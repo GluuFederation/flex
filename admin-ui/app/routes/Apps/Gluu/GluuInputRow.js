@@ -15,7 +15,8 @@ function GluuInputRow({
   doc_category,
   disabled,
   showError = false,
-  errorMessage = ''
+  errorMessage = '',
+  handleChange = null
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -36,19 +37,22 @@ function GluuInputRow({
           type={customType || type}
           name={name}
           defaultValue={value}
-          onChange={formik.handleChange}
+          onChange={(event) => {
+            if (handleChange) { formik.handleChange; handleChange(event) }
+            else { formik.handleChange; }
+          }}
           disabled={disabled}
         />
         {type == 'password' && (
-        <div style={{ position: 'absolute', right: 20, top: 7 }}>
-          {customType == 'text' ? (
-            <Visibility onClick={() => setVisivility()} />
-          ) : (
-            <VisibilityOff onClick={() => setVisivility()} />
-          )}
-        </div>
+          <div style={{ position: 'absolute', right: 20, top: 7 }}>
+            {customType == 'text' ? (
+              <Visibility onClick={() => setVisivility()} />
+            ) : (
+              <VisibilityOff onClick={() => setVisivility()} />
+            )}
+          </div>
         )}
-        {showError ? <div style={{ color:"red" }}>{errorMessage}</div> : null }
+        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

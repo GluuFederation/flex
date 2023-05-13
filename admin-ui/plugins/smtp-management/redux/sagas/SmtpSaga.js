@@ -22,7 +22,7 @@ import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/actions/ToastAction'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import SmtpApi from '../api/SmtpApi'
-import { getSmptResponse, getSmpts, testSmtpResponse, updateSmptResponse } from '../actions/SmtpActions'
+import { getSmptResponse, getSmpts, testSmtpResponse, testSmtpResponseFails, updateSmptResponse } from '../actions/SmtpActions'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -76,7 +76,7 @@ export function* testSmtp(payload) {
     yield put(testSmtpResponse(data))
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(testSmtpResponse({}))
+    yield put(testSmtpResponseFails())
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

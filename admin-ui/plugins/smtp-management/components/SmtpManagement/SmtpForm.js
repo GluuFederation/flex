@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Button, Row, Col, Form, FormGroup } from '../../../../app/components'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
@@ -17,6 +17,10 @@ function SmtpForm({ item, handleSubmit }) {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
+  const [hideTestButton, setHideTestButton] = useState(false);
+  const [tempItems, setTempItems] = useState(item);
+
+
   const toggle = () => {
     setModal(!modal)
   }
@@ -77,9 +81,22 @@ function SmtpForm({ item, handleSubmit }) {
       message: "Testing"
     })
     opts['smtpTest'] = JSON.parse(smtpData)
-
     dispatch(testSmtp(opts))
   }
+
+  const handleChange = (event) => {
+    const temp = { ...tempItems };
+    temp[event.target.name] = event.target.type == "number" ? parseInt(event.target.value) : event.target.type == "select-one" ? event.target.value == "true" ? true : false : event.target.value;
+
+    if (JSON.stringify(temp) !== JSON.stringify(item)) {
+      setHideTestButton(true)
+    }
+    else {
+      setHideTestButton(false)
+    }
+    setTempItems({ ...tempItems, [event.target.name]: event.target.value });
+  }
+
   return (
     <Form
       onSubmit={(e) => {
@@ -98,6 +115,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.host && formik.touched.host}
             errorMessage={formik.errors.host}
+            handleChange={handleChange}
           />
         </Col>
         <Col sm={8}>
@@ -110,6 +128,8 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.port && formik.touched.port}
             errorMessage={formik.errors.port}
+            handleChange={handleChange}
+            type="number"
           />
         </Col>
         <Col sm={8}>
@@ -124,9 +144,8 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.connect_protection && formik.touched.connect_protection}
             errorMessage={formik.errors.connect_protection}
+            handleChange={handleChange}
           />
-
-
         </Col>
 
         <Col sm={8}>
@@ -139,6 +158,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.from_name && formik.touched.from_name}
             errorMessage={formik.errors.from_name}
+            handleChange={handleChange}
           />
         </Col>
 
@@ -152,6 +172,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.from_email_address && formik.touched.from_email_address}
             errorMessage={formik.errors.from_email_address}
+            handleChange={handleChange}
           />
         </Col>
 
@@ -167,6 +188,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.requires_authentication && formik.touched.requires_authentication}
             errorMessage={formik.errors.requires_authentication}
+            handleChange={handleChange}
           />
         </Col>
 
@@ -180,6 +202,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.smtp_authentication_account_username && formik.touched.smtp_authentication_account_username}
             errorMessage={formik.errors.smtp_authentication_account_username}
+            handleChange={handleChange}
           />
         </Col>
 
@@ -193,6 +216,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.smtp_authentication_account_password && formik.touched.smtp_authentication_account_password}
             errorMessage={formik.errors.smtp_authentication_account_password}
+            handleChange={handleChange}
           />
         </Col>
 
@@ -208,6 +232,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.trust_host && formik.touched.trust_host}
             errorMessage={formik.errors.trust_host}
+            handleChange={handleChange}
           />
 
         </Col>
@@ -222,6 +247,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.key_store && formik.touched.key_store}
             errorMessage={formik.errors.key_store}
+            handleChange={handleChange}
           />
         </Col>
 
@@ -235,6 +261,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.key_store_password && formik.touched.key_store_password}
             errorMessage={formik.errors.key_store_password}
+            handleChange={handleChange}
           />
         </Col>
 
@@ -248,6 +275,7 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.key_store_alias && formik.touched.key_store_alias}
             errorMessage={formik.errors.key_store_alias}
+            handleChange={handleChange}
           />
         </Col>
 
@@ -261,11 +289,12 @@ function SmtpForm({ item, handleSubmit }) {
             rsize={9}
             showError={formik.errors.signing_algorithm && formik.touched.signing_algorithm}
             errorMessage={formik.errors.signing_algorithm}
+            handleChange={handleChange}
           />
         </Col>
       </FormGroup>
       <Row>
-        <Col>
+        {!hideTestButton && <Col>
           <button
             type="button"
             className={`btn btn-primary-${selectedTheme} text-center`}
@@ -275,7 +304,7 @@ function SmtpForm({ item, handleSubmit }) {
           >
             {t('fields.test')}
           </button>
-        </Col>
+        </Col>}
         <Col> <GluuCommitFooter saveHandler={toggle} hideButtons={{ save: true, back: true }} type="submit" />
         </Col>
       </Row>

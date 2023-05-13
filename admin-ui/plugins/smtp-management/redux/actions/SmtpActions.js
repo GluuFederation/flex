@@ -6,7 +6,8 @@ import {
   UPDATE_SMTP_RESPONSE,
   TEST_SMTP_CONFIG,
   TEST_SMTP_CONFIG_RESPONSE,
-  CLEAR_TEST_CONFIG
+  CLEAR_TEST_CONFIG,
+  TEST_SMTP_CONFIG_RESPONSE_FAILS
 } from './types'
 
 export const getSmpts = (action) => ({
@@ -48,6 +49,10 @@ export const testSmtp = (action) => {
 export const testSmtpResponse = (data) => ({
   type: TEST_SMTP_CONFIG_RESPONSE,
   payload: { data },
+})
+
+export const testSmtpResponseFails = (data) => ({
+  type: TEST_SMTP_CONFIG_RESPONSE_FAILS
 })
 
 export const clearSmtpConfig = () => ({
