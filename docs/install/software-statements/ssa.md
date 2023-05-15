@@ -17,7 +17,6 @@ Gluu issues SSAs through the Agama Lab web interface. You can obtain an SSA for 
 - Select a repository for use with Agama Lab. The repository must have at least 1 commit on the main branch. We recommend creating a fresh repository and pushing a commit for use with Agama Lab.
 ![agama-home](../../assets/agama-lab/agama-home.png)
 - On the left navigation bar, select `SCAN`
-![scan-home](../../assets/agama-lab/scan-overview.png)
 - Sign up for a free SCAN subscription, which will give you 500 SCAN credits. Flex does not cost any SCAN credits, so you will not be charged for SCAN.
 - Navigate to the tab named `SSA`.
 ![ssa-management](../../assets/agama-lab/ssa-management.png)
