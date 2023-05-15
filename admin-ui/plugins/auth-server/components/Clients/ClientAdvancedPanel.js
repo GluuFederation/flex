@@ -7,9 +7,11 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
-import DatePicker from 'react-datepicker'
 import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import dayjs from 'dayjs'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
@@ -21,7 +23,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
     client.expirationDate ? client.expirationDate : false,
   )
   const [scopesModal, setScopesModal] = useState(false)
-
+  const [expirationDate, setExpirationDate] = useState(expirable ? dayjs(expirable) : undefined)
   const handler = () => {
     setScopesModal(!scopesModal)
   }
@@ -218,19 +220,18 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
           {client.expirable && client.expirable.length ? (
             <FormGroup row>
               <Col sm={12}>
-                <DatePicker
-                  id="expirationDate"
-                  name="expirationDate"
-                  showTimeSelect
-                  dateFormat="yyyy-MM-dd HH:mm:aa"
-                  timeFormat="HH:mm:aa"
-                  selected={client.expirationDate}
-                  peekNextMonth
-                  showMonthDropdown
-                  showYearDropdown
-                  dropdownMode="select"
-                  onChange={(e) => formik.setFieldValue('expirationDate', e)}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    id="expirationDate"
+                    name="expirationDate"
+                    value={expirationDate}
+                    onChange={(date) => {
+                      console.log(`new Date(date)`, new Date(date))
+                      formik.setFieldValue('expirationDate', new Date(date))
+                      setExpirationDate(date)
+                    }}
+                  />
+                </LocalizationProvider> 
               </Col>
             </FormGroup>
           ) : null}

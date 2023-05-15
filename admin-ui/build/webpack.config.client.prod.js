@@ -1,15 +1,17 @@
 const path = require('path')
+const glob = require('glob')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+const CompressionPlugin = require("compression-webpack-plugin")
 
 const config = require('./../config')
 require('dotenv').config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
 })
-
 const BASE_PATH = process.env.BASE_PATH || '/admin'
 const CONFIG_API_BASE_URL =
   process.env.CONFIG_API_BASE_URL || 'https://sample.com'
@@ -26,13 +28,25 @@ module.exports = {
   optimization: {
     moduleIds: 'named',
     chunkIds: 'named',
-    minimize: false,
+    minimize: true,
     nodeEnv: 'production',
     mangleWasmImports: true,
     removeEmptyChunks: false,
     mergeDuplicateChunks: false,
     flagIncludedChunks: true,
-    minimizer: [`...`, new CssMinimizerPlugin(), '...'],
+    minimizer: [`...`, 
+    new CssMinimizerPlugin({
+      minimizerOptions: {
+        preset: [
+          "default",
+          {
+            calc: false,
+            discardComments: { removeAll: true },
+          },
+        ],
+      },
+    }),
+    '...'],
     emitOnErrors: true,
     splitChunks: {
       chunks: 'all',
@@ -99,19 +113,29 @@ module.exports = {
         SESSION_TIMEOUT_IN_MINUTES: JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
       },
     }),
+    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to "server" to activate BundleAnalyzerPlugin
+    new CompressionPlugin({
+      algorithm: "gzip",
+    })
   ],
   module: {
     rules: [
       {
         test: /\.js$/,
         include: [config.srcDir, config.pluginsDir],
-        exclude: /node_modules/,
+        exclude: /(node_modules|\.test\.js$)/,
         use: 'babel-loader',
+        sideEffects: false,
+      },
+      {
+        test: /\.test\.js$/,
+        include: [config.srcDir, config.pluginsDir],
+        use: 'ignore-loader',
       },
       // Modular Styles
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader", "postcss-loader"],
+        use: ["style-loader", "css-loader", "postcss-loader"]
       },
       {
         test: /\.scss$/,

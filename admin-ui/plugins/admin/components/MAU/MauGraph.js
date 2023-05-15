@@ -3,7 +3,6 @@ import { subMonths } from 'date-fns'
 import moment from 'moment'
 import ActiveUsersGraph from 'Routes/Dashboards/Grapths/ActiveUsersGraph'
 import Grid from '@mui/material/Grid'
-import 'react-datepicker/dist/react-datepicker.css'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';

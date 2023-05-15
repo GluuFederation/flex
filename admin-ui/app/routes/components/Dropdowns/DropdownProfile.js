@@ -10,7 +10,7 @@ const DropdownProfile = (props) => {
   const { t } = useTranslation()
   return (
     <React.Fragment>
-      <DropdownMenu right={props.right}>
+      <DropdownMenu end={props.end}>
         <DropdownItem header>
           {props.userinfo.user_name || props.userinfo.name || props.userinfo.given_name}
         </DropdownItem>
@@ -29,7 +29,7 @@ const DropdownProfile = (props) => {
 }
 DropdownProfile.propTypes = {
   position: PropTypes.string,
-  right: PropTypes.bool,
+  end: PropTypes.bool,
 }
 DropdownProfile.defaultProps = {
   position: '',

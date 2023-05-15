@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 import scopeReducer from 'Plugins/auth-server/redux/reducers/ScopeReducer'
-import scopes from './scopes'
+import scopes from './scopes.test'
 
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',

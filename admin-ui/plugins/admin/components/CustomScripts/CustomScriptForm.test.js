@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import CustomScriptForm from './CustomScriptForm'
 import item from "./item"
-import script from "./script"
+import script from "./script.test"
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 

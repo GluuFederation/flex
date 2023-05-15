@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 import item from "./item"
-import script from "./script"
+import script from "./script.test"
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',

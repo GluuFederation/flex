@@ -5,7 +5,7 @@ import { combineReducers, createStore} from 'redux'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
-import clients from './clients'
+import clients from './clients.test'
 import { I18nextProvider } from 'react-i18next'
 
 const permissions = [
