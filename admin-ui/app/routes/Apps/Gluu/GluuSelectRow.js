@@ -29,8 +29,8 @@ function GluuSelectRow({
             name={name}
             defaultValue={value}
             onChange={(event) => {
-              if (handleChange) { formik.handleChange; handleChange(event) }
-              else { formik.handleChange; }
+              if (handleChange) { formik.handleChange(event); handleChange(event) }
+              else { formik.handleChange(event); }
             }}
             disabled={disabled}
           >

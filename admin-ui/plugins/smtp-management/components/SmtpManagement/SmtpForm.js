@@ -10,6 +10,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
 import { testSmtp } from '../../redux/actions/SmtpActions'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 function SmtpForm({ item, handleSubmit }) {
   const { t } = useTranslation()
@@ -19,6 +20,7 @@ function SmtpForm({ item, handleSubmit }) {
   const [modal, setModal] = useState(false)
   const [hideTestButton, setHideTestButton] = useState(false);
   const [tempItems, setTempItems] = useState(item);
+ 
 
 
   const toggle = () => {
@@ -74,14 +76,28 @@ function SmtpForm({ item, handleSubmit }) {
   }
 
   const testSmtpConfig = () => {
-    const opts = {}
-    const smtpData = JSON.stringify({
-      sign: true,
-      subject: "Testing Email",
-      message: "Testing"
-    })
-    opts['smtpTest'] = JSON.parse(smtpData)
-    dispatch(testSmtp(opts))
+    const isValidate = checkValue();
+    if (isValidate) {
+      const opts = {}
+      const smtpData = JSON.stringify({
+        sign: true,
+        subject: "Testing Email",
+        message: "Testing"
+      })
+      opts['smtpTest'] = JSON.parse(smtpData)
+      dispatch(testSmtp(opts))
+    }
+    else {
+      toast.error("All fields is required");
+    }
+  }
+
+  const checkValue = () => {
+    for (var key in formik.values) {
+      if (formik.values[key] === null || formik.values[key] == "")
+        return false;
+    }
+    return true
   }
 
   const handleChange = (event) => {
@@ -116,6 +132,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.host && formik.touched.host}
             errorMessage={formik.errors.host}
             handleChange={handleChange}
+
           />
         </Col>
         <Col sm={8}>
@@ -298,9 +315,7 @@ function SmtpForm({ item, handleSubmit }) {
           <button
             type="button"
             className={`btn btn-primary-${selectedTheme} text-center`}
-            onClick={() => {
-              testSmtpConfig()
-            }}
+            onClick={testSmtpConfig}
           >
             {t('fields.test')}
           </button>
