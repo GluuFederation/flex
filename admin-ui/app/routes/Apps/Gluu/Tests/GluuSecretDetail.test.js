@@ -1,14 +1,14 @@
 import React from 'react'
 import GluuSecretDetail from '../GluuSecretDetail'
-import { render, screen } from '@testing-library/react'
-import i18n from '../../../../i18n'
-import { I18nextProvider } from 'react-i18next'
+import { render, screen, waitFor } from '@testing-library/react'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import userEvent from "@testing-library/user-event"
 
-it('Test GluuSecretDetail component', () => {
+it('Test GluuSecretDetail component', async () => {
   const LABEL = 'fields.application_type'
   const VALUE = 'computer'
-  render(
-    <I18nextProvider i18n={i18n}>
+  const { container } = render(
+    <AppTestWrapper>
       <GluuSecretDetail
         doc_category="openid_client"
         doc_entry="applicationType"
@@ -16,11 +16,16 @@ it('Test GluuSecretDetail component', () => {
         up
         label={LABEL}
       />
-    </I18nextProvider>,
+    </AppTestWrapper>,
   )
-  screen.getByText(/Application Type:/)
-  screen.getByText('The OpenID connect Client application type.')
-  expect(
-    screen.getByText('The OpenID connect Client application type.'),
-  ).toHaveAttribute('data-id', 'tooltip')
+  screen.getByText(/Application Type/i)
+
+  const mouseOverEle = container.querySelector(`div[data-tooltip-id="applicationType"]`)
+  expect(mouseOverEle).toBeInTheDocument()
+  
+  userEvent.hover(mouseOverEle)
+
+  await waitFor(() => {
+    expect(screen.getByRole("tooltip", { name: /Kind of the application/i, hidden: true })).toBeVisible();
+  })
 })

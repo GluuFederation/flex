@@ -10,15 +10,15 @@ function GluuTooltip(props) {
   const selectedTheme = theme.state.theme
 
   return (
-    <div data-tip data-for={props.doc_entry}>
+    <div data-tooltip-id={props.doc_entry} data-tip data-for={props.doc_entry}>
       {props.children}
       <ReactTooltip
-        html
         type="success"
         id={props.doc_entry}
         className={`type-${selectedTheme}`}
         data-testid={props.doc_entry}
         place="bottom"
+        style={{ zIndex: 101 }}
       >
         {props.isDirect
           ? props.doc_category

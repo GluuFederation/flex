@@ -5,6 +5,7 @@ import { combineReducers, createStore } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
+import moment from 'moment'
 
 const jwks_config = {
   keys: [
@@ -52,5 +53,5 @@ it('Should render keys page properly', () => {
   expect(screen.getByTestId('kty')).toHaveValue(jwks_config.keys[0].kty)
   expect(screen.getByTestId('use')).toHaveValue(jwks_config.keys[0].use)
   expect(screen.getByTestId('alg')).toHaveValue(jwks_config.keys[0].alg)
-  expect(screen.getByTestId('exp')).toHaveValue(String(jwks_config.keys[0].exp))
+  expect(screen.getByTestId('exp')).toHaveValue(moment(jwks_config.keys[0].exp).format("YYYY-MMM-DD"))
 })

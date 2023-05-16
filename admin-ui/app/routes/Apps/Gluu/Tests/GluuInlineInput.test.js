@@ -1,8 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import GluuInlineInput from '../GluuInlineInput'
-import i18n from '../../../../i18n'
-import { I18nextProvider } from 'react-i18next'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const LABEL = 'fields.application_type'
 const NAME = 'application_type'
@@ -13,8 +12,8 @@ function handler() {
 }
 
 it('Should render a boolean select box', () => {
-  render(
-    <I18nextProvider i18n={i18n}>
+  const { container } = render(
+    <AppTestWrapper>
       <GluuInlineInput
         label={LABEL}
         value={VALUE}
@@ -22,18 +21,20 @@ it('Should render a boolean select box', () => {
         isBoolean
         handler={handler}
       />
-    </I18nextProvider>,
+    </AppTestWrapper>,
   )
-  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
-  fireEvent.click(screen.getByText(VALUE))
-  fireEvent.click(screen.getByText(false))
+  const inputEl = container.querySelector(`input[name=${NAME}]`)
+  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
+  expect(inputEl.checked).toBe(true)
+  fireEvent.click(inputEl)
+  expect(inputEl.checked).toBe(false)
 })
 
 it('Should render a typeahead component with array', () => {
   VALUE = ['Two']
   const options = ['One', 'Two', 'Three']
   render(
-    <I18nextProvider i18n={i18n}>
+    <AppTestWrapper>
       <GluuInlineInput
         label={LABEL}
         value={VALUE}
@@ -42,25 +43,25 @@ it('Should render a typeahead component with array', () => {
         isArray
         handler={handler}
       />
-    </I18nextProvider>,
+    </AppTestWrapper>,
   )
-  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
+  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
   fireEvent.click(screen.getByText(VALUE))
 })
 
 it('Should render a text input', () => {
   VALUE = 'Client Secret'
   render(
-    <I18nextProvider i18n={i18n}>
+    <AppTestWrapper>
       <GluuInlineInput
         label={LABEL}
         value={VALUE}
         name={NAME}
         handler={handler}
       />
-    </I18nextProvider>,
+    </AppTestWrapper>,
   )
-  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
+  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
   expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
   expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
 })

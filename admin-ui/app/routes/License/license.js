@@ -5,6 +5,7 @@ export const license = {
   customerLastName: "Dutta",
   licenseActive: true,
   licenseEnable: true,
+  licenseEnabled: true,
   licenseKey: "GFXJ-AB8B-YDJK-L4AD",
   licenseType: "TIME_LIMITED",
   maxActivations: 14,

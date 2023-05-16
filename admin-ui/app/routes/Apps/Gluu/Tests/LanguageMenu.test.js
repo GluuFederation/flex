@@ -7,7 +7,7 @@ import { I18nextProvider } from 'react-i18next'
 it('All supported languages will be visible', () => {
   render(
     <I18nextProvider i18n={i18n}>
-      <LanguageMenu />
+      <LanguageMenu userInfo={{ inum: null }} />
     </I18nextProvider>,
   )
   expect(screen.getByTestId('ACTIVE_LANG')).toHaveTextContent('en')

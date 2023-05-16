@@ -1,16 +1,16 @@
 import React from 'react'
 import GluuTypeAheadWithAdd from '../GluuTypeAheadWithAdd'
-import { render, screen } from '@testing-library/react'
-import i18n from '../../../../i18n'
-import { I18nextProvider } from 'react-i18next'
+import { render, screen, waitFor } from '@testing-library/react'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import userEvent from '@testing-library/user-event'
 
-it('Test GluuTypeAheadWithAdd component', () => {
+it('Test GluuTypeAheadWithAdd component', async () => {
   const LABEL = 'fields.application_type'
   const NAME = 'applicationType'
   const VALUE = ['Monday']
   const OPTIONS = ['Monday', 'Tuesday']
-  render(
-    <I18nextProvider i18n={i18n}>
+  const { container } = render(
+    <AppTestWrapper>
       <GluuTypeAheadWithAdd
         doc_category="openid_client"
         name={NAME}
@@ -18,14 +18,22 @@ it('Test GluuTypeAheadWithAdd component', () => {
         label={LABEL}
         options={OPTIONS}
       />
-    </I18nextProvider>,
+    </AppTestWrapper>,
   )
-  screen.getByText('Application Type:')
+  screen.getByText(/Application Type/i)
   screen.getByText('Add')
   screen.getByText('Remove')
   screen.getByText(VALUE[0])
-  screen.getByText('The OpenID connect Client application type.')
-  expect(
-    screen.getByText('The OpenID connect Client application type.'),
-  ).toHaveAttribute('data-id', 'tooltip')
+  
+  const iconElement = container.querySelector(`svg[data-tooltip-id="applicationType"]`)
+  expect(iconElement).toBeInTheDocument()
+  
+  userEvent.hover(iconElement)
+
+  await waitFor(() => {
+    expect(screen.getByRole("tooltip", { name: /Kind of the application/i, hidden: true })).toBeVisible();
+    expect(
+      screen.getByText(/Kind of the application/i),
+    ).toHaveAttribute('role', 'tooltip')
+  })
 })

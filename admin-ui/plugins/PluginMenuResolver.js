@@ -1,4 +1,4 @@
-import plugins from '../plugins.config'
+import plugins from '../plugins.config.json'
 export function processMenus() {
   let pluginMenus = []
   plugins

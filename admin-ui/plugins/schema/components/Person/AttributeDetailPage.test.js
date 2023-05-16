@@ -4,9 +4,10 @@ import AttributeDetailPage from './AttributeDetailPage'
 import i18n from '../../../../app/i18n'
 import attributes from './attributes'
 import { I18nextProvider } from 'react-i18next'
+import { ThemeProvider } from 'Context/theme/themeContext'
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+  <I18nextProvider i18n={i18n}><ThemeProvider>{children}</ThemeProvider></I18nextProvider>
 )
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
