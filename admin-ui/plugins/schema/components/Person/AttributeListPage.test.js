@@ -3,9 +3,8 @@ import { render, screen } from '@testing-library/react'
 import AttributeListPage from './AttributeListPage'
 import { combineReducers, createStore } from 'redux'
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
-import { I18nextProvider } from 'react-i18next'
 import attributes from './attributes'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
@@ -30,9 +29,9 @@ const store = createStore(
 )
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>
+  <AppTestWrapper>
     <Provider store={store}>{children}</Provider>
-  </I18nextProvider>
+  </AppTestWrapper>
 )
 
 it('Should render the attribute list page properly', () => {
@@ -41,7 +40,7 @@ it('Should render the attribute list page properly', () => {
   })
   const inum = attributes[0].inum
   const displayName = attributes[0].displayName
-  screen.getByText(/Inum/)
+  screen.getByText(/Inum/i)
   screen.getByText(/Display Name/)
   screen.getByText(/Status/)
   screen.getByText(inum)

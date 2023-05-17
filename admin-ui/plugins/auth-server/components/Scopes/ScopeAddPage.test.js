@@ -3,10 +3,9 @@ import { render, screen } from '@testing-library/react'
 import ScopeAddPage from './ScopeAddPage'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
-import { I18nextProvider } from 'react-i18next'
 import scopeReducer from 'Plugins/auth-server/redux/reducers/ScopeReducer'
 import scopes from './scopes.test'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
@@ -36,9 +35,9 @@ const store = createStore(
 )
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>
+  <AppTestWrapper>
     <Provider store={store}>{children}</Provider>
-  </I18nextProvider>
+  </AppTestWrapper>
 )
 
 it('Should render the scope add page properly', () => {

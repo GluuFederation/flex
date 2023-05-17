@@ -1,12 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import ScopeDetailPage from './ScopeDetailPage'
-import i18n from '../../../../app/i18n'
 import scopes from './scopes.test'
-import { I18nextProvider } from 'react-i18next'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+  <AppTestWrapper>{children}</AppTestWrapper>
 )
 const permissions = [
   'https://jans.io/oauth/config/scopes.readonly',
@@ -22,5 +21,5 @@ it('Should render the scope detail page properly', () => {
   screen.getByText(/Display Name/)
   screen.getByText(/Description/)
   screen.getByText(/Default Scope/)
-  screen.getByText(/attributes/)
+  screen.getByText(/Attributes/)
 })

@@ -16,6 +16,6 @@ it('Should show the input with proper text', () => {
       <GluuInputRow label={LABEL} value={VALUE} name={NAME} handler={handler} formik={handler}/>
     </I18nextProvider>,
   )
-  screen.getByText('Application Type:')
+  screen.getByText(/Application Type/i)
   expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
 })

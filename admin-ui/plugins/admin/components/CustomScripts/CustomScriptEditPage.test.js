@@ -3,10 +3,9 @@ import { render, screen } from '@testing-library/react'
 import CustomScriptEditPage from './CustomScriptEditPage'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
-import { I18nextProvider } from 'react-i18next'
 import item from "./item"
 import script from "./script.test"
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
@@ -32,9 +31,9 @@ const store = createStore(
 )
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>
+  <AppTestWrapper>
     <Provider store={store}>{children}</Provider>
-  </I18nextProvider>
+  </AppTestWrapper>
 )
 
 it('Should render the Custom Script edit page properly', () => {

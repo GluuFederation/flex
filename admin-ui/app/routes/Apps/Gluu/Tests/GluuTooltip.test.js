@@ -1,20 +1,25 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import GluuTooltip from '../GluuTooltip'
-import i18n from '../../../../i18n'
-import { I18nextProvider } from 'react-i18next'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import userEvent from '@testing-library/user-event'
 
-it('Test gluutooltip', () => {
-  render(
-    <I18nextProvider i18n={i18n}>
+it('Test gluutooltip', async () => {
+  const { container } = render(
+    <AppTestWrapper>
       <GluuTooltip doc_category="openid_client" doc_entry="applicationType">
         <p>A custom component</p>
       </GluuTooltip>
-    </I18nextProvider>,
+    </AppTestWrapper>,
   )
   screen.getByText('A custom component')
-  screen.getByText('The OpenID connect Client application type.')
-  expect(
-    screen.getByText('The OpenID connect Client application type.'),
-  ).toHaveAttribute('data-id', 'tooltip')
+
+  const mouseOverEle = container.querySelector(`div[data-tooltip-id="applicationType"]`)
+  expect(mouseOverEle).toBeInTheDocument()
+  
+  userEvent.hover(mouseOverEle)
+
+  await waitFor(() => {
+    expect(screen.getByRole("tooltip")).toHaveTextContent(/Kind of the application/i)
+  })
 })

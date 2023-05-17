@@ -5,6 +5,7 @@ import { combineReducers, createStore } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const config = {
   issuer: 'https://admin-ui-test.gluu.org',
@@ -134,6 +135,14 @@ const CONFIG_STATE = {
   loading: false,
 }
 
+const ACER_STATE = {
+  acrReponse: {}
+}
+
+const SCRIPTS_STATE = {
+  scripts: []
+}
+
 const INIT_STATE = {
   isAuthenticated: false,
   userinfo: null,
@@ -151,13 +160,15 @@ const store = createStore(
     authReducer: (state = INIT_STATE) => state,
     jsonConfigReducer: (state = CONFIG_STATE) => state,
     noReducer: (state = {}) => state,
+    acrReducer: (state = ACER_STATE) => state,
+    initReducer: (state = SCRIPTS_STATE) => state,
   }),
 )
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>
+  <AppTestWrapper>
     <Provider store={store}>{children}</Provider>
-  </I18nextProvider>
+  </AppTestWrapper>
 )
 
 it('Should render json properties page properly', () => {

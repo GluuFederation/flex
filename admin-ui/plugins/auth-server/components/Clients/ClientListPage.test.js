@@ -1,12 +1,10 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import ClientListPage from './ClientListPage'
 import { combineReducers, createStore} from 'redux'
-import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
 import clients from './clients.test'
-import { I18nextProvider } from 'react-i18next'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
@@ -52,17 +50,30 @@ const store = createStore(
 )
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>
+  <AppTestWrapper>
     <Provider store={store}>
-      <Router basename="/admin">{children}</Router>
+      {children}
     </Provider>
-  </I18nextProvider>
+  </AppTestWrapper>
 )
 
-it('Should show the sidebar properly', () => {
-  render(<ClientListPage />, { wrapper: Wrapper })
-  screen.getByText(/OIDC Clients/)
-  screen.getByTitle('Add Client')
-  screen.getByText(/refresh/)
-  screen.getByText(/search/)
+it('Should show the sidebar properly', async () => {
+  const { container } = render(<ClientListPage />, { wrapper: Wrapper })
+
+  const addClientButton = container.querySelector(`button[aria-label="Add Client"]`)
+  expect(addClientButton).toBeInTheDocument()
+
+  fireEvent.mouseOver(addClientButton)
+
+  await waitFor(() => screen.getByText('Add Client'))
+
+  const refreshClientButton = container.querySelector(`button[aria-label="Refresh data"]`)
+  expect(refreshClientButton).toBeInTheDocument()
+
+  fireEvent.mouseOver(refreshClientButton)
+
+  await waitFor(() => screen.getByText('Refresh data'))
+
+  const inputSearch = container.querySelector(`input[placeholder="Search"]`)
+  expect(inputSearch).toBeInTheDocument()
 })

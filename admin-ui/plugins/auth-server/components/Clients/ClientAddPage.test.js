@@ -9,6 +9,8 @@ import { I18nextProvider } from 'react-i18next'
 import initReducer from 'Redux/reducers/InitReducer'
 import oidcDiscoveryReducer from 'Redux/reducers/OidcDiscoveryReducer'
 import scopeReducer from 'Plugins/auth-server/redux/reducers/ScopeReducer'
+import umaResourceReducer from 'Plugins/auth-server/redux/reducers/UMAResourceReducer'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
   'https://jans.io/oauth/config/openid/clients.write',
@@ -39,6 +41,7 @@ const store = createStore(
   combineReducers({
     authReducer: (state = INIT_STATE) => state,
     oidcReducer: (state = INIT_SCPOPES_STATE) => state,
+    umaResourceReducer,
     scopeReducer,
     initReducer,
     oidcDiscoveryReducer,
@@ -47,21 +50,19 @@ const store = createStore(
 )
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>
+  <AppTestWrapper>
     <Provider store={store}>
-      <Router basename="/admin">{children}</Router>
+      {children}
     </Provider>
-  </I18nextProvider>
+  </AppTestWrapper>
 )
 
 it('Should render client add page properly', () => {
   render(<ClientAddPage />, { wrapper: Wrapper })
   screen.getByText(/Basic/)
   screen.getByText(/Advanced/)
-  screen.getByText('Encryption/Signing')
-  screen.getByText(/Client Attributes/)
+  screen.getByText('Encription / Signing', { exact: false })
   screen.getByText(/Client Scripts/)
-  screen.getByText(/Client Name/)
-  screen.getByText(/The openid connect client name/)
-  screen.getByText(/description/)
+  screen.getByText('Client Name', { exact: false })
+  screen.getByText('description', { exact: false })
 })

@@ -271,6 +271,7 @@ function ClientListPage() {
       icon: 'refresh',
       tooltip: `${t('messages.refresh')}`,
       iconProps: { color: 'primary' },
+      ['data-testid']: `${t('messages.refresh')}`,
       isFreeAction: true,
       onClick: () => {
         makeOptions()
@@ -309,6 +310,7 @@ function ClientListPage() {
       icon: 'add',
       tooltip: `${t('messages.add_client')}`,
       iconProps: { color: 'primary' },
+      ['data-testid']: `${t('messages.add_client')}`,
       isFreeAction: true,
       onClick: () => handleGoToClientAddPage(),
     })

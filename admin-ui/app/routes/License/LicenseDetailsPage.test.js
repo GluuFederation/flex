@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import i18n from '../../i18n'
 import { I18nextProvider } from 'react-i18next'
 import license from "./license"
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const INIT_LICENSE_DETAIL_STATE = {
   item: license,
@@ -19,13 +20,13 @@ const store = createStore(
 )
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>
+  <AppTestWrapper>
     <Provider store={store}>{children}</Provider>
-  </I18nextProvider>
+  </AppTestWrapper>
 )
 
 it('Should render the Custom Script add page properly', () => {
-  render(<LicenseDetailsPage />, { wrapper: Wrapper })
+  render(<LicenseDetailsPage item={license} loading={false} />, { wrapper: Wrapper })
   const key = license.licenseKey
   screen.getByText(/Product Name/)
   screen.getByText(/Product Code/)

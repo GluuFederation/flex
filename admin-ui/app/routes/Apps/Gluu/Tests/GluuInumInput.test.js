@@ -1,8 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import GluuInumInput from '../GluuInumInput'
-import i18n from '../../../../i18n'
-import { I18nextProvider } from 'react-i18next'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const LABEL = 'fields.application_type'
 const NAME = 'application_type'
@@ -13,7 +12,7 @@ it('Should show the disabled input with proper text wit sa', () => {
     console.log("========")
   }
   render(
-    <I18nextProvider i18n={i18n}>
+    <AppTestWrapper>
       <GluuInumInput
         label={LABEL}
         value={VALUE}
@@ -21,9 +20,9 @@ it('Should show the disabled input with proper text wit sa', () => {
         handler={handler}
         formik={handler}
       />
-    </I18nextProvider>,
+    </AppTestWrapper>,
   )
-  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
+  expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
   expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
   expect(screen.getByDisplayValue(VALUE)).toBeDisabled()
 })

@@ -3,9 +3,8 @@ import { render, screen } from '@testing-library/react'
 import ScopeEditPage from './ScopeEditPage'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
-import { I18nextProvider } from 'react-i18next'
 import scopes from './scopes.test'
+import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 const permissions = [
   'https://jans.io/oauth/config/scopes.readonly',
@@ -20,18 +19,25 @@ const INIT_SHARED_STATE = {
   attributes: [],
   scripts: [],
 }
+
+const SCOPE_REDUCER = {
+  item: {},
+  loading: false
+}
+
 const store = createStore(
   combineReducers({
     authReducer: (state = INIT_STATE) => state,
     initReducer: (state = INIT_SHARED_STATE) => state,
     noReducer: (state = {}) => state,
+    scopeReducer: (state = SCOPE_REDUCER) => state
   }),
 )
 
 const Wrapper = ({ children }) => (
-  <I18nextProvider i18n={i18n}>
+  <AppTestWrapper>
     <Provider store={store}>{children}</Provider>
-  </I18nextProvider>
+  </AppTestWrapper>
 )
 
 it('Should render the scope edit page properly', () => {

@@ -7,8 +7,24 @@ module.exports = {
   ],
   env: {
     test: {
-      presets: ['@babel/preset-env', 'jest'],
-      plugins: ['@babel/plugin-transform-runtime'],
+      presets: [
+        [
+          "@babel/preset-react",
+          {
+            runtime: "automatic",
+          },
+        ],
+        [
+          "@babel/preset-env",
+          {
+            targets: {
+              node: "current",
+            },
+          },
+        ],
+        'jest'
+      ],
+      plugins: ["@babel/plugin-transform-runtime", "@babel/plugin-transform-modules-commonjs"],
     },
   },
 }
