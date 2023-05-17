@@ -4,6 +4,7 @@ import {
   GET_SMTPS_RESPONSE,
   TEST_SMTP_CONFIG,
   TEST_SMTP_CONFIG_RESPONSE,
+  TEST_SMTP_CONFIG_RESPONSE_FAILS,
   UPDATE_SMTP,
   UPDATE_SMTP_RESPONSE,
 } from '../actions/types'
@@ -56,6 +57,13 @@ export default function smtpsReducer(state = INIT_STATE, action) {
         loading: false,
         openModal: true
       }
+
+      case TEST_SMTP_CONFIG_RESPONSE_FAILS:
+        return {
+          ...state,
+          loading: false,
+          openModal: false
+        }
 
     case CLEAR_TEST_CONFIG:
       return {

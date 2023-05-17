@@ -14,6 +14,7 @@ function GluuSelectRow({
   rsize,
   doc_category,
   disabled,
+  handleChange
 }) {
   const { t } = useTranslation()
   return (
@@ -27,7 +28,10 @@ function GluuSelectRow({
             data-testid={name}
             name={name}
             defaultValue={value}
-            onChange={formik.handleChange}
+            onChange={(event) => {
+              if (handleChange) { formik.handleChange(event); handleChange(event) }
+              else { formik.handleChange(event); }
+            }}
             disabled={disabled}
           >
             <option value="">{t('actions.choose')}...</option>
