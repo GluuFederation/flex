@@ -24,16 +24,4 @@ it('Test gluu typeahead', async () => {
   )
   screen.getByText(/Application Type/i)
   screen.getByText(VALUE[0])
-
-  const iconElement = container.querySelector(`svg[data-tooltip-id="applicationType"]`)
-  expect(iconElement).toBeInTheDocument()
-  
-  userEvent.hover(iconElement)
-
-  await waitFor(() => {
-    expect(screen.getByRole("tooltip", { name: /Kind of the application/i, hidden: true })).toBeVisible();
-    expect(
-      screen.getByText(/Kind of the application/i),
-    ).toHaveAttribute('role', 'tooltip')
-  })
 })

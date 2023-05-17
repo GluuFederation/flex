@@ -23,6 +23,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test jest",
+    "clear_jest": "jest --clearCache",
     "test:watch": "npm test -- --watch",
     "start": "export $(cat .env | xargs) && npm run start:dev",
     "build:dev": "node ./build/cli-tools.js --clear dist --create dist && webpack --config ./build/webpack.config.client.dev.js",

@@ -18,6 +18,7 @@ function GluuTooltip(props) {
         className={`type-${selectedTheme}`}
         data-testid={props.doc_entry}
         place="bottom"
+        role="tooltip"
         style={{ zIndex: 101 }}
       >
         {props.isDirect
