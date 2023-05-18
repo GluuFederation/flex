@@ -20,7 +20,6 @@ function SmtpForm({ item, handleSubmit }) {
   const [modal, setModal] = useState(false)
   const [hideTestButton, setHideTestButton] = useState(false);
   const [tempItems, setTempItems] = useState(item);
- 
 
 
   const toggle = () => {
@@ -30,7 +29,7 @@ function SmtpForm({ item, handleSubmit }) {
   const initialValues = {
     host: item?.host || "",
     port: item?.port || "",
-    connect_protection: item?.connect_protection || "",
+    connect_protection: item?.connect_protection || "None",
     from_name: item?.from_name || "",
     from_email_address: item?.from_email_address || "",
     requires_authentication: item?.requires_authentication || "false",
@@ -52,17 +51,13 @@ function SmtpForm({ item, handleSubmit }) {
       {
         host: Yup.string().required('Host name is required.'),
         port: Yup.number().required('Port number is required.'),
-        connect_protection: Yup.string().required('Connection Protection is required.'),
+        connect_protection: Yup.string().min(2, 'Connection Protection is required.').required('Connection Protection is required.'),
         from_name: Yup.string().required('From name is required.'),
-        from_email_address: Yup.string().required('From email address is required.'),
-        requires_authentication: Yup.string().required('Authentication is required.'),
+        from_email_address: Yup.string().email('Please add a valid email address.').required('From email address is required.'),
+        requires_authentication: Yup.string().min(2, 'Connection Protection is required.').required('Authentication is required.'),
         smtp_authentication_account_username: Yup.string().required('SMTP user name is required.'),
         smtp_authentication_account_password: Yup.string().required('SMTP user password is required.'),
-        trust_host: Yup.string().required('Trust host is required.'),
-        key_store: Yup.string().required('Key Store is required.'),
-        key_store_password: Yup.string().required('Key Store password is required.'),
-        key_store_alias: Yup.string().required('Key Store alias is required.'),
-        signing_algorithm: Yup.string().required('Key Store Siging Alg is required.'),
+        trust_host: Yup.string().min(2, 'Connection Protection is required.').required('Trust host is required.'),
       }
     ),
     setFieldValue: (field) => {
@@ -88,13 +83,14 @@ function SmtpForm({ item, handleSubmit }) {
       dispatch(testSmtp(opts))
     }
     else {
-      toast.error("All fields is required");
+      toast.error(t('messages.mandatory_fields_required'));
     }
   }
 
   const checkValue = () => {
     for (var key in formik.values) {
-      if (formik.values[key] === null || formik.values[key] == "")
+      if ((formik.values[key] === null || formik.values[key] == "") && 
+      !["key_store", "key_store_password", "key_store_alias", "signing_algorithm"].includes(key) )
         return false;
     }
     return true
@@ -132,7 +128,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.host && formik.touched.host}
             errorMessage={formik.errors.host}
             handleChange={handleChange}
-
+            required
           />
         </Col>
         <Col sm={8}>
@@ -147,6 +143,7 @@ function SmtpForm({ item, handleSubmit }) {
             errorMessage={formik.errors.port}
             handleChange={handleChange}
             type="number"
+            required
           />
         </Col>
         <Col sm={8}>
@@ -162,6 +159,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.connect_protection && formik.touched.connect_protection}
             errorMessage={formik.errors.connect_protection}
             handleChange={handleChange}
+            required
           />
         </Col>
 
@@ -176,6 +174,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.from_name && formik.touched.from_name}
             errorMessage={formik.errors.from_name}
             handleChange={handleChange}
+            required
           />
         </Col>
 
@@ -190,6 +189,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.from_email_address && formik.touched.from_email_address}
             errorMessage={formik.errors.from_email_address}
             handleChange={handleChange}
+            required
           />
         </Col>
 
@@ -206,6 +206,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.requires_authentication && formik.touched.requires_authentication}
             errorMessage={formik.errors.requires_authentication}
             handleChange={handleChange}
+            required
           />
         </Col>
 
@@ -220,6 +221,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.smtp_authentication_account_username && formik.touched.smtp_authentication_account_username}
             errorMessage={formik.errors.smtp_authentication_account_username}
             handleChange={handleChange}
+            required
           />
         </Col>
 
@@ -234,6 +236,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.smtp_authentication_account_password && formik.touched.smtp_authentication_account_password}
             errorMessage={formik.errors.smtp_authentication_account_password}
             handleChange={handleChange}
+            required
           />
         </Col>
 
@@ -250,6 +253,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.trust_host && formik.touched.trust_host}
             errorMessage={formik.errors.trust_host}
             handleChange={handleChange}
+            required
           />
 
         </Col>
