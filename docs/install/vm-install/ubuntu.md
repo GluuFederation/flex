@@ -39,7 +39,7 @@ apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 
 ## Run the setup script
 
-- Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT you can use to install, specified by the `-admin-ui-ssa` argument.
+- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT in base64 format that you can use during installation specified by the `-admin-ui-ssa` argument.
 
 - Run the setup script:
 

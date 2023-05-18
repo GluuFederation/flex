@@ -109,6 +109,7 @@ nav:
 - 'Overview': 'README.md'
 - 'Installation':
     - 'install/README.md'
+    - 'Getting an SSA': 'install/ssa.md'
     - 'Helm Deployments':
         - 'install/helm-install/README.md'
         - 'Local Kubernetes Cluster': 'install/helm-install/local.md'
