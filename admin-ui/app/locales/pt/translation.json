@@ -330,7 +330,8 @@
     "error_in_script": "Erro no roteiro",
     "see_configurations": "Voir configuration",
     "manage_configurations": "Gerenciar configurações",
-    "fetching_project_details": "Buscando detalhes do projeto..."
+    "fetching_project_details": "Buscando detalhes do projeto...",
+    "mandatory_fields_required": "Os campos obrigatórios são obrigatórios"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",

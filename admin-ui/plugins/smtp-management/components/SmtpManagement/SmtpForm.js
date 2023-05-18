@@ -20,7 +20,6 @@ function SmtpForm({ item, handleSubmit }) {
   const [modal, setModal] = useState(false)
   const [hideTestButton, setHideTestButton] = useState(false);
   const [tempItems, setTempItems] = useState(item);
- 
 
 
   const toggle = () => {
@@ -59,10 +58,6 @@ function SmtpForm({ item, handleSubmit }) {
         smtp_authentication_account_username: Yup.string().required('SMTP user name is required.'),
         smtp_authentication_account_password: Yup.string().required('SMTP user password is required.'),
         trust_host: Yup.string().min(2, 'Connection Protection is required.').required('Trust host is required.'),
-        //key_store: Yup.string().required('Key Store is required.'),
-        //key_store_password: Yup.string().required('Key Store password is required.'),
-        //key_store_alias: Yup.string().required('Key Store alias is required.'),
-        //signing_algorithm: Yup.string().required('Key Store Siging Alg is required.'),
       }
     ),
     setFieldValue: (field) => {
@@ -88,7 +83,7 @@ function SmtpForm({ item, handleSubmit }) {
       dispatch(testSmtp(opts))
     }
     else {
-      toast.error("Mandatory fields are required");
+      toast.error(t('messages.mandatory_fields_required'));
     }
   }
 

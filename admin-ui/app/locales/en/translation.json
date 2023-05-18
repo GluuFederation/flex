@@ -461,7 +461,8 @@
     "error_in_script": "Error in script",
     "see_configurations": "See Configuration",
     "manage_configurations": "Manage Configurations",
-    "fetching_project_details": "Fetching project details..."
+    "fetching_project_details": "Fetching project details...",
+    "mandatory_fields_required": "Mandatory fields are required"
   },
   "tooltips": {
     "add_attribute": "Add attribute",

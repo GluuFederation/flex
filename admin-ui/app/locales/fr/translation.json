@@ -336,7 +336,8 @@
     "error_in_script": "Erreur dans le script",
     "see_configurations": "Voir configuration",
     "manage_configurations": "Gérer les configurations",
-    "fetching_project_details": "Récupération des détails du projet..."
+    "fetching_project_details": "Récupération des détails du projet...",
+    "mandatory_fields_required": "Les champs obligatoires sont requis"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
