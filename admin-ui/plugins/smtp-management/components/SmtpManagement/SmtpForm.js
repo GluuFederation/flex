@@ -53,7 +53,7 @@ function SmtpForm({ item, handleSubmit }) {
         port: Yup.number().required('Port number is required.'),
         connect_protection: Yup.string().min(2, 'Connection Protection is required.').required('Connection Protection is required.'),
         from_name: Yup.string().required('From name is required.'),
-        from_email_address: Yup.string().required('From email address is required.'),
+        from_email_address: Yup.string().email('Please add a valid email address.').required('From email address is required.'),
         requires_authentication: Yup.string().min(2, 'Connection Protection is required.').required('Authentication is required.'),
         smtp_authentication_account_username: Yup.string().required('SMTP user name is required.'),
         smtp_authentication_account_password: Yup.string().required('SMTP user password is required.'),
