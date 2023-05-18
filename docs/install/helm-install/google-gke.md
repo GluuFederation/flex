@@ -38,7 +38,7 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 ## Initial Setup
 
-1. Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT in base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluus Chart.
+1. Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT. You need to convert it into base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluus Chart.
 
 2. Enable [GKE API](https://console.cloud.google.com/kubernetes) if not enabled yet.
 
