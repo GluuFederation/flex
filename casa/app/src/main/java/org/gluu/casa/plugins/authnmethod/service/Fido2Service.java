@@ -21,6 +21,7 @@ import jakarta.ws.rs.core.Response;
 import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.PlatformAuthenticator;
 import org.gluu.casa.core.pojo.SecurityKey;
+import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
 import org.gluu.casa.rest.RSUtils;
 import org.gluu.casa.core.model.Fido2RegistrationEntry;
@@ -121,6 +122,30 @@ public class Fido2Service extends BaseService {
 
     }
 
+    public boolean removeDevice(FidoDevice device, String userId, String appId, boolean active) {
+        boolean success = false;
+        //In CB the ou=fido2_register branch does not exist (not a hierarchical DB)
+        String state = active ? Fido2RegistrationStatus.registered.getValue() : Fido2RegistrationStatus.pending.getValue();
+        logger.trace("Finding Fido 2 devices with state={} for user={}", state, userId);
+        Filter filter = Filter.createANDFilter(
+                Filter.createEqualityFilter("jansStatus", state),
+                Filter.createEqualityFilter("personInum", userId),
+                Filter.createEqualityFilter("jansApp", appId));
+        try {
+            List<Fido2RegistrationEntry> list = persistenceService.find(Fido2RegistrationEntry.class,
+                String.format("ou=%s,%s", FIDO2_OU, persistenceService.getPersonDn(userId)), filter);
+            for (Fido2RegistrationEntry entry : list) {
+                if (Utils.isNotEmpty(device.getId()) && Utils.isNotEmpty(entry.getId()) &&
+                device.getId().equals(entry.getId())) {
+                    success = persistenceService.delete(entry);
+                }
+            }
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
+        return success;
+    }
+
     public boolean removeDevice(FidoDevice device) {
 
         boolean success = false;
@@ -187,7 +212,7 @@ public class Fido2Service extends BaseService {
                 String content = response.readEntity(String.class);
                 String msg = "Registration failed (code: " + status + ")";
                 logger.error(msg + "; response was: " + content);
-            }            
+            }
     		return verified;
         }
         

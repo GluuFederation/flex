@@ -16,19 +16,19 @@ public class EmailPerson extends BasePerson {
      */
     private static final long serialVersionUID = -3072709087880306209L;
     
-	@AttributeName(name = "mail")
-	private String mail;
+    @AttributeName(name = "mail")
+    private String mail;
 
     @AttributeName(name = "jansEmail")
     private String jansEmail;
     
-	public String getMail() {
-		return mail;
-	}
+    public String getMail() {
+        return mail;
+    }
 
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 
     public String getJansEmail() {
         return jansEmail;

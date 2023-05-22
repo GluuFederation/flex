@@ -380,8 +380,8 @@ public class SecurityKey2ViewModel extends UserViewModel {
 					if (Messagebox.ON_YES.equals(event.getName())) {
 						try {
 							devices.remove(device);
-							boolean success = fido2Service.removeDevice(device);
-
+							boolean success = fido2Service.removeDevice(device, user.getId(),
+									new java.net.URI(fido2Service.getScriptPropertyValue("fido2_server_uri")).getHost(), true);		
 							if (success) {
 								if (reset) {
 									userService.turn2faOff(user);

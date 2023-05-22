@@ -2,10 +2,10 @@ package org.gluu.casa.plugins.emailotp;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.security.KeyStore;
 import java.security.PrivateKey;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
@@ -52,7 +52,6 @@ import org.gluu.casa.plugins.emailotp.model.SmtpConnectProtectionType;
 import org.gluu.casa.plugins.emailotp.model.VerifiedEmail;
 import org.gluu.casa.service.IPersistenceService;
 
-import io.jans.orm.model.SearchScope;
 import io.jans.util.security.SecurityProviderUtility;
 import io.jans.util.security.SecurityProviderUtility.SecurityModeType;
 import io.jans.util.security.StringEncrypter.EncryptionException;
@@ -96,9 +95,9 @@ public class EmailOtpService {
     public static final String DEF_MAIL_SSL_SOCKET_FACTORY          = "com.sun.mail.util.MailSSLSocketFactory";
 
     private Map<String, String> properties;
-	private IPersistenceService persistenceService;
-	private ObjectMapper mapper;
-	private long connectionTimeout = 5000;
+    private IPersistenceService persistenceService;
+    private ObjectMapper mapper;
+    private long connectionTimeout = 5000;
     private KeyStore keyStore;
 
     static {
@@ -108,42 +107,42 @@ public class EmailOtpService {
     /**
      * 
      */
-	private EmailOtpService() {
+    private EmailOtpService() {
         MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap(); 
         mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html"); 
         mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml"); 
         mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain"); 
         mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed"); 
         mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public static EmailOtpService getInstance() {
-		if (singleInstance == null) {
-			synchronized (EmailOtpService.class) {
-				singleInstance = new EmailOtpService();
-			}
-		}
-		return singleInstance;
-	}
+    /**
+     * 
+     * @return
+     */
+    public static EmailOtpService getInstance() {
+        if (singleInstance == null) {
+            synchronized (EmailOtpService.class) {
+                singleInstance = new EmailOtpService();
+            }
+        }
+        return singleInstance;
+    }
 
-	public void init() {
-        persistenceService = Utils.managedBean(IPersistenceService.class);
+    public void init() {
+        try {
+            persistenceService = Utils.managedBean(IPersistenceService.class);
 
-        reloadConfiguration();
-        mapper = new ObjectMapper();
+            reloadConfiguration();
+            mapper = new ObjectMapper();
 
-        SmtpConfiguration smtpConfiguration = getConfiguration().getSmtpConfiguration();
+            SmtpConfiguration smtpConfiguration = getConfiguration().getSmtpConfiguration();
 
-        String keystoreFile = smtpConfiguration.getKeyStore();
-        String keystoreSecret = decrypt(smtpConfiguration.getKeyStorePassword());
+            String keystoreFile = smtpConfiguration.getKeyStore();
+            String keystoreSecret = decrypt(smtpConfiguration.getKeyStorePassword());
 
-        SecurityProviderUtility.KeyStorageType keystoreType = solveKeyStorageType(keystoreFile);
+            SecurityProviderUtility.KeyStorageType keystoreType = solveKeyStorageType(keystoreFile);
 
-        try(InputStream is = new FileInputStream(keystoreFile)) {
             switch (keystoreType) {
             case JKS_KS: {
                 keyStore = KeyStore.getInstance("JKS");
@@ -158,121 +157,131 @@ public class EmailOtpService {
                 break;
             }
             }
-            keyStore.load(is, keystoreSecret.toCharArray());
+            try (InputStream is = new FileInputStream(keystoreFile)) {
+                keyStore.load(is, keystoreSecret.toCharArray());
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-	}
+    }
 
-	/**
-	 * 
-	 */
-	public void reloadConfiguration() {
-		ObjectMapper localMapper = new ObjectMapper();
-		properties = persistenceService.getCustScriptConfigProperties(ACR);
-		if (properties == null) {
-		    if (logger.isWarnEnabled()) { // according to Sonar request, as ACR.toUpperCase() is provided before checking    
-	            logger.warn(
-	                    "Config. properties for custom script '{}' could not be read. Features related to {} will not be accessible",
-	                    ACR, ACR.toUpperCase());
-		    }
-		} else {
-			try {
-			    if (logger.isInfoEnabled()) {
-	                logger.info("Settings found were: {}", localMapper.writeValueAsString(properties));
-			    }
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
-	}
+    /**
+     * 
+     */
+    public void reloadConfiguration() {
+        ObjectMapper localMapper = new ObjectMapper();
+        properties = persistenceService.getCustScriptConfigProperties(ACR);
+        if (properties == null) {
+            if (logger.isWarnEnabled()) { // according to Sonar request, as ACR.toUpperCase() is provided before checking    
+                logger.warn(
+                        "Config. properties for custom script '{}' could not be read. Features related to {} will not be accessible",
+                        ACR, ACR.toUpperCase());
+            }
+        } else {
+            try {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Settings found were: {}", localMapper.writeValueAsString(properties));
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
 
-	/**
-	 * 
-	 * @param value
-	 * @return
-	 */
-	public String getScriptPropertyValue(String value) {
-		return properties.get(value);
-	}
+    /**
+     * 
+     * @param value
+     * @return
+     */
+    public String getScriptPropertyValue(String value) {
+        return properties.get(value);
+    }
 
-	/**
-	 * 
-	 * @param uniqueIdOfTheUser
-	 * @return
-	 */
-	public List<BasicCredential> getCredentials(String uniqueIdOfTheUser) {
+    /**
+     * 
+     * @param uniqueIdOfTheUser
+     * @return
+     */
+    public List<BasicCredential> getCredentials(String uniqueIdOfTheUser) {
+        List<VerifiedEmail> verifiedEmails = getVerifiedEmail(uniqueIdOfTheUser);
+        List<BasicCredential> list = new ArrayList<>();
+        for (VerifiedEmail v : verifiedEmails) {
+            list.add(new BasicCredential(v.getEmail(), v.getAddedOn()));
+        }
+        return list;
+    }
 
-		List<VerifiedEmail> verifiedEmails = getVerifiedEmail(uniqueIdOfTheUser);
-		List<BasicCredential> list = new ArrayList<>();
-		for (VerifiedEmail v : verifiedEmails)
-			list.add(new BasicCredential(v.getEmail(), v.getAddedOn()));
-
-		return list;
-	}
-
-	/**
-	 * 
-	 * @param userId
-	 * @return
-	 */
-	public List<VerifiedEmail> getVerifiedEmail(String userId) {
-		List<VerifiedEmail> verifiedEmails = new ArrayList<>();
-		try {
+    /**
+     * 
+     * @param userId
+     * @return
+     */
+    public List<VerifiedEmail> getVerifiedEmail(String userId) {
+        List<VerifiedEmail> verifiedEmails = new ArrayList<>();
+        try {
             EmailPerson testPerson = new EmailPerson();
 
             String searchMask = String.format("inum=%s,ou=people,o=jans", userId);
             testPerson.setBaseDn(searchMask);
 
-			EmailPerson person = persistenceService.get(EmailPerson.class, persistenceService.getPersonDn(userId));
-			String json = person.getJansEmail();
-			json = Utils.isEmpty(json) ? "[]" : mapper.readTree(json).get("email-ids").toString();
-			verifiedEmails = mapper.readValue(json, new TypeReference<List<VerifiedEmail>>() { });
-			VerifiedEmail primaryMail = getExtraEmailId(person.getMail(), verifiedEmails);
-			// implies that this has not been already added
-			if (primaryMail != null) {
-				updateEmailIdAdd(userId, verifiedEmails, primaryMail);
-				verifiedEmails.add(primaryMail);
+            EmailPerson person = persistenceService.get(EmailPerson.class, persistenceService.getPersonDn(userId));
+            String json = person.getJansEmail();
+            json = Utils.isEmpty(json) ? "[]" : mapper.readTree(json).get("email-ids").toString();
+            verifiedEmails = mapper.readValue(json, new TypeReference<List<VerifiedEmail>>() { });
+            VerifiedEmail primaryMail = getExtraEmailId(person.getMail(), verifiedEmails);
+            // implies that this has not been already added
+            if (primaryMail != null) {
+                updateEmailIdAdd(userId, verifiedEmails, primaryMail);
+                verifiedEmails.add(primaryMail);
 
-			}
-			logger.info("getVerifiedEmail. User '{}' has {}", userId,
-					verifiedEmails.stream().map(VerifiedEmail::getEmail).collect(Collectors.toList()));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return verifiedEmails;
-	}
+            }
+            logger.info("getVerifiedEmail. User '{}' has {}", userId,
+                    verifiedEmails.stream().map(VerifiedEmail::getEmail).collect(Collectors.toList()));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return verifiedEmails;
+    }
 
-	/**
-	 * 
-	 * @param uniqueIdOfTheUser
-	 * @return
-	 */
-	public int getCredentialsTotal(String uniqueIdOfTheUser) {
-		return getVerifiedEmail(uniqueIdOfTheUser).size();
-	}
+    /**
+     * 
+     * @param uniqueIdOfTheUser
+     * @return
+     */
+    public int getCredentialsTotal(String uniqueIdOfTheUser) {
+        return getVerifiedEmail(uniqueIdOfTheUser).size();
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public JansConfiguration getConfiguration() {
-		return persistenceService.find(JansConfiguration.class, "ou=configuration,o=jans", null, 0, -1, SearchScope.BASE).get(0);		
-	}
-	
-	/**
-	 * 
-	 * @param emailId
-	 * @param subject
-	 * @param body
-	 * @return
-	 */
-	public boolean sendEmailWithOTP(String emailId, String subject, String body) {
-		SmtpConfiguration smtpConfiguration = getConfiguration().getSmtpConfiguration();
-		if (smtpConfiguration == null) {
-			logger.error("Failed to send email. SMTP settings not found. Please configure SMTP settings in oxTrust");
-			return false;
-		}
+    /**
+     * 
+     * @return
+     * @throws IOException
+     */
+    public JansConfiguration getConfiguration() throws IOException {
+        String baseDN = "ou=configuration,o=jans";
+        List<JansConfiguration> configRecs = persistenceService.find(JansConfiguration.class, baseDN, null, 0, -1);
+        Optional<JansConfiguration> resConfg = configRecs.stream().filter(jansConf -> baseDN.equals(jansConf.getDn())).findFirst();
+        if (!resConfg.isPresent()) {
+            throw new IOException("JansConfiguration isn't found.");
+        }
+        return resConfg.get();
+    }
+
+    /**
+     * 
+     * @param emailId
+     * @param subject
+     * @param body
+     * @param sign
+     * @return
+     * @throws IOException
+     */
+    public boolean sendEmailWithOTP(String emailId, String subject, String body, boolean sign) throws IOException {
+        SmtpConfiguration smtpConfiguration = getConfiguration().getSmtpConfiguration();
+        if (smtpConfiguration == null) {
+            logger.error("Failed to send email. SMTP settings not found. Please configure SMTP settings in Janssen");
+            return false;
+        }
 
         Properties props = new Properties();
 
@@ -290,11 +299,9 @@ public class EmailOtpService {
 
             props.put(DEF_MAIL_SMTP_SOCKET_FACTORY_CLASS, DEF_MAIL_SSL_SOCKET_FACTORY);
             props.put(DEF_MAIL_SMTP_SOCKET_FACTORY_PORT, smtpConfiguration.getPort());
-
             if (smtpConfiguration.isServerTrust()) {
                 props.put(DEF_MAIL_SMTP_SSL_TRUST, smtpConfiguration.getHost());
             }
-
             props.put(DEF_MAIL_SMTP_STARTTLS_ENABLE, true);
             props.put(DEF_MAIL_SMTP_STARTTLS_REQUIRED, true);
         }
@@ -308,11 +315,9 @@ public class EmailOtpService {
 
             props.put(DEF_MAIL_SMTP_SOCKET_FACTORY_CLASS, DEF_MAIL_SSL_SOCKET_FACTORY);
             props.put(DEF_MAIL_SMTP_SOCKET_FACTORY_PORT, smtpConfiguration.getPort());
-
             if (smtpConfiguration.isServerTrust()) {
                 props.put(DEF_MAIL_SMTP_SSL_TRUST, smtpConfiguration.getHost());
             }
-
             props.put(DEF_MAIL_SMTP_SSL_ENABLE, true);
         }
         else {
@@ -347,123 +352,33 @@ public class EmailOtpService {
             session = Session.getInstance(props, null);
         }
 
-		Message message = new MimeMessage(session);
-		try {
-			message.setFrom(new InternetAddress(smtpConfiguration.getFromEmailAddress(), smtpConfiguration.getFromName()));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailId));
-			message.setSubject(subject);
+        return generateSendEmail(session, smtpConfiguration, emailId, subject, body, sign);
+    }
 
-			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			mimeBodyPart.setContent(body, "text/html; charset=utf-8");
-
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(mimeBodyPart);
-			message.setContent(multipart);
-
-			Transport.send(message);
-		} catch (Exception e) {
-			logger.error("Failed to send OTP: {}", e.getMessage());
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * 
-	 * @param emailId
-	 * @param subject
-	 * @param body
-	 * @return
-	 */
-    public boolean sendEmailWithOTPSigned(String emailId, String subject, String body) {
-        SmtpConfiguration smtpConfiguration = getConfiguration().getSmtpConfiguration();
-        if (smtpConfiguration == null) {
-            logger.error("Failed to send email. SMTP settings not found. Please configure SMTP settings in oxTrust");
-            return false;
-        }
-
-        Properties props = new Properties();
-
-        props.put(DEF_MAIL_FROM, "Gluu Casa");
-
-        SmtpConnectProtectionType smtpConnectProtect = smtpConfiguration.getConnectProtection();
-
-        if (smtpConnectProtect == SmtpConnectProtectionType.START_TLS) {
-            props.put(DEF_MAIL_TRANSPORT_PROTOCOL, "smtp");
-
-            props.put(DEF_MAIL_SMTP_HOST, smtpConfiguration.getHost());
-            props.put(DEF_MAIL_SMTP_PORT, smtpConfiguration.getPort());
-            props.put(DEF_MAIL_SMTP_CONNECTION_TIMEOUT, this.connectionTimeout);
-            props.put(DEF_MAIL_SMTP_TIMEOUT, this.connectionTimeout);
-
-            props.put(DEF_MAIL_SMTP_SOCKET_FACTORY_CLASS, DEF_MAIL_SSL_SOCKET_FACTORY);
-            props.put(DEF_MAIL_SMTP_SOCKET_FACTORY_PORT, smtpConfiguration.getPort());
-            if (smtpConfiguration.isServerTrust()) {
-                props.put(DEF_MAIL_SMTP_SSL_TRUST, smtpConfiguration.getHost());
-            }
-            props.put(DEF_MAIL_SMTP_STARTTLS_ENABLE, true);
-            props.put(DEF_MAIL_SMTP_STARTTLS_REQUIRED, true);
-        }
-        else if (smtpConnectProtect == SmtpConnectProtectionType.SSL_TLS) {
-            props.put(DEF_MAIL_TRANSPORT_PROTOCOL_RFC822, "smtps");
-
-            props.put(DEF_MAIL_SMTPS_HOST, smtpConfiguration.getHost());
-            props.put(DEF_MAIL_SMTPS_PORT, smtpConfiguration.getPort());
-            props.put(DEF_MAIL_SMTPS_CONNECTION_TIMEOUT, this.connectionTimeout);
-            props.put(DEF_MAIL_SMTPS_TIMEOUT, this.connectionTimeout);
-
-            props.put(DEF_MAIL_SMTP_SOCKET_FACTORY_CLASS, DEF_MAIL_SSL_SOCKET_FACTORY);
-            props.put(DEF_MAIL_SMTP_SOCKET_FACTORY_PORT, smtpConfiguration.getPort());
-            if (smtpConfiguration.isServerTrust()) {
-                props.put(DEF_MAIL_SMTP_SSL_TRUST, smtpConfiguration.getHost());
-            }
-            props.put(DEF_MAIL_SMTP_SSL_ENABLE, true);
-        }
-        else {
-            props.put(DEF_MAIL_TRANSPORT_PROTOCOL, "smtp");
-
-            props.put(DEF_MAIL_SMTP_HOST, smtpConfiguration.getHost());
-            props.put(DEF_MAIL_SMTP_PORT, smtpConfiguration.getPort());
-            props.put(DEF_MAIL_SMTP_CONNECTION_TIMEOUT, this.connectionTimeout);
-            props.put(DEF_MAIL_SMTP_TIMEOUT, this.connectionTimeout);
-        }
-
-        Session session = null;
-        if (smtpConfiguration.isRequiresAuthentication()) {
-
-            if (smtpConnectProtect == SmtpConnectProtectionType.SSL_TLS) {
-                props.put(DEF_MAIL_SMTPS_AUTH, "true");
-            }
-            else {
-                props.put(DEF_MAIL_SMTP_AUTH, "true");
-            }
-
-            final String userName = smtpConfiguration.getSmtpAuthenticationAccountUsername();
-            final String password = decrypt(smtpConfiguration.getSmtpAuthenticationAccountPassword());            
-
-            session = Session.getInstance(props, new javax.mail.Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(userName, password);
-                }
-            });
-        } else {
-            session = Session.getInstance(props, null);
-        }
+    /**
+     * 
+     * @param session
+     * @param smtpConfiguration
+     * @param emailId
+     * @param subject
+     * @param body
+     * @param sign
+     * @return
+     */
+    private boolean generateSendEmail(final Session session, final SmtpConfiguration smtpConfiguration,
+            final String emailId, final String subject, final String body, final boolean sign) {
 
         PrivateKey privateKey = null;
-
-        Certificate certificate = null; 
         X509Certificate x509Certificate = null;
 
-        try {
-            privateKey = (PrivateKey)keyStore.getKey(smtpConfiguration.getKeyStoreAlias(),
-                    decrypt(smtpConfiguration.getKeyStorePassword()).toCharArray());
-            
-            certificate = keyStore.getCertificate(smtpConfiguration.getKeyStoreAlias());
-            x509Certificate = (X509Certificate)certificate;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
+        if (sign) {
+            try {
+                privateKey = (PrivateKey)keyStore.getKey(smtpConfiguration.getKeyStoreAlias(),
+                        decrypt(smtpConfiguration.getKeyStorePassword()).toCharArray());
+                x509Certificate = (X509Certificate)keyStore.getCertificate(smtpConfiguration.getKeyStoreAlias());
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
         }
 
         Message message = new MimeMessage(session);
@@ -476,19 +391,24 @@ public class EmailOtpService {
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(body, "text/html; charset=utf-8");
 
-            MimeMultipart multiPart = createMultipartWithSignature(privateKey, x509Certificate, smtpConfiguration.getSigningAlgorithm(), mimeBodyPart);            
-
-            message.setContent(multiPart);
+            if (sign) {
+                MimeMultipart multiPart = createMultipartWithSignature(privateKey, x509Certificate, smtpConfiguration.getSigningAlgorithm(), mimeBodyPart);            
+                message.setContent(multiPart);
+            }
+            else {
+                Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(mimeBodyPart);
+                message.setContent(multipart);
+            }
 
             Transport.send(message);
+            return true;
         } catch (Exception e) {
             logger.error("Failed to send OTP: {}", e.getMessage());
             return false;
         }
-
-        return true;
     }
-    
+
     /**
      * @param cert
      * @return
@@ -541,136 +461,129 @@ public class EmailOtpService {
      * @param email
      * @return
      */
-	public boolean isEmailRegistered(String email) {
+    public boolean isEmailRegistered(String email) {
 
-		EmailPerson person = new EmailPerson();
-		person.setMail(email);
-		person.setBaseDn(persistenceService.getPeopleDn());
-		logger.debug("Registered email id count: {}", persistenceService.count(person));
-		return persistenceService.count(person) > 0;
+        EmailPerson person = new EmailPerson();
+        person.setMail(email);
+        person.setBaseDn(persistenceService.getPeopleDn());
+        logger.debug("Registered email id count: {}", persistenceService.count(person));
+        return persistenceService.count(person) > 0;
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param password
-	 * @return
-	 */
-	public String encrypt(String password) {
-		try {
-			return Utils.stringEncrypter().encrypt(password);
-		} catch (EncryptionException ex) {
-			logger.error("Failed to encrypt SMTP password: ", ex);
-			return null;
-		}
-	}
+    /**
+     * 
+     * @param password
+     * @return
+     */
+    public String encrypt(String password) {
+        try {
+            return Utils.stringEncrypter().encrypt(password);
+        } catch (EncryptionException ex) {
+            logger.error("Failed to encrypt SMTP password: ", ex);
+            return null;
+        }
+    }
 
-	/**
-	 * 
-	 * @param password
-	 * @return
-	 */
-	public String decrypt(String password) {
-		try {
-			return Utils.stringEncrypter().decrypt(password);
-		} catch (EncryptionException e) {
-			logger.error("Unable to decrypt: {}", e.getMessage());
-			return null;
-		}
-	}
+    /**
+     * 
+     * @param password
+     * @return
+     */
+    public String decrypt(String password) {
+        try {
+            return Utils.stringEncrypter().decrypt(password);
+        } catch (EncryptionException e) {
+            logger.error("Unable to decrypt: {}", e.getMessage());
+            return null;
+        }
+    }
 
-	/**
-	 * 
-	 * @param userId
-	 * @param newEmail
-	 * @return
-	 */
-	public boolean addEmail(String userId, VerifiedEmail newEmail) {
-		return updateEmailIdAdd(userId, getVerifiedEmail(userId), newEmail);
-	}
+    /**
+     * 
+     * @param userId
+     * @param newEmail
+     * @return
+     */
+    public boolean addEmail(String userId, VerifiedEmail newEmail) {
+        return updateEmailIdAdd(userId, getVerifiedEmail(userId), newEmail);
+    }
 
-	/**
-	 * 
-	 * @param userId
-	 * @param emails
-	 * @param newEmail
-	 * @return
-	 */
-	public boolean updateEmailIdAdd(String userId, List<VerifiedEmail> emails, VerifiedEmail newEmail) {
-		boolean success = false;
-		try {
-			EmailPerson person = persistenceService.get(EmailPerson.class, persistenceService.getPersonDn(userId));
+    /**
+     * 
+     * @param userId
+     * @param emails
+     * @param newEmail
+     * @return
+     */
+    public boolean updateEmailIdAdd(String userId, List<VerifiedEmail> emails, VerifiedEmail newEmail) {
+        boolean success = false;
+        try {
+            EmailPerson person = persistenceService.get(EmailPerson.class, persistenceService.getPersonDn(userId));
+            List<VerifiedEmail> vEmails = new ArrayList<>(emails);
+            if (newEmail != null) {
+                // uniqueness of the new mail has already been verified at previous step
+                vEmails.add(newEmail);
+            }
+            List<String> mailIds = vEmails.stream().map(VerifiedEmail::getEmail).collect(Collectors.toList());
+            String json = !mailIds.isEmpty() ? mapper.writeValueAsString(Collections.singletonMap("email-ids", vEmails)) : null;
+            person.setJansEmail(json);
+            success = persistenceService.modify(person);
+            if (success && newEmail != null) {
+                // modify list only if LDAP update took place
+                emails.add(newEmail);
+                logger.debug("Added {}", newEmail.getEmail());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return success;
+    }
 
-			List<VerifiedEmail> vEmails = new ArrayList<>(emails);
-			if (newEmail != null) {
-				// uniqueness of the new mail has already been verified at previous step
-				vEmails.add(newEmail);
-			}
+    /**
+     * 
+     * @param nick
+     * @param extraMessage
+     * @return
+     */
+    Pair<String, String> getDeleteMessages(String nick, String extraMessage) {
 
-			List<String> mailIds = vEmails.stream().map(VerifiedEmail::getEmail).collect(Collectors.toList());
-			String json = !mailIds.isEmpty() ? mapper.writeValueAsString(Collections.singletonMap("email-ids", vEmails))
-					: null;
+        StringBuilder text = new StringBuilder();
+        if (extraMessage != null) {
+            text.append(extraMessage).append("\n\n");
+        }
+        text.append(Labels.getLabel("email_del_confirm",
+                new String[] { nick == null ? Labels.getLabel("general.no_named") : nick }));
+        if (extraMessage != null) {
+            text.append("\n");
+        }
 
-			person.setJansEmail(json);
+        return new Pair<>(Labels.getLabel("email_del_title"), text.toString());
 
-			success = persistenceService.modify(person);
+    }
 
-			if (success && newEmail != null) {
-				// modify list only if LDAP update took place
-				emails.add(newEmail);
-				logger.debug("Added {}", newEmail.getEmail());
-			}
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return success;
-	}
-
-	/**
-	 * 
-	 * @param nick
-	 * @param extraMessage
-	 * @return
-	 */
-	Pair<String, String> getDeleteMessages(String nick, String extraMessage) {
-
-		StringBuilder text = new StringBuilder();
-		if (extraMessage != null) {
-			text.append(extraMessage).append("\n\n");
-		}
-		text.append(Labels.getLabel("email_del_confirm",
-				new String[] { nick == null ? Labels.getLabel("general.no_named") : nick }));
-		if (extraMessage != null) {
-			text.append("\n");
-		}
-
-		return new Pair<>(Labels.getLabel("email_del_title"), text.toString());
-
-	}
-
-	/**
-	 * Creates an instance of VerifiedEmail by looking up in the list of
-	 * VerifiedEmail passed. If the item is not found in the list, it means the user
-	 * had already that mail added by means of another application, ie. oxTrust. In
-	 * this case the resulting object will not have properties like nickname, etc.
-	 * Just the mail id
-	 * 
-	 * @param mail Email id (LDAP attribute "mail" inside a user entry)
-	 * @param list List of existing email ids enrolled. Ideally, there is an item
-	 *             here corresponding to the uid number passed
-	 * @return VerifiedMobile object
-	 */
-	private VerifiedEmail getExtraEmailId(String mail, List<VerifiedEmail> list) {
-		VerifiedEmail vEmail = new VerifiedEmail(mail);
-		Optional<VerifiedEmail> extraEmail = list.stream().filter(ph -> mail.equals(ph.getEmail())).findFirst();
-		if (!extraEmail.isPresent()) {
-			vEmail.setNickName(mail);
-			return vEmail;
-		} else {
-			return null;
-		}
-	}
+    /**
+     * Creates an instance of VerifiedEmail by looking up in the list of
+     * VerifiedEmail passed. If the item is not found in the list, it means the user
+     * had already that mail added by means of another application, ie. oxTrust. In
+     * this case the resulting object will not have properties like nickname, etc.
+     * Just the mail id
+     * 
+     * @param mail Email id (LDAP attribute "mail" inside a user entry)
+     * @param list List of existing email ids enrolled. Ideally, there is an item
+     *             here corresponding to the uid number passed
+     * @return VerifiedMobile object
+     */
+    private VerifiedEmail getExtraEmailId(String mail, List<VerifiedEmail> list) {
+        VerifiedEmail vEmail = new VerifiedEmail(mail);
+        Optional<VerifiedEmail> extraEmail = list.stream().filter(ph -> mail.equals(ph.getEmail())).findFirst();
+        if (!extraEmail.isPresent()) {
+            vEmail.setNickName(mail);
+            return vEmail;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * 

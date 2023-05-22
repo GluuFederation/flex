@@ -11,38 +11,38 @@ public class EmailOtpPlugin extends Plugin{
     @SuppressWarnings("unused")
     private static Logger logger = LoggerFactory.getLogger(EmailOtpPlugin.class);  
 
-	public EmailOtpPlugin(PluginWrapper wrapper) {
-		super(wrapper);
+    public EmailOtpPlugin(PluginWrapper wrapper) {
+        super(wrapper);
 
         EmailOtpService emailOTPService = EmailOtpService.getInstance();
         emailOTPService.init();
-	}
+    }
 
     /**
      * This method is called by the application when the plugin is started.
      * See {@link PluginManager#startPlugin(String)}.
      */
-	@Override
+    @Override
     public void start() {
-	    // Do nothing.
+        // Do nothing.
     }
 
     /**
      * This method is called by the application when the plugin is stopped.
      * See {@link PluginManager#stopPlugin(String)}.
      */
-	@Override
+    @Override
     public void stop() {
-	    // Do nothing.
+        // Do nothing.
     }
 
     /**
      * This method is called by the application when the plugin is deleted.
      * See {@link PluginManager#deletePlugin(String)}.
      */
-	@Override
+    @Override
     public void delete() {
-	    // Do nothing.
+        // Do nothing.
     }
 
 }
