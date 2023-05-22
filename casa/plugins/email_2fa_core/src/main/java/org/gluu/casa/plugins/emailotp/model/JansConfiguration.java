@@ -19,19 +19,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JansConfiguration extends InumEntry implements Serializable {
 
-	private static final long serialVersionUID = -1817003894646725601L;
+    private static final long serialVersionUID = -1817003894646725601L;
 
-	@AttributeName(name = "jansSmtpConf")
-	@JsonObject
-	private SmtpConfiguration smtpConfiguration;
+    @AttributeName(name = "jansSmtpConf")
+    @JsonObject
+    private SmtpConfiguration smtpConfiguration;
 
-	public final SmtpConfiguration getSmtpConfiguration() {
-		return smtpConfiguration;
-	}
+    public final SmtpConfiguration getSmtpConfiguration() {
+        return smtpConfiguration;
+    }
 
-	public final void setSmtpConfiguration(SmtpConfiguration smtpConfiguration) {
-		this.smtpConfiguration = smtpConfiguration;
-	}
+    public final void setSmtpConfiguration(SmtpConfiguration smtpConfiguration) {
+        this.smtpConfiguration = smtpConfiguration;
+    }
 
     @Override
     public boolean equals(java.lang.Object obj) {

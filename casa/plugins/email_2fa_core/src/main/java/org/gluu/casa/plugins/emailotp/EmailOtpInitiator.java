@@ -7,9 +7,9 @@ import org.zkoss.zk.ui.util.Initiator;
 
 public class EmailOtpInitiator implements Initiator{
 
-	@Override
-	public void doInit(Page page, Map<String, Object> args) throws Exception {
-	    // Do nothing.
-	}
+    @Override
+    public void doInit(Page page, Map<String, Object> args) throws Exception {
+        // Do nothing.
+    }
 
 }
