@@ -22,8 +22,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version tag (e.g."v5.0.0")'
-        default: "v5.0.0"
+        description: 'Version tag (e.g."v5.0.0-14")'
+        default: "v5.0.0-14"
         required: false
 concurrency:
   group: run-once
@@ -121,6 +121,7 @@ jobs:
          MESSAGE="fix(docs): autogenerate docs"
          PR=$(gh pr create --body "Auto generated docs" --title "${MESSAGE}")
          cd ../../
+         
          sudo rm -rf temp
 
       - name: mike deploy ${{ github.event.inputs.version }}
@@ -173,6 +174,8 @@ jobs:
       - name: Create version files
         #if: >-
         #  github.event_name != 'workflow_dispatch'
+        env:
+          VERSION: ${{ github.event.release.tag_name }}
         run: |
           LATEST=${{ steps.set_versions.outputs.LATEST }}
           STABLE=${{ steps.set_versions.outputs.STABLE }}
@@ -188,10 +191,9 @@ jobs:
           # END move generated chart from a previous step
 
           echo "Replacing release number markers with actual release number"
-          cd ${STABLE}
-          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${STABLE:1}/g"
-          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${STABLE:1}/g"
-          git add . && git update-index --refresh
+          cd ${VERSION}
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${VERSION:1}/g"
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${VERSION:1}/g"          git add . && git update-index --refresh
           cd ..
 
           echo "${STABLE}" > stable.txt
