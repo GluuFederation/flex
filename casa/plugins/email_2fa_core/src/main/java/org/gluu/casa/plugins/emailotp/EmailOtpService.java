@@ -130,6 +130,7 @@ public class EmailOtpService {
     }
 
     public void init() {
+        InputStream is = null;
         try {
             persistenceService = Utils.managedBean(IPersistenceService.class);
 
@@ -143,7 +144,7 @@ public class EmailOtpService {
 
             SecurityProviderUtility.KeyStorageType keystoreType = solveKeyStorageType(keystoreFile);
 
-            InputStream is = new FileInputStream(keystoreFile);
+            is = new FileInputStream(keystoreFile);
             switch (keystoreType) {
             case JKS_KS: {
                 keyStore = KeyStore.getInstance("JKS");
@@ -161,6 +162,14 @@ public class EmailOtpService {
             keyStore.load(is, keystoreSecret.toCharArray());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 
