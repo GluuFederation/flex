@@ -193,7 +193,8 @@ jobs:
           echo "Replacing release number markers with actual release number"
           cd ${VERSION}
           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${VERSION:1}/g"
-          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${VERSION:1}/g"          git add . && git update-index --refresh
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${VERSION:1}/g"
+          git add . && git update-index --refresh
           cd ..
 
           echo "${STABLE}" > stable.txt
