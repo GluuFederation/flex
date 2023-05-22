@@ -360,6 +360,22 @@ public class EmailOtpService {
             session = Session.getInstance(props, null);
         }
 
+        return generateSendEmail(session, smtpConfiguration, emailId, subject, body, sign);
+    }
+
+    /**
+     * 
+     * @param session
+     * @param smtpConfiguration
+     * @param emailId
+     * @param subject
+     * @param body
+     * @param sign
+     * @return
+     */
+    private boolean generateSendEmail(final Session session, final SmtpConfiguration smtpConfiguration,
+            final String emailId, final String subject, final String body, final boolean sign) {
+
         PrivateKey privateKey = null;
         X509Certificate x509Certificate = null;
 
@@ -400,7 +416,7 @@ public class EmailOtpService {
             return false;
         }
     }
-    
+
     /**
      * @param cert
      * @return
