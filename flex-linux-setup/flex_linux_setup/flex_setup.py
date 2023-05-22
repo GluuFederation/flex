@@ -57,7 +57,7 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs Gluu Flex Admin UI", action='store_true')
     parser.add_argument('--update-admin-ui', help="Updates Gluu Flex Admin UI", action='store_true')
-    parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file")
+    parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file or jwt")
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
@@ -811,16 +811,21 @@ class flex_installer(JettyInstaller):
                         store_type='PKCS12'
                         )
 
+
+def read_or_get_ssa():
+    if os.path.isfile(argsp.admin_ui_ssa):
+        with open(argsp.admin_ui_ssa) as f:
+            installed_components['ssa'] = f.read()
+    else:
+        installed_components['ssa'] = argsp.admin_ui_ssa
+
+
 def decode_ssa_jwt():
-    ssa_fn = argsp.admin_ui_ssa
 
-    print("Decoding {}".format(ssa_fn))
-
-    with open(ssa_fn) as f:
-        ssa_jwt = f.read().strip()
+    print("Decoding SSA")
 
     ssa_decoded = jwt.decode(
-        ssa_jwt,
+        installed_components['ssa'],
         options={
                 'verify_signature': False,
                 'verify_exp': True,
@@ -838,26 +843,27 @@ def prompt_for_installation():
         if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
             if argsp.admin_ui_ssa:
+                read_or_get_ssa()
                 try:
                     decode_ssa_jwt()
-                except Exception:
+                except Exception as e:
                     argsp.admin_ui_ssa = None
                     print("\033[31mSSA you provided via argument is not valid.\033[0m")
+                    print(e)
+
             while not argsp.admin_ui_ssa:
-                ssa_fn = input("Please enter path of file containing SSA (q to exit): ")
-                if ssa_fn.strip().lower() == 'q':
+                ssa_text = input("Please enter path of file containing SSA or paste SSA (q to exit): ")
+                if ssa_text.strip().lower() == 'q':
                     print("Can't continue without SSA. Exiting...")
                     sys.exit()
-                if os.path.isfile(ssa_fn):
-                    try:
-                        argsp.admin_ui_ssa = ssa_fn
-                        decode_ssa_jwt()
-                    except Exception as e:
-                        argsp.admin_ui_ssa = None
-                        print("Error decoding {}".format(ssa_fn))
-                        print(e)
-                else:
-                    print("{} is not a file".format(ssa_fn))
+                argsp.admin_ui_ssa = ssa_text
+                read_or_get_ssa()
+                try:
+                    decode_ssa_jwt()
+                except Exception as e:
+                    argsp.admin_ui_ssa = None
+                    print("Error decoding SSA")
+                    print(e)
 
     else:
         print("Admin UI is allready installed on this system")
@@ -896,7 +902,13 @@ def install_post_setup():
 def prepare_for_installation():
     if not (argsp.flex_non_interactive or argsp.download_exit):
         prompt_for_installation()
-
+    else:
+        if argsp.install_admin_ui:
+            if not argsp.admin_ui_ssa:
+                print("Please provide Admin UI SSA")
+                sys.exit()
+            read_or_get_ssa()
+            decode_ssa_jwt()
 
 def get_components_from_setup_properties():
     if argsp.f:
@@ -908,6 +920,7 @@ def get_components_from_setup_properties():
 
         if not argsp.admin_ui_ssa and install_components['admin_ui']:
             argsp.admin_ui_ssa = setup_properties.get('admin-ui-ssa')
+            read_or_get_ssa()
             decode_ssa_jwt()
 
         if not (argsp.install_casa or install_components['casa']):
@@ -918,13 +931,9 @@ def get_components_from_setup_properties():
 
 
 def obtain_oidc_client_credidentials():
-    with open(argsp.admin_ui_ssa) as f:
-        ssa = f.read().strip()
-
-    installed_components['ssa'] = ssa
 
     data = {
-        "software_statement": ssa,
+        "software_statement": installed_components['ssa'],
         "response_types": ["token"],
         "redirect_uris": ["{}".format(ssa_json['iss'])],
         "client_name": "test-ui-client"
