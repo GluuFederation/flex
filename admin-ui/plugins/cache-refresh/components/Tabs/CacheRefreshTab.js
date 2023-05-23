@@ -8,12 +8,13 @@ import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
 import GluuSelectRow from "Routes/Apps/Gluu/GluuSelectRow";
 import GluuCheckBoxRow from "Routes/Apps/Gluu/GluuCheckBoxRow";
 import * as Yup from "yup";
-import { t } from "i18next";
 import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
 import { isEmpty } from "lodash";
 import { putCacheRefreshConfiguration } from "../../redux/actions/CacheRefreshActions";
+import { useTranslation } from "react-i18next";
 
 const CacheRefreshTab = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
@@ -29,7 +30,7 @@ const CacheRefreshTab = () => {
     vdsCacheRefreshEnabled = null,
     attributeMapping = [],
     vdsCacheRefreshProblemCount = null,
-    vdsCacheRefreshLastUpdateCount = null
+    vdsCacheRefreshLastUpdateCount = null,
   } = useSelector((state) => state.cacheRefreshReducer.configuration);
 
   const initialValues = {
@@ -43,7 +44,7 @@ const CacheRefreshTab = () => {
     vdsCacheRefreshEnabled,
     attributeMapping,
     vdsCacheRefreshProblemCount,
-    vdsCacheRefreshLastUpdateCount
+    vdsCacheRefreshLastUpdateCount,
   };
 
   const formik = useFormik({

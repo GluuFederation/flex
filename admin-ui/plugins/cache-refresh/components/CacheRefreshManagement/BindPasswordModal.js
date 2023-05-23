@@ -52,7 +52,12 @@ const BindPasswordModal = ({ handler, isOpen, handleChangePassword }) => {
       className="modal-outline-primary"
     >
       <ModalHeader style={{ padding: "16px" }} toggle={handler}>
-        <h4 style={{ fontWeight: 500 }}>Change Backend Bind Password</h4>
+        <h4
+          style={{ fontWeight: 500 }}
+          data-testid={t("titles.change_backend_bind_password")}
+        >
+          {t("titles.change_backend_bind_password")}
+        </h4>
       </ModalHeader>
       <ModalBody style={{ overflowX: "auto", maxHeight: "60vh" }}>
         <FormGroup row>

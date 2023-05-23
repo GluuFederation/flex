@@ -43,7 +43,9 @@
     "server_code": "Server Code",
     "add_key_attribute": "Add Key Attribute",
     "add_object_class": "Add Object class",
-    "add_source_attribute": "Add source attribute"
+    "add_source_attribute": "Add source attribute",
+    "add_source_ldap_server": "Add source LDAP server",
+    "remove_source_server": "Remove source server"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -622,7 +624,8 @@
     "userinfo": "Userinfo",
     "JARM": "JARM",
     "request_object": "Request Object",
-    "agama": "Agama"
+    "agama": "Agama",
+    "change_backend_bind_password": "Change Backend Bind Password"
   },
   "links": {
     "support": "https://support.gluu.org/"

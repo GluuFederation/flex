@@ -9,12 +9,12 @@ import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
 import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
 import { Box } from "@mui/material";
 import BindPasswordModal from "../CacheRefreshManagement/BindPasswordModal";
-import { t } from "i18next";
 import GluuCheckBoxRow from "Routes/Apps/Gluu/GluuCheckBoxRow";
 import * as Yup from "yup";
 import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
 import { isEmpty } from "lodash";
 import { putCacheRefreshConfiguration } from "../../redux/actions/CacheRefreshActions";
+import { useTranslation } from "react-i18next";
 
 const isStringsArray = (arr) => arr.every((i) => typeof i === "string");
 const convertToStringArray = (arr) => {
@@ -22,6 +22,7 @@ const convertToStringArray = (arr) => {
 };
 
 const SourceBackendServers = () => {
+  const { t } = useTranslation();
   const theme = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
   const dispatch = useDispatch();
@@ -135,12 +136,14 @@ const SourceBackendServers = () => {
         <FormGroup row>
           <Box className="mb-3" display="flex">
             {!addSourceLdapServer && (
-              <Button onClick={handleAddServer}>Add source LDAP server</Button>
+              <Button onClick={handleAddServer}>
+                {t("actions.add_source_ldap_server")}
+              </Button>
             )}
             {addSourceLdapServer && (
               <Button color="danger" onClick={handleRemoveServer}>
                 <i className="fa fa-remove me-2"></i>
-                Remove source server
+                {t("actions.remove_source_server")}
               </Button>
             )}
           </Box>

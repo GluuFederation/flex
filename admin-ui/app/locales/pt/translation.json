@@ -102,7 +102,9 @@
     "show_error": "Mostrar erro",
     "add_key_attribute": "Adicionar atributo de chave",
     "add_object_class": "Adicionar classe de objeto",
-    "add_source_attribute": "Adicionar atributo de origem"
+    "add_source_attribute": "Adicionar atributo de origem",
+    "add_source_ldap_server": "Adicionar servidor LDAP de origem",
+    "remove_source_server": "Remover servidor de origem"
   },
   "fields": {
     "access_token_signing_alg": "Algoritmo de assinatura de token de acesso",
@@ -455,7 +457,8 @@
     "scripts": "Scripts",
     "schemaName": "Nome do esquema",
     "user_management": "Gerenciamento de usuários",
-    "cache_refresh_management": "Gerenciamento de atualização de cache"
+    "cache_refresh_management": "Gerenciamento de atualização de cache",
+    "change_backend_bind_password": "Alterar senha de ligação de back-end"
   },
   "links": {
     "support": "https://support.gluu.org/"

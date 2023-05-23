@@ -76,7 +76,7 @@
     "accept": "J'accepte",
     "add": "Ajouter",
     "add_ldap_configuration": "Ajouter une configuration LDAP",
-    "add_mapping":"Ajouter un Mapping",
+    "add_mapping": "Ajouter un Mapping",
     "add_property": "Ajouter une propriété",
     "apply": "Appliquer",
     "back_home": "Retour à la maison",
@@ -104,7 +104,9 @@
     "show_error": "Afficher l'erreur",
     "add_key_attribute": "Ajouter un attribut clé",
     "add_object_class": "Ajouter une classe d'objet",
-    "add_source_attribute": "Ajouter un attribut source"
+    "add_source_attribute": "Ajouter un attribut source",
+    "add_source_ldap_server": "Ajouter un serveur LDAP source",
+    "remove_source_server": "Supprimer le serveur source"
   },
   "fields": {
     "access_token_signing_alg": "Algorithme de signature de jeton d'accès",
@@ -212,7 +214,7 @@
     "errors": "les erreurs",
     "native_persistence_configuration": "nativePersistanceConfiguration",
     "oauth": "OAuth",
-    "organization":"Organisation",
+    "organization": "Organisation",
     "openid": "OuvertID",
     "oxauth_claim_name": "Nom de la revendication oxAuth",
     "ox_attributes": "oxAttributs",
@@ -244,7 +246,7 @@
     "scopes:": "Portées",
     "scripts": "Scénarios",
     "script_type": "Type de script",
-    "select_date_range":"Sélectionnez une plage de dates",
+    "select_date_range": "Sélectionnez une plage de dates",
     "sector_uri": "Identificateur de secteur URI",
     "sender_email": "Courriel de l'expéditeur",
     "sender_name": "Nom de l'expéditeur",
@@ -461,7 +463,8 @@
     "scripts": "Scénarios",
     "schemaName": "Nom du schéma",
     "user_management": "Gestion des utilisateurs",
-    "cache_refresh_management": "Gestion de l'actualisation du cache"
+    "cache_refresh_management": "Gestion de l'actualisation du cache",
+    "change_backend_bind_password": "Modifier le mot de passe de liaison du backend"
   },
   "links": {
     "support": "https://support.gluu.org/"

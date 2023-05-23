@@ -1,4 +1,3 @@
-import { t } from "i18next";
 import React, { useEffect } from "react";
 import SetTitle from "Utils/SetTitle";
 import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
@@ -11,8 +10,10 @@ import InumDBServer from "../Tabs/InumDBServer";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useDispatch, useSelector } from "react-redux";
 import { getCacheRefreshConfiguration } from "../../redux/actions/CacheRefreshActions";
+import { useTranslation } from "react-i18next";
 
 const CacheRefreshManagement = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.cacheRefreshReducer.loading);
   SetTitle(t("titles.cache_refresh_management"));
@@ -30,13 +31,13 @@ const CacheRefreshManagement = () => {
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case "Cache Refresh":
+      case t("menus.cacherefresh"):
         return <CacheRefreshTab />;
-      case "Customer Backend Key/Attributes":
+      case t("menus.customer_backend_key_attributes"):
         return <CustomerBackendKey />;
-      case "Source Backend LDAP Servers":
+      case t("menus.source_backend_ldap_servers"):
         return <SourceBackendServers />;
-      case "Inum DB Server":
+      case t("menus.inum_db_server"):
         return <InumDBServer />;
     }
   };
