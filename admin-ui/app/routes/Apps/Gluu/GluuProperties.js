@@ -1,3 +1,4 @@
+
 import React, { useState, useContext } from 'react'
 import { FormGroup, Col, Button } from 'Components'
 import { Accordion } from 'Components'
@@ -20,6 +21,9 @@ function GluuProperties({
   isAddButton = true,
   isRemoveButton = true,
   isKeys=true,
+  multiProperties = false,
+  showError = false,
+  errorMessage
 }) {
   const [properties, setProperties] = useState(options)
   const { t } = useTranslation()
@@ -77,6 +81,7 @@ function GluuProperties({
                     valuePlaceholder={valuePlaceholder}
                     property={item}
                     disabled={disabled}
+                    multiProperties={multiProperties}
                     onPropertyChange={changeProperty}
                     onPropertyRemove={removeProperty}
                     isInputLables={isInputLables}
@@ -90,6 +95,7 @@ function GluuProperties({
             ))}
           </Col>
         </FormGroup>
+        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Accordion.Body>
     </Accordion>
   )

@@ -15,7 +15,9 @@ function GluuSelectRow({
   doc_category,
   disabled,
   handleChange,
-  required
+  required,
+  showError = false,
+  errorMessage
 }) {
   const { t } = useTranslation()
   return (
@@ -43,6 +45,7 @@ function GluuSelectRow({
             ))}
           </CustomInput>
         </InputGroup>
+        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

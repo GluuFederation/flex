@@ -52,6 +52,7 @@ export default function GluuTabs({
                 >
                     {tabNames?.map((name, index) => (
                         <Tab
+                            key={index}
                             label={name}
                             {...a11yProps(index)}
                         />
@@ -59,7 +60,7 @@ export default function GluuTabs({
                 </Tabs>
             </Box>
             {tabNames?.map((name, index) => (
-                <TabPanel value={value} index={index}>
+                <TabPanel value={value} key={index} index={index}>
                     {tabToShow(name)}
                 </TabPanel>
             ))}

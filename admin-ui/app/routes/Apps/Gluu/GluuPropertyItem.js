@@ -15,7 +15,10 @@ function GluuPropertyItem({
   valueLabel = "",
   isRemoveButton,
   isKeys,
-  sm=6
+  sm = 6,
+  multiProperties = false,
+  destinationPlaceholder = '',
+  sourcePlaceholder = ''
 }) {
   const { t } = useTranslation()
   return (
@@ -36,17 +39,47 @@ function GluuPropertyItem({
       </Col>}
       <Col sm={sm}>
         {isInputLables && <label>{valueLabel}</label>}
-        <Input
-          name={'value'}
-          defaultValue={property.value}
-          disabled={disabled}
-          onChange={onPropertyChange(position)}
-          placeholder={
-            valuePlaceholder
-              ? t(valuePlaceholder)
-              : t('placeholders.enter_property_value')
-          }
-        />
+        {!multiProperties ?
+          <>
+            <Input
+              name={'value'}
+              defaultValue={property.value}
+              disabled={disabled}
+              onChange={onPropertyChange(position)}
+              placeholder={
+                valuePlaceholder
+                  ? t(valuePlaceholder)
+                  : t('placeholders.enter_property_value')
+              }
+            />
+          </>
+          :
+          <>
+            <Input
+              name={'source'}
+              defaultValue={property.source}
+              disabled={disabled}
+              onChange={onPropertyChange(position)}
+              placeholder={
+                sourcePlaceholder
+                  ? t(sourcePlaceholder)
+                  : t('placeholders.enter_source_value')
+              }
+            />
+            <Input
+              name={'destination'}
+              defaultValue={property.destination}
+              disabled={disabled}
+              onChange={onPropertyChange(position)}
+              placeholder={
+                destinationPlaceholder
+                  ? t(destinationPlaceholder)
+                  : t('placeholders.enter_destination_value')
+              }
+            />
+          </>
+        }
+
       </Col>
       {isRemoveButton && <Col sm={2} className="mt-4">
         <Button

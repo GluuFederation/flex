@@ -21,6 +21,7 @@ function GluuCheckBoxRow({
           id={name}
           type="checkbox"
           name={name}
+          checked={value}
           data-testid={name}
           defaultChecked={value}
           onChange={handleOnChange}

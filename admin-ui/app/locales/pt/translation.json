@@ -65,7 +65,11 @@
     "user_management": "User Management",
     "maugraph": "MAU",
     "users": "Users",
-    "user-management": "User Management"
+    "user-management": "User Management",
+    "cacherefresh": "Atualização de Cache",
+    "customer_backend_key_attributes": "Chave/atributos de back-end do cliente",
+    "source_backend_ldap_servers": "Servidores LDAP de back-end de origem",
+    "inum_db_server": "Servidor DB Inum"
   },
   "actions": {
     "accept": "Aceitar",
@@ -75,6 +79,10 @@
     "add_property": "Adicionar propriedade",
     "apply": "Aplicar",
     "back_home": "Voltar para casa",
+    "add_server": "Adicionar servidor",
+    "add_base_dn": "Adicionar DN básico",
+    "change_bind_password": "Alterar Senha de Vinculação",
+    "set_password": "Configurar senha",
     "cancel": "Cancelar",
     "choose": "Escolher",
     "edit": "Editar",
@@ -91,7 +99,10 @@
     "close": "Fechar",
     "delete": "Deletar",
     "revoke": "Revogar",
-    "show_error": "Mostrar erro"
+    "show_error": "Mostrar erro",
+    "add_key_attribute": "Adicionar atributo de chave",
+    "add_object_class": "Adicionar classe de objeto",
+    "add_source_attribute": "Adicionar atributo de origem"
   },
   "fields": {
     "access_token_signing_alg": "Algoritmo de assinatura de token de acesso",
@@ -296,7 +307,26 @@
     "selectUserRevoke": "Selecione o usuário para revogar",
     "export_sample_config": "Exportar Configuração de Amostra",
     "export_current_config": "Exportar configuração atual",
-    "import_configuration": "Configuração de Importação"
+    "import_configuration": "Configuração de Importação",
+    "default_inum_server": "Servidor Inum Padrão",
+    "server_port": "Porta do servidor",
+    "enter_new_password": "Insira a nova senha",
+    "confirm_the_new_password": "Confirme a nova senha",
+    "key_attribute": "Atributo chave",
+    "object_class": "classe de objeto",
+    "source_attribute": "Atributo de origem",
+    "custom_ldap_filter": "Filtro LDAP personalizado",
+    "refresh_method": "Atualizar método",
+    "snapshot_folder": "Pasta de Instantâneos",
+    "snapshots_count": "Contagem de instantâneos",
+    "search_size_limit": "Limite de tamanho de pesquisa",
+    "keep_external_persons": "Manter pessoas externas",
+    "server_ip_address": "Endereço IP do servidor",
+    "polling_interval_mins": "Intervalo de sondagem (minutos)",
+    "cache_refresh": "Atualização de Cache",
+    "last_run": "Última corrida",
+    "updates_at_last_run": "Atualizações na última execução",
+    "problems_at_last_run": "Problemas na última corrida"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
@@ -331,7 +361,9 @@
     "see_configurations": "Voir configuration",
     "manage_configurations": "Gerenciar configurações",
     "fetching_project_details": "Buscando detalhes do projeto...",
-    "mandatory_fields_required": "Os campos obrigatórios são obrigatórios"
+    "mandatory_fields_required": "Os campos obrigatórios são obrigatórios",
+    "is_required": "é necessário",
+    "both_password_should_match": "Ambas as senhas devem corresponder"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -358,6 +390,8 @@
     "enable_ssl_communication": "Ative a comunicação SSL entre o servidor de autenticação e o servidor LDAP",
     "enter_property_key": "Insira a chave de propriedade",
     "enter_property_value": "Insira o valor da propriedade",
+    "enter_source_value": "Insira o valor de origem",
+    "enter_destination_value": "Insira o valor de destino",
     "enter_the_saml1_uri": "Digite o saml1 Uri",
     "enter_the_saml2_uri": "Digite o saml2 Uri",
     "enter_the_attribute_name": "Insira o nome do atributo",
@@ -420,7 +454,8 @@
     "scopes": "Scopes",
     "scripts": "Scripts",
     "schemaName": "Nome do esquema",
-    "user_management": "Gerenciamento de usuários"
+    "user_management": "Gerenciamento de usuários",
+    "cache_refresh_management": "Gerenciamento de atualização de cache"
   },
   "links": {
     "support": "https://support.gluu.org/"

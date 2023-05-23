@@ -56,11 +56,9 @@ export default function Fido() {
     const fiodData = JSON.stringify(data)
     opts['appConfiguration1'] = JSON.parse(fiodData);
     dispatch(putFidoConfiguration(opts));
-    console.log(opts)
   }
 
   const handleStaticConfigurationSubmit = (data) => {
-    console.log(data)
     const payload = fidoConfiguration.fido;
     payload.authenticatorCertsFolder = data.authenticatorCertsFolder;
     payload.mdsCertsFolder = data.mdsCertsFolder;
