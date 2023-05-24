@@ -416,7 +416,7 @@ class flex_installer(JettyInstaller):
         print("Extracting admin-ui from", self.flex_path)
         base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
 
-        print("Building luu Admin UI Frontend")
+        print("Building Gluu Admin UI Frontend")
         env_tmp = os.path.join(self.source_dir, '.env.tmp')
         config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
         config_api_installer.copyFile(os.path.join(self.source_dir, '.env.tmp'), os.path.join(self.source_dir, '.env'))
