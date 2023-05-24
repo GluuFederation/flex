@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react'
 import ScopeAddPage from './ScopeAddPage'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import scopeReducer from 'Plugins/auth-server/redux/reducers/ScopeReducer'
 import scopes from './scopes.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 

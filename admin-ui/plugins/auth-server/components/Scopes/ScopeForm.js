@@ -159,7 +159,14 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           id: Yup.string().min(2, 'id 2 characters').required('Required!'),
         })}
         onSubmit={(values) => {
-          const result = Object.assign(scope, values)
+          const result = {
+            ...scope,
+            ...values,
+            attributes: {
+              ...scope.attributes,
+              ...values.attributes
+            }
+          };
           result['id'] = result.id
           result['creatorType'] = 'user'
           result['creatorId'] = authReducer.userinfo.inum

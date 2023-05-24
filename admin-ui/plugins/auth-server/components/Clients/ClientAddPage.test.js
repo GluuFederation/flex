@@ -8,7 +8,7 @@ import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 import initReducer from 'Redux/reducers/InitReducer'
 import oidcDiscoveryReducer from 'Redux/reducers/OidcDiscoveryReducer'
-import scopeReducer from 'Plugins/auth-server/redux/reducers/ScopeReducer'
+import { reducer as scopeReducer} from 'Plugins/auth-server/redux/features/scopeSlice'
 import umaResourceReducer from 'Plugins/auth-server/redux/reducers/UMAResourceReducer'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 const permissions = [

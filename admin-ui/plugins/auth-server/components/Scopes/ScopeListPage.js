@@ -15,10 +15,9 @@ import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
 import {
   getScopes,
-  searchScopes,
   deleteScope,
-  setCurrentItem,
 } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { setCurrentItem } from 'Plugins/auth-server/redux/features/scopeSlice'
 import {
   hasPermission,
   buildPayload,
@@ -31,14 +30,11 @@ import {
   LIMIT,
   PATTERN,
   PATTERN_ID,
-  SEARCHING_SCOPES,
-  FETCHING_SCOPES,
   WITH_ASSOCIATED_CLIENTS,
 } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import styles from './styles'
 
 function ScopeListPage() {
   const { t } = useTranslation()
