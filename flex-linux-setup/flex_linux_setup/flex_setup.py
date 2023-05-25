@@ -475,7 +475,7 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['op_host'] = ssa_json.get('iss', '')
         Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
         Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
-        Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
+        Config.templateRenderingDict['license_hardware_key'] = ssa_json.get('org_id', str(uuid.uuid4()))
         Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
