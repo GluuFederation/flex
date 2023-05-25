@@ -815,7 +815,7 @@ class flex_installer(JettyInstaller):
 def read_or_get_ssa():
     if os.path.isfile(argsp.admin_ui_ssa):
         with open(argsp.admin_ui_ssa) as f:
-            installed_components['ssa'] = f.read()
+            installed_components['ssa'] = f.read().strip()
     else:
         installed_components['ssa'] = argsp.admin_ui_ssa
 
