@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Paper, TablePagination } from '@mui/material'
 import { Card, CardBody, Badge } from 'Components'
-import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { getScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { resetUMAResources } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
@@ -190,7 +190,7 @@ function ClientListPage() {
 
       buildPayload(userAction, '', options)
       userAction['limit'] = 100
-      dispatch(getScopes(userAction))
+      dispatch(getScopes({ action: userAction }))
 
       setTimeout(() => {
         setIsPageLoading(false)

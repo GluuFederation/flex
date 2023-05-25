@@ -1,8 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import ClientAddPage from './ClientAddPage'
-import { BrowserRouter as Router } from 'react-router-dom'
-import { createStore, combineReducers } from 'redux'
+import { BrowserRouter as Router } from 'react-router-dom' 
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
@@ -11,6 +10,7 @@ import oidcDiscoveryReducer from 'Redux/reducers/OidcDiscoveryReducer'
 import { reducer as scopeReducer} from 'Plugins/auth-server/redux/features/scopeSlice'
 import umaResourceReducer from 'Plugins/auth-server/redux/reducers/UMAResourceReducer'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
   'https://jans.io/oauth/config/openid/clients.write',
@@ -37,8 +37,9 @@ const INIT_SCPOPES_STATE = {
   item: {},
   loading: false,
 }
-const store = createStore(
-  combineReducers({
+
+const store = configureStore({
+  reducer:  combineReducers({
     authReducer: (state = INIT_STATE) => state,
     oidcReducer: (state = INIT_SCPOPES_STATE) => state,
     umaResourceReducer,
@@ -47,7 +48,7 @@ const store = createStore(
     oidcDiscoveryReducer,
     noReducer: (state = {}) => state,
   }),
-)
+})
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>

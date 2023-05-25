@@ -1,10 +1,10 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import ClientListPage from './ClientListPage'
-import { combineReducers, createStore} from 'redux'
+import ClientListPage from './ClientListPage' 
 import { Provider } from 'react-redux'
 import clients from './clients.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
@@ -40,14 +40,15 @@ const INIT_SCPOPES_STATE = {
   item: {},
   loading: false,
 }
-const store = createStore(
-  combineReducers({
+
+const store = configureStore({
+  reducer:  combineReducers({
     authReducer: (state = INIT_STATE) => state,
     oidcReducer: (state = INIT_CLIENTS_STATE) => state,
     scopeReducer: (state = INIT_SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,
   }),
-)
+})
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>

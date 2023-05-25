@@ -7,7 +7,6 @@ import { postUserAction } from 'Redux/api/backend-api'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { SESSION } from '../audit/Resources'
 import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
-import { GET_SESSIONS, REVOKE_SESSION } from '../actions/types'
 import SessionApi from '../api/SessionApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -32,7 +31,6 @@ function* newFunction() {
 export function* getSessions({ payload }) {
   const audit = yield* initAudit()
   try {
-    yield put(toggleLoader(true))
     payload = payload ? payload : { action: {} }
     addAdditionalData(audit, FETCH, SESSION, payload)
     const sessionApi = yield* newFunction()
@@ -47,8 +45,6 @@ export function* getSessions({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-  } finally {
-    yield put(toggleLoader(false))
   }
 }
 
@@ -73,11 +69,11 @@ export function* revokeSessionByUserDn({ payload }) {
 }
 
 export function* getSessionsWatcher() {
-  yield takeLatest(GET_SESSIONS, getSessions)
+  yield takeLatest('session/getSessions', getSessions)
 }
 
 export function* deleteSessionByUserDnWatcher() {
-  yield takeLatest(REVOKE_SESSION, revokeSessionByUserDn)
+  yield takeLatest('session/revokeSession', revokeSessionByUserDn)
 }
 
 export default function* rootSaga() {

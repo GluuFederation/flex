@@ -13,7 +13,7 @@ const sessionSlice = createSlice({
   reducers: {
     toggleLoader: (state, action) => {
       state.loading = action.payload;
-    }, 
+    },
     handleUpdateSessionsResponse: (state, action) => {
       state.loading = false;
       state.items = action.payload.data || [];
@@ -23,15 +23,23 @@ const sessionSlice = createSlice({
       state.items = state.items.filter(
         ({ userDn }) => userDn !== action.payload.data
       );
-    }
+    },
+    getSessions: (state) => {
+      state.loading = true;
+    },
+    revokeSession: (state) => {
+      state.loading = true;
+    },
   },
 });
 
-reducerRegistry.register("SessionReducer", reducer);
 export const {
   handleUpdateSessionsResponse,
   toggleLoader,
   handleRevokeSession,
+  getSessions,
+  revokeSession,
 } = sessionSlice.actions;
 
 export const { actions, reducer, state } = sessionSlice;
+reducerRegistry.register("SessionReducer", reducer);

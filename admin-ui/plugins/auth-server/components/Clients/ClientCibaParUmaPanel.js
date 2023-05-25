@@ -17,7 +17,7 @@ import { FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { deleteUMAResource } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
-import { setCurrentItem } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { setCurrentItem } from 'Plugins/auth-server/redux/features/scopeSlice'
 import {
   setCurrentItem as setCurrentItemClient,
   viewOnly,
@@ -95,7 +95,7 @@ function ClientCibaParUmaPanel({
   }
 
   const handleScopeEdit = (scope) => {
-    dispatch(setCurrentItem(scope))
+    dispatch(setCurrentItem({ item: scope }))
     return navigate(`/auth-server/scope/edit:${scope.inum}`)
   }
 

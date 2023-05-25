@@ -13,11 +13,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
-import {
-  getScopes,
-  deleteScope,
-} from 'Plugins/auth-server/redux/actions/ScopeActions'
-import { setCurrentItem } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { setCurrentItem, getScopes, searchScopes, deleteScope } from 'Plugins/auth-server/redux/features/scopeSlice'
 import {
   hasPermission,
   buildPayload,
@@ -100,7 +96,7 @@ function ScopeListPage() {
 
   useEffect(() => {
     makeOptions()
-    dispatch(getScopes(options))
+    dispatch(getScopes({ action: options }))
   }, [])
 
   function handleOptionsChange(event) {
@@ -129,19 +125,19 @@ function ScopeListPage() {
     return navigate('/auth-server/scope/new')
   }
   function handleGoToScopeEditPage(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem({ item: row }))
     return navigate(`/auth-server/scope/edit/:` + row.inum)
   }
 
   function handleScopeDelete(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem({ item: row }))
     setItem(row)
     toggle()
   }
 
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
-    dispatch(deleteScope(userAction))
+    dispatch(deleteScope({ action: userAction }))
     navigate('/auth-server/scopes')
     toggle()
   }
@@ -185,7 +181,7 @@ function ScopeListPage() {
       onClick: () => {
         makeOptions()
         // buildPayload(userAction, SEARCHING_SCOPES, options)
-        dispatch(getScopes(options))
+        dispatch(searchScopes({ action: options }))
       },
     })
   }
@@ -219,7 +215,7 @@ function ScopeListPage() {
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
-    dispatch(getScopes(options))
+    dispatch(getScopes({ action: options }))
   }
   const onRowCountChangeClick = (count) => {
     makeOptions()
@@ -227,7 +223,7 @@ function ScopeListPage() {
     options['limit'] = count
     setPageNumber(0)
     setLimit(count)
-    dispatch(getScopes(options))
+    dispatch(getScopes({ action: options }))
   }
 
   return (

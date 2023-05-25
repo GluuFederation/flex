@@ -17,7 +17,12 @@ const scopeSlice = createSlice({
   name: "scope",
   initialState,
   reducers: {
-    scopeHandleLoading: (state, action) => {
+    scopeHandleLoading: (state) => {
+      state.loading = true;
+      state.saveOperationFlag = false;
+      state.errorInSaveOperationFlag = false;
+    },
+    getScopes: (state) => {
       state.loading = true;
       state.saveOperationFlag = false;
       state.errorInSaveOperationFlag = false;
@@ -34,8 +39,13 @@ const scopeSlice = createSlice({
       }
     },
     setCurrentItem: (state, action) => {
-      state.item = action.payload;
+      state.item = action.payload.item;
       state.loading = false;
+    },
+    deleteScope: (state) => {
+      state.loading = true;
+      state.saveOperationFlag = false;
+      state.errorInSaveOperationFlag = false;
     },
     deleteScopeResponse: (state, action) => {
       state.loading = false;
@@ -49,7 +59,7 @@ const scopeSlice = createSlice({
     editScopeResponse: (state, action) => {
       state.loading = false;
       state.saveOperationFlag = true;
-      if (action.payload.data) {
+      if (action.payload?.data) {
         state.items = [...state.items];
         state.errorInSaveOperationFlag = false;
       } else {
@@ -79,6 +89,7 @@ const scopeSlice = createSlice({
       state.scopesByCreator = action.payload.data;
     },
     getClientScopesResponse: (state, action) => {
+      state.loading = false;
       if (action.payload.data) {
         state.clientScopes = action.payload.data.entries;
         state.loadingClientScopes = false;
@@ -87,10 +98,33 @@ const scopeSlice = createSlice({
         state.errorInSaveOperationFlag = false;
       }
     },
+    searchScopes: (state, action) => {
+      state.loading = true;
+      state.saveOperationFlag = false;
+      state.errorInSaveOperationFlag = false;
+    },
+    addScope: (state) => {
+      state.loading = true;
+      state.saveOperationFlag = false;
+      state.errorInSaveOperationFlag = false;
+    },
+    editScope: (state) => {
+      state.loading = true;
+      state.saveOperationFlag = false;
+      state.errorInSaveOperationFlag = false;
+    },
+    getScopeByCreator: () => {},
+    getScopeByPattern: () => {},
+    getScopeByInum: (state) => {
+      state.loading = true;
+      state.saveOperationFlag = false;
+      state.errorInSaveOperationFlag = false;
+    },
+    getClientScopes: (state) => {
+      state.loadingClientScopes = true;
+    },
   },
 });
-
-reducerRegistry.register("scopeReducer", reducer);
 
 export const {
   scopeHandleLoading,
@@ -102,5 +136,14 @@ export const {
   addScopeResponse,
   getScopeByCreatorResponse,
   getClientScopesResponse,
+  getScopes,
+  searchScopes,
+  deleteScope,
+  addScope,
+  editScope,
+  getScopeByCreator,
+  getScopeByInum,
+  getClientScopes,
 } = scopeSlice.actions;
 export const { actions, reducer, state } = scopeSlice;
+reducerRegistry.register("scopeReducer", reducer);
