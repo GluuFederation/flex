@@ -1,37 +1,37 @@
-import { createSlice } from "@reduxjs/toolkit";
-import reducerRegistry from "Redux/reducers/ReducerRegistry";
+import { createSlice } from '@reduxjs/toolkit'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 const initialState = {
   items: [],
   item: {},
   loading: false,
-};
+}
 
 const sessionSlice = createSlice({
-  name: "session",
+  name: 'session',
   initialState,
   reducers: {
     toggleLoader: (state, action) => {
-      state.loading = action.payload;
+      state.loading = action.payload
     },
     handleUpdateSessionsResponse: (state, action) => {
-      state.loading = false;
-      state.items = action.payload.data || [];
+      state.loading = false
+      state.items = action.payload.data || []
     },
     handleRevokeSession: (state, action) => {
-      state.loading = false;
+      state.loading = false
       state.items = state.items.filter(
         ({ userDn }) => userDn !== action.payload.data
-      );
+      )
     },
     getSessions: (state) => {
-      state.loading = true;
+      state.loading = true
     },
     revokeSession: (state) => {
-      state.loading = true;
+      state.loading = true
     },
   },
-});
+})
 
 export const {
   handleUpdateSessionsResponse,
@@ -39,7 +39,7 @@ export const {
   handleRevokeSession,
   getSessions,
   revokeSession,
-} = sessionSlice.actions;
+} = sessionSlice.actions
 
-export const { actions, reducer, state } = sessionSlice;
-reducerRegistry.register("SessionReducer", reducer);
+export const { actions, reducer, state } = sessionSlice
+reducerRegistry.register('SessionReducer', reducer)
