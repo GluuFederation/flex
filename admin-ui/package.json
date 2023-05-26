@@ -154,7 +154,6 @@
     "react-tooltip": "^5.10.5",
     "reactstrap": "^9.1.8",
     "recharts": "^2.5.0",
-    "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.3",
     "sass": "^1.60.0",

@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import ScopeForm from './ScopeForm'
-import { editScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import ScopeForm from './ScopeForm' 
 import { buildPayload } from 'Utils/PermChecker'
 import {
   getAttributes,
@@ -13,6 +12,7 @@ import {
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { editScope } from 'Plugins/auth-server/redux/features/scopeSlice'
 
 function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOperationFlag, errorInSaveOperationFlag }) {
   const userAction = {}
@@ -49,7 +49,7 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOper
       delete data.action_message
       postBody['scope'] = data
       buildPayload(userAction, message, postBody)
-      dispatch(editScope(userAction))
+      dispatch(editScope({ action: userAction }))
     }
   }
   return (

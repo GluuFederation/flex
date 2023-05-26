@@ -1,11 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import KeysPage from './KeysPage'
-import { combineReducers, createStore } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 import moment from 'moment'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const jwks_config = {
   keys: [
@@ -30,12 +30,12 @@ const INIT_STATE = {
   loading: false,
 }
 
-const store = createStore(
-  combineReducers({
+const store = configureStore({
+  reducer:  combineReducers({
     jwksReducer: (state = INIT_STATE) => state,
     noReducer: (state = {}) => state,
   }),
-)
+})
 
 const Wrapper = ({ children }) => (
   <I18nextProvider i18n={i18n}>

@@ -9,27 +9,6 @@ import {
 } from 'redux-saga/effects'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { updateToast } from 'Redux/actions/ToastAction'
-import {
-  getScopesResponse,
-  getScopeByPatternResponse,
-  addScopeResponse,
-  editScopeResponse,
-  deleteScopeResponse,
-  getScopeByCreatorResponse,
-  setCurrentItem,
-  getClientScopesResponse,
-} from '../actions/ScopeActions'
-import {
-  GET_SCOPES,
-  SEARCH_SCOPES,
-  GET_SCOPE_BY_INUM,
-  ADD_SCOPE,
-  EDIT_SCOPE,
-  DELETE_SCOPE,
-  GET_SCOPE_BY_PATTERN,
-  GET_SCOPE_BY_CREATOR,
-  GET_CLIENT_SCOPES,
-} from '../actions/types'
 import { SCOPE } from '../audit/Resources'
 import {
   CREATE,
@@ -44,12 +23,22 @@ import { postUserAction } from 'Redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import {
+  deleteScopeResponse,
+  handleUpdateScopeResponse,
+  scopeHandleLoading,
+  setCurrentItem,
+  editScopeResponse,
+  addScopeResponse,
+  getScopeByCreatorResponse,
+  getClientScopesResponse,
+} from '../features/scopeSlice'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.OAuthScopesApi(
-    getClient(JansConfigApi, token, issuer),
+    getClient(JansConfigApi, token, issuer)
   )
   return new ScopeApi(api)
 }
@@ -89,13 +78,14 @@ export function* getScopeByCreator({ payload }) {
 export function* getScopes({ payload }) {
   const audit = yield* initAudit()
   try {
+    yield put(scopeHandleLoading())
     addAdditionalData(audit, FETCH, SCOPE, payload)
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.getAllScopes, payload.action)
-    yield put(getScopesResponse(data))
+    yield put(handleUpdateScopeResponse({ data: data }))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(getScopesResponse(null))
+    yield put(handleUpdateScopeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -106,10 +96,11 @@ export function* getScopes({ payload }) {
 export function* getClientScopes({ payload }) {
   const audit = yield* initAudit()
   try {
+    yield put(scopeHandleLoading())
     addAdditionalData(audit, FETCH, SCOPE, payload)
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.getAllScopes, payload.action)
-    yield put(getClientScopesResponse(data))
+    yield put(getClientScopesResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getClientScopesResponse(null))
@@ -126,7 +117,7 @@ export function* getScopeBasedOnOpts({ payload }) {
     addAdditionalData(audit, FETCH, SCOPE, payload)
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.getScopeByOpts, payload.action.action_data)
-    yield put(getScopeByPatternResponse(data))
+    yield put(getScopeByPatternResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getScopeByPatternResponse(null))
@@ -140,11 +131,12 @@ export function* getScopeBasedOnOpts({ payload }) {
 export function* addAScope({ payload }) {
   const audit = yield* initAudit()
   try {
+    yield put(scopeHandleLoading())
     addAdditionalData(audit, CREATE, SCOPE, payload)
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.addNewScope, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(addScopeResponse(data))
+    yield put(addScopeResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -159,11 +151,12 @@ export function* addAScope({ payload }) {
 export function* editAnScope({ payload }) {
   const audit = yield* initAudit()
   try {
+    yield put(scopeHandleLoading())
     addAdditionalData(audit, UPDATE, SCOPE, payload)
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.editAScope, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(editScopeResponse(data))
+    yield put(editScopeResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -178,11 +171,12 @@ export function* editAnScope({ payload }) {
 export function* deleteAnScope({ payload }) {
   const audit = yield* initAudit()
   try {
+    yield put(scopeHandleLoading())
     addAdditionalData(audit, DELETION, SCOPE, payload)
     const scopeApi = yield* newFunction()
     yield call(scopeApi.deleteAScope, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(deleteScopeResponse(payload.action.action_data))
+    yield put(deleteScopeResponse({ data: payload.action.action_data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -195,31 +189,31 @@ export function* deleteAnScope({ payload }) {
 }
 
 export function* watchGetScopeByInum() {
-  yield takeEvery(GET_SCOPE_BY_INUM, getScopeByInum)
+  yield takeEvery('scope/getScopeByInum', getScopeByInum)
 }
 export function* watchGetScopeByCreator() {
-  yield takeEvery(GET_SCOPE_BY_CREATOR, getScopeByCreator)
+  yield takeEvery('scope/getScopeByCreator', getScopeByCreator)
 }
 export function* watchGetScopes() {
-  yield takeLatest(GET_SCOPES, getScopes)
+  yield takeLatest('scope/getScopes', getScopes)
 }
 export function* watchGetClientScopes() {
-  yield takeLatest(GET_CLIENT_SCOPES, getClientScopes)
+  yield takeLatest('scope/getClientScopes', getClientScopes)
 }
 export function* watchSearchScopes() {
-  yield takeLatest(SEARCH_SCOPES, getScopes)
+  yield takeLatest('scope/searchScopes', getScopes)
 }
 export function* watchGetScopeByOpts() {
-  yield takeLatest(GET_SCOPE_BY_PATTERN, getScopeBasedOnOpts)
+  yield takeLatest('scope/getScopeByPattern', getScopeBasedOnOpts)
 }
 export function* watchAddScope() {
-  yield takeLatest(ADD_SCOPE, addAScope)
+  yield takeLatest('scope/addScope', addAScope)
 }
 export function* watchEditScope() {
-  yield takeLatest(EDIT_SCOPE, editAnScope)
+  yield takeLatest('scope/editScope', editAnScope)
 }
 export function* watchDeleteScope() {
-  yield takeLatest(DELETE_SCOPE, deleteAnScope)
+  yield takeLatest('scope/deleteScope', deleteAnScope)
 }
 
 export default function* rootSaga() {
@@ -232,6 +226,6 @@ export default function* rootSaga() {
     fork(watchEditScope),
     fork(watchDeleteScope),
     fork(watchGetScopeByCreator),
-    fork(watchGetClientScopes)
+    fork(watchGetClientScopes),
   ])
 }

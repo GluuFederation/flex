@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import ScopeForm from './ScopeForm'
-import { addScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { addScope } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getAttributes, getScripts } from 'Redux/actions/InitActions'
@@ -46,7 +46,7 @@ function ScopeAddPage({
       delete data.action_message
       postBody['scope'] = data
       buildPayload(userAction, message, postBody)
-      dispatch(addScope(userAction))
+      dispatch(addScope({ action: userAction }))
     }
   }
 

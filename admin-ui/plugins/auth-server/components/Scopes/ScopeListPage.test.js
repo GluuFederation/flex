@@ -1,10 +1,10 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import ScopeListPage from './ScopeListPage'
-import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import scopes from './scopes.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const permissions = [
   'https://jans.io/oauth/config/scopes.readonly',
@@ -20,13 +20,14 @@ const INIT_SCPOPES_STATE = {
   item: {},
   loading: false,
 }
-const store = createStore(
-  combineReducers({
+
+const store = configureStore({
+  reducer:  combineReducers({
     authReducer: (state = INIT_STATE) => state,
     scopeReducer: (state = INIT_SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,
   }),
-)
+})
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>

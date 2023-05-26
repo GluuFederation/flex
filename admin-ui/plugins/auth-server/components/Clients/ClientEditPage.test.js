@@ -1,14 +1,14 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import ClientEditPage from './ClientEditPage'
-import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import clients from './clients.test'
 import initReducer from 'Redux/reducers/InitReducer'
 import oidcDiscoveryReducer from 'Redux/reducers/OidcDiscoveryReducer'
-import scopeReducer from 'Plugins/auth-server/redux/reducers/ScopeReducer'
+import { reducer as scopeReducer} from 'Plugins/auth-server/redux/features/scopeSlice'
 import umaResourceReducer from 'Plugins/auth-server/redux/reducers/UMAResourceReducer'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
   'https://jans.io/oauth/config/openid/clients.write',
@@ -25,8 +25,8 @@ const INIT_CLIENTS_STATE = {
   errorInSaveOperationFlag: false
 }
 
-const store = createStore(
-  combineReducers({
+const store = configureStore({
+  reducer:  combineReducers({
     authReducer: (state = INIT_STATE) => state,
     oidcReducer: (state = INIT_CLIENTS_STATE) => state,
     umaResourceReducer,
@@ -35,7 +35,7 @@ const store = createStore(
     oidcDiscoveryReducer,
     noReducer: (state = {}) => state,
   }),
-)
+})
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>

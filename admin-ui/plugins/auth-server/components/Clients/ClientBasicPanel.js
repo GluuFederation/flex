@@ -22,10 +22,9 @@ import { useTranslation } from 'react-i18next'
 import { getClientScopeByInum } from '../../../../app/utils/Util'
 import { useDispatch, useSelector } from 'react-redux'
 import { PER_PAGE_SCOPES } from '../../common/Constants'
-import { getClientScopes } from '../../redux/actions/ScopeActions'
 import { isEmpty } from 'lodash'
 import _debounce from 'lodash/debounce'
-import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { getScopes, getClientScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 const DOC_CATEGORY = 'openid_client'
 
 const ClientBasicPanel = ({
@@ -94,7 +93,7 @@ const ClientBasicPanel = ({
       }
       userAction["pattern"] = scopeInums.join(",")
       userAction["limit"] = PER_PAGE_SCOPES
-      dispatch(getClientScopes(userAction))
+      dispatch(getClientScopes({ action: userAction }))
     }
   }, [])
 
@@ -108,7 +107,7 @@ const ClientBasicPanel = ({
       delete userScopeAction.startIndex
     }
     if (totalItems + PER_PAGE_SCOPES > userScopeAction.limit) {
-      dispatch(getScopes(userScopeAction))
+      dispatch(getScopes({ action: userScopeAction }))
     }
   };
 
@@ -122,7 +121,7 @@ const ClientBasicPanel = ({
   function handleDebounceFn(inputValue) {
     userScopeAction['pattern'] = inputValue
     delete userScopeAction.startIndex
-    dispatch(getScopes(userScopeAction))
+    dispatch(getScopes({ action: userScopeAction }))
   }
 
   return (

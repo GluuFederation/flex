@@ -1,11 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import CustomScriptEditPage from './CustomScriptEditPage'
-import { createStore, combineReducers } from 'redux'
+import CustomScriptEditPage from './CustomScriptEditPage' 
 import { Provider } from 'react-redux'
 import item from "./item"
 import script from "./script.test"
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
@@ -22,13 +22,14 @@ const INIT_CUSTOM_SCRIPT_STATE = {
   item: item,
   loading: false,
 }
-const store = createStore(
-  combineReducers({
+
+const store = configureStore({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     customScriptReducer: (state = INIT_CUSTOM_SCRIPT_STATE) => state,
     noReducer: (state = {}) => state,
   }),
-)
+}) 
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>
