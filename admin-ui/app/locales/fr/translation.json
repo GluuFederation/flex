@@ -337,7 +337,8 @@
     "see_configurations": "Voir configuration",
     "manage_configurations": "Gérer les configurations",
     "fetching_project_details": "Récupération des détails du projet...",
-    "mandatory_fields_required": "Les champs obligatoires sont requis"
+    "mandatory_fields_required": "Les champs obligatoires sont requis",
+    "agama_is_not_enabled": "Agama n'est pas activé"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",

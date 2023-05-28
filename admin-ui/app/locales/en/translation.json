@@ -462,7 +462,8 @@
     "see_configurations": "See Configuration",
     "manage_configurations": "Manage Configurations",
     "fetching_project_details": "Fetching project details...",
-    "mandatory_fields_required": "Mandatory fields are required"
+    "mandatory_fields_required": "Mandatory fields are required",
+    "agama_is_not_enabled": "Agama is not enabled"
   },
   "tooltips": {
     "add_attribute": "Add attribute",

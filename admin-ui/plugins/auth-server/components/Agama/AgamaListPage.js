@@ -20,6 +20,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import InfoIcon from '@mui/icons-material/Info';
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import EditIcon from '@mui/icons-material/Edit';
+import { updateToast } from 'Redux/actions/ToastAction'
+import { isEmpty } from 'lodash'
+import { getJsonConfig } from 'Plugins/auth-server/redux/actions/JsonConfigActions'
 
 const dateTimeFormatOptions = {
   year: '2-digit',
@@ -49,6 +52,9 @@ function AgamaListPage() {
   const [shaFileName, setShaFileName] = useState('')
   const [listData, setListData] = useState([])
   const [selectedRow, setSelectedRow] = useState({})
+  const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
+  const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
+  const isConfigLoading = useSelector((state) => state.jsonConfigReducer.loading)
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -67,6 +73,12 @@ function AgamaListPage() {
       }
     })
   }
+
+  useEffect(() => {
+    if(isEmpty(configuration)) {
+      dispatch(getJsonConfig())
+    }
+  }, [])
 
   const submitData = async () => {
     let file = await convertFileToByteArray(selectedFile)
@@ -194,7 +206,11 @@ function AgamaListPage() {
         setSelectedFileName(null)
         setGetProjectName(false)
         setSHAfile(null)
-        setShowAddModal(true)
+        if(isAgamaEnabled) {
+          setShowAddModal(true)
+        } else {
+          dispatch(updateToast(true, 'error', t('messages.agama_is_not_enabled')))
+        }
       },
     })
     myActions.push({
@@ -412,10 +428,10 @@ function AgamaListPage() {
                 color={`primary-${selectedTheme}`}
                 style={applicationStyle.buttonStyle}
                 onClick={() => submitData()}
-                disabled={(shaFile && selectedFileName && shaStatus && projectName != '') ? loading ? true : false : true}
+                disabled={(shaFile && selectedFileName && shaStatus && projectName != '') ? loading || isConfigLoading ? true : false : true}
               >
 
-                {loading ? <>
+                {loading || isConfigLoading ? <>
                   <CircularProgress size={12} /> &nbsp;
                 </> : null}
                 {t('actions.add')}
