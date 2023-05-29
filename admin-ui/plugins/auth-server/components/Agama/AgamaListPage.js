@@ -16,13 +16,13 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
 import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@mui/icons-material/Info';
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
-import EditIcon from '@mui/icons-material/Edit';
 import { updateToast } from 'Redux/actions/ToastAction'
 import { isEmpty } from 'lodash'
 import { getJsonConfig } from 'Plugins/auth-server/redux/actions/JsonConfigActions'
+import SettingsIcon from '@mui/icons-material/Settings'
 
 const dateTimeFormatOptions = {
   year: '2-digit',
@@ -215,7 +215,7 @@ function AgamaListPage() {
     })
     myActions.push({
       icon: () => <InfoIcon />,
-      tooltip: `${t('messages.see_configurations')}`,
+      tooltip: `${t('messages.see_project_details')}`,
       iconProps: { color: 'primary' },
       isFreeAction: false,
       onClick: (event, rowData) => {
@@ -224,7 +224,7 @@ function AgamaListPage() {
       },
     })
     myActions.push({
-      icon: () => <EditIcon />,
+      icon: () => <SettingsIcon />,
       tooltip: `${t('messages.manage_configurations')}`,
       iconProps: { color: 'primary' },
       isFreeAction: false,
@@ -377,7 +377,7 @@ function AgamaListPage() {
             />
           </GluuViewWrapper>
           <Modal isOpen={showAddModal}>
-            <ModalHeader>Add Agama</ModalHeader>
+            <ModalHeader>{t('titles.add_agama_project')}</ModalHeader>
             <ModalBody>
               <div
                 {...getRootProps1()}
@@ -387,7 +387,7 @@ function AgamaListPage() {
                 {selectedFileName ? (
                   <strong>Selected File : {selectedFileName}</strong>
                 ) : (
-                  <p>Drag 'n' drop .gama file here, or click to select file</p>
+                  <p>{t(('messages.drag_agama_file'))}</p>
                 )}
               </div>
               <div className="mt-2"></div>
@@ -400,7 +400,7 @@ function AgamaListPage() {
                   <strong>Selected File : {shaFileName}</strong>
                 ) : (
                   <p>
-                    Drag 'n' drop .sha256sum file here, or click to select file
+                    {t(('messages.drag_sha_file'))}
                   </p>
                 )}
               </div>
