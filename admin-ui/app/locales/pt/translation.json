@@ -332,7 +332,10 @@
     "manage_configurations": "Gerenciar configurações",
     "fetching_project_details": "Buscando detalhes do projeto...",
     "mandatory_fields_required": "Os campos obrigatórios são obrigatórios",
-    "agama_is_not_enabled": "Agama não está ativado"
+    "agama_is_not_enabled": "Agama não está ativado",
+    "drag_agama_file": "Arrastar .gama arquivo aqui, ou clique para selecionar o arquivo",
+    "drag_sha_file": "Arrastar .sha256sum arquivo aqui, ou clique para selecionar o arquivo",
+    "see_project_details": "Ver detalhes do projeto"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -421,7 +424,8 @@
     "scopes": "Scopes",
     "scripts": "Scripts",
     "schemaName": "Nome do esquema",
-    "user_management": "Gerenciamento de usuários"
+    "user_management": "Gerenciamento de usuários",
+    "add_agama_project": "Adicionar projeto Agama"
   },
   "links": {
     "support": "https://support.gluu.org/"

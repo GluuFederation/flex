@@ -293,11 +293,11 @@ const AgamaProjectConfigModal = ({
                         columns={[
                           { title: `${t("fields.flow")}`, field: "flow" },
                           {
-                            title: `${t("fields.error")}`,
+                            title: `${t("fields.errors")}`,
                             field: "error",
                           },
                         ]}
-                        data={projectDetails.data.tableOptions}
+                        data={projectDetails.data?.tableOptions}
                         isLoading={projectDetails.isLoading}
                         title=""
                         options={{

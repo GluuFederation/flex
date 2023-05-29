@@ -338,7 +338,10 @@
     "manage_configurations": "Gérer les configurations",
     "fetching_project_details": "Récupération des détails du projet...",
     "mandatory_fields_required": "Les champs obligatoires sont requis",
-    "agama_is_not_enabled": "Agama n'est pas activé"
+    "agama_is_not_enabled": "Agama n'est pas activé",
+    "drag_agama_file": "Glisser .gama fichier ici, ou cliquez pour sélectionner le fichier",
+    "drag_sha_file": "Glisser .sha256sum fichier ici, ou cliquez pour sélectionner le fichier",
+    "see_project_details": "Voir les détails du projet"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
@@ -427,7 +430,8 @@
     "scopes": "Portées",
     "scripts": "Scénarios",
     "schemaName": "Nom du schéma",
-    "user_management": "Gestion des utilisateurs"
+    "user_management": "Gestion des utilisateurs",
+    "add_agama_project": "Ajouter un projet Agama"
   },
   "links": {
     "support": "https://support.gluu.org/"
