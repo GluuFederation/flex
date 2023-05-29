@@ -343,7 +343,7 @@ function AgamaListPage() {
                   field: 'deployed_on',
                 },
                 {
-                  title: `${t('fields.error')}`,
+                  title: `${t('fields.errors')}`,
                   field: 'error',
                 },
               ]}
