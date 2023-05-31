@@ -48,16 +48,18 @@ const mappingSlice = createSlice({
         };
       },
       updateMapping: (state, action) => {
-        const { id, role } = action.payload?.data;
-        let index = state.items.findIndex((element) => element.role === role);
-        let permissions = state.items[index].permissions;
-        permissions.splice(id, 1);
-        let changedPermissions = state.items;
-        changedPermissions[index].permissions = permissions;
-        return {
-          ...state,
-          items: [...changedPermissions],
-        };
+        if (action.payload?.data) {
+          const { id, role } = action.payload.data;
+          let index = state.items.findIndex((element) => element.role === role);
+          let permissions = state.items[index].permissions;
+          permissions.splice(id, 1);
+          let changedPermissions = state.items;
+          changedPermissions[index].permissions = permissions;
+          return {
+            ...state,
+            items: [...changedPermissions],
+          };
+        }
       },
       updatePermissionsToServer: (state, action) => {},
       addNewRolePermissions: (state, action) => {},

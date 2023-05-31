@@ -35,7 +35,6 @@ const apiRoleSlice = createSlice({
       state.loading = false
       if (action.payload?.data) {
         let currentItems = [...state.items]
-        currentItems.filter((item) => item.role === action.payload.data.role)
         currentItems.push(action.payload.data)
         state.items = currentItems
       }
