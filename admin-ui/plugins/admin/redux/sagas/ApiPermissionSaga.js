@@ -9,7 +9,7 @@ import {
   addPermissionResponse,
   editPermissionResponse,
   deletePermissionResponse,
-} from '../actions/ApiPermissionActions'
+} from 'Plugins/admin/redux/features/apiPermissionSlice'
 import {
   CREATE,
   UPDATE,
@@ -21,13 +21,6 @@ import {
   addAdditionalData,
 } from 'Utils/TokenController'
 import {updateToast} from 'Redux/actions/ToastAction'
-import {
-  GET_PERMISSIONS,
-  ADD_PERMISSION,
-  EDIT_PERMISSION,
-  DELETE_PERMISSION,
-  GET_PERMISSION,
-} from '../actions/types'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -47,7 +40,7 @@ export function* getPermissions({ payload }) {
     addAdditionalData(audit, FETCH, API_PERMISSION, payload)
     const permApi = yield* newFunction()
     const data = yield call(permApi.getPermissions)
-    yield put(getPermissionResponse(data))
+    yield put(getPermissionResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getPermissionResponse(null))
@@ -63,7 +56,7 @@ export function* getPermission({ payload }) {
     addAdditionalData(audit, FETCH, API_PERMISSION, payload)
     const permApi = yield* newFunction()
     const data = yield call(permApi.getPermission, payload.action.action_data)
-    yield put(getPermissionResponse(data))
+    yield put(getPermissionResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getPermissionResponse(null))
@@ -80,7 +73,7 @@ export function* addPermission({ payload }) {
     const permApi = yield* newFunction()
     const data = yield call(permApi.addPermission, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(addPermissionResponse(data))
+    yield put(addPermissionResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -98,7 +91,7 @@ export function* editPermission({ payload }) {
     const permApi = yield* newFunction()
     const data = yield call(permApi.editPermission, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(editPermissionResponse(data))
+    yield put(editPermissionResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -117,7 +110,7 @@ export function* deletePermission({ payload }) {
     const permApi = yield* newFunction()
     yield call(permApi.deletePermission, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(deletePermissionResponse(payload.action.action_data))
+    yield put(deletePermissionResponse({ inum: payload.action.action_data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -130,21 +123,21 @@ export function* deletePermission({ payload }) {
 }
 
 export function* watchGetPermissions() {
-  yield takeLatest(GET_PERMISSIONS, getPermissions)
+  yield takeLatest('apiPermission/getPermissions', getPermissions)
 }
 
 export function* watchAddPermission() {
-  yield takeLatest(ADD_PERMISSION, addPermission)
+  yield takeLatest('apiPermission/addPermission', addPermission)
 }
 
 export function* watchEditPermission() {
-  yield takeLatest(EDIT_PERMISSION, editPermission)
+  yield takeLatest('apiPermission/editPermission', editPermission)
 }
 export function* watchDeletePermission() {
-  yield takeLatest(DELETE_PERMISSION, deletePermission)
+  yield takeLatest('apiPermission/deletePermission', deletePermission)
 }
 export function* watchGetPermission() {
-  yield takeLatest(GET_PERMISSION, getPermission)
+  yield takeLatest('apiPermission/getPermission', getPermission)
 }
 export default function* rootSaga() {
   yield all([

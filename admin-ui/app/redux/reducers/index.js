@@ -1,14 +1,14 @@
 /**
  * App Reducers
  */
-import mauReducer from './MauReducer'
+import { reducer as mauReducer } from 'Plugins/admin/redux/features/mauSlice'
 import healthReducer from './HealthReducer'
 import authReducer from './AuthReducer'
 import fidoReducer from './FidoReducer'
-import initReducer from './InitReducer'
+import { reducer as initReducer } from '../features/initSlice'
 import logoutReducer from './LogoutReducer'
 import licenseReducer from './LicenseReducer'
-import licenseDetailsReducer from './LicenseDetailsReducer'
+import { reducer as licenseDetailsReducer } from '../features/licenseDetailsSlice'
 import oidcDiscoveryReducer from './OidcDiscoveryReducer'
 import attributesReducerRoot from './AttributesReducer'
 import toastReducer from './ToastReducer'

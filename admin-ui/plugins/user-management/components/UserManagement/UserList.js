@@ -25,7 +25,7 @@ import {
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
-import { getRoles } from '../../../admin/redux/actions/ApiRoleActions'
+import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'

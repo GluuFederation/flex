@@ -23,7 +23,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import DefaultAcrInput from './DefaultAcrInput'
 import { SIMPLE_PASSWORD_AUTH, FETCHING_SCRIPTS } from 'Plugins/auth-server/common/Constants'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/actions/AcrsActions'
-import { getScripts } from 'Redux/actions/InitActions'
+import { getScripts } from 'Redux/features/initSlice'
 
 function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
   const { t } = useTranslation()
@@ -49,7 +49,7 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, {})
     dispatch(getJsonConfig(userAction))
     dispatch(getAcrsConfig())
-    dispatch(getScripts(userAction))
+    dispatch(getScripts({ action: userAction }))
   }, [])
   useEffect(() => {
     return () => {

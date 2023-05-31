@@ -5,7 +5,7 @@ import {
   addRoleResponse,
   editRoleResponse,
   deleteRoleResponse,
-} from '../actions/ApiRoleActions'
+} from 'Plugins/admin/redux/features/apiRoleSlice'
 import { API_ROLE } from '../audit/Resources'
 import {
   CREATE,
@@ -19,13 +19,6 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from 'Utils/TokenController'
-import {
-  GET_ROLES,
-  GET_ROLE,
-  ADD_ROLE,
-  EDIT_ROLE,
-  DELETE_ROLE,
-} from '../actions/types'
 import RoleApi from '../api/RoleApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -47,7 +40,7 @@ export function* getRoles({ payload }) {
     addAdditionalData(audit, FETCH, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.getRoles)
-    yield put(getRolesResponse(data))
+    yield put(getRolesResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getRolesResponse(null))
@@ -63,7 +56,7 @@ export function* getRole({ payload }) {
     addAdditionalData(audit, FETCH, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.getRole, payload.action.action_data)
-    yield put(getRoleResponse(data))
+    yield put(getRoleResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getRoleResponse(null))
@@ -130,21 +123,21 @@ export function* deleteRole({ payload }) {
 }
 
 export function* watchGetRoles() {
-  yield takeLatest(GET_ROLES, getRoles)
+  yield takeLatest('apiRole/getRoles', getRoles)
 }
 
 export function* watchAddRole() {
-  yield takeLatest(ADD_ROLE, addRole)
+  yield takeLatest('apiRole/addRole', addRole)
 }
 
 export function* watchEditRole() {
-  yield takeLatest(EDIT_ROLE, editRole)
+  yield takeLatest('apiRole/editRole', editRole)
 }
 export function* watchDeleteRole() {
-  yield takeLatest(DELETE_ROLE, deleteRole)
+  yield takeLatest('apiRole/deleteRole', deleteRole)
 }
 export function* watchGetRole() {
-  yield takeLatest(GET_ROLE, getRole)
+  yield takeLatest('apiRole/getRole', getRole)
 }
 export default function* rootSaga() {
   yield all([

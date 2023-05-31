@@ -7,7 +7,7 @@ import { editClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
 import { getScopes, getScopeByCreator } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
 import { getUMAResourcesByClient } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
-import { getScripts } from 'Redux/actions/InitActions'
+import { getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
@@ -39,7 +39,7 @@ function ClientEditPage({
       dispatch(getScopes({ action: options }))
     }
     if (scripts.length < 1) {
-      dispatch(getScripts(options))
+      dispatch(getScripts({ action: options }))
     }
     if (isEmpty(umaResources)) {
       dispatch(getUMAResourcesByClient(clientData?.inum))

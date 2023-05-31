@@ -1,9 +1,8 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import { getMauResponse } from '../actions/MauActions'
+import { getMauResponse } from 'Plugins/admin/redux/features/mauSlice'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { postUserAction } from '../api/backend-api'
-import { GET_MAU } from '../actions/types'
 import MauApi from '../api/MauApi'
 import { getClient } from '../api/base'
 import { initAudit } from '../sagas/SagaUtils'
@@ -25,7 +24,7 @@ export function* getMau({ payload }) {
     addAdditionalData(audit, 'FETCH', 'MAU', payload)
     const mauApi = yield* newFunction()
     const data = yield call(mauApi.getMau, payload.action.action_data)
-    yield put(getMauResponse(buildData(data)))
+    yield put(getMauResponse({ data: buildData(data) }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getMauResponse(null))
@@ -37,7 +36,7 @@ export function* getMau({ payload }) {
 }
 
 export function* watchGetMau() {
-  yield takeLatest(GET_MAU, getMau)
+  yield takeLatest('mau/getMau', getMau)
 }
 
 export default function* rootSaga() {
