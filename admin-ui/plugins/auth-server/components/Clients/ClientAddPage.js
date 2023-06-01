@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { addNewClientAction } from 'Plugins/auth-server/redux/actions/OIDCActions'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
 import { getScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
-import { getScripts } from 'Redux/actions/InitActions'
+import { getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
@@ -32,7 +32,7 @@ function ClientAddPage({
       dispatch(getScopes({ action: userAction }))
     }
     if (scripts.length < 1) {
-      dispatch(getScripts(userAction))
+      dispatch(getScripts({ action: userAction }))
     }
     dispatch(getOidcDiscovery())
   }, [])

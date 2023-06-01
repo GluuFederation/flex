@@ -8,7 +8,7 @@ import { buildPayload } from 'Utils/PermChecker'
 import {
   getAttributes,
   getScripts
-} from 'Redux/actions/InitActions'
+} from 'Redux/features/initSlice'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -33,7 +33,7 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOper
     }
     if (scripts.length === 0) {
       buildPayload(userAction, 'Fetch custom scripts', {})
-      dispatch(getScripts(userAction))
+      dispatch(getScripts({ action: userAction }))
     }
   }, [])
   useEffect(() => {
@@ -62,7 +62,7 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOper
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <ScopeForm
-            scope={scope}
+            scope={{ ...scope, attributes: scope?.attributes && { ...scope?.attributes } }}
             attributes={attributes}
             scripts={scripts}
             handleSubmit={handleSubmit}

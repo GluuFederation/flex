@@ -7,7 +7,7 @@ import {
   getScripts,
   getScopes,
   getClients,
-} from 'Redux/actions/InitActions'
+} from 'Redux/features/initSlice'
 import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 
@@ -64,15 +64,15 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
       }
       if (clients.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch openid connect clients', {})
-        dispatch(getClients(userAction))
+        dispatch(getClients({ action: userAction }))
       }
       if (scopes.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch scopes', {})
-        dispatch(getScopes(userAction))
+        dispatch(getScopes({ action: userAction }))
       }
       if (scripts.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch custom scripts', {})
-        dispatch(getScripts(userAction))
+        dispatch(getScripts({ action: userAction }))
       }
       count++
     }, 1000)

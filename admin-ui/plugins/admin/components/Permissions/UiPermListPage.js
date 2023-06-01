@@ -14,7 +14,7 @@ import {
   deletePermission,
   editPermission,
   addPermission,
-} from 'Plugins/admin/redux/actions/ApiPermissionActions'
+} from 'Plugins/admin/redux/features/apiPermissionSlice'
 import {
   hasPermission,
   buildPayload,
@@ -60,11 +60,11 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   }
   function doFetchList() {
     buildPayload(userAction, 'PERMISSIONS', options)
-    dispatch(getPermissions(userAction))
+    dispatch(getPermissions({ action: userAction }))
   }
   function onAddConfirmed(roleData) {
     buildPayload(userAction, 'message', roleData)
-    dispatch(addPermission(userAction))
+    dispatch(addPermission({ action: userAction }))
     toggle()
     doFetchList()
   }
@@ -112,14 +112,14 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit permision', newData)
-                  dispatch(editPermission(userAction))
+                  dispatch(editPermission({ action: userAction }))
                   resolve()
                   doFetchList()
                 }),
               onRowDelete: (oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Remove permission', oldData)
-                  dispatch(deletePermission(userAction))
+                  dispatch(deletePermission({ action: userAction }))
                   resolve()
                   doFetchList()
                 }),

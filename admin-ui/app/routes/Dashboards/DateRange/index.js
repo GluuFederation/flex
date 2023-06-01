@@ -6,7 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDispatch } from "react-redux";
-import { getMau } from "Redux/actions/MauActions";
+import { getMau } from "Plugins/admin/redux/features/mauSlice";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 
@@ -23,7 +23,7 @@ export default function MaterialUIPickers() {
     options["startMonth"] = startDate.format("YYYYMM");
     options["endMonth"] = endDate.format("YYYYMM");
     buildPayload(userAction, "GET MAU", options);
-    dispatch(getMau(userAction));
+    dispatch(getMau({ action: userAction }));
   }, [startDate, endDate]);
 
   const setDate = (val, type) => {

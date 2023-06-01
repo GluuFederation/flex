@@ -21,15 +21,16 @@ import {
   updatePermissionsToServer,
   updatePermissionsServerResponse,
   deleteMapping,
-} from 'Plugins/admin/redux/actions/MappingActions'
+} from 'Plugins/admin/redux/features/mappingSlice'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Formik } from 'formik'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
   const authPermissions = useSelector((state) => state.authReducer.permissions)
@@ -65,7 +66,7 @@ function MappingItem({ candidate, roles }) {
   }
 
   const revertLocalChanges = () => {
-    dispatch(updatePermissionsServerResponse(JSON.parse(serverPermissions)))
+    dispatch(updatePermissionsServerResponse({ data: JSON.parse(serverPermissions) }))
   }
 
   const setServerPermissionsToLocalState = () => {
@@ -82,10 +83,10 @@ function MappingItem({ candidate, roles }) {
 
   const doRemove = (id, role) => {
     dispatch(
-      updateMapping({
+      updateMapping({ data: {
         id,
         role,
-      }),
+      }}),
     )
   }
 
@@ -94,10 +95,10 @@ function MappingItem({ candidate, roles }) {
   const handleAddPermission = (values, { resetForm }) => {
     if (values?.mappingAddPermissions?.length) {
       dispatch(
-        addPermissionsToRole({
+        addPermissionsToRole({ data: {
           data: values?.mappingAddPermissions,
           userRole: candidate.role,
-        }),
+        }}),
       )
     }
     resetForm()
@@ -105,10 +106,10 @@ function MappingItem({ candidate, roles }) {
   }
   const handleDeleteRole = () => {
     dispatch(
-      deleteMapping({
+      deleteMapping({ data: {
         role: candidate.role,
         permissions: candidate.permissions,
-      }),
+      }}),
     )
   }
 
@@ -222,7 +223,7 @@ function MappingItem({ candidate, roles }) {
                     color={`primary-${selectedTheme}`}
                     style={applicationStyle.buttonStyle}
                     onClick={() => {
-                      dispatch(updatePermissionsToServer(candidate))
+                      dispatch(updatePermissionsToServer({ data: candidate }))
                       setServerPermissionsToLocalState()
                     }}
                   >

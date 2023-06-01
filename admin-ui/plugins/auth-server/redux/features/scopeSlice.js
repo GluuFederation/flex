@@ -69,7 +69,7 @@ const scopeSlice = createSlice({
     addScopeResponse: (state, action) => {
       state.loading = false
       state.saveOperationFlag = true
-      if (action.payload.data) {
+      if (action.payload?.data) {
         state.items = [...state.items]
         state.errorInSaveOperationFlag = false
       } else {
