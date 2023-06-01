@@ -23,7 +23,7 @@ const initSlice = createSlice({
     getClientsResponse: (state, action) => {
       if (action.payload?.data) {
         state.clients = action.payload.data?.entries
-        state.totalClientsEntries = action.payload.data.totalEntriesCoun
+        state.totalClientsEntries = action.payload.data.totalEntriesCount
       }
     },
     getScopes: () => {},
