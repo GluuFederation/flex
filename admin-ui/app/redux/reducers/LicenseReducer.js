@@ -7,7 +7,9 @@ import {
   ACTIVATE_CHECK_USER_LICENSE_KEY,
   ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
   UPLOAD_NEW_SSA_TOKEN,
-  UPLOAD_NEW_SSA_TOKEN_RESPONSE
+  UPLOAD_NEW_SSA_TOKEN_RESPONSE,
+  GENERATE_TRIAL_LICENSE_KEY_RESPONSE,
+  GENERATE_TRIAL_LICENSE_KEY
 } from '../actions/types'
 import reducerRegistry from './ReducerRegistry'
 
@@ -19,7 +21,8 @@ const INIT_STATE = {
   isLoading: false,
   isConfigValid:null,
   error: '',
-  errorSSA: ''
+  errorSSA: '',
+  generatingTrialKey: false
 }
 
 const reducerName = 'licenseReducer'
@@ -90,6 +93,16 @@ export default function licenseReducer(state = INIT_STATE, action) {
           islicenseCheckResultLoaded: true,
         }
       }
+    case GENERATE_TRIAL_LICENSE_KEY:
+        return {
+          ...state,
+          generatingTrialKey: true
+        }
+    case GENERATE_TRIAL_LICENSE_KEY_RESPONSE:
+        return {
+          ...state,
+          generatingTrialKey: false
+        }
 
     default:
       return {

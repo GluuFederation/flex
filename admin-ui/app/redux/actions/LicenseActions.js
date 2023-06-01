@@ -7,7 +7,9 @@ import {
   ACTIVATE_CHECK_IS_CONFIG_VALID,
   ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
   UPLOAD_NEW_SSA_TOKEN,
-  UPLOAD_NEW_SSA_TOKEN_RESPONSE
+  UPLOAD_NEW_SSA_TOKEN_RESPONSE,
+  GENERATE_TRIAL_LICENSE_KEY,
+  GENERATE_TRIAL_LICENSE_KEY_RESPONSE
 } from './types'
 
 export const checkLicensePresent = (token) => ({
@@ -24,6 +26,17 @@ export const checkUserLicenceKey = (payload) => ({
   type: ACTIVATE_CHECK_USER_LICENSE_KEY,
   payload: { payload },
 })
+
+export const generateTrialLicense = () => ({ 
+  type: GENERATE_TRIAL_LICENSE_KEY,
+  payload: {},
+})
+
+export const generateTrialLicenseResponse = (payload) => ({
+  type: GENERATE_TRIAL_LICENSE_KEY_RESPONSE,
+  payload: payload
+})
+
 export const checkUserLicenseKeyResponse = (payload) => ({
   type: ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE,
   payload: payload,

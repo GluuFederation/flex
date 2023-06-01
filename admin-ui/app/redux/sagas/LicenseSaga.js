@@ -8,15 +8,20 @@ import {
   ACTIVATE_CHECK_USER_LICENSE_KEY,
   ACTIVATE_CHECK_IS_CONFIG_VALID,
   UPLOAD_NEW_SSA_TOKEN,
+  GENERATE_TRIAL_LICENSE_KEY
 } from '../actions/types'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse } from '../actions'
-import { updateToast } from 'Redux/actions/ToastAction'
+import {
+  checkLicenseConfigValidResponse,
+  checkLicensePresentResponse,
+  checkLicensePresent,
+  getOAuth2Config,
+  uploadNewSsaTokenResponse,
+  generateTrialLicenseResponse
+} from '../actions'
 
 import LicenseApi from '../api/LicenseApi'
-import { getClient, getClientWithToken } from '../api/base'
-import {
-  checkUserLicenseKeyResponse,
-} from '../actions'
+import { getClientWithToken } from '../api/base'
+import { checkUserLicenseKeyResponse } from '../actions'
 import {
   activateLicense,
   fetchApiTokenWithDefaultScopes,
@@ -45,6 +50,29 @@ function* checkLicensePresentWorker() {
     console.log('Error in checking License present.', error)
   }
   yield put(checkLicensePresentResponse())
+}
+
+function* generateTrailLicenseKey() {
+  try {
+    const licenseApi = yield* getApiTokenWithDefaultScopes()
+    const response = yield call(licenseApi.getTrialLicense)
+
+    if (response?.responseObject?.license) {
+      try {
+        const activateLicense = yield call(licenseApi.submitLicenseKey, {
+          payload: {
+            licenseKey: response.responseObject.license
+          }
+        })
+        yield put(generateTrialLicenseResponse(activateLicense))
+        yield put(checkLicensePresentResponse(activateLicense?.apiResult))
+      } catch (error) {
+        yield put(generateTrialLicenseResponse(null))
+      }
+    }
+  } catch (error) {
+    console.log('Error in generating key.', error)
+  }
 }
 
 function* activateCheckUserLicenseKey({ payload }) {
@@ -88,7 +116,7 @@ export function* checkLicensePresentWatcher() {
   yield takeEvery(ACTIVATE_CHECK_USER_LICENSE_KEY, activateCheckUserLicenseKey)
   yield takeEvery(ACTIVATE_CHECK_IS_CONFIG_VALID, checkAdminuiLicenseConfig)
   yield takeEvery(UPLOAD_NEW_SSA_TOKEN, uploadNewSsaToken)
-  
+  yield takeEvery(GENERATE_TRIAL_LICENSE_KEY, generateTrailLicenseKey)
 }
 
 /**
