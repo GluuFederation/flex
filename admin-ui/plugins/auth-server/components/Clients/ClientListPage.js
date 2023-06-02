@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Paper, TablePagination } from '@mui/material'
 import { Card, CardBody, Badge } from 'Components'
 import { getScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
-import { resetUMAResources } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
+import { resetUMAResources } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
@@ -23,11 +23,10 @@ import {
 } from 'Plugins/auth-server/common/Constants'
 import {
   getOpenidClients,
-  searchClients,
   setCurrentItem,
   deleteClient,
   viewOnly,
-} from 'Plugins/auth-server/redux/actions/OIDCActions'
+} from 'Plugins/auth-server/redux/features/oidcSlice'
 import {
   hasPermission,
   buildPayload,
@@ -43,11 +42,12 @@ import getThemeColor from 'Context/theme/config'
 function ClientListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  let clients = useSelector((state) => state.oidcReducer.items)
+  let nonExtensibleClients = useSelector((state) => state.oidcReducer.items)
   const { totalItems, entriesCount } = useSelector((state) => state.oidcReducer)
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.oidcReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
+  let clients = [...nonExtensibleClients ?? []]
   clients = clients?.map(addOrg)
   const userAction = {}
   const options = {}
@@ -78,7 +78,8 @@ function ClientListPage() {
   let memoLimit = limit
   let memoPattern = pattern
 
-  function addOrg(client) {
+  function addOrg(...args) {
+    let client = { ...args[0] }
     let org = '-'
     if (client.hasOwnProperty('o')) {
       client['organization'] = client.o
@@ -186,7 +187,7 @@ function ClientListPage() {
     } else {
       setIsPageLoading(true)
       makeOptions()
-      dispatch(getOpenidClients(options))
+      dispatch(getOpenidClients({ action: options }))
 
       buildPayload(userAction, '', options)
       userAction['limit'] = 100
@@ -210,15 +211,15 @@ function ClientListPage() {
     }
   }
   function handleGoToClientEditPage(row, edition) {
-    dispatch(viewOnly(edition))
-    dispatch(setCurrentItem(row))
+    dispatch(viewOnly({ view: edition }))
+    dispatch(setCurrentItem({ item: row }))
     return navigate(`/auth-server/client/edit/:` + row.inum.substring(0, 4))
   }
   function handleGoToClientAddPage() {
     return navigate('/auth-server/client/new')
   }
   function handleClientDelete(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem({ item: row }))
     setItem(row)
     toggle()
   }
@@ -232,7 +233,7 @@ function ClientListPage() {
   }
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
-    dispatch(deleteClient(userAction))
+    dispatch(deleteClient({ action: userAction }))
     navigate('/auth-server/clients')
     toggle()
   }
@@ -276,7 +277,7 @@ function ClientListPage() {
       onClick: () => {
         makeOptions()
         // buildPayload(userAction, SEARCHING_OIDC_CLIENTS, options)
-        dispatch(getOpenidClients(options))
+        dispatch(getOpenidClients({ action: options }))
       },
     })
   }
@@ -330,8 +331,7 @@ function ClientListPage() {
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
-    console.log(options)
-    dispatch(getOpenidClients(options))
+    dispatch(getOpenidClients({ action: options }))
   }
   const onRowCountChangeClick = (count) => {
     makeOptions()
@@ -339,7 +339,7 @@ function ClientListPage() {
     options['limit'] = count
     setPageNumber(0)
     setLimit(count)
-    dispatch(getOpenidClients(options))
+    dispatch(getOpenidClients({ action: options }))
   }
 
   return (

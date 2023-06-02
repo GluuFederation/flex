@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useNavigate } from 'react-router-dom'
-import { addNewClientAction } from 'Plugins/auth-server/redux/actions/OIDCActions'
+import { addNewClientAction } from 'Plugins/auth-server/redux/features/oidcSlice'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
 import { getScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { getScripts } from 'Redux/features/initSlice'
@@ -48,7 +48,7 @@ function ClientAddPage({
       const postBody = {}
       postBody['client'] = data
       buildPayload(userAction, data.action_message, postBody)
-      dispatch(addNewClientAction(userAction))
+      dispatch(addNewClientAction({ action: userAction }))
     }
   }
   const clientData = {

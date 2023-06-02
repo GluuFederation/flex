@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Card, CardBody } from 'Components'
-import { getJwks } from 'Plugins/auth-server/redux/actions/JwksActions'
+import { getJwks } from 'Plugins/auth-server/redux/features/jwksSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'

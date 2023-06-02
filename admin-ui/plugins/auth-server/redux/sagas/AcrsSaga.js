@@ -1,8 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getAcrsResponse, editAcrsResponse } from '../actions/AcrsActions'
+import { getAcrsResponse, editAcrsResponse } from '../features/acrSlice'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import { GET_ACRS, PUT_ACRS } from '../actions/types'
 import AcrApi from '../api/AcrApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -20,7 +19,7 @@ export function* getCurrentAcrs() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getAcrsConfig)
-    yield put(getAcrsResponse(data))
+    yield put(getAcrsResponse({ data }))
   } catch (e) {
     yield put(getAcrsResponse(null))
     if (isFourZeroOneError(e)) {
@@ -34,7 +33,7 @@ export function* editAcrs({ payload }) {
   try {
     const api = yield* newFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
-    yield put(editAcrsResponse(data))
+    yield put(editAcrsResponse({ data }))
   } catch (e) {
     yield put(editAcrsResponse(null))
     if (isFourZeroOneError(e)) {
@@ -45,11 +44,11 @@ export function* editAcrs({ payload }) {
 }
 
 export function* watchGetAcrsConfig() {
-  yield takeLatest(GET_ACRS, getCurrentAcrs)
+  yield takeLatest('acr/getAcrsConfig', getCurrentAcrs)
 }
 
 export function* watchPutAcrsConfig() {
-  yield takeLatest(PUT_ACRS, editAcrs)
+  yield takeLatest('acr/editAcrs', editAcrs)
 }
 export default function* rootSaga() {
   yield all([fork(watchGetAcrsConfig), fork(watchPutAcrsConfig)])

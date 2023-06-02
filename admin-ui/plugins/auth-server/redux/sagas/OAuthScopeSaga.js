@@ -7,7 +7,7 @@ import {
   takeLatest,
   select,
 } from 'redux-saga/effects'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { updateToast } from 'Redux/actions/ToastAction'
 import { SCOPE } from '../audit/Resources'
 import {

@@ -4,7 +4,7 @@ import {
   addAdditionalData,
 } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { SESSION } from '../audit/Resources'
 import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
 import SessionApi from '../api/SessionApi'

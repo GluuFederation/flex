@@ -1,7 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
 import { getFidoResponse, editFidoResponse } from '../actions/FidoActions'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { GET_FIDO, PUT_FIDO } from '../actions/types'
 import FidoApi from '../api/FidoApi'
 import { getClient } from '../api/base'
