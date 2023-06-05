@@ -275,6 +275,11 @@ def resolve_conf_app(old_conf, new_conf):
                 old_conf["licenseConfig"]["oidcClient"][attr] = new_conf["licenseConfig"]["oidcClient"][attr]
                 should_update = True
 
+        # license hardware key is changed to org_id
+        if old_conf["licenseConfig"]["licenseHardwareKey"] != new_conf["licenseConfig"]["licenseHardwareKey"]:
+            old_conf["licenseConfig"]["licenseHardwareKey"] = new_conf["licenseConfig"]["licenseHardwareKey"]
+            should_update = True
+
     # finalized status and conf
     return should_update, old_conf
 
