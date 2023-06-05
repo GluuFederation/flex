@@ -8,7 +8,7 @@ import { I18nextProvider } from 'react-i18next'
 import { reducer as initReducer } from 'Redux/features/initSlice'
 import oidcDiscoveryReducer from 'Redux/reducers/OidcDiscoveryReducer'
 import { reducer as scopeReducer} from 'Plugins/auth-server/redux/features/scopeSlice'
-import umaResourceReducer from 'Plugins/auth-server/redux/reducers/UMAResourceReducer'
+import { reducer as umaResourceReducer } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 const permissions = [

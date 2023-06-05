@@ -1,6 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { getAPIAccessToken } from '../actions/AuthActions'
-import { GET_JSON_CONFIG, PATCH_JSON_CONFIG } from '../actions/types'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import JsonConfigApi from '../api/JsonConfigApi'
 import { getClient } from 'Redux/api/base'
 import { JSON_CONFIG } from '../audit/Resources'
@@ -14,7 +13,7 @@ import {
 import {
   getJsonConfigResponse,
   patchJsonConfigResponse,
-} from '../actions/JsonConfigActions'
+} from '../features/jsonConfigSlice'
 import {} from '../../common/Constants'
 
 const JansConfigApi = require('jans_config_api')
@@ -35,7 +34,7 @@ export function* getJsonConfig({ payload }) {
     addAdditionalData(audit, FETCH, JSON_CONFIG, payload)
     const configApi = yield* newFunction()
     const data = yield call(configApi.fetchJsonConfig)
-    yield put(getJsonConfigResponse(data))
+    yield put(getJsonConfigResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     console.log(e)
@@ -57,7 +56,7 @@ export function* patchJsonConfig({ payload }) {
       payload.action.action_data,
     )
     yield put(updateToast(true, 'success'))
-    yield put(patchJsonConfigResponse(data))
+    yield put(patchJsonConfigResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -70,10 +69,10 @@ export function* patchJsonConfig({ payload }) {
 }
 
 export function* watchGetJsonConfig() {
-  yield takeLatest(GET_JSON_CONFIG, getJsonConfig)
+  yield takeLatest('jsonConfig/getJsonConfig', getJsonConfig)
 }
 export function* watchPatchJsonConfig() {
-  yield takeLatest(PATCH_JSON_CONFIG, patchJsonConfig)
+  yield takeLatest('jsonConfig/patchJsonConfig', patchJsonConfig)
 }
 
 export default function* rootSaga() {

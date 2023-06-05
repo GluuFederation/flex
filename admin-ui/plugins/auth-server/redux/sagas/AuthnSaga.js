@@ -8,15 +8,9 @@ import {
   setLDAPAuthAcrResponse,
   setScriptAuthAcrResponse,
   setSuccess,
-} from '../actions/AuthnActions'
+} from '../features/authNSlice'
 import LdapApi from '../../../services/redux/api/LdapApi'
 import ScriptApi from '../../../admin/redux/api/ScriptApi'
-import {
-  PUT_SIMPLE_AUTH_ACR,
-  PUT_LDAP_AUTH_ACR,
-  PUT_SCRIPT_ACR,
-} from '../actions/types'
-import {updateToast} from 'Redux/actions/ToastAction'
 const JansConfigApi = require('jans_config_api')
 
 function* newACRFunction() {
@@ -50,15 +44,15 @@ export function* editSimpleAuthAcr({ payload }) {
   try {
     const api = yield* newACRFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
-    yield put(setSimpleAuthAcrResponse(data))
-    yield put(setSuccess(true))
+    yield put(setSimpleAuthAcrResponse({ data }))
+    yield put(setSuccess({ data: true}))
   } catch (e) {
     yield put(setSimpleAuthAcrResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    yield put(setSuccess(false))
+    yield put(setSuccess({ data: false }))
   }
 }
 
@@ -66,15 +60,15 @@ export function* editLDAPAuthAcr({ payload }) {
   try {
     const api = yield* newLDAPFunction()
     const data = yield call(api.updateLdapConfig, payload.data)
-    yield put(setLDAPAuthAcrResponse(data))
-    yield put(setSuccess(true))
+    yield put(setLDAPAuthAcrResponse({ data }))
+    yield put(setSuccess({ data: true }))
   } catch (e) {
     yield put(setLDAPAuthAcrResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    yield put(setSuccess(false))
+    yield put(setSuccess({ data: false }))
   }
 }
 
@@ -82,11 +76,11 @@ export function* editScriptAuthAcr({ payload }) {
   try {
     const api = yield* newScriptFunction()
     const data = yield call(api.editCustomScript, payload.data)
-    yield put(setScriptAuthAcrResponse(data))
-    yield put(setSuccess(true))
+    yield put(setScriptAuthAcrResponse({ data }))
+    yield put(setSuccess({ data: true }))
   } catch (e) {
     yield put(setScriptAuthAcrResponse(null))
-    yield put(setSuccess(false))
+    yield put(setSuccess({ data: false }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -95,15 +89,15 @@ export function* editScriptAuthAcr({ payload }) {
 }
 
 export function* watchPutSimpleAcrsConfig() {
-  yield takeLatest(PUT_SIMPLE_AUTH_ACR, editSimpleAuthAcr)
+  yield takeLatest('authN/editSimpleAuthAcr', editSimpleAuthAcr)
 }
 
 export function* watchPutLDAPAcrsConfig() {
-  yield takeLatest(PUT_LDAP_AUTH_ACR, editLDAPAuthAcr)
+  yield takeLatest('authN/editLDAPAuthAcr', editLDAPAuthAcr)
 }
 
 export function* watchPutScriptAcrsConfig() {
-  yield takeLatest(PUT_SCRIPT_ACR, editScriptAuthAcr)
+  yield takeLatest('authN/editScriptAuthAcr', editScriptAuthAcr)
 }
 export default function* rootSaga() {
   yield all([

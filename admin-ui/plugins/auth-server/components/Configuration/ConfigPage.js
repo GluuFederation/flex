@@ -16,13 +16,13 @@ import {
 import {
   getJsonConfig,
   patchJsonConfig,
-} from 'Plugins/auth-server/redux/actions/JsonConfigActions'
+} from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 import { FETCHING_JSON_PROPERTIES } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import DefaultAcrInput from './DefaultAcrInput'
 import { SIMPLE_PASSWORD_AUTH, FETCHING_SCRIPTS } from 'Plugins/auth-server/common/Constants'
-import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/actions/AcrsActions'
+import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
 import { getScripts } from 'Redux/features/initSlice'
 
 function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
@@ -47,7 +47,7 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
 
   useEffect(() => {
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, {})
-    dispatch(getJsonConfig(userAction))
+    dispatch(getJsonConfig({ action: userAction }))
     dispatch(getAcrsConfig())
     dispatch(getScripts({ action: userAction }))
   }, [])
@@ -79,9 +79,9 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
       if (!!put) {
         const opts = {}
         opts['authenticationMethod'] = { 'defaultAcr': put.value || acrs.defaultAcr }
-        dispatch(editAcrs(opts))
+        dispatch(editAcrs({ data: opts }))
       }
-      dispatch(patchJsonConfig(userAction))
+      dispatch(patchJsonConfig({ action: userAction }))
     }
   }
   function toggle() {

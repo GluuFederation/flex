@@ -12,7 +12,7 @@ import {
   editScriptAuthAcr,
   editSimpleAuthAcr,
   setSuccess,
-} from "../../redux/actions/AuthnActions"
+} from "../../redux/features/authNSlice"
 
 function AuthNEditPage() {
   const dispatch = useDispatch()
@@ -24,7 +24,7 @@ function AuthNEditPage() {
 
   useEffect(() => {
     if (success) {
-      dispatch(setSuccess(false))
+      dispatch(setSuccess({ data: false }))
       setTimeout(() => {
         navigate("/auth-server/authn")
       }, [2000])
@@ -37,10 +37,10 @@ function AuthNEditPage() {
     if (item.name === "simple_password_auth") {
       if (data.defaultAuthNMethod == "true") {
         payload.authenticationMethod = { defaultAcr: "simple_password_auth" }
-        dispatch(editSimpleAuthAcr(payload))
+        dispatch(editSimpleAuthAcr({ data: payload }))
       }
     } else if (item.name === "default_ldap_password") {
-      const ldapPayload = item
+      const ldapPayload = { ...item }
       ldapPayload.level = data.level
       ldapPayload.bindDN = data.bindDN
       ldapPayload.maxConnections = data.maxConnections
@@ -54,11 +54,11 @@ function AuthNEditPage() {
 
       if (data.defaultAuthNMethod == "true") {
         payload.authenticationMethod = { defaultAcr: data.configId }
-        dispatch(editSimpleAuthAcr(payload))
+        dispatch(editSimpleAuthAcr({ data: payload }))
       }
-      dispatch(editLDAPAuthAcr(ldapPayload))
+      dispatch(editLDAPAuthAcr({ data: ldapPayload }))
     } else {
-      const scriptPayload = item
+      const scriptPayload = { ...item }
       scriptPayload.description = data.description
       scriptPayload.samlACR = data.samlACR
       scriptPayload.level = data.level
@@ -77,11 +77,11 @@ function AuthNEditPage() {
       }
       if (data.defaultAuthNMethod == "true") {
         payload.authenticationMethod = { defaultAcr: item.acrName }
-        dispatch(editSimpleAuthAcr(payload))
+        dispatch(editSimpleAuthAcr({ data: payload }))
       }
 
       payload.customScript = scriptPayload
-      dispatch(editScriptAuthAcr(payload))
+      dispatch(editScriptAuthAcr({ data: payload }))
     }
   }
 
@@ -93,7 +93,7 @@ function AuthNEditPage() {
       />
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          <AuthNForm handleSubmit={handleSubmit} item={item} />
+          <AuthNForm handleSubmit={handleSubmit} item={{ ...item }} />
         </CardBody>
       </Card>
     </GluuLoader>

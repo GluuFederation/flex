@@ -20,7 +20,7 @@ import { Formik } from 'formik'
 import {
   getLoggingConfig,
   editLoggingConfig,
-} from 'Plugins/auth-server/redux/actions/LoggingActions'
+} from 'Plugins/auth-server/redux/features/loggingSlice'
 import {
   hasPermission,
   LOGGING_READ,
@@ -72,7 +72,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
 
                 const opts = {}
                 opts['logging'] = JSON.stringify(values)
-                dispatch(editLoggingConfig(opts))
+                dispatch(editLoggingConfig({ data: opts }))
               }}
             >
               {(formik) => (
