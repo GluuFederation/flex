@@ -44,11 +44,7 @@ const attributeSlice = createSlice({
       state.loading = true
     },
     editAttributeResponse: (state, action) => {
-      if (action.payload?.data) {
-        state.loading = false
-      } else {
-        state.loading = false
-      }
+      state.loading = false
     },
     deleteAttribute: (state) => {
       state.loading = true

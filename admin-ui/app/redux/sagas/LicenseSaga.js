@@ -3,7 +3,6 @@
  */
 import { all, call, fork, put, take, takeEvery } from 'redux-saga/effects'
 import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse } from '../actions'
-import { updateToast } from 'Redux/features/toastSlice'
 
 import LicenseApi from '../api/LicenseApi'
 import { getClient, getClientWithToken } from '../api/base'
