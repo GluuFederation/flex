@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { API_PERMISSION } from '../audit/Resources'
 import PermissionApi from '../api/PermissionApi'
 import { getClient } from 'Redux/api/base'
@@ -20,7 +20,7 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from 'Utils/TokenController'
-import {updateToast} from 'Redux/actions/ToastAction'
+import {updateToast} from 'Redux/features/toastSlice'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'

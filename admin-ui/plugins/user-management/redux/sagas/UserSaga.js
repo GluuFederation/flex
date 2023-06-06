@@ -9,18 +9,11 @@ import {
 } from 'redux-saga/effects'
 import { API_USERS } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from '../../../../app/redux/features/authSlice'
 import {
   isFourZeroOneError,
   addAdditionalData,
 } from '../../../../app/utils/TokenController'
-import {
-  GET_USERS,
-  CREATE_NEW_USER,
-  UPDATE_USER,
-  DELETE_USER,
-  CHANGE_USERS_PASSWORD,
-} from '../actions/types'
 import UserApi from '../api/UserApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -32,8 +25,8 @@ import {
   changeUserPasswordResponse,
   createUserResponse,
   getUsers,
-} from '../actions/UserActions'
-import {updateToast} from 'Redux/actions/ToastAction'
+} from '../features/userSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -134,20 +127,20 @@ export function* deleteUserSaga({ payload }) {
 }
 
 export function* watchGetUsers() {
-  yield takeEvery(GET_USERS, getUsersSaga)
+  yield takeEvery('user/getUsers', getUsersSaga)
 }
 
 export function* watchCreateUser() {
-  yield takeLatest(CREATE_NEW_USER, createUserSaga)
+  yield takeLatest('user/createUser', createUserSaga)
 }
 export function* watchUpdateUser() {
-  yield takeLatest(UPDATE_USER, updateUserSaga)
+  yield takeLatest('user/updateUser', updateUserSaga)
 }
 export function* deleteUser() {
-  yield takeLatest(DELETE_USER, deleteUserSaga)
+  yield takeLatest('user/deleteUser', deleteUserSaga)
 }
 export function* changeUserPassword() {
-  yield takeLatest(CHANGE_USERS_PASSWORD, changeUserPasswordSaga)
+  yield takeLatest('user/changeUserPassword', changeUserPasswordSaga)
 }
 
 export default function* rootSaga() {

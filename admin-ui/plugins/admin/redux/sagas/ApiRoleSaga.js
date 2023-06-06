@@ -13,8 +13,8 @@ import {
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import {updateToast} from 'Redux/actions/ToastAction'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import {
   isFourZeroOneError,
   addAdditionalData,

@@ -5,10 +5,10 @@ import UserForm from './UserForm'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { updateUser } from '../../redux/actions/UserActions'
+import { updateUser } from '../../redux/features/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
-import { getPersistenceType } from '../../../services/redux/actions/PersistenceActions'
+import { getPersistenceType } from '../../../services/redux/features/persistenceTypeSlice'
 import * as Yup from 'yup'
 
 function UserEditPage() {

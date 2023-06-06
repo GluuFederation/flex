@@ -12,9 +12,9 @@ import {
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import {updateToast} from 'Redux/actions/ToastAction'
+import {updateToast} from 'Redux/features/toastSlice'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'

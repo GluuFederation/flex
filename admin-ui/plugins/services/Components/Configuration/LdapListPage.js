@@ -25,8 +25,8 @@ import {
   deleteLdap,
   testLdap,
   resetTestLdap,
-} from 'Plugins/services/redux/actions/LdapActions'
-import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
+} from 'Plugins/services/redux/features/ldapSlice'
+import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -66,7 +66,7 @@ function LdapListPage({
   const toggle = () => setModal(!modal)
 
   function handleGoToLdapEditPage(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem({ item: row }))
     return navigate(`/config/ldap/edit/:` + row.configId)
   }
 
@@ -132,7 +132,7 @@ function LdapListPage({
   }
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.configId)
-    dispatch(deleteLdap(item.configId))
+    dispatch(deleteLdap({ configId: item.configId }))
     navigate('/config/ldap')
     toggle()
   }
@@ -146,7 +146,7 @@ function LdapListPage({
     testPromise
       .then(() => {
         setTestRunning(true)
-        dispatch(testLdap(row))
+        dispatch(testLdap({ data: row }))
       })
   }
 
@@ -202,7 +202,7 @@ function LdapListPage({
                   ),
                 },
               ]}
-              data={ldapConfigurations}
+              data={ldapConfigurations || []}
               isLoading={loading}
               title=""
               actions={myActions}

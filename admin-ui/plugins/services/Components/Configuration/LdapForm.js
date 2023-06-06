@@ -14,7 +14,7 @@ import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import {
   testLdap,
   resetTestLdap,
-} from 'Plugins/services/redux/actions/LdapActions'
+} from 'Plugins/services/redux/features/ldapSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -104,7 +104,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
     })
 
     testPromise.then(() => {
-      dispatch(testLdap(formik.values))
+      dispatch(testLdap({ data: formik.values }))
     })
   }
 

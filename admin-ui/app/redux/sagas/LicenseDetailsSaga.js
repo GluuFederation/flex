@@ -9,7 +9,7 @@ const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)

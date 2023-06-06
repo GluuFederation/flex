@@ -29,7 +29,7 @@ import {
   editNativeCache,
   editRedisCache,
   editMemCache,
-} from 'Plugins/services/redux/actions/CacheActions'
+} from 'Plugins/services/redux/features/cacheSlice'
 import { CACHE } from 'Utils/ApiResources'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
@@ -158,23 +158,23 @@ function CachePage({
                 opts1['nativePersistenceConfiguration'] = JSON.stringify(
                   nativeCache,
                 )
-                dispatch(editNativeCache(opts1))
+                dispatch(editNativeCache({ data: opts1 }))
 
                 const opts2 = {}
                 opts2['inMemoryConfiguration'] = JSON.stringify(memoryCache)
-                dispatch(editMemoryCache(opts2))
+                dispatch(editMemoryCache({ data: opts2 }))
 
                 const opts3 = {}
                 opts3['redisConfiguration'] = JSON.stringify(redisCache)
-                dispatch(editRedisCache(opts3))
+                dispatch(editRedisCache({ data: opts3 }))
 
                 const opts4 = {}
                 opts4['memcachedConfiguration'] = JSON.stringify(memCache)
-                dispatch(editMemCache(opts4))
+                dispatch(editMemCache({ data: opts4 }))
 
                 const opts5 = {}
                 opts5['patchRequest'] = JSON.stringify(cache)
-                dispatch(editCache(opts5))
+                dispatch(editCache({ data: opts5 }))
               }}
             >
               {(formik) => (

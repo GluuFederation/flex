@@ -22,7 +22,7 @@ import {
   searchAttributes,
   setCurrentItem,
   deleteAttribute,
-} from 'Plugins/schema/redux/actions/AttributeActions'
+} from 'Plugins/schema/redux/features/attributeSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -49,7 +49,7 @@ function AttributeListPage() {
 
   useEffect(() => {
     makeOptions()
-    dispatch(getAttributes(options))
+    dispatch(getAttributes({ options }))
   }, [])
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
@@ -77,7 +77,7 @@ function AttributeListPage() {
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
-    dispatch(getAttributes(options))
+    dispatch(getAttributes({ options }))
   }
   const onRowCountChangeClick = (count) => {
     makeOptions()
@@ -85,7 +85,7 @@ function AttributeListPage() {
     options['limit'] = count
     setPageNumber(0)
     setLimit(count)
-    dispatch(getAttributes(options))
+    dispatch(getAttributes({ options }))
   }
 
   function makeOptions() {
@@ -96,11 +96,11 @@ function AttributeListPage() {
     }
   }
   function handleGoToAttributeEditPage(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem({ item: row }))
     return navigate(`/attribute/edit/:` + row.inum)
   }
   function handleGoToAttributeViewPage(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem({ item: row }))
     return navigate(`/attribute/view/:` + row.inum)
   }
   function handleAttribueDelete(row) {
@@ -159,7 +159,7 @@ function AttributeListPage() {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        dispatch(searchAttributes(options))
+        dispatch(searchAttributes({ options }))
       },
     })
   }
@@ -194,7 +194,7 @@ function AttributeListPage() {
     }
   }
   function onDeletionConfirmed() {
-    dispatch(deleteAttribute(item.inum))
+    dispatch(deleteAttribute({ inum: item.inum }))
     navigate('/attributes')
     toggle()
   }

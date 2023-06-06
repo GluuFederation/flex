@@ -15,8 +15,8 @@ import {
 } from 'Plugins/admin/redux/features/mappingSlice'
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import {updateToast} from 'Redux/actions/ToastAction'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import {
   isFourZeroOneError,
   addAdditionalData,

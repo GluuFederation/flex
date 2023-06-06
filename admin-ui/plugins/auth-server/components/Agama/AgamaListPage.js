@@ -19,7 +19,7 @@ import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
 import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@mui/icons-material/Info';
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
-import { updateToast } from 'Redux/actions/ToastAction'
+import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
 import { getJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 import SettingsIcon from '@mui/icons-material/Settings'
