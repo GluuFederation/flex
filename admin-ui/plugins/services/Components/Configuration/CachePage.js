@@ -173,7 +173,7 @@ function CachePage({
                 dispatch(editMemCache({ data: opts4 }))
 
                 const opts5 = {}
-                opts5['patchRequest'] = JSON.stringify(cache)
+                opts5['requestBody'] = JSON.stringify(cache)
                 dispatch(editCache({ data: opts5 }))
               }}
             >
