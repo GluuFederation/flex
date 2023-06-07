@@ -153,28 +153,37 @@ function CachePage({
                   defaultPutExpiration: values.memDefaultPutExpiration,
                   connectionFactoryType: values.connectionFactoryType,
                 }
+                if (values.cacheProviderType === "NATIVE_PERSISTENCE") {
+                  const opts1 = {}
+                  opts1['nativePersistenceConfiguration'] = JSON.stringify(
+                    nativeCache,
+                  )
+                  dispatch(editNativeCache({ data: opts1 }))
+                }
 
-                const opts1 = {}
-                opts1['nativePersistenceConfiguration'] = JSON.stringify(
-                  nativeCache,
-                )
-                dispatch(editNativeCache({ data: opts1 }))
+                if (values.cacheProviderType === "IN_MEMORY") {
+                  const opts2 = {}
+                  opts2['inMemoryConfiguration'] = JSON.stringify(memoryCache)
+                  dispatch(editMemoryCache({ data: opts2 }))
+                }
 
-                const opts2 = {}
-                opts2['inMemoryConfiguration'] = JSON.stringify(memoryCache)
-                dispatch(editMemoryCache({ data: opts2 }))
+                if (values.cacheProviderType === "REDIS") {
+                  const opts3 = {}
+                  opts3['redisConfiguration'] = JSON.stringify(redisCache)
+                  dispatch(editRedisCache({ data: opts3 }))
+                }
 
-                const opts3 = {}
-                opts3['redisConfiguration'] = JSON.stringify(redisCache)
-                dispatch(editRedisCache({ data: opts3 }))
+                if (values.cacheProviderType === "MEMCACHED") {
+                  const opts4 = {}
+                  opts4['memcachedConfiguration'] = JSON.stringify(memCache)
+                  dispatch(editMemCache({ data: opts4 }))
+                }
 
-                const opts4 = {}
-                opts4['memcachedConfiguration'] = JSON.stringify(memCache)
-                dispatch(editMemCache({ data: opts4 }))
-
-                const opts5 = {}
-                opts5['requestBody'] = JSON.stringify(cache)
-                dispatch(editCache({ data: opts5 }))
+                if (cacheData.cacheProviderType !== values.cacheProviderType) {
+                  const opts5 = {}
+                  opts5['requestBody'] = JSON.stringify(cache)
+                  dispatch(editCache({ data: opts5 }))
+                }
               }}
             >
               {(formik) => (

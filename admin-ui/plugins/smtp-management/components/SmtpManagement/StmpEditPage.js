@@ -35,7 +35,7 @@ function StmpEditPage() {
       }} />
       <Card className='mb-3' style={applicationStyle.mainCard}>
         <CardBody>
-          {!loading && <SmtpForm item={item.smtp} handleSubmit={handleSubmit} />}
+          {!loading && <SmtpForm item={{ ...item.smtp }} handleSubmit={handleSubmit} />}
         </CardBody>
       </Card>
     </GluuLoader>

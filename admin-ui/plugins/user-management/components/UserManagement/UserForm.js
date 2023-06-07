@@ -161,7 +161,9 @@ function UserForm({onSubmitData}) {
       if (userDetails.customAttributes[i].values) {
         const data = getCustomAttributeById(
           userDetails.customAttributes[i].name,
-        )
+        ) && { ...getCustomAttributeById(
+          userDetails.customAttributes[i].name,
+        )}
         if (
           data &&
           !usedClaimes.includes(userDetails.customAttributes[i].name)

@@ -200,7 +200,6 @@ export function* editNativeCache({ payload }) {
     const api = yield* newFunctionForNativeCache()
     const data = yield call(api.updateCacheNativeConfig, payload.data)
     yield put(editNativeCacheResponse({ data }))
-    console.log('here')
     yield put(updateToast(true, 'success'))
   } catch (e) {
     yield put(updateToast(true, 'error'))

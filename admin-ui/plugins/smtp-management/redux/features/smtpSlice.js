@@ -18,7 +18,7 @@ const smtpSlice = createSlice({
     setSelectedSmptData: (state, action) => {},
     getSmptResponse: (state, action) => {
       state.loading = false
-      state.smtp = action.payload || {}
+      state.smtp = action.payload?.data || {}
     },
     updateSmpt: (state, action) => {
       state.loading = true
