@@ -17,7 +17,9 @@ function ApiKey() {
     if (licenseKey != '') {
       dispatch(
         checkUserLicenceKey({
-          licenseKey: licenseKey,
+          payload: {
+            licenseKey: licenseKey
+          },
         }),
       )
     }

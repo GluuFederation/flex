@@ -15,22 +15,9 @@ import {
   editMemoryCacheResponse,
   editNativeCacheResponse,
   editRedisCacheResponse,
-} from '../actions/CacheActions'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import {updateToast} from 'Redux/actions/ToastAction'
-import {
-  GET_CACHE,
-  GET_MEMORY_CACHE,
-  GET_MEM_CACHE,
-  GET_NATIVE_CACHE,
-  GET_REDIS_CACHE,
-  PUT_CACHE,
-  PUT_MEMORY_CACHE,
-  PUT_MEM_CACHE,
-  PUT_NATIVE_CACHE,
-  PUT_REDIS_CACHE,
-  SET_CACHE,
-} from '../actions/types'
+} from '../features/cacheSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import CacheApi from '../api/CacheApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -84,7 +71,7 @@ export function* getCache() {
   try {
     const api = yield* newFunctionForCacheConfig()
     const data = yield call(api.getConfigCache)
-    yield put(getCacheResponse(data))
+    yield put(getCacheResponse({ data }))
   } catch (e) {
     yield put(getCacheResponse(null))
     if (isFourZeroOneError(e)) {
@@ -98,7 +85,7 @@ export function* getMemoryCache() {
   try {
     const api = yield* newFunctionForMemoryCache()
     const data = yield call(api.getConfigCacheInMemory)
-    yield put(getMemoryCacheResponse(data))
+    yield put(getMemoryCacheResponse({ data }))
   } catch (e) {
     yield put(getMemoryCacheResponse(null))
     if (isFourZeroOneError(e)) {
@@ -112,7 +99,7 @@ export function* getMemCache() {
   try {
     const api = yield* newFunctionForMemCache()
     const data = yield call(api.getConfigCacheMemcached)
-    yield put(getMemCacheResponse(data))
+    yield put(getMemCacheResponse({ data }))
   } catch (e) {
     yield put(getMemCacheResponse(null))
     if (isFourZeroOneError(e)) {
@@ -126,7 +113,7 @@ export function* getNativeCache() {
   try {
     const api = yield* newFunctionForNativeCache()
     const data = yield call(api.getConfigCacheNativePersistence)
-    yield put(getNativeCacheResponse(data))
+    yield put(getNativeCacheResponse({ data }))
   } catch (e) {
     yield put(getNativeCacheResponse(null))
     if (isFourZeroOneError(e)) {
@@ -140,7 +127,7 @@ export function* getRedisCache() {
   try {
     const api = yield* newFunctionForRedisCache()
     const data = yield call(api.getConfigCacheRedis)
-    yield put(getRedisCacheResponse(data))
+    yield put(getRedisCacheResponse({ data }))
   } catch (e) {
     yield put(getRedisCacheResponse(null))
     if (isFourZeroOneError(e)) {
@@ -156,7 +143,7 @@ export function* addCache({ payload }) {
   try {
     const api = yield* newFunctionForCacheConfig()
     const data = yield call(api.addCacheConfig, payload.data)
-    yield put(addCacheResponse(data))
+    yield put(addCacheResponse({ data }))
   } catch (e) {
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
@@ -171,7 +158,7 @@ export function* editCache({ payload }) {
     const api = yield* newFunctionForCacheConfig()
     const data = yield call(api.updateCacheConfig, payload.data)
     yield put(updateToast(true, 'success'))
-    yield put(editCacheResponse(data))
+    yield put(editCacheResponse({ data }))
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
@@ -185,7 +172,7 @@ export function* editMemoryCache({ payload }) {
     const api = yield* newFunctionForMemoryCache()
     const data = yield call(api.updateCacheMemoryConfig, payload.data)
     yield put(updateToast(true, 'success'))
-    yield put(editMemoryCacheResponse(data))
+    yield put(editMemoryCacheResponse({ data }))
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
@@ -198,7 +185,7 @@ export function* editMemCache({ payload }) {
   try {
     const api = yield* newFunctionForMemCache()
     const data = yield call(api.updateCacheMemConfig, payload.data)
-    yield put(editMemCacheResponse(data))
+    yield put(editMemCacheResponse({ data }))
     yield put(updateToast(true, 'success'))
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -212,7 +199,7 @@ export function* editNativeCache({ payload }) {
   try {
     const api = yield* newFunctionForNativeCache()
     const data = yield call(api.updateCacheNativeConfig, payload.data)
-    yield put(editNativeCacheResponse(data))
+    yield put(editNativeCacheResponse({ data }))
     yield put(updateToast(true, 'success'))
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -227,7 +214,7 @@ export function* editRedisCache({ payload }) {
     const api = yield* newFunctionForRedisCache()
     const data = yield call(api.updateCacheRedisConfig, payload.data)
     yield put(updateToast(true, 'success'))
-    yield put(editRedisCacheResponse(data))
+    yield put(editRedisCacheResponse({ data }))
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
@@ -239,47 +226,47 @@ export function* editRedisCache({ payload }) {
 // Editing Ends Here ......
 
 export function* watchGetCacheConfig() {
-  yield takeLatest(GET_CACHE, getCache)
+  yield takeLatest('cache/getCacheConfig', getCache)
 }
 
 export function* watchGetMemoryCache() {
-  yield takeLatest(GET_MEMORY_CACHE, getMemoryCache)
+  yield takeLatest('cache/getMemoryCacheConfig', getMemoryCache)
 }
 
 export function* watchGetMemCache() {
-  yield takeLatest(GET_MEM_CACHE, getMemCache)
+  yield takeLatest('cache/getMemCacheConfig', getMemCache)
 }
 
 export function* watchGetNativeCache() {
-  yield takeLatest(GET_NATIVE_CACHE, getNativeCache)
+  yield takeLatest('cache/getNativeCacheConfig', getNativeCache)
 }
 
 export function* watchGetRedisCache() {
-  yield takeLatest(GET_REDIS_CACHE, getRedisCache)
+  yield takeLatest('cache/getRedisCacheConfig', getRedisCache)
 }
 
 export function* watchAddCacheConfig() {
-  yield takeLatest(SET_CACHE, addCache)
+  yield takeLatest('cache/addCache', addCache)
 }
 
 export function* watchPutCacheConfig() {
-  yield takeLatest(PUT_CACHE, editCache)
+  yield takeLatest('cache/editCache', editCache)
 }
 
 export function* watchPutMemoryCacheConfig() {
-  yield takeLatest(PUT_MEMORY_CACHE, editMemoryCache)
+  yield takeLatest('cache/editMemoryCache', editMemoryCache)
 }
 
 export function* watchPutMemCacheConfig() {
-  yield takeLatest(PUT_MEM_CACHE, editMemCache)
+  yield takeLatest('cache/editMemCache', editMemCache)
 }
 
 export function* watchPutNativeCacheConfig() {
-  yield takeLatest(PUT_NATIVE_CACHE, editNativeCache)
+  yield takeLatest('cache/editNativeCache', editNativeCache)
 }
 
 export function* watchPutRedisCacheConfig() {
-  yield takeLatest(PUT_REDIS_CACHE, editRedisCache)
+  yield takeLatest('cache/editRedisCache', editRedisCache)
 }
 
 export default function* rootSaga() {

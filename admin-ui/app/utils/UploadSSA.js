@@ -57,7 +57,7 @@ function UploadSSA() {
 
   const submitData = () => {
     if(selectedFile){
-      dispatch(uploadNewSsaToken({ ssa:jwt }))
+      dispatch(uploadNewSsaToken({ payload: { ssa:jwt } }))
     }
   }
 

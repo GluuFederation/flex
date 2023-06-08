@@ -4,8 +4,8 @@ import {
   getLoggingResponse,
   editLoggingResponse,
 } from '../features/loggingSlice'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import {updateToast} from 'Redux/actions/ToastAction'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import LoggingApi from '../api/LoggingApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')

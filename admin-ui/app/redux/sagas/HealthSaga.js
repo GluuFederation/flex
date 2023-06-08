@@ -3,10 +3,9 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from 'Utils/TokenController'
-import { getHealthStatusResponse } from '../actions/HealthAction'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getHealthStatusResponse } from '../features/healthSlice'
+import { getAPIAccessToken } from '../features/authSlice'
 import { postUserAction } from '../api/backend-api'
-import { GET_HEALTH } from '../actions/types'
 import HealthApi from '../api/HealthApi'
 import { getClient } from '../api/base'
 import { initAudit } from '../sagas/SagaUtils'
@@ -28,7 +27,7 @@ export function* getHealthStatus({ payload }) {
     addAdditionalData(audit, 'FETCH', 'Health', payload)
     const healthApi = yield* newFunction()
     const data = yield call(healthApi.getHealthStatus, payload.action.action_data)
-    yield put(getHealthStatusResponse(data))
+    yield put(getHealthStatusResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
 
@@ -41,7 +40,7 @@ export function* getHealthStatus({ payload }) {
 }
 
 export function* watchGetHealthStatus() {
-  yield takeLatest(GET_HEALTH, getHealthStatus)
+  yield takeLatest('health/getHealthStatus', getHealthStatus)
 }
 
 export default function* rootSaga() {

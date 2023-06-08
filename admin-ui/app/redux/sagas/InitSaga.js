@@ -9,7 +9,7 @@ import {
   getScopesResponse,
   getClientsResponse,
 } from '../features/initSlice'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from '../features/authSlice'
 import { postUserAction } from '../api/backend-api'
 import { initAudit } from '../sagas/SagaUtils'
 import InitApi from '../api/InitApi'

@@ -7,7 +7,6 @@ import { all } from 'redux-saga/effects'
 import mauSaga from './MauSaga'
 import healthSaga from './HealthSaga'
 import authSagas from './AuthSaga'
-import fidoSaga from './FidoSaga'
 import initSaga from './InitSaga'
 import licenseSaga from './LicenseSaga'
 import licenseDetailsSaga from './LicenseDetailsSaga'
@@ -20,7 +19,6 @@ export default function* rootSaga() {
     [].concat(
       [
         authSagas(),
-        fidoSaga(),
         initSaga(),
         licenseSaga(),
         oidcDiscoverySaga(),

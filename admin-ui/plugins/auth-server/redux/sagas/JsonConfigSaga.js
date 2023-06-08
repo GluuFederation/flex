@@ -1,11 +1,11 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import JsonConfigApi from '../api/JsonConfigApi'
 import { getClient } from 'Redux/api/base'
 import { JSON_CONFIG } from '../audit/Resources'
 import { PATCH, FETCH } from '../../../../app/audit/UserActionType'
 import { postUserAction } from 'Redux/api/backend-api'
-import {updateToast} from 'Redux/actions/ToastAction'
+import {updateToast} from 'Redux/features/toastSlice'
 import {
   isFourZeroOneError,
   addAdditionalData,

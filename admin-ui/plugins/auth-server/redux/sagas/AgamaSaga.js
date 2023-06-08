@@ -1,6 +1,6 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import AgamaApi from '../api/AgamaApi'
 import { getClient } from 'Redux/api/base'
 import { getAgamaResponse, getAddAgamaResponse, getAgama } from '../features/agamaSlice'

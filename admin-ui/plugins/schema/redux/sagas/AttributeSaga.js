@@ -5,17 +5,10 @@ import {
   addAttributeResponse,
   editAttributeResponse,
   deleteAttributeResponse,
-} from '../actions/AttributeActions'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+} from '../features/attributeSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { postUserAction } from 'Redux/api/backend-api'
-import {updateToast} from 'Redux/actions/ToastAction'
-import {
-  GET_ATTRIBUTES,
-  SEARCH_ATTRIBUTES,
-  ADD_ATTRIBUTE,
-  EDIT_ATTRIBUTE,
-  DELETE_ATTRIBUTE,
-} from '../actions/types'
+import {updateToast} from 'Redux/features/toastSlice'
 import {
   CREATE,
   UPDATE,
@@ -45,7 +38,7 @@ export function* getAttributes({ payload }) {
     addAdditionalData(audit, FETCH, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.getAllAttributes, payload.options)
-    yield put(getAttributesResponse(data))
+    yield put(getAttributesResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getAttributesResponse(null))
@@ -61,7 +54,7 @@ export function* searchAttributes({ payload }) {
     addAdditionalData(audit, FETCH, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.searchAttributes, payload.options)
-    yield put(getAttributesResponse(data))
+    yield put(getAttributesResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getAttributesResponse(null))
@@ -79,7 +72,7 @@ export function* addAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.addNewAttribute, payload.data)
     yield put(updateToast(true, 'success'))
-    yield put(addAttributeResponse(data))
+    yield put(addAttributeResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -98,7 +91,7 @@ export function* editAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.editAnAttribute, payload.data)
     yield put(updateToast(true, 'success'))
-    yield put(editAttributeResponse(data))
+    yield put(editAttributeResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -117,7 +110,7 @@ export function* deleteAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     yield call(attributeApi.deleteAnAttribute, payload.inum)
     yield put(updateToast(true, 'success'))
-    yield put(deleteAttributeResponse(payload.inum))
+    yield put(deleteAttributeResponse({ inum: payload.inum }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -130,22 +123,22 @@ export function* deleteAttribute({ payload }) {
 }
 
 export function* watchGetAttributes() {
-  yield takeLatest(GET_ATTRIBUTES, getAttributes)
+  yield takeLatest('attribute/getAttributes', getAttributes)
 }
 
 export function* watchSearchAttributes() {
-  yield takeLatest(SEARCH_ATTRIBUTES, searchAttributes)
+  yield takeLatest('attribute/searchAttributes', searchAttributes)
 }
 
 export function* watchAddAttribute() {
-  yield takeLatest(ADD_ATTRIBUTE, addAttribute)
+  yield takeLatest('attribute/addAttribute', addAttribute)
 }
 
 export function* watchEditAttribute() {
-  yield takeLatest(EDIT_ATTRIBUTE, editAttribute)
+  yield takeLatest('attribute/editAttribute', editAttribute)
 }
 export function* watchDeleteAttribute() {
-  yield takeLatest(DELETE_ATTRIBUTE, deleteAttribute)
+  yield takeLatest('attribute/deleteAttribute', deleteAttribute)
 }
 
 export default function* rootSaga() {

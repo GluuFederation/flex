@@ -1,7 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
 import { getJwksResponse } from '../features/jwksSlice'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import JwksApi from '../api/JwksApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')

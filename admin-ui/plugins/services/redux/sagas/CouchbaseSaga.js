@@ -4,9 +4,8 @@ import {
   getCouchBaseResponse,
   addCouchBaseResponse,
   editCouchBaseResponse,
-} from '../actions/CouchbaseActions'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import { GET_COUCHBASE, PUT_COUCHBASE, SET_COUCHBASE } from '../actions/types'
+} from '../features/couchbaseSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import CouchbaseApi from '../api/CouchbaseApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -24,7 +23,7 @@ export function* getCouchbase() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getCouchBaseConfig)
-    yield put(getCouchBaseResponse(data))
+    yield put(getCouchBaseResponse({ data }))
   } catch (e) {
     yield put(getCouchBaseResponse(null))
     if (isFourZeroOneError(e)) {
@@ -38,7 +37,7 @@ export function* addCouchbase({ payload }) {
   try {
     const api = yield* newFunction()
     const data = yield call(api.addCouchBaseConfig, payload.data)
-    yield put(addCouchBaseResponse(data))
+    yield put(addCouchBaseResponse({ data }))
   } catch (e) {
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -51,7 +50,7 @@ export function* editCouchbase({ payload }) {
   try {
     const api = yield* newFunction()
     const data = yield call(api.updateCouchBaseConfig, payload.data)
-    yield put(editCouchBaseResponse(data))
+    yield put(editCouchBaseResponse({ data }))
   } catch (e) {
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -61,15 +60,15 @@ export function* editCouchbase({ payload }) {
 }
 
 export function* watchGetCouchbaseConfig() {
-  yield takeLatest(GET_COUCHBASE, getCouchbase)
+  yield takeLatest('couchbase/getCouchBaseConfig', getCouchbase)
 }
 
 export function* watchAddCouchbaseConfig() {
-  yield takeLatest(SET_COUCHBASE, addCouchbase)
+  yield takeLatest('couchbase/addCouchBase', addCouchbase)
 }
 
 export function* watchPutCouchbaseConfig() {
-  yield takeLatest(PUT_COUCHBASE, editCouchbase)
+  yield takeLatest('couchbase/editCouchBase', editCouchbase)
 }
 export default function* rootSaga() {
   yield all([fork(watchGetCouchbaseConfig), fork(watchPutCouchbaseConfig)])

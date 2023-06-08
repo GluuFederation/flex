@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
-import { addLdap } from 'Plugins/services/redux/actions/LdapActions'
+import { addLdap } from 'Plugins/services/redux/features/ldapSlice'
 import { buildPayload } from 'Utils/PermChecker'
 
 function LdapAddPage({ dispatch }) {
@@ -14,7 +14,7 @@ function LdapAddPage({ dispatch }) {
       let message = data.ldap.action_message
       delete data.ldap.action_message
       buildPayload(userAction, message, data)
-      dispatch(addLdap(userAction))
+      dispatch(addLdap({ data: userAction }))
       navigate('/config/ldap')
     }
   }

@@ -11,7 +11,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import Alert from '@mui/material/Alert'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
+import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
 import {
   hasPermission,
   buildPayload,
@@ -24,7 +24,7 @@ import {
   setCurrentItem,
   deleteSql,
   testSql,
-} from 'Plugins/services/redux/actions/SqlActions'
+} from 'Plugins/services/redux/features/sqlSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'

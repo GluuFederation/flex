@@ -3,17 +3,11 @@
  */
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import {
-  GET_OAUTH2_CONFIG,
-  GET_API_ACCESS_TOKEN,
-  USERINFO_REQUEST,
-  GET_USER_LOCATION,
-} from '../actions/types'
-import {
   getOAuth2ConfigResponse,
   getUserInfoResponse,
   getAPIAccessTokenResponse,
   getUserLocationResponse,
-} from '../actions'
+} from '../features/authSlice'
 
 import {
   fetchServerConfiguration,
@@ -33,7 +27,7 @@ function* getOAuth2ConfigWorker() {
     const token = yield* getApiTokenWithDefaultScopes()
     const response = yield call(fetchServerConfiguration, token)
     if (response) {
-      yield put(getOAuth2ConfigResponse(response))
+      yield put(getOAuth2ConfigResponse({ config: response }))
       return
     }
   } catch (error) {
@@ -42,23 +36,23 @@ function* getOAuth2ConfigWorker() {
   yield put(getOAuth2ConfigResponse())
 }
 
-function* getUserInformationWorker({ payload }) {
+function* getUserInformationWorker(code) {
   try {
-    const response = yield call(fetchUserInformation, payload.code)
+    const response = yield call(fetchUserInformation, code.payload)
     if (response) {
-      yield put(getUserInfoResponse(response.claims, response.jwtUserInfo))
+      yield put(getUserInfoResponse({ uclaims: response.claims, ujwt: response.jwtUserInfo }))
       return
     }
   } catch (error) {
     console.log('Problems getting user information.', error)
   }
 }
-function* getAPIAccessTokenWorker({ payload }) {
+function* getAPIAccessTokenWorker(jwt) {
   try {
-    if (payload.jwt) {
-      const response = yield call(fetchApiAccessToken, payload.jwt)
+    if (jwt) {
+      const response = yield call(fetchApiAccessToken, jwt.payload)
       if (response) {
-        yield put(getAPIAccessTokenResponse(response))
+        yield put(getAPIAccessTokenResponse({ accessToken: response }))
         return
       }
     }
@@ -71,7 +65,7 @@ function* getLocationWorker() {
   try {
     const response = yield call(getUserIpAndLocation)
     if (response) {
-      yield put(getUserLocationResponse(response))
+      yield put(getUserLocationResponse({ location: response }))
       return
     }
   } catch (error) {
@@ -81,18 +75,18 @@ function* getLocationWorker() {
 
 //watcher sagas
 export function* getApiTokenWatcher() {
-  yield takeEvery(GET_API_ACCESS_TOKEN, getAPIAccessTokenWorker)
+  yield takeEvery('auth/getAPIAccessToken', getAPIAccessTokenWorker)
 }
 
 export function* userInfoWatcher() {
-  yield takeEvery(USERINFO_REQUEST, getUserInformationWorker)
+  yield takeEvery('auth/getUserInfo', getUserInformationWorker)
 }
 
 export function* getOAuth2ConfigWatcher() {
-  yield takeEvery(GET_OAUTH2_CONFIG, getOAuth2ConfigWorker)
+  yield takeEvery('auth/getOAuth2Config', getOAuth2ConfigWorker)
 }
 export function* getLocationWatcher() {
-  yield takeEvery(GET_USER_LOCATION, getLocationWorker)
+  yield takeEvery('auth/getUserLocation', getLocationWorker)
 }
 
 /**

@@ -1,5 +1,5 @@
 import SmtpEditPage from './components/SmtpManagement/StmpEditPage'
-import smtpReducer from './redux/reducers/SmtpReducer'
+import smtpReducer from './redux/features/smtpSlice'
 import smtpSaga from './redux/sagas/SmtpSaga'
 import { SMTP_READ, SMTP_WRITE } from '../../app/utils/PermChecker'
 

@@ -1,7 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
 import { getAcrsResponse, editAcrsResponse } from '../features/acrSlice'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import AcrApi from '../api/AcrApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')

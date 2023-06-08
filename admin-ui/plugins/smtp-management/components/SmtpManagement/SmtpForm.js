@@ -8,7 +8,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
-import { testSmtp } from '../../redux/actions/SmtpActions'
+import { testSmtp } from '../../redux/features/smtpSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
@@ -80,7 +80,7 @@ function SmtpForm({ item, handleSubmit }) {
         message: "Testing"
       })
       opts['smtpTest'] = JSON.parse(smtpData)
-      dispatch(testSmtp(opts))
+      dispatch(testSmtp({ payload: opts }))
     }
     else {
       toast.error(t('messages.mandatory_fields_required'));

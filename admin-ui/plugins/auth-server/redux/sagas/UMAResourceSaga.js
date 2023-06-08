@@ -5,7 +5,7 @@ import {
 } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { getUMAResourcesByClientResponse, deleteUMAResourceResponse } from '../features/umaResourceSlice'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { UMA } from '../audit/Resources'
 import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
 import UMAResourceApi from '../api/UMAResourceApi'

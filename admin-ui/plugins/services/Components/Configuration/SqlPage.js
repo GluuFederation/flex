@@ -10,7 +10,7 @@ import {
 import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
 import LdapItem from './LdapItem'
 import { connect } from 'react-redux'
-import { getLdapConfig, editLdap } from 'Plugins/services/redux/actions/LdapActions'
+import { getLdapConfig, editLdap } from 'Plugins/services/redux/features/ldapSlice'
 import { useTranslation } from 'react-i18next'
 
 function SqlPage({ ldap, loading, dispatch }) {
@@ -35,7 +35,7 @@ function SqlPage({ ldap, loading, dispatch }) {
               <Formik
                 initialValues={ldap}
                 onSubmit={(values) => {
-                  dispatch(editLdap(JSON.stringify(values)))
+                  dispatch(editLdap({ data: JSON.stringify(values) }))
                 }}
               >
                 {(formik) => (

@@ -2,7 +2,7 @@ import AttributeListPage from './components/Person/AttributeListPage'
 import AttributeAddPage from './components/Person/AttributeAddPage'
 import AttributeEditPage from './components/Person/AttributeEditPage'
 import AttributeViewPage from './components/Person/AttributeViewPage'
-import attributeReducer from './redux/reducers/AttributeReducer'
+import { reducer as attributeReducer } from './redux/features/attributeSlice'
 import attributeSaga from './redux/sagas/AttributeSaga'
 import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils//PermChecker'
 
