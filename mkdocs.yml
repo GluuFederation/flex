@@ -17,11 +17,11 @@ edit_uri: edit/main/docs/
 plugins:
    - tags
    - search
-   - git-revision-date-localized:
-       type: timeago
-       enable_creation_date: true
-   - git-committers:
-       repository: GluuFederation/flex
+#   - git-revision-date-localized:
+#       type: timeago
+#       enable_creation_date: true
+#   - git-committers:
+#       repository: GluuFederation/flex
 # Configuration
 theme:
     name: material
@@ -142,6 +142,50 @@ nav:
     - 'Flex Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
     - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
     - 'Casa Docker Image': 'reference/kubernetes/docker-casa.md'
+- 'Casa':
+    - 'casa/index.md'
+    - Release Notes: 'casa/release-notes.md'
+    - Quick Start: 'casa/quick-start.md'
+    - 'Installation': 'casa/administration/installation.md'
+    - Administration Guide:
+        - 'About 2FA': 'casa/administration/2fa-basics.md'
+        - 'Admin console': 'casa/administration/admin-console.md'
+        - 'Credentials storage': 'casa/administration/credentials-stored.md'
+        - 'Custom branding': 'casa/administration/custom-branding.md'
+        - 'URL path customization': 'casa/administration/change-context-path.md'
+        - 'Localization': 'casa/administration/localization.md'
+        - 'Plugins':
+            - '2FA Settings': 'casa/plugins/2fa-settings.md'
+            - 'Accounts linking': 'casa/plugins/account-linking.md'
+            - 'BioID': 'casa/plugins/bioid.md'
+            - 'DUO': 'casa/plugins/duo.md'
+            - 'Consent Management': 'casa/plugins/consent-management.md'
+            - 'Custom Branding': 'casa/plugins/custom-branding.md'
+            - 'Certificate authentication': 'casa/plugins/cert-authn.md'
+            - 'Email 2FA OTP': 'casa/plugins/email2fa.md'
+            - 'Write your own plugin': 'casa/plugins/writing-plugins.md'
+        - 'FAQ': 'casa/administration/faq.md'
+    - Developer Guide:
+        - 'Intro': 'casa/developer/index.md'
+        - 'The basics':
+            - 'Architectural details': 'casa/developer/architecture.md'
+            - 'Intro to plugin development': 'casa/developer/intro-plugin.md'
+            - 'Writing your first plugin': 'casa/developer/writing-first.md'
+        - 'Common tasks':
+            - 'Working with menus': 'casa/developer/menus.md'
+            - 'Adding UI pages': 'casa/developer/ui-pages.md'
+            - 'Manipulating LDAP data': 'casa/developer/ldap-data.md'
+            - 'Adding REST services': 'casa/developer/rest-services.md'
+        - 'Adding authentication methods':
+            - 'Introduction': 'casa/developer/authn-methods/index.md'
+            - 'Coding authentication logic': 'casa/developer/authn-methods/authn-logic.md'
+            - 'Coding enrollment logic': 'casa/developer/authn-methods/credentials-management.md'
+        - 'Other topics':
+            - 'Plugin development tips': 'casa/developer/tips-development.md'
+            - 'Plugin management internals': 'casa/developer/plugin-management-internals.md'
+            - 'Configuration API': 'casa/developer/config-api.md'
+            - 'FAQ': 'casa/developer/faq.md'
+    - User Guide: 'casa/user-guide.md'
 #   Use section below to configure documentation structure as per available property and feature-flag documents
 #    - 'JSON Configuration':
 #      - 'reference/json-config/README.md'
