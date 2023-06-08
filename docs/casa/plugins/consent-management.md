@@ -15,7 +15,7 @@ The Consent Management plugin gives end-users the ability to view and revoke pre
 
 1. Visit `Administration console` > `Casa plugins`
 
-    ![plugins page](../img/plugins/plugins314.png)
+    ![plugins page](../../assets/casa/plugins/plugins314.png)
 
 1. Click on `Add a plugin...` and select the plugin jar file
 

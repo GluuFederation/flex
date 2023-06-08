@@ -23,7 +23,7 @@ Once you have configured and tested the integration(s) with the target external 
 
 1. Visit `Administration console` > `Casa plugins`
 
-    ![plugins page](../img/plugins/plugins314.png)
+    ![plugins page](../../assets/casa/plugins/plugins314.png)
 
 1. Click on `Add a plugin...` and select the plugin jar file
 

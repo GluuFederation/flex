@@ -51,4 +51,4 @@ Once both the script is enabled and at least one plugin installed, a new row wil
 
 Once you do that, a link for the enrollment page will appear under "2FA credentials" of user's menu:
 
-![menu item added](../../img/developer/authn-methods/menu-2fa.png)
+![menu item added](../../../assets/casa/developer/authn-methods/menu-2fa.png)

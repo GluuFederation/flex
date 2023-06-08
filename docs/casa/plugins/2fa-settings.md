@@ -52,7 +52,7 @@ A device/location is considered trustworthy when the user has presented a strong
 
 1. Navigate to `Administration console` > `Casa plugins`
 
-    ![plugins page](../img/plugins/plugins314.png)
+    ![plugins page](../../assets/casa/plugins/plugins314.png)
 
 1. Click on `Add a plugin...` and select the plugin jar file
 
@@ -62,11 +62,11 @@ A device/location is considered trustworthy when the user has presented a strong
 
 For administrators, a new link labeled "2FA settings" appears in the dashboard menu to access the function.
 
-![2fa-settings](../img/admin-console/2FA-settings.png)
+![2fa-settings](../../assets/casa/admin-console/2FA-settings.png)
 
 For regular users, proper details appear in the widget where 2FA is turned on.
 
-![2fa-settings](../img/admin-console/2fa_user_policy.png)
+![2fa-settings](../../assets/casa/admin-console/2fa_user_policy.png)
 
 ## API
 

@@ -8,7 +8,7 @@ All configuration changes applied via the admin console take effect immediately 
 
 This section contains settings used by Casa to establish a connection to the underlying database. These settings are prepared by the application installer and there is no need to apply any change afterwards. Update these settings only if the application needs to be tested against a different database Server. 
 
-![local-database](../img/admin-console/LocalDatabase.png)
+![local-database](../../assets/casa/admin-console/LocalDatabase.png)
 
 ## oxd
 
@@ -17,11 +17,11 @@ Casa leverages [oxd](https://oxd.gluu.org) to faciliate user authentication agai
 !!! Warning
     Ensure your Gluu Server has "dynamic registration" of clients enabled and that "returnClientSecretOnRead" is set to true while you are applying changes here.
 
-![oxd-settings](../img/admin-console/oxdSettings1.png)
+![oxd-settings](../../assets/casa/admin-console/oxdSettings1.png)
 
-![oxd-settings-scopes](../img/admin-console/oxdSettings2.png)
+![oxd-settings-scopes](../../assets/casa/admin-console/oxdSettings2.png)
 
-![oxd-settings-summary](../img/admin-console/oxdSettings3.png)
+![oxd-settings-summary](../../assets/casa/admin-console/oxdSettings3.png)
     
 In case of lockout, visit the [FAQ document](./faq.md#oxd).
 
@@ -52,7 +52,7 @@ The Gluu Server uses [interception scripts](https://gluu.org/docs/ce/admin-guide
 
 To enable authentication methods in Gluu, open oxTrust and navigate to  `Configuration` > `Manage custom scripts`. Enable the interception script for each type of 2FA credential that should be manageable in Casa - i.e. `fido2`, `u2f`, `super_gluu`, `otp`, and/or `twilio_sms`.  
 
-![oxtrust-enabled-scripts](../img/admin-console/oxTrust-enabled-scripts.png)
+![oxtrust-enabled-scripts](../../assets/casa/admin-console/oxTrust-enabled-scripts.png)
 
 !!! Note
     It is recommended not to use U2F but FIDO2 as authentication method.
@@ -65,13 +65,13 @@ With the Casa authentication script enabled in the Gluu Server, OpenID Connect c
 
 To make this behavior the default for all Gluu logins, navigate to `Configuration` > `Manage Authentication` > `Default Authentication method` and set `Default acr` and `oxTrust acr` to `casa`. Click update to save your changes. 
 
-![oxtrust-enabled-scripts](../img/admin-console/oxTrust-auth-mechanisms.png)
+![oxtrust-enabled-scripts](../../assets/casa/admin-console/oxTrust-auth-mechanisms.png)
     
 ### Configure Casa
 
 Once the applicable interception scripts are enabled in Gluu, a Casa admin can enable 2FA mechanisms in the `Enable methods` interface. Check the box for each type of authentication method users should be able to self-service in Casa. You can assign the handler [plugin](#plugins) for each method. Choose "System" to use the default implementation provided by the application.
 
-![enabled-2fa-methods](../img/admin-console/enabled-2FA-methods.png)
+![enabled-2fa-methods](../../assets/casa/admin-console/enabled-2FA-methods.png)
 
 The System plugin supports several authentication methods:
 
@@ -101,7 +101,7 @@ In the 2FA settings, an admin can:
 - Whether users can choose a preferred authentication method
 - Choose from a few predefined policies for when 2FA should be prompted. 
 
-![2fa-settings](../img/admin-console/2FA-settings.png)
+![2fa-settings](../../assets/casa/admin-console/2FA-settings.png)
 
 To reduce the chance of lockouts, we recommend setting a minimum of two (2) strong credentials. 
 
@@ -120,34 +120,34 @@ In addition, the plugin exposes an API to programmatically manipulate these sett
 
 If passwords are being stored in the Gluu Server (and not at an external backend directory server like AD), an admin can give users the ability to reset their password from inside Casa. To enable the password reset functionality, navigate to `Pass reset config` and click the toggle to `ON`.  
 
-![pw-reset-settings](../img/admin-console/pw-reset-setting.png)
+![pw-reset-settings](../../assets/casa/admin-console/pw-reset-setting.png)
 
 
 ## Branding
 
 Most organizations will want to custom brand Casa. Follow our guide to learn more about [custom branding Casa](./custom-branding.md).
 
-![custom-branding](../img/admin-console/custom-branding.png)
+![custom-branding](../../assets/casa/admin-console/custom-branding.png)
 
 
 ## Logging
 
 Application logs are useful sources of information to diagnose anomalies and understand possible causes of errors if presented. Casa uses the Log4J2 logging framework for this. The severity level for logs can be modified at runtime and requires no restart. For more information about logging, check the [FAQ entry](./faq.md#where-are-the-logs). 
 
-![logging](../img/admin-console/logging.png)
+![logging](../../assets/casa/admin-console/logging.png)
 
 
 ## Reset to password authentication
 
 If a user is locked out for any reason (e.g. lost device, etc.), an admin can navigate to `Reset to password authentication` in the admin console to turn 2FA off for them. Type the username (or part of) in the text field and then press search. Once the user has been located, click the checkbox and click the `Reset to password` button. The row will become disabled, and a success message will be displayed.
 
-![reset-user-to-pw](../img/admin-console/reset-user-to-pw.png)
+![reset-user-to-pw](../../assets/casa/admin-console/reset-user-to-pw.png)
 
 ## CORS domains
 
 Casa exposes some REST [services](../developer/rest-services.md) and plugin developers can also add their own. If consumption of services is required from the users' browser, known [cross origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) problems will arise. To "grant" an external domain access to a Casa service, you can add it to the list of allowed CORS domains.
 
-![cors-domains](../img/admin-console/cors-domains.png)
+![cors-domains](../../assets/casa/admin-console/cors-domains.png)
 
 ## Plugins
 
@@ -157,7 +157,7 @@ In this section of the console, the current list of active plugins is shown. Onc
 
 Click on the "Add a plugin..." button to select a file in your local hard drive that you wish to onboard as a new plugin into your Gluu Casa installation. Account that plugin files must have a specific format and structure as explained [here](../developer/intro-plugin.md#anatomy-of-a-plugin).
 
-![plugin detail](../img/admin-console/plugin-detail.png)
+![plugin detail](../../assets/casa/admin-console/plugin-detail.png)
 
 ## Config API
 

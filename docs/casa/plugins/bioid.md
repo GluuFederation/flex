@@ -62,7 +62,7 @@ Click on `Enable` under the script contents box, and press `Update` at the botto
 
 1. Visit `Administration console` > `Casa plugins`
 
-    ![plugins page](../img/plugins/bioid-plugin.png)
+    ![plugins page](../../assets/casa/plugins/bioid-plugin.png)
 
 1. Click on `Add a plugin...` and select the plugin jar file
 
@@ -77,25 +77,25 @@ Wait for one minute, then visit `Administration Console` > `Enabled methods` and
 ## Testing
 So far, users that log into Casa should be able to see a new entry "Biometric credentials" that will appear under "2FA credentials" .
 
-![plugins page](../img/plugins/bioid-menu.png)
+![plugins page](../../assets/casa/plugins/bioid-menu.png)
 
 From there they can enroll their biometric traits. 
 The steps to enroll your facial and periocular traits are self explanatory. Follow the instructions on the web page.
 You can enroll again or delete your credentials by visiting your registered credential.
 
-![plugins page](../img/plugins/enroll_bioid.png)
+![plugins page](../../assets/casa/plugins/enroll_bioid.png)
 
 
 
 Note - When you first use BioID you may wish to enroll a few times at different times of days or in different locations under a variety of environmental conditions. Once you can be reliably recognized, you only need to enroll again if something in your face changes significantly (such as after an accident or cosmetic surgery, or if you radically change eyeglasses, facial hair, facial jewelry, etc.) or if you often have to try more than once to be recognized. Once recognized, BioID typically adjusts itself to adapt to the changes right away.
 
-![plugins page](../img/plugins/bioid_edit_delete.png)
+![plugins page](../../assets/casa/plugins/bioid_edit_delete.png)
 
 ### Use the biometric credential as a second factor
 Ensure you have added another credential, hopefully of a different kind, for example a mobile phone number or an OTP token. Then visit the home page and click the toggle to turn 2FA on and logout.
 Try to access the application once more and supply the username and password for the account recently used to enroll the biometric credential. Depending on the numeric level assigned to the `bioid` script, you will be prompted for a different factor, for instance, to enter an OTP code. If so, click on `Try an alternative way to sign in` and click on `Biometric credential`.
 
-![plugins page](../img/plugins/another_way.png)
+![plugins page](../../assets/casa/plugins/another_way.png)
 
 Follow the instructions on the screen for verification of facial and periocular traits.
 

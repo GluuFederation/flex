@@ -84,23 +84,23 @@ Wait for one minute, then visit `Administration Console` > `Enabled methods` and
 ## Testing
 So far, users that log into Casa should be able to see a new entry "DUO credentials" that will appear under "2FA credentials" .
 
-![plugins page](../img/plugins/duo-menu.png)
+![plugins page](../../assets/casa/plugins/duo-menu.png)
 
 The steps to enroll your DUO credentials are self explanatory. Follow the instructions on the web page.
 
 
-![plugins page](../img/plugins/enroll_duo.png)
+![plugins page](../../assets/casa/plugins/enroll_duo.png)
 
 
 
 You can modify your enrollments or delete your credentials by visiting your registered credential. Click on "Add a new device" to add a new device and "My settings and Devices" to edit or delete a credential.
-![plugins page](../img/plugins/duo_edit.png)
+![plugins page](../../assets/casa/plugins/duo_edit.png)
 
 ### Use the duo credential as a second factor
 Ensure you have added another credential, hopefully of a different kind, for example a mobile phone number or an OTP token. Then visit the home page and click the toggle to turn 2FA on and logout.
 Try to access the application once more and supply the username and password for the account recently used to enroll the duo credential. Depending on the numeric level assigned to the `duo` script, you will be prompted for a different factor, for instance, to enter an OTP code. If so, click on `Try an alternative way to sign in` and click on `DUO credential`.
 
-![plugins page](../img/plugins/another_way_duo.png)
+![plugins page](../../assets/casa/plugins/another_way_duo.png)
 
 Follow the instructions on the screen for verification duo credentials.
 

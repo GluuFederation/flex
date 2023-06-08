@@ -16,7 +16,7 @@ Click on `Custom branding` in the admin console, and choose `Upload images and p
 * Choose button colors
 * Edit the footer text
 
-![quick design glance](../img/admin-console/custom-branding.png)
+![quick design glance](../../assets/casa/admin-console/custom-branding.png)
 
 Once you supply your files, color values, and footer text, click on `Save` and see the changes take immediately by navigating to a different page or opening a new browser tab. Repeat the process till you get the combination that best matches your organization's look and feel.
 
@@ -93,9 +93,9 @@ Here are some tips for applying your customizations:
     - cust-text-input  
     - cust-progress-bar  
    
-![Hints custom classes](../img/admin-console/branding/hint-cust-classes-1.png)
+![Hints custom classes](../../assets/casa/admin-console/branding/hint-cust-classes-1.png)
 
-![Hints custom classes](../img/admin-console/branding/hint-cust-classes-2.png)
+![Hints custom classes](../../assets/casa/admin-console/branding/hint-cust-classes-2.png)
 
 ### Viewing your changes
 
