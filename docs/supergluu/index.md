@@ -34,7 +34,7 @@ In all scenarios, users are prompted to scan a QR code on their first Super Gluu
 
 ### Testing locally 
 
-Super Gluu security is based on SSL, and therefore expects a public server with valid certificates. To test locally on a **non-public** server, [follow these steps](./developer-guide/index.md#testing-locally)
+Super Gluu security is based on SSL, and therefore expects a public server with valid certificates. To test locally on a **non-public** server, [follow these steps](./developer-guide/index.md#testing-locally-)
 
 ## Download Super Gluu		
 Super Gluu is available for free on the iOS and Android app marketplaces! 

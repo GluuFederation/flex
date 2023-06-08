@@ -8,13 +8,13 @@ Multi-factor authentication from Stytch protects your applications by using a se
 
 
 ## Prerequisites
-- A Gluu Server ([installation instructions](./installation-guide/index.md)).
+- A Gluu Flex Server ([installation instructions](../../../docs/install/README.md).
 - [Casa's Stytch interception script](https://github.com/GluuFederation/community-edition-setup/tree/master/static/casa/scripts/casa-external_stytch.py).
 - An account with [Stytch](https://stytch.com/).   
 
 ## Configure Stytch Account
 
-1. [Sign up](Stytch) for a Stytch account.
+1. [Sign up](https://stytch.com/) for a Stytch account.
 
 2. Upon registration, you can create the PROJECT_ID and SECRET https://stytch.com/dashboard/api-keys.
 

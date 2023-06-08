@@ -10,7 +10,7 @@ Gluu LDAP directory is key in Gluu Casa [architecture](./architecture.md#backend
 Before proceding ensure you have:
 
 - [A basic grasp of LDAP](./intro-plugin.md#ldap-notions)
-- The means to connect to Gluu lightweight directory, as mentioned [here](./intro-plugin.md#find-a-graphical-ldap-client). Normally, you'll use the `o=gluu` base branch DN.
+- The means to connect to Gluu lightweight directory, as mentioned [here](./intro-plugin.md#find-a-graphical-database-client). Normally, you'll use the `o=gluu` base branch DN.
 
 ## Know your LDAP
 

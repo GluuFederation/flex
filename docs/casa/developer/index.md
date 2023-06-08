@@ -1,6 +1,6 @@
 # Developer Guide
 
-This page introduces two relevant topics for developers: [writing plugins](#plugins) and writing applications for [credentials enrollment](#credentials-enrollment-in-your-applications).
+This page introduces two relevant topics for developers: [writing plugins](#plugins) and writing applications for [credentials enrollment](#apis-for-credential-enrollment).
 
 !!! Note
     Access to Casa github repo is required to go through developer doc pages. Please request read [access](https://gluu.org/contact) to the repository before undertaking any development task.

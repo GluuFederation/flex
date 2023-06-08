@@ -22,7 +22,7 @@ Make sure the Gluu Server has at least the following components:
 
 ### Install
 
-Casa is installed on the same server or virtual machine as the Gluu Server: follow the [Casa installation instructions](./administration/installation.md#installation-via-linux-packages).  
+Casa is installed on the same server or virtual machine as the Gluu Server: follow the [Casa installation instructions](./administration/installation.md#installation-via-linux-packages-).  
 
 ### Configure Casa
 
@@ -36,7 +36,7 @@ Configuring Casa for usage requires you to enable interception scripts in the Gl
 
 ### Test enrollment and 2FA
 
-1. [Enroll](./user-guide.md#2fa-credential-details-enrollment) at least two credentials on a non-administrator user.
+1. [Enroll](./user-guide.md#2fa-credential-details--enrollment) at least two credentials on a non-administrator user.
 
 1. [Turn on](./user-guide.md#turn-2fa-onoff) 2FA for the account.
 
@@ -44,7 +44,7 @@ Configuring Casa for usage requires you to enable interception scripts in the Gl
 
 ### Finish configuration
 
-Once satisfied with testing, [configure the Gluu Server](./administration/admin-console.md/#set-default-authentication-method-gluu) to log in users via Casa for all applications the server protects.
+Once satisfied with testing, [configure the Gluu Server](./administration/admin-console.md#set-default-authentication-method-gluu) to log in users via Casa for all applications the server protects.
 
 ### Check out available plugins
 

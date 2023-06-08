@@ -89,7 +89,7 @@ oxd server (version 4.x required) acts as a mediator to simplify the authorizati
 
 ### Geolocation service
 
-Casa uses the "IP-API" geolocation service for two purposes: gathering basic location information in the moment of the login itself and when enrollments take place for Super Gluu devices. The latter is available only if the administrator has added Super Gluu as one of its [enabled methods](../administration/#enabled-methods) previously.
+Casa uses the "IP-API" geolocation service for two purposes: gathering basic location information in the moment of the login itself and when enrollments take place for Super Gluu devices. The latter is available only if the administrator has added Super Gluu as one of its [enabled methods](../administration/admin-console.md#enabled-methods) previously.
 
 Casa supports free and pro service of IP-API.
 

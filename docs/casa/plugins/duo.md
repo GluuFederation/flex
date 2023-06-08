@@ -9,7 +9,7 @@ This document will explain how to use Gluu's [Duo interception script](https://g
 In order to use this authentication mechanism your organization will need to register for a DUO account. 
 
 ## Prerequisites
-- A Gluu Server ([installation instructions](../installation-guide/index.md));
+- A Gluu Flex Server ([installation instructions](../../install/README.md));
 - [DUO interception script](https://github.com/GluuFederation/casa/blob/version_4.5.0/plugins/duo/extras/DuoExternalAuthenticator.py) ;
 - An account with [DUO](https://admin.duosecurity.com/).   
 
