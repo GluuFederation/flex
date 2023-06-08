@@ -18,43 +18,43 @@ For additional security, Super Gluu gives you the option to configure either a p
 !!! Note
     After 5 unsuccessful attempts to enter the passcode, the app is locked for 10 minutes.
 
-![login choice](../img/user-guide/choose_login.jpg)
-![pin access](../img/user-guide/pin_settings.jpg)
-![touch access](../img/user-guide/touch_id_settings.jpg)
+![login choice](../../assets/supergluu/user-guide/choose_login.jpg)
+![pin access](../../assets/supergluu/user-guide/pin_settings.jpg)
+![touch access](../../assets/supergluu/user-guide/touch_id_settings.jpg)
 
 ### Confirm Push Notification
 
 Next, it will ask for permission to send push notifications from the Gluu Server. This choice can be changed later in the device settings. More information about the push notification will be covered later in the document.
 
-![confirm Push Notification](../img/user-guide/push_notifications.jpg)
+![confirm Push Notification](../../assets/supergluu/user-guide/push_notifications.jpg)
 
 ## Main Screen
 
 After configuration, the main screen is displayed. It features the main enrollment button in the center and the menu button in the top right.
 
-![home screen](../img/user-guide/main_page.jpg)
+![home screen](../../assets/supergluu/user-guide/main_page.jpg)
 
 ### QR Code Enrollment
 
 To enroll a device, enter the credentials in your Gluu Server web app to generate a QR code, then click the `Scan QR Code` button on the Super Gluu app's Home screen:
 
-![scanning screen](../img/user-guide/qr_code.jpg)
+![scanning screen](../../assets/supergluu/user-guide/qr_code.jpg)
 
 After it scans the code and the server returns the request correctly, it will prompt to `Approve` or `Deny`. To continue the enrollment/authentication process, click `Approve`:
 
-![scanning screen](../img/user-guide/approve_prompt.jpg)
+![scanning screen](../../assets/supergluu/user-guide/approve_prompt.jpg)
 
 The timer on the top right of the screen shows the time limit to choose to `Approve` or `Deny`. As time runs out, the number's color will change: yellow if it's under 20 seconds, red if it's under 10.
 
 Next, it will redirect to the main page and display a success message.
 
-![success message](../img/user-guide/success.jpg)
+![success message](../../assets/supergluu/user-guide/success.jpg)
 
 ## Menu
 
 After pressing the menu button, you'll get the option to view logs, keys, settings, and help files. You can also check the current app version in the bottom right corner. Tapping it for several seconds will show the details of the latest commit.
 
-![menu](../img/user-guide/settings.jpg)
+![menu](../../assets/supergluu/user-guide/settings.jpg)
 
 ### Logs
 
@@ -62,7 +62,7 @@ Each time it enrolls or authenticates a device, the app will save corresponding 
 
 Clear these logs if desired by swiping left on the log, then tapping the red button.
 
-![delete log](../img/user-guide/log_delete.jpg)
+![delete log](../../assets/supergluu/user-guide/log_delete.jpg)
 
 The Log tab will report about the enrollment and authentication process and displays who logged in, when, and from where. Just tap on the log to get to the information screen. 
 
@@ -73,7 +73,7 @@ The information screen contains data about:
 - IP address & location
 - Time & date
 
-![success message](../img/user-guide/log_sample.jpg)
+![success message](../../assets/supergluu/user-guide/log_sample.jpg)
 
 ### Keys
 
@@ -82,11 +82,11 @@ This tab contains all available keys for each Gluu server. A key is a unique fil
 !!! Note
     If you delete a key from your app, but wish to re-enroll the same device against the same server, the corresponding entry for that device also needs to be removed from the user record in the Gluu Server. See the [Gluu admin guide](https://gluu.org/docs/ce/user-management/local-user-management/#managing-associated-2fa-devices).  
 
-![keys screen](../img/user-guide/key.jpg)
+![keys screen](../../assets/supergluu/user-guide/key.jpg)
 
 To change a key's name, swipe left on it and tap the green button. To delete a key, swipe left on the key, then tap the red button.
 
-![delete key](../img/user-guide/key_delete.jpg)
+![delete key](../../assets/supergluu/user-guide/key_delete.jpg)
 
 ### Settings
 
@@ -96,7 +96,7 @@ In the Settings tab, there are options to configure the passcode or TouchID.
 
 Super Gluu can receive push notifications from Gluu Servers. The server can send an enrollment or authentication request to the application, as if it scanned the QR code directly. 
 
-![push notification](../img/user-guide/push_notification.jpg)
+![push notification](../../assets/supergluu/user-guide/push_notification.jpg)
 
 After choosing to receive push notifications either during initial setup or through the Settings tab later, enroll through the server. Super Gluu will send a token to the server, which will be used to send push notifications to the device.
 
@@ -104,7 +104,7 @@ After receiving the notification, tap `Approve` or `Deny` directly from the push
 
 Super Gluu can receive a notification when the application is running in the foreground. It will look just like the original authentication screen.
 
-![push notification when app is running](../img/user-guide/approve_prompt.jpg)
+![push notification when app is running](../../assets/supergluu/user-guide/approve_prompt.jpg)
 
 ## Device Settings, iPad Support
 
