@@ -38,10 +38,10 @@ function UserList(props) {
     opt['limit'] = 10
     dispatch(getUsers({ action: opt }))
     dispatch(getAttributesRoot({ options: opt }))
-    dispatch(getRoles())
+    dispatch(getRoles({}))
   }, [])
   const { totalItems, entriesCount } = useSelector(
-    (state) => state.userReducer,
+    (state) => state.userReducer
   )
   const [pageNumber, setPageNumber] = useState(0)
   const usersList = useSelector((state) => state.userReducer.items)
