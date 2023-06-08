@@ -186,6 +186,12 @@ nav:
             - 'Configuration API': 'casa/developer/config-api.md'
             - 'FAQ': 'casa/developer/faq.md'
     - User Guide: 'casa/user-guide.md'
+- 'Super Gluu':
+    - 'supergluu/index.md'
+    - User Guide: 'supergluu/user-guide/index.md'
+    - Administration Guide: 'supergluu/admin-guide/index.md'
+    - Developer Guide: 'supergluu/developer-guide/index.md'
+
 #   Use section below to configure documentation structure as per available property and feature-flag documents
 #    - 'JSON Configuration':
 #      - 'reference/json-config/README.md'
