@@ -25,7 +25,7 @@ function ScopeAddPage({
   useEffect(() => {
     if (attributes.length === 0) {
       buildPayload(userAction, 'Fetch attributes', { limit: 100 })
-      dispatch(getAttributes(userAction))
+      dispatch(getAttributes({ options: userAction }))
     }
     if (scripts.length === 0) {
       buildPayload(userAction, 'Fetch custom scripts', {})
