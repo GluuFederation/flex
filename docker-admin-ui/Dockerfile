@@ -1,4 +1,4 @@
-FROM node:hydrogen-alpine AS builder
+FROM node:hydrogen-alpine3.17 AS builder
 
 RUN apk update \
     && apk upgrade --available \
@@ -34,7 +34,7 @@ RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 # Application
 # ===========
 
-FROM node:hydrogen-alpine
+FROM node:hydrogen-alpine3.17
 
 # ======
 # alpine
