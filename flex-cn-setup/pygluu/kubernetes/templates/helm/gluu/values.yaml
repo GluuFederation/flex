@@ -357,7 +357,7 @@ casa:
     # -- Image  to use for deploying.
     repository: ghcr.io/gluufederation/flex/casa
     # -- Image  tag to use for deploying.
-    tag: 5.0.0_dev
+    tag: 5.0.0-13
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
