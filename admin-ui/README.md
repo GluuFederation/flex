@@ -25,3 +25,4 @@ npm run start
 Once the project is compiled and started, UI can be accessed at URL: http://localhost:4100
 
 **Note:** Please check this [link](https://raw.githubusercontent.com/0wczar/airframe-react/master/.npmrc) for NPM access token to be added to `NPM_TOKEN` field in `.env` file.
+
