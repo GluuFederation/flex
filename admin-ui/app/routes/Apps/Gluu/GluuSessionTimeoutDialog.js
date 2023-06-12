@@ -4,10 +4,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   Typography,
   Slide
 } from "@mui/material"
+import { Button } from 'Components'
 import clsx from "clsx"
 import styles from "./styles/GluuSessionTimeoutDialog.style"
 import { ThemeContext } from 'Context/theme/themeContext'
