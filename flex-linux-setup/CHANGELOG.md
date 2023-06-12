@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.14](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.13...flex-linux-setup-v1.0.14) (2023-06-12)
+
+
+### Features
+
+* **flex-linux-setup:** paste SSA when prompted ([1266d7b](https://github.com/GluuFederation/flex/commit/1266d7b08d0b034ffbb50e0f2fbae13473b967f2))
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** set licenseHardwareKey to org_id from ssa ([b69fb14](https://github.com/GluuFederation/flex/commit/b69fb14aa1695e621d4c4df375e91161f4eeee39))
+* **flex-linux-setup:** strip ssa after read from file ([4df6d14](https://github.com/GluuFederation/flex/commit/4df6d142c7d2ce3e07fef5917ff213cf463c2dfa))
+* **flex-linux-setup:** typo ([1ad0d26](https://github.com/GluuFederation/flex/commit/1ad0d26bc9ab56ceb17fff306377a409c28fe43e))
+* prepare for 5.0.0-14 release ([9481f55](https://github.com/GluuFederation/flex/commit/9481f55a380091501cf912778955e2ebba23e30c))
+
 ## [1.0.13](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.12...flex-linux-setup-v1.0.13) (2023-05-12)
 
 
