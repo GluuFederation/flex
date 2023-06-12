@@ -33,7 +33,7 @@ Kubernetes: `>=v1.21.0-0`
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
 | image.repository | string | `"janssenproject/certmanager"` | Image  to use for deploying. |
-| image.tag | string | `"1.0.13_dev"` | Image  tag to use for deploying. |
+| image.tag | string | `"1.0.13-1"` | Image  tag to use for deploying. |
 | keysLife | int | `48` | Auth server key rotation keys life in hours |
 | lifecycle | object | `{}` |  |
 | nodeSelector | object | `{}` |  |
