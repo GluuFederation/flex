@@ -34,7 +34,7 @@ EXPOSE 8080
 # Casa
 # ====
 
-ENV GLUU_VERSION=5.0.0-SNAPSHOT
+ENV GLUU_VERSION=5.0.0-14
 ENV GLUU_BUILD_DATE='2023-04-10 15:24'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
@@ -206,7 +206,7 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_GOOGLE_SECRET_NAME_PREFIX=jans \
     GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable \
     CN_PROMETHEUS_PORT="" \
-    CN_VERSION=5.0.0-SNAPSHOT \
+    CN_VERSION=5.0.0-14 \
     GLUU_CASA_JWKS_SIZE_LIMIT=100000
 
 # ==========
