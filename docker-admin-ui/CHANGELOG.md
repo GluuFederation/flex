@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.14-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.13-1...docker-admin-ui-v1.0.14-1) (2023-06-12)
+
+
+### Features
+
+* **docker-admin-ui:** set org_id as licenseHardwareKey ([#1072](https://github.com/GluuFederation/flex/issues/1072)) ([175f093](https://github.com/GluuFederation/flex/commit/175f093d86f9a1faca72534c6daf071372c5c70d))
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-14 release ([9481f55](https://github.com/GluuFederation/flex/commit/9481f55a380091501cf912778955e2ebba23e30c))
+
 ## [1.0.13-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.12-1...docker-admin-ui-v1.0.13-1) (2023-05-12)
 
 
