@@ -13,7 +13,6 @@ function ApiKey() {
   const generatingTrialKey = useSelector(
     (state) => state.licenseReducer.generatingTrialKey
   )
-  console.log(`isMobileDevice`, isMobileDevice)
 
   return (
     <div>
@@ -47,7 +46,7 @@ function ApiKey() {
           <Box
             display={'flex'}
             justifyContent={'space-between'}
-            gap={2}
+            gap={4}
             flexWrap={isMobileDevice && 'wrap'}
             className='mx-auto col-md-8'
           >

@@ -34,7 +34,7 @@ function* checkLicensePresentWorker() {
   } catch (error) {
     console.log('Error in checking License present.', error)
   }
-  yield put(checkLicensePresentResponse())
+  yield put(checkLicensePresentResponse({ isLicenseValid: false }))
 }
 
 function* generateTrailLicenseKey() {
@@ -50,8 +50,9 @@ function* generateTrailLicenseKey() {
           }
         })
         yield put(generateTrialLicenseResponse(activateLicense))
-        yield put(checkLicensePresentResponse(activateLicense?.apiResult))
+        yield put(checkLicensePresentResponse({ isLicenseValid: activateLicense?.apiResult }))
       } catch (error) {
+        yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
       }
     }

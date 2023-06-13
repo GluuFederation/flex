@@ -28,7 +28,7 @@ const LicenseKeyCards = () => {
   }
 
   return (
-    <Card sx={{ minWidth: 275, width: isMobileDevice ? '100%' : '50%' }}>
+    <Card sx={{ minWidth: 275, width: isMobileDevice ? '100%' : '50%', border: '1px solid #00a361', padding: '8px' }}>
       <CardContent>
         <Typography variant='h5' component='div' gutterBottom>
           Have a license key?
