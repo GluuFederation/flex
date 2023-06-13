@@ -60,7 +60,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   }
   function doFetchList() {
     buildPayload(userAction, 'ROLES', options)
-    dispatch(getRoles(userAction))
+    dispatch(getRoles({ action: userAction }))
   }
   function onAddConfirmed(roleData) {
     buildPayload(userAction, 'message', roleData)

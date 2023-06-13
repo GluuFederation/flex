@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import AttributeForm from './AttributeForm'
-import { editAttribute } from 'Plugins/schema/redux/actions/AttributeActions'
+import { editAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function AttributeEditPage({ item, loading, dispatch }) {
@@ -18,7 +18,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
   const navigate =useNavigate()
   function customHandleSubmit(data) {
     if (data) {
-      dispatch(editAttribute(data))
+      dispatch(editAttribute({ data }))
       navigate('/attributes')
     }
   }

@@ -5,6 +5,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
@@ -35,7 +36,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
   scripts = scripts
     .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
+    .map((item) => (item.name))
   function uriValidator(uri) {
     return uri
   }
@@ -43,7 +44,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
     if (!partial) {
       partial = []
     }
-    return total.filter((item) => partial.includes(item.dn))
+    return total.filter((item) => partial.includes(item))
   }
   const [softwareSection, setSoftwareSection] = useState(false)
   const [cibaSection, setCibaSection] = useState(false)
@@ -159,7 +160,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         rsize={9}
         disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
-      <GluuTypeAheadForDn
+      <GluuTypeAhead
         name="defaultAcrValues"
         label="fields.defaultAcrValues"
         formik={formik}
@@ -169,8 +170,8 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         lsize={3}
         rsize={9}
         disabled={viewOnly}
-      ></GluuTypeAheadForDn>
-      <GluuTypeAheadForDn
+      ></GluuTypeAhead>
+      <GluuTypeAhead
         name="authorizedAcrValues"
         label="fields.authorizedAcrValues"
         formik={formik}
@@ -180,7 +181,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         lsize={3}
         rsize={9}
         disabled={viewOnly}
-      ></GluuTypeAheadForDn>
+      ></GluuTypeAhead>
       <GluuToogleRow
         name="jansDefaultPromptLogin"
         lsize={3}

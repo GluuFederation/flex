@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { uuidv4 } from 'Utils/Util'
 import { EmptyLayout, Label } from 'Components'
-import { logoutUser } from 'Redux/actions/LogoutActions'
+import { logoutUser } from 'Redux/features/logoutSlice'
 import { useTranslation } from 'react-i18next'
 
 function ByeBye({ config, dispatch }) {

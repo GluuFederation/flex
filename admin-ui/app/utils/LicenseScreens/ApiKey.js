@@ -23,8 +23,10 @@ function ApiKey() {
     if (licenseKey != '') {
       dispatch(
         checkUserLicenceKey({
-          licenseKey: licenseKey
-        })
+          payload: {
+            licenseKey: licenseKey
+          },
+        }),
       )
     }
   }
@@ -53,7 +55,7 @@ function ApiKey() {
         </div>
         <div className='row'>
           <div className='col-md-8 text-center h2 mx-auto mb-3'>
-            Please enter details to activate
+            Click on the button of your choice
           </div>
         </div>
         <div className='row'>
@@ -87,7 +89,7 @@ function ApiKey() {
               className='btn'
               style={{ backgroundColor: '#00a361', color: 'white' }}
             >
-              Have a License Key?
+              Already have a license key? Click here to enter.
             </button>
           </Box>
         </Box>

@@ -8,7 +8,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
-import { getAgama, deleteAgama, addAgama } from '../../redux/actions/AgamaActions'
+import { getAgama, deleteAgama, addAgama } from '../../redux/features/agamaSlice'
 import { hasPermission, AGAMA_READ, AGAMA_WRITE } from 'Utils/PermChecker'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
@@ -19,9 +19,9 @@ import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
 import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@mui/icons-material/Info';
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
-import { updateToast } from 'Redux/actions/ToastAction'
+import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
-import { getJsonConfig } from 'Plugins/auth-server/redux/actions/JsonConfigActions'
+import { getJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 import SettingsIcon from '@mui/icons-material/Settings'
 
 const dateTimeFormatOptions = {
@@ -76,7 +76,7 @@ function AgamaListPage() {
 
   useEffect(() => {
     if(isEmpty(configuration)) {
-      dispatch(getJsonConfig())
+      dispatch(getJsonConfig({ action: {} }))
     }
   }, [])
 

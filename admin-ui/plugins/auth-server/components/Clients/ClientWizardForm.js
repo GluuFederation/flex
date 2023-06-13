@@ -233,7 +233,8 @@ function ClientWizardForm({
         <Formik
           innerRef={formRef}
           initialValues={initialValues}
-          onSubmit={(values) => {
+          onSubmit={(...args) => {
+            let values ={ ...args[0], [ATTRIBUTE]: args[0][ATTRIBUTE] && { ...args[0][ATTRIBUTE] } }
             values['action_message'] = commitMessage
             values[ATTRIBUTE].tlsClientAuthSubjectDn =
               values.tlsClientAuthSubjectDn

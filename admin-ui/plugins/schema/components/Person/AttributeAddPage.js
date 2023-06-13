@@ -3,14 +3,14 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import AttributeForm from './AttributeForm'
-import { addAttribute } from 'Plugins/schema/redux/actions/AttributeActions'
+import { addAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function AttributeAddPage({ dispatch }) {
   const navigate =useNavigate()
   function onSubmit(data) {
     if (data) {
-      dispatch(addAttribute(data))
+      dispatch(addAttribute({ data }))
       navigate('/attributes')
     }
   }

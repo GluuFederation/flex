@@ -1,8 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getPersistenceTypeResponse } from '../actions/PersistenceActions'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import { GET_PERSISTENCE_TYPE } from '../actions/types'
+import { getPersistenceTypeResponse } from '../features/persistenceTypeSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import PersistenceConfigApi from '../api/PersistenceConfigApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -20,7 +19,7 @@ export function* getPersistenceType() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getPersistenceType)
-    yield put(getPersistenceTypeResponse(data.persistenceType))
+    yield put(getPersistenceTypeResponse({ data: data.persistenceType }))
   } catch (e) {
     yield put(getPersistenceTypeResponse(null))
     if (isFourZeroOneError(e)) {
@@ -31,7 +30,7 @@ export function* getPersistenceType() {
 }
 
 export function* watchGetPersistenceType() {
-  yield takeLatest(GET_PERSISTENCE_TYPE, getPersistenceType)
+  yield takeLatest('persistenceType/getPersistenceType', getPersistenceType)
 }
 export default function* rootSaga() {
   yield all([fork(watchGetPersistenceType)])

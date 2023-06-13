@@ -70,7 +70,7 @@ function MappingPage({
   }
   function doFetchRoles() {
     buildPayload(userAction, 'ROLES', options)
-    dispatch(getRoles(userAction))
+    dispatch(getRoles({ action: userAction }))
   }
 
   function showMappingDialog() {

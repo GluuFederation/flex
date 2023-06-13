@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { buildPayload } from 'Utils/PermChecker'
 import { connect } from 'react-redux'
-import { getHealthStatus } from 'Redux/actions/HealthAction'
+import { getHealthStatus } from 'Redux/features/healthSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
@@ -29,7 +29,7 @@ function HealthPage({ serverStatus, dbStatus, dispatch }) {
 
   function fetchHealthInfo() {
     buildPayload(userAction, 'GET Health Status', options)
-    dispatch(getHealthStatus(userAction))
+    dispatch(getHealthStatus({ action: userAction }))
   }
 
   function isUp(status) {

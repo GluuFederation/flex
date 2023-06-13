@@ -9,7 +9,7 @@ import Alert from '@mui/material/Alert'
 import {
   getCouchBaseConfig,
   editCouchBase,
-} from 'Plugins/services/redux/actions/CouchbaseActions'
+} from 'Plugins/services/redux/features/couchbaseSlice'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
@@ -29,7 +29,7 @@ function CouchbasePage({ couchbase, loading, dispatch, persistenceType }) {
               <Formik
                 initialValues={couchbase}
                 onSubmit={(values) => {
-                  dispatch(editCouchBase(JSON.stringify(values)))
+                  dispatch(editCouchBase({ data: JSON.stringify(values) }))
                 }}
                 enableReinitialize
                 render={(formik) => {

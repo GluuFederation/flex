@@ -7,9 +7,9 @@ import {
   getUsers,
   setSelectedUserData,
   deleteUser,
-} from '../../redux/actions/UserActions'
+} from '../../redux/features/userSlice'
 
-import { getAttributesRoot } from '../../../../app/redux/actions/AttributesActions'
+import { getAttributesRoot } from '../../../../app/redux/features/attributesSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
@@ -36,12 +36,12 @@ function UserList(props) {
   const opt = {}
   useEffect(() => {
     opt['limit'] = 10
-    dispatch(getUsers(opt))
-    dispatch(getAttributesRoot(opt))
-    dispatch(getRoles())
+    dispatch(getUsers({ action: opt }))
+    dispatch(getAttributesRoot({ options: opt }))
+    dispatch(getRoles({}))
   }, [])
   const { totalItems, entriesCount } = useSelector(
-    (state) => state.userReducer,
+    (state) => state.userReducer
   )
   const [pageNumber, setPageNumber] = useState(0)
   const usersList = useSelector((state) => state.userReducer.items)
@@ -122,7 +122,7 @@ function UserList(props) {
       onClick: () => {
         setLimit(memoLimit)
         setPattern(memoPattern)
-        dispatch(getUsers({ limit: memoLimit, pattern: memoPattern }))
+        dispatch(getUsers({ action: { limit: memoLimit, pattern: memoPattern } }))
       },
     })
   }
@@ -166,7 +166,7 @@ function UserList(props) {
     options['limit'] = limit
     options['pattern'] = pattern
     setPageNumber(page)
-    dispatch(getUsers(options))
+    dispatch(getUsers({ action: options }))
   }
   const onRowCountChangeClick = (count) => {
     
@@ -174,7 +174,7 @@ function UserList(props) {
     options['pattern'] = pattern
     setPageNumber(0)
     setLimit(count)
-    dispatch(getUsers(options))
+    dispatch(getUsers({ action: options }))
   }
 
   useEffect(() => {
@@ -188,7 +188,7 @@ function UserList(props) {
       }
     }
     if(usedAttributes.length){
-      dispatch(getAttributesRoot({pattern:usedAttributes.toString(), limit:100}))
+      dispatch(getAttributesRoot({ options: {pattern:usedAttributes.toString(), limit:100} }))
     }
   },[usersList])
   return (

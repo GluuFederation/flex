@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Card, CardBody } from '../../../../app/components'
 import SetTitle from 'Utils/SetTitle'
 import { useDispatch, useSelector } from 'react-redux';
-import { getFidoConfiguration, putFidoConfiguration } from '../../redux/actions/FidoActions';
+import { getFidoConfiguration, putFidoConfiguration } from '../../redux/features/fidoSlice';
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle"
 
 const tabNames = [
@@ -56,11 +56,9 @@ export default function Fido() {
     const fiodData = JSON.stringify(data)
     opts['appConfiguration1'] = JSON.parse(fiodData);
     dispatch(putFidoConfiguration(opts));
-    console.log(opts)
   }
 
   const handleStaticConfigurationSubmit = (data) => {
-    console.log(data)
     const payload = fidoConfiguration.fido;
     payload.authenticatorCertsFolder = data.authenticatorCertsFolder;
     payload.mdsCertsFolder = data.mdsCertsFolder;
@@ -82,7 +80,6 @@ export default function Fido() {
     const fiodData = JSON.stringify(newPayload)
     opts['appConfiguration1'] = JSON.parse(fiodData);
     dispatch(putFidoConfiguration(opts));
-    console.log(opts)
   }
   return (
     <React.Fragment>

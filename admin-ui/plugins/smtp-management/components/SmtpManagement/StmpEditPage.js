@@ -5,7 +5,7 @@ import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle"
-import { clearSmtpConfig, getSmpts, updateSmpt } from '../../redux/actions/SmtpActions'
+import { clearSmtpConfig, getSmpts, updateSmpt } from '../../redux/features/smtpSlice'
 import SmtpForm from './SmtpForm'
 import GluuInfo from '../../../../app/routes/Apps/Gluu/GluuInfo'
 
@@ -35,7 +35,7 @@ function StmpEditPage() {
       }} />
       <Card className='mb-3' style={applicationStyle.mainCard}>
         <CardBody>
-          {!loading && <SmtpForm item={item.smtp} handleSubmit={handleSubmit} />}
+          {!loading && <SmtpForm item={{ ...item.smtp }} handleSubmit={handleSubmit} />}
         </CardBody>
       </Card>
     </GluuLoader>

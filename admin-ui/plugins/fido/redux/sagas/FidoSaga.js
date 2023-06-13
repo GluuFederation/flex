@@ -7,20 +7,16 @@ import {
   select,
   takeEvery,
 } from 'redux-saga/effects'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from '../../../../app/redux/features/authSlice'
 import {
   isFourZeroOneError,
 } from '../../../../app/utils/TokenController'
-import {
-  GET_FIDO_CONFIGURATION,
-  PUT_FIDO_CONFIGURATION,
-} from '../actions/types'
 import { getClient } from '../../../../app/redux/api/base'
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
-import { updateToast } from 'Redux/actions/ToastAction'
+import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import FidoApi from '../api/FidoApi'
-import { getFidoConfiguration, getFidoConfigurationResponse } from '../actions/FidoActions'
+import { getFidoConfiguration, getFidoConfigurationResponse } from '../features/fidoSlice'
 
 const JansConfigApi = require('jans_config_api')
 function* newFunction() {
@@ -67,11 +63,11 @@ export function* getFidoSaga() {
 
 
 export function* watchGetFido() {
-  yield takeEvery(GET_FIDO_CONFIGURATION, getFidoSaga)
+  yield takeEvery('fido2/getFidoConfiguration', getFidoSaga)
 }
 
 export function* watchUpdateFido() {
-  yield takeLatest(PUT_FIDO_CONFIGURATION, updateFidoSaga)
+  yield takeLatest('fido2/putFidoConfiguration', updateFidoSaga)
 }
 
 

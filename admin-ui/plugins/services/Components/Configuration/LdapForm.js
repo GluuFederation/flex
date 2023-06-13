@@ -10,24 +10,19 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { LDAP } from 'Utils/ApiResources'
-import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import {
   testLdap,
   resetTestLdap,
-} from 'Plugins/services/redux/actions/LdapActions'
+} from 'Plugins/services/redux/features/ldapSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useDispatch, useSelector } from 'react-redux'
+import { updateToast } from 'Redux/features/toastSlice'
 
 function LdapForm({ item, handleSubmit, createLdap }) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
-  const [alertObj, setAlertObj] = useState({
-    severity: '',
-    message: '',
-    show: false,
-  })
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   function toogle() {
@@ -98,19 +93,17 @@ function LdapForm({ item, handleSubmit, createLdap }) {
 
   function checkLdapConnection() {
     const testPromise = new Promise(function (resolve, reject) {
-      setAlertObj({ ...alertObj, show: false })
       dispatch(resetTestLdap())
       resolve()
     })
 
     testPromise.then(() => {
-      dispatch(testLdap(formik.values))
+      dispatch(testLdap({ data: formik.values }))
     })
   }
 
   useEffect(() => {
     dispatch(resetTestLdap())
-    setAlertObj({ ...alertObj, show: false })
   }, [])
 
   useEffect(() => {
@@ -119,19 +112,9 @@ function LdapForm({ item, handleSubmit, createLdap }) {
     }
 
     if (testStatus) {
-      setAlertObj({
-        ...alertObj,
-        severity: 'success',
-        message: `${t('messages.ldap_connection_success')}`,
-        show: true,
-      })
+      dispatch(updateToast(true, 'success', `${t('messages.ldap_connection_success')}`))
     } else {
-      setAlertObj({
-        ...alertObj,
-        severity: 'error',
-        message: `${t('messages.ldap_connection_error')}`,
-        show: true,
-      })
+      dispatch(updateToast(true, 'error', `${t('messages.ldap_connection_error')}`))
     }
   }, [testStatus])
 
@@ -443,11 +426,6 @@ function LdapForm({ item, handleSubmit, createLdap }) {
           modal={modal}
           onAccept={submitForm}
           formik={formik}
-        />
-        <GluuAlert
-          severity={alertObj.severity}
-          message={alertObj.message}
-          show={alertObj.show}
         />
       </GluuLoader>
     </Form>

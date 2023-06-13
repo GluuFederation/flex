@@ -81,11 +81,7 @@ def get_license_config(manager):
         manager.config.set("license_client_id", client_id)
         manager.secret.set("license_client_pw", client_secret)
 
-    # hardware key (unique per-installation)
-    hw_key = manager.config.get("license_hardware_key")
-    if not hw_key:
-        hw_key = str(uuid.uuid4())
-        manager.config.set("license_hardware_key", hw_key)
+    hw_key = payload.get("org_id", str(uuid.uuid4()))
 
     return {
         "license_hardware_key": hw_key,

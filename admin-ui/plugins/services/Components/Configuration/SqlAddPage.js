@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import SqlForm from './SqlForm'
-import { addSql } from 'Plugins/services/redux/actions/SqlActions'
+import { addSql } from 'Plugins/services/redux/features/sqlSlice'
 import { buildPayload } from 'Utils/PermChecker'
 
 function SqlAddPage({ dispatch }) {
@@ -14,7 +14,7 @@ function SqlAddPage({ dispatch }) {
       const message = data.sql.action_message
       delete data.sql.action_message
       buildPayload(userAction, message, data)
-      dispatch(addSql(userAction))
+      dispatch(addSql({ data: userAction }))
       navigate('/config/sql')
     }
   }

@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { changeUserPassword } from '../../redux/actions/UserActions'
+import { changeUserPassword } from '../../redux/features/userSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from '../../../../app/redux/actions'
 import { useFormik } from 'formik'
@@ -88,7 +88,7 @@ function UserForm({onSubmitData}) {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       options['pattern'] = searchClaims;
-      dispatch(getAttributesRoot(options))  
+      dispatch(getAttributesRoot({ options }))  
     }, 500)
 
     return () => clearTimeout(delayDebounceFn)
@@ -161,7 +161,9 @@ function UserForm({onSubmitData}) {
       if (userDetails.customAttributes[i].values) {
         const data = getCustomAttributeById(
           userDetails.customAttributes[i].name,
-        )
+        ) && { ...getCustomAttributeById(
+          userDetails.customAttributes[i].name,
+        )}
         if (
           data &&
           !usedClaimes.includes(userDetails.customAttributes[i].name)

@@ -13,10 +13,10 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
-import { getLdapConfig } from 'Plugins/services/redux/actions/LdapActions'
+import { getLdapConfig } from 'Plugins/services/redux/features/ldapSlice'
 import { getCustomScriptByType } from 'Plugins/admin/redux/features/customScriptSlice'
-import { setCurrentItem } from '../../redux/actions/AuthnActions'
-import { getAcrsConfig } from 'Plugins/auth-server/redux/actions/AcrsActions'
+import { setCurrentItem } from '../../redux/features/authNSlice'
+import { getAcrsConfig } from 'Plugins/auth-server/redux/features/acrSlice'
 
 function AuthNListPage() {
   const { t } = useTranslation()
@@ -96,7 +96,7 @@ function AuthNListPage() {
   }, [scripts])
 
   function handleGoToAuthNEditPage(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem({ item: row }))
     return navigate(`/auth-server/authn/edit/:` + row.inum)
   }
 

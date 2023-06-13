@@ -29,7 +29,7 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOper
   useEffect(() => {
     if (attributes.length === 0) {
       buildPayload(userAction, 'Fetch attributes', {})
-      dispatch(getAttributes(userAction))
+      dispatch(getAttributes({ options: userAction }))
     }
     if (scripts.length === 0) {
       buildPayload(userAction, 'Fetch custom scripts', {})

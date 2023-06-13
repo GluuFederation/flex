@@ -17,7 +17,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
-import { getHealthStatus } from 'Redux/actions/HealthAction'
+import { getHealthStatus } from 'Redux/features/healthSlice'
 import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
 import CheckIcon from '../../images/svg/check.svg'
@@ -138,7 +138,7 @@ function DashboardPage({
 
   function getServerStatus() {
     buildPayload(userAction, 'GET Health Status', options)
-    dispatch(getHealthStatus(userAction))
+    dispatch(getHealthStatus({ action: userAction }))
   }
 
   function getYearMonth(date) {

@@ -60,7 +60,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
     const interval = setInterval(() => {
       if (attributes.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch attributes', {})
-        dispatch(getAttributes(userAction))
+        dispatch(getAttributes({ options: userAction }))
       }
       if (clients.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch openid connect clients', {})

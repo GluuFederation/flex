@@ -1,10 +1,9 @@
 import { all, call, fork, put, takeLatest, select } from 'redux-saga/effects'
-import { GET_OIDC_DISCOVERY } from '../actions/types'
 import { getOidcDiscoveryResponse } from '../actions'
 import { isFourZeroOneError } from 'Utils/TokenController'
 import OidcDiscoveryApi from '../api/OidcDiscoveryApi'
 import { getClient } from '../api/base'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from '../features/authSlice'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -22,9 +21,9 @@ export function* getOidcDiscovery() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getOidcDiscovery)
-    yield put(getOidcDiscoveryResponse(data))
+    yield put(getOidcDiscoveryResponse({ configuration: data }))
   } catch (e) {
-    yield put(getOidcDiscoveryResponse(null))
+    yield put(getOidcDiscoveryResponse({ configuration: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -34,7 +33,7 @@ export function* getOidcDiscovery() {
 
 //watcher sagas
 export function* watchGetFidoConfig() {
-  yield takeLatest(GET_OIDC_DISCOVERY, getOidcDiscovery)
+  yield takeLatest('oidcDiscovery/getOidcDiscovery', getOidcDiscovery)
 }
 
 export default function* rootSaga() {
