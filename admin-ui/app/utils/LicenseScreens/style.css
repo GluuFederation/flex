@@ -38,3 +38,30 @@
     transform: rotate(360deg);
   }
 }
+
+.license-card {
+  min-width: 275px;
+  width: 50%;
+  border: 1px solid #00a361;
+  padding: 8px;
+}
+
+.license-card-actions {
+  padding: 0 16px 16px 16px;
+}
+
+.license-submit-btn {
+  background-color: #00a361 !important;
+  color: #fff !important;
+}
+
+.license-generate-btn {
+  color: #00a361 !important;
+  border: 2px solid #00a361 !important;
+}
+
+@media screen and (max-width: 680px) {
+  .license-card {
+    width: 100%;
+  }
+}

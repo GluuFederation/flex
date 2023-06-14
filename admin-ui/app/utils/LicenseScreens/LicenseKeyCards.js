@@ -4,11 +4,9 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkUserLicenceKey } from 'Redux/actions'
-import { useMediaQuery } from '@mui/material'
 
 const LicenseKeyCards = () => {
   const dispatch = useDispatch()
-  const isMobileDevice = useMediaQuery('(max-width:680px)')
   const [submitted, setIsSubmitted] = useState(false)
   const [licenseKey, setLicenseKey] = useState('')
 
@@ -28,7 +26,7 @@ const LicenseKeyCards = () => {
   }
 
   return (
-    <Card sx={{ minWidth: 275, width: isMobileDevice ? '100%' : '50%', border: '1px solid #00a361', padding: '8px' }}>
+    <Card className='license-card'>
       <CardContent>
         <Typography variant='h5' component='div' gutterBottom>
           Have a license key?
@@ -58,8 +56,7 @@ const LicenseKeyCards = () => {
               type='button'
               disabled={isLoading}
               onClick={() => submitLicenseKey()}
-              className='btn mt-2'
-              style={{ backgroundColor: '#00a361', color: 'white' }}
+              className='btn mt-2 license-submit-btn' 
             >
               {isLoading ? 'Submitting please wait...' : 'Submit'}
             </button>
