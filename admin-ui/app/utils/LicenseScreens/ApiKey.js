@@ -26,13 +26,12 @@ function ApiKey() {
           <div className='col-md-12 text-center my-5'>
             <img
               src={logo}
-              style={{ maxWidth: '200px' }}
-              className='img-fluid'
+              className='img-fluid license-screen-logo'
             />
           </div>
         </div>
         <div className='row'>
-          <div style={{color: '#00a361'  }} className='col-md-8 text-center h2 mx-auto mb-3'>
+          <div className='col-md-8 text-center h2 mx-auto mb-3 license-screen-title'>
             Welcome to Admin UI
           </div>
         </div>
@@ -43,13 +42,7 @@ function ApiKey() {
         </div>
 
         <Box className='row mt-3'>
-          <Box
-            display={'flex'}
-            justifyContent={'space-between'}
-            gap={4}
-            flexWrap={isMobileDevice && 'wrap'}
-            className='mx-auto col-md-8'
-          >
+          <Box className='mx-auto col-md-8 license-card-wrapper'>
             <GenerateLicenseCard />
             <LicenseKeyCards />
           </Box>

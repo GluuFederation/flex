@@ -60,8 +60,26 @@
   border: 2px solid #00a361 !important;
 }
 
+.license-screen-title {
+  color: #00a361 !important;
+}
+
+.license-screen-logo {
+  max-width: 200px !important;
+}
+
+.license-card-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 @media screen and (max-width: 680px) {
   .license-card {
     width: 100%;
+  }
+
+  .license-card-wrapper {
+    flex-wrap: wrap;
   }
 }
