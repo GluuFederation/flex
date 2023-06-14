@@ -10,38 +10,6 @@ This section contains settings used by Casa to establish a connection to the und
 
 ![local-database](../../assets/casa/admin-console/LocalDatabase.png)
 
-## oxd
-
-Casa leverages [oxd](https://oxd.gluu.org) to faciliate user authentication against its corresponding Gluu Server. oxd installation and configuration is prompted during Casa installation. To change or update details about the oxd server, or to configure and use an existing oxd deployment, navigate to the `oxd` page in the admin console.
-
-!!! Warning
-    Ensure your Gluu Server has "dynamic registration" of clients enabled and that "returnClientSecretOnRead" is set to true while you are applying changes here.
-
-![oxd-settings](../../assets/casa/admin-console/oxdSettings1.png)
-
-![oxd-settings-scopes](../../assets/casa/admin-console/oxdSettings2.png)
-
-![oxd-settings-summary](../../assets/casa/admin-console/oxdSettings3.png)
-    
-In case of lockout, visit the [FAQ document](./faq.md#oxd).
-
-### oxd Settings
-The following settings can be adjusted or viewed via the Casa admin console:
-
-- oxd server location: host and port of [oxd](https://gluu.org/docs/oxd). 
-
-- Scopes: The scopes to be requested from the authorization server when authentication takes place. Adding scopes to the set of pre-defined scopes allows plugin developers to have access to specific user attributes.
-
-- URI of the OpenID Provider (OP): This is the URL of the corresponding Gluu Server where users are sent for authentication, e.g. `https://idp.myorg.com`. 
-
-- Client Name: The name of the OpenID client that Casa uses to facilitate SSO with the Gluu Server. <!--, e.g. `Casa Production`.-->
-
-- Authorization Redirect URI: This is the URL of the Casa dashboard landing page that users are directed to after authentication. <!--, e.g. `https://idp.myorg.com/credentials`. -->
-
-- Post logout URI: The URL of the page that users should be directed to after they log out of Casa, e.g. `https://myorg.com`. 
-
-- oxd ID: Upon setting up the Casa client, the oxd ID will be automatically generated. It will look something like `2d88f886-0a8e-4249-af46-d47da0481349`
-
 ## Enabled Methods
 
 Updates need to be made in both the Gluu Server and Casa to get Casa operational.

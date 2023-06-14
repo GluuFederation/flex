@@ -1,5 +1,7 @@
 # Gluu Casa Quick Start Guide
 
+TODO: full rewrite needed
+
 ## Overview
 
 Gluu Casa is a self-service web portal for end-users to manage security preferences for their account in a [Gluu Server](https://gluu.org). Follow this guide to install and configure a deployment of Casa.

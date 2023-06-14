@@ -42,12 +42,12 @@ Particularly, ZK's default theme CSS file was disabled to offer a higher degree 
 
 ### External assets directory
 
-In the `/opt/gluu/jetty/casa/static` folder, you can place your own version of the main stylesheet and images Casa uses. No other stylesheet should be overriden.
+In the `/opt/jans/jetty/casa/static` folder, you can place your own version of the main stylesheet and images Casa uses. No other stylesheet should be overriden.
 
 To start, log in to the chroot and do the following:
 
 ```
-cd /opt/gluu/jetty/casa/static
+cd /opt/jans/jetty/casa/static
 jar -xf ../webapps/casa.war images styles/gluu/style.css  
 ```
 
@@ -56,7 +56,7 @@ This will copy the files you can edit later (these are the original versions pro
 If you place additional files in this directory, ensure ownership is set to recursive. For instance, you can:
 
 ```
-$ chown -R jetty:jetty /opt/gluu/jetty/casa/static/
+$ chown -R jetty:jetty /opt/jans/jetty/casa/static/
 ```
 
 ### Enable and apply your customizations
@@ -66,7 +66,7 @@ In the admin console, navigate to `Custom branding` > `Use Casa external assets 
 !!! Note  
     In CSS, the rules' order of appearance is important. Keep in mind that for all Casa pages, Bootstrap is loaded first, then style.css, and finally tachyons.css. This means rules for Tachyons have higher priority overall unless `!important` is used.  
     
-The main stylesheet (`style.css`) is located at `/opt/gluu/jetty/casa/static/styles/gluu` if you have followed the instructions above.
+The main stylesheet (`style.css`) is located at `/opt/jans/jetty/casa/static/styles/gluu` if you have followed the instructions above.
 
 Here are some tips for applying your customizations:
 

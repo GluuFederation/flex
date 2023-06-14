@@ -20,13 +20,7 @@ To publish the application at a location other than `/casa`, do the following:
 
     - Add the following directive: `Redirect /casa /<new-context-path>` before all `<Location>` and `<Proxy>` sections
 
-1. Adjust custom script settings:    
-
-    - Log in to oxTrust and go to `Configuration` > `Manage custom scripts`
-   
-    - On the "Person Authentication" tab, collapse the script labeled `casa` and adjust the "supergluu_app_id" property accordingly. Skip this step if your Casa installation has already been used for enrolling or authenticating via Super Gluu.
-   
-    - At the bottom, press the "Update" button
+1. Adjust custom script settings: adjust the "supergluu_app_id" property of the `casa` custom script accordingly
 
 1. Wait for around 1 minute (so the server picks the script changes), then restart Casa and Apache services. Use this [page](https://gluu.org/docs/gluu-server/4.4/operation/services/#restart) as a guide
 

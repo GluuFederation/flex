@@ -8,9 +8,7 @@ Gluu Casa ("Casa") is a self-service web portal for managing account security pr
 
 To log in to Casa, navigate to `https://<yourdomain>/casa`.
 
-![Login with linked account](../assets/casa/plugins/account-linking-login.png)
-
-If you have an existing account, sign in with your standard username and password. If you do not have an account, and external account linking is enabled, you can create a local account via social login or any other authentication provider available. 
+If you have an existing account, sign in with your standard username and password.
 
 ## Credential Dashboard
 
@@ -83,20 +81,6 @@ Add a nickname and click `Add`. Once added, the new device will appear in a list
 
 ![added-fido2](../assets/casa/view-fido2.png)
 
-### U2F security keys
-
-To add a new U2F credential, navigate to `2FA credentials` > `U2F Security Keys`. Insert the U2F key and click `Ready`. Casa will prompt to press the button on the U2F key.
-
-![add-u2f](../assets/casa/add-2fa-casa.png)
-
-Add a nickname and click `Add`.
-
-![nickname-u2f](../assets/casa/nickname-2fa-casa.png)
-
-Once it's added, the new device will appear in a list on the same page. Click the pencil to edit the device's nickname or the trashcan to delete the device.
-
-![added-u2f](../assets/casa/view-2fa-casa.png)
-    
 ### Super Gluu Devices
 
 To add a new Super Gluu device, navigate to `2FA credentials` > `Super Gluu Devices`.
@@ -140,7 +124,6 @@ To add a new mobile phone number for one-time passcodes, navigate to `2FA creden
 Enter a phone number and click 'Send SMS' to get the passcode. Enter the code received, nickname the mobile number, and click `Add`.
 
 Once it's added, the new mobile number will appear in a list on the same page. Click the pencil to edit the mobile number's nickname or the trashcan to delete the mobile number.
-
     
 ## Password Reset
 
@@ -149,29 +132,6 @@ If enabled by the system administrator, Casa can also be used to change your pas
 Navigate to the `Password Reset` widget. Enter your current and new passwords, then click `Change password`.
 
 ![change-password](../assets/casa/password-reset-casa.png)
-    
-## Account linking
-
-To manage accounts linked to outside sources, navigate to `Account Linking` on the left-hand menu. The item will only be accessible if the administrator has enabled this feature.
-
-![Nav Bar with Account Linking active](../assets/casa/plugins/account-linking-nav-bar.png)
-
-This presents the option to link new accounts, or edit existing linked accounts.
-
-![Options for linked accounts](../assets/casa/plugins/account-linking-options.png)
-
-Once an account is linked, it can be removed when necessary.
-
-![disable or remove linked account](../assets/casa/plugins/account-linking-remove.png)
-
-
-### Sign in with a linked account
-
-If the administrator has enabled the Account Linking plugin, a list with the configured external sites will be displayed on the right panel in the authentication web page. Click on an entry to trigger the given site's authentication process. After this is finished, you will be taken back to Casa.
-
-Note that users without a local password set yet don't have access to enroll credentials because the username + password combination is a prerequisite for multi-factor authentication. The user will be prompted to create a new password.
-
-![Login with linked account](../assets/casa/plugins/account-linking-need-password.png)
 
 ## Consent Management
 
