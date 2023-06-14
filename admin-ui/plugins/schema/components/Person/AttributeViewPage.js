@@ -7,9 +7,9 @@ import AttributeForm from './AttributeForm'
 import { editAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-function AttributeEditPage({ item, loading, dispatch }) {
-  if (!item.attributeValidation) {
-    item.attributeValidation = {
+function AttributeEditPage({ item: { ...extensibleItems }, loading, dispatch }) {
+  if (!extensibleItems.attributeValidation) {
+    extensibleItems.attributeValidation = {
       maxLength: null,
       regexp: null,
       minLength: null,
@@ -27,7 +27,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AttributeForm
-            item={item}
+            item={{ ...extensibleItems, attributeValidation: { ...extensibleItems.attributeValidation } }}
             customOnSubmit={customHandleSubmit}
             hideButtons={{ save: true }}
           />
