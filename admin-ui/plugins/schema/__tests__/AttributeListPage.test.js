@@ -1,8 +1,8 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import AttributeListPage from './AttributeListPage' 
+import AttributeListPage from '../presentation/pages/AttributeListPage' 
 import { Provider } from 'react-redux'
-import attributes from './attributes'
+import attributes from '../utils/attributes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 

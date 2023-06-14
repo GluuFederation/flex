@@ -14,8 +14,8 @@ import {
   UPDATE,
   DELETION,
   FETCH,
-} from '../../../../app/audit/UserActionType'
-import AttributeApi from '../api/AttributeApi'
+} from '../../../../../app/audit/UserActionType'
+import AttributeApi from '../../api/AttributeApi'
 import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 

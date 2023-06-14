@@ -1,8 +1,8 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import AttributeDetailPage from './AttributeDetailPage'
-import i18n from '../../../../app/i18n'
-import attributes from './attributes'
+import AttributeDetailPage from '../presentation/pages/AttributeDetailPage'
+import i18n from '../../../app/i18n'
+import attributes from '../utils/attributes'
 import { I18nextProvider } from 'react-i18next'
 import { ThemeProvider } from 'Context/theme/themeContext'
 

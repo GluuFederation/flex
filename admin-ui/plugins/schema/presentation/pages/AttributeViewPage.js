@@ -2,12 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
-import AttributeForm from './AttributeForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { editAttribute } from 'Plugins/schema/redux/features/attributeSlice'
+import AttributeForm from '../components/Person/AttributeForm'
+import { editAttribute } from 'Plugins/schema/infrastructure/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-function AttributeEditPage({ item: { ...extensibleItems } , loading, dispatch }) {
+function AttributeEditPage({ item: { ...extensibleItems }, loading, dispatch }) {
   if (!extensibleItems.attributeValidation) {
     extensibleItems.attributeValidation = {
       maxLength: null,
@@ -26,7 +26,11 @@ function AttributeEditPage({ item: { ...extensibleItems } , loading, dispatch })
     <GluuLoader blocking={loading}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          <AttributeForm item={{ ...extensibleItems, attributeValidation: { ...extensibleItems.attributeValidation } }} customOnSubmit={customHandleSubmit} />
+          <AttributeForm
+            item={{ ...extensibleItems, attributeValidation: { ...extensibleItems.attributeValidation } }}
+            customOnSubmit={customHandleSubmit}
+            hideButtons={{ save: true }}
+          />
         </CardBody>
       </Card>
     </GluuLoader>

@@ -1,10 +1,10 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import AttributeAddPage from './AttributeAddPage'
+import AttributeEditPage from '../presentation/pages/AttributeEditPage' 
 import { Provider } from 'react-redux'
+import attributes from '../utils/attributes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
   'https://jans.io/oauth/config/attributes.write',
@@ -14,23 +14,7 @@ const INIT_STATE = {
   permissions: permissions,
 }
 const INIT_ATTRIBUTE_STATE = {
-  items: [
-    {
-      name: 'givenName',
-      inum: 'B4B0',
-      displayName: 'givenName',
-      description: 'First Name',
-      status: 'ACTIVE',
-      dataType: 'STRING',
-      editType: 'ADMIN',
-      viewType: 'ADMIN',
-      usageType: 'OPENID',
-      jansHideOnDiscovery: false,
-      oxMultiValuedAttribute: false,
-      attributeValidation: { maxLength: null, regexp: null, minLength: null },
-      scimCustomAttr: false,
-    },
-  ],
+  items: [attributes[0]],
   item: {},
   loading: false,
 }
@@ -45,12 +29,14 @@ const store = configureStore({
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>
-    <Provider store={store}>{children}</Provider>
+    <Provider store={store}>
+      {children}
+    </Provider>
   </AppTestWrapper>
 )
 
-it('Should render the attribute add page properly', () => {
-  render(<AttributeAddPage />, { wrapper: Wrapper })
+it('Should render the attribute edit page properly', () => {
+  render(<AttributeEditPage />, { wrapper: Wrapper })
   screen.getByText(/Display Name/)
   screen.getByText(/Description/)
   screen.getByText(/Status/)

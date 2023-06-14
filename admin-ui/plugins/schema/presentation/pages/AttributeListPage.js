@@ -22,7 +22,7 @@ import {
   searchAttributes,
   setCurrentItem,
   deleteAttribute,
-} from 'Plugins/schema/redux/features/attributeSlice'
+} from 'Plugins/schema/infrastructure/redux/features/attributeSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
