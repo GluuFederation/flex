@@ -2,13 +2,11 @@
  * License Sagas
  */
 import { all, call, fork, put, take, takeEvery } from 'redux-saga/effects'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse } from '../actions'
+import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse, generateTrialLicenseResponse } from '../actions'
 
 import LicenseApi from '../api/LicenseApi'
-import { getClient, getClientWithToken } from '../api/base'
-import {
-  checkUserLicenseKeyResponse,
-} from '../actions'
+import { getClientWithToken } from '../api/base'
+import { checkUserLicenseKeyResponse } from '../actions'
 import {
   activateLicense,
   fetchApiTokenWithDefaultScopes,
@@ -36,7 +34,31 @@ function* checkLicensePresentWorker() {
   } catch (error) {
     console.log('Error in checking License present.', error)
   }
-  yield put(checkLicensePresentResponse())
+  yield put(checkLicensePresentResponse({ isLicenseValid: false }))
+}
+
+function* generateTrailLicenseKey() {
+  try {
+    const licenseApi = yield* getApiTokenWithDefaultScopes()
+    const response = yield call(licenseApi.getTrialLicense)
+
+    if (response?.responseObject?.['license-key']) {
+      try {
+        const activateLicense = yield call(licenseApi.submitLicenseKey, {
+          payload: {
+            licenseKey: response.responseObject['license-key']
+          }
+        })
+        yield put(generateTrialLicenseResponse(activateLicense))
+        yield put(checkLicensePresentResponse({ isLicenseValid: activateLicense?.apiResult }))
+      } catch (error) {
+        yield put(checkLicensePresentResponse({ isLicenseValid: false }))
+        yield put(generateTrialLicenseResponse(null))
+      }
+    }
+  } catch (error) {
+    console.log('Error in generating key.', error)
+  }
 }
 
 function* activateCheckUserLicenseKey({ payload }) {
@@ -80,7 +102,7 @@ export function* checkLicensePresentWatcher() {
   yield takeEvery('license/checkUserLicenceKey', activateCheckUserLicenseKey)
   yield takeEvery('license/checkLicenseConfigValid', checkAdminuiLicenseConfig)
   yield takeEvery('license/uploadNewSsaToken', uploadNewSsaToken)
-  
+  yield takeEvery('license/generateTrialLicense', generateTrailLicenseKey)
 }
 
 /**

@@ -9,7 +9,8 @@ const initialState = {
   isLoading: false,
   isConfigValid: null,
   error: '',
-  errorSSA: ''
+  errorSSA: '',
+  generatingTrialKey: false
 }
 
 const licenseSlice = createSlice({
@@ -28,13 +29,12 @@ const licenseSlice = createSlice({
       state.error = ''
     },
     checkUserLicenseKeyResponse: (state, action) => {
+      state.isLoading = false
       if (action.payload?.apiResult) {
         state.isLicenseValid = action.payload.apiResult
         state.error = ''
-        state.isLoading = false
       } else {
         state.error = action.payload.responseMessage
-        state.isLoading = false
       }
     },
     checkLicensePresentResponse: (state, action) => {
@@ -57,6 +57,12 @@ const licenseSlice = createSlice({
     uploadNewSsaTokenResponse: (state, action) => {
       state.isLoading = false
       state.errorSSA = action?.payload
+    },
+    generateTrialLicense: (state) => {
+      state.generatingTrialKey = true
+    },
+    generateTrialLicenseResponse: (state) => {
+      state.generatingTrialKey = false
     }
   },
 })
@@ -70,7 +76,9 @@ export const {
   checkLicenseConfigValid,
   checkLicenseConfigValidResponse,
   uploadNewSsaToken,
-  uploadNewSsaTokenResponse
+  uploadNewSsaTokenResponse,
+  generateTrialLicense,
+  generateTrialLicenseResponse
 } = licenseSlice.actions
 
 export default licenseSlice.reducer

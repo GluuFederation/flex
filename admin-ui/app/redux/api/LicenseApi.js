@@ -57,12 +57,20 @@ export default class LicenseApi {
       })
     })
   }
-  permission
+  
   deletePermission = async (data) => {
     const options = {}
     options['adminPermission'] = data
     return new Promise((resolve, reject) => {
       this.api.deleteAdminuiPermission(options, (error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+
+  getTrialLicense = async () => {
+    return new Promise((resolve, reject) => {
+      this.api.getTrialLicense((error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
