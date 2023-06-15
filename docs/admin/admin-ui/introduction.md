@@ -12,15 +12,15 @@ During installation, we need to provide a Software Statement Assertion (SSA) whi
 
 ## Flex License
 
-After installation Admin UI can be accessed on `https://hostname/admin` (the `hostname` is provided during setup). The web interface can be accessed only after submitting a valid `license key` issue from Gluu.
+After installation Admin UI can be accessed on `https://hostname/admin` (the `hostname` is provided during setup). This web interface can be accessed only after submitting a valid `license key` issue from Gluu.
 
-User can generate a 30 days trial license using this interface. To enjoy long time uninterrupted access to Admin UI get a flex license-key issued from Gluu.     
+User can also generate a 30 days trial license. To enjoy long time uninterrupted access to Admin UI get a flex license-key issued from Gluu.     
 
-The application will not ask for license-key again (when accessing Admin UI) until it is expired.
+The application will not ask for license key again until it is expired.
 
 ![image](../../assets/admin-ui/license-key-submit.png)
 
-Log into Admin UI using the default username (`admin`) and the `password` (the admin password provided during installation).
+After license activation, the user can log into Admin UI using the default username (`admin`) and the `password` (the admin password provided during installation).
 
 ![image](../../assets/admin-ui/login-page.png)
 
