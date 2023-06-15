@@ -6,29 +6,31 @@ After successful authentication, the administrator is taken to the Dashboard.
 
 ## Dashboard fields descriptions
 
-- **OIDC Clients Count:** The count of clients OIDC clients created on auth server.
-- **Active Users Count:** The count of users on auth server with `active` status.
-- **Token Issued Count:** This figure is the sum of access-tokens with grant-type `client credentials` and `authorization code` and id-token.
-- **OAuth server status:** This field shows the health status of the auth server. For e.g. `Running` or `Down`.
-- **Database status:** This field shows the health status of the persistence (e.g. LDAP, MySQL, Google spanner etc).
+- **OIDC Clients Count:** The count of OIDC clients created on auth server.
+- **Active Users Count:** The count of `active` users on auth server.
+- **Token Issued Count:** This figure is the sum of the total access-tokens with grant-type `client credentials` and `authorization code` and id-token.
+- **OAuth server status:** The health status of the auth server. For e.g. `Running` or `Down`.
+- **Database status:** The health status of the persistence (e.g. LDAP, MySQL, Google spanner etc).
 
 #### License Details
 
-- **Product Name:** The name of the product created on [LicenseSpring](https://licensespring.com/) platform. The license issued for Admin UI activation is created under this product. Check LicenseSpring [docs](https://docs.licensespring.com/docs/getting-started#configureyourproductwithinthelicensespringplatform) for more details.
+Admin UI uses [LicenseSpring](https://licensespring.com/) platform for customer license management. 
+
+- **Product Name:** The name of the product created on LicenseSpring platform. The license issued for Admin UI activation is created under this product. Check LicenseSpring [docs](https://docs.licensespring.com/docs/getting-started#configureyourproductwithinthelicensespringplatform) for more details.
 - **License Type:** The type of license issued. For e.g. Perpetual, Time Limited, Subscription and Consumption.
 - **Customer Email:** To issue a license, we need to enter customer details like first name, last name, company, email and phone number in the LicenseSpring platform. This field displays the email of the customer of the license.
-- **Company Name:** The company name of license.
-- **License Status:** This status of the license (e.g. active or inactive).
+- **Company Name:** The company name of the registered product.
+- **License Status:** The status of the license (e.g. active or inactive).
 
 ## Access Token Graph
 
-The dashboard has the bar graph showing month-wise access-token with grant-type `client credentials` and `authorization code` and id-token generated from auth server.
+The dashboard has a bar graph showing month-wise access-token with grant-type `client credentials` and `authorization code` and id-token generated from auth server.
 
 ![image](../../assets/admin-ui/access-token-graph.png)
 
 ## Localization and Theme selection
 
-Admin UI supports localization. The default language is English. The other supported languages are French and Portuguese. A new preferred language can be selected from the top right corner of the dashboard.
+Admin UI supports localization. The default language is English. The other supported languages are French and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.
 
 ![image](../../assets/admin-ui/localization.png)
 
