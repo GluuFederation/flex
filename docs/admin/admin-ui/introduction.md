@@ -1,3 +1,9 @@
+---
+tags:
+- installation
+- license
+---
+
 # Overview
 
 Gluu Flex Admin UI is a reactive web interface to simplify the management and configuration of your Auth Server. It is one of the key services of Gluu Flex that enables viewing and editing configuration properties, interception scripts, clients, users, metrics, etc at one place.

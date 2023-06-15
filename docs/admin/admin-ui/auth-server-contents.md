@@ -1,3 +1,14 @@
+---
+tags:
+- auth server
+- sessions
+- configuration
+- keys
+- logging
+- clients
+- scopes
+---
+
 # Overview
 
 The **Auth Server** menu covers the following important sub-menus to configure and manage Auth server.

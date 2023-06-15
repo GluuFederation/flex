@@ -1,3 +1,11 @@
+---
+tags:
+- admin
+- role
+- permission
+- scripts
+- mau
+---
 # Overview
 
 The features like managing Roles and Permissions, Custom Scripts and monthly active users monitoring are placed under **Admin** menu (in the left navigation). These features will be discussed one by one in this section.
