@@ -1,6 +1,6 @@
 # Overview
 
-The Auth Server menu covers the following important sub-menus to configure and manage Auth server.
+The **Auth Server** menu covers the following important sub-menus to configure and manage Auth server.
 - Sessions
 - Server configuration
 - Keys
@@ -12,7 +12,7 @@ The Auth Server menu covers the following important sub-menus to configure and m
 
 ## Sessions
 
-The Janssen Server OP stores user session data in persistence. This screen lists the active session details and the administrator can revoke the sessions of the selected user.
+The Janssen Auth Server stores user session data in persistence. This screen lists the active session details and the administrator can revoke the sessions of the selected user.
 
 ![image](../../assets/admin-ui/sessions.png)
 
@@ -44,7 +44,7 @@ The logged-in user with appropriate permissions can view, register, edit and del
 
 ![image](../../assets/admin-ui/client.png)
 
-The Client Metadatas are as follows:
+The Client Metadata are as follows:
 
 |Client fields|Description|
 |-------------|-----------|

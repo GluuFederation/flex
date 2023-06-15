@@ -45,6 +45,19 @@ The below table lists the Permissions for access control of the features:
 |https://jans.io/oauth/config/smtp.delete|Remove SMTP configuration|
 |https://jans.io/oauth/config/logging.readonly|View Auth server log configuration|
 |https://jans.io/oauth/config/logging.write|Edit Auth server log configuration|
+|https://jans.io/oauth/config/database/ldap.readonly|View LDAP persistence configuration|
+|https://jans.io/oauth/config/database/ldap.write|Edit LDAP persistence configuration|
+|https://jans.io/oauth/config/database/ldap.delete|Delete LDAP persistence configuration|
+|https://jans.io/oauth/config/jwks.readonly|View JWKS|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly|View Admin UI Roles|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write|Edit Admin UI Roles|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete|Delete Admin UI Roles|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly|View Admin UI Permissions|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write|Edit Admin UI Permissions|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete|Delete Admin UI Permissions|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly|View Role-Permission Mapping|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write|Edit Role-Permission Mapping|
+|https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete|Delete Role-Permission Mapping|
 
 ## Custom Scripts
 
