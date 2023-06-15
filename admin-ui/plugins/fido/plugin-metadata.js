@@ -1,7 +1,7 @@
-import { reducer as fidoReducer } from './redux/features/fidoSlice'
-import fidoSaga from './redux/sagas/FidoSaga'
+import { reducer as fidoReducer } from './infrastructure/redux/features/fidoSlice'
+import fidoSaga from './infrastructure/redux/sagas/FidoSaga'
 import { FIDO_READ, FIDO_WRITE } from '../../app/utils/PermChecker'
-import Fido from './components/FidoManagement/Fido'
+import Fido from './presentation/pages/Fido'
 
 
 const PLUGIN_BASE_PATH = '/fido'

@@ -7,15 +7,13 @@ import {
   select,
   takeEvery,
 } from 'redux-saga/effects'
-import { getAPIAccessToken } from '../../../../app/redux/features/authSlice'
-import {
-  isFourZeroOneError,
-} from '../../../../app/utils/TokenController'
-import { getClient } from '../../../../app/redux/api/base'
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
+import { isFourZeroOneError } from 'Utils/TokenController'
+import { getClient } from 'Redux/api/base'
+import { initAudit } from 'Redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
-import FidoApi from '../api/FidoApi'
+import { postUserAction } from 'Redux/api/backend-api'
+import FidoApi from '../../../infrastructure/api/FidoApi'
 import { getFidoConfiguration, getFidoConfigurationResponse } from '../features/fidoSlice'
 
 const JansConfigApi = require('jans_config_api')

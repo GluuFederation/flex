@@ -1,57 +1,30 @@
 import React, { useState, useContext } from 'react'
-import { Button, Row, Col, Form, FormGroup } from '../../../../app/components'
+import { Row, Col, Form, FormGroup } from '../../../../app/components'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
 import { useFormik } from 'formik'
-import * as Yup from 'yup'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { staticConfigInitValues, staticConfigValidationSchema } from '../../domain/use-cases/staticConfigUseCases'
 
 function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido.fido2Configuration;
 
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
   const toggle = () => {
     setModal(!modal)
   }
-  const initialValues = {
-    authenticatorCertsFolder: staticConfiguration?.authenticatorCertsFolder || "",
-    mdsAccessToken: staticConfiguration?.mdsAccessToken || "",
-    mdsCertsFolder: staticConfiguration?.mdsCertsFolder || "",
-    mdsTocsFolder: staticConfiguration?.mdsTocsFolder || "",
-    checkU2fAttestations: staticConfiguration?.checkU2fAttestations || false,
-    unfinishedRequestExpiration: staticConfiguration?.unfinishedRequestExpiration || "",
-    authenticationHistoryExpiration: staticConfiguration?.authenticationHistoryExpiration || "",
-    serverMetadataFolder: staticConfiguration?.serverMetadataFolder || "",
-    userAutoEnrollment: staticConfiguration?.userAutoEnrollment,
-    requestedCredentialTypes: staticConfiguration?.requestedCredentialTypes || "",
-    requestedParties: staticConfiguration?.requestedParties || "",
 
-  }
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues: staticConfigInitValues(staticConfiguration),
     onSubmit: (values) => {
       toggle()
     },
-    validationSchema: Yup.object({
-      authenticatorCertsFolder: Yup.string().required('Authenicator Certificates Folder is required.'),
-      mdsCertsFolder: Yup.string().required('MDS TOC Certificates Folder is required.'),
-      mdsTocsFolder: Yup.string().required('MDS TOC Files Folder is required.'),
-      checkU2fAttestations: Yup.boolean().required('Check U2F Attestations is required.'),
-      unfinishedRequestExpiration: Yup.string().required('Unfinished Request Expiration is required.'),
-      authenticationHistoryExpiration: Yup.string().required('Authenication History Expiration  is required.'),
-      serverMetadataFolder: Yup.string().required('Server Metadata is required.'),
-      userAutoEnrollment: Yup.boolean().required('User Auto Enrollment is required.'),
-    }),
+    validationSchema: staticConfigValidationSchema,
     setFieldValue: (field) => {
       delete values[field]
     },
