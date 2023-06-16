@@ -53,7 +53,7 @@ jobs:
         cd jans/terraform-provider-jans
         
         go install github.com/jstemmer/go-junit-report/v2@latest
-        go test -json -v ./... 2>&1 | go-junit-report -parser gojson > ${{ matrix.persistence-backends }}report.xml || exit 0
+        go test -v 2>&1 ./... | go-junit-report > ${{ matrix.persistence-backends }}report.xml
         ls
         pwd
 
