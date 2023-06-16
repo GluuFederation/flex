@@ -1,5 +1,7 @@
 ---
 tags:
+- administration
+- admin-ui
 - auth server
 - sessions
 - configuration
@@ -9,7 +11,7 @@ tags:
 - scopes
 ---
 
-# Overview
+# Auth Server Menu
 
 The **Auth Server** menu covers the following important sub-menus to configure and manage Auth server.
 - Sessions
@@ -23,13 +25,13 @@ The **Auth Server** menu covers the following important sub-menus to configure a
 
 ## Sessions
 
-The Janssen Auth Server stores user session data in persistence. This screen lists the active session details and the administrator can revoke the sessions of the selected user.
+The Janssen Authentication Server stores user session data in persistence. This screen lists the active session details and the administrator can revoke the sessions of the selected user.
 
 ![image](../../assets/admin-ui/sessions.png)
 
 ## Keys
 
-The JWKS is a set of keys containing the public keys that should be used to verify any JSON Web Token (JWT) issued by the authorization server.
+The JSON Web Key Sets (JWKS) is a set of public keys that should be used to verify any JSON Web Token (JWT) issued by the authorization server.
 
 ![image](../../assets/admin-ui/jwks.png)
 
@@ -51,11 +53,11 @@ Following AS configuration properties can be used to customize AS logging:
 
 ## Clients
 
-The logged-in user with appropriate permissions can view, register, edit and delete OIDC clients on auth server using Admin UI.
+The logged-in user with appropriate permissions can view, register, edit and delete OIDC clients on auth server using Gluu Flex Admin UI.
 
 ![image](../../assets/admin-ui/client.png)
 
-The Client Metadata are as follows:
+The Client details are as follows:
 
 |Client fields|Description|
 |-------------|-----------|
@@ -121,7 +123,7 @@ The Client Metadata are as follows:
 
 ## Scopes
 
-Scope is a mechanism to limit an application's access to a user's account. An application can request one or more scopes, this information is then presented to the user in the consent screen, and the access token issued to the application will be limited to the scopes granted.
+The scope is a mechanism to limit an application's access to a user's account. An application can request one or more scopes, this information is then presented to the user in the consent screen, and the access token issued to the application will be limited to the scopes granted.
 
 For an OpenID Connect, the scope can be mapped with user claims.
 
@@ -129,7 +131,7 @@ For an OpenID Connect, the scope can be mapped with user claims.
 
 ### Spontaneous scopes
 
-Spontaneous scopes are scopes with random part in it which are not known in advance. For example: transaction:4685456787, pis-552fds where 4685456787 or 552fds are generated part of the scope.
+Spontaneous scopes are scopes with random part in it which are not known in advance. For e.g. transaction:4685456787, pis-552fds where 4685456787 or 552fds are generated part of the scope.
 
 Spontaneous scopes are disabled by default and can be enabled per client. The admins cannot create a spontaneous scope. Creation only happens when an authorized client presents a spontaneous scope at the token endpoint. There are the following client properties available during dynamic registration of the client related to spontaneous scopes:
 
@@ -138,11 +140,11 @@ Spontaneous scopes are disabled by default and can be enabled per client. The ad
 
 ### UMA scopes
 
-UMA scope can be created by either user logged-in user (admin) or auth server can auto-created UMA scope. UMA scope cannot be modified using Admin UI.
+UMA scope can either be created by the user or auto-created by the auth server. UMA scope cannot be modified using Gluu Flex Admin UI.
 
-- If the logged-in user creates UMA scope then the creator-type will be `USER` and the creatorId will be logged-in user INUM.
+- If the logged-in user creates UMA scope then the creator type will be `USER` and the creator Id will be logged-in user's INUM.
 
-- If auth server has auto-created a UMA scope then it will have creator-type as `AUTO` and an empty creator Id.
+- If auth server has auto-created a UMA scope then it will have the creator type as `AUTO` and no creator Id.
 
 ### Dynamic Scopes
 

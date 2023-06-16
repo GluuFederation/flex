@@ -1,34 +1,36 @@
 ---
 tags:
+- administration
+- admin-ui
 - admin
 - role
 - permission
 - scripts
 - mau
 ---
-# Overview
+# Admin Menu
 
-The features like managing Roles and Permissions, Custom Scripts and monthly active users monitoring are placed under **Admin** menu (in the left navigation). These features will be discussed one by one in this section.
+The features like managing Roles and Permissions, Custom Scripts and monthly active users monitoring are placed under the **Admin** menu (in the left navigation of GUI). These features will be discussed one by one in this section.
 
-## Role and Permission Management
+## GUI Access Control
 
-The administrator can control user access to pages and services of Admin UI by adding or removing the permissions mapped to the user's role.
+The administrator can control view/edit/delete access of users of Gluu Flex Admin UI by adding or removing the appropriate Permissions mapped to the user's Admin UI Role. For e.g. if the **read** Permission of OIDC clients (`https://jans.io/oauth/config/clients.readonly`) is not mapped to the logged-in user's Role, the contents of the page showing OIDC client records will not be visible to the user. In the same way, if the write and delete Permissions of OIDC clients are not mapped then the user will not be able to edit or delete any OIDC client.
 
-### Admin UI Role
+### Role
 
-The logged-in administrator can create, edit or destroy Admin UI Roles using the `Admin UI Roles` Page. The Admin UI Role can be assigned to the user using the User Management feature of this GUI. After installation, the following Roles can be seen on Admin UI: api-viewer, api-editor, api-manager and api-admin. The default user of Admin UI i.e. `admin` is assigned with api-admin role. A user with one or more Admin UI Role(s) assigned will be able to log in to Admin UI.
+The logged-in administrator can create, edit or delete Admin UI Roles using the `Admin UI Roles` Page. The Admin UI Role can be assigned to the user using the User Management feature of this GUI. After installation, the following Admin UI Roles can be seen on Admin UI: api-viewer, api-editor, api-manager and api-admin. The default user i.e. `admin` is assigned with api-admin role. A user with one or more Admin UI Role(s) assigned will be able to log into Gluu Flex Admin UI.
 
 ![image](../../assets/admin-ui/role.png)
 
 ### Permissions (Scopes)
 
-Admin UI uses [Config API](https://github.com/JanssenProject/jans/tree/main/jans-config-api) to manage and configure the Jans Auth server. Config API helps in configuring auth-server, users, fido2 and scim modules. The APIs of this rest application are protected using an authorization token containing the appropriate permissions (scopes). Admin UI has the capability to add, edit and delete the Permissions used to access the APIs (i.e. APIs used by Admin UI).
+Gluu Flex Admin UI uses [Config API](https://github.com/JanssenProject/jans/tree/main/jans-config-api) to manage and configure the Jans Auth server. Config API helps in configuring auth-server, users, fido2 and scim modules. The APIs of this rest application are protected using an authorization token containing the appropriate permissions (scopes). The user interface has the capability to add, edit and delete the Permissions used to access the APIs (i.e. APIs used by Gluu Flex Admin UI).
 
 ![image](../../assets/admin-ui/permission.png)
 
 ### Role-Permission Mapping
 
-The administrator can map the Admin UI Role(s) with one or more permissions using the Role-Permission Mapping page. The Role mapped with Permissions can be then assigned to the user to allow access to the corresponding pages and features of the GUI.
+The administrator can map the Admin UI Role(s) with one or more Permission(s) using the Role-Permission Mapping page. The Role mapped with Permissions can be then assigned to the user to allow access to the corresponding pages and operations of the GUI.
 
 ![image](../../assets/admin-ui/role-permission.png)
 
@@ -69,7 +71,7 @@ The below table lists the Permissions for access control of the features:
 
 ## Custom Scripts
 
-[Custom Scripts](https://docs.jans.io/head/admin/developer/scripts/) are used to implement custom business logic for authentication, authorization, client registration, cache refresh, scopes, token revocation etc. The Jans-Auth Server leverages Custom Scripts when implemented can facilitate complex business workflows without changing the auth server code. Admin UI provides the interface to add/edit/delete custom scripts.
+[Custom Scripts](https://docs.jans.io/head/admin/developer/scripts/) are used to implement custom business logic for authentication, authorization, client registration, cache refresh, scopes, token revocation etc. The Janssen Authentication Server leverages Custom Scripts when implemented can facilitate complex business workflows without changing the server code. Gluu Flex Admin UI provides the interface to add/edit/delete custom scripts.
 
 ![image](../../assets/admin-ui/custom-scripts.png)
 

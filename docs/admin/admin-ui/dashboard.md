@@ -1,6 +1,13 @@
+---
+tags:
+- administration
+- admin-ui
+- dashboard
+---
+
 # Dashboard
 
-After successful authentication, the administrator is taken to the Dashboard.
+After successful authentication, the administrator is taken to the Dashboard. The dashboard brings an organized presentation of crucial details in one place adding to the convenience of users in tracking and analysis.
 
 ![image](../../assets/admin-ui/dashboard.png)
 
@@ -10,13 +17,13 @@ After successful authentication, the administrator is taken to the Dashboard.
 - **Active Users Count:** The count of `active` users on auth server.
 - **Token Issued Count:** This figure is the sum of the total access-tokens with grant-type `client credentials` and `authorization code` and id-token.
 - **OAuth server status:** The health status of the auth server. For e.g. `Running` or `Down`.
-- **Database status:** The health status of the persistence (e.g. LDAP, MySQL, Google spanner etc).
+- **Database status:** The health status of the persistence (e.g. LDAP, MySQL, Google Spanner etc).
 
 #### License Details
 
-Admin UI uses [LicenseSpring](https://licensespring.com/) platform for customer license management. 
+Admin UI uses [LicenseSpring](https://licensespring.com/) platform for customer license management.
 
-- **Product Name:** The name of the product created on LicenseSpring platform. The license issued for Admin UI activation is created under this product. Check LicenseSpring [docs](https://docs.licensespring.com/docs/getting-started#configureyourproductwithinthelicensespringplatform) for more details.
+- **Product Name:** The name of the product created on the LicenseSpring platform. The license issued for Admin UI activation is created under this product. Check LicenseSpring [docs](https://docs.licensespring.com/docs/getting-started#configureyourproductwithinthelicensespringplatform) for more details.
 - **License Type:** The type of license issued. For e.g. Perpetual, Time Limited, Subscription and Consumption.
 - **Customer Email:** To issue a license, we need to enter customer details like first name, last name, company, email and phone number in the LicenseSpring platform. This field displays the email of the customer of the license.
 - **Company Name:** The company name of the registered product.
