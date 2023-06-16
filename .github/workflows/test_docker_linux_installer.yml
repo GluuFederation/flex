@@ -51,4 +51,12 @@ jobs:
         export TF_ACC=1
         git clone https://github.com/JanssenProject/jans.git
         cd jans/terraform-provider-jans
-        go test -v ./... || exit 0
+        
+        go install github.com/jstemmer/go-junit-report/v2@latest
+        go test -json -v ./... 2>&1 | go-junit-report -parser gojson > report.xml || exit 0
+
+    - uses: actions/upload-artifact@v2  # upload test results
+      if: success() || failure()        # run this step even if previous step failed
+      with:
+        name: go-test-results
+        path: reportt.xml
