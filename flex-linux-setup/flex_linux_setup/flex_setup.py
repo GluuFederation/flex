@@ -68,6 +68,13 @@ def get_flex_setup_parser():
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
+profile = None
+profile_fn = os.path.join(__STATIC_SETUP_DIR__, 'profile')
+if os.path.exists(profile_fn):
+    with open(profile_fn) as f:
+        profile = f.read().strip()
+    print("Profile was detected as \033[1m{}\033[0m.".format(profile))
+
 if os.path.join(__STATIC_SETUP_DIR__, 'flex/flex-linux-setup') == cur_dir:
     jans_installer_downloaded = True
     flex_installer_downloaded = True
@@ -127,6 +134,11 @@ if not jans_installer_downloaded:
         shutil.unpack_archive(jans_zip_file, unpack_dir)
         shutil.copytree(os.path.join(unpack_dir, parent_dir, 'jans-linux-setup/jans_setup'), __STATIC_SETUP_DIR__)
         jans_zip.close()
+
+    if profile:
+        print("Writing profile \033[1m{}\033[0m to file {}.".format(profile, profile_fn))
+        with open(profile_fn, 'w') as w:
+            w.write(profile)
 
     sys.path.append(__STATIC_SETUP_DIR__)
     from setup_app import downloads
