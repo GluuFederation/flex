@@ -7,7 +7,7 @@ tags:
 
 # Dashboard
 
-After successful authentication, the administrator is taken to the Dashboard. The dashboard brings an organized presentation of crucial details in one place adding to the convenience of users in tracking and analysis.
+After successful authentication, the administrator is taken to the dashboard. The dashboard brings an organized presentation of crucial details in one place adding to the convenience of users in tracking and analysis of auth server and other details.
 
 ![image](../../assets/admin-ui/dashboard.png)
 
@@ -15,7 +15,7 @@ After successful authentication, the administrator is taken to the Dashboard. Th
 
 - **OIDC Clients Count:** The count of OIDC clients created on auth server.
 - **Active Users Count:** The count of `active` users on auth server.
-- **Token Issued Count:** This figure is the sum of the total access-tokens with grant-type `client credentials` and `authorization code` and id-token.
+- **Token Issued Count:** This figure is the sum of the access-tokens with grant-type `client credentials` and `authorization code` and id-token.
 - **OAuth server status:** The health status of the auth server. For e.g. `Running` or `Down`.
 - **Database status:** The health status of the persistence (e.g. LDAP, MySQL, Google Spanner etc).
 
