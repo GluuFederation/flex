@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: dorny/test-reporter@v1
       with:
-        artifact: go-test-resultsk
+        artifact: go-test-results
         name: Go Tests
         path: '*.xml'
         reporter: java-junit
