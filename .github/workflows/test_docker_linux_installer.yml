@@ -59,4 +59,4 @@ jobs:
       if: success() || failure()        # run this step even if previous step failed
       with:
         name: go-test-results
-        path: reportt.xml
+        path: report.xml
