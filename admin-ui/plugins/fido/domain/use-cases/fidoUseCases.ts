@@ -1,3 +1,5 @@
+import { TDynamicConfigurationPayload } from "../entities/TDynamicConfiguration"
+
 export const fidoApiPayload = ({ fidoConfiguration, data }) => {
   const payload = fidoConfiguration.fido
   payload.authenticatorCertsFolder = data.authenticatorCertsFolder
@@ -54,5 +56,5 @@ export const fidoApiPayloadDynamicConfig = ({ fidoConfiguration, data }) => {
   const fiodData = JSON.stringify(data)
   opts['appConfiguration1'] = JSON.parse(fiodData)
 
-  return opts
+  return opts as TDynamicConfigurationPayload
 }

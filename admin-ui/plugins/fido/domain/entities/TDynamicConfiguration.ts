@@ -12,11 +12,12 @@ export interface TDynamicConfigurationFields {
   metricReporterInterval: number
   metricReporterKeepfTDynamicConfigurationFieldsDataDays: number
   superGluuEnabled: boolean
-  personCustomObjectClassList: string[]
+  personCustomObjectClassList: string[],
+  metricReporterKeepDataDays: number
 }
 
 export interface TDynamicConfigurationPayload {
-  appConfiguration1: TDynamicConfigurationFields
+  [key: string]: TDynamicConfigurationFields
 }
 
 export interface TLoggingLayout {
