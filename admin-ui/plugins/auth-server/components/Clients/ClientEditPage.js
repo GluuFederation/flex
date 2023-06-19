@@ -4,7 +4,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from 'Plugins/auth-server/redux/features/oidcSlice'
-import { getScopes, getScopeByCreator } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { getScopeByCreator, emptyScopes} from 'Plugins/auth-server/redux/features/scopeSlice'
 import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
 import { getUMAResourcesByClient } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import { getScripts } from 'Redux/features/initSlice'
@@ -33,11 +33,9 @@ function ClientEditPage({
   const navigate =useNavigate()
 
   useEffect(() => {
+    dispatch(emptyScopes())
     dispatch(getScopeByCreator({ action: { inum: clientData.inum } }))
     buildPayload(userAction, '', options)
-    if (scopes.length < 1) {
-      dispatch(getScopes({ action: options }))
-    }
     if (scripts.length < 1) {
       dispatch(getScripts({ action: options }))
     }
