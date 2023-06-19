@@ -14,20 +14,17 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido.fido2Configuration;
 
   const { t } = useTranslation()
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState<boolean>(false)
   const toggle = () => {
     setModal(!modal)
   }
 
   const formik = useFormik({
     initialValues: staticConfigInitValues(staticConfiguration),
-    onSubmit: (values) => {
+    onSubmit: () => {
       toggle()
     },
-    validationSchema: staticConfigValidationSchema,
-    setFieldValue: (field) => {
-      delete values[field]
-    },
+    validationSchema: staticConfigValidationSchema
   })
 
   const submitForm = () => {
@@ -37,7 +34,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
   return (
     <Form
-      onSubmit={(e) => {
+      onSubmit={(e: React.FormEvent<HTMLInputElement>) => {
         e.preventDefault()
         formik.handleSubmit()
       }}

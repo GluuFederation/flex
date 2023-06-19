@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { configureStore, combineReducers, CombinedState } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
 import RootSaga from '../sagas'
@@ -7,6 +7,7 @@ import storage from 'redux-persist/lib/storage'
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import reducerRegistry from '../reducers/ReducerRegistry'
 import process from 'Plugins/PluginReducersResolver'
+import { Reducer } from 'react'
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware()
 const middlewares = [sagaMiddleware]
@@ -16,7 +17,7 @@ const persistConfig = {
   stateReconciler: hardSet,
 }
 // Preserve initial state for not-yet-loaded reducers
-const combine = (reducersObjects) => {
+const combine: any = (reducersObjects) => {
   const reducerNames = Object.keys(reducersObjects)
   Object.keys(appReducers).forEach((item) => {
     if (reducerNames.indexOf(item) === -1) {
@@ -29,15 +30,25 @@ const reducers = combine(reducerRegistry.getReducers())
 process()
 const persistedReducer = persistReducer(persistConfig, reducers)
 
-export function configStore(initialState) {
-  const store = configureStore({
-    middleware: middlewares,
-    reducer: persistedReducer,
-    initialState,
-  })
+const store = configureStore({
+  middleware: middlewares,
+  reducer: persistedReducer
+})
+
+
+declare const module: {
+  hot: {
+    accept(path: string, callback: () => void): void;
+  };
+};
+
+let rootReducers
+
+export function configStore() {
   const persistor = persistStore(store)
   window.dsfaStore = store
   reducerRegistry.setChangeListener((reds) => {
+    rootReducers = combine(reds)
     store.replaceReducer(combine(reds))
   })
   sagaMiddleware.run(RootSaga)
@@ -50,3 +61,5 @@ export function configStore(initialState) {
   }
   return { store, persistor }
 }
+export type RootState = ReturnType<typeof rootReducers>;
+

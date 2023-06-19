@@ -13,8 +13,9 @@ import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from 'Redux/api/backend-api'
-import FidoApi from '../../../infrastructure/api/FidoApi'
+import FidoApi from '../../api/FidoApi'
 import { getFidoConfiguration, getFidoConfigurationResponse } from '../features/fidoSlice'
+import {  PayloadAction } from '@reduxjs/toolkit'
 
 const JansConfigApi = require('jans_config_api')
 function* newFunction() {
@@ -26,7 +27,7 @@ function* newFunction() {
   return new FidoApi(api)
 }
 
-export function* updateFidoSaga({ payload }) {
+export function* updateFidoSaga({ payload } : PayloadAction<{ payload: any }>) {
   const audit = yield* initAudit()
   try {
     const fidoApi = yield* newFunction()

@@ -1,3 +1,5 @@
+import React from "react";
+
 export default {
   tableHeaderStyle: {
     backgroundColor: 'rgb(48, 54, 65)',
@@ -57,4 +59,4 @@ export default {
     marginTop: '0px',
     marginRight: '-10px',
   },
-}
+} 

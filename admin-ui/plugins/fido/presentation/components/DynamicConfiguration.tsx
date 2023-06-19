@@ -14,20 +14,17 @@ import {
 
 function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState<boolean>(false)
   const toggle = () => {
     setModal(!modal)
   }
 
   const formik = useFormik({
     initialValues: dynamicConfigInitValues(staticConfiguration),
-    onSubmit: (values) => {
+    onSubmit: () => {
       toggle()
     },
-    validationSchema: dynamicConfigValidationSchema,
-    setFieldValue: (field) => {
-      delete values[field]
-    },
+    validationSchema: dynamicConfigValidationSchema
   })
 
   const submitForm = () => {
@@ -37,7 +34,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
 
   return (
     <Form
-      onSubmit={(e) => {
+      onSubmit={(e: React.FormEvent<HTMLInputElement>) => {
         e.preventDefault()
         formik.handleSubmit()
       }}
@@ -278,7 +275,6 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
       </FormGroup>
       <Row>
         <Col>
-          {' '}
           <GluuCommitFooter
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}

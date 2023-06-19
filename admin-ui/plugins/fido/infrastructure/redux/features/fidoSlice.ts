@@ -13,7 +13,7 @@ const fidoSlice = createSlice({
     getFidoConfiguration: (state) => {
       state.loading = true
     },
-    putFidoConfiguration: (state) => {
+    putFidoConfiguration: (state, action) => {
       state.loading = true
     },
     getFidoConfigurationResponse: (state, action) => {
@@ -28,5 +28,5 @@ export const {
   putFidoConfiguration,
   getFidoConfigurationResponse
 } = fidoSlice.actions
-export const { actions, reducer, state } = fidoSlice
+export const { actions, reducer } = fidoSlice
 reducerRegistry.register('fidoReducer', reducer)

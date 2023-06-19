@@ -16,6 +16,7 @@ import {
   fidoApiPayload,
   fidoApiPayloadDynamicConfig,
 } from '../../domain/use-cases/fidoUseCases'
+import { RootState } from 'Redux/store'
 
 const tabNames = ['Dynamic Configuration', 'Static Configuration']
 
@@ -23,7 +24,7 @@ export default function Fido() {
   const { t } = useTranslation()
   SetTitle(t('titles.fido_management'))
   const dispatch = useDispatch()
-  const fidoConfiguration = useSelector((state) => state.fidoReducer)
+  const fidoConfiguration = useSelector((state: RootState) => state.fidoReducer)
 
   useEffect(() => {
     dispatch(getFidoConfiguration())
