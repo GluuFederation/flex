@@ -51,6 +51,7 @@ function* generateTrailLicenseKey() {
         })
         yield put(generateTrialLicenseResponse(activateLicense))
         yield put(checkLicensePresentResponse({ isLicenseValid: activateLicense?.apiResult }))
+        yield put(checkUserLicenseKeyResponse(activateLicense))
       } catch (error) {
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
