@@ -5,7 +5,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useNavigate } from 'react-router-dom'
 import { addNewClientAction } from 'Plugins/auth-server/redux/features/oidcSlice'
 import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
-import { getScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { emptyScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
@@ -27,10 +27,8 @@ function ClientAddPage({
   const navigate =useNavigate()
   const { t } = useTranslation()
   useEffect(() => {
+    dispatch(emptyScopes())
     buildPayload(userAction, '', options)
-    if (scopes.length < 1) {
-      dispatch(getScopes({ action: userAction }))
-    }
     if (scripts.length < 1) {
       dispatch(getScripts({ action: userAction }))
     }
