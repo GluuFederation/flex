@@ -36,51 +36,30 @@ it('Should render dynamic config form fields', async () => {
     wrapper: Wrapper,
   })
 
+  const inputFields = [
+    'Issuer',
+    'Base Endpoint',
+    'Clean Service Interval',
+    'Clean Service Batch Chunk',
+    'Use Local Cache',
+    'Disable JDK Logger',
+    'Logging Level',
+    'Logging Layout',
+    'External Logger Configuration',
+    'Metric Reporter Interval',
+    'Metric Reporter Keep Data Days',
+    'Metric Reporter Enabled',
+    'Person Custom Object Classes',
+    'Enable Super Gluu',
+  ]
   const dynamicConfigurationTab = screen.getByTestId(`Dynamic Configuration`)
 
   fireEvent.click(dynamicConfigurationTab)
 
   await waitFor(() => {
-    expect(screen.getByText('Issuer', { exact: false })).toBeInTheDocument()
-    expect(
-      screen.getByText('Base Endpoint', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Clean Service Interval', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Clean Service Batch Chunk', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Use Local Cache', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Disable JDK Logger', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Logging Level', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Logging Layout', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('External Logger Configuration', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Metric Reporter Interval', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Metric Reporter Keep Data Days', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Metric Reporter Enabled', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Person Custom Object Classes', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Enable Super Gluu', { exact: false })
-    ).toBeInTheDocument()
+    for (const field of inputFields) {
+      expect(screen.getByText(field, { exact: false })).toBeInTheDocument()
+    }
   })
 })
 
@@ -89,43 +68,27 @@ it('Should render static config form fields', async () => {
     wrapper: Wrapper,
   })
 
+  const inputFields = [
+    'Authenticator Certificates Folder',
+    'MDS Access Token',
+    'MDS TOC Certificates Folder',
+    'MDS TOC Files Folder',
+    'Check U2F Attestations',
+    'Unfinished Request Expiration',
+    'Authentication History Expiration',
+    'Server Metadata Folder',
+    'User Auto Enrollment',
+    'Requested Credential Types',
+    'Requested Parties Name',
+  ]
+
   const staticConfigurationTab = screen.getByTestId(`Static Configuration`)
 
   fireEvent.click(staticConfigurationTab)
 
   await waitFor(() => {
-    expect(
-      screen.getByText('Authenticator Certificates Folder', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('MDS Access Token', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('MDS TOC Certificates Folder', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('MDS TOC Files Folder', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Check U2F Attestations', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Unfinished Request Expiration', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Authentication History Expiration', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Server Metadata Folder', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('User Auto Enrollment', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Requested Credential Types', { exact: false })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Requested Parties Name', { exact: false })
-    ).toBeInTheDocument()
+    for (const field of inputFields) {
+      expect(screen.getByText(field, { exact: false })).toBeInTheDocument()
+    }
   })
 })

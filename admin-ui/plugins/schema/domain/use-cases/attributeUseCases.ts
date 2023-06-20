@@ -1,12 +1,10 @@
 import * as Yup from 'yup'
-import { TDefautAttribute } from '../entities/TDefautAttribute'
 
 export const getInitialState = (item) => {
   return (
-    item.attributeValidation &&
-    item.attributeValidation.regexp != null &&
-    item.attributeValidation.minLength != null &&
-    item.attributeValidation.maxLength != null
+    item.attributeValidation?.regexp != null &&
+    item.attributeValidation?.minLength != null &&
+    item.attributeValidation?.maxLength != null
   )
 }
 

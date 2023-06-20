@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
@@ -32,14 +32,22 @@ import { RootState } from 'Redux/store'
 function AttributeListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const attributes = useSelector((state: RootState) => state.attributeReducer.items)
-  const loading = useSelector((state: RootState) => state.attributeReducer.loading)
-  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
-  const { totalItems, entriesCount } = useSelector(
-    (state: RootState) => state.attributeReducer,
+  const attributes = useSelector(
+    (state: RootState) => state.attributeReducer.items
+  )
+  const loading = useSelector(
+    (state: RootState) => state.attributeReducer.loading
+  )
+  const permissions = useSelector(
+    (state: RootState) => state.authReducer.permissions
+  )
+  const { totalItems } = useSelector(
+    (state: RootState) => state.attributeReducer
   )
   const options = {}
-  const pageSize = localStorage.getItem('paggingSize') ? parseInt(localStorage.getItem('paggingSize')) : 10
+  const pageSize = localStorage.getItem('paggingSize')
+    ? parseInt(localStorage.getItem('paggingSize'))
+    : 10
   const [limit, setLimit] = useState<number>(pageSize)
   const [pageNumber, setPageNumber] = useState(0)
   const [pattern, setPattern] = useState(null)
@@ -81,7 +89,6 @@ function AttributeListPage() {
     dispatch(getAttributes({ options }))
   }
   const onRowCountChangeClick = (count) => {
-    console.log(`count`, count)
     makeOptions()
     options['startIndex'] = 0
     options['limit'] = count
@@ -112,6 +119,12 @@ function AttributeListPage() {
   function handleGoToAttributeAddPage() {
     return navigate('/attribute/new')
   }
+
+  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
+  const DetailsPanel = useCallback(
+    (rowData) => <AttributeDetailPage row={rowData.rowData} />,
+    []
+  )
 
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
     myActions.push((rowData) => ({
@@ -167,7 +180,7 @@ function AttributeListPage() {
   }
   if (hasPermission(permissions, ATTRIBUTE_DELETE)) {
     myActions.push((rowData) => ({
-      icon: () => <DeleteOutlined />,
+      icon: DeleteOutlinedIcon,
       iconProps: {
         color: 'secondary',
         id: 'deleteAttribute' + rowData.inum,
@@ -200,6 +213,30 @@ function AttributeListPage() {
     navigate('/attributes')
     toggle()
   }
+
+  const PaginationWrapper = useCallback(
+    (props) => (
+      <TablePagination
+        component='div'
+        count={totalItems}
+        page={pageNumber}
+        onPageChange={(prop, page) => {
+          onPageChangeClick(page)
+        }}
+        rowsPerPage={limit}
+        onRowsPerPageChange={(event) =>
+          onRowCountChangeClick(event.target.value)
+        }
+      />
+    ),
+    []
+  )
+
+  const PaperContainer = useCallback(
+    (props) => <Paper {...props} elevation={0} />,
+    []
+  )
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
@@ -207,21 +244,8 @@ function AttributeListPage() {
           <MaterialTable
             key={attributes ? attributes.length : 0}
             components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: (props) => (
-                <TablePagination
-                  component="div"
-                  count={totalItems}
-                  page={pageNumber}
-                  onPageChange={(prop, page) => {
-                    onPageChangeClick(page)
-                  }}
-                  rowsPerPage={limit}
-                  onRowsPerPageChange={(event) =>
-                    onRowCountChangeClick(event.target.value)
-                  }
-                />
-              ),
+              Container: PaperContainer,
+              Pagination: PaginationWrapper,
             }}
             columns={[
               { title: `${t('fields.inum')}`, field: 'inum' },
@@ -239,7 +263,7 @@ function AttributeListPage() {
             ]}
             data={attributes}
             isLoading={loading}
-            title=""
+            title=''
             actions={myActions}
             options={{
               search: true,
@@ -252,9 +276,7 @@ function AttributeListPage() {
               },
               actionsColumnIndex: -1,
             }}
-            detailPanel={(rowData) => {
-              return <AttributeDetailPage row={rowData.rowData} />
-            }}
+            detailPanel={DetailsPanel}
           />
         </GluuViewWrapper>
         {hasPermission(permissions, ATTRIBUTE_DELETE) && (
@@ -262,7 +284,7 @@ function AttributeListPage() {
             row={item}
             handler={toggle}
             modal={modal}
-            subject="attribute"
+            subject='attribute'
             onAccept={onDeletionConfirmed}
           />
         )}

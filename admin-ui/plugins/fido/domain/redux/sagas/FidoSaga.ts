@@ -31,7 +31,7 @@ export function* updateFidoSaga({ payload } : PayloadAction<{ payload: any }>) {
   const audit = yield* initAudit()
   try {
     const fidoApi = yield* newFunction()
-    const data = yield call(fidoApi.putPropertiesFido2, payload)
+    yield call(fidoApi.putPropertiesFido2, payload)
     yield put(updateToast(true, 'success'))
     yield put(getFidoConfiguration())
     yield call(postUserAction, audit)

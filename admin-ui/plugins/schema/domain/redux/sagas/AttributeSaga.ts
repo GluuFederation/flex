@@ -67,7 +67,6 @@ export function* searchAttributes({ payload } : PayloadAction<any>) {
 }
 
 export function* addAttribute({ payload } : PayloadAction<any>) {
-  console.log('att', payload)
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, CREATE, PERSON_SCHEMA, payload)

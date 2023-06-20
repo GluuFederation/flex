@@ -63,7 +63,7 @@ const AttributeDetailPage = ({ row }) => {
           </Col>
           <Col sm={3}>
             {Array.from(row.editType).map((item, index) => (
-              <Badge key={index} color={`primary-${selectedTheme}`}>
+              <Badge key={item} color={`primary-${selectedTheme}`}>
                 {item}
               </Badge>
             ))}
@@ -73,7 +73,7 @@ const AttributeDetailPage = ({ row }) => {
           </Col>
           <Col sm={3}>
             {Array.from(row.viewType).map((item, index) => (
-              <Badge key={index} color={`primary-${selectedTheme}`}>
+              <Badge key={item} color={`primary-${selectedTheme}`}>
                 {item}
               </Badge>
             ))}

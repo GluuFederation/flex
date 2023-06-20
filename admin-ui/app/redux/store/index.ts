@@ -1,4 +1,4 @@
-import { configureStore, combineReducers, CombinedState } from '@reduxjs/toolkit'
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
 import RootSaga from '../sagas'
@@ -7,7 +7,6 @@ import storage from 'redux-persist/lib/storage'
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import reducerRegistry from '../reducers/ReducerRegistry'
 import process from 'Plugins/PluginReducersResolver'
-import { Reducer } from 'react'
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware()
 const middlewares = [sagaMiddleware]

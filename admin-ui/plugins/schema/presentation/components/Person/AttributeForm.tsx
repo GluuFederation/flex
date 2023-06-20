@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Formik, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
 import {
   Col,
   InputGroup,
