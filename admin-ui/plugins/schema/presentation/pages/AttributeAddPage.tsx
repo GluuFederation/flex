@@ -3,12 +3,13 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import AttributeForm from '../components/Person/AttributeForm'
-import { addAttribute } from 'Plugins/schema/infrastructure/redux/features/attributeSlice'
+import { addAttribute } from 'Plugins/schema/domain/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { defautAttribute } from 'Plugins/schema/domain/use-cases/attributeUseCases'
 
 function AttributeAddPage({ dispatch }) {
-  const navigate =useNavigate()
+  const navigate = useNavigate()
+
   function onSubmit(data) {
     if (data) {
       dispatch(addAttribute({ data }))

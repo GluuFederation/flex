@@ -2,8 +2,8 @@ import AttributeListPage from './presentation/pages/AttributeListPage'
 import AttributeAddPage from './presentation/pages/AttributeAddPage'
 import AttributeEditPage from './presentation/pages/AttributeEditPage'
 import AttributeViewPage from './presentation/pages/AttributeViewPage'
-import { reducer as attributeReducer } from './infrastructure/redux/features/attributeSlice'
-import attributeSaga from './infrastructure/redux/sagas/AttributeSaga'
+import { reducer as attributeReducer } from './domain/redux/features/attributeSlice'
+import attributeSaga from './domain/redux/sagas/AttributeSaga'
 import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils//PermChecker'
 
 const pluginMetadata = {

@@ -15,9 +15,10 @@ import {
   DELETION,
   FETCH,
 } from '../../../../../app/audit/UserActionType'
-import AttributeApi from '../../api/AttributeApi'
+import AttributeApi from '../../../infrastructure/api/AttributeApi'
 import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 const PERSON_SCHEMA = 'person schema'
 
@@ -32,7 +33,7 @@ function* newFunction() {
   return new AttributeApi(api)
 }
 
-export function* getAttributes({ payload }) {
+export function* getAttributes({ payload } : PayloadAction<any>) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, PERSON_SCHEMA, payload)
@@ -48,7 +49,7 @@ export function* getAttributes({ payload }) {
     }
   }
 }
-export function* searchAttributes({ payload }) {
+export function* searchAttributes({ payload } : PayloadAction<any>) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, PERSON_SCHEMA, payload)
@@ -65,7 +66,8 @@ export function* searchAttributes({ payload }) {
   }
 }
 
-export function* addAttribute({ payload }) {
+export function* addAttribute({ payload } : PayloadAction<any>) {
+  console.log('att', payload)
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, CREATE, PERSON_SCHEMA, payload)
@@ -84,7 +86,7 @@ export function* addAttribute({ payload }) {
   }
 }
 
-export function* editAttribute({ payload }) {
+export function* editAttribute({ payload } : PayloadAction<any>) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, UPDATE, PERSON_SCHEMA, payload)
@@ -103,7 +105,7 @@ export function* editAttribute({ payload }) {
   }
 }
 
-export function* deleteAttribute({ payload }) {
+export function* deleteAttribute({ payload } : PayloadAction<any>) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, DELETION, PERSON_SCHEMA, payload)

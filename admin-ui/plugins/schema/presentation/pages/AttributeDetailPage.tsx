@@ -12,7 +12,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 
 const AttributeDetailPage = ({ row }) => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
   return (

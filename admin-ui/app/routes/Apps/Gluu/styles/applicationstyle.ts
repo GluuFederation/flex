@@ -7,7 +7,7 @@ export default {
     padding: '12px',
     textTransform: 'uppercase',
     fontSize: '16px',
-  },
+  } as React.CSSProperties,
   homeStatTooltip: {
     backgroundColor: '#00C9FF',
     borderRadius: '30px',

@@ -23,7 +23,14 @@ import {
   attributeValidationSchema
 } from 'Plugins/schema/domain/use-cases/attributeUseCases'
 
-function AttributeForm({ item, customOnSubmit, hideButtons }) {
+interface AttributeFormProps {
+  item: any
+  customOnSubmit: (data: any) => void
+  hideButtons?: any
+}
+
+function AttributeForm(props: AttributeFormProps) {
+  const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [validation, setValidation] = useState(getInitialState(item))

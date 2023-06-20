@@ -1,9 +1,12 @@
+import { TAttributeApi } from 'Plugins/schema/domain/entities/TAttributeApi'
 import { handleResponse } from 'Utils/ApiUtils'
 
 export default class AttributeApi {
   constructor(api) {
     this.api = api
   }
+
+  api: TAttributeApi
 
   // Get all attributes
   getAllAttributes = (opts) => {

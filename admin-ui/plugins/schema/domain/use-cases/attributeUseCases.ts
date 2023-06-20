@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
+import { TDefautAttribute } from '../entities/TDefautAttribute'
 
-export const defautAttribute = {
+export const defautAttribute: TDefautAttribute = {
   jansHideOnDiscovery: false,
   selected: false,
   scimCustomAttr: false,

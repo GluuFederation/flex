@@ -22,27 +22,28 @@ import {
   searchAttributes,
   setCurrentItem,
   deleteAttribute,
-} from 'Plugins/schema/infrastructure/redux/features/attributeSlice'
+} from 'Plugins/schema/domain/redux/features/attributeSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { RootState } from 'Redux/store'
 
 function AttributeListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const attributes = useSelector((state) => state.attributeReducer.items)
-  const loading = useSelector((state) => state.attributeReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  const attributes = useSelector((state: RootState) => state.attributeReducer.items)
+  const loading = useSelector((state: RootState) => state.attributeReducer.loading)
+  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
   const { totalItems, entriesCount } = useSelector(
-    (state) => state.attributeReducer,
+    (state: RootState) => state.attributeReducer,
   )
   const options = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
-  const [limit, setLimit] = useState(pageSize)
+  const pageSize = localStorage.getItem('paggingSize') ? parseInt(localStorage.getItem('paggingSize')) : 10
+  const [limit, setLimit] = useState<number>(pageSize)
   const [pageNumber, setPageNumber] = useState(0)
   const [pattern, setPattern] = useState(null)
-  const theme = useContext(ThemeContext)
+  const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
@@ -60,8 +61,8 @@ function AttributeListPage() {
   let memoPattern = pattern
 
   const navigate = useNavigate()
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
+  const [item, setItem] = useState<any>({})
+  const [modal, setModal] = useState<boolean>(false)
   const toggle = () => setModal(!modal)
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
@@ -74,12 +75,13 @@ function AttributeListPage() {
   const onPageChangeClick = (page) => {
     makeOptions()
     let startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
+    options['startIndex'] = startCount
     options['limit'] = limit
     setPageNumber(page)
     dispatch(getAttributes({ options }))
   }
   const onRowCountChangeClick = (count) => {
+    console.log(`count`, count)
     makeOptions()
     options['startIndex'] = 0
     options['limit'] = count
@@ -90,7 +92,7 @@ function AttributeListPage() {
 
   function makeOptions() {
     setPattern(memoPattern)
-    options['limit'] = parseInt(memoLimit)
+    options['limit'] = memoLimit
     if (memoPattern) {
       options['pattern'] = memoPattern
     }
@@ -215,8 +217,8 @@ function AttributeListPage() {
                     onPageChangeClick(page)
                   }}
                   rowsPerPage={limit}
-                  onRowsPerPageChange={(prop, count) =>
-                    onRowCountChangeClick(count.props.value)
+                  onRowsPerPageChange={(event) =>
+                    onRowCountChangeClick(event.target.value)
                   }
                 />
               ),

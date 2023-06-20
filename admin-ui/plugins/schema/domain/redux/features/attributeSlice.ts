@@ -13,10 +13,10 @@ const attributeSlice = createSlice({
   name: 'attribute',
   initialState,
   reducers: {
-    getAttributes: (state) => {
+    getAttributes: (state, action) => {
       state.loading = true
     },
-    searchAttributes: (state) => {
+    searchAttributes: (state, actino) => {
       state.loading = true
     },
     getAttributesResponse: (state, action) => {
@@ -29,7 +29,7 @@ const attributeSlice = createSlice({
         state.loading = false
       }
     },
-    addAttribute: (state) => {
+    addAttribute: (state, action) => {
       state.loading = true
     },
     addAttributeResponse: (state, action) => {
@@ -40,13 +40,13 @@ const attributeSlice = createSlice({
         state.loading = false
       }
     },
-    editAttribute: (state) => {
+    editAttribute: (state, action) => {
       state.loading = true
     },
     editAttributeResponse: (state, action) => {
       state.loading = false
     },
-    deleteAttribute: (state) => {
+    deleteAttribute: (state, action) => {
       state.loading = true
     },
     deleteAttributeResponse: (state, action) => {
@@ -76,5 +76,5 @@ export const {
   deleteAttributeResponse,
   setCurrentItem
 } = attributeSlice.actions
-export const { actions, reducer, state } = attributeSlice
+export const { actions, reducer } = attributeSlice
 reducerRegistry.register('attributeReducer', reducer)
