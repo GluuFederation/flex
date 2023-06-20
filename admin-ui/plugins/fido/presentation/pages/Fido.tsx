@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getFidoConfiguration,
   putFidoConfiguration,
-} from '../../infrastructure/redux/features/fidoSlice'
+} from '../../domain/redux/features/fidoSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   fidoApiPayload,
