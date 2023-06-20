@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
@@ -148,18 +148,23 @@ function AttributeListPage() {
       disabled: false,
     }))
   }
+
+  const GluuSearch = useCallback(() => {
+    return (
+      <GluuAdvancedSearch
+        limitId={limitId}
+        limit={limit}
+        pattern={pattern}
+        patternId={patternId}
+        handler={handleOptionsChange}
+        showLimit={false}
+      />
+    )
+  }, [limitId, limit, pattern, patternId, handleOptionsChange])
+
   if (hasPermission(permissions, ATTRIBUTE_READ)) {
     myActions.push({
-      icon: () => (
-        <GluuAdvancedSearch
-          limitId={limitId}
-          limit={limit}
-          pattern={pattern}
-          patternId={patternId}
-          handler={handleOptionsChange}
-          showLimit={false}
-        />
-      ),
+      icon: GluuSearch,
       tooltip: `${t('tooltips.advanced_search_options')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
