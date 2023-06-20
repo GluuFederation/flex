@@ -123,6 +123,9 @@ const scopeSlice = createSlice({
     getClientScopes: (state) => {
       state.loadingClientScopes = true
     },
+    emptyScopes: (state) => {
+      state.items = []
+    }
   },
 })
 
@@ -144,6 +147,7 @@ export const {
   getScopeByCreator,
   getScopeByInum,
   getClientScopes,
+  emptyScopes
 } = scopeSlice.actions
 export const { actions, reducer, state } = scopeSlice
 reducerRegistry.register('scopeReducer', reducer)

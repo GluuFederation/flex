@@ -325,7 +325,7 @@ const ClientBasicPanel = ({
           lsize={3}
           rsize={9}
           disabled={viewOnly}
-          paginate={totalItems >= PER_PAGE_SCOPES}
+          paginate={true}
           onSearch={debounceFn}
           onPaginate={handlePagination}
           maxResults={scopeOptions?.length ? scopeOptions.length - 1 : undefined}
