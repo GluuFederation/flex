@@ -1,16 +1,6 @@
 import * as Yup from 'yup'
 import { TDefautAttribute } from '../entities/TDefautAttribute'
 
-export const defautAttribute: TDefautAttribute = {
-  jansHideOnDiscovery: false,
-  selected: false,
-  scimCustomAttr: false,
-  oxMultiValuedAttribute: false,
-  custom: false,
-  requred: false,
-  attributeValidation: { maxLength: null, regexp: null, minLength: null }
-}
-
 export const getInitialState = (item) => {
   return (
     item.attributeValidation &&
