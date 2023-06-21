@@ -10,12 +10,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getFidoConfiguration,
   putFidoConfiguration,
-} from '../../domain/redux/features/fidoSlice'
+} from '../../domain/redux/features/FidoSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   fidoApiPayload,
   fidoApiPayloadDynamicConfig,
-} from '../../domain/use-cases/fidoUseCases'
+} from '../../domain/useCases/FidoUseCases'
 import { RootState } from 'Redux/store'
 
 const tabNames = ['Dynamic Configuration', 'Static Configuration']

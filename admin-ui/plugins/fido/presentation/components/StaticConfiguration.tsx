@@ -8,7 +8,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import { useTranslation } from 'react-i18next'
-import { staticConfigInitValues, staticConfigValidationSchema } from '../../domain/use-cases/staticConfigUseCases'
+import { staticConfigInitValues, staticConfigValidationSchema } from '../../domain/useCases/StaticConfigUseCases'
 
 function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido.fido2Configuration;

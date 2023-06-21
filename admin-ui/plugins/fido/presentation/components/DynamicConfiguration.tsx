@@ -10,7 +10,7 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import {
   dynamicConfigInitValues,
   dynamicConfigValidationSchema,
-} from '../../domain/use-cases/dynamicConfigUseCases'
+} from '../../domain/useCases/DynamicConfigUseCases'
 
 function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
@@ -22,7 +22,7 @@ import {
   searchAttributes,
   setCurrentItem,
   deleteAttribute,
-} from 'Plugins/schema/domain/redux/features/attributeSlice'
+} from 'Plugins/schema/domain/redux/features/AttributeSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'

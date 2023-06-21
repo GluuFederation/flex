@@ -5,7 +5,7 @@ import {
   addAttributeResponse,
   editAttributeResponse,
   deleteAttributeResponse,
-} from '../features/attributeSlice'
+} from '../features/AttributeSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { postUserAction } from 'Redux/api/backend-api'
 import {updateToast} from 'Redux/features/toastSlice'

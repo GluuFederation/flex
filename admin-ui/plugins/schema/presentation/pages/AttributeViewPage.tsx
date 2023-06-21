@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import AttributeForm from '../components/Person/AttributeForm'
-import { editAttribute } from 'Plugins/schema/domain/redux/features/attributeSlice'
+import { editAttribute } from 'Plugins/schema/domain/redux/features/AttributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function AttributeEditPage({ item: { ...extensibleItems }, loading, dispatch }) {

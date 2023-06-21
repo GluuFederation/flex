@@ -1,4 +1,4 @@
-import { reducer as fidoReducer } from './domain/redux/features/fidoSlice'
+import { reducer as fidoReducer } from './domain/redux/features/FidoSlice'
 import fidoSaga from './domain/redux/sagas/FidoSaga'
 import { FIDO_READ, FIDO_WRITE } from '../../app/utils/PermChecker'
 import Fido from './presentation/pages/Fido'

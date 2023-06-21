@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import AttributeForm from '../components/Person/AttributeForm'
-import { addAttribute } from 'Plugins/schema/domain/redux/features/attributeSlice'
+import { addAttribute } from 'Plugins/schema/domain/redux/features/AttributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { TDefautAttribute } from 'Plugins/schema/domain/entities/TDefautAttribute'
 

@@ -20,7 +20,7 @@ import {
   handleAttributeSubmit,
   getInitialAttributeValues,
   attributeValidationSchema
-} from 'Plugins/schema/domain/use-cases/attributeUseCases'
+} from 'Plugins/schema/domain/useCases/AttributeUseCases'
 
 interface AttributeFormProps {
   item: any
