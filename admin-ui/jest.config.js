@@ -2,7 +2,7 @@ const config = {
   verbose: true,
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/__tests__/setup.js"],
-  moduleFileExtensions: ["js", "jsx"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   transform: {
     "\\.[jt]sx?$": ["babel-jest", { presets: ["@babel/preset-env"] }],
   },

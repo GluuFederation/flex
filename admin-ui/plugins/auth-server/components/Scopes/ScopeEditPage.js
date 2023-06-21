@@ -14,13 +14,13 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { editScope } from 'Plugins/auth-server/redux/features/scopeSlice'
 
-function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOperationFlag, errorInSaveOperationFlag }) {
+function ScopeEditPage({ scope: { ...extensbileScope }, loading, dispatch, scripts, attributes, saveOperationFlag, errorInSaveOperationFlag }) {
   const userAction = {}
   const navigate =useNavigate()
   const { t } = useTranslation()
 
-  if (!scope.attributes) {
-    scope.attributes = {
+  if (!extensbileScope.attributes) {
+    extensbileScope.attributes = {
       spontaneousClientId: null,
       spontaneousClientScopes: [],
       showInConfigurationEndpoint: false,
@@ -62,7 +62,7 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOper
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <ScopeForm
-            scope={{ ...scope, attributes: scope?.attributes && { ...scope?.attributes } }}
+            scope={{ ...extensbileScope, attributes: extensbileScope?.attributes && { ...extensbileScope?.attributes } }}
             attributes={attributes}
             scripts={scripts}
             handleSubmit={handleSubmit}

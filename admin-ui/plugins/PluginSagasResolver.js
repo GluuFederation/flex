@@ -1,4 +1,4 @@
-import plugins from '../plugins.config'
+import plugins from '../plugins.config.json'
 
 
 //get all metadata path

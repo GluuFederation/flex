@@ -24,7 +24,7 @@ module.exports = {
   target: 'web',
   mode: 'development',
   entry: {
-    app: [path.join(config.srcDir, 'index.js')],
+    app: [path.join(config.srcDir, 'index.tsx')],
   },
 
   output: {
@@ -36,6 +36,7 @@ module.exports = {
   resolve: {
     fallback: { querystring: false },
     modules: ['node_modules', config.srcDir],
+    extensions: ['.ts', '.js', '.jsx', '.tsx'],
     alias: {
       path: require.resolve('path-browserify'),
       Components: path.resolve(__dirname, '../app/components'),
@@ -77,6 +78,11 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: 'babel-loader',
+      },
+      {
+        test: /\.ts(x?)$/,
+        exclude: /node_modules/,
+        use: 'ts-loader',
       },
       {
         test: /\.css$/i,
