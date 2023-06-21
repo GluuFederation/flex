@@ -17,11 +17,11 @@ edit_uri: edit/main/docs/
 plugins:
    - tags
    - search
-#   - git-revision-date-localized:
-#       type: timeago
-#       enable_creation_date: true
-#   - git-committers:
-#       repository: GluuFederation/flex
+   - git-revision-date-localized:
+       type: timeago
+       enable_creation_date: true
+   - git-committers:
+       repository: GluuFederation/flex
 # Configuration
 theme:
     name: material
