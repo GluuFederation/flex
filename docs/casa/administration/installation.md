@@ -1,11 +1,13 @@
-# Install Gluu Casa 
+# Gluu Casa Installation Guide
 
-## System Requirements
+## Installation
+
+### System Requirements
 
 Gluu Casa gets installed as a component of Gluu Flex Server. Please refer to system requirements for 
 [Gluu Flex Server](../administration/installation.md#system-requirements). 
 
-## Installation via Linux Packages 
+### Installation via Linux Packages 
 
 Casa is offered as one of the several components of the Gluu Flex Server. To include Casa in your instance, just ensure 
 to check it when prompted at [installation](https://gluu.org/docs/gluu-server/4.4/installation-guide/) time.
@@ -16,10 +18,7 @@ To add Casa post-install do the following:
 1. `cd /install/community-edition-setup`
 1. Run `./setup.py --install-casa`
 
-
-
-
-## Finish setup
+### Finish setup
 
 **Important notes:**
 
@@ -51,3 +50,22 @@ Recall admin capabilities are disabled by default. To unlock admin features foll
 
 In a clustered or containerized deployment, admin features and user features should run on different nodes. It is responsibility of the administrator to enable admin features on a specific (small) set of nodes and make those publically inaccessible, for instance, by removing them from the load balancer.
 -->
+
+## Uninstall Gluu Casa
+
+Follow the steps below to remove Casa from your Gluu Flex Server installation:
+
+1. Update acr: Uninstallation will remove `casa` acr and its corresponding custom script from your server.
+   So, before you uninstall Casa, update the acr value if it is set to `casa`. In case you have OpenId Connect clients
+   requesting this acr_value they you'll need to update their configuration. Also, check if the default authentication
+   method is set to `casa`. Do this using Admin-UI <TODO>
+
+1. Login to chroot.
+
+1. Run the cleanup utility. It will remove configurations added to your Gluu Flex Server when Casa was installed,
+   as well as any data which is no longer needed. In the chroot run:
+
+    ```
+    # cd /install/community-edition-setup/
+    # ./casa_cleanup.py
+    ```
