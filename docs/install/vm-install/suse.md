@@ -19,7 +19,7 @@ Before you install, check the [VM system requirements](vm-requirements.md).
 
 ## Install the Package
 
--Download the GPG key zip file , unzip and import GPG key
+- Download the GPG key zip file , unzip and import GPG key
 ```
 wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 unzip automation-flex-public-gpg.zip
