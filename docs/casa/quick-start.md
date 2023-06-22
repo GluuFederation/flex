@@ -1,24 +1,13 @@
 # Gluu Casa Quick Start Guide
 
-TODO: full rewrite needed
+Gluu Casa is a self-service web portal for end-users to manage security preferences for their accounts. Gluu Casa can
+be used to with [Gluu Flex](), [Janssen Server](https://jans.io) or [Gluu Server](https://gluu.org).
 
-## Overview
+Use this guide to install and configure a deployment of Casa.
 
-Gluu Casa is a self-service web portal for end-users to manage security preferences for their account in a [Gluu Server](https://gluu.org). Follow this guide to install and configure a deployment of Casa.
+## Installation
 
-## Prerequisites
-
-Casa can be installed via Gluu Server installation. The server or VM should have at least the following minimum specs:
-
-| CPU Unit | RAM | Disk Space | Processor Type |
-|------ | ---- | ---- | ---- |
-| 2  | 6 GB | 40 GB | 64 Bit |
-
-Make sure the Gluu Server has at least the following components:
-
-  - oxAuth OAuth2 Server
-  - oxTrust admin GUI
-  - Apache Web Server
+Follow the Gluu Casa [installation guide](./administration/installation.md) to install Gluu Casa.
 
 ## Getting started
 
