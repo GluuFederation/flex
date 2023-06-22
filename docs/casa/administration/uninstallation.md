@@ -1,14 +1,16 @@
-# Uninstallation and clean up
+# Uninstall Gluu Casa
 
-TODO: full rewrite needed
+Follow the steps below to remove Casa from your Gluu Flex Server installation:
 
-To remove Casa from your Gluu installation, do the following:
-
-1. Update applications requesting `casa` acr. In case you have OpenId Connect clients requesting this acr_value, do the required changes because uninstallation will remove this acr and its corresponding custom script from your server. For instance, in oxTrust navigate to `Configuration` > `Manage Authentication` > `Default Authentication method` and update accordingly if you have selected `casa` there.
+1. Update acr: Uninstallation will remove `casa` acr and its corresponding custom script from your server.
+So, before you uninstall Casa, update the acr value if it is set to `casa`. In case you have OpenId Connect clients 
+requesting this acr_value they you'll need to update their configuration. Also, check if the default authentication 
+method is set to `casa`. Do this using Admin-UI <TODO> 
 
 1. Login to chroot.
 
-1. Run the cleanup utility. It will remove configurations added to your Gluu Server when Casa was installed, as well as data no  longer needed. In the chroot run:
+1. Run the cleanup utility. It will remove configurations added to your Gluu Flex Server when Casa was installed, 
+as well as any data which is no longer needed. In the chroot run:
     
     ```
     # cd /install/community-edition-setup/
