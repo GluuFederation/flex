@@ -286,8 +286,8 @@ function CustomScriptForm(props: TProps) {
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                {items.map((ele, index) => (
-                  <option key={index} value={ele.value}>
+                {items.map((ele) => (
+                  <option key={ele.name} value={ele.value}>
                     {ele.name}
                   </option>
                 ))}

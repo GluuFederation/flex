@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
@@ -47,7 +47,9 @@ function ScriptListTable() {
   const myActions = []
   const [item, setItem] = useState<any>({})
   const [modal, setModal] = useState(false)
-  const pageSize = localStorage.getItem('paggingSize') ? parseInt(localStorage.getItem('paggingSize')) : 10
+  const pageSize = localStorage.getItem('paggingSize')
+    ? parseInt(localStorage.getItem('paggingSize'))
+    : 10
   const [limit, setLimit] = useState<number>(pageSize)
   const [pattern, setPattern] = useState(null)
   const [type, setType] = useState('person_authentication')
@@ -56,11 +58,17 @@ function ScriptListTable() {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const scripts = useSelector((state: RootState) => state.customScriptReducer.items)
-  const loading = useSelector((state: RootState) => state.customScriptReducer.loading)
-  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
+  const scripts = useSelector(
+    (state: RootState) => state.customScriptReducer.items
+  )
+  const loading = useSelector(
+    (state: RootState) => state.customScriptReducer.loading
+  )
+  const permissions = useSelector(
+    (state: RootState) => state.authReducer.permissions
+  )
   const { totalItems } = useSelector(
-    (state: RootState) => state.customScriptReducer,
+    (state: RootState) => state.customScriptReducer
   )
   const [pageNumber, setPageNumber] = useState(0)
   let memoPattern = pattern
@@ -82,6 +90,23 @@ function ScriptListTable() {
     makeOptions()
     dispatch(getCustomScriptByType({ action: options }))
   }, [])
+
+  const DeleteIcon = useCallback(() => <DeleteOutlined />, [])
+
+  const GluuSearch = useCallback(() => {
+    return (
+      <GluuCustomScriptSearch
+        limitId={LIMIT_ID}
+        limit={limit}
+        typeId={TYPE_ID}
+        patternId={PATTERN_ID}
+        scriptType={type}
+        pattern={pattern}
+        handler={handleOptionsChange}
+      />
+    )
+  }, [limit, pattern, type, handleOptionsChange])
+
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -89,7 +114,9 @@ function ScriptListTable() {
         id: 'editCustomScript' + rowData.inum,
       },
       tooltip: `${t('messages.edit_script')}`,
-      onClick: (event, entry) => {handleGoToCustomScriptEditPage(entry)},
+      onClick: (event, entry) => {
+        handleGoToCustomScriptEditPage(entry)
+      },
       disabled: false,
     }))
   }
@@ -107,17 +134,7 @@ function ScriptListTable() {
   }
   if (hasPermission(permissions, SCRIPT_READ)) {
     myActions.push({
-      icon: () => (
-        <GluuCustomScriptSearch
-          limitId={LIMIT_ID}
-          limit={limit}
-          typeId={TYPE_ID}
-          patternId={PATTERN_ID}
-          scriptType={type}
-          pattern={pattern}
-          handler={handleOptionsChange}
-        />
-      ),
+      icon: GluuSearch,
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
@@ -137,7 +154,7 @@ function ScriptListTable() {
   }
   if (hasPermission(permissions, SCRIPT_DELETE)) {
     myActions.push((rowData) => ({
-      icon: () => <DeleteOutlined />,
+      icon: DeleteIcon,
       iconProps: {
         id: 'deleteCustomScript' + rowData.inum,
       },
@@ -200,6 +217,34 @@ function ScriptListTable() {
     dispatch(getCustomScriptByType({ action: options }))
   }
 
+  const PaperContainer = useCallback(
+    (props) => <Paper {...props} elevation={0} />,
+    []
+  )
+
+  const DetailsPanel = useCallback(
+    (rowData) => <CustomScriptDetailPage row={rowData.rowData} />,
+    []
+  )
+
+  const TablePaginationWrapper = useCallback(
+    (props) => (
+      <TablePagination
+        component='div'
+        count={totalItems}
+        page={pageNumber}
+        onPageChange={(prop, page) => {
+          onPageChangeClick(page)
+        }}
+        rowsPerPage={limit}
+        onRowsPerPageChange={(event) =>
+          onRowCountChangeClick(event.target.value)
+        }
+      />
+    ),
+    [totalItems, pageNumber, onPageChangeClick, limit, onRowCountChangeClick]
+  )
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
@@ -207,21 +252,8 @@ function ScriptListTable() {
           <MaterialTable
             key={limit}
             components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: (props) => (
-                <TablePagination
-                  component="div"
-                  count={totalItems}
-                  page={pageNumber}
-                  onPageChange={(prop, page) => {
-                    onPageChangeClick(page)
-                  }}
-                  rowsPerPage={limit}
-                  onRowsPerPageChange={(event) =>
-                    onRowCountChangeClick(event.target.value)
-                  }
-                />
-              ),
+              Container: PaperContainer,
+              Pagination: TablePaginationWrapper,
             }}
             columns={[
               { title: `${t('fields.name')}`, field: 'name' },
@@ -230,44 +262,47 @@ function ScriptListTable() {
                 title: `${t('options.enabled')}`,
                 field: 'enabled',
                 type: 'boolean',
-                render: (rowData) => (
-                  <Badge
-                    color={
-                      rowData.enabled == true
-                        ? `primary-${selectedTheme}`
-                        : 'dimmed'
-                    }
-                  >
-                    {rowData.enabled ? 'true' : 'false'}
-                  </Badge>
-                ),
+                render: (rowData) => {
+                  return (
+                    <Badge
+                      color={
+                        rowData.enabled ? `primary-${selectedTheme}` : 'dimmed'
+                      }
+                    >
+                      {rowData.enabled ? 'true' : 'false'}
+                    </Badge>
+                  )
+                },
                 defaultSort: 'desc',
               },
             ]}
             data={scripts}
             isLoading={loading}
-            title=""
+            title=''
             actions={myActions}
             options={{
               search: true,
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: limit,
-              rowStyle: (rowData: any) => ({
-                backgroundColor: rowData.enabled && rowData?.scriptError?.stackTrace
-                  ? '#FF5858' : rowData.enabled
-                    ? themeColors.lightBackground
-                    : '#FFF',
-              }),
+              rowStyle: (rowData: any) => {
+                const enabledRowColor = rowData.enabled
+                  ? themeColors.lightBackground
+                  : '#FFF'
+                return {
+                  backgroundColor:
+                    rowData.enabled && rowData?.scriptError?.stackTrace
+                      ? '#FF5858'
+                      : enabledRowColor,
+                }
+              },
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
                 ...bgThemeColor,
               },
               actionsColumnIndex: -1,
             }}
-            detailPanel={(rowData) => {
-              return <CustomScriptDetailPage row={rowData.rowData} />
-            }}
+            detailPanel={DetailsPanel}
           />
         </GluuViewWrapper>
         {hasPermission(permissions, SCRIPT_DELETE) && (
@@ -275,7 +310,7 @@ function ScriptListTable() {
             row={item}
             handler={toggle}
             modal={modal}
-            subject="script"
+            subject='script'
             onAccept={onDeletionConfirmed}
           />
         )}
