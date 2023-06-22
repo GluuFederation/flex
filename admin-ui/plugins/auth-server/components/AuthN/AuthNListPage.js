@@ -14,7 +14,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
 import { getLdapConfig } from 'Plugins/services/redux/features/ldapSlice'
-import { getCustomScriptByType } from 'Plugins/admin/redux/features/customScriptSlice'
+import { getCustomScriptByType } from 'Plugins/admin/domain/redux/features/CustomScriptSlice'
 import { setCurrentItem } from '../../redux/features/authNSlice'
 import { getAcrsConfig } from 'Plugins/auth-server/redux/features/acrSlice'
 

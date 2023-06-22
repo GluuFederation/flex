@@ -10,7 +10,7 @@ import {
   setSuccess,
 } from '../features/authNSlice'
 import LdapApi from '../../../services/redux/api/LdapApi'
-import ScriptApi from '../../../admin/redux/api/ScriptApi'
+import ScriptApi from '../../../admin/infrastructure/api/ScriptApi'
 const JansConfigApi = require('jans_config_api')
 
 function* newACRFunction() {

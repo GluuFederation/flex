@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import { useMediaQuery } from 'react-responsive'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
-import { getMau } from 'Plugins/admin/redux/features/mauSlice'
+import { getMau } from 'Plugins/admin/domain/redux/features/MauSlice'
 import { getClients } from 'Redux/features/initSlice'
 import {
   hasBoth,

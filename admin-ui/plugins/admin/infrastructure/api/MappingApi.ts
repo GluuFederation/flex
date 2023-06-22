@@ -1,0 +1,45 @@
+import { TMappingApi } from 'Plugins/admin/domain/entities/TAdminApi'
+import { handleResponse } from 'Utils/ApiUtils'
+
+export default class MappingApi {
+  constructor(api) {
+    this.api = api
+  }
+
+  api: TMappingApi
+
+  getMappings = () => {
+    return new Promise((resolve, reject) => {
+      this.api.getAllAdminuiRolePermissions((error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+
+  updateMapping = (data) => {
+    const options = {}
+    options['rolePermissionMapping'] = data
+    return new Promise((resolve, reject) => {
+      this.api.mapPermissionsToRole(options, (error, options) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+
+  addMapping = (data) => {
+    const options = {}
+    options['rolePermissionMapping'] = data
+    return new Promise((resolve, reject) => {
+      this.api.mapPermissionsToRole(options, (error, options) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+  deleteMapping = (data) => {
+    return new Promise((resolve, reject) => {
+      this.api.removeRolePermissionsPermission(data.role, (error, options) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+}

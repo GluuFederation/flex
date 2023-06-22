@@ -1,7 +1,7 @@
 /**
  * App Reducers
  */
-import { reducer as mauReducer } from 'Plugins/admin/redux/features/mauSlice'
+import { reducer as mauReducer } from 'Plugins/admin/domain/redux/features/MauSlice'
 import healthReducer from '../features/healthSlice'
 import authReducer from '../features/authSlice'
 import { reducer as initReducer } from '../features/initSlice'

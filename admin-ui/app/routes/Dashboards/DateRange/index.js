@@ -6,7 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDispatch } from "react-redux";
-import { getMau } from "Plugins/admin/redux/features/mauSlice";
+import { getMau } from "Plugins/admin/domain/redux/features/MauSlice";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 

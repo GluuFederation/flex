@@ -6,6 +6,7 @@
       "lib": ["es5", "es2015", "es6", "dom"],
       "jsx": "react",
       "esModuleInterop": true,
+      "resolveJsonModule": true,
       "noEmit": false,
       "baseUrl": ".",
       "paths": {

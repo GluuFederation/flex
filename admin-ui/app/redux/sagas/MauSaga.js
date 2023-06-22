@@ -1,6 +1,6 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import { getMauResponse } from 'Plugins/admin/redux/features/mauSlice'
+import { getMauResponse } from 'Plugins/admin/domain/redux/features/MauSlice'
 import { getAPIAccessToken } from '../features/authSlice'
 import { postUserAction } from '../api/backend-api'
 import MauApi from '../api/MauApi'
