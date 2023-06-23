@@ -10,7 +10,7 @@ const JansConfigApi = require('jans_config_api')
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)  
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AgamaDeveloperStudioApi(
+  const api = new JansConfigApi.AgamaApi(
     getClient(JansConfigApi, token, issuer),
   )
   return new AgamaApi(api)
