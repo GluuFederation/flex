@@ -3,21 +3,12 @@ import { Container, Row, Col } from '../../../../app/components'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
-
+import { getCustomAttributeById } from 'Plugins/user-management/domain/useCases/userManagementUseCases'
 const UserDetailViewPage = ({ row }) => {
   const { rowData } = row
   const DOC_SECTION = 'user'
-  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
+  const personAttributes = useSelector((state: any) => state.attributesReducerRoot.items)
   
-  const getCustomAttributeById = (id) => {
-    let claimData = null
-    for (let i in personAttributes) {
-      if (personAttributes[i].name == id) {
-        claimData = personAttributes[i]
-      }
-    }
-    return claimData
-  }
   return (
     <React.Fragment>
       <Container style={{ backgroundColor: '#F5F5F5' }}>
@@ -64,8 +55,8 @@ const UserDetailViewPage = ({ row }) => {
               return (
                 <Col sm={4} key={'customAttributes' + key}>
                   <GluuFormDetailRow
-                    label={getCustomAttributeById(data.name) ? getCustomAttributeById(data.name).displayName : ''}
-                    doc_category={getCustomAttributeById(data.name) ? getCustomAttributeById(data.name).description : ''}
+                    label={getCustomAttributeById(data.name, personAttributes) ? getCustomAttributeById(data.name, personAttributes).displayName : ''}
+                    doc_category={getCustomAttributeById(data.name, personAttributes) ? getCustomAttributeById(data.name, personAttributes).description : ''}
                     isDirect={true}
                     value={valueToShow}
                   />

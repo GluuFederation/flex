@@ -8,11 +8,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { changeUserPassword } from '../../redux/features/userSlice'
+import { changeUserPassword } from 'Plugins/user-management/domain/redux/features/UserSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from '../../../../app/redux/actions'
+import { TDefaultUserInputs } from 'Plugins/user-management/domain/entities/TUserInputs'
+import { validateInputs } from 'Plugins/user-management/domain/useCases/userManagementUseCases'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import moment from 'moment'
 function UserForm({onSubmitData}) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -23,13 +26,13 @@ function UserForm({onSubmitData}) {
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
-  const userDetails = useSelector((state) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
-  const theme = useContext(ThemeContext)
+  const userDetails = useSelector((state: any) => state.userReducer.selectedUserData)
+  const personAttributes = useSelector((state: any) => state.attributesReducerRoot.items)
+  const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   let options = {}
 
-  const initialValues = {
+  const initialValues: TDefaultUserInputs = {
     displayName: userDetails?.displayName || '',
     givenName: userDetails?.givenName || '',
     mail: userDetails?.mail || '',
@@ -67,18 +70,10 @@ function UserForm({onSubmitData}) {
     onSubmit: (values) => {
       toggle()
     },
-    validationSchema: Yup.object(
-      {
-        displayName:Yup.string().required('Display name is required.'),
-        givenName:Yup.string().required('First name is required.'),
-        sn:Yup.string().required('Last name is required.'),
-        userId:Yup.string().required('User name is required.'),
-        mail:Yup.string().required('Email is required.'),
-      }
-    ),
-    setFieldValue: (field) => {
+    validationSchema:validateInputs,
+    /*setFieldValue: (field: string) => {
       delete values[field]
-    },
+    },*/
   })
 
   const toggle = () => {
@@ -114,7 +109,7 @@ function UserForm({onSubmitData}) {
     toggle()
     onSubmitData(formik.values)
   }
-  const loading = useSelector((state) => state.userReducer.loading)
+  const loading = useSelector((state: any) => state.userReducer.loading)
   const setSelectedClaimsToState = (data) => {
     const tempList = [...selectedClaims]
     tempList.push(data)
@@ -189,9 +184,9 @@ function UserForm({onSubmitData}) {
     const tempList = [...selectedClaims]
     if (userDetails) {
       formik.setFieldValue(id, '')
-    } else {
+    }/* else {
       formik.setFieldValue(id)
-    }
+    }*/
     const newList = tempList.filter((data, index) => data.name !== id)
     setSelectedClaims(newList)
   }
@@ -202,8 +197,8 @@ function UserForm({onSubmitData}) {
 
   const toggleChangePasswordModal = () => {
     setChangePasswordModal(!changePasswordModal)
-    formik.setFieldValue('userPassword')
-    formik.setFieldValue('userConfirmPassword')
+    formik.setFieldValue('userPassword', '')
+    formik.setFieldValue('userConfirmPassword', '')
     setShowButtons(true)
   }
   

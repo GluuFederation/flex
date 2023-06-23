@@ -8,16 +8,16 @@ import {
   takeEvery,
 } from 'redux-saga/effects'
 import { API_USERS } from '../audit/Resources'
-import { FETCH } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from '../../../../app/redux/features/authSlice'
+import { FETCH } from '../../../../../app/audit/UserActionType'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
-import UserApi from '../api/UserApi'
-import { getClient } from '../../../../app/redux/api/base'
+} from 'Utils/TokenController'
+import UserApi from '../../../infrastructure/api/UserApi'
+import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit } from 'Redux/sagas/SagaUtils'
 import {
   getUserResponse,
   updateUserResponse,
@@ -25,9 +25,9 @@ import {
   changeUserPasswordResponse,
   createUserResponse,
   getUsers,
-} from '../features/userSlice'
+} from '../features/UserSlice'
 import {updateToast} from 'Redux/features/toastSlice'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
+import { postUserAction } from 'Redux/api/backend-api'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)

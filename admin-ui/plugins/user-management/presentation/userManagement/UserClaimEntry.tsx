@@ -1,15 +1,15 @@
 import React from 'react'
-import GluuRemovableInputRow from '../../../../app/routes/Apps/Gluu/GluuRemovableInputRow'
-import GluuRemovableSelectRow from '../../../../app/routes/Apps/Gluu/GluuRemovableSelectRow'
-import GluuRemovableTypeAhead from '../../../../app/routes/Apps/Gluu/GluuRemovableTypeAhead'
-import { countries } from '../../common/countries'
+import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
+import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
+import GluuRemovableTypeAhead from 'Routes/Apps/Gluu/GluuRemovableTypeAhead'
+import { countries } from '../common/countries'
 import { useSelector } from 'react-redux'
 
 function UserClaimEntry({ data, type, entry, formik, handler }) {
   const doHandle = () => {
     handler(data.name)
   }
-  const roles = useSelector((state) => state.apiRoleReducer.items)
+  const roles = useSelector((state: any) => state.apiRoleReducer.items)
   const rolesToBeShown = roles.map((data) => data.role)
 
   return (

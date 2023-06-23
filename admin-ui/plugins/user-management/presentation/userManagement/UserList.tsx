@@ -7,29 +7,29 @@ import {
   getUsers,
   setSelectedUserData,
   deleteUser,
-} from '../../redux/features/userSlice'
+} from 'Plugins/user-management/domain/redux/features/UserSlice'
 
-import { getAttributesRoot } from '../../../../app/redux/features/attributesSlice'
+import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card, CardBody } from '../../../../app/components'
+import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useNavigate } from 'react-router-dom'
 import {
   hasPermission,
   USER_WRITE,
   USER_READ,
   USER_DELETE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
 import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
+import { LIMIT_ID, PATTERN_ID } from '../common/Constants'
 
 function UserList(props) {
   const dispatch = useDispatch()
@@ -41,15 +41,15 @@ function UserList(props) {
     dispatch(getRoles({}))
   }, [])
   const { totalItems, entriesCount } = useSelector(
-    (state) => state.userReducer
+    (state: any) => state.userReducer
   )
   const [pageNumber, setPageNumber] = useState(0)
-  const usersList = useSelector((state) => state.userReducer.items)
+  const usersList = useSelector((state: any) => state.userReducer.items)
   const redirectToUserListPage = useSelector(
-    (state) => state.userReducer.redirectToUserListPage,
+    (state: any) => state.userReducer.redirectToUserListPage,
   )
-  const loading = useSelector((state) => state.userReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  const loading = useSelector((state: any) => state.userReducer.loading)
+  const permissions = useSelector((state: any) => state.authReducer.permissions)
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState(null)
@@ -58,7 +58,7 @@ function UserList(props) {
     toggle()
     handleUserDelete(deleteData)
   }
-  const theme = useContext(ThemeContext)
+  const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
@@ -161,8 +161,8 @@ function UserList(props) {
   }
 
   const onPageChangeClick = (page) => {
-    let startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
+    let startCount: number = page * limit
+    options['startIndex'] = startCount
     options['limit'] = limit
     options['pattern'] = pattern
     setPageNumber(page)
@@ -210,8 +210,8 @@ function UserList(props) {
                         onPageChangeClick(page)
                       }}
                       rowsPerPage={limit}
-                      onRowsPerPageChange={(prop, count) =>
-                        onRowCountChangeClick(count.props.value)
+                      onRowsPerPageChange={(event) =>
+                        onRowCountChangeClick(event.target.value)
                       }
                     />
                   ),
@@ -233,9 +233,9 @@ function UserList(props) {
                   searchFieldAlignment: 'left',
                   selection: false,
                   pageSize: limit,
-                  rowStyle: (rowData) => ({
+                  /*rowStyle: (rowData) => ({
                     backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
-                  }),
+                  }),*/
                   headerStyle: {
                     ...applicationStyle.tableHeaderStyle,
                     ...bgThemeColor,

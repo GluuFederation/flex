@@ -1,8 +1,8 @@
-import UserList from './components/UserManagement/UserList'
-import UserAddPage from './components/UserManagement/UserAddPage'
-import UserEditPage from './components/UserManagement/UserEditPage'
-import userSaga from './redux/sagas/UserSaga'
-import userReducer from './redux/features/userSlice'
+import UserList from './presentation/userManagement/UserList'
+import UserAddPage from './presentation/userManagement/UserAddPage'
+import UserEditPage from './presentation/userManagement/UserEditPage'
+import userSaga from './domain/redux/sagas/UserSaga'
+import userReducer from './domain/redux/features/UserSlice'
 import { USER_READ, USER_WRITE } from '../../app/utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/user'
