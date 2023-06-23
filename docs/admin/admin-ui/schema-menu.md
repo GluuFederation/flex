@@ -12,7 +12,7 @@ Attributes are individual pieces of user data, like uid or email, that are requi
 
 ![image](../../assets/admin-ui/person.png)
 
-The following fields are supported in the Person (attribute) creation form are:
+The following fields are supported in the Person (attribute) creation form:
 
 - **Name:** This field defines the name of the Person attribute. The name must be unique in the Janssen Server persistence tree.
 - **Display Name:** The display name can be anything that is human-readable.
