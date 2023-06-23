@@ -47,6 +47,10 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 ```
 sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
 ```
+Output similar to below should confirm the integrity of the downloaded package.
+```
+flex-replace-flex-version-suse15.x86_64.rpm.sha256sum: ok
+```
 - Install the package
 
 ```
