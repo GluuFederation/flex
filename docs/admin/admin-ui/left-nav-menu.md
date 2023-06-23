@@ -10,11 +10,11 @@ In the realm of web design and user experience, the left navigation menu holds a
 
 Gluu Flex Admin UI has the following main menus on the left navigation:
 
-- Home
+- [Home](./dashboard.md)
 - [Admin](./admin-menu.md)
 - [Auth server](./auth-server-menu.md)
 - [Schema](./schema-menu.md)
-- Services
-- SMTP
+- [Services](./services-menu.md)
+- [SMTP](./smtp-menu.md)
 - [Users](./userMgmt-menu.md)
 - Sign out
