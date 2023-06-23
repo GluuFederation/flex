@@ -1,9 +1,14 @@
 # VM System Requirements
 
+## Supported Versions
+
 Gluu Flex currently provides packages for these Linux distros:
 
 - Ubuntu (versions: 20.04)
-- SUSE (SLES or LEAP) (version: 15)
+- SUSE Distributions
+  - SUSE Linux Enterprise Server (SLES) 15
+  - openSUSE Leap 15.4
+  - openSUSE Tumbleweed (non-production)
 - RedHat Enterprise Linux (version: 8)
 
 ## Hardware Requirements

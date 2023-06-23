@@ -8,42 +8,56 @@ tags:
 - Tumbleweed
 ---
 
-# SUSE Flex Installation
+# Install Gluu Flex On SUSE Linux
 
-Before you install, check the [VM system requirements](vm-requirements.md).
+This is a step-by-step guide for installation and uninstallation
+of Gluu Flex on SUSE Linux distributions
 
-SELinux must be set to permissive in ```/etc/selinux/config```
+## Prerequisites
 
-## Supported versions
-- SUSE Linux Enterprise Server (SLES) 15
-- openSUSE Leap 15.4
-- openSUSE Tumbleweed (non-production)
-
-## Install the Package
+- Ensure that the OS platform is one of the [supported versions](./vm-requirements.md#supported-versions)
+- VM should meet [VM system requirements](./vm-requirements.md)
+- Make sure that if `SELinux` is installed then
+  [it is put into permissive mode](https://documentation.suse.com/sles/15-SP1/html/SLES-all/cha-selinux.html#sec-selinux-mode-permissive)
 - If the server firewall is running, make sure to disable it during installation.
   For example:
 ```
-firewall-cmd --permanent --zone=public --add-service=https;
-firewall-cmd --reload;
+sudo firewall-cmd --permanent --zone=public --add-service=https
 ```
-- Download the GPG key zip file , unzip and import GPG key
 ```
-wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
-unzip automation-flex-public-gpg.zip;
-sudo rpm -import automation-flex-public-gpg.asc;
+sudo firewall-cmd --reload
 ```
-- Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
+- Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
+  that you can use during installation. SSA should be stored in a text file on an accessible path.
 
+## Install the Package
+
+### Download and Verify the Release Package
+
+- Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
 ```
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm -P ~/
 ```
-- Verify integrity of the downloaded package using published sha256sum.
 
-  Download sha256sum file for the package
+- GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
+  not found, the [installation step](#install-the-release-package) would fail. Use the commands below to download and
+  import the GPG key.
+```
+wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
+```
+```
+unzip automation-flex-public-gpg.zip
+```
+```
+sudo rpm -import automation-flex-public-gpg.asc
+```
+
+- Verify the integrity of the downloaded package using published sha256sum. Download the sha256sum file for the package
 ```
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm.sha256sum  -P ~/
 ```
-  Check the hash if it is matching.
+
+- Check the hash if it is matching.
 ```
 sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
 ```
@@ -51,44 +65,47 @@ Output similar to below should confirm the integrity of the downloaded package.
 ```
 flex-replace-flex-version-suse15.x86_64.rpm.sha256sum: ok
 ```
-- Install the package
 
+### Install the Release Package
+
+Use SUSE `zypper` tool to start the installation process
 ```
 sudo zypper install ~/flex-replace-flex-version-suse15.x86_64.rpm
 ```
 
-## Run the setup script
+### Run the setup script
 
 - Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
 
 - Run the setup script:
 
 ```
-sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [ssa-filename]
 ```
 
-## Log in to Text User Interface (TUI)
+## Verify and Access the Installation
 
-Begin configuration by accessing the TUI with the following command:
+Verify that installation has been successful and all installed components are accessible using the steps below:
 
+- Log in to Text User Interface (TUI)
 ```
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
+[TUI](https://docs.jans.io/stable/admin/config-guide/jans-tui) is a text-based configuration tool for Gluu Flex Server.
 
-Full TUI documentation can be found [here](https://docs.jans.io/stable/admin/config-guide/jans-tui)
-
-To login admin UI
+- Log into Admin-UI using URI below
 ```
 https://FQDN/admin
 ```
-To login casa
+
+- Access Casa using URI below
 ```
 https://FQDN/casa
 ```
 
 ## Uninstallation
 
-Removing Flex is a two step process:
+Removing Flex is a two-step process:
 
 1. Delete files installed by Gluu Flex
 1. Remove and purge the `jans` package
@@ -98,8 +115,8 @@ Use the command below to uninstall the Gluu Flex server
 ```
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
-output will be like this:
-<!-- I need to add the output when command is run. -->
+the output will be like this:
+<!-- I need to add the output when the command is run. -->
 ```
 ec2-user@manojs1978-clear-camel:~> sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
