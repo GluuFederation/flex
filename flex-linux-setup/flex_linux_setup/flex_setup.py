@@ -501,6 +501,9 @@ class flex_installer(JettyInstaller):
         for logfn in (self.log4j2_adminui_path, self.log4j2_path):
             config_api_installer.copyFile(logfn, config_api_installer.custom_config_dir)
 
+        print("Removing DUO Script")
+        config_api_installer.dbUtils.delete_dn('inum=5018-F9CF,ou=scripts,o=jans')
+
         self.rewrite_cli_ini()
 
     def install_casa(self):
