@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   agamaList: [],
-  loading: true,
+  loading: false,
   totalItems: 0,
   entriesCount: 0
 }
