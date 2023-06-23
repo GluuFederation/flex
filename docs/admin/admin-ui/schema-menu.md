@@ -1,3 +1,11 @@
+---
+tags:
+- administration
+- admin-ui
+- schema
+- person
+- attributes
+---
 # Schema
 
 Attributes are individual pieces of user data, like uid or email, that are required by applications in order to identify a user and grant access to protected resources. The Person attributes that are available in your Janssen server can be found by navigating `Schema > Person`.

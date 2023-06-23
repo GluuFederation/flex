@@ -16,5 +16,5 @@ Gluu Flex Admin UI has the following main menus on the left navigation:
 - [Schema](./schema-menu.md)
 - Services
 - SMTP
-- Users
+- [Users](./userMgmt-menu.md)
 - Sign out
