@@ -18,7 +18,7 @@ The administrator can control view/edit/delete access of users of Gluu Flex Admi
 
 ### Role
 
-The logged-in administrator can create, edit or delete Admin UI Roles using the Admin UI Roles Page. The Admin UI Role can be assigned to the user using the User Management feature of this GUI. After installation, the following Admin UI Roles can be seen on Admin UI: api-viewer, api-editor, api-manager and api-admin. The default user i.e. `admin` is assigned with api-admin role. A user with one or more Admin UI Role(s) assigned will be able to log into Gluu Flex Admin UI.
+The logged-in administrator can create, edit or delete Admin UI Roles using the Admin UI Roles Page. The Admin UI Role can be assigned to the user using the [User Management](./userMgmt-menu.md) feature of this GUI. After installation, the following Admin UI Roles can be seen on Admin UI: api-viewer, api-editor, api-manager and api-admin. The default user i.e. `admin` is assigned with api-admin role. A user with one or more Admin UI Role(s) assigned will be able to log into Gluu Flex Admin UI.
 
 ![image](../../assets/admin-ui/role.png)
 

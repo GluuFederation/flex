@@ -157,6 +157,18 @@ In order to configure a dynamic scope the following steps are required:
 
 ![image](../../assets/admin-ui/dynamic-scope.png)
 
+## Authn
+
+Authentication Context Class Reference (ACR) enables applications to request and verify the level of authentication assurance or the context of the authentication process used for user authentication.
+
+This page allows the administrator to view all enabled ACRs and select the default ACR which refers to the predefined or default authentication assurance when no specific ACR value is requested or specified.
+
+![image](../../assets/admin-ui/authn.png)
+
+## Agama
+
+This menu addresses deployment of [Agama](https://docs.jans.io/head/agama/introduction/) project packages (file with .gama extension).
+
 
 
 
