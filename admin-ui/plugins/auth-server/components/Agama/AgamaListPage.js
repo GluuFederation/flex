@@ -101,10 +101,8 @@ function AgamaListPage() {
     JSZip.loadAsync(file) // 1) read the Blob
       .then(function (zip) {
         let foundProjectName = false
-        let foundJson = false
         zip.forEach(function (relativePath, zipEntry) {
           if (zipEntry.name.endsWith('.json')) {
-            foundJson = true
             if (!foundProjectName) {
               zipEntry.async('string').then(function (jsonStr) {
                 const jsonData = JSON.parse(jsonStr) // Parse the JSON data
@@ -148,14 +146,13 @@ function AgamaListPage() {
     },
   })
 
-  const { totalItems, entriesCount, loading } = useSelector(
+  const { totalItems, loading } = useSelector(
     (state) => state.agamaReducer,
   )
   const agamaList = useSelector((state) => state.agamaReducer.agamaList)
   const permissions = useSelector((state) => state.authReducer.permissions)
   SetTitle(t('titles.agama'))
 
-  let memoLimit = limit
   useEffect(() => {
     dispatch(getAgama())
   }, [])
