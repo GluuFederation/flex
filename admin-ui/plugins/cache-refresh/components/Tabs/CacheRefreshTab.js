@@ -10,7 +10,7 @@ import GluuCheckBoxRow from "Routes/Apps/Gluu/GluuCheckBoxRow";
 import * as Yup from "yup";
 import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
 import { isEmpty } from "lodash";
-import { putCacheRefreshConfiguration } from "../../redux/actions/CacheRefreshActions";
+import { putCacheRefreshConfiguration } from "../../redux/features/CacheRefreshSlice";
 import { useTranslation } from "react-i18next";
 
 const CacheRefreshTab = () => {

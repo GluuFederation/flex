@@ -1,7 +1,3 @@
-import {
-  GET_CACHE_REFRESH_CONFIGURATION,
-  PUT_CACHE_REFRESH_CONFIGURATION,
-} from "../actions/types";
 import { initAudit } from "../../../../app/redux/sagas/SagaUtils";
 import { getClient } from "../../../../app/redux/api/base";
 import { isFourZeroOneError } from "Utils/TokenController";
@@ -15,13 +11,13 @@ import {
   takeEvery,
 } from "redux-saga/effects";
 import { postUserAction } from "../../../../app/redux/api/backend-api";
-import { updateToast } from "Redux/actions/ToastAction";
-import CacheRefreshApi from "../api/CacheRefreshApi";
+import { updateToast } from 'Redux/features/toastSlice'
+import CacheRefreshApi from "../api/CacheRefreshApi"
 import {
   getCacheRefreshConfiguration,
   getCacheRefreshConfigurationResponse,
-} from "../actions/CacheRefreshActions";
-import { getAPIAccessToken } from "../../../../app/redux/actions/AuthActions";
+} from "../features/CacheRefreshSlice";
+import { getAPIAccessToken } from "Redux/features/authSlice";
 
 const JansConfigApi = require("jans_config_api");
 
@@ -54,7 +50,7 @@ export function* editCacheConfig({ payload }) {
   const audit = yield* initAudit();
   try {
     const cacheRefreshApi = yield* newFunction();
-    const data = yield call(cacheRefreshApi.updateCacheRefreshConfig, payload);
+    yield call(cacheRefreshApi.updateCacheRefreshConfig, payload);
     yield put(updateToast(true, "success"));
     yield put(getCacheRefreshConfiguration());
     yield call(postUserAction, audit);
@@ -68,11 +64,11 @@ export function* editCacheConfig({ payload }) {
 }
 
 export function* watchGetCacheRefresh() {
-  yield takeEvery(GET_CACHE_REFRESH_CONFIGURATION, getCacheRefreshSaga);
+  yield takeEvery('cacheRefresh/getCacheRefreshConfiguration', getCacheRefreshSaga);
 }
 
 export function* watchPutCacheRefreshConfig() {
-  yield takeLatest(PUT_CACHE_REFRESH_CONFIGURATION, editCacheConfig);
+  yield takeLatest('cacheRefresh/putCacheRefreshConfiguration', editCacheConfig);
 }
 
 export default function* rootSaga() {

@@ -13,7 +13,7 @@ import BindPasswordModal from "../CacheRefreshManagement/BindPasswordModal";
 import * as Yup from "yup";
 import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
 import { isEmpty } from "lodash";
-import { putCacheRefreshConfiguration } from "../../redux/actions/CacheRefreshActions";
+import { putCacheRefreshConfiguration } from "../../redux/features/CacheRefreshSlice";
 
 const isStringsArray = (arr) => arr.every((i) => typeof i === "string");
 const convertToStringArray = (arr) => {

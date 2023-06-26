@@ -9,7 +9,7 @@ import SourceBackendServers from "../Tabs/SourceBackendServers";
 import InumDBServer from "../Tabs/InumDBServer";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useDispatch, useSelector } from "react-redux";
-import { getCacheRefreshConfiguration } from "../../redux/actions/CacheRefreshActions";
+import { getCacheRefreshConfiguration } from "../../redux/features/CacheRefreshSlice";
 import { useTranslation } from "react-i18next";
 
 const CacheRefreshManagement = () => {
