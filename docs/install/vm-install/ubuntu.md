@@ -1,11 +1,32 @@
 
-# Ubuntu Flex Installation
+---
+tags:
+- administration
+- installation
+- vm
+- Ubuntu
+---
 
-Before you install, check the [VM system requirements](vm-requirements.md).
+# Install Gluu Flex On Ubuntu Linux
 
-## Supported Versions
-- Ubuntu 22.04
-- Ubuntu 20.04
+This is a step-by-step guide for installation and uninstallation of Gluu Flex on Ubuntu Linux
+
+## Prerequisites
+
+- Ensure that the OS platform is one of the [supported versions](./vm-requirements.md#supported-versions)
+- VM should meet [VM system requirements](./vm-requirements.md)
+- Make sure that if `SELinux` is installed then it is put into permissive mode
+- If the server firewall is running, make sure you allow `https`, which is
+  needed for OpenID and FIDO.
+  
+```
+sudo firewall-cmd --permanent --zone=public --add-service=https
+```
+```
+sudo firewall-cmd --reload
+```
+- Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
+  that you can use during installation. SSA should be stored in a text file on an accessible path.
 
 ## Install the Package
 - If the server firewall is running, make sure to disable it during installation.
@@ -39,7 +60,8 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
 
 ```
-  Check the hash if it is matching.
+Check the hash if it is matching. You may need to change your working directory
+to where both the rpm and sha256sum file are located.
 ```
 cd /tmp;
 sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
@@ -119,6 +141,9 @@ Removing Flex is a two step process:
 
 1. Delete files installed by Gluu Flex
 1. Remove and purge the `jans` package
+
+If you have not run the setup script, you can skip step 1 and just remove
+the package.
 
 Use the command below to uninstall the Gluu Flex server
 
