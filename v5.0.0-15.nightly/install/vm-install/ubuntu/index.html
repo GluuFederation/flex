@@ -1094,27 +1094,65 @@
 <li>Ubuntu 20.04</li>
 </ul>
 <h2 id="install-the-package">Install the Package<a class="headerlink" href="#install-the-package" title="Permanent link">#</a></h2>
+<ul>
+<li>If the server firewall is running, make sure to disable it during installation.
+  For example:
+<div class="highlight"><pre><span></span><code>sudo ufw disable;
+sudo ufw status;
+</code></pre></div></li>
+<li>Download the GPG key zip file , unzip and import GPG key
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
+unzip automation-flex-public-gpg.zip;
+sudo gpg --import automation-flex-public-gpg.asc;
+</code></pre></div></li>
+</ul>
 <h3 id="ubuntu-2204">Ubuntu 22.04<a class="headerlink" href="#ubuntu-2204" title="Permanent link">#</a></h3>
 <ul>
 <li>Download the release package from the Github Gluu Flex <a href="https://github.com/GluuFederation/flex/releases">Releases</a></li>
 </ul>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-15.nightly/flex_5.0.0-15.nightly.ubuntu22.04_amd64.deb -P /tmp
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
 </code></pre></div>
+<ul>
+<li>Verify integrity of the downloaded package using published sha256sum.</li>
+</ul>
+<p>Download sha256sum file for the package</p>
+<p><div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
+</code></pre></div>
+  Check the hash if it is matching.
+<div class="highlight"><pre><span></span><code>cd /tmp;
+sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
+</code></pre></div></p>
+<p>Output similar to below should confirm the integrity of the downloaded package.
+<div class="highlight"><pre><span></span><code>flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum: ok
+</code></pre></div></p>
 <ul>
 <li>Install the package</li>
 </ul>
-<div class="highlight"><pre><span></span><code>apt install -y /tmp/flex_5.0.0-15.nightly.ubuntu22.04_amd64.deb
+<div class="highlight"><pre><span></span><code>apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
 </code></pre></div>
 <h3 id="ubuntu-2004">Ubuntu 20.04<a class="headerlink" href="#ubuntu-2004" title="Permanent link">#</a></h3>
 <ul>
 <li>Download the release package from the Github Gluu Flex <a href="https://github.com/GluuFederation/flex/releases">Releases</a></li>
 </ul>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-15.nightly/flex_5.0.0-15.nightly.ubuntu20.04_amd64.deb -P /tmp
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
 </code></pre></div>
+<ul>
+<li>Verify integrity of the downloaded package using published sha256sum.</li>
+</ul>
+<p>Download sha256sum file for the package</p>
+<p><div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
+</code></pre></div>
+  Check the hash if it is matching.
+<div class="highlight"><pre><span></span><code>cd /tmp;
+sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
+</code></pre></div></p>
+<p>Output similar to below should confirm the integrity of the downloaded package.
+<div class="highlight"><pre><span></span><code>flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum: ok
+</code></pre></div></p>
 <ul>
 <li>Install the package</li>
 </ul>
-<div class="highlight"><pre><span></span><code>apt install -y /tmp/flex_5.0.0-15.nightly.ubuntu20.04_amd64.deb
+<div class="highlight"><pre><span></span><code>apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 </code></pre></div>
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
 <ul>
@@ -1139,7 +1177,55 @@
 <li>Remove and purge the <code>jans</code> package</li>
 </ol>
 <p>Use the command below to uninstall the Gluu Flex server</p>
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<p><div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+</code></pre></div>
+output:</p>
+<div class="highlight"><pre><span></span><code>root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+
+This process is irreversible.
+Gluu Flex Components will be removed
+
+
+
+Are you sure to uninstall Gluu Flex? [yes/N] yes
+
+Profile was detected as jans.
+
+Log Files:
+
+/opt/jans/jans-setup/logs/flex-setup.log
+/opt/jans/jans-setup/logs/flex-setup-error.log
+
+Please wait while collecting properties...
+Uninstalling Gluu Casa
+  - Deleting /etc/default/casa
+  - Deleting /etc/systemd/system/casa.service
+  - Removing casa directives from apache configuration
+  - Deleting /opt/jans/jetty/jans-auth/custom/libs/casa-config.jar
+  - Removing plugin /opt/jans/jetty/jans-auth/custom/libs/casa-config.jar from Jans Auth Configuration
+  - Deleting /opt/jans/python/libs/Casa.py
+  - Deleting /opt/jans/python/libs/casa-external_fido2.py
+  - Deleting /opt/jans/python/libs/casa-external_otp.py
+  - Deleting /opt/jans/python/libs/casa-external_super_gluu.py
+  - Deleting /opt/jans/python/libs/casa-external_twilio_sms.py
+  - Deleting casa client from db backend
+  - Deleting casa client scopes from db backend
+  - Deleting casa configuration from db backend
+  - Deleting script 3000-F75A from db backend
+  - Deleting /opt/jans/jetty/casa
+Uninstalling Gluu Admin-UI
+  - Deleting Gluu Flex Admin UI Client  2001.e7989c7e-09b5-4e39-a7c9-a78017127cf0
+  - Removing Admin UI directives from apache configuration
+  - Deleting /opt/jans/jetty/jans-config-api/custom/libs/gluu-flex-admin-ui-plugin.jar
+  - Removing plugin /opt/jans/jetty/jans-config-api/custom/libs/gluu-flex-admin-ui-plugin.jar from Jans Config API Configuration
+  - Deleting /opt/jans/jetty/jans-config-api/custom/config/log4j2-adminui.xml
+  - Deleting /opt/jans/jetty/jans-config-api/custom/config/log4j2.xml
+  - Rewriting Jans CLI init file for plugins
+  - Deleting /var/www/html/admin
+Disabling script A51E-76DA
+Restarting Apache
+Restarting Jans Auth
+Restarting Janssen Config Api
 </code></pre></div>
 <!-- I need to add the output when command is run. -->
 
@@ -1147,13 +1233,53 @@
 <div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/install.py -uninstall
 </code></pre></div>
 <!-- I need to add the output when command is run. -->
+<p>output :</p>
+<div class="highlight"><pre><span></span><code>root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/install.py -uninstall
+
+This process is irreversible.
+You will lose all data related to Janssen Server.
+
+
+
+Are you sure to uninstall Janssen Server? [yes/N] yes
+
+Uninstalling Jannsen Server...
+Removing /etc/default/jans-config-api
+Stopping jans-config-api
+Removing /etc/default/jans-auth
+Stopping jans-auth
+Removing /etc/default/jans-fido2
+Stopping jans-fido2
+Removing /etc/default/jans-scim
+Stopping jans-scim
+Removing /etc/default/jans-cache-refresh
+Stopping jans-cache-refresh
+Stopping OpenDj Server
+Stopping Server...
+[23/Jun/2023:09:10:27 +0000] category=BACKEND severity=NOTICE msgID=370 msg=The backend userRoot is now taken offline
+[23/Jun/2023:09:10:28 +0000] category=BACKEND severity=NOTICE msgID=370 msg=The backend site is now taken offline
+[23/Jun/2023:09:10:28 +0000] category=BACKEND severity=NOTICE msgID=370 msg=The backend metric is now taken offline
+[23/Jun/2023:09:10:28 +0000] category=CORE severity=NOTICE msgID=203 msg=The Directory Server is now stopped
+Executing rm -r -f /etc/certs
+Executing rm -r -f /etc/jans
+Executing rm -r -f /opt/jans
+Executing rm -r -f /opt/amazon-corretto*
+Executing rm -r -f /opt/jre
+Executing rm -r -f /opt/node*
+Executing rm -r -f /opt/jetty*
+Executing rm -r -f /opt/jython*
+Executing rm -r -f /opt/opendj
+Executing rm -r -f /opt/dist
+Removing /etc/apache2/sites-enabled/https_jans.conf
+Removing /etc/apache2/sites-available/https_jans.conf
+</code></pre></div>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-05-18T10:52:08+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-05-18</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-23T10:16:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-23</span>
       
         <br>
         Created:
