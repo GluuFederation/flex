@@ -16,6 +16,7 @@ import CacheRefreshApi from "../api/CacheRefreshApi"
 import {
   getCacheRefreshConfiguration,
   getCacheRefreshConfigurationResponse,
+  putCacheRefreshConfiguration,
 } from "../features/CacheRefreshSlice";
 import { getAPIAccessToken } from "Redux/features/authSlice";
 
@@ -64,11 +65,11 @@ export function* editCacheConfig({ payload }) {
 }
 
 export function* watchGetCacheRefresh() {
-  yield takeEvery('cacheRefresh/getCacheRefreshConfiguration', getCacheRefreshSaga);
+  yield takeEvery(getCacheRefreshConfiguration.toString(), getCacheRefreshSaga);
 }
 
 export function* watchPutCacheRefreshConfig() {
-  yield takeLatest('cacheRefresh/putCacheRefreshConfiguration', editCacheConfig);
+  yield takeLatest(putCacheRefreshConfiguration.toString(), editCacheConfig);
 }
 
 export default function* rootSaga() {

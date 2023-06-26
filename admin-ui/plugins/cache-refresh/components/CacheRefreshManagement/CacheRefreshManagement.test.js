@@ -70,7 +70,7 @@ it("Should render cache refresh management page properly", () => {
 });
 
 it("Should display change password modal", async () => {
-  const { debug } = render(<CacheRefreshManagement />, {
+  render(<CacheRefreshManagement />, {
     wrapper: Wrapper,
   });
 

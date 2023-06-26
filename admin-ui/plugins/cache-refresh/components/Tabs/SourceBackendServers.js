@@ -1,45 +1,51 @@
-import React, { useContext, useState } from "react";
-import { ThemeContext } from "../../../../app/context/theme/themeContext";
-import { useDispatch, useSelector } from "react-redux";
-import { useFormik } from "formik";
-import { Row, Col, Form, FormGroup } from "../../../../app/components";
-import { Button } from "Components";
-import GluuProperties from "Routes/Apps/Gluu/GluuProperties";
-import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import { Box } from "@mui/material";
-import BindPasswordModal from "../CacheRefreshManagement/BindPasswordModal";
-import GluuCheckBoxRow from "Routes/Apps/Gluu/GluuCheckBoxRow";
-import * as Yup from "yup";
-import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
-import { isEmpty } from "lodash";
-import { putCacheRefreshConfiguration } from "../../redux/features/CacheRefreshSlice";
-import { useTranslation } from "react-i18next";
+import React, { useContext, useState } from 'react'
+import { ThemeContext } from '../../../../app/context/theme/themeContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { useFormik } from 'formik'
+import { Row, Col, Form, FormGroup } from '../../../../app/components'
+import { Button } from 'Components'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import { Box } from '@mui/material'
+import BindPasswordModal from '../CacheRefreshManagement/BindPasswordModal'
+import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
+import * as Yup from 'yup'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import { isEmpty } from 'lodash'
+import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
+import { useTranslation } from 'react-i18next'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 
-const isStringsArray = (arr) => arr.every((i) => typeof i === "string");
+const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
 const convertToStringArray = (arr) => {
-  return arr.map((item) => item.value);
-};
+  return arr.map((item) => item.value)
+}
 
 const SourceBackendServers = () => {
-  const { t } = useTranslation();
-  const theme = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
-  const dispatch = useDispatch();
+  const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
-  );
+  )
   const { targetConfig } = useSelector(
     (state) => state.cacheRefreshReducer.configuration
-  );
+  )
   const [addSourceLdapServer, setAddSourceLdapServer] = useState(
     targetConfig?.enabled || false
-  );
+  )
 
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(false)
   const toggle = () => {
-    setModal(!modal);
-  };
+    setModal(!modal)
+  }
+
+  const [auditModal, setAuditModal] = useState(false)
+  const toggleAudit = () => {
+    setAuditModal(!modal)
+  }
 
   const initialValues = {
     targetConfig: {
@@ -48,67 +54,73 @@ const SourceBackendServers = () => {
       baseDNs: targetConfig?.baseDNs || [],
       bindPassword: targetConfig?.bindPassword || null,
     },
-  };
+  }
 
   const validationSchema = Yup.object({
     targetConfig: Yup.object().shape({
       configId: Yup.string().required(
-        `${t("fields.name")} ${t("messages.is_required")}`
+        `${t('fields.name')} ${t('messages.is_required')}`
       ),
       bindDN: Yup.string().required(
-        `${t("fields.bind_dn")} ${t("messages.is_required")}`
+        `${t('fields.bind_dn')} ${t('messages.is_required')}`
       ),
       maxConnections: Yup.string().required(
-        `${t("fields.max_connections")} ${t("messages.is_required")}`
+        `${t('fields.max_connections')} ${t('messages.is_required')}`
       ),
       servers: Yup.array().min(
         1,
-        `${t("fields.server_port")} ${t("messages.is_required")}`
+        `${t('fields.server_port')} ${t('messages.is_required')}`
       ),
       baseDNs: Yup.array().min(
         1,
-        `${t("fields.base_dns")} ${t("messages.is_required")}`
+        `${t('fields.base_dns')} ${t('messages.is_required')}`
       ),
     }),
-  });
+  })
 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: addSourceLdapServer && validationSchema,
     setFieldValue: (field) => {
-      delete values[field];
+      delete values[field]
     },
     onSubmit: (data) => {
       if (isEmpty(formik.errors)) {
-        dispatch(
-          putCacheRefreshConfiguration({
-            cacheRefreshConfiguration: {
-              ...cacheRefreshConfiguration,
-              targetConfig: {
-                ...data.targetConfig,
-                baseDNs: isStringsArray(data.targetConfig.baseDNs || [])
-                  ? data.targetConfig.baseDNs
-                  : convertToStringArray(data?.targetConfig.baseDNs || []),
-                servers: isStringsArray(data.targetConfig.servers || [])
-                  ? data.targetConfig.servers
-                  : convertToStringArray(data?.targetConfig.servers || []),
-              },
-            },
-          })
-        );
+        toggleAudit()
       }
     },
-  });
+  })
+
+  const submitForm = () => {
+    toggleAudit()
+
+    dispatch(
+      putCacheRefreshConfiguration({
+        cacheRefreshConfiguration: {
+          ...cacheRefreshConfiguration,
+          targetConfig: {
+            ...formik.values.targetConfig,
+            baseDNs: isStringsArray(formik.values.targetConfig.baseDNs || [])
+              ? formik.values.targetConfig.baseDNs
+              : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
+            servers: isStringsArray(formik.values.targetConfig.servers || [])
+              ? formik.values.targetConfig.servers
+              : convertToStringArray(formik.values?.targetConfig.servers || []),
+          },
+        },
+      })
+    )
+  }
 
   const handleRemoveServer = () => {
-    setAddSourceLdapServer(false);
-    formik.setFieldValue("targetConfig.enabled", false);
-  };
+    setAddSourceLdapServer(false)
+    formik.setFieldValue('targetConfig.enabled', false)
+  }
 
   const handleAddServer = () => {
-    formik.setFieldValue("targetConfig.enabled", true);
-    setAddSourceLdapServer(true);
-  };
+    formik.setFieldValue('targetConfig.enabled', true)
+    setAddSourceLdapServer(true)
+  }
 
   const handleChangePassword = (updatedPassword) => {
     dispatch(
@@ -121,29 +133,29 @@ const SourceBackendServers = () => {
           },
         },
       })
-    );
-  };
+    )
+  }
 
   return (
     <>
       <Form
         onSubmit={(e) => {
-          e.preventDefault();
-          formik.handleSubmit();
+          e.preventDefault()
+          formik.handleSubmit()
         }}
-        className="mt-4"
+        className='mt-4'
       >
         <FormGroup row>
-          <Box className="mb-3" display="flex">
+          <Box className='mb-3' display='flex'>
             {!addSourceLdapServer && (
               <Button onClick={handleAddServer}>
-                {t("actions.add_source_ldap_server")}
+                {t('actions.add_source_ldap_server')}
               </Button>
             )}
             {addSourceLdapServer && (
-              <Button color="danger" onClick={handleRemoveServer}>
-                <i className="fa fa-remove me-2"></i>
-                {t("actions.remove_source_server")}
+              <Button color='danger' onClick={handleRemoveServer}>
+                <i className='fa fa-remove me-2'></i>
+                {t('actions.remove_source_server')}
               </Button>
             )}
           </Box>
@@ -151,9 +163,9 @@ const SourceBackendServers = () => {
             <>
               <Col sm={8}>
                 <GluuInputRow
-                  label="fields.name"
-                  name="targetConfig.configId"
-                  value={formik.values.targetConfig?.configId || ""}
+                  label='fields.name'
+                  name='targetConfig.configId'
+                  value={formik.values.targetConfig?.configId || ''}
                   formik={formik}
                   lsize={4}
                   rsize={8}
@@ -166,9 +178,9 @@ const SourceBackendServers = () => {
               </Col>
               <Col sm={8}>
                 <GluuInputRow
-                  label="fields.bind_dn"
-                  name="targetConfig.bindDN"
-                  value={formik.values.targetConfig?.bindDN || ""}
+                  label='fields.bind_dn'
+                  name='targetConfig.bindDN'
+                  value={formik.values.targetConfig?.bindDN || ''}
                   formik={formik}
                   lsize={4}
                   rsize={8}
@@ -179,11 +191,11 @@ const SourceBackendServers = () => {
               </Col>
               <Col sm={8}>
                 <GluuInputRow
-                  label="fields.max_connections"
-                  name="targetConfig.maxConnections"
-                  value={formik.values.targetConfig?.maxConnections || ""}
+                  label='fields.max_connections'
+                  name='targetConfig.maxConnections'
+                  value={formik.values.targetConfig?.maxConnections || ''}
                   formik={formik}
-                  type="number"
+                  type='number'
                   lsize={4}
                   rsize={8}
                   required
@@ -195,22 +207,22 @@ const SourceBackendServers = () => {
               </Col>
               <Col sm={8}>
                 <Row>
-                  <GluuLabel required label="fields.server_port" size={4} />
+                  <GluuLabel required label='fields.server_port' size={4} />
                   <Col sm={8}>
                     <GluuProperties
-                      compName="targetConfig.servers"
+                      compName='targetConfig.servers'
                       isInputLables={true}
                       formik={formik}
                       options={
                         formik.values.targetConfig?.servers
                           ? formik.values.targetConfig?.servers.map((item) => ({
-                              key: "",
+                              key: '',
                               value: item,
                             }))
                           : []
                       }
                       isKeys={false}
-                      buttonText="actions.add_server"
+                      buttonText='actions.add_server'
                       showError={
                         formik.errors.targetConfig?.servers ? true : false
                       }
@@ -220,23 +232,23 @@ const SourceBackendServers = () => {
                 </Row>
               </Col>
               <Col sm={8}>
-                <Row className="mt-4">
-                  <GluuLabel required label="fields.base_dns" size={4} />
+                <Row className='mt-4'>
+                  <GluuLabel required label='fields.base_dns' size={4} />
                   <Col sm={8}>
                     <GluuProperties
-                      compName="targetConfig.baseDNs"
+                      compName='targetConfig.baseDNs'
                       isInputLables={true}
                       formik={formik}
                       options={
                         formik.values.targetConfig?.baseDNs
                           ? formik.values.targetConfig?.baseDNs.map((item) => ({
-                              key: "",
+                              key: '',
                               value: item,
                             }))
                           : []
                       }
                       isKeys={false}
-                      buttonText="actions.add_base_dn"
+                      buttonText='actions.add_base_dn'
                       showError={
                         formik.errors.targetConfig?.baseDNs ? true : false
                       }
@@ -246,27 +258,27 @@ const SourceBackendServers = () => {
                 </Row>
               </Col>
               <Row>
-                <Col sm={2} className="mt-3">
+                <Col sm={2} className='mt-3'>
                   <Button
-                    type="button"
+                    type='button'
                     color={`primary-${selectedTheme}`}
-                    className="theme-config__trigger mt-3"
+                    className='theme-config__trigger mt-3'
                     onClick={toggle}
                   >
-                    {t("actions.change_bind_password")}
+                    {t('actions.change_bind_password')}
                   </Button>
                 </Col>
               </Row>
-              <Col sm={8} className="mt-3">
+              <Col sm={8} className='mt-3'>
                 <GluuCheckBoxRow
-                  label="fields.use_ssl"
-                  name="targetConfig.useSSL"
+                  label='fields.use_ssl'
+                  name='targetConfig.useSSL'
                   required
                   handleOnChange={(e) => {
                     formik.setFieldValue(
-                      "targetConfig.useSSL",
+                      'targetConfig.useSSL',
                       e.target.checked
-                    );
+                    )
                   }}
                   lsize={4}
                   rsize={8}
@@ -275,15 +287,16 @@ const SourceBackendServers = () => {
               </Col>
             </>
           )}
-          <Row>
-            <Col>
-              <GluuCommitFooter
-                hideButtons={{ save: true, back: false }}
-                type="submit"
-              />
-            </Col>
-          </Row>
         </FormGroup>
+        <Row>
+          <Col>
+            <GluuCommitFooter
+              hideButtons={{ save: true, back: false }}
+              type='submit'
+              saveHandler={toggleAudit}
+            />
+          </Col>
+        </Row>
         {modal && (
           <BindPasswordModal
             handleChangePassword={handleChangePassword}
@@ -292,8 +305,14 @@ const SourceBackendServers = () => {
           />
         )}
       </Form>
+      <GluuCommitDialog
+        handler={toggleAudit}
+        modal={auditModal}
+        onAccept={submitForm}
+        formik={formik}
+      />
     </>
-  );
-};
+  )
+}
 
-export default SourceBackendServers;
+export default SourceBackendServers

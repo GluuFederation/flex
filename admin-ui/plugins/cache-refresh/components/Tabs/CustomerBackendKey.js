@@ -1,108 +1,120 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useFormik } from "formik";
-import { Row, Col, Form, FormGroup } from "../../../../app/components";
-import GluuProperties from "Routes/Apps/Gluu/GluuProperties";
-import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
-import * as Yup from "yup";
-import { t } from "i18next";
-import { isEmpty } from "lodash";
-import { putCacheRefreshConfiguration } from "../../redux/features/CacheRefreshSlice";
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useFormik } from 'formik'
+import { Row, Col, Form, FormGroup } from '../../../../app/components'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import * as Yup from 'yup'
+import { t } from 'i18next'
+import { isEmpty } from 'lodash'
+import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 
-const isStringsArray = (arr) => arr.every((i) => typeof i === "string");
+const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
 const convertToStringArray = (arr) => {
-  return arr.map((item) => item.value);
-};
+  return arr.map((item) => item.value)
+}
 
 const CustomerBackendKey = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
-  );
+  )
+  const [modal, setModal] = useState(false)
+  const toggle = () => {
+    setModal(!modal)
+  }
+
   const {
     keyAttributes = [],
     keyObjectClasses = [],
     sourceAttributes = [],
-    customLdapFilter = "",
-  } = useSelector((state) => state.cacheRefreshReducer.configuration);
+    customLdapFilter = '',
+  } = useSelector((state) => state.cacheRefreshReducer.configuration)
   const initialValues = {
     keyAttributes,
     keyObjectClasses,
     sourceAttributes,
     customLdapFilter,
-  };
+  }
 
   const formik = useFormik({
     initialValues: initialValues,
     setFieldValue: (field) => {
-      delete values[field];
+      delete values[field]
     },
     validationSchema: Yup.object({
       keyAttributes: Yup.array().min(
         1,
-        `${t("fields.key_attribute")} ${t("messages.is_required")}`
+        `${t('fields.key_attribute')} ${t('messages.is_required')}`
       ),
       keyObjectClasses: Yup.array().min(
         1,
-        `${t("fields.object_class")} ${t("messages.is_required")}`
+        `${t('fields.object_class')} ${t('messages.is_required')}`
       ),
       sourceAttributes: Yup.array().min(
         1,
-        `${t("fields.source_attribute")} ${t("messages.is_required")}`
+        `${t('fields.source_attribute')} ${t('messages.is_required')}`
       ),
     }),
     onSubmit: (data) => {
       if (isEmpty(formik.errors)) {
-        dispatch(
-          putCacheRefreshConfiguration({
-            cacheRefreshConfiguration: {
-              ...cacheRefreshConfiguration,
-              ...data,
-              sourceAttributes: isStringsArray(data?.sourceAttributes || [])
-                ? data.sourceAttributes
-                : convertToStringArray(data?.sourceAttributes || []),
-              keyObjectClasses: isStringsArray(data.keyObjectClasses || [])
-                ? data.keyObjectClasses
-                : convertToStringArray(data?.keyObjectClasses || []),
-              keyAttributes: isStringsArray(data.keyAttributes || [])
-                ? data.keyAttributes
-                : convertToStringArray(data?.keyAttributes || []),
-            },
-          })
-        );
-      }
+        toggle()
+      } 
     },
-  });
+  })
+
+  const submitForm = () => {
+    toggle()
+
+    dispatch(
+      putCacheRefreshConfiguration({
+        cacheRefreshConfiguration: {
+          ...cacheRefreshConfiguration,
+          ...formik.values,
+          sourceAttributes: isStringsArray(formik.values?.sourceAttributes || [])
+            ? formik.values.sourceAttributes
+            : convertToStringArray(formik.values?.sourceAttributes || []),
+          keyObjectClasses: isStringsArray(formik.values.keyObjectClasses || [])
+            ? formik.values.keyObjectClasses
+            : convertToStringArray(formik.values?.keyObjectClasses || []),
+          keyAttributes: isStringsArray(formik.values.keyAttributes || [])
+            ? formik.values.keyAttributes
+            : convertToStringArray(formik.values?.keyAttributes || []),
+        },
+      })
+    )
+  }
 
   return (
     <Form
       onSubmit={(e) => {
-        e.preventDefault();
-        formik.handleSubmit();
+        e.preventDefault()
+        formik.handleSubmit()
       }}
-      className="mt-4"
+      className='mt-4'
     >
       <FormGroup row>
         <Col sm={8}>
           <Row>
-            <GluuLabel required label="fields.key_attribute" size={4} />
+            <GluuLabel required label='fields.key_attribute' size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName="keyAttributes"
+                compName='keyAttributes'
                 isInputLables={true}
                 formik={formik}
                 options={
                   formik.values.keyAttributes
                     ? formik.values.keyAttributes.map((item) => ({
-                        key: "",
+                        key: '',
                         value: item,
                       }))
                     : []
                 }
                 isKeys={false}
-                buttonText="actions.add_key_attribute"
+                buttonText='actions.add_key_attribute'
                 showError={
                   formik.errors.keyAttributes && formik.touched.keyAttributes
                 }
@@ -112,23 +124,23 @@ const CustomerBackendKey = () => {
           </Row>
         </Col>
         <Col sm={8}>
-          <Row className="mt-4">
-            <GluuLabel required label="fields.object_class" size={4} />
+          <Row className='mt-4'>
+            <GluuLabel required label='fields.object_class' size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName="keyObjectClasses"
+                compName='keyObjectClasses'
                 isInputLables={true}
                 formik={formik}
                 options={
                   formik.values.keyObjectClasses
                     ? formik.values.keyObjectClasses.map((item) => ({
-                        key: "",
+                        key: '',
                         value: item,
                       }))
                     : []
                 }
                 isKeys={false}
-                buttonText="actions.add_object_class"
+                buttonText='actions.add_object_class'
                 showError={
                   formik.errors.keyObjectClasses &&
                   formik.touched.keyObjectClasses
@@ -139,23 +151,23 @@ const CustomerBackendKey = () => {
           </Row>
         </Col>
         <Col sm={8}>
-          <Row className="mt-4">
-            <GluuLabel required label="fields.source_attribute" size={4} />
+          <Row className='mt-4'>
+            <GluuLabel required label='fields.source_attribute' size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName="sourceAttributes"
+                compName='sourceAttributes'
                 isInputLables={true}
                 formik={formik}
                 options={
                   formik.values.sourceAttributes
                     ? formik.values.sourceAttributes.map((item) => ({
-                        key: "",
+                        key: '',
                         value: item,
                       }))
                     : []
                 }
                 isKeys={false}
-                buttonText="actions.add_source_attribute"
+                buttonText='actions.add_source_attribute'
                 showError={
                   formik.errors.sourceAttributes &&
                   formik.touched.sourceAttributes
@@ -165,27 +177,34 @@ const CustomerBackendKey = () => {
             </Col>
           </Row>
         </Col>
-        <Col sm={8} className="mt-4">
+        <Col sm={8} className='mt-4'>
           <GluuInputRow
-            label="fields.custom_ldap_filter"
-            name="customLdapFilter"
-            value={formik.values.customLdapFilter || ""}
+            label='fields.custom_ldap_filter'
+            name='customLdapFilter'
+            value={formik.values.customLdapFilter || ''}
             formik={formik}
             lsize={4}
             rsize={8}
           />
         </Col>
-        <Row>
-          <Col>
-            <GluuCommitFooter
-              hideButtons={{ save: true, back: false }}
-              type="submit"
-            />
-          </Col>
-        </Row>
       </FormGroup>
+      <Row>
+        <Col>
+          <GluuCommitFooter
+            hideButtons={{ save: true, back: false }}
+            type='submit'
+            saveHandler={toggle}
+          />
+        </Col>
+      </Row>
+      <GluuCommitDialog
+        handler={toggle}
+        modal={modal}
+        onAccept={submitForm}
+        formik={formik}
+      />
     </Form>
-  );
-};
+  )
+}
 
-export default CustomerBackendKey;
+export default CustomerBackendKey

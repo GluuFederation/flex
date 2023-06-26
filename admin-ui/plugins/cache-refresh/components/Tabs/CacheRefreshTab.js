@@ -1,24 +1,30 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useFormik } from "formik";
-import { Row, Col, Form, FormGroup } from "../../../../app/components";
-import GluuProperties from "Routes/Apps/Gluu/GluuProperties";
-import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuSelectRow from "Routes/Apps/Gluu/GluuSelectRow";
-import GluuCheckBoxRow from "Routes/Apps/Gluu/GluuCheckBoxRow";
-import * as Yup from "yup";
-import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
-import { isEmpty } from "lodash";
-import { putCacheRefreshConfiguration } from "../../redux/features/CacheRefreshSlice";
-import { useTranslation } from "react-i18next";
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useFormik } from 'formik'
+import { Row, Col, Form, FormGroup } from '../../../../app/components'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
+import * as Yup from 'yup'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import { isEmpty } from 'lodash'
+import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { useTranslation } from 'react-i18next'
 
 const CacheRefreshTab = () => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
-  );
+  )
+  const [modal, setModal] = useState(false)
+  const toggle = () => {
+    setModal(!modal)
+  }
+
   const {
     updateMethod = null,
     snapshotFolder = null,
@@ -31,7 +37,8 @@ const CacheRefreshTab = () => {
     attributeMapping = [],
     vdsCacheRefreshProblemCount = null,
     vdsCacheRefreshLastUpdateCount = null,
-  } = useSelector((state) => state.cacheRefreshReducer.configuration);
+    vdsCacheRefreshLastUpdate = null,
+  } = useSelector((state) => state.cacheRefreshReducer.configuration)
 
   const initialValues = {
     updateMethod,
@@ -45,86 +52,93 @@ const CacheRefreshTab = () => {
     attributeMapping,
     vdsCacheRefreshProblemCount,
     vdsCacheRefreshLastUpdateCount,
-  };
+    vdsCacheRefreshLastUpdate,
+  }
 
   const formik = useFormik({
     initialValues: initialValues,
     enableReinitialize: true,
     validationSchema: Yup.object({
       snapshotMaxCount: Yup.mixed().required(
-        `${t("fields.snapshots_count")} ${t("messages.is_required")}`
+        `${t('fields.snapshots_count')} ${t('messages.is_required')}`
       ),
       snapshotFolder: Yup.string().required(
-        `${t("fields.snapshot_folder")} ${t("messages.is_required")}`
+        `${t('fields.snapshot_folder')} ${t('messages.is_required')}`
       ),
       updateMethod: Yup.string().required(
-        `${t("fields.refresh_method")} ${t("messages.is_required")}`
+        `${t('fields.refresh_method')} ${t('messages.is_required')}`
       ),
       attributeMapping: Yup.array().min(
         1,
-        `${t("fields.server_port")} ${t("messages.is_required")}`
+        `${t('fields.server_port')} ${t('messages.is_required')}`
       ),
     }),
     setFieldValue: (field) => {
-      delete values[field];
+      delete values[field]
     },
-    onSubmit: (data) => {
+    onSubmit: () => {
       if (isEmpty(formik.errors)) {
-        dispatch(
-          putCacheRefreshConfiguration({
-            cacheRefreshConfiguration: {
-              ...cacheRefreshConfiguration,
-              ...data,
-              attributeMapping: data.attributeMapping?.length
-                ? data.attributeMapping.map((attribute) => {
-                    return {
-                      source: attribute.source,
-                      destination: attribute.destination,
-                    };
-                  })
-                : [],
-            },
-          })
-        );
+        toggle()
       }
     },
-  });
+  })
+
+  const submitForm = () => {
+    toggle()
+
+    dispatch(
+      putCacheRefreshConfiguration({
+        cacheRefreshConfiguration: {
+          ...cacheRefreshConfiguration,
+          ...formik.values,
+          attributeMapping: formik.values.attributeMapping?.length
+            ? formik.values.attributeMapping.map((attribute) => {
+                return {
+                  source: attribute.source,
+                  destination: attribute.destination,
+                }
+              })
+            : [],
+        },
+      })
+    )
+  }
 
   return (
     <>
       <Form
         onSubmit={(e) => {
-          e.preventDefault();
-          formik.handleSubmit();
+          e.preventDefault()
+          formik.handleSubmit()
         }}
-        className="mt-4"
+        className='mt-4'
       >
         <FormGroup row>
           <Col sm={8}>
             <Row>
-              <GluuLabel label={"fields.last_run"} size={4} />
-              <Col sm={8}></Col>
+              <GluuLabel label={'fields.last_run'} size={4} />
+              <Col sm={8}>{formik.values.vdsCacheRefreshLastUpdate}</Col>
             </Row>
           </Col>
           <Col sm={8}>
-            <Row className="my-3">
-              <GluuLabel label={"fields.updates_at_last_run"} size={4} />
-              <Col sm={8}>{formik.values.vdsCacheRefreshProblemCount}</Col>
-            </Row>
-          </Col>
-          <Col sm={8}>
-            <Row className="mb-3">
-              <GluuLabel label={"fields.problems_at_last_run"} size={4} />
+            <Row className='my-3'>
+              <GluuLabel label={'fields.updates_at_last_run'} size={4} />
               <Col sm={8}>{formik.values.vdsCacheRefreshLastUpdateCount}</Col>
             </Row>
           </Col>
           <Col sm={8}>
+            <Row className='mb-3'>
+              <GluuLabel label={'fields.problems_at_last_run'} size={4} />
+              <Col sm={8}>{formik.values.vdsCacheRefreshProblemCount}</Col>
+            </Row>
+          </Col>
+          <Col sm={8}>
             <GluuSelectRow
-              label="fields.refresh_method"
-              name="updateMethod"
+              label='fields.refresh_method'
+              name='updateMethod'
               value={formik.values.updateMethod}
               defaultValue={formik.values.updateMethod}
-              values={["copy", "VDS"]}
+              values={['copy', 'VDS']}
               formik={formik}
               lsize={4}
               rsize={8}
@@ -137,10 +151,10 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={8}>
             <Row>
-              <GluuLabel required label="fields.server_port" size={4} />
+              <GluuLabel required label='fields.server_port' size={4} />
               <Col sm={8}>
                 <GluuProperties
-                  compName="attributeMapping"
+                  compName='attributeMapping'
                   isInputLables={true}
                   formik={formik}
                   multiProperties
@@ -148,7 +162,7 @@ const CacheRefreshTab = () => {
                     formik.values.attributeMapping
                       ? formik.values.attributeMapping.map(
                           ({ source, destination }) => ({
-                            key: "",
+                            key: '',
                             source,
                             destination,
                           })
@@ -156,7 +170,7 @@ const CacheRefreshTab = () => {
                       : []
                   }
                   isKeys={false}
-                  buttonText="actions.add_server"
+                  buttonText='actions.add_server'
                   showError={
                     formik.errors.attributeMapping &&
                     formik.touched.attributeMapping
@@ -166,10 +180,10 @@ const CacheRefreshTab = () => {
               </Col>
             </Row>
           </Col>
-          <Col sm={8} className="mt-3">
+          <Col sm={8} className='mt-3'>
             <GluuInputRow
-              label="fields.snapshot_folder"
-              name="snapshotFolder"
+              label='fields.snapshot_folder'
+              name='snapshotFolder'
               value={formik.values.snapshotFolder}
               formik={formik}
               lsize={4}
@@ -183,9 +197,9 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={8}>
             <GluuInputRow
-              label="fields.snapshots_count"
-              name="snapshotMaxCount"
-              type="number"
+              label='fields.snapshots_count'
+              name='snapshotMaxCount'
+              type='number'
               value={formik.values.snapshotMaxCount}
               formik={formik}
               lsize={4}
@@ -200,10 +214,10 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={8}>
             <GluuCheckBoxRow
-              label="fields.keep_external_persons"
-              name="keepExternalPerson"
+              label='fields.keep_external_persons'
+              name='keepExternalPerson'
               handleOnChange={(e) => {
-                formik.setFieldValue("keepExternalPerson", e.target.checked);
+                formik.setFieldValue('keepExternalPerson', e.target.checked)
               }}
               lsize={4}
               rsize={8}
@@ -212,8 +226,8 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={8}>
             <GluuInputRow
-              label="fields.server_ip_address"
-              name="cacheRefreshServerIpAddress"
+              label='fields.server_ip_address'
+              name='cacheRefreshServerIpAddress'
               value={formik.values.cacheRefreshServerIpAddress}
               formik={formik}
               lsize={4}
@@ -222,9 +236,9 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={8}>
             <GluuInputRow
-              label="fields.polling_interval_mins"
-              name="vdsCacheRefreshPollingInterval"
-              type="number"
+              label='fields.polling_interval_mins'
+              name='vdsCacheRefreshPollingInterval'
+              type='number'
               value={formik.values.vdsCacheRefreshPollingInterval}
               formik={formik}
               lsize={4}
@@ -233,9 +247,9 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={8}>
             <GluuInputRow
-              label="fields.search_size_limit"
-              name="ldapSearchSizeLimit"
-              type="number"
+              label='fields.search_size_limit'
+              name='ldapSearchSizeLimit'
+              type='number'
               value={formik.values.ldapSearchSizeLimit}
               formik={formik}
               lsize={4}
@@ -244,31 +258,35 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={8}>
             <GluuCheckBoxRow
-              label="fields.cache_refresh"
-              name="vdsCacheRefreshEnabled"
+              label='fields.cache_refresh'
+              name='vdsCacheRefreshEnabled'
               handleOnChange={(e) => {
-                formik.setFieldValue(
-                  "vdsCacheRefreshEnabled",
-                  e.target.checked
-                );
+                formik.setFieldValue('vdsCacheRefreshEnabled', e.target.checked)
               }}
               lsize={4}
               rsize={8}
               value={formik.values.vdsCacheRefreshEnabled}
             />
           </Col>
-          <Row>
-            <Col>
-              <GluuCommitFooter
-                hideButtons={{ save: true, back: false }}
-                type="submit"
-              />
-            </Col>
-          </Row>
         </FormGroup>
+        <Row>
+          <Col>
+            <GluuCommitFooter
+              hideButtons={{ save: true, back: false }}
+              type='submit'
+              saveHandler={toggle}
+            />
+          </Col>
+        </Row>
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+          formik={formik}
+        />
       </Form>
     </>
-  );
-};
+  )
+}
 
-export default CacheRefreshTab;
+export default CacheRefreshTab

@@ -1,35 +1,36 @@
-import { useFormik } from "formik";
-import React, { useContext, useState } from "react";
-import { Row, Col, Form, FormGroup } from "../../../../app/components";
-import { Button } from "Components";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuCheckBoxRow from "Routes/Apps/Gluu/GluuCheckBoxRow";
-import { useDispatch, useSelector } from "react-redux";
-import GluuProperties from "Routes/Apps/Gluu/GluuProperties";
-import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import { t } from "i18next";
-import { ThemeContext } from "../../../../app/context/theme/themeContext";
-import BindPasswordModal from "../CacheRefreshManagement/BindPasswordModal";
-import * as Yup from "yup";
-import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
-import { isEmpty } from "lodash";
-import { putCacheRefreshConfiguration } from "../../redux/features/CacheRefreshSlice";
+import { useFormik } from 'formik'
+import React, { useContext, useState } from 'react'
+import { Row, Col, Form, FormGroup } from '../../../../app/components'
+import { Button } from 'Components'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
+import { useDispatch, useSelector } from 'react-redux'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import { t } from 'i18next'
+import { ThemeContext } from '../../../../app/context/theme/themeContext'
+import BindPasswordModal from '../CacheRefreshManagement/BindPasswordModal'
+import * as Yup from 'yup'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import { isEmpty } from 'lodash'
+import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 
-const isStringsArray = (arr) => arr.every((i) => typeof i === "string");
+const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
 const convertToStringArray = (arr) => {
-  return arr.map((item) => item.value);
-};
+  return arr.map((item) => item.value)
+}
 
 const InumDBServer = () => {
-  const theme = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
-  const dispatch = useDispatch();
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
-  );
+  )
   const { defaultInumServer, inumConfig } = useSelector(
     (state) => state.cacheRefreshReducer.configuration
-  );
+  )
   const initialValues = {
     defaultInumServer: defaultInumServer || false,
     inumConfig: {
@@ -38,12 +39,17 @@ const InumDBServer = () => {
       baseDNs: inumConfig?.baseDNs || [],
       bindPassword: inumConfig?.bindPassword || null,
     },
-  };
+  }
 
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(false)
   const toggle = () => {
-    setModal(!modal);
-  };
+    setModal(!modal)
+  }
+
+  const [auditModal, setAuditModal] = useState(false)
+  const toggleAudit = () => {
+    setAuditModal(!modal)
+  }
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -51,55 +57,61 @@ const InumDBServer = () => {
       defaultInumServer: Yup.boolean(),
       inumConfig: Yup.object()
         .shape()
-        .when("defaultInumServer", {
+        .when('defaultInumServer', {
           is: false,
           then: () =>
             Yup.object({
               configId: Yup.string().required(
-                `${t("fields.name")} ${t("messages.is_required")}`
+                `${t('fields.name')} ${t('messages.is_required')}`
               ),
               bindDN: Yup.string().required(
-                `${t("fields.bind_dn")} ${t("messages.is_required")}`
+                `${t('fields.bind_dn')} ${t('messages.is_required')}`
               ),
               maxConnections: Yup.string().required(
-                `${t("fields.max_connections")} ${t("messages.is_required")}`
+                `${t('fields.max_connections')} ${t('messages.is_required')}`
               ),
               servers: Yup.array().min(
                 1,
-                `${t("fields.server_port")} ${t("messages.is_required")}`
+                `${t('fields.server_port')} ${t('messages.is_required')}`
               ),
               baseDNs: Yup.array().min(
                 1,
-                `${t("fields.base_dns")} ${t("messages.is_required")}`
+                `${t('fields.base_dns')} ${t('messages.is_required')}`
               ),
             }),
         }),
     }),
     setFieldValue: (field) => {
-      delete values[field];
+      delete values[field]
     },
     onSubmit: (data) => {
       if (isEmpty(formik.errors)) {
-        dispatch(
-          putCacheRefreshConfiguration({
-            cacheRefreshConfiguration: {
-              ...cacheRefreshConfiguration,
-              inumConfig: {
-                ...data.inumConfig,
-                baseDNs: isStringsArray(data.inumConfig.baseDNs || [])
-                  ? data.inumConfig.baseDNs
-                  : convertToStringArray(data?.inumConfig.baseDNs || []),
-                servers: isStringsArray(data.inumConfig.servers || [])
-                  ? data.inumConfig.servers
-                  : convertToStringArray(data?.inumConfig.servers || []),
-              },
-              defaultInumServer: data.defaultInumServer,
-            },
-          })
-        );
+        toggleAudit()
       }
     },
-  });
+  })
+
+  const submitForm = () => {
+    toggleAudit()
+
+    dispatch(
+      putCacheRefreshConfiguration({
+        cacheRefreshConfiguration: {
+          ...cacheRefreshConfiguration,
+          inumConfig: {
+            ...formik.values.inumConfig,
+            baseDNs: isStringsArray(formik.values.inumConfig.baseDNs || [])
+              ? formik.values.inumConfig.baseDNs
+              : convertToStringArray(formik.values?.inumConfig.baseDNs || []),
+            servers: isStringsArray(formik.values.inumConfig.servers || [])
+              ? formik.values.inumConfig.servers
+              : convertToStringArray(formik.values?.inumConfig.servers || []),
+          },
+          defaultInumServer: formik.values.defaultInumServer,
+        },
+      })
+    )
+  }
 
   const handleChangePassword = (updatedPassword) => {
     dispatch(
@@ -112,24 +124,24 @@ const InumDBServer = () => {
           },
         },
       })
-    );
-  };
+    )
+  }
 
   return (
     <Form
       onSubmit={(e) => {
-        e.preventDefault();
-        formik.handleSubmit();
+        e.preventDefault()
+        formik.handleSubmit()
       }}
-      className="mt-4"
+      className='mt-4'
     >
       <FormGroup row>
         <Col sm={8}>
           <GluuCheckBoxRow
-            label="fields.default_inum_server"
-            name="defaultInumServer"
+            label='fields.default_inum_server'
+            name='defaultInumServer'
             handleOnChange={(e) => {
-              formik.setFieldValue("defaultInumServer", e.target.checked);
+              formik.setFieldValue('defaultInumServer', e.target.checked)
             }}
             lsize={4}
             rsize={8}
@@ -140,9 +152,9 @@ const InumDBServer = () => {
           <>
             <Col sm={8}>
               <GluuInputRow
-                label="fields.name"
-                name="inumConfig.configId"
-                value={formik.values.inumConfig?.configId || ""}
+                label='fields.name'
+                name='inumConfig.configId'
+                value={formik.values.inumConfig?.configId || ''}
                 formik={formik}
                 lsize={4}
                 rsize={8}
@@ -156,9 +168,9 @@ const InumDBServer = () => {
             </Col>
             <Col sm={8}>
               <GluuInputRow
-                label="fields.bind_dn"
-                name="inumConfig.bindDN"
-                value={formik.values.inumConfig?.bindDN || ""}
+                label='fields.bind_dn'
+                name='inumConfig.bindDN'
+                value={formik.values.inumConfig?.bindDN || ''}
                 formik={formik}
                 lsize={4}
                 rsize={8}
@@ -172,11 +184,11 @@ const InumDBServer = () => {
             </Col>
             <Col sm={8}>
               <GluuInputRow
-                label="fields.max_connections"
-                name="inumConfig.maxConnections"
-                value={formik.values.inumConfig?.maxConnections || ""}
+                label='fields.max_connections'
+                name='inumConfig.maxConnections'
+                value={formik.values.inumConfig?.maxConnections || ''}
                 formik={formik}
-                type="number"
+                type='number'
                 lsize={4}
                 rsize={8}
                 required
@@ -189,22 +201,22 @@ const InumDBServer = () => {
             </Col>
             <Col sm={8}>
               <Row>
-                <GluuLabel required label="fields.server_port" size={4} />
+                <GluuLabel required label='fields.server_port' size={4} />
                 <Col sm={8}>
                   <GluuProperties
-                    compName="inumConfig.servers"
+                    compName='inumConfig.servers'
                     isInputLables={true}
                     formik={formik}
                     options={
                       formik.values.inumConfig?.servers
                         ? formik.values.inumConfig?.servers.map((item) => ({
-                            key: "",
+                            key: '',
                             value: item,
                           }))
                         : []
                     }
                     isKeys={false}
-                    buttonText="actions.add_server"
+                    buttonText='actions.add_server'
                     showError={
                       formik.errors.targetConfig?.servers ? true : false
                     }
@@ -214,23 +226,23 @@ const InumDBServer = () => {
               </Row>
             </Col>
             <Col sm={8}>
-              <Row className="mt-4">
-                <GluuLabel required label="fields.base_dns" size={4} />
+              <Row className='mt-4'>
+                <GluuLabel required label='fields.base_dns' size={4} />
                 <Col sm={8}>
                   <GluuProperties
-                    compName="inumConfig.baseDNs"
+                    compName='inumConfig.baseDNs'
                     isInputLables={true}
                     formik={formik}
                     options={
                       formik.values.inumConfig?.baseDNs
                         ? formik.values.inumConfig?.baseDNs.map((item) => ({
-                            key: "",
+                            key: '',
                             value: item,
                           }))
                         : []
                     }
                     isKeys={false}
-                    buttonText="actions.add_base_dn"
+                    buttonText='actions.add_base_dn'
                     showError={
                       formik.errors.targetConfig?.baseDNs ? true : false
                     }
@@ -240,24 +252,24 @@ const InumDBServer = () => {
               </Row>
             </Col>
             <Row>
-              <Col sm={2} className="mt-3">
+              <Col sm={2} className='mt-3'>
                 <Button
-                  type="button"
+                  type='button'
                   color={`primary-${selectedTheme}`}
-                  className="theme-config__trigger mt-3"
+                  className='theme-config__trigger mt-3'
                   onClick={toggle}
                 >
-                  {t("actions.change_bind_password")}
+                  {t('actions.change_bind_password')}
                 </Button>
               </Col>
             </Row>
-            <Col sm={8} className="mt-3">
+            <Col sm={8} className='mt-3'>
               <GluuCheckBoxRow
-                label="fields.use_ssl"
-                name="inumConfig.useSSL"
+                label='fields.use_ssl'
+                name='inumConfig.useSSL'
                 required
                 handleOnChange={(e) => {
-                  formik.setFieldValue("inumConfig.useSSL", e.target.checked);
+                  formik.setFieldValue('inumConfig.useSSL', e.target.checked)
                 }}
                 lsize={4}
                 rsize={8}
@@ -266,15 +278,16 @@ const InumDBServer = () => {
             </Col>
           </>
         )}
-        <Row>
-          <Col>
-            <GluuCommitFooter
-              hideButtons={{ save: true, back: false }}
-              type="submit"
-            />
-          </Col>
-        </Row>
       </FormGroup>
+      <Row>
+        <Col>
+          <GluuCommitFooter
+            hideButtons={{ save: true, back: false }}
+            type='submit'
+            saveHandler={toggleAudit}
+          />
+        </Col>
+      </Row>
       {modal && (
         <BindPasswordModal
           handleChangePassword={handleChangePassword}
@@ -282,8 +295,14 @@ const InumDBServer = () => {
           isOpen={modal}
         />
       )}
+      <GluuCommitDialog
+        handler={toggleAudit}
+        modal={auditModal}
+        onAccept={submitForm}
+        formik={formik}
+      />
     </Form>
-  );
-};
+  )
+}
 
-export default InumDBServer;
+export default InumDBServer
