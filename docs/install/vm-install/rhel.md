@@ -7,30 +7,32 @@ tags:
 - CentOS
 ---
 
-# Red Hat EL Flex Installation
+# Install Gluu Flex On Red Hat EL
 
-Before you install, check the [VM system requirements](vm-requirements.md).
+This is a step-by-step guide for installation and uninstallation of Gluu Flex on Ubuntu Linux.
 
-## Supported versions
-- Red Hat Enterprise Linus 8 (RHEL 8)
-
-## Disable SELinux
-You can disable SELinux temporarily by executing `setenforce 0`. To disable permanently edit file `/etc/selinux/config`.
-
-## Install the Package
-- Install EPEL and mod-auth-openidc as dependencies
-
-```
-sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm;
-sudo yum -y module enable mod_auth_openidc;
-```
-
-- If the server firewall is running, make sure to disable it during installation.
-  For example:
-```
+- Ensure that the OS platform is one of the [supported versions](./vm-requirements.md#supported-versions)
+- VM should meet [VM system requirements](./vm-requirements.md)
+- Make sure that if `SELinux` is installed then it is 
+[put into permissive mode](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/using_selinux/index#selinux-states-and-modes_getting-started-with-selinux)
+- If the server firewall is running, make sure you allow `https`, which is
+  needed for OpenID and FIDO.
+```shell
 sudo firewall-cmd --permanent --zone=public --add-service=https;
 sudo firewall-cmd --reload;
 ```
+- Install EPEL and mod-auth-openidc as dependencies
+```shell
+sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm;
+sudo yum -y module enable mod_auth_openidc;
+```
+- Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
+  that you can use during installation. SSA should be stored in a text file on an accessible path.
+
+## Install the Package
+
+
+
 - Download the GPG key zip file , unzip and import GPG key
 ```
 wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
