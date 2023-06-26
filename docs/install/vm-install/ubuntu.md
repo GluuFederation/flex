@@ -26,41 +26,57 @@ sudo ufw allow https
 
 ## Install the Package
 
-- Download the GPG key zip file , unzip and import GPG key
+### Download and Verify the Release Package
+
+- Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
+
+```shell
+#Ubuntu 22.04
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
+
+#Ubuntu 20.04
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
 ```
-wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
+
+- GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
+  not found, the [installation step](#install-the-release-package) would fail. Use the commands below to download and
+  import the GPG key.
+```shell
+wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
+```
+
+```shell
 unzip automation-flex-public-gpg.zip;
+```
+
+```shell
 sudo gpg --import automation-flex-public-gpg.asc;
 ```
 
-### Ubuntu 22.04
+- Verify the integrity of the downloaded package using published sha256sum. Download the sha256sum file for the package
 
-- Download the release package from the Github Gluu Flex [Releases](https://github.com/GluuFederation/flex/releases)
-
-```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
-
-```
-
-- Verify integrity of the downloaded package using published sha256sum.
-
-  Download sha256sum file for the package
-  
-```
+```shell
+#Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
 
+#Ubuntu 20.04
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
 ```
 Check the hash if it is matching. You may need to change your working directory
 to where both the rpm and sha256sum file are located.
-```
+```shell
 cd /tmp;
+
+#Ubuntu 22.04
 sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
 
+#Ubuntu 20.04
+sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
 ```
 
 Output similar to below should confirm the integrity of the downloaded package.
 ```
-flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum: ok
+flex_replace-flex-version.ubuntu<version>_amd64.deb.sha256sum: ok
 
 ```
 
