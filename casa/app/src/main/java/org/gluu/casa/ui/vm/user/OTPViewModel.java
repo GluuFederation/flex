@@ -239,7 +239,7 @@ public class OTPViewModel extends UserViewModel {
             }
             //Determines if numeric code is valid with respect to secret key
             IOTPAlgorithm service = otpService.getAlgorithmService(getApplicableAlgorithmType());
-            uid = service.getExternalUid(Base64.getEncoder().encodeToString(secretKey), code);
+            uid = service.getExternalUid(Base64.getUrlEncoder().encodeToString(secretKey), code);
             if (uid != null) {
 
                 //User may have entered the same key manually in the past

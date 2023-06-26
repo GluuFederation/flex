@@ -574,7 +574,7 @@ class PersonAuthentication(PersonAuthenticationType):
         return BaseEncoding.base64Url().encode(bytes)
 
     def fromBase64Url(self, chars):
-        return BaseEncoding.base64().decode(chars)
+        return BaseEncoding.base64Url().decode(chars)
 
 
     # Added for Casa compliance

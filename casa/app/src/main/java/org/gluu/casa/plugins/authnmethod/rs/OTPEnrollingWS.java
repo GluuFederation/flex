@@ -62,7 +62,7 @@ public class OTPEnrollingWS {
                 String request = as.generateSecretKeyUri(secretKey, name);
 
                 return ComputeRequestCode.SUCCESS.getResponse(
-                            Base64.getEncoder().encodeToString(secretKey), request);
+                            Base64.getUrlEncoder().encodeToString(secretKey), request);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 return ComputeRequestCode.INVALID_MODE.getResponse();

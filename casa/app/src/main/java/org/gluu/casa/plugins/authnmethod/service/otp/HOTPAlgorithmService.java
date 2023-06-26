@@ -57,7 +57,7 @@ public class HOTPAlgorithmService implements IOTPAlgorithm {
     }
 
     public String getExternalUid(String secretKey, String code) {
-        Pair<Boolean, Long> result = validateKey(Base64.getDecoder().decode(secretKey), code);
+        Pair<Boolean, Long> result = validateKey(Base64.getUrlDecoder().decode(secretKey), code);
         return result.getX()
                 ? String.format("%s:%s;%s", OTPType.HOTP.getName().toLowerCase(), secretKey, result.getY())
                 : null;
