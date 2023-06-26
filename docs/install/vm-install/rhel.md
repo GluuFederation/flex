@@ -19,12 +19,16 @@ This is a step-by-step guide for installation and uninstallation of Gluu Flex on
 - If the server firewall is running, make sure you allow `https`, which is
   needed for OpenID and FIDO.
 ```shell
-sudo firewall-cmd --permanent --zone=public --add-service=https;
+sudo firewall-cmd --permanent --zone=public --add-service=https
+```
+```shell
 sudo firewall-cmd --reload;
 ```
 - Install EPEL and mod-auth-openidc as dependencies
 ```shell
-sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm;
+sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+```
+```shell
 sudo yum -y module enable mod_auth_openidc;
 ```
 - Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
