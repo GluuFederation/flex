@@ -19,12 +19,12 @@ of Gluu Flex on SUSE Linux distributions
 - VM should meet [VM system requirements](./vm-requirements.md)
 - Make sure that if `SELinux` is installed then
   [it is put into permissive mode](https://documentation.suse.com/sles/15-SP1/html/SLES-all/cha-selinux.html#sec-selinux-mode-permissive)
-- If the server firewall is running, make sure to disable it during installation.
-  For example:
-```
+- If the server firewall is running, make sure you allow `https`, which is
+  needed for OpenID and FIDO.
+```shell
 sudo firewall-cmd --permanent --zone=public --add-service=https
 ```
-```
+```shell
 sudo firewall-cmd --reload
 ```
 - Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
@@ -35,89 +35,89 @@ sudo firewall-cmd --reload
 ### Download and Verify the Release Package
 
 - Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
-```
+```shell
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm -P ~/
 ```
 
 - GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
   not found, the [installation step](#install-the-release-package) would fail. Use the commands below to download and
   import the GPG key.
-```
+```shell
 wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 ```
-```
+```shell
 unzip automation-flex-public-gpg.zip
 ```
-```
+```shell
 sudo rpm -import automation-flex-public-gpg.asc
 ```
 
 - Verify the integrity of the downloaded package using published sha256sum. Download the sha256sum file for the package
-```
+```shell
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm.sha256sum  -P ~/
 ```
 
-- Check the hash if it is matching.
-```
+Check the hash if it is matching. You may need to change your working directory
+to where both the rpm and sha256sum file are located.
+```shell
 sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
 ```
 Output similar to below should confirm the integrity of the downloaded package.
-```
+```text
 flex-replace-flex-version-suse15.x86_64.rpm.sha256sum: ok
 ```
 
 ### Install the Release Package
 
 Use SUSE `zypper` tool to start the installation process
-```
+```shell
 sudo zypper install ~/flex-replace-flex-version-suse15.x86_64.rpm
 ```
 
 ### Run the setup script
 
 - Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
-
 - Run the setup script:
-
-```
+```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [ssa-filename]
 ```
 
 ## Verify and Access the Installation
-
 Verify that installation has been successful and all installed components are accessible using the steps below:
 
 - Log in to Text User Interface (TUI)
-```
+```shell
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
 [TUI](https://docs.jans.io/stable/admin/config-guide/jans-tui) is a text-based configuration tool for Gluu Flex Server.
 
 - Log into Admin-UI using URI below
-```
+```text
 https://FQDN/admin
 ```
 
 - Access Casa using URI below
-```
+```text
 https://FQDN/casa
 ```
 
 ## Uninstallation
 
-Removing Flex is a two-step process:
+Removing Flex is a two step process:
 
-1. Delete files installed by Gluu Flex
-1. Remove and purge the `jans` package
+- [Uninstall Gluu Flex](#uninstall-gluu-flex)
+- [Uninstall Janssen Packages](#uninstall-janssen-packages)
 
+If you have not run the setup script, you can skip step 1 and just remove
+the package.
+
+### Uninstall Gluu Flex
 Use the command below to uninstall the Gluu Flex server
-
-```
+```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
 the output will be like this:
-<!-- I need to add the output when the command is run. -->
-```
+```text
 ec2-user@manojs1978-clear-camel:~> sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
@@ -168,14 +168,13 @@ Restarting Jans Auth
 Restarting Janssen Config Api
 ```
 
+### Uninstall Janssen Packages
 The command below removes and uninstall the `jans` package
-
-```
+```shell
 sudo python3 /opt/jans/jans-setup/install.py -uninstall
 ```
 output will be like this:
-<!-- I need to add the output when command is run. -->
-```
+```shell
 ec2-user@manojs1978-clear-camel:~> sudo python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
