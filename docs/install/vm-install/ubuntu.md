@@ -29,7 +29,6 @@ sudo ufw allow https
 ### Download and Verify the Release Package
 
 - Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
-
 ```shell
 #Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
@@ -44,17 +43,14 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 ```shell
 wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 ```
-
 ```shell
 unzip automation-flex-public-gpg.zip;
 ```
-
 ```shell
 sudo gpg --import automation-flex-public-gpg.asc;
 ```
 
 - Verify the integrity of the downloaded package using published sha256sum. Download the sha256sum file for the package
-
 ```shell
 #Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
@@ -73,15 +69,12 @@ sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
 #Ubuntu 20.04
 sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
 ```
-
 Output similar to below should confirm the integrity of the downloaded package.
-```
+```shell
 flex_replace-flex-version.ubuntu<version>_amd64.deb.sha256sum: ok
-
 ```
 
 ### Install the Release Package
-
 ```shell
 #Ubuntu 22.04
 apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
@@ -94,10 +87,8 @@ apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 
 - Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after 
 which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
-
 - Run the setup script:
-
-```
+```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [ssa-filename]
 ```
 
@@ -106,20 +97,18 @@ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-
 Verify that installation has been successful and all installed components are accessible using the steps below:
 
 - Log in to Text User Interface (TUI)
-
 ```shell
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
-
 [TUI](https://docs.jans.io/stable/admin/config-guide/jans-tui) is a text-based configuration tool for Gluu Flex Server.
 
 - Log into Admin-UI using URI below
-```
+```text
 https://FQDN/admin
 ```
 
 - Access Casa using URI below
-```
+```text
 https://FQDN/casa
 ```
 
@@ -127,20 +116,19 @@ https://FQDN/casa
 
 Removing Flex is a two step process:
 
-1. Delete files installed by Gluu Flex
-1. Remove and purge the `jans` package
+- [Uninstall Gluu Flex](#uninstall-gluu-flex)
+- [Uninstall Janssen Packages](#uninstall-janssen-packages)
 
 If you have not run the setup script, you can skip step 1 and just remove
 the package.
 
+### Uninstall Gluu Flex
 Use the command below to uninstall the Gluu Flex server
-
-```
+```shell
 python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
-output:
-
-```
+Output:
+```text
 root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
@@ -188,20 +176,14 @@ Restarting Apache
 Restarting Jans Auth
 Restarting Janssen Config Api
 ```
-<!-- I need to add the output when command is run. -->
 
-
+### Uninstall Janssen Packages
 The command below removes and uninstall the `jans` package
-
-```
+```shell
 python3 /opt/jans/jans-setup/install.py -uninstall
-
 ```
-
-<!-- I need to add the output when command is run. -->
-output :
-
-```
+Output :
+```text
 root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
