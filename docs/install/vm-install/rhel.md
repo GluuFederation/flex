@@ -103,19 +103,19 @@ https://FQDN/casa
 
 Removing Flex is a two step process:
 
-1. Delete files installed by Gluu Flex
-1. Remove and purge the `jans` package
+- [Uninstall Gluu Flex](#uninstall-gluu-flex)
+- [Uninstall Janssen Packages](#uninstall-janssen-packages)
 
+If you have not run the setup script, you can skip step 1 and just remove
+the package.
+
+### Uninstall Gluu Flex
 Use the command below to uninstall the Gluu Flex server
-
-```
+```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
-
-<!-- I need to add the output when command is run. -->
-output:
-
-```
+Output:
+```text
 [ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
@@ -166,16 +166,13 @@ Restarting Jans Auth
 Restarting Janssen Config Api
 ```
 
-
+### Uninstall Janssen Packages
 The command below removes and uninstall the `jans` package
-
-```
+```shell
 sudo python3 /opt/jans/jans-setup/install.py -uninstall
-
 ```
-output:
-
-```
+Output:
+```text
 [ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
@@ -207,4 +204,4 @@ Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/httpd/conf.d/https_jans.conf
 ```
-<!-- I need to add the output when command is run. -->
+
