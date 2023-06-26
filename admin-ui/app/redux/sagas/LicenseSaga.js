@@ -2,21 +2,11 @@
  * License Sagas
  */
 import { all, call, fork, put, take, takeEvery } from 'redux-saga/effects'
-import {
-  CHECK_FOR_VALID_LICENSE,
-  ACTIVATE_CHECK_USER_API,
-  ACTIVATE_CHECK_USER_LICENSE_KEY,
-  ACTIVATE_CHECK_IS_CONFIG_VALID,
-  UPLOAD_NEW_SSA_TOKEN,
-} from '../actions/types'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse } from '../actions'
-import { updateToast } from 'Redux/actions/ToastAction'
+import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse, generateTrialLicenseResponse } from '../actions'
 
 import LicenseApi from '../api/LicenseApi'
-import { getClient, getClientWithToken } from '../api/base'
-import {
-  checkUserLicenseKeyResponse,
-} from '../actions'
+import { getClientWithToken } from '../api/base'
+import { checkUserLicenseKeyResponse } from '../actions'
 import {
   activateLicense,
   fetchApiTokenWithDefaultScopes,
@@ -37,14 +27,39 @@ function* checkLicensePresentWorker() {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
     const response = yield call(licenseApi.getIsActive)
     if (response) {
-      yield put(checkLicensePresentResponse(response.apiResult))
+      yield put(checkLicensePresentResponse({ isLicenseValid: response.apiResult }))
       return
     }
-    yield put(checkLicensePresentResponse(false))
+    yield put(checkLicensePresentResponse({ isLicenseValid: false }))
   } catch (error) {
     console.log('Error in checking License present.', error)
   }
-  yield put(checkLicensePresentResponse())
+  yield put(checkLicensePresentResponse({ isLicenseValid: false }))
+}
+
+function* generateTrailLicenseKey() {
+  try {
+    const licenseApi = yield* getApiTokenWithDefaultScopes()
+    const response = yield call(licenseApi.getTrialLicense)
+
+    if (response?.responseObject?.['license-key']) {
+      try {
+        const activateLicense = yield call(licenseApi.submitLicenseKey, {
+          payload: {
+            licenseKey: response.responseObject['license-key']
+          }
+        })
+        yield put(generateTrialLicenseResponse(activateLicense))
+        yield put(checkLicensePresentResponse({ isLicenseValid: activateLicense?.apiResult }))
+        yield put(checkUserLicenseKeyResponse(activateLicense))
+      } catch (error) {
+        yield put(checkLicensePresentResponse({ isLicenseValid: false }))
+        yield put(generateTrialLicenseResponse(null))
+      }
+    }
+  } catch (error) {
+    console.log('Error in generating key.', error)
+  }
 }
 
 function* activateCheckUserLicenseKey({ payload }) {
@@ -84,11 +99,11 @@ function* checkAdminuiLicenseConfig() {
 
 //watcher sagas
 export function* checkLicensePresentWatcher() {
-  yield takeEvery(CHECK_FOR_VALID_LICENSE, checkLicensePresentWorker)
-  yield takeEvery(ACTIVATE_CHECK_USER_LICENSE_KEY, activateCheckUserLicenseKey)
-  yield takeEvery(ACTIVATE_CHECK_IS_CONFIG_VALID, checkAdminuiLicenseConfig)
-  yield takeEvery(UPLOAD_NEW_SSA_TOKEN, uploadNewSsaToken)
-  
+  yield takeEvery('license/checkLicensePresent', checkLicensePresentWorker)
+  yield takeEvery('license/checkUserLicenceKey', activateCheckUserLicenseKey)
+  yield takeEvery('license/checkLicenseConfigValid', checkAdminuiLicenseConfig)
+  yield takeEvery('license/uploadNewSsaToken', uploadNewSsaToken)
+  yield takeEvery('license/generateTrialLicense', generateTrailLicenseKey)
 }
 
 /**

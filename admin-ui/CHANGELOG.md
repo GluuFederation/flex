@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.0.14](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.13...admin-ui-v1.0.14) (2023-06-12)
+
+
+### Features
+
+* **admin-ui:** check or warn if Agama engine is enabled before project uploading [#1036](https://github.com/GluuFederation/flex/issues/1036) ([997748e](https://github.com/GluuFederation/flex/commit/997748ee5b2626e40fb1e9c6f8b937a4f0836012))
+* **admin-ui:** redux toolkit slice convention ([483774d](https://github.com/GluuFederation/flex/commit/483774d44d66bf7194cddc83b8a34be2c68751aa))
+* **admin-ui:** remove redux boilerplate code in Schema, Servicer, User, SMTP module [#1071](https://github.com/GluuFederation/flex/issues/1071) ([6b7dc33](https://github.com/GluuFederation/flex/commit/6b7dc335e212a774d06aefed01ee67a1772d13c6))
+* **admin-ui:** remove redux boilerplate in admin using redux toolkit [#1060](https://github.com/GluuFederation/flex/issues/1060) ([e40ed78](https://github.com/GluuFederation/flex/commit/e40ed788137616a8349023737038fc3461c442ac))
+* **admin-ui:** remove the redux boilerplate in auth server using redux toolkit [#1066](https://github.com/GluuFederation/flex/issues/1066) ([e73bd7a](https://github.com/GluuFederation/flex/commit/e73bd7a29c60b7481e3af119b9d939f1102c5e7c))
+
+
+### Bug Fixes
+
+* **admin-ui:** added validation for from email address SMTP management ([78c2d95](https://github.com/GluuFederation/flex/commit/78c2d95e443da30fb47af10db69489f9487bde91))
+* **admin-ui:** column label changes in agama page ([7c70e56](https://github.com/GluuFederation/flex/commit/7c70e566f375507cd2bd5b1c8c0c68b393182452))
+* **admin-ui:** files prettified ([60cf2b5](https://github.com/GluuFederation/flex/commit/60cf2b5f8161e14febbe4a1380dc40473fb4858b))
+* **admin-ui:** jansAdminUIRole input selection data ([1d79960](https://github.com/GluuFederation/flex/commit/1d79960fe3a4a99b797c5f74618102fa1a05c131))
+* **admin-ui:** payload param changes to update services cache ([d40e5f9](https://github.com/GluuFederation/flex/commit/d40e5f9986b636c1770cbd5b1f26e4421fbe8ca9))
+* **admin-ui:** redux toolkit integration bug fixes ([20e0e0c](https://github.com/GluuFederation/flex/commit/20e0e0c1d8817531b096159fefa020a0c30213ea))
+* **admin-ui:** remove remaning action file [#1071](https://github.com/GluuFederation/flex/issues/1071) ([e882df5](https://github.com/GluuFederation/flex/commit/e882df540a3aae527fde56736dc9ae8ed76e9faa))
+* **admin-ui:** removed irrelevant dependency ([5d76504](https://github.com/GluuFederation/flex/commit/5d765042e797097cd693140dd8769289047d082a))
+* **admin-ui:** removed redux & action types ([d00d49f](https://github.com/GluuFederation/flex/commit/d00d49f17d750e4d5ea1a16f8bccbc0d972ce29b))
+* **admin-ui:** resolve sonarcloud bug warning ([5f03a77](https://github.com/GluuFederation/flex/commit/5f03a77e22094e5aa176076034d2ad926b3c0a4e))
+* **admin-ui:** session expiration dialog is not being displayed [#1081](https://github.com/GluuFederation/flex/issues/1081) ([cc16999](https://github.com/GluuFederation/flex/commit/cc16999526e18dbe5c1bc23a16d4b5457f6571c1))
+* **admin-ui:** show dashboard oidc clients count ([543c586](https://github.com/GluuFederation/flex/commit/543c5869814aa6cc906b05c782dc83f83aa9f851))
+* **admin-ui:** sonargate quality fixes ([8a21eb8](https://github.com/GluuFederation/flex/commit/8a21eb86627c1437e5982b86e9894b1ae7e32811))
+* **admin-ui:** test configuration changes ([685d1ef](https://github.com/GluuFederation/flex/commit/685d1ef5381b61db5594e90d4428104ec129ca68))
+* **admin-ui:** update bootstrap to v5.3.0 ([9e42bb3](https://github.com/GluuFederation/flex/commit/9e42bb3fb8bd6c05d78a1625184c86d371f805cb))
+* changed remaining failed tests ([d8ed64b](https://github.com/GluuFederation/flex/commit/d8ed64bcbdb731f81e399997ea87e8abf379cef2))
+* prepare for 5.0.0-14 release ([9481f55](https://github.com/GluuFederation/flex/commit/9481f55a380091501cf912778955e2ebba23e30c))
+* Storing ACR value is inserting inum instead of displayName [#1079](https://github.com/GluuFederation/flex/issues/1079) ([75228a5](https://github.com/GluuFederation/flex/commit/75228a55338153799ffc1288b3f0bfd0c656c071))
+
 ## [1.0.13](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.12...admin-ui-v1.0.13) (2023-05-12)
 
 

@@ -7,23 +7,16 @@ import {
   editClientResponse,
   deleteClientResponse,
   getOpenidClients
-} from '../actions/OIDCActions'
-import { getAPIAccessToken } from '../actions/AuthActions'
+} from '../features/oidcSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { OIDC } from '../audit/Resources'
-import {updateToast} from 'Redux/actions/ToastAction'
+import {updateToast} from 'Redux/features/toastSlice'
 import {
   CREATE,
   UPDATE,
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import {
-  GET_OPENID_CLIENTS,
-  ADD_NEW_CLIENT,
-  EDIT_CLIENT,
-  DELETE_CLIENT,
-  SEARCH_CLIENTS,
-} from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -51,7 +44,7 @@ export function* getOauthOpenidClients({ payload }) {
     addAdditionalData(audit, FETCH, OIDC, payload)
     const openIdApi = yield* newFunction()
     const data = yield call(openIdApi.getAllOpenidClients, payload.action)
-    yield put(getOpenidClientsResponse(data))
+    yield put(getOpenidClientsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     console.log(e)
@@ -69,7 +62,7 @@ export function* addNewClient({ payload }) {
     addAdditionalData(audit, CREATE, OIDC, payload)
     const api = yield* newFunction()
     const data = yield call(api.addNewOpenIdClient, payload.action.action_data)
-    yield put(addClientResponse(data))
+    yield put(addClientResponse({ data }))
     yield put(updateToast(true, 'success'))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -91,7 +84,7 @@ export function* editAClient({ payload }) {
     postBody['client'] = payload.action.action_data
     const api = yield* newFunction()
     const data = yield call(api.editAClient, postBody)
-    yield put(editClientResponse(data))
+    yield put(editClientResponse({ data }))
     yield put(updateToast(true, 'success'))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -125,22 +118,22 @@ export function* deleteAClient({ payload }) {
 }
 
 export function* getOpenidClientsWatcher() {
-  yield takeLatest(GET_OPENID_CLIENTS, getOauthOpenidClients)
+  yield takeLatest('oidc/getOpenidClients', getOauthOpenidClients)
 }
 
 export function* searchClientsWatcher() {
-  yield takeLatest(SEARCH_CLIENTS, getOauthOpenidClients)
+  yield takeLatest('oidc/searchClients', getOauthOpenidClients)
 }
 
 export function* addClientWatcher() {
-  yield takeLatest(ADD_NEW_CLIENT, addNewClient)
+  yield takeLatest('oidc/addNewClientAction', addNewClient)
 }
 
 export function* editClientWatcher() {
-  yield takeLatest(EDIT_CLIENT, editAClient)
+  yield takeLatest('oidc/editClient', editAClient)
 }
 export function* deleteClientWatcher() {
-  yield takeLatest(DELETE_CLIENT, deleteAClient)
+  yield takeLatest('oidc/deleteClient', deleteAClient)
 }
 
 export default function* rootSaga() {

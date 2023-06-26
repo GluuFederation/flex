@@ -365,7 +365,11 @@
     "fetching_project_details": "Buscando detalhes do projeto...",
     "mandatory_fields_required": "Os campos obrigatórios são obrigatórios",
     "is_required": "é necessário",
-    "both_password_should_match": "Ambas as senhas devem corresponder"
+    "both_password_should_match": "Ambas as senhas devem corresponder",
+    "agama_is_not_enabled": "Agama não está ativado",
+    "drag_agama_file": "Arrastar .gama arquivo aqui, ou clique para selecionar o arquivo",
+    "drag_sha_file": "Arrastar .sha256sum arquivo aqui, ou clique para selecionar o arquivo",
+    "see_project_details": "Ver detalhes do projeto"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -458,7 +462,8 @@
     "schemaName": "Nome do esquema",
     "user_management": "Gerenciamento de usuários",
     "cache_refresh_management": "Gerenciamento de atualização de cache",
-    "change_backend_bind_password": "Alterar senha de ligação de back-end"
+    "change_backend_bind_password": "Alterar senha de ligação de back-end",
+    "add_agama_project": "Adicionar projeto Agama"
   },
   "links": {
     "support": "https://support.gluu.org/"

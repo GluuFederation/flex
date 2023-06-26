@@ -4,15 +4,14 @@ import {
   addAdditionalData,
 } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
-import { getSessionsResponse, revokeSessionsResponse } from '../actions/SessionActions'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { SESSION } from '../audit/Resources'
 import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
-import { GET_SESSIONS, REVOKE_SESSION } from '../actions/types'
 import SessionApi from '../api/SessionApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { handleRevokeSession, handleUpdateSessionsResponse, toggleLoader } from '../features/sessionSlice'
 
 function* newFunction() {
   const wholeToken = yield select((state) => state.authReducer.token)
@@ -38,11 +37,10 @@ export function* getSessions({ payload }) {
     const data = yield call(
       sessionApi.getAllSessions,
     )
-    yield put(getSessionsResponse(data))
+    yield put(handleUpdateSessionsResponse({ data: data }))
     yield call(postUserAction, audit)
   } catch (e) {
-    console.log(e)
-    yield put(getSessionsResponse(null))
+    yield put(handleUpdateSessionsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -53,26 +51,29 @@ export function* getSessions({ payload }) {
 export function* revokeSessionByUserDn({ payload }) {
   const audit = yield* initAudit()
   try {
+    yield put(toggleLoader(true))
     addAdditionalData(audit, DELETION, SESSION, payload)
     const sessionApi = yield* newFunction()
     yield call(sessionApi.revokeSession, payload.action.userDn)
-    yield put(revokeSessionsResponse(payload.action.userDn))
+    yield put(handleRevokeSession({ data: payload.action.userDn }))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(revokeSessionsResponse(null))
+    yield put(handleRevokeSession(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+  } finally {
+    yield put(toggleLoader(false))
   }
 }
 
 export function* getSessionsWatcher() {
-  yield takeLatest(GET_SESSIONS, getSessions)
+  yield takeLatest('session/getSessions', getSessions)
 }
 
 export function* deleteSessionByUserDnWatcher() {
-  yield takeLatest(REVOKE_SESSION, revokeSessionByUserDn)
+  yield takeLatest('session/revokeSession', revokeSessionByUserDn)
 }
 
 export default function* rootSaga() {

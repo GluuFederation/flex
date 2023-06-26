@@ -1,9 +1,9 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import LoggingPage from './LoggingPage'
-import { combineReducers, createStore } from 'redux'
+import LoggingPage from './LoggingPage' 
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const permissions = [
   'https://jans.io/oauth/config/logging.readonly',
@@ -26,13 +26,13 @@ const LOGGING_STATE = {
   loading: false,
 }
 
-const store = createStore(
-  combineReducers({
+const store = configureStore({
+  reducer:  combineReducers({
     authReducer: (state = AUTH_STATE) => state,
     loggingReducer: (state = LOGGING_STATE) => state,
     noReducer: (state = {}) => state,
   }),
-)
+})
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>

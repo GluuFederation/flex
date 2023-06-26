@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Box } from "@mui/material";
 import MaterialTable from "@material-table/core";
 import { useDispatch } from "react-redux";
-import { updateToast } from "../../../../app/redux/actions/ToastAction";
+import { updateToast } from "../../../../app/redux/features/toastSlice";
 import { isEmpty } from "lodash";
 
 const AgamaProjectConfigModal = ({
@@ -293,11 +293,11 @@ const AgamaProjectConfigModal = ({
                         columns={[
                           { title: `${t("fields.flow")}`, field: "flow" },
                           {
-                            title: `${t("fields.error")}`,
+                            title: `${t("fields.errors")}`,
                             field: "error",
                           },
                         ]}
-                        data={projectDetails.data.tableOptions}
+                        data={projectDetails.data?.tableOptions}
                         isLoading={projectDetails.isLoading}
                         title=""
                         options={{

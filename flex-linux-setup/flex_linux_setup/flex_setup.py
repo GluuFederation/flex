@@ -68,6 +68,13 @@ def get_flex_setup_parser():
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
+profile = None
+profile_fn = os.path.join(__STATIC_SETUP_DIR__, 'profile')
+if os.path.exists(profile_fn):
+    with open(profile_fn) as f:
+        profile = f.read().strip()
+    print("Profile was detected as \033[1m{}\033[0m.".format(profile))
+
 if os.path.join(__STATIC_SETUP_DIR__, 'flex/flex-linux-setup') == cur_dir:
     jans_installer_downloaded = True
     flex_installer_downloaded = True
@@ -127,6 +134,11 @@ if not jans_installer_downloaded:
         shutil.unpack_archive(jans_zip_file, unpack_dir)
         shutil.copytree(os.path.join(unpack_dir, parent_dir, 'jans-linux-setup/jans_setup'), __STATIC_SETUP_DIR__)
         jans_zip.close()
+
+    if profile:
+        print("Writing profile \033[1m{}\033[0m to file {}.".format(profile, profile_fn))
+        with open(profile_fn, 'w') as w:
+            w.write(profile)
 
     sys.path.append(__STATIC_SETUP_DIR__)
     from setup_app import downloads
@@ -243,7 +255,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.13",
+  "JANS_APP_VERSION": "1.0.15",
   "JANS_BUILD": "-SNAPSHOT",
   "NODE_VERSION": "v18.16.0",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
@@ -268,7 +280,7 @@ class flex_installer(JettyInstaller):
         self.gluu_admin_ui_source_path = os.path.join(Config.dist_jans_dir, 'gluu-admin-ui.zip')
         self.log4j2_adminui_path = os.path.join(Config.dist_jans_dir, 'log4j2-adminui.xml')
         self.log4j2_path = os.path.join(Config.dist_jans_dir, 'log4j2.xml')
-        self.admin_ui_plugin_source_path = os.path.join(Config.dist_jans_dir, 'admin-ui-plugin.jar')
+        self.admin_ui_plugin_source_path = os.path.join(Config.dist_jans_dir, 'gluu-flex-admin-ui-plugin.jar')
         self.flex_path = os.path.join(Config.dist_jans_dir, 'flex.zip')
         self.source_dir = os.path.join(Config.install_dir, 'flex')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
@@ -416,7 +428,7 @@ class flex_installer(JettyInstaller):
         print("Extracting admin-ui from", self.flex_path)
         base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
 
-        print("Building luu Admin UI Frontend")
+        print("Building Gluu Admin UI Frontend")
         env_tmp = os.path.join(self.source_dir, '.env.tmp')
         config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
         config_api_installer.copyFile(os.path.join(self.source_dir, '.env.tmp'), os.path.join(self.source_dir, '.env'))
@@ -475,7 +487,7 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['op_host'] = ssa_json.get('iss', '')
         Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
         Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
-        Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
+        Config.templateRenderingDict['license_hardware_key'] = ssa_json.get('org_id', str(uuid.uuid4()))
         Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
@@ -488,6 +500,9 @@ class flex_installer(JettyInstaller):
 
         for logfn in (self.log4j2_adminui_path, self.log4j2_path):
             config_api_installer.copyFile(logfn, config_api_installer.custom_config_dir)
+
+        print("Removing DUO Script")
+        config_api_installer.dbUtils.delete_dn('inum=5018-F9CF,ou=scripts,o=jans')
 
         self.rewrite_cli_ini()
 
@@ -815,7 +830,7 @@ class flex_installer(JettyInstaller):
 def read_or_get_ssa():
     if os.path.isfile(argsp.admin_ui_ssa):
         with open(argsp.admin_ui_ssa) as f:
-            installed_components['ssa'] = f.read()
+            installed_components['ssa'] = f.read().strip()
     else:
         installed_components['ssa'] = argsp.admin_ui_ssa
 

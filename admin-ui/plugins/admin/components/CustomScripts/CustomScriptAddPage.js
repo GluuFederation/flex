@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
-import { addCustomScript } from 'Plugins/admin/redux/actions/CustomScriptActions'
+import { addCustomScript } from 'Plugins/admin/redux/features/customScriptSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
@@ -27,7 +27,7 @@ function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSave
       const message = data.customScript.action_message
       delete data.customScript.action_message
       buildPayload(userAction, message, data)
-      dispatch(addCustomScript(userAction))
+      dispatch(addCustomScript({ action: userAction }))
     }
   }
   return (

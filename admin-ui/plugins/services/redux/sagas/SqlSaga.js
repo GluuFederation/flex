@@ -9,8 +9,8 @@ import {
   editSqlResponse,
   deleteSqlResponse,
   testSqlResponse,
-} from '../actions/SqlActions'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+} from '../features/sqlSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { SQL } from '../audit/Resources'
 import {
   CREATE,
@@ -19,13 +19,6 @@ import {
   FETCH,
 } from '../../../../app/audit/UserActionType'
 import { initAudit } from 'Redux/sagas/SagaUtils'
-import {
-  GET_SQL,
-  PUT_SQL,
-  DELETE_SQL,
-  TEST_SQL,
-  ADD_SQL,
-} from '../actions/types'
 import SqlApi from '../api/SqlApi'
 import { postUserAction } from 'Redux/api/backend-api'
 import { getClient } from 'Redux/api/base'
@@ -46,7 +39,7 @@ export function* getSql(payload) {
     addAdditionalData(audit, FETCH, SQL, payload)
     const api = yield* newFunction()
     const data = yield call(api.getSqlConfig)
-    yield put(getSqlResponse(data))
+    yield put(getSqlResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getSqlResponse(null))
@@ -63,7 +56,7 @@ export function* addSql({ payload }) {
     addAdditionalData(audit, CREATE, SQL, payload)
     const api = yield* newFunction()
     const data = yield call(api.addSqlConfig, payload.data.action_data)
-    yield put(addSqlResponse(data))
+    yield put(addSqlResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(addSqlResponse(null))
@@ -80,7 +73,7 @@ export function* editSql({ payload }) {
     addAdditionalData(audit, UPDATE, SQL, payload)
     const api = yield* newFunction()
     const data = yield call(api.updateSqlConfig, payload.data.action_data)
-    yield put(editSqlResponse(data))
+    yield put(editSqlResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(editSqlResponse(null))
@@ -98,7 +91,7 @@ export function* deleteSql({ payload }) {
     addAdditionalData(audit, DELETION, SQL, payload)
     const api = yield* newFunction()
     yield call(api.deleteSqlConfig, payload.configId)
-    yield put(deleteSqlResponse(payload.configId))
+    yield put(deleteSqlResponse({ configId: payload.configId }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteSqlResponse(null))
@@ -115,7 +108,7 @@ export function* testSql({ payload }) {
     addAdditionalData(audit, DELETION, SQL, payload)
     const api = yield* newFunction()
     const data = yield call(api.testSqlConfig, payload.data)
-    yield put(testSqlResponse(data))
+    yield put(testSqlResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     console.log(e)
@@ -128,23 +121,23 @@ export function* testSql({ payload }) {
 }
 
 export function* watchGetSqlConfig() {
-  yield takeLatest(GET_SQL, getSql)
+  yield takeLatest('sql/getSqlConfig', getSql)
 }
 
 export function* watchAddSqlConfig() {
-  yield takeLatest(ADD_SQL, addSql)
+  yield takeLatest('sql/addSql', addSql)
 }
 
 export function* watchPutSqlConfig() {
-  yield takeLatest(PUT_SQL, editSql)
+  yield takeLatest('sql/editSql', editSql)
 }
 
 export function* watchDeleteSqlConfig() {
-  yield takeLatest(DELETE_SQL, deleteSql)
+  yield takeLatest('sql/deleteSql', deleteSql)
 }
 
 export function* watchTestSqlConfig() {
-  yield takeLatest(TEST_SQL, testSql)
+  yield takeLatest('sql/testSql', testSql)
 }
 
 export default function* rootSaga() {

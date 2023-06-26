@@ -16,9 +16,9 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
   getMapping,
   addNewRolePermissions,
-} from 'Plugins/admin/redux/actions/MappingActions'
-import { getRoles } from 'Plugins/admin/redux/actions/ApiRoleActions'
-import { getPermissions } from 'Plugins/admin/redux/actions/ApiPermissionActions'
+} from 'Plugins/admin/redux/features/mappingSlice'
+import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
+import { getPermissions } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import MappingItem from './MappingItem'
 import {
   hasPermission,
@@ -48,7 +48,7 @@ function MappingPage({
 
   function doFetchPermissionsList() {
     buildPayload(userAction, 'PERMISSIONS', options)
-    dispatch(getPermissions(userAction))
+    dispatch(getPermissions({ payload: userAction }))
   }
 
   useEffect(() => {
@@ -59,18 +59,18 @@ function MappingPage({
 
   function onAddConfirmed(mappingData) {
     buildPayload(userAction, 'Add new mapping', mappingData)
-    dispatch(addNewRolePermissions(mappingData))
+    dispatch(addNewRolePermissions({ data: mappingData }))
     toggle()
     // doFetchList()
   }
 
   function doFetchList() {
     buildPayload(userAction, 'ROLES_MAPPING', options)
-    dispatch(getMapping(userAction))
+    dispatch(getMapping({ action: userAction }))
   }
   function doFetchRoles() {
     buildPayload(userAction, 'ROLES', options)
-    dispatch(getRoles(userAction))
+    dispatch(getRoles({ action: userAction }))
   }
 
   function showMappingDialog() {

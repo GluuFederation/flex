@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import ScopeForm from './ScopeForm'
-import { addScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { addScope } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { getAttributes, getScripts } from 'Redux/actions/InitActions'
+import { getAttributes, getScripts } from 'Redux/features/initSlice'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -25,11 +25,11 @@ function ScopeAddPage({
   useEffect(() => {
     if (attributes.length === 0) {
       buildPayload(userAction, 'Fetch attributes', { limit: 100 })
-      dispatch(getAttributes(userAction))
+      dispatch(getAttributes({ options: userAction }))
     }
     if (scripts.length === 0) {
       buildPayload(userAction, 'Fetch custom scripts', {})
-      dispatch(getScripts(userAction))
+      dispatch(getScripts({ action: userAction }))
     }
   }, [])
 
@@ -46,7 +46,7 @@ function ScopeAddPage({
       delete data.action_message
       postBody['scope'] = data
       buildPayload(userAction, message, postBody)
-      dispatch(addScope(userAction))
+      dispatch(addScope({ action: userAction }))
     }
   }
 

@@ -32,8 +32,7 @@ const a11yProps = (index) => {
 
 export default function GluuTabs({
     tabNames,
-    tabToShow,
-    textColor = "black"
+    tabToShow
 }) {
     const [value, setValue] = useState(0);
 
@@ -46,13 +45,13 @@ export default function GluuTabs({
             <Box sx={{ borderBottom: 1, borderColor: "divider", }}>
                 <Tabs
                     value={value}
-                    textColor={textColor}
                     variant="scrollable"
                     onChange={handleChange}
                 >
                     {tabNames?.map((name, index) => (
                         <Tab
-                            key={index}
+                            data-testid={name}
+                            key={name + index.toString()}
                             label={name}
                             {...a11yProps(index)}
                         />
@@ -60,7 +59,7 @@ export default function GluuTabs({
                 </Tabs>
             </Box>
             {tabNames?.map((name, index) => (
-                <TabPanel value={value} key={index} index={index}>
+                <TabPanel value={value} key={name + index.toString()} index={index}>
                     {tabToShow(name)}
                 </TabPanel>
             ))}

@@ -1,8 +1,7 @@
 /**
  * Redux Actions
  */
-export * from './AuthActions'
-export * from './InitActions'
-export * from './LicenseActions'
-export * from './OidcDiscoveryActions'
-export * from './AttributesActions'
+export * from '../features/authSlice'
+export * from '../features/licenseSlice'
+export * from '../features/oidcDiscoverySlice'
+export * from '../features/attributesSlice'

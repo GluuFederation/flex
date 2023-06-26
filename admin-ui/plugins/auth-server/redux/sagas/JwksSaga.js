@@ -1,8 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getJwksResponse } from '../actions/JwksActions'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import { GET_JWKS } from '../actions/types'
+import { getJwksResponse } from '../features/jwksSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import JwksApi from '../api/JwksApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -20,7 +19,7 @@ export function* getJwksConfig() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getJwks)
-    yield put(getJwksResponse(data))
+    yield put(getJwksResponse({ data }))
   } catch (e) {
     yield put(getJwksResponse(null))
     if (isFourZeroOneError(e)) {
@@ -31,7 +30,7 @@ export function* getJwksConfig() {
 }
 
 export function* watchGetJwksConfig() {
-  yield takeLatest(GET_JWKS, getJwksConfig)
+  yield takeLatest('jwks/getJwks', getJwksConfig)
 }
 
 export default function* rootSaga() {

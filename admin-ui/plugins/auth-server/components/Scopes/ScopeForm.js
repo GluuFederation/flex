@@ -17,7 +17,7 @@ import {
 import {
   viewOnly,
   setCurrentItem,
-} from 'Plugins/auth-server/redux/actions/OIDCActions'
+} from 'Plugins/auth-server/redux/features/oidcSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -134,8 +134,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   }
 
   const goToClientViewPage = (clientId, clientData = {}) => {
-    dispatch(viewOnly(true))
-    dispatch(setCurrentItem(clientData))
+    dispatch(viewOnly({ view: true }))
+    dispatch(setCurrentItem({ item: clientData }))
     return navigate(`/auth-server/client/edit:` + clientId)
   }
 
@@ -159,7 +159,14 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           id: Yup.string().min(2, 'id 2 characters').required('Required!'),
         })}
         onSubmit={(values) => {
-          const result = Object.assign(scope, values)
+          const result = {
+            ...scope,
+            ...values,
+            attributes: {
+              ...scope.attributes,
+              ...values.attributes
+            }
+          };
           result['id'] = result.id
           result['creatorType'] = 'user'
           result['creatorId'] = authReducer.userinfo.inum

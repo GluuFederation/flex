@@ -1,20 +1,18 @@
 /**
  * App Reducers
  */
-import mauReducer from './MauReducer'
-import healthReducer from './HealthReducer'
-import authReducer from './AuthReducer'
-import fidoReducer from './FidoReducer'
-import initReducer from './InitReducer'
-import logoutReducer from './LogoutReducer'
-import licenseReducer from './LicenseReducer'
-import licenseDetailsReducer from './LicenseDetailsReducer'
-import oidcDiscoveryReducer from './OidcDiscoveryReducer'
-import attributesReducerRoot from './AttributesReducer'
-import toastReducer from './ToastReducer'
+import { reducer as mauReducer } from 'Plugins/admin/redux/features/mauSlice'
+import healthReducer from '../features/healthSlice'
+import authReducer from '../features/authSlice'
+import { reducer as initReducer } from '../features/initSlice'
+import logoutReducer from '../features/logoutSlice'
+import licenseReducer from '../features/licenseSlice'
+import { reducer as licenseDetailsReducer } from '../features/licenseDetailsSlice'
+import oidcDiscoveryReducer from '../features/oidcDiscoverySlice'
+import attributesReducerRoot from '../features/attributesSlice'
+import toastReducer from '../features/toastSlice'
 const appReducers = {
   authReducer,
-  fidoReducer,
   initReducer,
   logoutReducer,
   licenseReducer,

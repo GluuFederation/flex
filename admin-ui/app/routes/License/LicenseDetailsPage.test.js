@@ -1,23 +1,24 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import LicenseDetailsPage from './LicenseDetailsPage'
-import { createStore, combineReducers } from 'redux'
+import LicenseDetailsPage from './LicenseDetailsPage' 
 import { Provider } from 'react-redux'
 import i18n from '../../i18n'
 import { I18nextProvider } from 'react-i18next'
 import license from "./license"
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const INIT_LICENSE_DETAIL_STATE = {
   item: license,
   loading: false,
 }
-const store = createStore(
-  combineReducers({
+
+const store = configureStore({
+  reducer: combineReducers({
     licenseDetailsReducer: (state = INIT_LICENSE_DETAIL_STATE) => state,
     noReducer: (state = {}) => state,
   }),
-)
+})
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>

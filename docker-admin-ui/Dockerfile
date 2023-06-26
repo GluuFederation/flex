@@ -1,4 +1,4 @@
-FROM node:hydrogen-alpine AS builder
+FROM node:hydrogen-alpine3.17 AS builder
 
 RUN apk update \
     && apk upgrade --available \
@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=c4b27b3b0a19441422b14c11ed047f2ab1cec204
+ENV ADMIN_UI_VERSION=d58431f442b2e68ecd5addfc700581c4550dcdb0
 
 RUN mkdir -p /opt/flex
 
@@ -34,7 +34,7 @@ RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 # Application
 # ===========
 
-FROM node:hydrogen-alpine
+FROM node:hydrogen-alpine3.17
 
 # ======
 # alpine
@@ -70,7 +70,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=20edbc7b8638db25c8c65942f28c5f0f78a3e6ea
+ENV JANS_SOURCE_VERSION=4d17cbcdab3272653f2cf547bcef1d8181353ffd
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -191,7 +191,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="1.0.13-dev" \
+    org.opencontainers.image.version="1.0.15" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 

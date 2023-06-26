@@ -10,9 +10,9 @@ import {
   addLdapResponse,
   deleteLdapResponse,
   testLdapResponse,
-} from '../actions/LdapActions'
-import {updateToast} from 'Redux/actions/ToastAction'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+} from '../features/ldapSlice'
+import {updateToast} from 'Redux/features/toastSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { LDAP } from '../audit/Resources'
 import {
   CREATE,
@@ -20,13 +20,6 @@ import {
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import {
-  GET_LDAP,
-  PUT_LDAP,
-  ADD_LDAP,
-  DELETE_LDAP,
-  TEST_LDAP,
-} from '../actions/types'
 import LdapApi from '../api/LdapApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -47,7 +40,7 @@ export function* getLdap(payload) {
     addAdditionalData(audit, FETCH, LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.getLdapConfig)
-    yield put(getLdapResponse(data))
+    yield put(getLdapResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getLdapResponse(null))
@@ -65,7 +58,7 @@ export function* addLdap({ payload }) {
     const api = yield* newFunction()
     const data = yield call(api.addLdapConfig, payload.data.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(addLdapResponse(data))
+    yield put(addLdapResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -84,7 +77,7 @@ export function* editLdap({ payload }) {
     const api = yield* newFunction()
     const data = yield call(api.updateLdapConfig, payload.data.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(editLdapResponse(data))
+    yield put(editLdapResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -105,7 +98,7 @@ export function* deleteLdap({ payload }) {
     const api = yield* newFunction()
     yield call(api.deleteLdapConfig, payload.configId)
     yield put(updateToast(true, 'success'))
-    yield put(deleteLdapResponse(payload.configId))
+    yield put(deleteLdapResponse({ configId: payload.configId }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -122,7 +115,7 @@ export function* testLdap({ payload }) {
   try {
     const api = yield* newFunction()
     const data = yield call(api.testLdapConfig, payload.data)
-    yield put(testLdapResponse(data))
+    yield put(testLdapResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     console.log(e)
@@ -135,23 +128,23 @@ export function* testLdap({ payload }) {
 }
 
 export function* watchGetLdapConfig() {
-  yield takeLatest(GET_LDAP, getLdap)
+  yield takeLatest('ldap/getLdapConfig', getLdap)
 }
 
 export function* watchPutLdapConfig() {
-  yield takeLatest(PUT_LDAP, editLdap)
+  yield takeLatest('ldap/editLdap', editLdap)
 }
 
 export function* watchAddLdapConfig() {
-  yield takeLatest(ADD_LDAP, addLdap)
+  yield takeLatest('ldap/addLdap', addLdap)
 }
 
 export function* watchDeleteLdap() {
-  yield takeLatest(DELETE_LDAP, deleteLdap)
+  yield takeLatest('ldap/deleteLdap', deleteLdap)
 }
 
 export function* watchTestLdapConfig() {
-  yield takeLatest(TEST_LDAP, testLdap)
+  yield takeLatest('ldap/testLdap', testLdap)
 }
 
 export default function* rootSaga() {

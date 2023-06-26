@@ -1,16 +1,15 @@
 import { all, call, fork, put, takeEvery, select } from 'redux-saga/effects'
-import { GET_LICENSE_DETAILS, UPDATE_LICENSE_DETAILS } from '../actions/types'
 import {
   getLicenseDetailsResponse,
   updateLicenseDetailsResponse,
-} from '../actions/LicenseDetailsActions'
+} from '../features/licenseDetailsSlice'
 import { getClient } from 'Redux/api/base'
 import LicenseDetailsApi from '../api/LicenseDetailsApi'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -27,7 +26,7 @@ export function* getLicenseDetailsWorker({ payload }) {
     //addAdditionalData(audit, FETCH, GET_LICENSE_DETAILS, payload)
     const licenseApi = yield* newFunction()
     const data = yield call(licenseApi.getLicenseDetails)
-    yield put(getLicenseDetailsResponse(data))
+    yield put(getLicenseDetailsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getLicenseDetailsResponse(null))
@@ -44,7 +43,7 @@ export function* updateLicenseDetailsWorker({ payload }) {
     //addAdditionalData(audit, UPDATE, UPDATE_LICENSE_DETAILS, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.updateLicenseDetails, payload.action.action_data)
-    yield put(updateLicenseDetailsResponse(data))
+    yield put(updateLicenseDetailsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateLicenseDetailsResponse(null))
@@ -57,11 +56,11 @@ export function* updateLicenseDetailsWorker({ payload }) {
 
 export function* getLicenseWatcher() {
 
-  yield takeEvery(GET_LICENSE_DETAILS, getLicenseDetailsWorker)
+  yield takeEvery('licenseDetails/getLicenseDetails', getLicenseDetailsWorker)
 }
 
 export function* updateLicenseWatcher() {
-  yield takeEvery(UPDATE_LICENSE_DETAILS, updateLicenseDetailsWorker)
+  yield takeEvery('licenseDetails/updateLicenseDetails', updateLicenseDetailsWorker)
 }
 
 export default function* rootSaga() {

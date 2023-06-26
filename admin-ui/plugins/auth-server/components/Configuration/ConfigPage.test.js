@@ -1,11 +1,11 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import ConfigPage from './ConfigPage'
-import { combineReducers, createStore } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const config = {
   issuer: 'https://admin-ui-test.gluu.org',
@@ -155,15 +155,15 @@ const INIT_STATE = {
   backendIsUp: true,
 }
 
-const store = createStore(
-  combineReducers({
+const store = configureStore({
+  reducer:  combineReducers({
     authReducer: (state = INIT_STATE) => state,
     jsonConfigReducer: (state = CONFIG_STATE) => state,
     noReducer: (state = {}) => state,
     acrReducer: (state = ACER_STATE) => state,
     initReducer: (state = SCRIPTS_STATE) => state,
   }),
-)
+})
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>

@@ -7,22 +7,17 @@ import {
   select,
   takeEvery,
 } from 'redux-saga/effects'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from '../../../../app/redux/features/authSlice'
 import {
   isFourZeroOneError,
 } from '../../../../app/utils/TokenController'
-import {
-  GET_SMTPS,
-  TEST_SMTP_CONFIG,
-  UPDATE_SMTP
-} from '../actions/types'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
-import { updateToast } from 'Redux/actions/ToastAction'
+import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import SmtpApi from '../api/SmtpApi'
-import { getSmptResponse, getSmpts, testSmtpResponse, testSmtpResponseFails, updateSmptResponse } from '../actions/SmtpActions'
+import { getSmptResponse, getSmpts, testSmtpResponse, testSmtpResponseFails, updateSmptResponse } from '../features/smtpSlice'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -38,7 +33,7 @@ export function* updateStmpSaga({ payload }) {
     const stmpApi = yield* newFunction()
     const data = yield call(stmpApi.updateSmtpConfig, payload)
     yield put(updateToast(true, 'success'))
-    yield put(updateSmptResponse(data))
+    yield put(updateSmptResponse({ data }))
     yield put(getSmpts())
     yield call(postUserAction, audit)
   } catch (e) {
@@ -56,7 +51,7 @@ export function* getSmtpsSaga() {
   try {
     const stmpApi = yield* newFunction()
     const data = yield call(stmpApi.getSmtpConfig);
-    yield put(getSmptResponse(data))
+    yield put(getSmptResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getSmptResponse(null))
@@ -72,8 +67,7 @@ export function* testSmtp(payload) {
 
     const stmpApi = yield* newFunction()
     const data = yield call(stmpApi.testSmtpConfig, payload.payload)
-    console.log("dt",data)
-    yield put(testSmtpResponse(data))
+    yield put(testSmtpResponse({ data }))
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(testSmtpResponseFails())
@@ -85,15 +79,15 @@ export function* testSmtp(payload) {
 }
 
 export function* watchGetUsers() {
-  yield takeEvery(GET_SMTPS, getSmtpsSaga)
+  yield takeEvery('smtps/getSmpts', getSmtpsSaga)
 }
 
 export function* watchUpdateUser() {
-  yield takeLatest(UPDATE_SMTP, updateStmpSaga)
+  yield takeLatest('smtps/updateSmpt', updateStmpSaga)
 }
 
 export function* watchTestSmtpConfig() {
-  yield takeLatest(TEST_SMTP_CONFIG, testSmtp)
+  yield takeLatest('smtps/testSmtp', testSmtp)
 }
 
 

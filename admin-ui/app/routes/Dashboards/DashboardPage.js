@@ -6,8 +6,8 @@ import Box from '@mui/material/Box'
 import { useMediaQuery } from 'react-responsive'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
-import { getMau } from 'Redux/actions/MauActions'
-import { getClients } from 'Redux/actions/InitActions'
+import { getMau } from 'Plugins/admin/redux/features/mauSlice'
+import { getClients } from 'Redux/features/initSlice'
 import {
   hasBoth,
   buildPayload,
@@ -16,8 +16,8 @@ import {
 } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import { getLicenseDetails } from 'Redux/actions/LicenseDetailsActions'
-import { getHealthStatus } from 'Redux/actions/HealthAction'
+import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
+import { getHealthStatus } from 'Redux/features/healthSlice'
 import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
 import CheckIcon from '../../images/svg/check.svg'
@@ -98,7 +98,7 @@ function DashboardPage({
         }
         if (clients.length === 0 && count < 2) {
           buildPayload(userAction, 'Fetch openid connect clients', {})
-          dispatch(getClients(userAction))
+          dispatch(getClients({ action: userAction }))
         }
         if (Object.keys(license).length === 0 && count < 2) {
           getLicense()
@@ -118,7 +118,7 @@ function DashboardPage({
     options['startMonth'] = getYearMonth(startDate)
     options['endMonth'] = getYearMonth(endDate)
     buildPayload(userAction, 'GET MAU', options)
-    dispatch(getMau(userAction))
+    dispatch(getMau({ action: userAction }))
   }
 
   function getLicense() {
@@ -138,7 +138,7 @@ function DashboardPage({
 
   function getServerStatus() {
     buildPayload(userAction, 'GET Health Status', options)
-    dispatch(getHealthStatus(userAction))
+    dispatch(getHealthStatus({ action: userAction }))
   }
 
   function getYearMonth(date) {

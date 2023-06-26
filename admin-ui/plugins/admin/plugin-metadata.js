@@ -14,10 +14,10 @@ import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
 
-import scriptReducer from './redux/reducers/CustomScriptReducer'
-import apiRoleReducer from './redux/reducers/ApiRoleReducer'
-import apiPermissionReducer from './redux/reducers/ApiPermissionReducer'
-import mappingReducer from './redux/reducers/MappingReducer'
+import { reducer as scriptReducer } from 'Plugins/admin/redux/features/customScriptSlice'
+import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
+import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
+import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import {
   ACR_READ,
   ROLE_READ,

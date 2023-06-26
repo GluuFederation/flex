@@ -1,18 +1,16 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import { GET_AGAMA, DELETE_AGAMA, ADD_AGAMA } from '../actions/types'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import AgamaApi from '../api/AgamaApi'
 import { getClient } from 'Redux/api/base'
-import { getAgamaResponse, getAddAgamaResponse } from '../actions/AgamaActions'
-import { getAgama } from '../actions/AgamaActions'
+import { getAgamaResponse, getAddAgamaResponse, getAgama } from '../features/agamaSlice'
 const JansConfigApi = require('jans_config_api')
 
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)  
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AgamaDeveloperStudioApi(
+  const api = new JansConfigApi.AgamaApi(
     getClient(JansConfigApi, token, issuer),
   )
   return new AgamaApi(api)
@@ -62,13 +60,13 @@ export function* deleteAgamas(payload) {
 
 
 export function* watchGetAgama() {
-  yield takeLatest(GET_AGAMA, getAgamas)
+  yield takeLatest('agama/getAgama', getAgamas)
 }
 export function* watchDeleteAgama() {
-  yield takeLatest(DELETE_AGAMA, deleteAgamas)
+  yield takeLatest('agama/deleteAgama', deleteAgamas)
 }
 export function* watchAddAgama() {
-  yield takeLatest(ADD_AGAMA, addAgama)
+  yield takeLatest('agama/addAgama', addAgama)
 }
 
 

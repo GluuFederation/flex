@@ -15,9 +15,8 @@ import {
   deleteCustomScript,
   getCustomScriptByType,
   setCurrentItem,
-  getCustomScripts,
   viewOnly,
-} from 'Plugins/admin/redux/actions/CustomScriptActions'
+} from 'Plugins/admin/redux/features/customScriptSlice'
 import {
   hasPermission,
   buildPayload,
@@ -82,7 +81,7 @@ function ScriptListTable() {
   }
   useEffect(() => {
     makeOptions()
-    dispatch(getCustomScriptByType(options))
+    dispatch(getCustomScriptByType({ action: options }))
   }, [])
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push((rowData) => ({
@@ -133,7 +132,7 @@ function ScriptListTable() {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        dispatch(getCustomScriptByType(options))
+        dispatch(getCustomScriptByType({ action: options }))
       },
     })
   }
@@ -159,21 +158,20 @@ function ScriptListTable() {
   }
   function handleOptionsChange(event) {
     const name = event.target.name
-    console.log(name, event.target.value)
     if (name == 'pattern') {
       memoPattern = event.target.value
     } else if (name == 'type') {
       memoType = event.target.value
       makeOptions()
-      dispatch(getCustomScriptByType(options))
+      dispatch(getCustomScriptByType({ action: options }))
     }
   }
   function handleGoToCustomScriptAddPage() {
     return navigate('/adm/script/new')
   }
   function handleGoToCustomScriptEditPage(row, edition) {
-    dispatch(viewOnly(edition))
-    dispatch(setCurrentItem(row))
+    dispatch(viewOnly({ view: edition }))
+    dispatch(setCurrentItem({ item: row }))
     return navigate(`/adm/script/edit/:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
@@ -182,7 +180,7 @@ function ScriptListTable() {
   }
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
-    dispatch(deleteCustomScript(userAction))
+    dispatch(deleteCustomScript({ action: userAction }))
     navigate('/adm/scripts')
     toggle()
   }
@@ -193,15 +191,14 @@ function ScriptListTable() {
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
-    dispatch(getCustomScriptByType(options))
+    dispatch(getCustomScriptByType({ action: options }))
   }
   const onRowCountChangeClick = (count) => {
-    console.log(count)
     makeOptions()
     options['limit'] = count
     setPageNumber(0)
     setLimit(count)
-    dispatch(getCustomScriptByType(options))
+    dispatch(getCustomScriptByType({ action: options }))
   }
 
   return (

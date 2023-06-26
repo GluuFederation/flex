@@ -1,4 +1,4 @@
-import plugins from '../plugins.config'
+import plugins from '../plugins.config.json'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 async function process() {

@@ -8,7 +8,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
-import { getAgama, deleteAgama, addAgama } from '../../redux/actions/AgamaActions'
+import { getAgama, deleteAgama, addAgama } from '../../redux/features/agamaSlice'
 import { hasPermission, AGAMA_READ, AGAMA_WRITE } from 'Utils/PermChecker'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
@@ -16,10 +16,13 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
 import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@mui/icons-material/Info';
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
-import EditIcon from '@mui/icons-material/Edit';
+import { updateToast } from 'Redux/features/toastSlice'
+import { isEmpty } from 'lodash'
+import { getJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
+import SettingsIcon from '@mui/icons-material/Settings'
 
 const dateTimeFormatOptions = {
   year: '2-digit',
@@ -49,6 +52,9 @@ function AgamaListPage() {
   const [shaFileName, setShaFileName] = useState('')
   const [listData, setListData] = useState([])
   const [selectedRow, setSelectedRow] = useState({})
+  const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
+  const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
+  const isConfigLoading = useSelector((state) => state.jsonConfigReducer.loading)
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -67,6 +73,12 @@ function AgamaListPage() {
       }
     })
   }
+
+  useEffect(() => {
+    if(isEmpty(configuration)) {
+      dispatch(getJsonConfig({ action: {} }))
+    }
+  }, [])
 
   const submitData = async () => {
     let file = await convertFileToByteArray(selectedFile)
@@ -89,10 +101,8 @@ function AgamaListPage() {
     JSZip.loadAsync(file) // 1) read the Blob
       .then(function (zip) {
         let foundProjectName = false
-        let foundJson = false
         zip.forEach(function (relativePath, zipEntry) {
           if (zipEntry.name.endsWith('.json')) {
-            foundJson = true
             if (!foundProjectName) {
               zipEntry.async('string').then(function (jsonStr) {
                 const jsonData = JSON.parse(jsonStr) // Parse the JSON data
@@ -136,14 +146,13 @@ function AgamaListPage() {
     },
   })
 
-  const { totalItems, entriesCount, loading } = useSelector(
+  const { totalItems, loading } = useSelector(
     (state) => state.agamaReducer,
   )
   const agamaList = useSelector((state) => state.agamaReducer.agamaList)
   const permissions = useSelector((state) => state.authReducer.permissions)
   SetTitle(t('titles.agama'))
 
-  let memoLimit = limit
   useEffect(() => {
     dispatch(getAgama())
   }, [])
@@ -194,12 +203,16 @@ function AgamaListPage() {
         setSelectedFileName(null)
         setGetProjectName(false)
         setSHAfile(null)
-        setShowAddModal(true)
+        if(isAgamaEnabled) {
+          setShowAddModal(true)
+        } else {
+          dispatch(updateToast(true, 'error', t('messages.agama_is_not_enabled')))
+        }
       },
     })
     myActions.push({
       icon: () => <InfoIcon />,
-      tooltip: `${t('messages.see_configurations')}`,
+      tooltip: `${t('messages.see_project_details')}`,
       iconProps: { color: 'primary' },
       isFreeAction: false,
       onClick: (event, rowData) => {
@@ -208,7 +221,7 @@ function AgamaListPage() {
       },
     })
     myActions.push({
-      icon: () => <EditIcon />,
+      icon: () => <SettingsIcon />,
       tooltip: `${t('messages.manage_configurations')}`,
       iconProps: { color: 'primary' },
       isFreeAction: false,
@@ -327,7 +340,7 @@ function AgamaListPage() {
                   field: 'deployed_on',
                 },
                 {
-                  title: `${t('fields.error')}`,
+                  title: `${t('fields.errors')}`,
                   field: 'error',
                 },
               ]}
@@ -361,7 +374,7 @@ function AgamaListPage() {
             />
           </GluuViewWrapper>
           <Modal isOpen={showAddModal}>
-            <ModalHeader>Add Agama</ModalHeader>
+            <ModalHeader>{t('titles.add_agama_project')}</ModalHeader>
             <ModalBody>
               <div
                 {...getRootProps1()}
@@ -371,7 +384,7 @@ function AgamaListPage() {
                 {selectedFileName ? (
                   <strong>Selected File : {selectedFileName}</strong>
                 ) : (
-                  <p>Drag 'n' drop .gama file here, or click to select file</p>
+                  <p>{t(('messages.drag_agama_file'))}</p>
                 )}
               </div>
               <div className="mt-2"></div>
@@ -384,7 +397,7 @@ function AgamaListPage() {
                   <strong>Selected File : {shaFileName}</strong>
                 ) : (
                   <p>
-                    Drag 'n' drop .sha256sum file here, or click to select file
+                    {t(('messages.drag_sha_file'))}
                   </p>
                 )}
               </div>
@@ -412,10 +425,10 @@ function AgamaListPage() {
                 color={`primary-${selectedTheme}`}
                 style={applicationStyle.buttonStyle}
                 onClick={() => submitData()}
-                disabled={(shaFile && selectedFileName && shaStatus && projectName != '') ? loading ? true : false : true}
+                disabled={(shaFile && selectedFileName && shaStatus && projectName != '') ? loading || isConfigLoading ? true : false : true}
               >
 
-                {loading ? <>
+                {loading || isConfigLoading ? <>
                   <CircularProgress size={12} /> &nbsp;
                 </> : null}
                 {t('actions.add')}

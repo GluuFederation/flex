@@ -1,10 +1,10 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import UiRoleListPage from './UiRoleListPage'
-import { createStore, combineReducers } from 'redux'
+import UiRoleListPage from './UiRoleListPage' 
 import { Provider } from 'react-redux'
 import roles from "./roles"
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
@@ -18,13 +18,14 @@ const INIT_API_ROLE_STATE = {
   items: roles,
   loading: false,
 }
-const store = createStore(
-  combineReducers({
+
+const store = configureStore({
+  reducer:  combineReducers({
     authReducer: (state = INIT_STATE) => state,
     apiRoleReducer: (state = INIT_API_ROLE_STATE) => state,
     noReducer: (state = {}) => state,
   }),
-)
+}) 
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>

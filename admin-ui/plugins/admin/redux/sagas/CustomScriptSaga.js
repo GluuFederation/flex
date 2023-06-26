@@ -4,7 +4,7 @@ import {
   addCustomScriptResponse,
   editCustomScriptResponse,
   deleteCustomScriptResponse,
-} from '../actions/CustomScriptActions'
+} from 'Plugins/admin/redux/features/customScriptSlice'
 import { SCRIPT } from '../audit/Resources'
 import {
   CREATE,
@@ -12,16 +12,9 @@ import {
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import {updateToast} from 'Redux/actions/ToastAction'
-import {
-  GET_CUSTOM_SCRIPT,
-  GET_CUSTOM_SCRIPT_BY_TYPE,
-  ADD_CUSTOM_SCRIPT,
-  EDIT_CUSTOM_SCRIPT,
-  DELETE_CUSTOM_SCRIPT,
-} from '../actions/types'
+import {updateToast} from 'Redux/features/toastSlice'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -44,7 +37,7 @@ export function* getCustomScripts({ payload }) {
     addAdditionalData(audit, FETCH, SCRIPT, payload)
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.getAllCustomScript, payload.action)
-    yield put(getCustomScriptsResponse(data))
+    yield put(getCustomScriptsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getCustomScriptsResponse(null))
@@ -60,7 +53,7 @@ export function* getScriptsByType({ payload }) {
     addAdditionalData(audit, FETCH, SCRIPT, payload)
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.getScriptsByType, payload.action)
-    yield put(getCustomScriptsResponse(data))
+    yield put(getCustomScriptsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getCustomScriptsResponse(null))
@@ -79,7 +72,7 @@ export function* addScript({ payload }) {
       scriptApi.addCustomScript,
       payload.action.action_data,
     )
-    yield put(addCustomScriptResponse(data))
+    yield put(addCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success'))
   } catch (e) {
@@ -100,7 +93,7 @@ export function* editScript({ payload }) {
       scriptApi.editCustomScript,
       payload.action.action_data,
     )
-    yield put(editCustomScriptResponse(data))
+    yield put(editCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success'))
   } catch (e) {
@@ -120,7 +113,7 @@ export function* deleteScript({ payload }) {
     const scriptApi = yield* newFunction()
     yield call(scriptApi.deleteCustomScript, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(deleteCustomScriptResponse(payload.action.action_data))
+    yield put(deleteCustomScriptResponse({ inum: payload.action.action_data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -133,21 +126,21 @@ export function* deleteScript({ payload }) {
 }
 
 export function* watchGetAllCustomScripts() {
-  yield takeLatest(GET_CUSTOM_SCRIPT, getCustomScripts)
+  yield takeLatest('customScript/getCustomScripts', getCustomScripts)
 }
 
 export function* watchAddScript() {
-  yield takeLatest(ADD_CUSTOM_SCRIPT, addScript)
+  yield takeLatest('customScript/addCustomScript', addScript)
 }
 
 export function* watchEditScript() {
-  yield takeLatest(EDIT_CUSTOM_SCRIPT, editScript)
+  yield takeLatest('customScript/editCustomScript', editScript)
 }
 export function* watchDeleteScript() {
-  yield takeLatest(DELETE_CUSTOM_SCRIPT, deleteScript)
+  yield takeLatest('customScript/deleteCustomScript', deleteScript)
 }
 export function* watchScriptsByType() {
-  yield takeLatest(GET_CUSTOM_SCRIPT_BY_TYPE, getScriptsByType)
+  yield takeLatest('customScript/getCustomScriptByType', getScriptsByType)
 }
 export default function* rootSaga() {
   yield all([

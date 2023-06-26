@@ -12,21 +12,15 @@ import {
   updatePermissionsServerResponse,
   updatePermissionsLoading,
   getMapping,
-} from '../actions/MappingActions'
+} from 'Plugins/admin/redux/features/mappingSlice'
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import {updateToast} from 'Redux/actions/ToastAction'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import {
   isFourZeroOneError,
   addAdditionalData,
 } from 'Utils/TokenController'
-import {
-  GET_MAPPING,
-  UPDATE_PERMISSIONS_TO_SERVER,
-  ADD_MAPPING_ROLE_PERMISSIONS,
-  DELETE_MAPPING,
-} from '../actions/types'
 import MappingApi from '../api/MappingApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -48,7 +42,7 @@ export function* fetchMapping({ payload }) {
     addAdditionalData(audit, FETCH, API_MAPPING, payload)
     const mappingApi = yield* newFunction()
     const data = yield call(mappingApi.getMappings)
-    yield put(getMappingResponse(data))
+    yield put(getMappingResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getMappingResponse(null))
@@ -60,15 +54,15 @@ export function* fetchMapping({ payload }) {
 }
 
 export function* updateMapping({ payload }) {
-  yield put(updatePermissionsLoading(true))
+  yield put(updatePermissionsLoading({ data: true }))
   try {
     const mappingApi = yield* newFunction()
     const data = yield call(mappingApi.updateMapping, payload.data)
     yield put(updateToast(true, 'success'))
-    yield put(updatePermissionsServerResponse(data))
+    yield put(updatePermissionsServerResponse({ data }))
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(updatePermissionsLoading(false))
+    yield put(updatePermissionsLoading({ data: false }))
     yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -77,7 +71,7 @@ export function* updateMapping({ payload }) {
   }
 }
 export function* addMapping({ payload }) {
-  yield put(updatePermissionsLoading(true))
+  yield put(updatePermissionsLoading({ data: true }))
   try {
     const mappingApi = yield* newFunction()
     const data = yield call(mappingApi.addMapping, payload.data)
@@ -85,7 +79,7 @@ export function* addMapping({ payload }) {
     yield put(getMapping({}))
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(updatePermissionsLoading(false))
+    yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -95,7 +89,7 @@ export function* addMapping({ payload }) {
 }
 
 export function* deleteMapping({ payload }) {
-  yield put(updatePermissionsLoading(true))
+  yield put(updatePermissionsLoading({ data: true }))
   try {
     const mappingApi = yield* newFunction()
     const data = yield call(mappingApi.deleteMapping, payload.data)
@@ -103,7 +97,7 @@ export function* deleteMapping({ payload }) {
     yield put(getMapping({}))
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(updatePermissionsLoading(false))
+    yield put(updatePermissionsLoading({ data: false }))
     // yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -113,10 +107,10 @@ export function* deleteMapping({ payload }) {
 }
 
 export function* watchGetMapping() {
-  yield takeLatest(GET_MAPPING, fetchMapping)
-  yield takeEvery(UPDATE_PERMISSIONS_TO_SERVER, updateMapping)
-  yield takeEvery(ADD_MAPPING_ROLE_PERMISSIONS, addMapping)
-  yield takeEvery(DELETE_MAPPING, deleteMapping)
+  yield takeLatest('mapping/getMapping', fetchMapping)
+  yield takeEvery('mapping/updatePermissionsToServer', updateMapping)
+  yield takeEvery('mapping/addNewRolePermissions', addMapping)
+  yield takeEvery('mapping/deleteMapping', deleteMapping)
 }
 
 export default function* rootSaga() {

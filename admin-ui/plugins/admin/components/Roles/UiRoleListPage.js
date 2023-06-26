@@ -14,7 +14,7 @@ import {
   addRole,
   editRole,
   deleteRole,
-} from 'Plugins/admin/redux/actions/ApiRoleActions'
+} from 'Plugins/admin/redux/features/apiRoleSlice'
 import {
   hasPermission,
   buildPayload,
@@ -60,11 +60,11 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   }
   function doFetchList() {
     buildPayload(userAction, 'ROLES', options)
-    dispatch(getRoles(userAction))
+    dispatch(getRoles({ action: userAction }))
   }
   function onAddConfirmed(roleData) {
     buildPayload(userAction, 'message', roleData)
-    dispatch(addRole(userAction))
+    dispatch(addRole({ action: userAction }))
     toggle()
     doFetchList()
   }
@@ -147,14 +147,14 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit role', newData)
-                  dispatch(editRole(userAction))
+                  dispatch(editRole({ action: userAction }))
                   resolve()
                   doFetchList()
                 }),
               onRowDelete: (oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'remove role', oldData)
-                  dispatch(deleteRole(userAction))
+                  dispatch(deleteRole({ action: userAction }))
                   resolve()
                   doFetchList()
                 }),

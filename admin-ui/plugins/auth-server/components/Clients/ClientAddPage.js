@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useNavigate } from 'react-router-dom'
-import { addNewClientAction } from 'Plugins/auth-server/redux/actions/OIDCActions'
-import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
-import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
-import { getScripts } from 'Redux/actions/InitActions'
+import { addNewClientAction } from 'Plugins/auth-server/redux/features/oidcSlice'
+import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
+import { emptyScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
@@ -27,12 +27,10 @@ function ClientAddPage({
   const navigate =useNavigate()
   const { t } = useTranslation()
   useEffect(() => {
+    dispatch(emptyScopes())
     buildPayload(userAction, '', options)
-    if (scopes.length < 1) {
-      dispatch(getScopes(userAction))
-    }
     if (scripts.length < 1) {
-      dispatch(getScripts(userAction))
+      dispatch(getScripts({ action: userAction }))
     }
     dispatch(getOidcDiscovery())
   }, [])
@@ -48,7 +46,7 @@ function ClientAddPage({
       const postBody = {}
       postBody['client'] = data
       buildPayload(userAction, data.action_message, postBody)
-      dispatch(addNewClientAction(userAction))
+      dispatch(addNewClientAction({ action: userAction }))
     }
   }
   const clientData = {

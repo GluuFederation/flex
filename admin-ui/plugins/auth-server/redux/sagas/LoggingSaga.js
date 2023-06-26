@@ -3,10 +3,9 @@ import { isFourZeroOneError } from 'Utils/TokenController'
 import {
   getLoggingResponse,
   editLoggingResponse,
-} from '../actions/LoggingActions'
-import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import {updateToast} from 'Redux/actions/ToastAction'
-import { GET_LOGGING, PUT_LOGGING } from '../actions/types'
+} from '../features/loggingSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import LoggingApi from '../api/LoggingApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -24,7 +23,7 @@ export function* getLogging() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getLoggingConfig)
-    yield put(getLoggingResponse(data))
+    yield put(getLoggingResponse({ data }))
   } catch (e) {
     yield put(getLoggingResponse(null))
     if (isFourZeroOneError(e)) {
@@ -39,7 +38,7 @@ export function* editLogging({ payload }) {
     const api = yield* newFunction()
     const data = yield call(api.editLoggingConfig, payload.data)
     yield put(updateToast(true, 'success'))
-    yield put(editLoggingResponse(data))
+    yield put(editLoggingResponse({ data }))
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editLoggingResponse(null))
@@ -51,11 +50,11 @@ export function* editLogging({ payload }) {
 }
 
 export function* watchGetLoggingConfig() {
-  yield takeLatest(GET_LOGGING, getLogging)
+  yield takeLatest('logging/getLoggingConfig', getLogging)
 }
 
 export function* watchEditLoggingConfig() {
-  yield takeLatest(PUT_LOGGING, editLogging)
+  yield takeLatest('logging/editLoggingConfig', editLogging)
 }
 export default function* rootSaga() {
   yield all([fork(watchGetLoggingConfig), fork(watchEditLoggingConfig)])

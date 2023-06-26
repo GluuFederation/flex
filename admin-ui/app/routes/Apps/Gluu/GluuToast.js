@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { ToastContainer, toast } from "react-toastify"
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { updateToast } from 'Redux/actions/ToastAction'
+import { updateToast } from 'Redux/features/toastSlice'
 function GluuToast(){
   const dispatch = useDispatch()
   const { t } = useTranslation()

@@ -16,12 +16,12 @@ import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { deleteUMAResource } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
-import { setCurrentItem } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { deleteUMAResource } from 'Plugins/auth-server/redux/features/umaResourceSlice'
+import { setCurrentItem } from 'Plugins/auth-server/redux/features/scopeSlice'
 import {
   setCurrentItem as setCurrentItemClient,
   viewOnly,
-} from 'Plugins/auth-server/redux/actions/OIDCActions'
+} from 'Plugins/auth-server/redux/features/oidcSlice'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/ext-language_tools'
@@ -89,19 +89,19 @@ function ClientCibaParUmaPanel({
       action_message: message,
       action_data: selectedUMA.id,
     }
-    dispatch(deleteUMAResource(params))
+    dispatch(deleteUMAResource({ action: params }))
     setConfirmModal(false)
     setOpen(false)
   }
 
   const handleScopeEdit = (scope) => {
-    dispatch(setCurrentItem(scope))
+    dispatch(setCurrentItem({ item: scope }))
     return navigate(`/auth-server/scope/edit:${scope.inum}`)
   }
 
   const handleClientEdit = (inum) => {
     const currentClient = clients.find((client) => client.inum === inum)
-    dispatch(setCurrentItemClient(currentClient))
+    dispatch(setCurrentItemClient({ item: currentClient }))
     setOpen(false)
     dispatch(viewOnly(true))
     setCurrentStep(sequence[0])

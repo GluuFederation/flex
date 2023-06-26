@@ -8,15 +8,9 @@ import {
   getScriptsResponse,
   getScopesResponse,
   getClientsResponse,
-} from '../actions/InitActions'
-import { getAPIAccessToken } from '../actions/AuthActions'
+} from '../features/initSlice'
+import { getAPIAccessToken } from '../features/authSlice'
 import { postUserAction } from '../api/backend-api'
-import {
-  GET_SCOPES_FOR_STAT,
-  GET_SCRIPTS_FOR_STAT,
-  GET_CLIENTS_FOR_STAT,
-  GET_ATTRIBUTES_FOR_STAT,
-} from '../actions/types'
 import { initAudit } from '../sagas/SagaUtils'
 import InitApi from '../api/InitApi'
 import { getClient } from '../api/base'
@@ -64,7 +58,7 @@ export function* getScripts({ payload }) {
     addAdditionalData(audit, 'FETCH SCRIPTS FOR STAT', 'SCRIPT', payload)
     const scriptApi = yield* initScripts()
     const data = yield call(scriptApi.getScripts, payload.action.action_data)
-    yield put(getScriptsResponse(data))
+    yield put(getScriptsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getScriptsResponse(null))
@@ -82,10 +76,9 @@ export function* getClients({ payload }) {
     addAdditionalData(audit, 'FETCH CIENTS FOR STAT', 'OIDC', payload)
     const openIdApi = yield* initClients()
     const data = yield call(openIdApi.getClients, payload.action.action_data)
-    yield put(getClientsResponse(data))
+    yield put(getClientsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
-    console.log(e)
     yield put(getClientsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -100,7 +93,7 @@ export function* getScopes({ payload }) {
     addAdditionalData(audit, 'FETCH SCOPES FOR STAT', 'SCOPE', payload)
     const scopeApi = yield* initScopes()
     const data = yield call(scopeApi.getScopes, payload.action.action_data)
-    yield put(getScopesResponse(data))
+    yield put(getScopesResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getScopesResponse(null))
@@ -117,7 +110,7 @@ export function* getAttributes({ payload }) {
     addAdditionalData(audit, 'FETCH ATTRIBUTES FOR STAT', 'SCOPE', payload)
     const attributeApi = yield* initAttributes()
     const data = yield call(attributeApi.getAttributes, payload.options)
-    yield put(getAttributesResponse(data))
+    yield put(getAttributesResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getAttributesResponse(null))
@@ -129,16 +122,16 @@ export function* getAttributes({ payload }) {
 }
 
 export function* watchGetScripts() {
-  yield takeLatest(GET_SCRIPTS_FOR_STAT, getScripts)
+  yield takeLatest('init/getScripts', getScripts)
 }
 export function* watchGetClients() {
-  yield takeLatest(GET_CLIENTS_FOR_STAT, getClients)
+  yield takeLatest('init/getClients', getClients)
 }
 export function* watchGetScopes() {
-  yield takeLatest(GET_SCOPES_FOR_STAT, getScopes)
+  yield takeLatest('init/getScopes', getScopes)
 }
 export function* watchGetAttributes() {
-  yield takeLatest(GET_ATTRIBUTES_FOR_STAT, getAttributes)
+  yield takeLatest('init/getAttributes', getAttributes)
 }
 export default function* rootSaga() {
   yield all([
