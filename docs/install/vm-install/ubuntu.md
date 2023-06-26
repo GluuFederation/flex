@@ -90,60 +90,38 @@ apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
 apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 ```
 
-### Ubuntu 20.04
-
-- Download the release package from the Github Gluu Flex [Releases](https://github.com/GluuFederation/flex/releases)
-
-```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
-```
-
-- Verify integrity of the downloaded package using published sha256sum.
-
-  Download sha256sum file for the package
-  
-```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
-
-```
-  Check the hash if it is matching.
-```
-cd /tmp;
-sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
-
-```
-
-Output similar to below should confirm the integrity of the downloaded package.
-```
-flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum: ok
-
-```
-
-- Install the package
-
-```
-apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
-```
-
 ## Run the setup script
 
-- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
+- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after 
+which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
 
 - Run the setup script:
 
 ```
-python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [ssa-filename]
 ```
 
-## Log in to Text User Interface (TUI)
+## Verify and Access the Installation
 
-Begin configuration by accessing the TUI with the following command:
+Verify that installation has been successful and all installed components are accessible using the steps below:
 
-```
+- Log in to Text User Interface (TUI)
+
+```shell
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
 
-Full TUI documentation can be found [here](https://docs.jans.io/stable/admin/config-guide/jans-tui/)
+[TUI](https://docs.jans.io/stable/admin/config-guide/jans-tui) is a text-based configuration tool for Gluu Flex Server.
+
+- Log into Admin-UI using URI below
+```
+https://FQDN/admin
+```
+
+- Access Casa using URI below
+```
+https://FQDN/casa
+```
 
 ## Uninstallation
 
