@@ -18,24 +18,14 @@ This is a step-by-step guide for installation and uninstallation of Gluu Flex on
 - Make sure that if `SELinux` is installed then it is put into permissive mode
 - If the server firewall is running, make sure you allow `https`, which is
   needed for OpenID and FIDO.
-  
-```
-sudo firewall-cmd --permanent --zone=public --add-service=https
-```
-```
-sudo firewall-cmd --reload
+```shell
+sudo ufw allow https
 ```
 - Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
 
 ## Install the Package
-- If the server firewall is running, make sure to disable it during installation.
-  For example:
-```
-sudo ufw disable;
-sudo ufw status;
 
-```
 - Download the GPG key zip file , unzip and import GPG key
 ```
 wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
