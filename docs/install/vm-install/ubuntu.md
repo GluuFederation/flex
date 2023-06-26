@@ -80,10 +80,14 @@ flex_replace-flex-version.ubuntu<version>_amd64.deb.sha256sum: ok
 
 ```
 
-- Install the package
+### Install the Release Package
 
-```
+```shell
+#Ubuntu 22.04
 apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
+
+#Ubuntu 20.04
+apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 ```
 
 ### Ubuntu 20.04
