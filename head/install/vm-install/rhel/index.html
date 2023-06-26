@@ -1099,15 +1099,42 @@
 <p>You can disable SELinux temporarily by executing <code>setenforce 0</code>. To disable permanently edit file <code>/etc/selinux/config</code>.</p>
 <h2 id="install-the-package">Install the Package<a class="headerlink" href="#install-the-package" title="Permanent link">#</a></h2>
 <ul>
+<li>Install EPEL and mod-auth-openidc as dependencies</li>
+</ul>
+<div class="highlight"><pre><span></span><code>sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm;
+sudo yum -y module enable mod_auth_openidc;
+</code></pre></div>
+<ul>
+<li>If the server firewall is running, make sure to disable it during installation.
+  For example:
+<div class="highlight"><pre><span></span><code>sudo firewall-cmd --permanent --zone=public --add-service=https;
+sudo firewall-cmd --reload;
+</code></pre></div></li>
+<li>Download the GPG key zip file , unzip and import GPG key
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
+unzip automation-flex-public-gpg.zip;
+sudo rpm -import automation-flex-public-gpg.asc;
+</code></pre></div></li>
 <li>Download the release package from the Github Flex
   <a href="https://github.com/gluufederation/flex/releases">Releases</a></li>
 </ul>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm -P /tmp
+<p><div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm -P /tmp
+</code></pre></div>
+- Verify integrity of the downloaded package using published sha256sum.</p>
+<p>Download sha256sum file for the package
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm.sha256sum  -P /tmp
+</code></pre></div>
+  Check the hash if it is matching.</p>
+<p><div class="highlight"><pre><span></span><code>cd /tmp;
+sha256sum -c flex-replace-flex-version-el8.x86_64.rpm.sha256sum;
+</code></pre></div>
+Output similar to below should confirm the integrity of the downloaded package.</p>
+<div class="highlight"><pre><span></span><code>flex-replace-flex-version-el8.x86_64.rpm.sha256sum : ok
 </code></pre></div>
 <ul>
 <li>Install the package</li>
 </ul>
-<div class="highlight"><pre><span></span><code>yum install /tmp/flex-replace-flex-version-el8.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo yum install flex-5.0.0-15.nightly-suse15.x86_64.rpm
 </code></pre></div>
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
 <ul>
@@ -1125,6 +1152,12 @@
 <div class="highlight"><pre><span></span><code>/opt/jans/jans-cli/jans_cli_tui.py
 </code></pre></div>
 <p>Full TUI documentation can be found <a href="https://docs.jans.io/stable/admin/config-guide/jans-tui">here</a></p>
+<p>To login admin UI
+<div class="highlight"><pre><span></span><code>https://FQDN/admin
+</code></pre></div>
+To login casa
+<div class="highlight"><pre><span></span><code>https://FQDN/casa
+</code></pre></div></p>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
 <p>Removing Flex is a two step process:</p>
 <ol>
@@ -1132,12 +1165,93 @@
 <li>Remove and purge the <code>jans</code> package</li>
 </ol>
 <p>Use the command below to uninstall the Gluu Flex server</p>
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 </code></pre></div>
 <!-- I need to add the output when command is run. -->
+<p>output:</p>
+<div class="highlight"><pre><span></span><code>[ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
+This process is irreversible.
+Gluu Flex Components will be removed
+
+
+
+Are you sure to uninstall Gluu Flex? [yes/N] yes
+
+Profile was detected as jans.
+
+Log Files:
+
+/opt/jans/jans-setup/logs/flex-setup.log
+/opt/jans/jans-setup/logs/flex-setup-error.log
+
+/opt/jans/jans-setup/setup_app/pylib/jwt/utils.py:7: CryptographyDeprecationWarning: Python 3.6 is no longer supported by the Python core team. Therefore, support for it is deprecated in cryptography and will be removed in a future release.
+  from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurve
+Please wait while collecting properties...
+Uninstalling Gluu Casa
+  - Deleting /etc/default/casa
+  - Deleting /etc/systemd/system/casa.service
+  - Removing casa directives from apache configuration
+  - Deleting /opt/jans/jetty/jans-auth/custom/libs/casa-config.jar
+  - Removing plugin /opt/jans/jetty/jans-auth/custom/libs/casa-config.jar from Jans Auth Configuration
+  - Deleting /opt/jans/python/libs/Casa.py
+  - Deleting /opt/jans/python/libs/casa-external_fido2.py
+  - Deleting /opt/jans/python/libs/casa-external_otp.py
+  - Deleting /opt/jans/python/libs/casa-external_super_gluu.py
+  - Deleting /opt/jans/python/libs/casa-external_twilio_sms.py
+  - Deleting casa client from db backend
+  - Deleting casa client scopes from db backend
+  - Deleting casa configuration from db backend
+  - Deleting script 3000-F75A from db backend
+  - Deleting /opt/jans/jetty/casa
+Uninstalling Gluu Admin-UI
+  - Deleting Gluu Flex Admin UI Client  2001.931e814d-01e2-4983-898f-91bf93670f7b
+  - Removing Admin UI directives from apache configuration
+  - Deleting /opt/jans/jetty/jans-config-api/custom/libs/gluu-flex-admin-ui-plugin.jar
+  - Removing plugin /opt/jans/jetty/jans-config-api/custom/libs/gluu-flex-admin-ui-plugin.jar from Jans Config API Configuration
+  - Deleting /opt/jans/jetty/jans-config-api/custom/config/log4j2-adminui.xml
+  - Deleting /opt/jans/jetty/jans-config-api/custom/config/log4j2.xml
+  - Rewriting Jans CLI init file for plugins
+  - Deleting /var/www/html/admin
+Disabling script A51E-76DA
+Restarting Apache
+Restarting Jans Auth
+Restarting Janssen Config Api
+</code></pre></div>
 <p>The command below removes and uninstall the <code>jans</code> package</p>
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/install.py -uninstall
+<p><div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall
+</code></pre></div>
+output:</p>
+<div class="highlight"><pre><span></span><code>[ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/install.py -uninstall
+
+This process is irreversible.
+You will lose all data related to Janssen Server.
+
+
+
+Are you sure to uninstall Janssen Server? [yes/N] yes
+
+Uninstalling Jannsen Server...
+Removing /etc/default/jans-config-api
+Stopping jans-config-api
+Removing /etc/default/jans-auth
+Stopping jans-auth
+Removing /etc/default/jans-fido2
+Stopping jans-fido2
+Removing /etc/default/jans-scim
+Stopping jans-scim
+Removing /etc/default/jans-cache-refresh
+Stopping jans-cache-refresh
+Executing rm -r -f /etc/certs
+Executing rm -r -f /etc/jans
+Executing rm -r -f /opt/jans
+Executing rm -r -f /opt/amazon-corretto*
+Executing rm -r -f /opt/jre
+Executing rm -r -f /opt/node*
+Executing rm -r -f /opt/jetty*
+Executing rm -r -f /opt/jython*
+Executing rm -r -f /opt/dist
+Removing /etc/httpd/conf.d/https_jans.conf
 </code></pre></div>
 <!-- I need to add the output when command is run. -->
 
@@ -1146,7 +1260,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-05-18T10:52:08+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-05-18</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-23T10:48:53+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-23</span>
       
         <br>
         Created:
