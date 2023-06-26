@@ -11,6 +11,7 @@ tags:
 
 This is a step-by-step guide for installation and uninstallation of Gluu Flex on Ubuntu Linux.
 
+## Prerequisites
 - Ensure that the OS platform is one of the [supported versions](./vm-requirements.md#supported-versions)
 - VM should meet [VM system requirements](./vm-requirements.md)
 - Make sure that if `SELinux` is installed then it is 
@@ -31,71 +32,70 @@ sudo yum -y module enable mod_auth_openidc;
 
 ## Install the Package
 
-
-
-- Download the GPG key zip file , unzip and import GPG key
-```
-wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
-unzip automation-flex-public-gpg.zip;
-sudo rpm -import automation-flex-public-gpg.asc;
-```
+### Download and Verify the Release Package
 - Download the release package from the Github Flex
   [Releases](https://github.com/gluufederation/flex/releases)
-
-```
+```shell
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm -P /tmp
 ```
-- Verify integrity of the downloaded package using published sha256sum.
-
-  Download sha256sum file for the package
+- GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
+  not found, the [installation step](#install-the-release-package) would fail. Use the commands below to download and
+  import the GPG key.
+```shell
+wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 ```
+```shell
+unzip automation-flex-public-gpg.zip
+```
+```shell
+sudo rpm -import automation-flex-public-gpg.asc
+```
+- Verify integrity of the downloaded package using published sha256sum. Download sha256sum file for the package
+```shell
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm.sha256sum  -P /tmp
-
 ```
-  Check the hash if it is matching.
-  
-```
+Check the hash if it is matching. You may need to change your working directory
+to where both the rpm and sha256sum file are located.  
+```shell
 cd /tmp;
 sha256sum -c flex-replace-flex-version-el8.x86_64.rpm.sha256sum;
 ```
 Output similar to below should confirm the integrity of the downloaded package.
-
-```
+```text
 flex-replace-flex-version-el8.x86_64.rpm.sha256sum : ok
 ```
 
-- Install the package
-
-```
+### Install the Release Package
+```shell
 sudo yum install flex-5.0.0-15.nightly-suse15.x86_64.rpm
 ```
 
 ## Run the setup script
 
-- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
+- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after 
+which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
 
 - Run the setup script:
-
-```
+```shell
 python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 ```
 
-## Log in to Text User Interface (TUI)
+## Verify and Access the Installation
+Verify that installation has been successful and all installed components are accessible using the steps below
 
-Begin configuration by accessing the TUI with the following command:
-
-```
+- Log in to Text User Interface (TUI)
+```shell
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
-
 Full TUI documentation can be found [here](https://docs.jans.io/stable/admin/config-guide/jans-tui)
 
-To login admin UI
-```
+- Log into Admin-UI using URI below
+```text
 https://FQDN/admin
 ```
-To login casa
-```
+
+- Access Casa using URI below
+```text
 https://FQDN/casa
 ```
 
