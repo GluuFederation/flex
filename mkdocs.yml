@@ -121,7 +121,7 @@ nav:
         - 'install/vm-install/vm-requirements.md'
         - 'Ubuntu': 'install/vm-install/ubuntu.md'
         - 'RHEL': 'install/vm-install/rhel.md'
-        - 'Suse': 'install/vm-install/suse.md'
+        - 'SUSE': 'install/vm-install/suse.md'
 - 'Administration':
     - 'admin/README.md'
     - 'Configuration': 'admin/config.md'
