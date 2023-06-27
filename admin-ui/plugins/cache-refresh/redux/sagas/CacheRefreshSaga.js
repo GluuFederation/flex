@@ -1,6 +1,6 @@
 import { initAudit } from "../../../../app/redux/sagas/SagaUtils";
 import { getClient } from "../../../../app/redux/api/base";
-import { isFourZeroOneError } from "Utils/TokenController";
+import { isFourZeroOneError, addAdditionalData } from "Utils/TokenController";
 import {
   call,
   all,
@@ -19,8 +19,11 @@ import {
   putCacheRefreshConfiguration,
 } from "../features/CacheRefreshSlice";
 import { getAPIAccessToken } from "Redux/features/authSlice";
+import { UPDATE } from "../../../../app/audit/UserActionType";
 
 const JansConfigApi = require("jans_config_api");
+
+export const CACHE_REFRESH = 'cache-refresh' 
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token);
@@ -49,9 +52,10 @@ export function* getCacheRefreshSaga() {
 
 export function* editCacheConfig({ payload }) {
   const audit = yield* initAudit();
+  addAdditionalData(audit, UPDATE, CACHE_REFRESH, payload)
   try {
     const cacheRefreshApi = yield* newFunction();
-    yield call(cacheRefreshApi.updateCacheRefreshConfig, payload);
+    yield call(cacheRefreshApi.updateCacheRefreshConfig, payload.action.action_data);
     yield put(updateToast(true, "success"));
     yield put(getCacheRefreshConfiguration());
     yield call(postUserAction, audit);

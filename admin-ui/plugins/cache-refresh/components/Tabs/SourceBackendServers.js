@@ -16,6 +16,7 @@ import { isEmpty } from 'lodash'
 import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { buildPayload } from 'Utils/PermChecker'
 
 const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
 const convertToStringArray = (arr) => {
@@ -36,7 +37,7 @@ const SourceBackendServers = () => {
   const [addSourceLdapServer, setAddSourceLdapServer] = useState(
     targetConfig?.enabled || false
   )
-
+  const userAction = {}
   const [modal, setModal] = useState(false)
   const toggle = () => {
     setModal(!modal)
@@ -91,24 +92,26 @@ const SourceBackendServers = () => {
     },
   })
 
-  const submitForm = () => {
+  const submitForm = (userMessage) => {
     toggleAudit()
 
-    dispatch(
-      putCacheRefreshConfiguration({
-        cacheRefreshConfiguration: {
-          ...cacheRefreshConfiguration,
-          targetConfig: {
-            ...formik.values.targetConfig,
-            baseDNs: isStringsArray(formik.values.targetConfig.baseDNs || [])
-              ? formik.values.targetConfig.baseDNs
-              : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
-            servers: isStringsArray(formik.values.targetConfig.servers || [])
-              ? formik.values.targetConfig.servers
-              : convertToStringArray(formik.values?.targetConfig.servers || []),
-          },
+    buildPayload(userAction, userMessage, {
+      cacheRefreshConfiguration: {
+        ...cacheRefreshConfiguration,
+        targetConfig: {
+          ...formik.values.targetConfig,
+          baseDNs: isStringsArray(formik.values.targetConfig.baseDNs || [])
+            ? formik.values.targetConfig.baseDNs
+            : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
+          servers: isStringsArray(formik.values.targetConfig.servers || [])
+            ? formik.values.targetConfig.servers
+            : convertToStringArray(formik.values?.targetConfig.servers || []),
         },
-      })
+      },
+    })
+
+    dispatch(
+      putCacheRefreshConfiguration({ action: userAction })
     )
   }
 

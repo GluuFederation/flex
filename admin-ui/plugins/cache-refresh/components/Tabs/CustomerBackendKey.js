@@ -11,6 +11,7 @@ import { t } from 'i18next'
 import { isEmpty } from 'lodash'
 import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { buildPayload } from 'Utils/PermChecker'
 
 const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
 const convertToStringArray = (arr) => {
@@ -39,7 +40,7 @@ const CustomerBackendKey = () => {
     sourceAttributes,
     customLdapFilter,
   }
-
+  const userAction = {}
   const formik = useFormik({
     initialValues: initialValues,
     setFieldValue: (field) => {
@@ -66,25 +67,26 @@ const CustomerBackendKey = () => {
     },
   })
 
-  const submitForm = () => {
+  const submitForm = (userMessage) => { 
     toggle()
 
+    buildPayload(userAction, userMessage, {
+      cacheRefreshConfiguration: {
+        ...cacheRefreshConfiguration,
+        ...formik.values,
+        sourceAttributes: isStringsArray(formik.values?.sourceAttributes || [])
+          ? formik.values.sourceAttributes
+          : convertToStringArray(formik.values?.sourceAttributes || []),
+        keyObjectClasses: isStringsArray(formik.values.keyObjectClasses || [])
+          ? formik.values.keyObjectClasses
+          : convertToStringArray(formik.values?.keyObjectClasses || []),
+        keyAttributes: isStringsArray(formik.values.keyAttributes || [])
+          ? formik.values.keyAttributes
+          : convertToStringArray(formik.values?.keyAttributes || []),
+      },
+    })
     dispatch(
-      putCacheRefreshConfiguration({
-        cacheRefreshConfiguration: {
-          ...cacheRefreshConfiguration,
-          ...formik.values,
-          sourceAttributes: isStringsArray(formik.values?.sourceAttributes || [])
-            ? formik.values.sourceAttributes
-            : convertToStringArray(formik.values?.sourceAttributes || []),
-          keyObjectClasses: isStringsArray(formik.values.keyObjectClasses || [])
-            ? formik.values.keyObjectClasses
-            : convertToStringArray(formik.values?.keyObjectClasses || []),
-          keyAttributes: isStringsArray(formik.values.keyAttributes || [])
-            ? formik.values.keyAttributes
-            : convertToStringArray(formik.values?.keyAttributes || []),
-        },
-      })
+      putCacheRefreshConfiguration({ action: userAction })
     )
   }
 

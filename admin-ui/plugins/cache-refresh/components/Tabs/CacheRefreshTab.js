@@ -13,6 +13,7 @@ import { isEmpty } from 'lodash'
 import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
+import { buildPayload } from 'Utils/PermChecker'
 
 const CacheRefreshTab = () => {
   const { t } = useTranslation()
@@ -20,6 +21,7 @@ const CacheRefreshTab = () => {
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
+  const userAction = {}
   const [modal, setModal] = useState(false)
   const toggle = () => {
     setModal(!modal)
@@ -83,24 +85,26 @@ const CacheRefreshTab = () => {
     },
   })
 
-  const submitForm = () => {
+  const submitForm = (userMessage) => {
     toggle()
 
+    buildPayload(userAction, userMessage, {
+      cacheRefreshConfiguration: {
+        ...cacheRefreshConfiguration,
+        ...formik.values,
+        attributeMapping: formik.values.attributeMapping?.length
+          ? formik.values.attributeMapping.map((attribute) => {
+              return {
+                source: attribute.source,
+                destination: attribute.destination,
+              }
+            })
+          : [],
+      },
+    })
+
     dispatch(
-      putCacheRefreshConfiguration({
-        cacheRefreshConfiguration: {
-          ...cacheRefreshConfiguration,
-          ...formik.values,
-          attributeMapping: formik.values.attributeMapping?.length
-            ? formik.values.attributeMapping.map((attribute) => {
-                return {
-                  source: attribute.source,
-                  destination: attribute.destination,
-                }
-              })
-            : [],
-        },
-      })
+      putCacheRefreshConfiguration({ action: userAction })
     )
   }
 

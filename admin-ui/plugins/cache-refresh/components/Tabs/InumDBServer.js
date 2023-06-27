@@ -15,6 +15,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { isEmpty } from 'lodash'
 import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { buildPayload } from 'Utils/PermChecker'
 
 const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
 const convertToStringArray = (arr) => {
@@ -31,6 +32,7 @@ const InumDBServer = () => {
   const { defaultInumServer, inumConfig } = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
+  const userAction = {}
   const initialValues = {
     defaultInumServer: defaultInumServer || false,
     inumConfig: {
@@ -91,26 +93,28 @@ const InumDBServer = () => {
     },
   })
 
-  const submitForm = () => {
+  const submitForm = (userMessage) => {
     toggleAudit()
 
-    dispatch(
-      putCacheRefreshConfiguration({
-        cacheRefreshConfiguration: {
-          ...cacheRefreshConfiguration,
-          inumConfig: {
-            ...formik.values.inumConfig,
-            baseDNs: isStringsArray(formik.values.inumConfig.baseDNs || [])
-              ? formik.values.inumConfig.baseDNs
-              : convertToStringArray(formik.values?.inumConfig.baseDNs || []),
-            servers: isStringsArray(formik.values.inumConfig.servers || [])
-              ? formik.values.inumConfig.servers
-              : convertToStringArray(formik.values?.inumConfig.servers || []),
-          },
-          defaultInumServer: formik.values.defaultInumServer,
+    buildPayload(userAction, userMessage, {
+      cacheRefreshConfiguration: {
+        ...cacheRefreshConfiguration,
+        inumConfig: {
+          ...formik.values.inumConfig,
+          baseDNs: isStringsArray(formik.values.inumConfig.baseDNs || [])
+            ? formik.values.inumConfig.baseDNs
+            : convertToStringArray(formik.values?.inumConfig.baseDNs || []),
+          servers: isStringsArray(formik.values.inumConfig.servers || [])
+            ? formik.values.inumConfig.servers
+            : convertToStringArray(formik.values?.inumConfig.servers || []),
         },
-      })
-    )
+        defaultInumServer: formik.values.defaultInumServer,
+      },
+    })
+
+    dispatch(
+      putCacheRefreshConfiguration({ action: userAction })
+    ) 
   }
 
   const handleChangePassword = (updatedPassword) => {
