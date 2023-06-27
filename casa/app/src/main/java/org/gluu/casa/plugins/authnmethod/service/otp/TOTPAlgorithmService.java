@@ -61,7 +61,7 @@ public class TOTPAlgorithmService implements IOTPAlgorithm {
 
     public String getExternalUid(String secretKey, String code) {
 
-        return validateKey(Base64.getDecoder().decode(secretKey), code)
+        return validateKey(Base64.getUrlDecoder().decode(secretKey), code)
                 ? String.format("%s:%s", OTPType.TOTP.getName().toLowerCase(), secretKey)
                 : null;
     }
