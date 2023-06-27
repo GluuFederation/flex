@@ -77,10 +77,10 @@ flex_replace-flex-version.ubuntu<version>_amd64.deb.sha256sum: ok
 ### Install the Release Package
 ```shell
 #Ubuntu 22.04
-apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
+apt install -y ./flex_replace-flex-version.ubuntu22.04_amd64.deb
 
 #Ubuntu 20.04
-apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
+apt install -y ./flex_replace-flex-version.ubuntu20.04_amd64.deb
 ```
 
 ## Run the setup script
@@ -88,9 +88,21 @@ apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 - Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after 
 which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
 - Run the setup script:
+
+- We can add SSA at runtime
+```
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+```
+after jans installation you will be prompted for SSA file path or paste SSA  at runtime
+```text
+Install Admin UI [Y/n]: y
+Please enter path of file containing SSA or paste SSA (q to exit):
+```
+-using SSA file
 ```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [ssa-filename]
 ```
+
 
 ## Verify and Access the Installation
 
