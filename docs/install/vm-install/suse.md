@@ -208,11 +208,12 @@ Removing /etc/apache2/vhosts.d/_https_jans.conf
 
 Second uninstall the package:
 
+You should see the package with:
 ```
-sudo rpm -qa | grep jans
+sudo rpm -qa | grep gluu
 ```
 
-And then use
+Remove package with: 
 ```
 sudo zypper remove gluu-flex
 ```
