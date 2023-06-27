@@ -80,8 +80,19 @@ sudo yum install flex-5.0.0-15.nightly-suse15.x86_64.rpm
 which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
 
 - Run the setup script:
+
+- We can add SSA at runtime
+```
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+```
+after jans installation you will be prompted for SSA file path or paste SSA  at runtime
+```text
+Install Admin UI [Y/n]: y
+Please enter path of file containing SSA or paste SSA (q to exit):
+```
+-using SSA file
 ```shell
-python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [ssa-filename]
 ```
 
 ## Verify and Access the Installation
