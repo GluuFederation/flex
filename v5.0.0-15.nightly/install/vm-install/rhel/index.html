@@ -1118,18 +1118,18 @@ sudo rpm -import automation-flex-public-gpg.asc;
 <li>Download the release package from the Github Flex
   <a href="https://github.com/gluufederation/flex/releases">Releases</a></li>
 </ul>
-<p><div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm -P /tmp
+<p><div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-15.nightly/flex-5.0.0-15.nightly-el8.x86_64.rpm -P /tmp
 </code></pre></div>
 - Verify integrity of the downloaded package using published sha256sum.</p>
 <p>Download sha256sum file for the package
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm.sha256sum  -P /tmp
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-15.nightly/flex-5.0.0-15.nightly-el8.x86_64.rpm.sha256sum  -P /tmp
 </code></pre></div>
   Check the hash if it is matching.</p>
 <p><div class="highlight"><pre><span></span><code>cd /tmp;
-sha256sum -c flex-replace-flex-version-el8.x86_64.rpm.sha256sum;
+sha256sum -c flex-5.0.0-15.nightly-el8.x86_64.rpm.sha256sum;
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.</p>
-<div class="highlight"><pre><span></span><code>flex-replace-flex-version-el8.x86_64.rpm.sha256sum : ok
+<div class="highlight"><pre><span></span><code>flex-5.0.0-15.nightly-el8.x86_64.rpm.sha256sum : ok
 </code></pre></div>
 <ul>
 <li>Install the package</li>
