@@ -71,7 +71,7 @@ flex-replace-flex-version-el8.x86_64.rpm.sha256sum : ok
 
 ### Install the Release Package
 ```shell
-sudo yum install flex-5.0.0-15.nightly-suse15.x86_64.rpm
+sudo yum install ./flex-replace-flex-version-el8.x86_64.rpm
 ```
 
 ## Run the setup script
