@@ -52,35 +52,33 @@ unzip automation-flex-public-gpg.zip
 sudo rpm -import automation-flex-public-gpg.asc
 ```
 
-- Verify the integrity of the downloaded package using published sha256sum. Download the sha256sum file for the package
+- Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
 ```
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm.sha256sum  -P ~/
 ```
 
-- Check the hash if it is matching.
+- Verify package integrity
 ```
 sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
 ```
-Output similar to below should confirm the integrity of the downloaded package.
+You should see:
 ```
-flex-replace-flex-version-suse15.x86_64.rpm.sha256sum: ok
+flex-replace-flex-version-suse15.x86_64.rpm: ok
 ```
 
 ### Install the Release Package
 
-Use SUSE `zypper` tool to start the installation process
+Use SUSE `zypper` to install
 ```
 sudo zypper install ~/flex-replace-flex-version-suse15.x86_64.rpm
 ```
 
 ### Run the setup script
 
-- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
-
 - Run the setup script:
 
 ```
-sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [ssa-filename]
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 ```
 
 ## Verify and Access the Installation
@@ -110,7 +108,7 @@ Removing Flex is a two-step process:
 1. Delete files installed by Gluu Flex
 1. Remove and purge the `jans` package
 
-Use the command below to uninstall the Gluu Flex server
+First use the command below to uninstall the Gluu Flex server
 
 ```
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
@@ -124,7 +122,7 @@ This process is irreversible.
 Gluu Flex Components will be removed
 
 
- 
+
 Are you sure to uninstall Gluu Flex? [yes/N] yes
 
 Profile was detected as jans.
@@ -182,7 +180,7 @@ This process is irreversible.
 You will lose all data related to Janssen Server.
 
 
- 
+
 Are you sure to uninstall Janssen Server? [yes/N] yes
 
 Uninstalling Jannsen Server...
@@ -206,4 +204,15 @@ Executing rm -r -f /opt/jetty*
 Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/apache2/vhosts.d/_https_jans.conf
+```
+
+Second uninstall the package:
+
+```
+sudo rpm -qa | grep jans
+```
+
+And then use
+```
+sudo zypper remove gluu-flex
 ```
