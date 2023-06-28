@@ -49,6 +49,7 @@
     "my_profile": "Mon profil",
     "sql": "Sql",
     "logging": "Enregistrement",
+    "ssa": "SSA",
     "mau": "MAU",
     "oauthserver": "Serveur Auth",
     "persistence": "Persistance",
@@ -153,6 +154,7 @@
     "enabled_oAuth_audit_logging": "Activer la journalisation d'audit Oauth ?",
     "enter_the_attribute_inum": "Entrez l'attribut inum",
     "grant_types": "Types de subventions",
+    "grant_types_ssa": "Types de subventions",
     "host_name": "Nom d'hôte",
     "hide_on_discovery": "Masquer à la découverte ?",
     "http_logging_enabled": "Activer la journalisation HTTP",
@@ -206,6 +208,14 @@
     "oxauth_claim_name": "Nom de la revendication oxAuth",
     "ox_attributes": "oxAttributs",
     "password": "Mot de passe",
+    "software_roles": "Rôles logiciels",
+    "authorization_code": "Code d'autorisation",
+    "refresh_token": "Actualiser le jeton",
+    "uma_ticket": "UMA Billet",
+    "client_credentials": "Informations d'identification du client",
+    "implicit": "Implicite",
+    "one_time_use": "Utilisation unique",
+    "rotate_ssa": "Tourner SSA",
     "persist_client_authorizations": "Persistance des autorisations client",
     "policy_uri": "URI de la stratégie",
     "post_authn_scripts": "Scripts de publication authentifiés",
@@ -302,7 +312,10 @@
     "selectUserRevoke": "Sélectionnez l'utilisateur à révoquer",
     "export_sample_config": "Exporter l'exemple de configuration",
     "export_current_config": "Exporter la configuration actuelle",
-    "import_configuration": "Importer la configuration"
+    "import_configuration": "Importer la configuration",
+    "software_id": "Identifiant du logiciel",
+    "expiration": "Expiration",
+    "never": "Jamais"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
@@ -341,7 +354,8 @@
     "agama_is_not_enabled": "Agama n'est pas activé",
     "drag_agama_file": "Glisser .gama fichier ici, ou cliquez pour sélectionner le fichier",
     "drag_sha_file": "Glisser .sha256sum fichier ici, ou cliquez pour sélectionner le fichier",
-    "see_project_details": "Voir les détails du projet"
+    "see_project_details": "Voir les détails du projet",
+    "add_ssa": "Ajouter SSA"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
@@ -431,7 +445,8 @@
     "scripts": "Scénarios",
     "schemaName": "Nom du schéma",
     "user_management": "Gestion des utilisateurs",
-    "add_agama_project": "Ajouter un projet Agama"
+    "add_agama_project": "Ajouter un projet Agama",
+    "ssa_management": "SSA Gestion"
   },
   "links": {
     "support": "https://support.gluu.org/"

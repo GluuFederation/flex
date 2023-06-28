@@ -123,6 +123,11 @@
     "from_name": "From Name",
     "from_email_address": "From Email Address",
     "grant_types": "Grants",
+    "grant_types_ssa": "Grant Types",
+    "client_credentials": "Client Credentials",
+    "implicit": "Implicit",
+    "one_time_use": "One Time Use",
+    "rotate_ssa": "Rotate SSA",
     "host_name": "Host Name",
     "hide_on_discovery": "Hide On Discovery?",
     "http_logging_enabled": "Enable HTTP Logging",
@@ -185,6 +190,10 @@
     "oxauth_claim_name": "oxAuth claim name",
     "ox_attributes": "oxAttributes",
     "password": "Password",
+    "software_roles": "Software Roles",
+    "authorization_code": "Authorization Code",
+    "refresh_token": "Refresh Token",
+    "uma_ticket": "UMA Ticket",
     "persist_client_authorizations": "Persist Authorizations ",
     "policy_uri": "Policy URI",
     "post_authn_scripts": "Post Authn",
@@ -369,7 +378,10 @@
     "user_auto_enrollment": "User Auto Enrollment",
     "requested_credential_types": "Requested Credential Types",
     "requested_parties_name": "Requested Parties Name",
-    "domain":"Domain"
+    "domain":"Domain",
+    "software_id": "Software ID",
+    "expiration": "Expiration",
+    "never": "Never"
   },
   "languages": {
     "french": "French",
@@ -400,6 +412,7 @@
     "my_profile": "My Profile",
     "sql": "Sql",
     "logging": "Logging",
+    "ssa": "SSA",
     "mau": "Active Users",
     "oauthserver": "Auth server",
     "persistence": "Persistence",
@@ -466,7 +479,8 @@
     "agama_is_not_enabled": "Agama is not enabled",
     "drag_agama_file": "Drag .gama file here, or click to select file",
     "drag_sha_file": "Drag .sha256sum file here, or click to select file",
-    "see_project_details": "See project details"
+    "see_project_details": "See project details",
+    "add_ssa": "Add SSA"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
@@ -592,7 +606,8 @@
     "JARM": "JARM",
     "request_object": "Request Object",
     "agama": "Agama",
-    "add_agama_project": "Add Agama project"
+    "add_agama_project": "Add Agama project",
+    "ssa_management": "SSA Management"
   },
   "links": {
     "support": "https://support.gluu.org/"

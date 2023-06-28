@@ -13,6 +13,7 @@ const BASE_PATH = process.env.BASE_PATH || '/'
 const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES || 2
 const CONFIG_API_BASE_URL =
   process.env.CONFIG_API_BASE_URL || 'https://sample.com'
+const JANS_AUTH = process.env.JANS_AUTH
 
 module.exports = {
   name: 'client',
@@ -68,6 +69,7 @@ module.exports = {
         API_BASE_URL: JSON.stringify(process.env.API_BASE_URL),
         CONFIG_API_BASE_URL: JSON.stringify(CONFIG_API_BASE_URL),
         SESSION_TIMEOUT_IN_MINUTES: SESSION_TIMEOUT_IN_MINUTES,
+        JANS_AUTH: JSON.stringify(JANS_AUTH)
       },
     }),
     new MiniCssExtractPlugin(),

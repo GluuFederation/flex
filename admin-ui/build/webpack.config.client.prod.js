@@ -18,6 +18,7 @@ const CONFIG_API_BASE_URL =
 const API_BASE_URL =
   process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
 const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES || 2
+const JANS_AUTH = process.env.JANS_AUTH
 
 module.exports = {
   devtool: false,
@@ -112,6 +113,7 @@ module.exports = {
         API_BASE_URL: JSON.stringify(API_BASE_URL),
         CONFIG_API_BASE_URL: JSON.stringify(CONFIG_API_BASE_URL),
         SESSION_TIMEOUT_IN_MINUTES: JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
+        JANS_AUTH: JSON.stringify(JANS_AUTH)
       },
     }),
     new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to "server" to activate BundleAnalyzerPlugin

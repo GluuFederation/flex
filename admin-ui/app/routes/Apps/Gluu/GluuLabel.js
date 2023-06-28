@@ -5,9 +5,8 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
 import { HelpOutline } from '@mui/icons-material'
-import GluuTooltip from './GluuTooltip'
 
-function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
+function GluuLabel({ label, required, size, doc_category, doc_entry, style, noColon = false }) {
   const { t } = useTranslation()
   function getSize() {
     if (size != null) {
@@ -35,7 +34,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
             <HelpOutline tabIndex="-1" style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tooltip-id={doc_entry} data-for={doc_entry} />
           </>
         }
-        :
+        {!noColon && ":"}
       </h5>
       {/* {doc_category && (
         <ReactTooltip

@@ -29,6 +29,8 @@ function GluuTypeAhead({
   lsize = 4,
   rsize = 8,
   disabled,
+  showError = false,
+  errorMessage
 }) {
   const { t } = useTranslation()
   return (
@@ -65,6 +67,7 @@ function GluuTypeAhead({
             {t('placeholders.typeahead_holder_message')}
           </Typography>
         </ThemeProvider>
+        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

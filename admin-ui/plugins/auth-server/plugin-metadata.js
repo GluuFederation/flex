@@ -22,6 +22,7 @@ import { reducer as acrReducer } from './redux/features/acrSlice'
 import { reducer as loggingReducer } from './redux/features/loggingSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import { reducer as sessionReducer } from './redux/features/sessionSlice'
+import ssaReducer from './redux/features/SsaSlice'
 
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
@@ -33,6 +34,7 @@ import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
 import agamaSaga from './redux/sagas/AgamaSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
+import ssaSaga from './redux/sagas/SsaSaga' 
 
 import {
   ACR_READ,
@@ -45,12 +47,15 @@ import {
   PROPERTIES_READ,
   LOGGING_READ,
   AGAMA_READ,
+  SSA_READ
 } from 'Utils/PermChecker'
 import AgamaListPage from './components/Agama/AgamaListPage'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import AuthNListPage from './components/AuthN/AuthNListPage'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
+import SsaListPage from './components/Ssa/SsaListPage' 
+import SsaAddPage from './components/Ssa/SsaAddPage'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -82,6 +87,11 @@ const pluginMetadata = {
               title: 'menus.logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
               permission: LOGGING_READ,
+            }, 
+            {
+              title: 'menus.ssa',
+              path: PLUGIN_BASE_APTH + '/config/ssa',
+              permission: SSA_READ,
             },
           ],
         },
@@ -179,11 +189,16 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/agama',
       permission: AGAMA_READ,
     },
-    // {
-    //   component: AgamaAddPage,
-    //   path: PLUGIN_BASE_APTH + '/agama/new',
-    //   permission: AGAMA_WRITE,
-    // },
+    {
+      component: SsaListPage,
+      path: PLUGIN_BASE_APTH + '/config/ssa',
+      permission: SSA_READ,
+    },
+    {
+      component: SsaAddPage,
+      path: PLUGIN_BASE_APTH + '/config/ssa/new',
+      permission: SSA_READ,
+    }
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
@@ -196,6 +211,7 @@ const pluginMetadata = {
     { name: 'sessionReducer', reducer: sessionReducer },
     { name: 'agamaReducer', reducer: agamaReducer },
     { name: 'authNReducer', reducer: authNReducer },
+    { name: 'SsaReducer', reducer: ssaReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -207,7 +223,8 @@ const pluginMetadata = {
     umaResourceSaga(),
     sessionSaga(),
     agamaSaga(),
-    authnSaga()
+    authnSaga(),
+    ssaSaga()
   ],
 }
 
