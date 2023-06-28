@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#red-hat-el-flex-installation" class="md-skip">
+        <a href="#install-gluu-flex-on-red-hat-el" class="md-skip">
           Skip to content
         </a>
       
@@ -633,15 +633,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#supported-versions" class="md-nav__link">
-    Supported versions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disable-selinux" class="md-nav__link">
-    Disable SELinux
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
   </a>
   
 </li>
@@ -650,6 +643,26 @@
   <a href="#install-the-package" class="md-nav__link">
     Install the Package
   </a>
+  
+    <nav class="md-nav" aria-label="Install the Package">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download-and-verify-the-release-package" class="md-nav__link">
+    Download and Verify the Release Package
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-the-release-package" class="md-nav__link">
+    Install the Release Package
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -661,8 +674,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#log-in-to-text-user-interface-tui" class="md-nav__link">
-    Log in to Text User Interface (TUI)
+  <a href="#verify-and-access-the-installation" class="md-nav__link">
+    Verify and Access the Installation
   </a>
   
 </li>
@@ -671,6 +684,26 @@
   <a href="#uninstallation" class="md-nav__link">
     Uninstallation
   </a>
+  
+    <nav class="md-nav" aria-label="Uninstallation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uninstall-gluu-flex" class="md-nav__link">
+    Uninstall Gluu Flex
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uninstall-janssen-packages" class="md-nav__link">
+    Uninstall Janssen Packages
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -690,7 +723,7 @@
   
     <li class="md-nav__item">
       <a href="../suse/" class="md-nav__link">
-        Suse
+        SUSE
       </a>
     </li>
   
@@ -996,15 +1029,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#supported-versions" class="md-nav__link">
-    Supported versions
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#disable-selinux" class="md-nav__link">
-    Disable SELinux
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
   </a>
   
 </li>
@@ -1013,6 +1039,26 @@
   <a href="#install-the-package" class="md-nav__link">
     Install the Package
   </a>
+  
+    <nav class="md-nav" aria-label="Install the Package">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download-and-verify-the-release-package" class="md-nav__link">
+    Download and Verify the Release Package
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-the-release-package" class="md-nav__link">
+    Install the Release Package
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1024,8 +1070,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#log-in-to-text-user-interface-tui" class="md-nav__link">
-    Log in to Text User Interface (TUI)
+  <a href="#verify-and-access-the-installation" class="md-nav__link">
+    Verify and Access the Installation
   </a>
   
 </li>
@@ -1034,6 +1080,26 @@
   <a href="#uninstallation" class="md-nav__link">
     Uninstallation
   </a>
+  
+    <nav class="md-nav" aria-label="Uninstallation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uninstall-gluu-flex" class="md-nav__link">
+    Uninstall Gluu Flex
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uninstall-janssen-packages" class="md-nav__link">
+    Uninstall Janssen Packages
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1089,86 +1155,103 @@
   </a>
 
 
-<h1 id="red-hat-el-flex-installation">Red Hat EL Flex Installation<a class="headerlink" href="#red-hat-el-flex-installation" title="Permanent link">#</a></h1>
-<p>Before you install, check the <a href="../vm-requirements/">VM system requirements</a>.</p>
-<h2 id="supported-versions">Supported versions<a class="headerlink" href="#supported-versions" title="Permanent link">#</a></h2>
+<h1 id="install-gluu-flex-on-red-hat-el">Install Gluu Flex On Red Hat EL<a class="headerlink" href="#install-gluu-flex-on-red-hat-el" title="Permanent link">#</a></h1>
+<p>This is a step-by-step guide for installation and uninstallation of Gluu Flex on Ubuntu Linux.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
 <ul>
-<li>Red Hat Enterprise Linus 8 (RHEL 8)</li>
+<li>Ensure that the OS platform is one of the <a href="../vm-requirements/#supported-versions">supported versions</a></li>
+<li>VM should meet <a href="../vm-requirements/">VM system requirements</a></li>
+<li>Make sure that if <code>SELinux</code> is installed then it is 
+<a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/using_selinux/index#selinux-states-and-modes_getting-started-with-selinux">put into permissive mode</a></li>
+<li>If the server firewall is running, make sure you allow <code>https</code>, which is
+  needed for OpenID and FIDO.
+<div class="highlight"><pre><span></span><code>sudo firewall-cmd --permanent --zone<span class="o">=</span>public --add-service<span class="o">=</span>https
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>sudo firewall-cmd --reload<span class="p">;</span>
+</code></pre></div></li>
+<li>Install EPEL and mod-auth-openidc as dependencies
+<div class="highlight"><pre><span></span><code>sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>sudo yum -y module <span class="nb">enable</span> mod_auth_openidc<span class="p">;</span>
+</code></pre></div></li>
+<li>Please obtain an <a href="../../software-statements/ssa/">SSA</a> to trial Flex, after which you are issued a JWT
+  that you can use during installation. SSA should be stored in a text file on an accessible path.</li>
 </ul>
-<h2 id="disable-selinux">Disable SELinux<a class="headerlink" href="#disable-selinux" title="Permanent link">#</a></h2>
-<p>You can disable SELinux temporarily by executing <code>setenforce 0</code>. To disable permanently edit file <code>/etc/selinux/config</code>.</p>
 <h2 id="install-the-package">Install the Package<a class="headerlink" href="#install-the-package" title="Permanent link">#</a></h2>
+<h3 id="download-and-verify-the-release-package">Download and Verify the Release Package<a class="headerlink" href="#download-and-verify-the-release-package" title="Permanent link">#</a></h3>
 <ul>
-<li>Install EPEL and mod-auth-openidc as dependencies</li>
-</ul>
-<div class="highlight"><pre><span></span><code>sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm;
-sudo yum -y module enable mod_auth_openidc;
-</code></pre></div>
-<ul>
-<li>If the server firewall is running, make sure to disable it during installation.
-  For example:
-<div class="highlight"><pre><span></span><code>sudo firewall-cmd --permanent --zone=public --add-service=https;
-sudo firewall-cmd --reload;
-</code></pre></div></li>
-<li>Download the GPG key zip file , unzip and import GPG key
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
-unzip automation-flex-public-gpg.zip;
-sudo rpm -import automation-flex-public-gpg.asc;
-</code></pre></div></li>
 <li>Download the release package from the Github Flex
-  <a href="https://github.com/gluufederation/flex/releases">Releases</a></li>
+  <a href="https://github.com/gluufederation/flex/releases">Releases</a>
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm -P /tmp
+</code></pre></div></li>
+<li>GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
+  not found, the <a href="#install-the-release-package">installation step</a> would fail. Use the commands below to download and
+  import the GPG key.
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>unzip automation-flex-public-gpg.zip
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>sudo rpm -import automation-flex-public-gpg.asc
+</code></pre></div></li>
+<li>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the package
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm.sha256sum  -P /tmp
+</code></pre></div>
+Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> /tmp<span class="p">;</span>
+sha256sum -c flex-replace-flex-version-el8.x86_64.rpm.sha256sum<span class="p">;</span>
+</code></pre></div>
+Output similar to below should confirm the integrity of the downloaded package.
+<div class="highlight"><pre><span></span><code>flex-replace-flex-version-el8.x86_64.rpm.sha256sum : ok
+</code></pre></div></li>
 </ul>
-<p><div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-15.nightly/flex-5.0.0-15.nightly-el8.x86_64.rpm -P /tmp
-</code></pre></div>
-- Verify integrity of the downloaded package using published sha256sum.</p>
-<p>Download sha256sum file for the package
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-15.nightly/flex-5.0.0-15.nightly-el8.x86_64.rpm.sha256sum  -P /tmp
-</code></pre></div>
-  Check the hash if it is matching.</p>
-<p><div class="highlight"><pre><span></span><code>cd /tmp;
-sha256sum -c flex-5.0.0-15.nightly-el8.x86_64.rpm.sha256sum;
-</code></pre></div>
-Output similar to below should confirm the integrity of the downloaded package.</p>
-<div class="highlight"><pre><span></span><code>flex-5.0.0-15.nightly-el8.x86_64.rpm.sha256sum : ok
-</code></pre></div>
-<ul>
-<li>Install the package</li>
-</ul>
-<div class="highlight"><pre><span></span><code>sudo yum install flex-5.0.0-15.nightly-suse15.x86_64.rpm
+<h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
+<div class="highlight"><pre><span></span><code>sudo yum install ./flex-replace-flex-version-el8.x86_64.rpm
 </code></pre></div>
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
+<p>Execute the setup script with command below:
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+</code></pre></div>
+If Admin-UI component is being installed, then the script will require SSA input, either as text or as a file path.
+This should be the SSA or file which was acquired as part of <a href="#prerequisites">prerequisite step</a>.
+<div class="highlight"><pre><span></span><code>Install Admin UI [Y/n]: y
+Please enter path of file containing SSA or paste SSA (q to exit):
+</code></pre></div>
+Alternatively, for SSA file can be passed as a parameter to the setup script as below.
+<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa <span class="o">[</span>filename<span class="o">]</span>
+</code></pre></div></p>
+<h2 id="verify-and-access-the-installation">Verify and Access the Installation<a class="headerlink" href="#verify-and-access-the-installation" title="Permanent link">#</a></h2>
+<p>Verify that installation has been successful and all installed components are accessible using the steps below</p>
 <ul>
 <li>
-<p>Before initiating the setup please obtain an <a href="../../software-statements/ssa/">SSA</a> to trial Flex, after which you are issued a JWT that you can use during installation specified by the <code>-admin-ui-ssa</code> argument.</p>
-</li>
-<li>
-<p>Run the setup script:</p>
-</li>
-</ul>
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
-</code></pre></div>
-<h2 id="log-in-to-text-user-interface-tui">Log in to Text User Interface (TUI)<a class="headerlink" href="#log-in-to-text-user-interface-tui" title="Permanent link">#</a></h2>
-<p>Begin configuration by accessing the TUI with the following command:</p>
+<p>Log in to Text User Interface (TUI)
 <div class="highlight"><pre><span></span><code>/opt/jans/jans-cli/jans_cli_tui.py
 </code></pre></div>
-<p>Full TUI documentation can be found <a href="https://docs.jans.io/stable/admin/config-guide/jans-tui">here</a></p>
-<p>To login admin UI
+Full TUI documentation can be found <a href="https://docs.jans.io/stable/admin/config-guide/jans-tui">here</a></p>
+</li>
+<li>
+<p>Log into Admin-UI using URI below
 <div class="highlight"><pre><span></span><code>https://FQDN/admin
-</code></pre></div>
-To login casa
+</code></pre></div></p>
+</li>
+<li>
+<p>Access Casa using URI below
 <div class="highlight"><pre><span></span><code>https://FQDN/casa
 </code></pre></div></p>
+</li>
+</ul>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
 <p>Removing Flex is a two step process:</p>
-<ol>
-<li>Delete files installed by Gluu Flex</li>
-<li>Remove and purge the <code>jans</code> package</li>
-</ol>
-<p>Use the command below to uninstall the Gluu Flex server</p>
+<ul>
+<li><a href="#uninstall-gluu-flex">Uninstall Gluu Flex</a></li>
+<li><a href="#uninstall-janssen-packages">Uninstall Janssen Packages</a></li>
+</ul>
+<p>If you have not run the setup script, you can skip step 1 and just remove
+the package.</p>
+<h3 id="uninstall-gluu-flex">Uninstall Gluu Flex<a class="headerlink" href="#uninstall-gluu-flex" title="Permanent link">#</a></h3>
+<p>Use the command below to uninstall the Gluu Flex server
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 </code></pre></div>
-<!-- I need to add the output when command is run. -->
-<p>output:</p>
+Output:
 <div class="highlight"><pre><span></span><code>[ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
@@ -1217,11 +1300,12 @@ Disabling script A51E-76DA
 Restarting Apache
 Restarting Jans Auth
 Restarting Janssen Config Api
+</code></pre></div></p>
+<h3 id="uninstall-janssen-packages">Uninstall Janssen Packages<a class="headerlink" href="#uninstall-janssen-packages" title="Permanent link">#</a></h3>
+<p>The command below removes and uninstall the <code>jans</code> package
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall
 </code></pre></div>
-<p>The command below removes and uninstall the <code>jans</code> package</p>
-<p><div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall
-</code></pre></div>
-output:</p>
+Output:
 <div class="highlight"><pre><span></span><code>[ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
@@ -1252,15 +1336,14 @@ Executing rm -r -f /opt/jetty*
 Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/httpd/conf.d/https_jans.conf
-</code></pre></div>
-<!-- I need to add the output when command is run. -->
+</code></pre></div></p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-23T10:48:53+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-23</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-28T11:45:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-28</span>
       
         <br>
         Created:
@@ -1305,13 +1388,13 @@ Removing /etc/httpd/conf.d/https_jans.conf
       
       
         
-        <a href="../suse/" class="md-footer__link md-footer__link--next" aria-label="Next: Suse" rel="next">
+        <a href="../suse/" class="md-footer__link md-footer__link--next" aria-label="Next: SUSE" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Suse
+              SUSE
             </div>
           </div>
           <div class="md-footer__button md-icon">
