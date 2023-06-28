@@ -75,24 +75,19 @@ sudo yum install ./flex-replace-flex-version-el8.x86_64.rpm
 ```
 
 ## Run the setup script
-
-- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after 
-which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
-
-- Run the setup script:
-
-- We can add SSA at runtime
+Execute the setup script with command below:
 ```
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 ```
-after jans installation you will be prompted for SSA file path or paste SSA  at runtime
+If Admin-UI component is being installed, then the script will require SSA input, either as text or as a file path.
+This should be the SSA or file which was acquired as part of [prerequisite step](#prerequisites).
 ```text
 Install Admin UI [Y/n]: y
 Please enter path of file containing SSA or paste SSA (q to exit):
 ```
--using SSA file
+Alternatively, for SSA file can be passed as a parameter to the setup script as below.
 ```shell
-sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [ssa-filename]
+python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 ```
 
 ## Verify and Access the Installation
