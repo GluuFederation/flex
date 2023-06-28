@@ -815,17 +815,22 @@ class flex_installer(JettyInstaller):
     def generate_gluu_passwurd_api_keystore(self):
         print("Generating Gluu Passwurd API Keystore")
         suffix = 'passwurd_api'
+        keystore_pw = jansAuthInstaller.getPW()
+        keystore_pw_fn = os.path.join(Config.certFolder, 'passwurd_api.json')
         key_fn, csr_fn, crt_fn = jansAuthInstaller.gen_cert(suffix, 'changeit', user='jetty')
         passwurd_api_keystore_fn = os.path.join(Config.certFolder, 'passwurdAKeystore.pcks12')
         self.import_key_cert_into_keystore(
                         suffix=suffix,
                         keystore_fn=passwurd_api_keystore_fn,
-                        keystore_pw='changeit',
+                        keystore_pw=keystore_pw,
                         in_key=key_fn,
                         in_cert=crt_fn,
                         store_type='PKCS12'
                         )
-
+        keystore_pw_data = {'keyStoreSecret': keystore_pw}
+        jansAuthInstaller.writeFile(keystore_pw_fn, json.dumps(keystore_pw_data))
+        jansAuthInstaller.chown(keystore_pw_fn, Config.jetty_user, Config.root_user)
+        jansAuthInstaller.run([base.paths.cmd_chmod, '640', keystore_pw_fn])
 
 def read_or_get_ssa():
     if os.path.isfile(argsp.admin_ui_ssa):
@@ -891,10 +896,6 @@ def prompt_for_installation():
     else:
         print("Casa is allready installed on this system")
         install_components['casa'] = False
-
-    prompt_gluu_passwurd_api_keystore = input("Generate Gluu Passwurd API Keystore [Y/n]: ")
-    if not prompt_gluu_passwurd_api_keystore.lower().startswith('n'):
-        argsp.gluu_passwurd_cert = True
 
     if not (install_components['casa'] or install_components['admin_ui'] or argsp.gluu_passwurd_cert):
         print("Nothing to install. Exiting ...")
