@@ -64,7 +64,7 @@ sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
 ```
 Output similar to below should confirm the integrity of the downloaded package.
 ```text
-flex-replace-flex-version-suse15.x86_64.rpm.sha256sum: ok
+flex-replace-flex-version-suse15.x86_64.rpm: ok
 ```
 
 ### Install the Release Package
