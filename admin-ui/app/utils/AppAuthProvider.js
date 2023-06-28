@@ -34,8 +34,14 @@ export default function AppAuthProvider(props) {
   useEffect(() => {
     dispatch(checkLicenseConfigValid())
     dispatch(getOAuth2Config())
-    dispatch(checkLicensePresent())
   }, [])
+  
+  useEffect(() => {
+    if(isConfigValid) {
+      dispatch(checkLicensePresent())
+    }
+  }, [isConfigValid])
+
   useEffect(() => {
     getDerivedStateFromProps()
   }, [isLicenseValid])
@@ -91,8 +97,6 @@ export default function AppAuthProvider(props) {
               window.location.href = authzUrl
               return null
             }
-          } else {
-            dispatch(getOAuth2Config())
           }
         }
         setShowContent(false)
