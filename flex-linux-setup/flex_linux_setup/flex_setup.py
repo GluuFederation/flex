@@ -892,10 +892,6 @@ def prompt_for_installation():
         print("Casa is allready installed on this system")
         install_components['casa'] = False
 
-    prompt_gluu_passwurd_api_keystore = input("Generate Gluu Passwurd API Keystore [Y/n]: ")
-    if not prompt_gluu_passwurd_api_keystore.lower().startswith('n'):
-        argsp.gluu_passwurd_cert = True
-
     if not (install_components['casa'] or install_components['admin_ui'] or argsp.gluu_passwurd_cert):
         print("Nothing to install. Exiting ...")
         sys.exit()
