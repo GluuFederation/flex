@@ -52,13 +52,13 @@ unzip automation-flex-public-gpg.zip
 sudo rpm -import automation-flex-public-gpg.asc
 ```
 
-- Verify the integrity of the downloaded package using published sha256sum. Download the sha256sum file for the package
+- Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
 ```shell
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm.sha256sum  -P ~/
 ```
 
-Check the hash if it is matching. You may need to change your working directory
-to where both the rpm and sha256sum file are located.
+Verify package integrity of the package that has been downloaded by checking hash.
+Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
 ```shell
 sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
 ```
@@ -110,7 +110,6 @@ https://FQDN/casa
 ```
 
 ## Uninstallation
-
 Removing Flex is a two step process:
 
 - [Uninstall Gluu Flex](#uninstall-gluu-flex)

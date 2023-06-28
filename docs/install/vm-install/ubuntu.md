@@ -50,7 +50,7 @@ unzip automation-flex-public-gpg.zip;
 sudo gpg --import automation-flex-public-gpg.asc;
 ```
 
-- Verify the integrity of the downloaded package using published sha256sum. Download the sha256sum file for the package
+- Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
 ```shell
 #Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
@@ -58,11 +58,9 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 #Ubuntu 20.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
 ```
-Check the hash if it is matching. You may need to change your working directory
-to where both the rpm and sha256sum file are located.
+Verify package integrity of the package that has been downloaded by checking hash.
+Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
 ```shell
-cd /tmp;
-
 #Ubuntu 22.04
 sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
 
@@ -121,7 +119,6 @@ https://FQDN/casa
 ```
 
 ## Uninstallation
-
 Removing Flex is a two step process:
 
 - [Uninstall Gluu Flex](#uninstall-gluu-flex)
