@@ -7,113 +7,123 @@ tags:
 - CentOS
 ---
 
-# Red Hat EL Flex Installation
+# Install Gluu Flex On Red Hat EL
 
-Before you install, check the [VM system requirements](vm-requirements.md).
+This is a step-by-step guide for installation and uninstallation of Gluu Flex on Ubuntu Linux.
 
-## Supported versions
-- Red Hat Enterprise Linus 8 (RHEL 8)
-
-## Disable SELinux
-You can disable SELinux temporarily by executing `setenforce 0`. To disable permanently edit file `/etc/selinux/config`.
-
-## Install the Package
-- Install EPEL and mod-auth-openidc as dependencies
-
+## Prerequisites
+- Ensure that the OS platform is one of the [supported versions](./vm-requirements.md#supported-versions)
+- VM should meet [VM system requirements](./vm-requirements.md)
+- Make sure that if `SELinux` is installed then it is 
+[put into permissive mode](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/using_selinux/index#selinux-states-and-modes_getting-started-with-selinux)
+- If the server firewall is running, make sure you allow `https`, which is
+  needed for OpenID and FIDO.
+```shell
+sudo firewall-cmd --permanent --zone=public --add-service=https
 ```
-sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm;
-sudo yum -y module enable mod_auth_openidc;
-```
-
-- If the server firewall is running, make sure to disable it during installation.
-  For example:
-```
-sudo firewall-cmd --permanent --zone=public --add-service=https;
+```shell
 sudo firewall-cmd --reload;
 ```
-- Download the GPG key zip file , unzip and import GPG key
+- Install EPEL and mod-auth-openidc as dependencies
+```shell
+sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 ```
-wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
-unzip automation-flex-public-gpg.zip;
-sudo rpm -import automation-flex-public-gpg.asc;
+```shell
+sudo yum -y module enable mod_auth_openidc;
 ```
+- Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
+  that you can use during installation. SSA should be stored in a text file on an accessible path.
+
+## Install the Package
+
+### Download and Verify the Release Package
 - Download the release package from the Github Flex
   [Releases](https://github.com/gluufederation/flex/releases)
-
-```
+```shell
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm -P /tmp
 ```
-- Verify integrity of the downloaded package using published sha256sum.
-
-  Download sha256sum file for the package
+- GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
+  not found, the [installation step](#install-the-release-package) would fail. Use the commands below to download and
+  import the GPG key.
+```shell
+wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 ```
+```shell
+unzip automation-flex-public-gpg.zip
+```
+```shell
+sudo rpm -import automation-flex-public-gpg.asc
+```
+- Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
+```shell
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm.sha256sum  -P /tmp
-
 ```
-  Check the hash if it is matching.
-  
-```
+Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
+```shell
 cd /tmp;
 sha256sum -c flex-replace-flex-version-el8.x86_64.rpm.sha256sum;
 ```
 Output similar to below should confirm the integrity of the downloaded package.
-
-```
+```text
 flex-replace-flex-version-el8.x86_64.rpm.sha256sum : ok
 ```
 
-- Install the package
-
-```
-sudo yum install flex-5.0.0-15.nightly-suse15.x86_64.rpm
+### Install the Release Package
+```shell
+sudo yum install ./flex-replace-flex-version-el8.x86_64.rpm
 ```
 
 ## Run the setup script
-
-- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
-
-- Run the setup script:
-
+Execute the setup script with command below:
 ```
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+```
+If Admin-UI component is being installed, then the script will require SSA input, either as text or as a file path.
+This should be the SSA or file which was acquired as part of [prerequisite step](#prerequisites).
+```text
+Install Admin UI [Y/n]: y
+Please enter path of file containing SSA or paste SSA (q to exit):
+```
+Alternatively, for SSA file can be passed as a parameter to the setup script as below.
+```shell
 python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 ```
 
-## Log in to Text User Interface (TUI)
+## Verify and Access the Installation
+Verify that installation has been successful and all installed components are accessible using the steps below
 
-Begin configuration by accessing the TUI with the following command:
-
-```
+- Log in to Text User Interface (TUI)
+```shell
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
-
 Full TUI documentation can be found [here](https://docs.jans.io/stable/admin/config-guide/jans-tui)
 
-To login admin UI
-```
+- Log into Admin-UI using URI below
+```text
 https://FQDN/admin
 ```
-To login casa
-```
+
+- Access Casa using URI below
+```text
 https://FQDN/casa
 ```
 
 ## Uninstallation
-
 Removing Flex is a two step process:
 
-1. Delete files installed by Gluu Flex
-1. Remove and purge the `jans` package
+- [Uninstall Gluu Flex](#uninstall-gluu-flex)
+- [Uninstall Janssen Packages](#uninstall-janssen-packages)
 
+If you have not run the setup script, you can skip step 1 and just remove
+the package.
+
+### Uninstall Gluu Flex
 Use the command below to uninstall the Gluu Flex server
-
-```
+```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
-
-<!-- I need to add the output when command is run. -->
-output:
-
-```
+Output:
+```text
 [ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
@@ -164,16 +174,13 @@ Restarting Jans Auth
 Restarting Janssen Config Api
 ```
 
-
+### Uninstall Janssen Packages
 The command below removes and uninstall the `jans` package
-
-```
+```shell
 sudo python3 /opt/jans/jans-setup/install.py -uninstall
-
 ```
-output:
-
-```
+Output:
+```text
 [ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
@@ -205,4 +212,4 @@ Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/httpd/conf.d/https_jans.conf
 ```
-<!-- I need to add the output when command is run. -->
+
