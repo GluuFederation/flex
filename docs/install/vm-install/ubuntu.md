@@ -1,133 +1,139 @@
 
-# Ubuntu Flex Installation
+---
+tags:
+- administration
+- installation
+- vm
+- Ubuntu
+---
 
-Before you install, check the [VM system requirements](vm-requirements.md).
+# Install Gluu Flex On Ubuntu Linux
 
-## Supported Versions
-- Ubuntu 22.04
-- Ubuntu 20.04
+This is a step-by-step guide for installation and uninstallation of Gluu Flex on Ubuntu Linux
+
+## Prerequisites
+
+- Ensure that the OS platform is one of the [supported versions](./vm-requirements.md#supported-versions)
+- VM should meet [VM system requirements](./vm-requirements.md)
+- Make sure that if `SELinux` is installed then it is put into permissive mode
+- If the server firewall is running, make sure you allow `https`, which is
+  needed for OpenID and FIDO.
+```shell
+sudo ufw allow https
+```
+- Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
+  that you can use during installation. SSA should be stored in a text file on an accessible path.
 
 ## Install the Package
-- If the server firewall is running, make sure to disable it during installation.
-  For example:
-```
-sudo ufw disable;
-sudo ufw status;
 
-```
-- Download the GPG key zip file , unzip and import GPG key
-```
-wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip;
-unzip automation-flex-public-gpg.zip;
-sudo gpg --import automation-flex-public-gpg.asc;
-```
+### Download and Verify the Release Package
 
-### Ubuntu 22.04
-
-- Download the release package from the Github Gluu Flex [Releases](https://github.com/GluuFederation/flex/releases)
-
-```
+- Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
+```shell
+#Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
 
-```
-
-- Verify integrity of the downloaded package using published sha256sum.
-
-  Download sha256sum file for the package
-  
-```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
-
-```
-  Check the hash if it is matching.
-```
-cd /tmp;
-sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
-
-```
-
-Output similar to below should confirm the integrity of the downloaded package.
-```
-flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum: ok
-
-```
-
-- Install the package
-
-```
-apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
-```
-
-### Ubuntu 20.04
-
-- Download the release package from the Github Gluu Flex [Releases](https://github.com/GluuFederation/flex/releases)
-
-```
+#Ubuntu 20.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
 ```
 
-- Verify integrity of the downloaded package using published sha256sum.
-
-  Download sha256sum file for the package
-  
+- GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
+  not found, the [installation step](#install-the-release-package) would fail. Use the commands below to download and
+  import the GPG key.
+```shell
+wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 ```
+```shell
+unzip automation-flex-public-gpg.zip;
+```
+```shell
+sudo gpg --import automation-flex-public-gpg.asc;
+```
+
+- Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
+```shell
+#Ubuntu 22.04
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
+
+#Ubuntu 20.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
+```
+Verify package integrity of the package that has been downloaded by checking hash.
+Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
+```shell
+#Ubuntu 22.04
+sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
 
-```
-  Check the hash if it is matching.
-```
-cd /tmp;
+#Ubuntu 20.04
 sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
-
 ```
-
 Output similar to below should confirm the integrity of the downloaded package.
-```
-flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum: ok
-
-```
-
-- Install the package
-
-```
-apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
+```shell
+flex_replace-flex-version.ubuntu<version>_amd64.deb.sha256sum: ok
 ```
 
-## Run the setup script
+### Install the Release Package
+```shell
+#Ubuntu 22.04
+apt install -y ./flex_replace-flex-version.ubuntu22.04_amd64.deb
 
-- Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT that you can use during installation specified by the `-admin-ui-ssa` argument.
-
-- Run the setup script:
-
+#Ubuntu 20.04
+apt install -y ./flex_replace-flex-version.ubuntu20.04_amd64.deb
 ```
-python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
+
+### Run the setup script
+
+Execute the setup script with command below:
+```shell
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+```
+If Admin-UI component is being installed, then the script will require SSA input, either as text or as a file path.
+This should be the SSA or file which was acquired as part of [prerequisite step](#prerequisites).
+```text
+Install Admin UI [Y/n]: y
+Please enter path of file containing SSA or paste SSA (q to exit):
+```
+Alternatively, for SSA file can be passed as a parameter to the setup script as below.
+```shell
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 ```
 
-## Log in to Text User Interface (TUI)
+## Verify and Access the Installation
 
-Begin configuration by accessing the TUI with the following command:
+Verify that installation has been successful and all installed components are accessible using the steps below:
 
-```
+- Log in to Text User Interface (TUI)
+```shell
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
+[TUI](https://docs.jans.io/stable/admin/config-guide/jans-tui) is a text-based configuration tool for Gluu Flex Server.
 
-Full TUI documentation can be found [here](https://docs.jans.io/stable/admin/config-guide/jans-tui/)
+- Log into Admin-UI using URI below
+```text
+https://FQDN/admin
+```
+
+- Access Casa using URI below
+```text
+https://FQDN/casa
+```
 
 ## Uninstallation
-
 Removing Flex is a two step process:
 
-1. Delete files installed by Gluu Flex
-1. Remove and purge the `jans` package
+- [Uninstall Gluu Flex](#uninstall-gluu-flex)
+- [Uninstall Janssen Packages](#uninstall-janssen-packages)
 
+If you have not run the setup script, you can skip step 1 and just remove
+the package.
+
+### Uninstall Gluu Flex
 Use the command below to uninstall the Gluu Flex server
-
-```
+```shell
 python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
-output:
-
-```
+Output:
+```text
 root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
@@ -175,20 +181,14 @@ Restarting Apache
 Restarting Jans Auth
 Restarting Janssen Config Api
 ```
-<!-- I need to add the output when command is run. -->
 
-
+### Uninstall Janssen Packages
 The command below removes and uninstall the `jans` package
-
-```
+```shell
 python3 /opt/jans/jans-setup/install.py -uninstall
-
 ```
-
-<!-- I need to add the output when command is run. -->
-output :
-
-```
+Output :
+```text
 root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
