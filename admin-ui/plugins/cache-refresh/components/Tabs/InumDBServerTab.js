@@ -1,7 +1,6 @@
 import { useFormik } from 'formik'
 import React, { useContext, useState } from 'react'
-import { Row, Col, Form, FormGroup } from 'Components'
-import { Button } from 'Components'
+import { Row, Col, Form, FormGroup, Button } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
 import { useDispatch, useSelector } from 'react-redux'
