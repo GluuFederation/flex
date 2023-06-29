@@ -29,17 +29,17 @@ const InumDBServer = () => {
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
-  const { defaultInumServer, inumConfig } = useSelector(
+  const { defaultInumServer, targetConfig } = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
   const userAction = {}
   const initialValues = {
     defaultInumServer: defaultInumServer || false,
-    inumConfig: {
-      ...inumConfig,
-      servers: inumConfig?.servers || [],
-      baseDNs: inumConfig?.baseDNs || [],
-      bindPassword: inumConfig?.bindPassword || null,
+    targetConfig: {
+      ...targetConfig,
+      servers: targetConfig?.servers || [],
+      baseDNs: targetConfig?.baseDNs || [],
+      bindPassword: targetConfig?.bindPassword || null,
     },
   }
 
@@ -57,7 +57,7 @@ const InumDBServer = () => {
     initialValues: initialValues,
     validationSchema: Yup.object({
       defaultInumServer: Yup.boolean(),
-      inumConfig: Yup.object()
+      targetConfig: Yup.object()
         .shape()
         .when('defaultInumServer', {
           is: false,
@@ -99,14 +99,14 @@ const InumDBServer = () => {
     buildPayload(userAction, userMessage, {
       cacheRefreshConfiguration: {
         ...cacheRefreshConfiguration,
-        inumConfig: {
-          ...formik.values.inumConfig,
-          baseDNs: isStringsArray(formik.values.inumConfig.baseDNs || [])
-            ? formik.values.inumConfig.baseDNs
-            : convertToStringArray(formik.values?.inumConfig.baseDNs || []),
-          servers: isStringsArray(formik.values.inumConfig.servers || [])
-            ? formik.values.inumConfig.servers
-            : convertToStringArray(formik.values?.inumConfig.servers || []),
+        targetConfig: {
+          ...formik.values.targetConfig,
+          baseDNs: isStringsArray(formik.values.targetConfig.baseDNs || [])
+            ? formik.values.targetConfig.baseDNs
+            : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
+          servers: isStringsArray(formik.values.targetConfig.servers || [])
+            ? formik.values.targetConfig.servers
+            : convertToStringArray(formik.values?.targetConfig.servers || []),
         },
         defaultInumServer: formik.values.defaultInumServer,
       },
@@ -122,8 +122,8 @@ const InumDBServer = () => {
       putCacheRefreshConfiguration({
         cacheRefreshConfiguration: {
           ...cacheRefreshConfiguration,
-          inumConfig: {
-            ...formik.values.inumConfig,
+          targetConfig: {
+            ...formik.values.targetConfig,
             bindPassword: updatedPassword,
           },
         },
@@ -157,50 +157,50 @@ const InumDBServer = () => {
             <Col sm={8}>
               <GluuInputRow
                 label='fields.name'
-                name='inumConfig.configId'
-                value={formik.values.inumConfig?.configId || ''}
+                name='targetConfig.configId'
+                value={formik.values.targetConfig?.configId || ''}
                 formik={formik}
                 lsize={4}
                 rsize={8}
                 required
                 showError={
-                  formik.errors.inumConfig?.configId &&
-                  formik.touched.inumConfig?.configId
+                  formik.errors.targetConfig?.configId &&
+                  formik.touched.targetConfig?.configId
                 }
-                errorMessage={formik.errors.inumConfig?.configId}
+                errorMessage={formik.errors.targetConfig?.configId}
               />
             </Col>
             <Col sm={8}>
               <GluuInputRow
                 label='fields.bind_dn'
-                name='inumConfig.bindDN'
-                value={formik.values.inumConfig?.bindDN || ''}
+                name='targetConfig.bindDN'
+                value={formik.values.targetConfig?.bindDN || ''}
                 formik={formik}
                 lsize={4}
                 rsize={8}
                 required
                 showError={
-                  formik.errors.inumConfig?.bindDN &&
-                  formik.touched.inumConfig?.bindDN
+                  formik.errors.targetConfig?.bindDN &&
+                  formik.touched.targetConfig?.bindDN
                 }
-                errorMessage={formik.errors.inumConfig?.bindDN}
+                errorMessage={formik.errors.targetConfig?.bindDN}
               />
             </Col>
             <Col sm={8}>
               <GluuInputRow
                 label='fields.max_connections'
-                name='inumConfig.maxConnections'
-                value={formik.values.inumConfig?.maxConnections || ''}
+                name='targetConfig.maxConnections'
+                value={formik.values.targetConfig?.maxConnections || ''}
                 formik={formik}
                 type='number'
                 lsize={4}
                 rsize={8}
                 required
                 showError={
-                  formik.errors.inumConfig?.maxConnections &&
-                  formik.touched.inumConfig?.maxConnections
+                  formik.errors.targetConfig?.maxConnections &&
+                  formik.touched.targetConfig?.maxConnections
                 }
-                errorMessage={formik.errors.inumConfig?.maxConnections}
+                errorMessage={formik.errors.targetConfig?.maxConnections}
               />
             </Col>
             <Col sm={8}>
@@ -208,12 +208,12 @@ const InumDBServer = () => {
                 <GluuLabel required label='fields.server_port' size={4} />
                 <Col sm={8}>
                   <GluuProperties
-                    compName='inumConfig.servers'
+                    compName='targetConfig.servers'
                     isInputLables={true}
                     formik={formik}
                     options={
-                      formik.values.inumConfig?.servers
-                        ? formik.values.inumConfig?.servers.map((item) => ({
+                      formik.values.targetConfig?.servers
+                        ? formik.values.targetConfig?.servers.map((item) => ({
                             key: '',
                             value: item,
                           }))
@@ -222,7 +222,7 @@ const InumDBServer = () => {
                     isKeys={false}
                     buttonText='actions.add_server'
                     showError={
-                      formik.errors.targetConfig?.servers ? true : false
+                      formik.errors.targetConfig?.servers && formik.touched.targetConfig?.servers ? true : false
                     }
                     errorMessage={formik.errors.targetConfig?.servers}
                   />
@@ -234,12 +234,12 @@ const InumDBServer = () => {
                 <GluuLabel required label='fields.base_dns' size={4} />
                 <Col sm={8}>
                   <GluuProperties
-                    compName='inumConfig.baseDNs'
+                    compName='targetConfig.baseDNs'
                     isInputLables={true}
                     formik={formik}
                     options={
-                      formik.values.inumConfig?.baseDNs
-                        ? formik.values.inumConfig?.baseDNs.map((item) => ({
+                      formik.values.targetConfig?.baseDNs
+                        ? formik.values.targetConfig?.baseDNs.map((item) => ({
                             key: '',
                             value: item,
                           }))
@@ -248,7 +248,7 @@ const InumDBServer = () => {
                     isKeys={false}
                     buttonText='actions.add_base_dn'
                     showError={
-                      formik.errors.targetConfig?.baseDNs ? true : false
+                      formik.errors.targetConfig?.baseDNs && formik.touched.targetConfig?.baseDNs ? true : false
                     }
                     errorMessage={formik.errors.targetConfig?.baseDNs}
                   />
@@ -270,14 +270,14 @@ const InumDBServer = () => {
             <Col sm={8} className='mt-3'>
               <GluuCheckBoxRow
                 label='fields.use_ssl'
-                name='inumConfig.useSSL'
+                name='targetConfig.useSSL'
                 required
                 handleOnChange={(e) => {
-                  formik.setFieldValue('inumConfig.useSSL', e.target.checked)
+                  formik.setFieldValue('targetConfig.useSSL', e.target.checked)
                 }}
                 lsize={4}
                 rsize={8}
-                value={formik.values.inumConfig?.useSSL}
+                value={formik.values.targetConfig?.useSSL}
               />
             </Col>
           </>

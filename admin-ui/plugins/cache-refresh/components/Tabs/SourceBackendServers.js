@@ -31,11 +31,14 @@ const SourceBackendServers = () => {
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
-  const { targetConfig } = useSelector(
+  const { sourceConfigs } = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
+
+  const sourceConfig = sourceConfigs?.[0] || {} 
+
   const [addSourceLdapServer, setAddSourceLdapServer] = useState(
-    targetConfig?.enabled || false
+    sourceConfig?.enabled || false
   )
   const userAction = {}
   const [modal, setModal] = useState(false)
@@ -49,16 +52,19 @@ const SourceBackendServers = () => {
   }
 
   const initialValues = {
-    targetConfig: {
-      ...targetConfig,
-      servers: targetConfig?.servers || [],
-      baseDNs: targetConfig?.baseDNs || [],
-      bindPassword: targetConfig?.bindPassword || null,
+    sourceConfigs: {
+      ...sourceConfig,
+      servers: sourceConfig?.servers || [],
+      baseDNs: sourceConfig?.baseDNs || [],
+      bindPassword: sourceConfig?.bindPassword || null,
+      configId: sourceConfig?.configId || '',
+      bindDN: sourceConfig?.bindDN || '',
+      maxConnections: sourceConfig?.maxConnections || null,
     },
   }
 
   const validationSchema = Yup.object({
-    targetConfig: Yup.object().shape({
+    sourceConfigs: Yup.object().shape({
       configId: Yup.string().required(
         `${t('fields.name')} ${t('messages.is_required')}`
       ),
@@ -98,15 +104,15 @@ const SourceBackendServers = () => {
     buildPayload(userAction, userMessage, {
       cacheRefreshConfiguration: {
         ...cacheRefreshConfiguration,
-        targetConfig: {
-          ...formik.values.targetConfig,
-          baseDNs: isStringsArray(formik.values.targetConfig.baseDNs || [])
-            ? formik.values.targetConfig.baseDNs
-            : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
-          servers: isStringsArray(formik.values.targetConfig.servers || [])
-            ? formik.values.targetConfig.servers
-            : convertToStringArray(formik.values?.targetConfig.servers || []),
-        },
+        sourceConfigs: [{
+          ...formik.values.sourceConfigs,
+          baseDNs: isStringsArray(formik.values.sourceConfigs.baseDNs || [])
+            ? formik.values.sourceConfigs.baseDNs
+            : convertToStringArray(formik.values?.sourceConfigs.baseDNs || []),
+          servers: isStringsArray(formik.values.sourceConfigs.servers || [])
+            ? formik.values.sourceConfigs.servers
+            : convertToStringArray(formik.values?.sourceConfigs.servers || []),
+        }],
       },
     })
 
@@ -117,11 +123,11 @@ const SourceBackendServers = () => {
 
   const handleRemoveServer = () => {
     setAddSourceLdapServer(false)
-    formik.setFieldValue('targetConfig.enabled', false)
+    formik.setFieldValue('sourceConfigs.enabled', false)
   }
 
   const handleAddServer = () => {
-    formik.setFieldValue('targetConfig.enabled', true)
+    formik.setFieldValue('sourceConfigs.enabled', true)
     setAddSourceLdapServer(true)
   }
 
@@ -130,8 +136,8 @@ const SourceBackendServers = () => {
       putCacheRefreshConfiguration({
         cacheRefreshConfiguration: {
           ...cacheRefreshConfiguration,
-          targetConfig: {
-            ...formik.values.targetConfig,
+          sourceConfigs: {
+            ...formik.values.sourceConfigs,
             bindPassword: updatedPassword,
           },
         },
@@ -167,45 +173,45 @@ const SourceBackendServers = () => {
               <Col sm={8}>
                 <GluuInputRow
                   label='fields.name'
-                  name='targetConfig.configId'
-                  value={formik.values.targetConfig?.configId || ''}
+                  name='sourceConfigs.configId'
+                  value={formik.values.sourceConfigs?.configId || ''}
                   formik={formik}
                   lsize={4}
                   rsize={8}
                   required
                   showError={
-                    formik.errors.targetConfig?.configId ? true : false
+                    formik.errors.sourceConfigs?.configId && formik.touched.sourceConfigs?.configId ? true : false
                   }
-                  errorMessage={formik.errors.targetConfig?.configId}
+                  errorMessage={formik.errors.sourceConfigs?.configId}
                 />
               </Col>
               <Col sm={8}>
                 <GluuInputRow
                   label='fields.bind_dn'
-                  name='targetConfig.bindDN'
-                  value={formik.values.targetConfig?.bindDN || ''}
+                  name='sourceConfigs.bindDN'
+                  value={formik.values.sourceConfigs?.bindDN || ''}
                   formik={formik}
                   lsize={4}
                   rsize={8}
                   required
-                  showError={formik.errors.targetConfig?.bindDN ? true : false}
-                  errorMessage={formik.errors.targetConfig?.bindDN}
+                  showError={formik.errors.sourceConfigs?.bindDN && formik.touched.sourceConfigs?.bindDN ? true : false}
+                  errorMessage={formik.errors.sourceConfigs?.bindDN}
                 />
               </Col>
               <Col sm={8}>
                 <GluuInputRow
                   label='fields.max_connections'
-                  name='targetConfig.maxConnections'
-                  value={formik.values.targetConfig?.maxConnections || ''}
+                  name='sourceConfigs.maxConnections'
+                  value={formik.values.sourceConfigs?.maxConnections || ''}
                   formik={formik}
                   type='number'
                   lsize={4}
                   rsize={8}
                   required
                   showError={
-                    formik.errors.targetConfig?.maxConnections ? true : false
+                    formik.errors.sourceConfigs?.maxConnections && formik.touched.sourceConfigs?.maxConnections ? true : false
                   }
-                  errorMessage={formik.errors.targetConfig?.maxConnections}
+                  errorMessage={formik.errors.sourceConfigs?.maxConnections}
                 />
               </Col>
               <Col sm={8}>
@@ -213,12 +219,12 @@ const SourceBackendServers = () => {
                   <GluuLabel required label='fields.server_port' size={4} />
                   <Col sm={8}>
                     <GluuProperties
-                      compName='targetConfig.servers'
+                      compName='sourceConfigs.servers'
                       isInputLables={true}
                       formik={formik}
                       options={
-                        formik.values.targetConfig?.servers
-                          ? formik.values.targetConfig?.servers.map((item) => ({
+                        formik.values.sourceConfigs?.servers
+                          ? formik.values.sourceConfigs?.servers.map((item) => ({
                               key: '',
                               value: item,
                             }))
@@ -227,9 +233,9 @@ const SourceBackendServers = () => {
                       isKeys={false}
                       buttonText='actions.add_server'
                       showError={
-                        formik.errors.targetConfig?.servers ? true : false
+                        formik.errors.sourceConfigs?.servers && formik.touched.sourceConfigs?.servers ? true : false
                       }
-                      errorMessage={formik.errors.targetConfig?.servers}
+                      errorMessage={formik.errors.sourceConfigs?.servers}
                     />
                   </Col>
                 </Row>
@@ -239,12 +245,12 @@ const SourceBackendServers = () => {
                   <GluuLabel required label='fields.base_dns' size={4} />
                   <Col sm={8}>
                     <GluuProperties
-                      compName='targetConfig.baseDNs'
+                      compName='sourceConfigs.baseDNs'
                       isInputLables={true}
                       formik={formik}
                       options={
-                        formik.values.targetConfig?.baseDNs
-                          ? formik.values.targetConfig?.baseDNs.map((item) => ({
+                        formik.values.sourceConfigs?.baseDNs
+                          ? formik.values.sourceConfigs?.baseDNs.map((item) => ({
                               key: '',
                               value: item,
                             }))
@@ -253,9 +259,9 @@ const SourceBackendServers = () => {
                       isKeys={false}
                       buttonText='actions.add_base_dn'
                       showError={
-                        formik.errors.targetConfig?.baseDNs ? true : false
+                        formik.errors.sourceConfigs?.baseDNs && formik.touched.sourceConfigs?.baseDNs ? true : false
                       }
-                      errorMessage={formik.errors.targetConfig?.baseDNs}
+                      errorMessage={formik.errors.sourceConfigs?.baseDNs}
                     />
                   </Col>
                 </Row>
@@ -275,17 +281,17 @@ const SourceBackendServers = () => {
               <Col sm={8} className='mt-3'>
                 <GluuCheckBoxRow
                   label='fields.use_ssl'
-                  name='targetConfig.useSSL'
+                  name='sourceConfigs.useSSL'
                   required
                   handleOnChange={(e) => {
                     formik.setFieldValue(
-                      'targetConfig.useSSL',
+                      'sourceConfigs.useSSL',
                       e.target.checked
                     )
                   }}
                   lsize={4}
                   rsize={8}
-                  value={formik.values.targetConfig?.useSSL}
+                  value={formik.values.sourceConfigs?.useSSL}
                 />
               </Col>
             </>
