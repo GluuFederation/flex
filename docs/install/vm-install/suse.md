@@ -112,8 +112,8 @@ https://FQDN/casa
 ## Uninstallation
 Removing Flex is a two step process:
 
-- [Uninstall Gluu Flex](#uninstall-gluu-flex)
-- [Uninstall Janssen Packages](#uninstall-janssen-packages)
+- [Uninstall Gluu Flex](#uninstall-gluu-flex) and [Uninstall Janssen Packages](#uninstall-janssen-packages)
+- [Remove Gluu Packages](#remove-gluu-packages)
 
 If you have not run the setup script, you can skip step 1 and just remove
 the package.
@@ -212,4 +212,14 @@ Executing rm -r -f /opt/jetty*
 Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/apache2/vhosts.d/_https_jans.conf
+```
+
+### Remove Gluu Packages:
+List existing Gluu packages with:
+```
+sudo rpm -qa | grep gluu
+```
+Use `zypper` to remove packages:
+```
+sudo zypper remove gluu-flex
 ```
