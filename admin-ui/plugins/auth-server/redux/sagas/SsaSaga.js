@@ -2,14 +2,16 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import SsaApi from '../api/SsaApi'
-import { getSsaConfigResponse, toggleSaveConfig } from '../features/SsaSlice'
+import { getSsaConfigResponse, removeSsaResponse, toggleSaveConfig } from '../features/SsaSlice'
 import { CREATE, DELETION } from '../../../../app/audit/UserActionType'
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { updateToast } from 'Redux/features/toastSlice'
 
 export function* getSsa() {
   const token = yield select((state) => state.authReducer.token.access_token)
+  const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    const data = yield call(new SsaApi().getAllSsa, { payload: { token } })
+    const data = yield call(new SsaApi().getAllSsa, { payload: { token }, authServerHost })
     yield put(getSsaConfigResponse(data))
   } catch (e) {
     yield put(getSsaConfigResponse([]))
@@ -24,13 +26,16 @@ export function* addSsaConfig({ payload }) {
   const audit = yield* initAudit()
   addAdditionalData(audit, CREATE, 'post-register-ssa', payload)
   const token = yield select((state) => state.authReducer.token.access_token)
+  const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
     const data = yield call(new SsaApi().createSsa, {
       payload: payload.action.action_data,
       token,
+      authServerHost
     })
     createAndDownloadJSONFile(data)
     yield put(toggleSaveConfig(true))
+    yield put(updateToast(true, 'success'))
   } catch (e) {
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -43,13 +48,17 @@ export function* removeSsaConfig({ payload }) {
   const audit = yield* initAudit()
   addAdditionalData(audit, DELETION, 'delete-ssa', payload)
   const token = yield select((state) => state.authReducer.token.access_token)
+  const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
     const data = yield call(new SsaApi().deleteSsa, {
       jti: payload.action.action_data,
       token,
+      authServerHost
     })
     createAndDownloadJSONFile(data)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
+    yield put(removeSsaResponse())
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

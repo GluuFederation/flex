@@ -27,6 +27,9 @@ const ssaSlice = createSlice({
     removeSsa: (state) => {
       state.loading = true
     },
+    removeSsaResponse: (state) => {
+      state.loading = false
+    }
   },
 })
 
@@ -36,6 +39,7 @@ export const {
   createSsa,
   toggleSaveConfig,
   removeSsa,
+  removeSsaResponse
 } = ssaSlice.actions
 
 export default ssaSlice.reducer

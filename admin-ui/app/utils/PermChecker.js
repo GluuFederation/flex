@@ -44,9 +44,8 @@ export const SCOPE_READ = BASE_URL + '/config/scopes.readonly'
 export const SCOPE_WRITE = BASE_URL + '/config/scopes.write'
 export const SCOPE_DELETE = BASE_URL + '/config/scopes.delete'
 
-export const SSA_READ = BASE_URL + '/config/ssa.readonly'
-export const SSA_WRITE = BASE_URL + '/config/ssa.write'
-export const SSA_DELETE = BASE_URL + '/config/ssa.delete'
+export const SSA_PORTAl = 'https://jans.io/auth/ssa.portal'
+export const SSA_ADMIN = 'https://jans.io/auth/ssa.admin'
 
 export const SCRIPT_READ = BASE_URL + '/config/scripts.readonly'
 export const SCRIPT_WRITE = BASE_URL + '/config/scripts.write'

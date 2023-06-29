@@ -8,9 +8,8 @@ import { Paper } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   hasPermission,
-  SSA_READ,
-  SSA_WRITE,
-  SSA_DELETE,
+  SSA_PORTAl,
+  SSA_ADMIN,
   buildPayload,
 } from 'Utils/PermChecker'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -21,6 +20,7 @@ import SetTitle from 'Utils/SetTitle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { DeleteOutlined } from '@mui/icons-material'
 import TablePagination from '@mui/material/TablePagination'
+import SsaDetailPage from './SsaDetailPage'
 
 const SSAListPage = () => {
   const { t } = useTranslation()
@@ -51,14 +51,14 @@ const SSAListPage = () => {
   )
 
   const tableColumns = [
-    { title: `Software ID`, field: 'ssa.software_id' },
+    { title: t('fields.software_id'), field: 'ssa.software_id' },
     {
-      title: `Organization`,
+      title: t('fields.organization'),
       field: 'ssa.org_id',
     },
     {
-      title: `Software Roles`,
-      field: 'ssa.software_roels',
+      title: t('fields.software_roles'),
+      field: 'ssa.software_roles',
       render: (rowData) => {
         return rowData?.ssa?.software_roles?.map((data) => {
           return (
@@ -70,26 +70,37 @@ const SSAListPage = () => {
       },
     },
     {
-      title: `Status`,
+      title: t('fields.status'),
       field: 'status',
     },
-    { title: `Expiration`, field: 'expiration' },
+    {
+      title: t('fields.expiration'),
+      field: 'expiration',
+      render: (rowData) => {
+        const date = new Date(rowData.expiration).toLocaleDateString('en-US', {
+          month: '2-digit',
+          day: '2-digit',
+          year: 'numeric',
+        })
+        return date
+      },
+    },
   ]
 
-  if (hasPermission(permissions, SSA_WRITE)) {
+  if (hasPermission(permissions, SSA_ADMIN)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_ssa')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToSsaAddPage(),
-      disabled: !hasPermission(permissions, SSA_WRITE),
+      disabled: !hasPermission(permissions, SSA_ADMIN),
     })
   }
 
   const DeleteIcon = useCallback(() => <DeleteOutlined />, [])
 
-  if (hasPermission(permissions, SSA_DELETE)) {
+  if (hasPermission(permissions, SSA_ADMIN)) {
     myActions.push((rowData) => ({
       icon: DeleteIcon,
       iconProps: {
@@ -129,7 +140,7 @@ const SSAListPage = () => {
     <>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasPermission(permissions, SSA_READ)}>
+          <GluuViewWrapper canShow={hasPermission(permissions, SSA_PORTAl)}>
             <MaterialTable
               key={limit ? limit : 0}
               components={{
@@ -165,9 +176,12 @@ const SSAListPage = () => {
                 },
                 actionsColumnIndex: -1,
               }}
+              detailPanel={({ rowData }) => {
+                return <SsaDetailPage row={rowData} />
+              }}
             />
           </GluuViewWrapper>
-          {hasPermission(permissions, SSA_DELETE) && (
+          {hasPermission(permissions, SSA_ADMIN) && (
             <GluuDialog
               row={item}
               name={item?.ssa?.org_id || ''}

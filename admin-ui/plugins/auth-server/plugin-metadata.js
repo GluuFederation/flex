@@ -47,7 +47,7 @@ import {
   PROPERTIES_READ,
   LOGGING_READ,
   AGAMA_READ,
-  SSA_READ
+  SSA_PORTAl
 } from 'Utils/PermChecker'
 import AgamaListPage from './components/Agama/AgamaListPage'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
@@ -91,7 +91,7 @@ const pluginMetadata = {
             {
               title: 'menus.ssa',
               path: PLUGIN_BASE_APTH + '/config/ssa',
-              permission: SSA_READ,
+              permission: SSA_PORTAl,
             },
           ],
         },
@@ -192,12 +192,12 @@ const pluginMetadata = {
     {
       component: SsaListPage,
       path: PLUGIN_BASE_APTH + '/config/ssa',
-      permission: SSA_READ,
+      permission: SSA_PORTAl,
     },
     {
       component: SsaAddPage,
       path: PLUGIN_BASE_APTH + '/config/ssa/new',
-      permission: SSA_READ,
+      permission: SSA_PORTAl,
     }
   ],
   reducers: [

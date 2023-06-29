@@ -5,10 +5,10 @@ export default class SsaApi {
     this.api = api
   }
 
-  getAllSsa = async ({ payload }) => {
+  getAllSsa = async ({ payload, authServerHost }) => {
     const { token } = payload
     return new Promise((resolve, reject) => {
-      fetch(`${API_BASE_URL}/restv1/ssa`, {
+      fetch(`${authServerHost}/jans-auth/restv1/ssa`, {
         headers: {
           Authorization: 'Bearer ' + token,
           'Content-Type': 'application/json',
@@ -25,9 +25,9 @@ export default class SsaApi {
     })
   }
 
-  createSsa = async ({ payload, token }) => {
+  createSsa = async ({ payload, token, authServerHost }) => {
     return new Promise((resolve, reject) => {
-      fetch(`${API_BASE_URL}/restv1/ssa`, {
+      fetch(`${authServerHost}/jans-auth/restv1/ssa`, {
         headers: {
           Authorization: 'Bearer ' + token,
           'Content-Type': 'application/json',
@@ -45,9 +45,9 @@ export default class SsaApi {
     })
   }
   
-  deleteSsa = async ({ jti, token }) => {
+  deleteSsa = async ({ jti, token, authServerHost }) => {
     return new Promise((resolve, reject) => {
-      fetch(`${API_BASE_URL}/restv1/ssa?jti=${jti}`, {
+      fetch(`${authServerHost}/jans-auth/restv1/ssa?jti=${jti}`, {
         headers: {
           Authorization: 'Bearer ' + token,
           'Content-Type': 'application/json',
