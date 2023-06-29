@@ -68,7 +68,7 @@ sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
 ```
 Output similar to below should confirm the integrity of the downloaded package.
 ```shell
-flex_replace-flex-version.ubuntu<version>_amd64.deb.sha256sum: ok
+flex_replace-flex-version.ubuntu<version>_amd64.deb: ok
 ```
 
 ### Install the Release Package
