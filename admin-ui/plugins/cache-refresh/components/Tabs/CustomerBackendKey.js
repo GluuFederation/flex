@@ -99,10 +99,10 @@ const CustomerBackendKey = () => {
       className='mt-4'
     >
       <FormGroup row>
-        <Col sm={8}>
+        <Col sm={12}>
           <Row>
-            <GluuLabel required label='fields.key_attribute' size={4} />
-            <Col sm={8}>
+            <GluuLabel required label='fields.key_attribute' size={3} />
+            <Col sm={9}>
               <GluuProperties
                 compName='keyAttributes'
                 isInputLables={true}
@@ -125,10 +125,10 @@ const CustomerBackendKey = () => {
             </Col>
           </Row>
         </Col>
-        <Col sm={8}>
+        <Col sm={12}>
           <Row className='mt-4'>
-            <GluuLabel required label='fields.object_class' size={4} />
-            <Col sm={8}>
+            <GluuLabel required label='fields.object_class' size={3} />
+            <Col sm={9}>
               <GluuProperties
                 compName='keyObjectClasses'
                 isInputLables={true}
@@ -152,10 +152,10 @@ const CustomerBackendKey = () => {
             </Col>
           </Row>
         </Col>
-        <Col sm={8}>
+        <Col sm={12}>
           <Row className='mt-4'>
-            <GluuLabel required label='fields.source_attribute' size={4} />
-            <Col sm={8}>
+            <GluuLabel required label='fields.source_attribute' size={3} />
+            <Col sm={9}>
               <GluuProperties
                 compName='sourceAttributes'
                 isInputLables={true}
@@ -179,14 +179,14 @@ const CustomerBackendKey = () => {
             </Col>
           </Row>
         </Col>
-        <Col sm={8} className='mt-4'>
+        <Col sm={12} className='mt-4'>
           <GluuInputRow
             label='fields.custom_ldap_filter'
             name='customLdapFilter'
             value={formik.values.customLdapFilter || ''}
             formik={formik}
-            lsize={4}
-            rsize={8}
+            lsize={3}
+            rsize={9}
           />
         </Col>
       </FormGroup>

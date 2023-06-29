@@ -17,6 +17,11 @@ import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshS
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
+import {
+  testLdap,
+  resetTestLdap,
+} from 'Plugins/services/redux/features/ldapSlice'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
 const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
 const convertToStringArray = (arr) => {
@@ -34,8 +39,8 @@ const SourceBackendServers = () => {
   const { sourceConfigs } = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
-
-  const sourceConfig = sourceConfigs?.[0] || {} 
+  const loading = useSelector((state) => state.ldapReducer.loading)
+  const sourceConfig = sourceConfigs?.[0] || {}
 
   const [addSourceLdapServer, setAddSourceLdapServer] = useState(
     sourceConfig?.enabled || false
@@ -65,12 +70,12 @@ const SourceBackendServers = () => {
 
   const validationSchema = Yup.object({
     sourceConfigs: Yup.object().shape({
-      configId: Yup.string().required(
-        `${t('fields.name')} ${t('messages.is_required')}`
-      ),
-      bindDN: Yup.string().required(
-        `${t('fields.bind_dn')} ${t('messages.is_required')}`
-      ),
+      configId: Yup.string()
+        .min(2, 'Mininum 2 characters')
+        .required(`${t('fields.name')} ${t('messages.is_required')}`),
+      bindDN: Yup.string()
+        .min(2, 'Mininum 2 characters')
+        .required(`${t('fields.bind_dn')} ${t('messages.is_required')}`),
       maxConnections: Yup.string().required(
         `${t('fields.max_connections')} ${t('messages.is_required')}`
       ),
@@ -104,21 +109,25 @@ const SourceBackendServers = () => {
     buildPayload(userAction, userMessage, {
       cacheRefreshConfiguration: {
         ...cacheRefreshConfiguration,
-        sourceConfigs: [{
-          ...formik.values.sourceConfigs,
-          baseDNs: isStringsArray(formik.values.sourceConfigs.baseDNs || [])
-            ? formik.values.sourceConfigs.baseDNs
-            : convertToStringArray(formik.values?.sourceConfigs.baseDNs || []),
-          servers: isStringsArray(formik.values.sourceConfigs.servers || [])
-            ? formik.values.sourceConfigs.servers
-            : convertToStringArray(formik.values?.sourceConfigs.servers || []),
-        }],
+        sourceConfigs: [
+          {
+            ...formik.values.sourceConfigs,
+            baseDNs: isStringsArray(formik.values.sourceConfigs.baseDNs || [])
+              ? formik.values.sourceConfigs.baseDNs
+              : convertToStringArray(
+                  formik.values?.sourceConfigs.baseDNs || []
+                ),
+            servers: isStringsArray(formik.values.sourceConfigs.servers || [])
+              ? formik.values.sourceConfigs.servers
+              : convertToStringArray(
+                  formik.values?.sourceConfigs.servers || []
+                ),
+          },
+        ],
       },
     })
 
-    dispatch(
-      putCacheRefreshConfiguration({ action: userAction })
-    )
+    dispatch(putCacheRefreshConfiguration({ action: userAction }))
   }
 
   const handleRemoveServer = () => {
@@ -132,17 +141,30 @@ const SourceBackendServers = () => {
   }
 
   const handleChangePassword = (updatedPassword) => {
-    dispatch(
-      putCacheRefreshConfiguration({
-        cacheRefreshConfiguration: {
-          ...cacheRefreshConfiguration,
-          sourceConfigs: {
+    buildPayload(userAction, 'CHANGE SOURCE BACKEND BIND PASSWORD', {
+      cacheRefreshConfiguration: {
+        ...cacheRefreshConfiguration,
+        sourceConfigs: [
+          {
             ...formik.values.sourceConfigs,
             bindPassword: updatedPassword,
           },
-        },
-      })
-    )
+        ],
+      },
+    })
+
+    dispatch(putCacheRefreshConfiguration({ action: userAction }))
+  }
+  console.log(`formik.values`, formik.values)
+  function checkLdapConnection() {
+    const testPromise = new Promise(function (resolve, reject) {
+      dispatch(resetTestLdap())
+      resolve()
+    })
+
+    testPromise.then(() => {
+      dispatch(testLdap({ data: formik.values.sourceConfigs }))
+    })
   }
 
   return (
@@ -154,165 +176,202 @@ const SourceBackendServers = () => {
         }}
         className='mt-4'
       >
-        <FormGroup row>
-          <Box className='mb-3' display='flex'>
-            {!addSourceLdapServer && (
-              <Button onClick={handleAddServer}>
-                {t('actions.add_source_ldap_server')}
-              </Button>
-            )}
-            {addSourceLdapServer && (
-              <Button color='danger' onClick={handleRemoveServer}>
-                <i className='fa fa-remove me-2'></i>
-                {t('actions.remove_source_server')}
-              </Button>
-            )}
-          </Box>
-          {addSourceLdapServer && (
-            <>
-              <Col sm={8}>
-                <GluuInputRow
-                  label='fields.name'
-                  name='sourceConfigs.configId'
-                  value={formik.values.sourceConfigs?.configId || ''}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  required
-                  showError={
-                    formik.errors.sourceConfigs?.configId && formik.touched.sourceConfigs?.configId ? true : false
-                  }
-                  errorMessage={formik.errors.sourceConfigs?.configId}
-                />
-              </Col>
-              <Col sm={8}>
-                <GluuInputRow
-                  label='fields.bind_dn'
-                  name='sourceConfigs.bindDN'
-                  value={formik.values.sourceConfigs?.bindDN || ''}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  required
-                  showError={formik.errors.sourceConfigs?.bindDN && formik.touched.sourceConfigs?.bindDN ? true : false}
-                  errorMessage={formik.errors.sourceConfigs?.bindDN}
-                />
-              </Col>
-              <Col sm={8}>
-                <GluuInputRow
-                  label='fields.max_connections'
-                  name='sourceConfigs.maxConnections'
-                  value={formik.values.sourceConfigs?.maxConnections || ''}
-                  formik={formik}
-                  type='number'
-                  lsize={4}
-                  rsize={8}
-                  required
-                  showError={
-                    formik.errors.sourceConfigs?.maxConnections && formik.touched.sourceConfigs?.maxConnections ? true : false
-                  }
-                  errorMessage={formik.errors.sourceConfigs?.maxConnections}
-                />
-              </Col>
-              <Col sm={8}>
-                <Row>
-                  <GluuLabel required label='fields.server_port' size={4} />
-                  <Col sm={8}>
-                    <GluuProperties
-                      compName='sourceConfigs.servers'
-                      isInputLables={true}
-                      formik={formik}
-                      options={
-                        formik.values.sourceConfigs?.servers
-                          ? formik.values.sourceConfigs?.servers.map((item) => ({
-                              key: '',
-                              value: item,
-                            }))
-                          : []
-                      }
-                      isKeys={false}
-                      buttonText='actions.add_server'
-                      showError={
-                        formik.errors.sourceConfigs?.servers && formik.touched.sourceConfigs?.servers ? true : false
-                      }
-                      errorMessage={formik.errors.sourceConfigs?.servers}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-              <Col sm={8}>
-                <Row className='mt-4'>
-                  <GluuLabel required label='fields.base_dns' size={4} />
-                  <Col sm={8}>
-                    <GluuProperties
-                      compName='sourceConfigs.baseDNs'
-                      isInputLables={true}
-                      formik={formik}
-                      options={
-                        formik.values.sourceConfigs?.baseDNs
-                          ? formik.values.sourceConfigs?.baseDNs.map((item) => ({
-                              key: '',
-                              value: item,
-                            }))
-                          : []
-                      }
-                      isKeys={false}
-                      buttonText='actions.add_base_dn'
-                      showError={
-                        formik.errors.sourceConfigs?.baseDNs && formik.touched.sourceConfigs?.baseDNs ? true : false
-                      }
-                      errorMessage={formik.errors.sourceConfigs?.baseDNs}
-                    />
-                  </Col>
-                </Row>
-              </Col>
-              <Row>
-                <Col sm={2} className='mt-3'>
-                  <Button
-                    type='button'
-                    color={`primary-${selectedTheme}`}
-                    className='theme-config__trigger mt-3'
-                    onClick={toggle}
-                  >
-                    {t('actions.change_bind_password')}
+        <GluuLoader blocking={loading}>
+          <FormGroup row>
+            <Box
+              className='mb-3'
+              display='flex'
+              justifyContent={'space-between'}
+            >
+              <Box>
+                {!addSourceLdapServer && (
+                  <Button onClick={handleAddServer}>
+                    {t('actions.add_source_ldap_server')}
                   </Button>
+                )}
+                {addSourceLdapServer && (
+                  <Button color='danger' onClick={handleRemoveServer}>
+                    <i className='fa fa-remove me-2'></i>
+                    {t('actions.remove_source_server')}
+                  </Button>
+                )}
+              </Box>
+              {addSourceLdapServer && (
+                <Button
+                  color={`primary-${selectedTheme}`}
+                  onClick={checkLdapConnection}
+                >
+                  {t('fields.test')}
+                </Button>
+              )}
+            </Box>
+            {addSourceLdapServer && (
+              <>
+                <Col sm={12}>
+                  <GluuInputRow
+                    label='fields.name'
+                    name='sourceConfigs.configId'
+                    value={formik.values.sourceConfigs?.configId || ''}
+                    formik={formik}
+                    lsize={3}
+                    rsize={9}
+                    required
+                    showError={
+                      formik.errors.sourceConfigs?.configId &&
+                      formik.touched.sourceConfigs?.configId
+                        ? true
+                        : false
+                    }
+                    errorMessage={formik.errors.sourceConfigs?.configId}
+                  />
                 </Col>
-              </Row>
-              <Col sm={8} className='mt-3'>
-                <GluuCheckBoxRow
-                  label='fields.use_ssl'
-                  name='sourceConfigs.useSSL'
-                  required
-                  handleOnChange={(e) => {
-                    formik.setFieldValue(
-                      'sourceConfigs.useSSL',
-                      e.target.checked
-                    )
-                  }}
-                  lsize={4}
-                  rsize={8}
-                  value={formik.values.sourceConfigs?.useSSL}
-                />
-              </Col>
-            </>
-          )}
-        </FormGroup>
-        <Row>
-          <Col>
-            <GluuCommitFooter
-              hideButtons={{ save: true, back: false }}
-              type='submit'
-              saveHandler={toggleAudit}
+                <Col sm={12}>
+                  <GluuInputRow
+                    label='fields.bind_dn'
+                    name='sourceConfigs.bindDN'
+                    value={formik.values.sourceConfigs?.bindDN || ''}
+                    formik={formik}
+                    lsize={3}
+                    rsize={9}
+                    required
+                    showError={
+                      formik.errors.sourceConfigs?.bindDN &&
+                      formik.touched.sourceConfigs?.bindDN
+                        ? true
+                        : false
+                    }
+                    errorMessage={formik.errors.sourceConfigs?.bindDN}
+                  />
+                </Col>
+                <Col sm={12}>
+                  <GluuInputRow
+                    label='fields.max_connections'
+                    name='sourceConfigs.maxConnections'
+                    value={formik.values.sourceConfigs?.maxConnections || ''}
+                    formik={formik}
+                    type='number'
+                    lsize={3}
+                    rsize={9}
+                    required
+                    showError={
+                      formik.errors.sourceConfigs?.maxConnections &&
+                      formik.touched.sourceConfigs?.maxConnections
+                        ? true
+                        : false
+                    }
+                    errorMessage={formik.errors.sourceConfigs?.maxConnections}
+                  />
+                </Col>
+                <Col sm={12}>
+                  <Row>
+                    <GluuLabel required label='fields.server_port' size={3} />
+                    <Col sm={9}>
+                      <GluuProperties
+                        compName='sourceConfigs.servers'
+                        isInputLables={true}
+                        formik={formik}
+                        options={
+                          formik.values.sourceConfigs?.servers
+                            ? formik.values.sourceConfigs?.servers.map(
+                                (item) => ({
+                                  key: '',
+                                  value: item,
+                                })
+                              )
+                            : []
+                        }
+                        isKeys={false}
+                        buttonText='actions.add_server'
+                        showError={
+                          formik.errors.sourceConfigs?.servers &&
+                          formik.touched.sourceConfigs?.servers
+                            ? true
+                            : false
+                        }
+                        errorMessage={formik.errors.sourceConfigs?.servers}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+                <Col sm={12}>
+                  <Row className='mt-4'>
+                    <GluuLabel required label='fields.base_dns' size={3} />
+                    <Col sm={9}>
+                      <GluuProperties
+                        compName='sourceConfigs.baseDNs'
+                        isInputLables={true}
+                        formik={formik}
+                        options={
+                          formik.values.sourceConfigs?.baseDNs
+                            ? formik.values.sourceConfigs?.baseDNs.map(
+                                (item) => ({
+                                  key: '',
+                                  value: item,
+                                })
+                              )
+                            : []
+                        }
+                        isKeys={false}
+                        buttonText='actions.add_base_dn'
+                        showError={
+                          formik.errors.sourceConfigs?.baseDNs &&
+                          formik.touched.sourceConfigs?.baseDNs
+                            ? true
+                            : false
+                        }
+                        errorMessage={formik.errors.sourceConfigs?.baseDNs}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+                <Row>
+                  <Col sm={2} className='mt-3'>
+                    <Button
+                      type='button'
+                      color={`primary-${selectedTheme}`}
+                      className='theme-config__trigger mt-3'
+                      onClick={toggle}
+                    >
+                      {t('actions.change_bind_password')}
+                    </Button>
+                  </Col>
+                </Row>
+                <Col sm={8} className='mt-3'>
+                  <GluuCheckBoxRow
+                    label='fields.use_ssl'
+                    name='sourceConfigs.useSSL'
+                    required
+                    handleOnChange={(e) => {
+                      formik.setFieldValue(
+                        'sourceConfigs.useSSL',
+                        e.target.checked
+                      )
+                    }}
+                    lsize={4}
+                    rsize={8}
+                    value={formik.values.sourceConfigs?.useSSL}
+                  />
+                </Col>
+              </>
+            )}
+          </FormGroup>
+          <Row>
+            <Col>
+              <GluuCommitFooter
+                hideButtons={{ save: true, back: false }}
+                type='submit'
+                saveHandler={toggleAudit}
+              />
+            </Col>
+          </Row>
+          {modal && (
+            <BindPasswordModal
+              handleChangePassword={handleChangePassword}
+              handler={toggle}
+              isOpen={modal}
             />
-          </Col>
-        </Row>
-        {modal && (
-          <BindPasswordModal
-            handleChangePassword={handleChangePassword}
-            handler={toggle}
-            isOpen={modal}
-          />
-        )}
+          )}
+        </GluuLoader>
       </Form>
       <GluuCommitDialog
         handler={toggleAudit}

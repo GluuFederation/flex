@@ -118,25 +118,25 @@ const CacheRefreshTab = () => {
         className='mt-4'
       >
         <FormGroup row>
-          <Col sm={8}>
+          <Col sm={12}>
             <Row>
-              <GluuLabel label={'fields.last_run'} size={4} />
-              <Col sm={8}>{formik.values.vdsCacheRefreshLastUpdate}</Col>
+              <GluuLabel label={'fields.last_run'} size={3} />
+              <Col sm={9}>{formik.values.vdsCacheRefreshLastUpdate}</Col>
             </Row>
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <Row className='my-3'>
-              <GluuLabel label={'fields.updates_at_last_run'} size={4} />
-              <Col sm={8}>{formik.values.vdsCacheRefreshLastUpdateCount}</Col>
+              <GluuLabel label={'fields.updates_at_last_run'} size={3} />
+              <Col sm={9}>{formik.values.vdsCacheRefreshLastUpdateCount}</Col>
             </Row>
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <Row className='mb-3'>
-              <GluuLabel label={'fields.problems_at_last_run'} size={4} />
-              <Col sm={8}>{formik.values.vdsCacheRefreshProblemCount}</Col>
+              <GluuLabel label={'fields.problems_at_last_run'} size={3} />
+              <Col sm={9}>{formik.values.vdsCacheRefreshProblemCount}</Col>
             </Row>
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <GluuSelectRow
               label='fields.refresh_method'
               name='updateMethod'
@@ -144,8 +144,8 @@ const CacheRefreshTab = () => {
               defaultValue={formik.values.updateMethod}
               values={['copy', 'VDS']}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={3}
+              rsize={9}
               required
               showError={
                 formik.errors.updateMethod && formik.touched.updateMethod
@@ -153,10 +153,10 @@ const CacheRefreshTab = () => {
               errorMessage={formik.errors.updateMethod}
             />
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <Row>
-              <GluuLabel required label='fields.server_port' size={4} />
-              <Col sm={8}>
+              <GluuLabel required label='fields.server_port' size={3} />
+              <Col sm={9}>
                 <GluuProperties
                   compName='attributeMapping'
                   isInputLables={true}
@@ -184,14 +184,14 @@ const CacheRefreshTab = () => {
               </Col>
             </Row>
           </Col>
-          <Col sm={8} className='mt-3'>
+          <Col sm={12} className='mt-3'>
             <GluuInputRow
               label='fields.snapshot_folder'
               name='snapshotFolder'
               value={formik.values.snapshotFolder}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={3}
+              rsize={9}
               required
               showError={
                 formik.errors.snapshotFolder && formik.touched.snapshotFolder
@@ -199,15 +199,15 @@ const CacheRefreshTab = () => {
               errorMessage={formik.errors.snapshotFolder}
             />
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <GluuInputRow
               label='fields.snapshots_count'
               name='snapshotMaxCount'
               type='number'
               value={formik.values.snapshotMaxCount}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={3}
+              rsize={9}
               required
               showError={
                 formik.errors.snapshotMaxCount &&
@@ -216,59 +216,59 @@ const CacheRefreshTab = () => {
               errorMessage={formik.errors.snapshotMaxCount}
             />
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <GluuCheckBoxRow
               label='fields.keep_external_persons'
               name='keepExternalPerson'
               handleOnChange={(e) => {
                 formik.setFieldValue('keepExternalPerson', e.target.checked)
               }}
-              lsize={4}
-              rsize={8}
+              lsize={3}
+              rsize={9}
               value={formik.values.keepExternalPerson}
             />
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <GluuInputRow
               label='fields.server_ip_address'
               name='cacheRefreshServerIpAddress'
               value={formik.values.cacheRefreshServerIpAddress}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={3}
+              rsize={9}
             />
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <GluuInputRow
               label='fields.polling_interval_mins'
               name='vdsCacheRefreshPollingInterval'
               type='number'
               value={formik.values.vdsCacheRefreshPollingInterval}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={3}
+              rsize={9}
             />
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <GluuInputRow
               label='fields.search_size_limit'
               name='ldapSearchSizeLimit'
               type='number'
               value={formik.values.ldapSearchSizeLimit}
               formik={formik}
-              lsize={4}
-              rsize={8}
+              lsize={3}
+              rsize={9}
             />
           </Col>
-          <Col sm={8}>
+          <Col sm={12}>
             <GluuCheckBoxRow
               label='fields.cache_refresh'
               name='vdsCacheRefreshEnabled'
               handleOnChange={(e) => {
                 formik.setFieldValue('vdsCacheRefreshEnabled', e.target.checked)
               }}
-              lsize={4}
-              rsize={8}
+              lsize={3}
+              rsize={9}
               value={formik.values.vdsCacheRefreshEnabled}
             />
           </Col>

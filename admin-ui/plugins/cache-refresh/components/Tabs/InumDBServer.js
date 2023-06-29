@@ -118,16 +118,18 @@ const InumDBServer = () => {
   }
 
   const handleChangePassword = (updatedPassword) => {
-    dispatch(
-      putCacheRefreshConfiguration({
-        cacheRefreshConfiguration: {
-          ...cacheRefreshConfiguration,
-          targetConfig: {
-            ...formik.values.targetConfig,
-            bindPassword: updatedPassword,
-          },
+    buildPayload(userAction, 'CHANGE INUMDB BIND PASSWORD', {
+      cacheRefreshConfiguration: {
+        ...cacheRefreshConfiguration,
+        targetConfig: {
+          ...formik.values.targetConfig,
+          bindPassword: updatedPassword,
         },
-      })
+      },
+    })
+
+    dispatch(
+      putCacheRefreshConfiguration({ action: userAction })
     )
   }
 
@@ -140,28 +142,28 @@ const InumDBServer = () => {
       className='mt-4'
     >
       <FormGroup row>
-        <Col sm={8}>
+        <Col sm={12}>
           <GluuCheckBoxRow
             label='fields.default_inum_server'
             name='defaultInumServer'
             handleOnChange={(e) => {
               formik.setFieldValue('defaultInumServer', e.target.checked)
             }}
-            lsize={4}
-            rsize={8}
+            lsize={3}
+            rsize={9}
             value={formik.values.defaultInumServer}
           />
         </Col>
         {!formik.values.defaultInumServer && (
           <>
-            <Col sm={8}>
+            <Col sm={12}>
               <GluuInputRow
                 label='fields.name'
                 name='targetConfig.configId'
                 value={formik.values.targetConfig?.configId || ''}
                 formik={formik}
-                lsize={4}
-                rsize={8}
+                lsize={3}
+                rsize={9}
                 required
                 showError={
                   formik.errors.targetConfig?.configId &&
@@ -170,14 +172,14 @@ const InumDBServer = () => {
                 errorMessage={formik.errors.targetConfig?.configId}
               />
             </Col>
-            <Col sm={8}>
+            <Col sm={12}>
               <GluuInputRow
                 label='fields.bind_dn'
                 name='targetConfig.bindDN'
                 value={formik.values.targetConfig?.bindDN || ''}
                 formik={formik}
-                lsize={4}
-                rsize={8}
+                lsize={3}
+                rsize={9}
                 required
                 showError={
                   formik.errors.targetConfig?.bindDN &&
@@ -186,15 +188,15 @@ const InumDBServer = () => {
                 errorMessage={formik.errors.targetConfig?.bindDN}
               />
             </Col>
-            <Col sm={8}>
+            <Col sm={12}>
               <GluuInputRow
                 label='fields.max_connections'
                 name='targetConfig.maxConnections'
                 value={formik.values.targetConfig?.maxConnections || ''}
                 formik={formik}
                 type='number'
-                lsize={4}
-                rsize={8}
+                lsize={3}
+                rsize={9}
                 required
                 showError={
                   formik.errors.targetConfig?.maxConnections &&
@@ -203,10 +205,10 @@ const InumDBServer = () => {
                 errorMessage={formik.errors.targetConfig?.maxConnections}
               />
             </Col>
-            <Col sm={8}>
+            <Col sm={12}>
               <Row>
-                <GluuLabel required label='fields.server_port' size={4} />
-                <Col sm={8}>
+                <GluuLabel required label='fields.server_port' size={3} />
+                <Col sm={9}>
                   <GluuProperties
                     compName='targetConfig.servers'
                     isInputLables={true}
@@ -229,10 +231,10 @@ const InumDBServer = () => {
                 </Col>
               </Row>
             </Col>
-            <Col sm={8}>
+            <Col sm={12}>
               <Row className='mt-4'>
-                <GluuLabel required label='fields.base_dns' size={4} />
-                <Col sm={8}>
+                <GluuLabel required label='fields.base_dns' size={3} />
+                <Col sm={9}>
                   <GluuProperties
                     compName='targetConfig.baseDNs'
                     isInputLables={true}
@@ -267,7 +269,7 @@ const InumDBServer = () => {
                 </Button>
               </Col>
             </Row>
-            <Col sm={8} className='mt-3'>
+            <Col sm={12} className='mt-3'>
               <GluuCheckBoxRow
                 label='fields.use_ssl'
                 name='targetConfig.useSSL'
@@ -275,8 +277,8 @@ const InumDBServer = () => {
                 handleOnChange={(e) => {
                   formik.setFieldValue('targetConfig.useSSL', e.target.checked)
                 }}
-                lsize={4}
-                rsize={8}
+                lsize={3}
+                rsize={9}
                 value={formik.values.targetConfig?.useSSL}
               />
             </Col>
