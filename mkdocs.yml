@@ -154,7 +154,6 @@ nav:
     - 'Casa Docker Image': 'reference/kubernetes/docker-casa.md'
 - 'Casa':
     - 'casa/index.md'
-    - Release Notes: 'casa/release-notes.md'
     - Quick Start: 'casa/quick-start.md'
     - 'Installation': 'casa/administration/installation.md'
     - Administration Guide:
