@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { Row, Col, Form, FormGroup } from '../../../../app/components'
+import { Row, Col, Form, FormGroup } from 'Components'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -10,7 +10,7 @@ import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
 import * as Yup from 'yup'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { isEmpty } from 'lodash'
-import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
+import { putCacheRefreshConfiguration } from 'Plugins/cache-refresh/redux/features/CacheRefreshSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { buildPayload } from 'Utils/PermChecker'
@@ -72,7 +72,7 @@ const CacheRefreshTab = () => {
       ),
       attributeMapping: Yup.array().min(
         1,
-        `${t('fields.server_port')} ${t('messages.is_required')}`
+        `${t('fields.mandatory_fields_required')}`
       ),
     }),
     setFieldValue: (field) => {
@@ -155,7 +155,7 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={12}>
             <Row>
-              <GluuLabel required label='fields.server_port' size={3} />
+              <GluuLabel required label='fields.change_attribute_name_from_source_to_estination' size={3} />
               <Col sm={9}>
                 <GluuProperties
                   compName='attributeMapping'

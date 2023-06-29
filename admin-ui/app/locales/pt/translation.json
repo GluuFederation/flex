@@ -312,6 +312,7 @@
     "import_configuration": "Configuração de Importação",
     "default_inum_server": "Servidor Inum Padrão",
     "server_port": "Porta do servidor",
+    "change_attribute_name_from_source_to_estination": "Altere o nome do atributo da origem para o destino",
     "enter_new_password": "Insira a nova senha",
     "confirm_the_new_password": "Confirme a nova senha",
     "key_attribute": "Atributo chave",

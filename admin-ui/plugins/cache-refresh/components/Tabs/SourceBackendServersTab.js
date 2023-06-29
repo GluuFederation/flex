@@ -8,7 +8,7 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { Box } from '@mui/material'
-import BindPasswordModal from '../CacheRefreshManagement/BindPasswordModal'
+import BindPasswordModal from '../CacheRefresh/BindPasswordModal'
 import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
 import * as Yup from 'yup'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
@@ -28,7 +28,7 @@ const convertToStringArray = (arr) => {
   return arr.map((item) => item.value)
 }
 
-const SourceBackendServers = () => {
+const SourceBackendServersTab = () => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -155,7 +155,7 @@ const SourceBackendServers = () => {
 
     dispatch(putCacheRefreshConfiguration({ action: userAction }))
   }
-  console.log(`formik.values`, formik.values)
+
   function checkLdapConnection() {
     const testPromise = new Promise(function (resolve, reject) {
       dispatch(resetTestLdap())
@@ -264,7 +264,7 @@ const SourceBackendServers = () => {
                 </Col>
                 <Col sm={12}>
                   <Row>
-                    <GluuLabel required label='fields.server_port' size={3} />
+                    <GluuLabel required label='fields.change_attribute_name_from_source_to_estination' size={3} />
                     <Col sm={9}>
                       <GluuProperties
                         compName='sourceConfigs.servers'
@@ -383,4 +383,4 @@ const SourceBackendServers = () => {
   )
 }
 
-export default SourceBackendServers
+export default SourceBackendServersTab

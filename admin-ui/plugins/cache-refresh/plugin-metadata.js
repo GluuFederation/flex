@@ -1,5 +1,5 @@
 import { CACHE_REFRESH_READ, CACHE_REFRESH_WRITE } from "../../app/utils/PermChecker";
-import CacheRefreshManagement from "./components/CacheRefreshManagement/CacheRefreshManagement";
+import CacheRefreshManagement from "./components/CacheRefresh/CacheRefreshManagement";
 import cacheRefreshReducer from "./redux/features/CacheRefreshSlice";
 import cacheRefreshSaga from "./redux/sagas/CacheRefreshSaga";
 

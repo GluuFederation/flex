@@ -8,7 +8,7 @@ import {
   ModalFooter,
   Row,
 } from "reactstrap";
-import applicationstyle from "../../../../app/routes/Apps/Gluu/styles/applicationstyle";
+import applicationstyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { ThemeContext } from "Context/theme/themeContext";
 import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
 import { FormGroup } from "Components";

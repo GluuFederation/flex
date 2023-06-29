@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import SetTitle from "Utils/SetTitle";
 import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
-import { Card, CardBody } from "../../../../app/components";
-import GluuTabs from "../../../../app/routes/Apps/Gluu/GluuTabs";
+import { Card, CardBody } from "Components";
+import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
 import CacheRefreshTab from "../Tabs/CacheRefreshTab";
 import CustomerBackendKey from "../Tabs/CustomerBackendKey";
-import SourceBackendServers from "../Tabs/SourceBackendServers";
-import InumDBServer from "../Tabs/InumDBServer";
+import SourceBackendServersTab from "../Tabs/SourceBackendServersTab";
+import InumDBServerTab from "../Tabs/InumDBServerTab";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useDispatch, useSelector } from "react-redux";
-import { getCacheRefreshConfiguration } from "../../redux/features/CacheRefreshSlice";
+import { getCacheRefreshConfiguration } from "Plugins/cache-refresh/redux/features/CacheRefreshSlice";
 import { useTranslation } from "react-i18next";
 
 const CacheRefreshManagement = () => {
@@ -36,9 +36,9 @@ const CacheRefreshManagement = () => {
       case t("menus.customer_backend_key_attributes"):
         return <CustomerBackendKey />;
       case t("menus.source_backend_ldap_servers"):
-        return <SourceBackendServers />;
+        return <SourceBackendServersTab />;
       case t("menus.inum_db_server"):
-        return <InumDBServer />;
+        return <InumDBServerTab />;
     }
   };
 

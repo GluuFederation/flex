@@ -1,6 +1,6 @@
 import { useFormik } from 'formik'
 import React, { useContext, useState } from 'react'
-import { Row, Col, Form, FormGroup } from '../../../../app/components'
+import { Row, Col, Form, FormGroup } from 'Components'
 import { Button } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
@@ -8,12 +8,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { t } from 'i18next'
-import { ThemeContext } from '../../../../app/context/theme/themeContext'
-import BindPasswordModal from '../CacheRefreshManagement/BindPasswordModal'
+import { ThemeContext } from 'Context/theme/themeContext'
+import BindPasswordModal from '../CacheRefresh/BindPasswordModal'
 import * as Yup from 'yup'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { isEmpty } from 'lodash'
-import { putCacheRefreshConfiguration } from '../../redux/features/CacheRefreshSlice'
+import { putCacheRefreshConfiguration } from 'Plugins/cache-refresh/redux/features/CacheRefreshSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
 
@@ -22,7 +22,7 @@ const convertToStringArray = (arr) => {
   return arr.map((item) => item.value)
 }
 
-const InumDBServer = () => {
+const InumDBServerTab = () => {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const dispatch = useDispatch()
@@ -311,4 +311,4 @@ const InumDBServer = () => {
   )
 }
 
-export default InumDBServer
+export default InumDBServerTab

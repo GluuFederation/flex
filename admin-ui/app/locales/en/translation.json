@@ -351,6 +351,7 @@
     "remote_primary_key": "Remote primary key",
     "remote_ldap_server_post": "Remote LDAP server:port",
     "server_port": "Server:Port",
+    "change_attribute_name_from_source_to_estination": "Change attribute name from source to destination",
     "test": "TEST",
     "export_sample_config": "Export Sample Config",
     "export_current_config": "Export Current Config",
