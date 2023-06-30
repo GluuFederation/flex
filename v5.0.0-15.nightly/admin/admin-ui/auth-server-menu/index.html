@@ -784,7 +784,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../left-nav-menu.md" class="md-nav__link">
+      <a href="../left-nav-menu/" class="md-nav__link">
         Left Navigation Menu
       </a>
     </li>
@@ -928,6 +928,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#authn" class="md-nav__link">
+    Authn
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agama" class="md-nav__link">
+    Agama
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -943,7 +957,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schema-menu.md" class="md-nav__link">
+      <a href="../schema-menu/" class="md-nav__link">
         Schema
       </a>
     </li>
@@ -957,7 +971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services-menu.md" class="md-nav__link">
+      <a href="../services-menu/" class="md-nav__link">
         Services
       </a>
     </li>
@@ -971,7 +985,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fido-menu.md" class="md-nav__link">
+      <a href="../fido-menu/" class="md-nav__link">
         FIDO
       </a>
     </li>
@@ -985,7 +999,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../smtp-menu.md" class="md-nav__link">
+      <a href="../smtp-menu/" class="md-nav__link">
         SMTP
       </a>
     </li>
@@ -999,7 +1013,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../userMgmt-menu.md" class="md-nav__link">
+      <a href="../userMgmt-menu/" class="md-nav__link">
         Users
       </a>
     </li>
@@ -1634,6 +1648,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#authn" class="md-nav__link">
+    Authn
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agama" class="md-nav__link">
+    Agama
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1717,10 +1745,12 @@
 - Enabled Acrs
 - Agama deployment</p>
 <h2 id="sessions">Sessions<a class="headerlink" href="#sessions" title="Permanent link">#</a></h2>
-<p>The Janssen Authentication Server stores user session data in persistence. This screen lists the active session details and the administrator can revoke the sessions of the selected user.</p>
+<p>The Janssen Authentication Server stores user session data in persistence. This screen lists the active session 
+details and the administrator can revoke the sessions of the selected user.</p>
 <p><img alt="image" src="../../../assets/admin-ui/sessions.png" /></p>
 <h2 id="keys">Keys<a class="headerlink" href="#keys" title="Permanent link">#</a></h2>
-<p>The JSON Web Key Sets (JWKS) is a set of public keys that should be used to verify any JSON Web Token (JWT) issued by the authorization server.</p>
+<p>The JSON Web Key Sets (JWKS) is a set of public keys that should be used to verify any JSON Web Token (JWT) issued by 
+the authorization server.</p>
 <p><img alt="image" src="../../../assets/admin-ui/jwks.png" /></p>
 <h2 id="auth-server-configuration-properties">Auth Server Configuration Properties<a class="headerlink" href="#auth-server-configuration-properties" title="Permanent link">#</a></h2>
 <p>The auth server <a href="https://docs.jans.io/head/admin/reference/json/properties/janssenauthserver-properties/">configuration properties</a> can be updated using GUI.</p>
@@ -1735,7 +1765,8 @@
 <li><strong>Enable Oauth Audit Logging?:</strong> enable OAuth Audit Logging</li>
 </ul>
 <h2 id="clients">Clients<a class="headerlink" href="#clients" title="Permanent link">#</a></h2>
-<p>The logged-in user with appropriate permissions can view, register, edit and delete OIDC clients on auth server using Gluu Flex Admin UI.</p>
+<p>The logged-in user with appropriate permissions can view, register, edit and delete OIDC clients on auth server using 
+Gluu Flex Admin UI.</p>
 <p><img alt="image" src="../../../assets/admin-ui/client.png" /></p>
 <p>The Client details are as follows:</p>
 <table>
@@ -1985,41 +2016,58 @@
 </tbody>
 </table>
 <h2 id="scopes">Scopes<a class="headerlink" href="#scopes" title="Permanent link">#</a></h2>
-<p>The scope is a mechanism to limit an application's access to a user's account. An application can request one or more scopes, this information is then presented to the user in the consent screen, and the access token issued to the application will be limited to the scopes granted.</p>
+<p>The scope is a mechanism to limit an application's access to a user's account. An application can request one or 
+more scopes, this information is then presented to the user in the consent screen, and the access token issued to 
+the application will be limited to the scopes granted.</p>
 <p>For an OpenID Connect, the scope can be mapped with user claims.</p>
 <p><img alt="image" src="../../../assets/admin-ui/openid-scope.png" /></p>
 <h3 id="spontaneous-scopes">Spontaneous scopes<a class="headerlink" href="#spontaneous-scopes" title="Permanent link">#</a></h3>
-<p>Spontaneous scopes are scopes with random part in it which are not known in advance. For e.g. transaction:4685456787, pis-552fds where 4685456787 or 552fds are generated part of the scope.</p>
-<p>Spontaneous scopes are disabled by default and can be enabled per client. The admins cannot create a spontaneous scope. Creation only happens when an authorized client presents a spontaneous scope at the token endpoint. There are the following client properties available during dynamic registration of the client related to spontaneous scopes:</p>
+<p>Spontaneous scopes are scopes with random part in it which are not known in advance. For e.g. transaction:4685456787, 
+pis-552fds where 4685456787 or 552fds are generated part of the scope.</p>
+<p>Spontaneous scopes are disabled by default and can be enabled per client. The admins cannot create a spontaneous 
+scope. Creation only happens when an authorized client presents a spontaneous scope at the token endpoint. There are the
+following client properties available during dynamic registration of the client related to spontaneous scopes:</p>
 <ul>
-<li><strong>allowSpontaneousScopes</strong> OPTIONAL, boolean, false by default. Whether spontaneous scopes are allowed for the given client.</li>
-<li><strong>spontaneousScopes</strong> OPTIONAL, array of strings. Regular expressions which should match to scope. If matched scope is allowed. Example: ["^transaction:.+$"]. It matches transaction:245 but not transaction:.</li>
+<li><strong>allowSpontaneousScopes</strong> OPTIONAL, boolean, false by default. Whether spontaneous scopes are allowed for the given 
+client.</li>
+<li><strong>spontaneousScopes</strong> OPTIONAL, array of strings. Regular expressions which should match to scope. If matched scope is
+ allowed. Example: ["^transaction:.+$"]. It matches transaction:245 but not transaction:.</li>
 </ul>
 <h3 id="uma-scopes">UMA scopes<a class="headerlink" href="#uma-scopes" title="Permanent link">#</a></h3>
-<p>UMA scope can either be created by the user or auto-created by the auth server. UMA scope cannot be modified using Gluu Flex Admin UI.</p>
+<p>UMA scope can either be created by the user or auto-created by the auth server. UMA scope cannot be modified using 
+Gluu Flex Admin UI.</p>
 <ul>
-<li>
-<p>If the logged-in user creates UMA scope then the creator type will be <code>USER</code> and the creator Id will be logged-in user's INUM.</p>
-</li>
-<li>
-<p>If auth server has auto-created a UMA scope then it will have the creator type as <code>AUTO</code> and no creator Id.</p>
-</li>
+<li>If the logged-in user creates UMA scope then the creator type will be <code>USER</code> and the creator Id will be logged-in 
+user's INUM.</li>
+<li>If auth server has auto-created a UMA scope then it will have the creator type as <code>AUTO</code> and no creator Id.</li>
 </ul>
 <h3 id="dynamic-scopes">Dynamic Scopes<a class="headerlink" href="#dynamic-scopes" title="Permanent link">#</a></h3>
-<p>The dynamic scope custom script allows to generate a list of claims (and their values) on the fly, depending on circumstances like the id of the client requesting it, logged user's session parameters, values of other user's attributes, results of some calculations implementing specific business logic and/or requests to remote APIs or databases. Claims are then returned the usual way in response to a call to the user info endpoint.</p>
+<p>The dynamic scope custom script allows to generate a list of claims (and their values) on the fly, depending on 
+circumstances like the id of the client requesting it, logged user's session parameters, values of other user's 
+attributes, results of some calculations implementing specific business logic and/or requests to remote APIs or 
+databases. Claims are then returned the usual way in response to a call to the user info endpoint.</p>
 <p>In order to configure a dynamic scope the following steps are required:</p>
 <ul>
 <li>The script of type <code>DYNAMIC_SCOPE</code> must be configured and enabled.</li>
 <li>Create scope of scope type <code>Dynamic</code> and select Dynamic scope script and claims inputs.</li>
 </ul>
 <p><img alt="image" src="../../../assets/admin-ui/dynamic-scope.png" /></p>
+<h2 id="authn">Authn<a class="headerlink" href="#authn" title="Permanent link">#</a></h2>
+<p>Authentication Context Class Reference (ACR) enables applications to request and verify the level of authentication 
+assurance or the context of the authentication process used for user authentication.</p>
+<p>This page allows the administrator to view all enabled ACRs and select the default ACR which refers to the predefined 
+or default authentication assurance when no specific ACR value is requested or specified.</p>
+<p><img alt="image" src="../../../assets/admin-ui/authn.png" /></p>
+<h2 id="agama">Agama<a class="headerlink" href="#agama" title="Permanent link">#</a></h2>
+<p>This menu addresses deployment of <a href="https://docs.jans.io/head/agama/introduction/">Agama</a> project packages (file with 
+.gama extension).</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-16T12:04:25+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-16</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-30T06:54:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-30</span>
       
         <br>
         Created:
@@ -2064,13 +2112,13 @@
       
       
         
-        <a href="../../casa/" class="md-footer__link md-footer__link--next" aria-label="Next: Casa" rel="next">
+        <a href="../schema-menu/" class="md-footer__link md-footer__link--next" aria-label="Next: Schema" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Casa
+              Schema
             </div>
           </div>
           <div class="md-footer__button md-icon">
