@@ -18,7 +18,7 @@ const convertToStringArray = (arr) => {
   return arr.map((item) => item.value)
 }
 
-const CustomerBackendKey = () => {
+const CustomerBackendKeyTab = () => {
   const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
@@ -209,4 +209,4 @@ const CustomerBackendKey = () => {
   )
 }
 
-export default CustomerBackendKey
+export default CustomerBackendKeyTab

@@ -1,5 +1,5 @@
-import { initAudit } from "../../../../app/redux/sagas/SagaUtils";
-import { getClient } from "../../../../app/redux/api/base";
+import { initAudit } from "Redux/sagas/SagaUtils";
+import { getClient } from "Redux/api/base";
 import { isFourZeroOneError, addAdditionalData } from "Utils/TokenController";
 import {
   call,
@@ -10,7 +10,7 @@ import {
   select,
   takeEvery,
 } from "redux-saga/effects";
-import { postUserAction } from "../../../../app/redux/api/backend-api";
+import { postUserAction } from "Redux/api/backend-api";
 import { updateToast } from 'Redux/features/toastSlice'
 import CacheRefreshApi from "../api/CacheRefreshApi"
 import {

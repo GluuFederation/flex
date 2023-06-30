@@ -1,6 +1,7 @@
 import React from 'react'
 import { FormGroup, Col, Input, Button } from 'Components'
 import { useTranslation } from 'react-i18next'
+import { Box } from '@mui/material'
 
 function GluuPropertyItem({
   property,
@@ -54,7 +55,7 @@ function GluuPropertyItem({
             />
           </>
           :
-          <>
+          <Box display='flex' gap={2} alignItems={'center'}>
             <Input
               name={'source'}
               defaultValue={property.source}
@@ -77,7 +78,7 @@ function GluuPropertyItem({
                   : t('placeholders.enter_destination_value')
               }
             />
-          </>
+          </Box>
         }
 
       </Col>

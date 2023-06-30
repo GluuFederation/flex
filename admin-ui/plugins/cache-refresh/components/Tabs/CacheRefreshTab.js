@@ -162,6 +162,7 @@ const CacheRefreshTab = () => {
                   isInputLables={true}
                   formik={formik}
                   multiProperties
+                  inputSm={10}
                   options={
                     formik.values.attributeMapping
                       ? formik.values.attributeMapping.map(

@@ -4,7 +4,7 @@ import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
 import { Card, CardBody } from "Components";
 import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
 import CacheRefreshTab from "../Tabs/CacheRefreshTab";
-import CustomerBackendKey from "../Tabs/CustomerBackendKey";
+import CustomerBackendKeyTab from "../Tabs/CustomerBackendKeyTab";
 import SourceBackendServersTab from "../Tabs/SourceBackendServersTab";
 import InumDBServerTab from "../Tabs/InumDBServerTab";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
@@ -34,7 +34,7 @@ const CacheRefreshManagement = () => {
       case t("menus.cacherefresh"):
         return <CacheRefreshTab />;
       case t("menus.customer_backend_key_attributes"):
-        return <CustomerBackendKey />;
+        return <CustomerBackendKeyTab />;
       case t("menus.source_backend_ldap_servers"):
         return <SourceBackendServersTab />;
       case t("menus.inum_db_server"):

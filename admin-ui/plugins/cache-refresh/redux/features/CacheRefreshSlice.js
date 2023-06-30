@@ -1,4 +1,4 @@
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
