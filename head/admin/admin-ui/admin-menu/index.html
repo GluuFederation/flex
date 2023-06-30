@@ -784,7 +784,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../left-nav-menu.md" class="md-nav__link">
+      <a href="../left-nav-menu/" class="md-nav__link">
         Left Navigation Menu
       </a>
     </li>
@@ -935,7 +935,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schema-menu.md" class="md-nav__link">
+      <a href="../schema-menu/" class="md-nav__link">
         Schema
       </a>
     </li>
@@ -949,7 +949,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services-menu.md" class="md-nav__link">
+      <a href="../services-menu/" class="md-nav__link">
         Services
       </a>
     </li>
@@ -963,7 +963,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fido-menu.md" class="md-nav__link">
+      <a href="../fido-menu/" class="md-nav__link">
         FIDO
       </a>
     </li>
@@ -977,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../smtp-menu.md" class="md-nav__link">
+      <a href="../smtp-menu/" class="md-nav__link">
         SMTP
       </a>
     </li>
@@ -991,7 +991,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../userMgmt-menu.md" class="md-nav__link">
+      <a href="../userMgmt-menu/" class="md-nav__link">
         Users
       </a>
     </li>
@@ -1681,17 +1681,32 @@
 
 
 <h1 id="admin-menu">Admin Menu<a class="headerlink" href="#admin-menu" title="Permanent link">#</a></h1>
-<p>The features like managing Roles and Permissions, Custom Scripts and monthly active users monitoring are placed under the <strong>Admin</strong> menu (in the left navigation of GUI). These features will be discussed one by one in this section.</p>
+<p>The features like managing Roles and Permissions, Custom Scripts and monthly active users monitoring are placed under 
+the <strong>Admin</strong> menu (in the left navigation of GUI). These features will be discussed one by one in this section.</p>
 <h2 id="gui-access-control">GUI Access Control<a class="headerlink" href="#gui-access-control" title="Permanent link">#</a></h2>
-<p>The administrator can control view/edit/delete access of users of Gluu Flex Admin UI by adding or removing the appropriate Permissions mapped to the user's Admin UI Role. For e.g. if the <strong>read</strong> Permission of OIDC clients (<code>https://jans.io/oauth/config/clients.readonly</code>) is not mapped to the logged-in user's Role, the contents of the page showing OIDC client records will not be visible to the user. In the same way, if the write and delete Permissions of OIDC clients are not mapped then the user will not be able to edit or delete any OIDC client record.</p>
+<p>The administrator can control view/edit/delete access of users of Gluu Flex Admin UI by adding or removing the 
+appropriate Permissions mapped to the user's Admin UI Role. For e.g. if the <strong>read</strong> Permission of OIDC 
+clients (<code>https://jans.io/oauth/config/clients.readonly</code>) is not mapped to the logged-in user's Role, the contents of 
+the page showing OIDC client records will not be visible to the user. In the same way, if the write and delete 
+Permissions of OIDC clients are not mapped then the user will not be able to edit or delete any OIDC client record.</p>
 <h3 id="role">Role<a class="headerlink" href="#role" title="Permanent link">#</a></h3>
-<p>The logged-in administrator can create, edit or delete Admin UI Roles using the Admin UI Roles Page. The Admin UI Role can be assigned to the user using the User Management feature of this GUI. After installation, the following Admin UI Roles can be seen on Admin UI: api-viewer, api-editor, api-manager and api-admin. The default user i.e. <code>admin</code> is assigned with api-admin role. A user with one or more Admin UI Role(s) assigned will be able to log into Gluu Flex Admin UI.</p>
+<p>The logged-in administrator can create, edit or delete Admin UI Roles using the Admin UI Roles Page. The Admin UI Role 
+can be assigned to the user using the <a href="../userMgmt-menu/">User Management</a> feature of this GUI. After installation, 
+the following Admin UI Roles can be seen on Admin UI: api-viewer, api-editor, api-manager and api-admin. The default 
+user i.e. <code>admin</code> is assigned with api-admin role. A user with one or more Admin UI Role(s) assigned will be able to 
+log into Gluu Flex Admin UI.</p>
 <p><img alt="image" src="../../../assets/admin-ui/role.png" /></p>
 <h3 id="permissions-scopes">Permissions (Scopes)<a class="headerlink" href="#permissions-scopes" title="Permanent link">#</a></h3>
-<p>Gluu Flex Admin UI uses <a href="https://github.com/JanssenProject/jans/tree/main/jans-config-api">Config API</a> to manage and configure the Jans Auth server. Config API helps in configuring auth-server, users, fido2 and scim modules. The APIs of this rest application are protected using an authorization token containing the appropriate permissions (scopes). The user interface has the capability to add, edit and delete the Permissions used to access the APIs (i.e. rest APIs used by Admin UI).</p>
+<p>Gluu Flex Admin UI uses <a href="https://github.com/JanssenProject/jans/tree/main/jans-config-api">Config API</a> to manage and 
+configure the Jans Auth server. Config API helps in configuring auth-server, users, fido2 and scim modules. The APIs 
+of this rest application are protected using an authorization token containing the appropriate permissions (scopes). 
+The user interface has the capability to add, edit and delete the Permissions used to access the APIs (i.e. rest APIs 
+used by Admin UI).</p>
 <p><img alt="image" src="../../../assets/admin-ui/permission.png" /></p>
 <h3 id="role-permission-mapping">Role-Permission Mapping<a class="headerlink" href="#role-permission-mapping" title="Permanent link">#</a></h3>
-<p>The administrator can map the Admin UI Role with one or more Permission(s) using the Role-Permission Mapping page. The Role mapped with Permissions can be then assigned to the user to allow access to the corresponding operations of the GUI.</p>
+<p>The administrator can map the Admin UI Role with one or more Permission(s) using the Role-Permission Mapping page. 
+The Role mapped with Permissions can be then assigned to the user to allow access to the corresponding operations of 
+the GUI.</p>
 <p><img alt="image" src="../../../assets/admin-ui/role-permission.png" /></p>
 <p>The below table lists the Permissions used in Admin UI:</p>
 <table>
@@ -1825,7 +1840,10 @@
 </tbody>
 </table>
 <h2 id="custom-scripts">Custom Scripts<a class="headerlink" href="#custom-scripts" title="Permanent link">#</a></h2>
-<p><a href="https://docs.jans.io/head/admin/developer/scripts/">Custom Scripts</a> are used to implement custom business logic for authentication, authorization, client registration, cache refresh, scopes, token revocation etc. The Janssen Authentication Server leverages Custom Scripts when implemented can facilitate complex business workflows without changing the server code. Gluu Flex Admin UI provides the interface to add/edit/delete custom scripts.</p>
+<p><a href="https://docs.jans.io/head/admin/developer/scripts/">Custom Scripts</a> are used to implement custom business logic for 
+authentication, authorization, client registration, cache refresh, scopes, token revocation etc. The Janssen 
+Authentication Server leverages Custom Scripts when implemented can facilitate complex business workflows without 
+changing the server code. Gluu Flex Admin UI provides the interface to add/edit/delete custom scripts.</p>
 <p><img alt="image" src="../../../assets/admin-ui/custom-scripts.png" /></p>
 <h3 id="custom-scripts-fields-descriptions">Custom Scripts fields descriptions<a class="headerlink" href="#custom-scripts-fields-descriptions" title="Permanent link">#</a></h3>
 <ul>
@@ -1850,7 +1868,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-16T12:36:00+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-16</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-30T06:54:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-30</span>
       
         <br>
         Created:
