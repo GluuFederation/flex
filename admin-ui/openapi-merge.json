@@ -11,6 +11,9 @@
       },
       {
         "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/user-mgt-plugin-swagger.yaml"
+      },
+      {
+        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/cache-refresh-plugin-swagger.yaml"
       }
     ], 
     "output": "./configApiSpecs.yaml"

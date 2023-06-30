@@ -26,5 +26,9 @@
   {
     "key": "fido",
     "metadataFile": "./fido/plugin-metadata"
+  },
+  {
+    "key": "cache-refresh",
+    "metadataFile": "./cache-refresh/plugin-metadata"
   }
 ]

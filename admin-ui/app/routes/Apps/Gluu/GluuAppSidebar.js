@@ -17,6 +17,7 @@ import FidoIcon from "Components/SVG/menu/Fido"
 import { ThemeContext } from 'Context/theme/themeContext'
 import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
+import CachedIcon from '@mui/icons-material/Cached';
 import styles from './styles/GluuAppSidebar.style'
 
 function GluuAppSidebar({ scopes }) {
@@ -54,6 +55,8 @@ function GluuAppSidebar({ scopes }) {
 
       case 'fidomanagement':
         return <FidoIcon className="menu-icon" style={{ top: '-2px' }} />
+      case 'cacherefresh':
+        return <CachedIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
       default:
         return null
     }
