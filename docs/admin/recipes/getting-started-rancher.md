@@ -390,7 +390,7 @@ On the Janssen server, we are going to register a new client using the jans-cli.
 
 Here we will use manual client registration. We will use jans-tui tool provided by the Janssen server. jans-tui has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.
 
-Download or build [config-cli-tui](../../../jans-cli-tui) then:
+Download or build [config-cli-tui](https://docs.jans.io/v1.0.13/admin/config-guide/jans-tui/) then:
 
 1. Get the role based client id and secret:
 

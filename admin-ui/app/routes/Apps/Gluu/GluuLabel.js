@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
 import { HelpOutline } from '@mui/icons-material'
 
-function GluuLabel({ label, required, size, doc_category, doc_entry, style, noColon = false }) {
+function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
   const { t } = useTranslation()
   function getSize() {
     if (size != null) {

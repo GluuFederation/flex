@@ -8,6 +8,10 @@
     "add_property": "Add property",
     "add_party": "Add party",
     "add_types": "Add Types",
+    "add_server": "Add Server",
+    "add_base_dn": "Add base DN",
+    "change_bind_password": "Change Bind Password",
+    "set_password": "Set Password",
     "add_classes": "Add Classes",
     "apply": "Apply",
     "back_home": "Back Home",
@@ -36,7 +40,12 @@
     "server_response": "Server response",
     "server_success_stmp": "Stmp configruation test was successfull.",
     "server_fails_smtp": "Smtp configuration test was failed.",
-    "server_code": "Server Code"
+    "server_code": "Server Code",
+    "add_key_attribute": "Add Key Attribute",
+    "add_object_class": "Add Object class",
+    "add_source_attribute": "Add source attribute",
+    "add_source_ldap_server": "Add source LDAP server",
+    "remove_source_server": "Remove source server"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -351,6 +360,8 @@
     "selectUserRevoke": "Select the user to revoke",
     "remote_primary_key": "Remote primary key",
     "remote_ldap_server_post": "Remote LDAP server:port",
+    "server_port": "Server:Port",
+    "change_attribute_name_from_source_to_estination": "Change attribute name from source to destination",
     "test": "TEST",
     "export_sample_config": "Export Sample Config",
     "export_current_config": "Export Current Config",
@@ -382,7 +393,25 @@
     "domain":"Domain",
     "software_id": "Software ID",
     "expiration": "Expiration",
-    "never": "Never"
+    "never": "Never",
+    "default_inum_server": "Default Inum Server",
+    "enter_new_password": "Enter new password",
+    "confirm_the_new_password": "Confirm the new password",
+    "key_attribute": "Key attribute",
+    "object_class": "Object class",
+    "source_attribute": "Source Attribute",
+    "custom_ldap_filter": "Custom LDAP filter",
+    "refresh_method": "Refresh Method",
+    "snapshot_folder": "Snapshot Folder",
+    "snapshots_count": "Snapshots count",
+    "search_size_limit": "Search size limit",
+    "keep_external_persons": "Keep external persons",
+    "server_ip_address": "Server IP Address",
+    "polling_interval_mins": "Polling interval (minutes)",
+    "cache_refresh": "Cache Refresh",
+    "last_run": "Last run",
+    "updates_at_last_run": "Updates at the last run",
+    "problems_at_last_run": "Problems at the last run"
   },
   "languages": {
     "french": "French",
@@ -435,7 +464,11 @@
     "maugraph": "MAU",
     "users": "Users",
     "user-management": "User Management",
-    "agama": "Agama"
+    "agama": "Agama",
+    "cacherefresh": "Cache Refresh",
+    "customer_backend_key_attributes": "Customer Backend Key/Attributes",
+    "source_backend_ldap_servers": "Source Backend LDAP Servers",
+    "inum_db_server": "Inum DB Server"
   },
   "messages": {
     "success_in_saving": "Changes saved successfully",
@@ -477,6 +510,8 @@
     "manage_configurations": "Manage Configurations",
     "fetching_project_details": "Fetching project details...",
     "mandatory_fields_required": "Mandatory fields are required",
+    "is_required": "is required",
+    "both_password_should_match": "Both password should match",
     "agama_is_not_enabled": "Agama is not enabled",
     "drag_agama_file": "Drag .gama file here, or click to select file",
     "drag_sha_file": "Drag .sha256sum file here, or click to select file",
@@ -510,6 +545,8 @@
     "enable_ssl_communication": "Enable SSL communication between auth Server and LDAP server",
     "enter_property_key": "Enter the property key",
     "enter_property_value": "Enter the property value",
+    "enter_source_value": "Enter the source value",
+    "enter_destination_value": "Enter the destination value",
     "enter_the_saml1_uri": "Enter the saml1 URI",
     "enter_the_saml2_uri": "Enter the saml2 URI",
     "enter_the_attribute_name": "Enter the attribute name",
@@ -592,6 +629,7 @@
     "schemaName": "Schema Name",
     "user_management": "User Management",
     "fido_management": "FIDO Management",
+    "cache_refresh_management": "Cache Refresh Management",
     "error": "error",
     "token": "Tokens",
     "log_out": "Logout",
@@ -607,8 +645,9 @@
     "JARM": "JARM",
     "request_object": "Request Object",
     "agama": "Agama",
-    "add_agama_project": "Add Agama project",
-    "ssa_management": "SSA Management"
+    "ssa_management": "SSA Management",
+    "change_backend_bind_password": "Change Backend Bind Password",
+    "add_agama_project": "Add Agama project"
   },
   "links": {
     "support": "https://support.gluu.org/"

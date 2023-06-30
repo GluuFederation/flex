@@ -44,7 +44,7 @@ export const SCOPE_READ = BASE_URL + '/config/scopes.readonly'
 export const SCOPE_WRITE = BASE_URL + '/config/scopes.write'
 export const SCOPE_DELETE = BASE_URL + '/config/scopes.delete'
 
-export const SSA_PORTAl = 'https://jans.io/auth/ssa.portal'
+export const SSA_PORTAL = 'https://jans.io/auth/ssa.portal'
 export const SSA_ADMIN = 'https://jans.io/auth/ssa.admin'
 
 export const SCRIPT_READ = BASE_URL + '/config/scripts.readonly'
@@ -70,6 +70,9 @@ export const JWKS_DELETE = BASE_URL + '/config/jwks.delete'
 export const FIDO_READ = BASE_URL + '/config/fido2.readonly'
 export const FIDO_WRITE = BASE_URL + '/config/fido2.write'
 export const FIDO_DELETE = BASE_URL + '/config/fido2.delete'
+
+export const CACHE_REFRESH_READ = BASE_URL + '/config/cacherefresh.readonly'
+export const CACHE_REFRESH_WRITE = BASE_URL + '/config/cacherefresh.write'
 
 export const CACHE_READ = BASE_URL + '/config/cache.readonly'
 export const CACHE_WRITE = BASE_URL + '/config/cache.write'

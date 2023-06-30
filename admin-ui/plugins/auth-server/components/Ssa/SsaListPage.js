@@ -8,7 +8,7 @@ import { Paper } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   hasPermission,
-  SSA_PORTAl,
+  SSA_PORTAL,
   SSA_ADMIN,
   buildPayload,
 } from 'Utils/PermChecker'
@@ -130,7 +130,7 @@ const SSAListPage = () => {
     <>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasPermission(permissions, SSA_PORTAl)}>
+          <GluuViewWrapper canShow={hasPermission(permissions, SSA_PORTAL)}>
             <MaterialTable
               key={limit ? limit : 0}
               components={{
