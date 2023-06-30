@@ -19,7 +19,6 @@ import { useNavigate } from 'react-router'
 import SetTitle from 'Utils/SetTitle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { DeleteOutlined } from '@mui/icons-material'
-import TablePagination from '@mui/material/TablePagination'
 import SsaDetailPage from './SsaDetailPage'
 
 const SSAListPage = () => {
@@ -77,7 +76,7 @@ const SSAListPage = () => {
       title: t('fields.expiration'),
       field: 'expiration',
       render: (rowData) => {
-        const date = new Date(rowData.expiration).toLocaleDateString('en-US', {
+        const date = new Date(rowData.expiration * 1000).toLocaleDateString('en-US', {
           month: '2-digit',
           day: '2-digit',
           year: 'numeric',
@@ -127,15 +126,6 @@ const SSAListPage = () => {
     toggle()
   }
 
-  const onRowCountChangeClick = (count) => {
-    setLimit(count)
-    setPageNumber(0)
-  }
-
-  const onPageChangeClick = (page) => {
-    setPageNumber(page)
-  }
-
   return (
     <>
       <Card style={applicationStyle.mainCard}>
@@ -144,21 +134,7 @@ const SSAListPage = () => {
             <MaterialTable
               key={limit ? limit : 0}
               components={{
-                Container: PaperContainer,
-                Pagination: (props) => (
-                  <TablePagination
-                    component='div'
-                    count={items?.length || 0}
-                    page={pageNumber}
-                    onPageChange={(prop, page) => {
-                      onPageChangeClick(page)
-                    }}
-                    rowsPerPage={limit}
-                    onRowsPerPageChange={(prop, count) =>
-                      onRowCountChangeClick(count.props.value)
-                    }
-                  />
-                ),
+                Container: PaperContainer
               }}
               columns={tableColumns}
               data={items}

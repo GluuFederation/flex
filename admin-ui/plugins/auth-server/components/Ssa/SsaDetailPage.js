@@ -73,10 +73,11 @@ const SsaDetailPage = ({ row }) => {
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.description'
-              value={row.description}
+              label='fields.one_time_use'
+              value={row.ssa?.one_time_use?.toString()}
               doc_category={SSA}
-              doc_entry='description'
+              doc_entry='one_time_use'
+              isBadge
             />
           </Col>
           <Col sm={6}>
@@ -90,15 +91,6 @@ const SsaDetailPage = ({ row }) => {
           </Col>
         </Row>
         <Row>
-          <Col sm={6}>
-            <GluuFormDetailRow
-              label='fields.one_time_use'
-              value={row.ssa?.one_time_use?.toString()}
-              doc_category={SSA}
-              doc_entry='one_time_use'
-              isBadge
-            />
-          </Col>
           <Col sm={6}>
             <GluuFormDetailRow
               label='fields.rotate_ssa'
