@@ -171,6 +171,7 @@
     "ip_address": "Adresse IP",
     "is_active": "C'est actif",
     "is_expirable_client": "est un client expirable ?",
+    "is_expirable": "Est expirable?",
     "is_trusted_client": "Est un client de confiance",
     "json_web_keys": "Clés Web JSON",
     "jwks": "Jwks",

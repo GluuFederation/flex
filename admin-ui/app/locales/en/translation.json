@@ -146,6 +146,7 @@
     "ip_address": "IP Address",
     "is_active": "Active",
     "is_expirable_client": "Is Expirable Client?",
+    "is_expirable": "Is Expirable?",
     "is_trusted_client": "Supress authorization",
     "json_web_keys": "JSON Web Keys",
     "jwks": "Client JWKS",

@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { CardBody, Card, Form, Col, Row, Input } from 'Components'
+import { CardBody, Card, Form, Col, Row, FormGroup } from 'Components'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
-import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
 import * as Yup from 'yup'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import { Box } from '@mui/material'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
@@ -19,13 +16,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createSsa, toggleSaveConfig } from '../../redux/features/SsaSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import { useNavigate } from 'react-router'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+
+const grantTypes = [
+  'authorization_code',
+  'implicit',
+  'refresh_token',
+  'client_credentials',
+  'password',
+  'urn:ietf:params:oauth:grant-type:uma-ticket',
+]
 
 const SsaAddPage = () => {
   const userAction = {}
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { savedConfig } = useSelector((state) => state.ssaReducer)
-  const [neverExpire, setNeverExpire] = useState(false)
+  const [isExpirable, setIsExpirable] = useState(false)
   const [expirationDate, setExpirationDate] = useState(null)
   SetTitle(t('titles.ssa_management'))
   const [modal, setModal] = useState(false)
@@ -47,24 +54,17 @@ const SsaAddPage = () => {
     },
     validationSchema: Yup.object({
       software_id: Yup.mixed().required('Software ID is required'),
-      software_roles: Yup.array().required('Software Roles are mandatory.'),
+      software_roles: Yup.array()
+        .min(1)
+        .required('Software Roles are mandatory.'),
       description: Yup.mixed().required('Description is required'),
       org_id: Yup.mixed().required('Organization is required'),
-      grant_types: Yup.array().required('Please add a grant type.'),
+      grant_types: Yup.array().min(1).required('Please add a grant type.'),
     }),
     onSubmit: (values) => {
       toggle()
     },
   })
-
-  const grantTypes = [
-    { value: 'authorization_code', label: 'authorization_code' },
-    { value: 'refresh_token', label: 'refresh_token' },
-    { value: 'uma-ticket', label: 'uma_ticket' },
-    { value: 'client_credentials', label: 'client_credentials' },
-    { value: 'password', label: 'password' },
-    { value: 'implicit', label: 'implicit' },
-  ]
 
   const submitForm = (userMessage) => {
     toggle()
@@ -86,7 +86,7 @@ const SsaAddPage = () => {
       software_id,
       software_roles: software_roles?.map((role) => role.software_roles),
       grant_types,
-      expiration: neverExpire ? neverExpire : date,
+      expiration: isExpirable ? date : isExpirable,
       one_time_use,
       rotate_ssa,
       org_id,
@@ -96,24 +96,16 @@ const SsaAddPage = () => {
   }
 
   useEffect(() => {
-    if(savedConfig) {
+    if (savedConfig) {
       navigate('/auth-server/config/ssa')
     }
 
     return () => dispatch(toggleSaveConfig(false))
   }, [savedConfig])
 
-  useEffect(() => {
-    if (neverExpire) {
-      setExpirationDate(null)
-    }
-  }, [neverExpire])
-
-  useEffect(() => {
-    if (expirationDate) {
-      setNeverExpire(false)
-    }
-  }, [expirationDate])
+  function handleExpirable() {
+    setIsExpirable(!isExpirable)
+  }
 
   return (
     <>
@@ -170,120 +162,65 @@ const SsaAddPage = () => {
               }
               errorMessage={formik.errors.software_roles}
             />
-            <Box display='flex' flexDirection={'row'} gap={0}>
-              <GluuLabel
-                required
-                label={t('fields.grant_types_ssa')}
-                size={3}
-              />
-              <Box
-                display='flex'
-                flexDirection={'column'}
-                gap={0}
-                px={'5px'}
-                width={'100%'}
-              >
-                {grantTypes.map(({ value, label }) => {
-                  return (
-                    <Box
-                      key={value}
-                      display='flex'
-                      flexDirection={'row'}
-                      gap={2}
-                      alignItems={'center'}
-                      width={'100%'}
-                    >
-                      <Input
-                        id={'grant_types'}
-                        type='checkbox'
-                        value={value}
-                        name={'grant_types'}
-                        data-testid={value}
-                        onChange={formik.handleChange}
-                        size={2}
-                      />
-                      {/* <Label className='d-flex' sm={10}>
-                        <h5 style={{ margin: 0 }}>{t(`fields.${label}`)}</h5>
-                      </Label> */}
-                      <GluuLabel
-                        noColon
-                        size={10}
-                        label={t(`fields.${label}`)}
-                      />
-                    </Box>
-                  )
-                })}
-                {formik.errors.grant_types && formik.touched.grant_types ? (
-                  <div style={{ color: 'red' }}>
-                    {formik.errors.grant_types}
-                  </div>
-                ) : null}
-              </Box>
-            </Box>
-            <GluuCheckBoxRow
-              label='fields.one_time_use'
+            <GluuTypeAhead
+              name='grant_types'
+              label='fields.grant_types'
+              formik={formik}
+              value={formik.values.grant_types || []}
+              options={grantTypes}
+              lsize={3}
+              rsize={9}
+              required
+              showError={
+                formik.errors.grant_types && formik.touched.grant_types
+              }
+              errorMessage={formik.errors.grant_types}
+            />
+            <GluuToogleRow
               name='one_time_use'
-              handleOnChange={(e) => {
-                formik.setFieldValue('one_time_use', e.target.checked)
-              }}
+              formik={formik}
+              label='fields.one_time_use'
+              value={formik.values.one_time_use}
               lsize={3}
               rsize={7}
             />
-            <GluuCheckBoxRow
-              label='fields.rotate_ssa'
+            <GluuToogleRow
               name='rotate_ssa'
-              handleOnChange={(e) => {
-                formik.setFieldValue('rotate_ssa', e.target.checked)
-              }}
+              formik={formik}
+              label='fields.rotate_ssa'
+              value={formik.values.rotate_ssa}
               lsize={3}
               rsize={7}
             />
-            <Box display='flex' flexDirection={'row'} gap={0}>
-              <GluuLabel label={t('fields.expiration')} size={3} />
-              <Box
-                display='flex'
-                flexDirection={'column'}
-                gap={0}
-                px={'10.5px'}
-              >
-                <Box
-                  display='flex'
-                  flexDirection={'row'}
-                  gap={2}
-                  alignItems={'center'}
-                >
-                  <Box
-                    display='flex'
-                    flexDirection={'row'}
-                    gap={2}
-                    alignItems={'center'}
-                    width={'50%'}
-                  >
-                    <Input
-                      id={'expiration'}
-                      type='checkbox'
-                      checked={neverExpire}
-                      name={'expiration'}
-                      data-testid={'never'}
-                      onChange={(e) => {
-                        setNeverExpire(e.target.checked)
-                      }}
-                      size={2}
-                    />
-                    <GluuLabel noColon size={6} label={t(`fields.never`)} />
-                  </Box>
-                  <Box textAlign='center'>OR</Box>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      format='MM/DD/YYYY'
-                      id='date-picker-inline'
-                      value={expirationDate}
-                      onChange={(date) => setExpirationDate(date)}
-                    />
-                  </LocalizationProvider>
-                </Box>
-              </Box>
-            </Box>
+            <FormGroup row>
+              <Col sm={6}>
+                <GluuToogleRow
+                  name='expirable'
+                  formik={formik}
+                  label='fields.is_expirable'
+                  value={isExpirable}
+                  handler={handleExpirable}
+                  lsize={6}
+                  rsize={6}
+                />
+              </Col>
+              <Col sm={6}>
+                {isExpirable && (
+                  <FormGroup row>
+                    <Col sm={12}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          format='MM/DD/YYYY'
+                          id='date-picker-inline'
+                          value={expirationDate}
+                          onChange={(date) => setExpirationDate(date)}
+                        />
+                      </LocalizationProvider>
+                    </Col>
+                  </FormGroup>
+                )}
+              </Col>
+            </FormGroup>
             <Row>
               <Col>
                 <GluuCommitFooter

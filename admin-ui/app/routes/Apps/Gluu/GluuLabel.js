@@ -34,7 +34,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style, noCo
             <HelpOutline tabIndex="-1" style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tooltip-id={doc_entry} data-for={doc_entry} />
           </>
         }
-        {!noColon && ":"}
+        :
       </h5>
       {/* {doc_category && (
         <ReactTooltip

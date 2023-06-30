@@ -2,7 +2,7 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import SsaApi from '../api/SsaApi'
-import { getSsaConfigResponse, removeSsaResponse, toggleSaveConfig } from '../features/SsaSlice'
+import { getSsaConfig, getSsaConfigResponse, removeSsaResponse, toggleSaveConfig } from '../features/SsaSlice'
 import { CREATE, DELETION } from '../../../../app/audit/UserActionType'
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -50,12 +50,12 @@ export function* removeSsaConfig({ payload }) {
   const token = yield select((state) => state.authReducer.token.access_token)
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    const data = yield call(new SsaApi().deleteSsa, {
+    yield call(new SsaApi().deleteSsa, {
       jti: payload.action.action_data,
       token,
       authServerHost
     })
-    createAndDownloadJSONFile(data)
+    yield put(getSsaConfig())
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(removeSsaResponse())

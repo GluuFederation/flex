@@ -208,7 +208,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
               name="expirable"
               formik={formik}
               label="fields.is_expirable_client"
-              value={client.expirable && client.expirable.length ? true : false}
+              value={client.expirable?.length ? true : false}
               handler={handleExpirable}
               doc_category={DOC_CATEGORY}
               lsize={6}
@@ -218,7 +218,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
           )}
         </Col>
         <Col sm={6}>
-          {client.expirable && client.expirable.length ? (
+          {client.expirable?.length ? (
             <FormGroup row>
               <Col sm={12}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -227,7 +227,6 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
                     name="expirationDate"
                     value={expirationDate}
                     onChange={(date) => {
-                      console.log(`new Date(date)`, new Date(date))
                       formik.setFieldValue('expirationDate', new Date(date))
                       setExpirationDate(date)
                     }}
