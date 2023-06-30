@@ -142,6 +142,7 @@ nav:
  #       - 'admin/saml/README.md'
   #      - 'SAML IDP': 'admin/saml/idp.md'
    #     - 'SAML Proxy': 'admin/saml/proxy.md'
+    - 'Casa': 'admin/casa/README.md'
     - 'Flex Recipes':
         - 'admin/recipes/README.md'
         - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
