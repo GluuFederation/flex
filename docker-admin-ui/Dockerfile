@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=d58431f442b2e68ecd5addfc700581c4550dcdb0
+ENV ADMIN_UI_VERSION=72ee8fcef2b483848d0bda0bd26e4cdf9d4748bd
 
 RUN mkdir -p /opt/flex
 

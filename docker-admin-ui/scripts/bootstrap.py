@@ -280,6 +280,12 @@ def resolve_conf_app(old_conf, new_conf):
             old_conf["licenseConfig"]["licenseHardwareKey"] = new_conf["licenseConfig"]["licenseHardwareKey"]
             should_update = True
 
+        # opHost changes on authServerClient and tokenServerClient
+        for srv_client in ("authServerClient", "tokenServerClient"):
+            if new_conf["oidcConfig"][srv_client]["opHost"] != old_conf["oidcConfig"][srv_client]["opHost"]:
+                old_conf["oidcConfig"][srv_client]["opHost"] = new_conf["oidcConfig"][srv_client]["opHost"]
+                should_update = True
+
     # finalized status and conf
     return should_update, old_conf
 
