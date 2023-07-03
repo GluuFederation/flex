@@ -227,3 +227,13 @@ Executing rm -r -f /opt/dist
 Removing /etc/apache2/sites-enabled/https_jans.conf
 Removing /etc/apache2/sites-available/https_jans.conf
 ```
+
+### Remove Gluu Flex Packages:
+List existing Gluu Flex packages with:
+```
+sudo apt list --installed | grep flex
+```
+Remove packages:
+```
+sudo apt remove <package name>
+```
