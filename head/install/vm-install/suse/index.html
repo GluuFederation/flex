@@ -732,6 +732,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#remove-gluu-flex-packages" class="md-nav__link">
+    Remove Gluu Flex Packages:
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1641,6 +1648,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#remove-gluu-flex-packages" class="md-nav__link">
+    Remove Gluu Flex Packages:
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1792,8 +1806,8 @@ Alternatively, for SSA file can be passed as a parameter to the setup script as 
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
 <p>Removing Flex is a two step process:</p>
 <ul>
-<li><a href="#uninstall-gluu-flex">Uninstall Gluu Flex</a></li>
-<li><a href="#uninstall-janssen-packages">Uninstall Janssen Packages</a></li>
+<li><a href="#uninstall-gluu-flex">Uninstall Gluu Flex</a> and <a href="#uninstall-janssen-packages">Uninstall Janssen Packages</a></li>
+<li><a href="#remove-gluu-flex-packages">Remove Gluu Packages</a></li>
 </ul>
 <p>If you have not run the setup script, you can skip step 1 and just remove
 the package.</p>
@@ -1887,13 +1901,20 @@ Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/apache2/vhosts.d/_https_jans.conf
 </code></pre></div></p>
+<h3 id="remove-gluu-flex-packages">Remove Gluu Flex Packages:<a class="headerlink" href="#remove-gluu-flex-packages" title="Permanent link">#</a></h3>
+<p>List existing Gluu packages with:
+<div class="highlight"><pre><span></span><code>sudo rpm -qa <span class="p">|</span> grep flex
+</code></pre></div>
+Use <code>zypper</code> to remove packages:
+<div class="highlight"><pre><span></span><code>sudo zypper remove &lt;package-name&gt;
+</code></pre></div></p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-28T11:56:29+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-28</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-03T08:17:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-03</span>
       
         <br>
         Created:
