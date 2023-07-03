@@ -1,4 +1,3 @@
-
 ---
 tags:
 - administration
@@ -28,11 +27,13 @@ sudo ufw allow https
 
 ### Download and Verify the Release Package
 
-- Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
+- Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases). Choose
+the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
-
+```
+```shell
 #Ubuntu 20.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
 ```
@@ -50,33 +51,41 @@ unzip automation-flex-public-gpg.zip;
 sudo gpg --import automation-flex-public-gpg.asc;
 ```
 
-- Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
+- Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the 
+package.  Choose the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
-
+```
+```shell
 #Ubuntu 20.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
 ```
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
+Choose the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
 sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
-
+```
+```shell
 #Ubuntu 20.04
 sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
 ```
 Output similar to below should confirm the integrity of the downloaded package.
 ```shell
-flex_replace-flex-version.ubuntu<version>_amd64.deb.sha256sum: ok
+flex_replace-flex-version.ubuntu<version>_amd64.deb: ok
 ```
 
 ### Install the Release Package
+
+Choose the correct command from below based on the OS version.
+
 ```shell
 #Ubuntu 22.04
 apt install -y ./flex_replace-flex-version.ubuntu22.04_amd64.deb
-
+```
+```shell
 #Ubuntu 20.04
 apt install -y ./flex_replace-flex-version.ubuntu20.04_amd64.deb
 ```
@@ -227,4 +236,14 @@ Executing rm -r -f /opt/opendj
 Executing rm -r -f /opt/dist
 Removing /etc/apache2/sites-enabled/https_jans.conf
 Removing /etc/apache2/sites-available/https_jans.conf
+```
+
+### Remove Gluu Flex Packages:
+List existing Gluu Flex packages with:
+```shell
+sudo apt list --installed | grep flex
+```
+Remove packages:
+```shell
+sudo apt remove <package name>
 ```

@@ -65,7 +65,7 @@ sha256sum -c flex-replace-flex-version-el8.x86_64.rpm.sha256sum;
 ```
 Output similar to below should confirm the integrity of the downloaded package.
 ```text
-flex-replace-flex-version-el8.x86_64.rpm.sha256sum : ok
+flex-replace-flex-version-el8.x86_64.rpm : ok
 ```
 
 ### Install the Release Package
@@ -212,4 +212,12 @@ Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/httpd/conf.d/https_jans.conf
 ```
-
+### Remove Gluu Flex Packages:
+List existing Gluu packages with:
+```shell
+sudo yum list installed | grep flex
+```
+Remove packages:
+```shell
+sudo yum remove <package-name>
+```
