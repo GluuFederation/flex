@@ -18,7 +18,7 @@ export const dynamicConfigInitValues = (staticConfiguration) => {
     metricReporterKeepDataDays:
       staticConfiguration?.metricReporterKeepDataDays || '',
     personCustomObjectClassList:
-      staticConfiguration?.personCustomObjectClassList || '',
+      staticConfiguration?.personCustomObjectClassList || [],
     superGluuEnabled: staticConfiguration?.superGluuEnabled,
   }
 }

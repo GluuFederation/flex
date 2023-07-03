@@ -1,4 +1,4 @@
-import { TDynamicConfigurationPayload } from "../entities/TDynamicConfiguration"
+import { TDynamicConfigurationPayload } from '../entities/TDynamicConfiguration'
 
 export const fidoApiPayload = ({ fidoConfiguration, data }) => {
   const payload = fidoConfiguration.fido
@@ -53,7 +53,7 @@ export const fidoApiPayloadDynamicConfig = ({ fidoConfiguration, data }) => {
   )
 
   const opts = {}
-  const fiodData = JSON.stringify(data)
+  const fiodData = JSON.stringify(payload)
   opts['appConfiguration1'] = JSON.parse(fiodData)
 
   return opts as TDynamicConfigurationPayload

@@ -15,8 +15,8 @@ export const staticConfigInitValues = (staticConfiguration) => {
     serverMetadataFolder: staticConfiguration?.serverMetadataFolder || '',
     userAutoEnrollment: staticConfiguration?.userAutoEnrollment,
     requestedCredentialTypes:
-      staticConfiguration?.requestedCredentialTypes || '',
-    requestedParties: staticConfiguration?.requestedParties || '',
+      staticConfiguration?.requestedCredentialTypes || [],
+    requestedParties: staticConfiguration?.requestedParties || [],
   }
 }
 
