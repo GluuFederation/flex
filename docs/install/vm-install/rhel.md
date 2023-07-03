@@ -212,4 +212,12 @@ Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/httpd/conf.d/https_jans.conf
 ```
-
+### Remove Gluu Flex Packages:
+List existing Gluu packages with:
+```shell
+sudo yum list installed | grep flex
+```
+Remove packages:
+```shell
+sudo yum remove <package-name>
+```

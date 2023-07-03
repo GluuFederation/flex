@@ -216,10 +216,10 @@ Removing /etc/apache2/vhosts.d/_https_jans.conf
 
 ### Remove Gluu Flex Packages:
 List existing Gluu packages with:
-```
+```shell
 sudo rpm -qa | grep flex
 ```
 Use `zypper` to remove packages:
-```
+```shell
 sudo zypper remove <package-name>
 ```
