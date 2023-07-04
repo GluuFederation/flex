@@ -1,4 +1,5 @@
-import { select } from 'redux-saga/effects'
+import { put, select } from 'redux-saga/effects'
+import { handleApiTimeout } from '../actions'
 
 export function* initAudit() {
   const auditlog = {}
@@ -11,4 +12,10 @@ export function* initAudit() {
   auditlog['author'] = author
   auditlog['status'] = 'succeed'
   return auditlog
+}
+
+export function* checkApiTimeout(error) {
+  if(error?.message?.toLocaleLowerCase()?.includes('timeout')) {
+    yield put(handleApiTimeout({ isTimeout: true }))
+  }
 }
