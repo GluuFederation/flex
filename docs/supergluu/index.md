@@ -16,10 +16,10 @@ Super Gluu documentation is organized into the following sections:
 Super Gluu 3.1.x is compatible with all versions of Janssen ( with/without Flex-UI). 
 
 ## FIDO Security
-During Super Gluu authentication, the Gluu Server does more than look at the device ID to grant access. Super Gluu uses the Gluu Server's FIDO U2F endpoints to enroll a public key. The private key is stored on the device. At authentication time, the Gluu Server sends a challenge response to the device to check for the corresponding private key. This adds an extra layer of security to Super Gluu push notification authentications. 
+During Super Gluu authentication, the Janssen does more than look at the device ID to grant access. Super Gluu uses the Janssen Server's FIDO U2F endpoints to enroll a public key. The private key is stored on the device. At authentication time, the Janssen sends a challenge response to the device to check for the corresponding private key. This adds an extra layer of security to Super Gluu push notification authentications. 
 
 ## How to Use Super Gluu 
-Super Gluu is tightly bundled with the Gluu Server. Follow the [Gluu installation guide](https://gluu.org/docs/ce/installation-guide/) to deploy Gluu, then follow the Super Gluu [admin guide](https://gluu.org/docs/ce/authn-guide/supergluu/) to configure and begin using Super Gluu for strong authentication.
+Super Gluu is tightly bundled with Janssen. Follow the [Janssen installation guide](https://docs.jans.io/v1.0.14/admin/install/) to deploy Janssen with Flex-UI, then follow the Super Gluu [admin guide](https://gluu.org/docs/ce/authn-guide/supergluu/) to configure and begin using Super Gluu for strong authentication.
 
 ### Workflows
 Super Gluu supports multiple workflows, including: 
