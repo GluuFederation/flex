@@ -3,7 +3,7 @@
 ## Overview
 Super Gluu is a free and secure two-factor authentication (2FA) mobile app. 
 
-Super Gluu is tightly bundled with the [Gluu Server](https://gluu.org/gluu-server) identity and access management platform, and can be used to achieve 2FA for web and mobile applications that leverage Gluu for authentication.
+Super Gluu is tightly bundled with the [Janssen Server](https://docs.jans.io/), and can be used to achieve 2FA for web and mobile applications that leverage Gluu for authentication.
 
 Super Gluu documentation is organized into the following sections:
 
