@@ -1,7 +1,7 @@
 {
     "oidcConfig": {
         "authServerClient": {
-            "opHost": "https://%(hostname)s/admin",
+            "opHost": "https://%(hostname)s",
             "clientId": "%(admin_ui_client_id)s",
             "clientSecret": "%(admin_ui_client_encoded_pw)s",
             "scopes": [
@@ -18,7 +18,7 @@
             "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
         },
         "tokenServerClient": {
-            "opHost": "https://%(hostname)s/admin",
+            "opHost": "https://%(hostname)s",
             "clientId": "%(token_server_admin_ui_client_id)s",
             "clientSecret": "%(token_server_admin_ui_client_encoded_pw)s",
             "tokenEndpoint": "%(token_server_token_url)s",
