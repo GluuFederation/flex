@@ -64,10 +64,6 @@ const licenseSlice = createSlice({
     },
     generateTrialLicenseResponse: (state) => {
       state.generatingTrialKey = false
-    },
-    handleApiTimeout: (state, action) => {
-      state.isLoading = false
-      state.isTimeout = action.payload.isTimeout || false
     }
   },
 })
@@ -83,8 +79,7 @@ export const {
   uploadNewSsaToken,
   uploadNewSsaTokenResponse,
   generateTrialLicense,
-  generateTrialLicenseResponse,
-  handleApiTimeout
+  generateTrialLicenseResponse
 } = licenseSlice.actions
 
 export default licenseSlice.reducer

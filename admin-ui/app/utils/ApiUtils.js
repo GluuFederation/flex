@@ -1,5 +1,6 @@
 import store from 'Redux/store'
-import { handleApiTimeout } from '../redux/actions'
+import { handleApiTimeout } from 'Redux/features/initSlice'
+
 export function handleResponse(error, reject, resolve, data) {
   if (error) {
     reject(error)

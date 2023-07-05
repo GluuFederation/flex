@@ -15,7 +15,7 @@ function ApiKeyRedirect({
   isConfigValid
 }) {
   const { t } = useTranslation()
-  const { isTimeout } = useSelector((state) => state.licenseReducer)
+  const { isTimeout } = useSelector((state) => state.initReducer)
 
   return (
     <React.Fragment>
