@@ -37,6 +37,11 @@ const initSlice = createSlice({
       if (action.payload?.data) {
         state.attributes = action.payload.data?.entries
       }
+    },
+    handleApiTimeout: (state, action) => {
+      console.log('action', action.payload)
+      state.isLoading = false
+      state.isTimeout = action.payload.isTimeout || false
     }
   }
 })
@@ -49,7 +54,8 @@ export const {
   getScopes,
   getScopesResponse,
   getAttributes,
-  getAttributesResponse
+  getAttributesResponse,
+  handleApiTimeout
 } = initSlice.actions
 export const { actions, reducer, state } = initSlice
 reducerRegistry.register('initReducer', reducer)

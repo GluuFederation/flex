@@ -61,4 +61,5 @@ export function configStore() {
   return { store, persistor }
 }
 export type RootState = ReturnType<typeof rootReducers>;
+export default store
 

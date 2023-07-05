@@ -1,14 +1,12 @@
 /**
  * License Sagas
  */
-import { all, call, fork, put, take, takeEvery } from 'redux-saga/effects'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse, generateTrialLicenseResponse } from '../actions'
+import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
+import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse, generateTrialLicenseResponse, checkUserLicenseKeyResponse } from '../actions'
 
 import LicenseApi from '../api/LicenseApi'
 import { getClientWithToken } from '../api/base'
-import { checkUserLicenseKeyResponse } from '../actions'
 import {
-  activateLicense,
   fetchApiTokenWithDefaultScopes,
 } from '../api/backend-api'
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
-import UploadSSA from './UploadSSA'
 import { useLocation } from 'react-router'
 import { saveState } from './TokenController'
 import queryString from 'query-string'
@@ -14,30 +13,31 @@ import {
 } from 'Redux/actions'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 import { checkLicenseConfigValid } from '../redux/actions'
+import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 
 export default function AppAuthProvider(props) {
   const dispatch = useDispatch()
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
   const [roleNotFound, setRoleNotFound] = useState(false)
-
+  const { isTimeout } = useSelector((state) => state.initReducer)
   const { config, userinfo, userinfo_jwt, token, backendIsUp } = useSelector(
-    (state) => state.authReducer,
+    (state) => state.authReducer
   )
   const {
     islicenseCheckResultLoaded,
     isLicenseActivationResultLoaded,
     isLicenseValid,
-    isConfigValid
+    isConfigValid,
   } = useSelector((state) => state.licenseReducer)
 
   useEffect(() => {
     dispatch(checkLicenseConfigValid())
     dispatch(getOAuth2Config())
   }, [])
-  
+
   useEffect(() => {
-    if(isConfigValid) {
+    if (isConfigValid) {
       dispatch(checkLicensePresent())
     }
   }, [isConfigValid])
@@ -126,8 +126,16 @@ export default function AppAuthProvider(props) {
   return (
     <React.Fragment>
       <SessionTimeout isAuthenticated={showContent} />
+      {isTimeout && (
+        <GluuTimeoutModal
+          message={'The UI backend service is down'}
+          description={
+            'The request has been terminated as there is no response from the server for more than 60 seconds.'
+          }
+        />
+      )}
       {showContent && props.children}
-      {!showContent &&(
+      {!showContent && (
         <ApiKeyRedirect
           backendIsUp={backendIsUp}
           isLicenseValid={isLicenseValid}
