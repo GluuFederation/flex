@@ -61,15 +61,6 @@ function ApiKeyRedirect({
           />
         )}
 
-        {isTimeout && (
-          <GluuErrorModal
-            message={'The UI backend service is down'}
-            description={
-              'The request has been terminated as there is not response from server for more than 60 seconds.'
-            }
-          />
-        )}
-
         {roleNotFound && (
           <GluuErrorModal
             message={t('Unauthorized User')}
