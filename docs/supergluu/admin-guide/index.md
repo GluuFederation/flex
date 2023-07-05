@@ -5,7 +5,7 @@ To configure and enable Super Gluu 2FA, Flex administrator need to perform below
 
  - Log into Flex UI
  - `Admin` > `Scripts`
- - Enable `super_gluu` script ![image](../supergluu/admin-guide/Flex_UI_SuperGluu_script.png)
+ - Enable `super_gluu` script ![image](../../assets/supergluu/admin-guide/Flex_UI_SuperGluu_script.png)
 
 read the [Gluu Server docs](https://gluu.org/docs/ce/authn-guide/supergluu/). 
 
