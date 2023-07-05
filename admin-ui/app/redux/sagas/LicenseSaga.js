@@ -2,14 +2,13 @@
  * License Sagas
  */
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse, generateTrialLicenseResponse, handleApiTimeout, checkUserLicenseKeyResponse } from '../actions'
+import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse, generateTrialLicenseResponse, checkUserLicenseKeyResponse } from '../actions'
 
 import LicenseApi from '../api/LicenseApi'
 import { getClientWithToken } from '../api/base'
 import {
   fetchApiTokenWithDefaultScopes,
 } from '../api/backend-api'
-import { checkApiTimeout } from 'Redux/sagas/SagaUtils'
 
 const JansConfigApi = require('jans_config_api')
 
@@ -32,7 +31,6 @@ function* checkLicensePresentWorker() {
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
   } catch (error) {
     console.log('Error in checking License present.', error)
-    yield* checkApiTimeout(error)
   }
   yield put(checkLicensePresentResponse({ isLicenseValid: false }))
 }
@@ -55,12 +53,10 @@ function* generateTrailLicenseKey() {
       } catch (error) {
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
-        yield* checkApiTimeout(error)
       }
     }
   } catch (error) {
     console.log('Error in generating key.', error)
-    yield* checkApiTimeout(error)
   }
 }
 
@@ -71,7 +67,6 @@ function* activateCheckUserLicenseKey({ payload }) {
     yield put(checkUserLicenseKeyResponse(response))
   } catch (error) {
     console.log(error)
-    yield* checkApiTimeout(error)
   }
 }
 function* uploadNewSsaToken({ payload }) {
@@ -87,7 +82,6 @@ function* uploadNewSsaToken({ payload }) {
     // window.location.reload()
   } catch (error) {
     console.log(error)
-    yield* checkApiTimeout(error)
   }
 }
 
@@ -97,7 +91,6 @@ function* checkAdminuiLicenseConfig() {
     const response = yield call(licenseApi.checkAdminuiLicenseConfig)
     yield put(checkLicenseConfigValidResponse(response?.apiResult))
   } catch (error) {
-    yield* checkApiTimeout(error)
     console.log(error)
   }
 }
