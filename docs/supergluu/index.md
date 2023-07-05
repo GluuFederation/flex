@@ -13,7 +13,7 @@ Super Gluu documentation is organized into the following sections:
 
 ## Compatibility 
 
-Super Gluu 3.1.x is compatible with Gluu Server 3.x and 4.x. 
+Super Gluu 3.1.x is compatible with all versions of Janssen ( with/without Flex-UI). 
 
 ## FIDO Security
 During Super Gluu authentication, the Gluu Server does more than look at the device ID to grant access. Super Gluu uses the Gluu Server's FIDO U2F endpoints to enroll a public key. The private key is stored on the device. At authentication time, the Gluu Server sends a challenge response to the device to check for the corresponding private key. This adds an extra layer of security to Super Gluu push notification authentications. 
