@@ -1,7 +1,9 @@
 # Super Gluu Admin Guide
 
 ## Implementation
-To configure and enable Super Gluu 2FA, read the [Gluu Server docs](https://gluu.org/docs/ce/authn-guide/supergluu/). 
+To configure and enable Super Gluu 2FA, Flex administrator need to perform below operations. 
+
+read the [Gluu Server docs](https://gluu.org/docs/ce/authn-guide/supergluu/). 
 
 ## Ad removal  
 
