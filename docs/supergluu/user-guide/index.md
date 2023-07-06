@@ -80,7 +80,7 @@ The information screen contains data about:
 This tab contains all available keys for each Flex. A key is a unique file that is generated during enrollment, and is used to authenticate the device on the server. If a key for a server is deleted, enroll again with a new key.
 
 !!! Note
-    If you delete a key from your app, but wish to re-enroll the same device against the same server, the corresponding entry for that device also needs to be removed from the user record in the Flex. See the [Gluu admin guide](https://gluu.org/docs/ce/user-management/local-user-management/#managing-associated-2fa-devices).  
+    If you delete a key from your app, but wish to re-enroll the same device against the same server, the corresponding entry for that device also needs to be removed from the user record in the Flex.
 
 ![keys screen](../../assets/supergluu/user-guide/key.jpg)
 
