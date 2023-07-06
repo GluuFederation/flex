@@ -17,7 +17,8 @@ After above modifications administrator might want to test their setup. To do th
 
  - Change `default authentication method` to 'super_gluu'. How to is available [here](https://docs.jans.io/v1.0.14/admin/config-guide/jans-cli/cli-default-authentication-method/)
  - Keep this browser window active so you can revert authentication method to default one.
- - Open a new browser and test authentication. 
+ - Prepare your mobile device by follow [this](https://github.com/GluuFederation/flex/blob/docs-sg-changes/docs/supergluu/index.md#how-to-use-super-gluu) documentation.
+ - Test your setup 
 
 ## Ad removal  
 
