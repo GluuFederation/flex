@@ -24,7 +24,7 @@ Super Gluu is tightly bundled with Janssen. Follow the [Flex installation guide]
 ### Workflows
 Super Gluu supports multiple workflows, including: 
 
-- A one-step, passwordless authentication, where the person scans a QR code with their Super Gluu app, and the Gluu Server looks up which person is associated with that device. 
+- A one-step, passwordless authentication, where the person scans a QR code with their Super Gluu app, and the Flex/Janssen looks up which person is associated with that device. 
 
 - A two-step authentication, where the person enters their username and then receives an out-of-band push notification to the mobile device to authorize access (a.k.a identifier first authentication).
 
