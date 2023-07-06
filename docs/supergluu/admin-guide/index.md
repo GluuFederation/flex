@@ -1,32 +1,46 @@
-# Super Gluu Admin Guide
+---
+tags:
+- Super Gluu
+- administration
+- configuration
+---
 
-## Implementation
-To configure and enable Super Gluu 2FA, Flex administrator need to perform below operations. 
+# Super Gluu Administration Guide
 
-### Configuration in Flex
+To configure and enable Super Gluu 2FA, Gluu Flex administrator need to perform below operations using Flex UI. 
+
+## Configuration Using Flex UI
 
  - Log into Flex UI
- - `Admin` > `Scripts`
- - Enable `super_gluu` script ![image](../../assets/supergluu/admin-guide/Flex_UI_SuperGluu_script.png)
+ - Navigate to `Admin` > `Scripts`
+ - Enable `super_gluu` script 
+ 
+   ![image](../../assets/supergluu/admin-guide/Flex_UI_SuperGluu_script.png)
 
- - Go to `FIDO` and Enable SuperGluu. ![image](../../assets/supergluu/admin-guide/Flex_Super_Gluu_2.png)
+ - Navigate to `FIDO` and Enable SuperGluu
+ 
+   ![image](../../assets/supergluu/admin-guide/Flex_Super_Gluu_2.png)
 
-### Test Authentication
+At this point, Super Gluu module on Gluu Flex is configured and ready. 
 
-After above modifications administrator might want to test their setup. To do that: 
+### Test 2FA Authentication Flow
 
- - Change `default authentication method` to 'super_gluu'. How to is available [here](https://docs.jans.io/v1.0.14/admin/config-guide/jans-cli/cli-default-authentication-method/)
+To test Super Gluu configuration from end-to-end, an administrator can follow the steps below: 
+
+ - Change the `default authentication method` to 'super_gluu' using [this guide](https://docs.jans.io/v1.0.14/admin/config-guide/jans-cli/cli-default-authentication-method/)
  - Keep this browser window active so you can revert authentication method to default one.
- - Prepare your mobile device by following [User Guide](https://github.com/GluuFederation/flex/blob/docs-sg-changes/docs/supergluu/user-guide/index.md).
- - Test your setup 
+ - Prepare your mobile device by following [Super Gluu mobile app user guide](https://github.com/GluuFederation/flex/blob/docs-sg-changes/docs/supergluu/user-guide/index.md)
+ - Perform tests using a test user 
 
-## Ad removal  
+## Remove Advertisements From Super Gluu Mobile Application
 
-To remove advertisements from Super Gluu, a Gluu license file needs to be added to the corresponding Gluu Server.
+To remove advertisements from Super Gluu mobile app, a Gluu license file needs to be added to the corresponding 
+Gluu Flex Server.
 
-Follow these instructions: 
+Follow these instructions to add license file: 
 
-1. Inside the Gluu Server chroot, create a new license file titled `/etc/certs/super_gluu_license.json` and add the license details.
+1. Inside the Gluu Flex Server chroot, create a new license file titled `/etc/certs/super_gluu_license.json` and add 
+the license details.
 
       For example:
 
