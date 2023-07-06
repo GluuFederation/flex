@@ -32,6 +32,7 @@ To test Super Gluu configuration from end-to-end, an administrator can follow th
  - Prepare your mobile device by following [Super Gluu mobile app user guide](https://github.com/GluuFederation/flex/blob/docs-sg-changes/docs/supergluu/user-guide/index.md)
  - Perform tests using a test user 
 
+<!--
 ## Remove Advertisements From Super Gluu Mobile Application
 
 To remove advertisements from Super Gluu mobile app, a Gluu license file needs to be added to the corresponding 
@@ -65,6 +66,7 @@ the license details.
 
 1. Turn on Super Gluu 2FA for your server, as discussed in the [Gluu Server docs](https://gluu.org/docs/ce/authn-guide/supergluu/)
 
+-->
 1. Enroll Super Gluu for a user account, and ads will be removed from the app on that device. 
 
 All users who enroll Super Gluu against this server should now see advertisements removed from the app on their device. 
