@@ -23,7 +23,7 @@ export default class LicenseApi {
   }
   uploadSSAtoken = (data) => {
     const option = {}
-    option['sSARequest'] = data
+    option['sSARequest'] = data.payload
     return new Promise((resolve, reject) => {
       this.api.adminuiPostSsa(option, (error, data) => {
         handleResponse(error, reject, resolve, data)
