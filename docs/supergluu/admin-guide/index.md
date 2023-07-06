@@ -3,13 +3,21 @@
 ## Implementation
 To configure and enable Super Gluu 2FA, Flex administrator need to perform below operations. 
 
+### Configuration in Flex
+
  - Log into Flex UI
  - `Admin` > `Scripts`
  - Enable `super_gluu` script ![image](../../assets/supergluu/admin-guide/Flex_UI_SuperGluu_script.png)
 
  - Go to `FIDO` and Enable SuperGluu. ![image](../../assets/supergluu/admin-guide/Flex_Super_Gluu_2.png)
 
-read the [Gluu Server docs](https://gluu.org/docs/ce/authn-guide/supergluu/). 
+### Test Authentication
+
+After above modifications administrator might want to test their setup. To do that: 
+
+ - Change `default authentication method` to 'super_gluu'. How to is available [here](https://docs.jans.io/v1.0.14/admin/config-guide/jans-cli/cli-default-authentication-method/)
+ - Keep this browser window active so you can revert authentication method to default one.
+ - Open a new browser and test authentication. 
 
 ## Ad removal  
 
