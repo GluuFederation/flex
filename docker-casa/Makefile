@@ -1,5 +1,5 @@
-GLUU_VERSION?=5.0.0
-IMAGE_NAME=ghcr.io/gluufederation/flex/casa
+GLUU_VERSION?=$(shell grep -Po 'org.opencontainers.image.version="\K.*?(?=")' Dockerfile)
+IMAGE_NAME?=$(shell grep -Po 'org.opencontainers.image.url="\K.*?(?=")' Dockerfile)
 DEV_VERSION?=$(shell echo ${GLUU_VERSION} | cut -d '-' -f 1)_dev
 
 # pass extra build args, i.e. `make build-dev BUILD_ARGS="--no-cache"`
