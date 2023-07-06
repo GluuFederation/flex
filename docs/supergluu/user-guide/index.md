@@ -24,7 +24,7 @@ For additional security, Super Gluu gives you the option to configure either a p
 
 ### Confirm Push Notification
 
-Next, it will ask for permission to send push notifications from the Gluu Server. This choice can be changed later in the device settings. More information about the push notification will be covered later in the document.
+Next, it will ask for permission to send push notifications from the Flex. This choice can be changed later in the device settings. More information about the push notification will be covered later in the document.
 
 ![confirm Push Notification](../../assets/supergluu/user-guide/push_notifications.jpg)
 
@@ -36,7 +36,7 @@ After configuration, the main screen is displayed. It features the main enrollme
 
 ### QR Code Enrollment
 
-To enroll a device, enter the credentials in your Gluu Server web app to generate a QR code, then click the `Scan QR Code` button on the Super Gluu app's Home screen:
+To enroll a device, enter the credentials in your Flex web app to generate a QR code, then click the `Scan QR Code` button on the Super Gluu app's Home screen:
 
 ![scanning screen](../../assets/supergluu/user-guide/qr_code.jpg)
 
@@ -68,7 +68,7 @@ The Log tab will report about the enrollment and authentication process and disp
 
 The information screen contains data about:
 
-- Gluu server name & server URL
+- Flex name & server URL
 - Username
 - IP address & location
 - Time & date
@@ -77,10 +77,10 @@ The information screen contains data about:
 
 ### Keys
 
-This tab contains all available keys for each Gluu server. A key is a unique file that is generated during enrollment, and is used to authenticate the device on the server. If a key for a server is deleted, enroll again with a new key.
+This tab contains all available keys for each Flex. A key is a unique file that is generated during enrollment, and is used to authenticate the device on the server. If a key for a server is deleted, enroll again with a new key.
 
 !!! Note
-    If you delete a key from your app, but wish to re-enroll the same device against the same server, the corresponding entry for that device also needs to be removed from the user record in the Gluu Server. See the [Gluu admin guide](https://gluu.org/docs/ce/user-management/local-user-management/#managing-associated-2fa-devices).  
+    If you delete a key from your app, but wish to re-enroll the same device against the same server, the corresponding entry for that device also needs to be removed from the user record in the Flex. See the [Gluu admin guide](https://gluu.org/docs/ce/user-management/local-user-management/#managing-associated-2fa-devices).  
 
 ![keys screen](../../assets/supergluu/user-guide/key.jpg)
 
@@ -94,7 +94,7 @@ In the Settings tab, there are options to configure the passcode or TouchID.
 
 ## Push Notifications
 
-Super Gluu can receive push notifications from Gluu Servers. The server can send an enrollment or authentication request to the application, as if it scanned the QR code directly. 
+Super Gluu can receive push notifications from Flex. The server can send an enrollment or authentication request to the application, as if it scanned the QR code directly. 
 
 ![push notification](../../assets/supergluu/user-guide/push_notification.jpg)
 
