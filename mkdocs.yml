@@ -170,16 +170,16 @@ nav:
             - 'Custom Branding': 'casa/plugins/custom-branding.md'
         - 'FAQ': 'casa/administration/faq.md'
     - User Guide: 'casa/user-guide.md'
-#- 'Super Gluu':
-#    - 'supergluu/index.md'
-#    - User Guide: 'supergluu/user-guide/index.md'
-#    - Administration Guide: 'supergluu/admin-guide/index.md'
-#    - Developer Guide: 'supergluu/developer-guide/index.md'
+- 'Super Gluu':
+    - 'supergluu/index.md'
+    - User Guide: 'supergluu/user-guide/index.md'
+    - Administration Guide: 'supergluu/admin-guide/index.md'
+    - Developer Guide: 'supergluu/developer-guide/index.md'
 
-#   Use section below to configure documentation structure as per available property and feature-flag documents
-#    - 'JSON Configuration':
-#      - 'reference/json-config/README.md'
-#      - 'Properties':
-#          - 'reference/json-config/properties/README.md'
-#          - 'Casa': 'reference/json-config/properties/casa-properties.md'
-#          - 'Casa Config': 'reference/json-config/properties/casaconfig-properties.md'
+   #Use section below to configure documentation structure as per available property and feature-flag documents
+    - 'JSON Configuration':
+      - 'reference/json-config/README.md'
+      - 'Properties':
+          - 'reference/json-config/properties/README.md'
+          - 'Casa': 'reference/json-config/properties/casa-properties.md'
+          - 'Casa Config': 'reference/json-config/properties/casaconfig-properties.md'
