@@ -43,7 +43,8 @@ authentications after the initial device registration process.
 
 ### Testing locally 
 
-Super Gluu security is based on SSL, and therefore expects a public server with valid certificates. To test locally on a **non-public** server, [follow these steps](./developer-guide/index.md#testing-locally-)
+Super Gluu security is based on SSL, and therefore expects a public server with valid certificates. 
+To test locally on a **non-public** server, [follow these steps](./developer-guide/index.md#testing-locally-)
 
 ## Download Super Gluu		
 Super Gluu is available for free on the iOS and Android app marketplaces! 
@@ -54,7 +55,8 @@ Super Gluu is available for free on the iOS and Android app marketplaces!
 
 ## Contributors 
 
-The next version of Super Gluu will support localization in many languages. We'd like to extend our sincere appreciation to the following people for helping translate Super Gluu content:
+The next version of Super Gluu will support localization in many languages. We'd like to extend our sincere 
+appreciation to the following people for helping translate Super Gluu content:
 
 - Jose Gonzalez, [Gluu](https://gluu.org)
 - Gasmyr Mougang, [Gluu](https://gluu.org)
@@ -68,6 +70,4 @@ The next version of Super Gluu will support localization in many languages. We'd
 - Mohib Zico, [Gluu](https://gluu.org)
 - Mustafa Baser, [Gluu](https://gluu.org)
 
-If you'd like to provide translations for a language not currently supported, or see typos or grammar issues in your language of choice, please [contact us](https://gluu.org/contact).
 
-Thanks! 
