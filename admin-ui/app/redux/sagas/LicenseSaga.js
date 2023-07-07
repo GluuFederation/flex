@@ -77,8 +77,6 @@ function* retrieveLicenseKey() {
 
         yield put(generateTrialLicenseResponse(activateLicense))
         yield put(setValidatingFlow({ isValidatingFlow: true }))
-        yield put(checkUserLicenseKeyResponse(activateLicense))
-
 
         yield* checkMauThreshold()
       } catch (error) {
