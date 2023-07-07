@@ -1,6 +1,11 @@
+---
+tags:
+- Super Gluu
+- Introduction
+---
+
 # Super Gluu Documentation
 
-## Overview
 Super Gluu is a free and secure two-factor authentication (2FA) mobile app. 
 
 Super Gluu app can be used to achieve 2FA for web and mobile applications 

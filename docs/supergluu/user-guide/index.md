@@ -1,6 +1,11 @@
+---
+tags:
+- Super Gluu
+- User Guide
+---
+
 # Super Gluu User Guide
 
-## Overview
 This guide will show how to use the Super Gluu two-factor authentication mobile application. It covers initial set-up, 
 managing keys and logs, and general settings.
 
@@ -21,8 +26,16 @@ This choice can be changed in the application settings later.
 !!! Note
     After 5 unsuccessful attempts to enter the passcode, the app is locked for 10 minutes.
 
+Screen for passcode and TouchID selection
+
 ![login choice](../../assets/supergluu/user-guide/choose_login.jpg)
+
+Screen for enabling passcode
+
 ![pin access](../../assets/supergluu/user-guide/pin_settings.jpg)
+
+Screen for enabling TouchID
+
 ![touch access](../../assets/supergluu/user-guide/touch_id_settings.jpg)
 
 ### Confirm Push Notification
