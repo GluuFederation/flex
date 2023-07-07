@@ -73,7 +73,8 @@ enroll it. First, it needs to prepare the data properties, as follows:
   > EnrollmentResponse enrollmentResponse = u2fKey.register(new EnrollmentRequest(version, appParam, challenge, oxPush2Request));
 ``` 
 
-During registration, the app generates a unique keyHandle and keyPair (public/private keys) to sign all data and uses an ECC algorithm to encode the required data, as follows:
+During registration, the app generates a unique keyHandle and keyPair (public/private keys) to sign all data and 
+uses an ECC algorithm to encode the required data, as follows:
 
 ``` 
   > TokenEntry tokenEntry = new TokenEntry(keyPairGenerator.keyPairToJson(keyPair), enrollmentRequest.getApplication(), enrollmentRequest.getOxPush2Request().getIssuer());
@@ -90,9 +91,10 @@ During registration, the app generates a unique keyHandle and keyPair (public/pr
   > return new EnrollmentResponse(userPublicKey, keyHandle, vendorCertificate, signature);
 ``` 
 
-Now, all the data is converted into one-byte array, then one additional parameter is added, determining if the request is approved or denied, as follows:
+Now, all the data is converted into one-byte array, then one additional parameter is added, determining if 
+the request is approved or denied, as follows:
 
-> ```
+```
   > JSONObject clientData = new JSONObject();
   > if (isDeny){
   >     clientData.put(JSON_PROPERTY_REQUEST_TYPE, REGISTER_CANCEL_TYPE);//Deny
@@ -116,11 +118,12 @@ Now, all the data is converted into one-byte array, then one additional paramete
   > tokenResponse.setKeyHandle(new String(enrollmentResponse.getKeyHandle()));
   >
   > return tokenResponse;
-  > ```
+```
 
-For authentication, all information is associated with your device UDID and the app retrieves the data from the data store each time, as follows:
+For authentication, all information is associated with your device UDID and the app retrieves the data from the 
+data store each time, as follows:
 
-> ```
+```
   > TokenEntry tokenEntry = dataStore.getTokenEntry(keyHandle);
   > String keyPairJson = tokenEntry.getKeyPair();
   > keyPair = keyPairGenerator.keyPairFromJson(keyPairJson);
@@ -130,23 +133,26 @@ For authentication, all information is associated with your device UDID and the 
   > byte[] challengeSha256 = DigestUtils.sha256(challenge);
   > byte[] signedData = rawMessageCodec.encodeAuthenticateSignedBytes(applicationSha256, userPresence, counter, challengeSha256);
   > return new AuthenticateResponse(userPresence, counter, signature);
-  > ```
+```
 
-The onEnroll and onSign methods prepare the parameters and data before the call to the server. For more information about these two methods, see the [Super Gluu](https://github.com/GluuFederation/oxPush3) Git repo.
+The onEnroll and onSign methods prepare the parameters and data before the call to the server. For more 
+information about these two methods, see the [Super Gluu](https://github.com/GluuFederation/oxPush3) Git repo.
 
 Now, the app makes one last call to the server:
 
-> ```
+```
   > final Map<String, String> parameters = new HashMap<String, String>();
   > parameters.put("username", oxPush2Request.getUserName());
   > parameters.put("tokenResponse", tokenResponse.getResponse());
   > 
   > final String resultJsonResponse = CommunicationService.post(u2fEndpoint, parameters);
-  > ```
+```
 
-The string `resultJsonResponse` contains the JSON result. The app extracts some additional information from this result. Check enrollment or authentication success using the `u2fOperationResult.getStatus()` field, as follows:
+The string `resultJsonResponse` contains the JSON result. The app extracts some additional information 
+from this result. Check enrollment or authentication success using the `u2fOperationResult.getStatus()` field, 
+as follows:
 
-> ``` 
+``` 
   > LogInfo log = new LogInfo();
   > log.setIssuer(oxPush2Request.getIssuer());
   > log.setUserName(oxPush2Request.getUserName());
@@ -154,32 +160,36 @@ The string `resultJsonResponse` contains the JSON result. The app extracts some 
   > log.setLocationAddress(oxPush2Request.getLocationCity());
   > log.setCreatedDate(String.valueOf(System.currentTimeMillis()));//oxPush2Request.getCreated());
   > log.setMethod(oxPush2Request.getMethod());
-  > ```
+```
 
 ## Testing locally
 
 The following is a method for testing Super Gluu locally on a **non-public** server. This guide assumes a Gluu Server has been installed and is operational.
 
 !!! Warning
-The following testing steps mimic a MITM attack, so needless to say, these instructions are **for development purposes only!**
+    The following testing steps mimic a MITM attack, so needless to say, these instructions are **for development purposes only!**
 
-1. In the Gluu Server VM settings, change the network adapter connection type from NAT to Bridged; The Gluu Server and smartphone should be connected to WiFi on the same local network
+1. In the Gluu Server VM settings, change the network adapter connection type from NAT to Bridged; The Gluu 
+Server and smartphone should be connected to WiFi on the same local network
 
 1. Log into the VM and run `ifconfig` in the terminal to get the IP address of the Gluu Server
 
 1. In oxTrust, enable the Super Gluu authentication script
 
-1. Update the host file on the machine where you are running the browser to log in. Example: `192.168.1.232`    `c67.example.info`
+1. Update the host file on the machine where you are running the browser to log 
+in. Example: `192.168.1.232`    `c67.example.info`
 
 1. Run `ipconfig` / `ifconfig` on the machine where you are planning to run your DNS server.
 
-1. Configure any DNS server to allow resovle `u144.example.info.=192.168.1.232`. For example you can use a lightweight WindowsDNS DNS proxy server:
+1. Configure any DNS server to allow resovle `u144.example.info.=192.168.1.232`. For example you can 
+use a lightweight WindowsDNS DNS proxy server
 
     - Create a dns.config file in the folder with dedserver.jar. Example file content: u144.example.info.=192.168.1.232
     - Checkut and build `https://github.com/JonahAragon/WindowsDNS`
     - Run the DNS server using a command like this: java -jar dedserver.jar
 
-1. Create a `dns.config` file in the folder with `dedserver.jar`. Example file content: `u144.example.info.=192.168.1.232`
+1. Create a `dns.config` file in the folder with `dedserver.jar`. Example file 
+content: `u144.example.info.=192.168.1.232`
 
 1. Run the DNS server using a command like this: `java -jar dedserver.jar`
 
@@ -187,4 +197,5 @@ The following testing steps mimic a MITM attack, so needless to say, these instr
 
 1. Now you can test Super Gluu
 
-1. After you finish testing, don't forget to change your WiFi connection type on the mobile phone back to use the automatic settings.
+1. After you finish testing, don't forget to change your WiFi connection type on the mobile phone back 
+to use the automatic settings.
