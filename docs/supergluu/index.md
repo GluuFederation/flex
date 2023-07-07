@@ -3,7 +3,8 @@
 ## Overview
 Super Gluu is a free and secure two-factor authentication (2FA) mobile app. 
 
-Super Gluu is tightly bundled with the [Janssen Server](https://docs.jans.io/), and can be used to achieve 2FA for web and mobile applications that leverage Gluu for authentication.
+Super Gluu app can be used with [Janssen Server](https://docs.jans.io/), [Gluu Flex], and [Gluu Server] as 
+authentication servers to achieve 2FA for web and mobile applications.
 
 Super Gluu documentation is organized into the following sections:
 
@@ -13,24 +14,32 @@ Super Gluu documentation is organized into the following sections:
 
 ## Compatibility 
 
-Super Gluu 3.1.x is compatible with all versions of Janssen ( with/without Flex-UI). 
+Super Gluu is compatible with all versions of Gluu Flex.
 
 ## FIDO Security
-During Super Gluu authentication, the Janssen does more than look at the device ID to grant access. Super Gluu uses the Janssen Server's FIDO U2F endpoints to enroll a public key. The private key is stored on the device. At authentication time, the Janssen sends a challenge response to the device to check for the corresponding private key. This adds an extra layer of security to Super Gluu push notification authentications. 
+During Super Gluu authentication, the Gluu Flex does more than look at the device ID to grant access. Super Gluu uses 
+the Gluu Flex Server's FIDO U2F endpoints to enroll a public key. The private key is stored on the device. At 
+authentication time, the Gluu Flex sends a challenge response to the device to check for the corresponding private key. 
+This adds an extra layer of security to Super Gluu push notification authentications. 
 
 ## How to Use Super Gluu 
-Super Gluu is tightly bundled with Janssen. Follow the [Flex installation guide](https://github.com/GluuFederation/flex/tree/docs-sg-changes/flex-linux-setup) to deploy Janssen with Flex-UI, then follow the Super Gluu [admin guide](TODO) to configure and begin using Super Gluu for strong authentication.
+Super Gluu is tightly bundled with Janssen. 
+Follow the [Flex installation guide](https://github.com/GluuFederation/flex/tree/docs-sg-changes/flex-linux-setup) to 
+deploy Gluu Flex, then follow the Super Gluu [admin guide](./admin-guide/index.md) to configure and begin using 
+Super Gluu for strong authentication.
 
 ### Workflows
 Super Gluu supports multiple workflows, including: 
+- A one-step, passwordless authentication, where the person scans a QR code with their Super Gluu app, and the Gluu Flex
+looks up which person is associated with that device.
+- A two-step authentication, where the person enters their username and then receives an out-of-band push notification 
+to the mobile device to authorize access (a.k.a identifier first authentication).
+- A two-step authentication, where the person enters their username and password and then receives an out-of-band push 
+notification to the mobile device to authorize access.   
 
-- A one-step, passwordless authentication, where the person scans a QR code with their Super Gluu app, and the Flex/Janssen looks up which person is associated with that device. 
-
-- A two-step authentication, where the person enters their username and then receives an out-of-band push notification to the mobile device to authorize access (a.k.a identifier first authentication).
-
-- A two-step authentication, where the person enters their username and password and then receives an out-of-band push notification to the mobile device to authorize access.   
-
-In all scenarios, users are prompted to scan a QR code on their first Super Gluu authentication to bind their device and account. In the second and third workflows listed above, users begin receiving push notifications for all authentications after the initial device registration process. 
+In all scenarios, users are prompted to scan a QR code on their first Super Gluu authentication to bind their device 
+and account. In the second and third workflows listed above, users begin receiving push notifications for all 
+authentications after the initial device registration process. 
 
 ### Testing locally 
 
