@@ -1,4 +1,4 @@
-# Developer Guide
+# Super Gluu Developer Guide
 
 ## Overview
 Super Gluu is a two-factor authentication mobile application for iOS and Android. Super Gluu can be used as a strong authentication mechanism to access resources that are protected by Gluu's free open source central authentication server, called the [Gluu Server](https://gluu.org/gluu-server). The below documentation describes what is happening during user enrollment and authentication. 

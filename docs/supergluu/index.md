@@ -3,8 +3,9 @@
 ## Overview
 Super Gluu is a free and secure two-factor authentication (2FA) mobile app. 
 
-Super Gluu app can be used with [Janssen Server](https://docs.jans.io/), [Gluu Flex], and [Gluu Server] as 
-authentication servers to achieve 2FA for web and mobile applications.
+Super Gluu app can be used to achieve 2FA for web and mobile applications 
+with [Janssen Server](https://docs.jans.io/), [Gluu Flex](https://docs.gluu.org/), and 
+[Gluu Server](https://gluu.org/docs/) working as authentication servers.
 
 Super Gluu documentation is organized into the following sections:
 
@@ -24,7 +25,7 @@ This adds an extra layer of security to Super Gluu push notification authenticat
 
 ## How to Use Super Gluu 
 Super Gluu is tightly bundled with Janssen. 
-Follow the [Flex installation guide](https://github.com/GluuFederation/flex/tree/docs-sg-changes/flex-linux-setup) to 
+Follow the [Flex installation guide](./../install/helm-install/README.md) to 
 deploy Gluu Flex, then follow the Super Gluu [admin guide](./admin-guide/index.md) to configure and begin using 
 Super Gluu for strong authentication.
 
