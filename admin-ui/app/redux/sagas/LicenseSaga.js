@@ -39,14 +39,6 @@ function* newFunction() {
   return new MauApi(api)
 }
 
-function* newLicenseDetailsFunction() {
-  const { access_token, issuer } = yield call(fetchApiTokenWithDefaultScopes)
-  const api = new JansConfigApi.AdminUILicenseApi(
-    getClient(JansConfigApi, access_token, issuer)
-  )
-  return new LicenseDetailsApi(api)
-}
-
 function* checkLicensePresentWorker() {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
@@ -54,7 +46,8 @@ function* checkLicensePresentWorker() {
     if(!response?.success) {
       yield* retrieveLicenseKey()
     } else {
-      yield* checkMauThreshold()
+      const mauThreshold = response.responseObject?.find((item) => item?.name === "mau_threshold")
+      yield* checkMauThreshold(parseInt(mauThreshold?.value))
     }
   } catch (error) {
     console.log('Error in checking License present.', error)
@@ -78,7 +71,8 @@ function* retrieveLicenseKey() {
         yield put(generateTrialLicenseResponse(activateLicense))
         yield put(setValidatingFlow({ isValidatingFlow: true }))
 
-        yield* checkMauThreshold()
+        const mauThreshold = activateLicense.responseObject?.find((item) => item?.name === "mau_threshold")
+        yield* checkMauThreshold(parseInt(mauThreshold?.value))
       } catch (error) {
         console.log(error)
         yield put(
@@ -94,16 +88,11 @@ function* retrieveLicenseKey() {
   }
 }
 
-function* checkMauThreshold() {
+function* checkMauThreshold(mau_threshold) {
   const mauApi = yield* newFunction()
-  const licenseApi = yield* newLicenseDetailsFunction()
   try {
-    const [license, data] = yield all([
-      call(licenseApi.getLicenseDetails),
-      call(mauApi.getMau, { month: getYearMonth(new Date()) })
-    ]);
-
-    const limit = (license.maxActivations * 15) / 100 + license.maxActivations
+    const data = yield call(mauApi.getMau, { month: getYearMonth(new Date()) })
+    const limit = (mau_threshold * 15) / 100 + mau_threshold
     if(limit > data?.[0]?.monthly_active_users) {
       // under MAU limit
       yield put(
