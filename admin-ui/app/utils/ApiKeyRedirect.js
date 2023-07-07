@@ -16,15 +16,16 @@ function ApiKeyRedirect({
 }) {
   const { t } = useTranslation()
   const { isTimeout } = useSelector((state) => state.initReducer)
+  const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useSelector((state) => state.licenseReducer)
 
   return (
     <React.Fragment>
       <Container>
         {isConfigValid == false ? (
           <UploadSSA />
-        ) : !isTimeout && (
+        ) : !isTimeout && !isNoValidLicenseKeyFound && isUnderThresholdLimit && (
           <>
-            {!isLicenseValid && islicenseCheckResultLoaded && isConfigValid ? (
+            {!isLicenseValid && islicenseCheckResultLoaded && isConfigValid && !isValidatingFlow && !isNoValidLicenseKeyFound ? (
               <ApiKey />
             ) : (
               <div
@@ -70,7 +71,7 @@ function ApiKeyRedirect({
           />
         )}
 
-        {isLicenseActivationResultLoaded && !isLicenseValid && (
+        {(isLicenseActivationResultLoaded && !isLicenseValid) || isNoValidLicenseKeyFound && (
           <GluuErrorModal
             message={t('Invalid License')}
             description={

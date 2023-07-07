@@ -2,12 +2,10 @@ import React from 'react'
 import logo from 'Images/logos/logo192.png'
 import { useSelector } from 'react-redux'
 import './style.css'
-import { Box, useMediaQuery } from '@mui/material'
+import { Box } from '@mui/material'
 import GenerateLicenseCard from './GenerateLicenseCard'
-import LicenseKeyCards from './LicenseKeyCards'
 
 function ApiKey() {
-  const isMobileDevice = useMediaQuery('(max-width:680px)')
   const serverError = useSelector((state) => state.licenseReducer.error)
   const isLoading = useSelector((state) => state.licenseReducer.isLoading)
   const generatingTrialKey = useSelector(
@@ -44,7 +42,6 @@ function ApiKey() {
         <Box className='row mt-3'>
           <Box className='mx-auto col-md-8 license-card-wrapper'>
             <GenerateLicenseCard />
-            <LicenseKeyCards />
           </Box>
         </Box>
       </div>

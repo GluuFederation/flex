@@ -4,9 +4,6 @@
         "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/docs/jans-config-api-swagger.yaml"
       },
       {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-admin-ui-plugin-swagger.yaml"
-      },
-      {
         "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/fido2-plugin-swagger.yaml"
       },
       {
@@ -14,6 +11,9 @@
       },
       {
         "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/cache-refresh-plugin-swagger.yaml"
+      },
+      {
+        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/jans-config-api-issue-5402/jans-config-api/plugins/docs/jans-admin-ui-plugin-swagger.yaml"
       }
     ], 
     "output": "./configApiSpecs.yaml"

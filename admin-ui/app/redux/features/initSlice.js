@@ -6,7 +6,8 @@ const initialState = {
   clients: [],
   scopes: [],
   attributes: [],
-  totalClientsEntries: 0
+  totalClientsEntries: 0,
+  isTimeout: false
 }
 
 const initSlice = createSlice({
@@ -39,7 +40,6 @@ const initSlice = createSlice({
       }
     },
     handleApiTimeout: (state, action) => {
-      console.log('action', action.payload)
       state.isLoading = false
       state.isTimeout = action.payload.isTimeout || false
     }

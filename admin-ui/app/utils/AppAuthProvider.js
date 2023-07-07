@@ -14,13 +14,13 @@ import {
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 import { checkLicenseConfigValid } from '../redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
+import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
 
 export default function AppAuthProvider(props) {
   const dispatch = useDispatch()
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
   const [roleNotFound, setRoleNotFound] = useState(false)
-  const { isTimeout } = useSelector((state) => state.initReducer)
   const { config, userinfo, userinfo_jwt, token, backendIsUp } = useSelector(
     (state) => state.authReducer
   )
@@ -29,6 +29,7 @@ export default function AppAuthProvider(props) {
     isLicenseActivationResultLoaded,
     isLicenseValid,
     isConfigValid,
+    isUnderThresholdLimit,
   } = useSelector((state) => state.licenseReducer)
 
   useEffect(() => {
@@ -105,7 +106,9 @@ export default function AppAuthProvider(props) {
         if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length == 0) {
           setShowContent(false)
           setRoleNotFound(true)
-          alert('The logged-in user do not have valid role. Logging out of Admin UI')
+          alert(
+            'The logged-in user do not have valid role. Logging out of Admin UI'
+          )
           const state = uuidv4()
           const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
           window.location.href = sessionEndpoint
@@ -126,11 +129,16 @@ export default function AppAuthProvider(props) {
   return (
     <React.Fragment>
       <SessionTimeout isAuthenticated={showContent} />
-      {isTimeout && (
-        <GluuTimeoutModal
-          message={'The UI backend service is down'}
+      <GluuTimeoutModal
+        description={
+          'The request has been terminated as there is no response from the server for more than 60 seconds.'
+        }
+      />
+      {!isUnderThresholdLimit && (
+        <GluuErrorModal
+          message={'Alert'}
           description={
-            'The request has been terminated as there is no response from the server for more than 60 seconds.'
+            '<p style="text-align: center">The monthly active users exceed the allowed threshold of your license subscription plan. <br /> Please upgrade the plan on Agama Lab to enjoy the uninterrupted service of your digital destination.</p>'
           }
         />
       )}

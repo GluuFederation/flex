@@ -1,45 +1,33 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
+import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap'
+import { handleApiTimeout } from 'Redux/features/initSlice'
 
-const GluuTimeoutModal = ({ message = '', description = '' }) => {
+const GluuTimeoutModal = ({ description = '' }) => {
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
+  const { isTimeout } = useSelector((state) => state.initReducer)
+
+  const handler = useCallback(() => {
+    dispatch(handleApiTimeout({ isTimeout: false }))
+  }, [])
+
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        color: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 9999
-      }}
+    <Modal
+      centered
+      isOpen={isTimeout}
+      style={{ minWidth: '45vw' }}
+      toggle={handler}
+      className='modal-outline-primary'
     >
-      <img
-        src={require('Images/logos/logo192.png')}
-        style={{
-          width: '260px',
-          height: 'auto',
-          marginBottom: 50,
-        }}
-      />
-      <h2 style={{ color: 'white' }}>{message}</h2>
-      <p dangerouslySetInnerHTML={{ __html: description }}></p>
-      <button
-        style={{
-          border: 0,
-          backgroundColor: 'transparent',
-          color: 'white',
-          textDecoration: 'underline',
-        }}
-        onClick={() => window.location.reload()}
-      >
-        Try Again
-      </button>
-    </div>
+      <ModalBody style={{ overflowX: 'auto', maxHeight: '60vh' }}>
+        <p>{description}</p>
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={handler}>{t('actions.ok')}</Button>
+      </ModalFooter>
+    </Modal>
   )
 }
 
