@@ -42,7 +42,7 @@ A device/location is considered trustworthy when the user has presented a strong
 
 ## Requirements
 
-- The plugin jar file must match the version of your Casa (and Gluu Server) installation.
+- The plugin jar file must match the version of your Casa (and Gluu Flex Server) installation.
     
 ## Installation
 

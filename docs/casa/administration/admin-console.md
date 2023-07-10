@@ -24,15 +24,15 @@ Update these settings only if the application needs to be tested against a diffe
 
 ## Enabled Methods
 
-Updates need to be made in both the Gluu Server and Casa to get Casa operational.
+Updates need to be made in both the Gluu Flex Server and Casa to get Casa operational.
 
-### Enable Authentication Scripts (Gluu)
+### Enable Authentication Scripts (Gluu Flex)
 
-The Gluu Server uses [interception scripts](https://gluu.org/docs/ce/admin-guide/custom-script/) to implement user 
+The Gluu Flex Server uses [interception scripts](https://gluu.org/docs/ce/admin-guide/custom-script/) to implement user 
 authentication. For each type of 2FA credential that should be manageable in Casa, the corresponding authentication 
-script **must be** enabled in Gluu. 
+script **must be** enabled in Gluu Flex. 
 
-To enable authentication methods in Gluu, open oxTrust and navigate to  `Configuration` > `Manage custom scripts`. 
+To enable authentication methods in Gluu Flex, open oxTrust and navigate to  `Configuration` > `Manage custom scripts`. 
 Enable the interception script for each type of 2FA credential that should be manageable in 
 Casa - i.e. `fido2`, `u2f`, `super_gluu`, `otp`, and/or `twilio_sms`.  
 
@@ -45,11 +45,11 @@ To confirm script functionality, or if issues arise, check the
 [troubleshooting doc](./faq.md#troubleshooting-interception-scripts) in the FAQ.
 
 
-### Set Default Authentication Method (Gluu)
-With the Casa authentication script enabled in the Gluu Server, OpenID Connect clients can now request Casa 
+### Set Default Authentication Method (Gluu Flex)
+With the Casa authentication script enabled in the Gluu Flex Server, OpenID Connect clients can now request Casa 
 authentication (i.e. each user's 2FA preferences) using the standard OpenID Connect `acr_value`. 
 
-To make this behavior the default for all Gluu logins, navigate 
+To make this behavior the default for all Gluu Flex logins, navigate 
 to `Configuration` > `Manage Authentication` > `Default Authentication method` and set `Default acr` 
 and `oxTrust acr` to `casa`. Click update to save your changes. 
 
@@ -57,7 +57,7 @@ and `oxTrust acr` to `casa`. Click update to save your changes.
     
 ### Configure Casa
 
-Once the applicable interception scripts are enabled in Gluu, a Casa admin can enable 2FA mechanisms in 
+Once the applicable interception scripts are enabled in Gluu Flex, a Casa admin can enable 2FA mechanisms in 
 the `Enable methods` interface. Check the box for each type of authentication method users should be able to 
 self-service in Casa. You can assign the handler [plugin](#plugins) for each method. Choose "System" to use the 
 default implementation provided by the application.
@@ -80,7 +80,7 @@ interception script, and therefore the most secure.
     
 ### Testing 
 
-A recommended practice is to enable one script in the Gluu Server (like U2F), then enable the associated method in Casa.
+A recommended practice is to enable one script in the Gluu Flex Server (like U2F), then enable the associated method in Casa.
 Test and confirm that enrollment and authentication is working as expected, then continue adding other desired 2FA 
 methods. In an incognito browser, employ a user other than `admin` to test enrollments each time a new method is added. 
 This will prevent the `admin` user from being accidentally locked out.
@@ -117,7 +117,7 @@ In addition, the plugin exposes an API to programmatically manipulate these sett
 
 ## Pass reset config
 
-If passwords are being stored in the Gluu Server (and not at an external backend directory server like AD), an admin 
+If passwords are being stored in the Gluu Flex Server (and not at an external backend directory server like AD), an admin 
 can give users the ability to reset their password from inside Casa. To enable the password reset functionality, 
 navigate to `Pass reset config` and click the toggle to `ON`.  
 

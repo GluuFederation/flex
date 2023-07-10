@@ -9,7 +9,7 @@ tags:
 
 To publish the application at a location other than `/casa`, do the following:
 
-1. Log into the Gluu Server chroot (e.g. `# gluu-serverd login`)       
+1. Log into the Gluu Flex Server chroot (e.g. `# gluu-serverd login`)       
       
 1. Edit tag `<Set name="contextPath">` in file `/opt/gluu/jetty/casa/webapps/casa.xml` with the new path you want to use. For example, if you chose `/creds`, you would do the following:    
    
