@@ -1,3 +1,11 @@
+---
+tags:
+- Casa
+- administration
+- faq
+---
+
+
 # Frequently Asked Questions
 
 <!-- This page summarizes situations that may arise and their suggested solutions. -->

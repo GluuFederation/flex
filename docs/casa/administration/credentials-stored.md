@@ -1,3 +1,10 @@
+---
+tags:
+- Casa
+- administration
+- credential storage
+---
+
 # Storage of User Credentials
 
 The following provides a summary of where user credentials can be found in LDAP. If you need information regarding another backend database, please open a support ticket.

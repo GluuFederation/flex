@@ -1,3 +1,9 @@
+---
+tags:
+- Casa
+- quick start
+---
+
 # Gluu Casa Quick Start Guide
 
 Gluu Casa is a self-service web portal for end-users to manage security preferences for their accounts. Gluu Casa can

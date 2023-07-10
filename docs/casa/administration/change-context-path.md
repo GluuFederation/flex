@@ -1,3 +1,10 @@
+---
+tags:
+- Casa
+- administration
+- context path
+---
+
 # Change Application Context Path
 
 To publish the application at a location other than `/casa`, do the following:

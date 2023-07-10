@@ -136,7 +136,6 @@ nav:
         - 'FIDO': 'admin/admin-ui/fido-menu.md'
         - 'SMTP': 'admin/admin-ui/smtp-menu.md'
         - 'Users': 'admin/admin-ui/userMgmt-menu.md'
-    - 'Casa': 'admin/casa/README.md'
     - 'Flex Recipes':
         - 'admin/recipes/README.md'
         - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'

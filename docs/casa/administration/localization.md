@@ -1,6 +1,11 @@
-# About localization
+---
+tags:
+- Casa
+- administration
+- localization
+---
 
-## Overview
+# Casa localization
 
 Casa supports multilingual support through resource bundles. Administrators supply bundles as plaintext files ending with the `.properties` file extension.
  

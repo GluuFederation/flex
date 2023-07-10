@@ -1,3 +1,10 @@
+---
+tags:
+- Casa
+- 2FA
+- two-factor
+---
+
 # About Two-Factor Authentication (2FA)
 
 !!! Note
