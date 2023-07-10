@@ -176,10 +176,3 @@ nav:
     - Administration Guide: 'supergluu/admin-guide/index.md'
     - Developer Guide: 'supergluu/developer-guide/index.md'
 
-   #Use section below to configure documentation structure as per available property and feature-flag documents
-    - 'JSON Configuration':
-      - 'reference/json-config/README.md'
-      - 'Properties':
-          - 'reference/json-config/properties/README.md'
-          - 'Casa': 'reference/json-config/properties/casa-properties.md'
-          - 'Casa Config': 'reference/json-config/properties/casaconfig-properties.md'
