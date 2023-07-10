@@ -126,14 +126,11 @@ export default function AppAuthProvider(props) {
   return (
     <React.Fragment>
       <SessionTimeout isAuthenticated={showContent} />
-      {isTimeout && (
-        <GluuTimeoutModal
-          message={'The UI backend service is down'}
-          description={
-            'The request has been terminated as there is no response from the server for more than 60 seconds.'
-          }
-        />
-      )}
+      <GluuTimeoutModal
+        description={
+          'The request has been terminated as there is no response from the server for more than 60 seconds.'
+        }
+      />
       {showContent && props.children}
       {!showContent && (
         <ApiKeyRedirect
