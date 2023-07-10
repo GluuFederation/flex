@@ -39,7 +39,6 @@ const initSlice = createSlice({
       }
     },
     handleApiTimeout: (state, action) => {
-      console.log('action', action.payload)
       state.isLoading = false
       state.isTimeout = action.payload.isTimeout || false
     }

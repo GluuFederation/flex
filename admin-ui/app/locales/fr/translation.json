@@ -100,6 +100,7 @@
     "view": "Vue",
     "yes": "Oui",
     "close": "Fermer",
+    "try_again":  "Essayer à nouveau",
     "delete": "Supprimez",
     "revoke": "Révoquer",
     "show_error": "Afficher l'erreur",
