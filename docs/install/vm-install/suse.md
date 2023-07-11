@@ -27,6 +27,10 @@ sudo firewall-cmd --permanent --zone=public --add-service=https
 ```shell
 sudo firewall-cmd --reload
 ```
+- for Suse Linux we need to enable PackageHub as per OSversion and architecture
+```
+sudo SUSEConnect -p PackageHub/15.4/x86_64
+```
 - Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
 
