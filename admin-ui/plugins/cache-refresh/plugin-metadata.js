@@ -8,8 +8,8 @@ const PLUGIN_BASE_PATH = "/cache-refresh";
 const pluginMetadata = {
   menus: [
     {
-      title: "menus.cacherefresh", 
-      icon: "cacherefresh", 
+      title: "menus.jans_link", 
+      icon: "jans_link", 
       path: PLUGIN_BASE_PATH + '/cacherefreshmanagement',
       permission: CACHE_REFRESH_READ,
     },

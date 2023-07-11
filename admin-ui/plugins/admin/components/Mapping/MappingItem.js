@@ -66,7 +66,8 @@ function MappingItem({ candidate, roles }) {
   }
 
   const revertLocalChanges = () => {
-    dispatch(updatePermissionsServerResponse({ data: JSON.parse(serverPermissions) }))
+    const data = Object.assign(JSON.parse(serverPermissions))
+    dispatch(updatePermissionsServerResponse({ data: data }))
   }
 
   const setServerPermissionsToLocalState = () => {
@@ -94,9 +95,10 @@ function MappingItem({ candidate, roles }) {
 
   const handleAddPermission = (values, { resetForm }) => {
     if (values?.mappingAddPermissions?.length) {
+      const permissions = values.mappingAddPermissions.map((item) => typeof item === "string" ? item : item.mappingAddPermissions)
       dispatch(
         addPermissionsToRole({ data: {
-          data: values?.mappingAddPermissions,
+          data: permissions,
           userRole: candidate.role,
         }}),
       )

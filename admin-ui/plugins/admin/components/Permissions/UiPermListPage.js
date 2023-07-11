@@ -66,7 +66,6 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
     buildPayload(userAction, 'message', roleData)
     dispatch(addPermission({ action: userAction }))
     toggle()
-    doFetchList()
   }
   return (
     <Card style={applicationStyle.mainCard}>

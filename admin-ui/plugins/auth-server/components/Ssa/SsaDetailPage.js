@@ -50,7 +50,7 @@ const SsaDetailPage = ({ row }) => {
               label='fields.status'
               value={row.status}
               doc_category={SSA}
-              doc_entry='primaryKey'
+              doc_entry='status'
             />
           </Col>
           <Col sm={6}>

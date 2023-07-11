@@ -67,7 +67,8 @@
     "maugraph": "MAU",
     "users": "Users",
     "user-management": "User Management",
-    "cacherefresh": "Atualização de Cache",
+    "cacherefresh": "Jans Link",
+    "cache_refresh": "Atualização de Cache",
     "customer_backend_key_attributes": "Chave/atributos de back-end do cliente",
     "source_backend_ldap_servers": "Servidores LDAP de back-end de origem",
     "inum_db_server": "Servidor DB Inum"
@@ -347,6 +348,8 @@
     "problems_at_last_run": "Problemas na última corrida"
   },
   "messages": {
+    "add_permission": "Adicionar permissão",
+    "add_role": "Adicionar função",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",
     "action_deletion_for": "Confirmação de exclusão para",
@@ -465,7 +468,7 @@
     "sql_authentication": "Autenticação Sql",
     "logging": "EXPLORAÇÃO MADEIREIRA",
     "jwk_keys": "Chaves JWK",
-    "mapping": "API ROLES/PERMISSIONS MAPPING",
+    "mapping": "Mapeamento de funções/permissões",
     "modules_properties": "Propriedades do Módulo",
     "oauth_server_status_title": "Status do servidor OAuth",
     "oidc_clients": "Clientes OIDC",
@@ -479,7 +482,7 @@
     "schemaName": "Nome do esquema",
     "user_management": "Gerenciamento de usuários",
     "ssa_management": "SSA Gerenciamento",
-    "cache_refresh_management": "Gerenciamento de atualização de cache",
+    "jans_ink": "Jans Link",
     "change_backend_bind_password": "Alterar senha de ligação de back-end",
     "add_agama_project": "Adicionar projeto Agama"
   },
@@ -516,6 +519,22 @@
     "true": "verdadeiro",
     "user": "DO UTILIZADOR",
     "yes": "sim"
+  },
+  "documentation": {
+    "ssa": {
+      "org_id": "L'org_id est utilisé pour l'identification de l'organisation.",
+      "description": "Décrire SSA",
+      "software_id": "Le software_id est utilisé pour l'identification du logiciel.",
+      "software_roles": "Liste de valeurs de chaîne, valeur fixe [password, notify].",
+      "grant_types": "Valeur fixe [client_credentials].",
+      "expiration": "Date d'expiration. (Valeur par défaut : calculée en fonction des paramètres globaux de SSA)",
+      "one_time_use": "Définit si le SSA ne sera utilisé qu'une seule fois ou s'il peut être utilisé plusieurs fois. (Valeur par défaut : true)",
+      "rotate_ssa": "TODO - Sera utilisé pour faire tourner l'expiration du SSA, actuellement il est seulement enregistré en tant que partie du SSA. (Valeur par défaut : true)",
+      "status": "Status do SSA (ATIVO, USADO, EXPIRADO ou REVOGADO)"
+    },
+    "authn": {
+      "acr": "Référence de classe de contexte d'authentification"
+    }    
   },
   "script": {
     "inum": "Unique id identifying the script",
