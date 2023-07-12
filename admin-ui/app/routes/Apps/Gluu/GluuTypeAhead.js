@@ -30,7 +30,8 @@ function GluuTypeAhead({
   rsize = 8,
   disabled,
   showError = false,
-  errorMessage
+  errorMessage,
+  allowNew = true
 }) {
   const { t } = useTranslation()
   return (
@@ -43,7 +44,7 @@ function GluuTypeAhead({
       )}
       <Col sm={rsize}>
         <Typeahead
-          allowNew
+          allowNew={allowNew}
           disabled={disabled}
           ref={forwardRef}
           emptyLabel=""

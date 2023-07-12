@@ -57,9 +57,11 @@ function MappingItem({ candidate, roles }) {
   const getPermissionsForSearch = () => {
     const selectedPermissions = candidate.permissions
     const filteredArr = []
-    for (const i in permissions) {
+    for (const i in permissions) { 
       if (!selectedPermissions.includes(permissions[i].permission)) {
-        filteredArr.push(permissions[i].permission)
+        if(permissions[i].permission) {
+          filteredArr.push(permissions[i].permission)
+        }
       }
     }
     setSearchAblePermissions(filteredArr)
@@ -95,10 +97,9 @@ function MappingItem({ candidate, roles }) {
 
   const handleAddPermission = (values, { resetForm }) => {
     if (values?.mappingAddPermissions?.length) {
-      const permissions = values.mappingAddPermissions.map((item) => typeof item === "string" ? item : item.mappingAddPermissions)
       dispatch(
         addPermissionsToRole({ data: {
-          data: permissions,
+          data: values?.mappingAddPermissions,
           userRole: candidate.role,
         }}),
       )
@@ -164,6 +165,7 @@ function MappingItem({ candidate, roles }) {
                             value={[]}
                             forwardRef={autocompleteRef}
                             doc_category={'Mapping'}
+                            allowNew={false}
                           ></GluuTypeAhead>
                         </Col>
                         <Col>
