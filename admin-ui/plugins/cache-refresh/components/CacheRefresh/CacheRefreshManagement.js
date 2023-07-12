@@ -16,14 +16,14 @@ const CacheRefreshManagement = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.cacheRefreshReducer.loading);
-  SetTitle(t("titles.cache_refresh_management"));
+  SetTitle(t("titles.jans_ink"));
 
   useEffect(() => {
     dispatch(getCacheRefreshConfiguration());
   }, []);
 
   const tabNames = [
-    t("menus.cacherefresh"),
+    t("menus.cache_refresh"),
     t("menus.customer_backend_key_attributes"),
     t("menus.source_backend_ldap_servers"),
     t("menus.inum_db_server"),
@@ -31,7 +31,7 @@ const CacheRefreshManagement = () => {
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case t("menus.cacherefresh"):
+      case t("menus.cache_refresh"):
         return <CacheRefreshTab />;
       case t("menus.customer_backend_key_attributes"):
         return <CustomerBackendKeyTab />;

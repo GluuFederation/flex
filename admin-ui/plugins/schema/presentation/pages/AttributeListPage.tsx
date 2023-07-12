@@ -143,7 +143,7 @@ function AttributeListPage() {
       iconProps: {
         id: 'viewAttribute' + rowData.inum,
       },
-      tooltip: `${t('tooltips.view_Attribute')}`,
+      tooltip: `${t('tooltips.view_attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
       disabled: false,
     }))

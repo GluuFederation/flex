@@ -10,7 +10,9 @@ const apiPermissionSlice = createSlice({
   name: 'apiPermission',
   initialState,
   reducers: {
-    getPermissions: (state, action) => handleLoading(state),
+    getPermissions: (state, action) => {
+      state.loading = true
+    },
     getPermissionsResponse: (state, action) => {
       if (action.payload?.data) {
         return handleItems(state, action.payload.data)
@@ -18,7 +20,9 @@ const apiPermissionSlice = createSlice({
         return handleDefault(state)
       }
     },
-    addPermission: (state, action) => handleLoading(state),
+    addPermission: (state, action) => {
+      state.loading = true
+    },
     addPermissionResponse: (state, action) => {
       if (action.payload?.data) {
         return {
@@ -30,7 +34,9 @@ const apiPermissionSlice = createSlice({
         return handleDefault(state)
       }
     },
-    editPermission: (state, action) => handleLoading(state),
+    editPermission: (state, action) => {
+      state.loading = true
+    },
     editPermissionResponse: (state, action) => {
       if (action.payload?.data) {
         return {
@@ -42,7 +48,9 @@ const apiPermissionSlice = createSlice({
         return handleDefault(state)
       }
     },
-    getPermission: (state, action) => handleLoading(state),
+    getPermission: (state, action) => {
+      state.loading = true
+    },
     getPermissionResponse: (state, action) => {
       if (action.payload?.data) {
         return handleItems(state, action.payload.data)
@@ -50,7 +58,9 @@ const apiPermissionSlice = createSlice({
         return handleDefault(state)
       }
     },
-    deletePermission: (state, action) => handleLoading(state),
+    deletePermission: (state, action) => {
+      state.loading = true
+    },
     deletePermissionResponse: (state, action) => {
       if (action.payload?.inum) {
         return {
@@ -84,13 +94,6 @@ function handleDefault(state) {
   return {
     ...state,
     loading: false
-  }
-}
-
-function handleLoading(state) {
-  return {
-    ...state,
-    loading: true
   }
 }
 

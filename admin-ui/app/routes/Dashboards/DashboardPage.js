@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useMemo } from 'react'
 import { subMonths } from 'date-fns'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -22,7 +22,6 @@ import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
 import CheckIcon from '../../images/svg/check.svg'
 import CrossIcon from '../../images/svg/cross.svg'
-import Logo from '../../images/gluu-white-logo.png'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
@@ -43,7 +42,6 @@ function DashboardPage({
   const { t } = useTranslation()
   const [startDate] = useState(subMonths(new Date(), 3))
   const [endDate] = useState(new Date())
-  const [mobileChartStyle, setMobileChartStyle] = useState({})
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const breakDashboardCard = useMediaQuery({ query: '(max-width: 1424px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
@@ -58,14 +56,6 @@ function DashboardPage({
   const [tokenCount, setTokenCount] = useState(null)
 
   SetTitle(t('menus.dashboard'))
-
-  useEffect(() => {
-    setMobileChartStyle({
-      overflowX: 'scroll',
-      overflowY: 'hidden',
-      scrollBehavior: 'smooth',
-    })
-  }, [isMobile])
 
   useEffect(() => {
     const date = new Date()
@@ -192,10 +182,10 @@ function DashboardPage({
     },
   ]
 
-  const StatusCard = () => {
+  const StatusCard = useMemo(() => {
     return (
       <Grid xs={12} item>
-        <Paper className={`${classes.statusContainer} ms-20`} elevation={3}>
+        <Paper className={`${classes.statusContainer}`} elevation={3}>
           <div className={classes.userInfoText}>
             <div className={classes.statusText}>
               <Box display="flex" justifyContent="flex-start">
@@ -272,43 +262,7 @@ function DashboardPage({
         </Paper>
       </Grid>
     )
-  }
-
-  const SupportCard = () => {
-    return (
-      <Grid item xs={12} className={classes.supportContainer}>
-        <Paper
-          className={`${classes.supportCard}`}
-          style={{ background: themeColors.dashboard.supportCard }}
-        >
-          <div style={{ zIndex: 2 }}>
-            <img src={Logo} alt="logo" className={classes.supportLogo} />
-            <div className="mt-40">Gluu Services</div>
-            <div className="mt-40">Community Support</div>
-            <div className="mt-40">FAQ</div>
-          </div>
-        </Paper>
-        <Paper
-          className={`${classes.verticalTextContainer}`}
-          style={{ background: themeColors.dashboard.supportCard }}
-        >
-          <div
-            style={{
-              zIndex: 4,
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div className={classes.textVertical}>WORLD</div>
-            <div className={`${classes.textVertical} text-center`}>WIDE</div>
-            <div className={`${classes.textVertical} text-end`}>
-              SU<span className={`${classes.redText}`}>PP</span>ORT
-            </div>
-          </div>
-        </Paper>
-      </Grid>
-    )
-  }
+  }, [serverStatus, dbStatus])
 
   return (
     <GluuLoader blocking={loading}>
@@ -316,7 +270,7 @@ function DashboardPage({
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
         <div className={classes.root}>
-          <Grid container className="px-40">
+          <Grid spacing={{ sm: '20px', md: '40px' }} container className="px-40">
             <Grid item lg={breakDashboardCard ? 12 : 4} md={12}>
               <h3 className="txt-white">{t('dashboard.summary_title')}</h3>
               <div className="mt-20">
@@ -386,7 +340,7 @@ function DashboardPage({
               xs={12}
               style={{ width: '100%' }}
             >
-              <StatusCard />
+              {StatusCard}
             </Grid>
           </Grid>
           <Grid container className={`px-40`}>
@@ -409,20 +363,11 @@ function DashboardPage({
                     <DateRange />
                   </Grid>
                   <Grid
-                    md={9}
-                    xs={12}
-                    style={isMobile ? mobileChartStyle : {}}
+                    xs={11}
                     item
+                    className={classes.desktopChartStyle}
                   >
-                    <div
-                      className={
-                        isTabletOrMobile
-                          ? classes.chartContainerTable
-                          : classes.chartContainer
-                      }
-                    >
-                      <DashboardChart />
-                    </div>
+                    <DashboardChart />
                   </Grid>
                 </Grid>
               ) : (
@@ -445,16 +390,6 @@ function DashboardPage({
                 </Grid>
               )}
             </Grid>
-            {/* TODO: Implement support Card later */}
-            {/* <Grid
-              lg={3}
-              item
-              xs={isTabletOrMobile ? 5 : 3}
-              className={`${classes.bannerContainer} top-minus-40`}
-            >
-              <SupportCard />
-            </Grid>
-            {isTabletOrMobile && !isMobile && <StatusCard />} */}
           </Grid>
           <Grid container className={`${classes.flex} px-40`}>
             <Grid xs={12} item>
@@ -463,7 +398,6 @@ function DashboardPage({
                 item
                 className={`${isMobile ? classes.block : classes.flex} mt-20`}
               >
-                {isMobile && <StatusCard />}
                 <ul className="me-40">
                   <li className={classes.orange}>
                     {t('dashboard.client_credentials_access_token')}
