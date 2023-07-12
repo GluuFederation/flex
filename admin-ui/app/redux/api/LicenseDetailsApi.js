@@ -23,7 +23,7 @@ export default class LicenseDetailsApi {
             if (retries < MAX_RETRIES) {
               console.error(`Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`);
               retries++;
-              setTimeout(makeRequest(retries), 1000);
+              makeRequest(retries);
             } else {
               handleError(error, reject)
             }
