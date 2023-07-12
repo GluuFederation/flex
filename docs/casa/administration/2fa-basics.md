@@ -84,6 +84,3 @@ before the first usage of the application. This can be done in two ways:
 
 - Altering the login flow to check for presence of credentials and then redirect to custom pages that implement enrollment
 - Making enrollments occur at registration time (through the application you use for this purpose)
-
-Any of these cases entails a development effort which should leverage the 
-enrollments [API](../developer/index.md#apis-for-credential-enrollment) available.

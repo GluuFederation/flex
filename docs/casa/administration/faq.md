@@ -67,7 +67,7 @@ This is caused by an unauthorized access attempt (e.g. users requesting URLs wit
 
 ### "An error occurred: Casa did not start properly" is shown when accessing the application
 
-This occurs whenever the application failed to start successfully and may be caused by a syntax problem in the application [configuration](../developer/architecture.md#application-configuration) or an inconsistent configuration supplied. Check the log to diagnose the problem. Try to find a message like "WEBAPP INITIALIZATION FAILED" and see the traces above it. Often, error messages are self-explanatory.
+This occurs whenever the application failed to start successfully. Check the log to diagnose the problem. Try to find a message like "WEBAPP INITIALIZATION FAILED" and see the traces above it. Often, error messages are self-explanatory.
 
 Once fixed, please restart the application. You will have to see a "WEBAPP INITIALIZED SUCCESSFULLY" message to know that it's working.
 
