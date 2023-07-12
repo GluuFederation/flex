@@ -34,7 +34,7 @@
         <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
         <sonar.organization>gluufederation</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <bc.version>1.73</bc.version>
+        <bc.version>1.74</bc.version>
     </properties>
 
     <repositories>
