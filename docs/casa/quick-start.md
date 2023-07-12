@@ -39,7 +39,7 @@ authentication factor.
 ### Finish configuration
 
 Once satisfied with testing, 
-[configure the Gluu Flex Server](./administration/admin-console.md#set-default-authentication-method-gluu) to log in 
+[configure the Gluu Flex Server](./administration/admin-console.md#set-default-authentication-method-gluu-flex) to log in 
 users via Casa for all applications the server protects.
 
 ### Check out available plugins
