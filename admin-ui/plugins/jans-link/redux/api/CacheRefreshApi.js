@@ -7,7 +7,7 @@ export default class CacheRefreshApi {
 
   getPropertiesCacheRefresh = () => {
     return new Promise((resolve, reject) => {
-      this.api.getPropertiesCacheRefresh((error, data) => {
+      this.api.getJansLinkProperties((error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
@@ -15,7 +15,7 @@ export default class CacheRefreshApi {
 
   updateCacheRefreshConfig = (input) => {
     return new Promise((resolve, reject) => {
-      this.api.putPropertiesCacheRefresh(input, (error, data) => {
+      this.api.putJansLinkProperties(input, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })

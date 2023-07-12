@@ -9,10 +9,10 @@ import SourceBackendServersTab from "../Tabs/SourceBackendServersTab";
 import InumDBServerTab from "../Tabs/InumDBServerTab";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useDispatch, useSelector } from "react-redux";
-import { getCacheRefreshConfiguration } from "Plugins/cache-refresh/redux/features/CacheRefreshSlice";
+import { getCacheRefreshConfiguration } from "Plugins/jans-link/redux/features/CacheRefreshSlice";
 import { useTranslation } from "react-i18next";
 
-const CacheRefreshManagement = () => {
+const JansLinkPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.cacheRefreshReducer.loading);
@@ -57,4 +57,4 @@ const CacheRefreshManagement = () => {
   );
 };
 
-export default CacheRefreshManagement;
+export default JansLinkPage;

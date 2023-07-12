@@ -10,7 +10,7 @@ import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
 import * as Yup from 'yup'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { isEmpty } from 'lodash'
-import { putCacheRefreshConfiguration } from 'Plugins/cache-refresh/redux/features/CacheRefreshSlice'
+import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/CacheRefreshSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { buildPayload } from 'Utils/PermChecker'
@@ -89,7 +89,7 @@ const CacheRefreshTab = () => {
     toggle()
 
     buildPayload(userAction, userMessage, {
-      cacheRefreshConfiguration: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         ...formik.values,
         attributeMapping: formik.values.attributeMapping?.length
@@ -102,7 +102,7 @@ const CacheRefreshTab = () => {
           : [],
       },
     })
-
+    console.log(`userAction`, userAction)
     dispatch(
       putCacheRefreshConfiguration({ action: userAction })
     )
