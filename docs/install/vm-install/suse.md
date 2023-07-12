@@ -27,7 +27,7 @@ sudo firewall-cmd --permanent --zone=public --add-service=https
 ```shell
 sudo firewall-cmd --reload
 ```
-- for Suse Linux we need to enable PackageHub as per OSversion and architecture
+- for SUSE Linux Enterprise(SLES) we need to enable PackageHub as per OS version and architecture
 ```
 sudo SUSEConnect -p PackageHub/15.4/x86_64
 ```
