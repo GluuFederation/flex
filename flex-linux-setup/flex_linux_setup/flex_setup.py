@@ -21,7 +21,7 @@ from urllib.parse import urljoin
 
 argsp = None
 cur_dir = os.path.dirname(__file__)
-jans_installer_downloaded = False
+jans_installer_downloaded = bool(os.environ.get('JANS_INSTALLER'))
 flex_installer_downloaded = False
 install_py_path = os.path.join(cur_dir, 'jans_install.py')
 installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
@@ -39,7 +39,7 @@ if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
         print('\033[31m \033[1m')
         response = input("Are you sure to uninstall Gluu Flex? [yes/N] ")
         print('\033[0m')
-        if response.lower() in ('yes', 'n', 'no'):
+        if response.strip().lower() in ('yes', 'n', 'no'):
             if response.lower() != 'yes':
                 sys.exit()
             else:
@@ -861,7 +861,7 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
-        if not prompt_admin_ui_install.lower().startswith('n'):
+        if not prompt_admin_ui_install.strip().lower().startswith('n'):
             install_components['admin_ui'] = True
             if argsp.admin_ui_ssa:
                 read_or_get_ssa()
@@ -892,7 +892,7 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(Config.jetty_base, 'casa')):
         prompt_casa_install = input("Install Casa [Y/n]: ")
-        if not prompt_casa_install.lower().startswith('n'):
+        if not prompt_casa_install.strip().lower().startswith('n'):
             install_components['casa'] = True
     else:
         print("Casa is allready installed on this system")
