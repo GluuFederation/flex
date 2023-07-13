@@ -1,3 +1,11 @@
+---
+tags:
+- Casa
+- administration
+- custom branding
+- brand
+---
+
 # Custom branding
 
 In Casa, administrators can supply their own logo and favicon to better match the organization's look and feel. If you want to apply more advanced customizations, adding the custom branding plugin is the way to go.

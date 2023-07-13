@@ -1,6 +1,10 @@
-# User Guide - Gluu Casa
+---
+tags:
+- Casa
+- user guide
+---
 
-## Overview
+# Gluu Casa User Guide
 
 Gluu Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use-case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins. The options displayed in the user portal will always depend upon which settings have been enabled by the administrator. 
 

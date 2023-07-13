@@ -1,3 +1,10 @@
+---
+tags:
+- Casa
+- administration
+- installation
+---
+
 # Gluu Casa Installation Guide
 
 ## Installation

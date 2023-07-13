@@ -1,3 +1,11 @@
+---
+tags:
+- Casa
+- administration
+- faq
+---
+
+
 # Frequently Asked Questions
 
 <!-- This page summarizes situations that may arise and their suggested solutions. -->
@@ -39,7 +47,7 @@ If you've followed the steps as described above, next time he attempts to log in
 
 ### How to adjust the issuer for OTP tokens
 
-When people add OTP mobile apps, the enrollment appears in the device associated with an "issuer", so it is easy to recognize where the OTPs generated can be used. To keep track of which OTPs are valid for which IDPs, the issuer property can be adjusted in the Gluu Server OTP script. For example, you might want to set the `issuer` property to `ACME Dev` on your dev server, and `ACME, Inc.` on your production server. 
+When people add OTP mobile apps, the enrollment appears in the device associated with an "issuer", so it is easy to recognize where the OTPs generated can be used. To keep track of which OTPs are valid for which IDPs, the issuer property can be adjusted in the Gluu Flex Server OTP script. For example, you might want to set the `issuer` property to `ACME Dev` on your dev server, and `ACME, Inc.` on your production server. 
 
 
 ## Errors shown in the UI
@@ -59,7 +67,7 @@ This is caused by an unauthorized access attempt (e.g. users requesting URLs wit
 
 ### "An error occurred: Casa did not start properly" is shown when accessing the application
 
-This occurs whenever the application failed to start successfully and may be caused by a syntax problem in the application [configuration](../developer/architecture.md#application-configuration) or an inconsistent configuration supplied. Check the log to diagnose the problem. Try to find a message like "WEBAPP INITIALIZATION FAILED" and see the traces above it. Often, error messages are self-explanatory.
+This occurs whenever the application failed to start successfully. Check the log to diagnose the problem. Try to find a message like "WEBAPP INITIALIZATION FAILED" and see the traces above it. Often, error messages are self-explanatory.
 
 Once fixed, please restart the application. You will have to see a "WEBAPP INITIALIZED SUCCESSFULLY" message to know that it's working.
 

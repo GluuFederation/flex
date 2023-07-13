@@ -136,13 +136,6 @@ nav:
         - 'FIDO': 'admin/admin-ui/fido-menu.md'
         - 'SMTP': 'admin/admin-ui/smtp-menu.md'
         - 'Users': 'admin/admin-ui/userMgmt-menu.md'
-#        - 'admin/admin-ui/README.md'
-#        - 'Admin UI Properties': 'admin/admin-ui/properties.md'
-#    - 'SAML':
- #       - 'admin/saml/README.md'
-  #      - 'SAML IDP': 'admin/saml/idp.md'
-   #     - 'SAML Proxy': 'admin/saml/proxy.md'
-    - 'Casa': 'admin/casa/README.md'
     - 'Flex Recipes':
         - 'admin/recipes/README.md'
         - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
@@ -176,10 +169,3 @@ nav:
     - Administration Guide: 'supergluu/admin-guide/index.md'
     - Developer Guide: 'supergluu/developer-guide/index.md'
 
-   #Use section below to configure documentation structure as per available property and feature-flag documents
-    - 'JSON Configuration':
-      - 'reference/json-config/README.md'
-      - 'Properties':
-          - 'reference/json-config/properties/README.md'
-          - 'Casa': 'reference/json-config/properties/casa-properties.md'
-          - 'Casa Config': 'reference/json-config/properties/casaconfig-properties.md'
