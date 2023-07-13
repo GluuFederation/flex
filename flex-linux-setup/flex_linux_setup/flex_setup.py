@@ -28,7 +28,7 @@ installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
 ssa_json = {}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
-if '--remove-flex' in sys.argv:
+if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
 
     print('\033[31m')
     print("This process is irreversible.")
@@ -61,6 +61,7 @@ def get_flex_setup_parser():
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
+    parser.add_argument('--no-restart-services', help="Do not restart services, useful when you are both uninstalling flex and Jans", action='store_true')
     parser.add_argument('--gluu-passwurd-cert', help="Creates Gluu Passwurd API keystore", action='store_true')
     parser.add_argument('-download-exit', help="Downloads files and exits", action='store_true')
 
@@ -1020,14 +1021,16 @@ def main(uninstall):
         if argsp.gluu_passwurd_cert:
             installer_obj.generate_gluu_passwurd_api_keystore()
 
-    print("Restarting Apache")
-    httpd_installer.restart()
+    if not argsp.no_restart_services:
 
-    print("Restarting Jans Auth")
-    config_api_installer.restart('jans-auth')
+        print("Restarting Apache")
+        httpd_installer.restart()
 
-    print("Restarting Janssen Config Api")
-    config_api_installer.restart()
+        print("Restarting Jans Auth")
+        config_api_installer.restart('jans-auth')
+
+        print("Restarting Janssen Config Api")
+        config_api_installer.restart()
 
     if not uninstall:
         install_post_setup()
