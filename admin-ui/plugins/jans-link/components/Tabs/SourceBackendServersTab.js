@@ -13,7 +13,7 @@ import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
 import * as Yup from 'yup'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { isEmpty } from 'lodash'
-import { putCacheRefreshConfiguration } from 'Plugins/cache-refresh/redux/features/CacheRefreshSlice'
+import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/CacheRefreshSlice'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
@@ -110,7 +110,7 @@ const SourceBackendServersTab = () => {
     toggleAudit()
 
     buildPayload(userAction, userMessage, {
-      cacheRefreshConfiguration: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         sourceConfigs: [
           {

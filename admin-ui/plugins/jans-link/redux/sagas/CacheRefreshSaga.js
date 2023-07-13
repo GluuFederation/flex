@@ -23,12 +23,12 @@ import { UPDATE } from "../../../../app/audit/UserActionType";
 
 const JansConfigApi = require("jans_config_api");
 
-export const CACHE_REFRESH = 'cache-refresh' 
+export const JANS_LINK = 'jans-link' 
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token);
   const issuer = yield select((state) => state.authReducer.issuer);
-  const api = new JansConfigApi.CacheRefreshConfigurationApi(
+  const api = new JansConfigApi.JansLinkConfigurationApi(
     getClient(JansConfigApi, token, issuer)
   );
   return new CacheRefreshApi(api);
@@ -52,7 +52,7 @@ export function* getCacheRefreshSaga() {
 
 export function* editCacheConfig({ payload }) {
   const audit = yield* initAudit();
-  addAdditionalData(audit, UPDATE, CACHE_REFRESH, payload)
+  addAdditionalData(audit, UPDATE, JANS_LINK, payload)
   try {
     const cacheRefreshApi = yield* newFunction();
     yield call(cacheRefreshApi.updateCacheRefreshConfig, payload.action.action_data);

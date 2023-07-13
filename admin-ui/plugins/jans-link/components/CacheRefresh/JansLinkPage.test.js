@@ -5,7 +5,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import AppTestWrapper from "Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test";
-import CacheRefreshManagement from "./CacheRefreshManagement";
+import JansLinkPage from "./JansLinkPage";
 import { t } from "i18next";
 import { Provider } from "react-redux";
 import { combineReducers, createStore } from "redux";
@@ -42,13 +42,13 @@ const Wrapper = ({ children }) => (
 );
 
 const pageRenderSetup = () => {
-  render(<CacheRefreshManagement />, {
+  render(<JansLinkPage />, {
     wrapper: Wrapper,
   });
 };
 
 it("Should render cache refresh management page properly", () => {
-  render(<CacheRefreshManagement />, {
+  render(<JansLinkPage />, {
     wrapper: Wrapper,
   });
   screen.getByText(`${t("menus.cacherefresh")}`);
@@ -70,7 +70,7 @@ it("Should render cache refresh management page properly", () => {
 });
 
 it("Should display change password modal", async () => {
-  render(<CacheRefreshManagement />, {
+  render(<JansLinkPage />, {
     wrapper: Wrapper,
   });
 

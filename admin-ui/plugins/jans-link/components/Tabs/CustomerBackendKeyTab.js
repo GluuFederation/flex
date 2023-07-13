@@ -9,7 +9,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import * as Yup from 'yup'
 import { t } from 'i18next'
 import { isEmpty } from 'lodash'
-import { putCacheRefreshConfiguration } from 'Plugins/cache-refresh/redux/features/CacheRefreshSlice'
+import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/CacheRefreshSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
 
@@ -71,7 +71,7 @@ const CustomerBackendKeyTab = () => {
     toggle()
 
     buildPayload(userAction, userMessage, {
-      cacheRefreshConfiguration: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         ...formik.values,
         sourceAttributes: isStringsArray(formik.values?.sourceAttributes || [])
