@@ -687,10 +687,6 @@
           
         
           
-            
-          
-        
-          
         
       
       
@@ -928,25 +924,11 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../../admin/casa/" class="md-nav__link">
-        Casa
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
       
       
       
@@ -964,14 +946,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../../../admin/recipes/">Flex Recipes</a>
           
-            <label for="__nav_3_5">
+            <label for="__nav_3_4">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
       <nav class="md-nav" aria-label="Flex Recipes" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_5">
+        <label class="md-nav__title" for="__nav_3_4">
           <span class="md-nav__icon md-icon"></span>
           Flex Recipes
         </label>
@@ -1676,8 +1658,6 @@
             
           
         
-          
-        
       
       
         
@@ -1737,134 +1717,6 @@
       <a href="../../../supergluu/developer-guide/" class="md-nav__link">
         Developer Guide
       </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
-      
-      
-      
-        
-          
-            
-          
-        
-          
-        
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../reference/json-config/">JSON Configuration</a>
-          
-            <label for="__nav_6_5">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
-      
-      <nav class="md-nav" aria-label="JSON Configuration" data-md-level="2">
-        <label class="md-nav__title" for="__nav_6_5">
-          <span class="md-nav__icon md-icon"></span>
-          JSON Configuration
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5_2" type="checkbox" id="__nav_6_5_2" >
-      
-      
-      
-        
-          
-            
-          
-        
-          
-        
-          
-        
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../reference/json-config/properties/">Properties</a>
-          
-            <label for="__nav_6_5_2">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
-      
-      <nav class="md-nav" aria-label="Properties" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_5_2">
-          <span class="md-nav__icon md-icon"></span>
-          Properties
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/json-config/properties/casa-properties/" class="md-nav__link">
-        Casa
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/json-config/properties/casaconfig-properties/" class="md-nav__link">
-        Casa Config
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -2075,6 +1927,25 @@
                   
   
 
+  <nav class="md-tags" >
+    
+      
+      
+        <span class="md-tag">Casa</span>
+      
+    
+      
+      
+        <span class="md-tag">administration</span>
+      
+    
+      
+      
+        <span class="md-tag">faq</span>
+      
+    
+  </nav>
+
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/casa/administration/faq.md" title="Edit this page" class="md-content__button md-icon">
@@ -2111,7 +1982,7 @@ Just [restart](https://gluu.org/docs/ce/4.4/operation/services/#restart) casa se
 <p>If a user has been locked out for any reason (e.g. lost devices), you can reset his "authentication method" to password by accessing the admin console and choosing the menu item labelled "Reset users preference". Type the username (or part of) in the text field and then press search. Once you locate the user in the result grid, click the corresponding row and then hit "Change to password". The row will become disabled, and you'll see a success message.</p>
 <p>If you've followed the steps as described above, next time he attempts to log in, he won't be asked to present any credentials other than password to enter.</p>
 <h3 id="how-to-adjust-the-issuer-for-otp-tokens">How to adjust the issuer for OTP tokens<a class="headerlink" href="#how-to-adjust-the-issuer-for-otp-tokens" title="Permanent link">#</a></h3>
-<p>When people add OTP mobile apps, the enrollment appears in the device associated with an "issuer", so it is easy to recognize where the OTPs generated can be used. To keep track of which OTPs are valid for which IDPs, the issuer property can be adjusted in the Gluu Server OTP script. For example, you might want to set the <code>issuer</code> property to <code>ACME Dev</code> on your dev server, and <code>ACME, Inc.</code> on your production server. </p>
+<p>When people add OTP mobile apps, the enrollment appears in the device associated with an "issuer", so it is easy to recognize where the OTPs generated can be used. To keep track of which OTPs are valid for which IDPs, the issuer property can be adjusted in the Gluu Flex Server OTP script. For example, you might want to set the <code>issuer</code> property to <code>ACME Dev</code> on your dev server, and <code>ACME, Inc.</code> on your production server. </p>
 <h2 id="errors-shown-in-the-ui">Errors shown in the UI<a class="headerlink" href="#errors-shown-in-the-ui" title="Permanent link">#</a></h2>
 <h3 id="a-page-with-a-service-temporarily-unavailable-message-appears-when-accessing-the-application">A page with a "Service Temporarily Unavailable" message appears when accessing the application<a class="headerlink" href="#a-page-with-a-service-temporarily-unavailable-message-appears-when-accessing-the-application" title="Permanent link">#</a></h3>
 <p>This is the 503 HTTP error. There is an Apache server in front of the application and this means the reverse proxy couldn't establish a communication internally with the app. This usually happens when Casa hasn't started completely, so it's usually a matter of waiting a few seconds.</p>
@@ -2121,7 +1992,7 @@ Just [restart](https://gluu.org/docs/ce/4.4/operation/services/#restart) casa se
 <h3 id="an-unauthorized-access-error-is-shown-when-accessing-the-application">An "Unauthorized access" error is shown when accessing the application<a class="headerlink" href="#an-unauthorized-access-error-is-shown-when-accessing-the-application" title="Permanent link">#</a></h3>
 <p>This is caused by an unauthorized access attempt (e.g. users requesting URLs without ever logging in or after session has expired).</p>
 <h3 id="an-error-occurred-casa-did-not-start-properly-is-shown-when-accessing-the-application">"An error occurred: Casa did not start properly" is shown when accessing the application<a class="headerlink" href="#an-error-occurred-casa-did-not-start-properly-is-shown-when-accessing-the-application" title="Permanent link">#</a></h3>
-<p>This occurs whenever the application failed to start successfully and may be caused by a syntax problem in the application <a href="../developer/architecture.md#application-configuration">configuration</a> or an inconsistent configuration supplied. Check the log to diagnose the problem. Try to find a message like "WEBAPP INITIALIZATION FAILED" and see the traces above it. Often, error messages are self-explanatory.</p>
+<p>This occurs whenever the application failed to start successfully. Check the log to diagnose the problem. Try to find a message like "WEBAPP INITIALIZATION FAILED" and see the traces above it. Often, error messages are self-explanatory.</p>
 <p>Once fixed, please restart the application. You will have to see a "WEBAPP INITIALIZED SUCCESSFULLY" message to know that it's working.</p>
 <h2 id="miscellanenous">Miscellanenous<a class="headerlink" href="#miscellanenous" title="Permanent link">#</a></h2>
 <h3 id="admin-console-is-not-shown">Admin console is not shown<a class="headerlink" href="#admin-console-is-not-shown" title="Permanent link">#</a></h3>
@@ -2157,7 +2028,7 @@ Just [restart](https://gluu.org/docs/ce/4.4/operation/services/#restart) casa se
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-14T14:16:42+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-14</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-13T08:13:29+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-13</span>
       
         <br>
         Created:
