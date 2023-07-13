@@ -687,10 +687,6 @@
           
         
           
-            
-          
-        
-          
         
       
       
@@ -928,25 +924,11 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../admin/casa/" class="md-nav__link">
-        Casa
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
       
       
       
@@ -964,14 +946,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../admin/recipes/">Flex Recipes</a>
           
-            <label for="__nav_3_5">
+            <label for="__nav_3_4">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
       <nav class="md-nav" aria-label="Flex Recipes" data-md-level="2">
-        <label class="md-nav__title" for="__nav_3_5">
+        <label class="md-nav__title" for="__nav_3_4">
           <span class="md-nav__icon md-icon"></span>
           Flex Recipes
         </label>
@@ -1482,8 +1464,6 @@
             
           
         
-          
-        
       
       
         
@@ -1543,134 +1523,6 @@
       <a href="../supergluu/developer-guide/" class="md-nav__link">
         Developer Guide
       </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
-      
-      
-      
-        
-          
-            
-          
-        
-          
-        
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../reference/json-config/">JSON Configuration</a>
-          
-            <label for="__nav_6_5">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
-      
-      <nav class="md-nav" aria-label="JSON Configuration" data-md-level="2">
-        <label class="md-nav__title" for="__nav_6_5">
-          <span class="md-nav__icon md-icon"></span>
-          JSON Configuration
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5_2" type="checkbox" id="__nav_6_5_2" >
-      
-      
-      
-        
-          
-            
-          
-        
-          
-        
-          
-        
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../reference/json-config/properties/">Properties</a>
-          
-            <label for="__nav_6_5_2">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
-      
-      <nav class="md-nav" aria-label="Properties" data-md-level="3">
-        <label class="md-nav__title" for="__nav_6_5_2">
-          <span class="md-nav__icon md-icon"></span>
-          Properties
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/json-config/properties/casa-properties/" class="md-nav__link">
-        Casa
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/json-config/properties/casaconfig-properties/" class="md-nav__link">
-        Casa Config
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -1751,8 +1603,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gluu-server-integration" class="md-nav__link">
-    Gluu Server integration
+  <a href="#gluu-flex-server-integration" class="md-nav__link">
+    Gluu Flex Server integration
   </a>
   
 </li>
@@ -1813,6 +1665,20 @@
                   
   
 
+  <nav class="md-tags" >
+    
+      
+      
+        <span class="md-tag">Casa</span>
+      
+    
+      
+      
+        <span class="md-tag">Introduction</span>
+      
+    
+  </nav>
+
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/casa/index.md" title="Edit this page" class="md-content__button md-icon">
@@ -1841,7 +1707,7 @@
 <li>OTP hardware cards like <a href="https://www.ftsafe.com/Products/Power_Card/Standard">these</a> or dongles like <a href="https://www.ftsafe.com/Products/OTP/Single_Button_OTP">these</a>      </li>
 <li>OTP mobile apps like Google Authenticator, FreeOTP, etc.       </li>
 <li>Mobile phone numbers able to receive OTPs via SMS   </li>
-<li>Passwords (if stored in the corresponding Gluu Server's local database, i.e. not a backend LDAP like AD)      </li>
+<li>Passwords (if stored in the corresponding Gluu Flex Server's local database, i.e. not a backend LDAP like AD)      </li>
 </ul>
 <p>Additional authenticators and use cases can be supported via <a href="#plugin-oriented">custom plugins</a>. </p>
 <h2 id="2fa-enrollment-apis">2FA enrollment APIs<a class="headerlink" href="#2fa-enrollment-apis" title="Permanent link">#</a></h2>
@@ -1864,16 +1730,16 @@
 <li><a href="plugins/2fa-settings/">2FA settings</a></li>
 <li><a href="plugins/bioid/">BioID authentication</a></li>
 </ul>
-<h2 id="gluu-server-integration">Gluu Server integration<a class="headerlink" href="#gluu-server-integration" title="Permanent link">#</a></h2>
-<p>Gluu Server relies on "interception scripts" to implement user authentication. Casa itself has an interception script which defines authentication logic and routes authentications to specific 2FA mechanisms which also have their own scripts. All scripts must be enabled in the Gluu Server.        </p>
+<h2 id="gluu-flex-server-integration">Gluu Flex Server integration<a class="headerlink" href="#gluu-flex-server-integration" title="Permanent link">#</a></h2>
+<p>Gluu Flex Server relies on "interception scripts" to implement user authentication. Casa itself has an interception script which defines authentication logic and routes authentications to specific 2FA mechanisms which also have their own scripts. All scripts must be enabled in the Gluu Flex Server.        </p>
 <h2 id="user-roles">User roles<a class="headerlink" href="#user-roles" title="Permanent link">#</a></h2>
 <p>There are two types of users in Gluu Casa:</p>
 <ul>
 <li>
-<p><strong>Admin users</strong>: Any user in the <code>Managers Group</code> in the Gluu Server   </p>
+<p><strong>Admin users</strong>: Any user in the <code>Managers Group</code> in the Gluu Flex Server   </p>
 </li>
 <li>
-<p><strong>Regular users</strong>: Any user in the Gluu Server  </p>
+<p><strong>Regular users</strong>: Any user in the Gluu Flex Server  </p>
 </li>
 </ul>
 <p>Admin users have access to the Casa <a href="administration/admin-console/">admin console</a>. All users can manage their 2FA credentials, as outlined in the <a href="user-guide/">user guide</a>.  </p>
@@ -1899,7 +1765,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-29T16:31:16+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-29</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-13T08:13:29+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-13</span>
       
         <br>
         Created:
