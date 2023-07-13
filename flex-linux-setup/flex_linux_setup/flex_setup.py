@@ -28,7 +28,7 @@ installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
 ssa_json = {}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
-if '--remove-flex' in sys.argv:
+if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
 
     print('\033[31m')
     print("This process is irreversible.")
