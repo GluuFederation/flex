@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
@@ -33,6 +33,7 @@ import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
 
 function UserList(props) {
   const dispatch = useDispatch()
+  const renders = useRef(0);
   const opt = {}
   useEffect(() => {
     opt['limit'] = 10
@@ -174,8 +175,9 @@ function UserList(props) {
   }
 
   useEffect(() => {
-    if(usersList?.length) {
-      let usedAttributes = []
+    let usedAttributes = []
+    if(usersList?.length && renders.current < 1) {
+      renders.current = 1
       for (let i in usersList) {
         for (let j in usersList[i].customAttributes) {
           let val = usersList[i].customAttributes[j].name

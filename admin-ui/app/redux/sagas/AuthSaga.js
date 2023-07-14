@@ -22,9 +22,9 @@ function* getApiTokenWithDefaultScopes() {
   return response.access_token
 }
 
-function* getOAuth2ConfigWorker() {
+function* getOAuth2ConfigWorker({ payload }) {
   try {
-    const token = yield* getApiTokenWithDefaultScopes()
+    const token = !payload?.access_token ? yield* getApiTokenWithDefaultScopes() : payload.access_token
     const response = yield call(fetchServerConfiguration, token)
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))
