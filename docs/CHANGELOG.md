@@ -1,5 +1,39 @@
 # Changelog
 
+## [5.0.0-15](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-14...docs-v5.0.0-15) (2023-07-14)
+
+
+### Features
+
+* adding tags ([7841e03](https://github.com/GluuFederation/flex/commit/7841e03f6f626c29e353011332a7d9ac1fcf87bf))
+* documentation of admin-ui [#1063](https://github.com/GluuFederation/flex/issues/1063) ([3cf1e7b](https://github.com/GluuFederation/flex/commit/3cf1e7bd870f5f78628388fb4376c61594051d6b))
+* documentation of admin-ui [#1063](https://github.com/GluuFederation/flex/issues/1063) ([48233d3](https://github.com/GluuFederation/flex/commit/48233d38086d1982e8b59d2ba14fefd86e158438))
+* edit flex license contents ([8d7f749](https://github.com/GluuFederation/flex/commit/8d7f7499774f1a67aca902e3484b06b9cdbc7e96))
+* making changes as per review comments ([1bcd39b](https://github.com/GluuFederation/flex/commit/1bcd39b83bb8b4ebbd152ea1155c8946a572ec9e))
+* making changes as per review comments ([5c636fb](https://github.com/GluuFederation/flex/commit/5c636fbc05ef2f0a1d02a77e451ed268914fcec7))
+
+
+### Bug Fixes
+
+* **doc:** added How to configure SuperGluu in Flex ([6b7beef](https://github.com/GluuFederation/flex/commit/6b7beefacecd54bad75f7705b4b43a9ca4e6e59c))
+* **doc:** adding SG screenshot - 2 ([e06bd79](https://github.com/GluuFederation/flex/commit/e06bd79e2f7050faa1be25223e3c0d7a44a62b89))
+* **doc:** adding SG screenshot-1 ([b581a03](https://github.com/GluuFederation/flex/commit/b581a032586bed688af7428cea2b3508a6405cb0))
+* **doc:** enable SG - 2 ([d86ec85](https://github.com/GluuFederation/flex/commit/d86ec85556c8c170f9185dd789e259c0cc12fc11))
+* **doc:** Flex SG doc review - How to Use SuperGluu ([f564dd1](https://github.com/GluuFederation/flex/commit/f564dd1a96d46d26d3b443f232ff48d41736a77c))
+* **doc:** hiding ad removal related doc ([5354e84](https://github.com/GluuFederation/flex/commit/5354e846c0840f98d5ae1ff1e7f2c83d3841d7b6))
+* **doc:** how to enable SG in Flex-UI ([4851205](https://github.com/GluuFederation/flex/commit/48512055c34827b6268f887e652c17bed003b5a3))
+* **doc:** index page flex ([7d48422](https://github.com/GluuFederation/flex/commit/7d4842288159d356feec84bddb7dfb4881d96be4))
+* **doc:** removing key list from user record info ([01b671a](https://github.com/GluuFederation/flex/commit/01b671aeaa48de46c0152609b42b84e92a76e0fb))
+* **docs:** flex-ui SG -- Compatability ([f78c46a](https://github.com/GluuFederation/flex/commit/f78c46a462fd58120c35c29592a9f0698f237f88))
+* **doc:** SG flex - How to use Super Gluu-1 ([e07641c](https://github.com/GluuFederation/flex/commit/e07641cf7b1af4ebfbffcdf16f8b48b166efdb5c))
+* **doc:** sg flex - how to use Super Gluu-screenshot location ([7798023](https://github.com/GluuFederation/flex/commit/77980232e29f63e4273dc5b94d625691d2f3bd88))
+* **doc:** sg workflows ([601b237](https://github.com/GluuFederation/flex/commit/601b237fa19c64534e25ec9c6b76bfe6c9fbf514))
+* **docs:** test SG authentication ([32f6b24](https://github.com/GluuFederation/flex/commit/32f6b2475eed8fbbbae37629de065dcfdd9c1404))
+* **doc:** test authentication SG ([6d0f550](https://github.com/GluuFederation/flex/commit/6d0f5507e42cd3b13f384db7036d07fa28865a89))
+* **doc:** Test authentication user guide ([a554646](https://github.com/GluuFederation/flex/commit/a554646d6972f7409dc2751a02f1d623db895532))
+* **doc:** uploading modified screenshot ([0e9e0cf](https://github.com/GluuFederation/flex/commit/0e9e0cf1e1b66e15f4773552da8459b6e3fc8342))
+* prepare for 5.0.0-15 release ([664553a](https://github.com/GluuFederation/flex/commit/664553ab80e24a44fd68837e1d3998a730bd778c))
+
 ## [5.0.0-14](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-13...docs-v5.0.0-14) (2023-06-12)
 
 
