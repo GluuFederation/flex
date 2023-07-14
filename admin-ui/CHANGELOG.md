@@ -1,5 +1,66 @@
 # Changelog
 
+## [1.0.15](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.14...admin-ui-v1.0.15) (2023-07-14)
+
+
+### Features
+
+* **admin-ui:** add source backend ldap test config ([62daf44](https://github.com/GluuFederation/flex/commit/62daf444e914175b211beb834e2f8b650a2f6d5e))
+* **admin-ui:** fido screen test cases added ([fcdd91f](https://github.com/GluuFederation/flex/commit/fcdd91f610d01261d928117a4c427e053519abf4))
+* **admin-ui:** ssa management using admin-ui [#1140](https://github.com/GluuFederation/flex/issues/1140) ([4f872da](https://github.com/GluuFederation/flex/commit/4f872da18f1bce07330e25c660382cd711b8f5ed))
+* removing delay in calling request second time ([cb879ab](https://github.com/GluuFederation/flex/commit/cb879ab8eb376beed194fa42b214ae254a0fe59b))
+* retry license requests if there is timeout [#1176](https://github.com/GluuFederation/flex/issues/1176) ([6ceec33](https://github.com/GluuFederation/flex/commit/6ceec3337ad33468619b82f4e977666072912032))
+
+
+### Bug Fixes
+
+* **admin-ui:** add an action to refresh the page on timeout ([cf84ffb](https://github.com/GluuFederation/flex/commit/cf84ffbecccf17c68a4c1c2402c80c659d53f150))
+* **admin-ui:** add audit log dialog in cache refresh ([86136f7](https://github.com/GluuFederation/flex/commit/86136f7118853fc721399da4dacd722daaf96895))
+* **admin-ui:** add example entity in fido ([a433da4](https://github.com/GluuFederation/flex/commit/a433da4ae606630bbc4a322c35b7f6808afe9b99))
+* **admin-ui:** api timeout popup modification [#1175](https://github.com/GluuFederation/flex/issues/1175) ([e969220](https://github.com/GluuFederation/flex/commit/e96922006da2de8576439ca88fae0643902c29d2))
+* **admin-ui:** app crashes on visiting attribute view screen [#1099](https://github.com/GluuFederation/flex/issues/1099) ([564a80f](https://github.com/GluuFederation/flex/commit/564a80f03b1d8014a1b153a9988321d14d8bc5dc))
+* **admin-ui:** convert schema plugin in typescript ([fa8346e](https://github.com/GluuFederation/flex/commit/fa8346ea3a0c543bfd47ee03d0ee37a7c0dc3523))
+* **admin-ui:** data not loading in admin dashboard [#1093](https://github.com/GluuFederation/flex/issues/1093) ([78054ec](https://github.com/GluuFederation/flex/commit/78054ec1afb6b4e098f4fa8cb0c20f5d6febaa3c))
+* **admin-ui:** disable circular dependency ([f9f5db2](https://github.com/GluuFederation/flex/commit/f9f5db26392538c44f706ec3bb4f067719f489fc))
+* **admin-ui:** disable new selection on mapping permission ([ad9c2bf](https://github.com/GluuFederation/flex/commit/ad9c2bfeedbdbfde9a20fe5e826ac6fd66443028))
+* **admin-ui:** implement clean code architecture in fido pluign ([62ebf77](https://github.com/GluuFederation/flex/commit/62ebf771ff6cc0cfc2d4107487afd9993b6d48a9))
+* **admin-ui:** implement clean code architecture in schema pluign ([42b14ac](https://github.com/GluuFederation/flex/commit/42b14ac477386244ad31746469f1c711858c4a68))
+* **admin-ui:** implement typescript in fido plugin ([d3f7114](https://github.com/GluuFederation/flex/commit/d3f71142b120a73848ab7ccd19fb83a8f15f7663))
+* **admin-ui:** input layout changes ([0756579](https://github.com/GluuFederation/flex/commit/07565794ffee6d175a264b5b09c807239c5a8114))
+* **admin-ui:** issues in admin-ui [#1165](https://github.com/GluuFederation/flex/issues/1165) ([4339e6f](https://github.com/GluuFederation/flex/commit/4339e6ff30876096d02bb17a00dc8b86dbc2968a))
+* **admin-ui:** license screen css changes ([2e04312](https://github.com/GluuFederation/flex/commit/2e043128ad3694accc9b619b9ef0bd68df8475c8))
+* **admin-ui:** loader state on agama screen ([915e5e1](https://github.com/GluuFederation/flex/commit/915e5e1c5322999fe583ea38eacb771a1a429182))
+* **admin-ui:** minor import alias changes ([c2a4599](https://github.com/GluuFederation/flex/commit/c2a459920f1ff3430f59883fa175e83ac979b5d8))
+* **admin-ui:** move redux in domain layer ([7731910](https://github.com/GluuFederation/flex/commit/773191009332dac71efa3c2ef1d28a0796b301b6))
+* **admin-ui:** page goes blank on random users search [#1158](https://github.com/GluuFederation/flex/issues/1158) ([72ee8fc](https://github.com/GluuFederation/flex/commit/72ee8fcef2b483848d0bda0bd26e4cdf9d4748bd))
+* **admin-ui:** re-usable timeout function ([a0bcba6](https://github.com/GluuFederation/flex/commit/a0bcba689bd73a6c30bad78ea644e768e6e9920d))
+* **admin-ui:** react component lift up to parent ([6c99643](https://github.com/GluuFederation/flex/commit/6c9964305c194b7c30e84135c80e0d8f1d1d08f7))
+* **admin-ui:** remove agama developer studio [#1182](https://github.com/GluuFederation/flex/issues/1182) ([4df9fe2](https://github.com/GluuFederation/flex/commit/4df9fe2834ef8e299b52d91ef616fd4a35bd12d6))
+* **admin-ui:** remove fido external logger config field validation [#1103](https://github.com/GluuFederation/flex/issues/1103) ([5f60120](https://github.com/GluuFederation/flex/commit/5f601206e0eb653514859b208b7fe971309aa2fb))
+* **admin-ui:** remove reducer code in cache refresh plugin ([b2af837](https://github.com/GluuFederation/flex/commit/b2af837583ab5190228f142bc884914c6e37f464))
+* **admin-ui:** removed inline css ([c27e420](https://github.com/GluuFederation/flex/commit/c27e420f2f2f47d63a21ec3630ce50b9658f7b26))
+* **admin-ui:** rename Agama Developer Studio to Agama ([c139ab9](https://github.com/GluuFederation/flex/commit/c139ab97f460a2fce1e85bb70f954c7a5125b005))
+* **admin-ui:** rename cache-refresh to jans-link [#1185](https://github.com/GluuFederation/flex/issues/1185) ([012fb03](https://github.com/GluuFederation/flex/commit/012fb03545793a1339f06d678e64aeeb2a33552a))
+* **admin-ui:** requested pr changes ([1ee09d6](https://github.com/GluuFederation/flex/commit/1ee09d63bade2dcf2058c71abc9c2e4c60b8dc02))
+* **admin-ui:** review requested changes ([02dee52](https://github.com/GluuFederation/flex/commit/02dee5230e36aba6340f4e1159e5a4c62c1def5f))
+* **admin-ui:** reviewed requested changes ([c478743](https://github.com/GluuFederation/flex/commit/c478743a63289582f4fb943b44b691db2ba5c78b))
+* **admin-ui:** router version to 6.11.2 ([ad7f273](https://github.com/GluuFederation/flex/commit/ad7f273935fda5bd6b82b43550442e3c32ee1593))
+* **admin-ui:** schema form pre-filled values ([f19622c](https://github.com/GluuFederation/flex/commit/f19622c03f0708a292d7a4a6bda395399639171d))
+* **admin-ui:** sequential license api calls [#1151](https://github.com/GluuFederation/flex/issues/1151) ([fa6feeb](https://github.com/GluuFederation/flex/commit/fa6feebaa48b62dd12c63eee26168464ef39c65e))
+* **admin-ui:** show an error screen on license api timeout [#1163](https://github.com/GluuFederation/flex/issues/1163) ([ae98b12](https://github.com/GluuFederation/flex/commit/ae98b12b60f34f04cd94b060c21f765b4409cd48))
+* **admin-ui:** show error message if generated trial key fails [#1110](https://github.com/GluuFederation/flex/issues/1110) ([5d2a510](https://github.com/GluuFederation/flex/commit/5d2a510da8b8314d82b7d803aad3dd31c96d76f0))
+* **admin-ui:** sonarcloud code smell ([674b487](https://github.com/GluuFederation/flex/commit/674b4871876876b71497dc1e849ffa952ab1ceb4))
+* **admin-ui:** sonarcloud fixes ([82f5193](https://github.com/GluuFederation/flex/commit/82f5193aad86858a88b359628e63e56d7c4e48d8))
+* **admin-ui:** source & inum payload changes ([8351e50](https://github.com/GluuFederation/flex/commit/8351e503107b2849fdc0c39cd6a3ceab23c6b08f))
+* **admin-ui:** ssa details panel ([12126c8](https://github.com/GluuFederation/flex/commit/12126c8c3089b8caeb82b482b0b10bfeca79edbd))
+* **admin-ui:** ssa form changes ([a525abb](https://github.com/GluuFederation/flex/commit/a525abbb8776415a4351eabdd64811652ef3bd2d))
+* **admin-ui:** unable to add openid scope while creating AS client [#1115](https://github.com/GluuFederation/flex/issues/1115) ([d58431f](https://github.com/GluuFederation/flex/commit/d58431f442b2e68ecd5addfc700581c4550dcdb0))
+* **admin-ui:** update audit message on update cache refresh ([196a00c](https://github.com/GluuFederation/flex/commit/196a00c17f1ac222bc0a287fd5dc708ff2b6130c))
+* **admin-ui:** update card design ([1382ae4](https://github.com/GluuFederation/flex/commit/1382ae4a82ea147be0aac1904e3e01c5d5196f3d))
+* **admin-ui:** update UI of license key screen ([b934297](https://github.com/GluuFederation/flex/commit/b934297cdad2816874337b4842a77a7a81606823))
+* prepare for 5.0.0-15 release ([664553a](https://github.com/GluuFederation/flex/commit/664553ab80e24a44fd68837e1d3998a730bd778c))
+* ssa upload not working in admin-ui [#1171](https://github.com/GluuFederation/flex/issues/1171) ([02025df](https://github.com/GluuFederation/flex/commit/02025df7e2ed4fb432c534b2aa2f401a31868b41))
+
 ## [1.0.14](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.13...admin-ui-v1.0.14) (2023-06-12)
 
 
