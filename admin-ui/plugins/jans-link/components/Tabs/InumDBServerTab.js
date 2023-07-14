@@ -39,6 +39,8 @@ const InumDBServerTab = () => {
       servers: targetConfig?.servers || [],
       baseDNs: targetConfig?.baseDNs || [],
       bindPassword: targetConfig?.bindPassword || null,
+      configId: targetConfig?.configId || null,
+      bindDN: targetConfig?.bindDN || null
     },
   }
 
@@ -62,10 +64,10 @@ const InumDBServerTab = () => {
           is: false,
           then: () =>
             Yup.object({
-              configId: Yup.string().required(
+              configId: Yup.string().min(2, 'Mininum 2 characters').required(
                 `${t('fields.name')} ${t('messages.is_required')}`
               ),
-              bindDN: Yup.string().required(
+              bindDN: Yup.string().min(2, 'Mininum 2 characters').required(
                 `${t('fields.bind_dn')} ${t('messages.is_required')}`
               ),
               maxConnections: Yup.string().required(
