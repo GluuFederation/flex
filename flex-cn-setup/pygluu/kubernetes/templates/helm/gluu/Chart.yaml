@@ -1,29 +1,29 @@
 kubeVersion: ">=v1.21.0-0"
 annotations:
   artifacthub.io/changes: |
-    - Chart 5.0.19 official release
+    - Chart 5.0.20 dev release
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/images: |
     - name: auth-server
-      image: ghcr.io/janssenproject/jans/auth-server:1.0.15_dev
+      image: ghcr.io/janssenproject/jans/auth-server:1.0.16_dev
     - name: auth-server-key-rotation
-      image: ghcr.io/janssenproject/jans/certmanager:1.0.15_dev
+      image: ghcr.io/janssenproject/jans/certmanager:1.0.16_dev
     - name: configuration-manager
-      image: ghcr.io/janssenproject/jans/configurator:1.0.15_dev
+      image: ghcr.io/janssenproject/jans/configurator:1.0.16_dev
     - name:  config-api
-      image: ghcr.io/janssenproject/jans/config-api:1.0.15_dev
+      image: ghcr.io/janssenproject/jans/config-api:1.0.16_dev
     - name: fido2
-      image: ghcr.io/janssenproject/jans/fido2:1.0.15_dev
+      image: ghcr.io/janssenproject/jans/fido2:1.0.16_dev
     - name: opendj
       image: gluufederation/opendj:5.0.0_dev
     - name: persistence
-      image: ghcr.io/janssenproject/jans/persistence-loader:1.0.15_dev
+      image: ghcr.io/janssenproject/jans/persistence-loader:1.0.16_dev
     - name: scim
-      image: ghcr.io/janssenproject/jans/scim:1.0.15_dev
+      image: ghcr.io/janssenproject/jans/scim:1.0.16_dev
     - name: casa
       image: ghcr.io/gluufederation/flex/casa:5.0.0_dev
     - name: admin-ui
-      image: ghcr.io/gluufederation/flex/admin-ui:1.0.15_dev
+      image: ghcr.io/gluufederation/flex/admin-ui:1.0.16_dev
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: "true"
   catalog.cattle.io/certified: partner
@@ -41,60 +41,60 @@ maintainers:
   email: support@gluu.org
 description: Gluu Access and Identity Management
 name: gluu
-version: 5.0.19
+version: 5.0.20-dev
 dependencies:
     - name: config
       condition: global.config.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: config-api
       condition: global.config-api.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: opendj
       condition: global.opendj.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: auth-server
       condition: global.auth-server.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: admin-ui
       condition: global.admin-ui.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: fido2
       condition: global.fido2.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: scim
       condition: global.scim.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: nginx-ingress
       condition: global.nginx-ingress.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: oxshibboleth
       condition: global.oxshibboleth.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: oxpassport
-      version: 5.0.19
+      version: 5.0.20-dev
       condition: global.oxpassport.enabled
 
     - name: casa
-      version: 5.0.19
+      version: 5.0.20-dev
       condition: global.casa.enabled
 
     - name: auth-server-key-rotation
       condition: global.auth-server-key-rotation.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: persistence
       condition: global.persistence.enabled
-      version: 5.0.19
+      version: 5.0.20-dev
 
     - name: cn-istio-ingress
       condition: global.istio.ingress
-      version: 5.0.19
+      version: 5.0.20-dev
