@@ -19,12 +19,12 @@ const cachRefreshState = {
     snapshotMaxCount: null,
     ldapSearchSizeLimit: null,
     keepExternalPerson: null,
-    cacheRefreshServerIpAddress: null,
-    vdsCacheRefreshPollingInterval: null,
-    vdsCacheRefreshEnabled: null,
+    serverIpAddress: null,
+    pollingInterval: null,
+    linkEnabled: null,
     attributeMapping: [],
-    vdsCacheRefreshProblemCount: null,
-    vdsCacheRefreshLastUpdateCount: null,
+    problemCount: null,
+    lastUpdateCount: null,
   },
 };
 
@@ -51,8 +51,8 @@ it("Should render cache refresh management page properly", () => {
   render(<JansLinkPage />, {
     wrapper: Wrapper,
   });
-  screen.getByText(`${t("menus.cacherefresh")}`);
-  const cacheRefreshLink = screen.getByText(`${t("menus.cacherefresh")}`);
+
+  const cacheRefreshLink = screen.getByText(`${t("menus.cache_refresh")}`);
   expect(cacheRefreshLink).toBeInTheDocument();
 
   const customerBackendKeyAttributesLink = screen.getByText(
