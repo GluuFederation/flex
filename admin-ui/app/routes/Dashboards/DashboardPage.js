@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
-import { subMonths } from 'date-fns'
+import React, { useState, useEffect, useMemo } from 'react'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import { useMediaQuery } from 'react-responsive'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
-import { getMau } from 'Plugins/admin/redux/features/mauSlice'
 import { getClients } from 'Redux/features/initSlice'
 import {
   hasBoth,
@@ -22,8 +20,6 @@ import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
 import CheckIcon from '../../images/svg/check.svg'
 import CrossIcon from '../../images/svg/cross.svg'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 
@@ -40,16 +36,11 @@ function DashboardPage({
   dispatch,
 }) {
   const { t } = useTranslation()
-  const [startDate] = useState(subMonths(new Date(), 3))
-  const [endDate] = useState(new Date())
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const breakDashboardCard = useMediaQuery({ query: '(max-width: 1424px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const userAction = {}
   const options = {}
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(selectedTheme)
   const { classes } = styles()
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
   const [mauCount, setMauCount] = useState(null)
@@ -83,17 +74,14 @@ function DashboardPage({
     let count = 0
     const interval = () => {
       setTimeout(() => {
-        if (statData.length === 0 && count < 2) {
-          search()
-        }
-        if (clients.length === 0 && count < 2) {
+        if (clients.length === 0 && count < 1) {
           buildPayload(userAction, 'Fetch openid connect clients', {})
           dispatch(getClients({ action: userAction }))
         }
-        if (Object.keys(license).length === 0 && count < 2) {
+        if (Object.keys(license).length === 0 && count < 1) {
           getLicense()
         }
-        if (count < 2) {
+        if (count < 1) {
           getServerStatus()
           interval()
         }
@@ -102,14 +90,7 @@ function DashboardPage({
     }
     interval()
     return () => {}
-  }, [1000])
-
-  function search() {
-    options['startMonth'] = getYearMonth(startDate)
-    options['endMonth'] = getYearMonth(endDate)
-    buildPayload(userAction, 'GET MAU', options)
-    dispatch(getMau({ action: userAction }))
-  }
+  }, [])
 
   function getLicense() {
     buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
@@ -131,18 +112,6 @@ function DashboardPage({
     dispatch(getHealthStatus({ action: userAction }))
   }
 
-  function getYearMonth(date) {
-    return date.getFullYear() + getMonth(date)
-  }
-
-  function getMonth(aDate) {
-    const value = String(aDate.getMonth() + 1)
-    if (value.length > 1) {
-      return value
-    } else {
-      return '0' + value
-    }
-  }
 
   const summaryData = [
     {

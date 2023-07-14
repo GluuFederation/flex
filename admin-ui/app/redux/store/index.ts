@@ -43,6 +43,8 @@ declare const module: {
 
 let rootReducers
 
+sagaMiddleware.run(RootSaga)
+
 export function configStore() {
   const persistor = persistStore(store)
   window.dsfaStore = store
@@ -50,7 +52,6 @@ export function configStore() {
     rootReducers = combine(reds)
     store.replaceReducer(combine(reds))
   })
-  sagaMiddleware.run(RootSaga)
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers/index', () => {

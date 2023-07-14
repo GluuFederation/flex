@@ -37,7 +37,6 @@ function UserList(props) {
   useEffect(() => {
     opt['limit'] = 10
     dispatch(getUsers({ action: opt }))
-    dispatch(getAttributesRoot({ options: opt }))
     dispatch(getRoles({}))
   }, [])
   const { totalItems } = useSelector((state) => state.userReducer)
@@ -175,21 +174,23 @@ function UserList(props) {
   }
 
   useEffect(() => {
-    let usedAttributes = []
-    for (let i in usersList) {
-      for (let j in usersList[i].customAttributes) {
-        let val = usersList[i].customAttributes[j].name
-        if (!usedAttributes.includes(val)) {
-          usedAttributes.push(val)
+    if(usersList?.length) {
+      let usedAttributes = []
+      for (let i in usersList) {
+        for (let j in usersList[i].customAttributes) {
+          let val = usersList[i].customAttributes[j].name
+          if (!usedAttributes.includes(val)) {
+            usedAttributes.push(val)
+          }
         }
       }
-    }
-    if (usedAttributes.length) {
-      dispatch(
-        getAttributesRoot({
-          options: { pattern: usedAttributes.toString(), limit: 100 },
-        })
-      )
+      if (usedAttributes.length) {
+        dispatch(
+          getAttributesRoot({
+            options: { pattern: usedAttributes.toString(), limit: 100 },
+          })
+        )
+      }
     }
   }, [usersList])
 
