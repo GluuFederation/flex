@@ -10,14 +10,17 @@ const initialState = {
   permissions: [],
   location: {},
   config: {},
-  backendIsUp: true
+  backendIsUp: true,
+  defaultToken: null,
 }
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    getOAuth2Config: (state, action) => {},
+    getOAuth2Config: (state, action) => {
+      state.defaultToken = action.payload
+    },
     getOAuth2ConfigResponse: (state, action) => {
       if (action.payload?.config && action.payload?.config !== -1) {
         const newDataConfigObject = { ...state.config, ...action.payload.config }
@@ -58,6 +61,9 @@ const authSlice = createSlice({
       if (action.payload?.location) {
         state.location = action.payload.location
       }
+    },
+    setApiDefaultToken: (state, action) => {
+      state.defaultToken = action.payload
     }
   }
 })
@@ -72,7 +78,8 @@ export const {
   getAPIAccessToken,
   getAPIAccessTokenResponse,
   getUserLocation,
-  getUserLocationResponse
+  getUserLocationResponse,
+  setApiDefaultToken
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)

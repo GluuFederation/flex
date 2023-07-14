@@ -6,7 +6,6 @@ import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  getOAuth2Config,
   getUserInfo,
   getAPIAccessToken,
   checkLicensePresent,
@@ -20,7 +19,6 @@ export default function AppAuthProvider(props) {
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
   const [roleNotFound, setRoleNotFound] = useState(false)
-  const { isTimeout } = useSelector((state) => state.initReducer)
   const { config, userinfo, userinfo_jwt, token, backendIsUp } = useSelector(
     (state) => state.authReducer
   )
@@ -33,7 +31,6 @@ export default function AppAuthProvider(props) {
 
   useEffect(() => {
     dispatch(checkLicenseConfigValid())
-    dispatch(getOAuth2Config())
   }, [])
 
   useEffect(() => {

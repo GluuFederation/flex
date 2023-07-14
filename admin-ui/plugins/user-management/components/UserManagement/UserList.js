@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
@@ -33,11 +33,11 @@ import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
 
 function UserList(props) {
   const dispatch = useDispatch()
+  const renders = useRef(0);
   const opt = {}
   useEffect(() => {
     opt['limit'] = 10
     dispatch(getUsers({ action: opt }))
-    dispatch(getAttributesRoot({ options: opt }))
     dispatch(getRoles({}))
   }, [])
   const { totalItems } = useSelector((state) => state.userReducer)
@@ -176,20 +176,23 @@ function UserList(props) {
 
   useEffect(() => {
     let usedAttributes = []
-    for (let i in usersList) {
-      for (let j in usersList[i].customAttributes) {
-        let val = usersList[i].customAttributes[j].name
-        if (!usedAttributes.includes(val)) {
-          usedAttributes.push(val)
+    if(usersList?.length && renders.current < 1) {
+      renders.current = 1
+      for (let i in usersList) {
+        for (let j in usersList[i].customAttributes) {
+          let val = usersList[i].customAttributes[j].name
+          if (!usedAttributes.includes(val)) {
+            usedAttributes.push(val)
+          }
         }
       }
-    }
-    if (usedAttributes.length) {
-      dispatch(
-        getAttributesRoot({
-          options: { pattern: usedAttributes.toString(), limit: 100 },
-        })
-      )
+      if (usedAttributes.length) {
+        dispatch(
+          getAttributesRoot({
+            options: { pattern: usedAttributes.toString(), limit: 100 },
+          })
+        )
+      }
     }
   }, [usersList])
 

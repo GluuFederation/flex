@@ -2,20 +2,38 @@
  * License Sagas
  */
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse, generateTrialLicenseResponse, checkUserLicenseKeyResponse } from '../actions'
+import {
+  checkLicenseConfigValidResponse,
+  checkLicensePresentResponse,
+  checkLicensePresent,
+  getOAuth2Config,
+  uploadNewSsaTokenResponse,
+  generateTrialLicenseResponse,
+  checkUserLicenseKeyResponse,
+  setApiDefaultToken,
+} from '../actions'
 
 import LicenseApi from '../api/LicenseApi'
 import { getClientWithToken } from '../api/base'
-import {
-  fetchApiTokenWithDefaultScopes,
-} from '../api/backend-api'
+import { fetchApiTokenWithDefaultScopes } from '../api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
 
+let defaultToken 
+
+export function* getAccessToken() {
+  if (!defaultToken) {
+    defaultToken = yield call(fetchApiTokenWithDefaultScopes)
+    yield put(setApiDefaultToken(defaultToken))
+  }
+  return defaultToken
+}
+
 function* getApiTokenWithDefaultScopes() {
-  const response = yield call(fetchApiTokenWithDefaultScopes)
+  const { access_token } = yield call(getAccessToken)
+
   const api = new JansConfigApi.AdminUILicenseApi(
-    getClientWithToken(JansConfigApi, response.access_token),
+    getClientWithToken(JansConfigApi, access_token)
   )
   return new LicenseApi(api)
 }
@@ -73,11 +91,15 @@ function* uploadNewSsaToken({ payload }) {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
     const response = yield call(licenseApi.uploadSSAtoken, payload)
-    if(!response?.apiResult){
-      yield put(uploadNewSsaTokenResponse("Invalid SSA. Please contact Gluu's team to verify if SSA is correct."))
+    if (!response?.apiResult) {
+      yield put(
+        uploadNewSsaTokenResponse(
+          "Invalid SSA. Please contact Gluu's team to verify if SSA is correct."
+        )
+      )
     }
     yield put(checkLicenseConfigValidResponse(response?.apiResult))
-    yield put(getOAuth2Config())
+    yield put(getOAuth2Config(defaultToken))
     yield put(checkLicensePresent())
     // window.location.reload()
   } catch (error) {
@@ -88,6 +110,7 @@ function* uploadNewSsaToken({ payload }) {
 function* checkAdminuiLicenseConfig() {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
+    yield put(getOAuth2Config(defaultToken))
     const response = yield call(licenseApi.checkAdminuiLicenseConfig)
     yield put(checkLicenseConfigValidResponse(response?.apiResult))
   } catch (error) {
@@ -108,7 +131,5 @@ export function* checkLicensePresentWatcher() {
  * License Root Saga
  */
 export default function* rootSaga() {
-  yield all([
-    fork(checkLicensePresentWatcher),
-  ])
+  yield all([fork(checkLicensePresentWatcher)])
 }
