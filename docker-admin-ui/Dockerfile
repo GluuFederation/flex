@@ -70,7 +70,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=4d17cbcdab3272653f2cf547bcef1d8181353ffd
+ENV JANS_SOURCE_VERSION=2f3ea45597f941dd69e4e962720e9ffd26fb6b96
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
