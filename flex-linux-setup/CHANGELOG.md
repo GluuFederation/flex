@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.15](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.14...flex-linux-setup-v1.0.15) (2023-07-14)
+
+
+### Features
+
+* **flex-linux-setup:** option --no-restart-services ([d4b75bb](https://github.com/GluuFederation/flex/commit/d4b75bbf07f28a176ceeddcafb6b4904738e3646))
+* **flex-linux-setup:** remove prompt for passwurd api keystore creation ([44c7e1d](https://github.com/GluuFederation/flex/commit/44c7e1dcab8dc00a52dd8843b761509b1847b2ec))
+* **jans-flex-setup:** change default passwurd api keystaore password ([5cc3a7f](https://github.com/GluuFederation/flex/commit/5cc3a7fd4d293269855ff0e5562d8141534e9f70))
+
+
+### Bug Fixes
+
+* **flec-linux-setup:** opHost changes ([4daeb94](https://github.com/GluuFederation/flex/commit/4daeb947126ebdf137456bf1ae44f4f89f6a021c))
+* **flex-linux-setup:** do not prompt uninstalling when arg --flex-non-interactive provided ([cf58f4d](https://github.com/GluuFederation/flex/commit/cf58f4decd13a950d044e0251164bca25f95cbde))
+* **flex-linux-setup:** read profile from existing jans setup ([95213a4](https://github.com/GluuFederation/flex/commit/95213a41b11dd980b30f3dc9623ca397ffbad346))
+* **flex-linux-setup:** remove duo script ([40b5bf9](https://github.com/GluuFederation/flex/commit/40b5bf9a192b329433436f9d30da8eb4a6ac2271))
+* **flex-linux-setup:** strip inputs ([2e6d078](https://github.com/GluuFederation/flex/commit/2e6d078509dff71608cf87c48a99913255e66569))
+* prepare for 5.0.0-15 release ([664553a](https://github.com/GluuFederation/flex/commit/664553ab80e24a44fd68837e1d3998a730bd778c))
+* rename admin-ui plugin ([0ede41f](https://github.com/GluuFederation/flex/commit/0ede41f32470b862ae34023d02397825de5d7f71))
+
 ## [1.0.14](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.13...flex-linux-setup-v1.0.14) (2023-06-12)
 
 
