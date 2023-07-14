@@ -33,13 +33,13 @@ const CacheRefreshTab = () => {
     snapshotMaxCount = null,
     ldapSearchSizeLimit = null,
     keepExternalPerson = null,
-    serverIpAddress = null,
-    pollingInterval = null,
-    linkEnabled = null,
+    cacheRefreshServerIpAddress = null,
+    vdsCacheRefreshPollingInterval = null,
+    vdsCacheRefreshEnabled = null,
     attributeMapping = [],
-    problemCount = null,
-    lastUpdateCount = null,
-    lastUpdate = null,
+    vdsCacheRefreshProblemCount = null,
+    vdsCacheRefreshLastUpdateCount = null,
+    vdsCacheRefreshLastUpdate = null,
   } = useSelector((state) => state.cacheRefreshReducer.configuration)
 
   const initialValues = {
@@ -48,13 +48,13 @@ const CacheRefreshTab = () => {
     snapshotMaxCount,
     ldapSearchSizeLimit,
     keepExternalPerson,
-    serverIpAddress,
-    pollingInterval,
-    linkEnabled,
+    cacheRefreshServerIpAddress,
+    vdsCacheRefreshPollingInterval,
+    vdsCacheRefreshEnabled,
     attributeMapping,
-    problemCount,
-    lastUpdateCount,
-    lastUpdate,
+    vdsCacheRefreshProblemCount,
+    vdsCacheRefreshLastUpdateCount,
+    vdsCacheRefreshLastUpdate,
   }
 
   const formik = useFormik({
@@ -102,7 +102,7 @@ const CacheRefreshTab = () => {
           : [],
       },
     })
-
+    console.log(`userAction`, userAction)
     dispatch(
       putCacheRefreshConfiguration({ action: userAction })
     )
@@ -121,19 +121,19 @@ const CacheRefreshTab = () => {
           <Col sm={12}>
             <Row>
               <GluuLabel label={'fields.last_run'} size={3} />
-              <Col sm={9}>{formik.values.lastUpdate}</Col>
+              <Col sm={9}>{formik.values.vdsCacheRefreshLastUpdate}</Col>
             </Row>
           </Col>
           <Col sm={12}>
             <Row className='my-3'>
               <GluuLabel label={'fields.updates_at_last_run'} size={3} />
-              <Col sm={9}>{formik.values.lastUpdateCount}</Col>
+              <Col sm={9}>{formik.values.vdsCacheRefreshLastUpdateCount}</Col>
             </Row>
           </Col>
           <Col sm={12}>
             <Row className='mb-3'>
               <GluuLabel label={'fields.problems_at_last_run'} size={3} />
-              <Col sm={9}>{formik.values.problemCount}</Col>
+              <Col sm={9}>{formik.values.vdsCacheRefreshProblemCount}</Col>
             </Row>
           </Col>
           <Col sm={12}>
@@ -232,8 +232,8 @@ const CacheRefreshTab = () => {
           <Col sm={12}>
             <GluuInputRow
               label='fields.server_ip_address'
-              name='serverIpAddress'
-              value={formik.values.serverIpAddress}
+              name='cacheRefreshServerIpAddress'
+              value={formik.values.cacheRefreshServerIpAddress}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -242,9 +242,9 @@ const CacheRefreshTab = () => {
           <Col sm={12}>
             <GluuInputRow
               label='fields.polling_interval_mins'
-              name='pollingInterval'
+              name='vdsCacheRefreshPollingInterval'
               type='number'
-              value={formik.values.pollingInterval}
+              value={formik.values.vdsCacheRefreshPollingInterval}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -264,13 +264,13 @@ const CacheRefreshTab = () => {
           <Col sm={12}>
             <GluuCheckBoxRow
               label='fields.cache_refresh'
-              name='linkEnabled'
+              name='vdsCacheRefreshEnabled'
               handleOnChange={(e) => {
-                formik.setFieldValue('linkEnabled', e.target.checked)
+                formik.setFieldValue('vdsCacheRefreshEnabled', e.target.checked)
               }}
               lsize={3}
               rsize={9}
-              value={formik.values.linkEnabled}
+              value={formik.values.vdsCacheRefreshEnabled}
             />
           </Col>
         </FormGroup>
