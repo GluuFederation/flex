@@ -145,7 +145,7 @@ const SourceBackendServersTab = () => {
 
   const handleChangePassword = (updatedPassword) => {
     buildPayload(userAction, 'CHANGE SOURCE BACKEND BIND PASSWORD', {
-      cacheRefreshConfiguration: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         sourceConfigs: [
           {
