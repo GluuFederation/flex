@@ -186,7 +186,7 @@ sudo python3 /opt/jans/jans-setup/install.py -uninstall
 ```
 output will be like this:
 ```shell
-ec2-user@manojs1978-clear-camel:~> sudo python3 /opt/jans/jans-setup/install.py -uninstall
+ec2-user@manojs1978-clear-camel:~> sudo python3 /opt/jans/jans-setup/install.py -uninstall -yes --keep-downloads --keep-setup
 
 This process is irreversible.
 You will lose all data related to Janssen Server.
