@@ -11,6 +11,7 @@ import { reducer as licenseDetailsReducer } from '../features/licenseDetailsSlic
 import oidcDiscoveryReducer from '../features/oidcDiscoverySlice'
 import attributesReducerRoot from '../features/attributesSlice'
 import toastReducer from '../features/toastSlice'
+import profileDetailsReducer from '../features/ProfileDetailsSlice'
 const appReducers = {
   authReducer,
   initReducer,
@@ -21,7 +22,8 @@ const appReducers = {
   healthReducer,
   licenseDetailsReducer,
   attributesReducerRoot,
-  toastReducer
+  toastReducer,
+  profileDetailsReducer
 }
 
 export default appReducers
