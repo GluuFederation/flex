@@ -14,6 +14,7 @@ import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/C
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { buildPayload } from 'Utils/PermChecker'
+import moment from 'moment/moment'
 
 const CacheRefreshTab = () => {
   const { t } = useTranslation()
@@ -121,7 +122,7 @@ const CacheRefreshTab = () => {
           <Col sm={12}>
             <Row>
               <GluuLabel label={'fields.last_run'} size={3} />
-              <Col sm={9}>{formik.values.lastUpdate}</Col>
+              <Col sm={9}>{formik.values.lastUpdate ? moment(formik.values.lastUpdate).format('YYYY-MM-DD HH:mm:ss') : null}</Col>
             </Row>
           </Col>
           <Col sm={12}>
