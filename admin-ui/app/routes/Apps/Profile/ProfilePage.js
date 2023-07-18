@@ -1,5 +1,14 @@
 import React, { useContext, useEffect } from 'react'
-import { Container, Row, Col, Card, CardBody, Avatar, Button } from 'Components'
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardBody,
+  Avatar,
+  Button,
+  Badge,
+} from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +22,7 @@ import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import { setSelectedUserData } from 'Plugins/user-management/redux/features/userSlice'
 import { USER_WRITE, hasPermission } from 'Utils/PermChecker'
+import getThemeColor from '../../../context/theme/config'
 
 const ProfileDetails = () => {
   const { t } = useTranslation()
@@ -25,6 +35,7 @@ const ProfileDetails = () => {
   const { userinfo } = useSelector((state) => state.authReducer)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(theme.state.theme)
   const navigate = useNavigate()
   const { classes } = styles()
   SetTitle(t('titles.profile_detail'))
@@ -39,12 +50,18 @@ const ProfileDetails = () => {
     navigate(`/user/usermanagement/edit/:` + profileDetails.inum)
   }
 
+  const jansAdminUIRole = profileDetails?.customAttributes?.find(
+    (att) => att?.name === 'jansAdminUIRole'
+  )
+  console.log(`jansAdminUIRole`, jansAdminUIRole)
+
+  console.log(`userinfo`, userinfo, `profileDetails`, profileDetails)
   return (
     <React.Fragment>
       <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
         <Container>
           <Row className={classes.centerCard}>
-            <Col xs={10} md={6} lg={4}>
+            <Col xs={10} md={8} lg={5}>
               <Card>
                 <CardBody className={classes.profileCard}>
                   <React.Fragment>
@@ -53,50 +70,108 @@ const ProfileDetails = () => {
                     >
                       <Avatar.Image size='lg' src={randomAvatar()} />
                     </Box>
-                    <Box display={'flex'} flexDirection={'column'}>
-                      <Box>
-                        <Box fontSize={'16px'} className='text-center mb-4'>
-                          {userinfo.name}
-                        </Box>
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                        >
-                          <Box>First Name</Box>
-                          <Box>{userinfo.given_name}</Box>
-                        </Box>
+                    <Box display={'flex'} flexDirection={'column'} gap={2}>
+                      <Box display={'flex'} flexDirection={'column'} gap={1}>
+                        {loading ? (
+                          <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                            <Skeleton
+                              width={'45%'}
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                              animation='wave'
+                            />
+                          </Box>
+                        ) : (
+                          <Box
+                            fontWeight={700}
+                            fontSize={'16px'}
+                            className='text-center mb-4'
+                          >
+                            {profileDetails?.displayName}
+                          </Box>
+                        )}
+                        {loading ? (
+                          <Skeleton animation='wave' />
+                        ) : (
+                          <Box
+                            display={'flex'}
+                            justifyContent={'space-between'}
+                            alignItems={'center'}
+                            mb={1}
+                          >
+                            <Box fontWeight={700}>First Name</Box>
+                            <Box>{profileDetails?.givenName}</Box>
+                          </Box>
+                        )}
                         <Divider />
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                        >
-                          <Box>Last Name</Box>
-                          <Box>{userinfo.family_name}</Box>
-                        </Box>
+                        {loading ? (
+                          <Skeleton animation='wave' />
+                        ) : (
+                          <Box
+                            display={'flex'}
+                            justifyContent={'space-between'}
+                            alignItems={'center'}
+                            mb={1}
+                          >
+                            <Box fontWeight={700}>Last Name</Box>
+                            <Box>{userinfo.family_name}</Box>
+                          </Box>
+                        )}
                         <Divider />
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                        >
-                          <Box>Email</Box>
-                          <Box>{userinfo.email}</Box>
-                        </Box>
+                        {loading ? (
+                          <Skeleton animation='wave' />
+                        ) : (
+                          <Box
+                            display={'flex'}
+                            justifyContent={'space-between'}
+                            alignItems={'center'}
+                            mb={1}
+                          >
+                            <Box fontWeight={700}>Email</Box>
+                            <Box>{profileDetails?.mail}</Box>
+                          </Box>
+                        )}
                         <Divider />
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          alignItems={'center'}
-                          mb={1}
-                        >
-                          <Box>User Roles</Box>
-                          <Box>{userinfo.jansAdminUIRole}</Box>
-                        </Box>
+                        {loading ? (
+                          <Skeleton animation='wave' />
+                        ) : (
+                          <Box
+                            display={'flex'}
+                            justifyContent={'space-between'}
+                            alignItems={'center'}
+                            mb={1}
+                            gap={3}
+                          >
+                            <Box fontWeight={700}>User Roles</Box>
+                            {jansAdminUIRole?.values && (
+                              <Box
+                                display={'flex'}
+                                gap={'2px'}
+                                flexWrap={'wrap'}
+                                alignItems={'end'}
+                                justifyContent={'end'}
+                              >
+                                {jansAdminUIRole?.values.map((role, index) => (
+                                  <Badge
+                                    style={{ padding: '4px 6px' }}
+                                    color={`primary-${selectedTheme}`}
+                                    className='me-1'
+                                    key={index}
+                                  >
+                                    <span
+                                      style={{ color: themeColors.fontColor }}
+                                    >
+                                      {role}
+                                    </span>
+                                  </Badge>
+                                ))}
+                              </Box>
+                            )}
+                          </Box>
+                        )}
                         <Divider />
                         {loading ? (
                           <Skeleton animation='wave' />
@@ -108,7 +183,7 @@ const ProfileDetails = () => {
                               alignItems={'center'}
                               mb={1}
                             >
-                              <Box>Status</Box>
+                              <Box fontWeight={700}>Status</Box>
                               <Box>{profileDetails?.jansStatus || '-'}</Box>
                             </Box>
                           </>

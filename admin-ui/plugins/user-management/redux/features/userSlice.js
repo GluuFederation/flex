@@ -4,7 +4,7 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const initialState = {
   items: [],
   selectedUserData: null,
-  loading: true,
+  loading: false,
   redirectToUserListPage: false,
   totalItems: 0,
   entriesCount: 0
