@@ -1832,6 +1832,9 @@ of Gluu Flex on SUSE Linux distributions</p>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>sudo firewall-cmd --reload
 </code></pre></div></li>
+<li>for SUSE Linux Enterprise(SLES) we need to enable PackageHub as per OS version and architecture
+<div class="highlight"><pre><span></span><code>sudo SUSEConnect -p PackageHub/15.4/x86_64
+</code></pre></div></li>
 <li>Please obtain an <a href="../../software-statements/ssa/">SSA</a> to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.</li>
 </ul>
@@ -1916,7 +1919,7 @@ the package.</p>
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 </code></pre></div>
 the output will be like this:
-<div class="highlight"><pre><span></span><code>ec2-user@manojs1978-clear-camel:~&gt; sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
 Gluu Flex Components will be removed
@@ -1970,7 +1973,7 @@ Restarting Janssen Config Api
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall
 </code></pre></div>
 output will be like this:
-<div class="highlight"><pre><span></span><code>ec2-user@manojs1978-clear-camel:~&gt; sudo python3 /opt/jans/jans-setup/install.py -uninstall
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall -yes --keep-downloads --keep-setup
 
 This process is irreversible.
 You will lose all data related to Janssen Server.
@@ -2014,7 +2017,7 @@ Use <code>zypper</code> to remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-03T08:17:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-03</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-18T07:59:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-18</span>
       
         <br>
         Created:
