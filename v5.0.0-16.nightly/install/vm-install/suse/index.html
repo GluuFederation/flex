@@ -1832,6 +1832,9 @@ of Gluu Flex on SUSE Linux distributions</p>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>sudo firewall-cmd --reload
 </code></pre></div></li>
+<li>for SUSE Linux Enterprise(SLES) we need to enable PackageHub as per OS version and architecture
+<div class="highlight"><pre><span></span><code>sudo SUSEConnect -p PackageHub/15.4/x86_64
+</code></pre></div></li>
 <li>Please obtain an <a href="../../software-statements/ssa/">SSA</a> to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.</li>
 </ul>
@@ -1840,7 +1843,7 @@ of Gluu Flex on SUSE Linux distributions</p>
 <ul>
 <li>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-16.nightly/flex-5.0.0-16.nightly-suse15.x86_64.rpm -P ~/
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm -P ~/
 </code></pre></div></p>
 </li>
 <li>
@@ -1856,20 +1859,20 @@ of Gluu Flex on SUSE Linux distributions</p>
 </li>
 <li>
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the package
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-16.nightly/flex-5.0.0-16.nightly-suse15.x86_64.rpm.sha256sum  -P ~/
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm.sha256sum  -P ~/
 </code></pre></div></p>
 </li>
 </ul>
 <p>Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
-<div class="highlight"><pre><span></span><code>sha256sum -c flex-5.0.0-16.nightly-suse15.x86_64.rpm.sha256sum
+<div class="highlight"><pre><span></span><code>sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex-5.0.0-16.nightly-suse15.x86_64.rpm: ok
+<div class="highlight"><pre><span></span><code>flex-replace-flex-version-suse15.x86_64.rpm: ok
 </code></pre></div></p>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Use SUSE <code>zypper</code> tool to start the installation process
-<div class="highlight"><pre><span></span><code>sudo zypper install ~/flex-5.0.0-16.nightly-suse15.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo zypper install ~/flex-replace-flex-version-suse15.x86_64.rpm
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <p>Execute the setup script with command below:
@@ -1916,7 +1919,7 @@ the package.</p>
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 </code></pre></div>
 the output will be like this:
-<div class="highlight"><pre><span></span><code>ec2-user@manojs1978-clear-camel:~&gt; sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
 Gluu Flex Components will be removed
@@ -1970,7 +1973,7 @@ Restarting Janssen Config Api
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall
 </code></pre></div>
 output will be like this:
-<div class="highlight"><pre><span></span><code>ec2-user@manojs1978-clear-camel:~&gt; sudo python3 /opt/jans/jans-setup/install.py -uninstall
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall -yes --keep-downloads --keep-setup
 
 This process is irreversible.
 You will lose all data related to Janssen Server.
@@ -2014,7 +2017,7 @@ Use <code>zypper</code> to remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-03T08:17:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-03</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-18T07:59:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-18</span>
       
         <br>
         Created:
