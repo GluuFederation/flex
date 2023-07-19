@@ -27,6 +27,10 @@ sudo firewall-cmd --permanent --zone=public --add-service=https
 ```shell
 sudo firewall-cmd --reload
 ```
+- for SUSE Linux Enterprise(SLES) we need to enable PackageHub as per OS version and architecture
+```
+sudo SUSEConnect -p PackageHub/15.4/x86_64
+```
 - Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
 
@@ -125,7 +129,7 @@ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-f
 ```
 the output will be like this:
 ```text
-ec2-user@manojs1978-clear-camel:~> sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
 Gluu Flex Components will be removed
@@ -182,7 +186,7 @@ sudo python3 /opt/jans/jans-setup/install.py -uninstall
 ```
 output will be like this:
 ```shell
-ec2-user@manojs1978-clear-camel:~> sudo python3 /opt/jans/jans-setup/install.py -uninstall
+sudo python3 /opt/jans/jans-setup/install.py -uninstall -yes --keep-downloads --keep-setup
 
 This process is irreversible.
 You will lose all data related to Janssen Server.
