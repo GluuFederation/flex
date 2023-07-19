@@ -13,7 +13,9 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from '../../../../app/redux/actions'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-function UserForm({onSubmitData}) {
+import { debounce } from 'lodash'
+
+function UserForm({ onSubmitData }) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
@@ -24,7 +26,9 @@ function UserForm({onSubmitData}) {
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
+  const personAttributes = useSelector(
+    (state) => state.attributesReducerRoot.items
+  )
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   let options = {}
@@ -34,20 +38,20 @@ function UserForm({onSubmitData}) {
     givenName: userDetails?.givenName || '',
     mail: userDetails?.mail || '',
     userId: userDetails?.userId || '',
-    sn:'',
-    middleName:'',
+    sn: '',
+    middleName: '',
     jansStatus: userDetails?.jansStatus || '',
   }
 
-  if(userDetails){
+  if (userDetails) {
     for (let i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         let customAttribute = personAttributes.filter(
-          (e) => e.name == userDetails.customAttributes[i].name,
+          (e) => e.name == userDetails.customAttributes[i].name
         )
         if (userDetails.customAttributes[i].name == 'birthdate') {
           initialValues[userDetails.customAttributes[i].name] = moment(
-            userDetails.customAttributes[i].values[0],
+            userDetails.customAttributes[i].values[0]
           ).format('YYYY-MM-DD')
         } else {
           if (customAttribute[0]?.oxMultiValuedAttribute) {
@@ -67,15 +71,13 @@ function UserForm({onSubmitData}) {
     onSubmit: (values) => {
       toggle()
     },
-    validationSchema: Yup.object(
-      {
-        displayName:Yup.string().required('Display name is required.'),
-        givenName:Yup.string().required('First name is required.'),
-        sn:Yup.string().required('Last name is required.'),
-        userId:Yup.string().required('User name is required.'),
-        mail:Yup.string().required('Email is required.'),
-      }
-    ),
+    validationSchema: Yup.object({
+      displayName: Yup.string().required('Display name is required.'),
+      givenName: Yup.string().required('First name is required.'),
+      sn: Yup.string().required('Last name is required.'),
+      userId: Yup.string().required('User name is required.'),
+      mail: Yup.string().required('Email is required.'),
+    }),
     setFieldValue: (field) => {
       delete values[field]
     },
@@ -84,15 +86,6 @@ function UserForm({onSubmitData}) {
   const toggle = () => {
     setModal(!modal)
   }
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      options['pattern'] = searchClaims;
-      dispatch(getAttributesRoot({ options }))  
-    }, 500)
-
-    return () => clearTimeout(delayDebounceFn)
-  },[searchClaims])
 
   const submitChangePassword = () => {
     const submitableValue = {
@@ -160,10 +153,8 @@ function UserForm({onSubmitData}) {
     for (const i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         const data = getCustomAttributeById(
-          userDetails.customAttributes[i].name,
-        ) && { ...getCustomAttributeById(
-          userDetails.customAttributes[i].name,
-        )}
+          userDetails.customAttributes[i].name
+        ) && { ...getCustomAttributeById(userDetails.customAttributes[i].name) }
         if (
           data &&
           !usedClaimes.includes(userDetails.customAttributes[i].name)
@@ -206,14 +197,13 @@ function UserForm({onSubmitData}) {
     formik.setFieldValue('userConfirmPassword')
     setShowButtons(true)
   }
-  
 
   return (
     <GluuLoader blocking={loading}>
       <Modal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
-        className="modal-outline-primary"
+        className='modal-outline-primary'
       >
         <ModalHeader>Change Password</ModalHeader>
         <ModalBody>
@@ -221,9 +211,9 @@ function UserForm({onSubmitData}) {
             <Col>
               <GluuInputRow
                 doc_category={DOC_SECTION}
-                label="Password"
-                name="userPassword"
-                type="password"
+                label='Password'
+                name='userPassword'
+                type='password'
                 value={formik.values.userPassword || ''}
                 formik={formik}
                 lsize={3}
@@ -231,9 +221,9 @@ function UserForm({onSubmitData}) {
               />
               <GluuInputRow
                 doc_category={DOC_SECTION}
-                label="Confirm Password"
-                name="userConfirmPassword"
-                type="password"
+                label='Confirm Password'
+                name='userConfirmPassword'
+                type='password'
                 value={formik.values.userConfirmPassword || ''}
                 formik={formik}
                 lsize={3}
@@ -241,7 +231,7 @@ function UserForm({onSubmitData}) {
               />
 
               {passwordError != '' && (
-                <span className="text-danger">{passwordError}</span>
+                <span className='text-danger'>{passwordError}</span>
               )}
             </Col>
           </FormGroup>
@@ -252,7 +242,7 @@ function UserForm({onSubmitData}) {
               formik.values.userConfirmPassword && (
               <Button
                 color={`primary-${selectedTheme}`}
-                type="button"
+                type='button'
                 onClick={() => submitChangePassword()}
               >
                 {t('actions.change_password')}
@@ -277,8 +267,8 @@ function UserForm({onSubmitData}) {
           <Col sm={8}>
             {userDetails && (
               <GluuInputRow
-                label="INUM"
-                name="INUM"
+                label='INUM'
+                name='INUM'
                 doc_category={DOC_SECTION}
                 value={userDetails.inum || ''}
                 lsize={3}
@@ -289,8 +279,8 @@ function UserForm({onSubmitData}) {
             )}
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="First Name"
-              name="givenName"
+              label='First Name'
+              name='givenName'
               value={formik.values.givenName || ''}
               formik={formik}
               lsize={3}
@@ -300,8 +290,8 @@ function UserForm({onSubmitData}) {
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="Middle Name"
-              name="middleName"
+              label='Middle Name'
+              name='middleName'
               value={formik.values.middleName || ''}
               formik={formik}
               lsize={3}
@@ -312,8 +302,8 @@ function UserForm({onSubmitData}) {
 
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="Last Name"
-              name="sn"
+              label='Last Name'
+              name='sn'
               value={formik.values.sn || ''}
               formik={formik}
               lsize={3}
@@ -323,8 +313,8 @@ function UserForm({onSubmitData}) {
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="User Name"
-              name="userId"
+              label='User Name'
+              name='userId'
               value={formik.values.userId || ''}
               formik={formik}
               lsize={3}
@@ -334,20 +324,22 @@ function UserForm({onSubmitData}) {
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="Display Name"
-              name="displayName"
+              label='Display Name'
+              name='displayName'
               value={formik.values.displayName || ''}
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.displayName && formik.touched.displayName}
+              showError={
+                formik.errors.displayName && formik.touched.displayName
+              }
               errorMessage={formik.errors.displayName}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="Email"
-              name="mail"
-              type="email"
+              label='Email'
+              name='mail'
+              type='email'
               value={formik.values.mail || ''}
               formik={formik}
               lsize={3}
@@ -358,8 +350,8 @@ function UserForm({onSubmitData}) {
 
             <GluuSelectRow
               doc_category={DOC_SECTION}
-              label="Status"
-              name="jansStatus"
+              label='Status'
+              name='jansStatus'
               value={formik.values.jansStatus || ''}
               values={['active', 'inactive']}
               formik={formik}
@@ -370,9 +362,9 @@ function UserForm({onSubmitData}) {
             {!userDetails && (
               <GluuInputRow
                 doc_category={DOC_SECTION}
-                label="Password"
-                name="userPassword"
-                type="password"
+                label='Password'
+                name='userPassword'
+                type='password'
                 value={formik.values.userPassword || ''}
                 formik={formik}
                 lsize={3}
@@ -382,9 +374,9 @@ function UserForm({onSubmitData}) {
             {!userDetails && (
               <GluuInputRow
                 doc_category={DOC_SECTION}
-                label="Confirm Password"
-                name="userConfirmPassword"
-                type="password"
+                label='Confirm Password'
+                name='userConfirmPassword'
+                type='password'
                 value={formik.values.userConfirmPassword || ''}
                 formik={formik}
                 lsize={3}
@@ -392,7 +384,7 @@ function UserForm({onSubmitData}) {
               />
             )}
             {passwordError != '' && !changePasswordModal && (
-              <span className="text-danger">{passwordError}</span>
+              <span className='text-danger'>{passwordError}</span>
             )}
             {selectedClaims.map((data, key) => (
               <UserClaimEntry
@@ -401,7 +393,7 @@ function UserForm({onSubmitData}) {
                 data={data}
                 formik={formik}
                 handler={removeSelectedClaimsFromState}
-                type="input"
+                type='input'
               />
             ))}
             {showButtons && (
@@ -412,25 +404,25 @@ function UserForm({onSubmitData}) {
                       color={`primary-${selectedTheme}`}
                       onClick={() => setChangePasswordModal(true)}
                     >
-                      <i className="fa fa-key me-2"></i>
+                      <i className='fa fa-key me-2'></i>
                       {t('actions.change_password')}
                     </Button>
                   )}
                 </Col>
-                <Col md={8} className="text-end">
+                <Col md={8} className='text-end'>
                   <Button
                     color={`primary-${selectedTheme}`}
-                    type="button"
+                    type='button'
                     onClick={goBack}
                   >
-                    <i className="fa fa-arrow-circle-left me-2"></i>
+                    <i className='fa fa-arrow-circle-left me-2'></i>
                     {t('actions.cancel')}
                   </Button>
                   {/* For Space in buttons */}
                   &nbsp; &nbsp; &nbsp;
                   {/* For Space in buttons */}
-                  <Button color={`primary-${selectedTheme}`} type="submit">
-                    <i className="fa fa-check-circle me-2"></i>
+                  <Button color={`primary-${selectedTheme}`} type='submit'>
+                    <i className='fa fa-check-circle me-2'></i>
                     {t('actions.save')}
                   </Button>
                 </Col>
@@ -438,20 +430,27 @@ function UserForm({onSubmitData}) {
             )}
           </Col>
           <Col sm={4}>
-            <div className="border border-light ">
-              <div className="bg-light text-bold p-2">Available Claims</div>
+            <div className='border border-light '>
+              <div className='bg-light text-bold p-2'>Available Claims</div>
               <input
-                type="search"
-                className="form-control mb-2"
-                placeholder="Search Claims Here "
-                onChange={(e) => setSearchClaims(e.target.value)}
+                type='search'
+                className='form-control mb-2'
+                placeholder='Search Claims Here '
+                onChange={(e) => {
+                  setSearchClaims(e.target.value)
+                  const delayDebounceFn = debounce(function () {
+                    options['pattern'] = e.target.value;
+                    dispatch(getAttributesRoot({ options })) 
+                  }, 500);
+                  delayDebounceFn()
+                }}
                 value={searchClaims}
               />
-              <ul className="list-group">
+              <ul className='list-group'>
                 {personAttributes.map((data, key) => {
                   const name = data.displayName.toLowerCase()
                   const alreadyAddedClaim = selectedClaims.some(
-                    (el) => el.name === data.name,
+                    (el) => el.name === data.name
                   )
                   if (
                     data.status == 'active' &&
@@ -464,9 +463,9 @@ function UserForm({onSubmitData}) {
                     ) {
                       return (
                         <li
-                          className="list-group-item"
+                          className='list-group-item'
                           key={'list' + key}
-                          title="Click to add to the form"
+                          title='Click to add to the form'
                         >
                           <a
                             onClick={() => setSelectedClaimsToState(data)}

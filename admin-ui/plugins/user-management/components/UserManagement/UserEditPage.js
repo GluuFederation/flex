@@ -4,30 +4,35 @@ import { Container, CardBody, Card } from '../../../../app/components'
 import UserForm from './UserForm'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
-import { useFormik } from 'formik'
 import { updateUser } from '../../redux/features/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { getAttributesRoot } from '../../../../app/redux/actions'
 import moment from 'moment'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getPersistenceType } from '../../../services/redux/features/persistenceTypeSlice'
-import * as Yup from 'yup'
 
 function UserEditPage() {
   const dispatch = useDispatch()
-  const userAction = {}
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
+  const personAttributes = useSelector(
+    (state) => state.attributesReducerRoot.items
+  )
   const redirectToUserListPage = useSelector(
-    (state) => state.userReducer.redirectToUserListPage,
+    (state) => state.userReducer.redirectToUserListPage
+  )
+  const loadingAttributes = useSelector(
+    (state) => state.attributesReducerRoot.initLoading
   )
 
+  let options = {}
   useEffect(() => {
     dispatch(getPersistenceType())
   }, [])
 
   const persistenceType = useSelector(
-    (state) => state.persistenceTypeReducer.type,
+    (state) => state.persistenceTypeReducer.type
   )
 
   useEffect(() => {
@@ -50,7 +55,7 @@ function UserEditPage() {
             } else {
               values[key]
                 ? val.push(
-                    moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                    moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
                   )
                 : null
               value = values[key]
@@ -110,8 +115,14 @@ function UserEditPage() {
 
     dispatch(updateUser(submitableValues))
   }
-  
-  
+
+  useEffect(() => {
+    if (!personAttributes?.length) {
+      options['limit'] = 100
+      dispatch(getAttributesRoot({ options, init: true }))
+    }
+  }, [])
+
   return (
     <React.Fragment>
       <GluuAlert
@@ -120,9 +131,13 @@ function UserEditPage() {
         show={false}
       />
       <Container>
-        <Card className="mb-3">
+        <Card className='mb-3'>
           <CardBody>
-            <UserForm onSubmitData={submitData} />
+            {loadingAttributes ? (
+              <GluuLoader blocking={loadingAttributes} />
+            ) : (
+              <UserForm onSubmitData={submitData} />
+            )}
           </CardBody>
         </Card>
       </Container>

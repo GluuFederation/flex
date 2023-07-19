@@ -53,9 +53,7 @@ const ProfileDetails = () => {
   const jansAdminUIRole = profileDetails?.customAttributes?.find(
     (att) => att?.name === 'jansAdminUIRole'
   )
-  console.log(`jansAdminUIRole`, jansAdminUIRole)
 
-  console.log(`userinfo`, userinfo, `profileDetails`, profileDetails)
   return (
     <React.Fragment>
       <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
