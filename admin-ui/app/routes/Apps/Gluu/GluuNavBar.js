@@ -46,7 +46,7 @@ function GluuNavBar({ userinfo }) {
             <Notifications />
             <LanguageMenu userInfo={userInfo} />
             <ThemeSetting userInfo={userInfo} />
-            <UncontrolledDropdown nav inNavbar>
+            <UncontrolledDropdown nav direction="down">
               <DropdownToggle nav>
                 <Avatar.Image
                   size="md"
@@ -65,7 +65,7 @@ function GluuNavBar({ userinfo }) {
                   ]}
                 />
               </DropdownToggle>
-              <DropdownProfile right userinfo={userInfo} />
+              <DropdownProfile end userinfo={userInfo} />
             </UncontrolledDropdown>
           </Nav>
         </Box>
