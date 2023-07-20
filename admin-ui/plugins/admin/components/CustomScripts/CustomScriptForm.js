@@ -26,6 +26,7 @@ import { Alert, Button } from "reactstrap";
 import ErrorIcon from '@mui/icons-material/Error';
 
 function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
+  console.log(`;is is`, Object.isExtensible(item.moduleProperties));
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -90,9 +91,16 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       aliases: item.aliases,
       moduleProperties: item.moduleProperties,
       configurationProperties: item.configurationProperties,
+      script_path: scriptPath
     },
     validationSchema: Yup.object({
-      name: Yup.string().matches(/^[a-zA-Z0-9_]+$/,"Name should contain only letters, digits and underscores").min(2, 'Mininum 2 characters').required('Required!'),
+      name: Yup.string()
+        .matches(
+          /^[a-zA-Z0-9_]+$/,
+          'Name should contain only letters, digits and underscores'
+        )
+        .min(2, 'Mininum 2 characters')
+        .required('Required!'),
       description: Yup.string(),
       scriptType: Yup.string()
         .min(2, 'Mininum 2 characters')
@@ -100,7 +108,19 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       programmingLanguage: Yup.string()
         .min(3, 'This value is required')
         .required('Required!'),
-      script: Yup.object().shape().when('location_type', { is: 'db', then: () => Yup.string().required('Required!') })
+      script: Yup.string().when('location_type', {
+        is: (value) => {
+          console.log('the value', value)
+          return value === 'db'
+        },
+        then: () => Yup.string().required('Required!'),
+      }),
+      script_path: Yup.string().when('location_type', {
+        is: (value) => {
+          return value === 'file'
+        },
+        then: () => Yup.string().required('Required!'),
+      }),
     }),
 
     onSubmit: (values) => {
@@ -414,7 +434,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
         {scriptPath && (
 
           <FormGroup row>
-            <GluuLabel label="fields.script_path" doc_category={SCRIPT} doc_entry="scriptPath" />
+            <GluuLabel required label="fields.script_path" doc_category={SCRIPT} doc_entry="scriptPath" />
             <Col sm={9}>
               <InputGroup>
                 <Input
@@ -438,9 +458,16 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                   }
                   onChange={(e) => {
                     scriptPathChange(e.target.value)
+                    formik.setFieldValue('script_path', e.target.value)
                   }}
                 />
               </InputGroup>
+              {formik.errors.script_path &&
+              formik.touched.script_path && (
+                <div style={{ color: 'red' }}>
+                  {formik.errors.script_path}
+                </div>
+              )}
             </Col>
           </FormGroup>
         )}

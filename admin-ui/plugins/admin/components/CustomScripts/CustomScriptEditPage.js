@@ -37,6 +37,8 @@ function CustomScriptEditPage({
     }
   }
 
+  const moduleProperties = item.moduleProperties ? item.moduleProperties.map((item) => item) : []
+
   return (
     <GluuLoader blocking={loading}>
       <GluuAlert
@@ -47,7 +49,7 @@ function CustomScriptEditPage({
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <CustomScriptForm
-            item={{ ...item }}
+            item={{ ...item, moduleProperties }}
             scripts={scripts}
             viewOnly={viewOnly}
             handleSubmit={handleSubmit}
