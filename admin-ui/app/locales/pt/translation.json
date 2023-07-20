@@ -107,7 +107,8 @@
     "add_object_class": "Adicionar classe de objeto",
     "add_source_attribute": "Adicionar atributo de origem",
     "add_source_ldap_server": "Adicionar servidor LDAP de origem",
-    "remove_source_server": "Remover servidor de origem"
+    "remove_source_server": "Remover servidor de origem",
+    "copy_to_clipboard": "Copiar para área de transferência"
   },
   "fields": {
     "access_token_signing_alg": "Algoritmo de assinatura de token de acesso",
@@ -389,7 +390,8 @@
     "drag_agama_file": "Arrastar .gama arquivo aqui, ou clique para selecionar o arquivo",
     "drag_sha_file": "Arrastar .sha256sum arquivo aqui, ou clique para selecionar o arquivo",
     "see_project_details": "Ver detalhes do projeto",
-    "add_ssa": "Adicionar SSA"
+    "add_ssa": "Adicionar SSA",
+    "copied": "Copiado"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -521,6 +523,9 @@
     "yes": "sim"
   },
   "documentation": {
+    "no_category": {
+      "deletable": "É deletável?"
+    },
     "ssa": {
       "org_id": "L'org_id est utilisé pour l'identification de l'organisation.",
       "description": "Décrire SSA",

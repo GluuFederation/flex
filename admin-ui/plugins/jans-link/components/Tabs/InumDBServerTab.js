@@ -2,7 +2,7 @@ import { useFormik } from 'formik'
 import React, { useContext, useState } from 'react'
 import { Row, Col, Form, FormGroup, Button } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useDispatch, useSelector } from 'react-redux'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -144,10 +144,10 @@ const InumDBServerTab = () => {
     >
       <FormGroup row>
         <Col sm={12}>
-          <GluuCheckBoxRow
+          <GluuToogleRow
             label='fields.default_inum_server'
             name='defaultInumServer'
-            handleOnChange={(e) => {
+            handler={(e) => {
               formik.setFieldValue('defaultInumServer', e.target.checked)
             }}
             lsize={3}
@@ -271,11 +271,11 @@ const InumDBServerTab = () => {
               </Col>
             </Row>
             <Col sm={12} className='mt-3'>
-              <GluuCheckBoxRow
+              <GluuToogleRow
                 label='fields.use_ssl'
                 name='targetConfig.useSSL'
                 required
-                handleOnChange={(e) => {
+                handler={(e) => {
                   formik.setFieldValue('targetConfig.useSSL', e.target.checked)
                 }}
                 lsize={3}

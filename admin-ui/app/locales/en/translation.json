@@ -46,7 +46,8 @@
     "add_object_class": "Add Object class",
     "add_source_attribute": "Add source attribute",
     "add_source_ldap_server": "Add source LDAP server",
-    "remove_source_server": "Remove source server"
+    "remove_source_server": "Remove source server",
+    "copy_to_clipboard": "Copy To Clipboard"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -520,7 +521,8 @@
     "drag_agama_file": "Drag .gama file here, or click to select file",
     "drag_sha_file": "Drag .sha256sum file here, or click to select file",
     "see_project_details": "See project details",
-    "add_ssa": "Add SSA"
+    "add_ssa": "Add SSA",
+    "copied": "Copied"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
@@ -688,6 +690,9 @@
     "yes": "Yes"
   },
   "documentation": {
+    "no_category": {
+      "deletable": "Is Deletable?"
+    },
     "ssa": {
       "org_id": "The org_id is used for organization identification.",
       "description": "Describe SSA",

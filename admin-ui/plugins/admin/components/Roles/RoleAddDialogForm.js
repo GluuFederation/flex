@@ -10,8 +10,9 @@ import {
   ModalFooter,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 
 const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
   const [active, setActive] = useState(false)
@@ -42,7 +43,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
         <ModalHeader toggle={handler}>
           <i
             style={{ color: 'green' }}
-            className="fa fa-2x fa-info fa-fw modal-icon mb-3"
+            className='fa fa-2x fa-info fa-fw modal-icon mb-3'
           ></i>
           New Role
         </ModalHeader>
@@ -51,36 +52,36 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
           <FormGroup row>
             <Col sm={12}>
               <Input
-                id="api_role"
-                type="text"
-                name="api_role"
+                id='api_role'
+                type='text'
+                name='api_role'
                 onKeyUp={handleStatus}
-                defaultValue=""
+                defaultValue=''
               />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Col sm={12}>
               <Input
-                id="api_description"
-                type="textarea"
-                name="api_description"
-                defaultValue=""
+                id='api_description'
+                type='textarea'
+                name='api_description'
+                defaultValue=''
               />
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Col sm={12} className="ps-4">
-              <Input
-                id="deletable"
-                type="checkbox"
-                name="deletable"
-                onChange={(e) => {
+            <Col sm={12} className='ps-4'>
+              <GluuToogleRow
+                name='deletable'
+                handler={(e) => {
                   setDeletable(e.target.checked)
                 }}
-                checked={deletable}
-              />{' '}
-              Deletable ?
+                lsize={4}
+                rsize={8}
+                label="Deletable ?"
+                value={deletable}
+              />
             </Col>
           </FormGroup>
         </ModalBody>

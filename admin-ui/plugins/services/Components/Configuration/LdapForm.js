@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { Col, InputGroup, Form, FormGroup, Input } from 'Components'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-
+import GluuToogle from 'Routes/Apps/Gluu/GluuToogle'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
@@ -351,14 +351,10 @@ function LdapForm({ item, handleSubmit, createLdap }) {
           />
           <Col sm={9}>
             <InputGroup>
-              <Input
-                placeholder={t('placeholders.enable_ssl_communication')}
-                valid={!formik.errors.useSSL && !formik.touched.useSSL && init}
-                id="useSSL"
-                type="checkbox"
-                onKeyUp={toogle}
-                defaultChecked={item.useSSL}
-                onChange={formik.handleChange}
+              <GluuToogle
+                value={item.useSSL}
+                formik={formik}
+                name='useSSL'
               />
             </InputGroup>
           </Col>
@@ -371,16 +367,10 @@ function LdapForm({ item, handleSubmit, createLdap }) {
           />
           <Col sm={9}>
             <InputGroup>
-              <Input
-                placeholder={t('placeholders.activate_ldap_configuration')}
-                valid={
-                  !formik.errors.enabled && !formik.touched.enabled && init
-                }
-                type="checkbox"
-                id="enabled"
-                onKeyUp={toogle}
-                defaultChecked={item.enabled}
-                onChange={formik.handleChange}
+              <GluuToogle
+                value={item.enabled}
+                formik={formik}
+                name='enabled'
               />
             </InputGroup>
           </Col>

@@ -202,7 +202,7 @@ function LdapListPage({
                   ),
                 },
               ]}
-              data={ldapConfigurations || []}
+              data={ldapConfigurations?.length ? ldapConfigurations : []}
               isLoading={loading}
               title=""
               actions={myActions}
