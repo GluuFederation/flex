@@ -125,6 +125,16 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
     }),
 
     onSubmit: (values) => {
+      if(item.locationType === 'db') {
+        let moduleProperties = item.moduleProperties.filter((item) => item.value1 !== 'location_path')
+        item.moduleProperties = moduleProperties
+        delete item?.locationPath
+        delete values.locationPath
+      } else if(item.locationType === 'file') {
+        delete item?.script
+        delete values.script
+      }
+
       values.level = item.level
       values.moduleProperties = item.moduleProperties
       // eslint-disable-next-line no-extra-boolean-cast
