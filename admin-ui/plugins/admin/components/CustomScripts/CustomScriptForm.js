@@ -91,7 +91,8 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       aliases: item.aliases,
       moduleProperties: item.moduleProperties,
       configurationProperties: item.configurationProperties,
-      script_path: scriptPath
+      script_path: scriptPath,
+      locationPath: item?.locationPath
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -185,6 +186,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
 
   function scriptPathChange(value) {
     if (value != '') {
+      formik.setFieldValue('locationPath', value)
       if (!item.moduleProperties) {
         item.moduleProperties = []
       }
