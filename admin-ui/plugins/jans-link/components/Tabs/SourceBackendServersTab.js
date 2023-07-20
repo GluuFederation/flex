@@ -9,7 +9,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { Box } from '@mui/material'
 import BindPasswordModal from '../CacheRefresh/BindPasswordModal'
-import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import * as Yup from 'yup'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { isEmpty } from 'lodash'
@@ -353,11 +353,11 @@ const SourceBackendServersTab = () => {
                   </Col>
                 </Row>
                 <Col sm={8} className='mt-3'>
-                  <GluuCheckBoxRow
+                  <GluuToogleRow
                     label='fields.use_ssl'
                     name='sourceConfigs.useSSL'
                     required
-                    handleOnChange={(e) => {
+                    handler={(e) => {
                       formik.setFieldValue(
                         'sourceConfigs.useSSL',
                         e.target.checked

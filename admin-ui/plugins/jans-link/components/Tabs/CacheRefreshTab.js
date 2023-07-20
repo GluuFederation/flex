@@ -6,7 +6,7 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import * as Yup from 'yup'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { isEmpty } from 'lodash'
@@ -219,10 +219,10 @@ const CacheRefreshTab = () => {
             />
           </Col>
           <Col sm={12}>
-            <GluuCheckBoxRow
+            <GluuToogleRow
               label='fields.keep_external_persons'
               name='keepExternalPerson'
-              handleOnChange={(e) => {
+              handler={(e) => {
                 formik.setFieldValue('keepExternalPerson', e.target.checked)
               }}
               lsize={3}
@@ -263,10 +263,10 @@ const CacheRefreshTab = () => {
             />
           </Col>
           <Col sm={12}>
-            <GluuCheckBoxRow
+            <GluuToogleRow
               label='fields.cache_refresh'
               name='linkEnabled'
-              handleOnChange={(e) => {
+              handler={(e) => {
                 formik.setFieldValue('linkEnabled', e.target.checked)
               }}
               lsize={3}
