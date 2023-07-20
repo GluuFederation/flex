@@ -100,7 +100,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       programmingLanguage: Yup.string()
         .min(3, 'This value is required')
         .required('Required!'),
-      script: Yup.string().required('Required!'),
+      script: Yup.object().shape().when('location_type', { is: 'db', then: () => Yup.string().required('Required!') })
     }),
 
     onSubmit: (values) => {
@@ -155,6 +155,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
 
     }
     item.locationType = value;
+    formik.setFieldValue('location_type', value)
     if (value == 'file') {
       setScriptPath(true)
     } else {
