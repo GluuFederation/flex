@@ -30,10 +30,11 @@ export const getUserIpAndLocation = async () => {
 }
 
 // Retrieve user information
-export const fetchUserInformation = async (code) => {
+export const fetchUserInformation = async (code, codeVerifier) => {
   return axios
     .post('/app/admin-ui/oauth2/user-info', {
       code: code,
+      codeVerifier: codeVerifier,
     })
     .then((response) => response.data)
     .catch((error) => {
