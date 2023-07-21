@@ -250,7 +250,9 @@ const ClientBasicPanel = ({
         <Col sm={6}>
           <GluuToogleRow
             name="disabled"
-            formik={formik}
+            handler={(event) => {
+              formik.setFieldValue('disabled', !event?.target?.checked)
+            }}
             label="fields.is_active"
             value={!client.disabled}
             doc_category={DOC_CATEGORY}
@@ -301,6 +303,7 @@ const ClientBasicPanel = ({
         validator={uriValidator}
         inputId={uri_id}
         doc_category={DOC_CATEGORY}
+        multiple={false}
         lsize={3}
         rsize={9}
         disabled={viewOnly}

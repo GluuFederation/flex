@@ -3,7 +3,7 @@ import SetTitle from "Utils/SetTitle";
 import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
 import { Card, CardBody } from "Components";
 import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
-import CacheRefreshTab from "../Tabs/CacheRefreshTab";
+import ConfigurationTab from "../Tabs/ConfigurationTab";
 import CustomerBackendKeyTab from "../Tabs/CustomerBackendKeyTab";
 import SourceBackendServersTab from "../Tabs/SourceBackendServersTab";
 import InumDBServerTab from "../Tabs/InumDBServerTab";
@@ -23,7 +23,7 @@ const JansLinkPage = () => {
   }, []);
 
   const tabNames = [
-    t("menus.cache_refresh"),
+    t("menus.configuration"),
     t("menus.customer_backend_key_attributes"),
     t("menus.source_backend_ldap_servers"),
     t("menus.inum_db_server"),
@@ -31,8 +31,8 @@ const JansLinkPage = () => {
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case t("menus.cache_refresh"):
-        return <CacheRefreshTab />;
+      case t("menus.configuration"):
+        return <ConfigurationTab />;
       case t("menus.customer_backend_key_attributes"):
         return <CustomerBackendKeyTab />;
       case t("menus.source_backend_ldap_servers"):

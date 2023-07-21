@@ -20,6 +20,7 @@ function GluuTypeAheadWithAdd({
   lsize = 4,
   rsize = 8,
   disabled,
+  multiple = true
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
@@ -91,7 +92,7 @@ function GluuTypeAheadWithAdd({
           id={name}
           name={name}
           data-testid={name}
-          multiple={true}
+          multiple={multiple}
           selected={items}
           options={opts}
         />
