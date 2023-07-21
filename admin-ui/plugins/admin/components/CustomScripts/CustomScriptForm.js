@@ -166,6 +166,8 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       }
       const result = Object.assign(item, values)
       const reqBody = { customScript: result }
+      delete reqBody?.customScript?.script_path
+      delete reqBody?.customScript?.location_type
       handleSubmit(reqBody)
     },
   })
