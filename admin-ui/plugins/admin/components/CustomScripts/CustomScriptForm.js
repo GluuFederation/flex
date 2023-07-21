@@ -26,7 +26,6 @@ import { Alert, Button } from "reactstrap";
 import ErrorIcon from '@mui/icons-material/Error';
 
 function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
-  console.log(`;is is`, Object.isExtensible(item.moduleProperties));
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -80,6 +79,16 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
     }
   }
 
+  const defaultScriptPathValue = 
+    !!item?.moduleProperties &&
+      item?.moduleProperties?.filter(
+        (i) => i.value1 === 'location_path',
+      ).length > 0
+      ? item?.moduleProperties?.filter(
+        (it) => it.value1 === 'location_path',
+      )[0].value2
+      : undefined
+
   const formik = useFormik({
     initialValues: {
       name: item.name,
@@ -91,8 +100,9 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       aliases: item.aliases,
       moduleProperties: item.moduleProperties,
       configurationProperties: item.configurationProperties,
-      script_path: scriptPath,
-      locationPath: item?.locationPath
+      script_path: defaultScriptPathValue,
+      locationPath: item?.locationPath,
+      location_type: item?.locationType
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -111,7 +121,6 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
         .required('Required!'),
       script: Yup.string().when('location_type', {
         is: (value) => {
-          console.log('the value', value)
           return value === 'db'
         },
         then: () => Yup.string().required('Required!'),
@@ -126,7 +135,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
 
     onSubmit: (values) => {
       if(item.locationType === 'db') {
-        let moduleProperties = item.moduleProperties.filter((item) => item.value1 !== 'location_path')
+        let moduleProperties = item?.moduleProperties?.filter((item) => item?.value1 !== 'location_path')
         item.moduleProperties = moduleProperties
         delete item?.locationPath
         delete values.locationPath
@@ -165,6 +174,14 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
     if (value != '') {
       if (!item.moduleProperties) {
         item.moduleProperties = []
+      }
+      if (value === 'db') {
+        let moduleProperties = item?.moduleProperties?.filter((item) => item?.value1 !== 'location_path')
+        item.moduleProperties = moduleProperties
+        formik.setFieldValue('script_path', undefined)
+      } else if(value === 'file') {
+        delete item.script
+        formik.setFieldValue('script', undefined)
       }
       if (
         item.moduleProperties.filter(
@@ -458,16 +475,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                   }
                   disabled={viewOnly}
                   id="location_path"
-                  defaultValue={
-                    !!item.moduleProperties &&
-                      item.moduleProperties.filter(
-                        (i) => i.value1 === 'location_path',
-                      ).length > 0
-                      ? item.moduleProperties.filter(
-                        (it) => it.value1 === 'location_path',
-                      )[0].value2
-                      : undefined
-                  }
+                  defaultValue={defaultScriptPathValue}
                   onChange={(e) => {
                     scriptPathChange(e.target.value)
                     formik.setFieldValue('script_path', e.target.value)
