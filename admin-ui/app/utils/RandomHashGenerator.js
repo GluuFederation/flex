@@ -13,7 +13,7 @@ export class RandomHashGenerator {
         let str = "";
         let bytes = new Uint8Array(a);
         const len = bytes.byteLength;
-        for (var i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             str += String.fromCharCode(bytes[i]);
         }
 
