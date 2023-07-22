@@ -333,7 +333,7 @@ class flex_installer(JettyInstaller):
 
         download_files = []
 
-        if install_components['admin_ui'] or argsp.download_exit:
+        if install_components['admin_ui'] or argsp.download_exit or argsp.update_admin_ui:
             download_files += [
                     ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
                     (urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path),
@@ -342,6 +342,9 @@ class flex_installer(JettyInstaller):
                     (self.admin_ui_node_modules_url, self.admin_ui_node_modules_path),
                     (self.config_api_node_modules_url, self.config_api_node_modules_path),
                     ]
+
+            if argsp.update_admin_ui:
+                download_files.pop(0) 
 
         if install_components['casa'] or argsp.download_exit:
             download_files += [
@@ -496,6 +499,15 @@ class flex_installer(JettyInstaller):
         admin_ui_jans_conf_app =  config_api_installer.readFile(os.path.join(self.source_dir, os.path.basename(self.admin_ui_config_properties_path)))
         config_api_installer.dbUtils.set_configuration('jansConfApp', admin_ui_jans_conf_app, self.admin_ui_dn)
 
+        self.install_config_api_plugin()
+
+        print("Removing DUO Script")
+        config_api_installer.dbUtils.delete_dn('inum=5018-F9CF,ou=scripts,o=jans')
+
+        self.rewrite_cli_ini()
+
+
+    def install_config_api_plugin(self):
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
         config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
@@ -985,7 +997,9 @@ def main(uninstall):
 
     if argsp.update_admin_ui:
         if os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
+            installer_obj.download_files(force=True)
             installer_obj.build_gluu_admin_ui()
+            installer_obj.install_config_api_plugin()
         else:
             print("Gluu Flex Admin UI was not installed on this system. Update not possible.")
         sys.exit()
