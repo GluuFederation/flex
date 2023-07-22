@@ -514,7 +514,7 @@ class flex_installer(JettyInstaller):
             print("Old plugin {} was detected. Removing...".format(old_plugin))
             os.remove(old_plugin)
 
-        config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
+        config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir, backup=False)
         config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
         for logfn in (self.log4j2_adminui_path, self.log4j2_path):
