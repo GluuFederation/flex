@@ -7,6 +7,7 @@ import {
   getUserInfoResponse,
   getAPIAccessTokenResponse,
   getUserLocationResponse,
+  getRandomChallengePairResponse,
 } from '../features/authSlice'
 
 import {
@@ -16,6 +17,8 @@ import {
   getUserIpAndLocation,
   fetchApiTokenWithDefaultScopes,
 } from '../api/backend-api'
+
+import {RandomHashGenerator} from  'Utils/RandomHashGenerator'
 
 function* getApiTokenWithDefaultScopes() {
   const response = yield call(fetchApiTokenWithDefaultScopes)
@@ -36,9 +39,9 @@ function* getOAuth2ConfigWorker({ payload }) {
   yield put(getOAuth2ConfigResponse())
 }
 
-function* getUserInformationWorker(code) {
+function* getUserInformationWorker(code, codeVerifier) {
   try {
-    const response = yield call(fetchUserInformation, code.payload)
+    const response = yield call(fetchUserInformation, code.payload, localStorage.getItem("codeVerifier"))
     if (response) {
       yield put(getUserInfoResponse({ uclaims: response.claims, ujwt: response.jwtUserInfo }))
       return
@@ -56,6 +59,19 @@ function* getAPIAccessTokenWorker(jwt) {
         return
       }
     }
+  } catch (error) {
+    console.log('Problems getting API Access Token.', error)
+  }
+}
+
+function* getRandomChallengePairWorker() {
+  try {
+      const response = yield call(RandomHashGenerator.generateRandomChallengePair, 'SHA-256')
+      if (response) {
+        yield put(getRandomChallengePairResponse(response))
+        return
+      }
+    
   } catch (error) {
     console.log('Problems getting API Access Token.', error)
   }
@@ -88,6 +104,9 @@ export function* getOAuth2ConfigWatcher() {
 export function* getLocationWatcher() {
   yield takeEvery('auth/getUserLocation', getLocationWorker)
 }
+export function* getRandomChallengePairWatcher() {
+  yield takeEvery('auth/getRandomChallengePair', getRandomChallengePairWorker)
+}
 
 /**
  * Auth Root Saga
@@ -98,5 +117,6 @@ export default function* rootSaga() {
     fork(userInfoWatcher),
     fork(getApiTokenWatcher),
     fork(getLocationWatcher),
+    fork(getRandomChallengePairWatcher),
   ])
 }

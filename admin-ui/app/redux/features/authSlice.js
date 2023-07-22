@@ -12,6 +12,9 @@ const initialState = {
   config: {},
   backendIsUp: true,
   defaultToken: null,
+  codeChallenge: null,
+  codeChallengeMethod: 'S256',
+  codeVerifier: null,
 }
 
 const authSlice = createSlice({
@@ -64,7 +67,15 @@ const authSlice = createSlice({
     },
     setApiDefaultToken: (state, action) => {
       state.defaultToken = action.payload
-    }
+    },
+    getRandomChallengePair: (state, action) => {},
+    getRandomChallengePairResponse: (state, action) => {
+      if (action.payload?.codeChallenge) {
+        state.codeChallenge = action.payload.codeChallenge
+        state.codeVerifier = action.payload.codeVerifier
+        localStorage.setItem("codeVerifier", action.payload.codeVerifier)
+      }
+    },
   }
 })
 
@@ -79,7 +90,9 @@ export const {
   getAPIAccessTokenResponse,
   getUserLocation,
   getUserLocationResponse,
-  setApiDefaultToken
+  setApiDefaultToken,
+  getRandomChallengePair,
+  getRandomChallengePairResponse,
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)
