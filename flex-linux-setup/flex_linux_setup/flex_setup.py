@@ -508,6 +508,12 @@ class flex_installer(JettyInstaller):
 
 
     def install_config_api_plugin(self):
+
+        old_plugin = os.path.join(config_api_installer.libDir, 'admin-ui-plugin.jar')
+        if os.path.exists(old_plugin):
+            print("Old plugin {} was detected. Removing...".format(old_plugin))
+            os.remove(old_plugin)
+
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
         config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
@@ -516,6 +522,8 @@ class flex_installer(JettyInstaller):
 
         print("Removing DUO Script")
         config_api_installer.dbUtils.delete_dn('inum=5018-F9CF,ou=scripts,o=jans')
+
+        config_api_installer.set_class_path(glob.glob(os.path.join(config_api_installer.libDir, '*.jar')))
 
         self.rewrite_cli_ini()
 
@@ -989,6 +997,16 @@ def obtain_oidc_client_credidentials():
         sys.exit()
 
 
+def restart_services():
+    print("Restarting Apache")
+    httpd_installer.restart()
+
+    print("Restarting Jans Auth")
+    config_api_installer.restart('jans-auth')
+
+    print("Restarting Janssen Config Api")
+    config_api_installer.restart()
+
 def main(uninstall):
 
     get_components_from_setup_properties()
@@ -1000,6 +1018,7 @@ def main(uninstall):
             installer_obj.download_files(force=True)
             installer_obj.build_gluu_admin_ui()
             installer_obj.install_config_api_plugin()
+            restart_services()
         else:
             print("Gluu Flex Admin UI was not installed on this system. Update not possible.")
         sys.exit()
@@ -1036,15 +1055,8 @@ def main(uninstall):
             installer_obj.generate_gluu_passwurd_api_keystore()
 
     if not argsp.no_restart_services:
+        restart_services()
 
-        print("Restarting Apache")
-        httpd_installer.restart()
-
-        print("Restarting Jans Auth")
-        config_api_installer.restart('jans-auth')
-
-        print("Restarting Janssen Config Api")
-        config_api_installer.restart()
 
     if not uninstall:
         install_post_setup()
