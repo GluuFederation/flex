@@ -10,9 +10,9 @@ export class RandomHashGenerator {
     }
 
     static base64URLEncode(a) {
-        var str = "";
-        var bytes = new Uint8Array(a);
-        var len = bytes.byteLength;
+        let str = "";
+        let bytes = new Uint8Array(a);
+        const len = bytes.byteLength;
         for (var i = 0; i < len; i++) {
             str += String.fromCharCode(bytes[i]);
         }
@@ -29,7 +29,7 @@ export class RandomHashGenerator {
     }
 
     static generateRandomString() {
-        var array = new Uint32Array(56 / 2);
+        let array = new Uint32Array(56 / 2);
         window.crypto.getRandomValues(array);
         return Array.from(array, RandomHashGenerator.dec2hex).join('');
     }
