@@ -57,28 +57,30 @@ sudo rpm -import automation-flex-public-gpg.asc
 ```
 
 - Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
-```shell
+```
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm.sha256sum  -P ~/
 ```
 
-Verify package integrity of the package that has been downloaded by checking hash.
-Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
-```shell
+- Verify package integrity
+```
 sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
 ```
-Output similar to below should confirm the integrity of the downloaded package.
-```text
+You should see:
+```
 flex-replace-flex-version-suse15.x86_64.rpm: ok
 ```
 
 ### Install the Release Package
 
-Use SUSE `zypper` tool to start the installation process
+Use SUSE `zypper` to install
 ```shell
 sudo zypper install ~/flex-replace-flex-version-suse15.x86_64.rpm
 ```
 
 ### Run the setup script
+
+- Run the setup script:
+
 Execute the setup script with command below:
 ```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
@@ -122,8 +124,8 @@ Removing Flex is a two step process:
 If you have not run the setup script, you can skip step 1 and just remove
 the package.
 
-### Uninstall Gluu Flex
-Use the command below to uninstall the Gluu Flex server
+First use the command below to uninstall the Gluu Flex server
+
 ```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
@@ -135,7 +137,7 @@ This process is irreversible.
 Gluu Flex Components will be removed
 
 
- 
+
 Are you sure to uninstall Gluu Flex? [yes/N] yes
 
 Profile was detected as jans.
@@ -192,7 +194,7 @@ This process is irreversible.
 You will lose all data related to Janssen Server.
 
 
- 
+
 Are you sure to uninstall Janssen Server? [yes/N] yes
 
 Uninstalling Jannsen Server...
@@ -218,12 +220,14 @@ Executing rm -r -f /opt/dist
 Removing /etc/apache2/vhosts.d/_https_jans.conf
 ```
 
-### Remove Gluu Flex Packages:
-List existing Gluu packages with:
-```shell
-sudo rpm -qa | grep flex
+Second uninstall the package:
+
+You should see the package with:
 ```
-Use `zypper` to remove packages:
-```shell
-sudo zypper remove <package-name>
+sudo rpm -qa | grep gluu
+```
+
+Remove package with: 
+```
+sudo zypper remove gluu-flex
 ```
