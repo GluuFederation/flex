@@ -735,22 +735,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#uninstall-gluu-flex" class="md-nav__link">
-    Uninstall Gluu Flex
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#uninstall-janssen-packages" class="md-nav__link">
     Uninstall Janssen Packages
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#remove-gluu-flex-packages" class="md-nav__link">
-    Remove Gluu Flex Packages:
   </a>
   
 </li>
@@ -1735,22 +1721,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#uninstall-gluu-flex" class="md-nav__link">
-    Uninstall Gluu Flex
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#uninstall-janssen-packages" class="md-nav__link">
     Uninstall Janssen Packages
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#remove-gluu-flex-packages" class="md-nav__link">
-    Remove Gluu Flex Packages:
   </a>
   
 </li>
@@ -1843,7 +1815,7 @@ of Gluu Flex on SUSE Linux distributions</p>
 <ul>
 <li>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-16.nightly/flex-5.0.0-16.nightly-suse15.x86_64.rpm -P ~/
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm -P ~/
 </code></pre></div></p>
 </li>
 <li>
@@ -1859,22 +1831,26 @@ of Gluu Flex on SUSE Linux distributions</p>
 </li>
 <li>
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the package
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-16.nightly/flex-5.0.0-16.nightly-suse15.x86_64.rpm.sha256sum  -P ~/
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm.sha256sum  -P ~/
+</code></pre></div></p>
+</li>
+<li>
+<p>Verify package integrity
+<div class="highlight"><pre><span></span><code>sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
+</code></pre></div>
+You should see:
+<div class="highlight"><pre><span></span><code>flex-replace-flex-version-suse15.x86_64.rpm: ok
 </code></pre></div></p>
 </li>
 </ul>
-<p>Verify package integrity of the package that has been downloaded by checking hash.
-Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
-<div class="highlight"><pre><span></span><code>sha256sum -c flex-5.0.0-16.nightly-suse15.x86_64.rpm.sha256sum
-</code></pre></div>
-Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex-5.0.0-16.nightly-suse15.x86_64.rpm: ok
-</code></pre></div></p>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
-<p>Use SUSE <code>zypper</code> tool to start the installation process
-<div class="highlight"><pre><span></span><code>sudo zypper install ~/flex-5.0.0-16.nightly-suse15.x86_64.rpm
+<p>Use SUSE <code>zypper</code> to install
+<div class="highlight"><pre><span></span><code>sudo zypper install ~/flex-replace-flex-version-suse15.x86_64.rpm
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
+<ul>
+<li>Run the setup script:</li>
+</ul>
 <p>Execute the setup script with command below:
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 </code></pre></div>
@@ -1914,9 +1890,8 @@ Alternatively, for SSA file can be passed as a parameter to the setup script as 
 </ul>
 <p>If you have not run the setup script, you can skip step 1 and just remove
 the package.</p>
-<h3 id="uninstall-gluu-flex">Uninstall Gluu Flex<a class="headerlink" href="#uninstall-gluu-flex" title="Permanent link">#</a></h3>
-<p>Use the command below to uninstall the Gluu Flex server
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<p>First use the command below to uninstall the Gluu Flex server</p>
+<p><div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 </code></pre></div>
 the output will be like this:
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
@@ -2004,12 +1979,12 @@ Executing rm -r -f /opt/jython*
 Executing rm -r -f /opt/dist
 Removing /etc/apache2/vhosts.d/_https_jans.conf
 </code></pre></div></p>
-<h3 id="remove-gluu-flex-packages">Remove Gluu Flex Packages:<a class="headerlink" href="#remove-gluu-flex-packages" title="Permanent link">#</a></h3>
-<p>List existing Gluu packages with:
-<div class="highlight"><pre><span></span><code>sudo rpm -qa <span class="p">|</span> grep flex
-</code></pre></div>
-Use <code>zypper</code> to remove packages:
-<div class="highlight"><pre><span></span><code>sudo zypper remove &lt;package-name&gt;
+<p>Second uninstall the package:</p>
+<p>You should see the package with:
+<div class="highlight"><pre><span></span><code>sudo rpm -qa | grep gluu
+</code></pre></div></p>
+<p>Remove package with: 
+<div class="highlight"><pre><span></span><code>sudo zypper remove gluu-flex
 </code></pre></div></p>
 
   <hr>
@@ -2017,7 +1992,7 @@ Use <code>zypper</code> to remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-18T07:59:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-18</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-24T04:14:19+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-24</span>
       
         <br>
         Created:
