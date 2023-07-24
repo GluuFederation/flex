@@ -170,8 +170,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           result['id'] = result.id
           result['creatorType'] = 'user'
           result['creatorId'] = authReducer.userinfo.inum
-          result['attributes'].showInConfigurationEndpoint =
-            scope.attributes.showInConfigurationEndpoint
           result['attributes'].spontaneousClientId =
             scope.attributes.spontaneousClientId
           result['attributes'].spontaneousClientScopes =

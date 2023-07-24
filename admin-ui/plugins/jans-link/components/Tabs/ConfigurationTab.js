@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { buildPayload } from 'Utils/PermChecker'
 import moment from 'moment/moment'
 
-const CacheRefreshTab = () => {
+const ConfigurationTab = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
@@ -264,7 +264,7 @@ const CacheRefreshTab = () => {
           </Col>
           <Col sm={12}>
             <GluuToogleRow
-              label='fields.cache_refresh'
+              label='fields.enabled'
               name='linkEnabled'
               handler={(e) => {
                 formik.setFieldValue('linkEnabled', e.target.checked)
@@ -295,4 +295,4 @@ const CacheRefreshTab = () => {
   )
 }
 
-export default CacheRefreshTab
+export default ConfigurationTab

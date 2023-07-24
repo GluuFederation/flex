@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
-import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
-import { updateUser } from '../../redux/features/userSlice'
+import { updateUser } from 'Plugins/user-management/redux/features/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAttributesRoot } from '../../../../app/redux/actions'
+import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import moment from 'moment'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { getPersistenceType } from '../../../services/redux/features/persistenceTypeSlice'
+import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
 
 function UserEditPage() {
   const dispatch = useDispatch()

@@ -112,11 +112,8 @@ const ClientBasicPanel = ({
   };
 
   const debounceFn = useCallback(_debounce((query) => {
-    const searchedScope = scopeOptions?.find((scope) => scope.name.includes(query))
-    if (isEmpty(searchedScope)) {
-      query && handleDebounceFn(query)
-    }
-  }, 500), [scopeOptions])
+    query && handleDebounceFn(query)
+  }, 500), [])
 
   function handleDebounceFn(inputValue) {
     userScopeAction['pattern'] = inputValue
@@ -250,7 +247,9 @@ const ClientBasicPanel = ({
         <Col sm={6}>
           <GluuToogleRow
             name="disabled"
-            formik={formik}
+            handler={(event) => {
+              formik.setFieldValue('disabled', !event?.target?.checked)
+            }}
             label="fields.is_active"
             value={!client.disabled}
             doc_category={DOC_CATEGORY}
@@ -301,6 +300,7 @@ const ClientBasicPanel = ({
         validator={uriValidator}
         inputId={uri_id}
         doc_category={DOC_CATEGORY}
+        multiple={false}
         lsize={3}
         rsize={9}
         disabled={viewOnly}
