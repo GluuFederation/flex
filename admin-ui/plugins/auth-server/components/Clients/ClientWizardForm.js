@@ -15,6 +15,7 @@ import ClientSoftwarePanel from './ClientSoftwarePanel'
 import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
 import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
 import {toast} from 'react-toastify'
+import { cloneDeep } from 'lodash'
 const sequence = [
   'Basic',
   'Tokens',
@@ -344,7 +345,7 @@ function ClientWizardForm({
                         return (
                           <div>
                             <ClientBasic
-                              client={client}
+                              client={cloneDeep(client)}
                               scopes={scopes}
                               formik={formik}
                               viewOnly={viewOnly}
@@ -356,7 +357,7 @@ function ClientWizardForm({
                         return (
                           <div>
                             <ClientTokensPanel
-                              client={client}
+                              client={cloneDeep(client)}
                               scripts={scripts}
                               formik={formik}
                               viewOnly={viewOnly}
@@ -367,7 +368,7 @@ function ClientWizardForm({
                         return (
                           <div>
                             <ClientLogoutPanel
-                              client={client}
+                              client={cloneDeep(client)}
                               scripts={scripts}
                               formik={formik}
                               viewOnly={viewOnly}
@@ -378,7 +379,7 @@ function ClientWizardForm({
                         return (
                           <div>
                             <ClientSoftwarePanel
-                              client={client}
+                              client={cloneDeep(client)}
                               scripts={scripts}
                               formik={formik}
                               viewOnly={viewOnly}
@@ -389,7 +390,7 @@ function ClientWizardForm({
                         return (
                           <div>
                             <ClientCibaParUmaPanel
-                              client={client}
+                              client={cloneDeep(client)}
                               umaResources={umaResources}
                               scopes={scopes}
                               scripts={scripts}
@@ -404,7 +405,7 @@ function ClientWizardForm({
                         return (
                           <div>
                             <ClientEncryptionSigningPanel
-                              client={client}
+                              client={cloneDeep(client)}
                               formik={formik}
                               oidcConfiguration={oidcConfiguration}
                               viewOnly={viewOnly}
@@ -415,7 +416,7 @@ function ClientWizardForm({
                         return (
                           <div>
                             <ClientAdvanced
-                              client={client}
+                              client={cloneDeep(client)}
                               scripts={scripts}
                               formik={formik}
                               scopes={scopes}
@@ -427,7 +428,7 @@ function ClientWizardForm({
                         return (
                           <div>
                             <ClientScript
-                              client={client}
+                              client={cloneDeep(client)}
                               formik={formik}
                               scripts={scripts}
                               viewOnly={viewOnly}

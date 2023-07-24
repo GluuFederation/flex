@@ -112,11 +112,8 @@ const ClientBasicPanel = ({
   };
 
   const debounceFn = useCallback(_debounce((query) => {
-    const searchedScope = scopeOptions?.find((scope) => scope.name.includes(query))
-    if (isEmpty(searchedScope)) {
-      query && handleDebounceFn(query)
-    }
-  }, 500), [scopeOptions])
+    query && handleDebounceFn(query)
+  }, 500), [])
 
   function handleDebounceFn(inputValue) {
     userScopeAction['pattern'] = inputValue
