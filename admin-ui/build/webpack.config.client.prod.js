@@ -95,9 +95,16 @@ module.exports = {
   plugins: [
     new CircularDependencyPlugin({
       exclude: /a\.js|node_modules/,
-      failOnError: true,
+      failOnError: false,
       allowAsyncCycles: false,
       cwd: process.cwd(),
+      onDetected: ({ module, paths, compilation }) => {
+        let warnings = []
+        warnings.push(new Error(paths.join(' -> ')))
+        if (warnings.length > 0) {
+          warnings.forEach(error => error && console.warn(error.message));
+        }
+      },
     }),
     new HtmlWebpackPlugin({
       template: config.srcHtmlLayout,

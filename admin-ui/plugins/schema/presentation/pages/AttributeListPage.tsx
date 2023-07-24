@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
@@ -143,7 +143,7 @@ function AttributeListPage() {
       iconProps: {
         id: 'viewAttribute' + rowData.inum,
       },
-      tooltip: `${t('tooltips.view_Attribute')}`,
+      tooltip: `${t('tooltips.view_attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
       disabled: false,
     }))
@@ -234,7 +234,7 @@ function AttributeListPage() {
         }
       />
     ),
-    []
+    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
   )
 
   const PaperContainer = useCallback(

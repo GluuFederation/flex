@@ -44,7 +44,7 @@ function AuthNDetailPage({ row }) {
               label='fields.password_attribute'
               value={row.passwordAttribute}
               doc_category={AUTHN}
-              doc_entry='passwordAttribute'
+              doc_entry='password_attribute'
             />
           </Col>
           <Col sm={6}>
@@ -52,7 +52,7 @@ function AuthNDetailPage({ row }) {
               label='fields.hash_algorithm'
               value={row.hashAlgorithm}
               doc_category={AUTHN}
-              doc_entry='hashAlgorithm'
+              doc_entry='hash_algorithm'
               isBadge
             />
           </Col>
@@ -64,7 +64,7 @@ function AuthNDetailPage({ row }) {
               label='fields.primary_key'
               value={row.primaryKey}
               doc_category={AUTHN}
-              doc_entry='primaryKey'
+              doc_entry='primary_key'
             />
           </Col>
           <Col sm={6}>
@@ -72,7 +72,7 @@ function AuthNDetailPage({ row }) {
               label='fields.saml_acr'
               value={row.samlACR}
               doc_category={AUTHN}
-              doc_entry='samlACR'
+              doc_entry='saml_acr'
             />
           </Col>
         </Row>

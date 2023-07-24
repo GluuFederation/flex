@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2023-04-10 15:24'
+ENV GLUU_BUILD_DATE='2023-07-14 08:42'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -69,7 +69,7 @@ COPY conf/prometheus-config.yaml /opt/prometheus/
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=9c8e510e6571362009b4ca422ab946ba711e0122
+ENV JANS_SOURCE_VERSION=2f3ea45597f941dd69e4e962720e9ffd26fb6b96
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -216,7 +216,7 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/casa" \
     org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="1.0.15" \
+    org.opencontainers.image.version="5.0.0" \
     org.opencontainers.image.title="Gluu Flex Casa" \
     org.opencontainers.image.description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 

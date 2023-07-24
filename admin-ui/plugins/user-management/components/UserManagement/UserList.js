@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
@@ -33,21 +33,16 @@ import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
 
 function UserList(props) {
   const dispatch = useDispatch()
+  const renders = useRef(0);
   const opt = {}
   useEffect(() => {
     opt['limit'] = 10
     dispatch(getUsers({ action: opt }))
-    dispatch(getAttributesRoot({ options: opt }))
     dispatch(getRoles({}))
   }, [])
-  const { totalItems, entriesCount } = useSelector(
-    (state) => state.userReducer
-  )
+  const { totalItems } = useSelector((state) => state.userReducer)
   const [pageNumber, setPageNumber] = useState(0)
   const usersList = useSelector((state) => state.userReducer.items)
-  const redirectToUserListPage = useSelector(
-    (state) => state.userReducer.redirectToUserListPage,
-  )
   const loading = useSelector((state) => state.userReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
   const { t } = useTranslation()
@@ -66,8 +61,7 @@ function UserList(props) {
 
   const myActions = []
   const options = {}
-  const userAction = {}
-  const navigate =useNavigate()
+  const navigate = useNavigate()
 
   function handleGoToUserAddPage() {
     dispatch(setSelectedUserData(null))
@@ -95,18 +89,22 @@ function UserList(props) {
     dispatch(deleteUser(row.inum))
   }
 
+  const GluuSearch = useCallback(() => {
+    return (
+      <GluuAdvancedSearch
+        limitId={LIMIT_ID}
+        patternId={PATTERN_ID}
+        limit={limit}
+        pattern={pattern}
+        handler={handleOptionsChange}
+        showLimit={false}
+      />
+    )
+  }, [limit, pattern, handleOptionsChange])
+
   if (hasPermission(permissions, USER_READ)) {
     myActions.push({
-      icon: () => (
-        <GluuAdvancedSearch
-          limitId={LIMIT_ID}
-          patternId={PATTERN_ID}
-          limit={limit}
-          pattern={pattern}
-          handler={handleOptionsChange}
-          showLimit={false}
-        />
-      ),
+      icon: GluuSearch,
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
@@ -147,7 +145,7 @@ function UserList(props) {
   }
   if (hasPermission(permissions, USER_DELETE)) {
     myActions.push((rowData) => ({
-      icon: () => <DeleteOutlined />,
+      icon: DeleteOutlinedIcon,
       iconProps: {
         color: 'secondary',
         id: 'deleteClient' + rowData.inum,
@@ -169,7 +167,6 @@ function UserList(props) {
     dispatch(getUsers({ action: options }))
   }
   const onRowCountChangeClick = (count) => {
-    
     options['limit'] = count
     options['pattern'] = pattern
     setPageNumber(0)
@@ -178,75 +175,95 @@ function UserList(props) {
   }
 
   useEffect(() => {
-    let usedAttributes = [];
-    for(let i in usersList){
-      for(let j in usersList[i].customAttributes){
-        let val = usersList[i].customAttributes[j].name
-        if(!usedAttributes.includes(val)){
-          usedAttributes.push(val);
+    let usedAttributes = []
+    if(usersList?.length && renders.current < 1) {
+      renders.current = 1
+      for (let i in usersList) {
+        for (let j in usersList[i].customAttributes) {
+          let val = usersList[i].customAttributes[j].name
+          if (!usedAttributes.includes(val)) {
+            usedAttributes.push(val)
+          }
         }
       }
+      if (usedAttributes.length) {
+        dispatch(
+          getAttributesRoot({
+            options: { pattern: usedAttributes.toString(), limit: 100 },
+          })
+        )
+      }
     }
-    if(usedAttributes.length){
-      dispatch(getAttributesRoot({ options: {pattern:usedAttributes.toString(), limit:100} }))
-    }
-  },[usersList])
+  }, [usersList])
+
+  const PaperContainer = useCallback(
+    (props) => <Paper {...props} elevation={0} />,
+    []
+  )
+
+  const DetailPanel = useCallback((rowData) => {
+    return <UserDetailViewPage row={rowData} />
+  }, [])
+
+  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
+
+  const PaginationWrapper = useCallback(
+    (props) => (
+      <TablePagination
+        component='div'
+        count={totalItems}
+        page={pageNumber}
+        onPageChange={(prop, page) => {
+          onPageChangeClick(page)
+        }}
+        rowsPerPage={limit}
+        onRowsPerPageChange={(prop, count) =>
+          onRowCountChangeClick(count.props.value)
+        }
+      />
+    ),
+    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
+  )
+
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={hasPermission(permissions, USER_READ)}>
-            {usersList?.length > 0 && (
-              <MaterialTable
-                key={limit}
-                components={{
-                  Container: (props) => <Paper {...props} elevation={0} />,
-                  Pagination: (props) => (
-                    <TablePagination
-                      component="div"
-                      count={totalItems}
-                      page={pageNumber}
-                      onPageChange={(prop, page) => {
-                        onPageChangeClick(page)
-                      }}
-                      rowsPerPage={limit}
-                      onRowsPerPageChange={(prop, count) =>
-                        onRowCountChangeClick(count.props.value)
-                      }
-                    />
-                  ),
-                }}
-                columns={[
-                  {
-                    title: `${t('fields.name')}`,
-                    field: 'displayName',
-                  },
-                  { title: `${t('fields.userName')}`, field: 'userId' },
-                  { title: `${t('fields.email')}`, field: 'mail' },
-                ]}
-                data={usersList}
-                isLoading={loading}
-                title=""
-                actions={myActions}
-                options={{
-                  search: true,
-                  searchFieldAlignment: 'left',
-                  selection: false,
-                  pageSize: limit,
-                  rowStyle: (rowData) => ({
-                    backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
-                  }),
-                  headerStyle: {
-                    ...applicationStyle.tableHeaderStyle,
-                    ...bgThemeColor,
-                  },
-                  actionsColumnIndex: -1,
-                }}
-                detailPanel={(rowData) => {
-                  return <UserDetailViewPage row={rowData} />
-                }}
-              />
-            )}
+            <MaterialTable
+              key={limit}
+              components={{
+                Container: PaperContainer,
+                Pagination: PaginationWrapper,
+              }}
+              columns={[
+                {
+                  title: `${t('fields.name')}`,
+                  field: 'displayName',
+                },
+                { title: `${t('fields.userName')}`, field: 'userId' },
+                { title: `${t('fields.email')}`, field: 'mail' },
+              ]}
+              data={usersList}
+              isLoading={loading}
+              title=''
+              actions={myActions}
+              options={{
+                search: true,
+                searchFieldAlignment: 'left',
+                selection: false,
+                pageSize: limit,
+                rowStyle: (rowData) => ({
+                  backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                }),
+                headerStyle: {
+                  ...applicationStyle.tableHeaderStyle,
+                  ...bgThemeColor,
+                },
+                actionsColumnIndex: -1,
+              }}
+              detailPanel={DetailPanel}
+            />
           </GluuViewWrapper>
         </CardBody>
         <GluuCommitDialog

@@ -9,11 +9,9 @@ import {
   CustomInput,
 } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { JSON_CONFIG } from 'Utils/ApiResources'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { connect } from 'react-redux'
 import { Formik } from 'formik'
@@ -29,6 +27,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 
 function LoggingPage({ logging, dispatch, permissions, loading }) {
   const { t } = useTranslation()
@@ -128,10 +127,10 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                         </CustomInput>
                       </Col>
                     </FormGroup>
-                  <GluuCheckBoxRow
+                  <GluuToogleRow
                     label="fields.http_logging_enabled"
                     name="httpLoggingEnabled"
-                    handleOnChange={(e) => {
+                    handler={(e) => {
                       formik.setFieldValue(
                         'httpLoggingEnabled',
                         e.target.checked,
@@ -141,22 +140,22 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                     rsize={7}
                     value={logging.httpLoggingEnabled}
                     doc_category={JSON_CONFIG}
-                  ></GluuCheckBoxRow>
-                  <GluuCheckBoxRow
+                  />
+                  <GluuToogleRow
                     label="fields.disable_jdk_logger"
                     name="disableJdkLogger"
-                    handleOnChange={(e) => {
+                    handler={(e) => {
                       formik.setFieldValue('disableJdkLogger', e.target.checked)
                     }}
                     lsize={5}
                     rsize={7}
                     doc_category={JSON_CONFIG}
                     value={logging.disableJdkLogger}
-                  ></GluuCheckBoxRow>
-                  <GluuCheckBoxRow
+                  />
+                  <GluuToogleRow
                     label="fields.enabled_oAuth_audit_logging"
                     name="enabledOAuthAuditLogging"
-                    handleOnChange={(e) => {
+                    handler={(e) => {
                       formik.setFieldValue(
                         'enabledOAuthAuditLogging',
                         e.target.checked,
@@ -166,7 +165,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                     rsize={7}
                     doc_category={JSON_CONFIG}
                     value={logging.enabledOAuthAuditLogging}
-                  ></GluuCheckBoxRow>
+                  />
 
                   {hasPermission(permissions, LOGGING_WRITE) && (
                     <Button

@@ -7,12 +7,10 @@ const styles = makeStyles()({
     left: 0,
     top: 140,
     height: 70,
-    width: 250,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
   wave: {
-    width: 250,
     position: 'relative',
     top: -75
   },

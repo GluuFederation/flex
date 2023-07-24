@@ -10,3 +10,6 @@ export const SQL = "sql"
 export const COUCHBASE = "couchbase"
 export const CACHE = "cache"
 export const AUTHN = "authn"
+export const SSA = 'ssa'
+export const ROLES = 'roles'
+export const PERMISSIONS = "permissions"

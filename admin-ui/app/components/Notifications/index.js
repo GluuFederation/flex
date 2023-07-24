@@ -60,20 +60,7 @@ export default function Lang() {
                   <List component="nav" aria-label="notification">
                     <ListItem button>
                       <ListItemText 
-                        primary="User data has been updated"
-                        secondary="User data has been updated text detail description"
-                      />
-                    </ListItem>
-                    <ListItem button>
-                      <ListItemText 
-                        primary="License successfully added"
-                        secondary="License successfully added text detail description"
-                      />
-                    </ListItem>
-                    <ListItem button>
-                      <ListItemText 
-                        primary="Service Cache successfully removed"
-                        secondary="Service Cache successfully removed text detail description"
+                        primary="No new notifications"
                       />
                     </ListItem>
                   </List>

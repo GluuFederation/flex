@@ -73,8 +73,9 @@ export function* addPermission({ payload }) {
     const permApi = yield* newFunction()
     const data = yield call(permApi.addPermission, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(addPermissionResponse({ data }))
     yield call(postUserAction, audit)
+    yield* getPermissions({ payload: { action: { action_data: [], action_message: 'PERMISSIONS' } } })
+    yield put(addPermissionResponse({ data }))
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addPermissionResponse(null))

@@ -29,6 +29,9 @@ function GluuTypeAhead({
   lsize = 4,
   rsize = 8,
   disabled,
+  showError = false,
+  errorMessage,
+  allowNew = true
 }) {
   const { t } = useTranslation()
   return (
@@ -41,7 +44,7 @@ function GluuTypeAhead({
       )}
       <Col sm={rsize}>
         <Typeahead
-          allowNew
+          allowNew={allowNew}
           disabled={disabled}
           ref={forwardRef}
           emptyLabel=""
@@ -65,6 +68,7 @@ function GluuTypeAhead({
             {t('placeholders.typeahead_holder_message')}
           </Typography>
         </ThemeProvider>
+        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

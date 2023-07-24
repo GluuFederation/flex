@@ -10,7 +10,8 @@ const initialState = {
   isConfigValid: null,
   error: '',
   errorSSA: '',
-  generatingTrialKey: false
+  generatingTrialKey: false,
+  isTimeout: false
 }
 
 const licenseSlice = createSlice({

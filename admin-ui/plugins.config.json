@@ -26,5 +26,9 @@
   {
     "key": "fido",
     "metadataFile": "./fido/plugin-metadata"
+  },
+  {
+    "key": "jans-link",
+    "metadataFile": "./jans-link/plugin-metadata"
   }
 ]

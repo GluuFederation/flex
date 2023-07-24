@@ -121,18 +121,21 @@ nav:
         - 'install/vm-install/vm-requirements.md'
         - 'Ubuntu': 'install/vm-install/ubuntu.md'
         - 'RHEL': 'install/vm-install/rhel.md'
-        - 'Suse': 'install/vm-install/suse.md'
+        - 'SUSE': 'install/vm-install/suse.md'
 - 'Administration':
     - 'admin/README.md'
     - 'Configuration': 'admin/config.md'
-#    - 'Admin UI':
-#        - 'admin/admin-ui/README.md'
-#        - 'Admin UI Properties': 'admin/admin-ui/properties.md'
-#    - 'SAML':
- #       - 'admin/saml/README.md'
-  #      - 'SAML IDP': 'admin/saml/idp.md'
-   #     - 'SAML Proxy': 'admin/saml/proxy.md'
-    - 'Casa': 'admin/casa/README.md'
+    - 'Admin UI':
+        - 'Introduction': 'admin/admin-ui/introduction.md'
+        - 'Left Navigation Menu': 'admin/admin-ui/left-nav-menu.md'
+        - 'Home': 'admin/admin-ui/dashboard.md'
+        - 'Admin': 'admin/admin-ui/admin-menu.md'
+        - 'Auth server': 'admin/admin-ui/auth-server-menu.md'
+        - 'Schema': 'admin/admin-ui/schema-menu.md'
+        - 'Services': 'admin/admin-ui/services-menu.md'
+        - 'FIDO': 'admin/admin-ui/fido-menu.md'
+        - 'SMTP': 'admin/admin-ui/smtp-menu.md'
+        - 'Users': 'admin/admin-ui/userMgmt-menu.md'
     - 'Flex Recipes':
         - 'admin/recipes/README.md'
         - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
@@ -142,10 +145,27 @@ nav:
     - 'Flex Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
     - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
     - 'Casa Docker Image': 'reference/kubernetes/docker-casa.md'
-#   Use section below to configure documentation structure as per available property and feature-flag documents
-#    - 'JSON Configuration':
-#      - 'reference/json-config/README.md'
-#      - 'Properties':
-#          - 'reference/json-config/properties/README.md'
-#          - 'Casa': 'reference/json-config/properties/casa-properties.md'
-#          - 'Casa Config': 'reference/json-config/properties/casaconfig-properties.md'
+- 'Casa':
+    - 'casa/index.md'
+    - Quick Start: 'casa/quick-start.md'
+    - 'Installation': 'casa/administration/installation.md'
+    - Administration Guide:
+        - 'About 2FA': 'casa/administration/2fa-basics.md'
+        - 'Admin console': 'casa/administration/admin-console.md'
+        - 'Credentials storage': 'casa/administration/credentials-stored.md'
+        - 'Custom branding': 'casa/administration/custom-branding.md'
+        - 'URL path customization': 'casa/administration/change-context-path.md'
+        - 'Localization': 'casa/administration/localization.md'
+        - 'Plugins':
+            - '2FA Settings': 'casa/plugins/2fa-settings.md'
+#            - 'BioID': 'casa/plugins/bioid.md'
+            - 'Consent Management': 'casa/plugins/consent-management.md'
+            - 'Custom Branding': 'casa/plugins/custom-branding.md'
+        - 'FAQ': 'casa/administration/faq.md'
+    - User Guide: 'casa/user-guide.md'
+- 'Super Gluu':
+    - 'supergluu/index.md'
+    - User Guide: 'supergluu/user-guide/index.md'
+    - Administration Guide: 'supergluu/admin-guide/index.md'
+    - Developer Guide: 'supergluu/developer-guide/index.md'
+

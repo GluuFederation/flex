@@ -21,14 +21,14 @@ from urllib.parse import urljoin
 
 argsp = None
 cur_dir = os.path.dirname(__file__)
-jans_installer_downloaded = False
+jans_installer_downloaded = bool(os.environ.get('JANS_INSTALLER'))
 flex_installer_downloaded = False
 install_py_path = os.path.join(cur_dir, 'jans_install.py')
 installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
 ssa_json = {}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
-if '--remove-flex' in sys.argv:
+if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
 
     print('\033[31m')
     print("This process is irreversible.")
@@ -39,7 +39,7 @@ if '--remove-flex' in sys.argv:
         print('\033[31m \033[1m')
         response = input("Are you sure to uninstall Gluu Flex? [yes/N] ")
         print('\033[0m')
-        if response.lower() in ('yes', 'n', 'no'):
+        if response.strip().lower() in ('yes', 'n', 'no'):
             if response.lower() != 'yes':
                 sys.exit()
             else:
@@ -61,6 +61,7 @@ def get_flex_setup_parser():
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
+    parser.add_argument('--no-restart-services', help="Do not restart services, useful when you are both uninstalling flex and Jans", action='store_true')
     parser.add_argument('--gluu-passwurd-cert', help="Creates Gluu Passwurd API keystore", action='store_true')
     parser.add_argument('-download-exit', help="Downloads files and exits", action='store_true')
 
@@ -255,7 +256,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.15",
+  "JANS_APP_VERSION": "1.0.16",
   "JANS_BUILD": "-SNAPSHOT",
   "NODE_VERSION": "v18.16.0",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
@@ -332,7 +333,7 @@ class flex_installer(JettyInstaller):
 
         download_files = []
 
-        if install_components['admin_ui'] or argsp.download_exit:
+        if install_components['admin_ui'] or argsp.download_exit or argsp.update_admin_ui:
             download_files += [
                     ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
                     (urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path),
@@ -341,6 +342,9 @@ class flex_installer(JettyInstaller):
                     (self.admin_ui_node_modules_url, self.admin_ui_node_modules_path),
                     (self.config_api_node_modules_url, self.config_api_node_modules_path),
                     ]
+
+            if argsp.update_admin_ui:
+                download_files.pop(0) 
 
         if install_components['casa'] or argsp.download_exit:
             download_files += [
@@ -495,14 +499,28 @@ class flex_installer(JettyInstaller):
         admin_ui_jans_conf_app =  config_api_installer.readFile(os.path.join(self.source_dir, os.path.basename(self.admin_ui_config_properties_path)))
         config_api_installer.dbUtils.set_configuration('jansConfApp', admin_ui_jans_conf_app, self.admin_ui_dn)
 
-        config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
+        self.install_config_api_plugin()
+
+        print("Removing DUO Script")
+        config_api_installer.dbUtils.delete_dn('inum=5018-F9CF,ou=scripts,o=jans')
+
+        self.rewrite_cli_ini()
+
+
+    def install_config_api_plugin(self):
+
+        old_plugin = os.path.join(config_api_installer.libDir, 'admin-ui-plugin.jar')
+        if os.path.exists(old_plugin):
+            print("Old plugin {} was detected. Removing...".format(old_plugin))
+            os.remove(old_plugin)
+
+        config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir, backup=False)
         config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
         for logfn in (self.log4j2_adminui_path, self.log4j2_path):
             config_api_installer.copyFile(logfn, config_api_installer.custom_config_dir)
 
-        print("Removing DUO Script")
-        config_api_installer.dbUtils.delete_dn('inum=5018-F9CF,ou=scripts,o=jans')
+        config_api_installer.set_class_path(glob.glob(os.path.join(config_api_installer.libDir, '*.jar')))
 
         self.rewrite_cli_ini()
 
@@ -815,17 +833,22 @@ class flex_installer(JettyInstaller):
     def generate_gluu_passwurd_api_keystore(self):
         print("Generating Gluu Passwurd API Keystore")
         suffix = 'passwurd_api'
+        keystore_pw = jansAuthInstaller.getPW()
+        keystore_pw_fn = os.path.join(Config.certFolder, 'passwurd_api.json')
         key_fn, csr_fn, crt_fn = jansAuthInstaller.gen_cert(suffix, 'changeit', user='jetty')
         passwurd_api_keystore_fn = os.path.join(Config.certFolder, 'passwurdAKeystore.pcks12')
         self.import_key_cert_into_keystore(
                         suffix=suffix,
                         keystore_fn=passwurd_api_keystore_fn,
-                        keystore_pw='changeit',
+                        keystore_pw=keystore_pw,
                         in_key=key_fn,
                         in_cert=crt_fn,
                         store_type='PKCS12'
                         )
-
+        keystore_pw_data = {'keyStoreSecret': keystore_pw}
+        jansAuthInstaller.writeFile(keystore_pw_fn, json.dumps(keystore_pw_data))
+        jansAuthInstaller.chown(keystore_pw_fn, Config.jetty_user, Config.root_user)
+        jansAuthInstaller.run([base.paths.cmd_chmod, '640', keystore_pw_fn])
 
 def read_or_get_ssa():
     if os.path.isfile(argsp.admin_ui_ssa):
@@ -855,7 +878,7 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
-        if not prompt_admin_ui_install.lower().startswith('n'):
+        if not prompt_admin_ui_install.strip().lower().startswith('n'):
             install_components['admin_ui'] = True
             if argsp.admin_ui_ssa:
                 read_or_get_ssa()
@@ -886,15 +909,11 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(Config.jetty_base, 'casa')):
         prompt_casa_install = input("Install Casa [Y/n]: ")
-        if not prompt_casa_install.lower().startswith('n'):
+        if not prompt_casa_install.strip().lower().startswith('n'):
             install_components['casa'] = True
     else:
         print("Casa is allready installed on this system")
         install_components['casa'] = False
-
-    prompt_gluu_passwurd_api_keystore = input("Generate Gluu Passwurd API Keystore [Y/n]: ")
-    if not prompt_gluu_passwurd_api_keystore.lower().startswith('n'):
-        argsp.gluu_passwurd_cert = True
 
     if not (install_components['casa'] or install_components['admin_ui'] or argsp.gluu_passwurd_cert):
         print("Nothing to install. Exiting ...")
@@ -975,6 +994,16 @@ def obtain_oidc_client_credidentials():
         sys.exit()
 
 
+def restart_services():
+    print("Restarting Apache")
+    httpd_installer.restart()
+
+    print("Restarting Jans Auth")
+    config_api_installer.restart('jans-auth')
+
+    print("Restarting Janssen Config Api")
+    config_api_installer.restart()
+
 def main(uninstall):
 
     get_components_from_setup_properties()
@@ -983,7 +1012,10 @@ def main(uninstall):
 
     if argsp.update_admin_ui:
         if os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
+            installer_obj.download_files(force=True)
             installer_obj.build_gluu_admin_ui()
+            installer_obj.install_config_api_plugin()
+            restart_services()
         else:
             print("Gluu Flex Admin UI was not installed on this system. Update not possible.")
         sys.exit()
@@ -1019,14 +1051,9 @@ def main(uninstall):
         if argsp.gluu_passwurd_cert:
             installer_obj.generate_gluu_passwurd_api_keystore()
 
-    print("Restarting Apache")
-    httpd_installer.restart()
+    if not argsp.no_restart_services:
+        restart_services()
 
-    print("Restarting Jans Auth")
-    config_api_installer.restart('jans-auth')
-
-    print("Restarting Janssen Config Api")
-    config_api_installer.restart()
 
     if not uninstall:
         install_post_setup()

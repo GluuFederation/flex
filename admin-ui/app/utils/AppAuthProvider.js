@@ -1,41 +1,46 @@
 import React, { useState, useEffect } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
-import UploadSSA from './UploadSSA'
 import { useLocation } from 'react-router'
 import { saveState } from './TokenController'
 import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  getOAuth2Config,
   getUserInfo,
   getAPIAccessToken,
   checkLicensePresent,
+  getRandomChallengePair,
 } from 'Redux/actions'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 import { checkLicenseConfigValid } from '../redux/actions'
+import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 
 export default function AppAuthProvider(props) {
   const dispatch = useDispatch()
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
   const [roleNotFound, setRoleNotFound] = useState(false)
-
-  const { config, userinfo, userinfo_jwt, token, backendIsUp } = useSelector(
-    (state) => state.authReducer,
+  const { config, userinfo, userinfo_jwt, token, backendIsUp, codeChallenge, codeVerifier, codeChallengeMethod } = useSelector(
+    (state) => state.authReducer
   )
   const {
     islicenseCheckResultLoaded,
     isLicenseActivationResultLoaded,
     isLicenseValid,
-    isConfigValid
+    isConfigValid,
   } = useSelector((state) => state.licenseReducer)
 
   useEffect(() => {
     dispatch(checkLicenseConfigValid())
-    dispatch(getOAuth2Config())
-    dispatch(checkLicensePresent())
+    dispatch(getRandomChallengePair())
   }, [])
+
+  useEffect(() => {
+    if (isConfigValid) {
+      dispatch(checkLicensePresent())
+    }
+  }, [isConfigValid])
+
   useEffect(() => {
     getDerivedStateFromProps()
   }, [isLicenseValid])
@@ -58,12 +63,16 @@ export default function AppAuthProvider(props) {
       !responseType ||
       !acrValues ||
       !state ||
-      !nonce
+      !nonce ||
+      !codeChallenge ||
+      !codeVerifier ||
+      !codeChallengeMethod
+
     ) {
       console.warn('Parameters to process authz code flow are missing.')
       return
     }
-    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}&redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`
+    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}&redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}&code_challenge_method=${codeChallengeMethod}&code_challenge=${codeChallenge}`
   }
 
   const getDerivedStateFromProps = () => {
@@ -81,7 +90,7 @@ export default function AppAuthProvider(props) {
       if (!userinfo) {
         const params = queryString.parse(location.search)
         if (params.code && params.scope && params.state) {
-          dispatch(getUserInfo(params.code))
+          dispatch(getUserInfo(params.code, codeVerifier))
         } else {
           if (!showContent && Object.keys(config).length) {
             const state = uuidv4()
@@ -91,8 +100,6 @@ export default function AppAuthProvider(props) {
               window.location.href = authzUrl
               return null
             }
-          } else {
-            dispatch(getOAuth2Config())
           }
         }
         setShowContent(false)
@@ -122,8 +129,13 @@ export default function AppAuthProvider(props) {
   return (
     <React.Fragment>
       <SessionTimeout isAuthenticated={showContent} />
+      <GluuTimeoutModal
+        description={
+          'The request has been terminated as there is no response from the server for more than 60 seconds.'
+        }
+      />
       {showContent && props.children}
-      {!showContent &&(
+      {!showContent && (
         <ApiKeyRedirect
           backendIsUp={backendIsUp}
           isLicenseValid={isLicenseValid}
