@@ -131,9 +131,9 @@ The scope is a mechanism to limit an application's access to a user's account. A
 more scopes, this information is then presented to the user in the consent screen, and the access token issued to 
 the application will be limited to the scopes granted. Please check [here](https://docs.jans.io/v1.0.15/admin/auth-server/scopes/) for detail documentation on scopes.
 
-### OAuth scopes
+### OAuth 2.0 scopes
 
-OAuth 2.0 Scopes for any of their API's. This scope type would only have a description, but no claims. Once a client obtains this token, it may be passed to the backend API.
+This scope type would only have a description, but no claims. Once a client obtains this token, it may be passed to the backend API.
 
 ### OpenID scopes
 
