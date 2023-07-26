@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import ClientDetailPage from './ClientDetailPage'
+import ClientDetailPage from 'Plugins/auth-server/components/Clients/ClientDetailPage'
 import clients from './clients.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 

@@ -1,6 +1,7 @@
 const config = {
   verbose: true,
   testEnvironment: "jsdom",
+  setupFiles: ["<rootDir>/__tests__/setup-tests.js"],
   setupFilesAfterEnv: ["<rootDir>/__tests__/setup.js"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   transform: {

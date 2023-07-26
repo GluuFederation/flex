@@ -77,7 +77,7 @@ module.exports = {
     publicPath: BASE_PATH,
   },
   resolve: {
-    fallback: { "querystring": false },
+    fallback: { "querystring": false, crypto: false, util: false, console: false },
     modules: ['node_modules', config.srcDir],
     extensions: ['.ts', '.js', '.jsx', '.tsx'],
     alias: {
