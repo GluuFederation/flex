@@ -196,7 +196,7 @@ This menu addresses deployment of [Agama](https://docs.jans.io/head/agama/introd
 ![image](../../assets/admin-ui/agama-deployment.png)
 
 
-The project name, description, version, deployment start and end date-time and deployment error (if any) can be seen on details popup of the record. User can export sample and current configuration or import configuration. 
+The project name, description, version, deployment start/end date-time and deployment error (if any) can be seen on details popup of the record. User can export sample and current configuration or import configuration. 
 
 ![image](../../assets/admin-ui/gama-details.png)
 
