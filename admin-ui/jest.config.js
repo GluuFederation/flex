@@ -7,6 +7,9 @@ const config = {
   transform: {
     "\\.[jt]sx?$": ["babel-jest", { presets: ["@babel/preset-env"] }],
   },
+  testEnvironmentOptions: {
+    url: 'http://admin-ui-test.gluu.org/'
+  },
   moduleNameMapper: {
     "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)$":
       "<rootDir>/__mocks__/fileMock.js",
