@@ -28,10 +28,15 @@ const cachRefreshState = {
   },
 };
 
+const ldapReducer = {
+  loading: false
+}
+
 const store = createStore(
   combineReducers({
     noReducer: (state = {}) => state,
     cacheRefreshReducer: (state = cachRefreshState) => state,
+    ldapReducer: (state = ldapReducer) => state
   })
 );
 
@@ -52,7 +57,7 @@ it("Should render cache refresh management page properly", () => {
     wrapper: Wrapper,
   });
 
-  const cacheRefreshLink = screen.getByText(`${t("menus.cache_refresh")}`);
+  const cacheRefreshLink = screen.getByText(`${t("menus.configuration")}`);
   expect(cacheRefreshLink).toBeInTheDocument();
 
   const customerBackendKeyAttributesLink = screen.getByText(

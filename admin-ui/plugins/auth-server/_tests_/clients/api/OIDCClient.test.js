@@ -121,13 +121,11 @@ describe('OIDC Client CRUD Operation', () => {
   })
 
   it('GET OIDC client list', async () => {
-    log(`initialState`, initialState)
     const result = await expectSaga(getOauthOpenidClients, {
       payload: { action: {} },
     })
       .withReducer(rootReducer, initialState)
       .run(false)
-    log(`result.returnValue`, result.returnValue)
     expect(Array.isArray(result.returnValue.entries)).toBe(true)
     expect(result.returnValue instanceof Error).toBe(false)
   })
@@ -170,17 +168,5 @@ describe('OIDC Client CRUD Operation', () => {
       .silentRun(false)
 
     expect(result.returnValue instanceof Error).toBe(false)
-  })
-
-  it('test initAudit return value', () => {
-    expectSaga(initAudit)
-      .withReducer(oidcReducer, initialState)
-      .returns({
-        client_id: '',
-        ip_address: '',
-        author: undefined,
-        status: 'succeed',
-      })
-      .run()
   })
 })

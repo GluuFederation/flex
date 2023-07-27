@@ -13,8 +13,6 @@ function GluuToogle({ name, formik, value, handler, disabled }) {
     <Toggle
       name={name}
       data-testid={name}
-      defaultChecked={value}
-      onClick={handler}
       onChange={(event) => {
         setChecked(event.target.checked)
         if(formik !== undefined) {

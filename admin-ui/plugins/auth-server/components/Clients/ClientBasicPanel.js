@@ -52,7 +52,7 @@ const ClientBasicPanel = ({
     'password',
     'urn:ietf:params:oauth:grant-type:uma-ticket',
   ]
-  const tokenEndpointAuthMethod = !!oidcConfiguration.tokenEndpointAuthMethodsSupported
+  const tokenEndpointAuthMethod = !!oidcConfiguration?.tokenEndpointAuthMethodsSupported
     ? oidcConfiguration.tokenEndpointAuthMethodsSupported
     : []
   const responseTypes = ['code', 'token', 'id_token']
