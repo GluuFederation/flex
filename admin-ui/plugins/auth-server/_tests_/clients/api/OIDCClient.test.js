@@ -7,7 +7,6 @@ import {
 import { reducer as oidcReducer } from 'Plugins/auth-server/redux/features/oidcSlice'
 import authReducer from 'Redux/features/authSlice'
 import { expectSaga } from 'redux-saga-test-plan'
-import { initAudit } from 'Redux/sagas/SagaUtils'
 import { combineReducers } from '@reduxjs/toolkit'
 import { fetchApiTokenWithDefaultScopes, fetchApiAccessToken } from 'Redux/api/backend-api'
 import { log } from 'console'
