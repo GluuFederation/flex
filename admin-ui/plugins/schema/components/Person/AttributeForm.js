@@ -24,8 +24,8 @@ function AttributeForm(props) {
 
   const getInitialState = (item) => {
     return (
-      item.attributeValidation?.regexp != null &&
-      item.attributeValidation?.minLength != null &&
+      item.attributeValidation?.regexp != null ||
+      item.attributeValidation?.minLength != null ||
       item.attributeValidation?.maxLength != null
     )
   }
@@ -35,7 +35,7 @@ function AttributeForm(props) {
   function handleValidation() {
     setValidation(!validation)
   }
-  
+
   function toogle() {
     if (!init) {
       setInit(true)
@@ -44,14 +44,23 @@ function AttributeForm(props) {
 
   const handleAttributeSubmit = ({ item, values, customOnSubmit }) => {
     const result = Object.assign(item, values)
-    result['attributeValidation'].maxLength = result.maxLength
-    result['attributeValidation'].minLength = result.minLength
-    result['attributeValidation'].regexp = result.regexp
+    if (result.maxLength !== null) {
+      result['attributeValidation'].maxLength = result.maxLength
+    }
+    if(result.minLength !== null) {
+      result['attributeValidation'].minLength = result.minLength
+    }
+    if(result.regexp !== null) {
+      result['attributeValidation'].regexp = result.regexp
+    }
     customOnSubmit(JSON.stringify(result))
   }
 
   const attributeValidationSchema = Yup.object({
-    name: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
+    name: Yup.string()
+      .min(2, 'Minimum 2 characters')
+      .matches(/^[^\s]+$/, 'Name must not contain spaces')
+      .required('Required!'),
     displayName: Yup.string()
       .min(2, 'Mininum 2 characters')
       .required('Required!'),
@@ -353,7 +362,6 @@ function AttributeForm(props) {
           </FormGroup>
           <GluuToogleRow
             name='validation'
-            formik={formik}
             label='fields.enable_custom_validation_for_this_attribute'
             value={validation}
             handler={handleValidation}

@@ -25,7 +25,7 @@ export default class AttributeApi {
 
   addNewAttribute = (data) => {
     let options = {}
-    options['gluuAttribute'] = data
+    options['jansAttribute'] = data
     return new Promise((resolve, reject) => {
       this.api.postAttributes(options, (error, data) => {
         handleResponse(error, reject, resolve, data)
@@ -35,7 +35,7 @@ export default class AttributeApi {
 
   editAnAttribute = (data) => {
     let options = {}
-    options['gluuAttribute'] = data
+    options['jansAttribute'] = data
     return new Promise((resolve, reject) => {
       this.api.putAttributes(options, (error, data) => {
         handleResponse(error, reject, resolve, data)
