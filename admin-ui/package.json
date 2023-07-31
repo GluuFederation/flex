@@ -22,7 +22,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test": "set NODE_ENV=test&& jest --runInBand --detectOpenHandles --forceExit",
+    "test": "set NODE_ENV=test&& jest --forceExit",
     "clear_jest": "jest --clearCache",
     "test:watch": "npm test -- --watch",
     "start": "export $(cat .env | xargs) && npm run start:dev",
