@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react'
 import { FormGroup, Col, Row, Button, Input } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
-import GluuTooltip from './GluuTooltip'
 import applicationStyle from './styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -31,10 +30,11 @@ function GluuTypeAheadWithAdd({
     const newItem = document.getElementById(inputId).value
     document.getElementById(inputId).value = ''
     if (validator(newItem)) {
-      items.push(newItem)
+      const updatedItems = [...items]
+      updatedItems.push(newItem) 
       opts.push(newItem)
-      setItems(items)
-      formik.setFieldValue(name, items)
+      setItems(updatedItems)
+      formik.setFieldValue(name, updatedItems)
     }
   }
 
@@ -74,6 +74,7 @@ function GluuTypeAheadWithAdd({
               disabled={disabled}
               style={applicationStyle.buttonStyle}
               onClick={addItem}
+              data-testid={t('actions.add')}
             >
               <i className="fa fa-plus-circle me-2"></i>
               {t('actions.add')}

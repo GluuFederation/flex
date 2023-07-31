@@ -1,16 +1,11 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
-import ClientAddPage from './ClientAddPage'
-import { BrowserRouter as Router } from 'react-router-dom' 
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import ClientListPage from 'Plugins/auth-server/components/Clients/ClientListPage' 
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
-import { I18nextProvider } from 'react-i18next'
-import { reducer as initReducer } from 'Redux/features/initSlice'
-import oidcDiscoveryReducer from 'Redux/features/oidcDiscoverySlice'
-import { reducer as scopeReducer} from 'Plugins/auth-server/redux/features/scopeSlice'
-import { reducer as umaResourceReducer } from 'Plugins/auth-server/redux/features/umaResourceSlice'
+import clients from './clients.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
   'https://jans.io/oauth/config/openid/clients.write',
@@ -19,6 +14,14 @@ const permissions = [
 const INIT_STATE = {
   permissions: permissions,
 }
+
+const INIT_CLIENTS_STATE = {
+  items: [clients[0]],
+  item: {},
+  view: false,
+  loading: false,
+}
+
 const INIT_SCPOPES_STATE = {
   items: [
     {
@@ -41,11 +44,8 @@ const INIT_SCPOPES_STATE = {
 const store = configureStore({
   reducer:  combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    oidcReducer: (state = INIT_SCPOPES_STATE) => state,
-    umaResourceReducer,
-    scopeReducer,
-    initReducer,
-    oidcDiscoveryReducer,
+    oidcReducer: (state = INIT_CLIENTS_STATE) => state,
+    scopeReducer: (state = INIT_SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,
   }),
 })
@@ -58,12 +58,23 @@ const Wrapper = ({ children }) => (
   </AppTestWrapper>
 )
 
-it('Should render client add page properly', () => {
-  render(<ClientAddPage />, { wrapper: Wrapper })
-  screen.getByText(/Basic/)
-  screen.getByText(/Advanced/)
-  screen.getByText('Encription / Signing', { exact: false })
-  screen.getByText(/Client Scripts/)
-  screen.getByText('Client Name', { exact: false })
-  screen.getByText('description', { exact: false })
+it('Should show the sidebar properly', async () => {
+  const { container } = render(<ClientListPage />, { wrapper: Wrapper })
+
+  const addClientButton = container.querySelector(`button[aria-label="Add Client"]`)
+  expect(addClientButton).toBeInTheDocument()
+
+  fireEvent.mouseOver(addClientButton)
+
+  await waitFor(() => screen.getByText('Add Client'))
+
+  const refreshClientButton = container.querySelector(`button[aria-label="Refresh data"]`)
+  expect(refreshClientButton).toBeInTheDocument()
+
+  fireEvent.mouseOver(refreshClientButton)
+
+  await waitFor(() => screen.getByText('Refresh data'))
+
+  const inputSearch = container.querySelector(`input[placeholder="Search"]`)
+  expect(inputSearch).toBeInTheDocument()
 })
