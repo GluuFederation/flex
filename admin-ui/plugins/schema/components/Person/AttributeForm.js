@@ -84,7 +84,10 @@ function AttributeForm(props) {
       jansHideOnDiscovery: item.jansHideOnDiscovery,
       oxMultiValuedAttribute: item.oxMultiValuedAttribute,
       attributeValidation: item.attributeValidation,
-      scimCustomAttr: item.scimCustomAttr
+      scimCustomAttr: item.scimCustomAttr,
+      maxLength: item.attributeValidation.maxLength,
+      minLength: item.attributeValidation.minLength,
+      regexp: item.attributeValidation.regexp
     }
   }
 
