@@ -131,8 +131,11 @@ def configure_logging():
         else:
             config[key] = file_aliases[key]
 
-    if as_boolean(custom_config.get("enable_stdout_log_prefix")):
-        config["log_prefix"] = "${sys:log.console.prefix}%X{log.console.group} - "
+    if any([
+        as_boolean(custom_config.get("enable_stdout_log_prefix")),
+        as_boolean(os.environ.get("CN_ENABLE_STDOUT_LOG_PREFIX")),
+    ]):
+        config["log_prefix"] = "${sys:casa.log.console.prefix}%X{casa.log.console.group} - "
 
     with open("/app/templates/log4j2.xml") as f:
         txt = f.read()
