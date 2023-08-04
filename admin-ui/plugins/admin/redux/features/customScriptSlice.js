@@ -116,6 +116,5 @@ export const {
   viewOnly,
   setCurrentItem
 } = customScriptSlice.actions
-export { initialState }
 export const { actions, reducer, state } = customScriptSlice
 reducerRegistry.register('customScriptReducer', reducer)

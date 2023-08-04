@@ -46,7 +46,6 @@ export function* editSimpleAuthAcr({ payload }) {
     const data = yield call(api.updateAcrsConfig, payload.data)
     yield put(setSimpleAuthAcrResponse({ data }))
     yield put(setSuccess({ data: true}))
-    return data
   } catch (e) {
     yield put(setSimpleAuthAcrResponse(null))
     if (isFourZeroOneError(e)) {
@@ -54,7 +53,6 @@ export function* editSimpleAuthAcr({ payload }) {
       yield put(getAPIAccessToken(jwt))
     }
     yield put(setSuccess({ data: false }))
-    return e
   }
 }
 

@@ -42,4 +42,4 @@ export const {
 } = sessionSlice.actions
 
 export const { actions, reducer, state } = sessionSlice
-reducerRegistry.register('sessionReducer', reducer)
+reducerRegistry.register('SessionReducer', reducer)

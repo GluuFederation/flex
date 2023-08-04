@@ -84,14 +84,12 @@ export function* getScopes({ payload }) {
     const data = yield call(scopeApi.getAllScopes, payload.action)
     yield put(handleUpdateScopeResponse({ data: data }))
     yield call(postUserAction, audit)
-    return data
   } catch (e) {
     yield put(handleUpdateScopeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 
@@ -140,7 +138,6 @@ export function* addAScope({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(addScopeResponse({ data }))
     yield call(postUserAction, audit)
-    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addScopeResponse(null))
@@ -148,7 +145,6 @@ export function* addAScope({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 
@@ -162,7 +158,6 @@ export function* editAnScope({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(editScopeResponse({ data }))
     yield call(postUserAction, audit)
-    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editScopeResponse(null))
@@ -170,7 +165,6 @@ export function* editAnScope({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 

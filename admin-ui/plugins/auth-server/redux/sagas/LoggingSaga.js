@@ -24,14 +24,12 @@ export function* getLogging() {
     const api = yield* newFunction()
     const data = yield call(api.getLoggingConfig)
     yield put(getLoggingResponse({ data }))
-    return data
   } catch (e) {
     yield put(getLoggingResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 
@@ -41,7 +39,6 @@ export function* editLogging({ payload }) {
     const data = yield call(api.editLoggingConfig, payload.data)
     yield put(updateToast(true, 'success'))
     yield put(editLoggingResponse({ data }))
-    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editLoggingResponse(null))
@@ -49,7 +46,6 @@ export function* editLogging({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 

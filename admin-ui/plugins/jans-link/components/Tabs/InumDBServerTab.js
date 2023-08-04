@@ -98,7 +98,7 @@ const InumDBServerTab = () => {
     toggleAudit()
 
     buildPayload(userAction, userMessage, {
-      appConfiguration2: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         targetConfig: {
           ...formik.values.targetConfig,
@@ -120,7 +120,7 @@ const InumDBServerTab = () => {
 
   const handleChangePassword = (updatedPassword) => {
     buildPayload(userAction, 'CHANGE INUMDB BIND PASSWORD', {
-      appConfiguration2: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         targetConfig: {
           ...formik.values.targetConfig,

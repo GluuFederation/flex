@@ -39,14 +39,12 @@ export function* getSessions({ payload }) {
     )
     yield put(handleUpdateSessionsResponse({ data: data }))
     yield call(postUserAction, audit)
-    return data
   } catch (e) {
     yield put(handleUpdateSessionsResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 
@@ -56,11 +54,11 @@ export function* revokeSessionByUserDn({ payload }) {
     yield put(toggleLoader(true))
     addAdditionalData(audit, DELETION, SESSION, payload)
     const sessionApi = yield* newFunction()
-    yield call(sessionApi.revokeSession, payload.userDn)
-    yield put(handleRevokeSession({ data: payload.userDn }))
+    yield call(sessionApi.revokeSession, payload.action.userDn)
+    yield put(handleRevokeSession({ data: payload.action.userDn }))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(handleRevokeSession({ data: null }))
+    yield put(handleRevokeSession(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

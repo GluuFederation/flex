@@ -8,8 +8,8 @@ import { reducer as oidcReducer } from 'Plugins/auth-server/redux/features/oidcS
 import authReducer from 'Redux/features/authSlice'
 import { expectSaga } from 'redux-saga-test-plan'
 import { combineReducers } from '@reduxjs/toolkit'
+import { fetchApiTokenWithDefaultScopes, fetchApiAccessToken } from 'Redux/api/backend-api'
 import { log } from 'console'
-import { authReducerInit, beforeAllAsync } from './setup.test'
 
 const action_data = {
   dn: 'inum=52b123c5-c074-4a0c-9d5f-d1f56e56dd8b,ou=clients,o=jans',
@@ -61,9 +61,43 @@ const rootReducer = combineReducers({
 
 let initialState
 
+const beforeAllAsync = async () => {
+  const { issuer, token } = global
+  if (!issuer && !token) {
+    try {
+      // Call the API and wait for the response.
+      const response = await fetchApiTokenWithDefaultScopes()
+      const accessToken = await fetchApiAccessToken(response.access_token)
+      // Set the response in the global object.
+      global.issuer = accessToken.issuer
+      global.token = accessToken.access_token
+      formInitState(accessToken.access_token, accessToken.issuer)
+    } catch (error) {
+      formInitState(token, issuer)
+      error(error.message)
+      throw new Error('Error during beforeAllAsync: ' + error.message)
+    }
+  } else {
+    log('Issuer and token already available.')
+  }
+}
+
 const formInitState = (token, issuer) => {
   initialState = {
-    authReducer: authReducerInit(token, issuer),
+    authReducer: {
+      userinfo_jwt: token,
+      config: {
+        clientId: '',
+      },
+      location: {
+        IPv4: '',
+      },
+      userinfo: {},
+      issuer,
+      token: {
+        access_token: token,
+      },
+    },
     oidcReducer: {
       items: [],
     },
@@ -72,9 +106,9 @@ const formInitState = (token, issuer) => {
 
 beforeAll(async () => {
   try {
-    await beforeAllAsync(formInitState)
+    await beforeAllAsync() 
   } catch (error) {
-    log(error.message)
+    error(error.message)
   }
 })
 
@@ -106,16 +140,16 @@ describe('OIDC Client CRUD Operation', () => {
     expect(result.returnValue instanceof Error).toBe(false)
   })
 
-  it('should update client name from jest-test to update-test', async () => {
+  it('should udpate client name from jest-test to update-test', async () => {
     const result = await expectSaga(editAClient, {
       payload: {
         action: {
-          action_data: { ...action_data, displayName: 'update-test' },
+          action_data: { ...action_data, displayName: 'udpate-test' },
         },
       },
     })
       .withReducer(rootReducer, initialState)
-      .returns({ client: { ...action_data, displayName: 'update-test' } })
+      .returns({ client: { ...action_data, displayName: 'udpate-test' } })
       .silentRun(false)
 
     expect(result.returnValue instanceof Error).toBe(false)

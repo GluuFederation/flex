@@ -110,7 +110,7 @@ const SourceBackendServersTab = () => {
     toggleAudit()
 
     buildPayload(userAction, userMessage, {
-      appConfiguration2: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         sourceConfigs: [
           {
@@ -145,7 +145,7 @@ const SourceBackendServersTab = () => {
 
   const handleChangePassword = (updatedPassword) => {
     buildPayload(userAction, 'CHANGE SOURCE BACKEND BIND PASSWORD', {
-      appConfiguration2: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         sourceConfigs: [
           {

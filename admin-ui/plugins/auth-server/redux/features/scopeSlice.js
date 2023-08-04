@@ -149,6 +149,5 @@ export const {
   getClientScopes,
   emptyScopes
 } = scopeSlice.actions
-export { initialState }
 export const { actions, reducer, state } = scopeSlice
 reducerRegistry.register('scopeReducer', reducer)

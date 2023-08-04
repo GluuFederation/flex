@@ -71,7 +71,7 @@ const CustomerBackendKeyTab = () => {
     toggle()
 
     buildPayload(userAction, userMessage, {
-      appConfiguration2: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         ...formik.values,
         sourceAttributes: isStringsArray(formik.values?.sourceAttributes || [])

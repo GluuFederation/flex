@@ -1,3 +1,5 @@
+const API_BASE_URL = process.env.JANS_AUTH
+
 export default class SsaApi {
   constructor(api) {
     this.api = api

@@ -13,14 +13,12 @@ export function* getSsa() {
   try {
     const data = yield call(new SsaApi().getAllSsa, { payload: { token }, authServerHost })
     yield put(getSsaConfigResponse(data))
-    return data
   } catch (e) {
     yield put(getSsaConfigResponse([]))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 
@@ -38,13 +36,11 @@ export function* addSsaConfig({ payload }) {
     createAndDownloadJSONFile(data)
     yield put(toggleSaveConfig(true))
     yield put(updateToast(true, 'success'))
-    return payload.action.action_data
   } catch (e) {
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 
@@ -54,13 +50,12 @@ export function* removeSsaConfig({ payload }) {
   const token = yield select((state) => state.authReducer.token.access_token)
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    const data = yield call(new SsaApi().deleteSsa, {
+    yield call(new SsaApi().deleteSsa, {
       jti: payload.action.action_data,
       token,
       authServerHost
     })
     yield put(getSsaConfig())
-    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(removeSsaResponse())
@@ -68,7 +63,6 @@ export function* removeSsaConfig({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 

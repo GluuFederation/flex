@@ -90,7 +90,7 @@ const ConfigurationTab = () => {
     toggle()
 
     buildPayload(userAction, userMessage, {
-      appConfiguration2: {
+      jansLinkConfiguration: {
         ...cacheRefreshConfiguration,
         ...formik.values,
         attributeMapping: formik.values.attributeMapping?.length

@@ -36,7 +36,6 @@ export function* getJsonConfig({ payload }) {
     const data = yield call(configApi.fetchJsonConfig)
     yield put(getJsonConfigResponse({ data }))
     yield call(postUserAction, audit)
-    return data
   } catch (e) {
     console.log(e)
     yield put(getJsonConfigResponse(null))
@@ -44,7 +43,6 @@ export function* getJsonConfig({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 
@@ -60,7 +58,6 @@ export function* patchJsonConfig({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(patchJsonConfigResponse({ data }))
     yield call(postUserAction, audit)
-    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(patchJsonConfigResponse(null))
@@ -68,7 +65,6 @@ export function* patchJsonConfig({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return e
   }
 }
 
