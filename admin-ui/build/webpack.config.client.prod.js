@@ -6,8 +6,8 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
-const CompressionPlugin = require("compression-webpack-plugin")
-
+//const CompressionPlugin = require("compression-webpack-plugin")
+const TerserWebpackPlugin = require('terser-webpack-plugin');
 const config = require('./../config')
 require('dotenv').config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
@@ -23,52 +23,13 @@ module.exports = {
   devtool: false,
   mode: 'production',
   entry: {
-    app: [path.join(config.srcDir, 'index.js')],
+    app: [path.join(config.srcDir, 'index.js')]
   },
   optimization: {
-    moduleIds: 'named',
-    chunkIds: 'named',
-    minimize: true,
-    nodeEnv: 'production',
-    mangleWasmImports: true,
-    removeEmptyChunks: false,
-    mergeDuplicateChunks: false,
-    flagIncludedChunks: true,
-    minimizer: [`...`, 
-    new CssMinimizerPlugin({
-      minimizerOptions: {
-        preset: [
-          "default",
-          {
-            calc: false,
-            discardComments: { removeAll: true },
-          },
-        ],
-      },
-    }),
-    '...'],
-    emitOnErrors: true,
     splitChunks: {
-      chunks: 'all',
-      minSize: 20000,
-      minRemainingSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 30,
-      maxInitialRequests: 30,
-      enforceSizeThreshold: 50000,
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          reuseExistingChunk: true,
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-      },
+      chunks: 'all'
     },
+    minimizer: [`...`, new TerserWebpackPlugin(), new CssMinimizerPlugin(), `...`]
   },
   output: {
     filename: '[name].bundle.js',
@@ -120,10 +81,7 @@ module.exports = {
         SESSION_TIMEOUT_IN_MINUTES: JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
       },
     }),
-    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to "server" to activate BundleAnalyzerPlugin
-    new CompressionPlugin({
-      algorithm: "gzip",
-    })
+    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }) //* switch mode to "server" to activate BundleAnalyzerPlugin
   ],
   module: {
     rules: [
