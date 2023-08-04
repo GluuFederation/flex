@@ -33,7 +33,6 @@ const rootReducer = combineReducers({
 })
 
 describe('api tests for authn module', () => {
-  let defaultAuthNMethod
   it('should get custom script by type person_authentication', async () => {
     const result = await expectSaga(getScriptsByType, {
       payload: { action: { type: 'person_authentication' } },
@@ -41,7 +40,7 @@ describe('api tests for authn module', () => {
       .withReducer(rootReducer, initialState)
       .silentRun(false)
 
-    defaultAuthNMethod = result.returnValue?.entries?.find(
+    result.returnValue?.entries?.find(
       (item) => item.name === 'simple_password_auth'
     )
     expect(result.returnValue instanceof Error).toBe(false)

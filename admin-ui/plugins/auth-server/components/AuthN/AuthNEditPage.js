@@ -35,7 +35,7 @@ function AuthNEditPage() {
     const payload = {}
 
     if (item.name === "simple_password_auth") {
-      if (data.defaultAuthNMethod == "true" || data.defaultAuthNMethod == true) {
+      if (data.defaultAuthNMethod === "true" || data.defaultAuthNMethod === true) {
         payload.authenticationMethod = { defaultAcr: "simple_password_auth" }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }
@@ -52,7 +52,7 @@ function AuthNEditPage() {
       ldapPayload.useSSL = data.useSSL
       ldapPayload.enabled = data.enabled
 
-      if (data.defaultAuthNMethod == "true" || data.defaultAuthNMethod == true) {
+      if (data.defaultAuthNMethod === "true" || data.defaultAuthNMethod === true) {
         payload.authenticationMethod = { defaultAcr: data.configId }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }
@@ -75,7 +75,7 @@ function AuthNEditPage() {
             hide: false,
           }))
       }
-      if (data.defaultAuthNMethod == "true" || data.defaultAuthNMethod == true) {
+      if (data.defaultAuthNMethod === "true" || data.defaultAuthNMethod === true) {
         payload.authenticationMethod = { defaultAcr: item.acrName }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }

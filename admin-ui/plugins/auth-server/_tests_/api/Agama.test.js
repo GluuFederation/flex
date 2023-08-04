@@ -3,8 +3,8 @@ import { expectSaga } from 'redux-saga-test-plan'
 import authReducer from 'Redux/features/authSlice'
 import {
   getAgamas,
-  addAgama,
-  deleteAgamas,
+  // addAgama,
+  // deleteAgamas,
 } from 'Plugins/auth-server/redux/sagas/AgamaSaga'
 import {
   initialState as agamaInitState,

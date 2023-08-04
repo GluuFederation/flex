@@ -73,7 +73,7 @@ describe('test create, read & delete actions for ssa module', () => {
 
   it('should delete newly created config', async () => {
     if (newConfig) {
-      const result = await expectSaga(removeSsaConfig, {
+      await expectSaga(removeSsaConfig, {
         payload: { action: { action_data: newConfig.ssa.jti } },
       })
         .withReducer(rootReducer, initialState)
