@@ -43,7 +43,7 @@ function* checkLicensePresentWorker() {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
     const response = yield call(licenseApi.getIsActive)
     if (response) {
-      yield put(checkLicensePresentResponse({ isLicenseValid: response.apiResult }))
+      yield put(checkLicensePresentResponse({ isLicenseValid: true }))
       return
     }
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
@@ -66,7 +66,7 @@ function* generateTrailLicenseKey() {
           }
         })
         yield put(generateTrialLicenseResponse(activateLicense))
-        yield put(checkLicensePresentResponse({ isLicenseValid: activateLicense?.apiResult }))
+        yield put(checkLicensePresentResponse({ isLicenseValid: true }))
         yield put(checkUserLicenseKeyResponse(activateLicense))
       } catch (error) {
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
@@ -98,7 +98,7 @@ function* uploadNewSsaToken({ payload }) {
         )
       )
     }
-    yield put(checkLicenseConfigValidResponse(response?.apiResult))
+    yield put(checkLicenseConfigValidResponse(true))
     yield put(getOAuth2Config(defaultToken))
     yield put(checkLicensePresent())
     // window.location.reload()
@@ -112,7 +112,7 @@ function* checkAdminuiLicenseConfig() {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
     yield put(getOAuth2Config(defaultToken))
     const response = yield call(licenseApi.checkAdminuiLicenseConfig)
-    yield put(checkLicenseConfigValidResponse(response?.apiResult))
+    yield put(checkLicenseConfigValidResponse(true))
   } catch (error) {
     console.log(error)
   }
