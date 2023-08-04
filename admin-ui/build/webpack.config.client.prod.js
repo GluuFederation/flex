@@ -6,7 +6,6 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
-//const CompressionPlugin = require("compression-webpack-plugin")
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const config = require('./../config')
 require('dotenv').config({
@@ -29,7 +28,10 @@ module.exports = {
     splitChunks: {
       chunks: 'all'
     },
-    minimizer: [`...`, new TerserWebpackPlugin(), new CssMinimizerPlugin(), `...`]
+    minimizer: [`...`,
+      new TerserWebpackPlugin(),
+      new CssMinimizerPlugin(),
+      `...`]
   },
   output: {
     filename: '[name].bundle.js',
