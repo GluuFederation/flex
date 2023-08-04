@@ -186,7 +186,7 @@ export function* deleteAnScope({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(deleteScopeResponse(null))
+    yield put(deleteScopeResponse({ data: null}))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.s.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

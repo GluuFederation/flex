@@ -93,7 +93,7 @@ describe('perform CRUD for scopes module', () => {
       .withReducer(rootReducer, initialState)
       // .returns({ scope: { ...createdScope, displayName: 'update-test' } })
       .silentRun(false)
-    log('json', JSON.stringify(result.returnValue))
+
     expect(result.returnValue instanceof Error).toBe(false)
   })
 

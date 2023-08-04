@@ -59,7 +59,6 @@ describe('api tests for authn module', () => {
       .withReducer(rootReducer, initialState)
       .silentRun(false)
 
-    log(`result.returnValue`, result.returnValue)
     expect(result.returnValue instanceof Error).toBe(false)
   })
 })

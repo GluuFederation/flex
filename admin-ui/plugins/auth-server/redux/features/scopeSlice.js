@@ -49,7 +49,7 @@ const scopeSlice = createSlice({
     },
     deleteScopeResponse: (state, action) => {
       state.loading = false
-      if (action.payload.data) {
+      if (action.payload?.data) {
         state.items = state.items.filter((i) => i.inum !== action.payload.data)
       } else {
         state.saveOperationFlag = false
