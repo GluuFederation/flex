@@ -43,4 +43,5 @@ export const {
 } = ssaSlice.actions
 
 export default ssaSlice.reducer
+export { initialState }
 reducerRegistry.register('ssaReducer', ssaSlice.reducer)

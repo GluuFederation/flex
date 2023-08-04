@@ -42,5 +42,6 @@ export const {
   addAgama,
   getAddAgamaResponse
 } = agamaSlice.actions
+export { initialState }
 export const { actions, reducer, state } = agamaSlice
 reducerRegistry.register('agamaReducer', reducer)

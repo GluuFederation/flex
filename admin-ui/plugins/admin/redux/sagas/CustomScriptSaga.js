@@ -55,12 +55,14 @@ export function* getScriptsByType({ payload }) {
     const data = yield call(scriptApi.getScriptsByType, payload.action)
     yield put(getCustomScriptsResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(getCustomScriptsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* addScript({ payload }) {
