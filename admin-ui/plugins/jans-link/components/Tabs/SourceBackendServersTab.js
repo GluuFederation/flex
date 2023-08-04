@@ -280,7 +280,7 @@ const SourceBackendServersTab = () => {
                 </Col>
                 <Col sm={12}>
                   <Row>
-                    <GluuLabel required label='fields.change_attribute_name_from_source_to_estination' size={3} />
+                    <GluuLabel required label='fields.server_port' size={3} />
                     <Col sm={9}>
                       <GluuProperties
                         compName='sourceConfigs.servers'
