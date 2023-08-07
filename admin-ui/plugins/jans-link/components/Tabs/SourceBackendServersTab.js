@@ -136,6 +136,13 @@ const SourceBackendServersTab = () => {
   const handleRemoveServer = () => {
     setAddSourceLdapServer(false)
     formik.setFieldValue('sourceConfigs.enabled', false)
+    formik.setFieldValue('sourceConfigs.configId', null)
+    formik.setFieldValue('sourceConfigs.bindDN', null)
+    formik.setFieldValue('sourceConfigs.maxConnections', null)
+    formik.setFieldValue('sourceConfigs.servers', [])
+    formik.setFieldValue('sourceConfigs.baseDNs', [])
+    formik.setFieldValue('sourceConfigs.useSSL', null)
+    formik.setFieldValue('sourceConfigs.bindPassword', null)
   }
 
   const handleAddServer = () => {
@@ -150,6 +157,16 @@ const SourceBackendServersTab = () => {
         sourceConfigs: [
           {
             ...formik.values.sourceConfigs,
+            baseDNs: isStringsArray(formik.values?.sourceConfigs?.baseDNs || [])
+            ? formik.values.sourceConfigs.baseDNs
+            : convertToStringArray(
+                formik.values?.sourceConfigs.baseDNs || []
+              ),
+            servers: isStringsArray(formik.values?.sourceConfigs?.servers || [])
+              ? formik.values.sourceConfigs.servers
+              : convertToStringArray(
+                  formik.values?.sourceConfigs.servers || []
+                ),
             bindPassword: updatedPassword,
           },
         ],

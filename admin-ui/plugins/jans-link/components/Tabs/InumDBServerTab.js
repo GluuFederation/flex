@@ -102,12 +102,12 @@ const InumDBServerTab = () => {
         ...cacheRefreshConfiguration,
         targetConfig: {
           ...formik.values.targetConfig,
-          baseDNs: isStringsArray(formik.values.targetConfig.baseDNs || [])
+          baseDNs: isStringsArray(formik.values?.targetConfig?.baseDNs || [])
             ? formik.values.targetConfig.baseDNs
             : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
-          servers: isStringsArray(formik.values.targetConfig.servers || [])
+          servers: isStringsArray(formik.values?.targetConfig?.servers || [])
             ? formik.values.targetConfig.servers
-            : convertToStringArray(formik.values?.targetConfig.servers || []),
+            : convertToStringArray(formik.values?.targetConfig?.servers || []),
         },
         defaultInumServer: formik.values.defaultInumServer,
       },
@@ -124,6 +124,12 @@ const InumDBServerTab = () => {
         ...cacheRefreshConfiguration,
         targetConfig: {
           ...formik.values.targetConfig,
+          baseDNs: isStringsArray(formik.values?.targetConfig?.baseDNs || [])
+          ? formik.values.targetConfig.baseDNs
+          : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
+          servers: isStringsArray(formik.values?.targetConfig?.servers || [])
+            ? formik.values.targetConfig.servers
+            : convertToStringArray(formik.values?.targetConfig.servers || []),
           bindPassword: updatedPassword,
         },
       },
