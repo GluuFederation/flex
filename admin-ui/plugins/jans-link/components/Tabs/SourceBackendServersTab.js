@@ -150,6 +150,16 @@ const SourceBackendServersTab = () => {
         sourceConfigs: [
           {
             ...formik.values.sourceConfigs,
+            baseDNs: isStringsArray(formik.values?.sourceConfigs?.baseDNs || [])
+            ? formik.values.sourceConfigs.baseDNs
+            : convertToStringArray(
+                formik.values?.sourceConfigs.baseDNs || []
+              ),
+            servers: isStringsArray(formik.values?.sourceConfigs?.servers || [])
+              ? formik.values.sourceConfigs.servers
+              : convertToStringArray(
+                  formik.values?.sourceConfigs.servers || []
+                ),
             bindPassword: updatedPassword,
           },
         ],
