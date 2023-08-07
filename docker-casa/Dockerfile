@@ -69,7 +69,7 @@ COPY conf/prometheus-config.yaml /opt/prometheus/
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=2f3ea45597f941dd69e4e962720e9ffd26fb6b96
+ENV JANS_SOURCE_VERSION=28def2ba4612de90f8ecea488bd10c676576be9d
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
