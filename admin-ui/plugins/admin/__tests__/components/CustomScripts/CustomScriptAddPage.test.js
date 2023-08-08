@@ -1,10 +1,8 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import CustomScriptAddPage from './CustomScriptAddPage'
+import CustomScriptAddPage from 'Plugins/admin/components/CustomScripts/CustomScriptAddPage'
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
-import { I18nextProvider } from 'react-i18next'
-import item from "./item"
+import item from "./item.test"
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 

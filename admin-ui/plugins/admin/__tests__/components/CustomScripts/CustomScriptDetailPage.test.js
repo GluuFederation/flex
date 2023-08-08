@@ -1,8 +1,8 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
-import CustomScriptDetailPage from './CustomScriptDetailPage'
-import item from "./item"
+import { render, screen } from '@testing-library/react' 
+import item from "./item.test"
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import CustomScriptDetailPage from 'Plugins/admin/components/CustomScripts/CustomScriptDetailPage'
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>{children}</AppTestWrapper>

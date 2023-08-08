@@ -168,6 +168,10 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       const reqBody = { customScript: result }
       delete reqBody?.customScript?.script_path
       delete reqBody?.customScript?.location_type
+
+      if(!reqBody.customScript.aliases) {
+        delete reqBody.customScript.aliases
+      }
       handleSubmit(reqBody)
     },
   })

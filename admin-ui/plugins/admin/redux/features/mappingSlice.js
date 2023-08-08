@@ -91,5 +91,6 @@ const mappingSlice = createSlice({
     addNewRolePermissions,
     deleteMapping
   } = mappingSlice.actions;
+export { initialState }
 export const { actions, reducer, state } = mappingSlice
 reducerRegistry.register('mappingReducer', reducer)

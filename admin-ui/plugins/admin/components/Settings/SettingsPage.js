@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SETTINGS } from 'Utils/ApiResources'
 import {
   Card,

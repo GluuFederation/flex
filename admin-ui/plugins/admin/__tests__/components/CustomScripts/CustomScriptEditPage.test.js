@@ -1,11 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import CustomScriptEditPage from './CustomScriptEditPage' 
 import { Provider } from 'react-redux'
-import item from "./item"
+import item from "./item.test"
 import script from "./script.test"
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import CustomScriptEditPage from 'Plugins/admin/components/CustomScripts/CustomScriptEditPage'
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',

@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import UiRoleListPage from './UiRoleListPage' 
+import UiRoleListPage from 'Plugins/admin/components/Roles/UiRoleListPage' 
 import { Provider } from 'react-redux'
-import roles from "./roles"
+import roles from "./roles.test"
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 

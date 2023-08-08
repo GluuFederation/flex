@@ -77,13 +77,16 @@ export function* addScript({ payload }) {
     yield put(addCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success'))
+    return data
   } catch (e) {
+    console.log('error', e)
     yield put(updateToast(true, 'error'))
     yield put(addCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* editScript({ payload }) {
@@ -98,13 +101,16 @@ export function* editScript({ payload }) {
     yield put(editCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success'))
+    return data
   } catch (e) {
+    console.log('error', e)
     yield put(updateToast(true, 'error'))
     yield put(editCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -113,10 +119,11 @@ export function* deleteScript({ payload }) {
   try {
     addAdditionalData(audit, DELETION, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    yield call(scriptApi.deleteCustomScript, payload.action.action_data)
+    const data  =yield call(scriptApi.deleteCustomScript, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield put(deleteCustomScriptResponse({ inum: payload.action.action_data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteCustomScriptResponse(null))
@@ -124,6 +131,7 @@ export function* deleteScript({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
