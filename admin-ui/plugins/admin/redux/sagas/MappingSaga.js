@@ -44,12 +44,14 @@ export function* fetchMapping({ payload }) {
     const data = yield call(mappingApi.getMappings)
     yield put(getMappingResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
-    yield put(getMappingResponse(null))
+    yield put(getMappingResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -60,14 +62,16 @@ export function* updateMapping({ payload }) {
     const data = yield call(mappingApi.updateMapping, payload.data)
     yield put(updateToast(true, 'success'))
     yield put(updatePermissionsServerResponse({ data }))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
-    yield put(getMappingResponse(null))
+    yield put(getMappingResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* addMapping({ payload }) {
@@ -77,6 +81,7 @@ export function* addMapping({ payload }) {
     const data = yield call(mappingApi.addMapping, payload.data)
     yield put(updateToast(true, 'success'))
     yield put(getMapping({}))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
@@ -85,6 +90,7 @@ export function* addMapping({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -95,6 +101,7 @@ export function* deleteMapping({ payload }) {
     const data = yield call(mappingApi.deleteMapping, payload.data)
     yield put(updateToast(true, 'success'))
     yield put(getMapping({}))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading({ data: false }))
@@ -103,6 +110,7 @@ export function* deleteMapping({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 

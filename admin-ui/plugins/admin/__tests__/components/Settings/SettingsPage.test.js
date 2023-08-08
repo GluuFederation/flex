@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import SettingsPage from './SettingsPage'
-import i18n from '../../../../app/i18n'
+import SettingsPage from 'Plugins/admin/components/Settings/SettingsPage'
+import i18n from '../../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 import { ThemeProvider } from 'Context/theme/themeContext'
 

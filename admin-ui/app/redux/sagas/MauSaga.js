@@ -26,12 +26,14 @@ export function* getMau({ payload }) {
     const data = yield call(mauApi.getMau, payload.action.action_data)
     yield put(getMauResponse({ data: buildData(data) }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(getMauResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 

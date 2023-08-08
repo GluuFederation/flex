@@ -42,12 +42,14 @@ export function* getRoles({ payload }) {
     const data = yield call(roleApi.getRoles)
     yield put(getRolesResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(getRolesResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* getRole({ payload }) {
@@ -75,6 +77,7 @@ export function* addRole({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addRoleResponse(null))
@@ -82,6 +85,7 @@ export function* addRole({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* editRole({ payload }) {
@@ -93,6 +97,7 @@ export function* editRole({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editRoleResponse(null))
@@ -100,6 +105,7 @@ export function* editRole({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -108,10 +114,11 @@ export function* deleteRole({ payload }) {
   try {
     addAdditionalData(audit, DELETION, API_ROLE, payload)
     const roleApi = yield* newFunction()
-    yield call(roleApi.deleteRole, payload.action.action_data)
+    const data = yield call(roleApi.deleteRole, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteRoleResponse(null))
@@ -119,6 +126,7 @@ export function* deleteRole({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
