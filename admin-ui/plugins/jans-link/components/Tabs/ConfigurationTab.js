@@ -176,7 +176,7 @@ const ConfigurationTab = () => {
                       : []
                   }
                   isKeys={false}
-                  buttonText='actions.add_server'
+                  buttonText='actions.add_attribute_mapping'
                   showError={
                     formik.errors.attributeMapping &&
                     formik.touched.attributeMapping
@@ -228,16 +228,6 @@ const ConfigurationTab = () => {
               lsize={3}
               rsize={9}
               value={formik.values.keepExternalPerson}
-            />
-          </Col>
-          <Col sm={12}>
-            <GluuInputRow
-              label='fields.server_ip_address'
-              name='serverIpAddress'
-              value={formik.values.serverIpAddress}
-              formik={formik}
-              lsize={3}
-              rsize={9}
             />
           </Col>
           <Col sm={12}>
