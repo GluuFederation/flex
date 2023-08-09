@@ -176,7 +176,7 @@ const ConfigurationTab = () => {
                       : []
                   }
                   isKeys={false}
-                  buttonText='actions.add_server'
+                  buttonText='actions.add_attribute_mapping'
                   showError={
                     formik.errors.attributeMapping &&
                     formik.touched.attributeMapping
