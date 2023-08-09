@@ -232,16 +232,6 @@ const ConfigurationTab = () => {
           </Col>
           <Col sm={12}>
             <GluuInputRow
-              label='fields.server_ip_address'
-              name='serverIpAddress'
-              value={formik.values.serverIpAddress}
-              formik={formik}
-              lsize={3}
-              rsize={9}
-            />
-          </Col>
-          <Col sm={12}>
-            <GluuInputRow
               label='fields.polling_interval_mins'
               name='pollingInterval'
               type='number'

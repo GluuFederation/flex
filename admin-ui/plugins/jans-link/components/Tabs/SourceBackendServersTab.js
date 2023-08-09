@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { Row, Col, Form, FormGroup } from 'Components'
-import { Button } from 'Components'
+import { Row, Col, Form, FormGroup, Button } from 'Components'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -17,10 +16,6 @@ import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/C
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
-import {
-  testLdap,
-  resetTestLdap,
-} from 'Plugins/services/redux/features/ldapSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { updateToast } from 'Redux/features/toastSlice'
 
@@ -176,18 +171,6 @@ const SourceBackendServersTab = () => {
     dispatch(putCacheRefreshConfiguration({ action: userAction }))
   }
 
-  function checkLdapConnection() {
-    const testPromise = new Promise(function (resolve, reject) {
-      dispatch(resetTestLdap())
-      resolve()
-    })
-
-    testPromise.then(() => {
-      setTestRunning(true)
-      dispatch(testLdap({ data: formik.values.sourceConfigs }))
-    })
-  }
-
   useEffect(() => {
     if (testStatus === null || !testRunning) {
       return
@@ -229,14 +212,6 @@ const SourceBackendServersTab = () => {
                   </Button>
                 )}
               </Box>
-              {addSourceLdapServer && (
-                <Button
-                  color={`primary-${selectedTheme}`}
-                  onClick={checkLdapConnection}
-                >
-                  {t('fields.test')}
-                </Button>
-              )}
             </Box>
             {addSourceLdapServer && (
               <>
