@@ -168,7 +168,6 @@ const ConfigurationTab = () => {
                     formik.values.attributeMapping
                       ? formik.values.attributeMapping.map(
                           ({ source, destination }) => ({
-                            key: '',
                             source,
                             destination,
                           })

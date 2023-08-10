@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from 'react'
 import { FormGroup, Col, Button, Accordion } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
@@ -15,15 +14,15 @@ function GluuProperties({
   disabled = false,
   buttonText = null,
   isInputLables = false,
-  keyLabel = "",
-  valueLabel = "",
+  keyLabel = '',
+  valueLabel = '',
   isAddButton = true,
   isRemoveButton = true,
-  isKeys=true,
+  isKeys = true,
   multiProperties = false,
   showError = false,
   errorMessage,
-  inputSm
+  inputSm,
 }) {
   const [properties, setProperties] = useState(options)
   const { t } = useTranslation()
@@ -31,10 +30,15 @@ function GluuProperties({
   const selectedTheme = theme.state.theme
 
   const addProperty = () => {
-    const item = { key: '', value: '' }
+    let item
+    if (multiProperties) {
+      item = { source: '', destination: '' }
+    } else {
+      item = { key: '', value: '' }
+    }
     setProperties((prev) => [...prev, item])
   }
-  const changeProperty = (position) => (e) => {
+  const changeProperty = (position, e) => {
     const { name, value } = e.target
     const newDataArr = [...properties]
     newDataArr[position] = { ...newDataArr[position], [name]: value }
@@ -48,26 +52,28 @@ function GluuProperties({
     setProperties(data)
     formik.setFieldValue(
       compName,
-      data.filter((element) => element != null),
+      data.filter((element) => element != null)
     )
   }
 
   return (
-    <Accordion className="mb-2 b-primary" initialOpen>
+    <Accordion className='mb-2 b-primary' initialOpen>
       <Accordion.Header>{t(label).toUpperCase()}</Accordion.Header>
       <Accordion.Body>
-        {isAddButton && <Button
-          style={{
-            float: 'right',
-          }}
-          type="button"
-          color={`primary-${selectedTheme}`}
-          onClick={addProperty}
-          disabled={disabled}
-        >
-          <i className="fa fa-fw fa-plus me-2"></i>
-          {buttonText ? t(buttonText) : t('actions.add_property')}
-        </Button>}
+        {isAddButton && (
+          <Button
+            style={{
+              float: 'right',
+            }}
+            type='button'
+            color={`primary-${selectedTheme}`}
+            onClick={addProperty}
+            disabled={disabled}
+          >
+            <i className='fa fa-fw fa-plus me-2'></i>
+            {buttonText ? t(buttonText) : t('actions.add_property')}
+          </Button>
+        )}
         <FormGroup row>
           <Col sm={12}>
             <FormGroup row></FormGroup>
@@ -96,7 +102,7 @@ function GluuProperties({
             ))}
           </Col>
         </FormGroup>
-        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
       </Accordion.Body>
     </Accordion>
   )
