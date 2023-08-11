@@ -28,7 +28,17 @@ module.exports = {
       chunks: 'all'
     },
     minimizer: [`...`,
-      new CssMinimizerPlugin(),
+      new CssMinimizerPlugin({
+        minimizerOptions: {
+          preset: [
+            "default",
+            {
+              calc: false,
+              discardComments: { removeAll: true },
+            },
+          ],
+        },
+      }),
       `...`]
   },
   output: {
