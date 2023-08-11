@@ -6,7 +6,6 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
-const TerserWebpackPlugin = require('terser-webpack-plugin');
 const config = require('./../config')
 require('dotenv').config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
@@ -29,7 +28,6 @@ module.exports = {
       chunks: 'all'
     },
     minimizer: [`...`,
-      new TerserWebpackPlugin(),
       new CssMinimizerPlugin(),
       `...`]
   },
