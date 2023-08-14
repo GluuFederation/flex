@@ -1,5 +1,70 @@
 # Changelog
 
+## [5.0.0-16](https://github.com/GluuFederation/flex/compare/v5.0.0-15...v5.0.0-16) (2023-08-14)
+
+
+### Features
+
+* adding PKCE in admin-ui authentication [#1221](https://github.com/GluuFederation/flex/issues/1221) ([e4f87b0](https://github.com/GluuFederation/flex/commit/e4f87b049153374fd5fc938c82c74f44a037b170))
+* **admin-ui:** add more details to user profile page [#1213](https://github.com/GluuFederation/flex/issues/1213) ([b8580c8](https://github.com/GluuFederation/flex/commit/b8580c80bc4b3d5985d3523f7b135ee3c5d73e0b))
+* **admin-ui:** api test cases for admin module [#1262](https://github.com/GluuFederation/flex/issues/1262) ([4054893](https://github.com/GluuFederation/flex/commit/40548933059e09746b63b5a9e2e40ca1ce451750))
+* **admin-ui:** need api test cases for auth-server module [#1251](https://github.com/GluuFederation/flex/issues/1251) ([5973619](https://github.com/GluuFederation/flex/commit/5973619dd56092a1423d991055dbd72f66721b3f))
+* **admin-ui:** remove mysql and couchbase schema configuration menus from admin ui [#1263](https://github.com/GluuFederation/flex/issues/1263) ([d634114](https://github.com/GluuFederation/flex/commit/d634114d1f5d8a7b5e4f097b9ef0fc4207137716))
+* **admin-ui:** remove Server IP Address field & ldap test action [#1266](https://github.com/GluuFederation/flex/issues/1266) ([ade6657](https://github.com/GluuFederation/flex/commit/ade6657cb5d0a7816fdc532c647401880b4e8b76))
+* **admin-ui:** replace all checkboxes with switch buttons [#1219](https://github.com/GluuFederation/flex/issues/1219) ([ce46408](https://github.com/GluuFederation/flex/commit/ce464087499486e4c0562d95cf84af1edbf63b98))
+* **admin-ui:** revert restructuring of fido and schema plugin [#1246](https://github.com/GluuFederation/flex/issues/1246) ([aecd484](https://github.com/GluuFederation/flex/commit/aecd4844a1698c690f03e2115b9bb2da9760e260))
+* **admin-ui:** ui & client component tests added ([d721edc](https://github.com/GluuFederation/flex/commit/d721edcdb5994e3aeaaccd405290365541e7e30d))
+* fix code smells ([04e6937](https://github.com/GluuFederation/flex/commit/04e6937bb187b239e097484e62544e2c0c7521a2))
+* fix code smells ([da43379](https://github.com/GluuFederation/flex/commit/da43379bd81e17ff09ceb453cf09f8f2a51afb49))
+* **flex-linux-setup:** update admin-ui config-api plugin ([a067ff9](https://github.com/GluuFederation/flex/commit/a067ff9f81463c1bf6275aa5647059fe24ce97cf))
+
+
+### Bug Fixes
+
+* **admi-ui:** block user edit form in attribute loading state ([82047a1](https://github.com/GluuFederation/flex/commit/82047a1d9a2907c0c76ec19c27fe000a94f3ca59))
+* **admin-ui:** add attribute slice actions ([fcf3ba0](https://github.com/GluuFederation/flex/commit/fcf3ba04a6c2bd508218a6c00b0e101775a60a38))
+* **admin-ui:** bugs in admin-ui [#1225](https://github.com/GluuFederation/flex/issues/1225) ([1779f62](https://github.com/GluuFederation/flex/commit/1779f62f8650fa11d412a8fc3ca20defeacf881e))
+* **admin-ui:** call api protection once ([3c79f4e](https://github.com/GluuFederation/flex/commit/3c79f4e47c4d1629e9270dc1dcae4a626de0be9d))
+* **admin-ui:** change bind password not working [#1214](https://github.com/GluuFederation/flex/issues/1214) ([bb3c55e](https://github.com/GluuFederation/flex/commit/bb3c55e94f163e57521a8f48b3457a60126f5c80))
+* **admin-ui:** clear input value on location type change ([902a00f](https://github.com/GluuFederation/flex/commit/902a00fb7e6125518d7ab85333f5f282f92f08d2))
+* **admin-ui:** clear source ldap server data on remove ([fc9665d](https://github.com/GluuFederation/flex/commit/fc9665d61cc84a82a8f5edf4ab3232fc7cd71a1d))
+* **admin-ui:** client scope search & redirect url ([4437753](https://github.com/GluuFederation/flex/commit/4437753ffa271b47ce43f3f5131604f2c0af6e33))
+* **admin-ui:** code smell fixes ([d28745b](https://github.com/GluuFederation/flex/commit/d28745ba7151d7eac1f8de72b718c32438d96734))
+* **admin-ui:** code smells ([9761804](https://github.com/GluuFederation/flex/commit/9761804f36d974908dd89baf016310b76a6a9131))
+* **admin-ui:** code smells in test cases auth-server ([582905b](https://github.com/GluuFederation/flex/commit/582905b8560d0d7032d1a60a884916c8a86cdf9f))
+* **admin-ui:** custom script with location type file is not saving [#1226](https://github.com/GluuFederation/flex/issues/1226) ([086544e](https://github.com/GluuFederation/flex/commit/086544ebd4051cde74ae52b411ef5f6d2ea8660b))
+* **admin-ui:** field options for RPT script ([7ebcca9](https://github.com/GluuFederation/flex/commit/7ebcca9b05a66de1e1236122280039ce1802aab4))
+* **admin-ui:** fix url security hotspot ([fe89e9a](https://github.com/GluuFederation/flex/commit/fe89e9a59abf56ba2e1bcdf7419f9b28f3840a1a))
+* **admin-ui:** fixes in attribute form attributeValidation ([46ac506](https://github.com/GluuFederation/flex/commit/46ac506294b1e24f162bc3ef46f1eec4bb8bbcb5))
+* **admin-ui:** force exit jest test ([457c6cd](https://github.com/GluuFederation/flex/commit/457c6cdfb109b9d942a0e235f5533c536e771dde))
+* **admin-ui:** improve profile details layout ([da1f841](https://github.com/GluuFederation/flex/commit/da1f84161cd6cdf6a3be08ac8a83b040addd9147))
+* **admin-ui:** jans link change class from jansLinkConfiguration to appConfiguration2 ([c51448a](https://github.com/GluuFederation/flex/commit/c51448a59374ffeba318d4a0114edb51c4022975))
+* **admin-ui:** jans-link not opening in admin-ui after running job [#1217](https://github.com/GluuFederation/flex/issues/1217) ([bc69bd2](https://github.com/GluuFederation/flex/commit/bc69bd2c0e9fda1ad9e36416fdd5eb67c6e22d95))
+* **admin-ui:** jans-link save in admin-ui not working due changes in api [#1194](https://github.com/GluuFederation/flex/issues/1194) ([8551fc7](https://github.com/GluuFederation/flex/commit/8551fc7970d6e18c0f8b133f4de9c0f4df4478ff))
+* **admin-ui:** jans-link save in admin-ui not working due changes in api [#1194](https://github.com/GluuFederation/flex/issues/1194) ([4c82a43](https://github.com/GluuFederation/flex/commit/4c82a435c88155f238cc88e23da8cf930856a11b))
+* **admin-ui:** jans-link source backend ldap servers field label changes [#1253](https://github.com/GluuFederation/flex/issues/1253) ([b733a0c](https://github.com/GluuFederation/flex/commit/b733a0c22caa3e080f0578c6fc64bbae89c405a1))
+* **admin-ui:** modified failing tests auth-server module ([eae73ba](https://github.com/GluuFederation/flex/commit/eae73ba13c026ec2f52eb2fb66a40e6f3a5ba484))
+* **admin-ui:** not able to add source backend ldap server in jans-link [#1252](https://github.com/GluuFederation/flex/issues/1252) ([29cf468](https://github.com/GluuFederation/flex/commit/29cf4683dbf3071fb2f149b92c6013404a80cecc))
+* **admin-ui:** not able to change location type on edit script ([d09e180](https://github.com/GluuFederation/flex/commit/d09e180badcef7a894c1b5d12ee92ae4ec66fa83))
+* **admin-ui:** not able to save base dn in source backend ldap & inum db [#1258](https://github.com/GluuFederation/flex/issues/1258) ([d840916](https://github.com/GluuFederation/flex/commit/d840916ab3ac76291af3cd356798b1417870d3a3))
+* **admin-ui:** override jsom test env options ([a5e1aed](https://github.com/GluuFederation/flex/commit/a5e1aedf04f3588eca187d577d7934fef01abd11))
+* **admin-ui:** remove location path on db selection ([b9bb41b](https://github.com/GluuFederation/flex/commit/b9bb41b91f7ac955175ae6b5e7f9e8dd066d6eb1))
+* **admin-ui:** remove validation properties from api payload ([ecd6780](https://github.com/GluuFederation/flex/commit/ecd67806c8f7128d955bfc6821aee8f07a0f140f))
+* **admin-ui:** replace XMLHttpRequest with xhr2 in jest tests ([fcef9db](https://github.com/GluuFederation/flex/commit/fcef9dbec9f37ee58b6d4e3d5a891caf08103dd4))
+* **admin-ui:** smtp configuration test is failing [#1209](https://github.com/GluuFederation/flex/issues/1209) ([717e529](https://github.com/GluuFederation/flex/commit/717e529c260b36b609d6b2fe27f30e2b81f7b142))
+* **admin-ui:** source & destination react component malfunctioning [#1269](https://github.com/GluuFederation/flex/issues/1269) ([edcc08e](https://github.com/GluuFederation/flex/commit/edcc08ed640a3b51659afb0d9903a389e9c46750))
+* **admin-ui:** tooltips missing in SSA Management form [#1199](https://github.com/GluuFederation/flex/issues/1199) ([c26c891](https://github.com/GluuFederation/flex/commit/c26c891aa70723ac9a699970124661a0fc0350da))
+* **admin-ui:** update location path on script path change ([c464876](https://github.com/GluuFederation/flex/commit/c464876030ee79d7fe128a050dd3bf1420ce3209))
+* **flex-linux-setup:** admin-ui plugin path after upgrade ([c34db77](https://github.com/GluuFederation/flex/commit/c34db7717c8e6663b8b8310dd85683dee01d7cd7))
+* **flex-linux-setup:** do not remove duo script after upgrade ([dbf41d0](https://github.com/GluuFederation/flex/commit/dbf41d0196e91bd17acd421c1c2c161e89e9837d))
+* **flex-linux-setup:** don't backup jar file in upgrade ([1e53d42](https://github.com/GluuFederation/flex/commit/1e53d42b166469e95079a837906f0b0112c7580c))
+* inspect the cause of higher memory requirement in prod build creation [#1243](https://github.com/GluuFederation/flex/issues/1243) ([d3ae6fb](https://github.com/GluuFederation/flex/commit/d3ae6fb51c4f0ea7860a99d7fbcd492346a30718))
+* inspect the cause of higher memory requirement in prod build creation [#1243](https://github.com/GluuFederation/flex/issues/1243) ([ce87406](https://github.com/GluuFederation/flex/commit/ce874064bd1f31767184b54d262bb08372fee9e1))
+* inspect the cause of higher memory requirement in prod build creation [#1243](https://github.com/GluuFederation/flex/issues/1243) ([3bda913](https://github.com/GluuFederation/flex/commit/3bda913c959c1df790bf304c4add0d475d69feb0))
+* inspect the cause of higher memory requirement in prod build creation [#1243](https://github.com/GluuFederation/flex/issues/1243) ([fcb4397](https://github.com/GluuFederation/flex/commit/fcb439772e2a45f68e8e959103c8f853764ac377))
+* prepare for 5.0.0-16 release ([699d534](https://github.com/GluuFederation/flex/commit/699d53480c98ab0cb4562097757b64fcbd17d9c9))
+* remove ingress.class annotation and add spec.ingressClassName ([#1228](https://github.com/GluuFederation/flex/issues/1228)) ([98e8d30](https://github.com/GluuFederation/flex/commit/98e8d30f563fde5d3fd85882b7b094413c302301))
+
 ## [5.0.0-15](https://github.com/GluuFederation/flex/compare/v5.0.0-15.nightly...v5.0.0-15) (2023-07-14)
 
 
