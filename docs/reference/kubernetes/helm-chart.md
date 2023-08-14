@@ -6,7 +6,7 @@ tags:
 ---
 # gluu
 
-![Version: 5.0.20](https://img.shields.io/badge/Version-5.0.20-informational?style=flat-square) ![AppVersion: 5.0.0](https://img.shields.io/badge/AppVersion-5.0.0-informational?style=flat-square)
+![Version: 5.0.21](https://img.shields.io/badge/Version-5.0.21-informational?style=flat-square) ![AppVersion: 5.0.0](https://img.shields.io/badge/AppVersion-5.0.0-informational?style=flat-square)
 
 Gluu Access and Identity Management
 
@@ -29,20 +29,20 @@ Kubernetes: `>=v1.21.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | admin-ui | 5.0.20 |
-|  | auth-server | 5.0.20 |
-|  | auth-server-key-rotation | 5.0.20 |
-|  | casa | 5.0.20 |
-|  | cn-istio-ingress | 5.0.20 |
-|  | config | 5.0.20 |
-|  | config-api | 5.0.20 |
-|  | fido2 | 5.0.20 |
-|  | nginx-ingress | 5.0.20 |
-|  | opendj | 5.0.20 |
-|  | oxpassport | 5.0.20 |
-|  | oxshibboleth | 5.0.20 |
-|  | persistence | 5.0.20 |
-|  | scim | 5.0.20 |
+|  | admin-ui | 5.0.21 |
+|  | auth-server | 5.0.21 |
+|  | auth-server-key-rotation | 5.0.21 |
+|  | casa | 5.0.21 |
+|  | cn-istio-ingress | 5.0.21 |
+|  | config | 5.0.21 |
+|  | config-api | 5.0.21 |
+|  | fido2 | 5.0.21 |
+|  | nginx-ingress | 5.0.21 |
+|  | opendj | 5.0.21 |
+|  | oxpassport | 5.0.21 |
+|  | oxshibboleth | 5.0.21 |
+|  | persistence | 5.0.21 |
+|  | scim | 5.0.21 |
 
 ## Values
 
