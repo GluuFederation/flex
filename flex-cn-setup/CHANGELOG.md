@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.16](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.15...flex-cn-setup-v1.0.16) (2023-08-14)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-16 release ([699d534](https://github.com/GluuFederation/flex/commit/699d53480c98ab0cb4562097757b64fcbd17d9c9))
+* remove ingress.class annotation and add spec.ingressClassName ([#1228](https://github.com/GluuFederation/flex/issues/1228)) ([98e8d30](https://github.com/GluuFederation/flex/commit/98e8d30f563fde5d3fd85882b7b094413c302301))
+
 ## [1.0.15](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.14...flex-cn-setup-v1.0.15) (2023-07-14)
 
 
