@@ -72,12 +72,14 @@ export function* getCache() {
     const api = yield* newFunctionForCacheConfig()
     const data = yield call(api.getConfigCache)
     yield put(getCacheResponse({ data }))
+    return data
   } catch (e) {
     yield put(getCacheResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -159,11 +161,13 @@ export function* editCache({ payload }) {
     const data = yield call(api.updateCacheConfig, payload.data)
     yield put(updateToast(true, 'success'))
     yield put(editCacheResponse({ data }))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
+    return e
   }
 }
 
@@ -173,25 +177,30 @@ export function* editMemoryCache({ payload }) {
     const data = yield call(api.updateCacheMemoryConfig, payload.data)
     yield put(updateToast(true, 'success'))
     yield put(editMemoryCacheResponse({ data }))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
+    return e
   }
 }
 
 export function* editMemCache({ payload }) {
+  console.log('the payload mem caced', payload)
   try {
     const api = yield* newFunctionForMemCache()
     const data = yield call(api.updateCacheMemConfig, payload.data)
     yield put(editMemCacheResponse({ data }))
     yield put(updateToast(true, 'success'))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
+    return e
   }
 }
 
@@ -201,11 +210,13 @@ export function* editNativeCache({ payload }) {
     const data = yield call(api.updateCacheNativeConfig, payload.data)
     yield put(editNativeCacheResponse({ data }))
     yield put(updateToast(true, 'success'))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
+    return e
   }
 }
 
@@ -215,11 +226,13 @@ export function* editRedisCache({ payload }) {
     const data = yield call(api.updateCacheRedisConfig, payload.data)
     yield put(updateToast(true, 'success'))
     yield put(editRedisCacheResponse({ data }))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
+    return e
   }
 }
 

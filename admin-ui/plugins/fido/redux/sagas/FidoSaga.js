@@ -30,16 +30,18 @@ export function* updateFidoSaga({ payload }) {
   const audit = yield* initAudit()
   try {
     const fidoApi = yield* newFunction()
-    yield call(fidoApi.putPropertiesFido2, payload)
+    const data = yield call(fidoApi.putPropertiesFido2, payload)
     yield put(updateToast(true, 'success'))
     yield put(getFidoConfiguration())
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -50,12 +52,14 @@ export function* getFidoSaga() {
     const data = yield call(fidoApi.getPropertiesFido2);
     yield put(getFidoConfigurationResponse(data))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(getFidoConfigurationResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 

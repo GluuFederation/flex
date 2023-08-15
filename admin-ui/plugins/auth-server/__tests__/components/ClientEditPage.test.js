@@ -22,7 +22,8 @@ const INIT_CLIENTS_STATE = {
   items: [clients[0]],
   item: clients[0],
   saveOperationFlag: false,
-  errorInSaveOperationFlag: false
+  errorInSaveOperationFlag: false,
+  loading: false
 }
 
 const store = configureStore({
@@ -32,7 +33,7 @@ const store = configureStore({
     umaResourceReducer,
     scopeReducer,
     initReducer,
-    oidcDiscoveryReducer,
+    oidcDiscoveryReducer: (state = { loading: false }) => state,
     noReducer: (state = {}) => state,
   }),
 })
@@ -46,7 +47,7 @@ const Wrapper = ({ children }) => (
 )
 
 it('Should the client edit page properly', () => {
-  render(<ClientEditPage />, { wrapper: Wrapper })
+  render(<ClientEditPage loadingOidcDiscovevry={false} />, { wrapper: Wrapper })
   screen.getByText(/Basic/)
   screen.getByText(/Advanced/)
   screen.getByText('Encription / Signing', { exact: false })

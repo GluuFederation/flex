@@ -10,6 +10,7 @@ import {
   addLdapResponse,
   deleteLdapResponse,
   testLdapResponse,
+  toggleSavedFormFlag
 } from '../features/ldapSlice'
 import {updateToast} from 'Redux/features/toastSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
@@ -59,14 +60,18 @@ export function* addLdap({ payload }) {
     const data = yield call(api.addLdapConfig, payload.data.action_data)
     yield put(updateToast(true, 'success'))
     yield put(addLdapResponse({ data }))
+    yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
+    yield put(toggleSavedFormFlag(false))
     yield put(updateToast(true, 'error'))
     yield put(addLdapResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -79,7 +84,10 @@ export function* editLdap({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(editLdapResponse({ data }))
     yield call(postUserAction, audit)
+    yield put(toggleSavedFormFlag(true))
+    return data
   } catch (e) {
+    yield put(toggleSavedFormFlag(false))
     yield put(updateToast(true, 'error'))
     console.log(e)
     yield put(editLdapResponse(null))
@@ -87,6 +95,7 @@ export function* editLdap({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -96,10 +105,11 @@ export function* deleteLdap({ payload }) {
   try {
     addAdditionalData(audit, DELETION, LDAP, payload)
     const api = yield* newFunction()
-    yield call(api.deleteLdapConfig, payload.configId)
+    const data = yield call(api.deleteLdapConfig, payload.configId)
     yield put(updateToast(true, 'success'))
     yield put(deleteLdapResponse({ configId: payload.configId }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteLdapResponse(null))
@@ -107,6 +117,7 @@ export function* deleteLdap({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 

@@ -1,11 +1,10 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import AttributeListPage from 'Plugins/schema/components/Person/AttributeListPage' 
+import AttributeEditPage from 'Plugins/schema/components/Person/AttributeEditPage' 
 import { Provider } from 'react-redux'
-import attributes from '../utils/attributes'
+import attributes from '../../utils/attributes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
   'https://jans.io/oauth/config/attributes.write',
@@ -14,7 +13,6 @@ const permissions = [
 const INIT_STATE = {
   permissions: permissions,
 }
-
 const INIT_ATTRIBUTE_STATE = {
   items: [attributes[0]],
   item: {},
@@ -31,19 +29,18 @@ const store = configureStore({
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>
-    <Provider store={store}>{children}</Provider>
+    <Provider store={store}>
+      {children}
+    </Provider>
   </AppTestWrapper>
 )
 
-it('Should render the attribute list page properly', () => {
-  render(<AttributeListPage />, {
-    wrapper: Wrapper,
-  })
-  const inum = attributes[0].inum
-  const displayName = attributes[0].displayName
-  screen.getByText(/Inum/i)
+it('Should render the attribute edit page properly', () => {
+  render(<AttributeEditPage />, { wrapper: Wrapper })
   screen.getByText(/Display Name/)
+  screen.getByText(/Description/)
   screen.getByText(/Status/)
-  screen.getByText(inum)
-  screen.getByText(displayName)
+  screen.getByText(/Edit Type/)
+  screen.getByText(/View Type/)
+  screen.getByText(/Usage Type/)
 })

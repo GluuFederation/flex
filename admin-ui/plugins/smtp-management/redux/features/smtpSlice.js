@@ -56,5 +56,6 @@ export const {
   testSmtpResponseFails,
   clearSmtpConfig
 } = smtpSlice.actions
+export { initialState }
 export default smtpSlice.reducer
 reducerRegistry.register('smtpsReducer', smtpSlice.reducer)

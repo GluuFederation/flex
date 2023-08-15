@@ -13,7 +13,7 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material'
+import { FormControlLabel, Link, Radio, RadioGroup } from '@mui/material'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { deleteUMAResource } from 'Plugins/auth-server/redux/features/umaResourceSlice'
@@ -232,13 +232,12 @@ function ClientCibaParUmaPanel({
                   <Box key={uma.id} className="mb-2">
                     <Box display="flex">
                       <Box width="40%">
-                        <a
-                          href="javascript:;"
+                        <Link
                           className="common-link cursor-pointer"
                           onClick={() => handleUMADetail(uma)}
                         >
                           {uma.id}
-                        </a>
+                        </Link>
                       </Box>
                       <Box width="50%" className="text-dark">
                         {uma.name}
@@ -332,13 +331,12 @@ function ClientCibaParUmaPanel({
                         return (
                           <Box key={key}>
                             <Box display="flex">
-                              <a
-                                href="javascript:;"
+                              <Link
                                 onClick={() => handleScopeEdit(scope)}
                                 className="common-link"
                               >
                                 {scope?.displayName ? scope?.displayName : ''}
-                              </a>
+                              </Link>
                             </Box>
                           </Box>
                         )
@@ -376,13 +374,12 @@ function ClientCibaParUmaPanel({
                     return (
                       <Box key={key}>
                         <Box display="flex">
-                          <a
-                            href="javascript:;"
+                          <Link
                             onClick={() => handleClientEdit(inum)}
                             className="common-link"
                           >
                             {inum}
-                          </a>
+                          </Link>
                         </Box>
                       </Box>
                     )

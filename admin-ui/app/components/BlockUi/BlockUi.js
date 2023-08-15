@@ -150,6 +150,7 @@ export default function BlockUi(props) {
           className="block-ui-container"
           tabIndex="0"
           ref={blocker}
+          style={{ minHeight: '100px' }}
           onKeyUp={tabbedUpBottom}
           onKeyDown={tabbedDownBottom}
         >

@@ -211,7 +211,6 @@ function ScriptListTable() {
               Container: (props) => <Paper {...props} elevation={0} />,
               Pagination: (props) => (
                 <TablePagination
-                  component="div"
                   count={totalItems}
                   page={pageNumber}
                   onPageChange={(prop, page) => {

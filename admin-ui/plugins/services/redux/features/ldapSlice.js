@@ -4,7 +4,8 @@ const initialState = {
   ldap: [],
   item: {},
   loading: false,
-  testStatus: null
+  testStatus: null,
+  savedForm: false,
 }
 
 const ldapSlice = createSlice({
@@ -58,6 +59,9 @@ const ldapSlice = createSlice({
     },
     resetTestLdap: (state) => {
       state.testStatus = initialState.testStatus
+    },
+    toggleSavedFormFlag: (state, action) => {
+      state.savedForm = action.payload || false
     }
   }
 })
@@ -74,7 +78,8 @@ export const {
   setCurrentItem,
   testLdap,
   testLdapResponse,
-  resetTestLdap
+  resetTestLdap,
+  toggleSavedFormFlag
 } = ldapSlice.actions
-
+export { initialState }
 export const { actions, reducer } = ldapSlice

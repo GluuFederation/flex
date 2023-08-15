@@ -40,12 +40,14 @@ export function* getAttributes({ payload }) {
     const data = yield call(attributeApi.getAllAttributes, payload.options)
     yield put(getAttributesResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
-    yield put(getAttributesResponse(null))
+    yield put(getAttributesResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* searchAttributes({ payload }) {
@@ -57,7 +59,7 @@ export function* searchAttributes({ payload }) {
     yield put(getAttributesResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(getAttributesResponse(null))
+    yield put(getAttributesResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -74,13 +76,15 @@ export function* addAttribute({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(addAttributeResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(addAttributeResponse(null))
+    yield put(addAttributeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -93,13 +97,15 @@ export function* editAttribute({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(editAttributeResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(editAttributeResponse(null))
+    yield put(editAttributeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -108,10 +114,11 @@ export function* deleteAttribute({ payload }) {
   try {
     addAdditionalData(audit, DELETION, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
-    yield call(attributeApi.deleteAnAttribute, payload.inum)
+    const data = yield call(attributeApi.deleteAnAttribute, payload.inum)
     yield put(updateToast(true, 'success'))
     yield put(deleteAttributeResponse({ inum: payload.inum }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteAttributeResponse(null))
@@ -119,6 +126,7 @@ export function* deleteAttribute({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 

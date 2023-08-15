@@ -25,6 +25,7 @@ function ClientEditPage({
   saveOperationFlag,
   errorInSaveOperationFlag,
   umaResources,
+  loadingOidcDiscovevry
 }) {
   const userAction = {}
   const options = {}
@@ -63,24 +64,27 @@ function ClientEditPage({
       dispatch(editClient({ action: userAction }))
     }
   }
-
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={loading || loadingOidcDiscovevry}>
       <GluuAlert
         severity={t('titles.error')}
         message={t('messages.error_in_saving')}
         show={errorInSaveOperationFlag}
       />
-      <ClientWizardForm
-        client_data={{ ...clientData }}
-        viewOnly={viewOnly}
-        scopes={scopes}
-        scripts={scripts}
-        permissions={permissions}
-        oidcConfiguration={oidcConfiguration}
-        customOnSubmit={handleSubmit}
-        umaResources={umaResources}
-      />
+      {!(loadingOidcDiscovevry || loading) && 
+        <>
+          <ClientWizardForm
+            client_data={{ ...clientData }}
+            viewOnly={viewOnly}
+            scopes={scopes}
+            scripts={scripts}
+            permissions={permissions}
+            oidcConfiguration={oidcConfiguration}
+            customOnSubmit={handleSubmit}
+            umaResources={umaResources}
+          />
+        </>
+      } 
     </GluuLoader>
   )
 }
@@ -93,6 +97,7 @@ const mapStateToProps = (state) => {
     scripts: state.initReducer.scripts,
     permissions: state.authReducer.permissions,
     oidcConfiguration: state.oidcDiscoveryReducer.configuration,
+    loadingOidcDiscovevry: state.oidcDiscoveryReducer.loading,
     saveOperationFlag: state.oidcReducer.saveOperationFlag,
     errorInSaveOperationFlag: state.oidcReducer.errorInSaveOperationFlag,
     umaResources: state.umaResourceReducer.items,

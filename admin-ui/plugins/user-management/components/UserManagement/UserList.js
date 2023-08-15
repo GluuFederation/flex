@@ -210,7 +210,6 @@ function UserList(props) {
   const PaginationWrapper = useCallback(
     (props) => (
       <TablePagination
-        component='div'
         count={totalItems}
         page={pageNumber}
         onPageChange={(prop, page) => {

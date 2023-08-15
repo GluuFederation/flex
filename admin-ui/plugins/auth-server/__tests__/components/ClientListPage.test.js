@@ -20,6 +20,7 @@ const INIT_CLIENTS_STATE = {
   item: {},
   view: false,
   loading: false,
+  totalItems: 0
 }
 
 const INIT_SCPOPES_STATE = {
@@ -35,6 +36,7 @@ const INIT_SCPOPES_STATE = {
       attributes: { showInConfigurationEndpoint: false },
       umaType: false,
       tableData: { id: 0 },
+      totalItems: 0
     },
   ],
   item: {},
@@ -47,6 +49,7 @@ const store = configureStore({
     oidcReducer: (state = INIT_CLIENTS_STATE) => state,
     scopeReducer: (state = INIT_SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,
+    
   }),
 })
 

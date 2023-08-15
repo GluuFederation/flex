@@ -137,4 +137,5 @@ export const {
   editRedisCache,
   editRedisCacheResponse
 } = cacheSlice.actions
+export { initialState }
 export const { actions, reducer } = cacheSlice

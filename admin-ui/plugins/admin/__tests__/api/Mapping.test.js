@@ -48,8 +48,8 @@ const rootReducer = combineReducers({
 })
 
 const uiRolePayload = {
-  role: 'test-role',
-  description: 'test description',
+  role: 'test-map-role',
+  description: 'test map description',
   deletable: true,
 }
 
@@ -63,7 +63,7 @@ const mappingPayload = {
 
 describe('perform CRUD action for mapping module', () => {
   let uiRole
-  it('should fetch mapping role permissions', async () => {
+  test('should fetch mapping role permissions', async () => {
     const result = await expectSaga(fetchMapping, {
       payload: {
         action: {},
@@ -75,7 +75,7 @@ describe('perform CRUD action for mapping module', () => {
     expect(result.returnValue instanceof Error).toBe(false)
   })
 
-  it('should create new permission https://jans.io/oauth/config/test_jest.read', async () => {
+  test('should create new permission https://jans.io/oauth/config/test_jest.read', async () => {
     const result = await expectSaga(addPermission, {
       payload: {
         action: {
@@ -89,7 +89,7 @@ describe('perform CRUD action for mapping module', () => {
     expect(result.returnValue instanceof Error).toBe(false)
   })
 
-  it('should create new permission https://jans.io/oauth/config/test_jest.write', async () => {
+  test('should create new permission https://jans.io/oauth/config/test_jest.write', async () => {
     const result = await expectSaga(addPermission, {
       payload: {
         action: {
@@ -103,7 +103,7 @@ describe('perform CRUD action for mapping module', () => {
     expect(result.returnValue instanceof Error).toBe(false)
   })
 
-  it('should create new test role', async () => {
+  test('should create new test role', async () => {
     const result = await expectSaga(addRole, {
       payload: { action: { action_data: uiRolePayload } },
     })
@@ -116,7 +116,7 @@ describe('perform CRUD action for mapping module', () => {
     }
   })
 
-  it('should add mapping', async () => {
+  test('should add mapping', async () => {
     if (uiRole) {
       const result = await expectSaga(addMapping, {
         payload: {
@@ -132,7 +132,7 @@ describe('perform CRUD action for mapping module', () => {
     }
   })
 
-  it('should update mapping', async () => {
+  test('should update mapping', async () => {
     if (uiRole) {
       const result = await expectSaga(updateMapping, {
         payload: {
@@ -151,7 +151,7 @@ describe('perform CRUD action for mapping module', () => {
     }
   })
 
-  it('should delete newly created mapping item', async () => {
+  test('should delete newly created mapping item', async () => {
     if (uiRole) {
       const result = await expectSaga(deleteMapping, {
         payload: {
@@ -170,7 +170,7 @@ describe('perform CRUD action for mapping module', () => {
     }
   })
 
-  it('should delete permission https://jans.io/oauth/config/test_jest.read', async () => {
+  test('should delete permission https://jans.io/oauth/config/test_jest.read', async () => {
     const result = await expectSaga(deletePermission, {
       payload: {
         action: {
@@ -184,7 +184,7 @@ describe('perform CRUD action for mapping module', () => {
     expect(result.returnValue instanceof Error).toBe(false)
   })
 
-  it('should delete permission https://jans.io/oauth/config/test_jest.write', async () => {
+  test('should delete permission https://jans.io/oauth/config/test_jest.write', async () => {
     const result = await expectSaga(deletePermission, {
       payload: {
         action: {
@@ -198,7 +198,7 @@ describe('perform CRUD action for mapping module', () => {
     expect(result.returnValue instanceof Error).toBe(false)
   })
 
-  it('should delete newly added role', async () => {
+  test('should delete newly added role', async () => {
     if (uiRole) {
       const result = await expectSaga(deleteRole, {
         payload: {
