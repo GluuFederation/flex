@@ -38,7 +38,7 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 ## Initial Setup
 
-1. Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT. You need to convert it into base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluus Chart.
+1. Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT. You need to convert it into base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluu's Chart.
 
 2. Install [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
@@ -56,9 +56,11 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
     ```
     You can adjust `node-type` and `nodes` number as per your desired cluster size
 
-7. Install [Helm3](https://helm.sh/docs/intro/install/)
+7. To be able to attach volumes to your pod, you need to install the Amazon [EBS CSI driver](https://docs.aws.amazon.com/eks/latest/userguide/csi-iam-role.html)
 
-8. Create `gluu` namespace where our resources will reside
+8. Install [Helm3](https://helm.sh/docs/intro/install/)
+
+9. Create `gluu` namespace where our resources will reside
     ```
     kubectl create namespace gluu
     ```
