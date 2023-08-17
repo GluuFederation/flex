@@ -42,12 +42,14 @@ export function* getPermissions({ payload }) {
     const data = yield call(permApi.getPermissions)
     yield put(getPermissionResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(getPermissionResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* getPermission({ payload }) {
@@ -73,8 +75,10 @@ export function* addPermission({ payload }) {
     const permApi = yield* newFunction()
     const data = yield call(permApi.addPermission, payload.action.action_data)
     yield put(updateToast(true, 'success'))
-    yield put(addPermissionResponse({ data }))
     yield call(postUserAction, audit)
+    yield* getPermissions({ payload: { action: { action_data: [], action_message: 'PERMISSIONS' } } })
+    yield put(addPermissionResponse({ data }))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addPermissionResponse(null))
@@ -82,6 +86,7 @@ export function* addPermission({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* editPermission({ payload }) {
@@ -93,6 +98,7 @@ export function* editPermission({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(editPermissionResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editPermissionResponse(null))
@@ -100,6 +106,7 @@ export function* editPermission({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return data
   }
 }
 
@@ -108,10 +115,12 @@ export function* deletePermission({ payload }) {
   try {
     addAdditionalData(audit, DELETION, API_PERMISSION, payload)
     const permApi = yield* newFunction()
-    yield call(permApi.deletePermission, payload.action.action_data)
+    const data = yield call(permApi.deletePermission, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield put(deletePermissionResponse({ inum: payload.action.action_data }))
     yield call(postUserAction, audit)
+    yield getPermissions({ payload: { action: { action_data: [], action_message: 'PERMISSIONS' } } })
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deletePermissionResponse(null))
@@ -119,6 +128,7 @@ export function* deletePermission({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 

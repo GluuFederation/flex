@@ -29,8 +29,9 @@ function GluuPropertyItem({
         <Input
           name={'key'}
           defaultValue={property.key}
+          value={property.key}
           disabled={disabled}
-          onChange={onPropertyChange(position)}
+          onChange={(event) => onPropertyChange(position, event)}
           placeholder={
             keyPlaceholder
               ? t(keyPlaceholder)
@@ -45,8 +46,9 @@ function GluuPropertyItem({
             <Input
               name={'value'}
               defaultValue={property.value}
+              value={property.value}
               disabled={disabled}
-              onChange={onPropertyChange(position)}
+              onChange={(event) => onPropertyChange(position, event)}
               placeholder={
                 valuePlaceholder
                   ? t(valuePlaceholder)
@@ -59,8 +61,9 @@ function GluuPropertyItem({
             <Input
               name={'source'}
               defaultValue={property.source}
+              value={property.source}
               disabled={disabled}
-              onChange={onPropertyChange(position)}
+              onChange={(event) => onPropertyChange(position, event)}
               placeholder={
                 sourcePlaceholder
                   ? t(sourcePlaceholder)
@@ -70,8 +73,9 @@ function GluuPropertyItem({
             <Input
               name={'destination'}
               defaultValue={property.destination}
+              value={property.destination}
               disabled={disabled}
-              onChange={onPropertyChange(position)}
+              onChange={(event) => onPropertyChange(position, event)}
               placeholder={
                 destinationPlaceholder
                   ? t(destinationPlaceholder)

@@ -1,3 +1,9 @@
+---
+tags:
+- Casa
+- quick start
+---
+
 # Gluu Casa Quick Start Guide
 
 Gluu Casa is a self-service web portal for end-users to manage security preferences for their accounts. Gluu Casa can
@@ -33,7 +39,7 @@ authentication factor.
 ### Finish configuration
 
 Once satisfied with testing, 
-[configure the Gluu Flex Server](./administration/admin-console.md#set-default-authentication-method-gluu) to log in 
+[configure the Gluu Flex Server](./administration/admin-console.md#set-default-authentication-method-gluu-flex) to log in 
 users via Casa for all applications the server protects.
 
 ### Check out available plugins

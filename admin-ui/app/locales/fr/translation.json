@@ -68,13 +68,15 @@
     "maugraph": "MAU",
     "users": "Utilisateurs",
     "user-management": "User Management",
-    "cacherefresh": "Actualisation du cache",
+    "jans_link": "Jans Lien",
+    "cache_refresh": "Actualisation du cache",
     "customer_backend_key_attributes": "Clé/attributs du backend client",
     "source_backend_ldap_servers": "Serveurs LDAP dorsaux sources",
     "inum_db_server": "Serveur de base de données Inum"
   },
   "actions": {
     "accept": "J'accepte",
+    "add_attribute_mapping": "Ajouter un mappage d'attributs",
     "add": "Ajouter",
     "add_ldap_configuration": "Ajouter une configuration LDAP",
     "add_mapping": "Ajouter un Mapping",
@@ -100,6 +102,7 @@
     "view": "Vue",
     "yes": "Oui",
     "close": "Fermer",
+    "try_again":  "Essayer à nouveau",
     "delete": "Supprimez",
     "revoke": "Révoquer",
     "show_error": "Afficher l'erreur",
@@ -107,7 +110,8 @@
     "add_object_class": "Ajouter une classe d'objet",
     "add_source_attribute": "Ajouter un attribut source",
     "add_source_ldap_server": "Ajouter un serveur LDAP source",
-    "remove_source_server": "Supprimer le serveur source"
+    "remove_source_server": "Supprimer le serveur source",
+    "copy_to_clipboard": "Copier dans le presse-papier"
   },
   "fields": {
     "access_token_signing_alg": "Algorithme de signature de jeton d'accès",
@@ -352,6 +356,8 @@
     "problems_at_last_run": "Problèmes lors de la dernière course"
   },
   "messages": {
+    "add_permission": "Ajouter une autorisation",
+    "add_role": "Ajouter un rôle",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
     "action_deletion_question": "Voulez-vous vraiment supprimer cet élément ?",
     "action_deletion_for": "Confirmation de suppression pour",
@@ -391,7 +397,8 @@
     "drag_agama_file": "Glisser .gama fichier ici, ou cliquez pour sélectionner le fichier",
     "drag_sha_file": "Glisser .sha256sum fichier ici, ou cliquez pour sélectionner le fichier",
     "see_project_details": "Voir les détails du projet",
-    "add_ssa": "Ajouter SSA"
+    "add_ssa": "Ajouter SSA",
+    "copied": "Copié"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
@@ -484,7 +491,7 @@
     "schemaName": "Nom du schéma",
     "user_management": "Gestion des utilisateurs",
     "ssa_management": "SSA Gestion",
-    "cache_refresh_management": "Gestion de l'actualisation du cache",
+    "jans_ink": "Jans Link",
     "change_backend_bind_password": "Modifier le mot de passe de liaison du backend",
     "add_agama_project": "Ajouter un projet Agama"
   },
@@ -521,6 +528,25 @@
     "true": "vrai",
     "user": "UTILISATEUR",
     "yes": "Oui"
+  },
+  "documentation": {
+    "no_category": {
+      "deletable": "Est supprimable?"
+    },
+    "ssa": {
+      "org_id": "L'org_id est utilisé pour l'identification de l'organisation.",
+      "description": "Décrire SSA",
+      "software_id": "Le software_id est utilisé pour l'identification du logiciel.",
+      "software_roles": "Liste de valeurs de chaîne, valeur fixe [password, notify].",
+      "grant_types": "Valeur fixe [client_credentials].",
+      "expiration": "Date d'expiration. (Valeur par défaut : calculée en fonction des paramètres globaux de SSA)",
+      "one_time_use": "Définit si le SSA ne sera utilisé qu'une seule fois ou s'il peut être utilisé plusieurs fois. (Valeur par défaut : true)",
+      "rotate_ssa": "TODO - Sera utilisé pour faire tourner l'expiration du SSA, actuellement il est seulement enregistré en tant que partie du SSA. (Valeur par défaut : true)",
+      "status": "Statut du SSA (ACTIF, UTILISÉ, EXPIRÉ ou RÉVOQUÉ)"
+    },
+    "authn": {
+      "acr": "Référence de classe de contexte d'authentification"
+    }
   },
   "script": {
     "inum": "Unique id identifying the script",

@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=72ee8fcef2b483848d0bda0bd26e4cdf9d4748bd
+ENV ADMIN_UI_VERSION=68dfd5f0185eb1c3f0612daea2fb859b0b207cef
 
 RUN mkdir -p /opt/flex
 
@@ -70,7 +70,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=4d17cbcdab3272653f2cf547bcef1d8181353ffd
+ENV JANS_SOURCE_VERSION=bd40c5b3ed82373225790e3d66ed7f7cd3e04ccb
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -191,7 +191,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="1.0.15" \
+    org.opencontainers.image.version="1.0.17" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 

@@ -1,6 +1,7 @@
 {
   "actions": {
     "accept": "Accept",
+    "add_attribute_mapping": "Add Attribute Mapping",
     "finish": "Finish",
     "add": "Add",
     "add_ldap_configuration": "Add LDAP Configuration",
@@ -33,6 +34,7 @@
     "yes": "Yes",
     "change_password": "Change Password",
     "close": "Close",
+    "try_again":  "Try Again",
     "delete": "Delete",
     "revoke": "Revoke",
     "show_error": "Show Error",
@@ -45,7 +47,8 @@
     "add_object_class": "Add Object class",
     "add_source_attribute": "Add source attribute",
     "add_source_ldap_server": "Add source LDAP server",
-    "remove_source_server": "Remove source server"
+    "remove_source_server": "Remove source server",
+    "copy_to_clipboard": "Copy To Clipboard"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -459,18 +462,21 @@
     "settings": "Settings",
     "signout": "Sign out",
     "smtp": "SMTP",
-    "stmp_management": "Smtp Management",
+    "stmp_management": "SMTP Configuration",
     "user_management": "User Management",
     "maugraph": "MAU",
     "users": "Users",
     "user-management": "User Management",
     "agama": "Agama",
-    "cacherefresh": "Cache Refresh",
+    "jans_link": "Jans Link",
+    "cache_refresh": "Cache Refresh",
     "customer_backend_key_attributes": "Customer Backend Key/Attributes",
     "source_backend_ldap_servers": "Source Backend LDAP Servers",
     "inum_db_server": "Inum DB Server"
   },
   "messages": {
+    "add_permission": "Add Permission",
+    "add_role": "Add Role",
     "success_in_saving": "Changes saved successfully",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
     "action_deletion_question": "Do you really want to delete this item?",
@@ -516,7 +522,8 @@
     "drag_agama_file": "Drag .gama file here, or click to select file",
     "drag_sha_file": "Drag .sha256sum file here, or click to select file",
     "see_project_details": "See project details",
-    "add_ssa": "Add SSA"
+    "add_ssa": "Add SSA",
+    "copied": "Copied"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
@@ -615,7 +622,7 @@
     "logging": "LOGGING",
     "jwk_keys": "JWK keys",
     "jans_json_property": "Jans Server JSON Configuration",
-    "mapping": "API ROLES/PERMISSIONS MAPPING",
+    "mapping": "Role/Permission Mapping",
     "modules_properties": "Module Properties",
     "oauth_server_status_title": "OAuth server status",
     "oidc_clients": "OpenID Connect Clients",
@@ -624,12 +631,12 @@
     "profile_detail": "Profile Details",
     "roles": "Admin UI Roles",
     "permissions": "Config API Permissions",
-    "scopes": "OpenID/OAuth Scopes",
+    "scopes": "Scopes",
     "scripts": "Custom Scripts",
     "schemaName": "Schema Name",
     "user_management": "User Management",
-    "fido_management": "FIDO Management",
-    "cache_refresh_management": "Cache Refresh Management",
+    "fido_management": "FIDO Configuration",
+    "jans_ink": "Jans Link",
     "error": "error",
     "token": "Tokens",
     "log_out": "Logout",
@@ -684,6 +691,37 @@
     "yes": "Yes"
   },
   "documentation": {
+    "no_category": {
+      "deletable": "Is Deletable?"
+    },
+    "ssa": {
+      "org_id": "The org_id is used for organization identification.",
+      "description": "Describe SSA",
+      "software_id": "The software_id is used for software identification.",
+      "software_roles": "List of string values, fixed value [password, notify].",
+      "grant_types": "Fixed value Fixed value [client_credentials].",
+      "expiration": "Expiration date. (Default value: calculated based on global SSA settings)",
+      "one_time_use": "Defined whether the SSA will be used only once or can be used multiple times. (Default value: true)",
+      "rotate_ssa": "TODO - Will be used to rotate expiration of the SSA, currently is only saved as part of the SSA. (Default value: true)",
+      "status": "SSA status (ACTIVE, USED, EXPIRED or REVOKED)"
+    },
+    "authn": {
+      "acr": "Authentication Context Class Reference",
+      "level": "Level of authentication assurance",
+      "password_attribute": "Password",
+      "hash_algorithm": "Hash Algorithim",
+      "saml_acr": "The SAML parameter Authentication Context Requests",
+      "primary_key": "Primary Key",
+      "description": "Description"
+    },
+    "roles": {
+      "name": "Role name",
+      "description": "Role description"
+    },
+    "permissions": {
+      "name": "Permission Name",
+      "description": "Permission Description"
+    },
     "json_properties": {
       "defaultAcr": "This field controls the default authentication mechanism that is presented to users from all applications that leverage Janssen Server for authentication.",
       "accessTokenLifetime": "Specifies the Client-specific access token expiration.",
@@ -884,6 +922,7 @@
       "bruteForceProtectionEnabled": "Enable or disable service, This functionality can be enabled dynamically."
     },
     "openid_client": {
+      "displayName": "Name of the Client to be presented to the End-User.",
       "clientName": "Name of the Client to be presented to the End-User.",
       "inum": "The OpenID Connect unique client identifier. It MUST NOT be currently valid for any other registered Client.",
       "clientId": "The openid connect client id",

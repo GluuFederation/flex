@@ -17,6 +17,7 @@ import { createSsa, toggleSaveConfig } from '../../redux/features/SsaSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import { useNavigate } from 'react-router'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import { SSA } from 'Utils/ApiResources'
 
 const grantTypes = [
   'authorization_code',
@@ -128,6 +129,8 @@ const SsaAddPage = () => {
               showError={
                 formik.errors.software_id && formik.touched.software_id
               }
+              doc_category={SSA}
+              doc_entry='software_id'
               value={formik.values.software_id}
             />
             <GluuInputRow
@@ -138,6 +141,8 @@ const SsaAddPage = () => {
               errorMessage={formik.errors.org_id}
               showError={formik.errors.org_id && formik.touched.org_id}
               value={formik.values.org_id}
+              doc_category={SSA}
+              doc_entry='org_id'
             />
             <GluuInputRow
               label='fields.description'
@@ -148,6 +153,8 @@ const SsaAddPage = () => {
               showError={
                 formik.errors.description && formik.touched.description
               }
+              doc_category={SSA}
+              doc_entry='description'
               value={formik.values.description}
             />
             <GluuTypeAhead
@@ -162,6 +169,8 @@ const SsaAddPage = () => {
               showError={
                 formik.errors.software_roles && formik.touched.software_roles
               }
+              doc_category={SSA}
+              doc_entry='software_roles'
               errorMessage={formik.errors.software_roles}
             />
             <GluuTypeAhead
@@ -176,6 +185,8 @@ const SsaAddPage = () => {
               showError={
                 formik.errors.grant_types && formik.touched.grant_types
               }
+              doc_category={SSA}
+              doc_entry='grant_types'
               errorMessage={formik.errors.grant_types}
             />
             <GluuToogleRow
@@ -185,6 +196,8 @@ const SsaAddPage = () => {
               value={formik.values.one_time_use}
               lsize={3}
               rsize={7}
+              doc_category={SSA}
+              doc_entry='one_time_use'
             />
             <GluuToogleRow
               name='rotate_ssa'
@@ -193,6 +206,8 @@ const SsaAddPage = () => {
               value={formik.values.rotate_ssa}
               lsize={3}
               rsize={7}
+              doc_category={SSA}
+              doc_entry='rotate_ssa'
             />
             <FormGroup row>
               <Col sm={6}>
@@ -204,6 +219,8 @@ const SsaAddPage = () => {
                   handler={handleExpirable}
                   lsize={6}
                   rsize={6}
+                  doc_category={SSA}
+                  doc_entry='expiration'
                 />
               </Col>
               <Col sm={6}>

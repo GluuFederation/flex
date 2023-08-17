@@ -36,9 +36,7 @@ const customScriptSlice = createSlice({
     addCustomScriptResponse: (state, action) => {
       state.loading = false
       state.errorInSaveOperationFlag = false
-
       if (action.payload?.data) {
-        state.items = [...state.items, action.payload.data]
         state.saveOperationFlag = true
       } else {
         state.saveOperationFlag = false
@@ -116,5 +114,6 @@ export const {
   viewOnly,
   setCurrentItem
 } = customScriptSlice.actions
+export { initialState }
 export const { actions, reducer, state } = customScriptSlice
 reducerRegistry.register('customScriptReducer', reducer)

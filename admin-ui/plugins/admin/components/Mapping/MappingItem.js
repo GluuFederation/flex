@@ -57,16 +57,19 @@ function MappingItem({ candidate, roles }) {
   const getPermissionsForSearch = () => {
     const selectedPermissions = candidate.permissions
     const filteredArr = []
-    for (const i in permissions) {
+    for (const i in permissions) { 
       if (!selectedPermissions.includes(permissions[i].permission)) {
-        filteredArr.push(permissions[i].permission)
+        if(permissions[i].permission) {
+          filteredArr.push(permissions[i].permission)
+        }
       }
     }
     setSearchAblePermissions(filteredArr)
   }
 
   const revertLocalChanges = () => {
-    dispatch(updatePermissionsServerResponse({ data: JSON.parse(serverPermissions) }))
+    const data = Object.assign(JSON.parse(serverPermissions))
+    dispatch(updatePermissionsServerResponse({ data: data }))
   }
 
   const setServerPermissionsToLocalState = () => {
@@ -162,6 +165,7 @@ function MappingItem({ candidate, roles }) {
                             value={[]}
                             forwardRef={autocompleteRef}
                             doc_category={'Mapping'}
+                            allowNew={false}
                           ></GluuTypeAhead>
                         </Col>
                         <Col>

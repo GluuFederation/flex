@@ -55,7 +55,7 @@ function GluuAppSidebar({ scopes }) {
 
       case 'fidomanagement':
         return <FidoIcon className="menu-icon" style={{ top: '-2px' }} />
-      case 'cacherefresh':
+      case 'jans_link':
         return <CachedIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
       default:
         return null

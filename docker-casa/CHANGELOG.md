@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.0.0-16](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-15...docker-casa-v5.0.0-16) (2023-08-14)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-16 release ([699d534](https://github.com/GluuFederation/flex/commit/699d53480c98ab0cb4562097757b64fcbd17d9c9))
+
+## [5.0.0-15](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-14...docker-casa-v5.0.0-15) (2023-07-14)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-15 release ([664553a](https://github.com/GluuFederation/flex/commit/664553ab80e24a44fd68837e1d3998a730bd778c))
+
 ## [5.0.0-14](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-13...docker-casa-v5.0.0-14) (2023-06-12)
 
 

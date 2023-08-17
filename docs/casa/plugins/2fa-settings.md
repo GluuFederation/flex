@@ -42,11 +42,11 @@ A device/location is considered trustworthy when the user has presented a strong
 
 ## Requirements
 
-- The plugin jar file must match the version of your Casa (and Gluu Server) installation.
+- The plugin jar file must match the version of your Casa (and Gluu Flex Server) installation.
     
 ## Installation
 
-1. [Download the plugin](https://maven.gluu.org/maven/org/gluu/casa/plugins/strong-authn-settings/5.0.0-SNAPSHOT/strong-authn-settings-5.0.0-SNAPSHOT-jar-with-dependencies.jar)
+1. [Download the plugin](https://maven.gluu.org/maven/org/gluu/casa/plugins/strong-authn-settings/5.0.0-16/strong-authn-settings-5.0.0-16-jar-with-dependencies.jar)
 
 1. Log in to Casa using an administrator account
 

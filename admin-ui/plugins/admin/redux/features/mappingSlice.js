@@ -26,10 +26,7 @@ const mappingSlice = createSlice({
         let newArr = existingPermissions.concat(data);
         let addedPermissions = state.items;
         addedPermissions[roleIndex].permissions = newArr;
-        return {
-          ...state,
-          items: [...addedPermissions],
-        };
+        state.items = [...addedPermissions]
       },
       updatePermissionsLoading: (state, action) => ({
         ...state,
@@ -41,11 +38,8 @@ const mappingSlice = createSlice({
         );
         let changedData = state.items;
         changedData[indexToUpdatePermissions] = action.payload?.data;
-        return {
-          ...state,
-          items: [...changedData],
-          loading: false,
-        };
+        state.items = [...changedData]
+        state.loading = false
       },
       updateMapping: (state, action) => {
         if (action.payload?.data) {
@@ -55,10 +49,7 @@ const mappingSlice = createSlice({
           permissions.splice(id, 1);
           let changedPermissions = state.items;
           changedPermissions[index].permissions = permissions;
-          return {
-            ...state,
-            items: [...changedPermissions],
-          };
+          state.items = [...changedPermissions]
         }
       },
       updatePermissionsToServer: (state, action) => {},
@@ -100,5 +91,6 @@ const mappingSlice = createSlice({
     addNewRolePermissions,
     deleteMapping
   } = mappingSlice.actions;
+export { initialState }
 export const { actions, reducer, state } = mappingSlice
 reducerRegistry.register('mappingReducer', reducer)

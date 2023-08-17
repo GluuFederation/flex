@@ -79,6 +79,16 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
     }
   }
 
+  const defaultScriptPathValue = 
+    !!item?.moduleProperties &&
+      item?.moduleProperties?.filter(
+        (i) => i.value1 === 'location_path',
+      ).length > 0
+      ? item?.moduleProperties?.filter(
+        (it) => it.value1 === 'location_path',
+      )[0].value2
+      : undefined
+
   const formik = useFormik({
     initialValues: {
       name: item.name,
@@ -90,9 +100,18 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       aliases: item.aliases,
       moduleProperties: item.moduleProperties,
       configurationProperties: item.configurationProperties,
+      script_path: defaultScriptPathValue,
+      locationPath: item?.locationPath,
+      location_type: item?.locationType
     },
     validationSchema: Yup.object({
-      name: Yup.string().matches(/^[a-zA-Z0-9_]+$/,"Name should contain only letters, digits and underscores").min(2, 'Mininum 2 characters').required('Required!'),
+      name: Yup.string()
+        .matches(
+          /^[a-zA-Z0-9_]+$/,
+          'Name should contain only letters, digits and underscores'
+        )
+        .min(2, 'Mininum 2 characters')
+        .required('Required!'),
       description: Yup.string(),
       scriptType: Yup.string()
         .min(2, 'Mininum 2 characters')
@@ -100,10 +119,31 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       programmingLanguage: Yup.string()
         .min(3, 'This value is required')
         .required('Required!'),
-      script: Yup.string().required('Required!'),
+      script: Yup.string().when('location_type', {
+        is: (value) => {
+          return value === 'db'
+        },
+        then: () => Yup.string().required('Required!'),
+      }),
+      script_path: Yup.string().when('location_type', {
+        is: (value) => {
+          return value === 'file'
+        },
+        then: () => Yup.string().required('Required!'),
+      }),
     }),
 
     onSubmit: (values) => {
+      if(item.locationType === 'db') {
+        let moduleProperties = item?.moduleProperties?.filter((item) => item?.value1 !== 'location_path')
+        item.moduleProperties = moduleProperties
+        delete item?.locationPath
+        delete values.locationPath
+      } else if(item.locationType === 'file') {
+        delete item?.script
+        delete values.script
+      }
+
       values.level = item.level
       values.moduleProperties = item.moduleProperties
       // eslint-disable-next-line no-extra-boolean-cast
@@ -126,6 +166,12 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       }
       const result = Object.assign(item, values)
       const reqBody = { customScript: result }
+      delete reqBody?.customScript?.script_path
+      delete reqBody?.customScript?.location_type
+
+      if(!reqBody.customScript.aliases) {
+        delete reqBody.customScript.aliases
+      }
       handleSubmit(reqBody)
     },
   })
@@ -134,6 +180,14 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
     if (value != '') {
       if (!item.moduleProperties) {
         item.moduleProperties = []
+      }
+      if (value === 'db') {
+        let moduleProperties = item?.moduleProperties?.filter((item) => item?.value1 !== 'location_path')
+        item.moduleProperties = moduleProperties
+        formik.setFieldValue('script_path', undefined)
+      } else if(value === 'file') {
+        delete item.script
+        formik.setFieldValue('script', undefined)
       }
       if (
         item.moduleProperties.filter(
@@ -155,6 +209,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
 
     }
     item.locationType = value;
+    formik.setFieldValue('location_type', value)
     if (value == 'file') {
       setScriptPath(true)
     } else {
@@ -164,6 +219,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
 
   function scriptPathChange(value) {
     if (value != '') {
+      formik.setFieldValue('locationPath', value)
       if (!item.moduleProperties) {
         item.moduleProperties = []
       }
@@ -413,7 +469,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
         {scriptPath && (
 
           <FormGroup row>
-            <GluuLabel label="fields.script_path" doc_category={SCRIPT} doc_entry="scriptPath" />
+            <GluuLabel required label="fields.script_path" doc_category={SCRIPT} doc_entry="scriptPath" />
             <Col sm={9}>
               <InputGroup>
                 <Input
@@ -425,21 +481,19 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                   }
                   disabled={viewOnly}
                   id="location_path"
-                  defaultValue={
-                    !!item.moduleProperties &&
-                      item.moduleProperties.filter(
-                        (i) => i.value1 === 'location_path',
-                      ).length > 0
-                      ? item.moduleProperties.filter(
-                        (it) => it.value1 === 'location_path',
-                      )[0].value2
-                      : undefined
-                  }
+                  defaultValue={defaultScriptPathValue}
                   onChange={(e) => {
                     scriptPathChange(e.target.value)
+                    formik.setFieldValue('script_path', e.target.value)
                   }}
                 />
               </InputGroup>
+              {formik.errors.script_path &&
+              formik.touched.script_path && (
+                <div style={{ color: 'red' }}>
+                  {formik.errors.script_path}
+                </div>
+              )}
             </Col>
           </FormGroup>
         )}

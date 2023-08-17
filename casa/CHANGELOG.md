@@ -1,5 +1,57 @@
 # Changelog
 
+## [5.0.0-16](https://github.com/GluuFederation/flex/compare/casa-v5.0.0-15...casa-v5.0.0-16) (2023-08-14)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-16 release ([699d534](https://github.com/GluuFederation/flex/commit/699d53480c98ab0cb4562097757b64fcbd17d9c9))
+
+## 5.0.0-15 (2023-07-14)
+
+
+### Features
+
+* assembly / src.xml has been updated; ([7b1d7a1](https://github.com/GluuFederation/flex/commit/7b1d7a194bec83df6a57cf7466bde6262bfe9421))
+* email_2fa_core plug-in has been added; ([d259a10](https://github.com/GluuFederation/flex/commit/d259a102ed3c92cd59f398c233fce540528fd625))
+* email_2fa_core plug-in has been updated; ([b8074c8](https://github.com/GluuFederation/flex/commit/b8074c8643e165910b44ada6e46b42d841a514d1))
+* email_2fa_core: improvements of code have been added; ([ad2b212](https://github.com/GluuFederation/flex/commit/ad2b21298a7b770c406320e82a9e2a10cbfc93c1))
+* email_2fa_core.py access to resources has been updated; ([edba5b1](https://github.com/GluuFederation/flex/commit/edba5b15cdcced74fee6d22b6c66b9477af6b780))
+* email_2fa_core.py jython script has been added; ([d259a10](https://github.com/GluuFederation/flex/commit/d259a102ed3c92cd59f398c233fce540528fd625))
+* email_2fa_core.py jython script has been updated; ([3a76ad9](https://github.com/GluuFederation/flex/commit/3a76ad976f74bf605c6c83524d7e367a7328da22))
+* email_2fa_core.py jython script has been updated; ([edba5b1](https://github.com/GluuFederation/flex/commit/edba5b15cdcced74fee6d22b6c66b9477af6b780))
+* email_2fa_core.py jython script has been updated; ([3a56d41](https://github.com/GluuFederation/flex/commit/3a56d4108f6ef90f0c8bb8bceaa06a3933f6aaaf))
+* fido2: removing of device has been updated; ([c4b7c12](https://github.com/GluuFederation/flex/commit/c4b7c1292de4928848d26ccd8d72cab8b8dfb855))
+* pom.xml: repositories have been updated; ([ef1973d](https://github.com/GluuFederation/flex/commit/ef1973d1dc2902d22cd32d13004f7157097adf6d))
+* pom.xml: repositories have been updated; ([960b7fc](https://github.com/GluuFederation/flex/commit/960b7fc563e716f288ae07c112489b4a941a3aab))
+
+
+### Bug Fixes
+
+* casa: bc-fips build has been added; ([5a35558](https://github.com/GluuFederation/flex/commit/5a35558e575322855a0beebc5ecd6396fb93df47))
+* casa: in email_2fa_core localization fix; ([60b11de](https://github.com/GluuFederation/flex/commit/60b11de86b7e88ba454ebc484ceb9de595c6c384))
+* casa/pom.xml to reduce vulnerabilities ([9faafcf](https://github.com/GluuFederation/flex/commit/9faafcf34d4d34cf2603341b0997db7e29929cd2))
+* email_2fa_core: closing of stream has been added; ([e2d67e1](https://github.com/GluuFederation/flex/commit/e2d67e13cf634f25dc34cf4871337c29a8991ad8))
+* email_2fa_core: EmailOtpService.getConfiguration() has been updated, according to SQL deployment; ([c4b7c12](https://github.com/GluuFederation/flex/commit/c4b7c1292de4928848d26ccd8d72cab8b8dfb855))
+* email_2fa_core/install.bat has been removed; ([f27e461](https://github.com/GluuFederation/flex/commit/f27e4613c23a7243a3adb6c433cd7a422facc851))
+* prepare for 5.0.0-14 release ([9481f55](https://github.com/GluuFederation/flex/commit/9481f55a380091501cf912778955e2ebba23e30c))
+* prepare for 5.0.0-15 release ([664553a](https://github.com/GluuFederation/flex/commit/664553ab80e24a44fd68837e1d3998a730bd778c))
+* prepare for 5.0.11 release ([d3cc35a](https://github.com/GluuFederation/flex/commit/d3cc35a70437f4298dadc0f779d190af7370c75b))
+* prepare for 5.0.12 release ([994c985](https://github.com/GluuFederation/flex/commit/994c9855cf34c3c805f87943f9203cf58c5810e7))
+* prepare for 5.0.13 release ([8578827](https://github.com/GluuFederation/flex/commit/85788276444c5015378120b5801a8848d225b02f))
+* upgrade com.fasterxml.jackson.core:jackson-databind from 2.14.1 to 2.14.2 ([36b6ba1](https://github.com/GluuFederation/flex/commit/36b6ba166f6908988c6206fedb89264ecb353969))
+* use base64 url encoding as in AS OTP cust script [#1020](https://github.com/GluuFederation/flex/issues/1020) ([e0ef024](https://github.com/GluuFederation/flex/commit/e0ef0245fa8619936be221dc45c81f6bc41b319b))
+* use regular base64 encoding as used in casa app for enrollment ([fcbebf0](https://github.com/GluuFederation/flex/commit/fcbebf0716becc2bad12a40150978fdc7904a921))
+
+
+### Documentation
+
+* email_2fa_core: documentation file has been updated; ([239261e](https://github.com/GluuFederation/flex/commit/239261e63afbfcf82c9e647e3b904981c74747bd))
+* email_2fa_core: documentation file has been updated; ([2c98380](https://github.com/GluuFederation/flex/commit/2c9838079c82c4a506c5e489f52443376c91995d))
+* email_2fa_core: documentation files have been updated; ([6ba7a2b](https://github.com/GluuFederation/flex/commit/6ba7a2bf5f143b5dc72092655e8db08073960efa))
+* fix broken links ([bcb4e4b](https://github.com/GluuFederation/flex/commit/bcb4e4bc70bff8455ecfc493cd79f855bfa5c81a))
+* **installation:** address merge conflict ([090b851](https://github.com/GluuFederation/flex/commit/090b85138866208f74a1a2a07aa5d8deb2920bf9))
+
 ## [5.0.0-13](https://github.com/GluuFederation/flex/compare/casa-v5.0.0-12...casa-v5.0.0-13) (2023-05-12)
 
 

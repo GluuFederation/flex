@@ -6,8 +6,6 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
-const CompressionPlugin = require("compression-webpack-plugin")
-
 const config = require('./../config')
 require('dotenv').config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
@@ -23,52 +21,25 @@ module.exports = {
   devtool: false,
   mode: 'production',
   entry: {
-    app: [path.join(config.srcDir, 'index.tsx')],
+    app: [path.join(config.srcDir, 'index.js')]
   },
   optimization: {
-    moduleIds: 'named',
-    chunkIds: 'named',
-    minimize: true,
-    nodeEnv: 'production',
-    mangleWasmImports: true,
-    removeEmptyChunks: false,
-    mergeDuplicateChunks: false,
-    flagIncludedChunks: true,
-    minimizer: [`...`, 
-    new CssMinimizerPlugin({
-      minimizerOptions: {
-        preset: [
-          "default",
-          {
-            calc: false,
-            discardComments: { removeAll: true },
-          },
-        ],
-      },
-    }),
-    '...'],
-    emitOnErrors: true,
     splitChunks: {
-      chunks: 'all',
-      minSize: 20000,
-      minRemainingSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 30,
-      maxInitialRequests: 30,
-      enforceSizeThreshold: 50000,
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          reuseExistingChunk: true,
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-      },
+      chunks: 'all'
     },
+    minimizer: [`...`,
+      new CssMinimizerPlugin({
+        minimizerOptions: {
+          preset: [
+            "default",
+            {
+              calc: false,
+              discardComments: { removeAll: true },
+            },
+          ],
+        },
+      }),
+      `...`]
   },
   output: {
     filename: '[name].bundle.js',
@@ -77,9 +48,8 @@ module.exports = {
     publicPath: BASE_PATH,
   },
   resolve: {
-    fallback: { "querystring": false },
+    fallback: { "querystring": false, crypto: false, util: false, console: false },
     modules: ['node_modules', config.srcDir],
-    extensions: ['.ts', '.js', '.jsx', '.tsx'],
     alias: {
       path: require.resolve('path-browserify'),
       Components: path.resolve(__dirname, '../app/components'),
@@ -121,10 +91,7 @@ module.exports = {
         SESSION_TIMEOUT_IN_MINUTES: JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
       },
     }),
-    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to "server" to activate BundleAnalyzerPlugin
-    new CompressionPlugin({
-      algorithm: "gzip",
-    })
+    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }) //* switch mode to "server" to activate BundleAnalyzerPlugin
   ],
   module: {
     rules: [
@@ -134,11 +101,6 @@ module.exports = {
         exclude: /(node_modules|\.test\.js$)/,
         use: 'babel-loader',
         sideEffects: false,
-      },
-      {
-        test: /\.ts(x?)$/,
-        exclude: /node_modules/,
-        use: 'ts-loader',
       },
       {
         test: /\.test\.js$/,

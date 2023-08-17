@@ -1,14 +1,64 @@
-import { handleResponse } from 'Utils/ApiUtils'
-
+import { handleResponse, handleError } from 'Utils/ApiUtils'
+const MAX_RETRIES = 1;
 export default class LicenseApi {
   constructor(api) {
     this.api = api
   }
+
   getIsActive = () => {
+    let retries = 0;
+
     return new Promise((resolve, reject) => {
-      this.api.isLicenseActive((error, data) => {
-        handleResponse(error, reject, resolve, data)
-      })
+      const makeRequest = (retries) => {
+        (new Promise((resolve, reject) => {
+          this.api.isLicenseActive((error, data) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve(data)
+            }
+          })
+        }))
+          .then(response => { resolve(response) })
+          .catch(error => {
+            if (retries < MAX_RETRIES) {
+              console.error(`Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`);
+              retries++;
+              makeRequest(retries);
+            } else {
+              handleError(error, reject)
+            }
+          })
+      };
+      makeRequest(retries);
+    })
+  }
+
+  checkAdminuiLicenseConfig = () => {
+    let retries = 0;
+    return new Promise((resolve, reject) => {
+      const makeRequest = (retries) => {
+        (new Promise((resolve, reject) => {
+          this.api.checkAdminuiLicenseConfig((error, data) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve(data)
+            }
+          })
+        }))
+          .then(response => { resolve(response) })
+          .catch(error => {
+            if (retries < MAX_RETRIES) {
+              console.error(`Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`);
+              retries++;
+              makeRequest(retries);
+            } else {
+              handleError(error, reject)
+            }
+          })
+      };
+      makeRequest(retries);
     })
   }
 
@@ -26,13 +76,6 @@ export default class LicenseApi {
     option['sSARequest'] = data.payload
     return new Promise((resolve, reject) => {
       this.api.adminuiPostSsa(option, (error, data) => {
-        handleResponse(error, reject, resolve, data)
-      })
-    })
-  }
-  checkAdminuiLicenseConfig = () => {
-    return new Promise((resolve, reject) => {
-      this.api.checkAdminuiLicenseConfig((error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
@@ -57,7 +100,7 @@ export default class LicenseApi {
       })
     })
   }
-  
+
   deletePermission = async (data) => {
     const options = {}
     options['adminPermission'] = data

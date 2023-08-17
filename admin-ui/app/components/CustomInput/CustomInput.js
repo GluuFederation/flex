@@ -9,7 +9,7 @@ const CustomInput = (props) => {
   })
 
   return (
-    <RSCustomInput className={ inputClass } { ...otherProps } />
+    <RSCustomInput data-testid={props.name} className={ inputClass } { ...otherProps } />
   )
 }
 CustomInput.propTypes = { ...RSCustomInput.propTypes }

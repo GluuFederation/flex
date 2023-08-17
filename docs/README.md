@@ -26,3 +26,18 @@ Gluu Flex uses Agama to offer an alternative way to build web-based authenticati
 ## Support
 
 The Gluu Flex contract includes guaranteed response times and consultative support via our [support portal](https://support.gluu.org).
+
+## Looking for older documentation versions?
+
+ The Janssen Project posts the last five versions of the documentation. If you are looking for older versions, you can find them unprocessed in the [docs](https://github.com/JanssenProject/jans/tree/main/docs) folder. Select the version of choice from the tag dropdown in GitHub. If you want to process them you may do so by following the steps below :
+ 
+### Testing Documentation Changes Locally
+
+While contributing documentation to official Gluu [documentation](https://docs.gluu.org/) it is important to make sure that documents meet [style guidelines](../CONTRIBUTING.md#documentation-style-guide) and have been proofread to remove any typographical or grammatical errors.
+Gluu uses [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) to create the documentation site. Before new content is pushed to the repository on GitHub, it should be tested locally by the author. Author can do this by deploying Material for MkDocs locally.
+
+High-level steps involve:
+
+1. [Install Material for MkDocs](https://squidfunk.github.io/mkdocs-material/getting-started/#installation)
+2. Install required plugins
+3. [Preview as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)

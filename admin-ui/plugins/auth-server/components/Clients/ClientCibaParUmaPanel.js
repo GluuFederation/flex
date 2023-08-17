@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import moment from 'moment'
 import AceEditor from 'react-ace'
 import { Card, Col, Container, FormGroup } from 'Components'
@@ -35,7 +35,6 @@ function ClientCibaParUmaPanel({
   dispatch,
   umaResources,
   scopes,
-  scripts,
   setCurrentStep,
   sequence,
   formik,
@@ -47,10 +46,6 @@ function ClientCibaParUmaPanel({
   const cibaDeliveryModes = ['poll', 'push', 'ping']
   const claimRedirectURI = []
 
-  scripts = scripts
-    .filter((item) => item.scriptType == 'person_authentication')
-    .filter((item) => item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
   function uriValidator(uri) {
     return uri
   }
@@ -61,11 +56,10 @@ function ClientCibaParUmaPanel({
   const [showScopeSection, setShowScopeSection] = useState('scope')
   const [confirmModal, setConfirmModal] = useState(false)
   const [scopeList, setScopeList] = useState([])
-
-  const rptScripts = scripts
-    .filter((item) => item.scriptType == 'uma_rpt_claims')
-    .filter((item) => item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
+  const rptScripts = useSelector((state) => state.initReducer.scripts)
+    ?.filter((item) => item.scriptType == 'uma_rpt_claims')
+    ?.filter((item) => item.enabled)
+    ?.map((item) => ({ dn: item.dn, name: item.name }))
 
   const handleUMADetail = (uma) => {
     if (!isEmpty(uma)) {

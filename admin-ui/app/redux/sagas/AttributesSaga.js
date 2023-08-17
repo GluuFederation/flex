@@ -1,7 +1,8 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import {
-  getAttributesResponseRoot
+  getAttributesResponseRoot,
+  toggleInitAttributeLoader
 } from '../features/attributesSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -28,6 +29,9 @@ function* newFunction() {
 
 export function* getAttributesRoot({ payload }) {
   const audit = yield* initAudit()
+  if(payload.init) {
+    yield put(toggleInitAttributeLoader(true))
+  }
   try {
     addAdditionalData(audit, FETCH, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
@@ -40,6 +44,8 @@ export function* getAttributesRoot({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+  } finally {
+    yield put(toggleInitAttributeLoader(false))
   }
 }
 

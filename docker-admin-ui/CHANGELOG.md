@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.16-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.15-1...docker-admin-ui-v1.0.16-1) (2023-08-14)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-16 release ([699d534](https://github.com/GluuFederation/flex/commit/699d53480c98ab0cb4562097757b64fcbd17d9c9))
+
+## [1.0.15-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.14-1...docker-admin-ui-v1.0.15-1) (2023-07-14)
+
+
+### Bug Fixes
+
+* **docker-admin-ui:** error activating license key due to outdated assets ([#1122](https://github.com/GluuFederation/flex/issues/1122)) ([4a5e1dd](https://github.com/GluuFederation/flex/commit/4a5e1dd252728377281ca654becfbc48e65445e9))
+* **docker-admin-ui:** incompatible py3-grpcio version ([#1095](https://github.com/GluuFederation/flex/issues/1095)) ([2d35405](https://github.com/GluuFederation/flex/commit/2d354055f8a6cc22926add6fea12e3f16b524911))
+* prepare for 5.0.0-15 release ([664553a](https://github.com/GluuFederation/flex/commit/664553ab80e24a44fd68837e1d3998a730bd778c))
+
 ## [1.0.14-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.13-1...docker-admin-ui-v1.0.14-1) (2023-06-12)
 
 

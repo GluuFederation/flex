@@ -25,6 +25,7 @@ import {
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { isEmpty } from 'lodash'
 
 function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -66,7 +67,6 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
     buildPayload(userAction, 'message', roleData)
     dispatch(addPermission({ action: userAction }))
     toggle()
-    doFetchList()
   }
   return (
     <Card style={applicationStyle.mainCard}>
@@ -116,12 +116,13 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
                   resolve()
                   doFetchList()
                 }),
-              onRowDelete: (oldData) =>
+              onRowDelete: (oldData) => 
                 new Promise((resolve, reject) => {
-                  buildPayload(userAction, 'Remove permission', oldData)
-                  dispatch(deletePermission({ action: userAction }))
+                  if (!isEmpty(oldData)) {
+                    buildPayload(userAction, 'Remove permission', oldData)
+                    dispatch(deletePermission({ action: userAction }))
+                  }
                   resolve()
-                  doFetchList()
                 }),
             }}
           />

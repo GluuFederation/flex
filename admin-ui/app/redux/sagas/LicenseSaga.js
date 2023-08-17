@@ -13,20 +13,31 @@ import {
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
   setValidatingFlow,
+  setApiDefaultToken
 } from '../actions'
 import LicenseApi from 'Redux/api/LicenseApi'
 import { getClientWithToken, getClient } from 'Redux/api/base'
 import { fetchApiTokenWithDefaultScopes } from 'Redux/api/backend-api'
 import MauApi from 'Redux/api/MauApi'
-import LicenseDetailsApi from 'Redux/api/LicenseDetailsApi'
 import { getYearMonth } from '../../utils/Util'
 
 const JansConfigApi = require('jans_config_api')
 
+let defaultToken 
+
+export function* getAccessToken() {
+  if (!defaultToken) {
+    defaultToken = yield call(fetchApiTokenWithDefaultScopes)
+    yield put(setApiDefaultToken(defaultToken))
+  }
+  return defaultToken
+}
+
 function* getApiTokenWithDefaultScopes() {
-  const response = yield call(fetchApiTokenWithDefaultScopes)
+  const { access_token } = yield call(getAccessToken)
+
   const api = new JansConfigApi.AdminUILicenseApi(
-    getClientWithToken(JansConfigApi, response.access_token),
+    getClientWithToken(JansConfigApi, access_token)
   )
   return new LicenseApi(api)
 }
@@ -166,7 +177,7 @@ function* uploadNewSsaToken({ payload }) {
       )
     }
     yield put(checkLicenseConfigValidResponse(response?.success))
-    yield put(getOAuth2Config())
+    yield put(getOAuth2Config(defaultToken))
     yield put(checkLicensePresent())
     // window.location.reload()
   } catch (error) {
@@ -177,6 +188,7 @@ function* uploadNewSsaToken({ payload }) {
 function* checkAdminuiLicenseConfig() {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
+    yield put(getOAuth2Config(defaultToken))
     const response = yield call(licenseApi.checkAdminuiLicenseConfig)
     yield put(checkLicenseConfigValidResponse(response?.success))
   } catch (error) {

@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.16](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.15...flex-cn-setup-v1.0.16) (2023-08-14)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-16 release ([699d534](https://github.com/GluuFederation/flex/commit/699d53480c98ab0cb4562097757b64fcbd17d9c9))
+* remove ingress.class annotation and add spec.ingressClassName ([#1228](https://github.com/GluuFederation/flex/issues/1228)) ([98e8d30](https://github.com/GluuFederation/flex/commit/98e8d30f563fde5d3fd85882b7b094413c302301))
+
+## [1.0.15](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.14...flex-cn-setup-v1.0.15) (2023-07-14)
+
+
+### Bug Fixes
+
+* adjust opendj permissions, image tag and remove unneeded initContainer ([#1050](https://github.com/GluuFederation/flex/issues/1050)) ([9f90325](https://github.com/GluuFederation/flex/commit/9f9032519f44008ec489f824df40be7045fe3f4e))
+* correct image tag ([#1101](https://github.com/GluuFederation/flex/issues/1101)) ([1e4f316](https://github.com/GluuFederation/flex/commit/1e4f316e911fa26f941011005ee9f2c28157f5db))
+* prepare for 5.0.0-15 release ([664553a](https://github.com/GluuFederation/flex/commit/664553ab80e24a44fd68837e1d3998a730bd778c))
+* remove unneeded configuration snippet ([#1128](https://github.com/GluuFederation/flex/issues/1128)) ([ee45de6](https://github.com/GluuFederation/flex/commit/ee45de655d55ae0b8bf591d18e32588bcb8661c2))
+
 ## [1.0.14](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.13...flex-cn-setup-v1.0.14) (2023-06-12)
 
 

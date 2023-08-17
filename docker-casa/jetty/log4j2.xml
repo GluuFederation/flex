@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="ERROR">
     <Properties>
-        <Property name="log.console.prefix" value="casa" />
+        <Property name="casa.log.console.prefix" value="casa" />
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
@@ -25,7 +25,7 @@
 
     <Loggers>
         <Logger name="org.gluu.casa.timer" level="$timer_log_level" additivity="false">
-            <Property name="log.console.group">-timer</Property>
+            <Property name="casa.log.console.group">-timer</Property>
             <AppenderRef ref="$timer_log_target" />
         </Logger>
         <Logger name="org.gluu.casa" level="$casa_log_level" additivity="false">

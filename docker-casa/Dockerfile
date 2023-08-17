@@ -34,8 +34,8 @@ EXPOSE 8080
 # Casa
 # ====
 
-ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2023-04-10 15:24'
+ENV GLUU_VERSION=5.0.0-16
+ENV GLUU_BUILD_DATE='2023-07-14 08:42'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -69,7 +69,7 @@ COPY conf/prometheus-config.yaml /opt/prometheus/
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=9c8e510e6571362009b4ca422ab946ba711e0122
+ENV JANS_SOURCE_VERSION=bd40c5b3ed82373225790e3d66ed7f7cd3e04ccb
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -216,7 +216,7 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/casa" \
     org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.0.0" \
+    org.opencontainers.image.version="1.0.17" \
     org.opencontainers.image.title="Gluu Flex Casa" \
     org.opencontainers.image.description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 
@@ -236,6 +236,8 @@ COPY conf/*.tmpl /app/templates/
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh
 
+RUN sed -i 's/\(<New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler"\)\/\(>\)/\1\2<Set name="showContexts">false<\/Set><\/New>/' /opt/jetty/etc/jetty.xml
+
 # create non-root user
 RUN adduser -s /bin/sh -h /home/1000 -D -G root -u 1000 jetty
 
@@ -250,8 +252,6 @@ RUN chmod -R g=u ${JETTY_BASE}/casa/static \
     && chmod -R g=u /etc/certs \
     && chmod -R g=u /etc/jans \
     && chmod 664 /usr/java/latest/jre/lib/security/cacerts \
-    && chmod 664 /opt/jetty/etc/jetty.xml \
-    && chmod 664 /opt/jetty/etc/webdefault.xml \
     && chown -R 1000:0 ${JETTY_BASE}/common/libs \
     && chown -R 1000:0 /usr/share/java \
     && chown -R 1000:0 /opt/prometheus \

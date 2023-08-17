@@ -62,7 +62,7 @@ export function* getSmtpsSaga() {
   }
 }
 
-export function* testSmtp(payload) {
+export function* testSmtp({ payload }) {
   try {
 
     const stmpApi = yield* newFunction()

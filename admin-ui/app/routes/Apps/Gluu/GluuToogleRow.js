@@ -13,12 +13,13 @@ function GluuToogleRow({
   handler,
   rsize,
   doc_category ="no_category",
-  disabled
+  disabled,
+  required = false
 }) {
   return (
     
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <GluuLabel required={required} label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
       <Col sm={rsize}>
         <GluuToogle
           id={name}

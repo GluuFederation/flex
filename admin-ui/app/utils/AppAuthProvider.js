@@ -6,10 +6,10 @@ import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  getOAuth2Config,
   getUserInfo,
   getAPIAccessToken,
   checkLicensePresent,
+  getRandomChallengePair,
 } from 'Redux/actions'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 import { checkLicenseConfigValid } from '../redux/actions'
@@ -21,7 +21,7 @@ export default function AppAuthProvider(props) {
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
   const [roleNotFound, setRoleNotFound] = useState(false)
-  const { config, userinfo, userinfo_jwt, token, backendIsUp } = useSelector(
+  const { config, userinfo, userinfo_jwt, token, backendIsUp, codeChallenge, codeVerifier, codeChallengeMethod } = useSelector(
     (state) => state.authReducer
   )
   const {
@@ -34,7 +34,7 @@ export default function AppAuthProvider(props) {
 
   useEffect(() => {
     dispatch(checkLicenseConfigValid())
-    dispatch(getOAuth2Config())
+    dispatch(getRandomChallengePair())
   }, [])
 
   useEffect(() => {
@@ -65,12 +65,16 @@ export default function AppAuthProvider(props) {
       !responseType ||
       !acrValues ||
       !state ||
-      !nonce
+      !nonce ||
+      !codeChallenge ||
+      !codeVerifier ||
+      !codeChallengeMethod
+
     ) {
       console.warn('Parameters to process authz code flow are missing.')
       return
     }
-    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}&redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`
+    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}&redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}&code_challenge_method=${codeChallengeMethod}&code_challenge=${codeChallenge}`
   }
 
   const getDerivedStateFromProps = () => {
@@ -88,7 +92,7 @@ export default function AppAuthProvider(props) {
       if (!userinfo) {
         const params = queryString.parse(location.search)
         if (params.code && params.scope && params.state) {
-          dispatch(getUserInfo(params.code))
+          dispatch(getUserInfo(params.code, codeVerifier))
         } else {
           if (!showContent && Object.keys(config).length) {
             const state = uuidv4()

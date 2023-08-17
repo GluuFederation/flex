@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
+import { ROLES } from 'Utils/ApiResources'
 
 function UiRoleDetailPage({ row }) {
   const { rowData } = row
@@ -13,6 +14,8 @@ function UiRoleDetailPage({ row }) {
               label="fields.name"
               value={rowData.role}
               isBadge={true}
+              doc_category={ROLES}
+              doc_entry='name'
             />
           </Col>
           <Col sm={9}>
@@ -21,6 +24,8 @@ function UiRoleDetailPage({ row }) {
               value={rowData.description}
               lsize={3}
               rsize={9}
+              doc_category={ROLES}
+              doc_entry='description'
             />
           </Col>
         </Row>

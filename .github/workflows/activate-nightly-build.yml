@@ -23,14 +23,11 @@ jobs:
         sudo cp gh_${VERSION}_linux_amd64/bin/gh /usr/local/bin/
         gh version
         echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token
-        NIGHTLY_VERSION=$(cat docker-casa/Dockerfile | grep "ENV GLUU_VERSION" | awk -F "[=-]" '{print $2}')
-        # if Nightly version is equal to 5.0.0 then increment the patch version
-        if [[ $NIGHTLY_VERSION == "5.0.0" ]]; then
-          TAGS=$(gh release list -L 1000 -R ${{ github.repository }} | grep -o '^\v.*'| grep -v Draft | cut -f 1 | sed '/-/!{s/$/_/}' | sort -V | sed 's/_$//')
-          PATCH_NUMBER=$(echo "${TAGS}" | grep -v -- "nightly" | tail -1 | tr -d "v5.0.0-")
-          PATCH_NUMBER=$((PATCH_NUMBER+1))
-          NIGHTLY_VERSION="5.0.0-${PATCH_NUMBER}"
-        fi
+        LATEST_VERSION=`curl  "https://api.github.com/repos/GluuFederation/flex/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c2-`
+        NIGHTLY_VERSION=$(echo "$LATEST_VERSION" | awk -F "[=-]" '{print $1}')
+        PATCH_NUMBER=$(echo "$LATEST_VERSION" | awk -F "[=-]" '{print $2}')
+        PATCH_NUMBER=$((PATCH_NUMBER+1))
+        NIGHTLY_VERSION="${NIGHTLY_VERSION}-${PATCH_NUMBER}"
         gh release delete v${NIGHTLY_VERSION}.nightly --cleanup-tag --yes || echo "v${NIGHTLY_VERSION}.nightly" does not exist
         gh release delete v${NIGHTLY_VERSION}.nightly --cleanup-tag --yes || echo "v${NIGHTLY_VERSION}.nightly" does not exist
         git push --delete origin v${NIGHTLY_VERSION}.nightly || echo "v${NIGHTLY_VERSION}.nightly" does not exist

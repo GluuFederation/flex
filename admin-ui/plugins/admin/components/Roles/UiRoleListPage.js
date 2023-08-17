@@ -66,7 +66,6 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
     buildPayload(userAction, 'message', roleData)
     dispatch(addRole({ action: userAction }))
     toggle()
-    doFetchList()
   }
   return (
     <Card style={applicationStyle.mainCard}>

@@ -4,6 +4,12 @@ Flex Linux Setup
 Scripts and templates to automate deployment Gluu Flex components on Janssen server.
 Currently Gluu Flex has three components: Admin UI, Janssen and Casa.
 
+**VM Requirement**
+
+ - CPU: At least 2 
+ - Memory: At least 8 GB
+ - Disk Space: At least 40 GB
+
 Installing Gluu Flex
 -----------------------
 

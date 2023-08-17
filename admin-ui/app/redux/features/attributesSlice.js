@@ -4,7 +4,8 @@ import unionBy from 'lodash/unionBy'
 
 const initialState = {
   items: [],
-  loading: false
+  loading: false,
+  initLoading: true
 }
 
 const attributesSlice = createSlice({
@@ -20,11 +21,14 @@ const attributesSlice = createSlice({
       if (data) {
         state.items = unionBy(data.entries, state.items, 'displayName')
       }
+    },
+    toggleInitAttributeLoader: (state, action) => {
+      state.initLoading = action.payload
     }
   }
 })
 
-export const { getAttributesRoot, getAttributesResponseRoot } =
+export const { getAttributesRoot, getAttributesResponseRoot, toggleInitAttributeLoader } =
   attributesSlice.actions
 
 export default attributesSlice.reducer

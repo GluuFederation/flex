@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
+import { PERMISSIONS } from 'Utils/ApiResources'
 
 function UiPermDetailPage({ row }) {
   const { rowData } = row
@@ -15,6 +16,8 @@ function UiPermDetailPage({ row }) {
               isBadge={true}
               lsize={3}
               rsize={9}
+              doc_category={PERMISSIONS}
+              doc_entry='name'
             />
           </Col>
           {rowData.description && (
@@ -24,6 +27,8 @@ function UiPermDetailPage({ row }) {
                 value={rowData.description}
                 lsize={3}
                 rsize={9}
+                doc_category={PERMISSIONS}
+                doc_entry='description'
               />
             </Col>
           )}

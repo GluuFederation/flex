@@ -40,40 +40,6 @@ logger = logging.getLogger("entrypoint")
 manager = get_manager()
 
 
-def modify_webdefault_xml():
-    fn = "/opt/jetty/etc/webdefault.xml"
-    with open(fn) as f:
-        txt = f.read()
-
-    # disable dirAllowed
-    updates = re.sub(
-        r'(<param-name>dirAllowed</param-name>)(\s*)(<param-value>)true(</param-value>)',
-        r'\1\2\3false\4',
-        txt,
-        flags=re.DOTALL | re.M,
-    )
-
-    with open(fn, "w") as f:
-        f.write(updates)
-
-
-def modify_jetty_xml():
-    fn = "/opt/jetty/etc/jetty.xml"
-    with open(fn) as f:
-        txt = f.read()
-
-    # disable contexts
-    updates = re.sub(
-        r'<New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler"/>',
-        r'<New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler">\n\t\t\t\t <Set name="showContexts">false</Set>\n\t\t\t </New>',
-        txt,
-        flags=re.DOTALL | re.M,
-    )
-
-    with open(fn, "w") as f:
-        f.write(updates)
-
-
 def configure_logging():
     # default config
     config = {
@@ -131,8 +97,11 @@ def configure_logging():
         else:
             config[key] = file_aliases[key]
 
-    if as_boolean(custom_config.get("enable_stdout_log_prefix")):
-        config["log_prefix"] = "${sys:log.console.prefix}%X{log.console.group} - "
+    if any([
+        as_boolean(custom_config.get("enable_stdout_log_prefix")),
+        as_boolean(os.environ.get("CN_ENABLE_STDOUT_LOG_PREFIX")),
+    ]):
+        config["log_prefix"] = "${sys:casa.log.console.prefix}%X{casa.log.console.group} - "
 
     with open("/app/templates/log4j2.xml") as f:
         txt = f.read()
@@ -197,8 +166,6 @@ def main():
         "changeit",
     )
 
-    modify_jetty_xml()
-    modify_webdefault_xml()
     configure_logging()
 
     persistence_setup = PersistenceSetup(manager)
