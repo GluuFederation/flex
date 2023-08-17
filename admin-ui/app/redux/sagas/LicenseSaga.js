@@ -152,6 +152,7 @@ function* generateTrailLicenseKey() {
       } catch (error) {
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
+        yield put(setLicenseError(error.message))
       }
     }
   } catch (error) {
