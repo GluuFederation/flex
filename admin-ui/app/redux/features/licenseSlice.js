@@ -77,6 +77,9 @@ const licenseSlice = createSlice({
     },
     setValidatingFlow: (state, action) => {
       state.isValidatingFlow = action.payload.isValidatingFlow
+    },
+    setLicenseError: (state, action) => {
+      state.error = action.payload
     }
   },
 })
@@ -96,7 +99,8 @@ export const {
   retrieveLicenseKey,
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
-  setValidatingFlow
+  setValidatingFlow,
+  setLicenseError
 } = licenseSlice.actions
 
 export default licenseSlice.reducer

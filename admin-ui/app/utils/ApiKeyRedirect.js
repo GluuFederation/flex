@@ -23,9 +23,9 @@ function ApiKeyRedirect({
       <Container>
         {isConfigValid == false ? (
           <UploadSSA />
-        ) : !isTimeout && !isNoValidLicenseKeyFound && isUnderThresholdLimit && (
+        ) : !isTimeout && isUnderThresholdLimit && (
           <>
-            {!isLicenseValid && islicenseCheckResultLoaded && isConfigValid && !isValidatingFlow && !isNoValidLicenseKeyFound ? (
+            {!isLicenseValid && islicenseCheckResultLoaded && isConfigValid && !isValidatingFlow && isNoValidLicenseKeyFound ? (
               <ApiKey />
             ) : (
               <div
@@ -71,14 +71,6 @@ function ApiKeyRedirect({
           />
         )}
 
-        {(isLicenseActivationResultLoaded && !isLicenseValid) || isNoValidLicenseKeyFound && (
-          <GluuErrorModal
-            message={t('Invalid License')}
-            description={
-              'License has been not enabled for this application. Please contact support and confirm if license-key is correct.'
-            }
-          />
-        )}
       </Container>
     </React.Fragment>
   )

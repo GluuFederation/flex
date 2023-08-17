@@ -13,7 +13,8 @@ import {
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
   setValidatingFlow,
-  setApiDefaultToken
+  setApiDefaultToken,
+  setLicenseError
 } from '../actions'
 import LicenseApi from 'Redux/api/LicenseApi'
 import { getClientWithToken, getClient } from 'Redux/api/base'
@@ -71,11 +72,11 @@ function* retrieveLicenseKey() {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
     const response = yield call(licenseApi.retrieveLicense)
 
-    if (response?.['license_key']) {
+    if (response?.responseObject?.['licenseKey']) {
       try {
         const activateLicense = yield call(licenseApi.submitLicenseKey, {
           payload: {
-            licenseKey: response['license_key']
+            licenseKey: response.responseObject['licenseKey']
           }
         })
 
@@ -96,6 +97,8 @@ function* retrieveLicenseKey() {
   } catch (error) {
     console.log('Error in generating key.', error)
     yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
+    yield put(checkLicensePresentResponse({ isLicenseValid: false }))
+    yield put(generateTrialLicenseResponse(null))
   }
 }
 
@@ -153,6 +156,9 @@ function* generateTrailLicenseKey() {
     }
   } catch (error) {
     console.log('Error in generating key.', error)
+    yield put(checkLicensePresentResponse({ isLicenseValid: false }))
+    yield put(generateTrialLicenseResponse(null))
+    yield put(setLicenseError(error.message))
   }
 }
 
