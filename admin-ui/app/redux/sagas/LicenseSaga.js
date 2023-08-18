@@ -86,8 +86,8 @@ function* retrieveLicenseKey() {
         const mauThreshold = activateLicense.responseObject?.find((item) => item?.name === "mau_threshold")
         yield* checkMauThreshold(parseInt(mauThreshold?.value))
       } catch (error) {
-        console.log(error)
-        yield put(setLicenseError(error.responseMessage || error.message))
+        const errorMessage = error?.response?.body?.responseMessage || error.message
+        yield put(setLicenseError(errorMessage))
         yield put(
           retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true })
         )
@@ -96,8 +96,9 @@ function* retrieveLicenseKey() {
       }
     }
   } catch (error) {
+    const errorMessage = error?.response?.body?.responseMessage || error.message
     console.log('Error in generating key.', error)
-    yield put(setLicenseError(error.responseMessage || error.message))
+    yield put(setLicenseError(errorMessage))
     yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     yield put(generateTrialLicenseResponse(null))
@@ -152,16 +153,18 @@ function* generateTrailLicenseKey() {
         )
         yield put(checkUserLicenseKeyResponse(activateLicense))
       } catch (error) {
+        const errorMessage = error?.response?.body?.responseMessage || error.message
         yield put(checkLicensePresentResponse({ isLicenseValid: false }))
         yield put(generateTrialLicenseResponse(null))
-        yield put(setLicenseError(error.message))
+        yield put(setLicenseError(errorMessage))
       }
     }
   } catch (error) {
+    const errorMessage = error?.response?.body?.responseMessage || error.message
     console.log('Error in generating key.', error)
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     yield put(generateTrialLicenseResponse(null))
-    yield put(setLicenseError(error.message))
+    yield put(setLicenseError(errorMessage))
   }
 }
 
