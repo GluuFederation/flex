@@ -87,6 +87,7 @@ function* retrieveLicenseKey() {
         yield* checkMauThreshold(parseInt(mauThreshold?.value))
       } catch (error) {
         console.log(error)
+        yield put(setLicenseError(error.responseMessage || error.message))
         yield put(
           retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true })
         )
@@ -96,6 +97,7 @@ function* retrieveLicenseKey() {
     }
   } catch (error) {
     console.log('Error in generating key.', error)
+    yield put(setLicenseError(error.responseMessage || error.message))
     yield put(retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true }))
     yield put(checkLicensePresentResponse({ isLicenseValid: false }))
     yield put(generateTrialLicenseResponse(null))
