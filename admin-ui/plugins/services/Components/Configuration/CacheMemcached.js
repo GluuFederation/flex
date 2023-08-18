@@ -74,7 +74,7 @@ function CacheMemcached({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.memDefaultPutExpiration}
+          value={config.defaultPutExpiration}
           doc_category={CACHE}
         />
       </CardBody>

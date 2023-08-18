@@ -41,12 +41,14 @@ export function* getCacheRefreshSaga() {
     const data = yield call(cacheRefreshApi.getPropertiesCacheRefresh);
     yield put(getCacheRefreshConfigurationResponse(data));
     yield call(postUserAction, audit);
+    return data
   } catch (e) {
     yield put(getCacheRefreshConfigurationResponse(null));
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt);
       yield put(getAPIAccessToken(jwt));
     }
+    return e
   }
 }
 
@@ -55,25 +57,27 @@ export function* editCacheConfig({ payload }) {
   addAdditionalData(audit, UPDATE, JANS_LINK, payload)
   try {
     const cacheRefreshApi = yield* newFunction();
-    yield call(cacheRefreshApi.updateCacheRefreshConfig, payload.action.action_data);
+    const data = yield call(cacheRefreshApi.updateCacheRefreshConfig, payload.action.action_data);
     yield put(updateToast(true, "success"));
     yield put(getCacheRefreshConfiguration());
     yield call(postUserAction, audit);
+    return data
   } catch (e) {
     yield put(updateToast(true, "error"));
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt);
       yield put(getAPIAccessToken(jwt));
     }
+    return e
   }
 }
 
 export function* watchGetCacheRefresh() {
-  yield takeEvery(getCacheRefreshConfiguration.toString(), getCacheRefreshSaga);
+  yield takeEvery('cacheRefresh/getCacheRefreshConfiguration', getCacheRefreshSaga);
 }
 
 export function* watchPutCacheRefreshConfig() {
-  yield takeLatest(putCacheRefreshConfiguration.toString(), editCacheConfig);
+  yield takeLatest('cacheRefresh/putCacheRefreshConfiguration', editCacheConfig);
 }
 
 export default function* rootSaga() {

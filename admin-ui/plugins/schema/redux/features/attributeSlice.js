@@ -76,5 +76,6 @@ export const {
   deleteAttributeResponse,
   setCurrentItem
 } = attributeSlice.actions
+export { initialState }
 export const { actions, reducer } = attributeSlice
 reducerRegistry.register('attributeReducer', reducer)

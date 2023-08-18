@@ -2,7 +2,7 @@ import React from 'react'
 function GluuBlockUI(blocking) {
   if (blocking) {
     return (
-      <div className="block-ui-container">
+      <div className="block-ui-container" style={{ minHeight: '100px' }}>
         <div className="block-ui-overlay" />
         <div className="block-ui-message-container">
           <div className="block-ui-message">

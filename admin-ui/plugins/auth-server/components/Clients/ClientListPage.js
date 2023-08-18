@@ -3,7 +3,7 @@ import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { Paper, TablePagination } from '@mui/material'
+import { Link, Paper, TablePagination } from '@mui/material'
 import { Card, CardBody, Badge } from 'Components'
 import { getScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { resetUMAResources } from 'Plugins/auth-server/redux/features/umaResourceSlice'
@@ -133,8 +133,7 @@ function ClientListPage() {
       render: (rowData) => {
         return rowData?.grantTypes?.map((data) => {
           return (
-            // eslint-disable-next-line react/jsx-key
-            <div style={{ maxWidth: 140, overflow: 'auto' }}>
+            <div key={data} style={{ maxWidth: 140, overflow: 'auto' }}>
               <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
             </div>
           )
@@ -146,13 +145,12 @@ function ClientListPage() {
       field: 'scopes',
       render: (rowData) => {
         return (
-          <a
+          <Link
             className="common-link"
-            href="javascript:;"
             onClick={() => setScopeData(rowData.scopes)}
           >
             {rowData.scopes?.length || '0'}
-          </a>
+          </Link>
         )
       },
     },
@@ -357,7 +355,6 @@ function ClientListPage() {
               Container: (props) => <Paper {...props} elevation={0} />,
               Pagination: (props) => (
                 <TablePagination
-                  component="div"
                   count={totalItems}
                   page={pageNumber}
                   onPageChange={(prop, page) => {

@@ -36,6 +36,7 @@ export function* updateStmpSaga({ payload }) {
     yield put(updateSmptResponse({ data }))
     yield put(getSmpts())
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(updateSmptResponse(null))
@@ -43,6 +44,7 @@ export function* updateStmpSaga({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -53,12 +55,14 @@ export function* getSmtpsSaga() {
     const data = yield call(stmpApi.getSmtpConfig);
     yield put(getSmptResponse({ data }))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(getSmptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 

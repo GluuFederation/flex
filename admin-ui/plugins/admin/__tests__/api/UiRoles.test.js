@@ -44,7 +44,7 @@ const payload = {
 
 describe('CRUD UI Roles', () => {
   let role
-  it('should fetch UI roles', async () => {
+  test('should fetch UI roles', async () => {
     const result = await expectSaga(getRoles, {
       payload: {},
     })
@@ -55,7 +55,7 @@ describe('CRUD UI Roles', () => {
   })
 
   // create test role
-  it('should create an UI role', async () => {
+  test('should create an UI role', async () => {
     const result = await expectSaga(addRole, {
       payload: { action: { action_data: payload } },
     })
@@ -68,7 +68,7 @@ describe('CRUD UI Roles', () => {
     }
   })
 
-  it('should update newly added role', async () => {
+  test('should update newly added role', async () => {
     if (role) {
       const result = await expectSaga(editRole, {
         payload: {
@@ -86,7 +86,7 @@ describe('CRUD UI Roles', () => {
     }
   })
 
-  it('should delete newly added role', async () => {
+  test('should delete newly added role', async () => {
     if (role) {
       const result = await expectSaga(deleteRole, {
         payload: {
@@ -99,6 +99,9 @@ describe('CRUD UI Roles', () => {
         .run(false)
 
       expect(result.returnValue instanceof Error).toBe(false)
+      if (result.returnValue instanceof Error) {
+        log('test error', result.returnValue)
+      }
     } else {
       log('skipping delete test, no role found!!!')
     }

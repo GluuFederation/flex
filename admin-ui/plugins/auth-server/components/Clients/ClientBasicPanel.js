@@ -133,7 +133,7 @@ const ClientBasicPanel = ({
                 id="inum"
                 name="inum"
                 disabled={viewOnly}
-                value={client.inum}
+                defaultValue={client.inum}
               />
             </Col>
           </FormGroup>

@@ -19,6 +19,7 @@ const INIT_SCPOPES_STATE = {
   items: [scopes[0]],
   item: {},
   loading: false,
+  totalItems: 0
 }
 
 const store = configureStore({

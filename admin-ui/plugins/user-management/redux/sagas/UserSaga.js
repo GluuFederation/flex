@@ -45,6 +45,7 @@ export function* createUserSaga({ payload }) {
     const data = yield call(userApi.createUsers, payload)
     yield put(updateToast(true, 'success'))
     yield put(createUserResponse(data))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(createUserResponse(null))
@@ -52,6 +53,7 @@ export function* createUserSaga({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 export function* updateUserSaga({ payload }) {
@@ -62,6 +64,7 @@ export function* updateUserSaga({ payload }) {
     const data = yield call(userApi.updateUsers, payload)
     yield put(updateToast(true, 'success'))
     yield put(updateUserResponse(data))
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(updateUserResponse(null))
@@ -69,6 +72,7 @@ export function* updateUserSaga({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -98,12 +102,14 @@ export function* getUsersSaga({ payload }) {
     const data = yield call(userApi.getUsers, payload)
     yield put(getUserResponse(data))
     yield call(postUserAction, audit)
+    return data
   } catch (e) {
     yield put(getUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 
@@ -116,6 +122,7 @@ export function* deleteUserSaga({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(getUsers({}))
     yield put(deleteUserResponse(data))
+    return  data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteUserResponse(null))
@@ -123,6 +130,7 @@ export function* deleteUserSaga({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   }
 }
 

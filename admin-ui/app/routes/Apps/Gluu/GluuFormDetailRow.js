@@ -29,7 +29,7 @@ function GluuFormDetailRow({
         <Label for={label} style={{ fontWeight: 'bold' }} sm={lsize || 6}>
           {t(label)}:
         </Label>
-        <Label for={value} sm={rsize || 6}>
+        <Label for={value?.toString()} sm={rsize || 6}>
           {!isBadge ? (
             value
           ) : (

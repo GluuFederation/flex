@@ -69,6 +69,6 @@ export const {
   deleteUser,
   deleteUserResponse
 } = userSlice.actions
-
+export { initialState }
 export default userSlice.reducer
 reducerRegistry.register('userReducer', userSlice.reducer)
