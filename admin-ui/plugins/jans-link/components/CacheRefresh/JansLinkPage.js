@@ -23,10 +23,10 @@ const JansLinkPage = () => {
   }, []);
 
   const tabNames = [
-    t("menus.configuration"),
-    t("menus.customer_backend_key_attributes"),
-    t("menus.source_backend_ldap_servers"),
-    t("menus.inum_db_server"),
+    { name: t("menus.configuration"), path: '/jans-link/configuration' },
+    { name: t("menus.customer_backend_key_attributes"), path: '/jans-link/customer-backend-key-attributes' },
+    { name: t("menus.source_backend_ldap_servers"), path: '/jans-link/source-backend-ldap-servers' },
+    { name: t("menus.inum_db_server"), path: '/jans-link/inum-db-server' },
   ];
 
   const tabToShow = (tabName) => {
@@ -48,7 +48,7 @@ const JansLinkPage = () => {
         <Card className="mb-3" style={applicationStyle.mainCard}>
           <CardBody>
             {!isLoading && (
-              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} />
+              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
             )}
           </CardBody>
         </Card>

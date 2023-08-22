@@ -351,6 +351,8 @@
   },
   "messages": {
     "add_permission": "Adicionar permissão",
+    "add_configuration": "Adicionar configuração",
+    "edit_configuration": "Excluir configuração",
     "add_role": "Adicionar função",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",
@@ -524,6 +526,10 @@
     "yes": "sim"
   },
   "documentation": {
+    "jans_link": {
+      "enabled": "Esta caixa de seleção é usada para salvar e enviar as alterações. Não use isto a menos que o administrador do servidor tenha inserido todos os valores necessários.",
+      "useSSL": "Use esse recurso se o servidor de back-end permitir conectividade SSL."
+    },
     "no_category": {
       "deletable": "É deletável?"
     },

@@ -476,6 +476,9 @@
   },
   "messages": {
     "add_permission": "Add Permission",
+    "add_configuration": "Add Configuration",
+    "edit_configuration": "Edit Configuration",
+    "delete_configuration": "Delete Configuration",
     "add_role": "Add Role",
     "success_in_saving": "Changes saved successfully",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
@@ -691,6 +694,10 @@
     "yes": "Yes"
   },
   "documentation": {
+    "jans_link": {
+      "enabled": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
+      "useSSL": "Use this feature if the backend server allows SSL connectivity."
+    },
     "no_category": {
       "deletable": "Is Deletable?"
     },
