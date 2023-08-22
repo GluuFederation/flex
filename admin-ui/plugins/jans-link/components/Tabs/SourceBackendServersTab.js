@@ -1,376 +1,139 @@
-import React, { useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useDispatch, useSelector } from 'react-redux'
-import { useFormik } from 'formik'
-import { Row, Col, Form, FormGroup, Button } from 'Components'
-import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import { Box } from '@mui/material'
-import BindPasswordModal from '../CacheRefresh/BindPasswordModal'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import * as Yup from 'yup'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { isEmpty } from 'lodash'
-import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/CacheRefreshSlice'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import MaterialTable from '@material-table/core'
+import { Paper } from '@mui/material'
+import { DeleteOutlined } from '@mui/icons-material'
+import { useNavigate } from 'react-router'
+import getThemeColor from 'Context/theme/config'
 import { useTranslation } from 'react-i18next'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/CacheRefreshSlice'
 import { buildPayload } from 'Utils/PermChecker'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-
-const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
-const convertToStringArray = (arr) => {
-  return arr.map((item) => item.value)
-}
 
 const SourceBackendServersTab = () => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  const navigate = useNavigate()
   const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+  let actions = []
   const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
+  const userAction = {}
+  const [item, setItem] = useState({})
+  const [modal, setModal] = useState(false)
+  const toggle = () => setModal(!modal)
   const { sourceConfigs } = useSelector(
     (state) => state.cacheRefreshReducer.configuration
   )
   const loading = useSelector((state) => state.ldapReducer.loading)
-  const sourceConfig = sourceConfigs?.[0] || {}
 
-  const [addSourceLdapServer, setAddSourceLdapServer] = useState(
-    sourceConfig?.enabled || false
+  const tableColumns = [
+    { field: 'configId', title: `${t('fields.name')}` },
+    { field: 'enabled', title: `${t('fields.enabled')}` },
+  ]
+
+  const navigateToEdit = (rowData) => {
+    delete rowData?.tableData
+    navigate('/jans-link/source-backend-ldap-servers/edit', { state: { sourceConfig: rowData } })
+  }
+
+  const deleteConfig = (data) => {
+    setItem(data)
+    toggle()
+  }
+
+  const navigateToAdd = () => {
+    navigate('/jans-link/source-backend-ldap-servers/add')
+  }
+
+  actions.push((rowData) => ({
+    icon: 'edit',
+    iconProps: {
+      id: 'editClient' + rowData.configId,
+    },
+    tooltip: `${t('messages.edit_configuration')}`,
+    onClick: (event, rowData) => navigateToEdit(rowData),
+    disabled: false,
+  }))
+
+  actions.push((rowData) => ({
+    icon: DeleteIcon,
+    iconProps: {
+      color: 'secondary',
+      id: 'deleteClient' + rowData.configId,
+    },
+    tooltip: `${t('messages.delete_configuration')}`,
+    onClick: (event, rowData) => deleteConfig(rowData),
+    disabled: false,
+  }))
+
+  actions.push({
+    icon: 'add',
+    tooltip: `${t('messages.add_configuration')}`,
+    iconProps: { color: 'primary' },
+    isFreeAction: true,
+    onClick: () => navigateToAdd(),
+  })
+
+  const PaperContainer = useCallback(
+    (props) => <Paper {...props} elevation={0} />,
+    []
   )
-  const userAction = {}
-  const [modal, setModal] = useState(false)
-  const toggle = () => {
-    setModal(!modal)
-  }
 
-  const [auditModal, setAuditModal] = useState(false)
-  const toggleAudit = () => {
-    setAuditModal(!modal)
-  }
+  const DeleteIcon = useCallback(
+    (props) => <DeleteOutlined />,
+    []
+  )
 
-  const initialValues = {
-    sourceConfigs: {
-      ...sourceConfig,
-      servers: sourceConfig?.servers || [],
-      baseDNs: sourceConfig?.baseDNs || [],
-      bindPassword: sourceConfig?.bindPassword || null,
-      configId: sourceConfig?.configId || '',
-      bindDN: sourceConfig?.bindDN || '',
-      maxConnections: sourceConfig?.maxConnections || null,
-    },
-  }
-
-  const validationSchema = Yup.object({
-    sourceConfigs: Yup.object().shape({
-      configId: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required(`${t('fields.name')} ${t('messages.is_required')}`),
-      bindDN: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required(`${t('fields.bind_dn')} ${t('messages.is_required')}`),
-      maxConnections: Yup.string().required(
-        `${t('fields.max_connections')} ${t('messages.is_required')}`
-      ),
-      servers: Yup.array().min(
-        1,
-        `${t('fields.server_port')} ${t('messages.is_required')}`
-      ),
-      baseDNs: Yup.array().min(
-        1,
-        `${t('fields.base_dns')} ${t('messages.is_required')}`
-      ),
-    }),
-  })
-
-  const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: addSourceLdapServer && validationSchema,
-    setFieldValue: (field) => {
-      delete values[field]
-    },
-    onSubmit: (data) => {
-      if (isEmpty(formik.errors)) {
-        toggleAudit()
-      }
-    },
-  })
-
-  const submitForm = (userMessage) => {
-    toggleAudit()
-
-    buildPayload(userAction, userMessage, {
+  function onDeletionConfirmed(message) {
+    const sourceConfigs = cacheRefreshConfiguration.sourceConfigs?.filter((config) => config.configId !== item.configId)
+    buildPayload(userAction, message, {
       appConfiguration2: {
         ...cacheRefreshConfiguration,
-        sourceConfigs: [
-          {
-            ...formik.values.sourceConfigs,
-            baseDNs: isStringsArray(formik.values.sourceConfigs.baseDNs || [])
-              ? formik.values.sourceConfigs.baseDNs
-              : convertToStringArray(
-                  formik.values?.sourceConfigs.baseDNs || []
-                ),
-            servers: isStringsArray(formik.values.sourceConfigs.servers || [])
-              ? formik.values.sourceConfigs.servers
-              : convertToStringArray(
-                  formik.values?.sourceConfigs.servers || []
-                ),
-          },
-        ],
+        sourceConfigs: sourceConfigs,
       },
     })
-
     dispatch(putCacheRefreshConfiguration({ action: userAction }))
-  }
-
-  const handleRemoveServer = () => {
-    setAddSourceLdapServer(false)
-    formik.setFieldValue('sourceConfigs.enabled', false)
-    formik.setFieldValue('sourceConfigs.configId', null)
-    formik.setFieldValue('sourceConfigs.bindDN', null)
-    formik.setFieldValue('sourceConfigs.maxConnections', null)
-    formik.setFieldValue('sourceConfigs.servers', [])
-    formik.setFieldValue('sourceConfigs.baseDNs', [])
-    formik.setFieldValue('sourceConfigs.useSSL', null)
-    formik.setFieldValue('sourceConfigs.bindPassword', null)
-  }
-
-  const handleAddServer = () => {
-    formik.setFieldValue('sourceConfigs.enabled', true)
-    setAddSourceLdapServer(true)
-  }
-
-  const handleChangePassword = (updatedPassword) => {
-    buildPayload(userAction, 'CHANGE SOURCE BACKEND BIND PASSWORD', {
-      appConfiguration2: {
-        ...cacheRefreshConfiguration,
-        sourceConfigs: [
-          {
-            ...formik.values.sourceConfigs,
-            baseDNs: isStringsArray(formik.values?.sourceConfigs?.baseDNs || [])
-            ? formik.values.sourceConfigs.baseDNs
-            : convertToStringArray(
-                formik.values?.sourceConfigs.baseDNs || []
-              ),
-            servers: isStringsArray(formik.values?.sourceConfigs?.servers || [])
-              ? formik.values.sourceConfigs.servers
-              : convertToStringArray(
-                  formik.values?.sourceConfigs.servers || []
-                ),
-            bindPassword: updatedPassword,
-          },
-        ],
-      },
-    })
-
-    dispatch(putCacheRefreshConfiguration({ action: userAction }))
+    toggle()
   }
 
   return (
     <>
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault()
-          formik.handleSubmit()
-        }}
-        className='mt-4'
-      >
-        <GluuLoader blocking={loading}>
-          <FormGroup row>
-            <Box
-              className='mb-3'
-              display='flex'
-              justifyContent={'space-between'}
-            >
-              <Box>
-                {!addSourceLdapServer && (
-                  <Button onClick={handleAddServer}>
-                    {t('actions.add_source_ldap_server')}
-                  </Button>
-                )}
-                {addSourceLdapServer && (
-                  <Button color='danger' onClick={handleRemoveServer}>
-                    <i className='fa fa-remove me-2'></i>
-                    {t('actions.remove_source_server')}
-                  </Button>
-                )}
-              </Box>
-            </Box>
-            {addSourceLdapServer && (
-              <>
-                <Col sm={12}>
-                  <GluuInputRow
-                    label='fields.name'
-                    name='sourceConfigs.configId'
-                    value={formik.values.sourceConfigs?.configId || ''}
-                    formik={formik}
-                    lsize={3}
-                    rsize={9}
-                    required
-                    showError={
-                      formik.errors.sourceConfigs?.configId &&
-                      formik.touched.sourceConfigs?.configId
-                        ? true
-                        : false
-                    }
-                    errorMessage={formik.errors.sourceConfigs?.configId}
-                  />
-                </Col>
-                <Col sm={12}>
-                  <GluuInputRow
-                    label='fields.bind_dn'
-                    name='sourceConfigs.bindDN'
-                    value={formik.values.sourceConfigs?.bindDN || ''}
-                    formik={formik}
-                    lsize={3}
-                    rsize={9}
-                    required
-                    showError={
-                      formik.errors.sourceConfigs?.bindDN &&
-                      formik.touched.sourceConfigs?.bindDN
-                        ? true
-                        : false
-                    }
-                    errorMessage={formik.errors.sourceConfigs?.bindDN}
-                  />
-                </Col>
-                <Col sm={12}>
-                  <GluuInputRow
-                    label='fields.max_connections'
-                    name='sourceConfigs.maxConnections'
-                    value={formik.values.sourceConfigs?.maxConnections || ''}
-                    formik={formik}
-                    type='number'
-                    lsize={3}
-                    rsize={9}
-                    required
-                    showError={
-                      formik.errors.sourceConfigs?.maxConnections &&
-                      formik.touched.sourceConfigs?.maxConnections
-                        ? true
-                        : false
-                    }
-                    errorMessage={formik.errors.sourceConfigs?.maxConnections}
-                  />
-                </Col>
-                <Col sm={12}>
-                  <Row>
-                    <GluuLabel required label='fields.server_port' size={3} />
-                    <Col sm={9}>
-                      <GluuProperties
-                        compName='sourceConfigs.servers'
-                        isInputLables={true}
-                        formik={formik}
-                        options={
-                          formik.values.sourceConfigs?.servers
-                            ? formik.values.sourceConfigs?.servers.map(
-                                (item) => ({
-                                  key: '',
-                                  value: item,
-                                })
-                              )
-                            : []
-                        }
-                        isKeys={false}
-                        buttonText='actions.add_server'
-                        showError={
-                          formik.errors.sourceConfigs?.servers &&
-                          formik.touched.sourceConfigs?.servers
-                            ? true
-                            : false
-                        }
-                        errorMessage={formik.errors.sourceConfigs?.servers}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col sm={12}>
-                  <Row className='mt-4'>
-                    <GluuLabel required label='fields.base_dns' size={3} />
-                    <Col sm={9}>
-                      <GluuProperties
-                        compName='sourceConfigs.baseDNs'
-                        isInputLables={true}
-                        formik={formik}
-                        options={
-                          formik.values.sourceConfigs?.baseDNs
-                            ? formik.values.sourceConfigs?.baseDNs.map(
-                                (item) => ({
-                                  key: '',
-                                  value: item,
-                                })
-                              )
-                            : []
-                        }
-                        isKeys={false}
-                        buttonText='actions.add_base_dn'
-                        showError={
-                          formik.errors.sourceConfigs?.baseDNs &&
-                          formik.touched.sourceConfigs?.baseDNs
-                            ? true
-                            : false
-                        }
-                        errorMessage={formik.errors.sourceConfigs?.baseDNs}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Row>
-                  <Col sm={2} className='mt-3'>
-                    <Button
-                      type='button'
-                      color={`primary-${selectedTheme}`}
-                      className='theme-config__trigger mt-3'
-                      onClick={toggle}
-                    >
-                      {t('actions.change_bind_password')}
-                    </Button>
-                  </Col>
-                </Row>
-                <Col sm={8} className='mt-3'>
-                  <GluuToogleRow
-                    label='fields.use_ssl'
-                    name='sourceConfigs.useSSL'
-                    required
-                    handler={(e) => {
-                      formik.setFieldValue(
-                        'sourceConfigs.useSSL',
-                        e.target.checked
-                      )
-                    }}
-                    lsize={4}
-                    rsize={8}
-                    value={formik.values.sourceConfigs?.useSSL}
-                  />
-                </Col>
-              </>
-            )}
-          </FormGroup>
-          <Row>
-            <Col>
-              <GluuCommitFooter
-                hideButtons={{ save: true, back: false }}
-                type='submit'
-                saveHandler={toggleAudit}
-              />
-            </Col>
-          </Row>
-          {modal && (
-            <BindPasswordModal
-              handleChangePassword={handleChangePassword}
-              handler={toggle}
-              isOpen={modal}
-            />
-          )}
-        </GluuLoader>
-      </Form>
-      <GluuCommitDialog
-        handler={toggleAudit}
-        modal={auditModal}
-        onAccept={submitForm}
-        formik={formik}
+      <GluuViewWrapper canShow={true}>
+        <MaterialTable
+          key={'sourceConfigs'}
+          components={{
+            Container: PaperContainer,
+          }}
+          columns={tableColumns}
+          data={sourceConfigs}
+          isLoading={loading}
+          title=''
+          actions={actions}
+          options={{
+            actionsColumnIndex: -1,
+            search: true,
+            headerStyle: {
+              ...applicationStyle.tableHeaderStyle,
+              ...bgThemeColor,
+            },
+          }}
+        />
+      </GluuViewWrapper>
+      <GluuDialog
+        row={item}
+        name={item?.configId || ''}
+        handler={toggle}
+        modal={modal}
+        subject='openid connect client'
+        onAccept={onDeletionConfirmed}
       />
     </>
   )

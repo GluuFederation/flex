@@ -357,6 +357,8 @@
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
+    "add_configuration": "Ajouter une configuration",
+    "edit_configuration": "Supprimer la configuration",
     "add_role": "Ajouter un rôle",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
     "action_deletion_question": "Voulez-vous vraiment supprimer cet élément ?",
@@ -530,6 +532,10 @@
     "yes": "Oui"
   },
   "documentation": {
+    "jans_link": {
+      "enabled": "Cette case à cocher est utilisée pour enregistrer et pousser les modifications. Ne l'utilisez que si l'administrateur du serveur a entré toutes les valeurs requises.",
+      "useSSL": "Utilisez cette fonctionnalité si le serveur principal autorise la connectivité SSL."
+    },
     "no_category": {
       "deletable": "Est supprimable?"
     },

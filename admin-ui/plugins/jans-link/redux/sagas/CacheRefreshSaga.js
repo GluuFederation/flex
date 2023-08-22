@@ -16,7 +16,7 @@ import CacheRefreshApi from "../api/CacheRefreshApi"
 import {
   getCacheRefreshConfiguration,
   getCacheRefreshConfigurationResponse,
-  putCacheRefreshConfiguration,
+  toggleSavedFormFlag,
 } from "../features/CacheRefreshSlice";
 import { getAPIAccessToken } from "Redux/features/authSlice";
 import { UPDATE } from "../../../../app/audit/UserActionType";
@@ -41,9 +41,11 @@ export function* getCacheRefreshSaga() {
     const data = yield call(cacheRefreshApi.getPropertiesCacheRefresh);
     yield put(getCacheRefreshConfigurationResponse(data));
     yield call(postUserAction, audit);
+    yield put(toggleSavedFormFlag(false))
     return data
   } catch (e) {
     yield put(getCacheRefreshConfigurationResponse(null));
+    yield put(toggleSavedFormFlag(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt);
       yield put(getAPIAccessToken(jwt));
@@ -60,9 +62,11 @@ export function* editCacheConfig({ payload }) {
     const data = yield call(cacheRefreshApi.updateCacheRefreshConfig, payload.action.action_data);
     yield put(updateToast(true, "success"));
     yield put(getCacheRefreshConfiguration());
+    yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit);
     return data
   } catch (e) {
+    yield put(toggleSavedFormFlag(false))
     yield put(updateToast(true, "error"));
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt);

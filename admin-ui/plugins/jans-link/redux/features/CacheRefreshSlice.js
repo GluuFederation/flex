@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   configuration: {},
   loading: false,
+  savedForm: false,
 }
 
 const cacheRefreshSlice = createSlice({
@@ -20,6 +21,9 @@ const cacheRefreshSlice = createSlice({
     putCacheRefreshConfiguration: (state) => {
       state.loading = true
     },
+    toggleSavedFormFlag: (state, action) => {
+      state.savedForm = action.payload || false
+    }
   }
 })
 
@@ -27,6 +31,7 @@ export const {
   getCacheRefreshConfiguration,
   getCacheRefreshConfigurationResponse,
   putCacheRefreshConfiguration,
+  toggleSavedFormFlag
 } = cacheRefreshSlice.actions
 
 export default cacheRefreshSlice.reducer

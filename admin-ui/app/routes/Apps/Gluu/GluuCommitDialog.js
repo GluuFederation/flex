@@ -56,6 +56,7 @@ const GluuCommitDialog = ({
     <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">
       <ModalHeader toggle={closeModal}>
         <i
+          onClick={closeModal}
           style={{ color: 'green' }}
           className="fa fa-2x fa-info fa-fw modal-icon mb-3"
         ></i>
