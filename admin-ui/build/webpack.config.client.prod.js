@@ -80,6 +80,7 @@ module.exports = {
       template: config.srcHtmlLayout,
       inject: 'body',
       title: 'AdminUI',
+      favicon: path.resolve(__dirname, '../app/images/favicons/favicon.ico'),
     }),
     new MiniCssExtractPlugin(),
     new webpack.DefinePlugin({
