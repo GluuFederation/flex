@@ -17,24 +17,10 @@ LOGGING_CONFIG = {
             "level": "INFO",
             "propagate": True,
         },
-        "wait": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "webdav": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "entrypoint": {
+        "casa": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },
     },
-    # "root": {
-    #     "level": "INFO",
-    #     "handlers": ["console"],
-    # },
 }
