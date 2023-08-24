@@ -49,6 +49,13 @@ RUN mkdir -p ${JETTY_BASE}/casa/webapps \
     && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/casa --add-module=server,deploy,resources,http,jsp,cdi-decorate,jmx,stats,logging-log4j2 --approve-all-licenses \
     && rm -rf /tmp/casa.war /tmp/WEB-INF
 
+# casa plugins
+RUN mkdir -p /opt/jans/jetty/casa/plugins \
+    && for casa_plugin in strong-authn-settings authorized-clients custom-branding; \
+    do \
+        wget -nv "https://maven.gluu.org/maven/org/gluu/casa/plugins/${casa_plugin}/${GLUU_VERSION}/${casa_plugin}-${GLUU_VERSION}-jar-with-dependencies.jar" -O "/opt/jans/jetty/casa/plugins/${casa_plugin}-${GLUU_VERSION}.jar"; \
+    done
+
 # ======
 # Python
 # ======
@@ -69,7 +76,7 @@ COPY conf/prometheus-config.yaml /opt/prometheus/
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=bd40c5b3ed82373225790e3d66ed7f7cd3e04ccb
+ENV JANS_SOURCE_VERSION=38653c9cb9eb992213c5f230a5f36ce1187d0197
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -216,7 +223,7 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/casa" \
     org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="1.0.17" \
+    org.opencontainers.image.version="5.0.0" \
     org.opencontainers.image.title="Gluu Flex Casa" \
     org.opencontainers.image.description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 

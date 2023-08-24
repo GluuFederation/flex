@@ -16,7 +16,7 @@ SYNC_DIR = "/opt/jans/jetty/casa"
 TMP_DIR = "/tmp/webdav"
 
 logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger("webdav")
+logger = logging.getLogger("casa")
 
 
 def sync_from_webdav(url, username, password):
