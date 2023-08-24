@@ -72,7 +72,7 @@ def get_license_config(manager):
     # get license client credentials
     client_id, client_secret = get_license_client_creds(manager)
 
-    if not client_id:
+    if not all([client_id, client_secret]):
         resp = register_license_client(ssa, reg_url, payload["org_id"], payload["iss"])
         client_id = resp["client_id"]
         client_secret = resp["client_secret"]
