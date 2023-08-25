@@ -41,7 +41,7 @@
 
 .license-card {
   min-width: 275px;
-  width: 50%;
+  width: 100%;
   border: 1px solid #00a361;
   padding: 8px;
 }
@@ -75,10 +75,6 @@
 }
 
 @media screen and (max-width: 680px) {
-  .license-card {
-    width: 100%;
-  }
-
   .license-card-wrapper {
     flex-wrap: wrap;
   }

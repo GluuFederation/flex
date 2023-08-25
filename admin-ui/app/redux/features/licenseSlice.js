@@ -11,7 +11,9 @@ const initialState = {
   error: '',
   errorSSA: '',
   generatingTrialKey: false,
-  isTimeout: false
+  isNoValidLicenseKeyFound: false,
+  isUnderThresholdLimit: true,
+  isValidatingFlow: false
 }
 
 const licenseSlice = createSlice({
@@ -30,9 +32,8 @@ const licenseSlice = createSlice({
       state.error = ''
     },
     checkUserLicenseKeyResponse: (state, action) => {
-      state.isLoading = false
-      if (action.payload?.apiResult) {
-        state.isLicenseValid = action.payload.apiResult
+      if (action.payload?.success) {
+        state.isLicenseValid = action.payload.success
         state.error = ''
       } else {
         state.error = action.payload.responseMessage
@@ -48,7 +49,6 @@ const licenseSlice = createSlice({
     },
     checkLicenseConfigValid: (state, action) => {},
     checkLicenseConfigValidResponse: (state, action) => {
-      state.isLoading = false
       state.isConfigValid = action.payload || false
     },
     uploadNewSsaToken: (state, action) => {
@@ -64,6 +64,22 @@ const licenseSlice = createSlice({
     },
     generateTrialLicenseResponse: (state) => {
       state.generatingTrialKey = false
+    },
+    retrieveLicenseKey: (state, action) => {
+      state.isLoading = true
+    },
+    retrieveLicenseKeyResponse: (state, action) => {
+      state.isNoValidLicenseKeyFound = action.payload.isNoValidLicenseKeyFound
+    },
+    checkThresholdLimit: (state, action) => {
+      state.isUnderThresholdLimit = action.payload.isUnderThresholdLimit
+      state.isLoading = false
+    },
+    setValidatingFlow: (state, action) => {
+      state.isValidatingFlow = action.payload.isValidatingFlow
+    },
+    setLicenseError: (state, action) => {
+      state.error = action.payload
     }
   },
 })
@@ -79,7 +95,12 @@ export const {
   uploadNewSsaToken,
   uploadNewSsaTokenResponse,
   generateTrialLicense,
-  generateTrialLicenseResponse
+  generateTrialLicenseResponse,
+  retrieveLicenseKey,
+  retrieveLicenseKeyResponse,
+  checkThresholdLimit,
+  setValidatingFlow,
+  setLicenseError
 } = licenseSlice.actions
 
 export default licenseSlice.reducer

@@ -20,3 +20,16 @@ export const getClientScopeByInum = (str) => {
   const value = inum.split('=')[1]
   return value
 }
+
+export function getYearMonth(date) {
+  return date.getFullYear() + getMonth(date)
+}
+
+export function getMonth(aDate) {
+  const value = String(aDate.getMonth() + 1)
+  if (value.length > 1) {
+    return value
+  } else {
+    return '0' + value
+  }
+}

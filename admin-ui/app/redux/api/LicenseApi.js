@@ -118,4 +118,12 @@ export default class LicenseApi {
       })
     })
   }
+
+  retrieveLicense = async () => {
+    return new Promise((resolve, reject) => {
+      this.api.retrieveLicense((error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
 }

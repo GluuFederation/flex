@@ -6,7 +6,8 @@ const initialState = {
   clients: [],
   scopes: [],
   attributes: [],
-  totalClientsEntries: 0
+  totalClientsEntries: 0,
+  isTimeout: false
 }
 
 const initSlice = createSlice({
