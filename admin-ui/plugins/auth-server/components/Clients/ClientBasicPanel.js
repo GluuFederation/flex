@@ -134,6 +134,7 @@ const ClientBasicPanel = ({
                 name="inum"
                 disabled={viewOnly}
                 defaultValue={client.inum}
+                readOnly={viewOnly}
               />
             </Col>
           </FormGroup>

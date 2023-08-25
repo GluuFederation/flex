@@ -24,7 +24,7 @@ function GluuSecretDetail({ label, value, doc_category, doc_entry }) {
         )}
         {up && (
           <Col sm={9}>
-            <Label for="input" sm={12} style={{ fontWeight: 'bold' }}>
+            <Label for="input" style={{ fontWeight: 'bold' }}>
               {value}
             </Label>
           </Col>
