@@ -1,3 +1,9 @@
+---
+tags:
+- administration
+- admin-ui
+- smtp
+---
 # SMTP Configuration
 
 The description of all the fields in SMTP configuration form:

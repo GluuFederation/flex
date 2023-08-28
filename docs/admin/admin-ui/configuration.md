@@ -1,0 +1,99 @@
+---
+tags:
+- administration
+- admin-ui
+- configuration
+---
+
+# Configuration
+
+This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include role-permission mapping, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License Server, and license metadata.
+
+## Configuration Components
+
+### Role-Permission Mapping
+
+[Role-permission](./admin-menu.md/) mapping defines which administrative roles are granted specific permissions within the Gluu Flex Admin UI. This mapping ensures that administrators can only access and modify functionalities relevant to their roles.
+
+The mapping is stored in json format with following attributes.
+
+**Roles**
+|Attribute Name|Description|
+|--------------|-----------|
+|roles|Array of all roles|
+|role|Role name|
+|description| Role description|
+
+**Permissions**
+|Attribute Name|Description|
+|--------------|-----------|
+|permissions|Array of all available permissions|
+|permission|Permission name|
+|description| Permission description|
+|defaultPermissionInToken|If set to `true`, it indicates that permission will need authentication and valid role during `/token` request to include in token|
+
+**Mapping**
+|Attribute Name|Description|
+|--------------|-----------|
+|rolePermissionMapping| List of all role-permission mapping|
+|role|Role name|
+|permission|Array of all permission mapped to the role|
+
+
+### OIDC Client Details for Auth Server
+
+To establish secure communication with the Auth Server, Gluu Flex Admin UI requires the OIDC client details, including client ID and client secret. These details are used for authentication and authorization purposes.
+
+The information is stored in json format with following attributes.
+
+|Attribute Name|Description|
+|--------------|-----------|
+|authServerClient|Object with Auth Server client details|
+|opHost|Auth Server hostname|
+|clientId| Client Id of OIDC client used to access Auth server|
+|clientSecret| Client Secret of OIDC client used to access Auth server|
+|scopes|Scopes required for Admin UI authentication|
+|acrValues|ACR required for Admin UI authentication|
+|redirectUri|Redirect UI which is Admin UI home page|
+|postLogoutUri|Url to be redirected after Admin UI logout|
+|frontchannelLogoutUri|Front channel Logout Uri|
+
+
+### OIDC Client Details for Token Server
+
+Similarly, Gluu Flex Admin UI needs OIDC client details to interact with the Token Server. This enables the UI to request and manage access tokens required to access protected resources.
+
+The information is stored in json format with following attributes.
+
+|Attribute Name|Description|
+|--------------|-----------|
+|tokenServerClient|Object with Token Server client details|
+|opHost|Token Server hostname|
+|clientId| Client Id of OIDC client used to access Token server|
+|clientSecret| Client Secret of OIDC client used to access Token server|
+|tokenEndpoint|Token endpoint of token server|
+
+### OIDC Client Details for License Server
+
+Access to the License APIs is managed through OIDC client details. These details allows the Gluu Flex Admin UI Backend to generated access token to allow the retrieval of license-related information using license APIs.
+
+The information is stored in json format with following attributes.
+
+|Attribute Name|Description|
+|--------------|-----------|
+|opHost|Auth Server hostname used to generate token to access License APIs|
+|clientId| Client Id of OIDC client used to generate token to access License APIs|
+|clientSecret| Client Secret of OIDC client used to generate token to access License APIs|
+
+### License Metadata
+
+License metadata includes relevant information about the Gluu Flex Admin UI's licensing, such as License Key, Hardware id, License server url, License Auth server url, SSA used to register license auth server client.
+
+The information is stored in json format with following attributes.
+
+|Attribute Name|Description|
+|--------------|-----------|
+|licenseConfig|Object with License configuration details|
+|ssa|SSA used to register OIDC client to access license APIs|
+|scanLicenseApiHostname| SCAN License server hostname|
+|licenseHardwareKey|Hardware key (org_id) to access license APIs|

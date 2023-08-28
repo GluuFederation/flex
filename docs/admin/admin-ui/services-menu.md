@@ -1,3 +1,10 @@
+---
+tags:
+- administration
+- admin-ui
+- services
+- cache-configuration
+---
 # Services
 
 This menu allows user to configure Cache Provider and LDAP schemas which can be used by the auth server.

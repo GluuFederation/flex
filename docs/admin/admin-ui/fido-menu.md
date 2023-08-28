@@ -1,3 +1,9 @@
+---
+tags:
+- administration
+- admin-ui
+- fido2
+---
 # FIDO Configuration
 
 [FIDO 2.0](https://fidoalliance.org/) (FIDO2) is an open authentication standard that enables people to leverage common devices to authenticate to online services in both mobile and desktop environments.
