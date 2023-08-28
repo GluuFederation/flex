@@ -159,7 +159,7 @@
     "recharts": "^2.5.0",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.3",
-    "sass": "^1.60.0",
+    "sass": "~1.64.2",
     "text-mask-addons": "^3.8.0",
     "tss-react": "^4.8.2",
     "unzipper": "^0.10.11",

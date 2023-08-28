@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from '@mui/material/Button'
-import ClickAwayListener from '@mui/base/ClickAwayListener'
+import { ClickAwayListener } from '@mui/base/ClickAwayListener'
 import Grow from '@mui/material/Grow'
 import Paper from '@mui/material/Paper'
 import Popper from '@mui/material/Popper'
