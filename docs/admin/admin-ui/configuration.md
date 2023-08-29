@@ -7,7 +7,7 @@ tags:
 
 # Configuration
 
-This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include role-permission mapping, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License Server, and license metadata.
+This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include role-permission mapping, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata.
 
 ## Configuration Components
 
@@ -23,6 +23,7 @@ The mapping is stored in json format with following attributes.
 |roles|Array of all roles|
 |role|Role name|
 |description| Role description|
+|deletable|If set to `true` then entire role-permission mapping with respect to the role can be deleted. Default value: `false`|
 
 **Permissions**
 |Attribute Name|Description|
@@ -39,6 +40,40 @@ The mapping is stored in json format with following attributes.
 |role|Role name|
 |permission|Array of all permission mapped to the role|
 
+**Sample role-permission mapping stored in persistence**
+
+```
+{
+  "roles": [
+    {
+      "role": "sample-role",
+      "description": "role description",
+      "deletable": false
+    }
+  ],
+  "permissions": [
+    {
+      "permission": "sample-permission1",
+      "description": "permission1 description",
+      "defaultPermissionInToken": false
+    },
+    {
+      "permission": "sample-permission2",
+      "description": "permission2 description",
+      "defaultPermissionInToken": true
+    }
+  ],
+  "rolePermissionMapping": [
+    {
+      "role": "sample-role",
+      "permissions": [
+        "sample-permission1",
+        "sample-permission2"
+      ]
+    }
+  ]
+}
+```
 
 ### OIDC Client Details for Auth Server
 
@@ -58,10 +93,9 @@ The information is stored in json format with following attributes.
 |postLogoutUri|Url to be redirected after Admin UI logout|
 |frontchannelLogoutUri|Front channel Logout Uri|
 
-
 ### OIDC Client Details for Token Server
 
-Similarly, Gluu Flex Admin UI needs OIDC client details to interact with the Token Server. This enables the UI to request and manage access tokens required to access protected resources.
+Similarly, Gluu Flex Admin UI needs OIDC client details to interact with the Token Server. This enables the UI to request and manage access tokens required to access `Jans Config API` protected resources.
 
 The information is stored in json format with following attributes.
 
@@ -97,3 +131,52 @@ The information is stored in json format with following attributes.
 |ssa|SSA used to register OIDC client to access license APIs|
 |scanLicenseApiHostname| SCAN License server hostname|
 |licenseHardwareKey|Hardware key (org_id) to access license APIs|
+
+**Sample configuration stored in persistence**
+
+```
+{
+  "oidcConfig": {
+    "authServerClient": {
+      "redirectUri": "https://your.host.com/admin",
+      "postLogoutUri": "https://your.gost.com/admin",
+      "frontchannelLogoutUri": "https://your.host.com/admin/logout",
+      "scopes": [
+        "openid",
+        "profile",
+        "user_name",
+        "email"
+      ],
+      "acrValues": [
+        "basic"
+      ],
+      "opHost": "https://your.host.com",
+      "clientId": "2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568",
+      "clientSecret": "GGO4t1uixrTpl4Rizt3zag=="
+    },
+    "tokenServerClient": {
+      "tokenEndpoint": "https://your.host.com/jans-auth/restv1/token",
+      "scopes": [
+        "openid",
+        "profile",
+        "user_name",
+        "email"
+      ],
+      "opHost": "https://your.host.com",
+      "clientId": "2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568",
+      "clientSecret": "GGO4t1uixrTpl4Rizt3zag=="
+    }
+  },
+  "licenseConfig": {
+    "ssa": "...ssa in jwt format...",
+    "scanLicenseApiHostname": "https://cloud-dev.gluu.cloud",
+    "licenseKey": "XXXX-XXXX-XXXX-XXXX",
+    "licenseHardwareKey": "github:ghUsername",
+    "oidcClient": {
+      "opHost": "https://account-dev.gluu.cloud",
+      "clientId": "36a43e2b-a77b-4e9c-a966-a9d98af1665c",
+      "clientSecret": "211188d8-a2d8-4562-ab53-80907c1bb5ba"
+    }
+  }
+}
+```

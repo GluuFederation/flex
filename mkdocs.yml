@@ -127,7 +127,6 @@ nav:
     - 'Configuration': 'admin/config.md'
     - 'Admin UI':
         - 'Introduction': 'admin/admin-ui/introduction.md'
-        - 'Auth Server Interaction': 'admin/admin-ui/auth-server-interaction.md'
         - 'Configuration': 'admin/admin-ui/configuration.md'
         - 'Logs': 'admin/admin-ui/logs.md'
         - 'Left Navigation Menu': 'admin/admin-ui/left-nav-menu.md'
