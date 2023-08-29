@@ -67,6 +67,7 @@ const authSlice = createSlice({
     },
     setApiDefaultToken: (state, action) => {
       state.defaultToken = action.payload
+      state.issuer = action.payload.issuer
     },
     getRandomChallengePair: (state, action) => {},
     getRandomChallengePairResponse: (state, action) => {

@@ -19,6 +19,7 @@ import {
 } from '../api/backend-api'
 
 import {RandomHashGenerator} from  'Utils/RandomHashGenerator'
+import { checkLicensePresentResponse } from '../actions'
 
 function* getApiTokenWithDefaultScopes() {
   const response = yield call(fetchApiTokenWithDefaultScopes)
@@ -44,6 +45,7 @@ function* getUserInformationWorker(code, codeVerifier) {
     const response = yield call(fetchUserInformation, code.payload, localStorage.getItem("codeVerifier"))
     if (response) {
       yield put(getUserInfoResponse({ uclaims: response.claims, ujwt: response.jwtUserInfo }))
+      yield put(checkLicensePresentResponse({ isLicenseValid: true }))
       return
     }
   } catch (error) {

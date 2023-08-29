@@ -15,15 +15,32 @@ import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 import { checkLicenseConfigValid } from '../redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
+import {
+  FetchRequestor,
+  AuthorizationServiceConfiguration,
+  AuthorizationRequest,
+  RedirectRequestHandler,
+} from '@openid/appauth'
+
+let configuration
 
 export default function AppAuthProvider(props) {
+  const authorizationHandler = new RedirectRequestHandler()
   const dispatch = useDispatch()
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
   const [roleNotFound, setRoleNotFound] = useState(false)
-  const { config, userinfo, userinfo_jwt, token, backendIsUp, codeChallenge, codeVerifier, codeChallengeMethod } = useSelector(
-    (state) => state.authReducer
-  )
+  const {
+    config,
+    userinfo,
+    userinfo_jwt,
+    token,
+    backendIsUp,
+    codeChallenge,
+    codeVerifier,
+    codeChallengeMethod,
+    issuer,
+  } = useSelector((state) => state.authReducer)
   const {
     islicenseCheckResultLoaded,
     isLicenseActivationResultLoaded,
@@ -33,12 +50,16 @@ export default function AppAuthProvider(props) {
   } = useSelector((state) => state.licenseReducer)
 
   useEffect(() => {
-    dispatch(checkLicenseConfigValid())
+    const params = queryString.parse(location.search)
+    if (!(params.code && params.scope && params.state)) {
+      dispatch(checkLicenseConfigValid())
+    }
     dispatch(getRandomChallengePair())
   }, [])
 
   useEffect(() => {
-    if (isConfigValid) {
+    const params = queryString.parse(location.search)
+    if (isConfigValid && !(params.code && params.scope && params.state)) {
       dispatch(checkLicensePresent())
     }
   }, [isConfigValid])
@@ -69,7 +90,6 @@ export default function AppAuthProvider(props) {
       !codeChallenge ||
       !codeVerifier ||
       !codeChallengeMethod
-
     ) {
       console.warn('Parameters to process authz code flow are missing.')
       return
@@ -77,7 +97,7 @@ export default function AppAuthProvider(props) {
     return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}&redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}&code_challenge_method=${codeChallengeMethod}&code_challenge=${codeChallenge}`
   }
 
-  const getDerivedStateFromProps = () => {
+  const getDerivedStateFromProps = async () => {
     if (window.location.href.indexOf('logout') > -1) {
       setShowContent(true)
       return null
@@ -91,17 +111,45 @@ export default function AppAuthProvider(props) {
     if (!showContent) {
       if (!userinfo) {
         const params = queryString.parse(location.search)
-        if (params.code && params.scope && params.state) {
+        if (params.code && params.scope && params.state && !isLicenseValid) {
           dispatch(getUserInfo(params.code, codeVerifier))
         } else {
           if (!showContent && Object.keys(config).length) {
+            // const state = uuidv4()
+            // saveState(state)
+            // const authzUrl = buildAuthzUrl(state, uuidv4())
+            // if (authzUrl) {
+            //   window.location.href = authzUrl
+            // }
+            // new
             const state = uuidv4()
             saveState(state)
-            const authzUrl = buildAuthzUrl(state, uuidv4())
-            if (authzUrl) {
-              window.location.href = authzUrl
-              return null
+            configuration =
+              await AuthorizationServiceConfiguration.fetchFromIssuer(
+                issuer,
+                new FetchRequestor()
+              )
+            console.log(`COMPONENT configuration`, configuration)
+            let extras = {
+              acr_values: config.acrValues,
+              nonce: uuidv4(),
+              code_challenge_method: codeChallengeMethod,
+              code_challenge: codeChallenge,
             }
+            let request = new AuthorizationRequest({
+              client_id: config.clientId,
+              redirect_uri: config.redirectUrl,
+              scope: config.scope,
+              response_type: config.responseType,
+              state: state,
+              extras,
+            })
+            console.log(`request`, request)
+            authorizationHandler.performAuthorizationRequest(
+              configuration,
+              request
+            )
+            return
           }
         }
         setShowContent(false)
