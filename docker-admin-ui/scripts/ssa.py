@@ -9,7 +9,7 @@ from jwcrypto.jwt import JWT
 from settings import LOGGING_CONFIG
 
 logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger("entrypoint")
+logger = logging.getLogger("admin-ui")
 
 
 def register_license_client(ssa, reg_url, org_id, redirect_uri):

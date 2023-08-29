@@ -17,19 +17,10 @@ LOGGING_CONFIG = {
             "level": "INFO",
             "propagate": True,
         },
-        "entrypoint": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "wait": {
+        "admin-ui": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },
     },
-    # "root": {
-    #     "level": "INFO",
-    #     "handlers": ["console"],
-    # },
 }
