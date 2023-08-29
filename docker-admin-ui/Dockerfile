@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=f1149ac4a3c08682bbb0037c2e03d5e97a52593a
+ENV ADMIN_UI_VERSION=63cbafcd464bc740a65b7326f68bc20ede61bee3
 
 RUN mkdir -p /opt/flex
 
@@ -50,8 +50,6 @@ RUN usermod -m -d /home/1000 node
 # =====
 # nginx
 # =====
-
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # Ports for nginx
 EXPOSE 8080
@@ -182,7 +180,9 @@ ENV CN_WAIT_MAX_TIME=300 \
     GOOGLE_PROJECT_ID="" \
     CN_GOOGLE_SECRET_MANAGER_PASSPHRASE=secret \
     CN_GOOGLE_SECRET_VERSION_ID=latest \
-    CN_GOOGLE_SECRET_NAME_PREFIX=jans
+    CN_GOOGLE_SECRET_NAME_PREFIX=jans \
+    GLUU_ADMIN_UI_PUBLIC_DIR=/var/lib/nginx/html \
+    GLUU_ADMIN_UI_ENABLE_NGINX=true
 
 # ==========
 # misc stuff
@@ -204,11 +204,13 @@ RUN chmod +x /app/scripts/entrypoint.sh
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
+RUN cp /app/templates/admin-ui/nginx-default.conf /etc/nginx/http.d/default.conf
+
 # add existing node user to root group
 RUN addgroup node root
 
 # make empty files and folders
-RUN mkdir -p /app/plugins \
+RUN mkdir -p /opt/flex/admin-ui/_plugins \
     && touch /run/nginx/nginx.pid
 
 # adjust ownership
@@ -220,7 +222,7 @@ RUN chown -R 1000:0 /var/lib/nginx \
     && chown -R 1000:0 /etc/jans \
     && chown -R 1000:0 /etc/certs \
     && chown 1000:0 /run/nginx/nginx.pid \
-    && chown -R 1000:0 /app/plugins \
+    && chown -R 1000:0 /opt/flex/admin-ui/_plugins \
     && chown 1000:0 /opt/flex/admin-ui \
     && chown 1000:0 /opt/flex/admin-ui/.env \
     && chown 1000:0 /opt/flex/admin-ui/plugins.config.json \

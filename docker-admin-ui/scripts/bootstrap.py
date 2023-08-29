@@ -5,6 +5,7 @@ from uuid import uuid4
 from functools import cached_property
 
 from jans.pycloudlib import get_manager
+from jans.pycloudlib.utils import as_boolean
 from jans.pycloudlib.utils import get_random_chars
 from jans.pycloudlib.utils import encode_text
 from jans.pycloudlib.persistence import CouchbaseClient
@@ -19,7 +20,7 @@ from settings import LOGGING_CONFIG
 from ssa import get_license_config
 
 logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger("entrypoint")
+logger = logging.getLogger("admin-ui")
 
 
 def render_env(manager):
@@ -28,21 +29,10 @@ def render_env(manager):
         "hostname": hostname,
     }
 
-    with open("/app/templates/env.tmpl") as fr:
+    with open("/app/templates/admin-ui/env") as fr:
         txt = fr.read() % ctx
 
     with open("/opt/flex/admin-ui/.env", "w") as fw:
-        fw.write(txt)
-
-
-def render_nginx_conf(manager):
-    with open("/app/templates/nginx-default.conf.tmpl") as fr:
-        ctx = {
-            "hostname": manager.config.get("hostname"),
-        }
-        txt = fr.read() % ctx
-
-    with open("/etc/nginx/http.d/default.conf", "w") as fw:
         fw.write(txt)
 
 
@@ -50,7 +40,6 @@ def main():
     manager = get_manager()
 
     render_env(manager)
-    render_nginx_conf(manager)
 
     persistence_setup = PersistenceSetup(manager)
     persistence_setup.import_ldif_files()
@@ -157,7 +146,7 @@ class PersistenceSetup:
     @cached_property
     def ldif_files(self):
         filenames = ["clients.ldif"]
-        return [f"/app/templates/{filename}" for filename in filenames]
+        return [f"/app/templates/admin-ui/{filename}" for filename in filenames]
 
     def import_ldif_files(self):
         for file_ in self.ldif_files:
@@ -167,7 +156,7 @@ class PersistenceSetup:
     def save_config(self):
         logger.info("Updating admin-ui config in persistence (if required).")
 
-        with open("/app/templates/auiConfiguration.json") as f:
+        with open("/app/templates/admin-ui/auiConfiguration.json") as f:
             conf_from_file = f.read() % self.ctx
 
         dn = "ou=admin-ui,ou=configuration,o=jans"
