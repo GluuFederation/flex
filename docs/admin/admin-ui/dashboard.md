@@ -7,7 +7,7 @@ tags:
 
 # Dashboard
 
-After successful authentication, the administrator is taken to the dashboard. The dashboard brings an organized presentation of crucial details in one place adding to the convenience of users in tracking and analysis of auth server and other details.
+After successful authentication, the administrator is taken to the dashboard. The dashboard brings an organized presentation of crucial details at one place adding to the convenience of users in tracking and analysis of auth server and other details.
 
 ![image](../../assets/admin-ui/dashboard.png)
 
@@ -31,7 +31,7 @@ Admin UI uses [LicenseSpring](https://licensespring.com/) platform for customer 
 
 ## Access Token Graph
 
-The dashboard has a bar graph showing month-wise access-token with grant-type `client credentials` and `authorization code` and id-token generated from auth server.
+The dashboard has a bar graph showing month-wise access-token with grant-type `client credentials`, `authorization code` and `id_token` generated from auth server.
 
 ![image](../../assets/admin-ui/access-token-graph.png)
 

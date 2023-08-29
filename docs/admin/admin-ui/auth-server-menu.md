@@ -14,6 +14,7 @@ tags:
 # Auth Server Menu
 
 The **Auth Server** menu covers the following important sub-menus to configure and manage Auth server.
+
 - Sessions
 - Server configuration
 - Keys
@@ -128,9 +129,15 @@ The Client details are as follows:
 
 The scope is a mechanism to limit an application's access to a user's account. An application can request one or 
 more scopes, this information is then presented to the user in the consent screen, and the access token issued to 
-the application will be limited to the scopes granted.
+the application will be limited to the scopes granted. Please check [here](https://docs.jans.io/v1.0.15/admin/auth-server/scopes/) for detail documentation on scopes.
 
-For an OpenID Connect, the scope can be mapped with user claims.
+### OAuth 2.0 scopes
+
+This scope type would only have a description, but no claims. Once a client obtains this token, it may be passed to the backend API.
+
+### OpenID scopes
+
+Specify what access privileges are being requested for Access Tokens. The scopes associated with Access Tokens determine what resources will be available when they are used to access OAuth 2.0 protected endpoints. For OpenID Connect, scopes can be used to request that specific sets of information be made available as Claim Values.
 
 ![image](../../assets/admin-ui/openid-scope.png)
 
@@ -150,7 +157,7 @@ client.
 
 ### UMA scopes
 
-UMA scope can either be created by the user or auto-created by the auth server. UMA scope cannot be modified using 
+UMA scope can either be created by the user or auto-created by the authentication server. UMA scope cannot be modified using 
 Gluu Flex Admin UI.
 
 - If the logged-in user creates UMA scope then the creator type will be `USER` and the creator Id will be logged-in 
@@ -184,10 +191,14 @@ or default authentication assurance when no specific ACR value is requested or s
 ## Agama
 
 This menu addresses deployment of [Agama](https://docs.jans.io/head/agama/introduction/) project packages (file with 
-.gama extension).
+.gama extension). To make sure that package is untempered, the file containing sha256 checksum also need to be uploaded on UI.
+
+![image](../../assets/admin-ui/agama-deployment.png)
 
 
+The project name, description, version, deployment start/end date-time and deployment error (if any) can be seen on details popup of the record. User can export sample and current configuration or import configuration. 
 
+![image](../../assets/admin-ui/gama-details.png)
 
-
+![image](../../assets/admin-ui/export-gama-config.png)
 
