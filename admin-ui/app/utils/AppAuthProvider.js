@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
 import { useLocation } from 'react-router'
-import { saveState } from './TokenController'
+import {
+  saveState,
+  NoHashQueryStringUtils,
+  saveConfigRequest,
+  getConfigRequest,
+  saveIssuer,
+  getIssuer
+} from './TokenController'
 import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { useSelector, useDispatch } from 'react-redux'
@@ -19,13 +26,16 @@ import {
   FetchRequestor,
   AuthorizationServiceConfiguration,
   AuthorizationRequest,
+  TokenRequest,
   RedirectRequestHandler,
+  LocalStorageBackend,
+  DefaultCrypto,
+  BaseTokenRequestHandler,
+  AuthorizationNotifier,
+  GRANT_TYPE_AUTHORIZATION_CODE,
 } from '@openid/appauth'
 
-let configuration
-
 export default function AppAuthProvider(props) {
-  const authorizationHandler = new RedirectRequestHandler()
   const dispatch = useDispatch()
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
@@ -53,8 +63,8 @@ export default function AppAuthProvider(props) {
     const params = queryString.parse(location.search)
     if (!(params.code && params.scope && params.state)) {
       dispatch(checkLicenseConfigValid())
+      // dispatch(getRandomChallengePair())
     }
-    dispatch(getRandomChallengePair())
   }, [])
 
   useEffect(() => {
@@ -63,120 +73,107 @@ export default function AppAuthProvider(props) {
       dispatch(checkLicensePresent())
     }
   }, [isConfigValid])
+  const [error, setError] = useState(null)
+  const [code, setCode] = useState(null)
 
   useEffect(() => {
-    getDerivedStateFromProps()
+    const authorizationHandler = new RedirectRequestHandler(
+      new LocalStorageBackend(),
+      new NoHashQueryStringUtils(),
+      window.location,
+      new DefaultCrypto()
+    )
+
+    if (isLicenseValid) {
+      AuthorizationServiceConfiguration.fetchFromIssuer(
+        issuer,
+        new FetchRequestor()
+      )
+        .then((response) => {
+          let extras = {
+            acr_values: config.acrValues,
+          }
+          const authRequest = new AuthorizationRequest({
+            client_id: config.clientId,
+            redirect_uri: config.redirectUrl,
+            scope: config.scope,
+            response_type: AuthorizationRequest.RESPONSE_TYPE_CODE,
+            state: undefined,
+            extras,
+          })
+          saveIssuer(issuer)
+          saveConfigRequest(authRequest)
+          authorizationHandler.performAuthorizationRequest(
+            response,
+            authRequest
+          )
+        })
+        .catch((error) => {
+          setError(error)
+        })
+    }
   }, [isLicenseValid])
 
-  const buildAuthzUrl = (state, nonce) => {
-    console.log('Config', config)
-    const {
-      authzBaseUrl,
-      clientId,
-      scope,
-      redirectUrl,
-      responseType,
-      acrValues,
-    } = config
-    if (
-      !authzBaseUrl ||
-      !clientId ||
-      !scope ||
-      !redirectUrl ||
-      !responseType ||
-      !acrValues ||
-      !state ||
-      !nonce ||
-      !codeChallenge ||
-      !codeVerifier ||
-      !codeChallengeMethod
-    ) {
-      console.warn('Parameters to process authz code flow are missing.')
+  useEffect(() => {
+    const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor())
+    const authorizationHandler = new RedirectRequestHandler(
+      new LocalStorageBackend(),
+      new NoHashQueryStringUtils(),
+      window.location,
+      new DefaultCrypto()
+    )
+    const notifier = new AuthorizationNotifier()
+    const config = getConfigRequest()
+    const issuer = getIssuer()
+
+    notifier.setAuthorizationListener((request, response, error) => {
+      console.log('the request', request)
+      if (response) {
+        console.log(`Authorization Code  ${response.code}`)
+
+        let extras = null
+        if (request.internal) {
+          extras = {}
+          extras.code_verifier = request.internal.code_verifier
+        }
+
+        const tokenRequest = new TokenRequest({
+          client_id: request.clientId,
+          redirect_uri: request.redirectUri,
+          grant_type: GRANT_TYPE_AUTHORIZATION_CODE,
+          code: response.code,
+          extras: { code_verifier: request.internal.code_verifier, scope: request.scope },
+        })
+        console.log(`tokenRequest`, tokenRequest)
+
+        AuthorizationServiceConfiguration.fetchFromIssuer(
+          issuer,
+          new FetchRequestor()
+        )
+          .then((configuration) => {
+            return tokenHandler.performTokenRequest(configuration, tokenRequest)
+          })
+          .then((token) => {
+            localStorage.setItem('access_token', token.accessToken)
+          })
+          .catch((oError) => {
+            setError(oError)
+          })
+      }
+    })
+
+    const params = new URLSearchParams(location.search)
+    setCode(params.get('code'))
+
+    if (!code) {
+      setError('Unable to get authorization code')
       return
     }
-    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}&redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}&code_challenge_method=${codeChallengeMethod}&code_challenge=${codeChallenge}`
-  }
 
-  const getDerivedStateFromProps = async () => {
-    if (window.location.href.indexOf('logout') > -1) {
-      setShowContent(true)
-      return null
-    }
-    if (!isLicenseValid) {
-      setShowContent(false)
-    }
-    if (!isConfigValid) {
-      setShowContent(false)
-    }
-    if (!showContent) {
-      if (!userinfo) {
-        const params = queryString.parse(location.search)
-        if (params.code && params.scope && params.state && !isLicenseValid) {
-          dispatch(getUserInfo(params.code, codeVerifier))
-        } else {
-          if (!showContent && Object.keys(config).length) {
-            // const state = uuidv4()
-            // saveState(state)
-            // const authzUrl = buildAuthzUrl(state, uuidv4())
-            // if (authzUrl) {
-            //   window.location.href = authzUrl
-            // }
-            // new
-            const state = uuidv4()
-            saveState(state)
-            configuration =
-              await AuthorizationServiceConfiguration.fetchFromIssuer(
-                issuer,
-                new FetchRequestor()
-              )
-            console.log(`COMPONENT configuration`, configuration)
-            let extras = {
-              acr_values: config.acrValues,
-              nonce: uuidv4(),
-              code_challenge_method: codeChallengeMethod,
-              code_challenge: codeChallenge,
-            }
-            let request = new AuthorizationRequest({
-              client_id: config.clientId,
-              redirect_uri: config.redirectUrl,
-              scope: config.scope,
-              response_type: config.responseType,
-              state: state,
-              extras,
-            })
-            console.log(`request`, request)
-            authorizationHandler.performAuthorizationRequest(
-              configuration,
-              request
-            )
-            return
-          }
-        }
-        setShowContent(false)
-        return null
-      } else {
-        if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length == 0) {
-          setShowContent(false)
-          setRoleNotFound(true)
-          alert(
-            'The logged-in user do not have valid role. Logging out of Admin UI'
-          )
-          const state = uuidv4()
-          const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
-          window.location.href = sessionEndpoint
-          return null
-        }
-        if (!token) {
-          dispatch(getAPIAccessToken(userinfo_jwt))
-        }
-        setShowContent(true)
-        return null
-      }
-    } else {
-      setShowContent(true)
-      return true
-    }
-  }
+    authorizationHandler.setAuthorizationNotifier(notifier)
+    authorizationHandler.completeAuthorizationRequestIfPossible()
+  }, [code])
+
 
   return (
     <React.Fragment>
@@ -208,3 +205,4 @@ export default function AppAuthProvider(props) {
     </React.Fragment>
   )
 }
+

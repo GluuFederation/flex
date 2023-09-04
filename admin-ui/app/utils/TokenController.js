@@ -1,3 +1,5 @@
+import { BasicQueryStringUtils } from "@openid/appauth"
+
 export const isFourZeroOneError = (error) => {
   return error.status === 401 ? true : false
 }
@@ -15,6 +17,22 @@ export const saveState = (state) => {
   }
 }
 
+export const saveConfigRequest = (request) => {
+  localStorage.setItem('configRequest', JSON.stringify(request))
+}
+
+export const saveIssuer = (issuer) => {
+  localStorage.setItem('issuer', issuer)
+}
+
+export const getIssuer = () => {
+  return localStorage.getItem('issuer')
+}
+
+export const getConfigRequest = () => {
+  return JSON.parse(localStorage.getItem('configRequest'))
+}
+
 export const isValidState = (newState) => {
   return localStorage.getItem('gluu.flow.state') === newState ? true : false
 }
@@ -25,4 +43,10 @@ export const addAdditionalData = (audit, action, resource, payload) => {
   audit['message'] = payload.action ? payload.action.action_message : ''
   audit['payload'] = payload.action ? payload.action.action_data : {}
   audit['date'] = new Date()
+}
+
+export class NoHashQueryStringUtils extends BasicQueryStringUtils {
+  parse(input, useHash) {
+      return super.parse(input, false);
+  }
 }
