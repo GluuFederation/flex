@@ -193,6 +193,7 @@ function* uploadNewSsaToken({ payload }) {
     yield put(checkLicensePresent())
     // window.location.reload()
   } catch (error) {
+    yield put(checkLicenseConfigValidResponse(false))
     console.log(error)
   }
 }
@@ -205,6 +206,7 @@ function* checkAdminuiLicenseConfig() {
     yield put(checkLicenseConfigValidResponse(response?.success))
   } catch (error) {
     console.log(error)
+    yield put(checkLicenseConfigValidResponse(false))
   }
 }
 
