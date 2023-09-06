@@ -41,10 +41,9 @@ const authSlice = createSlice({
     },
     getUserInfo: (state, action) => {},
     getUserInfoResponse: (state, action) => {
-      if (action.payload?.uclaims) {
-        state.userinfo = action.payload.uclaims
+      if (action.payload?.ujwt) {
+        state.userinfo = action.payload.userinfo
         state.userinfo_jwt = action.payload.ujwt
-        state.permissions = action.payload.scopes
         state.isAuthenticated = true
       } else {
         state.isAuthenticated = true
@@ -52,10 +51,10 @@ const authSlice = createSlice({
     },
     getAPIAccessToken: (state, action) => {},
     getAPIAccessTokenResponse: (state, action) => {
-      if (action.payload?.accessToken) {
-        state.token = action.payload.accessToken
-        state.issuer = action.payload.accessToken.issuer
-        state.permissions = action.payload.accessToken.scopes
+      if (action.payload?.access_token) {
+        state.token = { access_token: action.payload.access_token, scopes: action.payload.scopes }
+        state.issuer = action.payload.issuer
+        state.permissions = action.payload.scopes
         state.isAuthenticated = true
       }
     },
@@ -68,14 +67,6 @@ const authSlice = createSlice({
     setApiDefaultToken: (state, action) => {
       state.defaultToken = action.payload
       state.issuer = action.payload.issuer
-    },
-    getRandomChallengePair: (state, action) => {},
-    getRandomChallengePairResponse: (state, action) => {
-      if (action.payload?.codeChallenge) {
-        state.codeChallenge = action.payload.codeChallenge
-        state.codeVerifier = action.payload.codeVerifier
-        localStorage.setItem("codeVerifier", action.payload.codeVerifier)
-      }
     },
   }
 })
@@ -92,8 +83,6 @@ export const {
   getUserLocation,
   getUserLocationResponse,
   setApiDefaultToken,
-  getRandomChallengePair,
-  getRandomChallengePairResponse,
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)

@@ -17,20 +17,12 @@ export const saveState = (state) => {
   }
 }
 
-export const saveConfigRequest = (request) => {
-  localStorage.setItem('configRequest', JSON.stringify(request))
-}
-
 export const saveIssuer = (issuer) => {
   localStorage.setItem('issuer', issuer)
 }
 
 export const getIssuer = () => {
   return localStorage.getItem('issuer')
-}
-
-export const getConfigRequest = () => {
-  return JSON.parse(localStorage.getItem('configRequest'))
 }
 
 export const isValidState = (newState) => {

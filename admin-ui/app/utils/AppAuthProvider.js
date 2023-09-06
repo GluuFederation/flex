@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
 import { useLocation } from 'react-router'
 import {
-  saveState,
   NoHashQueryStringUtils,
-  saveConfigRequest,
-  getConfigRequest,
   saveIssuer,
   getIssuer
 } from './TokenController'
@@ -13,13 +10,11 @@ import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  getUserInfo,
   getAPIAccessToken,
   checkLicensePresent,
-  getRandomChallengePair,
 } from 'Redux/actions'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
-import { checkLicenseConfigValid } from '../redux/actions'
+import { checkLicenseConfigValid, getOAuth2Config, getUserInfoResponse } from '../redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
 import GluuErrorModal from 'Routes/Apps/Gluu/GluuErrorModal'
 import {
@@ -34,21 +29,20 @@ import {
   AuthorizationNotifier,
   GRANT_TYPE_AUTHORIZATION_CODE,
 } from '@openid/appauth'
+import { fetchUserInformation } from 'Redux/api/backend-api'
+import jwt_decode from "jwt-decode";
 
 export default function AppAuthProvider(props) {
   const dispatch = useDispatch()
   const location = useLocation()
-  const [showContent, setShowContent] = useState(false)
   const [roleNotFound, setRoleNotFound] = useState(false)
+  const [showAdminUI, setShowAdminUI] = useState(false)
   const {
     config,
     userinfo,
     userinfo_jwt,
     token,
     backendIsUp,
-    codeChallenge,
-    codeVerifier,
-    codeChallengeMethod,
     issuer,
   } = useSelector((state) => state.authReducer)
   const {
@@ -63,7 +57,6 @@ export default function AppAuthProvider(props) {
     const params = queryString.parse(location.search)
     if (!(params.code && params.scope && params.state)) {
       dispatch(checkLicenseConfigValid())
-      // dispatch(getRandomChallengePair())
     }
   }, [])
 
@@ -102,7 +95,6 @@ export default function AppAuthProvider(props) {
             extras,
           })
           saveIssuer(issuer)
-          saveConfigRequest(authRequest)
           authorizationHandler.performAuthorizationRequest(
             response,
             authRequest
@@ -123,13 +115,10 @@ export default function AppAuthProvider(props) {
       new DefaultCrypto()
     )
     const notifier = new AuthorizationNotifier()
-    const config = getConfigRequest()
     const issuer = getIssuer()
 
     notifier.setAuthorizationListener((request, response, error) => {
-      console.log('the request', request)
       if (response) {
-        console.log(`Authorization Code  ${response.code}`)
 
         let extras = null
         if (request.internal) {
@@ -144,17 +133,41 @@ export default function AppAuthProvider(props) {
           code: response.code,
           extras: { code_verifier: request.internal.code_verifier, scope: request.scope },
         })
-        console.log(`tokenRequest`, tokenRequest)
+        let authConfigs
+        dispatch(getOAuth2Config())
 
         AuthorizationServiceConfiguration.fetchFromIssuer(
           issuer,
           new FetchRequestor()
         )
           .then((configuration) => {
+            authConfigs = configuration
             return tokenHandler.performTokenRequest(configuration, tokenRequest)
           })
           .then((token) => {
-            localStorage.setItem('access_token', token.accessToken)
+            return fetchUserInformation({ userInfoEndpoint: authConfigs.userInfoEndpoint, access_token: token.accessToken, token_type: token.tokenType })
+          })
+          .then((ujwt) => {
+            if(!userinfo) {
+              dispatch(getUserInfoResponse({ userinfo: jwt_decode(ujwt), ujwt: ujwt }))
+              dispatch(getAPIAccessToken(ujwt))
+              setShowAdminUI(true)
+            } else {
+              if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length == 0) {
+                setShowAdminUI(false)
+                alert(
+                  'The logged-in user do not have valid role. Logging out of Admin UI'
+                )
+                setRoleNotFound(true)
+                const state = uuidv4()
+                const sessionEndpoint = `${authConfigs.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${localStorage.getItem('postLogoutRedirectUri')}`
+                window.location.href = sessionEndpoint
+                return null
+              }
+              if (!token) {
+                dispatch(getAPIAccessToken(userinfo_jwt))
+              }
+            }
           })
           .catch((oError) => {
             setError(oError)
@@ -177,7 +190,7 @@ export default function AppAuthProvider(props) {
 
   return (
     <React.Fragment>
-      <SessionTimeout isAuthenticated={showContent} />
+      <SessionTimeout isAuthenticated={showAdminUI} />
       <GluuTimeoutModal
         description={
           'The request has been terminated as there is no response from the server for more than 60 seconds.'
@@ -191,18 +204,17 @@ export default function AppAuthProvider(props) {
           }
         />
       )}
-      {showContent && props.children}
-      {!showContent && (
+      {showAdminUI && props.children}
+      {!showAdminUI && (
         <ApiKeyRedirect
           backendIsUp={backendIsUp}
           isLicenseValid={isLicenseValid}
-          redirectUrl={config.redirectUrl}
           isConfigValid={isConfigValid}
           islicenseCheckResultLoaded={islicenseCheckResultLoaded}
           isLicenseActivationResultLoaded={isLicenseActivationResultLoaded}
+          roleNotFound={roleNotFound}
         />
       )}
     </React.Fragment>
   )
 }
-
