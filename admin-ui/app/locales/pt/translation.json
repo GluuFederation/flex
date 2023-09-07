@@ -356,7 +356,7 @@
     "add_configuration": "Adicionar configuração",
     "edit_configuration": "Excluir configuração",
     "new_role": "Novo papel",
-    "adding_new_api_config_role": "Adicionando nova função de configuração de API",
+    "adding_new_permission": "Adicionando nova permissão",
     "add_role": "Adicionar função",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",

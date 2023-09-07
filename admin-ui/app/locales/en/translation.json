@@ -480,7 +480,7 @@
     "edit_configuration": "Edit Configuration",
     "delete_configuration": "Delete Configuration",
     "new_role": "New Role",
-    "adding_new_api_config_role": "Adding new api config role",
+    "adding_new_permission": "Adding new permission",
     "add_role": "Add Role",
     "success_in_saving": "Changes saved successfully",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",

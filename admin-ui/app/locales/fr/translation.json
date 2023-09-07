@@ -360,7 +360,7 @@
     "add_permission": "Ajouter une autorisation",
     "add_configuration": "Ajouter une configuration",
     "new_role": "Nouveau rôle",
-    "adding_new_api_config_role": "Ajout d'un nouveau rôle de configuration API",
+    "adding_new_permission": "Ajout d'une nouvelle autorisation",
     "edit_configuration": "Supprimer la configuration",
     "add_role": "Ajouter un rôle",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",

@@ -47,7 +47,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
           ></i>
           {t('messages.new_role')}
         </ModalHeader>
-        <ModalBody>{t('messages.adding_new_api_config_role')}</ModalBody>
+        <ModalBody>{t('messages.adding_new_permission')}</ModalBody>
         <ModalBody>
           <FormGroup row>
             <Col sm={12}>
@@ -79,7 +79,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
                 }}
                 lsize={4}
                 rsize={8}
-                label={`${t('documentation.no_category.deletable')} ?`}
+                label={`${t('documentation.no_category.deletable')}`}
                 value={deletable}
               />
             </Col>

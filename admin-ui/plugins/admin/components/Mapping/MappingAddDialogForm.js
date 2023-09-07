@@ -87,7 +87,7 @@ const MappingAddDialogForm = ({
           ></i>
           {t('messages.new_role')}
         </ModalHeader>
-        <ModalBody>{t('messages.adding_new_api_config_role')}</ModalBody>
+        <ModalBody>{t('messages.adding_new_permission')}</ModalBody>
         <ModalBody>
           <GluuSingleValueCompleter
             name="api_role"
