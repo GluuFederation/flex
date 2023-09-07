@@ -85,9 +85,9 @@ const MappingAddDialogForm = ({
             style={{ color: 'green' }}
             className="fa fa-2x fa-info fa-fw modal-icon mb-3"
           ></i>
-          New Role
+          {t('messages.new_role')}
         </ModalHeader>
-        <ModalBody>Adding new api config role</ModalBody>
+        <ModalBody>{t('messages.adding_new_permission')}</ModalBody>
         <ModalBody>
           <GluuSingleValueCompleter
             name="api_role"

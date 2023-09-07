@@ -159,6 +159,7 @@ const InumDBServerTab = () => {
             lsize={3}
             rsize={9}
             value={formik.values.defaultInumServer}
+            doc_category={null}
           />
         </Col>
         {!formik.values.defaultInumServer && (
@@ -279,7 +280,7 @@ const InumDBServerTab = () => {
             <Col sm={12} className='mt-3'>
               <GluuToogleRow
                 label='fields.use_ssl'
-                name='targetConfig.useSSL'
+                name='useSSL'
                 required
                 handler={(e) => {
                   formik.setFieldValue('targetConfig.useSSL', e.target.checked)
@@ -287,6 +288,7 @@ const InumDBServerTab = () => {
                 lsize={3}
                 rsize={9}
                 value={formik.values.targetConfig?.useSSL}
+                doc_category='jans_link'
               />
             </Col>
           </>

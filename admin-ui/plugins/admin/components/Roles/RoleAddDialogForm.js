@@ -45,9 +45,9 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
             style={{ color: 'green' }}
             className='fa fa-2x fa-info fa-fw modal-icon mb-3'
           ></i>
-          New Role
+          {t('messages.new_role')}
         </ModalHeader>
-        <ModalBody>Adding new api config role</ModalBody>
+        <ModalBody>{t('messages.adding_new_permission')}</ModalBody>
         <ModalBody>
           <FormGroup row>
             <Col sm={12}>
@@ -79,7 +79,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
                 }}
                 lsize={4}
                 rsize={8}
-                label="Deletable ?"
+                label={`${t('documentation.no_category.deletable')}`}
                 value={deletable}
               />
             </Col>

@@ -66,6 +66,7 @@ module.exports = {
       title: 'AdminUI',
       inject: 'body',
       template: config.srcHtmlLayout,
+      favicon: path.resolve(__dirname, '../app/images/favicons/favicon.ico'),
     }),
     new webpack.DefinePlugin({
       'process.env': {
@@ -139,6 +140,11 @@ module.exports = {
     ],
   },
   devServer: {
+    client: {
+      overlay: {
+        runtimeErrors: false,
+      },
+    },
     hot: true,
     compress: true,
     historyApiFallback: {

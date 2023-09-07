@@ -80,16 +80,18 @@ function ScopeDetailPage({ row }) {
         <Row>
           <Col sm={3}>{t('fields.attributes')}:</Col>
           <Col sm={9}>
-            {Object.keys(row.attributes || []).map((item, key) => (
+            {Object.keys(row.attributes || []).map((item, key) => {
+              return (
               <GluuFormDetailRow
                 key={key}
                 label={item}
                 isBadge={true}
                 value={String(row.attributes[item])}
                 doc_category={SCOPE}
-                doc_entry="attributes"
+                doc_entry={`attributes.${item}`}
               />
-            ))}
+            )
+            })}
           </Col>
         </Row>
       </Container>

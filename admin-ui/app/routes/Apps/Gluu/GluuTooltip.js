@@ -19,7 +19,7 @@ function GluuTooltip(props) {
         data-testid={props.doc_entry}
         place="bottom"
         role="tooltip"
-        style={{ zIndex: 101 }}
+        style={{ zIndex: 101, maxWidth: '45vw' }}
       >
         {props.isDirect
           ? props.doc_category
