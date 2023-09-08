@@ -21,7 +21,7 @@ export default function AppAuthProvider(props) {
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
   const [roleNotFound, setRoleNotFound] = useState(false)
-  const { config, userinfo, userinfo_jwt, token, backendIsUp, codeChallenge, codeVerifier, codeChallengeMethod } = useSelector(
+  const { config, userinfo, userinfo_jwt, token, codeChallenge, codeVerifier, codeChallengeMethod } = useSelector(
     (state) => state.authReducer
   )
   const {
@@ -149,7 +149,6 @@ export default function AppAuthProvider(props) {
       {showContent && props.children}
       {!showContent && (
         <ApiKeyRedirect
-          backendIsUp={backendIsUp}
           isLicenseValid={isLicenseValid}
           redirectUrl={config.redirectUrl}
           isConfigValid={isConfigValid}
