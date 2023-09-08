@@ -32,7 +32,7 @@ export default class RoleApi {
     })
   }
 
-  deleteRole = async (data) => {
+  deleteRole = (data) => {
     return new Promise((resolve, reject) => {
       this.api.deleteAdminuiRole(data.role, (error, data) => {
         handleResponse(error, reject, resolve, data)

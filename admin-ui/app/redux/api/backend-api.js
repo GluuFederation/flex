@@ -4,7 +4,7 @@ const JansConfigApi = require('jans_config_api')
 import { useSelector } from 'react-redux'
 // Get OAuth2 Configuration
 
-export const fetchServerConfiguration = async (token) => {
+export const fetchServerConfiguration = (token) => {
   const headers = { Authorization: `Bearer ${token}` }
   return axios
     .get('/app/admin-ui/oauth2/config', { headers })
@@ -19,7 +19,7 @@ export const fetchServerConfiguration = async (token) => {
 }
 
 // get user location and ip
-export const getUserIpAndLocation = async () => {
+export const getUserIpAndLocation = () => {
   return axios_instance
     .get('https://geolocation-db.com/json/')
     .then((response) => response.data)
@@ -30,7 +30,7 @@ export const getUserIpAndLocation = async () => {
 }
 
 // Retrieve user information
-export const fetchUserInformation = async (code, codeVerifier) => {
+export const fetchUserInformation = (code, codeVerifier) => {
   return axios
     .post('/app/admin-ui/oauth2/user-info', {
       code: code,
@@ -47,7 +47,7 @@ export const fetchUserInformation = async (code, codeVerifier) => {
 }
 
 // post user action
-export const postUserAction = async (userAction) => {
+export const postUserAction = (userAction) => {
   return axios
     .post('/admin-ui/logging/audit', {
       headers: {
@@ -62,7 +62,7 @@ export const postUserAction = async (userAction) => {
 }
 
 // Get API Access Token
-export const fetchApiAccessToken = async (jwt) => {
+export const fetchApiAccessToken = (jwt) => {
   return axios
     .get('/app/admin-ui/oauth2/api-protection-token', { params: { ujwt: jwt } })
     .then((response) => response.data)
@@ -75,7 +75,7 @@ export const fetchApiAccessToken = async (jwt) => {
     })
 }
 
-export const fetchApiTokenWithDefaultScopes = async () => {
+export const fetchApiTokenWithDefaultScopes = () => {
   return axios
     .get('/app/admin-ui/oauth2/api-protection-token')
     .then((response) => response.data)

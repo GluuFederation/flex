@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
 import Box from '@mui/material/Box'
 import {
   Avatar,
@@ -14,14 +13,14 @@ import {
   UncontrolledDropdown,
 } from 'Components'
 import { LanguageMenu } from './LanguageMenu'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import { randomAvatar } from '../../../utilities'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 
-function GluuNavBar({ userinfo }) {
-  const userInfo = userinfo ? userinfo : {}
+function GluuNavBar() {
+  const userInfo = useSelector((state) => state.authReducer.userinfo)
   const [showCollapse, setShowCollapse] = useState(
     window.matchMedia('(max-width: 992px)').matches,
   )
@@ -74,18 +73,4 @@ function GluuNavBar({ userinfo }) {
   )
 }
 
-GluuNavBar.propTypes = {
-  userinfo: PropTypes.object,
-}
-
-GluuNavBar.defaultProps = {
-  navStyle: {},
-}
-
-const mapStateToProps = ({ authReducer }) => {
-  const userinfo = authReducer.userinfo
-  return {
-    userinfo,
-  }
-}
-export default connect(mapStateToProps)(GluuNavBar)
+export default GluuNavBar

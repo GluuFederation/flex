@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 
 const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
   const [active, setActive] = useState(false)
@@ -50,7 +51,8 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
         <ModalBody>{t('messages.adding_new_permission')}</ModalBody>
         <ModalBody>
           <FormGroup row>
-            <Col sm={12}>
+            <GluuLabel label={'fields.name'} />
+            <Col sm={9}>
               <Input
                 id='api_role'
                 type='text'
@@ -61,7 +63,8 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Col sm={12}>
+            <GluuLabel label={'fields.description'} />
+            <Col sm={9}>
               <Input
                 id='api_description'
                 type='textarea'

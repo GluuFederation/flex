@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { SidebarMenu } from 'Components'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { hasPermission } from 'Utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
@@ -20,7 +20,8 @@ import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached';
 import styles from './styles/GluuAppSidebar.style'
 
-function GluuAppSidebar({ scopes }) {
+function GluuAppSidebar() {
+  const scopes = useSelector(({ authReducer }) => authReducer.token? authReducer.token.scopes : authReducer.permissions)
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -162,13 +163,4 @@ function GluuAppSidebar({ scopes }) {
   )
 }
 
-const mapStateToProps = ({ authReducer }) => {
-  const scopes = authReducer.token
-    ? authReducer.token.scopes
-    : authReducer.permissions
-  return {
-    scopes,
-  }
-}
-
-export default connect(mapStateToProps)(GluuAppSidebar)
+export default GluuAppSidebar

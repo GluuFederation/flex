@@ -3,7 +3,7 @@ export default class SsaApi {
     this.api = api
   }
 
-  getAllSsa = async ({ payload, authServerHost }) => {
+  getAllSsa = ({ payload, authServerHost }) => {
     const { token } = payload
     return new Promise((resolve, reject) => {
       fetch(`${authServerHost}/jans-auth/restv1/ssa`, {
@@ -23,7 +23,7 @@ export default class SsaApi {
     })
   }
 
-  createSsa = async ({ payload, token, authServerHost }) => {
+  createSsa = ({ payload, token, authServerHost }) => {
     return new Promise((resolve, reject) => {
       fetch(`${authServerHost}/jans-auth/restv1/ssa`, {
         headers: {
@@ -43,7 +43,7 @@ export default class SsaApi {
     })
   }
   
-  deleteSsa = async ({ jti, token, authServerHost }) => {
+  deleteSsa = ({ jti, token, authServerHost }) => {
     return new Promise((resolve, reject) => {
       fetch(`${authServerHost}/jans-auth/restv1/ssa?jti=${jti}`, {
         headers: {

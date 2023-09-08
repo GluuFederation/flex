@@ -13,7 +13,7 @@ import {
   STAT_JANS_READ,
 } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
 import { getHealthStatus } from 'Redux/features/healthSlice'
 import DashboardChart from './Chart/DashboardChart'
@@ -23,18 +23,7 @@ import CrossIcon from '../../images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 
-function DashboardPage({
-  statData,
-  permissions,
-  clients,
-  license,
-  serverStatus,
-  dbStatus,
-  loading,
-  users,
-  totalClientsEntries,
-  dispatch,
-}) {
+function DashboardPage() {
   const { t } = useTranslation()
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const breakDashboardCard = useMediaQuery({ query: '(max-width: 1424px)' })
@@ -45,6 +34,17 @@ function DashboardPage({
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
   const [mauCount, setMauCount] = useState(null)
   const [tokenCount, setTokenCount] = useState(null)
+
+  const statData = useSelector(state => state.mauReducer.stat)
+  const loading = useSelector(state => state.mauReducer.loading)
+  const clients = useSelector(state => state.initReducer.clients)
+  const totalClientsEntries = useSelector(state => state.initReducer.totalClientsEntries)
+  const license = useSelector(state => state.licenseDetailsReducer.item)
+  const serverStatus = useSelector(state => state.healthReducer.serverStatus)
+  const dbStatus = useSelector(state => state.healthReducer.dbStatus)
+  const permissions = useSelector(state => state.authReducer.permissions)
+
+  const dispatch = useDispatch()
 
   SetTitle(t('menus.dashboard'))
 
@@ -143,11 +143,12 @@ function DashboardPage({
     },
     {
       text: t('dashboard.company_name'),
-      value: `${license?.customerFirstName} ${license?.customerLastName}`,
+      value: `${license?.customerFirstName || ''} ${license?.customerLastName || ''}`,
     },
     {
       text: t('dashboard.license_status'),
       value: license?.licenseActive ? 'active' : 'inactive',
+      key: 'License Status'
     },
   ]
 
@@ -281,7 +282,7 @@ function DashboardPage({
                         {userInfo.map((info, key) => (
                           <div className={classes.userInfoText} key={key}>
                             {info.text}:{' '}
-                            {info.text === 'License Status' ? (
+                            {info?.key === 'License Status' ? (
                               <span
                                 className={
                                   info.value === 'active'
@@ -391,18 +392,4 @@ function DashboardPage({
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    statData: state.mauReducer.stat,
-    loading: state.mauReducer.loading,
-    clients: state.initReducer.clients,
-    totalClientsEntries: state.initReducer.totalClientsEntries,
-    license: state.licenseDetailsReducer.item,
-    serverStatus: state.healthReducer.serverStatus,
-    dbStatus: state.healthReducer.dbStatus,
-    permissions: state.authReducer.permissions,
-    users: state.userReducer.items,
-  }
-}
-
-export default connect(mapStateToProps)(DashboardPage)
+export default DashboardPage

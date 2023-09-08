@@ -43,7 +43,7 @@ export default class AttributeApi {
     })
   }
 
-  deleteAnAttribute = async (inum) => {
+  deleteAnAttribute = (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteAttributesByInum(inum, (error, data) => {
         handleResponse(error, reject, resolve, data)

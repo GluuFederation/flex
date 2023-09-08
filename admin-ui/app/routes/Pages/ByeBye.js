@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { uuidv4 } from 'Utils/Util'
 import { EmptyLayout, Label } from 'Components'
 import { logoutUser } from 'Redux/features/logoutSlice'
 import { useTranslation } from 'react-i18next'
 
-function ByeBye({ config, dispatch }) {
+function ByeBye() {
+  const config = useSelector((state) => state.authReducer.config)
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   useEffect(() => {
     if (config) {
@@ -28,11 +30,4 @@ function ByeBye({ config, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  const config = state.authReducer.config
-
-  return {
-    config,
-  }
-}
-export default connect(mapStateToProps)(ByeBye)
+export default ByeBye

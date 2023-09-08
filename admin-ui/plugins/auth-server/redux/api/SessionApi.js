@@ -3,7 +3,7 @@ export default class SessionApi {
     this.api = api
   }
 
-  getAllSessions = async () => {
+  getAllSessions = () => {
     return new Promise((resolve, reject) => {
       this.api.getSessions((error, data) => {
         this.handleResponse(error, reject, resolve, data)
@@ -11,7 +11,7 @@ export default class SessionApi {
     })
   }
 
-  revokeSession = async (userDn) => {
+  revokeSession = (userDn) => {
     return new Promise((resolve, reject) => {
       this.api.revokeUserSession(userDn, (error, data) => {
         this.handleResponse(error, reject, resolve, data)

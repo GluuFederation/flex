@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { buildPayload } from 'Utils/PermChecker'
 import { Container, Row, Col } from 'Components'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   getAttributes,
   getScripts,
@@ -11,7 +11,12 @@ import {
 import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 
-function Reports({ attributes, clients, scopes, scripts, dispatch }) {
+function Reports() {
+  const attributes = useSelector(state => state.initReducer.attributes);
+  const clients = useSelector(state => state.initReducer.clients);
+  const scopes = useSelector(state => state.initReducer.scopes);
+  const scripts = useSelector(state => state.initReducer.scripts);
+  const dispatch = useDispatch()
   const { t } = useTranslation()
 
   const attributeData = [
@@ -126,13 +131,5 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
     </Container>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    attributes: state.initReducer.attributes,
-    clients: state.initReducer.clients,
-    scopes: state.initReducer.scopes,
-    scripts: state.initReducer.scripts,
-  }
-}
 
-export default connect(mapStateToProps)(Reports)
+export default Reports

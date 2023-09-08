@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -10,15 +10,15 @@ import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-function CustomScriptEditPage({
-  item,
-  scripts,
-  loading,
-  dispatch,
-  saveOperationFlag,
-  errorInSaveOperationFlag,
-  viewOnly,
-}) {
+function CustomScriptEditPage() {
+  const dispatch = useDispatch()
+  const item = useSelector(state => state.customScriptReducer.item);
+  const scripts = useSelector(state => state.customScriptReducer.items);
+  const loading = useSelector(state => state.customScriptReducer.loading);
+  const saveOperationFlag = useSelector(state => state.customScriptReducer.saveOperationFlag);
+  const errorInSaveOperationFlag = useSelector(state => state.customScriptReducer.errorInSaveOperationFlag);
+  const viewOnly = useSelector(state => state.customScriptReducer.view);
+
   const userAction = {}
   const navigate =useNavigate()
   const { t } = useTranslation()
@@ -59,16 +59,5 @@ function CustomScriptEditPage({
     </GluuLoader>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    item: state.customScriptReducer.item,
-    scripts: state.customScriptReducer.items,
-    loading: state.customScriptReducer.loading,
-    permissions: state.authReducer.permissions,
-    saveOperationFlag: state.customScriptReducer.saveOperationFlag,
-    errorInSaveOperationFlag:
-      state.customScriptReducer.errorInSaveOperationFlag,
-    viewOnly: state.customScriptReducer.view,
-  }
-}
-export default connect(mapStateToProps)(CustomScriptEditPage)
+
+export default CustomScriptEditPage

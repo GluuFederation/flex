@@ -5,7 +5,7 @@ export default class UMAResourceApi {
     this.api = api
   }
 
-  getUMAResources = async (clientId) => {
+  getUMAResources = (clientId) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthUmaResourcesByClientid(clientId, (error, data) => {
         handleResponse(error, reject, resolve, data)
@@ -13,7 +13,7 @@ export default class UMAResourceApi {
     })
   }
 
-  deteleUMAResource = async (id) => {
+  deteleUMAResource = (id) => {
     return new Promise((resolve, reject) => {
       this.api.deleteOauthUmaResourcesById(id, (error, data) => {
         handleResponse(error, reject, resolve, data)

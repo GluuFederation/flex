@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { connect, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
@@ -8,9 +8,13 @@ import { buildPayload } from 'Utils/PermChecker'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
-function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSaveOperationFlag }) {
+function CustomScriptAddPage() {
   const userAction = {}
+  const dispatch = useDispatch()
   const loading  = useSelector((state) => state.customScriptReducer.loading)
+  const scripts = useSelector(state => state.customScriptReducer.items);
+  const saveOperationFlag = useSelector(state => state.customScriptReducer.saveOperationFlag);
+  const errorInSaveOperationFlag = useSelector(state => state.customScriptReducer.errorInSaveOperationFlag);
   const navigate =useNavigate()
 
   useEffect(() => {
@@ -40,12 +44,5 @@ function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSave
     </GluuLoader>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    scripts: state.customScriptReducer.items,
-    permissions: state.authReducer.permissions,
-    saveOperationFlag: state.customScriptReducer.saveOperationFlag,
-    errorInSaveOperationFlag: state.customScriptReducer.errorInSaveOperationFlag,
-  }
-}
-export default connect(mapStateToProps)(CustomScriptAddPage)
+
+export default CustomScriptAddPage

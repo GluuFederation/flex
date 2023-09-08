@@ -13,14 +13,14 @@ export default class ScopeApi {
     })
   }
 
-  getScope = async (inum) => {
+  getScope = (inum) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthScopesByInum(inum, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
   }
-  getScopeByCreator = async (inum) => {
+  getScopeByCreator = (inum) => {
     return new Promise((resolve, reject) => {
       this.api.getScopeByCreator(inum, (error, data) => {
         handleResponse(error, reject, resolve, data)
@@ -28,7 +28,7 @@ export default class ScopeApi {
     })
   }
 
-  patchScope = async (id) => {
+  patchScope = (id) => {
     return new Promise((resolve, reject) => {
       this.api.patchOauthScopesById(id, (error, data) => {
         handleResponse(error, reject, resolve, data)
@@ -59,7 +59,7 @@ export default class ScopeApi {
     })
   }
 
-  deleteAScope = async (inum) => {
+  deleteAScope = (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteOauthScopesByInum(inum, (error, data) => {
         handleResponse(error, reject, resolve, data)

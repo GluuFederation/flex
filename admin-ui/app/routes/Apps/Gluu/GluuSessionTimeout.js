@@ -24,7 +24,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
     clearInterval(countdownInterval)
   }
 
-  const handleLogout = async (isTimedOut = false) => {
+  const handleLogout = (isTimedOut = false) => {
     try {
       setTimeoutModalOpen(false)
       clearSessionInterval()
