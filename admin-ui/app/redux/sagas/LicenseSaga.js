@@ -195,6 +195,9 @@ function* uploadNewSsaToken({ payload }) {
   } catch (error) {
     yield put(checkLicenseConfigValidResponse(false))
     console.log(error)
+    yield put(
+      uploadNewSsaTokenResponse(error?.api_response?.body?.responseMessage || error.message)
+    )
   }
 }
 
