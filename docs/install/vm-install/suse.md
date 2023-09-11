@@ -110,6 +110,8 @@ Verify that installation has been successful and all installed components are ac
 https://FQDN/admin
 ```
 
+To troubleshoot issues with Admin UI access, check the [logs](../../admin/admin-ui/logs.md), refer to the [FAQ](../../admin/admin-ui/faq.md) and review [service dependencies](../../admin/admin-ui/introduction/#flex-services-dependencies).
+
 - Access Casa using URI below
 ```text
 https://FQDN/casa

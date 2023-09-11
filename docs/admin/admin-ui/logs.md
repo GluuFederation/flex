@@ -26,3 +26,11 @@ The log locations for Gluu Flex Admin UI can be configured by modifying the log4
 ```
 
 Within this configuration file, you can adjust various settings such as log levels, appenders, and formats.
+
+## Default Log Location
+
+The default log location for the Admin UI backend is:
+
+```
+/opt/jans/jetty/jans-config-api/logs
+```
