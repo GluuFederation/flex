@@ -750,18 +750,6 @@
         
           
         
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
       
       
         <label class="md-nav__link" for="__nav_3_3">
@@ -789,6 +777,82 @@
   
 
             
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/" class="md-nav__link">
+        Logs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3_4" type="checkbox" id="__nav_3_3_4" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_3_4">
+          Left Navigation Menu
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Left Navigation Menu" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          Left Navigation Menu
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
           
             
               
@@ -915,6 +979,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#oauth-20-scopes" class="md-nav__link">
+    OAuth 2.0 scopes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#openid-scopes" class="md-nav__link">
+    OpenID scopes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#spontaneous-scopes" class="md-nav__link">
     Spontaneous scopes
   </a>
@@ -1028,6 +1106,13 @@
       <a href="../userMgmt-menu/" class="md-nav__link">
         Users
       </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -1723,6 +1808,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#oauth-20-scopes" class="md-nav__link">
+    OAuth 2.0 scopes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#openid-scopes" class="md-nav__link">
+    OpenID scopes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#spontaneous-scopes" class="md-nav__link">
     Spontaneous scopes
   </a>
@@ -1835,15 +1934,17 @@
 
 
 <h1 id="auth-server-menu">Auth Server Menu<a class="headerlink" href="#auth-server-menu" title="Permanent link">#</a></h1>
-<p>The <strong>Auth Server</strong> menu covers the following important sub-menus to configure and manage Auth server.
-- Sessions
-- Server configuration
-- Keys
-- Logging
-- Clients
-- Scopes
-- Enabled Acrs
-- Agama deployment</p>
+<p>The <strong>Auth Server</strong> menu covers the following important sub-menus to configure and manage Auth server.</p>
+<ul>
+<li>Sessions</li>
+<li>Server configuration</li>
+<li>Keys</li>
+<li>Logging</li>
+<li>Clients</li>
+<li>Scopes</li>
+<li>Enabled Acrs</li>
+<li>Agama deployment</li>
+</ul>
 <h2 id="sessions">Sessions<a class="headerlink" href="#sessions" title="Permanent link">#</a></h2>
 <p>The Janssen Authentication Server stores user session data in persistence. This screen lists the active session 
 details and the administrator can revoke the sessions of the selected user.</p>
@@ -2118,8 +2219,11 @@ Gluu Flex Admin UI.</p>
 <h2 id="scopes">Scopes<a class="headerlink" href="#scopes" title="Permanent link">#</a></h2>
 <p>The scope is a mechanism to limit an application's access to a user's account. An application can request one or 
 more scopes, this information is then presented to the user in the consent screen, and the access token issued to 
-the application will be limited to the scopes granted.</p>
-<p>For an OpenID Connect, the scope can be mapped with user claims.</p>
+the application will be limited to the scopes granted. Please check <a href="https://docs.jans.io/v1.0.15/admin/auth-server/scopes/">here</a> for detail documentation on scopes.</p>
+<h3 id="oauth-20-scopes">OAuth 2.0 scopes<a class="headerlink" href="#oauth-20-scopes" title="Permanent link">#</a></h3>
+<p>This scope type would only have a description, but no claims. Once a client obtains this token, it may be passed to the backend API.</p>
+<h3 id="openid-scopes">OpenID scopes<a class="headerlink" href="#openid-scopes" title="Permanent link">#</a></h3>
+<p>Specify what access privileges are being requested for Access Tokens. The scopes associated with Access Tokens determine what resources will be available when they are used to access OAuth 2.0 protected endpoints. For OpenID Connect, scopes can be used to request that specific sets of information be made available as Claim Values.</p>
 <p><img alt="image" src="../../../assets/admin-ui/openid-scope.png" /></p>
 <h3 id="spontaneous-scopes">Spontaneous scopes<a class="headerlink" href="#spontaneous-scopes" title="Permanent link">#</a></h3>
 <p>Spontaneous scopes are scopes with random part in it which are not known in advance. For e.g. transaction:4685456787, 
@@ -2134,7 +2238,7 @@ client.</li>
  allowed. Example: ["^transaction:.+$"]. It matches transaction:245 but not transaction:.</li>
 </ul>
 <h3 id="uma-scopes">UMA scopes<a class="headerlink" href="#uma-scopes" title="Permanent link">#</a></h3>
-<p>UMA scope can either be created by the user or auto-created by the auth server. UMA scope cannot be modified using 
+<p>UMA scope can either be created by the user or auto-created by the authentication server. UMA scope cannot be modified using 
 Gluu Flex Admin UI.</p>
 <ul>
 <li>If the logged-in user creates UMA scope then the creator type will be <code>USER</code> and the creator Id will be logged-in 
@@ -2160,14 +2264,18 @@ or default authentication assurance when no specific ACR value is requested or s
 <p><img alt="image" src="../../../assets/admin-ui/authn.png" /></p>
 <h2 id="agama">Agama<a class="headerlink" href="#agama" title="Permanent link">#</a></h2>
 <p>This menu addresses deployment of <a href="https://docs.jans.io/head/agama/introduction/">Agama</a> project packages (file with 
-.gama extension).</p>
+.gama extension). To make sure that package is untempered, the file containing sha256 checksum also need to be uploaded on UI.</p>
+<p><img alt="image" src="../../../assets/admin-ui/agama-deployment.png" /></p>
+<p>The project name, description, version, deployment start/end date-time and deployment error (if any) can be seen on details popup of the record. User can export sample and current configuration or import configuration. </p>
+<p><img alt="image" src="../../../assets/admin-ui/gama-details.png" /></p>
+<p><img alt="image" src="../../../assets/admin-ui/export-gama-config.png" /></p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-30T06:54:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-30</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-27T07:12:20+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-27</span>
       
         <br>
         Created:

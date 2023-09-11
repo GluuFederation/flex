@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#where-is-this-content" class="md-skip">
+        <a href="#smtp-configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -750,18 +750,6 @@
         
           
         
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
       
       
         <label class="md-nav__link" for="__nav_3_3">
@@ -789,6 +777,82 @@
   
 
             
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logs/" class="md-nav__link">
+        Logs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3_4" type="checkbox" id="__nav_3_3_4" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_3_4">
+          Left Navigation Menu
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Left Navigation Menu" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          Left Navigation Menu
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
           
             
               
@@ -900,39 +964,12 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          SMTP
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         SMTP
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -948,6 +985,13 @@
       <a href="../userMgmt-menu/" class="md-nav__link">
         Users
       </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -1590,21 +1634,8 @@
   
   
   
+    
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1619,6 +1650,25 @@
                   
   
 
+  <nav class="md-tags" >
+    
+      
+      
+        <span class="md-tag">administration</span>
+      
+    
+      
+      
+        <span class="md-tag">admin-ui</span>
+      
+    
+      
+      
+        <span class="md-tag">smtp</span>
+      
+    
+  </nav>
+
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/admin-ui/smtp-menu.md" title="Edit this page" class="md-content__button md-icon">
@@ -1627,18 +1677,65 @@
   </a>
 
 
-  <h1>SMTP</h1>
-
-<h2 id="where-is-this-content">Where is this content?<a class="headerlink" href="#where-is-this-content" title="Permanent link">#</a></h2>
-<p>The Gluu Flex documentation is a work in progress, and this document is currently a draft. Keep an eye on this page for 
-updates.</p>
+<h1 id="smtp-configuration">SMTP Configuration<a class="headerlink" href="#smtp-configuration" title="Permanent link">#</a></h1>
+<p>The description of all the fields in SMTP configuration form:</p>
+<table>
+<thead>
+<tr>
+<th>Fields</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMTP Host</td>
+<td>Hostname of the SMTP server</td>
+</tr>
+<tr>
+<td>Connect Protection</td>
+<td>Protocol to protect connection</td>
+</tr>
+<tr>
+<td>From Name</td>
+<td>Name of the sender</td>
+</tr>
+<tr>
+<td>From Email Address</td>
+<td>Email Address of the Sender</td>
+</tr>
+<tr>
+<td>Requires Authentication</td>
+<td>This checkbox enables sender authentication</td>
+</tr>
+<tr>
+<td>SMTP User Name</td>
+<td>Username of the SMTP</td>
+</tr>
+<tr>
+<td>SMTP User Password</td>
+<td>Password for the SMTP</td>
+</tr>
+<tr>
+<td>Requires SSL</td>
+<td>This checkbox enables the SSL</td>
+</tr>
+<tr>
+<td>SMTP Port</td>
+<td>Port number of the SMTP server</td>
+</tr>
+<tr>
+<td>Keystore</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-30T06:54:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-30</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-08-28T14:55:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-08-28</span>
       
         <br>
         Created:
