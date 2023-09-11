@@ -5,9 +5,9 @@ import ApiKey from './LicenseScreens/ApiKey'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
 import UploadSSA from './UploadSSA'
 import { useSelector } from 'react-redux'
+import GluuServiceDownModal from '../routes/Apps/Gluu/GluuServiceDownModal'
 
 function ApiKeyRedirect({
-  backendIsUp,
   isLicenseValid,
   islicenseCheckResultLoaded,
   isLicenseActivationResultLoaded,
@@ -17,6 +17,7 @@ function ApiKeyRedirect({
   const { t } = useTranslation()
   const { isTimeout } = useSelector((state) => state.initReducer)
   const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useSelector((state) => state.licenseReducer)
+  const backendStatus = useSelector((state) => state.authReducer.backendStatus)
 
   return (
     <React.Fragment>
@@ -27,7 +28,7 @@ function ApiKeyRedirect({
           <>
             {!isLicenseValid && islicenseCheckResultLoaded && isConfigValid && !isValidatingFlow && isNoValidLicenseKeyFound ? (
               <ApiKey />
-            ) : (
+            ) : backendStatus.active && (
               <div
                 style={{
                   backgroundColor: 'transparent',
@@ -53,11 +54,11 @@ function ApiKeyRedirect({
           </>
         )}
 
-        {!backendIsUp && (
-          <GluuErrorModal
-            message={'The UI backend service is down'}
-            description={
-              'It may due to any of the following reason <br/>1. Admin UI Backend is down. <br/>2. Unable to get license credentials from Gluu server.<br/>Please contact the site administrator or check server logs.'
+        {!backendStatus.active && (
+          <GluuServiceDownModal
+            statusCode={backendStatus.statusCode}
+            message={
+              backendStatus.errorMessage || 'Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).'
             }
           />
         )}
