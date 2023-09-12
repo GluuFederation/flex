@@ -4,7 +4,7 @@ import isEmpty from 'lodash/isEmpty'
 import MaterialTable from '@material-table/core'
 import Autocomplete from '@mui/material/Autocomplete'
 import { Paper, TextField, Box } from '@mui/material'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Button } from 'reactstrap'
 import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -20,7 +20,13 @@ import {
   SESSION_DELETE,
 } from 'Utils/PermChecker'
 
-function SessionListPage({ sessions, permissions, loading, dispatch }) {
+function SessionListPage() {
+  const sessions = useSelector((state) => state.sessionReducer.items)
+  const loading = useSelector((state) => state.sessionReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+
+  const dispatch = useDispatch()
+
   const { t } = useTranslation()
   const myActions = []
   const [item, setItem] = useState({})
@@ -147,11 +153,4 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    sessions: state.sessionReducer.items,
-    loading: state.sessionReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(SessionListPage)
+export default SessionListPage

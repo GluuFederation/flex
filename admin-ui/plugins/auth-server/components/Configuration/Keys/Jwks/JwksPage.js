@@ -3,10 +3,15 @@ import { Card, CardBody } from 'Components'
 import { getJwks } from 'Plugins/auth-server/redux/features/jwksSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import JwkItem from './JwkItem'
 
-function JwksPage({ jwks, loading, dispatch }) {
+function JwksPage() {
+  const jwks = useSelector((state) => state.jwksReducer.jwks)
+  const loading = useSelector((state) => state.jwksReducer.loading)
+
+  const dispatch = useDispatch()
+
   useEffect(() => {
     dispatch(getJwks())
   }, [])
@@ -27,10 +32,4 @@ function JwksPage({ jwks, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    jwks: state.jwksReducer.jwks,
-    loading: state.jwksReducer.loading,
-  }
-}
-export default connect(mapStateToProps)(JwksPage)
+export default JwksPage

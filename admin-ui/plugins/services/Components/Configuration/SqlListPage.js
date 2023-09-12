@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Paper } from '@mui/material'
 import { Card, CardBody, FormGroup } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -30,15 +30,20 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
-function SqlListPage({
-  sqlConfigurations,
-  permissions,
-  loading,
-  dispatch,
-  testStatus,
-  persistenceType,
-  persistenceTypeLoading,
-}) {
+function SqlListPage() {
+  const sqlConfigurations = useSelector((state) => state.sqlReducer.sql)
+  const loading = useSelector((state) => state.sqlReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const testStatus = useSelector((state) => state.sqlReducer.testStatus)
+  const persistenceType = useSelector(
+    (state) => state.persistenceTypeReducer.type
+  )
+  const persistenceTypeLoading = useSelector(
+    (state) => state.persistenceTypeReducer.loading
+  )
+
+  const dispatch = useDispatch()
+
   useEffect(() => {
     dispatch(getSqlConfig())
     dispatch(getPersistenceType())
@@ -214,14 +219,4 @@ function SqlListPage({
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    sqlConfigurations: state.sqlReducer.sql,
-    loading: state.sqlReducer.loading,
-    permissions: state.authReducer.permissions,
-    testStatus: state.sqlReducer.testStatus,
-    persistenceType: state.persistenceTypeReducer.type,
-    persistenceTypeLoading: state.persistenceTypeReducer.loading,
-  }
-}
-export default connect(mapStateToProps)(SqlListPage)
+export default SqlListPage

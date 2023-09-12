@@ -13,7 +13,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { JSON_CONFIG } from 'Utils/ApiResources'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Formik } from 'formik'
 import {
   getLoggingConfig,
@@ -29,9 +29,15 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 
-function LoggingPage({ logging, dispatch, permissions, loading }) {
+function LoggingPage() {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  const logging = useSelector((state) => state.loggingReducer.logging)
+  const loading = useSelector((state) => state.loggingReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+
+  const dispatch = useDispatch()
+
   const selectedTheme = theme.state.theme
   useEffect(() => {
     dispatch(getLoggingConfig())
@@ -185,11 +191,5 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
     </GluuLoader>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    logging: state.loggingReducer.logging,
-    loading: state.loggingReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(LoggingPage)
+
+export default LoggingPage

@@ -1,12 +1,16 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import SqlForm from './SqlForm'
 import { editSql } from 'Plugins/services/redux/features/sqlSlice'
 import { buildPayload } from 'Utils/PermChecker'
 
-function SqlEditPage({ item, dispatch }) {
+function SqlEditPage() {
+  const item = useSelector((state) => state.sqlReducer.item)
+
+  const dispatch = useDispatch()
+
   const userAction = {}
   const navigate =useNavigate()
   function handleSubmit(data) {
@@ -31,11 +35,5 @@ function SqlEditPage({ item, dispatch }) {
     </React.Fragment>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    item: state.sqlReducer.item,
-    loading: state.sqlReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(SqlEditPage)
+
+export default SqlEditPage

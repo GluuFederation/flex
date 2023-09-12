@@ -17,7 +17,7 @@ import CacheInMemory from './CacheInMemory'
 import CacheRedis from './CacheRedis'
 import CacheNative from './CacheNative'
 import CacheMemcached from './CacheMemcached'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   getCacheConfig,
   getMemoryCacheConfig,
@@ -36,15 +36,16 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-function CachePage({
-  cacheData,
-  cacheMemoryData,
-  cacheMemData,
-  cacheNativeData,
-  cacheRedisData,
-  loading,
-  dispatch,
-}) {
+function CachePage() {
+  const cacheData = useSelector((state) => state.cacheReducer.cache)
+  const cacheMemoryData = useSelector((state) => state.cacheReducer.cacheMemory)
+  const cacheMemData = useSelector((state) => state.cacheReducer.cacheMem)
+  const cacheNativeData = useSelector((state) => state.cacheReducer.cacheNative)
+  const cacheRedisData = useSelector((state) => state.cacheReducer.cacheRedis)
+  const loading = useSelector((state) => state.cacheReducer.loading)
+
+  const dispatch = useDispatch()
+
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [cacheProviderType, setCacheProviderType] = useState(
@@ -258,16 +259,4 @@ function CachePage({
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    cacheData: state.cacheReducer.cache,
-    cacheMemoryData: state.cacheReducer.cacheMemory,
-    cacheMemData: state.cacheReducer.cacheMem,
-    cacheNativeData: state.cacheReducer.cacheNative,
-    cacheRedisData: state.cacheReducer.cacheRedis,
-    permissions: state.authReducer.permissions,
-    loading: state.cacheReducer.loading,
-  }
-}
-
-export default connect(mapStateToProps)(CachePage)
+export default CachePage

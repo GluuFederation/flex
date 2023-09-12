@@ -1,13 +1,20 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
 import { editAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { cloneDeep } from 'lodash'
 
-function AttributeEditPage({ item: { ...extensibleItems }, loading, dispatch }) {
+function AttributeEditPage() {
+  const item = useSelector((state) => state.attributeReducer.item)
+  const loading = useSelector((state) => state.attributeReducer.loading)
+  const extensibleItems = cloneDeep(item)
+
+  const dispatch = useDispatch()
+
   if (!extensibleItems.attributeValidation) {
     extensibleItems.attributeValidation = {
       maxLength: null,
@@ -36,11 +43,5 @@ function AttributeEditPage({ item: { ...extensibleItems }, loading, dispatch }) 
     </GluuLoader>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    item: state.attributeReducer.item,
-    loading: state.attributeReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(AttributeEditPage)
+
+export default AttributeEditPage

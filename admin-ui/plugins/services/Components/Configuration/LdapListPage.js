@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Paper } from '@mui/material'
 import { Card, CardBody } from 'Components'
@@ -32,15 +32,16 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
-function LdapListPage({
-  ldapConfigurations,
-  permissions,
-  loading,
-  dispatch,
-  testStatus,
-  persistenceType,
-  persistenceTypeLoading,
-}) {
+function LdapListPage() {
+  const ldapConfigurations = useSelector((state) => state.ldapReducer.ldap)
+  const loading = useSelector((state) => state.ldapReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const testStatus = useSelector((state) => state.ldapReducer.testStatus)
+  const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
+  const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
+
+  const dispatch = useDispatch()
+
   useEffect(() => {
     dispatch(getLdapConfig())
     dispatch(getPersistenceType())
@@ -246,14 +247,4 @@ function LdapListPage({
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    ldapConfigurations: state.ldapReducer.ldap,
-    loading: state.ldapReducer.loading,
-    permissions: state.authReducer.permissions,
-    testStatus: state.ldapReducer.testStatus,
-    persistenceType: state.persistenceTypeReducer.type,
-    persistenceTypeLoading: state.persistenceTypeReducer.loading,
-  }
-}
-export default connect(mapStateToProps)(LdapListPage)
+export default LdapListPage

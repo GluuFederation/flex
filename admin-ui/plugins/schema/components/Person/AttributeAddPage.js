@@ -1,12 +1,13 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
 import { addAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-function AttributeAddPage({ dispatch }) {
+function AttributeAddPage() {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   function onSubmit(data) {
@@ -36,10 +37,5 @@ function AttributeAddPage({ dispatch }) {
     </React.Fragment>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    loading: state.attributeReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(AttributeAddPage)
+
+export default AttributeAddPage

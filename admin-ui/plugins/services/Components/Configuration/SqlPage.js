@@ -15,8 +15,9 @@ import { useTranslation } from 'react-i18next'
 
 function SqlPage() {
   const { t } = useTranslation()
-  const ldap = useSelector(state => state.ldapReducer.ldap);
-  const loading = useSelector(state => state.ldapReducer.loading)
+  const ldap = useSelector((state) => state.ldapReducer.ldap)
+  const loading = useSelector((state) => state.ldapReducer.loading)
+
   const dispatch = useDispatch()
 
   useEffect(() => {
