@@ -20,7 +20,7 @@ During installation, we need to provide a Software Statement Assertion (SSA) whi
 
 ## Gluu Flex License
 
-After installation Admin UI can be accessed on `https://hostname/admin` (the `hostname` is provided during setup). This web interface can be accessed only after subscribing Admin UI license from Agama Lab. Once the license is subscribed the application will not ask for a license key again until the submitted key's validity is expired.
+After installation, the Admin UI can be accessed at https://hostname/admin (the hostname is provided during setup). Access to this web interface is granted only after subscribing to the Admin UI license from Agama Lab.
 
 There is a provision to generate a 30-day free trial license of Gluu Flex which will help users to enter and understand this web interface.
 
