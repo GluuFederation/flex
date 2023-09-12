@@ -6,7 +6,7 @@
 
 #### The requested page not found
 
-```
+```text
 Error Code: 404
 The requested page was not found on this server.
 ```
@@ -15,12 +15,12 @@ If a user encounters the above error when visiting the Admin UI URL, it indicate
 
 ####  Admin UI backend is down
 
-```
+```text
 Error Code: 503
 Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).
 ```
 
-Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, [Jans Config API](https://docs.jans.io/v1.0.16/contribute/implementation-design/jans-config-api/). This error prompts administrators to perform a series of troubleshooting steps.
+Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, [Jans Config API](https://docs.jans.io/head/contribute/implementation-design/jans-config-api/). This error prompts administrators to perform a series of troubleshooting steps.
 
 1. Verify the status of the Jans Config API service by using the command `systemctl status jans-config-api.service`. In the majority of cases, this error is displayed when the Jans Config API is not running. 
 2. It is essential to verify the server's network connectivity, including firewall rules, ports, and routing, to ensure that there are no network-related impediments preventing communication with the Jans Config API. Jans Config API runs at port `8074` for Janssen vm installation.
@@ -30,7 +30,7 @@ Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a R
 
 #### Internal server error in generating Jans Config Api token 
 
-```
+```text
 Error Code: 500
 Error in generating token to access Jans Config Api endpoints.
 ```
@@ -50,13 +50,13 @@ During installation, it is necessary to provide a Software Statement Assertion (
 
 ![image](../../assets/admin-ui/license-error-payment-required.png)
 
-```
+```text
 Payment Required.
 ```
 
 This message indicates that in order to enjoy long-term access to the Gluu Flex Admin UI, you will need to subscribe for a Admin UI license on the [Agama Lab](https://cloud.gluu.org/agama-lab) website.
 
-```
+```text
 License validity period has expired.
 ```
 

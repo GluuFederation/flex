@@ -45,7 +45,7 @@ The mapping is stored in json format with following attributes.
 
 **Sample role-permission mapping stored in persistence**
 
-```
+```text
 {
   "roles": [
     {
@@ -137,7 +137,7 @@ The information is stored in json format with following attributes.
 
 **Sample configuration stored in persistence**
 
-```
+```text
 {
   "oidcConfig": {
     "authServerClient": {
