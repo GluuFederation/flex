@@ -103,7 +103,7 @@ Full TUI documentation can be found [here](https://docs.jans.io/stable/admin/con
 https://FQDN/admin
 ```
 
-To troubleshoot issues with Admin UI access, check the [logs](../../admin/admin-ui/logs.md), refer to the [FAQ](../../admin/admin-ui/faq.md) and review [service dependencies](../../admin/admin-ui/introduction/#flex-services-dependencies).
+When troubleshooting issues with Admin UI access, it's advisable to check the [logs](../../admin/admin-ui/logs.md), refer to the [FAQ](../../admin/admin-ui/faq.md), and review [service dependencies](../../admin/admin-ui/introduction.md/#flex-services-dependencies) for potential solutions.
 
 - Access Casa using URI below
 ```text

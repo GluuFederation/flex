@@ -34,3 +34,5 @@ The default log location for the Admin UI backend is:
 ```
 /opt/jans/jetty/jans-config-api/logs
 ```
+
+It is also recommended to check the browser's console log and network tab for any failing requests, as this can provide additional information to diagnose and troubleshoot issues.
