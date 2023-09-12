@@ -11,7 +11,7 @@ Error Code: 404
 The requested page was not found on this server.
 ```
 
-If a user encounters the above error when visiting the Admin UI URL, it indicates that the Admin UI is not properly installed. Please verify whether the Admin UI build is located at /var/www/html/admin. If the build is not present at this location, Janssen displays this error.
+If a user encounters the above error when visiting the Admin UI URL, it indicates that the Admin UI is not properly installed. Please verify whether the Admin UI build is located at `/var/www/html/admin`. If the build is not present at this location, Janssen displays this error.
 
 ####  Admin UI backend is down
 
@@ -22,7 +22,7 @@ Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api
 
 Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, [Jans Config API](https://docs.jans.io/v1.0.16/contribute/implementation-design/jans-config-api/). This error prompts administrators to perform a series of troubleshooting steps.
 
-1. Verify the status of the Jans Config API service by using the command systemctl status jans-config-api.service. In the majority of cases, this error is displayed when the Jans Config API is not running. 
+1. Verify the status of the Jans Config API service by using the command `systemctl status jans-config-api.service`. In the majority of cases, this error is displayed when the Jans Config API is not running. 
 2. It is essential to verify the server's network connectivity, including firewall rules, ports, and routing, to ensure that there are no network-related impediments preventing communication with the Jans Config API. Jans Config API runs at port `8074` for Janssen vm installation.
 3. Check the Jans Config API logs at `/opt/jans/jetty/jans-config-api/logs/configapi.log` for any potential errors.
 4. Review the Admin UI logs at `/opt/jans/jetty/jans-config-api/logs/adminui.log` to check for any potential errors.
