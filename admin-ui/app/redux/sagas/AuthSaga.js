@@ -4,22 +4,17 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import {
   getOAuth2ConfigResponse,
-  getUserInfoResponse,
   getAPIAccessTokenResponse,
   getUserLocationResponse,
-  getRandomChallengePairResponse,
   setBackendStatus,
 } from '../features/authSlice'
 
 import {
   fetchServerConfiguration,
-  fetchUserInformation,
   fetchApiAccessToken,
   getUserIpAndLocation,
   fetchApiTokenWithDefaultScopes,
 } from '../api/backend-api'
-
-import {RandomHashGenerator} from  'Utils/RandomHashGenerator'
 
 function* getApiTokenWithDefaultScopes() {
     const response = yield call(fetchApiTokenWithDefaultScopes)
@@ -36,6 +31,7 @@ function* getOAuth2ConfigWorker({ payload }) {
   try {
     const token = !payload?.access_token ? yield* getApiTokenWithDefaultScopes() : payload.access_token
     const response = yield call(fetchServerConfiguration, token)
+    localStorage.setItem('postLogoutRedirectUri', response.postLogoutRedirectUri)
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))
       return
@@ -46,39 +42,15 @@ function* getOAuth2ConfigWorker({ payload }) {
   yield put(getOAuth2ConfigResponse())
 }
 
-function* getUserInformationWorker(code, codeVerifier) {
-  try {
-    const response = yield call(fetchUserInformation, code.payload, localStorage.getItem("codeVerifier"))
-    if (response) {
-      yield put(getUserInfoResponse({ uclaims: response.claims, ujwt: response.jwtUserInfo }))
-      return
-    }
-  } catch (error) {
-    console.log('Problems getting user information.', error)
-  }
-}
 function* getAPIAccessTokenWorker(jwt) {
   try {
     if (jwt) {
       const response = yield call(fetchApiAccessToken, jwt.payload)
       if (response) {
-        yield put(getAPIAccessTokenResponse({ accessToken: response }))
+        yield put(getAPIAccessTokenResponse(response))
         return
       }
     }
-  } catch (error) {
-    console.log('Problems getting API Access Token.', error)
-  }
-}
-
-function* getRandomChallengePairWorker() {
-  try {
-      const response = yield call(RandomHashGenerator.generateRandomChallengePair, 'SHA-256')
-      if (response) {
-        yield put(getRandomChallengePairResponse(response))
-        return
-      }
-    
   } catch (error) {
     console.log('Problems getting API Access Token.', error)
   }
@@ -101,18 +73,11 @@ export function* getApiTokenWatcher() {
   yield takeEvery('auth/getAPIAccessToken', getAPIAccessTokenWorker)
 }
 
-export function* userInfoWatcher() {
-  yield takeEvery('auth/getUserInfo', getUserInformationWorker)
-}
-
 export function* getOAuth2ConfigWatcher() {
   yield takeEvery('auth/getOAuth2Config', getOAuth2ConfigWorker)
 }
 export function* getLocationWatcher() {
   yield takeEvery('auth/getUserLocation', getLocationWorker)
-}
-export function* getRandomChallengePairWatcher() {
-  yield takeEvery('auth/getRandomChallengePair', getRandomChallengePairWorker)
 }
 
 /**
@@ -121,9 +86,7 @@ export function* getRandomChallengePairWatcher() {
 export default function* rootSaga() {
   yield all([
     fork(getOAuth2ConfigWatcher),
-    fork(userInfoWatcher),
     fork(getApiTokenWatcher),
     fork(getLocationWatcher),
-    fork(getRandomChallengePairWatcher),
   ])
 }
