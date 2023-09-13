@@ -9,7 +9,7 @@ from jans.pycloudlib.utils import exec_cmd
 from settings import LOGGING_CONFIG
 
 logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger("entrypoint")
+logger = logging.getLogger("admin-ui")
 
 ADMIN_UI_DIR = "/opt/flex/admin-ui"
 
@@ -24,7 +24,7 @@ def _discover_plugins():
     ]
 
     for plugin in set(user_plugins):
-        src = f"/app/plugins/{plugin}.zip"
+        src = f"/opt/flex/admin-ui/_plugins/{plugin}.zip"
 
         if not os.path.isfile(src):
             continue
@@ -44,7 +44,7 @@ def _discover_plugins():
 
 def _build_src() -> None:
     logger.info("Building admin-ui app ...")
-    public_dir = "/var/lib/nginx/html"
+    public_dir = os.environ.get("GLUU_ADMIN_UI_PUBLIC_DIR", "/var/lib/nginx/html")
 
     os.chdir(ADMIN_UI_DIR)
 

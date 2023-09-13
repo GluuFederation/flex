@@ -81,6 +81,6 @@ export const fetchApiTokenWithDefaultScopes = async () => {
         'Problems getting API access token in order to process api calls.',
         error,
       )
-      return -1
+      return error
     })
 }

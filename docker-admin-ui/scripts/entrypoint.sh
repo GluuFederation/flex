@@ -2,8 +2,13 @@
 
 set -e
 
-python3 /app/scripts/wait.py
-python3 /app/scripts/bootstrap.py
-python3 /app/scripts/builder.py
+# get script directory
+basedir=$(dirname "$(readlink -f -- "$0")")
 
-exec nginx
+python3 "$basedir/wait.py"
+python3 "$basedir/bootstrap.py"
+python3 "$basedir/builder.py"
+
+if [ "$GLUU_ADMIN_UI_ENABLE_NGINX" = "true" ]; then
+    exec nginx -g 'daemon off;'
+fi

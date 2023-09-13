@@ -6,6 +6,7 @@ import {
   getOAuth2ConfigResponse,
   getAPIAccessTokenResponse,
   getUserLocationResponse,
+  setBackendStatus,
 } from '../features/authSlice'
 
 import {
@@ -16,8 +17,14 @@ import {
 } from '../api/backend-api'
 
 function* getApiTokenWithDefaultScopes() {
-  const response = yield call(fetchApiTokenWithDefaultScopes)
-  return response.access_token
+    const response = yield call(fetchApiTokenWithDefaultScopes)
+
+    if (response?.access_token) {
+      return response.access_token
+    } else if(response?.name === "AxiosError") {
+      yield(put(setBackendStatus({ active: false, errorMessage: response?.response?.data?.responseMessage, statusCode: response?.response?.status })))
+      return null
+    }
 }
 
 function* getOAuth2ConfigWorker({ payload }) {

@@ -19,8 +19,8 @@
     },
     "tokenServerClient": {
       "opHost": "https://%(hostname)s",
-      "clientId": "%(admin_ui_client_id)s",
-      "clientSecret": "%(admin_ui_client_encoded_pw)s",
+      "clientId": "%(admin_ui_token_client_id)s",
+      "clientSecret": "%(admin_ui_token_client_encoded_pw)s",
       "tokenEndpoint": "https://%(hostname)s/jans-auth/restv1/token",
       "scopes": [
         "openid",

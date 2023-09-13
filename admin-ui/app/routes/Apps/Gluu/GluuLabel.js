@@ -7,7 +7,7 @@ import applicationStyle from './styles/applicationstyle'
 import { HelpOutline } from '@mui/icons-material'
 
 function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   function getSize() {
     if (size != null) {
       return size
@@ -20,14 +20,14 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
         {t(label)}
         {required && <span style={applicationStyle.fieldRequired}> *</span>}
         
-        {doc_category &&  
+        {(doc_category && i18n.exists('documentation.' + doc_category + '.' + doc_entry)) &&  
           <>
             <ReactTooltip
               tabIndex="-1"
               id={doc_entry}
               place="right"
               role="tooltip"
-              style={{ zIndex: 101 }}
+              style={{ zIndex: 101, maxWidth: '45vw' }}
             >
               {t('documentation.' + doc_category + '.' + doc_entry)}
             </ReactTooltip>

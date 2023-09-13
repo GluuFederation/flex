@@ -42,7 +42,6 @@ export default function AppAuthProvider(props) {
     userinfo,
     userinfo_jwt,
     token,
-    backendIsUp,
     issuer,
   } = useSelector((state) => state.authReducer)
   const {
@@ -207,7 +206,6 @@ export default function AppAuthProvider(props) {
       {showAdminUI && props.children}
       {!showAdminUI && (
         <ApiKeyRedirect
-          backendIsUp={backendIsUp}
           isLicenseValid={isLicenseValid}
           isConfigValid={isConfigValid}
           islicenseCheckResultLoaded={islicenseCheckResultLoaded}
