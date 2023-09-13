@@ -27,7 +27,7 @@ jansScope: inum=43F1,ou=scopes,o=jans
 jansScope: inum=6D90,ou=scopes,o=jans
 jansScope: inum=764C,ou=scopes,o=jans
 jansSubjectTyp: pairwise
-jansTknEndpointAuthMethod: client_secret_basic
+jansTknEndpointAuthMethod: none
 jansTrustedClnt: true
 jansSignedRespAlg: RS256
 
@@ -55,6 +55,9 @@ jansRedirectURI: https://%(hostname)s/admin
 jansRespTyp: code
 jansRptAsJwt: false
 jansScope: inum=F0C4,ou=scopes,o=jans
+jansScope: inum=43F1,ou=scopes,o=jans
+jansScope: inum=6D90,ou=scopes,o=jans
+jansScope: inum=764C,ou=scopes,o=jans
 jansSubjectTyp: pairwise
 jansTknEndpointAuthMethod: client_secret_basic
 jansTrustedClnt: true
