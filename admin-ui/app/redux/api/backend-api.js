@@ -1,8 +1,6 @@
 import axios from '../api/axios'
 import axios_instance from 'axios'
 const JansConfigApi = require('jans_config_api')
-import { useSelector } from 'react-redux'
-// Get OAuth2 Configuration
 
 export const fetchServerConfiguration = (token) => {
   const headers = { Authorization: `Bearer ${token}` }
@@ -30,20 +28,18 @@ export const getUserIpAndLocation = () => {
 }
 
 // Retrieve user information
-export const fetchUserInformation = (code, codeVerifier) => {
+export const fetchUserInformation = ({ userInfoEndpoint, token_type, access_token }) => {
+  const headers = { Authorization: `${token_type} ${access_token}` }
   return axios
-    .post('/app/admin-ui/oauth2/user-info', {
-      code: code,
-      codeVerifier: codeVerifier,
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error(
-        'Problems fetching user information with the provided code.',
-        error,
-      )
-      return -1
-    })
+  .get(userInfoEndpoint, { headers })
+  .then((response) => response.data)
+  .catch((error) => {
+    console.error(
+      'Problems fetching user information with the provided code.',
+      error,
+    )
+    return -1
+  })
 }
 
 // post user action
@@ -84,6 +80,6 @@ export const fetchApiTokenWithDefaultScopes = () => {
         'Problems getting API access token in order to process api calls.',
         error,
       )
-      return -1
+      return error
     })
 }

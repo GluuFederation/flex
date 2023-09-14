@@ -21,8 +21,18 @@ The Gluu Flex Admin UI generates two types of log files:
 
 The log locations for Gluu Flex Admin UI can be configured by modifying the log4j2-adminui.xml file located at:
 
-```
+```text
 /opt/jans/jetty/jans-config-api/custom/config/log4j2-adminui.xml
 ```
 
 Within this configuration file, you can adjust various settings such as log levels, appenders, and formats.
+
+## Default Log Location
+
+The default log location for the Admin UI backend is:
+
+```text
+/opt/jans/jetty/jans-config-api/logs
+```
+
+It is also recommended to check the browser's console log and network tab for any failing requests, as this can provide additional information to diagnose and troubleshoot issues.

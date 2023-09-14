@@ -75,8 +75,8 @@ export default class LicenseApi {
     const option = {}
     option['sSARequest'] = data.payload
     return new Promise((resolve, reject) => {
-      this.api.adminuiPostSsa(option, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.adminuiPostSsa(option, (error, data, response) => {
+        handleResponse(error, reject, resolve, data, response)
       })
     })
   }

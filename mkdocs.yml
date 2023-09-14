@@ -129,7 +129,8 @@ nav:
         - 'Introduction': 'admin/admin-ui/introduction.md'
         - 'Configuration': 'admin/admin-ui/configuration.md'
         - 'Logs': 'admin/admin-ui/logs.md'
-        - 'Left Navigation Menu': 'admin/admin-ui/left-nav-menu.md'
+        - 'Left Navigation Menu':
+          - 'admin/admin-ui/left-nav-menu.md'
           - 'Home': 'admin/admin-ui/dashboard.md'
           - 'Admin': 'admin/admin-ui/admin-menu.md'
           - 'Auth server': 'admin/admin-ui/auth-server-menu.md'
@@ -138,6 +139,7 @@ nav:
           - 'FIDO': 'admin/admin-ui/fido-menu.md'
           - 'SMTP': 'admin/admin-ui/smtp-menu.md'
           - 'Users': 'admin/admin-ui/userMgmt-menu.md'
+        - 'FAQ & Troubleshooting': 'admin/admin-ui/faq.md'
     - 'Flex Recipes':
         - 'admin/recipes/README.md'
         - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
