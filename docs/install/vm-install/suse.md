@@ -233,3 +233,19 @@ Remove package with:
 ```
 sudo zypper remove gluu-flex
 ```
+
+### Uninstalling Admin UI
+
+To uninstall the Admin UI from your Flex installation, execute this command:
+
+```shell
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+```
+
+### Updating Admin UI
+
+To update the Admin UI in an existing Flex installation, execute this command:
+
+```shell
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
+```
