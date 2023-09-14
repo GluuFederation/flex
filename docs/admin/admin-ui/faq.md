@@ -27,6 +27,7 @@ Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a R
 3. Check the Jans Config API logs at `/opt/jans/jetty/jans-config-api/logs/configapi.log` for any potential errors.
 4. Review the Admin UI logs at `/opt/jans/jetty/jans-config-api/logs/adminui.log` to check for any potential errors.
 5. Confirm the existence of the `/opt/jans/jetty/jans-config-api/custom/libs/gluu-flex-admin-ui-plugin.jar` file. This file serves as the backend jar for the Admin UI and is used as a Jans Config API extension.
+6. It is also recommended to check the browser's console log and network tab for any failing requests, as this can provide additional information to diagnose and troubleshoot issues.
 
 #### Internal server error in generating Jans Config Api token 
 
