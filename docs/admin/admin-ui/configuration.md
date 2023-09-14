@@ -18,6 +18,7 @@ This document outlines the configuration process for Gluu Flex Admin UI, with a 
 The mapping is stored in json format with following attributes.
 
 **Roles**
+
 |Attribute Name|Description|
 |--------------|-----------|
 |roles|Array of all roles|
@@ -26,6 +27,7 @@ The mapping is stored in json format with following attributes.
 |deletable|If set to `true` then entire role-permission mapping with respect to the role can be deleted. Default value: `false`|
 
 **Permissions**
+
 |Attribute Name|Description|
 |--------------|-----------|
 |permissions|Array of all available permissions|
@@ -34,6 +36,7 @@ The mapping is stored in json format with following attributes.
 |defaultPermissionInToken|If set to `true`, it indicates that permission will need authentication and valid role during `/token` request to include in token|
 
 **Mapping**
+
 |Attribute Name|Description|
 |--------------|-----------|
 |rolePermissionMapping| List of all role-permission mapping|
@@ -42,7 +45,7 @@ The mapping is stored in json format with following attributes.
 
 **Sample role-permission mapping stored in persistence**
 
-```
+```text
 {
   "roles": [
     {
@@ -134,7 +137,7 @@ The information is stored in json format with following attributes.
 
 **Sample configuration stored in persistence**
 
-```
+```text
 {
   "oidcConfig": {
     "authServerClient": {
