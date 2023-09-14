@@ -727,6 +727,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#uninstalling-admin-ui" class="md-nav__link">
+    Uninstalling Admin UI
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-admin-ui" class="md-nav__link">
+    Updating Admin UI
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -857,6 +871,8 @@
       
       
       
+        
+          
         
           
         
@@ -1096,6 +1112,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/faq/" class="md-nav__link">
+        FAQ & Troubleshooting
+      </a>
     </li>
   
 
@@ -1824,6 +1854,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#uninstalling-admin-ui" class="md-nav__link">
+    Uninstalling Admin UI
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-admin-ui" class="md-nav__link">
+    Updating Admin UI
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1897,10 +1941,10 @@
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>. Choose
 the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-17.nightly/flex_5.0.0-17.nightly.ubuntu22.04_amd64.deb -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-17.nightly/flex_5.0.0-17.nightly.ubuntu20.04_amd64.deb -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
 </code></pre></div></p>
 </li>
 <li>
@@ -1918,32 +1962,32 @@ wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-17.nightly/
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the 
 package.  Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-17.nightly/flex_5.0.0-17.nightly.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-17.nightly/flex_5.0.0-17.nightly.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
 </code></pre></div>
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-sha256sum -c flex_5.0.0-17.nightly.ubuntu22.04_amd64.deb.sha256sum
+sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-sha256sum -c flex_5.0.0-17.nightly.ubuntu20.04_amd64.deb.sha256sum
+sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex_5.0.0-17.nightly.ubuntu&lt;version&gt;_amd64.deb: ok
+<div class="highlight"><pre><span></span><code>flex_replace-flex-version.ubuntu&lt;version&gt;_amd64.deb: ok
 </code></pre></div></p>
 </li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Choose the correct command from below based on the OS version.</p>
 <p><div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-apt install -y ./flex_5.0.0-17.nightly.ubuntu22.04_amd64.deb
+apt install -y ./flex_replace-flex-version.ubuntu22.04_amd64.deb
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-apt install -y ./flex_5.0.0-17.nightly.ubuntu20.04_amd64.deb
+apt install -y ./flex_replace-flex-version.ubuntu20.04_amd64.deb
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <p>Execute the setup script with command below:
@@ -1971,11 +2015,12 @@ Alternatively, for SSA file can be passed as a parameter to the setup script as 
 <div class="highlight"><pre><span></span><code>https://FQDN/admin
 </code></pre></div></p>
 </li>
-<li>
-<p>Access Casa using URI below
+</ul>
+<p>When troubleshooting issues with Admin UI access, it's advisable to check the <a href="../../../admin/admin-ui/logs/">logs</a>, refer to the <a href="../../../admin/admin-ui/faq/">FAQ</a>, and review <a href="../../admin/admin-ui/introduction.md/#flex-services-dependencies">service dependencies</a> for potential solutions.</p>
+<ul>
+<li>Access Casa using URI below
 <div class="highlight"><pre><span></span><code>https://FQDN/casa
-</code></pre></div></p>
-</li>
+</code></pre></div></li>
 </ul>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
 <p>Removing Flex is a two step process:</p>
@@ -2088,13 +2133,21 @@ Removing /etc/apache2/sites-available/https_jans.conf
 Remove packages:
 <div class="highlight"><pre><span></span><code>sudo apt remove &lt;package name&gt;
 </code></pre></div></p>
+<h3 id="uninstalling-admin-ui">Uninstalling Admin UI<a class="headerlink" href="#uninstalling-admin-ui" title="Permanent link">#</a></h3>
+<p>To uninstall the Admin UI from your Flex installation, execute this command:</p>
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+</code></pre></div>
+<h3 id="updating-admin-ui">Updating Admin UI<a class="headerlink" href="#updating-admin-ui" title="Permanent link">#</a></h3>
+<p>To update the Admin UI in an existing Flex installation, execute this command:</p>
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
+</code></pre></div>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-03T08:17:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-03</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-14T11:35:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-14</span>
       
         <br>
         Created:
