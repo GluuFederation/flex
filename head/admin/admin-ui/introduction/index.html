@@ -750,6 +750,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3_3">
@@ -813,6 +815,13 @@
         <li class="md-nav__item">
   <a href="#gluu-flex-license" class="md-nav__link">
     Gluu Flex License
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flex-services-dependencies" class="md-nav__link">
+    Flex services dependencies
   </a>
   
 </li>
@@ -1028,6 +1037,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        FAQ & Troubleshooting
+      </a>
     </li>
   
 
@@ -1693,6 +1716,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#flex-services-dependencies" class="md-nav__link">
+    Flex services dependencies
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1741,24 +1771,30 @@
 
 
 <h1 id="gluu-flex-admin-ui">Gluu Flex Admin UI<a class="headerlink" href="#gluu-flex-admin-ui" title="Permanent link">#</a></h1>
-<p>Gluu Flex Admin UI is a web interface to simplify the management and configuration of your Authentication Server. It is one of the key services of Gluu Flex that enables viewing and editing of configuration properties, interception scripts, clients, users, metrics etc in one place.</p>
+<p>Gluu Flex Admin UI is a web interface to simplify the management and configuration of your Authentication Server. It is one of the key services of Gluu Flex that enables viewing and editing of configuration properties, interception scripts, clients, users, metrics etc in one place. This user-friendly interface facilitates interaction with the Jans Auth Server through a REST API layer known as the Jans Config API.</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
 <p>Gluu Flex can be installed using <a href="../../../install/vm-install/vm-requirements/">VM installer</a> or using <a href="../../recipes/getting-started-rancher/">Rancher</a> on Cloud Native.</p>
-<p>During installation, we need to provide a Software Statement Assertion (SSA) which is used by Admin UI to register an OIDC client to access license APIs. Check the following <a href="../../../install/software-statements/ssa/">guide</a> for the steps to issue SSA from the Agama Lab web interface.</p>
+<p>During installation, we need to provide a Software Statement Assertion (SSA) which is used by Admin UI to register an OIDC client to access license APIs. Check the following <a href="../../../install/software-statements/ssa/">guide</a> for the steps to issue SSA from the <a href="https://cloud.gluu.org/agama-lab">Agama Lab</a> web interface.</p>
 <p><img alt="image" src="../../../assets/admin-ui/install-ssa.png" /></p>
 <h2 id="gluu-flex-license">Gluu Flex License<a class="headerlink" href="#gluu-flex-license" title="Permanent link">#</a></h2>
-<p>After installation Admin UI can be accessed on <code>https://hostname/admin</code> (the <code>hostname</code> is provided during setup). This web interface can be accessed only after submitting a valid <code>license key</code> issued from Gluu.</p>
-<p>There is a provision to generate a 30-day free trial license of Gluu Flex which will help users to enter and understand this web interface. To enjoy long-time uninterrupted access to Admin UI get a license key issued from Gluu. Once a valid license key is submitted, the application will not ask for a license key again until the submitted key's validity is expired.</p>
-<p><img alt="image" src="../../../assets/admin-ui/license-key-submit.png" /></p>
+<p>After installation, the Admin UI can be accessed at https://hostname/admin (the hostname is provided during setup). Access to this web interface is granted only after subscribing to the Admin UI license from Agama Lab.</p>
+<p>There is a provision to generate a 30-day free trial license of Gluu Flex which will help users to enter and understand this web interface.</p>
+<p><img alt="image" src="../../../assets/admin-ui/trial-license.png" /></p>
 <p>After license activation, the user can log into Gluu Flex Admin UI using the default username (<code>admin</code>) and the <code>password</code> (the admin password provided during installation).</p>
 <p><img alt="image" src="../../../assets/admin-ui/login-page.png" /></p>
+<h2 id="flex-services-dependencies">Flex services dependencies<a class="headerlink" href="#flex-services-dependencies" title="Permanent link">#</a></h2>
+<p>Gluu Flex Admin UI depends on following Flex services:</p>
+<ul>
+<li>Janssen Config API service (jans-config-api.service) </li>
+<li>The Apache HTTP Server (apache2.service) </li>
+</ul>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-16T12:36:00+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-16</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-12T13:44:03+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-12</span>
       
         <br>
         Created:
