@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { Link } from 'react-router-dom'
 import { Sidebar, SidebarTrigger } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
-import GluuAppSidebar from 'Routes/Apps/Gluu/GluuAppSidebar'
+import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
-export const DefaultSidebar = () => (
+const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
+
+const DefaultSidebar = () => (
   <Sidebar>
     {/* START SIDEBAR-OVERLAY: Close (x) */}
     <Sidebar.Close>
@@ -29,9 +31,11 @@ export const DefaultSidebar = () => (
       {/* <SidebarTopA /> */}
       <Sidebar.Section fluid cover>
         {/* SIDEBAR: Menu */}
-        <GluuAppSidebar />
+        <Suspense fallback={<GluuSuspenseLoader />}><GluuAppSidebar /></Suspense>
       </Sidebar.Section>
     </Sidebar.MobileFluid>
     {/* END SIDEBAR: Only for Mobile */}
   </Sidebar>
 )
+
+export default DefaultSidebar

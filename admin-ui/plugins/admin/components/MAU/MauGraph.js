@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, lazy, Suspense } from 'react'
 import moment from 'moment'
-import ActiveUsersGraph from 'Routes/Dashboards/Grapths/ActiveUsersGraph'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -30,6 +29,8 @@ import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import dayjs from 'dayjs'
+
+const ActiveUsersGraph = lazy(() => import('Routes/Dashboards/Grapths/ActiveUsersGraph'))
 
 function MauGraph() {
   const dispatch = useDispatch()
@@ -158,7 +159,7 @@ function MauGraph() {
             <FormGroup row />
             <FormGroup row>
               <Col sm={12}>
-                <ActiveUsersGraph data={doDataAugmentation(statData)} />
+                <Suspense fallback={<div>Loading...</div>}><ActiveUsersGraph data={doDataAugmentation(statData)} /></Suspense>
               </Col>
             </FormGroup>
           </CardBody>

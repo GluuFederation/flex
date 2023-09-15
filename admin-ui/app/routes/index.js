@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, lazy, Suspense } from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-// ----------- Pages Imports ---------------
-import Reports from './Dashboards/Reports'
-import DashboardPage from './Dashboards/DashboardPage'
-import HealthPage from './Health/HealthPage'
-import LicenseDetailsPage from './License/LicenseDetailsPage'
 import NavbarOnly from './Layouts/NavbarOnly'
 import SidebarDefault from './Layouts/SidebarDefault'
 import SidebarA from './Layouts/SidebarA'
 import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
 
-import ProfilePage from './Apps/Profile/ProfilePage'
 // ----------- Layout Imports ---------------
-import { DefaultSidebar } from './../layout/components/DefaultSidebar'
-import ByeBye from './Pages/ByeBye'
-
-import Gluu404Error from './Apps/Gluu/Gluu404Error'
-import GluuNavBar from './Apps/Gluu/GluuNavBar'
 import { processRoutes } from 'Plugins/PluginMenuResolver'
 import { hasPermission } from 'Utils/PermChecker'
+import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+
+const DashboardPage = lazy(() => import('./Dashboards/DashboardPage'))
+const HealthPage = lazy(() => import('./Health/HealthPage'))
+const LicenseDetailsPage = lazy(() => import('./License/LicenseDetailsPage'))
+const ProfilePage = lazy(() => import('./Apps/Profile/ProfilePage'))
+const Gluu404Error = lazy(() => import('./Apps/Gluu/Gluu404Error'))
+const ByeBye = lazy(() => import('./Pages/ByeBye'))
+const GluuNavBar = lazy(() => import('./Apps/Gluu/GluuNavBar'))
+const DefaultSidebar = lazy(() => import('./../layout/components/DefaultSidebar'))
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -35,10 +34,10 @@ export const RoutedContent = () => {
 
   return (
     <Routes>
-      <Route path="/home/dashboard" element={<DashboardPage />} />
+      <Route path="/home/dashboard" element={<Suspense fallback={<GluuSuspenseLoader />}><DashboardPage /></Suspense>} />
       <Route path="/" element={ <Navigate to="/home/dashboard" /> } />
-      <Route path="/home/health" element={<HealthPage />} />
-      <Route path="/home/licenseDetails" element={<LicenseDetailsPage />} />
+      <Route path="/home/health" element={<Suspense fallback={<GluuSuspenseLoader />}><HealthPage /></Suspense>} />
+      <Route path="/home/licenseDetails" element={<Suspense fallback={<GluuSuspenseLoader />}><LicenseDetailsPage /></Suspense>} />
       {/*    Layouts     */}
       <Route path="/layouts/navbar" element={<NavbarOnly />} />
       <Route path="/layouts/sidebar" element={<SidebarDefault />} />
@@ -56,9 +55,9 @@ export const RoutedContent = () => {
           ),
       )}
       {/*    Pages Routes    */}
-      <Route element={<ProfilePage />} path="/profile" />
-      <Route element={<ByeBye />} path="/logout" />
-      <Route element={<Gluu404Error />} path="/error-404" />
+      <Route element={<Suspense fallback={<GluuSuspenseLoader />}><ProfilePage /></Suspense>} path="/profile" />
+      <Route element={<Suspense fallback={<GluuSuspenseLoader />}><ByeBye /></Suspense>} path="/logout" />
+      <Route element={<Suspense fallback={<GluuSuspenseLoader />}><Gluu404Error /></Suspense>} path="/error-404" />
 
       {/*    404    */}
       <Route path="*" element={ <Navigate to="/error-404" /> } />
@@ -72,7 +71,7 @@ export const RoutedNavbars = () => (
     <Route
       path="/*"
       element={
-        <GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" />
+        <Suspense fallback={<GluuSuspenseLoader />}><GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" /></Suspense>
       }
     />
   </Routes>
@@ -80,6 +79,6 @@ export const RoutedNavbars = () => (
 
 export const RoutedSidebars = () => (
   <Routes>
-    <Route path="/*" element={<DefaultSidebar />} />
+    <Route path="/*" element={<Suspense fallback={<GluuSuspenseLoader />}><DefaultSidebar /></Suspense>} />
   </Routes>
 )
