@@ -154,8 +154,7 @@ function LicenseDetailsPage() {
             </Container>
           ) : (
             <Alert severity="warning">
-              {!loading &&
-                'The License API is not enabled for this application.'}
+              {!loading && t('messages.license_api_not_enabled')}
             </Alert>
           )}
         </CardBody>

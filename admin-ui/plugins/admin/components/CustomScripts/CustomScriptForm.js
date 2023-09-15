@@ -564,7 +564,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               doc_category={SCRIPT}
               name="script"
               language={selectedLanguage?.toLowerCase()}
-              label="script"
+              label="fields.script"
               lsize={2}
               rsize={10}
               formik={formik}

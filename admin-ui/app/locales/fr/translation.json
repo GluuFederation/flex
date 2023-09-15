@@ -201,6 +201,7 @@
     "hide_on_discovery": "Masquer à la découverte ?",
     "http_logging_enabled": "Activer la journalisation HTTP",
     "id": "id",
+    "script": "Scénario",
     "id_token_encrypted_response_alg": "JWE alg Algorithm pour chiffrer le jeton d'identification",
     "id_token_encrypted_response_enc": "JWE enc Algorithme pour chiffrer le jeton d'identification",
     "id_token_signed_response_alg": "JWS alg Algorithm pour la signature du jeton d'identification",
@@ -385,6 +386,7 @@
     "add_configuration": "Ajouter une configuration",
     "new_role": "Nouveau rôle",
     "adding_new_permission": "Ajout d'une nouvelle autorisation",
+    "license_api_not_enabled": "L'API de licence n'est pas activée pour cette application.",
     "edit_configuration": "Supprimer la configuration",
     "add_role": "Ajouter un rôle",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
@@ -1042,6 +1044,10 @@
       "jansDefaultPromptLogin": "Si activé, définir prompt=login dans la demande d'autorisation, ce qui oblige le serveur d'autorisation à forcer l'utilisateur à se connecter à nouveau avant d'afficher la demande d'autorisation.",
       "updateTokenScriptDns": "Liste de scripts de mise à jour des jetons.",
       "ropcScripts": "Liste de scripts de Resource Owner Password Credentials (ROPC)."
+    },
+    "permissions": {
+      "name": "Nom de la permission",
+      "description": "Description de la permission"
     }
   },
   "script": {

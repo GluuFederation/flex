@@ -17,6 +17,7 @@ function GluuInputEditor({
   rsize,
   doc_category,
   readOnly = false,
+  label
 }) {
   const handleChange = (scripts) => {
     formik.handleChange(name)(scripts)
@@ -27,7 +28,7 @@ function GluuInputEditor({
       <GluuLabel
         doc_category={doc_category}
         doc_entry={name}
-        label={name}
+        label={label}
         size={lsize}
         required={required}
       />
