@@ -32,7 +32,7 @@ export default class PermissionApi {
     })
   }
   
-  deletePermission = async (data) => {
+  deletePermission = (data) => {
     return new Promise((resolve, reject) => {
       this.api.deleteAdminuiPermission(encodeURIComponent(data.permission), (error, data) => {
         handleResponse(error, reject, resolve, data)

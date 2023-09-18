@@ -4,12 +4,17 @@ import { Formik } from 'formik'
 import { Form, Container, Card, CardBody } from 'Components'
 import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
 import LdapItem from './LdapItem'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getLdapConfig, editLdap } from 'Plugins/services/redux/features/ldapSlice'
 import { useTranslation } from 'react-i18next'
 
-function LdapPage({ ldap, loading, dispatch }) {
+function LdapPage() {
   const { t } = useTranslation()
+  const ldap = useSelector((state) => state.ldapReducer.ldap);
+  const loading = useSelector((state) => state.ldapReducer.loading);
+
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     dispatch(getLdapConfig())
@@ -55,12 +60,4 @@ function LdapPage({ ldap, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    ldap: state.ldapReducer.ldap,
-    permissions: state.authReducer.permissions,
-    loading: state.ldapReducer.loading,
-  }
-}
-
-export default connect(mapStateToProps)(LdapPage)
+export default LdapPage

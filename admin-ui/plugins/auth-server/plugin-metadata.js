@@ -49,13 +49,18 @@ import {
   AGAMA_READ,
   SSA_PORTAL
 } from 'Utils/PermChecker'
-import AgamaListPage from './components/Agama/AgamaListPage'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import AuthNListPage from './components/AuthN/AuthNListPage'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
 import SsaListPage from './components/Ssa/SsaListPage' 
 import SsaAddPage from './components/Ssa/SsaAddPage'
+import React, { Suspense, lazy } from 'react'
+
+const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
+function AgamaListPageWrapper() {
+  return <Suspense fallback={<div>Loading...</div>}><AgamaListPage /></Suspense>
+} 
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -185,7 +190,7 @@ const pluginMetadata = {
       permission: ACR_READ,
     },
     {
-      component: AgamaListPage,
+      component: AgamaListPageWrapper,
       path: PLUGIN_BASE_APTH + '/agama',
       permission: AGAMA_READ,
     },

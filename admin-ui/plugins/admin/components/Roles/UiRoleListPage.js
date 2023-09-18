@@ -4,7 +4,7 @@ import { Paper } from '@mui/material'
 import UiRoleDetailPage from './UiRoleDetailPage'
 import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -26,18 +26,23 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { ROLE_DELETE } from '../../../../app/utils/PermChecker'
 
-function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
-  const { t } = useTranslation()
+function UiRoleListPage() {
+  const apiRoles = useSelector((state) => state.apiRoleReducer.items)
+  const loading = useSelector((state) => state.apiRoleReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+
   const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
-  const myActions = []
-  const options = []
-  const userAction = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const myActions = [],
+    options = [],
+    userAction = {},
+    pageSize = localStorage.getItem('paggingSize') || 10,
+    theme = useContext(ThemeContext),
+    selectedTheme = theme.state.theme,
+    themeColors = getThemeColor(selectedTheme),
+    bgThemeColor = { background: themeColors.background },
+    toggle = () => setModal(!modal),
+    { t } = useTranslation(),
+    dispatch = useDispatch()
 
   useEffect(() => {
     doFetchList()
@@ -91,7 +96,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
                   return (
                     <select
                       onChange={(e) => rowData.onChange(e.target.value)}
-                      className="form-control"
+                      className='form-control'
                     >
                       <option
                         selected={
@@ -124,7 +129,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
             ]}
             data={apiRoles}
             isLoading={loading || false}
-            title=""
+            title=''
             actions={myActions}
             options={{
               search: true,
@@ -170,12 +175,4 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    apiRoles: state.apiRoleReducer.items,
-    loading: state.apiRoleReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-
-export default connect(mapStateToProps)(UiRoleListPage)
+export default UiRoleListPage

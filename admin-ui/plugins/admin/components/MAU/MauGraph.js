@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, lazy, Suspense } from 'react'
 import moment from 'moment'
-import ActiveUsersGraph from 'Routes/Dashboards/Grapths/ActiveUsersGraph'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -8,7 +7,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getMau } from 'Plugins/admin/redux/features/mauSlice'
-import applicationstyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import {
   Button,
@@ -26,13 +24,19 @@ import {
   STAT_JANS_READ
 } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import dayjs from 'dayjs'
 
-function MauGraph({ statData, permissions, loading, dispatch }) {
+const ActiveUsersGraph = lazy(() => import('Routes/Dashboards/Grapths/ActiveUsersGraph'))
+
+function MauGraph() {
+  const dispatch = useDispatch()
+  const statData = useSelector(state => state.mauReducer.stat);
+  const loading = useSelector(state => state.mauReducer.loading);
+  const permissions = useSelector(state => state.authReducer.permissions);
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -103,19 +107,6 @@ function MauGraph({ statData, permissions, loading, dispatch }) {
     return result
   }
 
-  const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
-    <Button
-      color={`primary-${selectedTheme}`}
-      outline
-      style={applicationstyle.customButtonStyle}
-      className='example-custom-input'
-      onClick={onClick}
-      ref={ref}
-    >
-      {value}
-    </Button>
-  ))
-
   return (
     <GluuLoader blocking={loading}>
       <GluuViewWrapper
@@ -154,7 +145,7 @@ function MauGraph({ statData, permissions, loading, dispatch }) {
                   style={{
                     position: 'relative',
                     top: '55px',
-                    ...applicationstyle.customButtonStyle
+                    ...applicationStyle.customButtonStyle
                   }}
                   color={`primary-${selectedTheme}`}
                   onClick={search}
@@ -168,7 +159,7 @@ function MauGraph({ statData, permissions, loading, dispatch }) {
             <FormGroup row />
             <FormGroup row>
               <Col sm={12}>
-                <ActiveUsersGraph data={doDataAugmentation(statData)} />
+                <Suspense fallback={<div>Loading...</div>}><ActiveUsersGraph data={doDataAugmentation(statData)} /></Suspense>
               </Col>
             </FormGroup>
           </CardBody>
@@ -179,12 +170,4 @@ function MauGraph({ statData, permissions, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    statData: state.mauReducer.stat,
-    loading: state.mauReducer.loading,
-    permissions: state.authReducer.permissions
-  }
-}
-
-export default connect(mapStateToProps)(MauGraph)
+export default MauGraph

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useNavigate } from 'react-router-dom'
@@ -11,16 +11,17 @@ import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 
-function ClientAddPage({
-  permissions,
-  scopes,
-  scripts,
-  loading,
-  dispatch,
-  oidcConfiguration,
-  saveOperationFlag,
-  errorInSaveOperationFlag,
-}) {
+function ClientAddPage() {
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  let scopes = useSelector((state) => state.scopeReducer.items)
+  const scripts = useSelector((state) => state.initReducer.scripts)
+  const loading = useSelector((state) => state.oidcReducer.loading)
+  const oidcConfiguration = useSelector((state) => state.oidcDiscoveryReducer.configuration)
+  const saveOperationFlag = useSelector((state) => state.oidcReducer.saveOperationFlag)
+  const errorInSaveOperationFlag = useSelector((state) => state.oidcReducer.errorInSaveOperationFlag)
+
+  const dispatch = useDispatch()
+
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
@@ -105,15 +106,4 @@ function ClientAddPage({
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    permissions: state.authReducer.permissions,
-    scopes: state.scopeReducer.items,
-    scripts: state.initReducer.scripts,
-    loading: state.oidcReducer.loading,
-    oidcConfiguration: state.oidcDiscoveryReducer.configuration,
-    saveOperationFlag: state.oidcReducer.saveOperationFlag,
-    errorInSaveOperationFlag: state.oidcReducer.errorInSaveOperationFlag,
-  }
-}
-export default connect(mapStateToProps)(ClientAddPage)
+export default ClientAddPage

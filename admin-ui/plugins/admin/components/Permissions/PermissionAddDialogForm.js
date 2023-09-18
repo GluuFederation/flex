@@ -56,6 +56,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                 name="api_permission"
                 onKeyUp={handleStatus}
                 defaultValue=""
+                placeholder={`${t('fields.name')}`}
               />
             </Col>
           </FormGroup>
@@ -66,6 +67,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                 type="textarea"
                 name="permission_description"
                 defaultValue=""
+                placeholder={`${t('fields.description')}`}
               />
             </Col>
           </FormGroup>

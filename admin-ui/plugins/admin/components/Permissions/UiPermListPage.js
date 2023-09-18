@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@mui/material'
 import UiPermDetailPage from './UiPermDetailPage'
 import { Badge } from 'reactstrap'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -27,7 +27,12 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { isEmpty } from 'lodash'
 
-function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
+function UiPermListPage() {
+  const apiPerms = useSelector(state => state.apiPermissionReducer.items);
+  const loading = useSelector(state => state.apiPermissionReducer.loading);
+  const permissions = useSelector(state => state.authReducer.permissions);
+
+  const dispatch = useDispatch();
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -68,13 +73,24 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
     dispatch(addPermission({ action: userAction }))
     toggle()
   }
+
+  const PaperContainer = useCallback(
+    (props) => <Paper {...props} elevation={0} />,
+    []
+  )
+
+  const DetailPanel = useCallback(
+    (rowD) => <UiPermDetailPage row={rowD} />,
+    []
+  )
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuViewWrapper canShow={hasPermission(permissions, PERMISSION_READ)}>
           <MaterialTable
             components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
+              Container: PaperContainer,
             }}
             columns={[
               {
@@ -103,9 +119,7 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
-            detailPanel={(rowD) => {
-              return <UiPermDetailPage row={rowD} />
-            }}
+            detailPanel={DetailPanel}
             editable={{
               isDeleteHidden:() => !hasPermission(permissions, PERMISSION_DELETE),
               isEditHidden:() => !hasPermission(permissions, PERMISSION_WRITE),
@@ -137,11 +151,4 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    apiPerms: state.apiPermissionReducer.items,
-    loading: state.apiPermissionReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(UiPermListPage)
+export default UiPermListPage

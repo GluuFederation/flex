@@ -6,7 +6,7 @@ import plugins from '../plugins.config.json'
 function process() {
     let pluginSagas = [];
     plugins
-    .map((item) => (item.metadataFile)).forEach(async (path) => {
+    .map((item) => (item.metadataFile)).forEach((path) => {
         pluginSagas = [...pluginSagas, ...(require(`${path}`)).default.sagas]
     })
     return  pluginSagas;

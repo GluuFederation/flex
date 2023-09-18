@@ -178,6 +178,7 @@
     "logo_uri": "Logo URI",
     "logout_redirect_uris": "Logout Redirect URIs",
     "level": "Level",
+    "script": "Script",
     "local_primary_key": "Local Primary Key",
     "max_connections": "Max Connections",
     "max_idle_connections": "Max Idle Connections",
@@ -477,6 +478,7 @@
   "messages": {
     "add_permission": "Add Permission",
     "add_configuration": "Add Configuration",
+    "license_api_not_enabled": "The License API is not enabled for this application.",
     "edit_configuration": "Edit Configuration",
     "delete_configuration": "Delete Configuration",
     "new_role": "New Role",

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useNavigate } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { editClient } from 'Plugins/auth-server/redux/features/oidcSlice'
 import { getScopeByCreator, emptyScopes} from 'Plugins/auth-server/redux/features/scopeSlice'
 import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
@@ -13,20 +13,20 @@ import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import isEmpty from 'lodash/isEmpty'
 
-function ClientEditPage({
-  clientData,
-  viewOnly,
-  scopes,
-  scripts,
-  loading,
-  permissions,
-  dispatch,
-  oidcConfiguration,
-  saveOperationFlag,
-  errorInSaveOperationFlag,
-  umaResources,
-  loadingOidcDiscovevry
-}) {
+function ClientEditPage() {
+  const clientData = useSelector((state) => state.oidcReducer.item)
+  const viewOnly = useSelector((state) => state.oidcReducer.view)
+  const loading = useSelector((state) => state.oidcReducer.loading)
+  let scopes = useSelector((state) => state.scopeReducer.items)
+  const scripts = useSelector((state) => state.initReducer.scripts)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const oidcConfiguration = useSelector((state) => state.oidcDiscoveryReducer.configuration)
+  const saveOperationFlag = useSelector((state) => state.oidcReducer.saveOperationFlag)
+  const errorInSaveOperationFlag = useSelector((state) => state.oidcReducer.errorInSaveOperationFlag)
+  const umaResources = useSelector((state) => state.umaResourceReducer.items)
+  const loadingOidcDiscovevry = useSelector((state) => state.oidcDiscoveryReducer.loading)
+
+  const dispatch = useDispatch()
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
@@ -88,19 +88,5 @@ function ClientEditPage({
     </GluuLoader>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    clientData: state.oidcReducer.item,
-    viewOnly: state.oidcReducer.view,
-    loading: state.oidcReducer.loading,
-    scopes: state.scopeReducer.items,
-    scripts: state.initReducer.scripts,
-    permissions: state.authReducer.permissions,
-    oidcConfiguration: state.oidcDiscoveryReducer.configuration,
-    loadingOidcDiscovevry: state.oidcDiscoveryReducer.loading,
-    saveOperationFlag: state.oidcReducer.saveOperationFlag,
-    errorInSaveOperationFlag: state.oidcReducer.errorInSaveOperationFlag,
-    umaResources: state.umaResourceReducer.items,
-  }
-}
-export default connect(mapStateToProps)(ClientEditPage)
+
+export default ClientEditPage

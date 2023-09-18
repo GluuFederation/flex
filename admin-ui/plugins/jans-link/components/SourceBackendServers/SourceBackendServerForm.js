@@ -138,8 +138,9 @@ const SourceBackendServerForm = () => {
     let payload
 
     if (!sourceConfig?.configId) {
+      const sourceConfigs = [...(cacheRefreshConfiguration.sourceConfigs || [])]
       payload = [
-        ...cacheRefreshConfiguration.sourceConfigs,
+        ...sourceConfigs,
         {
           ...formik.values.sourceConfigs,
           baseDNs: baseDNs,

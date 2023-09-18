@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
@@ -13,7 +13,10 @@ import SetTitle from 'Utils/SetTitle'
 
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
-function LicenseDetailsPage({ item, loading, dispatch }) {
+function LicenseDetailsPage() {
+  const item = useSelector((state) => state.licenseDetailsReducer.item)
+  const loading = useSelector((state) => state.licenseDetailsReducer.loading)
+  const dispatch = useDispatch()
   const userAction = {}
   const options = {}
   const { t } = useTranslation()
@@ -151,8 +154,7 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
             </Container>
           ) : (
             <Alert severity="warning">
-              {!loading &&
-                'The License API is not enabled for this application.'}
+              {!loading && t('messages.license_api_not_enabled')}
             </Alert>
           )}
         </CardBody>
@@ -161,10 +163,4 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    item: state.licenseDetailsReducer.item,
-    loading: state.licenseDetailsReducer.loading,
-  }
-}
-export default connect(mapStateToProps)(LicenseDetailsPage)
+export default LicenseDetailsPage

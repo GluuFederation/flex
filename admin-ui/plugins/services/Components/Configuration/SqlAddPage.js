@@ -1,12 +1,14 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import SqlForm from './SqlForm'
 import { addSql } from 'Plugins/services/redux/features/sqlSlice'
 import { buildPayload } from 'Utils/PermChecker'
 
-function SqlAddPage({ dispatch }) {
+function SqlAddPage() {
+  const dispatch = useDispatch()
+
   const userAction = {}
   const navigate =useNavigate()
   function handleSubmit(data) {
@@ -34,10 +36,5 @@ function SqlAddPage({ dispatch }) {
     </React.Fragment>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    loading: state.sqlReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(SqlAddPage)
+
+export default SqlAddPage

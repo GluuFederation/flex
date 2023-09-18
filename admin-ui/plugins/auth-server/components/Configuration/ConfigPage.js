@@ -6,7 +6,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import useExitPrompt from 'Routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   buildPayload,
@@ -17,15 +17,20 @@ import {
   getJsonConfig,
   patchJsonConfig,
 } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
-import { FETCHING_JSON_PROPERTIES } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import DefaultAcrInput from './DefaultAcrInput'
-import { SIMPLE_PASSWORD_AUTH, FETCHING_SCRIPTS } from 'Plugins/auth-server/common/Constants'
+import { SIMPLE_PASSWORD_AUTH, FETCHING_JSON_PROPERTIES } from 'Plugins/auth-server/common/Constants'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
 import { getScripts } from 'Redux/features/initSlice'
 
-function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
+function ConfigPage() {
+  const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const acrs = useSelector((state) => state.acrReducer.acrReponse)
+  const scripts = useSelector((state) => state.initReducer.scripts)
+
+  const dispatch = useDispatch()
+
   const { t } = useTranslation()
   const lSize = 6
   const userAction = {}
@@ -162,14 +167,4 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    configuration: state.jsonConfigReducer.configuration,
-    permissions: state.authReducer.permissions,
-    loading: state.jsonConfigReducer.loading,
-    acrs: state.acrReducer.acrReponse,
-    scripts: state.initReducer.scripts,
-  }
-}
-
-export default connect(mapStateToProps)(ConfigPage)
+export default ConfigPage

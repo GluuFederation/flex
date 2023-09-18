@@ -10,14 +10,6 @@ const CustomScriptDetailPage = ({ row }) => {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  function getBadgeTheme(status) {
-    if (status) {
-      return `primary-${selectedTheme}`
-    } else {
-      return 'dimmed'
-    }
-  }
-
   return (
     <React.Fragment>
       <Container style={{ backgroundColor: '#F5F5F5' }}>
@@ -64,7 +56,7 @@ const CustomScriptDetailPage = ({ row }) => {
               doc_category={SCRIPT}
               doc_entry="internal"
               isBadge
-              badgeColor={getBadgeTheme(row.internal)}
+              badgeColor={`primary-${selectedTheme}`}
               value={row.internal ? t('options.true') : t('options.false')}
             />
           </Col>
@@ -74,7 +66,7 @@ const CustomScriptDetailPage = ({ row }) => {
               doc_category={SCRIPT}
               doc_entry="enabled"
               isBadge
-              badgeColor={getBadgeTheme(row.enabled)}
+              badgeColor={`primary-${selectedTheme}`}
               value={row.enabled ? t('options.true') : t('options.false')}
             />
           </Col>

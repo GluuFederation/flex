@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
-import { connect, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
-import { addLdap } from 'Plugins/services/redux/features/ldapSlice'
+import { addLdap, toggleSavedFormFlag } from 'Plugins/services/redux/features/ldapSlice'
 import { buildPayload } from 'Utils/PermChecker'
-import { toggleSavedFormFlag } from 'Plugins/services/redux/features/ldapSlice'
 
 function LdapAddPage() {
   const dispatch = useDispatch()
@@ -54,10 +53,5 @@ function LdapAddPage() {
     </React.Fragment>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    loading: state.ldapReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(LdapAddPage)
+
+export default LdapAddPage

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
-import { connect, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import moment from 'moment'
 import AceEditor from 'react-ace'
 import { Card, Col, Container, FormGroup } from 'Components'
@@ -416,11 +416,4 @@ function ClientCibaParUmaPanel({
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    clients: state.oidcReducer.items,
-    loading: state.oidcReducer.loading,
-  }
-}
-
-export default connect(mapStateToProps)(ClientCibaParUmaPanel)
+export default ClientCibaParUmaPanel

@@ -4,7 +4,7 @@ import { Formik } from 'formik'
 import CouchbaseItem from './CouchbaseItem'
 import { Form, FormGroup, Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Alert from '@mui/material/Alert'
 import {
   getCouchBaseConfig,
@@ -13,7 +13,13 @@ import {
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-function CouchbasePage({ couchbase, loading, dispatch, persistenceType }) {
+function CouchbasePage() {
+  const couchbase = useSelector((state) => state.couchbaseReducer.couchbase)
+  const loading = useSelector((state) => state.couchbaseReducer.loading)
+  const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
+
+  const dispatch = useDispatch()
+
   const { t } = useTranslation()
   SetTitle(t('titles.couchbase_authentication'))
   useEffect(() => {
@@ -66,13 +72,4 @@ function CouchbasePage({ couchbase, loading, dispatch, persistenceType }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    couchbase: state.couchbaseReducer.couchbase,
-    permissions: state.authReducer.permissions,
-    loading: state.couchbaseReducer.loading,
-    persistenceType: state.persistenceTypeReducer.type,
-  }
-}
-
-export default connect(mapStateToProps)(CouchbasePage)
+export default CouchbasePage

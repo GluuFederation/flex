@@ -97,7 +97,7 @@ const ClientBasicPanel = ({
     }
   }, [])
 
-  const handlePagination = async (event, shownResults) => {
+  const handlePagination = (event, shownResults) => {
     userScopeAction['limit'] = PER_PAGE_SCOPES
     userScopeAction['startIndex'] = (userScopeAction['startIndex'] ?? 0) + 10
     if(!userScopeAction.pattern) {

@@ -7,14 +7,17 @@ import {
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { buildPayload } from 'Utils/PermChecker'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getHealthStatus } from 'Redux/features/healthSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
 import { Box } from '@mui/material'
 
-function HealthPage({ serverStatus, dbStatus, dispatch }) {
+function HealthPage() {
+  const serverStatus = useSelector(state => state.healthReducer.serverStatus);
+  const dbStatus = useSelector(state => state.healthReducer.dbStatus);
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -24,7 +27,7 @@ function HealthPage({ serverStatus, dbStatus, dispatch }) {
   SetTitle(t('titles.services_health'))
 
   useEffect(() => {
-    fetchHealthInfo(userAction, options, dispatch)
+    fetchHealthInfo()
   }, [])
 
   function fetchHealthInfo() {
@@ -80,12 +83,4 @@ function HealthPage({ serverStatus, dbStatus, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    serverStatus: state.healthReducer.serverStatus,
-    dbStatus: state.healthReducer.dbStatus,
-    loading: state.healthReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(HealthPage)
+export default HealthPage

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Suspense, lazy, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Toggle from 'react-toggle'
@@ -12,18 +12,20 @@ import {
 } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
-import GluuInputEditor from 'Routes/Apps/Gluu/GluuInputEditor'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import Counter from 'Components/Widgets/GroupedButtons/Counter'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import items from './scriptTypes'
-import GluuScriptErrorModal from "../../../../app/routes/Apps/Gluu/GluuScriptErrorModal";
 import { Alert, Button } from "reactstrap";
 import ErrorIcon from '@mui/icons-material/Error';
+import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+
+const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
+const Counter = lazy(() => import('Components/Widgets/GroupedButtons/Counter'))
+const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
 function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
   const { t } = useTranslation()
@@ -278,11 +280,13 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
   return (
     <>
       {isModalOpen && (
-        <GluuScriptErrorModal
-          isOpen={isModalOpen}
-          error={item.scriptError.stackTrace}
-          handler={() => setIsModalOpen(false)}
-        />
+        <Suspense fallback={<GluuSuspenseLoader />}>
+          <GluuScriptErrorModal
+            isOpen={isModalOpen}
+            error={item.scriptError.stackTrace}
+            handler={() => setIsModalOpen(false)}
+          />
+        </Suspense>
       )}
 
       {item?.scriptError?.stackTrace ? (
@@ -535,11 +539,13 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
         <FormGroup row>
           <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level"/>
           <Col sm={9}>
-            <Counter
-              counter={item.level}
-              disabled={viewOnly}
-              onCounterChange={(level) => onLevelChange(level)}
-            />
+            <Suspense fallback={<GluuSuspenseLoader />}>
+              <Counter
+                counter={item.level}
+                disabled={viewOnly}
+                onCounterChange={(level) => onLevelChange(level)}
+              />
+            </Suspense>
             <Input type="hidden" id="level" defaultValue={item.level} />
           </Col>
         </FormGroup>
@@ -553,18 +559,20 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
           disabled={viewOnly}
         ></GluuProperties>
         {!scriptPath && (
-          <GluuInputEditor
-            doc_category={SCRIPT}
-            name="script"
-            language={selectedLanguage?.toLowerCase()}
-            label="script"
-            lsize={2}
-            rsize={10}
-            formik={formik}
-            value={item.script}
-            readOnly={viewOnly}
-            required
-          ></GluuInputEditor>
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <GluuInputEditor
+              doc_category={SCRIPT}
+              name="script"
+              language={selectedLanguage?.toLowerCase()}
+              label="fields.script"
+              lsize={2}
+              rsize={10}
+              formik={formik}
+              value={item.script}
+              readOnly={viewOnly}
+              required
+            />
+          </Suspense>
         )}
 
         <FormGroup row>

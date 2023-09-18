@@ -2,8 +2,7 @@ import axios from '../api/axios'
 import axios_instance from 'axios'
 const JansConfigApi = require('jans_config_api')
 
-// Get OAuth2 Configuration
-export const fetchServerConfiguration = async (token) => {
+export const fetchServerConfiguration = (token) => {
   const headers = { Authorization: `Bearer ${token}` }
   return axios
     .get('/app/admin-ui/oauth2/config', { headers })
@@ -18,7 +17,7 @@ export const fetchServerConfiguration = async (token) => {
 }
 
 // get user location and ip
-export const getUserIpAndLocation = async () => {
+export const getUserIpAndLocation = () => {
   return axios_instance
     .get('https://geolocation-db.com/json/')
     .then((response) => response.data)
@@ -29,7 +28,7 @@ export const getUserIpAndLocation = async () => {
 }
 
 // Retrieve user information
-export const fetchUserInformation = async ({ userInfoEndpoint, token_type, access_token }) => {
+export const fetchUserInformation = ({ userInfoEndpoint, token_type, access_token }) => {
   const headers = { Authorization: `${token_type} ${access_token}` }
   return axios
   .get(userInfoEndpoint, { headers })
@@ -44,7 +43,7 @@ export const fetchUserInformation = async ({ userInfoEndpoint, token_type, acces
 }
 
 // post user action
-export const postUserAction = async (userAction) => {
+export const postUserAction = (userAction) => {
   return axios
     .post('/admin-ui/logging/audit', {
       headers: {
@@ -59,7 +58,7 @@ export const postUserAction = async (userAction) => {
 }
 
 // Get API Access Token
-export const fetchApiAccessToken = async (jwt) => {
+export const fetchApiAccessToken = (jwt) => {
   return axios
     .get('/app/admin-ui/oauth2/api-protection-token', { params: { ujwt: jwt } })
     .then((response) => response.data)
@@ -72,7 +71,7 @@ export const fetchApiAccessToken = async (jwt) => {
     })
 }
 
-export const fetchApiTokenWithDefaultScopes = async () => {
+export const fetchApiTokenWithDefaultScopes = () => {
   return axios
     .get('/app/admin-ui/oauth2/api-protection-token')
     .then((response) => response.data)

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -13,11 +13,22 @@ import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { editScope } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { cloneDeep } from 'lodash'
 
-function ScopeEditPage({ scope: { ...extensbileScope }, loading, dispatch, scripts, attributes, saveOperationFlag, errorInSaveOperationFlag }) {
+function ScopeEditPage() {
   const userAction = {}
   const navigate =useNavigate()
   const { t } = useTranslation()
+
+  const scope = useSelector((state) => state.scopeReducer.item)
+  const extensbileScope = cloneDeep(scope)
+  const loading = useSelector((state) => state.scopeReducer.loading)
+  const scripts = useSelector((state) => state.initReducer.scripts)
+  const attributes = useSelector((state) => state.initReducer.attributes)
+  const saveOperationFlag = useSelector((state) => state.scopeReducer.saveOperationFlag)
+  const errorInSaveOperationFlag = useSelector((state) => state.scopeReducer.errorInSaveOperationFlag)
+
+  const dispatch = useDispatch()
 
   if (!extensbileScope.attributes) {
     extensbileScope.attributes = {
@@ -72,16 +83,5 @@ function ScopeEditPage({ scope: { ...extensbileScope }, loading, dispatch, scrip
     </GluuLoader>
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    scope: state.scopeReducer.item,
-    loading: state.scopeReducer.loading,
-    permissions: state.authReducer.permissions,
-    scripts: state.initReducer.scripts,
-    attributes: state.initReducer.attributes,
-    saveOperationFlag: state.scopeReducer.saveOperationFlag,
-    errorInSaveOperationFlag: state.scopeReducer.errorInSaveOperationFlag,
-  }
-}
 
-export default connect(mapStateToProps)(ScopeEditPage)
+export default ScopeEditPage

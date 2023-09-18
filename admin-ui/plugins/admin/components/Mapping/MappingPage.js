@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import MappingAddDialogForm from './MappingAddDialogForm'
@@ -29,14 +29,13 @@ import {
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 
-function MappingPage({
-  mapping,
-  apiRoles,
-  permissions,
-  permissionLoading,
-  loading,
-  dispatch,
-}) {
+function MappingPage() {
+  const dispatch = useDispatch()
+  const mapping = useSelector(state => state.mappingReducer.items);
+  const loading = useSelector(state => state.mappingReducer.loading);
+  const apiRoles = useSelector(state => state.apiRoleReducer.items);
+  const permissions = useSelector(state => state.authReducer.permissions);
+  const permissionLoading = useSelector(state => state.apiPermissionReducer.loading);
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -116,14 +115,4 @@ function MappingPage({
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    mapping: state.mappingReducer.items,
-    loading: state.mappingReducer.loading,
-    apiRoles: state.apiRoleReducer.items,
-    permissions: state.authReducer.permissions,
-    permissionLoading: state.apiPermissionReducer.loading,
-  }
-}
-
-export default connect(mapStateToProps)(MappingPage)
+export default MappingPage
