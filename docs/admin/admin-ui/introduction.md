@@ -8,7 +8,7 @@ tags:
 
 # Gluu Flex Admin UI
 
-Gluu Flex Admin UI is a web interface to simplify the management and configuration of your Authentication Server. It is one of the key services of Gluu Flex that enables viewing and editing of configuration properties, interception scripts, clients, users, metrics etc in one place. This user-friendly interface facilitates interaction with the Jans Auth Server through a REST API layer known as the Jans Config API.
+Gluu Flex Admin UI is a web interface to simplify the management and configuration of your Janssen Authentication Server. One of the key services offered by Gluu Flex is the ability to view and edit configuration properties, interception scripts, clients, users, metrics, and more, all in one place. This user-friendly interface facilitates interaction with the Jans Auth Server through a REST API layer known as the Jans Config API.
 
 ![image](../../assets/admin-ui/design-auth-server-interaction.png)
 
@@ -16,9 +16,9 @@ The above diagram explains interaction between various depending components.
 
 ### Admin UI Frontend
 
-This user facing GUI has been developed using [React.js](https://react.dev/) and [Redux](https://redux.js.org/) is used for state management. The Admin UI seamlessly integrates with the Janssen server through an OpenAPI JavaScript client of Jans Config API. This client allows the GUI to make API calls to the Jans Config API endpoints, enabling efficient configuration management. The GUI utilizes popular libraries such as [Material-UI](https://mui.com/material-ui/), Axios, [Formik](https://formik.org/), etc. The User-Facing GUI is developed and maintained using the Webpack build tool. [Webpack](https://webpack.js.org/) is responsible for compiling and bundling the application, optimizing its performance, and generating the necessary production files.
+This user facing GUI has been developed using [React.js](https://react.dev/) and [Redux](https://redux.js.org/) is used for state management. The Admin UI utilizes an OpenAPI JavaScript client for Jans Config API, facilitating API calls to Jans Config API endpoints.
 
-The Admin UI bundle is hosted on an **Apache HTTP server**, which is included as a component with the Janssen server installation. This setup ensures that the GUI is readily accessible and efficiently served to users.
+The GUI utilizes popular libraries such as [Material-UI](https://mui.com/material-ui/), Axios, [Formik](https://formik.org/), etc. [Webpack](https://webpack.js.org/) is responsible for compiling and bundling the application, optimizing its performance, and generating the necessary production files. The Admin UI bundle is hosted on an **Apache HTTP server**, which is included as a component with the Janssen server installation. This setup ensures that the GUI is readily accessible and efficiently served to users.
 
 ### Admin UI Backend
 
