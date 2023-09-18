@@ -20,7 +20,50 @@ When accessing the Gluu Flex Admin UI through a web browser, the following steps
 6. If the user has not already subscribed to a valid license in Agama Lab, the Admin UI displays a page to generate a 30-day trial license. The user cannot generate another trial license after expiry of a generated trial license and will need to subscribe to the Admin UI license in Agama Lab to access the user interface.
 7. After verification of valid license the frontend initiates the Authorization Code Flow by redirecting the user to the login page.
 
-![image](../../assets/admin-ui/design-verify-license.png)
+```mermaid
+
+sequenceDiagram
+title License Verification
+autonumber
+actor User
+User->>Browser: open Admin UI URL
+Browser->>Gluu Flex Admin UI: launch Admin UI
+Gluu Flex Admin UI->>Admin UI Backend: /config
+Admin UI Backend->>Gluu Flex Admin UI: Admin UI config
+Gluu Flex Admin UI->>Admin UI Backend: /license/isConfigValid 
+Note over Gluu Flex Admin UI,Admin UI Backend: validate license OIDC client
+alt license client valid
+    Admin UI Backend->>Gluu Flex Admin UI: true
+else license client invalid
+    Admin UI Backend->>account.gluu.org: DCR using SSA
+
+    alt DCR success
+        account.gluu.org->>Admin UI Backend: client credentials
+        Admin UI Backend->>Admin UI Backend: save client credentials in persistence
+        Admin UI Backend->>Gluu Flex Admin UI: true
+    else DCR fails
+        Admin UI Backend->>Gluu Flex Admin UI: false
+        Gluu Flex Admin UI->>Browser: Screen to Upload SSA
+    end
+end
+Gluu Flex Admin UI->>Admin UI Backend: /license/isActive
+Note over Gluu Flex Admin UI,Admin UI Backend: validate license
+Admin UI Backend->>SCAN: /scan/license/isActive
+alt license active
+    SCAN->>Admin UI Backend: true
+else license inactive / not present
+    SCAN->>Admin UI Backend: false
+    Admin UI Backend->>SCAN: /retrieve
+    alt license subscribed
+        SCAN->>Admin UI Backend: license
+    else license not subscribed
+        SCAN->>Admin UI Backend: false
+        Admin UI Backend->>Gluu Flex Admin UI: false
+        Gluu Flex Admin UI->>Browser: Screen to generate Trial license
+    end
+end
+Admin UI Backend->>Gluu Flex Admin UI: login page
+```
 
 ## The Authorization Code Flow
 
@@ -30,7 +73,23 @@ When accessing the Gluu Flex Admin UI through a web browser, the following steps
 4. With AT1, the frontend requests the User-Info in JWT format (`UJWT`) from the authorization server by calling userInfo endpoint.
 7. The frontend stores the UJWT and its claims, including the user's role ( claim name is `jansAdminUIRole`) and other relevant information, in the Redux store.
 
-![image](../../assets/admin-ui/design-auth-code-flow.png)
+```mermaid
+
+sequenceDiagram
+title License Verification
+autonumber
+actor User
+Gluu Flex Admin UI->>Jans Auth Server: /authorize
+Jans Auth Server->>Gluu Flex Admin UI:code
+Gluu Flex Admin UI->>Jans Auth Server: /token
+Note right of Gluu Flex Admin UI: code as parameter
+Jans Auth Server->>Gluu Flex Admin UI: access_token
+Note right of Gluu Flex Admin UI: access_token as parameter
+Gluu Flex Admin UI->>Jans Auth Server: /userInfo
+Jans Auth Server->>Gluu Flex Admin UI: user-info (UJWT)
+Gluu Flex Admin UI->>Gluu Flex Admin UI: extract & store claims from UJWT
+
+```
 
 ## API Protection and Scopes
 
@@ -43,7 +102,22 @@ To ensure security and access control, Gluu Flex Admin UI leverages API protecti
 5. The frontend receives AT2 and associated scopes from the backend.
 6. Features in the frontend are enabled or disabled based on the scopes provided in AT2. Refer this [doc](./admin-menu.md/#gui-access-control) for GUI access control.
 
-![image](../../assets/admin-ui/design-access-control-token.png)
+```mermaid
+
+sequenceDiagram
+title License Verification
+autonumber
+actor User
+
+Gluu Flex Admin UI->>Admin UI Backend: /api-protection-token?ujwt=...
+Admin UI Backend->>Jans Token Server: /token
+Jans Token Server->>Jans Token Server: Verify ujwt
+Jans Token Server->>Jans Token Server: Add scopes to token based on role (AT2)
+Jans Token Server->>Admin UI Backend: AT2
+Admin UI Backend->>Gluu Flex Admin UI: AT2
+Gluu Flex Admin UI->>Gluu Flex Admin UI:extracts scopes from AT2
+Gluu Flex Admin UI->>Gluu Flex Admin UI: GUI access control based on scopes from AT2
+```
 
 ## Accessing Config-API Endpoints
 
@@ -54,7 +128,28 @@ To access config-api endpoints, the following steps are taken:
 3. At the Jans Config API, AT2 is validated, and the provided scopes are verified to ensure the necessary scope for the requested endpoint is present.
 4. If the above steps are successful, the requested data is fetched from the Jans Config API and forwarded to the frontend.
 
-![image](../../assets/admin-ui/design-access-config-api.png)
+```mermaid
+
+sequenceDiagram
+title License Verification
+autonumber
+actor User
+
+Gluu Flex Admin UI->>Admin UI Backend: /api-protection-token?ujwt=...
+Admin UI Backend->>Jans Token Server: /token
+Jans Token Server->>Jans Token Server: Verify ujwt
+Jans Token Server->>Jans Token Server: Add scopes to token based on role (AT2)
+Jans Token Server->>Admin UI Backend: AT2
+Admin UI Backend->>Gluu Flex Admin UI: AT2
+Gluu Flex Admin UI->>Jans Config API: request API with AT2
+Jans Config API<<->>Jans Token Server: introspect AT2
+Jans Token Server->>Jans Config API: AT2 JSON
+Jans Config API->>Jans Config API: Enforcement: verify required scopes
+Jans Config API->>Jans Config API: validate params
+Jans Config API->>Jans Auth Server:call API with request params
+Jans Auth Server->>Jans Config API:response
+Jans Config API->>Gluu Flex Admin UI:response
+```
 
 ## Conclusion
 
