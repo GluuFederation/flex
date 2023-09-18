@@ -9,11 +9,11 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { cloneDeep } from 'lodash'
 
 function AttributeEditPage() {
-  const item = useSelector((state) => state.attributeReducer.item)
-  const loading = useSelector((state) => state.attributeReducer.loading)
-  const extensibleItems = cloneDeep(item)
-
-  const dispatch = useDispatch()
+  const item = useSelector((state) => state.attributeReducer.item),
+    loading = useSelector((state) => state.attributeReducer.loading),
+    extensibleItems = cloneDeep(item),
+    dispatch = useDispatch(),
+    navigate = useNavigate()
 
   if (!extensibleItems.attributeValidation) {
     extensibleItems.attributeValidation = {
@@ -22,7 +22,6 @@ function AttributeEditPage() {
       minLength: null,
     }
   }
-  const navigate = useNavigate()
   function customHandleSubmit(data) {
     if (data) {
       dispatch(editAttribute({ data }))
