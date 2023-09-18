@@ -27,22 +27,22 @@ import getThemeColor from 'Context/theme/config'
 import { ROLE_DELETE } from '../../../../app/utils/PermChecker'
 
 function UiRoleListPage() {
-  const apiRoles = useSelector(state => state.apiRoleReducer.items);
-  const loading = useSelector(state => state.apiRoleReducer.loading);
-  const permissions = useSelector(state => state.authReducer.permissions);
+  const apiRoles = useSelector((state) => state.apiRoleReducer.items)
+  const loading = useSelector((state) => state.apiRoleReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
 
-  const dispatch = useDispatch();
-  const { t } = useTranslation()
   const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
-  const myActions = []
-  const options = []
-  const userAction = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const myActions = [],
+    options = [],
+    userAction = {},
+    pageSize = localStorage.getItem('paggingSize') || 10,
+    theme = useContext(ThemeContext),
+    selectedTheme = theme.state.theme,
+    themeColors = getThemeColor(selectedTheme),
+    bgThemeColor = { background: themeColors.background },
+    toggle = () => setModal(!modal),
+    { t } = useTranslation(),
+    dispatch = useDispatch()
 
   useEffect(() => {
     doFetchList()
@@ -96,7 +96,7 @@ function UiRoleListPage() {
                   return (
                     <select
                       onChange={(e) => rowData.onChange(e.target.value)}
-                      className="form-control"
+                      className='form-control'
                     >
                       <option
                         selected={
@@ -129,7 +129,7 @@ function UiRoleListPage() {
             ]}
             data={apiRoles}
             isLoading={loading || false}
-            title=""
+            title=''
             actions={myActions}
             options={{
               search: true,
