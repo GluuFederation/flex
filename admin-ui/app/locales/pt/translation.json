@@ -73,7 +73,9 @@
     "cache_refresh": "Atualização de Cache",
     "customer_backend_key_attributes": "Chave/atributos de back-end do cliente",
     "source_backend_ldap_servers": "Servidores LDAP de back-end de origem",
-    "inum_db_server": "Servidor DB Inum"
+    "inum_db_server": "Servidor DB Inum",
+    "static_configuration": "Configuração estática",
+    "dynamic_configuration": "Configuração Dinâmica"
   },
   "actions": {
     "accept": "Aceitar",
