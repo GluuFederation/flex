@@ -13,8 +13,6 @@ import {
 } from '../redux/features/fidoSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-const tabNames = ['Dynamic Configuration', 'Static Configuration']
-
 const fidoApiPayload = ({ fidoConfiguration, data }) => {
   const payload = fidoConfiguration.fido
   payload.authenticatorCertsFolder = data.authenticatorCertsFolder
@@ -84,16 +82,21 @@ export default function Fido() {
     dispatch(getFidoConfiguration())
   }, [])
 
+  const tabNames = [
+    { name: t("menus.static_configuration"), path: '/fido/fidomanagement/static-configuration' },
+    { name: t("menus.dynamic_configuration"), path: '/fido/fidomanagement/dynamic-configuration' },
+  ];
+
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case 'Static Configuration':
+      case t("menus.static_configuration"):
         return (
           <StaticConfiguration
             handleSubmit={handleStaticConfigurationSubmit}
             fidoConfiguration={fidoConfiguration}
           />
         )
-      case 'Dynamic Configuration':
+      case t("menus.dynamic_configuration"):
         return (
           <DynamicConfiguration
             handleSubmit={handleDyamicConfigurationSubmit}
@@ -119,7 +122,7 @@ export default function Fido() {
         <Card className='mb-3' style={applicationStyle.mainCard}>
           <CardBody>
             {!fidoConfiguration?.loading && (
-              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} />
+              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
             )}
           </CardBody>
         </Card>

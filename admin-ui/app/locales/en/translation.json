@@ -473,7 +473,9 @@
     "cache_refresh": "Cache Refresh",
     "customer_backend_key_attributes": "Customer Backend Key/Attributes",
     "source_backend_ldap_servers": "Source Backend LDAP Servers",
-    "inum_db_server": "Inum DB Server"
+    "inum_db_server": "Inum DB Server",
+    "static_configuration": "Static Configuration",
+    "dynamic_configuration": "Dynamic Configuration"
   },
   "messages": {
     "add_permission": "Add Permission",
