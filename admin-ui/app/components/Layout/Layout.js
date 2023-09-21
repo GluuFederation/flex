@@ -244,10 +244,8 @@ class Layout extends React.Component {
             <div className={ classNames(layoutClass, themeClass) } ref={ this.containerRef }>
               { 
                 !this.state.sidebarHidden && sidebar && React.cloneElement(sidebar, {
-                  sidebarSlim: !!this.props.sidebarSlim && this.state.sidebarCollapsed && (
-                    this.state.screenSize === 'lg' || this.state.screenSize === 'xl'
-                  ),
-                  sidebarCollapsed: !this.props.sidebarSlim && this.state.sidebarCollapsed
+                  sidebarSlim: false,
+                  sidebarCollapsed: this.state.sidebarCollapsed
                 })
               }
 
