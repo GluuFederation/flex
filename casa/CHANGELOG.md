@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.0.0-18](https://github.com/GluuFederation/flex/compare/casa-v5.0.0-16...casa-v5.0.0-18) (2023-09-23)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-18 release ([29f822f](https://github.com/GluuFederation/flex/commit/29f822fb9071d64bef9f05f05d34e62991253c8e))
+* prepare for 5.0.0-18 release ([4af69cb](https://github.com/GluuFederation/flex/commit/4af69cbd7d900d889f15a341368b4bfa2a3552e9))
+* versioning ([f7bd0e0](https://github.com/GluuFederation/flex/commit/f7bd0e051db16ce3b2b2d10b8be9af2b7670f3be))
+* versioning ([1abf437](https://github.com/GluuFederation/flex/commit/1abf437211cbaef6052d5d4eeeac9e54b1de61eb))
+
 ## [5.0.0-16](https://github.com/GluuFederation/flex/compare/casa-v5.0.0-15...casa-v5.0.0-16) (2023-08-14)
 
 
