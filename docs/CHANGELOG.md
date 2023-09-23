@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.0.0-18](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-16...docs-v5.0.0-18)(2023-09-23)
+
+
+### Features
+
+* adding configuration and logs details ([d136f3d](https://github.com/GluuFederation/flex/commit/d136f3d7d0572b6a3efde3357372f9d28ce0fdda))
+* updating configuration docs ([a1933e3](https://github.com/GluuFederation/flex/commit/a1933e379af56345a599d9965aaa784b93247cca))
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-18 release ([29f822f](https://github.com/GluuFederation/flex/commit/29f822fb9071d64bef9f05f05d34e62991253c8e))
+* prepare for 5.0.0-18 release ([4af69cb](https://github.com/GluuFederation/flex/commit/4af69cbd7d900d889f15a341368b4bfa2a3552e9))
+* versioning ([1abf437](https://github.com/GluuFederation/flex/commit/1abf437211cbaef6052d5d4eeeac9e54b1de61eb))
+
 ## [5.0.0-16](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-15...docs-v5.0.0-16) (2023-08-14)
 
 
