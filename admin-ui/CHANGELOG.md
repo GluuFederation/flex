@@ -1,5 +1,46 @@
 # Changelog
 
+## [1.0.18](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.16...admin-ui-v1.0.18) (2023-09-23)
+
+
+### Features
+
+* **admin-ui:** add favicon in admin ui [#1290](https://github.com/GluuFederation/flex/issues/1290) ([f1149ac](https://github.com/GluuFederation/flex/commit/f1149ac4a3c08682bbb0037c2e03d5e97a52593a))
+* **admin-ui:** api test cases for admin-ui plugins [#1284](https://github.com/GluuFederation/flex/issues/1284) ([688d5d7](https://github.com/GluuFederation/flex/commit/688d5d7b3928e6eac431266525cf25e7450a040d))
+* **admin-ui:** display error if license activation fails ([c68a272](https://github.com/GluuFederation/flex/commit/c68a272784cf4d095a3bff742169010c35f188b5))
+* **admin-ui:** implement auth code flow using javascript library [#1303](https://github.com/GluuFederation/flex/issues/1303) ([6cf6749](https://github.com/GluuFederation/flex/commit/6cf6749ed5184aa03593b89b65cbe71fd0575d87))
+* **admin-ui:** implement authorization code PKCE flow ([63cba77](https://github.com/GluuFederation/flex/commit/63cba77a9aac80ed63b8bbfe0da48f97c14ad0d0))
+* **admin-ui:** implement navigation path for tab view in a page [#1333](https://github.com/GluuFederation/flex/issues/1333) ([f265fcf](https://github.com/GluuFederation/flex/commit/f265fcf4ad7a12e2a426a4e17cb50efb6de9ad5c))
+* **admin-ui:** jans-link UI changes [#1287](https://github.com/GluuFederation/flex/issues/1287) ([4d964fa](https://github.com/GluuFederation/flex/commit/4d964facc0e7d2057fa5bc1ee62db70b1723fcfc))
+* **admin-ui:** lazy load app components ([cde3e19](https://github.com/GluuFederation/flex/commit/cde3e1901c2b0e3ce99336d4a117bc08d5773dab))
+* **admin-ui:** replace user-info with userInfoEndpoint endpoint ([62e8dd2](https://github.com/GluuFederation/flex/commit/62e8dd2f452b31d07398d2cbc10eaf34e2ca8095))
+* **admin-ui:** replaced connect from react redux with hooks ([d971c6d](https://github.com/GluuFederation/flex/commit/d971c6d0a7f7410aa7f713a2c1766b0e5a30a4e1))
+* **admin-ui:** show trial license screen when no valid license key found ([2871a53](https://github.com/GluuFederation/flex/commit/2871a530ae9f0a2e4c0e145437180e9514181420))
+* **admin-ui:** task related to localization and tooltips [#1289](https://github.com/GluuFederation/flex/issues/1289) ([ea26225](https://github.com/GluuFederation/flex/commit/ea26225ac4be634d39b5b8b698fcec62af38a909))
+
+
+### Bug Fixes
+
+* **admin-ui:** added support for api spec response parameter ([61a9bca](https://github.com/GluuFederation/flex/commit/61a9bca4bef4a157c4deedaf41e3ad5dc2f47054))
+* **admin-ui:** change admin ui license api spec branch in json file [#1295](https://github.com/GluuFederation/flex/issues/1295) ([f767e08](https://github.com/GluuFederation/flex/commit/f767e088d0746a9146a7a28f712b3db90fb6edfb))
+* **admin-ui:** display error message if license activation fails ([d2f3e7f](https://github.com/GluuFederation/flex/commit/d2f3e7f879e15f2f186be124935098dae8b20356))
+* **admin-ui:** display upload ssa UI if configs are not valid [#1310](https://github.com/GluuFederation/flex/issues/1310) ([81173c9](https://github.com/GluuFederation/flex/commit/81173c9eff01a37ff115204bba7da322fed70561))
+* **admin-ui:** install openid dependency ([0ef277d](https://github.com/GluuFederation/flex/commit/0ef277de1d9d038235bba7799c8f0b7db83e0394))
+* **admin-ui:** jans-link source ldap server not saving ([21a6315](https://github.com/GluuFederation/flex/commit/21a6315d7ca2a46297b05aeb175d2dc47b7ebf73))
+* **admin-ui:** minor localization adjustments ([32b4e3e](https://github.com/GluuFederation/flex/commit/32b4e3e8a69095dc0d847c39cc66e31c9b03c764))
+* **admin-ui:** prepend / for chunk.js entries ([9fd5f71](https://github.com/GluuFederation/flex/commit/9fd5f7172b7a685331c6357c00734dacf5e05fb3))
+* **admin-ui:** resolve ResizeObserver error on jest test ([7a4bb7b](https://github.com/GluuFederation/flex/commit/7a4bb7b354986bc79f9756129d7dea8b276bfaf5))
+* **admin-ui:** resolve sass warnings on local dev server [#1301](https://github.com/GluuFederation/flex/issues/1301) ([63cbafc](https://github.com/GluuFederation/flex/commit/63cbafcd464bc740a65b7326f68bc20ede61bee3))
+* **admin-ui:** show message based on error code in Admin UI [#1316](https://github.com/GluuFederation/flex/issues/1316) ([9ceaf8d](https://github.com/GluuFederation/flex/commit/9ceaf8d85f14e19ee440b58a0c667e08e35f5699))
+* **admin-ui:** sonarcloud code duplication ([cdc4ac2](https://github.com/GluuFederation/flex/commit/cdc4ac2277db504b5e8f0ebb1fef4c58b3cb4771))
+* **admin-ui:** ui crashes on unavailable scope entries ([dbb8675](https://github.com/GluuFederation/flex/commit/dbb867550ce9c2bb7d47415cd976e9bbab8b06cc))
+* **admin-ui:** update base path in admin ui test ([71ae482](https://github.com/GluuFederation/flex/commit/71ae482ad1fb6d211e42f607b941f6078e945f68))
+* **admin-ui:** update base_path for code splitting ([2b1e79e](https://github.com/GluuFederation/flex/commit/2b1e79e1f7fcd7f835926aa76a58ee2978ac6091))
+* **admin-ui:** use responseMessage from response body to display message ([5736f26](https://github.com/GluuFederation/flex/commit/5736f269559e7e08206cf0e0c1a577c93c619a24))
+* **admin-ui:** use responseMessage to show errors ([3a2254d](https://github.com/GluuFederation/flex/commit/3a2254dfbf0711d4efd9cd72825c064bc2da1f5a))
+* prepare for 5.0.0-18 release ([29f822f](https://github.com/GluuFederation/flex/commit/29f822fb9071d64bef9f05f05d34e62991253c8e))
+* prepare for 5.0.0-18 release ([4af69cb](https://github.com/GluuFederation/flex/commit/4af69cbd7d900d889f15a341368b4bfa2a3552e9))
+
 ## [1.0.16](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.15...admin-ui-v1.0.16) (2023-08-14)
 
 
