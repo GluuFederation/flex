@@ -23,7 +23,7 @@ on:
     inputs:
       version:
         description: 'Version tag (e.g."v5.0.0-14")'
-        default: "v5.0.0-16"
+        default: "v5.0.0-18"
         required: false
 concurrency:
   group: run-once
