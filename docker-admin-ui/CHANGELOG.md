@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.18-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.16-1...docker-admin-ui-v1.0.18-1) (2023-09-23)
+
+
+### Features
+
+* **docker:** sync assets of images ([#1293](https://github.com/GluuFederation/flex/issues/1293)) ([73e1cae](https://github.com/GluuFederation/flex/commit/73e1cae8ac9af7551a5a8c44e4ef5e7633c0ce8c))
+
+
+### Bug Fixes
+
+* **docker-admin-ui:** update admin-ui clients for auth using js lib ([#1324](https://github.com/GluuFederation/flex/issues/1324)) ([31cdf0d](https://github.com/GluuFederation/flex/commit/31cdf0d261b86fe0a61ab3c7df27241fdb188327))
+* prepare for 5.0.0-18 release ([29f822f](https://github.com/GluuFederation/flex/commit/29f822fb9071d64bef9f05f05d34e62991253c8e))
+* prepare for 5.0.0-18 release ([4af69cb](https://github.com/GluuFederation/flex/commit/4af69cbd7d900d889f15a341368b4bfa2a3552e9))
+
 ## [1.0.16-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.15-1...docker-admin-ui-v1.0.16-1) (2023-08-14)
 
 
