@@ -1,6 +1,6 @@
 # Changelog
 
-## [5.0.0-16](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-16...docs-v5.0.0-16) (2023-09-23)
+## [5.0.0-18](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-16...docs-v5.0.0-18)(2023-09-23)
 
 
 ### Features
