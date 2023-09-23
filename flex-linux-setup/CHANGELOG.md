@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.18](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.16...flex-linux-setup-v1.0.18) (2023-09-23)
+
+
+### Features
+
+* **flex-linux-setup:** add adminu ui token client ([93f4deb](https://github.com/GluuFederation/flex/commit/93f4deb1d1f00eaca3548454aeb79ef3917e9a05))
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-18 release ([29f822f](https://github.com/GluuFederation/flex/commit/29f822fb9071d64bef9f05f05d34e62991253c8e))
+* prepare for 5.0.0-18 release ([4af69cb](https://github.com/GluuFederation/flex/commit/4af69cbd7d900d889f15a341368b4bfa2a3552e9))
+* versioning ([f7bd0e0](https://github.com/GluuFederation/flex/commit/f7bd0e051db16ce3b2b2d10b8be9af2b7670f3be))
+
 ## [1.0.16](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.15...flex-linux-setup-v1.0.16) (2023-08-14)
 
 
