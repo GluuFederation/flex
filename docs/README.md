@@ -41,3 +41,4 @@ High-level steps involve:
 1. [Install Material for MkDocs](https://squidfunk.github.io/mkdocs-material/getting-started/#installation)
 2. Install required plugins
 3. [Preview as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)
+
