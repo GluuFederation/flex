@@ -75,6 +75,7 @@
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
     "activate": "Activate",
+    "use_search_limit": "Load Source Data withLimited Search",
     "active": "Active",
     "application_type": "Application type",
     "attributes": "Attributes",

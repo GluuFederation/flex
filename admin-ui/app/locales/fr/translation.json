@@ -119,6 +119,7 @@
   "fields": {
     "issuer": "Émetteur",
     "base_endpoint": "Point d'Accès de Base",
+    "use_search_limit": "Charger les données sources avec une recherche limitée",
     "clean_service_interval": "Intervalle de Nettoyage du Service",
     "clean_service_batch_chunk": "Lot de Nettoyage du Service",
     "use_local_cache": "Utiliser le Cache Local",

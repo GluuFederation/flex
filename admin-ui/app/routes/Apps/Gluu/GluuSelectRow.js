@@ -37,11 +37,15 @@ function GluuSelectRow({
             disabled={disabled}
           >
             <option value="">{t('actions.choose')}...</option>
-            {values.map((item, key) => (
-              <option value={item} key={key}>
-                {item}
-              </option>
-            ))}
+            {values.map((item) => {
+              const value = typeof item === 'string' ? item : item.value
+              const label = typeof item === 'string' ? item : item.label
+              return (
+                <option value={value} key={value}>
+                  {label}
+                </option>
+              )
+            })}
           </CustomInput>
         </InputGroup>
         {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
