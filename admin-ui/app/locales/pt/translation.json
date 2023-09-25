@@ -119,6 +119,7 @@
     "issuer": "Emissor",
     "base_endpoint": "Endpoint Base",
     "clean_service_interval": "Intervalo de Limpeza do Serviço",
+    "use_search_limit": "Carregar dados de origem com pesquisa limitada",
     "clean_service_batch_chunk": "Lote de Limpeza do Serviço",
     "use_local_cache": "Usar Cache Local",
     "logging_level": "Nível de Registo",

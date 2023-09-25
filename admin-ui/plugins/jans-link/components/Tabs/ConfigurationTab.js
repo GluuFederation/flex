@@ -41,6 +41,8 @@ const ConfigurationTab = () => {
     problemCount = null,
     lastUpdateCount = null,
     lastUpdate = null,
+    loggingLevel = [],
+    useSearchLimit = false
   } = useSelector((state) => state.cacheRefreshReducer.configuration)
 
   const initialValues = {
@@ -56,6 +58,8 @@ const ConfigurationTab = () => {
     problemCount,
     lastUpdateCount,
     lastUpdate,
+    loggingLevel,
+    useSearchLimit
   }
 
   const formik = useFormik({
@@ -76,9 +80,6 @@ const ConfigurationTab = () => {
         `${t('fields.mandatory_fields_required')}`
       ),
     }),
-    setFieldValue: (field) => {
-      delete values[field]
-    },
     onSubmit: () => {
       if (isEmpty(formik.errors)) {
         toggle()
@@ -143,7 +144,7 @@ const ConfigurationTab = () => {
               name='updateMethod'
               value={formik.values.updateMethod}
               defaultValue={formik.values.updateMethod}
-              values={['copy', 'VDS']}
+              values={[{ value: 'copy', label: 'COPY' }, { value: 'vds', label: 'VDS' }]}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -152,6 +153,18 @@ const ConfigurationTab = () => {
                 formik.errors.updateMethod && formik.touched.updateMethod
               }
               errorMessage={formik.errors.updateMethod}
+            />
+          </Col>
+          <Col sm={12}>
+            <GluuSelectRow
+              label='fields.logging_level'
+              name='loggingLevel'
+              value={formik.values.loggingLevel}
+              defaultValue={formik.values.loggingLevel}
+              values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
+              formik={formik}
+              lsize={3}
+              rsize={9}
             />
           </Col>
           <Col sm={12}>
@@ -261,6 +274,18 @@ const ConfigurationTab = () => {
               lsize={3}
               rsize={9}
               value={formik.values.linkEnabled}
+            />
+          </Col>
+          <Col sm={12}>
+            <GluuToogleRow
+              label='fields.use_search_limit'
+              name='useSearchLimit'
+              handler={(e) => {
+                formik.setFieldValue('useSearchLimit', e.target.checked)
+              }}
+              lsize={3}
+              rsize={9}
+              value={formik.values.useSearchLimit}
             />
           </Col>
         </FormGroup>
