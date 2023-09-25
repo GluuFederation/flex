@@ -184,10 +184,12 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-          <GluuInputRow
+          <GluuSelectRow
             label='fields.logging_level'
             name='loggingLevel'
-            value={formik.values.loggingLevel || ''}
+            value={formik.values.loggingLevel}
+            defaultValue={formik.values.loggingLevel}
+            values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
             formik={formik}
             lsize={4}
             rsize={8}
