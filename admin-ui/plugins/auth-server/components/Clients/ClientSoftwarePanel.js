@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Col, Container, FormGroup } from 'Components'
+import React from 'react'
+import { Container } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
@@ -7,33 +7,31 @@ import isEmpty from 'lodash/isEmpty'
 const DOC_CATEGORY = 'openid_client'
 
 const EMPTY = ''
-function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
+const origin_uri_id = 'origin_uri_id'
+const contact_uri_id = 'contact_uri_id'
+const contacts = []
+const authorizedOrigins = []
+
+function uriValidator(uri) {
+  return uri
+}
+
+function emailValidator(email) {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+    email,
+  )
+}
+
+function ClientSoftwarePanel({ formik, viewOnly }) {
   const { t } = useTranslation()
 
-  const origin_uri_id = 'origin_uri_id'
-  const contact_uri_id = 'contact_uri_id'
-  const contacts = []
-  const authorizedOrigins = []
-  scripts = scripts
-    .filter((item) => item.scriptType == 'person_authentication')
-    .filter((item) => item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
-  function uriValidator(uri) {
-    return uri
-  }
-
-  function emailValidator(email) {
-    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-      email,
-    )
-  }
   return (
     <Container>
       <GluuInputRow
         label="fields.clientUri"
         name="clientUri"
         formik={formik}
-        value={isEmpty(client.clientUri) ? EMPTY : client.clientUri}
+        value={isEmpty(formik.values.clientUri) ? EMPTY : formik.values.clientUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -41,7 +39,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.policy_uri"
         name="policyUri"
         formik={formik}
-        value={isEmpty(client.policyUri) ? EMPTY : client.policyUri}
+        value={isEmpty(formik.values.policyUri) ? EMPTY : formik.values.policyUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -49,7 +47,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.logo_uri"
         name="logoUri"
         formik={formik}
-        value={isEmpty(client.logoUri) ? EMPTY : client.logoUri}
+        value={isEmpty(formik.values.logoUri) ? EMPTY : formik.values.logoUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -57,7 +55,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.tosUri"
         name="tosUri"
         formik={formik}
-        value={isEmpty(client.tosUri) ? EMPTY : client.tosUri}
+        value={isEmpty(formik.values.tosUri) ? EMPTY : formik.values.tosUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -66,7 +64,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.contacts"
         formik={formik}
         placeholder="Eg. sample@org.com"
-        value={client.contacts || []}
+        value={formik.values.contacts || []}
         options={contacts}
         validator={emailValidator}
         inputId={contact_uri_id}
@@ -80,7 +78,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.authorizedOrigins"
         formik={formik}
         placeholder={t('Enter a valid origin uri eg') + ' https://...'}
-        value={client.authorizedOrigins || []}
+        value={formik.values.authorizedOrigins || []}
         options={authorizedOrigins}
         validator={uriValidator}
         inputId={origin_uri_id}
@@ -94,7 +92,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.softwareId"
         name="softwareId"
         formik={formik}
-        value={client.softwareId}
+        value={formik.values.softwareId}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -103,7 +101,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.softwareVersion"
         name="softwareVersion"
         formik={formik}
-        value={client.softwareVersion}
+        value={formik.values.softwareVersion}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -112,7 +110,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.softwareStatement"
         name="softwareStatement"
         formik={formik}
-        value={client.softwareStatement}
+        value={formik.values.softwareStatement}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />

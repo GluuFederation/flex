@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Col, Container, FormGroup } from 'Components'
+import React from 'react'
+import { Container } from 'Components'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
@@ -7,28 +7,19 @@ import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientLogoutPanel({ client, scripts, formik, viewOnly }) {
+function uriValidator(uri) {
+  return uri
+}
+const post_uri_id = 'post_uri_id'
+const postLogoutRedirectUris = []
+function postUriValidator(uri) {
+  return uri
+}
+const backchannelLogoutUris = []
+const backchannel_uri_id = 'backchannel_uri_id'
+
+function ClientLogoutPanel({ formik, viewOnly }) {
   const { t } = useTranslation()
-
-  scripts = scripts
-    .filter((item) => item.scriptType == 'person_authentication')
-    .filter((item) => item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
-  function uriValidator(uri) {
-    return uri
-  }
-
-  const postLogoutRedirectUris = []
-  function postUriValidator(uri) {
-    return uri
-  }
-  const post_uri_id = 'post_uri_id'
-
-  const backchannelLogoutUris = []
-  function uriValidator(uri) {
-    return uri
-  }
-  const backchannel_uri_id = 'backchannel_uri_id'
 
   return (
     <Container>
@@ -36,7 +27,7 @@ function ClientLogoutPanel({ client, scripts, formik, viewOnly }) {
         label="fields.frontChannelLogoutUri"
         name="frontChannelLogoutUri"
         formik={formik}
-        value={client.frontChannelLogoutUri}
+        value={formik.values.frontChannelLogoutUri}
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
@@ -47,7 +38,7 @@ function ClientLogoutPanel({ client, scripts, formik, viewOnly }) {
         label="fields.post_logout_redirect_uris"
         formik={formik}
         placeholder={t('placeholders.post_logout_redirect_uris')}
-        value={client.postLogoutRedirectUris || []}
+        value={formik.values.postLogoutRedirectUris || []}
         options={postLogoutRedirectUris}
         validator={postUriValidator}
         inputId={post_uri_id}
@@ -60,7 +51,7 @@ function ClientLogoutPanel({ client, scripts, formik, viewOnly }) {
         label="fields.backchannelLogoutUri"
         formik={formik}
         placeholder={t('Enter a valid uri with pattern') + ' https://'}
-        value={client.backchannelLogoutUri || []}
+        value={formik.values.backchannelLogoutUri || []}
         options={backchannelLogoutUris}
         validator={uriValidator}
         inputId={backchannel_uri_id}
@@ -70,7 +61,7 @@ function ClientLogoutPanel({ client, scripts, formik, viewOnly }) {
       <GluuBooleanSelectBox
         name="backchannelLogoutSessionRequired"
         label="fields.backchannelLogoutSessionRequired"
-        value={client.backchannelLogoutSessionRequired}
+        value={formik.values.backchannelLogoutSessionRequired}
         formik={formik}
         lsize={4}
         rsize={8}
@@ -84,7 +75,7 @@ function ClientLogoutPanel({ client, scripts, formik, viewOnly }) {
         rsize={8}
         formik={formik}
         label="fields.frontChannelLogoutSessionRequired"
-        value={client.frontChannelLogoutSessionRequired}
+        value={formik.values.frontChannelLogoutSessionRequired}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />

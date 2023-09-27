@@ -11,6 +11,7 @@ const initialState = {
   entriesCount: 0,
   clientScopes: [],
   loadingClientScopes: false,
+  selectedClientScopes: []
 }
 
 const scopeSlice = createSlice({
@@ -125,6 +126,9 @@ const scopeSlice = createSlice({
     },
     emptyScopes: (state) => {
       state.items = []
+    },
+    setClientSelectedScopes: (state, action) => {
+      state.selectedClientScopes = action.payload
     }
   },
 })
@@ -147,7 +151,8 @@ export const {
   getScopeByCreator,
   getScopeByInum,
   getClientScopes,
-  emptyScopes
+  emptyScopes,
+  setClientSelectedScopes
 } = scopeSlice.actions
 export { initialState }
 export const { actions, reducer, state } = scopeSlice

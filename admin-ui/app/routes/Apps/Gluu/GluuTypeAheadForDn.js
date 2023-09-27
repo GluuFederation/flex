@@ -35,7 +35,8 @@ function GluuTypeAheadForDn({
   onPaginate = () => {},
   maxResults = undefined,
   isLoading = false,
-  placeholder = undefined
+  placeholder = undefined,
+  onChange
 }) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -83,6 +84,7 @@ function GluuTypeAheadForDn({
                     : item.dn,
               ),
             )
+            onChange?.(selected)
           }}
           disabled={disabled}
           id={name}

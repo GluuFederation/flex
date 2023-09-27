@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react'
+import React, { useState, useContext, useRef, useEffect } from 'react'
 import { Wizard, Card, CardFooter, CardBody, Form, Button } from 'Components'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
@@ -15,7 +15,9 @@ import ClientSoftwarePanel from './ClientSoftwarePanel'
 import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
 import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
 import { toast } from 'react-toastify'
+import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { cloneDeep } from 'lodash'
+import { useDispatch } from 'react-redux'
 const sequence = [
   'Basic',
   'Tokens',
@@ -44,6 +46,7 @@ function ClientWizardForm({
   const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(sequence[0])
+  const dispatch = useDispatch()
 
   const initialValues = {
     inum: client_data.inum,
@@ -62,7 +65,7 @@ function ClientWizardForm({
     tosUri: client_data.tosUri,
     jwksUri: client_data.jwksUri,
     jwks: client_data.jwks,
-    expirable: client_data.expirationDate ? ['on'] : [],
+    expirable: !!client_data.expirationDate,
     expirationDate: client_data.expirationDate,
     softwareStatement: client_data.softwareStatement,
     softwareVersion: client_data.softwareVersion,
@@ -214,6 +217,12 @@ function ClientWizardForm({
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
+  useEffect(() => {
+    return function cleanup() {
+      dispatch(setClientSelectedScopes([]))
+    }
+  }, [])
+
   const activeClientStep = (formik) => {
     switch (currentStep) {
       case sequence[0]:
@@ -328,6 +337,8 @@ function ClientWizardForm({
           onSubmit={(...args) => {
             let values = {
               ...args[0],
+              accessTokenAsJwt: args[0]?.accessTokenAsJwt && JSON.parse(args[0]?.accessTokenAsJwt),
+              rptAsJwt: args[0]?.rptAsJwt && JSON.parse(args[0]?.rptAsJwt),
               [ATTRIBUTE]: args[0][ATTRIBUTE] && { ...args[0][ATTRIBUTE] },
             }
             values['action_message'] = commitMessage
@@ -371,7 +382,7 @@ function ClientWizardForm({
           {(formik) => (
             <Form onSubmit={formik.handleSubmit} onKeyDown={onKeyDown}>
               <Card>
-                <CardBody className='d-flex justify-content-center pt-5'>
+                <CardBody className='d-flex justify-content-center pt-5 wizard-wrapper'>
                   <Wizard activeStep={currentStep} onStepChanged={changeStep}>
                     <Wizard.Step
                       id={setId(0)}
@@ -431,7 +442,7 @@ function ClientWizardForm({
                     </Wizard.Step>
                   </Wizard>
                 </CardBody>
-                <CardBody className='p-5'>
+                <CardBody className='p-2'>
                   {activeClientStep(formik)}
                 </CardBody>
                 <CardFooter className='p-4 bt-0'>

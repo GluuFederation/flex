@@ -4,6 +4,12 @@
 .wizard {
     display: flex;
     align-items: center;
+    overflow-x: auto;
+}
+
+.wizard-wrapper {
+    max-width: 70vw;
+    margin: 0 auto;
 }
 
 .wizard-step {
@@ -60,8 +66,8 @@
 }
 
 @media (max-width: breakpoint-max('md', $grid-breakpoints)) {
-    .wizard {
-        flex-wrap: wrap;
+    .wizard-wrapper {
+        max-width: 100vw;
     }
 
     .wizard-step {

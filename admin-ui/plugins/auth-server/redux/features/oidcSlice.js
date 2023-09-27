@@ -43,12 +43,10 @@ const oidcSlice = createSlice({
     },
     addClientResponse: (state, action) => {
       state.loading = false
+      state.saveOperationFlag = true
       if (action.payload?.data) {
-        state.items = [...state.items]
-        state.saveOperationFlag = true
         state.errorInSaveOperationFlag = false
       } else {
-        state.saveOperationFlag = true
         state.errorInSaveOperationFlag = true
       }
     },
@@ -61,7 +59,7 @@ const oidcSlice = createSlice({
     editClientResponse: (state, action) => {
       state.loading = false
       if (action.payload?.data) {
-        const clients = state.items.filter(
+        const clients = state?.items?.filter(
           (e) => e.inum !== action.payload.data.inum
         )
         state.items = [action.payload.data, ...clients]

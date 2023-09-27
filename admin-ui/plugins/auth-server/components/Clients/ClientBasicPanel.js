@@ -22,10 +22,21 @@ import { useTranslation } from 'react-i18next'
 import { getClientScopeByInum } from '../../../../app/utils/Util'
 import { useDispatch, useSelector } from 'react-redux'
 import { PER_PAGE_SCOPES } from '../../common/Constants'
-import { isEmpty } from 'lodash'
 import _debounce from 'lodash/debounce'
-import { getScopes, getClientScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
+import { getScopes, getClientScopes, setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 const DOC_CATEGORY = 'openid_client'
+
+const grantTypes = [
+  'authorization_code',
+  'implicit',
+  'refresh_token',
+  'client_credentials',
+  'password',
+  'urn:ietf:params:oauth:grant-type:uma-ticket',
+]
+
+const responseTypes = ['code', 'token', 'id_token']
+const uri_id = 'redirect_uri'
 
 const ClientBasicPanel = ({
   client,
@@ -37,33 +48,17 @@ const ClientBasicPanel = ({
   const dispatch = useDispatch()
   const totalItems = useSelector((state) => state.scopeReducer.totalItems)
   const clientScopes = useSelector((state) => state.scopeReducer.clientScopes)?.map((item) => ({ dn: item.dn, name: item.id }))
+  const selectedClientScopes = useSelector((state) => state.scopeReducer.selectedClientScopes)
   const isLoading = useSelector((state) => state.scopeReducer.loadingClientScopes)
   const scopeLoading = useSelector((state) => state.scopeReducer.loading)
   const clientScopeOptions = scopes?.filter(o1 => !clientScopes?.some(o2 => o1.dn === o2.dn))
   const scopeOptions = client?.scopes?.length ? clientScopeOptions : scopes
   const { t } = useTranslation()
-  const uri_id = 'redirect_uri'
-  const post_uri_id = 'post_uri_id'
-  const grantTypes = [
-    'authorization_code',
-    'implicit',
-    'refresh_token',
-    'client_credentials',
-    'password',
-    'urn:ietf:params:oauth:grant-type:uma-ticket',
-  ]
+
   const tokenEndpointAuthMethod = !!oidcConfiguration?.tokenEndpointAuthMethodsSupported
     ? oidcConfiguration.tokenEndpointAuthMethodsSupported
     : []
-  const responseTypes = ['code', 'token', 'id_token']
-  const postLogoutRedirectUris = []
-  const redirectUris = []
-  const [expirable, setExpirable] = useState(
-    client.expirationDate ? client.expirationDate : false,
-  )
-  const [expDate, setExpDate] = useState(
-    client.expirationDate ? new Date(client.expirationDate) : new Date(),
-  )
+
   const [showClientSecret, setShowClientSecret] = useState(false)
   const [userScopeAction] = useState({
     limit: PER_PAGE_SCOPES,
@@ -121,6 +116,12 @@ const ClientBasicPanel = ({
     dispatch(getScopes({ action: userScopeAction }))
   }
 
+  const saveSelectedScopes = (scopes) => {
+    dispatch(setClientSelectedScopes(scopes))
+  }
+  const defaultScopeValue = client?.scopes?.length ? clientScopes : []
+  const scopeFieldValue = selectedClientScopes?.length ? selectedClientScopes : defaultScopeValue
+
   return (
     <Container>
       {client.inum && (
@@ -144,7 +145,7 @@ const ClientBasicPanel = ({
         label="fields.client_name"
         name="clientName"
         formik={formik}
-        value={client.clientName}
+        value={formik.values.clientName}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -161,7 +162,7 @@ const ClientBasicPanel = ({
               id="clientSecret"
               name="clientSecret"
               type={showClientSecret ? 'text' : 'password'}
-              value={client.clientSecret}
+              value={formik.values.clientSecret}
               onChange={formik.handleChange}
               disabled={viewOnly}
             />
@@ -178,14 +179,14 @@ const ClientBasicPanel = ({
         label="fields.description"
         name="description"
         formik={formik}
-        value={client.description}
+        value={formik.values.description}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuSelectRow
         label="fields.token_endpoint_auth_method"
         formik={formik}
-        value={client.tokenEndpointAuthMethod}
+        value={formik.values.tokenEndpointAuthMethod}
         values={tokenEndpointAuthMethod}
         lsize={3}
         rsize={9}
@@ -204,7 +205,7 @@ const ClientBasicPanel = ({
               id="subjectType"
               name="subjectType"
               disabled={viewOnly}
-              defaultValue={client.subjectType}
+              defaultValue={formik.values.subjectType}
               onChange={formik.handleChange}
             >
               <option value="">{t('actions.choose')}...</option>
@@ -218,7 +219,7 @@ const ClientBasicPanel = ({
         label="fields.sector_uri"
         name="sectorIdentifierUri"
         formik={formik}
-        value={client.sectorIdentifierUri}
+        value={formik.values.sectorIdentifierUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -226,7 +227,7 @@ const ClientBasicPanel = ({
         name="grantTypes"
         label="fields.grant_types"
         formik={formik}
-        value={client.grantTypes}
+        value={formik.values.grantTypes}
         options={grantTypes}
         doc_category={DOC_CATEGORY}
         lsize={3}
@@ -237,7 +238,7 @@ const ClientBasicPanel = ({
         name="responseTypes"
         label="fields.response_types"
         formik={formik}
-        value={client.responseTypes}
+        value={formik.values.responseTypes}
         options={responseTypes}
         doc_category={DOC_CATEGORY}
         lsize={3}
@@ -252,9 +253,9 @@ const ClientBasicPanel = ({
               formik.setFieldValue('disabled', !event?.target?.checked)
             }}
             label="fields.is_active"
-            value={!client.disabled}
+            value={!formik.values.disabled}
             doc_category={DOC_CATEGORY}
-            lsize={9}
+            lsize={6}
             rsize={3}
             disabled={viewOnly}
           />
@@ -262,11 +263,11 @@ const ClientBasicPanel = ({
         <Col sm={6}>
           <GluuToogleRow
             name="trustedClient"
-            lsize={9}
+            lsize={6}
             rsize={3}
             formik={formik}
             label="fields.is_trusted_client"
-            value={client.trustedClient}
+            value={formik.values.trustedClient}
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
           />
@@ -280,7 +281,7 @@ const ClientBasicPanel = ({
               type="select"
               id="applicationType"
               name="applicationType"
-              defaultValue={client.applicationType}
+              defaultValue={formik.values.applicationType}
               onChange={formik.handleChange}
               disabled={viewOnly}
             >
@@ -296,8 +297,8 @@ const ClientBasicPanel = ({
         label="fields.redirect_uris"
         formik={formik}
         placeholder={t('placeholders.redirect_uris')}
-        value={client.redirectUris || []}
-        options={redirectUris}
+        value={formik.values.redirectUris || []}
+        options={[]}
         validator={uriValidator}
         inputId={uri_id}
         doc_category={DOC_CATEGORY}
@@ -311,7 +312,7 @@ const ClientBasicPanel = ({
         label="fields.redirectUrisRegex"
         name="redirectUrisRegex"
         formik={formik}
-        value={client.redirectUrisRegex}
+        value={formik.values.redirectUrisRegex}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -320,12 +321,13 @@ const ClientBasicPanel = ({
           name="scopes"
           label="fields.scopes"
           formik={formik}
-          value={client?.scopes?.length ? clientScopes : []}
+          value={scopeFieldValue}
           options={scopeOptions}
           doc_category={DOC_CATEGORY}
           lsize={3}
           rsize={9}
           disabled={viewOnly}
+          onChange={saveSelectedScopes}
           paginate={true}
           onSearch={debounceFn}
           onPaginate={handlePagination}
