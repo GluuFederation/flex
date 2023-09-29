@@ -8,7 +8,7 @@ tags:
   - AWS
 ---
 
-# Install Gluu on EKS
+# Install Gluu Flex on EKS
 
 ## System Requirements
 
@@ -65,7 +65,7 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
     kubectl create namespace gluu
     ```
 
-## Gluu Installation using Helm
+## Gluu Flex Installation using Helm
 1.  Install [Nginx-Ingress](https://github.com/kubernetes/ingress-nginx), if you are not using Istio ingress
     
       ```
@@ -194,15 +194,41 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 
 
+    - PostgreSQL for persistence storage
+
+        In a production environment, a production grade PostgreSQL server should be used such as `Amazon RDS`
+
+        For testing purposes, you can deploy it on the EKS cluster using the following command:
+
+        ```
+        helm install my-release --set auth.postgresPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/postgresql
+        ```
+
+        Add the following yaml snippet to your `override.yaml` file:
+        
+        ```yaml
+        
+        global:
+          cnPersistenceType: sql
+        config:
+          configmap:
+            cnSqlDbName: gluu
+            cnSqlDbPort: 5432
+            cnSqlDbDialect: pgsql
+            cnSqlDbHost: my-release-mysql.gluu.svc
+            cnSqlDbUser: postgres
+            cnSqlDbTimezone: UTC
+            cnSqldbUserPassword: Test1234#
+        ```
+
     - MySQL for persistence storage
 
         In a production environment, a production grade MySQL server should be used such as `Amazon RDS`
 
-        For testing purposes, you can deploy it on the EKS cluster using the following commands:
+        For testing purposes, you can deploy it on the EKS cluster using the following command:
 
         ```
-        helm repo add bitnami https://charts.bitnami.com/bitnami
-        helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu bitnami/mysql -n gluu
+        helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/mysql
         ```
 
         Add the following yaml snippet to your `override.yaml` file:
@@ -250,14 +276,17 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
             cnSqldbUserPassword: Test1234#
         ```
 
-3.  Install Gluu
+3.  Install Gluu Flex
 
 
 
-      After finishing all the tweaks to the `override.yaml` file, we can use it to install gluu.
+      After finishing all the tweaks to the `override.yaml` file, we can use it to install gluu flex.
 
       ```
       helm repo add gluu-flex https://docs.gluu.org/charts
       helm repo update
       helm install gluu gluu-flex/gluu -n gluu -f override.yaml
       ```
+
+## Configure Gluu Flex
+  You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration. 
