@@ -18,10 +18,7 @@ import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { deleteUMAResource } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import { setCurrentItem } from 'Plugins/auth-server/redux/features/scopeSlice'
-import {
-  setCurrentItem as setCurrentItemClient,
-  viewOnly,
-} from 'Plugins/auth-server/redux/features/oidcSlice'
+import { setCurrentItem as setCurrentItemClient } from 'Plugins/auth-server/redux/features/oidcSlice'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/ext-language_tools'
@@ -29,8 +26,13 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 
 const DOC_CATEGORY = 'openid_client'
 
+function uriValidator(uri) {
+  return uri
+}
+const claim_uri_id = 'claim_uri_id'
+const cibaDeliveryModes = ['poll', 'push', 'ping']
+
 function ClientCibaParUmaPanel({
-  client,
   clients,
   dispatch,
   umaResources,
@@ -42,13 +44,7 @@ function ClientCibaParUmaPanel({
 }) {
   const { t } = useTranslation()
   const navigate =useNavigate()
-  const claim_uri_id = 'claim_uri_id'
-  const cibaDeliveryModes = ['poll', 'push', 'ping']
   const claimRedirectURI = []
-
-  function uriValidator(uri) {
-    return uri
-  }
 
   const [open, setOpen] = useState(false)
   const [selectedUMA, setSelectedUMA] = useState()
@@ -127,7 +123,7 @@ function ClientCibaParUmaPanel({
         name="backchannelTokenDeliveryMode"
         label="fields.backchannelTokenDeliveryMode"
         formik={formik}
-        value={client.backchannelTokenDeliveryMode}
+        value={formik.values.backchannelTokenDeliveryMode}
         values={cibaDeliveryModes}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -136,7 +132,7 @@ function ClientCibaParUmaPanel({
         label="fields.backchannelClientNotificationEndpoint"
         name="backchannelClientNotificationEndpoint"
         formik={formik}
-        value={client.backchannelClientNotificationEndpoint}
+        value={formik.values.backchannelClientNotificationEndpoint}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -145,7 +141,7 @@ function ClientCibaParUmaPanel({
         name="backchannelUserCodeParameter"
         formik={formik}
         label="fields.backchannelUserCodeParameter"
-        value={client.backchannelUserCodeParameter}
+        value={formik.values.backchannelUserCodeParameter}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -154,7 +150,7 @@ function ClientCibaParUmaPanel({
         label="fields.parLifetime"
         name="parLifetime"
         formik={formik}
-        value={client.parLifetime}
+        value={formik.values.parLifetime}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -162,7 +158,7 @@ function ClientCibaParUmaPanel({
         name="requirePar"
         formik={formik}
         label="fields.requirePar"
-        value={client.requirePar}
+        value={formik.values.requirePar}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -173,24 +169,22 @@ function ClientCibaParUmaPanel({
           <Col sm={6}>
             <RadioGroup
               row
-              name="accessTokenAsJwt"
-              value={client.rptAsJwt || true}
+              name="rptAsJwt"
+              value={formik.values.rptAsJwt?.toString() || 'true'}
               onChange={(e) => {
-                formik.setFieldValue('rptAsJwt', e.target.value == 'true')
+                formik.setFieldValue('rptAsJwt', e.target.value === 'true' ? 'true' : 'false')
               }}
             >
               <FormControlLabel
-                value={true}
+                value={'true'}
                 control={<Radio color="primary" />}
                 label="JWT"
-                checked={client.rptAsJwt == true}
                 disabled={viewOnly}
               />
               <FormControlLabel
-                value={false}
+                value={'false'}
                 control={<Radio color="primary" />}
                 label="Reference"
-                checked={client.rptAsJwt == false}
                 disabled={viewOnly}
               />
             </RadioGroup>
@@ -198,11 +192,11 @@ function ClientCibaParUmaPanel({
         </FormGroup>
       </GluuTooltip>
       <GluuTypeAheadWithAdd
-        name="claimRedirectURIs"
+        name="claimRedirectUris"
         label="fields.claimRedirectURIs"
         formik={formik}
         placeholder={t('Enter a valid claim uri eg') + ' https://...'}
-        value={client.claimRedirectUris || []}
+        value={formik.values.claimRedirectUris || []}
         options={claimRedirectURI}
         validator={uriValidator}
         inputId={claim_uri_id}
@@ -215,7 +209,7 @@ function ClientCibaParUmaPanel({
         name="rptClaimsScripts"
         label="fields.rpt_scripts"
         formik={formik}
-        value={client.rptClaimsScripts}
+        value={formik.values.rptClaimsScripts}
         options={rptScripts}
         doc_category={DOC_CATEGORY}
         doc_entry="rptClaimsScripts"

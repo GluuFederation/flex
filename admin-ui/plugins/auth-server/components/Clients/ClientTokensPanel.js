@@ -1,50 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Col, Container, FormGroup } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
-import { useTranslation } from 'react-i18next'
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
-  const { t } = useTranslation()
-  const additionalAudiences = []
-  function audienceValidator(aud) {
-    return aud
-  }
-  const audience_id = 'audience_id'
+const audience_id = 'audience_id'
+function audienceValidator(aud) {
+  return aud
+}
 
-  scripts = scripts
-    .filter((item) => item.scriptType == 'person_authentication')
-    .filter((item) => item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
-  function uriValidator(uri) {
-    return uri
-  }
-  function getMapping(partial, total) {
-    if (!partial) {
-      partial = []
-    }
-    return total.filter((item) => partial.includes(item.dn))
-  }
-  const [softwareSection, setSoftwareSection] = useState(false)
-  const [cibaSection, setCibaSection] = useState(false)
-
-  function handleCibaSection() {
-    setCibaSection(!cibaSection)
-  }
-  function handleSoftwareSection() {
-    setSoftwareSection(!softwareSection)
-  }
-  function emailValidator(email) {
-    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-      email,
-    )
-  }
+function ClientTokensPanel({ formik, viewOnly }) {
   return (
     <Container>
       <FormGroup row>
@@ -56,26 +25,24 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
                 <RadioGroup
                   row
                   name="accessTokenAsJwt"
-                  value={client.accessTokenAsJwt || true}
+                  value={formik.values.accessTokenAsJwt?.toString() || 'true'}
                   onChange={(e) => {
                     formik.setFieldValue(
                       'accessTokenAsJwt',
-                      e.target.value == 'true',
+                      e.target.value === 'true' ? 'true' : 'false',
                     )
                   }}
                 >
                   <FormControlLabel
-                    value={true}
+                    value={'true'}
                     control={<Radio color="primary" />}
                     label="JWT"
-                    checked={client.accessTokenAsJwt == true}
                     disabled={viewOnly}
                   />
                   <FormControlLabel
-                    value={false}
+                    value={'false'}
                     control={<Radio color="primary" />}
                     label="Reference"
-                    checked={client.accessTokenAsJwt == false}
                     disabled={viewOnly}
                   />
                 </RadioGroup>
@@ -89,7 +56,7 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
             rsize={8}
             formik={formik}
             label="fields.includeClaimsInIdToken"
-            value={client.includeClaimsInIdToken}
+            value={formik.values.includeClaimsInIdToken}
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
           />
@@ -101,7 +68,7 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
             rsize={8}
             formik={formik}
             label="fields.requireAuthTime"
-            value={client.requireAuthTime}
+            value={formik.values.requireAuthTime}
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
           />
@@ -112,7 +79,7 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
         name="runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims"
         label="fields.run_introspection_script_before_accesstoken"
         value={
-          client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
+          formik.values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
         }
         formik={formik}
         lsize={8}
@@ -124,7 +91,7 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
         label="fields.idTokenTokenBindingCnf"
         name="idTokenTokenBindingCnf"
         formik={formik}
-        value={client.idTokenTokenBindingCnf}
+        value={formik.values.idTokenTokenBindingCnf}
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
@@ -134,8 +101,8 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
         name="additionalAudience"
         label="fields.additionalAudience"
         formik={formik}
-        value={client.additionalAudience || []}
-        options={additionalAudiences}
+        value={formik.values.additionalAudience || []}
+        options={[]}
         validator={audienceValidator}
         inputId={audience_id}
         doc_category={DOC_CATEGORY}
@@ -147,7 +114,7 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
         name="accessTokenLifetime"
         formik={formik}
         type="number"
-        value={client.accessTokenLifetime}
+        value={formik.values.accessTokenLifetime}
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
@@ -158,7 +125,7 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
         name="refreshTokenLifetime"
         formik={formik}
         type="number"
-        value={client.refreshTokenLifetime}
+        value={formik.values.refreshTokenLifetime}
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
@@ -169,7 +136,7 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
         name="defaultMaxAge"
         formik={formik}
         type="number"
-        value={client.defaultMaxAge}
+        value={formik.values.defaultMaxAge}
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}

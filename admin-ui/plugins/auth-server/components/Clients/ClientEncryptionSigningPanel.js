@@ -5,7 +5,7 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewOnly }) {
+function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
   const { t } = useTranslation()
   const accessTokenSigningAlg = !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
     ? oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
@@ -47,30 +47,13 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
     ? oidcConfiguration.userInfoEncryptionEncValuesSupported
     : []
 
-  // authorization
-  const jansAuthSignedRespAlg = !!oidcConfiguration.authorizationSigningAlgValuesSupported
-    ? oidcConfiguration.authorizationSigningAlgValuesSupported
-    : []
-
-  const jansAuthEncRespAlg = !!oidcConfiguration.authorizationEncryptionAlgValuesSupported
-    ? oidcConfiguration.authorizationEncryptionAlgValuesSupported
-    : []
-
-  const jansAuthEncRespEnc = !!oidcConfiguration.authorizationEncryptionEncValuesSupported
-    ? oidcConfiguration.authorizationEncryptionEncValuesSupported
-    : []
-
-  const tokenEndpointAuthMethod = !!oidcConfiguration.tokenEndpointAuthMethodsSupported
-    ? oidcConfiguration.tokenEndpointAuthMethodsSupported
-    : []
-
   return (
     <Container>
       <GluuInputRow
         label="fields.jwks_uri"
         name="jwksUri"
         formik={formik}
-        value={client.jwksUri}
+        value={formik.values.jwksUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -78,7 +61,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
         label="fields.jwks"
         name="jwks"
         formik={formik}
-        value={client.jwks}
+        value={formik.values.jwks}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -88,7 +71,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.id_token_signed_response_alg"
             formik={formik}
-            value={client.accessTokenSigningAlg}
+            value={formik.values.accessTokenSigningAlg}
             values={idTokenSignedResponseAlg}
             lsize={6}
             rsize={6}
@@ -103,7 +86,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
             formik={formik}
             lsize={6}
             rsize={6}
-            value={client.idTokenEncryptedResponseAlg}
+            value={formik.values.idTokenEncryptedResponseAlg}
             values={idTokenEncryptedResponseAlg}
             name="idTokenEncryptedResponseAlg"
             doc_category={DOC_CATEGORY}
@@ -114,7 +97,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.id_token_encrypted_response_enc"
             formik={formik}
-            value={client.idTokenEncryptedResponseEnc}
+            value={formik.values.idTokenEncryptedResponseEnc}
             values={idTokenEncryptedResponseEnc}
             lsize={6}
             rsize={6}
@@ -130,7 +113,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.access_token_signing_alg"
             formik={formik}
-            value={client.accessTokenSigningAlg}
+            value={formik.values.accessTokenSigningAlg}
             values={accessTokenSigningAlg}
             lsize={6}
             rsize={6}
@@ -146,7 +129,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.user_info_signed_response_alg"
             formik={formik}
-            value={client.userInfoSignedResponseAlg}
+            value={formik.values.userInfoSignedResponseAlg}
             values={userInfoSignedResponseAlg}
             lsize={6}
             rsize={6}
@@ -159,7 +142,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.user_info_encrypted_response_alg"
             formik={formik}
-            value={client.userInfoEncryptedResponseAlg}
+            value={formik.values.userInfoEncryptedResponseAlg}
             values={userInfoEncryptedResponseAlg}
             lsize={6}
             rsize={6}
@@ -172,7 +155,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.user_info_encrypted_response_enc"
             formik={formik}
-            value={client.userInfoEncryptedResponseEnc}
+            value={formik.values.userInfoEncryptedResponseEnc}
             values={userInfoEncryptedResponseEnc}
             lsize={6}
             rsize={6}
@@ -188,7 +171,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.authorizationSignedResponseAlg"
             formik={formik}
-            value={client.jansAuthSignedRespAlg}
+            value={formik.values.jansAuthSignedRespAlg}
             values={idTokenSignedResponseAlg}
             lsize={6}
             rsize={6}
@@ -203,7 +186,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
             formik={formik}
             lsize={6}
             rsize={6}
-            value={client.jansAuthEncRespAlg}
+            value={formik.values.jansAuthEncRespAlg}
             values={idTokenEncryptedResponseAlg}
             name="jansAuthEncRespAlg"
             doc_category={DOC_CATEGORY}
@@ -214,7 +197,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.authorizationEncryptedResponseEnc"
             formik={formik}
-            value={client.jansAuthEncRespEnc}
+            value={formik.values.jansAuthEncRespEnc}
             values={idTokenEncryptedResponseEnc}
             lsize={6}
             rsize={6}
@@ -230,7 +213,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.request_object_signing_alg"
             formik={formik}
-            value={client.requestObjectSigningAlg}
+            value={formik.values.requestObjectSigningAlg}
             values={requestObjectSignedResponseAlg}
             lsize={6}
             rsize={6}
@@ -243,7 +226,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.request_object_encryption_alg"
             formik={formik}
-            value={client.requestObjectEncryptionAlg}
+            value={formik.values.requestObjectEncryptionAlg}
             values={requestObjectEncryptedResponseAlg}
             lsize={6}
             rsize={6}
@@ -256,7 +239,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewO
           <GluuSelectRow
             label="fields.request_object_encryption_enc"
             formik={formik}
-            value={client.requestObjectEncryptionEnc}
+            value={formik.values.requestObjectEncryptionEnc}
             values={requestObjectEncryptedResponseEnc}
             lsize={6}
             rsize={6}

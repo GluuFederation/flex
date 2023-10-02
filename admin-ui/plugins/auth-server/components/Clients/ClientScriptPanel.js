@@ -4,7 +4,7 @@ import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 
 const DOC_CATEGORY = 'openid_client'
 
-function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
+function ClientScriptPanel({ scripts, formik, viewOnly }) {
   const postScripts = scripts
     .filter((item) => item.scriptType == 'post_authn')
     .filter((item) => item.enabled)
@@ -45,7 +45,7 @@ function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
         name="spontaneousScopeScriptDns"
         label="fields.spontaneous_scopes"
         formik={formik}
-        value={getMapping(client?.spontaneousScopeScriptDns,spontaneousScripts)}
+        value={getMapping(formik.values?.spontaneousScopeScriptDns,spontaneousScripts)}
         options={spontaneousScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -54,7 +54,7 @@ function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
         name="updateTokenScriptDns"
         label="fields.updateTokenScriptDns"
         formik={formik}
-        value={getMapping(client?.updateTokenScriptDns, updateTokenScriptDns)}
+        value={getMapping(formik.values?.updateTokenScriptDns, updateTokenScriptDns)}
         options={updateTokenScriptDns}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -63,7 +63,7 @@ function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
         name="postAuthnScripts"
         label="fields.post_authn_scripts"
         formik={formik}
-        value={getMapping(client?.postAuthnScripts, postScripts)}
+        value={getMapping(formik.values?.postAuthnScripts, postScripts)}
         options={postScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -72,7 +72,7 @@ function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
         name="introspectionScripts"
         label="fields.introspection_scripts"
         formik={formik}
-        value={getMapping(client?.introspectionScripts, instrospectionScripts)}
+        value={getMapping(formik.values?.introspectionScripts, instrospectionScripts)}
         options={instrospectionScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -81,7 +81,7 @@ function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
         name="ropcScripts"
         label="fields.ropcScripts"
         formik={formik}
-        value={getMapping(client?.ropcScripts, ropcScripts)}
+        value={getMapping(formik.values?.ropcScripts, ropcScripts)}
         options={ropcScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -90,7 +90,7 @@ function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
         name="consentGatheringScripts"
         label="fields.consent_gathering_scripts"
         formik={formik}
-        value={getMapping(client?.consentGatheringScripts, consentScripts)}
+        value={getMapping(formik.values?.consentGatheringScripts, consentScripts)}
         options={consentScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
