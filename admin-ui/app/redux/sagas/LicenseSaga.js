@@ -110,7 +110,7 @@ function* checkMauThreshold(mau_threshold) {
   try {
     const data = yield call(mauApi.getMau, { month: getYearMonth(new Date()) })
     const limit = (mau_threshold * 15) / 100 + mau_threshold
-    if(limit > data?.[0]?.monthly_active_users) {
+    if((limit > data?.[0]?.monthly_active_users) || data?.length === 0) {
       // under MAU limit
       yield put(
         checkLicensePresentResponse({
