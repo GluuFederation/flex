@@ -8,7 +8,8 @@ const SidebarTrigger = (props) => {
 
   return (
     <Tag
-      onClick={() => {
+      onClick={(event) => {
+        event.stopPropagation()
         props.pageConfig.toggleSidebar()
         return false
       }}

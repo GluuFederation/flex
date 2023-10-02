@@ -22,11 +22,11 @@ import GluuErrorFallBack from './GluuErrorFallBack'
 function GluuNavBar() {
   const userInfo = useSelector((state) => state.authReducer.userinfo)
   const [showCollapse, setShowCollapse] = useState(
-    window.matchMedia('(max-width: 992px)').matches,
+    window.matchMedia('(max-width: 768px)').matches,
   )
   useEffect(() => {
     window
-      .matchMedia('(max-width: 992px)')
+      .matchMedia('(max-width: 768px)')
       .addEventListener('change', (e) => setShowCollapse(e.matches))
   }, [])
   return (
@@ -34,7 +34,7 @@ function GluuNavBar() {
       <Navbar expand="lg" themed>
         <Nav>
           {showCollapse && (
-            <NavItem className="me-3">
+            <NavItem>
               <SidebarTrigger id="navToggleBtn" />
             </NavItem>
           )}
