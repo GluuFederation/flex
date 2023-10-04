@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        simple: [ "docs", "docker-casa", "docker-admin-ui" ]
+        simple: [ "docs", "docker-admin-ui" ]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -47,16 +47,6 @@ jobs:
         git config user.email "54212639+mo-auto@users.noreply.github.com"
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
 
-    - uses: google-github-actions/release-please-action@v3.7
-      if: matrix.simple == 'docker-casa'
-      id: release-casa
-      with:
-         path: ${{ matrix.simple }}
-         token: ${{ secrets.MOWORKFLOWTOKEN }}
-         release-type: simple
-         package-name: ${{ matrix.simple }}
-         monorepo-tags: true
-         release-as: ${{ github.event.inputs.java_release_as }}
     - uses: google-github-actions/release-please-action@v3.7
       if: matrix.simple == 'docker-admin-ui'
       id: release-admin-ui
