@@ -2,7 +2,7 @@
 
 ## Overview
 
-Gluu Flex is a commercially supported distribution of the [Janssen Project](https://jans.io), including the OpenID, OAuth, Config, FIDO, and SCIM Server components. Additionally, Flex includes the commercially licensed Flex Admin UI and Casa, a self-service MFA platform.
+Gluu Flex is a commercially supported distribution of the [Janssen Project](https://jans.io), including the OpenID, OAuth, Config, FIDO, and SCIM Server components. Additionally, Flex includes the commercially licensed Flex Admin UI.
 
 ## Janssen Documentation
 
@@ -12,9 +12,9 @@ Central to Gluu Flex is the [Janssen Project](https://docs.jans.io). Janssen ena
 
 The Gluu Flex Admin UI is a reactive web interface to simplify the management and configuration of your Auth Server. The Admin UI enables you to easily view and edit configuration properties, interception scripts, clients, and metrics in one place.
 
-## Casa
+## Jans Casa
 
-[Gluu Casa](https://gluu.org/docs/casa) ("Casa") is a self-service web portal for end-users to manage authentication and authorization preferences for their account in Gluu Flex. 
+[Jans Casa](https://docs.jans.io/vreplace-janssen-version/docs/casa/) ("Casa") is a self-service web portal for end-users to manage authentication and authorization preferences for their account in Gluu Flex. 
 
 For example, as people interact with an organization's digital services, they may need to:
 
