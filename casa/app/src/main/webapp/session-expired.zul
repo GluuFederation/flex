@@ -1,4 +1,0 @@
-<?page language="xhtml"?>
-<?init class="org.gluu.casa.core.navigation.ReloginInitiator"?>
-<zk:zk xmlns:zk="zk">
-</zk:zk>

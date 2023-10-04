@@ -29,10 +29,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        module: [admin-ui, casa, flex-cn-setup, flex-linux-setup]
+        module: [admin-ui, flex-cn-setup, flex-linux-setup]
     env:
-      JVM_PROJECTS: |
-        casa
       NON_JVM_PROJECTS: |
         admin-ui
         flex-cn-setup
@@ -90,21 +88,6 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-          
-      - name: Build and analyze JVM based project
-        if: contains(env.CHANGED_DIR, matrix.module) && contains(env.JVM_PROJECTS, matrix.module)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          cd ${{ matrix.module }}
-          case ${{ matrix.module }} in
-            "casa")
-              echo "Run Sonar analysis with test execution"
-              mvn -B install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-            ;;
-          esac
-
 
       - name: Convert repo org name to lowercase for non JVM projects
         if: contains(env.CHANGED_DIR, matrix.module) && contains(env.NON_JVM_PROJECTS, matrix.module)
