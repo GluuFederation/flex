@@ -18,7 +18,7 @@ The key services of Flex include:
  
 - **Jans SCIM**: System for Cross-domain Identity Management ([SCIM](http://www.simplecloud.info/)) is JSON/REST API to manage user data. Use it to add, edit and update user information. This service should not be Internet-facing.
 
-- **Gluu Casa**: A self-service web portal for end-users to manage authentication and authorization preferences for their account in the Gluu Flex server. Typically, it enables people to manage their MFA credentials, like FIDO tokens and OTP authenticators. It's also extensible if your organization has any other self-service requirements.
+- **Jans Casa**: A self-service web portal for end-users to manage authentication and authorization preferences for their account in the Gluu Flex server. Typically, it enables people to manage their MFA credentials, like FIDO tokens and OTP authenticators. It's also extensible if your organization has any other self-service requirements.
 
 ## Building Blocks
 
@@ -312,7 +312,7 @@ After inputting the license keys, you can then use `admin` and the password you 
 
 ## Testing Casa
 
-Gluu Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins.
+Jans Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins.
 
 Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation. 
 
