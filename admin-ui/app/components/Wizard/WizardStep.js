@@ -16,6 +16,7 @@ export const WizardStep = (props) => {
   return (
     <a
       href={null}
+      data-testid={props['data-testid']}
       className={stepClass}
       onClick={() => !props.disabled && props.onClick()}
     >

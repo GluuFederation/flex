@@ -385,6 +385,7 @@ function ClientWizardForm({
                 <CardBody className='d-flex justify-content-center pt-5 wizard-wrapper'>
                   <Wizard activeStep={currentStep} onStepChanged={changeStep}>
                     <Wizard.Step
+                      data-testid={sequence[0]}
                       id={setId(0)}
                       icon={<i className='fa fa-shopping-basket fa-fw'></i>}
                       complete={isComplete(sequence[0])}
@@ -392,6 +393,7 @@ function ClientWizardForm({
                       {t('titles.client_basic')}
                     </Wizard.Step>
                     <Wizard.Step
+                      data-testid={sequence[1]}
                       id={setId(1)}
                       icon={<i className='fa fa-credit-card fa-fw'></i>}
                       complete={isComplete(sequence[1])}
@@ -399,6 +401,7 @@ function ClientWizardForm({
                       {t('titles.token')}
                     </Wizard.Step>
                     <Wizard.Step
+                      data-testid={sequence[2]}
                       id={setId(2)}
                       icon={<i className='fa fa-credit-card fa-fw'></i>}
                       complete={isComplete(sequence[2])}
@@ -406,6 +409,7 @@ function ClientWizardForm({
                       {t('titles.log_out')}
                     </Wizard.Step>
                     <Wizard.Step
+                      data-testid={sequence[3]}
                       id={setId(3)}
                       icon={<i className='fa fa-credit-card fa-fw'></i>}
                       complete={isComplete(sequence[3])}
@@ -413,6 +417,7 @@ function ClientWizardForm({
                       {t('titles.software_info')}
                     </Wizard.Step>
                     <Wizard.Step
+                      data-testid={sequence[4]}
                       id={setId(4)}
                       icon={<i className='fa fa-credit-card fa-fw'></i>}
                       complete={isComplete(sequence[4])}
@@ -420,6 +425,7 @@ function ClientWizardForm({
                       {t('titles.CIBA_PAR_UMA')}
                     </Wizard.Step>
                     <Wizard.Step
+                      data-testid={sequence[5]}
                       id={setId(5)}
                       icon={<i className='fa fa-credit-card fa-fw'></i>}
                       complete={isComplete(sequence[5])}
@@ -427,6 +433,7 @@ function ClientWizardForm({
                       {t('titles.encryption_signing')}
                     </Wizard.Step>
                     <Wizard.Step
+                      data-testid={sequence[6]}
                       id={setId(6)}
                       icon={<i className='fa fa-cube fa-fw'></i>}
                       complete={isComplete(sequence[6])}
@@ -434,6 +441,7 @@ function ClientWizardForm({
                       {t('titles.client_advanced')}
                     </Wizard.Step>
                     <Wizard.Step
+                      data-testid={sequence[7]}
                       id={setId(7)}
                       icon={<i className='fa fa-credit-card fa-fw'></i>}
                       complete={isComplete(sequence[7])}
