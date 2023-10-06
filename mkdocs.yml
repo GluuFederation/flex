@@ -148,9 +148,8 @@ nav:
 - 'Reference':
     - 'reference/kubernetes/README.md'
     - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
-    - 'Flex Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
+    - 'Flex Monolith Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
     - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
-    - 'Casa Docker Image': 'reference/kubernetes/docker-casa.md'
 - 'Super Gluu':
     - 'supergluu/index.md'
     - User Guide: 'supergluu/user-guide/index.md'

@@ -183,6 +183,7 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
             # -- Couchbase restricted user
             cnCouchbaseUser: janssen
         ```
+    
     - PostgreSQL for persistence storage
 
         In a production environment, a production grade PostgreSQL server should be used such as `Cloud SQL`
