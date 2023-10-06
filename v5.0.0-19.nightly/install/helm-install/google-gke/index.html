@@ -1202,8 +1202,6 @@
         
           
         
-          
-        
       
       
         
@@ -1247,7 +1245,7 @@
   
     <li class="md-nav__item">
       <a href="../../../reference/kubernetes/docker-flex-monolith/" class="md-nav__link">
-        Flex Docker Image
+        Flex Monolith Docker Image
       </a>
     </li>
   
@@ -1262,20 +1260,6 @@
     <li class="md-nav__item">
       <a href="../../../reference/kubernetes/docker-admin-ui/" class="md-nav__link">
         Admin UI Docker Image
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/kubernetes/docker-casa/" class="md-nav__link">
-        Casa Docker Image
       </a>
     </li>
   
@@ -1720,7 +1704,7 @@ helm install nginx ingress-nginx/ingress-nginx
 <li>
 <p>Couchbase for pesistence storage</p>
 <p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
-<p><div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">couchbase</span><span class="w"></span>
 
 <span class="nt">config</span><span class="p">:</span><span class="w"></span>
@@ -1742,7 +1726,9 @@ helm install nginx ingress-nginx/ingress-nginx
 <span class="w">    </span><span class="c1"># -- Couchbase restricted user</span><span class="w"></span>
 <span class="w">    </span><span class="nt">cnCouchbaseUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">janssen</span><span class="w"></span>
 </code></pre></div>
-    - PostgreSQL for persistence storage</p>
+</li>
+<li>
+<p>PostgreSQL for persistence storage</p>
 <p>In a production environment, a production grade PostgreSQL server should be used such as <code>Cloud SQL</code></p>
 <p>For testing purposes, you can deploy it on the GKE cluster using the following command:</p>
 <div class="highlight"><pre><span></span><code>helm install my-release --set auth.postgresPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/postgresql
@@ -1825,7 +1811,7 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-29T06:05:26+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-29</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-06T12:38:07+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-06</span>
       
         <br>
         Created:
