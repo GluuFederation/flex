@@ -5,7 +5,6 @@ import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import {
   checkLicenseConfigValidResponse,
   checkLicensePresentResponse,
-  checkLicensePresent,
   getOAuth2Config,
   uploadNewSsaTokenResponse,
   generateTrialLicenseResponse,
