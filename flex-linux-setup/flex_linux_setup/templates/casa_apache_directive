@@ -1,5 +1,0 @@
-    <Location /casa>
-        ProxyPass http://localhost:%(casa_web_port)s/casa retry=5 connectiontimeout=60 timeout=60
-        Order deny,allow
-        Allow from all 
-    </Location>

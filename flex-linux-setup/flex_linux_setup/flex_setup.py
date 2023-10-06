@@ -210,7 +210,7 @@ base.argsp = argsp
 if 'SETUP_BRANCH' not in base.current_app.app_info:
     base.current_app.app_info['SETUP_BRANCH'] = argsp.jans_setup_branch
 
-base.current_app.app_info['ox_version'] = base.current_app.app_info['JANS_APP_VERSION'] + base.current_app.app_info['JANS_BUILD']
+base.current_app.app_info['jans_version'] = base.current_app.app_info['JANS_APP_VERSION'] + base.current_app.app_info['JANS_BUILD']
 
 sys.path.insert(0, base.pylib_dir)
 sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
@@ -226,7 +226,9 @@ from setup_app.installers.httpd import HttpdInstaller
 from setup_app.installers.config_api import ConfigApiInstaller
 from setup_app.installers.jetty import JettyInstaller
 from setup_app.installers.jans_auth import JansAuthInstaller
+from setup_app.installers.jans import JansInstaller
 from setup_app.installers.jans_cli import JansCliInstaller
+from setup_app.installers.jans_casa import CasaInstaller
 from setup_app.utils.properties_utils import propertiesUtils
 from setup_app.utils.ldif_utils import myLdifParser
 
@@ -259,15 +261,17 @@ app_versions = {
   "JANS_APP_VERSION": "1.0.19-SNAPSHOT",
   "JANS_BUILD": "",
   "NODE_VERSION": "v18.16.0",
-  "CASA_VERSION": "5.0.0-SNAPSHOT",
   "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
 }
 
 node_installer = NodeInstaller()
 httpd_installer = HttpdInstaller()
+jans_installer = JansInstaller()
 config_api_installer = ConfigApiInstaller()
 jansAuthInstaller = JansAuthInstaller()
 jans_cli_installer = JansCliInstaller()
+jans_casa_installer = CasaInstaller()
+
 setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
 
@@ -294,27 +298,13 @@ class flex_installer(JettyInstaller):
         self.config_api_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.config_api_node_modules_url))
 
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
-        self.casa_dist_dir = os.path.join(Config.dist_jans_dir, 'gluu-casa')
-        self.casa_web_resources_fn = os.path.join(self.casa_dist_dir, 'casa_web_resources.xml')
-        self.casa_war_fn = os.path.join(self.casa_dist_dir, 'casa.war')
-        self.casa_config_fn = os.path.join(self.casa_dist_dir,'casa-config.jar')
-        self.casa_scopes_fn = os.path.join(self.templates_dir,'casa_scopes.json')
-
-        self.twillo_fn = os.path.join(self.casa_dist_dir,'twilio.jar')
-        self.py_lib_dir = os.path.join(Config.jansOptPythonFolder, 'libs')
-        self.fido2_client_jar_fn = os.path.join(Config.dist_jans_dir, 'jans-fido2-client.jar')
 
         if not argsp.download_exit:
             self.dbUtils.bind(force=True)
 
         self.admin_ui_dn = 'ou=admin-ui,ou=configuration,o=jans'
         Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
-        Config.templateRenderingDict['casa_web_port'] = '8080'
         self.simple_auth_scr_inum = 'A51E-76DA'
-        self.casa_python_libs = ['Casa.py', 'casa-external_fido2.py', 'casa-external_otp.py', 'casa-external_super_gluu.py', 'casa-external_twilio_sms.py']
-        self.casa_script_fn = os.path.join(self.casa_dist_dir, 'pylib', self.casa_python_libs[0])
-        self.casa_client_id_prefix = '3000.'
-
         self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
 
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
@@ -345,18 +335,6 @@ class flex_installer(JettyInstaller):
 
             if argsp.update_admin_ui:
                 download_files.pop(0) 
-
-        if install_components['casa'] or argsp.download_exit:
-            download_files += [
-                    ('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa_web_resources.xml', self.casa_web_resources_fn),
-                    ('https://maven.gluu.org/maven/org/gluu/casa/{0}/casa-{0}.war'.format(app_versions['CASA_VERSION']), self.casa_war_fn),
-                    ('https://maven.gluu.org/maven/org/gluu/casa-config/{0}/casa-config-{0}.jar'.format(app_versions['CASA_VERSION']), self.casa_config_fn),
-                    (os.path.join(base.current_app.app_info['TWILIO_MAVEN'], '{0}/twilio-{0}.jar'.format(base.current_app.app_info['TWILIO_VERSION'])), self.twillo_fn),
-                    (os.path.join(base.current_app.app_info['JANS_MAVEN'], 'maven/io/jans/jans-fido2-client/{0}{1}/jans-fido2-client-{0}{1}.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.fido2_client_jar_fn),
-                ]
-
-            for plib in self.casa_python_libs:
-                download_files.append(('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/{}'.format(plib), os.path.join(self.casa_dist_dir, 'pylib', plib)))
 
         for download_url, target in download_files:
             if force or not os.path.exists(target):
@@ -558,173 +536,11 @@ class flex_installer(JettyInstaller):
         self.rewrite_cli_ini()
 
     def install_casa(self):
-
-        self.source_files = [(self.casa_war_fn,)]
-
-        casa_scopes = self.create_casa_scopes()
-
-        print("Adding casa config to jans-auth")
-        self.copyFile(self.casa_config_fn, self.jans_auth_custom_lib_dir)
-        casa_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn))
-        jansAuthInstaller.add_extra_class(casa_config_class_path)
-
-        print("jansAuthInstaller.web_app_xml_fn:", jansAuthInstaller.web_app_xml_fn)
-        jans_auth_web_app_xml = jansAuthInstaller.readFile(jansAuthInstaller.web_app_xml_fn)
-
-        if os.path.basename(self.twillo_fn) not in jans_auth_web_app_xml:
-            print("Adding twillo to jans-auth")
-            self.copyFile(self.twillo_fn, self.jans_auth_custom_lib_dir)
-            twillo_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn))
-            jansAuthInstaller.add_extra_class(twillo_config_class_path)
-
-        if os.path.basename(self.fido2_client_jar_fn) not in jans_auth_web_app_xml:
-            print("Adding Fido2 Client lib to jans-auth")
-            self.copyFile(self.fido2_client_jar_fn, self.jans_auth_custom_lib_dir)
-            fido2_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
-            jansAuthInstaller.add_extra_class(fido2_class_path)
-
-        # copy casa scripts
-        if not os.path.exists(self.py_lib_dir):
-            os.makedirs(self.py_lib_dir)
-        for fn in glob.glob(os.path.join(self.casa_dist_dir, 'pylib/*.py')):
-            print("Copying", fn, "to", self.py_lib_dir)
-            self.copyFile(fn, self.py_lib_dir)
-
-        self.run([paths.cmd_chown, '-R', '{0}:{0}'.format(Config.jetty_user), self.py_lib_dir])
-
-        # prepare casa scipt ldif
-        casa_auth_script_fn = os.path.join(self.templates_dir, 'casa_person_authentication_script.ldif')
-        base64_script_file = self.generate_base64_file(self.casa_script_fn, 1)
-        Config.templateRenderingDict['casa_person_authentication_script'] = base64_script_file
-        self.renderTemplateInOut(casa_auth_script_fn, self.templates_dir, self.source_dir)
-
-        Config.templateRenderingDict['casa_redirect_uri'] = 'https://{}/casa'.format(Config.hostname)
-        Config.templateRenderingDict['casa_redirect_logout_uri'] = 'https://{}/casa/bye.zul'.format(Config.hostname)
-        Config.templateRenderingDict['casa_frontchannel_logout_uri'] = 'https://{}/casa/autologout'.format(Config.hostname)
-
-
-        self.casa_client_fn = os.path.join(self.source_dir, 'templates/casa_client.ldif')
-        self.casa_config_fn = os.path.join(self.source_dir, 'templates/casa_config.ldif')
-        self.service_name = 'casa'
-
-        for casa_prop in ('casa_client_id', 'casa_client_pw'):
-            if casa_prop in setup_properties:
-                setattr(Config, casa_prop, setup_properties[casa_prop])
-
-        self.check_clients([('casa_client_id', self.casa_client_id_prefix)])
-
-        if not Config.get('casa_client_encoded_pw'):
-            Config.casa_client_encoded_pw = jansAuthInstaller.obscure(Config.casa_client_pw)
-
-        print("\033[1mCasa Client ID:\033[0m", Config.casa_client_id)
-        print("\033[1mCasa Client Secret:\033[0m", Config.casa_client_pw)
-
-        print("Importing LDIF Files")
-
-        self.renderTemplateInOut(self.casa_client_fn, self.templates_dir, self.source_dir)
-        self.renderTemplateInOut(self.casa_config_fn, self.templates_dir, self.source_dir)
-        casa_client_output_fn = os.path.join(self.source_dir, os.path.basename(self.casa_client_fn))
-
-        casa_client_ldif_parser = myLdifParser(casa_client_output_fn)
-        casa_client_ldif_parser.parse()
-
-        casa_client_ldif_parser.entries[0][1]['jansScope'] += casa_scopes
-        with open(casa_client_output_fn, 'wb') as w:
-            casa_client_ldif_writer = LDIFWriter(w)
-            casa_client_ldif_writer.unparse(casa_client_ldif_parser.entries[0][0], casa_client_ldif_parser.entries[0][1])
-
-        self.dbUtils.import_ldif([
-                casa_client_output_fn,
-                os.path.join(self.source_dir, os.path.basename(self.casa_config_fn)),
-                os.path.join(self.source_dir, os.path.basename(casa_auth_script_fn)),
-                ])
-
-        Config.installCasa = True
-
-        self.copyFile(os.path.join(self.templates_dir, 'casa.default'), os.path.join(Config.templateFolder, 'jetty/casa'))
-
-        self.jetty_app_configuration[self.service_name] = {
-                    "memory": {
-                        "max_allowed_mb": 1024,
-                        "metaspace_mb": 128,
-                        "jvm_heap_ration": 0.7,
-                        "ratio": 0.1
-                        },
-                    "jetty": {
-                        "modules": "server,deploy,resources,http,http-forwarded,console-capture,jsp,cdi-decorate"
-                    },
-                    "installed": False,
-                    "name": self.service_name
-                }
-
-
-        print("Calculating application memory")
-
-        installedComponents = []
-
-        # Jetty apps
-        for config_var, service in [('installOxAuth', 'jans-auth'),
-                                    ('installScimServer', 'jans-scim'),
-                                    ('installFido2', 'jans-fido2'),
-                                    ('installConfigApi', 'jans-config-api'),
-                                    ('installEleven', 'jans-eleven'),
-                                    ('installCasa', self.service_name),
-                                    ]:
-
-            if Config.get(config_var) and service in self.jetty_app_configuration:
-                installedComponents.append(self.jetty_app_configuration[service])
-
-        self.calculate_aplications_memory(Config.application_max_ram, self.jetty_app_configuration, installedComponents)
-
-        print("Deploying casa as Jetty application")
-        self.installJettyService(self.jetty_app_configuration[self.service_name], True)
-        self.copyFile(os.path.join(self.templates_dir, 'casa.service'), '/etc/systemd/system')
-        jetty_service_dir = os.path.join(Config.jetty_base, self.service_name)
-        jetty_service_webapps_dir = os.path.join(jetty_service_dir, 'webapps')
-
-        self.run([paths.cmd_mkdir, '-p', os.path.join(jetty_service_dir, 'static')])
-        self.run([paths.cmd_mkdir, '-p', os.path.join(jetty_service_dir, 'plugins')])
-        self.copyFile(self.casa_war_fn, jetty_service_webapps_dir)
-        self.copyFile(self.casa_web_resources_fn, jetty_service_webapps_dir)
-        jansAuthInstaller.chown(jetty_service_dir, Config.jetty_user, Config.jetty_group, recursive=True)
-        jansAuthInstaller.chown(self.jans_auth_custom_lib_dir, Config.jetty_user, Config.jetty_group, recursive=True)
-
-        self.add_apache_directive('<Location /casa>', 'casa_apache_directive')
-
-        self.enable()
-
-
-    def create_casa_scopes(self):
-
-        print("Creating Casa client scopes")
-        scopes = base.readJsonFile(self.casa_scopes_fn)
-        casa_scopes_ldif_fn = os.path.join(self.source_dir, 'casa_scopes.ldif')
-        scope_ldif_fd = open(casa_scopes_ldif_fn, 'wb')
-        scopes_list = []
-
-        ldif_scopes_writer = LDIFWriter(scope_ldif_fd, cols=1000)
-
-        for scope in scopes:
-            scope_dn = 'inum={},ou=scopes,o=jans'.format(scope['inum'])
-            scopes_list.append(scope_dn)
-            ldif_dict = {
-                        'objectClass': ['top', 'jansScope'],
-                        'description': [scope['description']],
-                        'displayName': [scope['displayName']],
-                        'inum': [scope['inum']],
-                        'jansDefScope': [str(scope['jansDefScope'])],
-                        'jansId': [scope['jansId']],
-                        'jansScopeTyp': [scope['jansScopeTyp']],
-                        'jansAttrs': [json.dumps({"spontaneousClientId":None, "spontaneousClientScopes":[], "showInConfigurationEndpoint": False})],
-                    }
-            ldif_scopes_writer.unparse(scope_dn, ldif_dict)
-
-        scope_ldif_fd.close()
-
-        self.dbUtils.import_ldif([casa_scopes_ldif_fn])
-
-        return scopes_list
-
+        Config.install_casa = True
+        jans_casa_installer.calculate_selected_aplications_memory()
+        jans_installer.order_services()
+        jans_casa_installer.start_installation()
+        jans_casa_installer.enable()
 
     def save_properties(self):
         fn = Config.savedProperties
@@ -733,7 +549,7 @@ class flex_installer(JettyInstaller):
             p = Properties()
             with open(fn, 'rb') as f:
                 p.load(f, 'utf-8')
-            for prop in ('casa_client_id', 'casa_client_pw', 'casa_client_encoded_pw', 'admin_ui_client_id', 'admin_ui_client_pw'):
+            for prop in ('admin_ui_client_id', 'admin_ui_client_pw'):
                 if Config.get(prop):
                     p[prop] = Config.get(prop)
             with open(fn, 'wb') as f:
@@ -764,60 +580,6 @@ class flex_installer(JettyInstaller):
                 append_c = 2
 
         self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
-
-
-
-    def uninstall_casa(self):
-        print("Uninstalling Gluu Casa")
-        for fn in (os.path.join(Config.os_default, 'casa'), os.path.join(Config.unit_files_path, 'casa.service')):
-            if os.path.exists(fn):
-                print(del_msg, fn)
-                self.run(['rm', '-f', fn])
-
-        print("  - Removing casa directives from apache configuration")
-        self.remove_apache_directive('<Location /casa>')
-
-
-        jans_auth_plugins = jansAuthInstaller.get_plugins(paths=True)
-
-        casa_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn))
-
-        if os.path.exists(casa_config_class_path):
-            print(del_msg, casa_config_class_path)
-            self.run(['rm', '-f', casa_config_class_path])
-
-        if casa_config_class_path in jans_auth_plugins:
-            print("  - Removing plugin {} from Jans Auth Configuration".format(casa_config_class_path))
-            jans_auth_plugins.remove(casa_config_class_path)
-            jansAuthInstaller.set_class_path(jans_auth_plugins)
-
-        for plib in self.casa_python_libs:
-            plib_path = os.path.join(self.py_lib_dir, plib)
-            if os.path.exists(plib_path):
-                print(del_msg, plib_path)
-                self.run(['rm', '-f', plib_path])
-
-        result = self.dbUtils.search('ou=clients,o=jans', '(&(inum={}*)(objectClass=jansClnt))'.format(self.casa_client_id_prefix))
-        if result:
-            print("  - Deleting casa client from db backend")
-            self.dbUtils.delete_dn(result['dn'])
-
-        result = self.dbUtils.search('ou=scopes,o=jans', '(&(inum=3000.*)(objectClass=jansScope))', fetchmany=True)
-        if result:
-            print("  - Deleting casa client scopes from db backend")
-            for scope in result:
-                self.dbUtils.delete_dn(scope[1]['dn'])
-
-        print("  - Deleting casa configuration from db backend")
-        self.dbUtils.delete_dn('ou=casa,ou=configuration,o=jans')
-
-        print("  - Deleting script 3000-F75A from db backend")
-        self.dbUtils.delete_dn('inum=3000-F75A,ou=scripts,o=jans')
-
-        casa_dir = os.path.join(Config.jetty_base, 'casa')
-        if os.path.exists(casa_dir):
-            print(del_msg, casa_dir)
-            self.run(['rm', '-f', '-r', casa_dir])
 
 
     def uninstall_admin_ui(self):
@@ -946,12 +708,12 @@ def prompt_for_installation():
         print("Admin UI is allready installed on this system")
         install_components['admin_ui'] = False
 
-    if not os.path.exists(os.path.join(Config.jetty_base, 'casa')):
-        prompt_casa_install = input("Install Casa [Y/n]: ")
+    if not jans_casa_installer.installed():
+        prompt_casa_install = input("Install Jans Casa [Y/n]: ")
         if not prompt_casa_install.strip().lower().startswith('n'):
             install_components['casa'] = True
     else:
-        print("Casa is allready installed on this system")
+        print("Jans Casa is allready installed on this system")
         install_components['casa'] = False
 
     if not (install_components['casa'] or install_components['admin_ui'] or argsp.gluu_passwurd_cert):
@@ -962,7 +724,7 @@ def prompt_for_installation():
 def install_post_setup():
     if install_components['casa']:
         print("Starting Casa")
-        config_api_installer.start('casa')
+        jans_casa_installer.start()
 
     print("Installation was completed.")
 
@@ -970,7 +732,7 @@ def install_post_setup():
         print("Browse https://{}/admin".format(Config.hostname))
 
     if install_components['casa']:
-        print("Browse https://{}/casa".format(Config.hostname))
+        print("Browse https://{}/jans-casa".format(Config.hostname))
 
 def prepare_for_installation():
     if not (argsp.flex_non_interactive or argsp.download_exit):
@@ -1063,8 +825,6 @@ def main(uninstall):
         prepare_for_installation()
 
     if uninstall:
-        config_api_installer.stop('casa')
-        installer_obj.uninstall_casa()
         installer_obj.uninstall_admin_ui()
         print("Disabling script", installer_obj.simple_auth_scr_inum)
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
