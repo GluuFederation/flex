@@ -190,7 +190,6 @@ function* uploadNewSsaToken({ payload }) {
     }
     yield put(checkLicenseConfigValidResponse(response?.success))
     yield put(getOAuth2Config(defaultToken))
-    yield put(checkLicensePresent())
     // window.location.reload()
   } catch (error) {
     yield put(checkLicenseConfigValidResponse(false))
