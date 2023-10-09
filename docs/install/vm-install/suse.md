@@ -226,12 +226,12 @@ Second uninstall the package:
 
 You should see the package with:
 ```
-sudo rpm -qa | grep gluu
+sudo rpm -qa | grep flex
 ```
 
 Remove package with: 
 ```
-sudo zypper remove gluu-flex
+sudo zypper remove flex
 ```
 
 ### Uninstalling Admin UI
