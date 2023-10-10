@@ -6,7 +6,7 @@ import GluuAlert from "Routes/Apps/Gluu/GluuAlert"
 import { useTranslation } from "react-i18next"
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle"
 import { useSelector, useDispatch } from "react-redux"
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 import {
   editLDAPAuthAcr,
   editScriptAuthAcr,
