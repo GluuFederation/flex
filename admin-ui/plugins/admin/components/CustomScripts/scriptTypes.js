@@ -23,6 +23,7 @@ export const items = [
     {name: "UPDATE_TOKEN", value: "update_token"},
     {name: "CONFIG_API_AUTH", value: "config_api_auth"},
     {name: "MODIFY_SSA_RESPONSE", value: "modify_ssa_response"},
+    {name: "AUTHORIZATION_CHALLENGE", value: "authorization_challenge"}
 ];
 
 export default items

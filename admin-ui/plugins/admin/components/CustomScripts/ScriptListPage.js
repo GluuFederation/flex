@@ -31,13 +31,12 @@ import {
   PATTERN_ID,
   TYPE,
   TYPE_ID,
-  FETCHING_SCRIPTS,
-  SEARCHING_SCRIPTS,
 } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import scriptTypes from './scriptTypes'
 
 function ScriptListTable() {
   const { t } = useTranslation()
@@ -117,6 +116,7 @@ function ScriptListTable() {
           scriptType={type}
           pattern={pattern}
           handler={handleOptionsChange}
+          options={scriptTypes}
         />
       ),
       tooltip: `${t('messages.advanced_search')}`,
