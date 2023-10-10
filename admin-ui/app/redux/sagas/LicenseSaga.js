@@ -5,7 +5,6 @@ import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import {
   checkLicenseConfigValidResponse,
   checkLicensePresentResponse,
-  checkLicensePresent,
   getOAuth2Config,
   uploadNewSsaTokenResponse,
   generateTrialLicenseResponse,
@@ -190,7 +189,6 @@ function* uploadNewSsaToken({ payload }) {
     }
     yield put(checkLicenseConfigValidResponse(response?.success))
     yield put(getOAuth2Config(defaultToken))
-    yield put(checkLicensePresent())
     // window.location.reload()
   } catch (error) {
     yield put(checkLicenseConfigValidResponse(false))
