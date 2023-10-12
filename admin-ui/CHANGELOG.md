@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.19](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.18...admin-ui-v1.0.19) (2023-10-12)
+
+
+### Features
+
+* **admin-ui:** add test cases in client wizard form [#1358](https://github.com/GluuFederation/flex/issues/1358) ([4a9e3d5](https://github.com/GluuFederation/flex/commit/4a9e3d5ed575867f1cb194ae8ed0ccaf7c6942e0))
+* **admin-ui:** logging level in jans-link [#1351](https://github.com/GluuFederation/flex/issues/1351) ([165cf5f](https://github.com/GluuFederation/flex/commit/165cf5f3f15dbed3ca1d6ce966b211bfb92f868f))
+* upgrade i18next from 22.5.1 to 23.5.1 ([cf2421c](https://github.com/GluuFederation/flex/commit/cf2421c90f4921f93028ba2a70fd12044c390725))
+
+
+### Bug Fixes
+
+* **admin-ui:** allow user to login page on emtpy stat results [#1356](https://github.com/GluuFederation/flex/issues/1356) ([a854b70](https://github.com/GluuFederation/flex/commit/a854b70d218d6a7172ff2171985dda5626748eca))
+* **admin-ui:** change to dropdown fido logging level ([e960d6b](https://github.com/GluuFederation/flex/commit/e960d6b524bde6940d7ccb63a641e2b5ce3ba6e3))
+* **admin-ui:** code smell ([b0564e1](https://github.com/GluuFederation/flex/commit/b0564e10e60fca1350ca0dff79a41b5fde926327))
+* **admin-ui:** isActive endpoint called twice on ssa upload [#1369](https://github.com/GluuFederation/flex/issues/1369) ([9f6697a](https://github.com/GluuFederation/flex/commit/9f6697abe67f2f974388b9311c9cdc5f99b3b15e))
+* **admin-ui:** save form value of client in state while navigating between tabs [#1341](https://github.com/GluuFederation/flex/issues/1341) ([6fca50a](https://github.com/GluuFederation/flex/commit/6fca50a0fc8b98aad8b011976591ea5d9e9556eb))
+* prepare for 5.0.0-19 release ([2d8e13d](https://github.com/GluuFederation/flex/commit/2d8e13deb4364063ffc7270d617697eb0994ead7))
+* upgrade react-router-dom from 6.11.2 to 6.16.0 ([e927319](https://github.com/GluuFederation/flex/commit/e927319b64da225516dcd24c7a40ab4cdd5a9636))
+
 ## [1.0.18](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.16...admin-ui-v1.0.18) (2023-09-23)
 
 
