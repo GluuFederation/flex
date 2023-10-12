@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.19-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.18-1...docker-admin-ui-v1.0.19-1) (2023-10-12)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-19 release ([2d8e13d](https://github.com/GluuFederation/flex/commit/2d8e13deb4364063ffc7270d617697eb0994ead7))
+
 ## [1.0.18-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.16-1...docker-admin-ui-v1.0.18-1) (2023-09-23)
 
 
