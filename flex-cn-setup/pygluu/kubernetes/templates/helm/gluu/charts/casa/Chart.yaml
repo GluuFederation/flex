@@ -2,7 +2,7 @@ apiVersion: v2
 name: casa
 version: 5.0.22
 kubeVersion: ">=v1.21.0-0"
-description: Gluu Casa ("Casa") is a self-service web portal for end-users to manage authentication and authorization preferences for their account in a Gluu Server.
+description: Jans Casa ("Casa") is a self-service web portal for end-users to manage authentication and authorization preferences for their account in a Jans Server.
 type: application
 keywords:
   - casa
@@ -10,12 +10,11 @@ keywords:
   - passwordless
 home: https://gluu.org/docs/casa/
 sources:
-  - https://gluu.org/docs/casa/
-  - https://github.com/GluuFederation/docker-casa
-  - https://github.com/GluuFederation/flex/tree/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/charts/casa
+  - https://gluu.org/casa/
+  - https://github.com/JanssenProject/jans/docker-jans-casa
 maintainers:
   - name: Mohammad Abudayyeh
-    email: support@gluu.org
+    email: support@jans.io
     url: https://github.com/moabu
-icon: https://casa.gluu.org/wp-content/themes/gluucasa/casafavicon.ico
+icon: https://github.com/JanssenProject/jans/raw/main/docs/assets/logo/janssen_project_favicon_transparent_50px_50px.png
 appVersion: "5.0.0"
