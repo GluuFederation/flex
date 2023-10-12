@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.19](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.18...flex-cn-setup-v1.0.19) (2023-10-12)
+
+
+### Bug Fixes
+
+* jans casa ([e1f11bf](https://github.com/GluuFederation/flex/commit/e1f11bfb270cd90bee14ce0019e7e33d8c08e81d))
+* prepare for 5.0.0-19 release ([2d8e13d](https://github.com/GluuFederation/flex/commit/2d8e13deb4364063ffc7270d617697eb0994ead7))
+
 ## [1.0.18](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.16...flex-cn-setup-v1.0.18) (2023-09-23)
 
 
