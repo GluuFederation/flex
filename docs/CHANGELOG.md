@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.0.0-19](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-18...docs-v5.0.0-19) (2023-10-12)
+
+
+### Features
+
+* **docs:** remove Casa files from Flex ([a5b7fcd](https://github.com/GluuFederation/flex/commit/a5b7fcd302924c5f77df89a074de98e6ae78b888))
+
+
+### Bug Fixes
+
+* **docs:** remove Casa image assets ([0b9f0b4](https://github.com/GluuFederation/flex/commit/0b9f0b4cc467ef61b66707cd4b8d8b3bf7ae354f))
+* **docs:** update docs w.r.t casa move to Jans ([5b7d3fd](https://github.com/GluuFederation/flex/commit/5b7d3fd5fd04d0853b2f3339c283db5948f1c84c))
+* **docs:** update docs w.r.t casa move to Jans ([16f647c](https://github.com/GluuFederation/flex/commit/16f647c78ecfac33317ae108c0283782c0354eaa))
+* prepare for 5.0.0-19 release ([2d8e13d](https://github.com/GluuFederation/flex/commit/2d8e13deb4364063ffc7270d617697eb0994ead7))
+
 ## [5.0.0-18](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-16...docs-v5.0.0-18)(2023-09-23)
 
 
