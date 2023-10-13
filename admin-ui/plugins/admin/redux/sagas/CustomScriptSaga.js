@@ -4,6 +4,8 @@ import {
   addCustomScriptResponse,
   editCustomScriptResponse,
   deleteCustomScriptResponse,
+  setScriptTypes,
+  setIsScriptTypesLoading
 } from 'Plugins/admin/redux/features/customScriptSlice'
 import { SCRIPT } from '../audit/Resources'
 import {
@@ -135,6 +137,34 @@ export function* deleteScript({ payload }) {
   }
 }
 
+export function* getScriptTypes() {
+  yield put(setIsScriptTypesLoading(true))
+  try {
+    const scriptApi = yield* newFunction()
+    const data = yield call(scriptApi.getCustomScriptTypes)
+    
+    const types = data.map((type) => {
+      if(type?.includes('_')) {
+        const splitFormat = type?.split('_')
+        const formattedTypes = splitFormat?.map((formattedType) => formattedType?.charAt(0)?.toUpperCase() + formattedType?.slice(1))
+        return { value: type, name: formattedTypes?.join(' ') };
+      }
+    
+      return { value: type, name: type?.charAt(0)?.toUpperCase() + type?.slice(1) };
+    })
+    yield put(setScriptTypes(types || []))
+  } catch (e) {
+    console.log('error in getting script-types: ', e)
+    yield put(setScriptTypes([]))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  } finally {
+    yield put(setIsScriptTypesLoading(false))
+  }
+}
+
 export function* watchGetAllCustomScripts() {
   yield takeLatest('customScript/getCustomScripts', getCustomScripts)
 }
@@ -152,6 +182,9 @@ export function* watchDeleteScript() {
 export function* watchScriptsByType() {
   yield takeLatest('customScript/getCustomScriptByType', getScriptsByType)
 }
+export function* watchGetScriptTypes() {
+  yield takeLatest('customScript/getScriptTypes', getScriptTypes)
+}
 export default function* rootSaga() {
   yield all([
     fork(watchGetAllCustomScripts),
@@ -159,5 +192,6 @@ export default function* rootSaga() {
     fork(watchEditScript),
     fork(watchDeleteScript),
     fork(watchScriptsByType),
+    fork(watchGetScriptTypes)
   ])
 }

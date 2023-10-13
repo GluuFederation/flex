@@ -18,16 +18,18 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import items from './scriptTypes'
 import { Alert, Button } from "reactstrap";
 import ErrorIcon from '@mui/icons-material/Error';
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+import { useSelector } from 'react-redux'
+import { Skeleton } from '@mui/material'
 
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('Components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
-function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
+function CustomScriptForm({ item, handleSubmit, viewOnly }) {
+  const { scriptTypes, loadingScriptTypes } = useSelector((state) => state.customScriptReducer)
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -385,7 +387,12 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
         <FormGroup row>
           <GluuLabel label="fields.script_type" required doc_category={SCRIPT} doc_entry="scriptType"/>
           <Col sm={9}>
-            <InputGroup>
+              {loadingScriptTypes ? 
+              <Skeleton
+                variant='text'
+                width='100%'
+                sx={{ fontSize: '3rem' }}
+              /> : <InputGroup>
               <CustomInput
                 type="select"
                 id="scriptType"
@@ -398,13 +405,13 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                {items.map((ele, index) => (
+                {scriptTypes.map((ele, index) => (
                   <option key={index} value={ele.value}>
                     {ele.name}
                   </option>
                 ))}
               </CustomInput>
-            </InputGroup>
+            </InputGroup>}
             {formik.errors.scriptType && formik.touched.scriptType ? (
               <div style={{ color: 'red' }}>{formik.errors.scriptType}</div>
             ) : null}
