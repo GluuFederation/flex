@@ -126,9 +126,22 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 
 - Access Casa using URI below
 ```text
-https://FQDN/casa
+https://FQDN/jans-casa
 ```
-
+### Let's Encrypt
+ To generate Let’s Encrypt CA certificate run below commands and add required information at prompt:
+```bash 
+sudo apt update && sudo apt install certbot python3-certbot-apache
+sudo certbot --apache -d FQDN
+```
+to check certbot status
+```
+sudo systemctl status certbot.timer
+```
+to renew certificate run
+```
+sudo certbot renew --dry-run
+```
 ## Uninstallation
 Removing Flex is a two step process:
 
