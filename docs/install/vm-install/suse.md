@@ -122,10 +122,10 @@ https://FQDN/jans-casa
 sudo zypper -n install certbot
 sudo certbot certonly --webroot -w /srv/www/htdocs -d FQDN
 ```
-Modify  https_jans.conf file for SSLCertificateFile and SSLCertificateKeyFile values with certificate location which we got from certbot command execution.
+Modify  _https_jans.conf file for SSLCertificateFile and SSLCertificateKeyFile values with certificate location which we got from certbot command execution.
 
 ```
- sudo vi /etc/httpd/conf.d/https_jans.conf
+ sudo vi /etc/apache2/vhosts.d/_https_jans.conf
 SSLCertificateFile location_of_fullchain.pem
 SSLCertificateKeyFile location_of_privkey.pem
 sudo /usr/sbin/rcapache2 restart
