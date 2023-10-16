@@ -8,7 +8,10 @@ const initialState = {
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
   totalItems: 0,
-  entriesCount: 0
+  entriesCount: 0,
+  scriptTypes: [],
+  hasFetchedScriptTypes: false,
+  loadingScriptTypes: false
 }
 
 const customScriptSlice = createSlice({
@@ -19,6 +22,9 @@ const customScriptSlice = createSlice({
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
+    },
+    setIsScriptTypesLoading: (state, action) => {
+      state.loadingScriptTypes = action.payload
     },
     getCustomScriptsResponse: (state, action) => {
       state.loading = false
@@ -85,6 +91,10 @@ const customScriptSlice = createSlice({
         state.errorInSaveOperationFlag = false
       }
     },
+    setScriptTypes: (state, action) => {
+      state.scriptTypes = action.payload || [],
+      state.hasFetchedScriptTypes = true
+    },
     setCurrentItem: (state, action) => {
       state.item = action.payload?.item
       state.loading = false
@@ -97,7 +107,8 @@ const customScriptSlice = createSlice({
         state.saveOperationFlag = false
         state.errorInSaveOperationFlag = false
       }
-    }
+    },
+    getScriptTypes: () => {}
   }
 })
 
@@ -112,7 +123,10 @@ export const {
   deleteCustomScriptResponse,
   getCustomScriptByType,
   viewOnly,
-  setCurrentItem
+  setCurrentItem,
+  setScriptTypes,
+  getScriptTypes,
+  setIsScriptTypesLoading
 } = customScriptSlice.actions
 export { initialState }
 export const { actions, reducer, state } = customScriptSlice
