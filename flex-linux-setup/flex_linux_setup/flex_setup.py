@@ -446,7 +446,7 @@ class flex_installer(JettyInstaller):
 
             return ldif_parser
 
-        print("Creating Gluu Flex Admin UI Client")
+        print("Creating Gluu Flex Admin UI Web Client")
 
         client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
         if client_check_result['2001.'] == -1:
@@ -455,13 +455,13 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Client {}'.format(ssa_json.get('org_id', ''))]
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client {}'.format(ssa_json.get('org_id', ''))]
             ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['none']
 
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
 
-            print("\033[1mAdmin UI Client ID:\033[0m", Config.admin_ui_client_id)
-            print("\033[1mAdmin UI Client Secret:\033[0m", Config.admin_ui_client_pw)
+            print("\033[1mAdmin UI Web Client ID:\033[0m", Config.admin_ui_client_id)
+            print("\033[1mAdmin UI Web Client Secret:\033[0m", Config.admin_ui_client_pw)
 
             with open(client_tmp_fn, 'wb') as w:
                 ldif_writer = LDIFWriter(w)
@@ -471,29 +471,27 @@ class flex_installer(JettyInstaller):
             self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(client_tmp_fn))])
 
 
-
-        client_check_result = config_api_installer.check_clients([('admin_ui_token_client_id', '2002.')])
+        client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == -1:
 
             ldif_parser = get_client_parser()
 
-            ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_token_client_id)s']
-            ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_token_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Token Client {}'.format(ssa_json.get('org_id', ''))]
+            ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_web_client_id)s']
+            ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_web_client_encoded_pw)s']
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client {}'.format(ssa_json.get('org_id', ''))]
             ldif_parser.entries[0][1]['jansGrantTyp'] = ['client_credentials']
 
-            token_client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_token_client.ldif')
+            web_client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_web_client.ldif')
 
-            print("\033[1mAdmin UI Token Client ID:\033[0m", Config.admin_ui_token_client_id)
-            print("\033[1mAdmin UI Token Client Secret:\033[0m", Config.admin_ui_token_client_encoded_pw)
+            print("\033[1mAdmin UI Backend API Client ID:\033[0m", Config.admin_ui_web_client_id)
+            print("\033[1mAdmin UI Backend API Secret:\033[0m", Config.admin_ui_web_client_encoded_pw)
 
-            with open(token_client_tmp_fn, 'wb') as w:
+            with open(web_client_tmp_fn, 'wb') as w:
                 ldif_writer = LDIFWriter(w)
-                ldif_writer.unparse('inum=%(admin_ui_token_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
+                ldif_writer.unparse('inum=%(admin_ui_web_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
 
-            config_api_installer.renderTemplateInOut(token_client_tmp_fn, self.templates_dir, self.source_dir)
-            self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(token_client_tmp_fn))])
-
+            config_api_installer.renderTemplateInOut(web_client_tmp_fn, self.templates_dir, self.source_dir)
+            self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(web_client_tmp_fn))])
 
         self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
 
@@ -587,13 +585,13 @@ class flex_installer(JettyInstaller):
 
         client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
         if client_check_result['2001.'] == 1:
-            print("  - Deleting Gluu Flex Admin UI Client ", Config.admin_ui_client_id)
+            print("  - Deleting Gluu Flex Admin UI Web Client ", Config.admin_ui_client_id)
             self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_client_id))
 
-        client_check_result = config_api_installer.check_clients([('admin_ui_token_client_id', '2002.')])
+        client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == 1:
-            print("  - Deleting Gluu Flex Admin UI Token Client ", Config.admin_ui_token_client_id)
-            self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_token_client_id))
+            print("  - Deleting Gluu Flex Admin UI Backend API Client ", Config.admin_ui_web_client_id)
+            self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_web_client_id))
 
 
         self.dbUtils.set_configuration("jansConfApp", None, self.admin_ui_dn)
