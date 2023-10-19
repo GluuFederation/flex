@@ -17,7 +17,7 @@
       "postLogoutUri": "https://%(hostname)s/admin",
       "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
     },
-    "auiBackenApiClient": {
+    "auiBackendApiClient": {
       "opHost": "https://%(hostname)s",
       "clientId": "%(admin_ui_web_client_id)s",
       "clientSecret": "%(admin_ui_web_client_encoded_pw)s",
