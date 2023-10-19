@@ -35,9 +35,9 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 ## Installation Steps
 
-Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT. You need to convert it into base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluus Chart.
+Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT. You need to convert it into base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluu's Chart.
 
-Start a fresh ubuntu `18.04` or `20.04` 4 CPU, 16 GB RAM, and 50GB SSD VM with ports `443` and `80` open. Then execute the following
+Start a fresh Ubuntu `18.04`/`20.04`/`22.04` 4 CPU, 16 GB RAM, and 50GB SSD VM with ports `443` and `80` open. Then execute the following
 
 ```bash
 sudo su -
@@ -58,3 +58,5 @@ The installer will automatically add a record to your hosts record in the VM but
 | Casa        | `https://FQDN/casa`                             |
 | Admin-UI    | `https://FQDN/admin`                            |
 
+## Configure Gluu Flex
+  You can use the Janssen [TUI](https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/) to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.
