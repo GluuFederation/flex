@@ -109,28 +109,26 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 ```text
 https://FQDN/jans-casa
 ```
-### Let's Encrypt
- To generate Let’s Encrypt CA certificate run below commands:
-```
-sudo yum install certbot python3-certbot-apache 
-sudo certbot certonly --apache
-```
-if getting error
-```
-Error while running apachectl configtest.
-AH00526: Syntax error on line 5 of /etc/httpd/conf.d/ssl.conf:
-Cannot define multiple Listeners on the same IP:port
-```
-solution : comment "listen 443" in ssl.conf
+## Enabling HTTPS 
+To enable communication with Janssen Server over TLS (https) in a production 
+environment, Janssen Server needs details about CA certificate. Update the 
+HTTPS cofiguration file `https_jans.conf` as shown below:
 
-Modify  https_jans.conf file for SSLCertificateFile and SSLCertificateKeyFile values with certificate location which we will get after certbot command execution.
-```
- sudo vi /etc/httpd/conf.d/https_jans.conf
-SSLCertificateFile location_of_fullchain.pem
-SSLCertificateKeyFile location_of_privkey.pem
-sudo service httpd restart
-```
-
+!!! Note
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
+- Open `https_jans.conf` 
+  ```bash
+  sudo vi /etc/httpd/conf.d/https_jans.conf
+  ```
+- Update `SSLCertificateFile` and `SSLCertificateKeyFile` parameters values
+  ```bash
+  SSLCertificateFile location_of_fullchain.pem
+  SSLCertificateKeyFile location_of_privkey.pem
+  ```
+- Restart `httpd` service for changes to take effect
+  ```bash
+  sudo service httpd restart
+  ```
 ## Uninstallation
 Removing Flex is a two step process:
 
