@@ -116,18 +116,24 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 ```text
 https://FQDN/jans-casa
 ```
-## Let's Encrypt
- To generate Let’s Encrypt CA certificate run below commands:
-```
-sudo zypper -n install certbot
-sudo certbot certonly --webroot -w /srv/www/htdocs -d FQDN
-```
-Modify  _https_jans.conf file for SSLCertificateFile and SSLCertificateKeyFile values with certificate location which we got from certbot command execution.
+## Enabling HTTPS 
+To enable communication with Janssen Server over TLS (https) in a production 
+environment, Janssen Server needs details about CA certificate. Update the 
+HTTPS cofiguration file `https_jans.conf` as shown below:
 
-```
+!!! Note
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
+- Open `_https_jans.conf` 
+```bash
  sudo vi /etc/apache2/vhosts.d/_https_jans.conf
+ ```
+ - Update `SSLCertificateFile` and `SSLCertificateKeyFile` parameters values
+ ```bash
 SSLCertificateFile location_of_fullchain.pem
 SSLCertificateKeyFile location_of_privkey.pem
+```
+- Restart `apache` service for changes to take effect
+```bash
 sudo /usr/sbin/rcapache2 restart
 ```
 ## Uninstallation

@@ -128,20 +128,14 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 ```text
 https://FQDN/jans-casa
 ```
-### Let's Encrypt
- To generate Let’s Encrypt CA certificate run below commands and add required information at prompt:
-```bash 
-sudo apt update && sudo apt install certbot python3-certbot-apache
-sudo certbot --apache -d FQDN
-```
-to check certbot status
-```
-sudo systemctl status certbot.timer
-```
-to renew certificate run
-```
-sudo certbot renew --dry-run
-```
+## Enabling HTTPS
+
+To enable communication with Janssen Server over TLS (https) in a production
+environment, Janssen Server needs details about CA certificate.
+
+!!! Note
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
+
 ## Uninstallation
 Removing Flex is a two step process:
 
