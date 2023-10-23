@@ -683,6 +683,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#enabling-https" class="md-nav__link">
+    Enabling HTTPS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstallation" class="md-nav__link">
     Uninstallation
   </a>
@@ -1517,6 +1524,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#enabling-https" class="md-nav__link">
+    Enabling HTTPS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstallation" class="md-nav__link">
     Uninstallation
   </a>
@@ -1632,10 +1646,10 @@
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>. Choose
 the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-20.nightly/flex_5.0.0-20.nightly.ubuntu22.04_amd64.deb -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-20.nightly/flex_5.0.0-20.nightly.ubuntu20.04_amd64.deb -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
 </code></pre></div></p>
 </li>
 <li>
@@ -1653,32 +1667,32 @@ wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-20.nightly/
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the 
 package.  Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-20.nightly/flex_5.0.0-20.nightly.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-20.nightly/flex_5.0.0-20.nightly.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
 </code></pre></div>
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-sha256sum -c flex_5.0.0-20.nightly.ubuntu22.04_amd64.deb.sha256sum
+sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-sha256sum -c flex_5.0.0-20.nightly.ubuntu20.04_amd64.deb.sha256sum
+sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex_5.0.0-20.nightly.ubuntu&lt;version&gt;_amd64.deb: ok
+<div class="highlight"><pre><span></span><code>flex_replace-flex-version.ubuntu&lt;version&gt;_amd64.deb: ok
 </code></pre></div></p>
 </li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Choose the correct command from below based on the OS version.</p>
 <p><div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-apt install -y ./flex_5.0.0-20.nightly.ubuntu22.04_amd64.deb
+apt install -y ./flex_replace-flex-version.ubuntu22.04_amd64.deb
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-apt install -y ./flex_5.0.0-20.nightly.ubuntu20.04_amd64.deb
+apt install -y ./flex_replace-flex-version.ubuntu20.04_amd64.deb
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <p>Execute the setup script with command below:
@@ -1710,9 +1724,16 @@ Alternatively, for SSA file can be passed as a parameter to the setup script as 
 <p>When troubleshooting issues with Admin UI access, it's advisable to check the <a href="../../../admin/admin-ui/logs/">logs</a>, refer to the <a href="../../../admin/admin-ui/faq/">FAQ</a>, and review <a href="../../admin/admin-ui/introduction.md/#flex-services-dependencies">service dependencies</a> for potential solutions.</p>
 <ul>
 <li>Access Casa using URI below
-<div class="highlight"><pre><span></span><code>https://FQDN/casa
+<div class="highlight"><pre><span></span><code>https://FQDN/jans-casa
 </code></pre></div></li>
 </ul>
+<h2 id="enabling-https">Enabling HTTPS<a class="headerlink" href="#enabling-https" title="Permanent link">#</a></h2>
+<p>To enable communication with Janssen Server over TLS (https) in a production
+environment, Janssen Server needs details about CA certificate.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Want to use <code>Let's Encrypt</code> to get a certificate? Follow <a href="../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt">this guide</a>.</p>
+</div>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
 <p>Removing Flex is a two step process:</p>
 <ul>
@@ -1838,7 +1859,7 @@ Remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-14T11:35:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-14</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-20T04:58:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-20</span>
       
         <br>
         Created:
