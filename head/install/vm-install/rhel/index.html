@@ -697,6 +697,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#enabling-https" class="md-nav__link">
+    Enabling HTTPS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstallation" class="md-nav__link">
     Uninstallation
   </a>
@@ -1517,6 +1524,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#enabling-https" class="md-nav__link">
+    Enabling HTTPS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstallation" class="md-nav__link">
     Uninstallation
   </a>
@@ -1698,7 +1712,27 @@ Full TUI documentation can be found <a href="https://docs.jans.io/stable/admin/c
 <p>When troubleshooting issues with Admin UI access, it's advisable to check the <a href="../../../admin/admin-ui/logs/">logs</a>, refer to the <a href="../../../admin/admin-ui/faq/">FAQ</a>, and review <a href="../../admin/admin-ui/introduction.md/#flex-services-dependencies">service dependencies</a> for potential solutions.</p>
 <ul>
 <li>Access Casa using URI below
-<div class="highlight"><pre><span></span><code>https://FQDN/casa
+<div class="highlight"><pre><span></span><code>https://FQDN/jans-casa
+</code></pre></div></li>
+</ul>
+<h2 id="enabling-https">Enabling HTTPS<a class="headerlink" href="#enabling-https" title="Permanent link">#</a></h2>
+<p>To enable communication with Janssen Server over TLS (https) in a production 
+environment, Janssen Server needs details about CA certificate. Update the 
+HTTPS cofiguration file <code>https_jans.conf</code> as shown below:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Want to use <code>Let's Encrypt</code> to get a certificate? Follow <a href="../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt">this guide</a>.</p>
+</div>
+<ul>
+<li>Open <code>https_jans.conf</code> 
+  <div class="highlight"><pre><span></span><code>sudo vi /etc/httpd/conf.d/https_jans.conf
+</code></pre></div></li>
+<li>Update <code>SSLCertificateFile</code> and <code>SSLCertificateKeyFile</code> parameters values
+  <div class="highlight"><pre><span></span><code>SSLCertificateFile location_of_fullchain.pem
+SSLCertificateKeyFile location_of_privkey.pem
+</code></pre></div></li>
+<li>Restart <code>httpd</code> service for changes to take effect
+  <div class="highlight"><pre><span></span><code>sudo service httpd restart
 </code></pre></div></li>
 </ul>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
@@ -1820,7 +1854,7 @@ Remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-14T11:35:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-14</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-19T15:45:11+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-19</span>
       
         <br>
         Created:

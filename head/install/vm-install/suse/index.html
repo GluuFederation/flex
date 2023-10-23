@@ -711,6 +711,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#enabling-https" class="md-nav__link">
+    Enabling HTTPS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstallation" class="md-nav__link">
     Uninstallation
   </a>
@@ -721,13 +728,6 @@
           <li class="md-nav__item">
   <a href="#uninstall-janssen-packages" class="md-nav__link">
     Uninstall Janssen Packages
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#uninstalling-admin-ui" class="md-nav__link">
-    Uninstalling Admin UI
   </a>
   
 </li>
@@ -1503,6 +1503,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#enabling-https" class="md-nav__link">
+    Enabling HTTPS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#uninstallation" class="md-nav__link">
     Uninstallation
   </a>
@@ -1513,13 +1520,6 @@
           <li class="md-nav__item">
   <a href="#uninstall-janssen-packages" class="md-nav__link">
     Uninstall Janssen Packages
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#uninstalling-admin-ui" class="md-nav__link">
-    Uninstalling Admin UI
   </a>
   
 </li>
@@ -1684,7 +1684,28 @@ Alternatively, for SSA file can be passed as a parameter to the setup script as 
 <p>When troubleshooting issues with Admin UI access, it's advisable to check the <a href="../../../admin/admin-ui/logs/">logs</a>, refer to the <a href="../../../admin/admin-ui/faq/">FAQ</a>, and review <a href="../../admin/admin-ui/introduction.md/#flex-services-dependencies">service dependencies</a> for potential solutions.</p>
 <ul>
 <li>Access Casa using URI below
-<div class="highlight"><pre><span></span><code>https://FQDN/casa
+<div class="highlight"><pre><span></span><code>https://FQDN/jans-casa
+</code></pre></div></li>
+</ul>
+<h2 id="enabling-https">Enabling HTTPS<a class="headerlink" href="#enabling-https" title="Permanent link">#</a></h2>
+<p>To enable communication with Janssen Server over TLS (https) in a production 
+environment, Janssen Server needs details about CA certificate. Update the 
+HTTPS cofiguration file <code>https_jans.conf</code> as shown below:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Want to use <code>Let's Encrypt</code> to get a certificate? Follow <a href="../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt">this guide</a>.</p>
+</div>
+<ul>
+<li>Open <code>_https_jans.conf</code> 
+<div class="highlight"><pre><span></span><code> sudo vi /etc/apache2/vhosts.d/_https_jans.conf
+ <span class="sb">```</span>
+ - Update <span class="sb">`</span>SSLCertificateFile<span class="sb">`</span> and <span class="sb">`</span>SSLCertificateKeyFile<span class="sb">`</span> parameters values
+ <span class="sb">```</span>bash
+SSLCertificateFile location_of_fullchain.pem
+SSLCertificateKeyFile location_of_privkey.pem
+</code></pre></div></li>
+<li>Restart <code>apache</code> service for changes to take effect
+<div class="highlight"><pre><span></span><code>sudo /usr/sbin/rcapache2 restart
 </code></pre></div></li>
 </ul>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
@@ -1791,10 +1812,6 @@ Removing /etc/apache2/vhosts.d/_https_jans.conf
 <p>Remove package with: 
 <div class="highlight"><pre><span></span><code>sudo zypper remove flex
 </code></pre></div></p>
-<h3 id="uninstalling-admin-ui">Uninstalling Admin UI<a class="headerlink" href="#uninstalling-admin-ui" title="Permanent link">#</a></h3>
-<p>To uninstall the Admin UI from your Flex installation, execute this command:</p>
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
-</code></pre></div>
 <h3 id="updating-admin-ui">Updating Admin UI<a class="headerlink" href="#updating-admin-ui" title="Permanent link">#</a></h3>
 <p>To update the Admin UI in an existing Flex installation, execute this command:</p>
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
@@ -1805,7 +1822,7 @@ Removing /etc/apache2/vhosts.d/_https_jans.conf
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-09T08:42:10+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-09</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-20T04:58:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-20</span>
       
         <br>
         Created:
