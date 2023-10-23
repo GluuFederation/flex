@@ -126,8 +126,15 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 
 - Access Casa using URI below
 ```text
-https://FQDN/casa
+https://FQDN/jans-casa
 ```
+## Enabling HTTPS
+
+To enable communication with Janssen Server over TLS (https) in a production
+environment, Janssen Server needs details about CA certificate.
+
+!!! Note
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
 
 ## Uninstallation
 Removing Flex is a two step process:

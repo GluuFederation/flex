@@ -107,9 +107,28 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 
 - Access Casa using URI below
 ```text
-https://FQDN/casa
+https://FQDN/jans-casa
 ```
+## Enabling HTTPS 
+To enable communication with Janssen Server over TLS (https) in a production 
+environment, Janssen Server needs details about CA certificate. Update the 
+HTTPS cofiguration file `https_jans.conf` as shown below:
 
+!!! Note
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
+- Open `https_jans.conf` 
+  ```bash
+  sudo vi /etc/httpd/conf.d/https_jans.conf
+  ```
+- Update `SSLCertificateFile` and `SSLCertificateKeyFile` parameters values
+  ```bash
+  SSLCertificateFile location_of_fullchain.pem
+  SSLCertificateKeyFile location_of_privkey.pem
+  ```
+- Restart `httpd` service for changes to take effect
+  ```bash
+  sudo service httpd restart
+  ```
 ## Uninstallation
 Removing Flex is a two step process:
 
