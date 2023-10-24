@@ -5,7 +5,6 @@ from uuid import uuid4
 from functools import cached_property
 
 from jans.pycloudlib import get_manager
-from jans.pycloudlib.utils import as_boolean
 from jans.pycloudlib.utils import get_random_chars
 from jans.pycloudlib.utils import encode_text
 from jans.pycloudlib.persistence import CouchbaseClient
@@ -41,9 +40,10 @@ def main():
 
     render_env(manager)
 
-    persistence_setup = PersistenceSetup(manager)
-    persistence_setup.import_ldif_files()
-    persistence_setup.save_config()
+    with manager.lock.create_lock("admin-ui-setup"):
+        persistence_setup = PersistenceSetup(manager)
+        persistence_setup.import_ldif_files()
+        persistence_setup.save_config()
 
 
 def read_from_file(path):
@@ -101,7 +101,7 @@ class PersistenceSetup:
 
         ctx = {
             "hostname": self.manager.config.get("hostname"),
-            "admin_ui_auth_method": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic"),
+            "adminui_authentication_mode": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic"),
         }
 
         # admin-ui client for auth server
@@ -269,8 +269,23 @@ def resolve_conf_app(old_conf, new_conf):
             old_conf["licenseConfig"]["licenseHardwareKey"] = new_conf["licenseConfig"]["licenseHardwareKey"]
             should_update = True
 
-        # opHost changes on authServerClient and tokenServerClient
-        for srv_client in ("authServerClient", "tokenServerClient"):
+        client_changes = [
+            # authServerClient is renamed to auiWebClient
+            ("auiWebClient", "authServerClient"),
+            # tokenServerClient is renamed to auiBackendApiClient
+            ("auiBackendApiClient", "tokenServerClient"),
+        ]
+        for new_client, old_client in client_changes:
+            if new_client in old_conf["oidcConfig"]:
+                continue
+
+            old_conf["oidcConfig"][new_client] = old_conf["oidcConfig"].pop(
+                old_client, new_conf["oidcConfig"][new_client],
+            )
+            should_update = True
+
+        # opHost changes on auiWebClient and auiBackendApiClient
+        for srv_client in ("auiWebClient", "auiBackendApiClient"):
             if new_conf["oidcConfig"][srv_client]["opHost"] != old_conf["oidcConfig"][srv_client]["opHost"]:
                 old_conf["oidcConfig"][srv_client]["opHost"] = new_conf["oidcConfig"][srv_client]["opHost"]
                 should_update = True

@@ -1,6 +1,6 @@
 {
     "oidcConfig": {
-        "authServerClient": {
+        "auiWebClient": {
             "opHost": "https://%(hostname)s",
             "clientId": "%(admin_ui_client_id)s",
             "clientSecret": "%(admin_ui_client_encoded_pw)s",
@@ -11,13 +11,13 @@
                 "email"
             ],
             "acrValues": [
-                "%(admin_ui_auth_method)s"
+                "%(adminui_authentication_mode)s"
             ],
             "redirectUri": "https://%(hostname)s/admin",
             "postLogoutUri": "https://%(hostname)s/admin",
             "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
         },
-        "tokenServerClient": {
+        "auiBackendApiClient": {
             "opHost": "https://%(hostname)s",
             "clientId": "%(token_server_admin_ui_client_id)s",
             "clientSecret": "%(token_server_admin_ui_client_encoded_pw)s",
@@ -35,7 +35,7 @@
         "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
         "licenseHardwareKey": "%(license_hardware_key)s",
         "oidcClient": {
-            "opHost": "%(scan_license_auth_server_hostname)s",
+            "opHost": "%(op_host)s",
             "clientId": "%(oidc_client_id)s",
             "clientSecret": "%(oidc_client_secret)s",
             "tokenEndpoint": null,
