@@ -1201,7 +1201,7 @@
         
           <li class="md-nav__item">
   <a href="#install-postgresql-database" class="md-nav__link">
-    Install PostgreSQL database:
+    Install PostgreSQL database
   </a>
   
 </li>
@@ -1638,7 +1638,7 @@
         
           <li class="md-nav__item">
   <a href="#install-postgresql-database" class="md-nav__link">
-    Install PostgreSQL database:
+    Install PostgreSQL database
   </a>
   
 </li>
@@ -1921,7 +1921,7 @@
 <td><code>Gluu</code></td>
 </tr>
 <tr>
-<td><code>role_based_client_id</code></td>
+<td><code>tui_client_id</code></td>
 <td><code>2000.9313cd4b-147c-4a67-96be-8a69ddbaf7e9</code></td>
 </tr>
 <tr>
@@ -2008,11 +2008,11 @@
 <td><code>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></td>
 </tr>
 <tr>
-<td><code>role_based_client_encoded_pw</code></td>
+<td><code>tui_client_encoded_pw</code></td>
 <td><code>ZHd2VW01Y3VOUW66388PS512</code></td>
 </tr>
 <tr>
-<td><code>role_based_client_pw</code></td>
+<td><code>tui_client_pw</code></td>
 <td><code>AusZHd2VW01Y3VOUW6638</code></td>
 </tr>
 <tr>
@@ -2098,7 +2098,7 @@
 <p class="admonition-title">Note</p>
 <p>For the <code>Database test setup</code> to work, a PV provisioner support must be present in the underlying infrastructure.</p>
 </div>
-<h3 id="install-postgresql-database">Install PostgreSQL database:<a class="headerlink" href="#install-postgresql-database" title="Permanent link">#</a></h3>
+<h3 id="install-postgresql-database">Install PostgreSQL database<a class="headerlink" href="#install-postgresql-database" title="Permanent link">#</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you are willing to use MySQL installation, skip this section and head to the <a href="#install-mysql-database">Install MySQL</a> section.</p>
@@ -2176,13 +2176,13 @@ helm install nginx ingress-nginx/ingress-nginx
 <li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
 <li>Add <code>License SSA</code>. Before initiating the setup, please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.</li>
 <li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.postgres.svc.cluster.local</code> in the case of <code>PostgreSQL</code> or <code>my-release-mysql.gluu.svc.cluster.local</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
+<li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. You can also enable different services like <code>Client API</code> and <code>Jackrabbit</code>.</li>
+<li>Click on the  section named <code>Ingress</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>. </li>
 <li>To pass your <code>FQDN</code> or <code>Domain</code> that is intended to serve the Gluu Flex IDP, head to the <code>Configuration</code> section:<ol>
 <li>Add your <code>FQDN</code> and check the box <code>Is the FQDN globally resolvable</code>.</li>
-<li>Click on the <code>Edit YAML</code> tab and add your <code>FQDN</code> to <code>nginx-ingress.ingress.hosts</code> and <code>nginx-ingress.ingress.tls.hosts</code>.</li>
+<li>Click on the <code>Edit YAML</code> tab and add your <code>FQDN</code> to <code>nginx-ingress.ingress.hosts</code> and <code>nginx-ingress.ingress.tls.hosts</code>. </li>
 </ol>
 </li>
-<li>Click on the  section named <code>NGINX</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>. </li>
-<li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. You can also enable different services like <code>Client API</code> and <code>Jackrabbit</code>. </li>
 <li>Click on <code>Install</code> on the bottom right of the window.</li>
 </ul>
 <div class="admonition note">
@@ -2320,16 +2320,16 @@ responseTypes: code
 <h4 id="jans-tui"><code>Jans TUI</code><a class="headerlink" href="#jans-tui" title="Permanent link">#</a></h4>
 <p>On the Janssen server, we are going to register a new client using the jans-cli. There are two ways you can register an OIDC client with the Janssen server, Manual Client Registration and Dynamic Client Registration (DCR).</p>
 <p>Here we will use manual client registration. We will use jans-tui tool provided by the Janssen server. jans-tui has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.</p>
-<p>Download or build <a href="https://docs.jans.io/v1.0.13/admin/config-guide/jans-tui/">config-cli-tui</a> then:</p>
+<p>Download or build <a href="https://docs.jans.io/head/admin/config-guide/jans-cli/">config-cli-tui</a> then:</p>
 <ol>
-<li>Get the role based client id and secret:</li>
+<li>Get the tui client id and secret:</li>
 </ol>
-<p><div class="highlight"><pre><span></span><code><span class="c1"># Notice the namespace is jans here . Change it if it was changed during installation of janssen previously</span>
-<span class="nv">ROLE_BASED_CLIENT_ID</span><span class="o">=</span><span class="k">$(</span>kubectl get cm cn -o json -n jans <span class="p">|</span> grep <span class="s1">&#39;&quot;role_based_client_id&quot;:&#39;</span> <span class="p">|</span> sed -e <span class="s1">&#39;s#.*:\(\)#\1#&#39;</span> <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="p">|</span> tr -d <span class="s2">&quot;,&quot;</span> <span class="p">|</span> tr -d <span class="s1">&#39;[:space:]&#39;</span><span class="k">)</span>
-<span class="nv">ROLE_BASED_CLIENT_SECRET</span><span class="o">=</span><span class="k">$(</span>kubectl get secret cn -o json -n jans <span class="p">|</span> grep <span class="s1">&#39;&quot;role_based_client_pw&quot;:&#39;</span> <span class="p">|</span> sed -e <span class="s1">&#39;s#.*:\(\)#\1#&#39;</span> <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="p">|</span> tr -d <span class="s2">&quot;,&quot;</span> <span class="p">|</span> tr -d <span class="s1">&#39;[:space:]&#39;</span> <span class="p">|</span> base64 -d<span class="k">)</span>
+<p><div class="highlight"><pre><span></span><code> <span class="nv">FQDN</span><span class="o">=</span> <span class="c1">#Add your FQDN here</span>
+ <span class="nv">TUI_CLIENT_ID</span><span class="o">=</span><span class="k">$(</span>kubectl get cm cn -n &lt;namespace&gt; --template<span class="o">={{</span>.data.tui_client_id<span class="o">}}</span><span class="k">)</span>
+ <span class="nv">TUI_CLIENT_SECRET</span><span class="o">=</span><span class="k">$(</span>kubectl get secret cn -n &lt;namespace&gt; --template<span class="o">={{</span>.data.tui_client_pw<span class="o">}}</span> <span class="p">|</span> base64 -d<span class="k">)</span>
 </code></pre></div>
 2. Get schema file using this command</p>
-<div class="codehilite"><pre><span></span><code>`./config-cli-tui.pyz --host &lt;FQDN&gt; --client-id &lt;ROLE_BASED_CLIENT_ID&gt; --client-secret &lt;ROLE_BASED_CLIENT_SECRET&gt; --no-tui --schema /components/schemas/Client`
+<div class="codehilite"><pre><span></span><code>`./config-cli-tui.pyz --host &lt;FQDN&gt; --client-id &lt;TUI_CLIENT_ID&gt; --client-secret &lt;TUI_CLIENT_SECRET&gt; --no-tui --schema /components/schemas/Client`
 </code></pre></div>
 
 <ol>
@@ -2421,7 +2421,7 @@ responseTypes: code
 </li>
 <li>
 <p>Now you can use that JSON file as input to the command below and register your client</p>
-<p><code>./config-cli-tui.pyz --host &lt;FQDN&gt; --client-id &lt;ROLE_BASED_CLIENT_ID&gt; --client-secret &lt;ROLE_BASED_CLIENT_SECRET&gt; --no-tui --operation-id=post-oauth-openid-client --data &lt;path&gt;/schema-json-file.json</code></p>
+<p><code>./config-cli-tui.pyz --host &lt;FQDN&gt; --client-id &lt;TUI_CLIENT_ID&gt; --client-secret &lt;TUI_CLIENT_SECRET&gt; --no-tui --operation-id=post-oauth-openid-client --data &lt;path&gt;/schema-json-file.json</code></p>
 </li>
 <li>
 <p>After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like <code>inum</code> and <code>clientSecret</code>, will be required before we configure <code>mod_auth_openidc</code> So keep in mind that we shall get back to this.</p>
@@ -2738,7 +2738,7 @@ docker run -dit -p 8111:80 \
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-04T17:28:07+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-04</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-24T07:42:45+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-24</span>
       
         <br>
         Created:
