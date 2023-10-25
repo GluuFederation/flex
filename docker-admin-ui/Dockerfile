@@ -1,4 +1,4 @@
-FROM node:hydrogen-alpine3.17 AS builder
+FROM node:hydrogen-alpine3.18 AS builder
 
 RUN apk update \
     && apk upgrade --available \
@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=2d8e13deb4364063ffc7270d617697eb0994ead7
+ENV ADMIN_UI_VERSION=136990a032e3e38e737ab488a7968085d3e21a6a
 
 RUN mkdir -p /opt/flex
 
@@ -34,7 +34,7 @@ RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 # Application
 # ===========
 
-FROM node:hydrogen-alpine3.17
+FROM node:hydrogen-alpine3.18
 
 # ======
 # alpine
@@ -191,7 +191,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="1.0.19" \
+    org.opencontainers.image.version="1.0.20" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 

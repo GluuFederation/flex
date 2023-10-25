@@ -38,8 +38,7 @@ def _discover_plugins():
         logger.info(out.decode())
 
     with open(os.path.join(ADMIN_UI_DIR, "plugins.config.json")) as f:
-        loaded_plugins = [plug["key"] for plug in json.loads(f.read())]
-    return loaded_plugins
+        return [plug["key"] for plug in json.loads(f.read())]
 
 
 def _build_src() -> None:
