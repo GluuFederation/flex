@@ -17,6 +17,7 @@ import uuid
 from pathlib import Path
 from urllib import request
 from urllib.parse import urljoin
+from xml.etree import ElementTree
 
 
 argsp = None
@@ -281,7 +282,7 @@ class flex_installer(JettyInstaller):
 
         self.jans_auth_dir = os.path.join(Config.jetty_base, jansAuthInstaller.service_name)
         self.jans_auth_custom_lib_dir = os.path.join(self.jans_auth_dir, 'custom/libs')
-
+        self.admin_ui_log_dir = '/var/log/adminui'
         self.gluu_admin_ui_source_path = os.path.join(Config.dist_jans_dir, 'gluu-admin-ui.zip')
         self.log4j2_adminui_path = os.path.join(Config.dist_jans_dir, 'log4j2-adminui.xml')
         self.log4j2_path = os.path.join(Config.dist_jans_dir, 'log4j2.xml')
@@ -526,8 +527,32 @@ class flex_installer(JettyInstaller):
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir, backup=False)
         config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
-        for logfn in (self.log4j2_adminui_path, self.log4j2_path):
-            config_api_installer.copyFile(logfn, config_api_installer.custom_config_dir)
+        config_api_installer.copyFile(self.log4j2_path, config_api_installer.custom_config_dir)
+
+        log4j2_adminui_path_target_path = os.path.join(
+                                config_api_installer.custom_config_dir,
+                                os.path.basename(self.log4j2_adminui_path)
+                                )
+
+        print("Reading XML", self.log4j2_adminui_path)
+        tree = ElementTree.parse(self.log4j2_adminui_path)
+        root = tree.getroot()
+
+        for appenders in root.findall('Appenders'):
+            for child in appenders:
+                if child.tag=='RollingFile' and child.get('name') in ('ADMINUI-AUDIT', 'ADMINUI-LOG'):
+                    for prop in ('fileName', 'filePattern'):
+                        file_name = child.get(prop)
+                        if file_name:
+                            file_base_name = os.path.basename(file_name)
+                            new_file_path = os.path.join(self.admin_ui_log_dir, file_base_name)
+                            child.set(prop, new_file_path)
+        print("Writing XML", log4j2_adminui_path_target_path)
+        tree.write(log4j2_adminui_path_target_path, encoding='utf-8', xml_declaration=True)
+
+        if not os.path.exists(self.admin_ui_log_dir):
+            os.makedirs(self.admin_ui_log_dir)
+        config_api_installer.chown(self.admin_ui_log_dir, Config.jetty_user, Config.jetty_group)
 
         config_api_installer.set_class_path(glob.glob(os.path.join(config_api_installer.libDir, '*.jar')))
 
