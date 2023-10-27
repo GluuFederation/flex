@@ -227,4 +227,6 @@ WORKDIR /app
 
 EXPOSE 8080
 
-CMD ["sh", "/app/bin/entrypoint.sh"]
+# CMD ["sh", "/app/bin/entrypoint.sh"]
+# @TODO: remove after debugging serverless is finished
+CMD ["sh", "/app/bin/flex-entrypoint.sh"]
