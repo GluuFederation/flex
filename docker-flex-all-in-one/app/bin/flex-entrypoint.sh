@@ -11,6 +11,16 @@ check_agama_scripts_dir() {
     done
 }
 
+check_auth_custom_libs_dir() {
+    host=$(hostname -f)
+    while true; do
+        echo "[I] Checking contents of ${host}:/opt/jans/jetty/jans-auth/custom/libs directory"
+        ls -l /opt/jans/jetty/jans-auth/custom/libs;
+        sleep 10
+    done
+}
+
 check_agama_scripts_dir &
+check_auth_custom_libs_dir &
 
 sh /app/bin/entrypoint.sh
