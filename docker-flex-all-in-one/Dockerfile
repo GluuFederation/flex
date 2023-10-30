@@ -183,6 +183,7 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
 
 RUN chmod -R g=u ${JETTY_HOME}/temp \
     ${JETTY_BASE}/common/libs \
+    ${JETTY_BASE}/jans-auth/agama \
     ${JETTY_BASE}/jans-auth/custom \
     ${JETTY_BASE}/jans-auth/resources \
     ${JETTY_BASE}/jans-auth/logs \
