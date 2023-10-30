@@ -150,8 +150,9 @@ RUN chmod +x /app/bin/entrypoint.sh
 RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     ${JETTY_BASE}/common/libs \
     ${JETTY_BASE}/jans-auth/custom \
-    ${JETTY_BASE}/jans-auth/resources \
+    ${JETTY_BASE}/jans-auth/resources\
     ${JETTY_BASE}/jans-auth/logs \
+    ${JETTY_BASE}/jans-auth/agama \
     ${JETTY_BASE}/jans-config-api/custom \
     ${JETTY_BASE}/jans-config-api/resources \
     ${JETTY_BASE}/jans-config-api/logs \
