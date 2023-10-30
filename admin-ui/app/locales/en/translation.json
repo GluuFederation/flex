@@ -60,6 +60,7 @@
     "license_type": "License Type",
     "customer_email": "Customer Email",
     "company_name": "Company Name",
+    "customer_name": "Customer Name",
     "license_status": "License Status",
     "oauth_server_status": "OAuth server status",
     "database_status": "Database status",

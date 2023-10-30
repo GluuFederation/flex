@@ -142,7 +142,7 @@ function DashboardPage() {
       value: license?.customerEmail,
     },
     {
-      text: t('dashboard.company_name'),
+      text: t('dashboard.customer_name'),
       value: `${license?.customerFirstName || ''} ${license?.customerLastName || ''}`,
     },
     {
