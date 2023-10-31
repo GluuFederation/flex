@@ -19,7 +19,7 @@ import {
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from 'Redux/api/base'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import { postUserAction } from 'Redux/api/backend-api'
+import { postUserAction, fetchApiAccessToken } from 'Redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -32,10 +32,9 @@ import {
   addScopeResponse,
   getScopeByCreatorResponse,
   getClientScopesResponse,
+  setAccessToken
 } from '../features/scopeSlice'
 import { SCOPE_TAGS } from 'Utils/PermChecker'
-import { fetchApiAccessToken } from 'Redux/api/backend-api'
-import { setAccessToken } from '../features/scopeSlice'
 
 function* newFunction() {
   let token
