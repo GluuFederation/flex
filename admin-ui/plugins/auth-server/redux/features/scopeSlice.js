@@ -11,13 +11,17 @@ const initialState = {
   entriesCount: 0,
   clientScopes: [],
   loadingClientScopes: false,
-  selectedClientScopes: []
+  selectedClientScopes: [],
+  accessToken: null
 }
 
 const scopeSlice = createSlice({
   name: 'scope',
   initialState,
   reducers: {
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload
+    },
     scopeHandleLoading: (state) => {
       state.loading = true
       state.saveOperationFlag = false
@@ -115,7 +119,6 @@ const scopeSlice = createSlice({
       state.errorInSaveOperationFlag = false
     },
     getScopeByCreator: () => {},
-    getScopeByPattern: () => {},
     getScopeByInum: (state) => {
       state.loading = true
       state.saveOperationFlag = false
@@ -152,7 +155,8 @@ export const {
   getScopeByInum,
   getClientScopes,
   emptyScopes,
-  setClientSelectedScopes
+  setClientSelectedScopes,
+  setAccessToken
 } = scopeSlice.actions
 export { initialState }
 export const { actions, reducer, state } = scopeSlice

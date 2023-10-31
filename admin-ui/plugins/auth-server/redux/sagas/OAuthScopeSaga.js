@@ -19,7 +19,7 @@ import {
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from 'Redux/api/base'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import { postUserAction } from 'Redux/api/backend-api'
+import { postUserAction, fetchApiAccessToken } from 'Redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -32,14 +32,29 @@ import {
   addScopeResponse,
   getScopeByCreatorResponse,
   getClientScopesResponse,
+  setAccessToken
 } from '../features/scopeSlice'
+import { SCOPE_TAGS } from 'Utils/PermChecker'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
+  let token
+  const scopesToken = yield select((state) => state.scopeReducer.accessToken)
+
+  if (!scopesToken) {
+    const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+    const scopeApiToken = yield call(fetchApiAccessToken, jwt, SCOPE_TAGS)
+    if (scopeApiToken.access_token) {
+      token = scopeApiToken.access_token
+      yield put(setAccessToken(scopeApiToken.access_token))
+    } else {
+      token = yield select((state) => state.authReducer.token.access_token)
+    } 
+  } else {
+    token = scopesToken;
+  }
+  
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthScopesApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.OAuthScopesApi(getClient(JansConfigApi, token, issuer))
   return new ScopeApi(api)
 }
 
@@ -106,23 +121,6 @@ export function* getClientScopes({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getClientScopesResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
-  }
-}
-
-export function* getScopeBasedOnOpts({ payload }) {
-  const audit = yield* initAudit()
-  try {
-    addAdditionalData(audit, FETCH, SCOPE, payload)
-    const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.getScopeByOpts, payload.action.action_data)
-    yield put(getScopeByPatternResponse({ data }))
-    yield call(postUserAction, audit)
-  } catch (e) {
-    yield put(getScopeByPatternResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -209,9 +207,6 @@ export function* watchGetClientScopes() {
 export function* watchSearchScopes() {
   yield takeLatest('scope/searchScopes', getScopes)
 }
-export function* watchGetScopeByOpts() {
-  yield takeLatest('scope/getScopeByPattern', getScopeBasedOnOpts)
-}
 export function* watchAddScope() {
   yield takeLatest('scope/addScope', addAScope)
 }
@@ -227,7 +222,6 @@ export default function* rootSaga() {
     fork(watchGetScopeByInum),
     fork(watchGetScopes),
     fork(watchSearchScopes),
-    fork(watchGetScopeByOpts),
     fork(watchAddScope),
     fork(watchEditScope),
     fork(watchDeleteScope),
