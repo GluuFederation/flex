@@ -58,9 +58,9 @@ export const postUserAction = (userAction) => {
 }
 
 // Get API Access Token
-export const fetchApiAccessToken = (jwt) => {
+export const fetchApiAccessToken = (jwt, permissionTag) => {
   return axios
-    .get('/app/admin-ui/oauth2/api-protection-token', { params: { ujwt: jwt } })
+    .post('/app/admin-ui/oauth2/api-protection-token', { ujwt: jwt, permissionTag: permissionTag || [] })
     .then((response) => response.data)
     .catch((error) => {
       console.error(
@@ -73,7 +73,7 @@ export const fetchApiAccessToken = (jwt) => {
 
 export const fetchApiTokenWithDefaultScopes = () => {
   return axios
-    .get('/app/admin-ui/oauth2/api-protection-token')
+    .post('/app/admin-ui/oauth2/api-protection-token', {})
     .then((response) => response.data)
     .catch((error) => {
       console.error(
