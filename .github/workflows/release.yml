@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        simple: [ "docs", "docker-admin-ui" ]
+        simple: [ "docs", "docker-admin-ui", "docker-flex-all-in-one" ]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -50,6 +50,16 @@ jobs:
     - uses: google-github-actions/release-please-action@v3.7
       if: matrix.simple == 'docker-admin-ui'
       id: release-admin-ui
+      with:
+         path: ${{ matrix.simple }}
+         token: ${{ secrets.MOWORKFLOWTOKEN }}
+         release-type: simple
+         package-name: ${{ matrix.simple }}
+         monorepo-tags: true
+         release-as: ${{ github.event.inputs.docker_release_as }}
+    - uses: google-github-actions/release-please-action@v3.7
+      if: matrix.simple == 'docker-flex-all-in-one'
+      id: release-all-in-one
       with:
          path: ${{ matrix.simple }}
          token: ${{ secrets.MOWORKFLOWTOKEN }}

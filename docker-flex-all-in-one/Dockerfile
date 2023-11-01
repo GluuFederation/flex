@@ -1,0 +1,232 @@
+# ==============
+# Assets sources
+# ==============
+
+# the following ARGs set default base images
+# they can be overriden in build process via --build-arg option
+ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:1.0.20_dev
+ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:1.0.20_dev
+
+# original Janssen version
+ARG CN_VERSION=1.0.20-SNAPSHOT
+
+# -----------
+# base images
+# -----------
+
+FROM ${JANS_AIO_IMAGE} AS jans-aio-src
+
+FROM ${FLEX_ADMIN_UI_IMAGE} AS flex-admin-ui-src
+
+# ===
+# app
+# ===
+
+FROM bellsoft/liberica-openjdk-alpine:17.0.8
+
+# hadolint ignore=DL3018
+RUN apk update \
+    && apk upgrade --available \
+    && apk add --no-cache tini bash curl openssl python3 py3-cryptography py3-psycopg2 py3-grpcio nodejs npm nginx \
+    && apk add --no-cache --virtual .build-deps git wget
+
+# -------
+# License
+# -------
+
+COPY LICENSE /licenses/LICENSE
+
+# -----------
+# assets sync
+# -----------
+
+COPY --from=jans-aio-src /app /app
+COPY --from=jans-aio-src /opt/jetty /opt/jetty
+COPY --from=jans-aio-src /opt/jython /opt/jython
+COPY --from=jans-aio-src /etc/certs /etc/certs
+COPY --from=jans-aio-src /etc/jans /etc/jans
+COPY --from=jans-aio-src /opt/jans /opt/jans
+COPY --from=jans-aio-src /opt/prometheus /opt/prometheus
+COPY --from=jans-aio-src /usr/local/bin/facter /usr/local/bin/facter
+COPY --from=jans-aio-src /etc/nginx/jans-aio /etc/nginx/jans-aio
+
+COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
+COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
+COPY --from=flex-admin-ui-src /run/nginx/nginx.pid /run/nginx/nginx.pid
+COPY --from=flex-admin-ui-src /app/scripts /app/flex_aio/admin_ui
+RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
+
+# ------
+# Python
+# ------
+
+RUN python3 -m ensurepip \
+    && pip3 install --no-cache-dir -U pip wheel setuptools \
+    && pip3 install --no-cache-dir --default-timeout=300 -r /app/requirements.txt \
+    && pip3 uninstall -y pip wheel
+
+# -------
+# Cleanup
+# -------
+
+RUN apk del .build-deps \
+    && rm -rf /var/cache/apk/*
+
+# ----
+# misc
+# ----
+
+RUN ln -sf /usr/lib/jvm/jdk /opt/java
+
+RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
+
+COPY app /app
+
+# set directory contains installer code that will be added to Python sys.path
+ENV PYTHONPATH=/app
+
+ENV JETTY_BASE=/opt/jans/jetty \
+    JETTY_HOME=/opt/jetty \
+    CN_AIO_COMPONENTS="" \
+    CN_AIO_ENABLE_MONITOR=false \
+    CN_AIO_PLUGINS="flex_aio.plugins.FlexPlugin" \
+    CN_ENABLE_STDOUT_LOG_PREFIX=true \
+    CN_DUO_ENABLED=false \
+    CN_AUTH_JAVA_OPTIONS="" \
+    CN_CONFIG_API_JAVA_OPTIONS="" \
+    CN_FIDO2_JAVA_OPTIONS="" \
+    CN_SCIM_JAVA_OPTIONS=""  \
+    CN_JETTY_REQUEST_HEADER_SIZE=8192 \
+    CN_CONFIG_API_CREATE_SCOPES=true \
+    CN_AUTH_JETTY_HOST=127.0.0.1 \
+    CN_AUTH_JETTY_PORT=8081 \
+    CN_CONFIG_API_JETTY_HOST=127.0.0.1 \
+    CN_CONFIG_API_JETTY_PORT=8074 \
+    CN_FIDO2_JETTY_HOST=127.0.0.1 \
+    CN_FIDO2_JETTY_PORT=8073 \
+    CN_SCIM_JETTY_HOST=127.0.0.1 \
+    CN_SCIM_JETTY_PORT=8087 \
+    CN_CASA_JETTY_HOST=127.0.0.1 \
+    CN_CASA_JETTY_PORT=8082 \
+    CN_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/jans-casa/resources/.administrable \
+    CN_CASA_JWKS_SIZE_LIMIT=100000 \
+    CN_CASA_JAVA_OPTIONS="" \
+    CN_LINK_JETTY_HOST=127.0.0.1 \
+    CN_LINK_JETTY_PORT=9091 \
+    CN_LINK_JAVA_OPTIONS="" \
+    CN_SHARE_AUTH_CONF=false \
+    CN_SQL_PASSWORD_FILE=/etc/jans/conf/sql_password \
+    CN_COUCHBASE_PASSWORD_FILE=/etc/jans/conf/couchbase_password \
+    CN_COUCHBASE_SUPERUSER_PASSWORD_FILE=/etc/jans/conf/couchbase_superuser_password \
+    CN_LDAP_PASSWORD_FILE=/etc/jans/conf/ldap_password \
+    CN_LDAP_TRUSTSTORE_PASSWORD_FILE=/etc/jans/conf/ldap_truststore_password \
+    GLUU_ADMIN_UI_ENABLE_NGINX=false \
+    GLUU_ADMIN_UI_PUBLIC_DIR=/var/lib/nginx/html/admin
+
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/all-in-one" \
+    org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
+    org.opencontainers.image.vendor="Gluu Federation" \
+    org.opencontainers.image.version="1.0.20" \
+    org.opencontainers.image.title="Gluu Flex All-in-One" \
+    org.opencontainers.image.description=""
+
+# forward logs to stdout and stderr
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
+RUN cp /app/templates/nginx/*-upstream.conf /etc/nginx/jans-aio/ \
+    && cp /app/templates/nginx/*-location.conf /etc/nginx/jans-aio \
+    && cp /app/templates/nginx/admin-index.html /var/lib/nginx/html/admin/index.html
+
+RUN touch /run/nginx/nginx.pid
+
+# create non-root user
+RUN adduser -s /bin/sh -h /home/1000 -D -u 1000 flex \
+    && addgroup flex root
+
+RUN chmod +x /app/bin/entrypoint.sh
+
+# adjust ownership and permission
+RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
+    ${JETTY_BASE}/common/libs \
+    ${JETTY_BASE}/jans-auth/custom \
+    ${JETTY_BASE}/jans-auth/resources \
+    ${JETTY_BASE}/jans-auth/logs \
+    ${JETTY_BASE}/jans-auth/agama \
+    ${JETTY_BASE}/jans-config-api/custom \
+    ${JETTY_BASE}/jans-config-api/resources \
+    ${JETTY_BASE}/jans-config-api/logs \
+    ${JETTY_BASE}/jans-config-api/_plugins \
+    ${JETTY_BASE}/jans-fido2/custom \
+    ${JETTY_BASE}/jans-fido2/resources \
+    ${JETTY_BASE}/jans-fido2/logs \
+    ${JETTY_BASE}/jans-scim/custom \
+    ${JETTY_BASE}/jans-scim/resources \
+    ${JETTY_BASE}/jans-scim/logs \
+    ${JETTY_BASE}/jans-casa/static \
+    ${JETTY_BASE}/jans-casa/plugins \
+    ${JETTY_BASE}/jans-casa/resources \
+    ${JETTY_BASE}/jans-casa/logs \
+    ${JETTY_BASE}/jans-link/resources \
+    ${JETTY_BASE}/jans-link/logs \
+    /etc/certs \
+    /etc/jans \
+    /opt/jans/python/libs \
+    /opt/jans/configurator \
+    /opt/prometheus \
+    /app \
+    /var/lib/nginx \
+    /var/log/nginx \
+    /etc/nginx/jans-aio \
+    /usr/share/java \
+    /opt/flex/admin-ui/_plugins
+
+RUN chmod -R g=u ${JETTY_HOME}/temp \
+    ${JETTY_BASE}/common/libs \
+    ${JETTY_BASE}/jans-auth/agama \
+    ${JETTY_BASE}/jans-auth/custom \
+    ${JETTY_BASE}/jans-auth/resources \
+    ${JETTY_BASE}/jans-auth/logs \
+    ${JETTY_BASE}/jans-config-api/custom \
+    ${JETTY_BASE}/jans-config-api/resources \
+    ${JETTY_BASE}/jans-config-api/logs \
+    ${JETTY_BASE}/jans-config-api/_plugins \
+    ${JETTY_BASE}/jans-fido2/custom \
+    ${JETTY_BASE}/jans-fido2/resources \
+    ${JETTY_BASE}/jans-fido2/logs \
+    ${JETTY_BASE}/jans-scim/custom \
+    ${JETTY_BASE}/jans-scim/resources \
+    ${JETTY_BASE}/jans-scim/logs \
+    ${JETTY_BASE}/jans-casa/static \
+    ${JETTY_BASE}/jans-casa/plugins \
+    ${JETTY_BASE}/jans-casa/resources \
+    ${JETTY_BASE}/jans-casa/logs \
+    ${JETTY_BASE}/jans-link/resources \
+    ${JETTY_BASE}/jans-link/logs \
+    /etc/certs \
+    /etc/jans \
+    /opt/jans/python/libs \
+    /opt/jans/configurator \
+    /opt/prometheus \
+    /app \
+    /var/lib/nginx \
+    /var/log/nginx \
+    /etc/nginx/jans-aio \
+    /usr/share/java \
+    /opt/flex/admin-ui/_plugins
+
+RUN chown 1000:1000 /opt/java/lib/security/cacerts \
+    /run/nginx/nginx.pid \
+    /etc/nginx/http.d/default.conf \
+    /opt/flex/admin-ui
+
+# run as non-root user
+USER 1000
+
+RUN mkdir -p $HOME/.config/gcloud
+
+WORKDIR /app
+
+EXPOSE 8080
+
+CMD ["sh", "/app/bin/flex-entrypoint.sh"]
