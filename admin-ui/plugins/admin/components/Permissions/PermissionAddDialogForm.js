@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import {
   FormGroup,
   Col,
@@ -10,30 +10,33 @@ import {
   ModalFooter,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 
 const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
   const [active, setActive] = useState(false)
+  const [permission, setPermission] = useState('') 
+  const [description, setDescription] = useState('')
+  const [tag, setTag] = useState('')
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  function handleStatus() {
-    const value = document.getElementById('api_permission').value
-    if (value.length >= 5) {
-      setActive(true)
-    } else {
-      setActive(false)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (permission?.length >= 5 && tag.length > 0) {
+        setActive(true)
+      } else {
+        setActive(false)
+      }
     }
-  }
+  }, [tag, permission])
 
   function handleAccept() {
     const roleData = {}
-    roleData['permission'] = document.getElementById('api_permission').value
-    roleData['description'] = document.getElementById(
-      'permission_description',
-    ).value
+    roleData['permission'] = permission
+    roleData['tag'] = tag
+    roleData['description'] = description
     onAccept(roleData)
   }
   return (
@@ -54,9 +57,23 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                 id="api_permission"
                 type="text"
                 name="api_permission"
-                onKeyUp={handleStatus}
                 defaultValue=""
-                placeholder={`${t('fields.name')}`}
+                placeholder={`${t('fields.name')}*`}
+                onChange={(event) => setPermission(event.target.value)}
+                value={permission}
+              />
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <Col sm={12}>
+              <Input
+                id="tag"
+                type="text"
+                name="tag"
+                defaultValue=""
+                placeholder={`${t('fields.tag')}*`}
+                onChange={(event) => setTag(event.target.value)}
+                value={tag}
               />
             </Col>
           </FormGroup>
@@ -68,6 +85,8 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                 name="permission_description"
                 defaultValue=""
                 placeholder={`${t('fields.description')}`}
+                onChange={(event) => setDescription(event.target.value)}
+                value={description}
               />
             </Col>
           </FormGroup>

@@ -69,12 +69,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
-  function getPropertiesConfig(entry) {
+  function getPropertiesConfig(entry, key) {
     if (
-      entry.configurationProperties &&
-      Array.isArray(entry.configurationProperties)
+      entry[key] &&
+      Array.isArray(entry[key])
     ) {
-      return entry.configurationProperties.map((e) => ({
+      return entry[key].map((e) => ({
         key: e.value1,
         value: e.value2,
       }))
@@ -149,10 +149,19 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
       }
 
       values.level = item.level
-      values.moduleProperties = item.moduleProperties
       // eslint-disable-next-line no-extra-boolean-cast
       if (!!values.configurationProperties) {
         values.configurationProperties = values.configurationProperties
+          .filter((e) => e != null)
+          .filter((e) => Object.keys(e).length !== 0)
+          .map((e) => ({
+            value1: e.key || e.value1,
+            value2: e.value || e.value2,
+            hide: false,
+          }))
+      }
+      if (!!values.moduleProperties && item.locationType !== 'db') {
+        values.moduleProperties = values.moduleProperties
           .filter((e) => e != null)
           .filter((e) => Object.keys(e).length !== 0)
           .map((e) => ({
@@ -562,7 +571,16 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
           formik={formik}
           keyPlaceholder={t('placeholders.enter_property_key')}
           valuePlaceholder={t('placeholders.enter_property_value')}
-          options={getPropertiesConfig(item)}
+          options={getPropertiesConfig(item, 'configurationProperties')}
+          disabled={viewOnly}
+        ></GluuProperties>
+        <GluuProperties
+          compName="moduleProperties"
+          label="fields.module_properties"
+          formik={formik}
+          keyPlaceholder={t('placeholders.enter_property_key')}
+          valuePlaceholder={t('placeholders.enter_property_value')}
+          options={getPropertiesConfig(item, 'moduleProperties')}
           disabled={viewOnly}
         ></GluuProperties>
         {!scriptPath && (
@@ -594,16 +612,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
             />
           </Col>
         </FormGroup>
-        <GluuTooltip doc_category={SCRIPT} doc_entry="moduleProperties">
-          <FormGroup row>
-            <Input
-              type="hidden"
-              id="moduleProperties"
-              defaultValue={item.moduleProperties}
-              disabled={viewOnly}
-            />
-          </FormGroup>
-        </GluuTooltip>
         {!viewOnly && <GluuCommitFooter saveHandler={toggle} />}
         <GluuCommitDialog
           handler={toggle}
