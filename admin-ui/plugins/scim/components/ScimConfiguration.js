@@ -7,6 +7,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import PropTypes from 'prop-types'
 
 const ScimConfiguration = ({ handleSubmit }) => {
   const scimConfigs = useSelector((state) => state.scimReducer.scim)
@@ -334,6 +335,10 @@ const ScimConfiguration = ({ handleSubmit }) => {
       />
     </Form>
   )
+}
+
+ScimConfiguration.propTypes = {
+  handleSubmit: PropTypes.func
 }
 
 export default ScimConfiguration

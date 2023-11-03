@@ -1,6 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-const Fido = ({ fill = '', className, style }) => {
+const Scim = ({ className, style }) => {
   return (
     <div className={className} style={style}>
       <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'>
@@ -10,4 +11,9 @@ const Fido = ({ fill = '', className, style }) => {
   )
 }
 
-export default Fido
+Scim.propTypes = {
+  className: PropTypes.any,
+  style: PropTypes.any
+}
+
+export default Scim

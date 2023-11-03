@@ -6,7 +6,10 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { Card, CardBody } from 'Components'
 import ScimConfiguration from './ScimConfiguration'
-import { getScimConfiguration, putScimConfiguration } from '../redux/features/ScimSlice'
+import {
+  getScimConfiguration,
+  putScimConfiguration,
+} from '../redux/features/ScimSlice'
 import { buildPayload } from 'Utils/PermChecker'
 
 const ScimPage = () => {
@@ -27,17 +30,15 @@ const ScimPage = () => {
   }
 
   return (
-    <React.Fragment>
-      <GluuLoader blocking={scimConfiguration?.loading}>
-        <Card className='mb-3' style={applicationStyle.mainCard}>
-          <CardBody>
-            {!scimConfiguration?.loading && (
-              <ScimConfiguration handleSubmit={handleSubmit} />
-            )}
-          </CardBody>
-        </Card>
-      </GluuLoader>
-  </React.Fragment>
+    <GluuLoader blocking={scimConfiguration?.loading}>
+      <Card className='mb-3' style={applicationStyle.mainCard}>
+        <CardBody>
+          {!scimConfiguration?.loading && (
+            <ScimConfiguration handleSubmit={handleSubmit} />
+          )}
+        </CardBody>
+      </Card>
+    </GluuLoader>
   )
 }
 

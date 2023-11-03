@@ -15,7 +15,6 @@ import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { Alert, Button } from "reactstrap";
@@ -23,6 +22,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import { useSelector } from 'react-redux'
 import { Skeleton } from '@mui/material'
+import PropTypes from 'prop-types'
 
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('Components/Widgets/GroupedButtons/Counter'))
@@ -623,6 +623,18 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
       </Form>
     </>
   )
+}
+
+CustomScriptForm.propTypes = {
+  item: PropTypes.any,
+  handleSubmit: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.any
+  ]),
+  viewOnly: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.any
+  ])
 }
 
 export default CustomScriptForm
