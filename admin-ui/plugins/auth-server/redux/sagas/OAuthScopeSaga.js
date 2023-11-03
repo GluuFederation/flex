@@ -38,19 +38,19 @@ import { SCOPE_TAGS } from 'Utils/PermChecker'
 
 function* newFunction() {
   let token
-  const scopesToken = yield select((state) => state.scopeReducer.accessToken)
+  const savedToken = yield select((state) => state.scopeReducer.accessToken)
 
-  if (!scopesToken) {
+  if (!savedToken) {
     const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-    const scopeApiToken = yield call(fetchApiAccessToken, jwt, SCOPE_TAGS)
-    if (scopeApiToken.access_token) {
-      token = scopeApiToken.access_token
-      yield put(setAccessToken(scopeApiToken.access_token))
+    const apiToken = yield call(fetchApiAccessToken, jwt, SCOPE_TAGS)
+    if (apiToken.access_token) {
+      token = apiToken.access_token
+      yield put(setAccessToken(apiToken.access_token))
     } else {
       token = yield select((state) => state.authReducer.token.access_token)
     } 
   } else {
-    token = scopesToken;
+    token = savedToken;
   }
   
   const issuer = yield select((state) => state.authReducer.issuer)

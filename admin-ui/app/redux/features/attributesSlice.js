@@ -5,13 +5,17 @@ import unionBy from 'lodash/unionBy'
 const initialState = {
   items: [],
   loading: false,
-  initLoading: true
+  initLoading: true,
+  accessToken: null
 }
 
 const attributesSlice = createSlice({
   name: 'attributes',
   initialState,
   reducers: {
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload
+    },
     getAttributesRoot: (state, action) => {
       state.loading = true
     },
@@ -28,7 +32,7 @@ const attributesSlice = createSlice({
   }
 })
 
-export const { getAttributesRoot, getAttributesResponseRoot, toggleInitAttributeLoader } =
+export const { getAttributesRoot, getAttributesResponseRoot, toggleInitAttributeLoader, setAccessToken } =
   attributesSlice.actions
 
 export default attributesSlice.reducer
