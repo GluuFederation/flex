@@ -232,7 +232,7 @@ function DashboardPage() {
         </Paper>
       </Grid>
     )
-  }, [serverStatus, dbStatus])
+  }, [serverStatus, dbStatus, t])
 
   return (
     <GluuLoader blocking={loading}>

@@ -344,7 +344,6 @@ const SourceBackendServerForm = () => {
                     <GluuToogleRow
                       label='fields.use_ssl'
                       name='useSSL'
-                      required
                       handler={(e) => {
                         formik.setFieldValue(
                           'sourceConfigs.useSSL',
@@ -361,7 +360,6 @@ const SourceBackendServerForm = () => {
                     <GluuToogleRow
                       label='fields.enable'
                       name='enabled'
-                      required
                       handler={(e) => {
                         formik.setFieldValue(
                           'sourceConfigs.enabled',
