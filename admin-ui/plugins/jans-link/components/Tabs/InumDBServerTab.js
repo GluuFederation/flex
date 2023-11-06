@@ -281,13 +281,25 @@ const InumDBServerTab = () => {
               <GluuToogleRow
                 label='fields.use_ssl'
                 name='useSSL'
-                required
                 handler={(e) => {
                   formik.setFieldValue('targetConfig.useSSL', e.target.checked)
                 }}
                 lsize={3}
                 rsize={9}
                 value={formik.values.targetConfig?.useSSL}
+                doc_category='jans_link'
+              />
+            </Col>
+            <Col sm={12} className='mt-3'>
+              <GluuToogleRow
+                label='fields.enabled'
+                name='enabled'
+                handler={(e) => {
+                  formik.setFieldValue('targetConfig.enabled', e.target.checked)
+                }}
+                lsize={3}
+                rsize={9}
+                value={formik.values.targetConfig?.enabled}
                 doc_category='jans_link'
               />
             </Col>

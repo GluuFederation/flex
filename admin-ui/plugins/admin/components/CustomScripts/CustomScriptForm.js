@@ -15,7 +15,6 @@ import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { Alert, Button } from "reactstrap";
@@ -23,6 +22,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import { useSelector } from 'react-redux'
 import { Skeleton } from '@mui/material'
+import PropTypes from 'prop-types'
 
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('Components/Widgets/GroupedButtons/Counter'))
@@ -69,12 +69,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
-  function getPropertiesConfig(entry) {
+  function getPropertiesConfig(entry, key) {
     if (
-      entry.configurationProperties &&
-      Array.isArray(entry.configurationProperties)
+      entry[key] &&
+      Array.isArray(entry[key])
     ) {
-      return entry.configurationProperties.map((e) => ({
+      return entry[key].map((e) => ({
         key: e.value1,
         value: e.value2,
       }))
@@ -149,10 +149,19 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
       }
 
       values.level = item.level
-      values.moduleProperties = item.moduleProperties
       // eslint-disable-next-line no-extra-boolean-cast
       if (!!values.configurationProperties) {
         values.configurationProperties = values.configurationProperties
+          .filter((e) => e != null)
+          .filter((e) => Object.keys(e).length !== 0)
+          .map((e) => ({
+            value1: e.key || e.value1,
+            value2: e.value || e.value2,
+            hide: false,
+          }))
+      }
+      if (!!values.moduleProperties && item.locationType !== 'db') {
+        values.moduleProperties = values.moduleProperties
           .filter((e) => e != null)
           .filter((e) => Object.keys(e).length !== 0)
           .map((e) => ({
@@ -562,7 +571,16 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
           formik={formik}
           keyPlaceholder={t('placeholders.enter_property_key')}
           valuePlaceholder={t('placeholders.enter_property_value')}
-          options={getPropertiesConfig(item)}
+          options={getPropertiesConfig(item, 'configurationProperties')}
+          disabled={viewOnly}
+        ></GluuProperties>
+        <GluuProperties
+          compName="moduleProperties"
+          label="fields.module_properties"
+          formik={formik}
+          keyPlaceholder={t('placeholders.enter_property_key')}
+          valuePlaceholder={t('placeholders.enter_property_value')}
+          options={getPropertiesConfig(item, 'moduleProperties')}
           disabled={viewOnly}
         ></GluuProperties>
         {!scriptPath && (
@@ -594,16 +612,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
             />
           </Col>
         </FormGroup>
-        <GluuTooltip doc_category={SCRIPT} doc_entry="moduleProperties">
-          <FormGroup row>
-            <Input
-              type="hidden"
-              id="moduleProperties"
-              defaultValue={item.moduleProperties}
-              disabled={viewOnly}
-            />
-          </FormGroup>
-        </GluuTooltip>
         {!viewOnly && <GluuCommitFooter saveHandler={toggle} />}
         <GluuCommitDialog
           handler={toggle}
@@ -615,6 +623,18 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
       </Form>
     </>
   )
+}
+
+CustomScriptForm.propTypes = {
+  item: PropTypes.any,
+  handleSubmit: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.any
+  ]),
+  viewOnly: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.any
+  ])
 }
 
 export default CustomScriptForm

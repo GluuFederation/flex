@@ -104,6 +104,9 @@ export const AGAMA_DELETE = BASE_URL + '/config/agama.delete'
 export const SESSION_READ = BASE_URL + '/jans-auth-server/session.readonly'
 export const SESSION_DELETE = BASE_URL + '/jans-auth-server/session.delete'
 
+export const SCIM_CONFIG_READ = 'https://jans.io/scim/config.readonly'
+export const SCIM_CONFIG_WRITE = 'https://jans.io/scim/config.write'
+
 export const SCOPE_TAGS = ['scopes']
 
 export const hasPermission = (scopes, scope) => {

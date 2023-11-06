@@ -59,7 +59,7 @@ const UserDetailViewPage = ({ row }) => {
             if (data.name == 'birthdate') {
               valueToShow = moment(data?.values[0]).format('YYYY-MM-DD')
             } else {
-              valueToShow = data?.values[0]
+              valueToShow = data?.values?.[0]
             }
               return (
                 <Col sm={4} key={'customAttributes' + key}>
