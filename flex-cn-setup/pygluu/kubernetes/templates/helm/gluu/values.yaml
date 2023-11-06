@@ -378,7 +378,7 @@ casa:
   livenessProbe:
     httpGet:
       # -- http liveness probe endpoint
-      path: /casa/health-check
+      path: /jans-casa/health-check
       port: http-casa
     initialDelaySeconds: 25
     periodSeconds: 25
@@ -387,7 +387,7 @@ casa:
   readinessProbe:
     httpGet:
       # -- http readiness probe endpoint
-      path: /casa/health-check
+      path: /jans-casa/health-check
       port: http-casa
     initialDelaySeconds: 30
     periodSeconds: 30
@@ -527,6 +527,10 @@ config:
     cnSecretKubernetesSecret: cn
     # -- Load balancer address for AWS if the FQDN is not registered.
     lbAddr: ""
+    # -- OpenDJ certificate string. This must be encoded using base64.
+    cnLdapCrt: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
+    # -- OpenDJ key string. This must be encoded using base64.
+    cnLdapKey: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
   # -- Country code. Used for certificate creation.
   countryCode: US
   # -- Email address of the administrator usually. Used for certificate creation.
@@ -540,6 +544,8 @@ config:
     pullSecrets: [ ]
   # -- LDAP admin password if OpenDJ is used for persistence.
   ldapPassword: P@ssw0rds
+  # -- LDAP truststore password if OpenDJ is used for persistence
+  ldapTruststorePassword: changeit
   # -- Organization name. Used for certificate creation.
   orgName: Gluu
   # -- Redis admin password if `config.configmap.cnCacheType` is set to `REDIS`.
@@ -1155,6 +1161,24 @@ global:
     provisioner: microk8s.io/hostpath
     reclaimPolicy: Retain
     volumeBindingMode: WaitForFirstConsumer
+  # -- Path to SQL password file
+  cnSqlPasswordFile: /etc/jans/conf/sql_password
+  # -- Path to Couchbase password file
+  cnCouchbasePasswordFile: /etc/jans/conf/couchbase_password
+  # -- Path to Couchbase superuser password file
+  cnCouchbaseSuperuserPasswordFile: /etc/jans/conf/couchbase_superuser_password
+  # -- Path to LDAP password file
+  cnLdapPasswordFile: /etc/jans/conf/ldap_password
+  # -- Path to LDAP truststore password file
+  cnLdapTruststorePasswordFile: /etc/jans/conf/ldap_truststore_password
+  # -- Path to OpenDJ cert file
+  cnLdapCertFile: /etc/certs/opendj.crt
+  # -- Path to OpenDJ key file
+  cnLdapKeyFile: /etc/certs/opendj.key
+  # -- Path to OpenDJ CA cert file
+  cnLdapCacertFile: /etc/certs/opendj.pem
+  # -- Path to OpenDJ truststore file
+  cnLdapTruststoreFile: /etc/certs/opendj.pkcs12
 
 # -- Nginx ingress definitions chart
 nginx-ingress:
