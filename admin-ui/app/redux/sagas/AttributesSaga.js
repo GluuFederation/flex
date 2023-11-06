@@ -2,10 +2,11 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import {
   getAttributesResponseRoot,
+  setAccessToken,
   toggleInitAttributeLoader
 } from '../features/attributesSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { postUserAction } from 'Redux/api/backend-api'
+import { postUserAction, fetchApiAccessToken } from 'Redux/api/backend-api'
 import {
   FETCH,
 } from '../../audit/UserActionType'
@@ -13,13 +14,28 @@ import {
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { ATTRIBUTES_TAG } from 'Utils/PermChecker'
 
 const PERSON_SCHEMA = 'person schema'
 
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
+  let token
+  token = yield select((state) => state.attributesReducerRoot.accessToken)
+
+  if (!token) {
+    const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+    const apiToken = yield call(fetchApiAccessToken, jwt, [ATTRIBUTES_TAG])
+    if (apiToken.access_token) {
+      token = apiToken.access_token
+      yield put(setAccessToken(apiToken.access_token))
+    } else {
+      token = yield select((state) => state.authReducer.token.access_token)
+    } 
+  }
+
+
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.AttributeApi(
     getClient(JansConfigApi, token, issuer),
