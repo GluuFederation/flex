@@ -117,6 +117,9 @@ nav:
         - 'Google GKE': 'install/helm-install/google-gke.md'
         - 'Microsoft Azure AKS': 'install/helm-install/microsoft-azure.md'
         - 'Using Rancher Marketplace': 'install/helm-install/rancher.md'
+    - 'Docker Deployments':
+        - 'Quick Start': 'install/docker-install/quick-start.md'
+        - 'Docker compose': 'install/docker-install/compose.md'
     - 'VM Installation':
         - 'install/vm-install/vm-requirements.md'
         - 'Ubuntu': 'install/vm-install/ubuntu.md'
