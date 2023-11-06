@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Container, FormGroup, InputGroup, CustomInput } from 'Components'
+import { Col, Container, FormGroup } from 'Components'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
@@ -54,26 +54,6 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
   return (
     <Container>
       <ClientShowSpontaneousScopes handler={handler} isOpen={scopesModal} />
-      <FormGroup row>
-        <GluuLabel label="fields.subject_type" />
-        <Col sm={9}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="subjectType"
-              name="subjectType"
-              disabled={viewOnly}
-              defaultValue={formik.values.subjectType}
-              onChange={formik.handleChange}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              <option>pairwise</option>
-              <option>public</option>
-            </CustomInput>
-          </InputGroup>
-        </Col>
-      </FormGroup>
-
       <GluuToogleRow
         name="persistClientAuthorizations"
         lsize={3}

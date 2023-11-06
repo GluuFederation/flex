@@ -82,8 +82,8 @@ function ClientTokensPanel({ formik, viewOnly }) {
           formik.values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
         }
         formik={formik}
-        lsize={8}
-        rsize={4}
+        lsize={4}
+        rsize={8}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
