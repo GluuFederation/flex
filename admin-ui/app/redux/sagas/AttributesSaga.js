@@ -14,7 +14,7 @@ import {
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
-import { ATTRIBUTES_TAGS } from 'Utils/PermChecker'
+import { ATTRIBUTES_TAG } from 'Utils/PermChecker'
 
 const PERSON_SCHEMA = 'person schema'
 
@@ -22,19 +22,17 @@ const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
   let token
-  const savedToken = yield select((state) => state.attributesReducerRoot.accessToken)
+  token = yield select((state) => state.attributesReducerRoot.accessToken)
 
-  if (!savedToken) {
+  if (!token) {
     const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-    const apiToken = yield call(fetchApiAccessToken, jwt, ATTRIBUTES_TAGS)
+    const apiToken = yield call(fetchApiAccessToken, jwt, [ATTRIBUTES_TAG])
     if (apiToken.access_token) {
       token = apiToken.access_token
       yield put(setAccessToken(apiToken.access_token))
     } else {
       token = yield select((state) => state.authReducer.token.access_token)
     } 
-  } else {
-    token = savedToken;
   }
 
 

@@ -80,7 +80,7 @@ const UserDetailViewPage = ({ row }) => {
                           : ''
                       }
                       isDirect={true}
-                      value={valueToShow}
+                      value={typeof valueToShow === "boolean" ? JSON.stringify(valueToShow) : valueToShow}
                     />
                   </Col>
                 ) : null}

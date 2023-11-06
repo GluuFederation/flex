@@ -34,23 +34,21 @@ import {
   getClientScopesResponse,
   setAccessToken
 } from '../features/scopeSlice'
-import { SCOPE_TAGS } from 'Utils/PermChecker'
+import { SCOPE_TAG } from 'Utils/PermChecker'
 
 function* newFunction() {
   let token
-  const savedToken = yield select((state) => state.scopeReducer.accessToken)
+  token = yield select((state) => state.scopeReducer.accessToken)
 
-  if (!savedToken) {
+  if (!token) {
     const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-    const apiToken = yield call(fetchApiAccessToken, jwt, SCOPE_TAGS)
+    const apiToken = yield call(fetchApiAccessToken, jwt, [SCOPE_TAG])
     if (apiToken.access_token) {
       token = apiToken.access_token
       yield put(setAccessToken(apiToken.access_token))
     } else {
       token = yield select((state) => state.authReducer.token.access_token)
     } 
-  } else {
-    token = savedToken;
   }
   
   const issuer = yield select((state) => state.authReducer.issuer)
