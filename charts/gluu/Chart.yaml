@@ -74,10 +74,6 @@ dependencies:
       condition: global.nginx-ingress.enabled
       version: 5.0.23
 
-    - name: oxshibboleth
-      condition: global.oxshibboleth.enabled
-      version: 5.0.23
-
     - name: oxpassport
       version: 5.0.23
       condition: global.oxpassport.enabled

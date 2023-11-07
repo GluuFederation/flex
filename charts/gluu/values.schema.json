@@ -821,15 +821,6 @@
                   }
                }
             },
-            "oxshibboleth":{
-               "type":"object",
-               "properties":{
-                  "enabled":{
-                     "description":"Boolean flag to enable/disable the oxShibbboleth chart. Not part of the openbanking distribution. Keep as default.This also enables SAML-related features; UI menu, etc. Not part of the openbanking distribution. Please leave this disabled.",
-                     "type":"boolean"
-                  }
-               }
-            },
             "distribution":{
                "description":"Gluu distributions supported are: default|openbanking.",
                "type":"string",
@@ -1060,13 +1051,6 @@
 
          }
       },
-      "oxshibboleth":{
-		  "description":"Shibboleth project for the Gluu Server's SAML IDP functionality.",
-         "type":"object",
-         "properties":{
-
-         }
-      },
       "persistence":{
 		  "description":"Job to generate data and intial config for Gluu Server persistence layer.",
          "type":"object",
@@ -1109,9 +1093,6 @@
       },
       {
          "$ref":"#/definitions/oxpassport-enabled"
-      },
-      {
-         "$ref":"#/definitions/oxshibboleth-enabled"
       },
       {
          "$ref":"#/definitions/persistence-enabled"
@@ -2501,157 +2482,6 @@
                         "properties":{
                            "oxPassportServiceName":{
                               "description":"Name of the oxPassport service. Please keep it as default.",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-]+$"
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-         },
-         "else":true
-      },
-      "oxshibboleth-enabled":{
-         "if":{
-            "properties":{
-               "global":{
-                  "properties":{
-                     "oxshibboleth":{
-                        "properties":{
-                           "enabled":{
-                              "const":"true"
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-         },
-         "then":{
-            "properties":{
-               "oxshibboleth":{
-                  "required":[
-                     "image",
-                     "replicas",
-                     "resources",
-                     "service"
-                  ],
-                  "type":"object",
-                  "properties":{
-                     "hpa":{
-                        "description":"Configure the HorizontalPodAutoscaler",
-                        "type":"object",
-                        "properties":{
-                           "enabled":{
-                              "type":"boolean"
-                           },
-                           "minReplicas":{
-                              "type":"integer"
-                           },
-                           "maxReplicas":{
-                              "type":"integer"
-                           },
-                           "targetCPUUtilizationPercentage":{
-                              "type":"integer"
-                           },
-                           "metrics":{
-                              "description":"metrics if targetCPUUtilizationPercentage is not set",
-                              "type":"array"
-                           },
-                           "behavior":{
-                              "description":"Scaling Policies",
-                              "type":"object"
-                           }
-                        }
-                     },
-                     "usrEnvs":{
-                        "description":"Add custom normal and secret envs to the service",
-                        "type":"object",
-                        "properties":{
-                           "normal":{
-                              "description":"Add custom normal envs to the service",
-                              "type":"object"
-                           },
-                           "secret":{
-                              "description":"Add custom secret envs to the service",
-                              "type":"object"
-                           }
-                        }
-                     },
-                     "dnsPolicy":{
-                        "description":"Add custom dns policy",
-                        "type":"string",
-                        "pattern":"^(Default|ClusterFirst|ClusterFirstWithHostNet|None|)$"
-                     },
-                     "dnsConfig":{
-                        "description":"Add custom dns config",
-                        "type":"object"
-                     },
-                     "image":{
-                        "type":"object",
-                        "properties":{
-                           "pullPolicy":{
-                              "description":"Image pullPolicy to use for deploying.",
-                              "type":"string",
-                              "pattern":"^(Always|Never|IfNotPresent)$"
-                           },
-                           "repository":{
-                              "description":"Image  to use for deploying",
-                              "type":"string"
-                           },
-                           "tag":{
-                              "description":"Image  tag to use for deploying.",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_.]+$"
-                           }
-                        }
-                     },
-                     "replicas":{
-                        "description":"Service replica number.",
-                        "type":"integer"
-                     },
-                     "resources":{
-                        "description":"Resource specs.",
-                        "type":"object",
-                        "properties":{
-                           "limits":{
-                              "type":"object",
-                              "properties":{
-                                 "cpu":{
-                                    "description":"CPU limit.",
-                                    "type":"string",
-                                    "pattern":"^[0-9m]+$"
-                                 },
-                                 "memory":{
-                                    "description":"Memory limit.",
-                                    "type":"string",
-                                    "pattern":"^[0-9Mi]+$"
-                                 }
-                              }
-                           },
-                           "requests":{
-                              "type":"object",
-                              "properties":{
-                                 "cpu":{
-                                    "description":"CPU request.",
-                                    "type":"string",
-                                    "pattern":"^[0-9m]+$"
-                                 },
-                                 "memory":{
-                                    "description":"Memory request.",
-                                    "type":"string",
-                                    "pattern":"^[0-9Mi]+$"
-                                 }
-                              }
-                           }
-                        }
-                     },
-                     "service":{
-                        "type":"object",
-                        "properties":{
-                           "oxShibbolethServiceName":{
-                              "description":"Name of the oxShibboleth service. Please keep it as default.",
                               "type":"string",
                               "pattern":"^[a-z0-9-]+$"
                            }
