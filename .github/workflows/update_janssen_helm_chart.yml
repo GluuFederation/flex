@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/*'
+      - 'charts/gluu/*'
 jobs:
   createPullRequest:
     runs-on: ubuntu-latest

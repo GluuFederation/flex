@@ -29,11 +29,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        module: [admin-ui, flex-cn-setup, flex-linux-setup]
+        module: [admin-ui, flex-linux-setup]
     env:
       NON_JVM_PROJECTS: |
         admin-ui
-        flex-cn-setup
         flex-linux-setup
 
     steps:

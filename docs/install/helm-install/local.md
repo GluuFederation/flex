@@ -46,7 +46,7 @@ sudo su -
 wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh && chmod u+x startflexdemo.sh && ./startflexdemo.sh
 ```
 
-This will install docker, microk8s, helm and Gluu with the default settings that can be found inside [values.yaml](https://github.com/GluuFederation/flex/blob/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu).  
+This will install docker, microk8s, helm and Gluu with the default settings that can be found inside [values.yaml](https://github.com/GluuFederation/flex/blob/main/charts/gluu).  
 
 The installer will automatically add a record to your hosts record in the VM but if you want access the endpoints outside the VM you must  map the `ip` of the instance running ubuntu to the FQDN you provided and then access the endpoints at your browser such in the example in the table below.
 

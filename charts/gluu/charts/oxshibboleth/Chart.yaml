@@ -1,0 +1,21 @@
+
+apiVersion: v2
+name: oxshibboleth
+version: 5.0.23
+kubeVersion: ">=v1.21.0-0"
+description: Shibboleth project for the Gluu Server's SAML IDP functionality.
+type: application
+keywords:
+  - SAML
+  - Shibboleth
+home: https://docs.gluu.org
+sources:
+  - https://github.com/GluuFederation/oxShibboleth
+  - https://github.com/GluuFederation/docker-oxshibboleth
+  - https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/oxshibboleth
+maintainers:
+  - name: Mohammad Abudayyeh
+    email: support@gluu.org
+    url: https://github.com/moabu
+icon: https://gluu.org/docs/gluu-server/favicon.ico
+appVersion: "5.0.0"
