@@ -12,14 +12,14 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/head/install/helm-install/amazon-eks/">
+        <link rel="canonical" href="https://docs.gluu.org/head/install/docker-install/quick-start/">
       
       <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
-        <title>Amazon EKS - Gluu Flex Documentation</title>
+        <title>Quick Start - Gluu Flex Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#install-gluu-flex-on-eks" class="md-skip">
+        <a href="#overview" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Amazon EKS
+              Quick Start
             
           </span>
         </div>
@@ -422,14 +422,12 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" >
       
       
       
@@ -453,7 +451,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../">Helm Deployments</a>
+          <a href="../../helm-install/">Helm Deployments</a>
           
             <label for="__nav_2_3">
               <span class="md-nav__icon md-icon"></span>
@@ -476,7 +474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../local/" class="md-nav__link">
+      <a href="../../helm-install/local/" class="md-nav__link">
         Local Kubernetes Cluster
       </a>
     </li>
@@ -488,73 +486,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Amazon EKS
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../helm-install/amazon-eks/" class="md-nav__link">
         Amazon EKS
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
-    System Requirements
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initial-setup" class="md-nav__link">
-    Initial Setup
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gluu-flex-installation-using-helm" class="md-nav__link">
-    Gluu Flex Installation using Helm
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-gluu-flex" class="md-nav__link">
-    Configure Gluu Flex
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -566,7 +502,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../google-gke/" class="md-nav__link">
+      <a href="../../helm-install/google-gke/" class="md-nav__link">
         Google GKE
       </a>
     </li>
@@ -580,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../microsoft-azure/" class="md-nav__link">
+      <a href="../../helm-install/microsoft-azure/" class="md-nav__link">
         Microsoft Azure AKS
       </a>
     </li>
@@ -594,7 +530,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../rancher/" class="md-nav__link">
+      <a href="../../helm-install/rancher/" class="md-nav__link">
         Using Rancher Marketplace
       </a>
     </li>
@@ -613,12 +549,14 @@
               
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" checked>
       
       
       
@@ -645,11 +583,83 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../docker-install/quick-start/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Quick Start
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Quick Start
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#system-requirements" class="md-nav__link">
+    System Requirements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    Install
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verify-installation-by-accessing-standard-endpoints" class="md-nav__link">
+    Verify Installation By Accessing Standard Endpoints
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-gluu-flex" class="md-nav__link">
+    Configure Gluu flex
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallremove-gluu-flex" class="md-nav__link">
+    Uninstall/Remove Gluu flex
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -661,7 +671,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../docker-install/compose/" class="md-nav__link">
+      <a href="../compose/" class="md-nav__link">
         Docker compose
       </a>
     </li>
@@ -1460,14 +1470,19 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#system-requirements" class="md-nav__link">
@@ -1477,22 +1492,29 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#initial-setup" class="md-nav__link">
-    Initial Setup
+  <a href="#install" class="md-nav__link">
+    Install
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gluu-flex-installation-using-helm" class="md-nav__link">
-    Gluu Flex Installation using Helm
+  <a href="#verify-installation-by-accessing-standard-endpoints" class="md-nav__link">
+    Verify Installation By Accessing Standard Endpoints
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#configure-gluu-flex" class="md-nav__link">
-    Configure Gluu Flex
+    Configure Gluu flex
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallremove-gluu-flex" class="md-nav__link">
+    Uninstall/Remove Gluu flex
   </a>
   
 </li>
@@ -1526,376 +1548,95 @@
     
       
       
-        <span class="md-tag">helm</span>
+        <span class="md-tag">quick-start</span>
       
     
       
       
-        <span class="md-tag">EKS</span>
-      
-    
-      
-      
-        <span class="md-tag">Amazon Web Services</span>
-      
-    
-      
-      
-        <span class="md-tag">AWS</span>
+        <span class="md-tag">docker</span>
       
     
   </nav>
 
 
 
-  <a href="https://github.com/GluuFederation/flex/edit/main/docs/install/helm-install/amazon-eks.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/GluuFederation/flex/edit/main/docs/install/docker-install/quick-start.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="install-gluu-flex-on-eks">Install Gluu Flex on EKS<a class="headerlink" href="#install-gluu-flex-on-eks" title="Permanent link">#</a></h1>
-<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
-<p>The resources may be set to the minimum as below:</p>
-<ul>
-<li>8 GiB RAM</li>
-<li>8 CPU cores</li>
-<li>50GB hard-disk</li>
-</ul>
-<p>Use the listing below for detailed estimation of minimum required resources. Table contains the default resources recommendations per service. Depending on the use of each service the resources needs may be increase or decrease.</p>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>CPU Unit</th>
-<th>RAM</th>
-<th>Disk Space</th>
-<th>Processor Type</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Auth server</td>
-<td>2.5</td>
-<td>2.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>LDAP (OpenDJ)</td>
-<td>1.5</td>
-<td>2GB</td>
-<td>10GB</td>
-<td>64 Bit</td>
-<td>Only if couchbase is not installed</td>
-</tr>
-<tr>
-<td>fido2</td>
-<td>0.5</td>
-<td>0.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>scim</td>
-<td>1.0</td>
-<td>1.0GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>config - job</td>
-<td>0.5</td>
-<td>0.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes on fresh installs</td>
-</tr>
-<tr>
-<td>persistence - job</td>
-<td>0.5</td>
-<td>0.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes on fresh installs</td>
-</tr>
-<tr>
-<td>nginx</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes if not ALB</td>
-</tr>
-<tr>
-<td>auth-key-rotation</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No [Strongly recommended]</td>
-</tr>
-<tr>
-<td>config-api</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>casa</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>admin-ui</td>
-<td>2</td>
-<td>2GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<p>Releases of images are in style 1.0.0-beta.0, 1.0.0-0</p>
-<h2 id="initial-setup">Initial Setup<a class="headerlink" href="#initial-setup" title="Permanent link">#</a></h2>
-<ol>
-<li>
-<p>Before initiating the setup please obtain an <a href="../../software-statements/ssa/">SSA</a> to trial Flex, after which you are issued a JWT. You need to convert it into base64 format that you can use to install, specified by the <code>.global.licenseSsa</code> key in the <code>values.yaml</code> of Gluu's Chart.</p>
-</li>
-<li>
-<p>Install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">aws cli</a></p>
-</li>
-<li>
-<p>Configure your AWS user account using <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html">aws configure</a> command. This makes you able to authenticate before creating the cluster.
-    Note that this user account must have permissions to work with Amazon EKS IAM roles and service linked roles, AWS CloudFormation, and a VPC and related resources</p>
-</li>
-<li>
-<p>Install <a href="https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html">kubectl</a></p>
-</li>
-<li>
-<p>Install <a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html">eksctl</a> </p>
-</li>
-<li>
-<p>Create cluster using eksctl such as the following example:</p>
-<p><div class="highlight"><pre><span></span><code>eksctl create cluster --name gluu-cluster --nodegroup-name gluu-nodes --node-type NODE_TYPE --nodes 2  --managed --region REGION_CODE
-</code></pre></div>
-You can adjust <code>node-type</code> and <code>nodes</code> number as per your desired cluster size</p>
-</li>
-<li>
-<p>To be able to attach volumes to your pod, you need to install the Amazon <a href="https://docs.aws.amazon.com/eks/latest/userguide/csi-iam-role.html">EBS CSI driver</a></p>
-</li>
-<li>
-<p>Install <a href="https://helm.sh/docs/intro/install/">Helm3</a></p>
-</li>
-<li>
-<p>Create <code>gluu</code> namespace where our resources will reside
-    <div class="highlight"><pre><span></span><code>kubectl create namespace gluu
-</code></pre></div></p>
-</li>
-</ol>
-<h2 id="gluu-flex-installation-using-helm">Gluu Flex Installation using Helm<a class="headerlink" href="#gluu-flex-installation-using-helm" title="Permanent link">#</a></h2>
-<ol>
-<li>
-<p>Install <a href="https://github.com/kubernetes/ingress-nginx">Nginx-Ingress</a>, if you are not using Istio ingress</p>
-<div class="highlight"><pre><span></span><code>helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo add stable https://charts.helm.sh/stable
-helm repo update
-helm install nginx ingress-nginx/ingress-nginx
-</code></pre></div>
-</li>
-<li>
-<p>Create a file named <code>override.yaml</code> and add changes as per your desired configuration:</p>
-<ul>
-<li>
-<p>FQDN/domain is <em>not</em> registered:</p>
-<p>Get the Loadbalancer address: 
-<div class="highlight"><pre><span></span><code>kubectl get svc nginx-ingress-nginx-controller --output jsonpath=&#39;{.status.loadBalancer.ingress[0].hostname}&#39;
-</code></pre></div></p>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
-</code></pre></div>
-</li>
-<li>
-<p>FQDN/domain is registered:</p>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file`:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">    </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
-<span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
-<span class="nt">nginx</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
-<span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
-<span class="w">      </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
-<span class="w">        </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
-</code></pre></div>
-</li>
-<li>
-<p>LDAP/Opendj for persistence storage</p>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:
-  <div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ldap</span><span class="w"></span>
-<span class="w">  </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">provisioner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes.io/aws-ebs</span><span class="w"></span>
-<span class="w">  </span><span class="nt">opendj</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-</code></pre></div></p>
-<p>So if your desired configuration has no-FQDN and LDAP, the final <code>override.yaml</code> file will look something like that:</p>
-<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ldap</span><span class="w"></span>
-<span class="w">   </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="w">   </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="nt">provisioner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes.io/aws-ebs</span><span class="w"></span>
-<span class="w">   </span><span class="nt">opendj</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w"> </span><span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
-<span class="w"> </span><span class="nt">nginx-ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
-<span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
-<span class="w">      </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
-<span class="w">        </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu          </span><span class="w"></span>
-</code></pre></div>
-</li>
-<li>
-<p>Couchbase for pesistence storage</p>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">couchbase</span><span class="w"></span>
+  <h1>Quick Start</h1>
 
-<span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Janssen.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnCouchbaseBucketPrefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jans</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security &gt; Root Certificate. In mTLS setups this is not required.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnCouchbaseCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- The number of replicas per index created. Please note that the number of index nodes must be one greater than the number of index replicas. That means if your couchbase cluster only has 2 index nodes you cannot place the number of replicas to be higher than 1.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnCouchbaseIndexNumReplica</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Couchbase password for the restricted user config.configmap.cnCouchbaseUser that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnCouchbasePassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">P@ssw0rd</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- The Couchbase super user (admin) username. This user is used during initialization only.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnCouchbaseSuperUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">admin</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnCouchbaseSuperUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Couchbase URL. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnCouchbaseUrl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cbjanssen.default.svc.cluster.local</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Couchbase restricted user</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnCouchbaseUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">janssen</span><span class="w"></span>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>This image is for testing and development purposes only. Use Flex <a href="https://github.com/GluuFederation/flex/tree/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu">helm charts</a> for production setups.</strong></p>
+</div>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
+<p>The quickest way to get Gluu flex up and running is to have a Docker container-based deployment.</p>
+<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
+<p>System should meet <a href="../../vm-install/vm-requirements/">minimum VM system requirements</a></p>
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">#</a></h2>
+<p>Installation depends on a <a href="https://github.com/GluuFederation/flex/tree/main/docker-flex-monolith#environment-variables">set of environment variables</a>.
+These environment variables can be set to customize installation as per the need. If not set, the installer uses default values.</p>
+<p>Run this command to start the installation:</p>
+<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> sudo bash startflexmonolithdemo.sh demoexample.gluu.io MYSQL
+</code></pre></div>
+<p>Console messages like below confirms the successful installation:</p>
+<div class="highlight"><pre><span></span><code>[+] Running 3/3
+ ⠿ Network docker-flex-monolith_cloud_bridge  Created                      0.0s    
+ ⠿ Container docker-flex-monolith-mysql-1     Started                      0.6s
+ ⠿ Container docker-flex-monolith-flex-1      Started                      0.9s
+
+Waiting for auth-server to come up. Depending on the resources it may take 3-5 mins for the services to be up.
+Testing openid-configuration endpoint.. 
+</code></pre></div>
+<p>As can be seen, the install script also accesses the well-known endpoints to verify that Gluu Flex is responsive.</p>
+<h2 id="verify-installation-by-accessing-standard-endpoints">Verify Installation By Accessing Standard Endpoints<a class="headerlink" href="#verify-installation-by-accessing-standard-endpoints" title="Permanent link">#</a></h2>
+<p>To access Gluu flex standard endpoints from outside of the Docker container, systems <code>/etc/hosts</code> file needs to be updated. Open the file and add the IP domain record which should be the IP of the instance docker is installed. And the domain used in the env above <code>CN_HOSTNAME</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># For-example</span>
+<span class="m">172</span>.22.0.3      demoexample.gluu.io
+</code></pre></div>
+<p>After adding the record, hit the standard endpoints such as </p>
+<div class="highlight"><pre><span></span><code>https://demoexample.gluu.io/.well-known/openid-configuration
+</code></pre></div>
+<h2 id="configure-gluu-flex">Configure Gluu flex<a class="headerlink" href="#configure-gluu-flex" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Access the Docker container shell using:</p>
+<div class="highlight"><pre><span></span><code>docker <span class="nb">exec</span> -ti docker-flex-monolith-flex-1 bash
 </code></pre></div>
 </li>
 <li>
-<p>PostgreSQL for persistence storage</p>
-<p>In a production environment, a production grade PostgreSQL server should be used such as <code>Amazon RDS</code></p>
-<p>For testing purposes, you can deploy it on the EKS cluster using the following command:</p>
-<div class="highlight"><pre><span></span><code>helm install my-release --set auth.postgresPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/postgresql
-</code></pre></div>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pgsql</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-release-mysql.gluu.svc</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w"></span>
-</code></pre></div>
+<p>Grab a pair of client_id and client_pw(secret) from <code>setup.properties</code> or <code>/opt/jans/jans-setup/setup.properties.last</code></p>
 </li>
 <li>
-<p>MySQL for persistence storage</p>
-<p>In a production environment, a production grade MySQL server should be used such as <code>Amazon RDS</code></p>
-<p>For testing purposes, you can deploy it on the EKS cluster using the following command:</p>
-<div class="highlight"><pre><span></span><code>helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/mysql
-</code></pre></div>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-release-mysql.gluu.svc</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w"></span>
-</code></pre></div>
-<p>So if your desired configuration has FQDN and MySQL, the final <code>override.yaml</code> file will look something like that:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">  </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
-<span class="nt">nginx-ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
-<span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
-<span class="w">      </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
-<span class="w">        </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu  </span><span class="w"></span>
-<span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-release-mysql.gluu.svc</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w"></span>
-</code></pre></div>
-</li>
-</ul>
-</li>
-<li>
-<p>Install Gluu Flex</p>
-<p>After finishing all the tweaks to the <code>override.yaml</code> file, we can use it to install gluu flex.</p>
-<div class="highlight"><pre><span></span><code>helm repo add gluu-flex https://docs.gluu.org/charts
-helm repo update
-helm install gluu gluu-flex/gluu -n gluu -f override.yaml
-</code></pre></div>
+<p>Use the CLI tools located under <code>/opt/jans/jans-cli/</code> to configure Gluu flex as needed. For example you can run the <a href="https://docs.jans.io/head/admin/config-guide/config-tools/jans-tui/">TUI</a>:
+    <div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-cli/config-cli-tui.py
+</code></pre></div></p>
 </li>
 </ol>
-<h2 id="configure-gluu-flex">Configure Gluu Flex<a class="headerlink" href="#configure-gluu-flex" title="Permanent link">#</a></h2>
-<p>You can use the Janssen <a href="https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/">TUI</a> to configure Flex components. The TUI calls the Config API to perform ad hoc configuration. </p>
+<h2 id="uninstallremove-gluu-flex">Uninstall/Remove Gluu flex<a class="headerlink" href="#uninstallremove-gluu-flex" title="Permanent link">#</a></h2>
+<p>This docker based installation uses <code>docker compose</code> under the hood to create containers. Hence uninstalling Gluu flex involves invoking <code>docker compose</code> with appropriate yml file. Run command below to stop and remove containers.</p>
+<div class="highlight"><pre><span></span><code>docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml down &amp;&amp; rm -rf flex-*
+</code></pre></div>
+<p>Console messages like below confirms the successful removal:</p>
+<div class="highlight"><pre><span></span><code>[+] Running 3/3
+ ⠿ Container docker-flex-monolith-flex-1      Removed                   10.5s
+ ⠿ Container docker-flex-monolith-mysql-1     Removed                    0.9s
+ ⠿ Network docker-flex-monolith_cloud_bridge  Removed                    0.1s
+</code></pre></div>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-29T06:05:26+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-29</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-11-07T07:16:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-11-07</span>
       
         <br>
         Created:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-09-22T19:37:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-09-22</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-11-07T07:16:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-11-07</span>
       
     
   </small>
@@ -1920,7 +1661,7 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../local/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Local Kubernetes Cluster" rel="prev">
+        <a href="../../helm-install/rancher/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Using Rancher Marketplace" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1929,20 +1670,20 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
               <span class="md-footer__direction">
                 Previous
               </span>
-              Local Kubernetes Cluster
+              Using Rancher Marketplace
             </div>
           </div>
         </a>
       
       
         
-        <a href="../google-gke/" class="md-footer__link md-footer__link--next" aria-label="Next: Google GKE" rel="next">
+        <a href="../compose/" class="md-footer__link md-footer__link--next" aria-label="Next: Docker compose" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Google GKE
+              Docker compose
             </div>
           </div>
           <div class="md-footer__button md-icon">
