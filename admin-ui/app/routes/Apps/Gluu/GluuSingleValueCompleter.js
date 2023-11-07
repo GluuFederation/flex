@@ -24,6 +24,7 @@ function GluuSingleValueCompleter({
   doc_category,
   doc_entry,
   onChange = null,
+  hideHelperMessage = false
 }) {
   const { t } = useTranslation()
   return (
@@ -49,11 +50,11 @@ function GluuSingleValueCompleter({
             }
           }}
         />
-        <ThemeProvider theme={theme}>
+        {!hideHelperMessage && <ThemeProvider theme={theme}>
           <Typography variant="subtitle1">
             {t('placeholders.typeahead_holder_message')}
           </Typography>
-        </ThemeProvider>
+        </ThemeProvider>}
       </Col>
     </FormGroup>
   )
