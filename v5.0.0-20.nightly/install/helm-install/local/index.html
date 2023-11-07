@@ -380,6 +380,8 @@
         
           
         
+          
+        
       
       
         
@@ -618,19 +620,86 @@
         
           
         
-          
-        
-          
-        
       
       
         <label class="md-nav__link" for="__nav_2_4">
+          Docker Deployments
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Docker Deployments" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Docker Deployments
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docker-install/quick-start/" class="md-nav__link">
+        Quick Start
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docker-install/compose/" class="md-nav__link">
+        Docker compose
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_5">
           VM Installation
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="VM Installation" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_4">
+        <label class="md-nav__title" for="__nav_2_5">
           <span class="md-nav__icon md-icon"></span>
           VM Installation
         </label>
@@ -1573,7 +1642,7 @@
 <p>Start a fresh Ubuntu <code>18.04</code>/<code>20.04</code>/<code>22.04</code> 4 CPU, 16 GB RAM, and 50GB SSD VM with ports <code>443</code> and <code>80</code> open. Then execute the following</p>
 <p><div class="highlight"><pre><span></span><code>sudo su -
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/v5.0.0-20.nightly/automation/startflexdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexdemo.sh <span class="o">&amp;&amp;</span> ./startflexmonolithdemo.sh
+<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexdemo.sh <span class="o">&amp;&amp;</span> ./startflexdemo.sh
 </code></pre></div></p>
 <p>This will install docker, microk8s, helm and Gluu with the default settings that can be found inside <a href="https://github.com/GluuFederation/flex/blob/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu">values.yaml</a>.  </p>
 <p>The installer will automatically add a record to your hosts record in the VM but if you want access the endpoints outside the VM you must  map the <code>ip</code> of the instance running ubuntu to the FQDN you provided and then access the endpoints at your browser such in the example in the table below.</p>
@@ -1615,7 +1684,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-11-06T08:47:18+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-11-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-11-07T07:16:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-11-07</span>
       
         <br>
         Created:
