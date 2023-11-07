@@ -43,7 +43,7 @@ Start a fresh Ubuntu `18.04`/`20.04`/`22.04` 4 CPU, 16 GB RAM, and 50GB SSD VM w
 sudo su -
 ```
 ```bash
-wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh && chmod u+x startflexdemo.sh && ./startflexmonolithdemo.sh
+wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh && chmod u+x startflexdemo.sh && ./startflexdemo.sh
 ```
 
 This will install docker, microk8s, helm and Gluu with the default settings that can be found inside [values.yaml](https://github.com/GluuFederation/flex/blob/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu).  
