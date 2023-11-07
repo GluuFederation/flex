@@ -74,10 +74,6 @@ dependencies:
       condition: global.nginx-ingress.enabled
       version: 5.0.23
 
-    - name: oxpassport
-      version: 5.0.23
-      condition: global.oxpassport.enabled
-
     - name: casa
       version: 5.0.23
       condition: global.casa.enabled

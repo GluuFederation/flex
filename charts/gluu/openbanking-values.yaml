@@ -505,11 +505,6 @@ global:
     enabled: false
     # -- Name of the OpenDJ service. Please keep it as default.
     ldapServiceName: opendj
-  oxpassport:
-    # -- Name of the oxPassport service. Please keep it as default.
-    oxPassportServiceName: oxpassport
-    # -- Boolean flag to enable/disable passport chart
-    enabled: false
   # --  Gluu distributions supported are: default|openbanking.
   distribution: openbanking
   persistence:

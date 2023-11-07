@@ -146,7 +146,6 @@ data:
   CN_HYBRID_MAPPING: {{ .Values.configmap.cnPersistenceHybridMapping | quote }}
   {{- end }}
   # Auto enable installation of some services
-  CN_PASSPORT_ENABLED: {{ .Values.global.oxpassport.enabled | quote }}
   {{ if eq .Values.configmap.cnCacheType "REDIS" }}
   CN_REDIS_URL: {{ .Values.configmap.cnRedisUrl | quote }}
   CN_REDIS_TYPE: {{ .Values.configmap.cnRedisType | quote }}
