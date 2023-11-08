@@ -41,6 +41,7 @@ function GluuInputRow({
             if (handleChange) { formik.handleChange(event); handleChange(event) }
             else { formik.handleChange(event); }
           }}
+          onKeyDown={(evt) => evt.key === 'e' && type === "number" && evt.preventDefault()}
           disabled={disabled}
         />
         {type == 'password' && (
