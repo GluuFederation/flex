@@ -22,6 +22,7 @@ function GluuAdvancedSearch({
           data-testid={limitId}
           defaultValue={limit}
           onChange={handler}
+          onKeyDown={(evt) => evt.key === 'e' && evt.preventDefault()}
         />
       )}
       &nbsp;
