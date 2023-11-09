@@ -269,7 +269,7 @@ function AttributeListPage() {
             title=''
             actions={myActions}
             options={{
-              search: true,
+              search: false,
               selection: false,
               searchFieldAlignment: 'left',
               pageSize: limit,
