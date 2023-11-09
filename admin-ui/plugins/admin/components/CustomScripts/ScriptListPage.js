@@ -273,7 +273,7 @@ function ScriptListTable() {
             title=''
             actions={myActions}
             options={{
-              search: true,
+              search: false,
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: limit,
