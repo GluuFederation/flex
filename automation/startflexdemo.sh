@@ -22,7 +22,7 @@ if [[ $GLUU_PERSISTENCE != "LDAP" ]] && [[ $GLUU_PERSISTENCE != "MYSQL" ]]; then
   exit 1
 fi
 if [[ ! "$GLUU_LICENSE_SSA" ]]; then
-  read -rp "Enter base64 encoded licenseSsa:                           " GLUU_LICENSE_SSA
+  read -rp "Enter the License SSA provided by Gluu:                           " GLUU_LICENSE_SSA
 fi
 LOG_TARGET="FILE"
 LOG_LEVEL="TRACE"
@@ -128,9 +128,10 @@ EOF
 fi
 
 echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
+ENCODED_GLUU_LICENSE_SSA=$(echo -n "$GLUU_LICENSE_SSA" | base64 -w0)
 cat << EOF >> override.yaml
 global:
-  licenseSsa: $GLUU_LICENSE_SSA
+  licenseSsa: $ENCODED_GLUU_LICENSE_SSA
   cloud:
     testEnviroment: true
   istio:
