@@ -102,6 +102,11 @@ function UiPermListPage() {
                   <Badge color={`primary-${selectedTheme}`}>{rowData.permission}</Badge>
                 ),
               },
+              {
+                title: `${t('fields.tag')}`,
+                field: 'tag',
+                editable: false,
+              },
               { title: `${t('fields.description')}`, field: 'description' },
             ]}
             data={apiPerms}
