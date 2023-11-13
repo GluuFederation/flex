@@ -1,7 +1,7 @@
 kubeVersion: ">=v1.22.0-0"
 annotations:
   artifacthub.io/changes: |
-    - 1.0.20 dev chart release
+    - 1.0.20 chart release
   artifacthub.io/containsSecurityUpdates: 'true'
   artifacthub.io/images: |
     - name: all-in-one
@@ -12,7 +12,7 @@ annotations:
   catalog.cattle.io/release-name: flex-all-in-one
   catalog.cattle.io/display-name: Flex Cloud Identity and Access Management All-in-One
 apiVersion: v2
-appVersion: "1.0.20-dev"
+appVersion: "5.0.0"
 icon: >-
   https://gluu.org/docs/gluu-server/favicon.ico
 home: https://docs.gluu.org
@@ -24,4 +24,4 @@ maintainers:
     email: support@gluu.org
 description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
 name: flex-all-in-one
-version: 1.0.20-dev
+version: 1.0.20

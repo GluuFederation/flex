@@ -70,6 +70,7 @@ jobs:
       - name: Copy generated chart from main
         run: |
           helm package charts/gluu
+          helm package charts/gluu-all-in-one
           cp gluu-*.tgz ../
 
       - name: Import GPG key
