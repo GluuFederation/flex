@@ -64,10 +64,10 @@
   },
   "comp-charts-flex": {
     "color": "0052CC",
-    "description": "Touching folder /flex-cn-setup/pygluu/kubernetes/templates/helm",
+    "description": "Touching folder /charts",
     "auto-label": {
       "branch": "",
-      "paths": ["flex-cn-setup/pygluu/kubernetes/templates/helm"],
+      "paths": ["charts"],
       "title-prefixes": []
     }
   },
@@ -113,15 +113,6 @@
     "auto-label": {
       "branch": "",
       "paths": ["admin-ui"],
-      "title-prefixes": []
-    }
-  },
-  "comp-flex-cn-setup": {
-    "color": "0052CC",
-    "description": "Touching folder /flex-cn-setup",
-    "auto-label": {
-      "branch": "",
-      "paths": ["flex-cn-setup"],
       "title-prefixes": []
     }
   },

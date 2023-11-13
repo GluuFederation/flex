@@ -85,7 +85,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        python-projects: ["flex-cn-setup", "flex-linux-setup"]
+        python-projects: ["flex-linux-setup"]
     steps:
     - name: Checkout
       uses: actions/checkout@v3

@@ -21,7 +21,6 @@ Gluu Access and Identity Management
 ## Source Code
 
 * <https://gluu.org/docs/gluu-server>
-* <https://github.com/GluuFederation/flex/flex-cn-setup>
 
 ## Requirements
 

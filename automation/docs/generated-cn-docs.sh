@@ -14,10 +14,10 @@ tar xvf helm-docs_"${HELM_DOCS_VERSION}"_Linux_x86_64.tar.gz
 sudo cp helm-docs /usr/local/bin/
 cd ..
 # Generate Helm docs
-helm-docs "$MAIN_DIRECTORY_LOCATION"/flex-cn-setup/pygluu/kubernetes/templates/helm/
+helm-docs "$MAIN_DIRECTORY_LOCATION"/charts/
 rm -rf helmtemp
 echo "Copying Helm chart Readme to helm-chart.md"
-cp "$MAIN_DIRECTORY_LOCATION"/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/README.md "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/helm-chart.md
+cp "$MAIN_DIRECTORY_LOCATION"/charts/gluu/README.md "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/helm-chart.md
 echo "Adding keywords to helm-chart"
 sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n---\n/' "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/helm-chart.md
 echo "Copying docker-monolith main README.md to compose.md"

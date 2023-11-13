@@ -1,0 +1,21 @@
+
+apiVersion: v2
+name: config
+version: 5.0.23
+kubeVersion: ">=v1.21.0-0"
+description: Configuration parameters for setup and initial configuration secret and config layers used by Gluu services.
+type: application
+keywords:
+  - configuration
+  - secrets
+home: https://docs.gluu.org
+sources:
+  - https://gluu.org/docs/gluu-server/reference/container-configs/
+  - https://github.com/JanssenProject/jans/docker-jans-configurator
+  - https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/config
+maintainers:
+  - name: Mohammad Abudayyeh
+    email: support@gluu.org
+    url: https://github.com/moabu
+icon: https://gluu.org/docs/gluu-server/favicon.ico
+appVersion: "5.0.0"

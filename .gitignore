@@ -103,7 +103,6 @@ ENV/
 .mypy_cache/
 
 *.pyz
-/flex-cn-setup/pygluu/kubernetes/kubernetes-client
 .DS_Store
 
 docs/_build
