@@ -55,7 +55,7 @@ The installer will automatically add a record to your hosts record in the VM but
 | Auth server | `https://FQDN/.well-known/openid-configuration` |
 | fido2       | `https://FQDN/.well-known/fido2-configuration`  |
 | scim        | `https://FQDN/.well-known/scim-configuration`   |
-| Casa        | `https://FQDN/casa`                             |
+| Casa        | `https://FQDN/jans-casa`                        |
 | Admin-UI    | `https://FQDN/admin`                            |
 
 ## Configure Gluu Flex

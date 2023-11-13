@@ -316,7 +316,7 @@ Jans Casa ("Casa") is a self-service web portal for managing account security pr
 
 Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation. 
 
-8. Point your browser to https://demoexample.gluu.org/casa and you should be welcomed by the Casa login page as shown below.
+8. Point your browser to https://demoexample.gluu.org/jans-casa and you should be welcomed by the Casa login page as shown below.
 
     <img width="1503" alt="Screenshot 2022-07-06 at 22 39 49" src="https://user-images.githubusercontent.com/17182751/177629838-20b3140f-3d28-4b63-a275-c8ce54f6a096.png">
 
