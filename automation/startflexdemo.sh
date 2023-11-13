@@ -15,10 +15,10 @@ if ! [[ $GLUU_FQDN == *"."*"."* ]]; then
   exit 1
 fi
 if [[ ! "$GLUU_PERSISTENCE" ]]; then
-  read -rp "Enter persistence type [LDAP|MYSQL|PostgreSQL]:                            " GLUU_PERSISTENCE
+  read -rp "Enter persistence type [LDAP|MYSQL|PGSQL]:                            " GLUU_PERSISTENCE
 fi
-if [[ $GLUU_PERSISTENCE != "LDAP" ]] && [[ $GLUU_PERSISTENCE != "MYSQL" ]] && [[ $GLUU_PERSISTENCE != "PostgreSQL" ]]; then
-  echo "[E] Incorrect entry. Please enter either LDAP, MYSQL or PostgreSQL"
+if [[ $GLUU_PERSISTENCE != "LDAP" ]] && [[ $GLUU_PERSISTENCE != "MYSQL" ]] && [[ $GLUU_PERSISTENCE != "PGSQL" ]]; then
+  echo "[E] Incorrect entry. Please enter either LDAP, MYSQL or PGSQL"
   exit 1
 fi
 if [[ ! "$GLUU_LICENSE_SSA" ]]; then
@@ -93,7 +93,7 @@ config:
     cnSqldbUserPassword: Test1234#
 EOF
 fi
-if [[ $GLUU_PERSISTENCE == "PostgreSQL" ]]; then
+if [[ $GLUU_PERSISTENCE == "PGSQL" ]]; then
   sudo microk8s.kubectl get po --kubeconfig="$KUBECONFIG"
   sudo helm install my-release --set auth.postgresPassword=Test1234#,auth.database=gluu -n gluu oci://registry-1.docker.io/bitnamicharts/postgresql --kubeconfig="$KUBECONFIG"
   cat << EOF > override.yaml
