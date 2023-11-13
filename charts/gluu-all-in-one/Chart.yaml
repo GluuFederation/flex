@@ -9,8 +9,8 @@ annotations:
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: 'true'
   catalog.cattle.io/certified: partner
-  catalog.cattle.io/release-name: flex-all-in-one
-  catalog.cattle.io/display-name: Flex Cloud Identity and Access Management All-in-One
+  catalog.cattle.io/release-name: gluu-all-in-one
+  catalog.cattle.io/display-name: Gluu Flex Cloud Identity and Access Management All-in-One
 apiVersion: v2
 appVersion: "5.0.0"
 icon: >-
@@ -23,5 +23,5 @@ maintainers:
   - name: moabu
     email: support@gluu.org
 description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
-name: flex-all-in-one
+name: gluu-all-in-one
 version: 1.0.20
