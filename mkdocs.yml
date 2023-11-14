@@ -128,6 +128,8 @@ nav:
 - 'Administration':
     - 'admin/README.md'
     - 'Configuration': 'admin/config.md'
+    - 'K8s Operations Guide': 
+      - 'Upgrade': 'admin/kubernetes-ops/upgrade.md'
     - 'Admin UI':
         - 'Introduction': 'admin/admin-ui/introduction.md'
         - 'Design & Implementation':
