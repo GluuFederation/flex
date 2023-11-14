@@ -564,8 +564,6 @@ config:
       memory: 300Mi
   # -- State code. Used for certificate creation.
   state: TX
-  # -- Salt. Used for encoding/decoding sensitive data. If omitted or set to empty string, the value will be self-generated. Otherwise, a 24 alphanumeric characters are allowed as its value.
-  salt: ""
   # -- Configure any additional volumes that need to be attached to the pod
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
