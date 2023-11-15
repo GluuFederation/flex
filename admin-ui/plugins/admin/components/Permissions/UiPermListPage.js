@@ -107,6 +107,11 @@ function UiPermListPage() {
                 field: 'tag',
                 editable: false,
               },
+              {
+                title: `${t('fields.default_permission_in_token')}`,
+                field: 'defaultPermissionInToken',
+                editable: false,
+              },
               { title: `${t('fields.description')}`, field: 'description' },
             ]}
             data={apiPerms}

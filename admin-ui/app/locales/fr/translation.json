@@ -120,6 +120,7 @@
   "fields": {
     "tag": "Étiqueter",
     "issuer": "Émetteur",
+    "default_permission_in_token": "Permission par défaut dans le jeton",
     "base_endpoint": "Point d'Accès de Base",
     "use_search_limit": "Charger les données sources avec une recherche limitée",
     "clean_service_interval": "Intervalle de Nettoyage du Service",
@@ -1099,7 +1100,9 @@
     },
     "permissions": {
       "name": "Nom de la permission",
-      "description": "Description de la permission"
+      "description": "Description de la permission",
+      "tag": "Nom-de-la-balise pour identifier l'autorisation à inclure dans le jeton d'accès à l'API.",
+      "default_permission_in_token": "Si défini sur vrai, l'autorisation sera disponible par défaut dans le jeton d'autorisation pour accéder à l'API (avant l'authentification)."
     }
   },
   "script": {
