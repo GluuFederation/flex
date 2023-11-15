@@ -75,6 +75,7 @@
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
+    "default_permission_in_token": "Default permission in token",
     "tag": "Tag",
     "activate": "Activate",
     "use_search_limit": "Load Source Data withLimited Search",
@@ -748,7 +749,9 @@
     },
     "permissions": {
       "name": "Permission Name",
-      "description": "Permission Description"
+      "description": "Permission Description",
+      "tag": "Tag-name to identify permission to be included in the API access token.",
+      "default_permission_in_token": "If set to true the permission will be available by default in the authorization token to access API (before authentication)."
     },
     "json_properties": {
       "parEndpoint": "URL for Pushed Authorisation Request (PAR) Endpoint",

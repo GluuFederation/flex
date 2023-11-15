@@ -118,6 +118,7 @@
   },
   "fields": {
     "tag": "Marcação",
+    "default_permission_in_token": "Permissão padrão no token",
     "issuer": "Emissor",
     "base_endpoint": "Endpoint Base",
     "clean_service_interval": "Intervalo de Limpeza do Serviço",
@@ -719,7 +720,9 @@
     },
     "permissions": {
       "name": "Nome da permissão",
-      "description": "Descrição da permissão"
+      "description": "Descrição da permissão",
+      "tag": "Nome-da-etiqueta para identificar a permissão a ser incluída no token de acesso à API.",
+      "default_permission_in_token": "Se definido como verdadeiro, a permissão estará disponível por padrão no token de autorização para acessar a API (antes da autenticação)."
     },
     "sql": {
       "config_name": "Digite o nome da configuração SQL.",
