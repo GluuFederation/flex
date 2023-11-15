@@ -38,7 +38,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
       ...(defaultPermissionInToken !== undefined &&
         defaultPermissionInToken !== '' && {
           defaultPermissionInToken:
-            defaultPermissionInToken === 'true' ? true : false,
+            defaultPermissionInToken === 'true',
         }),
     }
 

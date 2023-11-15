@@ -2,6 +2,7 @@ import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { PERMISSIONS } from 'Utils/ApiResources'
+import PropTypes from 'prop-types'
 
 function UiPermDetailPage({ row }) {
   const { rowData } = row
@@ -64,6 +65,17 @@ function UiPermDetailPage({ row }) {
       </Container>
     </React.Fragment>
   )
+}
+
+UiPermDetailPage.propTypes = {
+  row: PropTypes.shape({
+    rowData: PropTypes.shape({
+      description: PropTypes.string.isRequired,
+      permission: PropTypes.string.isRequired,
+      tag: PropTypes.string.isRequired,
+      defaultPermissionInToken: PropTypes.bool.isRequired,
+    })
+  })
 }
 
 export default UiPermDetailPage
