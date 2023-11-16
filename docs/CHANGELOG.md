@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.0.0-20](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-19...docs-v5.0.0-20) (2023-11-16)
+
+
+### Features
+
+* aio chart ([#1436](https://github.com/GluuFederation/flex/issues/1436)) ([a20a695](https://github.com/GluuFederation/flex/commit/a20a695e913faca0b5033d5bc532449ce5c11ade))
+
+
+### Bug Fixes
+
+* **docs:** update casa base URI ([#1440](https://github.com/GluuFederation/flex/issues/1440)) ([495536c](https://github.com/GluuFederation/flex/commit/495536cefedfe27116df174c3c73ac05369f90a1))
+* prepare for 5.0.0-20 release ([f74643c](https://github.com/GluuFederation/flex/commit/f74643c6aa0aee9d4c218b90fb1f9237171324f8))
+
 ## [5.0.0-19](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-18...docs-v5.0.0-19) (2023-10-12)
 
 
