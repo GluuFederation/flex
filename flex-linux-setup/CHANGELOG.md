@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.20](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.19...flex-linux-setup-v1.0.20) (2023-11-16)
+
+
+### Features
+
+* **flex-linux-setup:** change admin-ui log location to /var/log/adminui ([9d1d3e0](https://github.com/GluuFederation/flex/commit/9d1d3e0e6ce0aa3a87be4a604b18012746fa57d0))
+* **flex-linux-setup:** change client name ([5d04770](https://github.com/GluuFederation/flex/commit/5d047708aa05a1e66dbf71519a8e1cc44d68a82f))
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** typo auiBackenApiClient ([c4df77c](https://github.com/GluuFederation/flex/commit/c4df77c7fa0f22eb0e64eac0f94178b09be62d20))
+* prepare for 5.0.0-20 release ([f74643c](https://github.com/GluuFederation/flex/commit/f74643c6aa0aee9d4c218b90fb1f9237171324f8))
+* version 1.0.20-SNAPSHOT ([#1402](https://github.com/GluuFederation/flex/issues/1402)) ([26aed88](https://github.com/GluuFederation/flex/commit/26aed8803f0248bceccd426ce29a31e752858a86))
+
 ## [1.0.19](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.18...flex-linux-setup-v1.0.19) (2023-10-12)
 
 
