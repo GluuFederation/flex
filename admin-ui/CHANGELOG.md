@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.0.20](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.19...admin-ui-v1.0.20) (2023-11-16)
+
+
+### Features
+
+* **admin-ui:** config api tag column [#1444](https://github.com/GluuFederation/flex/issues/1444) ([4c33de0](https://github.com/GluuFederation/flex/commit/4c33de081da2d9066f47f7aa8b65cff3d0251e34))
+* **admin-ui:** config api tag column [#1444](https://github.com/GluuFederation/flex/issues/1444) [#1447](https://github.com/GluuFederation/flex/issues/1447) ([008fc9c](https://github.com/GluuFederation/flex/commit/008fc9c4a4e02197e6f6ab222df084c6de03c1a7))
+* **admin-ui:** integrate GET endpoint to fetch script-types ([b5ef76c](https://github.com/GluuFederation/flex/commit/b5ef76c4d24e9030a0275b8d4424f40105977842))
+* release aio chart ([e6fd336](https://github.com/GluuFederation/flex/commit/e6fd336e21f3fcfb26e23296dc6235dc74761c91))
+
+
+### Bug Fixes
+
+* **admin-ui:** accepting character in number type fields [#1437](https://github.com/GluuFederation/flex/issues/1437) ([685975e](https://github.com/GluuFederation/flex/commit/685975eadd4fceab6b678c835a082a9d3d463b25))
+* **admin-ui:** code review changes ([d825300](https://github.com/GluuFederation/flex/commit/d8253003e25ced0c5884a4431cffcd93837d56f5))
+* **admin-ui:** code smells ([3d4f9d3](https://github.com/GluuFederation/flex/commit/3d4f9d3005b5b083a6a8fade95069370bd478678))
+* **admin-ui:** code smells ([4976da8](https://github.com/GluuFederation/flex/commit/4976da87c92357dbc820d74c66586ef24d7ce26d))
+* **admin-ui:** getting blank page for user management [#1421](https://github.com/GluuFederation/flex/issues/1421) ([210a29b](https://github.com/GluuFederation/flex/commit/210a29b7dd0bbd6f7ac500d0e78114995832a03e))
+* **admin-ui:** large header issue [#1398](https://github.com/GluuFederation/flex/issues/1398) ([c6d7eab](https://github.com/GluuFederation/flex/commit/c6d7eab92fae14f4e482a36e7ac28bb4d49db800))
+* **admin-ui:** pr code smells ([b0b8d1d](https://github.com/GluuFederation/flex/commit/b0b8d1d79831c217b041099f924f3724e525d29e))
+* **admin-ui:** remove input label ([500c49c](https://github.com/GluuFederation/flex/commit/500c49c2b34781149ec3a8c2734320de557fecf2))
+* **admin-ui:** remove subjectType field & update field label on tokens tab ([17e8575](https://github.com/GluuFederation/flex/commit/17e857519d11eb2855a283b510d58819be5157ee))
+* **admin-ui:** scim config permission added ([2c68f7e](https://github.com/GluuFederation/flex/commit/2c68f7ec459628bf990a0e8c2f3e3b0267685272))
+* **admin-ui:** search Pattern field [#1435](https://github.com/GluuFederation/flex/issues/1435) ([f00971e](https://github.com/GluuFederation/flex/commit/f00971ea971028cb977d3a33340fea0556b7fa20))
+* **admin-ui:** show error message on api failure ([00a1236](https://github.com/GluuFederation/flex/commit/00a123626759e2dd99a55615e8a36402a4ef2069))
+* **admin-ui:** use getCustomScriptType to fetch script-types ([136990a](https://github.com/GluuFederation/flex/commit/136990a032e3e38e737ab488a7968085d3e21a6a))
+* dashboard card language translation [#1419](https://github.com/GluuFederation/flex/issues/1419) ([3976b68](https://github.com/GluuFederation/flex/commit/3976b682492be2a6b7fa15bc4412ee7d14daf363))
+* inaccuracy in displaying license details [#1411](https://github.com/GluuFederation/flex/issues/1411) ([6a171c0](https://github.com/GluuFederation/flex/commit/6a171c029d9e39cc4c4e42e599422ef9f4eb4559))
+* prepare for 5.0.0-20 release ([f74643c](https://github.com/GluuFederation/flex/commit/f74643c6aa0aee9d4c218b90fb1f9237171324f8))
+
 ## [1.0.19](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.18...admin-ui-v1.0.19) (2023-10-12)
 
 
