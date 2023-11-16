@@ -103,21 +103,7 @@ jobs:
           
          # Run cn docs 
          sudo bash ./automation/docs/generated-cn-docs.sh . || echo "something went wrong with generating the cn docs"
-          
-         echo "Generating property docs and push to main"
-         sudo bash ./automation/docs/generate-property-docs.sh . || echo "something went wrong with generating the property docs"
-         cd docs
-         git add . || echo "Nothing to add"
-         git commit -a -S -m "docs: automated property doc generation" || echo "Nothing to commit"
-         cd ..
-          
-         echo "Generating javadocs"
-         sudo bash ./automation/docs/generate-javadocs.sh . || echo "something went wrong with generating the java docs"
-         cd docs
-         git add . || echo "Nothing to add"
-         git commit -a -S -m "docs: generate and add javadocs" || echo "Nothing to commit"
-         cd ..
-         
+                             
          git push --set-upstream origin cn-flex-update-auto-generated-docs
          MESSAGE="fix(docs): autogenerate docs"
          PR=$(gh pr create --body "Auto generated docs" --title "${MESSAGE}")
