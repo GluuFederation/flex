@@ -21,6 +21,7 @@
       "opHost": "https://%(hostname)s",
       "clientId": "%(admin_ui_web_client_id)s",
       "clientSecret": "%(admin_ui_web_client_encoded_pw)s",
+      "introspectionEndpoint": "https://%(hostname)s/jans-auth/restv1/introspection",
       "tokenEndpoint": "https://%(hostname)s/jans-auth/restv1/token",
       "scopes": [
         "openid",

@@ -458,6 +458,7 @@ class flex_installer(JettyInstaller):
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
             ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client {}'.format(ssa_json.get('org_id', ''))]
             ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['none']
+            ldif_parser.entries[0][1]['jansAttrs'] = ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']
 
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
 
@@ -481,6 +482,12 @@ class flex_installer(JettyInstaller):
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_web_client_encoded_pw)s']
             ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client {}'.format(ssa_json.get('org_id', ''))]
             ldif_parser.entries[0][1]['jansGrantTyp'] = ['client_credentials']
+            ldif_parser.entries[0][1]['jansRespTyp'] = ['token']
+            ldif_parser.entries[0][1]['jansScope'] = ['inum=F0C4,ou=scopes,o=jans']
+            ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['client_secret_basic']
+            ldif_parser.entries[0][1]['jansTrustedClnt'] = ['FALSE']
+            for del_entry in ('jansLogoutURI', 'jansPostLogoutRedirectURI', 'jansRedirectURI', 'jansSignedRespAlg'):
+                del ldif_parser.entries[0][1][del_entry]
 
             web_client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_web_client.ldif')
 
