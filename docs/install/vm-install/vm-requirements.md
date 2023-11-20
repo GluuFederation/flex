@@ -4,7 +4,7 @@
 
 Gluu Flex currently provides packages for these Linux distros:
 
-- Ubuntu (versions: 20.04)
+- Ubuntu (versions: 20.04 and 22.04)
 - SUSE Distributions
   - SUSE Linux Enterprise Server (SLES) 15
   - openSUSE Leap 15.4
