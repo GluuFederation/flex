@@ -101,6 +101,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://docs.gluu.org/v5.0.0-21.nightly/admin/kubernetes-ops/</loc>
+         <lastmod>2023-11-20</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://docs.gluu.org/v5.0.0-21.nightly/admin/kubernetes-ops/upgrade/</loc>
          <lastmod>2023-11-20</lastmod>
          <changefreq>daily</changefreq>
