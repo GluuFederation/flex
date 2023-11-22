@@ -1,11 +1,9 @@
 kubeVersion: ">=v1.22.0-0"
 annotations:
-  artifacthub.io/changes: |
-    - 1.0.20 chart release
   artifacthub.io/containsSecurityUpdates: 'true'
   artifacthub.io/images: |
     - name: all-in-one
-      image: ghcr.io/gluufederation/flex/flex-all-in-one:1.0.20_dev
+      image: ghcr.io/gluufederation/flex/flex-all-in-one:1.0.21_dev
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: 'true'
   catalog.cattle.io/certified: partner
@@ -24,4 +22,4 @@ maintainers:
     email: support@gluu.org
 description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
 name: gluu-all-in-one
-version: 1.0.20
+version: 1.0.21-dev

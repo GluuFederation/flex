@@ -4,11 +4,11 @@
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
-ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:1.0.20-1
-ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:1.0.20-1
+ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:1.0.21_dev 
+ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:1.0.21_dev 
 
 # original Janssen version
-ARG CN_VERSION=1.0.20
+ARG CN_VERSION="1.0.21" 
 
 # -----------
 # base images
@@ -126,7 +126,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/all-in-one" \
     org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="1.0.20" \
+    org.opencontainers.image.version="1.0.21" \
     org.opencontainers.image.title="Gluu Flex All-in-One" \
     org.opencontainers.image.description=""
 
