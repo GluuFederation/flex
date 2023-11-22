@@ -90,4 +90,5 @@ def get_license_config(manager):
         "scan_license_api_hostname": scan_url,
         "op_host": auth_url,
         "ssa": ssa,
+        "org_id": payload.get("org_id", ""),
     }
