@@ -18,6 +18,7 @@ import { toast } from 'react-toastify'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { cloneDeep } from 'lodash'
 import { useDispatch } from 'react-redux'
+import PropTypes from 'prop-types'
 const sequence = [
   'Basic',
   'Tokens',
@@ -117,6 +118,9 @@ function ClientWizardForm({
     oxAuthClaims: client_data.oxAuthClaims,
     attributes: client_data.attributes,
     tlsClientAuthSubjectDn: client_data.attributes.tlsClientAuthSubjectDn,
+    introspectionSignedResponseAlg: client_data.attributes?.introspectionSignedResponseAlg,
+    introspectionEncryptedResponseAlg: client_data.attributes?.introspectionEncryptedResponseAlg,
+    introspectionEncryptedResponseEnc: client_data.attributes?.introspectionEncryptedResponseEnc,
     frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired,
     runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
       client_data.attributes
@@ -344,6 +348,12 @@ function ClientWizardForm({
             values['action_message'] = commitMessage
             values[ATTRIBUTE].tlsClientAuthSubjectDn =
               values.tlsClientAuthSubjectDn
+            values[ATTRIBUTE].introspectionSignedResponseAlg =
+              values.introspectionSignedResponseAlg
+            values[ATTRIBUTE].introspectionEncryptedResponseAlg =
+              values.introspectionEncryptedResponseAlg
+            values[ATTRIBUTE].introspectionEncryptedResponseEnc =
+              values.introspectionEncryptedResponseEnc
             values[
               ATTRIBUTE
             ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
@@ -529,5 +539,16 @@ function ClientWizardForm({
     </React.Fragment>
   )
 }
+
+ClientWizardForm.propTypes = {
+  client_data: PropTypes.any,
+  viewOnly: PropTypes.bool,
+  scopes: PropTypes.array,
+  scripts: PropTypes.array,
+  permissions: PropTypes.array,
+  customOnSubmit: PropTypes.func,
+  oidcConfiguration: PropTypes.object,
+  umaResources: PropTypes.array,
+};
 
 export default ClientWizardForm

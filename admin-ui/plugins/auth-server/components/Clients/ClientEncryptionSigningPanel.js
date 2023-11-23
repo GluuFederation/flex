@@ -3,6 +3,7 @@ import { Col, Container, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
@@ -249,8 +250,57 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
           />
         </Col>
       </FormGroup>
+      <h2>{t(`titles.introspection_object`)}</h2>
+      <FormGroup row>
+        <Col sm={6}>
+          <GluuSelectRow
+            label="fields.introspection_signed_response_alg"
+            formik={formik}
+            value={formik.values.introspectionSignedResponseAlg}
+            values={idTokenSignedResponseAlg}
+            lsize={6}
+            rsize={6}
+            name="introspectionSignedResponseAlg"
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+          />
+        </Col>
+        <Col sm={6}>
+          <GluuSelectRow
+            label="fields.introspection_encrypted_response_alg"
+            formik={formik}
+            value={formik.values.introspectionEncryptedResponseAlg}
+            values={idTokenEncryptedResponseAlg}
+            lsize={6}
+            rsize={6}
+            name="introspectionEncryptedResponseAlg"
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+          />
+        </Col>
+        <Col sm={6}>
+          <GluuSelectRow
+            label="fields.introspection_encrypted_response_enc"
+            formik={formik}
+            value={formik.values.introspectionEncryptedResponseEnc}
+            values={idTokenEncryptedResponseEnc}
+            lsize={6}
+            rsize={6}
+            name="introspectionEncryptedResponseEnc"
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+          />
+        </Col>
+      </FormGroup>
     </Container>
   )
 }
+
+ClientEncryptionSigningPanel.propTypes = {
+  formik: PropTypes.shape({
+    values: PropTypes.any,
+  }),
+};
+
 
 export default ClientEncryptionSigningPanel

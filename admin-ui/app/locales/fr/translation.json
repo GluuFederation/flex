@@ -120,6 +120,9 @@
   "fields": {
     "tag": "Étiqueter",
     "issuer": "Émetteur",
+    "introspection_signed_response_alg": "Algorithme de signature de réponse d'inspection",
+    "introspection_encrypted_response_alg": "Algorithme de chiffrement de réponse d'inspection",
+    "introspection_encrypted_response_enc": "Algorithme de chiffrement de réponse d'inspection",
     "default_permission_in_token": "Permission par défaut dans le jeton",
     "base_endpoint": "Point d'Accès de Base",
     "use_search_limit": "Charger les données sources avec une recherche limitée",
@@ -542,6 +545,7 @@
   "titles": {
     "acrs": "ACR",
     "algorithmic_keys": "Clés algorithmiques",
+    "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",
     "all_custom_scripts": "Tous les scripts personnalisés",
     "all_oidc_clients": "Tous les clients OIDC",

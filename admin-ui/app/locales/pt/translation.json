@@ -119,6 +119,9 @@
   "fields": {
     "tag": "Marcação",
     "default_permission_in_token": "Permissão padrão no token",
+    "introspection_signed_response_alg": "Algoritmo de assinatura da resposta de introspeção",
+    "introspection_encrypted_response_alg": "Algoritmo de criptografia da resposta de introspeção",
+    "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
     "base_endpoint": "Endpoint Base",
     "clean_service_interval": "Intervalo de Limpeza do Serviço",
@@ -540,6 +543,7 @@
   "titles": {
     "acrs": "ACRs",
     "algorithmic_keys": "Chaves Algorítmicas",
+    "introspection_object": "Objeto de introspecção",
     "all_attributes": "Todos os Atributos",
     "all_custom_scripts": "Todos os scripts personalizados",
     "all_oidc_clients": "Todos os clientes OIDC",

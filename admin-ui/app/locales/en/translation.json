@@ -76,6 +76,9 @@
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
     "default_permission_in_token": "Default permission in token",
+    "introspection_signed_response_alg": "Introspection Signed Response Alg",
+    "introspection_encrypted_response_alg": "Introspection Encrypted Response Alg",
+    "introspection_encrypted_response_enc": "Introspection Encrypted Response Enc",
     "tag": "Tag",
     "activate": "Activate",
     "use_search_limit": "Load Source Data withLimited Search",
@@ -619,6 +622,7 @@
   "titles": {
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",
+    "introspection_object": "Introspection Object",
     "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",
     "application_settings": "Application Settings",
