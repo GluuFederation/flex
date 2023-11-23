@@ -117,6 +117,9 @@ function ClientWizardForm({
     oxAuthClaims: client_data.oxAuthClaims,
     attributes: client_data.attributes,
     tlsClientAuthSubjectDn: client_data.attributes.tlsClientAuthSubjectDn,
+    introspectionSignedResponseAlg: client_data.attributes.introspectionSignedResponseAlg,
+    introspectionEncryptedResponseAlg: client_data.attributes.introspectionEncryptedResponseAlg,
+    introspectionEncryptedResponseEnc: client_data.attributes.introspectionEncryptedResponseEnc,
     frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired,
     runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
       client_data.attributes
@@ -344,6 +347,12 @@ function ClientWizardForm({
             values['action_message'] = commitMessage
             values[ATTRIBUTE].tlsClientAuthSubjectDn =
               values.tlsClientAuthSubjectDn
+            values[ATTRIBUTE].introspectionSignedResponseAlg =
+              values.introspectionSignedResponseAlg
+            values[ATTRIBUTE].introspectionEncryptedResponseAlg =
+              values.introspectionEncryptedResponseAlg
+            values[ATTRIBUTE].introspectionEncryptedResponseEnc =
+              values.introspectionEncryptedResponseEnc
             values[
               ATTRIBUTE
             ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
