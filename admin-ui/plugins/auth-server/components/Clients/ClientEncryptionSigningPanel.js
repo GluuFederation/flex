@@ -3,6 +3,7 @@ import { Col, Container, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
@@ -294,5 +295,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
     </Container>
   )
 }
+
+ClientEncryptionSigningPanel.propTypes = {
+  formik: PropTypes.shape({
+    values: PropTypes.any,
+  }),
+};
+
 
 export default ClientEncryptionSigningPanel
