@@ -1,3 +1,7 @@
 .recharts-legend-wrapper {
   display: none;
 }
+
+th .css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active, th .css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active > svg {
+  color: #fff !important;
+}
