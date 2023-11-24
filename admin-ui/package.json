@@ -95,7 +95,8 @@
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.13.2",
     "whatwg-fetch": "^3.6.17",
-    "xhr2": "^0.2.1"
+    "xhr2": "^0.2.1",
+    "yaml-loader": "^0.8.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",

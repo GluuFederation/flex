@@ -10,6 +10,7 @@ function JsonPropertyBuilder({
   path,
   handler,
   parentIsArray,
+  schema
 }) {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
@@ -19,11 +20,11 @@ function JsonPropertyBuilder({
     path = path + '/' + propKey
   }
   function isBoolean(item) {
-    return typeof item === 'boolean'
+    return typeof item === 'boolean' || schema?.type === 'boolean'
   }
 
   function isString(item) {
-    return typeof item === 'string'
+    return typeof item === 'string' || schema?.type === 'string'
   }
 
   function isNumber(item) {
@@ -40,7 +41,7 @@ function JsonPropertyBuilder({
 
   function isStringArray(item) {
     return (
-      Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string'
+      (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') || (schema?.type === 'array' && schema?.items?.type === 'string')
     )
   }
 
@@ -120,7 +121,7 @@ function JsonPropertyBuilder({
         rsize={lSize}
         isArray={true}
         handler={handler}
-        options={propValue}
+        options={schema?.items?.enum || propValue || []}
         parentIsArray={parentIsArray}
         path={path}
       />
