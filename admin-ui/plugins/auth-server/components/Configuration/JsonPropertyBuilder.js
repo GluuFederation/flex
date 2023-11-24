@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Accordion, FormGroup, Col, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 
 function JsonPropertyBuilder({
   propKey,
@@ -196,6 +197,10 @@ function JsonPropertyBuilder({
     )
   }
   return <div></div>
+}
+
+JsonPropertyBuilder.propTypes = {
+  schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string })
 }
 
 export default JsonPropertyBuilder
