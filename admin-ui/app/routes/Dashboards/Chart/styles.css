@@ -2,6 +2,6 @@
   display: none;
 }
 
-th .css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active, th .css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active > svg {
+table > thead > tr > th .Mui-active, table > thead > tr > th .Mui-active > svg {
   color: #fff !important;
 }
