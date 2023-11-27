@@ -21,10 +21,29 @@ quick glimpse of what administration UI can do for administrators, for a
 complete deep-dive of all the features, head over to the 
 [documentation](https://docs.gluu.org/v5.0.0-20/admin/admin-ui/introduction/).
 
+### Dashboard For All Things Important
+
+Use dashboard to understand current state of usage, authorization activity and
+system health. The dashboard uses graphs and charts convey the usage trend
+in user and access token activity. Dashboard also highlights any 
+system/operational issue faced by any server component. 
+
+![](./docs/assets/admin-ui/dashboard.png)
+
 ### Take Control
 
-Manage Every Aspect Of Your IAM. Be it OAuth configurations, FIDO or SCIM.
+Manage every aspect of your authorization server configuration.
+Be it OAuth configurations, FIDO or SCIM.
 
 ![](./docs/assets/admin-ui/left-nav-bar.png)
+
+### Monitor Monthly Active Users (MAU)
+
+Administrators can keep track of monthly active users and use this insight for
+capacity planning and licensing.
+
+![](./docs/assets/admin-ui/mau.png)
+
+
 
 
