@@ -8,6 +8,7 @@ import useExitPrompt from 'Routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { useDispatch, useSelector } from 'react-redux'
 import RefreshIcon from '@mui/icons-material/Refresh';
+import spec from '../../../../configApiSpecs.yaml'
 import {
   buildPayload,
   hasPermission,
@@ -40,6 +41,10 @@ function ConfigPage() {
   const [showExitPrompt, setShowExitPrompt] = useExitPrompt(true)
   const [search, setSearch] = useState('')
   const [finalSearch, setFinalSearch] = useState('')
+  const schema = spec.components.schemas.AppConfiguration.properties
+  const properties = Object.keys(schema)
+  const api_configurations = Object.keys(configuration)
+  const missing_properties_data = properties.filter((property) => !api_configurations.some((configuration) => configuration === property))
   SetTitle(t('titles.jans_json_property'))
 
   const [put, setPut] = useState([])
@@ -119,14 +124,28 @@ function ConfigPage() {
           </div>
         </CardHeader>
         <CardBody style={{ minHeight: 500 }}>
-          {Object.keys(configuration).map((propKey, idx) => {
+          {Object.keys(configuration).map((propKey) => {
             if(generateLabel(propKey).includes(finalSearch)){
               return (
               <PropertyBuilder
-                key={idx}
+                key={propKey}
                 propKey={propKey}
                 propValue={configuration[propKey]}
                 lSize={lSize}
+                handler={patchHandler}
+                schema={schema[propKey]}
+              />
+              )
+            }
+          })}
+          {Object.keys(configuration).length > 0 && missing_properties_data.map((propKey) => {
+            if(generateLabel(propKey).includes(finalSearch)){
+              return (
+              <PropertyBuilder
+                key={propKey}
+                propKey={propKey}
+                lSize={lSize}
+                schema={schema[propKey]}
                 handler={patchHandler}
               />
               )

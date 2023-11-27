@@ -97,6 +97,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.ya?ml$/,
+        use: 'yaml-loader',
+      },
+      {
         test: /\.js$/,
         include: [config.srcDir, config.pluginsDir],
         exclude: /(node_modules|\.test\.js$)/,
