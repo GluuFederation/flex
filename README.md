@@ -1,7 +1,8 @@
 
 ## Welcome to the Gluu Flex Project
 
-Gluu Flex is a commercial distribution of the Linux Foundation Janssen Project. 
+Gluu Flex is a commercial distribution of the Linux Foundation 
+[Janssen Project](https://jans.io). 
 It was created for businesses who want the protections of a commercial license, 
 plus some additional tools convenient for enterprise scale. 
 Flex is built from Janssen Project components,  so migrating to or from the 
@@ -9,9 +10,10 @@ open source distribution is easy–just update your configuration.
 
 ## Quick Start
 
-Try first, ask questions later? Go to the [Gluu](https://gluu.org) website right now!
+Try first, ask questions later? Go to the [Gluu Flex](https://gluu.org/flex/) 
+website right now!
 
-## User Interface for Administration
+## User Interface for Administration: Admin-UI
 
 Gluu Flex provides user interface to perform complex administration tasks 
 and to manage configuration. This administration UI provides enterprise IAM 
