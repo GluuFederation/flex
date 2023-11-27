@@ -5,7 +5,7 @@ import {
   toggleInitAttributeLoader
 } from '../features/attributesSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { postUserAction, fetchApiAccessToken } from 'Redux/api/backend-api'
+import { postUserAction } from 'Redux/api/backend-api'
 import {
   FETCH,
 } from '../../audit/UserActionType'
