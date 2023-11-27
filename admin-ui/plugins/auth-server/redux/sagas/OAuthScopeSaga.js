@@ -19,7 +19,7 @@ import {
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from 'Redux/api/base'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import { postUserAction, fetchApiAccessToken } from 'Redux/api/backend-api'
+import { postUserAction } from 'Redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -32,27 +32,14 @@ import {
   addScopeResponse,
   getScopeByCreatorResponse,
   getClientScopesResponse,
-  setAccessToken
 } from '../features/scopeSlice'
-import { SCOPE_TAG } from 'Utils/PermChecker'
 
 function* newFunction() {
-  let token
-  token = yield select((state) => state.scopeReducer.accessToken)
-
-  if (!token) {
-    const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-    const apiToken = yield call(fetchApiAccessToken, jwt, [SCOPE_TAG])
-    if (apiToken.access_token) {
-      token = apiToken.access_token
-      yield put(setAccessToken(apiToken.access_token))
-    } else {
-      token = yield select((state) => state.authReducer.token.access_token)
-    } 
-  }
-  
+  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthScopesApi(getClient(JansConfigApi, token, issuer))
+  const api = new JansConfigApi.OAuthScopesApi(
+    getClient(JansConfigApi, token, issuer)
+  )
   return new ScopeApi(api)
 }
 

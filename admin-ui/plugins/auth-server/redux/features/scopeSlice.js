@@ -12,16 +12,12 @@ const initialState = {
   clientScopes: [],
   loadingClientScopes: false,
   selectedClientScopes: [],
-  accessToken: null
 }
 
 const scopeSlice = createSlice({
   name: 'scope',
   initialState,
   reducers: {
-    setAccessToken: (state, action) => {
-      state.accessToken = action.payload
-    },
     scopeHandleLoading: (state) => {
       state.loading = true
       state.saveOperationFlag = false
@@ -156,7 +152,6 @@ export const {
   getClientScopes,
   emptyScopes,
   setClientSelectedScopes,
-  setAccessToken
 } = scopeSlice.actions
 export { initialState }
 export const { actions, reducer, state } = scopeSlice

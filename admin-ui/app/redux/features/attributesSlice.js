@@ -6,16 +6,12 @@ const initialState = {
   items: [],
   loading: false,
   initLoading: true,
-  accessToken: null
 }
 
 const attributesSlice = createSlice({
   name: 'attributes',
   initialState,
   reducers: {
-    setAccessToken: (state, action) => {
-      state.accessToken = action.payload
-    },
     getAttributesRoot: (state, action) => {
       state.loading = true
     },
@@ -32,7 +28,7 @@ const attributesSlice = createSlice({
   }
 })
 
-export const { getAttributesRoot, getAttributesResponseRoot, toggleInitAttributeLoader, setAccessToken } =
+export const { getAttributesRoot, getAttributesResponseRoot, toggleInitAttributeLoader } =
   attributesSlice.actions
 
 export default attributesSlice.reducer
