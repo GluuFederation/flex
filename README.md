@@ -1,18 +1,76 @@
 
 ## Welcome to the Gluu Flex Project
 
+Gluu Flex is a commercial distribution of the Linux Foundation
+[Janssen Project](https://jans.io).
+It was created for businesses who want the protections of a commercial license,
+plus some additional tools convenient for enterprise scale.
+Flex is built from Janssen Project components, so migrating to or from the
+open source distribution is easy, just update your configuration.
+
 ## Quick Start
 
-Try first, ask questions later? Go to the [Gluu](https://gluu.org) website right now!
+Prefer to try first, and ask questions later? Go to the [Gluu Flex](https://gluu.org/flex/)
+website right now!
 
-## Project Goal
+## User Interface for Administration: Admin-UI
 
-## Project Structure
+Gluu Flex provides a user interface to perform complex administration tasks
+and to manage configuration. This administration UI provides enterprise IAM
+administrators with features like MAU monitoring, session monitoring,
+managing user attributes, and much more. While the section below provides a
+quick glimpse of what administration UI can do for administrators, for a
+complete deep-dive of all the features, head over to the
+[documentation](https://docs.gluu.org/v5.0.0-20/admin/admin-ui/introduction/).
 
-## Design Goals
+### Dashboard For All Things Important
 
-## History
+Use the dashboard to understand the current state of usage, authorization activity, and
+system health. The dashboard uses graphs and charts to convey the usage trend
+in user and access token activity. The dashboard also highlights any
+system/operational issue faced by any server component.
 
-## Why the name Gluu?
+![](./docs/assets/admin-ui/dashboard.png)
 
-## Support
+### Take Control
+
+Manage every aspect of your authorization server configuration.
+Be it OAuth configurations, FIDO, or SCIM.
+
+![](./docs/assets/admin-ui/left-nav-bar.png)
+
+### Monitor Monthly Active Users (MAU)
+
+Administrators can keep track of monthly active users and use this insight for
+capacity planning and licensing.
+
+![](./docs/assets/admin-ui/mau.png)
+
+
+## Trial and Commercial Licensing
+
+Gluu Flex license is in the form of a SSA(Software Statement Assertion). SSA is
+an encrypted JWT token. Provide this SSA during the installation of
+the Gluu Flex when prompted.
+
+### Trial License
+
+:rocket: Trial license is free for 30 days -- no need to even contact Gluu. :rocket:
+
+To get a free 30-day trial license, just sign up for
+[SCAN on Agama Lab](https://cloud.gluu.org/agama-lab/dashboard/market/scan) and
+obtain an SSA for Flex install.
+
+### Commercial License
+A commercial license can be obtained from [SCAN on Agama Lab](https://cloud.gluu.org/agama-lab/dashboard/market/scan).
+Gluu Flex offers licenses for under 1600 MAU on Agama Lab. For larger orders,
+please contact [sales@gluu.org](mailto:sales@gluu.org)
+
+### Air-Gapped Deployments
+We need to call Gluu License APIs to perform license checks. So, if you need an
+"air-gapped" deployment which will not be allowed to call the Gluu License API,
+please reach out to  [sales@gluu.org](mailto:sales@gluu.org)
+
+When in doubt, [book a meeting](https://gluu.org/contact-us/) with the Gluu 
+business team to discuss your license and support options.
+
