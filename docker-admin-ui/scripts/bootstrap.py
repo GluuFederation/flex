@@ -183,7 +183,7 @@ class PersistenceSetup:
             bucket = os.environ.get("CN_COUCHBASE_BUCKET_PREFIX", "jans")
             dn = id_from_dn(dn)
 
-            req = self.client.exec_query(f"SELECT META().id, {bucket}.* FROM {bucket} USE KEYS '{dn}'")
+            req = self.client.exec_query(f"SELECT META().id, {bucket}.* FROM {bucket} USE KEYS '{dn}'")  # nosec: B608
             entry = req.json()["results"][0]
 
             conf = entry.get("jansConfApp") or {}
@@ -196,7 +196,7 @@ class PersistenceSetup:
             if should_update:
                 logger.info("Updating admin-ui config app")
                 rev = entry["jansRevision"] + 1
-                self.client.exec_query(f"UPDATE {bucket} USE KEYS '{dn}' SET jansConfApp={json.dumps(merged_conf)}, jansRevision={rev}")
+                self.client.exec_query(f"UPDATE {bucket} USE KEYS '{dn}' SET jansConfApp={json.dumps(merged_conf)}, jansRevision={rev}")  # nosec: B608
 
         else:
             entry = self.client.get(dn)
@@ -289,6 +289,16 @@ def resolve_conf_app(old_conf, new_conf):
             if new_conf["oidcConfig"][srv_client]["opHost"] != old_conf["oidcConfig"][srv_client]["opHost"]:
                 old_conf["oidcConfig"][srv_client]["opHost"] = new_conf["oidcConfig"][srv_client]["opHost"]
                 should_update = True
+
+        # add missing introspectionEndpoint
+        if "introspectionEndpoint" not in old_conf["oidcConfig"]["auiBackendApiClient"]:
+            old_conf["oidcConfig"]["auiBackendApiClient"]["introspectionEndpoint"] = new_conf["oidcConfig"]["auiBackendApiClient"]["introspectionEndpoint"]
+            should_update = True
+
+        # set scope to openid only
+        if old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] != new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]:
+            old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] = new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]
+            should_update = True
 
     # finalized status and conf
     return should_update, old_conf
