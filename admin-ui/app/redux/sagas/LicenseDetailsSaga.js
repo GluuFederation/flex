@@ -12,7 +12,7 @@ import { isFourZeroOneError } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
+  const token = yield select((state) => state.authReducer.token?.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.AdminUILicenseApi(
     getClient(JansConfigApi, token, issuer),
@@ -29,6 +29,7 @@ export function* getLicenseDetailsWorker({ payload }) {
     yield put(getLicenseDetailsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
+    console.log('error in getting license details: ', e)
     yield put(getLicenseDetailsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

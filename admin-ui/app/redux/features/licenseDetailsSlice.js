@@ -18,7 +18,13 @@ const licenseDetailsSlice = createSlice({
       if (action.payload?.data) {
         return {
           ...state,
-          item: action.payload.data,
+          item: { 
+            ...action.payload.data, 
+            companyName: action.payload.data?.companyName ? action.payload.data?.companyName.replace(/"/g , '') : '', 
+            customerFirstName: action.payload.data?.customerFirstName ? action.payload.data?.customerFirstName.replace(/"/g , '') : '',
+            customerLastName: action.payload.data?.customerLastName ? action.payload.data?.customerLastName.replace(/"/g , '') : '',
+            customerEmail: action.payload.data?.customerEmail ? action.payload.data?.customerEmail.replace(/"/g , '') : ''
+          },
           loading: false
         }
       } else {
