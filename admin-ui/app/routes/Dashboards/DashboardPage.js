@@ -22,6 +22,7 @@ import CheckIcon from '../../images/svg/check.svg'
 import CrossIcon from '../../images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
+import { formatDate } from 'Utils/Util'
 
 function DashboardPage() {
   const { t } = useTranslation()
@@ -42,6 +43,7 @@ function DashboardPage() {
   const license = useSelector(state => state.licenseDetailsReducer.item)
   const serverStatus = useSelector(state => state.healthReducer.serverStatus)
   const dbStatus = useSelector(state => state.healthReducer.dbStatus)
+  const access_token = useSelector((state) => state.authReducer.token?.access_token)
   const permissions = useSelector(state => state.authReducer.permissions)
 
   const dispatch = useDispatch()
@@ -71,26 +73,21 @@ function DashboardPage() {
   }, [statData])
 
   useEffect(() => {
-    let count = 0
-    const interval = () => {
-      setTimeout(() => {
-        if (clients.length === 0 && count < 1) {
-          buildPayload(userAction, 'Fetch openid connect clients', {})
-          dispatch(getClients({ action: userAction }))
-        }
-        if (Object.keys(license).length === 0 && count < 1) {
-          getLicense()
-        }
-        if (count < 1) {
-          getServerStatus()
-          interval()
-        }
-        count++
-      }, 1000)
+    if (Object.keys(license).length === 0 && access_token) {
+      getLicense()
     }
-    interval()
-    return () => {}
-  }, [])
+  }, [access_token, license])
+
+  useEffect(() => {
+    if (clients.length === 0 && access_token) {
+      buildPayload(userAction, 'Fetch openid connect clients', {})
+      dispatch(getClients({ action: userAction }))
+    }
+  }, [access_token, clients])
+
+  useEffect(() => {
+    if (access_token) getServerStatus()
+  }, [access_token])
 
   function getLicense() {
     buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
@@ -144,6 +141,11 @@ function DashboardPage() {
     {
       text: t('dashboard.customer_name'),
       value: `${license?.customerFirstName || ''} ${license?.customerLastName || ''}`,
+    },
+    {
+      text: t('fields.validityPeriod'),
+      value: formatDate(license.validityPeriod),
+      key: 'License Validity Period'
     },
     {
       text: t('dashboard.license_status'),
