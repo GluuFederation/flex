@@ -49,10 +49,6 @@ capacity planning and licensing.
 
 ## Trial and Commercial Licensing
 
-Gluu Flex license is in the form of a SSA(Software Statement Assertion). SSA is
-an encrypted JWT token. Provide this SSA during the installation of
-the Gluu Flex when prompted.
-
 ### Trial License
 
 :rocket: Trial license is free for 30 days -- no need to even contact Gluu. :rocket:
@@ -74,3 +70,9 @@ please reach out to  [sales@gluu.org](mailto:sales@gluu.org)
 When in doubt, [book a meeting](https://gluu.org/contact-us/) with the Gluu 
 business team to discuss your license and support options.
 
+## License and SSA
+
+Each Gluu Flex instance needs an SSA(Software Statement Assertion) as input 
+during the installation process. SSA, which is an encrypted JWT string, 
+represents an installed instance of the Gluu Flex. Customers can get one or 
+more SSAs issued for a particular license using Agama Lab. 
