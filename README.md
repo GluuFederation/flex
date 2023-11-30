@@ -72,7 +72,7 @@ business team to discuss your license and support options.
 
 ## License and SSA
 
-Each Gluu Flex instance needs an SSA(Software Statement Assertion) as input 
+Each Gluu Flex instance needs an SSA(Software Statement Assertion) as an input 
 during the installation process. SSA, which is an encrypted JWT string, 
 represents an installed instance of the Gluu Flex. Customers can get one or 
 more SSAs issued for a particular license using Agama Lab. 
