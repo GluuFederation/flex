@@ -5,7 +5,7 @@ GLUU_PERSISTENCE=$2
 GLUU_LICENSE_SSA=$3
 GLUU_CI_CD_RUN=$4
 EXT_IP=$5
-INSTALL_ISTIO=$5
+INSTALL_ISTIO=$6
 if [[ ! "$GLUU_FQDN" ]]; then
   read -rp "Enter Hostname [demoexample.gluu.org]:                           " GLUU_FQDN
 fi
