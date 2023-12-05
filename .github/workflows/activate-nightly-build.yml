@@ -23,12 +23,17 @@ jobs:
         sudo cp gh_${VERSION}_linux_amd64/bin/gh /usr/local/bin/
         gh version
         echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token
-        LATEST_VERSION=`curl  "https://api.github.com/repos/GluuFederation/flex/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c2-`
-        NIGHTLY_VERSION=$(echo "$LATEST_VERSION" | awk -F "[=-]" '{print $1}')
+        LATEST_VERSION=$(head -n 7 CHANGELOG.md | grep -o '\[.*\]' | sed 's/\[\(.*\)\]/\1/')
+        BASE_VERSION=$(echo "$LATEST_VERSION" | awk -F "[=-]" '{print $1}')
         PATCH_NUMBER=$(echo "$LATEST_VERSION" | awk -F "[=-]" '{print $2}')
         PATCH_NUMBER=$((PATCH_NUMBER+1))
-        NIGHTLY_VERSION="${NIGHTLY_VERSION}-${PATCH_NUMBER}"
+        NIGHTLY_VERSION="${BASE_VERSION}-${PATCH_NUMBER}"
+        # Clean up old nightly release
+        gh release delete v${LATEST_VERSION}.nightly --cleanup-tag --yes || echo "v${LATEST_VERSION}.nightly" does not exist
+        git push --delete origin v${LATEST_VERSION}.nightly || echo "v${LATEST_VERSION}.nightly" does not exist
+        # Create new nightly release
         gh release delete v${NIGHTLY_VERSION}.nightly --cleanup-tag --yes || echo "v${NIGHTLY_VERSION}.nightly" does not exist
         gh release delete v${NIGHTLY_VERSION}.nightly --cleanup-tag --yes || echo "v${NIGHTLY_VERSION}.nightly" does not exist
         git push --delete origin v${NIGHTLY_VERSION}.nightly || echo "v${NIGHTLY_VERSION}.nightly" does not exist
+        
         gh release create v${NIGHTLY_VERSION}.nightly --generate-notes --prerelease --title "v${NIGHTLY_VERSION}.nightly"
