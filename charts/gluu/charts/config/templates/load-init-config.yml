@@ -160,6 +160,9 @@ spec:
           - /bin/sh
           - -c
           - |
+              {{- with .Values.customScripts }}
+              {{- toYaml . | replace "- " "" | nindent 14}}
+              {{- end }}
               {{- if .Values.migration.enabled }}
                /app/scripts/entrypoint.sh migrate --migration-dir {{ .Values.migration.migrationDir | quote }} --data-format {{ .Values.migration.migrationDataFormat | quote }} && /usr/bin/python3 /scripts/tls_generator.py
                {{- else }}
