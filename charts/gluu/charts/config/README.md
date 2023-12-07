@@ -75,6 +75,7 @@ Kubernetes: `>=v1.21.0-0`
 | configmap.containerMetadataName | string | `"kubernetes"` |  |
 | configmap.lbAddr | string | `""` | Loadbalancer address for AWS if the FQDN is not registered. |
 | countryCode | string | `"US"` | Country code. Used for certificate creation. |
+| customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
 | dnsConfig | object | `{}` | Add custom dns config |
 | dnsPolicy | string | `""` | Add custom dns policy |
 | email | string | `"support@gluu.org"` | Email address of the administrator usually. Used for certificate creation. |
