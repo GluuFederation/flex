@@ -59,7 +59,7 @@ If you are using a setup from before SCAN was implemented, you will need to migr
 - Disable the script, and click `Update`. This will update the properties of the script configuration.
 - Populate the `AS_SSA` and `AS_ENDPOINT` fields as described above. 
 - Enable the script by clicking the `Enable` check box
-- Scroll to the bottom of the page and ckick `Update`
+- Scroll to the bottom of the page and click `Update`
 
 The latest version of Super Gluu is now enabled on your server.
 
