@@ -91,6 +91,8 @@ jobs:
 
       - name: Generate docs
         continue-on-error: true
+        if: >-
+          github.event_name != 'pull_request'
         env:
           VERSION: ${{ github.event.release.tag_name }}
         run: |
@@ -159,8 +161,8 @@ jobs:
       # Commits if the files were changed
       # Finally pushes if there are unpushed commits
       - name: Create version files
-        #if: >-
-        #  github.event_name != 'workflow_dispatch'
+        if: >-
+          github.event_name != 'pull_request'
         env:
           VERSION: ${{ github.event.release.tag_name }}
         run: |
