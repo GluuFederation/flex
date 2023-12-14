@@ -49,11 +49,24 @@ To get started, log into the Gluu Server dashboard (a.k.a. oxTrust) and do the f
 
 Now Super Gluu is an available authentication mechanism for your Gluu Server. This means that, using OpenID Connect `acr_values`, applications can now request Super Gluu authentication for users. You can verify this by going to the `super_gluu` script properties and seeing that the `AS_CLIENT_ID` and `AS_CLIENT_SECRET` fields are now populated.
 
+## Migration from old setups
+
+If you are using a setup from before SCAN was implemented, you will need to migrate to the latest `super_gluu` interception script. 
+
+- Obtain the latest `super_gluu` interception script for [Gluu Server](https://github.com/GluuFederation/oxAuth/blob/master/Server/integrations/super_gluu/SuperGluuExternalAuthenticator.py) or [Jans](https://github.com/JanssenProject/jans/blob/main/docs/script-catalog/person_authentication/super-gluu-external-authenticator/SuperGluuExternalAuthenticator.py)
+- Open the script configuration using one of the methods mentioned above, and navigate to `super_gluu`
+- Replace the contents of the script with the new one
+- Disable the script, and click `Update`. This will update the properties of the script configuration.
+- Populate the `AS_SSA` and `AS_ENDPOINT` fields as described above. 
+- Enable the script by clicking the `Enable` check box
+- Scroll to the bottom of the page and click `Update`
+
+The latest version of Super Gluu is now enabled on your server.
+
 !!! Note 
     To make sure Super Gluu has been enabled successfully, you can check your Gluu Server's OpenID Connect configuration by navigating to the following URL: `https://<hostname>/.well-known/openid-configuration`. Find `acr_values_supported` and you should see `super_gluu`. 
 
-
-### Test 2FA Authentication Flow
+## Test 2FA Authentication Flow
 
 To test the Super Gluu configuration from end to end, an administrator can follow the steps below:
 
