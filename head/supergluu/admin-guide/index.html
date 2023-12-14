@@ -1468,18 +1468,19 @@
     Configuration on Gluu Server 4.x
   </a>
   
-    <nav class="md-nav" aria-label="Configuration on Gluu Server 4.x">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-2fa-authentication-flow" class="md-nav__link">
-    Test 2FA Authentication Flow
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-from-old-setups" class="md-nav__link">
+    Migration from old setups
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#test-2fa-authentication-flow" class="md-nav__link">
+    Test 2FA Authentication Flow
+  </a>
   
 </li>
       
@@ -1557,18 +1558,19 @@
     Configuration on Gluu Server 4.x
   </a>
   
-    <nav class="md-nav" aria-label="Configuration on Gluu Server 4.x">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-2fa-authentication-flow" class="md-nav__link">
-    Test 2FA Authentication Flow
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-from-old-setups" class="md-nav__link">
+    Migration from old setups
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#test-2fa-authentication-flow" class="md-nav__link">
+    Test 2FA Authentication Flow
+  </a>
   
 </li>
       
@@ -1653,11 +1655,23 @@
 <li>Scroll to the bottom of the page and click <code>Update</code>. </li>
 </ul>
 <p>Now Super Gluu is an available authentication mechanism for your Gluu Server. This means that, using OpenID Connect <code>acr_values</code>, applications can now request Super Gluu authentication for users. You can verify this by going to the <code>super_gluu</code> script properties and seeing that the <code>AS_CLIENT_ID</code> and <code>AS_CLIENT_SECRET</code> fields are now populated.</p>
+<h2 id="migration-from-old-setups">Migration from old setups<a class="headerlink" href="#migration-from-old-setups" title="Permanent link">#</a></h2>
+<p>If you are using a setup from before SCAN was implemented, you will need to migrate to the latest <code>super_gluu</code> interception script. </p>
+<ul>
+<li>Obtain the latest <code>super_gluu</code> interception script for <a href="https://github.com/GluuFederation/oxAuth/blob/master/Server/integrations/super_gluu/SuperGluuExternalAuthenticator.py">Gluu Server</a> or <a href="https://github.com/JanssenProject/jans/blob/main/docs/script-catalog/person_authentication/super-gluu-external-authenticator/SuperGluuExternalAuthenticator.py">Jans</a></li>
+<li>Open the script configuration using one of the methods mentioned above, and navigate to <code>super_gluu</code></li>
+<li>Replace the contents of the script with the new one</li>
+<li>Disable the script, and click <code>Update</code>. This will update the properties of the script configuration.</li>
+<li>Populate the <code>AS_SSA</code> and <code>AS_ENDPOINT</code> fields as described above. </li>
+<li>Enable the script by clicking the <code>Enable</code> check box</li>
+<li>Scroll to the bottom of the page and click <code>Update</code></li>
+</ul>
+<p>The latest version of Super Gluu is now enabled on your server.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To make sure Super Gluu has been enabled successfully, you can check your Gluu Server's OpenID Connect configuration by navigating to the following URL: <code>https://&lt;hostname&gt;/.well-known/openid-configuration</code>. Find <code>acr_values_supported</code> and you should see <code>super_gluu</code>. </p>
 </div>
-<h3 id="test-2fa-authentication-flow">Test 2FA Authentication Flow<a class="headerlink" href="#test-2fa-authentication-flow" title="Permanent link">#</a></h3>
+<h2 id="test-2fa-authentication-flow">Test 2FA Authentication Flow<a class="headerlink" href="#test-2fa-authentication-flow" title="Permanent link">#</a></h2>
 <p>To test the Super Gluu configuration from end to end, an administrator can follow the steps below:</p>
 <ul>
 <li>Change the <code>default authentication method</code> to <code>super_gluu</code> using <a href="https://docs.jans.io/stable/admin/config-guide/default-authentication-method-config/">this guide</a></li>
@@ -1671,7 +1685,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-23T10:50:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-23</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-12-14T10:04:31+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-12-14</span>
       
         <br>
         Created:
