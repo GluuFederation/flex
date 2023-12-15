@@ -117,7 +117,7 @@ function JsonPropertyBuilder({
         id={propKey}
         name={propKey}
         label={generateLabel(propKey)}
-        value={propValue}
+        value={propValue || []}
         lsize={lSize}
         rsize={lSize}
         isArray={true}
