@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.21-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.20-1...docker-admin-ui-v1.0.21-1) (2023-12-18)
+
+
+### Features
+
+* **docker-admin-ui:** replace jwt token with reference token to access config-api ([#1470](https://github.com/GluuFederation/flex/issues/1470)) ([f75ce0f](https://github.com/GluuFederation/flex/commit/f75ce0fd3d1a54a657043bd73eee89a6268f3b4f))
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-21 release ([cee44ca](https://github.com/GluuFederation/flex/commit/cee44ca8f5e66e5d1861fe499665f9dac40183ce))
+
 ## [1.0.20-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.19-1...docker-admin-ui-v1.0.20-1) (2023-11-16)
 
 
