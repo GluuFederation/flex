@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.21-1](https://github.com/GluuFederation/flex/compare/docker-flex-all-in-one-v1.0.20-1...docker-flex-all-in-one-v1.0.21-1) (2023-12-18)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-21 release ([cee44ca](https://github.com/GluuFederation/flex/commit/cee44ca8f5e66e5d1861fe499665f9dac40183ce))
+
 ## 1.0.20-1 (2023-11-16)
 
 
