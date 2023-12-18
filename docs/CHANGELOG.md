@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.0-21](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-20...docs-v5.0.0-21) (2023-12-18)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-21 release ([cee44ca](https://github.com/GluuFederation/flex/commit/cee44ca8f5e66e5d1861fe499665f9dac40183ce))
+
 ## [5.0.0-20](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-19...docs-v5.0.0-20) (2023-11-16)
 
 
