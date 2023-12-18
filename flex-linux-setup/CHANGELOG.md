@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.21](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.20...flex-linux-setup-v1.0.21) (2023-12-18)
+
+
+### Features
+
+* **flex-linux-setup:** replace jwt token with reference token to access config-api ([7296ce1](https://github.com/GluuFederation/flex/commit/7296ce1db8efb8d69b688741dd94aefcf6d538ca))
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** stop jans-auth and config-api before building admin-ui ([7081ffe](https://github.com/GluuFederation/flex/commit/7081ffec0e17e1340750734a561af55d7fa5e04e))
+* prepare for 5.0.0-21 release ([cee44ca](https://github.com/GluuFederation/flex/commit/cee44ca8f5e66e5d1861fe499665f9dac40183ce))
+
 ## [1.0.20](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.19...flex-linux-setup-v1.0.20) (2023-11-16)
 
 
