@@ -1,5 +1,35 @@
 # Changelog
 
+## [5.0.0-21](https://github.com/GluuFederation/flex/compare/v5.0.0-20...v5.0.0-21) (2023-12-18)
+
+
+### Features
+
+* add support for custom scripts in flex ([#1494](https://github.com/GluuFederation/flex/issues/1494)) ([591eca2](https://github.com/GluuFederation/flex/commit/591eca2d6f9f648f7e02c8336fbc266d042e2ae1))
+* **admin-ui:** add config api spec file ([344035e](https://github.com/GluuFederation/flex/commit/344035e0ad34d178845271a320d5a067984447f4))
+* **admin-ui:** the algorithm to secure the JWT for a particular introspection response [#1409](https://github.com/GluuFederation/flex/issues/1409) ([67f1e40](https://github.com/GluuFederation/flex/commit/67f1e4095dc3e81e0d813bc4e6a206df2ae69a62))
+* **docker-admin-ui:** replace jwt token with reference token to access config-api ([#1470](https://github.com/GluuFederation/flex/issues/1470)) ([f75ce0f](https://github.com/GluuFederation/flex/commit/f75ce0fd3d1a54a657043bd73eee89a6268f3b4f))
+
+
+### Bug Fixes
+
+* **admin-ui:** auth server properties page crashes on visit [#1506](https://github.com/GluuFederation/flex/issues/1506) ([b58ae74](https://github.com/GluuFederation/flex/commit/b58ae74124945197511d9e5848a7756887367d50))
+* **admin-ui:** code smells ([3861710](https://github.com/GluuFederation/flex/commit/3861710f87fad9baa6378b5a6619ead32e59ef96))
+* **admin-ui:** code smells ([5c2d228](https://github.com/GluuFederation/flex/commit/5c2d228665b0493c7afcad863c89ee9558b7e2e1))
+* **admin-ui:** need to change the font color for Enabled header in the scripts grid [#1472](https://github.com/GluuFederation/flex/issues/1472) ([3fcc963](https://github.com/GluuFederation/flex/commit/3fcc963387a6da31401c4a961532054b094839cd))
+* **admin-ui:** recover adminuitest script ([a11be8a](https://github.com/GluuFederation/flex/commit/a11be8ae416a17c9a666c15a97380d546dccefd8))
+* **admin-ui:** remove generation of specific access_token [#1477](https://github.com/GluuFederation/flex/issues/1477) ([b927d1a](https://github.com/GluuFederation/flex/commit/b927d1a189db65f93bf806f447d4e39e89f9f032))
+* **admin-ui:** remove unused import ([d06bdcf](https://github.com/GluuFederation/flex/commit/d06bdcf40c1c10db8fdbcdaa03d8298aac618715))
+* **admin-ui:** target html tag for table colum styles [#1472](https://github.com/GluuFederation/flex/issues/1472) ([3efaa21](https://github.com/GluuFederation/flex/commit/3efaa2177dddcad1b7b0912dd949d0bd1bacc01b))
+* **admin-ui:** unable to generate valid jans-config-api client using kc plugin specs [#1504](https://github.com/GluuFederation/flex/issues/1504) ([f06233f](https://github.com/GluuFederation/flex/commit/f06233f396b004f6319ee0823b9df19c00ca941f))
+* **admin-ui:** unable to launch admin-ui [#1493](https://github.com/GluuFederation/flex/issues/1493) ([949f2be](https://github.com/GluuFederation/flex/commit/949f2beff5334471cc141671c175a22f469ce005))
+* **admin-ui:** use yaml configs for auth server properties configuration [#1475](https://github.com/GluuFederation/flex/issues/1475) ([79efbfc](https://github.com/GluuFederation/flex/commit/79efbfcb46a8939055b9114b8c66ff40f98435ce))
+* cn script duplicate input number removal ([#1489](https://github.com/GluuFederation/flex/issues/1489)) ([24b2860](https://github.com/GluuFederation/flex/commit/24b2860fe356fbb7488b306f573debb134f9a7b9))
+* command to External/LB IP ([#1488](https://github.com/GluuFederation/flex/issues/1488)) ([563fda7](https://github.com/GluuFederation/flex/commit/563fda72ca021983b62eb79ebdba821e85a66b2e))
+* **docs:** add clarity about SSA and license ([#1485](https://github.com/GluuFederation/flex/issues/1485)) ([4c51269](https://github.com/GluuFederation/flex/commit/4c512695984d7611d7fc1602be5334e344768fb7))
+* **flex-linux-setup:** stop jans-auth and config-api before building admin-ui ([7081ffe](https://github.com/GluuFederation/flex/commit/7081ffec0e17e1340750734a561af55d7fa5e04e))
+* prepare for 5.0.0-21 release ([cee44ca](https://github.com/GluuFederation/flex/commit/cee44ca8f5e66e5d1861fe499665f9dac40183ce))
+
 ## [5.0.0-20](https://github.com/GluuFederation/flex/compare/v5.0.0-19...v5.0.0-20) (2023-11-16)
 
 
