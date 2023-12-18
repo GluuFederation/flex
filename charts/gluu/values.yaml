@@ -106,7 +106,7 @@ admin-ui:
     # -- Image  to use for deploying.
     repository: ghcr.io/gluufederation/flex/admin-ui
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -206,7 +206,7 @@ auth-server:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/auth-server
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -283,7 +283,7 @@ auth-server-key-rotation:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/certmanager
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Auth server key rotation keys life in hours
@@ -368,7 +368,7 @@ casa:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/casa
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -553,7 +553,7 @@ config:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/configurator
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- LDAP admin password if OpenDJ is used for persistence.
@@ -659,7 +659,7 @@ config-api:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/config-api
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -761,7 +761,7 @@ fido2:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/fido2
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1422,7 +1422,7 @@ persistence:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/persistence-loader
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.
@@ -1506,7 +1506,7 @@ scim:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/scim
     # -- Image  tag to use for deploying.
-    tag: 1.0.21_dev
+    tag: 1.0.21-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.

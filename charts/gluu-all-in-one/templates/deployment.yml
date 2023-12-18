@@ -61,6 +61,8 @@ spec:
               {{- if not .Values.isFqdnRegistered }}
               /usr/bin/python3 /scripts/updatelbip.py &
               {{- end}}
+              /app/bin/entrypoint.sh
+        {{- end}}
         ports:
         - name: {{ .Values.service.name }}
           containerPort: {{ .Values.service.port }}

@@ -4,8 +4,8 @@
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
-ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:1.0.21_dev
-ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:1.0.21_dev
+ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:1.0.21-1
+ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:1.0.21-1
 
 # original Janssen version
 ARG CN_VERSION="1.0.21"
