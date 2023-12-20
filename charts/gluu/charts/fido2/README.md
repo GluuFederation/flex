@@ -10,7 +10,7 @@ FIDO 2.0 (FIDO2) is an open authentication standard that enables leveraging comm
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Mohammad Abudayyeh | <support@gluu.org> | <https://github.com/moabu> |
+| Mohammad Abudayyeh | <team@gluu.org> | <https://github.com/moabu> |
 
 ## Source Code
 

@@ -10,7 +10,7 @@ Responsible for regenerating auth-keys per x hours
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Mohammad Abudayyeh | <support@gluu.org> | <https://github.com/moabu> |
+| Mohammad Abudayyeh | <team@gluu.org> | <https://github.com/moabu> |
 
 ## Source Code
 

@@ -35,7 +35,7 @@ sources:
   - https://docs.gluu.org
 maintainers:
 - name: moabu
-  email: support@gluu.org
+  email: team@gluu.org
 description: Gluu Access and Identity Management
 name: gluu
 version: 5.0.25-dev

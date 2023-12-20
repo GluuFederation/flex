@@ -10,7 +10,7 @@ Jans Config Api endpoints can be used to configure jans-auth-server, which is an
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Mohammad Abudayyeh | <support@gluu.org> | <https://github.com/moabu> |
+| Mohammad Abudayyeh | <team@gluu.org> | <https://github.com/moabu> |
 
 ## Source Code
 

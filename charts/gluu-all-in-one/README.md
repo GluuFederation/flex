@@ -10,7 +10,7 @@ Gluu Access and Identity Management All-in-One Chart. This chart deploys the sel
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| moabu | <support@gluu.org> |  |
+| moabu | <team@gluu.org> |  |
 
 ## Source Code
 
@@ -185,7 +185,7 @@ Kubernetes: `>=v1.22.0-0`
 | customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
 | dnsConfig | object | `{}` | Add custom dns config |
 | dnsPolicy | string | `""` | Add custom dns policy |
-| email | string | `"support@gluu.org"` | Email address of the administrator usually. Used for certificate creation. |
+| email | string | `"team@gluu.org"` | Email address of the administrator usually. Used for certificate creation. |
 | fido2.appLoggers | object | `{"enableStdoutLogPrefix":"true","fido2LogLevel":"INFO","fido2LogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
 | fido2.appLoggers.enableStdoutLogPrefix | string | `"true"` | Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e fido2 ===> 2022-12-20 17:49:55,744 INFO |
 | fido2.appLoggers.fido2LogLevel | string | `"INFO"` | fido2.log level |

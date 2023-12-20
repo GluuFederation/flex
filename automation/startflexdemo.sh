@@ -80,7 +80,7 @@ if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
   cat << EOF > override.yaml
 config:
   countryCode: US
-  email: support@gluu.org
+  email: team@gluu.org
   orgName: Gluu
   city: Austin
   configmap:
@@ -99,7 +99,7 @@ if [[ $GLUU_PERSISTENCE == "PGSQL" ]]; then
   cat << EOF > override.yaml
 config:
   countryCode: US
-  email: support@gluu.org
+  email: team@gluu.org
   orgName: Gluu
   city: Austin
   configmap:
@@ -133,7 +133,7 @@ if [[ $GLUU_PERSISTENCE == "LDAP" ]]; then
   cat << EOF > override.yaml
 config:
   countryCode: US
-  email: support@gluu.org
+  email: team@gluu.org
   orgName: Gluu
   city: Austin
   configmap:

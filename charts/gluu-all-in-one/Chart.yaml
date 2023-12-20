@@ -19,7 +19,7 @@ sources:
   - https://github.com/GluuProject/jans/charts/janssen
 maintainers:
   - name: moabu
-    email: support@gluu.org
+    email: team@gluu.org
 description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
 name: gluu-all-in-one
 version: 1.0.22-dev

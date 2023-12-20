@@ -10,7 +10,7 @@ System for Cross-domain Identity Management (SCIM) version 2.0
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Mohammad Abudayyeh | <support@gluu.org> | <https://github.com/moabu> |
+| Mohammad Abudayyeh | <team@gluu.org> | <https://github.com/moabu> |
 
 ## Source Code
 

@@ -548,7 +548,7 @@ config:
   # -- Country code. Used for certificate creation.
   countryCode: US
   # -- Email address of the administrator usually. Used for certificate creation.
-  email: support@gluu.org
+  email: team@gluu.org
   image:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/configurator

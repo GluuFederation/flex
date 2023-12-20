@@ -16,6 +16,6 @@ module "gluu" {
   jans_city         = "Austin"
   jans_state        = "TX"
   jans_country_code = "US"
-  jans_email        = "support@gluu.org"
+  jans_email        = "team@gluu.org"
   jans_org_name     = "Gluu"
 }

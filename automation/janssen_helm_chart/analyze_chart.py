@@ -134,7 +134,7 @@ with open(main_values_schema_file, 'w+') as file:
 
 
 def main():
-    find_replace(main_dir, "support@gluu.org", "support@jans.io", "*.*")
+    find_replace(main_dir, "team@gluu.org", "support@jans.io", "*.*")
     find_replace(main_dir, "https://gluu.org/docs/gluu-server/favicon.ico",
                  "https://github.com/JanssenProject/jans/raw/main/docs/logo/janssen_project_favicon_transparent_50px_50px.png",
                  "*.*")

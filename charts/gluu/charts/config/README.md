@@ -10,7 +10,7 @@ Configuration parameters for setup and initial configuration secret and config l
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Mohammad Abudayyeh | <support@gluu.org> | <https://github.com/moabu> |
+| Mohammad Abudayyeh | <team@gluu.org> | <https://github.com/moabu> |
 
 ## Source Code
 
@@ -78,7 +78,7 @@ Kubernetes: `>=v1.21.0-0`
 | customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
 | dnsConfig | object | `{}` | Add custom dns config |
 | dnsPolicy | string | `""` | Add custom dns policy |
-| email | string | `"support@gluu.org"` | Email address of the administrator usually. Used for certificate creation. |
+| email | string | `"team@gluu.org"` | Email address of the administrator usually. Used for certificate creation. |
 | fullNameOverride | string | `""` |  |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
 | image.repository | string | `"janssenproject/configurator"` | Image  to use for deploying. |

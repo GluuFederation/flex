@@ -8,7 +8,7 @@ city: Austin
 # -- Country code. Used for certificate creation.
 countryCode: US
 # -- Email address of the administrator usually. Used for certificate creation.
-email: support@gluu.org
+email: team@gluu.org
 # -- Organization name. Used for certificate creation.
 orgName: Gluu
 # -- Resource specs.

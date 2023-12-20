@@ -481,7 +481,7 @@ questions:
   label: City
   description: "City. Used for certificate creation."
 - variable: config.email
-  default: "support@gluu.org"
+  default: "team@gluu.org"
   required: true
   type: string
   group: "Configuration"

@@ -13,7 +13,7 @@ sources:
   - https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/auth-server-key-rotation
 maintainers:
   - name: Mohammad Abudayyeh
-    email: support@gluu.org
+    email: team@gluu.org
     url: https://github.com/moabu
 icon: https://gluu.org/docs/gluu-server/favicon.ico
 appVersion: "5.0.0"

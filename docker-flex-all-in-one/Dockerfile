@@ -125,7 +125,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
     GLUU_ADMIN_UI_PUBLIC_DIR=/var/lib/nginx/html/admin
 
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/all-in-one" \
-    org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
+    org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
     org.opencontainers.image.version="1.0.22" \
     org.opencontainers.image.title="Gluu Flex All-in-One" \

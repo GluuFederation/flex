@@ -86,7 +86,7 @@ ENV CN_GLUU_LICENSE_SSA="" \
 # ==========
 
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/monolith" \
-    org.opencontainers.image.authors="GluuFederation <support@gluu.org>" \
+    org.opencontainers.image.authors="GluuFederation <team@gluu.org>" \
     org.opencontainers.image.vendor="GluuFederation" \
     org.opencontainers.image.version="1.0.22" \
     org.opencontainers.image.title="GluuFederation Flex Monolith Image" \

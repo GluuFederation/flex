@@ -72,7 +72,7 @@ kubectl get secret cn -o json -n <namespace>
 
 | Key                                           | Example Values                                     |
 | --------------------------------------------- | -------------------------------------------------- |
-| `admin_email`                                 | `support@gluu.org`                                 |
+| `admin_email`                                 | `team@gluu.org`                                 |
 | `admin_inum`                                  | `d3afef58-c026-4514-9d4c-e0a3efb4c29d `            |
 | `admin_ui_client_id`                          | `1901.a6575c1e-4688-4c11-8c95-d9e570b13ee8`        |
 | `auth_enc_keys`                               | `RSA1_5 RSA-OAEP`                                  |
