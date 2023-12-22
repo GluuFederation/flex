@@ -61,6 +61,8 @@ function GluuAppSidebar() {
         return <ScimIcon className="menu-icon" style={{ top: '-2px' }} />
       case 'jans_link':
         return <CachedIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+      case 'saml':
+        return <></>
       default:
         return null
     }
