@@ -106,7 +106,7 @@ export function* postSamlIdentity({ payload }) {
     addAdditionalData(audit, 'CREATE', 'SAML', payload)
     const token = yield select((state) => state.authReducer.token.access_token)
     const api = yield* newSamlIdentityFunction()
-    const data = yield call(api.postSamlIdentityProvider, {
+    yield call(api.postSamlIdentityProvider, {
       formdata: payload.action.action_data,
       token,
     })
@@ -132,7 +132,7 @@ export function* updateSamlIdentity({ payload }) {
     addAdditionalData(audit, 'UPDATE', 'SAML', payload)
     const token = yield select((state) => state.authReducer.token.access_token)
     const api = yield* newSamlIdentityFunction()
-    const data = yield call(api.updateSamlIdentityProvider, {
+    yield call(api.updateSamlIdentityProvider, {
       formdata: payload.action.action_data,
       token,
     })

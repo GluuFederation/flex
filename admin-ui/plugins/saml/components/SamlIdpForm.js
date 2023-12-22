@@ -14,6 +14,7 @@ import {
   toggleSavedFormFlag,
   updateSamlIdentity,
 } from 'Plugins/saml/redux/features/SamlSlice'
+import PropTypes from 'prop-types'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
@@ -101,7 +102,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
   function handleSubmit(values, user_message) {
     delete values.importMetadataFile
-    var formdata = new FormData()
+    let formdata = new FormData()
 
     let payload = {
       identityProvider: { ...values },
@@ -147,218 +148,220 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
   }, [savedForm])
 
   return (
-    <>
-      <Card>
-        <CardBody className=''>
-          <Form onSubmit={formik.handleSubmit} className='mt-4'>
-            <FormGroup row>
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.name'
-                  name='name'
-                  value={formik.values.name || ''}
-                  formik={formik}
-                  lsize={4}
-                  required
-                  rsize={8}
-                  showError={formik.errors.name && formik.touched.name}
-                  errorMessage={formik.errors.name}
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.displayName'
-                  name='displayName'
-                  value={formik.values.displayName || ''}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  showError={
-                    formik.errors.displayName && formik.touched.displayName
-                  }
-                  errorMessage={formik.errors.displayName}
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.description'
-                  name='description'
-                  value={formik.values.description || ''}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  showError={
-                    formik.errors.description && formik.touched.description
-                  }
-                  errorMessage={formik.errors.description}
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.realm'
-                  name='realm'
-                  value={formik.values.realm || ''}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  showError={formik.errors.realm && formik.touched.realm}
-                  errorMessage={formik.errors.realm}
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
-                <FormGroup row>
-                  <GluuLabel
-                    label={'fields.import_metadata_from_file'}
-                    size={4}
-                  />
-                  <Col sm={8}>
-                    <Toggle
-                      onChange={(event) => {
-                        onHandleFileSelection(event.target.checked)
-                      }}
-                      checked={formik.values.importMetadataFile}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                </FormGroup>
-              </Col>
-              <input
-                type='file'
-                accept='text/xml,application/json'
-                onChange={handleFileChange}
-                id='metdaDateFile'
-                ref={inputFile}
-                style={{ display: 'none' }}
+    <Card>
+      <CardBody className=''>
+        <Form onSubmit={formik.handleSubmit} className='mt-4'>
+          <FormGroup row>
+            <Col sm={10}>
+              <GluuInputRow
+                label='fields.name'
+                name='name'
+                value={formik.values.name || ''}
+                formik={formik}
+                lsize={4}
+                required
+                rsize={8}
+                showError={formik.errors.name && formik.touched.name}
+                errorMessage={formik.errors.name}
+                disabled={viewOnly}
               />
-              {!formik.values.importMetadataFile && (
-                <>
-                  <Col sm={10}>
-                    <GluuInputRow
-                      label='fields.idp_entity_id'
-                      name='idpEntityId'
-                      value={formik.values.idpEntityId || ''}
-                      formik={formik}
-                      required
-                      lsize={4}
-                      rsize={8}
-                      showError={
-                        formik.errors.idpEntityId && formik.touched.idpEntityId
-                      }
-                      errorMessage={formik.errors.idpEntityId}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                  <Col sm={10}>
-                    <GluuInputRow
-                      label='fields.signing_certificate'
-                      name='signingCertificate'
-                      value={formik.values.signingCertificate || ''}
-                      formik={formik}
-                      lsize={4}
-                      rsize={8}
-                      showError={
-                        formik.errors.signingCertificate &&
-                        formik.touched.signingCertificate
-                      }
-                      errorMessage={formik.errors.signingCertificate}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                  <Col sm={10}>
-                    <GluuInputRow
-                      label='fields.name_policy_format'
-                      name='nameIDPolicyFormat'
-                      value={formik.values.nameIDPolicyFormat || ''}
-                      formik={formik}
-                      lsize={4}
-                      rsize={8}
-                      required
-                      showError={
-                        formik.errors.nameIDPolicyFormat &&
-                        formik.touched.nameIDPolicyFormat
-                      }
-                      errorMessage={formik.errors.nameIDPolicyFormat}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                  <Col sm={10}>
-                    <GluuInputRow
-                      label='fields.single_signon_service_url'
-                      name='singleSignOnServiceUrl'
-                      value={formik.values.singleSignOnServiceUrl}
-                      required
-                      formik={formik}
-                      lsize={4}
-                      rsize={8}
-                      showError={
-                        formik.errors.singleSignOnServiceUrl &&
-                        formik.touched.singleSignOnServiceUrl
-                      }
-                      errorMessage={formik.errors.singleSignOnServiceUrl}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                  <Col sm={10}>
-                    <GluuInputRow
-                      label='fields.encryption_public_key'
-                      name='encryptionPublicKey'
-                      value={formik.values.encryptionPublicKey || ''}
-                      formik={formik}
-                      lsize={4}
-                      rsize={8}
-                      showError={
-                        formik.errors.encryptionPublicKey &&
-                        formik.touched.encryptionPublicKey
-                      }
-                      errorMessage={formik.errors.encryptionPublicKey}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                  <Col sm={10}>
-                    <GluuInputRow
-                      label='fields.single_logout_service_url'
-                      name='singleLogoutServiceUrl'
-                      value={formik.values.singleLogoutServiceUrl || ''}
-                      formik={formik}
-                      lsize={4}
-                      rsize={8}
-                      showError={
-                        formik.errors.singleLogoutServiceUrl &&
-                        formik.touched.singleLogoutServiceUrl
-                      }
-                      errorMessage={formik.errors.singleLogoutServiceUrl}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                </>
-              )}
-            </FormGroup>
-            {!viewOnly && (
-              <Row>
-                <Col>
-                  <GluuCommitFooter
-                    saveHandler={toggle}
-                    hideButtons={{ save: true, back: false }}
-                    type='submit'
+            </Col>
+            <Col sm={10}>
+              <GluuInputRow
+                label='fields.displayName'
+                name='displayName'
+                value={formik.values.displayName || ''}
+                formik={formik}
+                lsize={4}
+                rsize={8}
+                showError={
+                  formik.errors.displayName && formik.touched.displayName
+                }
+                errorMessage={formik.errors.displayName}
+                disabled={viewOnly}
+              />
+            </Col>
+            <Col sm={10}>
+              <GluuInputRow
+                label='fields.description'
+                name='description'
+                value={formik.values.description || ''}
+                formik={formik}
+                lsize={4}
+                rsize={8}
+                showError={
+                  formik.errors.description && formik.touched.description
+                }
+                errorMessage={formik.errors.description}
+                disabled={viewOnly}
+              />
+            </Col>
+            <Col sm={10}>
+              <GluuInputRow
+                label='fields.realm'
+                name='realm'
+                value={formik.values.realm || ''}
+                formik={formik}
+                lsize={4}
+                rsize={8}
+                showError={formik.errors.realm && formik.touched.realm}
+                errorMessage={formik.errors.realm}
+                disabled={viewOnly}
+              />
+            </Col>
+            <Col sm={10}>
+              <FormGroup row>
+                <GluuLabel
+                  label={'fields.import_metadata_from_file'}
+                  size={4}
+                />
+                <Col sm={8}>
+                  <Toggle
+                    onChange={(event) => {
+                      onHandleFileSelection(event.target.checked)
+                    }}
+                    checked={formik.values.importMetadataFile}
+                    disabled={viewOnly}
                   />
                 </Col>
-              </Row>
-            )}
-            <GluuCommitDialog
-              handler={toggle}
-              modal={modal}
-              onAccept={submitForm}
-              formik={formik}
+              </FormGroup>
+            </Col>
+            <input
+              type='file'
+              accept='text/xml,application/json'
+              onChange={handleFileChange}
+              id='metdaDateFile'
+              ref={inputFile}
+              style={{ display: 'none' }}
             />
-          </Form>
-        </CardBody>
-      </Card>
-    </>
+            {!formik.values.importMetadataFile && (
+              <>
+                <Col sm={10}>
+                  <GluuInputRow
+                    label='fields.idp_entity_id'
+                    name='idpEntityId'
+                    value={formik.values.idpEntityId || ''}
+                    formik={formik}
+                    required
+                    lsize={4}
+                    rsize={8}
+                    showError={
+                      formik.errors.idpEntityId && formik.touched.idpEntityId
+                    }
+                    errorMessage={formik.errors.idpEntityId}
+                    disabled={viewOnly}
+                  />
+                </Col>
+                <Col sm={10}>
+                  <GluuInputRow
+                    label='fields.signing_certificate'
+                    name='signingCertificate'
+                    value={formik.values.signingCertificate || ''}
+                    formik={formik}
+                    lsize={4}
+                    rsize={8}
+                    showError={
+                      formik.errors.signingCertificate &&
+                      formik.touched.signingCertificate
+                    }
+                    errorMessage={formik.errors.signingCertificate}
+                    disabled={viewOnly}
+                  />
+                </Col>
+                <Col sm={10}>
+                  <GluuInputRow
+                    label='fields.name_policy_format'
+                    name='nameIDPolicyFormat'
+                    value={formik.values.nameIDPolicyFormat || ''}
+                    formik={formik}
+                    lsize={4}
+                    rsize={8}
+                    required
+                    showError={
+                      formik.errors.nameIDPolicyFormat &&
+                      formik.touched.nameIDPolicyFormat
+                    }
+                    errorMessage={formik.errors.nameIDPolicyFormat}
+                    disabled={viewOnly}
+                  />
+                </Col>
+                <Col sm={10}>
+                  <GluuInputRow
+                    label='fields.single_signon_service_url'
+                    name='singleSignOnServiceUrl'
+                    value={formik.values.singleSignOnServiceUrl}
+                    required
+                    formik={formik}
+                    lsize={4}
+                    rsize={8}
+                    showError={
+                      formik.errors.singleSignOnServiceUrl &&
+                      formik.touched.singleSignOnServiceUrl
+                    }
+                    errorMessage={formik.errors.singleSignOnServiceUrl}
+                    disabled={viewOnly}
+                  />
+                </Col>
+                <Col sm={10}>
+                  <GluuInputRow
+                    label='fields.encryption_public_key'
+                    name='encryptionPublicKey'
+                    value={formik.values.encryptionPublicKey || ''}
+                    formik={formik}
+                    lsize={4}
+                    rsize={8}
+                    showError={
+                      formik.errors.encryptionPublicKey &&
+                      formik.touched.encryptionPublicKey
+                    }
+                    errorMessage={formik.errors.encryptionPublicKey}
+                    disabled={viewOnly}
+                  />
+                </Col>
+                <Col sm={10}>
+                  <GluuInputRow
+                    label='fields.single_logout_service_url'
+                    name='singleLogoutServiceUrl'
+                    value={formik.values.singleLogoutServiceUrl || ''}
+                    formik={formik}
+                    lsize={4}
+                    rsize={8}
+                    showError={
+                      formik.errors.singleLogoutServiceUrl &&
+                      formik.touched.singleLogoutServiceUrl
+                    }
+                    errorMessage={formik.errors.singleLogoutServiceUrl}
+                    disabled={viewOnly}
+                  />
+                </Col>
+              </>
+            )}
+          </FormGroup>
+          {!viewOnly && (
+            <Row>
+              <Col>
+                <GluuCommitFooter
+                  saveHandler={toggle}
+                  hideButtons={{ save: true, back: false }}
+                  type='submit'
+                />
+              </Col>
+            </Row>
+          )}
+          <GluuCommitDialog
+            handler={toggle}
+            modal={modal}
+            onAccept={submitForm}
+            formik={formik}
+          />
+        </Form>
+      </CardBody>
+    </Card>
   )
 }
 
 export default SamlIdpForm
+SamlIdpForm.propTypes = {
+  configs: PropTypes.any,
+  viewOnly: PropTypes.bool,
+}

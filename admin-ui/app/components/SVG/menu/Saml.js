@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Saml = ({ className, style }) => {
   return (
@@ -17,3 +18,7 @@ const Saml = ({ className, style }) => {
 }
 
 export default Saml
+Saml.propTypes = {
+  style: PropTypes.node,
+  className: PropTypes.string,
+}

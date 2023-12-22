@@ -31,8 +31,8 @@ export default class SamlApi {
   }
 
   postSamlIdentityProvider = ({ formdata, token }) => {
-    return new Promise( async (resolve, reject) => {
-      await axios.post("/kc/saml/idp/upload", formdata, { headers: { Authorization: `Bearer ${token}` } })
+    return new Promise((resolve, reject) => {
+      axios.post("/kc/saml/idp/upload", formdata, { headers: { Authorization: `Bearer ${token}` } })
         .then(response => response.text())
         .then(result => handleResponse(undefined, reject, resolve, result))
         .catch(error => handleResponse(error, reject, resolve, undefined));
@@ -41,8 +41,8 @@ export default class SamlApi {
 
   updateSamlIdentityProvider = ({ formdata, token }) => {
     // put-saml-identity-provider
-    return new Promise( async (resolve, reject) => {
-      await axios.put("/kc/saml/idp/upload", formdata, { headers: { Authorization: `Bearer ${token}` } })
+    return new Promise((resolve, reject) => {
+      axios.put("/kc/saml/idp/upload", formdata, { headers: { Authorization: `Bearer ${token}` } })
         .then(response => response.text())
         .then(result => handleResponse(undefined, reject, resolve, result))
         .catch(error => handleResponse(error, reject, resolve, undefined));

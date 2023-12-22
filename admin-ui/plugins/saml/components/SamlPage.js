@@ -11,8 +11,10 @@ import { useSelector } from 'react-redux'
 
 const SamlPage = () => {
   const { t } = useTranslation()
-  const { loadingSamlIdp, loading } = useSelector((state) => state.idpSamlReducer)
-  
+  const { loadingSamlIdp, loading } = useSelector(
+    (state) => state.idpSamlReducer
+  )
+
   SetTitle(t('titles.saml_management'))
 
   const tabNames = [
@@ -23,30 +25,24 @@ const SamlPage = () => {
   const tabToShow = (tabName) => {
     switch (tabName) {
       case t('menus.saml_idp'):
-        return (
-          <SamlIdentityList />
-        )
+        return <SamlIdentityList />
       case t('menus.idp_config'):
-        return (
-          <IdpConfigTab />
-        )
+        return <IdpConfigTab />
     }
   }
 
   return (
-    <React.Fragment>
-      <GluuLoader blocking={loadingSamlIdp || loading}>
-        <Card className='mb-3' style={applicationStyle.mainCard}>
-          <CardBody>
-            <GluuTabs
-              tabNames={tabNames}
-              tabToShow={tabToShow}
-              withNavigation={true}
-            />
-          </CardBody>
-        </Card>
-      </GluuLoader>
-    </React.Fragment>
+    <GluuLoader blocking={loadingSamlIdp || loading}>
+      <Card className='mb-3' style={applicationStyle.mainCard}>
+        <CardBody>
+          <GluuTabs
+            tabNames={tabNames}
+            tabToShow={tabToShow}
+            withNavigation={true}
+          />
+        </CardBody>
+      </Card>
+    </GluuLoader>
   )
 }
 
