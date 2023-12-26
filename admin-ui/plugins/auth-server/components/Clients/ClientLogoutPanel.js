@@ -47,11 +47,11 @@ function ClientLogoutPanel({ formik, viewOnly }) {
       ></GluuTypeAheadWithAdd>
 
       <GluuTypeAheadWithAdd
-        name="backchannelLogoutUri"
+        name="attributes.backchannelLogoutUri"
         label="fields.backchannelLogoutUri"
         formik={formik}
         placeholder={t('Enter a valid uri with pattern') + ' https://'}
-        value={formik.values.backchannelLogoutUri || []}
+        value={formik.values.attributes.backchannelLogoutUri || []}
         options={backchannelLogoutUris}
         validator={uriValidator}
         inputId={backchannel_uri_id}
@@ -59,9 +59,9 @@ function ClientLogoutPanel({ formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
       <GluuBooleanSelectBox
-        name="backchannelLogoutSessionRequired"
+        name="attributes.backchannelLogoutSessionRequired"
         label="fields.backchannelLogoutSessionRequired"
-        value={formik.values.backchannelLogoutSessionRequired}
+        value={formik.values.attributes.backchannelLogoutSessionRequired}
         formik={formik}
         lsize={4}
         rsize={8}

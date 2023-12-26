@@ -47,6 +47,7 @@ function ClientAddPage() {
       const postBody = {}
       postBody['client'] = data
       buildPayload(userAction, data.action_message, postBody)
+      delete userAction.action_data.client.action_message
       dispatch(addNewClientAction({ action: userAction }))
     }
   }
@@ -57,7 +58,6 @@ function ClientAddPage() {
     claimRedirectUris: [],
     responseTypes: [],
     grantTypes: [],
-    requireAuthTime: false,
     postLogoutRedirectUris: [],
     oxAuthScopes: [],
     trustedClient: false,
@@ -68,13 +68,9 @@ function ClientAddPage() {
     accessTokenAsJwt: false,
     backchannelUserCodeParameter: false,
     disabled: false,
-    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
-    keepClientAuthorizationAfterExpiration: false,
-    allowSpontaneousScopes: false,
-    backchannelLogoutSessionRequired: false,
     attributes: {
       tlsClientAuthSubjectDn: null,
-      runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
+      runIntrospectionScriptBeforeJwtCreation: false,
       keepClientAuthorizationAfterExpiration: false,
       allowSpontaneousScopes: false,
       backchannelLogoutSessionRequired: false,
@@ -89,11 +85,6 @@ function ClientAddPage() {
   }
   return (
     <GluuLoader blocking={loading}>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={t('messages.error_in_saving')}
-        show={errorInSaveOperationFlag}
-      />
       <ClientWizardForm
         client_data={clientData}
         scopes={scopes}

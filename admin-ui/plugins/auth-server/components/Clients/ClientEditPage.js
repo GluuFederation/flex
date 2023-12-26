@@ -61,16 +61,12 @@ function ClientEditPage() {
   function handleSubmit(data) {
     if (data) {
       buildPayload(userAction, data.action_message, data)
+      delete userAction?.action_data?.action_message
       dispatch(editClient({ action: userAction }))
     }
   }
   return (
     <GluuLoader blocking={loading || loadingOidcDiscovevry}>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={t('messages.error_in_saving')}
-        show={errorInSaveOperationFlag}
-      />
       {!(loadingOidcDiscovevry || loading) && 
         <>
           <ClientWizardForm

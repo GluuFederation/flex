@@ -2,20 +2,7 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  acrs: [
-    {
-      name: 'simple_password_auth',
-      level: '-1',
-      description: 'Built-in default password authentication',
-      samlACR:
-        'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
-      primaryKey: 'uid',
-      passwordAttribute: 'userPassword',
-      hashAlgorithm: 'bcrypt',
-      defaultAuthNMethod: false,
-      acrName: 'simple_password_auth'
-    }
-  ],
+  acrs: [],
   item: {},
   loading: false,
   acrAUTHReponse: {},
