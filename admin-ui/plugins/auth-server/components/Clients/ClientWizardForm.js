@@ -304,7 +304,6 @@ function ClientWizardForm({
             }
             delete values.expirable
             values['action_message'] = commitMessage
-            console.log(`values`, values)
             customOnSubmit(JSON.parse(JSON.stringify(values)))
           }}
         >
