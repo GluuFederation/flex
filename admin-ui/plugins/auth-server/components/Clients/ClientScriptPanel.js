@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container } from 'Components'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
+import PropTypes from 'prop-types'
 
 const DOC_CATEGORY = 'openid_client'
 
@@ -100,3 +101,9 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
 }
 
 export default ClientScriptPanel
+ClientScriptPanel.propTypes = {
+  formik: PropTypes.any,
+  client: PropTypes.any,
+  scripts: PropTypes.any,
+  viewOnly: PropTypes.bool
+}

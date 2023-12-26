@@ -8,8 +8,6 @@ import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
 import { emptyScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
-import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { useTranslation } from 'react-i18next'
 
 function ClientAddPage() {
   const permissions = useSelector((state) => state.authReducer.permissions)
@@ -26,7 +24,6 @@ function ClientAddPage() {
   const options = {}
   options['limit'] = parseInt(100000)
   const navigate =useNavigate()
-  const { t } = useTranslation()
   useEffect(() => {
     dispatch(emptyScopes())
     buildPayload(userAction, '', options)

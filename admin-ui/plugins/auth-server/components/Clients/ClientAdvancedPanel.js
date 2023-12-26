@@ -13,6 +13,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
+import PropTypes from 'prop-types'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
@@ -209,3 +210,9 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
 }
 
 export default ClientAdvancedPanel
+ClientAdvancedPanel.propTypes = {
+  formik: PropTypes.any,
+  client: PropTypes.any,
+  scripts: PropTypes.any,
+  viewOnly: PropTypes.bool
+}

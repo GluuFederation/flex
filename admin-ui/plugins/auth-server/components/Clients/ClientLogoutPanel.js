@@ -5,6 +5,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 const DOC_CATEGORY = 'openid_client'
 
 function uriValidator(uri) {
@@ -84,3 +85,9 @@ function ClientLogoutPanel({ formik, viewOnly }) {
 }
 
 export default ClientLogoutPanel
+ClientLogoutPanel.propTypes = {
+  formik: PropTypes.any,
+  client: PropTypes.any,
+  scripts: PropTypes.any,
+  viewOnly: PropTypes.bool
+}

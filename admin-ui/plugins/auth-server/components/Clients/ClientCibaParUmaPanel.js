@@ -23,6 +23,7 @@ import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/ext-language_tools'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import PropTypes from 'prop-types'
 
 const DOC_CATEGORY = 'openid_client'
 
@@ -419,3 +420,12 @@ function ClientCibaParUmaPanel({
 }
 
 export default ClientCibaParUmaPanel
+ClientCibaParUmaPanel.propTypes = {
+  formik: PropTypes.any,
+  client: PropTypes.any,
+  scopes: PropTypes.any,
+  viewOnly: PropTypes.bool,
+  setCurrentStep: PropTypes.any,
+  sequence: PropTypes.any,
+  umaResources: PropTypes.any
+}
