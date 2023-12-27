@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   item: {},
-  loading: true,
+  loading: true
 }
 
 const licenseDetailsSlice = createSlice({
@@ -12,62 +12,54 @@ const licenseDetailsSlice = createSlice({
   reducers: {
     getLicenseDetails: (state) => ({
       ...state,
-      loading: true,
+      loading: true
     }),
     getLicenseDetailsResponse: (state, action) => {
       if (action.payload?.data) {
         return {
           ...state,
-          item: {
-            ...action.payload.data,
-            companyName: action.payload.data?.companyName
-              ? action.payload.data?.companyName.replace(/"/g, '')
-              : '',
-            customerFirstName: action.payload.data?.customerFirstName
-              ? action.payload.data?.customerFirstName.replace(/"/g, '')
-              : '',
-            customerLastName: action.payload.data?.customerLastName
-              ? action.payload.data?.customerLastName.replace(/"/g, '')
-              : '',
-            customerEmail: action.payload.data?.customerEmail
-              ? action.payload.data?.customerEmail.replace(/"/g, '')
-              : '',
+          item: { 
+            ...action.payload.data, 
+            companyName: action.payload.data?.companyName ? action.payload.data?.companyName.replace(/"/g , '') : '', 
+            customerFirstName: action.payload.data?.customerFirstName ? action.payload.data?.customerFirstName.replace(/"/g , '') : '',
+            customerLastName: action.payload.data?.customerLastName ? action.payload.data?.customerLastName.replace(/"/g , '') : '',
+            customerEmail: action.payload.data?.customerEmail ? action.payload.data?.customerEmail.replace(/"/g , '') : ''
           },
-          loading: false,
+          loading: false
         }
       } else {
         return {
           ...state,
-          loading: false,
+          loading: false
         }
       }
     },
     updateLicenseDetails: (state) => ({
       ...state,
-      loading: true,
+      loading: true
     }),
     updateLicenseDetailsResponse: (state, action) => {
       if (action.payload?.data) {
         return {
           ...state,
           items: action.payload.data,
-          loading: false,
+          loading: false
         }
       } else {
         return {
           ...state,
-          loading: false,
+          loading: false
         }
       }
-    },
-  },
+    }
+  }
 })
 
 export const {
   getLicenseDetails,
   getLicenseDetailsResponse,
   updateLicenseDetails,
-  updateLicenseDetailsResponse,
+  updateLicenseDetailsResponse
 } = licenseDetailsSlice.actions
 export const { actions, reducer, state } = licenseDetailsSlice
 reducerRegistry.register('licenseDetailsReducer', reducer)

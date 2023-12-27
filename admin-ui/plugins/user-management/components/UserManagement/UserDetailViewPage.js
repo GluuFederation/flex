@@ -8,7 +8,7 @@ const UserDetailViewPage = ({ row }) => {
   const { rowData } = row
   const DOC_SECTION = 'user'
   const personAttributes = useSelector(
-    (state) => state.attributesReducerRoot.items,
+    (state) => state.attributesReducerRoot.items
   )
 
   const getCustomAttributeById = (id) => {
@@ -80,11 +80,7 @@ const UserDetailViewPage = ({ row }) => {
                           : ''
                       }
                       isDirect={true}
-                      value={
-                        typeof valueToShow === 'boolean'
-                          ? JSON.stringify(valueToShow)
-                          : valueToShow
-                      }
+                      value={typeof valueToShow === "boolean" ? JSON.stringify(valueToShow) : valueToShow}
                     />
                   </Col>
                 ) : null}

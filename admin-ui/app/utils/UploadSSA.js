@@ -34,7 +34,7 @@ function UploadSSA() {
   }
 
   useEffect(() => {
-    if (selectedFile) {
+    if(selectedFile){
       readJWTFile()
     }
   }, [selectedFile])
@@ -56,8 +56,8 @@ function UploadSSA() {
   })
 
   const submitData = () => {
-    if (selectedFile) {
-      dispatch(uploadNewSsaToken({ payload: { ssa: jwt } }))
+    if(selectedFile){
+      dispatch(uploadNewSsaToken({ payload: { ssa:jwt } }))
     }
   }
 
@@ -65,19 +65,19 @@ function UploadSSA() {
     <React.Fragment>
       <Container>
         {isLoading && (
-          <div className='loader-outer'>
-            <div className='loader'></div>
-          </div>
+        <div className="loader-outer">
+          <div className="loader"></div>
+        </div>
         )}
-        <div className='row'>
-          <div className='col-md-12 text-center mt-5 mb-5'>
+        <div className="row">
+          <div className="col-md-12 text-center mt-5 mb-5">
             <img
               src={logo}
               style={{ maxWidth: '200px' }}
-              className='img-fluid'
+              className="img-fluid"
             />
           </div>
-          <div className='col-md-12'>
+          <div className="col-md-12">
             <div>Please upload ssa here :</div>
             <div
               {...getRootProps1()}
@@ -87,14 +87,13 @@ function UploadSSA() {
               {selectedFileName ? (
                 <strong>Selected File : {selectedFileName}</strong>
               ) : (
-                <p>
-                  Drag &apos;n&apos; drop .jwt file here, or click to select
-                  file
-                </p>
+                <p>Drag &apos;n&apos; drop .jwt file here, or click to select file</p>
               )}
             </div>
-            <div className='text-sm text-danger'>{error}</div>
-            <div className='mt-4'>
+            <div className='text-sm text-danger'>
+              {error}
+            </div>
+            <div className="mt-4">
               <Button
                 disabled={isLoading}
                 color={`primary-${selectedTheme}`}

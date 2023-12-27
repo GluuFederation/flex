@@ -32,54 +32,54 @@ function ClientDetailPage({ row, scopes }) {
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.client_id'
+              label="fields.client_id"
               value={row.inum}
               doc_category={DOC_CATEGORY}
-              doc_entry='clientId'
+              doc_entry="clientId"
             />
           </Col>
           <Col sm={6}>
             <GluuSecretDetail
-              label='fields.client_secret'
-              value={row.clientSecret ? row.clientSecret : dash}
+              label="fields.client_secret"
+              value={row.clientSecret ? row.clientSecret : dash }
               doc_category={DOC_CATEGORY}
-              doc_entry='clientSecret'
+              doc_entry="clientSecret"
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.name'
+              label="fields.name"
               value={row.displayName ? row.displayName : dash}
               doc_category={DOC_CATEGORY}
-              doc_entry='displayName'
+              doc_entry="displayName"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.description'
+              label="fields.description"
               value={extractDescription(row.customAttributes || []) || dash}
               doc_category={DOC_CATEGORY}
-              doc_entry='description'
+              doc_entry="description"
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.subject_type'
+              label="fields.subject_type"
               value={row.subjectType ? row.subjectType : dash}
               doc_category={DOC_CATEGORY}
-              doc_entry='subjectType'
+              doc_entry="subjectType"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.application_type'
+              label="fields.application_type"
               value={row.applicationType}
               doc_category={DOC_CATEGORY}
-              doc_entry='applicationType'
+              doc_entry="applicationType"
             />
           </Col>
         </Row>
@@ -93,7 +93,7 @@ function ClientDetailPage({ row, scopes }) {
                     {t('options.yes')}
                   </Badge>
                 ) : (
-                  <Badge color='secondary'>{t('options.no')}</Badge>
+                  <Badge color="secondary">{t('options.no')}</Badge>
                 )}
               </Label>
             </FormGroup>
@@ -107,7 +107,7 @@ function ClientDetailPage({ row, scopes }) {
                     {t('options.enabled')}
                   </Badge>
                 ) : (
-                  <Badge color='danger'>{t('options.disabled')}</Badge>
+                  <Badge color="danger">{t('options.disabled')}</Badge>
                 )}
               </Label>
             </FormGroup>

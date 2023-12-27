@@ -5,7 +5,11 @@ import { Consumer } from './context'
 
 const UncontrolledTabsTabContent = (props) => (
   <Consumer>
-    {(value) => <TabContent {...props} activeTab={value.activeTabId} />}
+    {
+      (value) => (
+        <TabContent { ...props } activeTab={ value.activeTabId } />
+      )
+    }
   </Consumer>
 )
 

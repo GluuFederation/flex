@@ -27,10 +27,10 @@ import getThemeColor from '../../../context/theme/config'
 const ProfileDetails = () => {
   const { t } = useTranslation()
   const { loading, profileDetails } = useSelector(
-    (state) => state.profileDetailsReducer,
+    (state) => state.profileDetailsReducer
   )
   const scopes = useSelector((state) =>
-    state.token ? state.token.scopes : state.authReducer.permissions,
+    state.token ? state.token.scopes : state.authReducer.permissions
   )
   const { userinfo } = useSelector((state) => state.authReducer)
   const theme = useContext(ThemeContext)
@@ -51,7 +51,7 @@ const ProfileDetails = () => {
   }
 
   const jansAdminUIRole = profileDetails?.customAttributes?.find(
-    (att) => att?.name === 'jansAdminUIRole',
+    (att) => att?.name === 'jansAdminUIRole'
   )
 
   return (
@@ -71,11 +71,7 @@ const ProfileDetails = () => {
                     <Box display={'flex'} flexDirection={'column'} gap={2}>
                       <Box display={'flex'} flexDirection={'column'} gap={1}>
                         {loading ? (
-                          <Box
-                            display={'flex'}
-                            justifyContent={'center'}
-                            alignItems={'center'}
-                          >
+                          <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
                             <Skeleton
                               width={'45%'}
                               sx={{

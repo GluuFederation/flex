@@ -34,7 +34,7 @@ import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
 import agamaSaga from './redux/sagas/AgamaSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
-import ssaSaga from './redux/sagas/SsaSaga'
+import ssaSaga from './redux/sagas/SsaSaga' 
 
 import {
   ACR_READ,
@@ -47,24 +47,20 @@ import {
   PROPERTIES_READ,
   LOGGING_READ,
   AGAMA_READ,
-  SSA_PORTAL,
+  SSA_PORTAL
 } from 'Utils/PermChecker'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import AuthNListPage from './components/AuthN/AuthNListPage'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
-import SsaListPage from './components/Ssa/SsaListPage'
+import SsaListPage from './components/Ssa/SsaListPage' 
 import SsaAddPage from './components/Ssa/SsaAddPage'
 import React, { Suspense, lazy } from 'react'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
 function AgamaListPageWrapper() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AgamaListPage />
-    </Suspense>
-  )
-}
+  return <Suspense fallback={<div>Loading...</div>}><AgamaListPage /></Suspense>
+} 
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -96,7 +92,7 @@ const pluginMetadata = {
               title: 'menus.logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
               permission: LOGGING_READ,
-            },
+            }, 
             {
               title: 'menus.ssa',
               path: PLUGIN_BASE_APTH + '/config/ssa',
@@ -207,7 +203,7 @@ const pluginMetadata = {
       component: SsaAddPage,
       path: PLUGIN_BASE_APTH + '/config/ssa/new',
       permission: SSA_PORTAL,
-    },
+    }
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
@@ -233,7 +229,7 @@ const pluginMetadata = {
     sessionSaga(),
     agamaSaga(),
     authnSaga(),
-    ssaSaga(),
+    ssaSaga()
   ],
 }
 

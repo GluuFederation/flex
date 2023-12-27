@@ -19,26 +19,21 @@ it('Test gluutooltip', async () => {
         label={LABEL}
         name={NAME}
         value={VALUE}
-        doc_category='openid_client'
+        doc_category="openid_client"
         formik={formikf}
       />
     </I18nextProvider>,
   )
 
-  const iconElement = container.querySelector(
-    `svg[data-tooltip-id="applicationType"]`,
-  )
+  const iconElement = container.querySelector(`svg[data-tooltip-id="applicationType"]`)
   expect(iconElement).toBeInTheDocument()
-
+  
   userEvent.hover(iconElement)
 
   await waitFor(() => {
-    expect(screen.getByRole('tooltip')).toHaveTextContent(
-      /Kind of the application/i,
-    )
-    expect(screen.getByText(/Kind of the application/i)).toHaveAttribute(
-      'role',
-      'tooltip',
-    )
+    expect(screen.getByRole("tooltip")).toHaveTextContent(/Kind of the application/i)
+    expect(
+      screen.getByText(/Kind of the application/i),
+    ).toHaveAttribute('role', 'tooltip')
   })
 })

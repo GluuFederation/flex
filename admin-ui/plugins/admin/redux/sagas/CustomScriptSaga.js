@@ -5,7 +5,7 @@ import {
   editCustomScriptResponse,
   deleteCustomScriptResponse,
   setScriptTypes,
-  setIsScriptTypesLoading,
+  setIsScriptTypesLoading
 } from 'Plugins/admin/redux/features/customScriptSlice'
 import { SCRIPT } from '../audit/Resources'
 import {
@@ -16,7 +16,7 @@ import {
 } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import { updateToast } from 'Redux/features/toastSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -121,10 +121,7 @@ export function* deleteScript({ payload }) {
   try {
     addAdditionalData(audit, DELETION, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(
-      scriptApi.deleteCustomScript,
-      payload.action.action_data,
-    )
+    const data  =yield call(scriptApi.deleteCustomScript, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield put(deleteCustomScriptResponse({ inum: payload.action.action_data }))
     yield call(postUserAction, audit)
@@ -145,21 +142,15 @@ export function* getScriptTypes() {
   try {
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.getCustomScriptTypes)
-
+    
     const types = data.map((type) => {
-      if (type?.includes('_')) {
+      if(type?.includes('_')) {
         const splitFormat = type?.split('_')
-        const formattedTypes = splitFormat?.map(
-          (formattedType) =>
-            formattedType?.charAt(0)?.toUpperCase() + formattedType?.slice(1),
-        )
-        return { value: type, name: formattedTypes?.join(' ') }
+        const formattedTypes = splitFormat?.map((formattedType) => formattedType?.charAt(0)?.toUpperCase() + formattedType?.slice(1))
+        return { value: type, name: formattedTypes?.join(' ') };
       }
-
-      return {
-        value: type,
-        name: type?.charAt(0)?.toUpperCase() + type?.slice(1),
-      }
+    
+      return { value: type, name: type?.charAt(0)?.toUpperCase() + type?.slice(1) };
     })
     yield put(setScriptTypes(types || []))
   } catch (e) {
@@ -201,6 +192,6 @@ export default function* rootSaga() {
     fork(watchEditScript),
     fork(watchDeleteScript),
     fork(watchScriptsByType),
-    fork(watchGetScriptTypes),
+    fork(watchGetScriptTypes)
   ])
 }

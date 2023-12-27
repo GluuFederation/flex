@@ -10,7 +10,7 @@ function SqlAddPage() {
   const dispatch = useDispatch()
 
   const userAction = {}
-  const navigate = useNavigate()
+  const navigate =useNavigate()
   function handleSubmit(data) {
     if (data) {
       const message = data.sql.action_message
@@ -24,9 +24,12 @@ function SqlAddPage() {
   return (
     <React.Fragment>
       <Container>
-        <Card className='mb-3'>
+        <Card className="mb-3">
           <CardBody>
-            <SqlForm item={defautConfigurations} handleSubmit={handleSubmit} />
+            <SqlForm 
+              item={defautConfigurations} 
+              handleSubmit={handleSubmit} 
+            />
           </CardBody>
         </Card>
       </Container>

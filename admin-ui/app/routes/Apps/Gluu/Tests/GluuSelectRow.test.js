@@ -22,7 +22,7 @@ describe('GluuSelectRow', () => {
         value={value}
         values={values}
         formik={formikMock}
-      />,
+      />
     )
 
     const selectElement = screen.getByTestId(name)
@@ -40,7 +40,7 @@ describe('GluuSelectRow', () => {
           name,
           value: newValue,
         }),
-      }),
+      })
     )
   })
 
@@ -56,7 +56,7 @@ describe('GluuSelectRow', () => {
         values={values}
         formik={formikMock}
         handleChange={handleChangeMock}
-      />,
+      />
     )
 
     const selectElement = screen.getByTestId(name)

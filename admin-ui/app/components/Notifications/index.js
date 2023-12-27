@@ -43,33 +43,25 @@ export default function Lang() {
         <Button
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
-          aria-haspopup='true'
+          aria-haspopup="true"
           className={classes.btnContainer}
           onClick={handleToggle}
         >
-          <NotificationsIcon style={{ color: 'white' }} />
+          <NotificationsIcon style={{color: "white"}}/>
         </Button>
-        <Popper
-          open={open}
-          anchorEl={anchorRef.current}
-          role={undefined}
-          transition
-          disablePortal
-          className={classes.topElm}
-        >
+        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal className={classes.topElm}>
           {({ TransitionProps, placement }) => (
             <Grow
               {...TransitionProps}
-              style={{
-                transformOrigin:
-                  placement === 'bottom' ? 'center top' : 'center bottom',
-              }}
+              style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
-                  <List component='nav' aria-label='notification'>
+                  <List component="nav" aria-label="notification">
                     <ListItem button>
-                      <ListItemText primary='No new notifications' />
+                      <ListItemText 
+                        primary="No new notifications"
+                      />
                     </ListItem>
                   </List>
                 </ClickAwayListener>

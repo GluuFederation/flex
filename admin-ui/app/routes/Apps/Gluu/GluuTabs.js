@@ -49,7 +49,7 @@ export default function GluuTabs({
 }) {
   const path = useLocation()
   const [value, setValue] = useState(
-    withNavigation ? initTabValue(tabNames, path) : 0,
+    withNavigation ? initTabValue(tabNames, path) : 0
   )
   const navigate = useNavigate()
 
@@ -97,11 +97,7 @@ export default function GluuTabs({
         </Tabs>
       </Box>
       {tabNames?.map((tab, index) => (
-        <TabPanel
-          value={value}
-          key={(withNavigation ? tab.name : tab) + index.toString()}
-          index={index}
-        >
+        <TabPanel value={value} key={(withNavigation ? tab.name : tab) + index.toString()} index={index}>
           {tabToShow(withNavigation ? tab.name : tab)}
         </TabPanel>
       ))}

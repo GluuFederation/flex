@@ -29,14 +29,14 @@ function GluuRemovableSelectRow({
         <Col sm={rsize - 1}>
           <InputGroup>
             <CustomInput
-              type='select'
+              type="select"
               id={name}
               data-testid={name}
               name={name}
               defaultValue={value}
               onChange={formik.handleChange}
             >
-              <option value=''>{t('actions.choose')}...</option>
+              <option value="">{t('actions.choose')}...</option>
               {values.map((item, key) => (
                 <option value={item.cca2} key={key}>
                   {item.name}

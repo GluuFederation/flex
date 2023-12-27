@@ -11,14 +11,12 @@ import moment from 'moment'
 function UserAddPage() {
   const dispatch = useDispatch()
   const userAction = {}
-  const navigate = useNavigate()
+  const navigate =useNavigate()
   const redirectToUserListPage = useSelector(
     (state) => state.userReducer.redirectToUserListPage,
   )
   const { t } = useTranslation()
-  const personAttributes = useSelector(
-    (state) => state.attributesReducerRoot.items,
-  )
+  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
   const createCustomAttributes = (values) => {
     let customAttributes = []
     if (values) {
@@ -83,7 +81,7 @@ function UserAddPage() {
       navigate('/user/usersmanagement')
     }
   }, [redirectToUserListPage])
-
+ 
   return (
     <React.Fragment>
       <GluuAlert
@@ -92,7 +90,7 @@ function UserAddPage() {
         show={false}
       />
       <Container>
-        <Card className='mb-3'>
+        <Card className="mb-3">
           <CardBody>
             <UserForm onSubmitData={submitData} />
           </CardBody>

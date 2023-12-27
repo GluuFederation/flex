@@ -5,8 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
-const BundleAnalyzerPlugin =
-  require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const config = require('./../config')
 require('dotenv').config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
@@ -22,18 +21,17 @@ module.exports = {
   devtool: false,
   mode: 'production',
   entry: {
-    app: [path.join(config.srcDir, 'index.js')],
+    app: [path.join(config.srcDir, 'index.js')]
   },
   optimization: {
     splitChunks: {
-      chunks: 'all',
+      chunks: 'all'
     },
-    minimizer: [
-      `...`,
+    minimizer: [`...`,
       new CssMinimizerPlugin({
         minimizerOptions: {
           preset: [
-            'default',
+            "default",
             {
               calc: false,
               discardComments: { removeAll: true },
@@ -41,8 +39,7 @@ module.exports = {
           ],
         },
       }),
-      `...`,
-    ],
+      `...`]
   },
   output: {
     filename: '[name].bundle.js',
@@ -51,12 +48,7 @@ module.exports = {
     publicPath: BASE_PATH,
   },
   resolve: {
-    fallback: {
-      querystring: false,
-      crypto: false,
-      util: false,
-      console: false,
-    },
+    fallback: { "querystring": false, crypto: false, util: false, console: false },
     modules: ['node_modules', config.srcDir],
     alias: {
       path: require.resolve('path-browserify'),
@@ -80,7 +72,7 @@ module.exports = {
         let warnings = []
         warnings.push(new Error(paths.join(' -> ')))
         if (warnings.length > 0) {
-          warnings.forEach((error) => error && console.warn(error.message))
+          warnings.forEach(error => error && console.warn(error.message));
         }
       },
     }),
@@ -100,7 +92,7 @@ module.exports = {
         SESSION_TIMEOUT_IN_MINUTES: JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
       },
     }),
-    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to "server" to activate BundleAnalyzerPlugin
+    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }) //* switch mode to "server" to activate BundleAnalyzerPlugin
   ],
   module: {
     rules: [
@@ -123,7 +115,7 @@ module.exports = {
       // Modular Styles
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: ["style-loader", "css-loader", "postcss-loader"]
       },
       {
         test: /\.scss$/,

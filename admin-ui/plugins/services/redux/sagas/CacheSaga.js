@@ -1,5 +1,8 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, hasApiToken } from 'Utils/TokenController'
+import {
+  isFourZeroOneError,
+  hasApiToken,
+} from 'Utils/TokenController'
 import {
   getCacheResponse,
   getMemoryCacheResponse,
@@ -14,7 +17,7 @@ import {
   editRedisCacheResponse,
 } from '../features/cacheSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { updateToast } from 'Redux/features/toastSlice'
+import {updateToast} from 'Redux/features/toastSlice'
 import CacheApi from '../api/CacheApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')

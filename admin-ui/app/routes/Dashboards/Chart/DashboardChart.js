@@ -51,7 +51,7 @@ const DashboardChart = () => {
   }
 
   return (
-    <ResponsiveContainer debounce={300} width='100%' height='100%'>
+    <ResponsiveContainer debounce={300} width="100%" height="100%">
       <BarChart
         data={doDataAugmentation(statData)}
         margin={{ top: 5, right: 30, bottom: 5 }}
@@ -59,12 +59,12 @@ const DashboardChart = () => {
       >
         <XAxis dataKey={'month'} />
         <YAxis />
-        <CartesianGrid strokeDasharray='3 3' />
+        <CartesianGrid strokeDasharray="3 3" />
         <Tooltip content={<TooltipDesign />} />
         <Legend wrapperStyle={{ color: '#fff' }} />
-        <Bar dataKey='client_credentials_access_token_count' fill={'#FE9F01'} />
-        <Bar dataKey='authz_code_access_token_count' fill={'#9CBEE0'} />
-        <Bar dataKey='authz_code_idtoken_count' fill={'#8D9460'} />
+        <Bar dataKey="client_credentials_access_token_count" fill={'#FE9F01'} />
+        <Bar dataKey="authz_code_access_token_count" fill={'#9CBEE0'} />
+        <Bar dataKey="authz_code_idtoken_count" fill={'#8D9460'} />
       </BarChart>
     </ResponsiveContainer>
   )

@@ -41,7 +41,7 @@ const ldapSlice = createSlice({
     deleteLdapResponse: (state, action) => {
       if (action.payload?.configId) {
         state.ldap = state.ldap.filter(
-          (i) => i.configId !== action.payload.configId,
+          (i) => i.configId !== action.payload.configId
         )
       }
       state.loading = false
@@ -62,8 +62,8 @@ const ldapSlice = createSlice({
     },
     toggleSavedFormFlag: (state, action) => {
       state.savedForm = action.payload || false
-    },
-  },
+    }
+  }
 })
 
 export const {
@@ -79,7 +79,7 @@ export const {
   testLdap,
   testLdapResponse,
   resetTestLdap,
-  toggleSavedFormFlag,
+  toggleSavedFormFlag
 } = ldapSlice.actions
 export { initialState }
 export const { actions, reducer } = ldapSlice

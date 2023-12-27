@@ -74,8 +74,8 @@ UiPermDetailPage.propTypes = {
       permission: PropTypes.string.isRequired,
       tag: PropTypes.string.isRequired,
       defaultPermissionInToken: PropTypes.bool.isRequired,
-    }),
-  }),
+    })
+  })
 }
 
 export default UiPermDetailPage

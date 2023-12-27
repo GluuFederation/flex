@@ -18,30 +18,25 @@ class NestedDropdownSubmenu extends React.Component {
       children,
       className,
       openId,
-      onOpen,
+      onOpen
     } = this.props
     const itemClass = classNames(className, 'nested-dropdown__submenu-item', {
-      'nested-dropdown__submenu-item--open': openId === this.id,
+      'nested-dropdown__submenu-item--open': openId === this.id
     })
-    const linkClass = classNames(
-      'nested-dropdown__submenu-item__link',
-      'dropdown-item',
-    )
-
+    const linkClass = classNames('nested-dropdown__submenu-item__link', 'dropdown-item')
+        
     return (
-      <Tag className={itemClass}>
+      <Tag className={ itemClass }>
         <a
-          href='#'
-          className={linkClass}
-          onClick={() => {
-            onOpen(this.id)
-          }}
+          href="#"
+          className={ linkClass }
+          onClick={ () => { onOpen(this.id) } }
         >
-          {title}
+          { title }
         </a>
-        <div className='nested-dropdown__submenu-item__menu-wrap'>
-          <SubMenuTag className='nested-dropdown__submenu-item__menu dropdown-menu'>
-            {children}
+        <div className="nested-dropdown__submenu-item__menu-wrap">
+          <SubMenuTag className="nested-dropdown__submenu-item__menu dropdown-menu">
+            { children }
           </SubMenuTag>
         </div>
       </Tag>
@@ -50,23 +45,38 @@ class NestedDropdownSubmenu extends React.Component {
 }
 NestedDropdownSubmenu.propTypes = {
   children: PropTypes.node,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  tag: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  subMenuTag: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node
+  ]),
+  tag: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func
+  ]),
+  subMenuTag: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func
+  ]),
   className: PropTypes.string,
   // Context Provided:
   openId: PropTypes.string,
-  onOpen: PropTypes.func.isRequired,
+  onOpen: PropTypes.func.isRequired
 }
 NestedDropdownSubmenu.defaultProps = {
-  tag: 'div',
-  subMenuTag: 'div',
+  tag: "div",
+  subMenuTag: "div"
 }
 
 const ContextNestedDropdownSubmenu = (props) => (
   <Consumer>
-    {(contextProps) => <NestedDropdownSubmenu {...contextProps} {...props} />}
+    {
+      (contextProps) => (
+        <NestedDropdownSubmenu { ...contextProps } { ...props } />
+      )   
+    }
   </Consumer>
 )
 
-export { ContextNestedDropdownSubmenu as NestedDropdownSubmenu }
+export {
+  ContextNestedDropdownSubmenu as NestedDropdownSubmenu
+}

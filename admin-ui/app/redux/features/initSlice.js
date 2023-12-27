@@ -7,7 +7,7 @@ const initialState = {
   scopes: [],
   attributes: [],
   totalClientsEntries: 0,
-  isTimeout: false,
+  isTimeout: false
 }
 
 const initSlice = createSlice({
@@ -42,8 +42,8 @@ const initSlice = createSlice({
     handleApiTimeout: (state, action) => {
       state.isLoading = false
       state.isTimeout = action.payload.isTimeout || false
-    },
-  },
+    }
+  }
 })
 
 export const {
@@ -55,7 +55,7 @@ export const {
   getScopesResponse,
   getAttributes,
   getAttributesResponse,
-  handleApiTimeout,
+  handleApiTimeout
 } = initSlice.actions
 export const { actions, reducer, state } = initSlice
 reducerRegistry.register('initReducer', reducer)

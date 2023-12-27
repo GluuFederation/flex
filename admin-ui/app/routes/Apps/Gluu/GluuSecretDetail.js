@@ -14,17 +14,17 @@ function GluuSecretDetail({ label, value, doc_category, doc_entry }) {
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
       <FormGroup row>
-        <Label for='input' sm={2}>
+        <Label for="input" sm={2}>
           {t(label)}:
         </Label>
         {value !== '-' && (
-          <Label for='input' sm={1}>
+          <Label for="input" sm={1}>
             <Toggle defaultChecked={false} onChange={handleSecret} />
           </Label>
         )}
         {up && (
           <Col sm={9}>
-            <Label for='input' style={{ fontWeight: 'bold' }}>
+            <Label for="input" style={{ fontWeight: 'bold' }}>
               {value}
             </Label>
           </Col>

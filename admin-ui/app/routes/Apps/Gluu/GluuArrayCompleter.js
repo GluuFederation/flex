@@ -35,7 +35,7 @@ function GluuArrayCompleter({
         <Col sm={6}>
           <Typeahead
             allowNew
-            emptyLabel=''
+            emptyLabel=""
             labelKey={name}
             onChange={(selected) => {
               console.log(selected)
@@ -48,7 +48,7 @@ function GluuArrayCompleter({
             options={options}
           />
           <ThemeProvider theme={theme}>
-            <Typography variant='subtitle1'>
+            <Typography variant="subtitle1">
               {t(
                 'Enter multiple items by selecting from appeared dropdown after entering each item.',
               )}

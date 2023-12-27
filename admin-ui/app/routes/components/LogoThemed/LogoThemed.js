@@ -5,8 +5,8 @@ import classNames from 'classnames'
 import { ThemeConsumer } from 'Components/Theme'
 
 const logos = {
-  default: require('Images/logos/logo192.png'),
-  primary: require('Images/logos/logo192.png'),
+  'default': require('Images/logos/logo192.png'),
+  'primary': require('Images/logos/logo192.png')
 }
 
 const getLogoUrl = () => {
@@ -24,19 +24,22 @@ const getLogoUrlBackground = (style, color) => {
 
 const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
   <ThemeConsumer>
-    {({ style, color }) => (
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <img
-          style={{ width: '130px', height: '51px' }}
-          src={
-            checkBackground ? getLogoUrlBackground(style, color) : getLogoUrl()
-          }
-          className={classNames('d-block', className)}
-          alt='Jans admin ui Logo'
-          {...otherProps}
-        />
-      </div>
-    )}
+    {
+      ({ style, color }) => (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <img style={{ width:'130px', height:'51px' }}
+            src={
+              checkBackground ?
+                getLogoUrlBackground(style, color) :
+                getLogoUrl()
+            }
+            className={ classNames('d-block', className) }
+            alt="Jans admin ui Logo"
+            { ...otherProps }
+          />
+        </div>
+      )
+    }
   </ThemeConsumer>
 )
 LogoThemed.propTypes = {

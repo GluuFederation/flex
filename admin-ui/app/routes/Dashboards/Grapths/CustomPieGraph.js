@@ -28,9 +28,9 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
       <text
         x={x}
         y={y}
-        fill='white'
+        fill="white"
         textAnchor={x > cx ? 'start' : 'end'}
-        dominantBaseline='central'
+        dominantBaseline="central"
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
@@ -38,16 +38,16 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
   }
 
   return (
-    <ResponsiveContainer className='mau' width='98%' height={300}>
+    <ResponsiveContainer className="mau" width="98%" height={300}>
       <PieChart>
         <Pie
           data={data}
-          cx='50%'
-          cy='50%'
+          cx="50%"
+          cy="50%"
           labelLine={false}
           label={renderCustomizedLabel}
           outerRadius={80}
-          fill='#8884d8'
+          fill="#8884d8"
           dataKey={dataKey}
           nameKey={nameKey}
         >

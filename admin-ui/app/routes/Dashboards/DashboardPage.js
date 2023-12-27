@@ -36,19 +36,15 @@ function DashboardPage() {
   const [mauCount, setMauCount] = useState(null)
   const [tokenCount, setTokenCount] = useState(null)
 
-  const statData = useSelector((state) => state.mauReducer.stat)
-  const loading = useSelector((state) => state.mauReducer.loading)
-  const clients = useSelector((state) => state.initReducer.clients)
-  const totalClientsEntries = useSelector(
-    (state) => state.initReducer.totalClientsEntries,
-  )
-  const license = useSelector((state) => state.licenseDetailsReducer.item)
-  const serverStatus = useSelector((state) => state.healthReducer.serverStatus)
-  const dbStatus = useSelector((state) => state.healthReducer.dbStatus)
-  const access_token = useSelector(
-    (state) => state.authReducer.token?.access_token,
-  )
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  const statData = useSelector(state => state.mauReducer.stat)
+  const loading = useSelector(state => state.mauReducer.loading)
+  const clients = useSelector(state => state.initReducer.clients)
+  const totalClientsEntries = useSelector(state => state.initReducer.totalClientsEntries)
+  const license = useSelector(state => state.licenseDetailsReducer.item)
+  const serverStatus = useSelector(state => state.healthReducer.serverStatus)
+  const dbStatus = useSelector(state => state.healthReducer.dbStatus)
+  const access_token = useSelector((state) => state.authReducer.token?.access_token)
+  const permissions = useSelector(state => state.authReducer.permissions)
 
   const dispatch = useDispatch()
 
@@ -113,6 +109,7 @@ function DashboardPage() {
     dispatch(getHealthStatus({ action: userAction }))
   }
 
+
   const summaryData = [
     {
       text: t('dashboard.oidc_clients_count'),
@@ -143,19 +140,17 @@ function DashboardPage() {
     },
     {
       text: t('dashboard.customer_name'),
-      value: `${license?.customerFirstName || ''} ${
-        license?.customerLastName || ''
-      }`,
+      value: `${license?.customerFirstName || ''} ${license?.customerLastName || ''}`,
     },
     {
       text: t('fields.validityPeriod'),
       value: formatDate(license.validityPeriod),
-      key: 'License Validity Period',
+      key: 'License Validity Period'
     },
     {
       text: t('dashboard.license_status'),
       value: license?.licenseActive ? 'active' : 'inactive',
-      key: 'License Status',
+      key: 'License Status'
     },
   ]
 
@@ -165,7 +160,7 @@ function DashboardPage() {
         <Paper className={`${classes.statusContainer}`} elevation={3}>
           <div className={classes.userInfoText}>
             <div className={classes.statusText}>
-              <Box display='flex' justifyContent='flex-start'>
+              <Box display="flex" justifyContent="flex-start">
                 <span>{t('dashboard.oauth_server_status')}</span>
                 <span>
                   <img
@@ -173,11 +168,11 @@ function DashboardPage() {
                     className={
                       isUp(serverStatus) ? classes.iconCheck : classes.iconCross
                     }
-                    alt='oauth server'
+                    alt="oauth server"
                   />
                 </span>
               </Box>
-              <Box display='flex' justifyContent='flex-end'>
+              <Box display="flex" justifyContent="flex-end">
                 <span className={classes.checkText}>
                   <span
                     className={
@@ -190,7 +185,7 @@ function DashboardPage() {
               </Box>
             </div>
             <div className={classes.statusText}>
-              <Box display='flex' justifyContent='flex-start'>
+              <Box display="flex" justifyContent="flex-start">
                 <span>{t('dashboard.database_status')}</span>
                 <span>
                   <img
@@ -198,11 +193,11 @@ function DashboardPage() {
                     className={
                       isUp(dbStatus) ? classes.iconCheck : classes.iconCross
                     }
-                    alt='database'
+                    alt="database"
                   />
                 </span>
               </Box>
-              <Box display='flex' justifyContent='flex-end'>
+              <Box display="flex" justifyContent="flex-end">
                 <span
                   className={
                     isUp(dbStatus) ? classes.checkText : classes.crossText
@@ -213,7 +208,7 @@ function DashboardPage() {
               </Box>
             </div>
             <div className={classes.statusText}>
-              <Box display='flex' justifyContent='flex-start'>
+              <Box display="flex" justifyContent="flex-start">
                 <span>{t('dashboard.server_status')}</span>
                 <span>
                   <img
@@ -221,11 +216,11 @@ function DashboardPage() {
                     className={
                       isUp(serverStatus) ? classes.iconCheck : classes.iconCross
                     }
-                    alt='server'
+                    alt="server"
                   />
                 </span>
               </Box>
-              <Box display='flex' justifyContent='flex-end'>
+              <Box display="flex" justifyContent="flex-end">
                 <span
                   className={
                     isUp(serverStatus) ? classes.checkText : classes.crossText
@@ -247,14 +242,10 @@ function DashboardPage() {
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
         <div className={classes.root}>
-          <Grid
-            spacing={{ sm: '20px', md: '40px' }}
-            container
-            className='px-40'
-          >
+          <Grid spacing={{ sm: '20px', md: '40px' }} container className="px-40">
             <Grid item lg={breakDashboardCard ? 12 : 4} md={12}>
-              <h3 className='txt-white'>{t('dashboard.summary_title')}</h3>
-              <div className='mt-20'>
+              <h3 className="txt-white">{t('dashboard.summary_title')}</h3>
+              <div className="mt-20">
                 {summaryData.map((data, key) => (
                   <Paper key={key} className={classes.summary}>
                     <div className={classes.summaryText}>{data.text}</div>
@@ -326,7 +317,7 @@ function DashboardPage() {
           </Grid>
           <Grid container className={`px-40`}>
             <Grid lg={12} xs={12} item>
-              <h3 className='text-white'>
+              <h3 className="text-white">
                 {t('dashboard.access_tokens_graph')}
               </h3>
               {isTabletOrMobile ? (
@@ -343,7 +334,11 @@ function DashboardPage() {
                     <div>{t('dashboard.select_date_range')}</div>
                     <DateRange />
                   </Grid>
-                  <Grid xs={11} item className={classes.desktopChartStyle}>
+                  <Grid
+                    xs={11}
+                    item
+                    className={classes.desktopChartStyle}
+                  >
                     <DashboardChart />
                   </Grid>
                 </Grid>
@@ -375,12 +370,12 @@ function DashboardPage() {
                 item
                 className={`${isMobile ? classes.block : classes.flex} mt-20`}
               >
-                <ul className='me-40'>
+                <ul className="me-40">
                   <li className={classes.orange}>
                     {t('dashboard.client_credentials_access_token')}
                   </li>
                 </ul>
-                <ul className='me-40'>
+                <ul className="me-40">
                   <li className={classes.lightBlue}>
                     {t('dashboard.authorization_code_access_token')}
                   </li>

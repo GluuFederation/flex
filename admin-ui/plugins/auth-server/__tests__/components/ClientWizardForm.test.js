@@ -37,7 +37,7 @@ describe('Should render client add/edit form properly', () => {
       <ClientWizardForm scripts={[]} client_data={clients[0]} />,
       {
         wrapper: Wrapper,
-      },
+      }
     )
 
     screen.debug(container, Infinity)
@@ -66,21 +66,24 @@ describe('Should render client add/edit form properly', () => {
       <ClientWizardForm scripts={[]} client_data={clients[0]} />,
       {
         wrapper: Wrapper,
-      },
+      }
     )
 
     screen.debug(container, Infinity)
     const tokensTab = screen.getByTestId('Tokens')
     fireEvent.click(tokensTab)
-
+    
     expect(await screen.findByText(/Access token type/i)).toBeVisible()
     expect(await screen.findByText(/Default max authn age/i)).toBeVisible()
   })
 
   test('persist input values if tabs are switched', async () => {
-    render(<ClientWizardForm scripts={[]} client_data={clients[0]} />, {
-      wrapper: Wrapper,
-    })
+    render(
+      <ClientWizardForm scripts={[]} client_data={clients[0]} />,
+      {
+        wrapper: Wrapper,
+      }
+    )
 
     const tokensTab = screen.getByTestId('Tokens')
     // Switch to Tokens Tab
@@ -100,14 +103,12 @@ describe('Should render client add/edit form properly', () => {
     fireEvent.click(cibaParUmaTab)
 
     const claimsRedirectUris = screen.getByTestId('new_entry')
-    fireEvent.change(claimsRedirectUris, {
-      target: { value: 'www.claims_gluu.org' },
-    })
+    fireEvent.change(claimsRedirectUris, { target: { value: 'www.claims_gluu.org' } })
     // Update value of Claims redirect URI field under UMA
     const addButton = screen.getByTestId(t('actions.add'))
     fireEvent.click(addButton)
     screen.debug(await screen.findByText('www.claims_gluu.org'), Infinity)
-
+    
     // Switch back to Tokens Tab & checks if the modified value exists
     fireEvent.click(tokensTab)
     expect(await screen.getByDisplayValue('22')).toBeVisible()

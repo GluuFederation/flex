@@ -6,10 +6,10 @@ const FooterText = (props) => (
     (C) {props.year} All Rights Reserved. This is the &quot;{props.name}&quot;
     designed and implemented by{' '}
     <a
-      href='https://www.gluu.org'
-      target='_blank'
-      rel='noopener noreferrer'
-      className='sidebar__link'
+      href="https://www.gluu.org"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="sidebar__link"
     >
       Gluu Inc.
     </a>

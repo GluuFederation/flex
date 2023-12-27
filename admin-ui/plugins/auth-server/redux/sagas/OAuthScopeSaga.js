@@ -38,7 +38,7 @@ function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.OAuthScopesApi(
-    getClient(JansConfigApi, token, issuer),
+    getClient(JansConfigApi, token, issuer)
   )
   return new ScopeApi(api)
 }
@@ -169,7 +169,7 @@ export function* deleteAnScope({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(deleteScopeResponse({ data: null }))
+    yield put(deleteScopeResponse({ data: null}))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.s.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

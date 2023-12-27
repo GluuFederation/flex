@@ -88,9 +88,9 @@ function GluuNameValuesProperty({
 
   return (
     <Row>
-      <GluuLabel label='Parties' size={9} />
+      <GluuLabel label="Parties" size={9} />
       &nbsp;
-      <input type='button' value='Add more' onClick={addClick} />
+      <input type="button" value="Add more" onClick={addClick} />
       &nbsp;
       {dataArray.map((party, index) => (
         <div key={index}>
@@ -109,7 +109,7 @@ function GluuNameValuesProperty({
             <Col sm={8}>
               <Typeahead
                 allowNew
-                emptyLabel=''
+                emptyLabel=""
                 labelKey={name2}
                 placeholder={placeholder2}
                 onInputChange={handleInputChange}
@@ -123,7 +123,7 @@ function GluuNameValuesProperty({
                 options={options}
               />
               <ThemeProvider theme={theme}>
-                <Typography variant='subtitle1'>
+                <Typography variant="subtitle1">
                   Enter multiple items by selecting from appeared dropdown after
                   entering each item.
                 </Typography>
@@ -131,8 +131,8 @@ function GluuNameValuesProperty({
             </Col>
             &nbsp;
             <input
-              type='button'
-              value='remove'
+              type="button"
+              value="remove"
               onClick={() => removeClick(index)}
             />
           </FormGroup>

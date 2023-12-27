@@ -4,7 +4,7 @@ const initialState = {
   sql: [],
   item: {},
   loading: false,
-  testStatus: false,
+  testStatus: false
 }
 
 const sqlSlice = createSlice({
@@ -40,7 +40,7 @@ const sqlSlice = createSlice({
     deleteSqlResponse: (state, action) => {
       if (action.payload?.configId) {
         state.sql = state.sql.filter(
-          (i) => i.configId !== action.payload.configId,
+          (i) => i.configId !== action.payload.configId
         )
       }
       state.loading = false
@@ -55,7 +55,7 @@ const sqlSlice = createSlice({
     testSqlResponse: (state, action) => {
       state.loading = false
     },
-  },
+  }
 })
 
 export const {

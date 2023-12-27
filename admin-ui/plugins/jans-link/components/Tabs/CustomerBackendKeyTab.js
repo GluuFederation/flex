@@ -21,7 +21,7 @@ const convertToStringArray = (arr) => {
 const CustomerBackendKeyTab = () => {
   const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
-    (state) => state.cacheRefreshReducer.configuration,
+    (state) => state.cacheRefreshReducer.configuration
   )
   const [modal, setModal] = useState(false)
   const toggle = () => {
@@ -49,25 +49,25 @@ const CustomerBackendKeyTab = () => {
     validationSchema: Yup.object({
       keyAttributes: Yup.array().min(
         1,
-        `${t('fields.key_attribute')} ${t('messages.is_required')}`,
+        `${t('fields.key_attribute')} ${t('messages.is_required')}`
       ),
       keyObjectClasses: Yup.array().min(
         1,
-        `${t('fields.object_class')} ${t('messages.is_required')}`,
+        `${t('fields.object_class')} ${t('messages.is_required')}`
       ),
       sourceAttributes: Yup.array().min(
         1,
-        `${t('fields.source_attribute')} ${t('messages.is_required')}`,
+        `${t('fields.source_attribute')} ${t('messages.is_required')}`
       ),
     }),
     onSubmit: (data) => {
       if (isEmpty(formik.errors)) {
         toggle()
-      }
+      } 
     },
   })
 
-  const submitForm = (userMessage) => {
+  const submitForm = (userMessage) => { 
     toggle()
 
     buildPayload(userAction, userMessage, {
@@ -85,7 +85,9 @@ const CustomerBackendKeyTab = () => {
           : convertToStringArray(formik.values?.keyAttributes || []),
       },
     })
-    dispatch(putCacheRefreshConfiguration({ action: userAction }))
+    dispatch(
+      putCacheRefreshConfiguration({ action: userAction })
+    )
   }
 
   return (

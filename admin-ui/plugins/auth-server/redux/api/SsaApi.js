@@ -11,15 +11,15 @@ export default class SsaApi {
           Authorization: 'Bearer ' + token,
           'Content-Type': 'application/json',
         },
-        method: 'GET',
+        method: 'GET'
       })
-        .then((response) => response.json())
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((error) => {
-          reject(error)
-        })
+      .then((response) => response.json())
+      .then((data) => {
+        resolve(data)
+      })
+      .catch((error) => {
+        reject(error)
+      }) 
     })
   }
 
@@ -31,18 +31,18 @@ export default class SsaApi {
           'Content-Type': 'application/json',
         },
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       })
-        .then((response) => response.json())
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((error) => {
-          reject(error)
-        })
+      .then((response) => response.json())
+      .then((data) => {
+        resolve(data)
+      })
+      .catch((error) => {
+        reject(error)
+      }) 
     })
   }
-
+  
   deleteSsa = ({ jti, token, authServerHost }) => {
     return new Promise((resolve, reject) => {
       fetch(`${authServerHost}/jans-auth/restv1/ssa?jti=${jti}`, {
@@ -52,13 +52,13 @@ export default class SsaApi {
         },
         method: 'DELETE',
       })
-        .then((response) => response.json())
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((error) => {
-          reject(error)
-        })
+      .then((response) => response.json())
+      .then((data) => {
+        resolve(data)
+      })
+      .catch((error) => {
+        reject(error)
+      }) 
     })
   }
 }

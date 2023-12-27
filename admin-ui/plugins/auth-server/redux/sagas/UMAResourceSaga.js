@@ -1,10 +1,10 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import { postUserAction } from 'Redux/api/backend-api'
 import {
-  getUMAResourcesByClientResponse,
-  deleteUMAResourceResponse,
-} from '../features/umaResourceSlice'
+  isFourZeroOneError,
+  addAdditionalData,
+} from 'Utils/TokenController'
+import { postUserAction } from 'Redux/api/backend-api'
+import { getUMAResourcesByClientResponse, deleteUMAResourceResponse } from '../features/umaResourceSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { UMA } from '../audit/Resources'
 import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
@@ -34,7 +34,10 @@ export function* getUMAResourcesByClient({ payload }) {
     payload = payload ? payload : {}
     addAdditionalData(audit, FETCH, UMA, payload)
     const openIdApi = yield* newFunction()
-    const data = yield call(openIdApi.getUMAResources, payload.inum)
+    const data = yield call(
+      openIdApi.getUMAResources,
+      payload.inum,
+    )
     yield put(getUMAResourcesByClientResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -65,10 +68,7 @@ export function* deleteUMAResourceById({ payload }) {
 }
 
 export function* getUMAResourcesByClientWatcher() {
-  yield takeLatest(
-    'umaResource/getUMAResourcesByClient',
-    getUMAResourcesByClient,
-  )
+  yield takeLatest('umaResource/getUMAResourcesByClient', getUMAResourcesByClient)
 }
 
 export function* deleteUMAResourceByIdWatcher() {

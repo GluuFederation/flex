@@ -11,14 +11,14 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { useTranslation } from 'react-i18next'
-import {
-  getSessions,
-  revokeSession,
-} from 'Plugins/auth-server/redux/features/sessionSlice'
+import { getSessions, revokeSession } from 'Plugins/auth-server/redux/features/sessionSlice'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { hasPermission, SESSION_DELETE } from 'Utils/PermChecker'
+import {
+  hasPermission,
+  SESSION_DELETE,
+} from 'Utils/PermChecker'
 
 function SessionListPage() {
   const sessions = useSelector((state) => state.sessionReducer.items)
@@ -37,9 +37,7 @@ function SessionListPage() {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const sessionUsername = sessions.map(
-    (session) => session.sessionAttributes.auth_user,
-  )
+  const sessionUsername = sessions.map(session => session.sessionAttributes.auth_user)
   const usernames = [...new Set(sessionUsername)]
   const [revokeUsername, setRevokeUsername] = useState()
 
@@ -48,22 +46,14 @@ function SessionListPage() {
   const tableColumns = [
     { title: `${t('fields.s_id')}`, field: 'sessionAttributes.sid' },
     { title: `${t('fields.username')}`, field: 'sessionAttributes.auth_user' },
-    {
-      title: `${t('fields.ip_address')}`,
-      field: 'sessionAttributes.remote_ip',
-    },
-    {
-      title: `${t('fields.client_id_used')}`,
-      field: 'sessionAttributes.client_id',
-    },
-    {
+    { title: `${t('fields.ip_address')}`, field: 'sessionAttributes.remote_ip' },
+    { title: `${t('fields.client_id_used')}`, field: 'sessionAttributes.client_id' },
+    { 
       title: `${t('fields.auth_time')}`,
       field: 'authenticationTime',
       render: (rowData) => (
         <span>
-          {moment(rowData.authenticationTime).format(
-            'ddd, MMM DD, YYYY h:mm:ss A',
-          )}
+          { moment(rowData.authenticationTime).format("ddd, MMM DD, YYYY h:mm:ss A") }
         </span>
       ),
     },
@@ -74,7 +64,7 @@ function SessionListPage() {
       hidden: true,
       render: (rowData) => (
         <span>
-          {moment(rowData.expirationDate).format('ddd, MMM DD, YYYY h:mm:ss A')}
+          { moment(rowData.expirationDate).format("ddd, MMM DD, YYYY h:mm:ss A") }
         </span>
       ),
     },
@@ -86,12 +76,7 @@ function SessionListPage() {
   }, [])
 
   const handleRevoke = () => {
-    const row = !isEmpty(sessions)
-      ? sessions.find(
-          ({ sessionAttributes }) =>
-            sessionAttributes.auth_user === revokeUsername,
-        )
-      : null
+    const row = !isEmpty(sessions) ? sessions.find(({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername) : null
     if (row) {
       setItem(row)
       toggle()
@@ -110,19 +95,17 @@ function SessionListPage() {
       <CardBody>
         <GluuViewWrapper canShow>
           {hasPermission(permissions, SESSION_DELETE) && (
-            <Box display='flex' justifyContent='flex-end'>
-              <Box display='flex' alignItems='center' fontSize='16px' mr='20px'>
+            <Box display="flex" justifyContent="flex-end">
+              <Box display="flex" alignItems="center" fontSize="16px" mr="20px">
                 {t('fields.selectUserRevoke')}
               </Box>
               <Autocomplete
-                id='combo-box-demo'
+                id="combo-box-demo"
                 options={usernames}
                 getOptionLabel={(option) => option}
                 style={{ width: 300 }}
                 onChange={(_, value) => setRevokeUsername(value)}
-                renderInput={(params) => (
-                  <TextField {...params} label='Username' variant='outlined' />
-                )}
+                renderInput={(params) => <TextField {...params} label="Username" variant="outlined" />}
               />
               {revokeUsername && (
                 <Button
@@ -142,7 +125,7 @@ function SessionListPage() {
             columns={tableColumns}
             data={sessions}
             isLoading={loading}
-            title=''
+            title=""
             actions={myActions}
             options={{
               columnsButton: true,
@@ -150,11 +133,8 @@ function SessionListPage() {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
-              headerStyle: {
-                ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
-              },
-              actionsColumnIndex: -1,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              actionsColumnIndex: -1
             }}
           />
         </GluuViewWrapper>
@@ -164,7 +144,7 @@ function SessionListPage() {
             name={item.sessionAttributes.auth_user}
             handler={toggle}
             modal={modal}
-            subject='user session revoke'
+            subject="user session revoke"
             onAccept={onRevokeConfirmed}
           />
         )}

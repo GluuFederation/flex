@@ -19,26 +19,21 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
       <h5 className='d-flex' aria-label={label}>
         {t(label)}
         {required && <span style={applicationStyle.fieldRequired}> *</span>}
-        {doc_category &&
-          i18n.exists('documentation.' + doc_category + '.' + doc_entry) && (
-            <>
-              <ReactTooltip
-                tabIndex='-1'
-                id={doc_entry}
-                place='right'
-                role='tooltip'
-                style={{ zIndex: 101, maxWidth: '45vw' }}
-              >
-                {t('documentation.' + doc_category + '.' + doc_entry)}
-              </ReactTooltip>
-              <HelpOutline
-                tabIndex='-1'
-                style={{ width: 18, height: 18, marginLeft: 6, marginRight: 6 }}
-                data-tooltip-id={doc_entry}
-                data-for={doc_entry}
-              />
-            </>
-          )}
+        
+        {(doc_category && i18n.exists('documentation.' + doc_category + '.' + doc_entry)) &&  
+          <>
+            <ReactTooltip
+              tabIndex="-1"
+              id={doc_entry}
+              place="right"
+              role="tooltip"
+              style={{ zIndex: 101, maxWidth: '45vw' }}
+            >
+              {t('documentation.' + doc_category + '.' + doc_entry)}
+            </ReactTooltip>
+            <HelpOutline tabIndex="-1" style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tooltip-id={doc_entry} data-for={doc_entry} />
+          </>
+        }
         :
       </h5>
       {/* {doc_category && (

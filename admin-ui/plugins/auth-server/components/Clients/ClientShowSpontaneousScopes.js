@@ -18,7 +18,7 @@ function ClientShowSpontaneousScopes({ handler, isOpen }) {
   const selectedTheme = theme.state.theme
 
   return (
-    <Modal isOpen={isOpen} toggle={handler} className='modal-outline-primary'>
+    <Modal isOpen={isOpen} toggle={handler} className="modal-outline-primary">
       <ModalHeader>{t('fields.spontaneousScopes')}</ModalHeader>
       <ModalBody>
         {printableScopes.length > 0 ? (

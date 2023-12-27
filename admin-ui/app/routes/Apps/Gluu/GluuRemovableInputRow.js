@@ -35,7 +35,10 @@ function GluuRemovableInputRow({
             onChange={formik.handleChange}
           />
         </Col>
-        <div style={applicationStyle.removableInputRow} onClick={handler}>
+        <div
+          style={applicationStyle.removableInputRow}
+          onClick={handler}
+        >
           <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
         </div>
       </FormGroup>

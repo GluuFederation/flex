@@ -1,45 +1,45 @@
 @import './variables';
 
 .sidebar--animations-enabled {
-  &.sidebar--animate-slim--progress {
-    .active > a {
-      background-color: transparent !important;
-      box-shadow: none !important;
-      color: $sidebar-menu-color !important;
+    &.sidebar--animate-slim--progress {
+        .active > a {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            color: $sidebar-menu-color !important;
+        }
+
+        .sidebar-menu__entry__link::after,
+        .sidebar-submenu__entry__link::after {
+            opacity: 0;
+        }
+
+        .sidebar-menu .badge {
+            opacity: 0;
+        }
     }
 
-    .sidebar-menu__entry__link::after,
-    .sidebar-submenu__entry__link::after {
-      opacity: 0;
+    &.sidebar--animate-entry-complete {
+        .sidebar__section {
+            opacity: 1;
+        }
     }
 
-    .sidebar-menu .badge {
-      opacity: 0;
-    }
-  }
-
-  &.sidebar--animate-entry-complete {
     .sidebar__section {
-      opacity: 1;
-    }
-  }
-
-  .sidebar__section {
-    opacity: 0;
-  }
-
-  .sidebar-menu__entry {
-    &__link::after {
-      transition: opacity 200ms ease-in;
+        opacity: 0;
     }
 
-    &.active .sidebar-menu__entry__link {
-      transition: background-color 200ms ease-in-out box-shadow 200ms
-        ease-in-out;
-    }
-  }
+    .sidebar-menu__entry {
+        &__link::after {
+            transition: opacity 200ms ease-in;
+        }
 
-  .sidbear-menu .badge {
-    transition: opacity 200ms ease-in-out;
-  }
+        &.active .sidebar-menu__entry__link {
+            transition: background-color 200ms ease-in-out
+                        box-shadow 200ms ease-in-out;
+        }
+    }
+
+    .sidbear-menu .badge {
+        transition: opacity 200ms ease-in-out;
+    }
 }

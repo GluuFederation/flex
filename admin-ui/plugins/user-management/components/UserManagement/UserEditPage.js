@@ -17,13 +17,13 @@ function UserEditPage() {
   const { t } = useTranslation()
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
   const personAttributes = useSelector(
-    (state) => state.attributesReducerRoot.items,
+    (state) => state.attributesReducerRoot.items
   )
   const redirectToUserListPage = useSelector(
-    (state) => state.userReducer.redirectToUserListPage,
+    (state) => state.userReducer.redirectToUserListPage
   )
   const loadingAttributes = useSelector(
-    (state) => state.attributesReducerRoot.initLoading,
+    (state) => state.attributesReducerRoot.initLoading
   )
 
   let options = {}
@@ -32,7 +32,7 @@ function UserEditPage() {
   }, [])
 
   const persistenceType = useSelector(
-    (state) => state.persistenceTypeReducer.type,
+    (state) => state.persistenceTypeReducer.type
   )
 
   useEffect(() => {
@@ -55,7 +55,7 @@ function UserEditPage() {
             } else {
               values[key]
                 ? val.push(
-                    moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                    moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
                   )
                 : null
               value = values[key]

@@ -11,7 +11,7 @@ const initialState = {
   entriesCount: 0,
   scriptTypes: [],
   hasFetchedScriptTypes: false,
-  loadingScriptTypes: false,
+  loadingScriptTypes: false
 }
 
 const customScriptSlice = createSlice({
@@ -83,7 +83,7 @@ const customScriptSlice = createSlice({
       state.loading = false
       if (action.payload?.inum) {
         const items = state.items.filter(
-          (item) => item.inum !== action.payload.inum,
+          (item) => item.inum !== action.payload.inum
         )
         state.items = items
       } else {
@@ -92,8 +92,8 @@ const customScriptSlice = createSlice({
       }
     },
     setScriptTypes: (state, action) => {
-      ;(state.scriptTypes = action.payload || []),
-        (state.hasFetchedScriptTypes = true)
+      state.scriptTypes = action.payload || [],
+      state.hasFetchedScriptTypes = true
     },
     setCurrentItem: (state, action) => {
       state.item = action.payload?.item
@@ -108,8 +108,8 @@ const customScriptSlice = createSlice({
         state.errorInSaveOperationFlag = false
       }
     },
-    getScriptTypes: () => {},
-  },
+    getScriptTypes: () => {}
+  }
 })
 
 export const {
@@ -126,7 +126,7 @@ export const {
   setCurrentItem,
   setScriptTypes,
   getScriptTypes,
-  setIsScriptTypesLoading,
+  setIsScriptTypesLoading
 } = customScriptSlice.actions
 export { initialState }
 export const { actions, reducer, state } = customScriptSlice

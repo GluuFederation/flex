@@ -2,7 +2,7 @@ import React from 'react'
 
 function GluuErrorFallBack({ error }) {
   return (
-    <div role='alert'>
+    <div role="alert">
       <pre>{error.message}</pre>
     </div>
   )

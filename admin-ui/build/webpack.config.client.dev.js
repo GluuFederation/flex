@@ -34,12 +34,7 @@ module.exports = {
     publicPath: BASE_PATH,
   },
   resolve: {
-    fallback: {
-      querystring: false,
-      crypto: false,
-      util: false,
-      console: false,
-    },
+    fallback: { querystring: false, crypto: false, util: false, console: false },
     modules: ['node_modules', config.srcDir],
     alias: {
       path: require.resolve('path-browserify'),
@@ -63,7 +58,7 @@ module.exports = {
         let warnings = []
         warnings.push(new Error(paths.join(' -> ')))
         if (warnings.length > 0) {
-          warnings.forEach((error) => error && console.warn(error.message))
+          warnings.forEach(error => error && console.warn(error.message));
         }
       },
     }),

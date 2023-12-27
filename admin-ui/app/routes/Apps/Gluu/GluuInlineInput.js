@@ -5,7 +5,12 @@ import GluuToogle from './GluuToogle'
 import { useTranslation } from 'react-i18next'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { Col, FormGroup, Input, Button } from 'Components'
+import {
+  Col,
+  FormGroup,
+  Input,
+  Button,
+} from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuInlineInput({
@@ -31,9 +36,9 @@ function GluuInlineInput({
   const [correctValue, setCorrectValue] = useState([])
   const [data, setData] = useState(value)
   const onValueChanged = (e) => {
-    if (isBoolean) {
+    if(isBoolean){
       setData(e.target.checked)
-    } else {
+    }else{
       setData(e.target.value)
     }
     setShow(true)
@@ -41,13 +46,13 @@ function GluuInlineInput({
   const handleTypeAheadChange = (selectedOptions) => {
     const object = selectedOptions.filter((data) => typeof data == 'object')
     const arrayItems = selectedOptions.filter((data) => typeof data != 'object')
-    for (const i in object) {
-      if (!object[i]['tokenEndpointAuthMethodsSupported']) {
-        arrayItems.push(object[i][name])
-      } else {
-        arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
+      for (const i in object) {
+        if (!object[i]['tokenEndpointAuthMethodsSupported']) {
+          arrayItems.push(object[i][name])
+        } else {
+          arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
+        }
       }
-    }
     setCorrectValue(arrayItems)
     setShow(true)
   }
@@ -76,42 +81,42 @@ function GluuInlineInput({
             size={lsize}
             required={required}
             withTooltip={false}
-            doc_category='json_properties'
+            doc_category="json_properties" 
             doc_entry={name}
           />
           <Col sm={rsize}>
             {!isBoolean && !isArray && (
-              <Input
-                id={name}
-                data-testid={name}
-                name={name}
-                type={type}
-                defaultValue={data}
-                onChange={onValueChanged}
-              />
+            <Input
+              id={name}
+              data-testid={name}
+              name={name}
+              type={type}
+              defaultValue={data}
+              onChange={onValueChanged}
+            />
             )}
             {isBoolean && (
-              <GluuToogle
-                id={name}
-                data-testid={name}
-                name={name}
-                handler={onValueChanged}
-                value={value}
-              />
+            <GluuToogle
+              id={name}
+              data-testid={name}
+              name={name}
+              handler={onValueChanged}
+              value={value}
+            />
             )}
             {isArray && (
-              <Typeahead
-                id={name}
-                data-testid={name}
-                name={name}
-                allowNew
-                emptyLabel=''
-                labelKey={name}
-                onChange={handleTypeAheadChange}
-                multiple={true}
-                defaultSelected={value}
-                options={options || []}
-              />
+            <Typeahead
+              id={name}
+              data-testid={name}
+              name={name}
+              allowNew
+              emptyLabel=""
+              labelKey={name}
+              onChange={handleTypeAheadChange}
+              multiple={true}
+              defaultSelected={value}
+              options={options || []}
+            />
             )}
           </Col>
         </FormGroup>
@@ -122,13 +127,13 @@ function GluuInlineInput({
             <Button
               color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
-              size='sm'
+              size="sm"
               onClick={onAccept}
             >
-              <i className='fa fa-check me-2'></i>
+              <i className="fa fa-check me-2"></i>
             </Button>{' '}
-            <Button color='danger' size='sm' onClick={onCancel}>
-              <i className='fa fa-times me-2'></i>
+            <Button color="danger" size="sm" onClick={onCancel}>
+              <i className="fa fa-times me-2"></i>
             </Button>
           </>
         )}

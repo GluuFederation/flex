@@ -1,19 +1,19 @@
-import React, { useContext } from 'react'
+import React, { useContext } from "react"
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Typography,
-  Slide,
-} from '@mui/material'
+  Slide
+} from "@mui/material"
 import { Button } from 'Components'
-import clsx from 'clsx'
-import styles from './styles/GluuSessionTimeoutDialog.style'
+import clsx from "clsx"
+import styles from "./styles/GluuSessionTimeoutDialog.style"
 import { ThemeContext } from 'Context/theme/themeContext'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction='up' ref={ref} {...props} />
+  return <Slide direction="up" ref={ref} {...props} />
 })
 
 const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
@@ -27,18 +27,20 @@ const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
       classes={{ paper: classes.dialog }}
       TransitionComponent={Transition}
     >
-      <DialogTitle>Session Timeout</DialogTitle>
+      <DialogTitle>
+        Session Timeout
+      </DialogTitle>
       <DialogContent>
-        <Typography variant='body2'>
-          The current session is about to expire in{' '}
+        <Typography variant="body2">
+          The current session is about to expire in{" "}
           <span className={classes.countdown}>{countdown}</span> seconds.
         </Typography>
-        <Typography variant='body2'>{`Would you like to continue the session?`}</Typography>
+        <Typography variant="body2">{`Would you like to continue the session?`}</Typography>
       </DialogContent>
       <DialogActions>
         <Button
           onClick={onLogout}
-          variant='contained'
+          variant="contained"
           className={clsx(classes.logout, classes.button)}
         >
           Logout
@@ -46,7 +48,7 @@ const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
         <Button
           onClick={onContinue}
           color={`primary-${selectedTheme}`}
-          variant='contained'
+          variant="contained"
           className={classes.button}
         >
           Continue Session

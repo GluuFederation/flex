@@ -59,11 +59,11 @@ function ScriptListTable() {
   const scripts = useSelector((state) => state.customScriptReducer.items)
   const loading = useSelector((state) => state.customScriptReducer.loading)
   const hasFetchedScriptTypes = useSelector(
-    (state) => state.customScriptReducer.hasFetchedScriptTypes,
+    (state) => state.customScriptReducer.hasFetchedScriptTypes
   )
   const permissions = useSelector((state) => state.authReducer.permissions)
   const { totalItems, scriptTypes, loadingScriptTypes } = useSelector(
-    (state) => state.customScriptReducer,
+    (state) => state.customScriptReducer
   )
   const [pageNumber, setPageNumber] = useState(0)
   let memoPattern = pattern
@@ -282,8 +282,8 @@ function ScriptListTable() {
                   rowData.enabled && rowData?.scriptError?.stackTrace
                     ? '#FF5858'
                     : rowData.enabled
-                      ? themeColors.lightBackground
-                      : '#FFF',
+                    ? themeColors.lightBackground
+                    : '#FFF',
               }),
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,

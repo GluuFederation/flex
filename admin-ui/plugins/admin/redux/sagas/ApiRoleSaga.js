@@ -14,8 +14,11 @@ import {
   FETCH,
 } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import {updateToast} from 'Redux/features/toastSlice'
+import {
+  isFourZeroOneError,
+  addAdditionalData,
+} from 'Utils/TokenController'
 import RoleApi from '../api/RoleApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'

@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   items: [],
-  loading: true,
+  loading: true
 }
 
 const apiPermissionSlice = createSlice({
@@ -28,7 +28,7 @@ const apiPermissionSlice = createSlice({
         return {
           ...state,
           items: [...state.items, action.payload.data],
-          loading: false,
+          loading: false
         }
       } else {
         return handleDefault(state)
@@ -42,7 +42,7 @@ const apiPermissionSlice = createSlice({
         return {
           ...state,
           items: [...action.payload.data],
-          loading: false,
+          loading: false
         }
       } else {
         return handleDefault(state)
@@ -66,9 +66,9 @@ const apiPermissionSlice = createSlice({
         return {
           ...state,
           items: state.items.filter(
-            (item) => item.inum !== action.payload.inum,
+            (item) => item.inum !== action.payload.inum
           ),
-          loading: false,
+          loading: false
         }
       } else {
         return handleDefault(state)
@@ -77,23 +77,23 @@ const apiPermissionSlice = createSlice({
     setCurrentItem: (state, action) => ({
       ...state,
       item: action.payload?.item,
-      loading: false,
-    }),
-  },
+      loading: false
+    })
+  }
 })
 
 function handleItems(state, data) {
   return {
     ...state,
     items: data,
-    loading: false,
+    loading: false
   }
 }
 
 function handleDefault(state) {
   return {
     ...state,
-    loading: false,
+    loading: false
   }
 }
 
@@ -108,7 +108,7 @@ export const {
   getPermissionResponse,
   deletePermission,
   deletePermissionResponse,
-  setCurrentItem,
+  setCurrentItem
 } = apiPermissionSlice.actions
 export const { actions, reducer, state } = apiPermissionSlice
 reducerRegistry.register('apiPermissionReducer', reducer)

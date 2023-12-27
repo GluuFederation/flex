@@ -11,16 +11,16 @@ function CacheInMemory({ config, formik }) {
       <CardBody>
         <FormGroup row>
           <Col
-            xs='12'
+            xs="12"
             style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
           >
             {t('fields.in_memory_configuration')}:
           </Col>
         </FormGroup>
         <GluuInputRow
-          label='fields.default_put_expiration'
-          name='memoryDefaultPutExpiration'
-          type='number'
+          label="fields.default_put_expiration"
+          name="memoryDefaultPutExpiration"
+          type="number"
           lsize={6}
           rsize={6}
           formik={formik}

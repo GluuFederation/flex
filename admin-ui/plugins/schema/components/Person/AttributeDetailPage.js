@@ -1,5 +1,12 @@
 import React, { useContext } from 'react'
-import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
+import {
+  Container,
+  Badge,
+  Row,
+  Col,
+  FormGroup,
+  Label,
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 
@@ -14,20 +21,20 @@ const AttributeDetailPage = ({ row }) => {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label for='input' sm={6}>
+              <Label for="input" sm={6}>
                 {t('fields.name')}:
               </Label>
-              <Label for='input' sm={6}>
+              <Label for="input" sm={6}>
                 {row.name}
               </Label>
             </FormGroup>
           </Col>
           <Col sm={6}>
             <FormGroup row>
-              <Label for='input' sm={6}>
+              <Label for="input" sm={6}>
                 {t('fields.displayname')}:
               </Label>
-              <Label for='input' sm={6}>
+              <Label for="input" sm={6}>
                 {row.displayName}
               </Label>
             </FormGroup>

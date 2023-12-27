@@ -5,8 +5,11 @@ import { getClient } from 'Redux/api/base'
 import { JSON_CONFIG } from '../audit/Resources'
 import { PATCH, FETCH } from '../../../../app/audit/UserActionType'
 import { postUserAction } from 'Redux/api/backend-api'
-import { updateToast } from 'Redux/features/toastSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import {updateToast} from 'Redux/features/toastSlice'
+import {
+  isFourZeroOneError,
+  addAdditionalData,
+} from 'Utils/TokenController'
 import {
   getJsonConfigResponse,
   patchJsonConfigResponse,

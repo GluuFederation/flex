@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   type: '',
-  loading: false,
+  loading: false
 }
 
 const persistenceTypeSlice = createSlice({
@@ -15,8 +15,8 @@ const persistenceTypeSlice = createSlice({
     getPersistenceTypeResponse: (state, action) => {
       state.type = action.payload?.data || ''
       state.loading = false
-    },
-  },
+    }
+  }
 })
 
 export const { getPersistenceType, getPersistenceTypeResponse } =

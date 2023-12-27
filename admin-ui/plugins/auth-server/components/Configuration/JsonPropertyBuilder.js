@@ -11,7 +11,7 @@ function JsonPropertyBuilder({
   path,
   handler,
   parentIsArray,
-  schema,
+  schema
 }) {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
@@ -42,10 +42,7 @@ function JsonPropertyBuilder({
 
   function isStringArray(item) {
     return (
-      (Array.isArray(item) &&
-        item.length >= 1 &&
-        typeof item[0] === 'string') ||
-      (schema?.type === 'array' && schema?.items?.type === 'string')
+      (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') || (schema?.type === 'array' && schema?.items?.type === 'string')
     )
   }
 
@@ -55,10 +52,10 @@ function JsonPropertyBuilder({
     )
   }
   function isObject(item) {
-    if (item != null) {
+    if(item != null){
       return typeof item === 'object'
-    } else {
-      return false
+    }else{
+      return false;
     }
   }
 
@@ -104,7 +101,7 @@ function JsonPropertyBuilder({
         id={propKey}
         name={propKey}
         lsize={lSize}
-        type='number'
+        type="number"
         rsize={lSize}
         label={generateLabel(propKey)}
         handler={handler}
@@ -134,8 +131,8 @@ function JsonPropertyBuilder({
 
   if (isObjectArray(propValue)) {
     return (
-      <Accordion className='mb-2 b-primary' initialOpen>
-        <Accordion.Header className='text-primary'>
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <Accordion.Header className="text-primary">
           {propKey.toUpperCase()}{' '}
         </Accordion.Header>
         <Accordion.Body>
@@ -158,8 +155,8 @@ function JsonPropertyBuilder({
     return (
       <div>
         {show && (
-          <Accordion className='mb-2 b-primary' initialOpen>
-            <Accordion.Header className='text-primary'>
+          <Accordion className="mb-2 b-primary" initialOpen>
+            <Accordion.Header className="text-primary">
               {propKey.toUpperCase().length > 10 ? propKey.toUpperCase() : ''}
             </Accordion.Header>
             <Accordion.Body>
@@ -168,12 +165,12 @@ function JsonPropertyBuilder({
                   <Col sm={11} md={11}></Col>
                   <Col sm={1} md={1}>
                     <Button
-                      color='danger'
-                      size='sm'
+                      color="danger"
+                      size="sm"
                       style={{ float: 'right' }}
                       onClick={removeHandler}
                     >
-                      <i className='fa fa-remove me-2'></i>
+                      <i className="fa fa-remove me-2"></i>
                       {'  '}
                       {t('actions.remove')}
                       {'  '}
@@ -203,7 +200,7 @@ function JsonPropertyBuilder({
 }
 
 JsonPropertyBuilder.propTypes = {
-  schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string }),
+  schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string })
 }
 
 export default JsonPropertyBuilder

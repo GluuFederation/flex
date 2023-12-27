@@ -15,14 +15,14 @@ const GluuTimeoutModal = ({ description = '' }) => {
 
   const handleRefresh = () => {
     dispatch(handleApiTimeout({ isTimeout: false }))
-
+    
     const host = authServerHost ? `${authServerHost}/admin` : null
-    if (host) {
+    if(host) {
       window.location.href = host
     } else {
       window.location.reload()
     }
-  }
+  };
 
   const handler = useCallback(() => {
     dispatch(handleApiTimeout({ isTimeout: false }))
@@ -41,9 +41,7 @@ const GluuTimeoutModal = ({ description = '' }) => {
       </ModalBody>
       <ModalFooter>
         <Button onClick={handler}>{t('actions.close')}</Button>
-        <Button onClick={handleRefresh} color={`primary-${selectedTheme}`}>
-          {t('actions.try_again')}
-        </Button>
+        <Button onClick={handleRefresh} color={`primary-${selectedTheme}`}>{t('actions.try_again')}</Button>
       </ModalFooter>
     </Modal>
   )

@@ -44,21 +44,19 @@ function AuthNListPage() {
   const ldap = useSelector((state) => state.ldapReducer.ldap)
   const scripts = useSelector((state) => state.customScriptReducer.items)
   const scriptsLoading = useSelector(
-    (state) => state.customScriptReducer.loading,
+    (state) => state.customScriptReducer.loading
   )
   const loading = useSelector((state) => state.ldapReducer.loading)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
 
   const customScriptloading = useSelector(
-    (state) => state.customScriptReducer.loading,
+    (state) => state.customScriptReducer.loading
   )
   SetTitle(t('titles.authn'))
 
   useEffect(() => {
     dispatch(getLdapConfig())
-    dispatch(
-      getCustomScriptByType({ action: { type: 'person_authentication' } }),
-    )
+    dispatch(getCustomScriptByType({ action: { type: 'person_authentication' } }))
     dispatch(getAcrsConfig())
 
     return () => {
@@ -151,7 +149,7 @@ function AuthNListPage() {
               loading || customScriptloading
                 ? []
                 : [...authN, ...list.ldap, ...list.scripts].sort(
-                    (item1, item2) => item1.level - item2.level,
+                    (item1, item2) => item1.level - item2.level
                   )
             }
             isLoading={loading || customScriptloading}

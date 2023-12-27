@@ -17,7 +17,7 @@ it('Test gluu typeahead for dn', async () => {
   const { container } = render(
     <I18nextProvider i18n={i18n}>
       <GluuTypeAheadForDn
-        doc_category='openid_client'
+        doc_category="openid_client"
         name={NAME}
         value={VALUE}
         label={LABEL}

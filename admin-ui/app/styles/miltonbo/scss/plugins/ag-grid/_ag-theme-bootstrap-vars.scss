@@ -1,4 +1,4 @@
-@import './../../variables';
+@import "./../../variables";
 
 $font-family: $font-family-base;
 $font-size: 14px;
@@ -12,10 +12,7 @@ $icon-color: #333 !default;
 $alt-icon-color: #fff !default;
 $foreground-color: rgba(black, $foreground-opacity) !default;
 $secondary-foreground-color: $table-head-color;
-$disabled-foreground-color: rgba(
-  $table-head-color,
-  $disabled-foreground-color-opacity
-);
+$disabled-foreground-color: rgba($table-head-color, $disabled-foreground-color-opacity);
 $menu-option-active-color: #bde2e5 !default;
 
 $card-background-color: #f6f6f6 !default;
@@ -41,7 +38,7 @@ $tool-panel-background-color: #f6f6f6 !default;
 
 $chip-background-color: #ecf0f1 !default;
 
-$range-selection-background-color: rgba(120, 120, 120, 0.4) !default;
+$range-selection-background-color: rgba(120, 120, 120, 0.4) !default; 
 $range-selection-highlight-color: rgba(255, 255, 255, 0.4) !default;
 
 $hover-color: inherit !default;
@@ -70,4 +67,4 @@ $value-change-delta-up-color: $success;
 $value-change-delta-down-color: $danger;
 $value-change-value-highlight-background-color: #cec !default;
 
-@import '~ag-grid-community/src/styles/ag-theme-classic/vars/ag-theme-classic-vars';
+@import "~ag-grid-community/src/styles/ag-theme-classic/vars/ag-theme-classic-vars";

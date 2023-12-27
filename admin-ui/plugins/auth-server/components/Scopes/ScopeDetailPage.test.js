@@ -4,7 +4,9 @@ import ScopeDetailPage from './ScopeDetailPage'
 import scopes from './scopes.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
-const Wrapper = ({ children }) => <AppTestWrapper>{children}</AppTestWrapper>
+const Wrapper = ({ children }) => (
+  <AppTestWrapper>{children}</AppTestWrapper>
+)
 const permissions = [
   'https://jans.io/oauth/config/scopes.readonly',
   'https://jans.io/oauth/config/scopes.write',

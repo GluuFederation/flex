@@ -14,9 +14,9 @@ function Gluu404Error() {
           title={t('messages.resource_not_found_title')}
           text={t('messages.resource_not_found_message')}
         />
-        <div className='d-flex mb-5'>
-          <Link to='/'>{t('actions.back_home')}</Link>
-          <Link to='/' className='ms-auto text-decoration-none'>
+        <div className="d-flex mb-5">
+          <Link to="/">{t('actions.back_home')}</Link>
+          <Link to="/" className="ms-auto text-decoration-none">
             {t('links.support')}
           </Link>
         </div>

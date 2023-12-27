@@ -23,57 +23,57 @@ function ScopeDetailPage({ row }) {
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.inum'
+              label="fields.inum"
               value={row.inum}
               doc_category={SCOPE}
-              doc_entry='inum'
+              doc_entry="inum"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.id'
+              label="fields.id"
               value={row.id}
               doc_category={SCOPE}
-              doc_entry='id'
+              doc_entry="id"
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.description'
+              label="fields.description"
               value={row.description}
               doc_category={SCOPE}
-              doc_entry='description'
+              doc_entry="description"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.displayname'
+              label="fields.displayname"
               value={row.displayName}
               doc_category={SCOPE}
-              doc_entry='displayName'
+              doc_entry="displayName"
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.scope_type'
+              label="fields.scope_type"
               value={row.scopeType}
               doc_category={SCOPE}
-              doc_entry='scopeType'
+              doc_entry="scopeType"
               isBadge
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.default_scope'
+              label="fields.default_scope"
               isBadge
               badgeColor={getBadgeTheme(row.defaultScope)}
               value={row.defaultScope ? t('options.yes') : t('options.no')}
               doc_category={SCOPE}
-              doc_entry='defaultScope'
+              doc_entry="defaultScope"
             />
           </Col>
         </Row>
@@ -82,15 +82,15 @@ function ScopeDetailPage({ row }) {
           <Col sm={9}>
             {Object.keys(row.attributes || []).map((item, key) => {
               return (
-                <GluuFormDetailRow
-                  key={key}
-                  label={item}
-                  isBadge={true}
-                  value={String(row.attributes[item])}
-                  doc_category={SCOPE}
-                  doc_entry={`attributes.${item}`}
-                />
-              )
+              <GluuFormDetailRow
+                key={key}
+                label={item}
+                isBadge={true}
+                value={String(row.attributes[item])}
+                doc_category={SCOPE}
+                doc_entry={`attributes.${item}`}
+              />
+            )
             })}
           </Col>
         </Row>

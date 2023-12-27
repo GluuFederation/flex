@@ -1,7 +1,7 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import _ from 'lodash'
-import PropTypes from 'prop-types'
+import React from "react"
+import { Link } from "react-router-dom"
+import _ from "lodash"
+import PropTypes from "prop-types"
 
 import {
   UncontrolledDropdown,
@@ -11,62 +11,62 @@ import {
   ExtendedDropdown,
   ListGroup,
   ListGroupItem,
-  Media,
-} from 'Components'
+  Media
+} from "Components"
 
 /*eslint-disable */
 const activityFeedIcons = [
-  <span className='fa-stack fa-lg fa-fw d-flex me-3'>
-    <i className='fa fa-circle fa-fw fa-stack-2x text-success'></i>
-    <i className='fa fa-check fa-stack-1x fa-fw text-white'></i>
+  <span className="fa-stack fa-lg fa-fw d-flex me-3">
+    <i className="fa fa-circle fa-fw fa-stack-2x text-success"></i>
+    <i className="fa fa-check fa-stack-1x fa-fw text-white"></i>
   </span>,
-  <span className='fa-stack fa-lg fa-fw d-flex me-3'>
-    <i className='fa fa-circle fa-fw fa-stack-2x text-danger'></i>
-    <i className='fa fa-close fa-stack-1x fa-fw text-white'></i>
+  <span className="fa-stack fa-lg fa-fw d-flex me-3">
+    <i className="fa fa-circle fa-fw fa-stack-2x text-danger"></i>
+    <i className="fa fa-close fa-stack-1x fa-fw text-white"></i>
   </span>,
-  <span className='fa-stack fa-lg fa-fw d-flex me-3'>
-    <i className='fa fa-circle fa-fw fa-stack-2x text-warning'></i>
-    <i className='fa fa-exclamation fa-stack-1x fa-fw text-white'></i>
+  <span className="fa-stack fa-lg fa-fw d-flex me-3">
+    <i className="fa fa-circle fa-fw fa-stack-2x text-warning"></i>
+    <i className="fa fa-exclamation fa-stack-1x fa-fw text-white"></i>
   </span>,
-  <span className='fa-stack fa-lg fa-fw d-flex me-3'>
-    <i className='fa fa-circle fa-fw fa-stack-2x text-primary'></i>
-    <i className='fa fa-info fa-stack-1x fa-fw text-white'></i>
-  </span>,
-]
+  <span className="fa-stack fa-lg fa-fw d-flex me-3">
+    <i className="fa fa-circle fa-fw fa-stack-2x text-primary"></i>
+    <i className="fa fa-info fa-stack-1x fa-fw text-white"></i>
+  </span>
+];
 /*eslint-enable */
 
-const NavbarActivityFeed = (props) => (
+const NavbarActivityFeed = props => (
   <UncontrolledDropdown nav inNavbar {...props}>
     <DropdownToggle nav>
       <IconWithBadge
         badge={
-          <Badge pill color='white'>
+          <Badge pill color="white">
             2
           </Badge>
         }
       >
-        <i className='fa fa-bell-o fa-fw' style={{ color: 'white' }} />
+        <i className="fa fa-bell-o fa-fw" style={{ color: 'white' }} />
       </IconWithBadge>
     </DropdownToggle>
     <ExtendedDropdown right>
-      <ExtendedDropdown.Section className='d-flex justify-content-between align-items-center'>
-        <h6 className='mb-0'>Activity Feed</h6>
+      <ExtendedDropdown.Section className="d-flex justify-content-between align-items-center">
+        <h6 className="mb-0">Activity Feed</h6>
         <Badge pill>2</Badge>
       </ExtendedDropdown.Section>
 
       <ExtendedDropdown.Section list>
         <ListGroup>
-          {_.times(2, (index) => (
+          {_.times(2, index => (
             <ListGroupItem key={index} action>
               <Media>
                 <Media left>{activityFeedIcons[index % 4]}</Media>
                 <Media body>
-                  <span className='h6'>
+                  <span className="h6">
                     {'faker.name.firstName()'} {'faker.name.lastName()'}
-                  </span>{' '}
+                  </span>{" "}
                   changed Description to &quot;{'faker.random.words()'}&quot;
-                  <p className='mt-2 mb-1'>{'faker.lorem.sentence()'}</p>
-                  <div className='small mt-2'>
+                  <p className="mt-2 mb-1">{'faker.lorem.sentence()'}</p>
+                  <div className="small mt-2">
                     {'faker.date.past().toString()'}
                   </div>
                 </Media>
@@ -77,19 +77,19 @@ const NavbarActivityFeed = (props) => (
       </ExtendedDropdown.Section>
 
       <ExtendedDropdown.Section
-        className='text-center'
+        className="text-center"
         tag={Link}
-        to='/apps/widgets'
+        to="/apps/widgets"
       >
         See All Notifications
-        <i className='fa fa-angle-right fa-fw ms-2' />
+        <i className="fa fa-angle-right fa-fw ms-2" />
       </ExtendedDropdown.Section>
     </ExtendedDropdown>
   </UncontrolledDropdown>
 )
 NavbarActivityFeed.propTypes = {
   className: PropTypes.string,
-  style: PropTypes.object,
+  style: PropTypes.object
 }
 
 export { NavbarActivityFeed }

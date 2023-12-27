@@ -16,7 +16,7 @@ function GluuInputRow({
   disabled,
   showError = false,
   errorMessage = '',
-  handleChange = null,
+  handleChange = null
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -29,13 +29,7 @@ function GluuInputRow({
   }
   return (
     <FormGroup row>
-      <GluuLabel
-        label={label}
-        size={lsize}
-        doc_category={doc_category}
-        required={required}
-        doc_entry={name}
-      />
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} required={required} doc_entry={name} />
       <Col sm={rsize} style={{ position: 'relative' }}>
         <Input
           id={name}
@@ -44,16 +38,10 @@ function GluuInputRow({
           name={name}
           defaultValue={value}
           onChange={(event) => {
-            if (handleChange) {
-              formik.handleChange(event)
-              handleChange(event)
-            } else {
-              formik.handleChange(event)
-            }
+            if (handleChange) { formik.handleChange(event); handleChange(event) }
+            else { formik.handleChange(event); }
           }}
-          onKeyDown={(evt) =>
-            evt.key === 'e' && type === 'number' && evt.preventDefault()
-          }
+          onKeyDown={(evt) => evt.key === 'e' && type === "number" && evt.preventDefault()}
           disabled={disabled}
         />
         {type == 'password' && (
@@ -65,7 +53,7 @@ function GluuInputRow({
             )}
           </div>
         )}
-        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

@@ -12,7 +12,7 @@ const styles = makeStyles()({
   },
   wave: {
     position: 'relative',
-    top: -75,
+    top: -75
   },
   powered: {
     color: '#fff',
@@ -20,7 +20,7 @@ const styles = makeStyles()({
     position: 'relative',
     top: -130,
     fontWeight: 500,
-  },
+  }
 })
 
 export default styles

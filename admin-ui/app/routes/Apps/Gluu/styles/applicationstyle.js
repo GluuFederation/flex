@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default {
   tableHeaderStyle: {
@@ -20,7 +20,7 @@ export default {
   buttonFlexIconStyles: {
     display: 'flex',
     alignItems: 'center',
-    gap: '6px',
+    gap: '6px'
   },
   customButtonStyle: {
     background: '#00a260',
@@ -59,4 +59,4 @@ export default {
     marginTop: '0px',
     marginRight: '-10px',
   },
-}
+} 

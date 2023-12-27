@@ -13,12 +13,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
-import {
-  setCurrentItem,
-  getScopes,
-  searchScopes,
-  deleteScope,
-} from 'Plugins/auth-server/redux/features/scopeSlice'
+import { setCurrentItem, getScopes, searchScopes, deleteScope } from 'Plugins/auth-server/redux/features/scopeSlice'
 import {
   hasPermission,
   buildPayload,
@@ -80,7 +75,7 @@ function ScopeListPage() {
         return (
           <Link
             to={`/auth-server/clients?scopeInum=${rowData.inum}`}
-            className='common-link'
+            className="common-link"
           >
             {rowData.clients?.length}
           </Link>
@@ -256,7 +251,7 @@ function ScopeListPage() {
             columns={tableColumns}
             data={scopes}
             isLoading={loading}
-            title=''
+            title=""
             actions={myActions}
             options={{
               columnsButton: true,
@@ -280,7 +275,7 @@ function ScopeListPage() {
             name={item.id}
             handler={toggle}
             modal={modal}
-            subject='scope'
+            subject="scope"
             onAccept={onDeletionConfirmed}
           />
         )}

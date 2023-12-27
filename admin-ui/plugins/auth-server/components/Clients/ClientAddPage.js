@@ -14,22 +14,16 @@ function ClientAddPage() {
   let scopes = useSelector((state) => state.scopeReducer.items)
   const scripts = useSelector((state) => state.initReducer.scripts)
   const loading = useSelector((state) => state.oidcReducer.loading)
-  const oidcConfiguration = useSelector(
-    (state) => state.oidcDiscoveryReducer.configuration,
-  )
-  const saveOperationFlag = useSelector(
-    (state) => state.oidcReducer.saveOperationFlag,
-  )
-  const errorInSaveOperationFlag = useSelector(
-    (state) => state.oidcReducer.errorInSaveOperationFlag,
-  )
+  const oidcConfiguration = useSelector((state) => state.oidcDiscoveryReducer.configuration)
+  const saveOperationFlag = useSelector((state) => state.oidcReducer.saveOperationFlag)
+  const errorInSaveOperationFlag = useSelector((state) => state.oidcReducer.errorInSaveOperationFlag)
 
   const dispatch = useDispatch()
 
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
-  const navigate = useNavigate()
+  const navigate =useNavigate()
   useEffect(() => {
     dispatch(emptyScopes())
     buildPayload(userAction, '', options)

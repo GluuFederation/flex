@@ -25,37 +25,28 @@ const commands = {
     try {
       plugins = args.split(',')
     } catch (e) {
-      console.error(
-        'The args passed is invalid or undefined. All plugins will be removed.',
-      )
+      console.error('The args passed is invalid or undefined. All plugins will be removed.')
     }
 
     const pluginsDir = dirParamToPath('plugins')
 
-    fse
-      .readdirSync(pluginsDir)
-      .map((file) => path.join(pluginsDir, file))
-      .filter((path) => fse.statSync(path).isDirectory())
-      .filter((path) => !plugins.includes(this.getLastFolderName(path)))
+    fse.readdirSync(pluginsDir)
+      .map(file => path.join(pluginsDir, file))
+      .filter(path => fse.statSync(path).isDirectory())
+      .filter(path => !plugins.includes(this.getLastFolderName(path)))
       //.filter(path =>     fse.readdirSync(path).length === 0)
-      .map((path) => rimraf.sync(path))
+      .map(path => rimraf.sync(path))
   },
   resetPluginConfig: function () {
     const pluginsDir = dirParamToPath('plugins')
     const configJson = []
 
-    fse
-      .readdirSync(pluginsDir)
-      .map((file) => path.join(pluginsDir, file))
-      .filter((path) => fse.statSync(path).isDirectory())
-      .filter((path) => fse.readdirSync(path).length > 0)
-      .map((path) =>
-        configJson.push(this.createPluginEntry(this.getLastFolderName(path))),
-      )
-    fse.writeFileSync(
-      path.join(dirParamToPath('rootDir'), 'plugins.config.json'),
-      JSON.stringify(configJson, null, 2),
-    )
+    fse.readdirSync(pluginsDir)
+      .map(file => path.join(pluginsDir, file))
+      .filter(path => fse.statSync(path).isDirectory())
+      .filter(path => fse.readdirSync(path).length > 0)
+      .map(path => configJson.push(this.createPluginEntry(this.getLastFolderName(path))))
+    fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'), JSON.stringify(configJson, null, 2))
   },
   addPlugin: function (sourcePath) {
     const pluginsPath = dirParamToPath('plugins')
@@ -64,54 +55,36 @@ const commands = {
       console.error('Plugin zip not found at %s', sourcePath)
       return
     }
-    const lastFolderName = this.getLastFolderName(sourcePath)
-      .split('.')
-      .slice(0, -1)
-      .join('.')
+    const lastFolderName = this.getLastFolderName(sourcePath).split('.').slice(0, -1).join('.')
 
     const pluginPathInRepo = path.join(pluginsPath, lastFolderName)
     if (fse.existsSync(pluginPathInRepo)) {
-      console.error(
-        'Plugin with %s name already present in plugin repo.',
-        lastFolderName,
-      )
+      console.error('Plugin with %s name already present in plugin repo.', lastFolderName)
       return
     }
 
     mkdirp.sync(pluginPathInRepo)
-    fse
-      .createReadStream(sourcePath)
-      .pipe(unzipper.Extract({ path: pluginPathInRepo }))
+    fse.createReadStream(sourcePath).pipe(unzipper.Extract({ path: pluginPathInRepo }))
 
     pluginsObj.push(this.createPluginEntry(lastFolderName))
-    fse.writeFileSync(
-      path.join(dirParamToPath('rootDir'), 'plugins.config.json'),
-      JSON.stringify(pluginsObj, null, 2),
-    )
+    fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'), JSON.stringify(pluginsObj, null, 2))
+
   },
   removePlugin: function (pluginName) {
     try {
       const pluginsPath = dirParamToPath('plugins')
-      const pluginDirName = path
-        .dirname(
-          pluginsObj.filter((ele) => ele.key === pluginName)[0].metadataFile,
-        )
-        .replace('./', '')
+      const pluginDirName = path.dirname(pluginsObj.filter(ele => ele.key === pluginName)[0].metadataFile).replace('./', '')
       const pluginPathInRepo = path.join(pluginsPath, pluginDirName)
 
       if (fse.existsSync(pluginPathInRepo)) {
         rimraf.sync(pluginPathInRepo)
         fse.writeFileSync(
           path.join(dirParamToPath('rootDir'), 'plugins.config.json'),
-          JSON.stringify(pluginsObj.filter((ele) => ele.key !== pluginName)),
-          null,
-          2,
+          JSON.stringify(pluginsObj.filter(ele => ele.key !== pluginName)), null, 2
         )
       }
     } catch (e) {
-      console.error(
-        'Error in enabling plugin. Check the plugin keys entered in args.',
-      )
+      console.error('Error in enabling plugin. Check the plugin keys entered in args.')
     }
   },
   createPluginEntry: function (pluginKey) {
@@ -126,19 +99,15 @@ const commands = {
       return
     }
     console.log('Following plugins are present.')
-    pluginsObj.forEach((ele) => {
+    pluginsObj.forEach(ele => {
       console.log('- ' + ele.key)
     })
   },
   getLastFolderName: function (path) {
-    return path
-      .replace(/\\/g, '/')
-      .split('/')
-      .filter(function (el) {
-        return el.trim().length > 0
-      })
-      .pop()
-  },
+    return path.replace(/\\/g, '/').split('/').filter(function (el) {
+      return el.trim().length > 0
+    }).pop()
+  }
 }
 
 program
@@ -148,7 +117,7 @@ program
   .option('-ap, --addPlugin []')
   .option('-rp, --removePlugin []')
   .parse(process.argv)
-const options = program.opts()
+const options = program.opts();
 for (const commandName in commands) {
   // eslint-disable-next-line no-prototype-builtins
   if (commands.hasOwnProperty(commandName) && options[commandName]) {

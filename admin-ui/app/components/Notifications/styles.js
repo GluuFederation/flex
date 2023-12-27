@@ -1,4 +1,4 @@
-import { makeStyles } from 'tss-react/mui'
+import { makeStyles } from "tss-react/mui"; 
 
 const styles = makeStyles()((theme) => ({
   root: {
@@ -17,8 +17,8 @@ const styles = makeStyles()((theme) => ({
     color: '#FFFFFF',
   },
   topElm: {
-    zIndex: 9999,
-  },
+    zIndex: 9999
+  }
 }))
 
 export default styles

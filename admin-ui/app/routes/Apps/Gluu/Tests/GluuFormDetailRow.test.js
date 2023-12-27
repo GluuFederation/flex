@@ -8,7 +8,7 @@ const VALUE = 'openid'
 
 it('Should render one label and a badge', () => {
   function handler() {
-    console.log('========')
+    console.log("========")
   }
   render(
     <AppTestWrapper>

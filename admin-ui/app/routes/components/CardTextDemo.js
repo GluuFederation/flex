@@ -7,17 +7,19 @@ const CardTextDemo = (props) => {
   const { t } = useTranslation()
   return (
     <CardText>
-      <span className='me-2'>#{props.cardNo}</span>
-      {t('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')}
-      {t('Nulla nisl elit, porta a sapien eget, fringilla sagittis ex.')}
+      <span className="me-2">
+        #{ props.cardNo }
+      </span> 
+      {t("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")} 
+      {t("Nulla nisl elit, porta a sapien eget, fringilla sagittis ex.")}
     </CardText>
   )
 }
 CardTextDemo.propTypes = {
-  cardNo: PropTypes.node,
+  cardNo: PropTypes.node
 }
 CardTextDemo.defaultProps = {
-  cardNo: '?.??',
+  cardNo: "?.??"
 }
 
 export { CardTextDemo }

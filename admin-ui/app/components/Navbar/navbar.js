@@ -1,7 +1,7 @@
-import React from 'react'
-import classNames from 'classnames'
-import PropTypes from 'prop-types'
-import { Navbar as BSNavbar, Container } from 'reactstrap'
+import React from "react"
+import classNames from "classnames"
+import PropTypes from "prop-types"
+import { Navbar as BSNavbar, Container } from "reactstrap"
 
 const Navbar = ({
   themed,
@@ -16,10 +16,10 @@ const Navbar = ({
 }) => {
   let navbarClass = classNames(
     {
-      'navbar-shadow': shadow,
+      "navbar-shadow": shadow
     },
-    'navbar-multi-collapse',
-    className,
+    "navbar-multi-collapse",
+    className
   )
 
   // When a combination of light or dark is present
@@ -27,7 +27,7 @@ const Navbar = ({
   if ((dark || light) && color) {
     navbarClass = classNames(
       navbarClass,
-      `navbar-${light ? 'light' : ''}${dark ? 'dark' : ''}-${color}`,
+      `navbar-${light ? "light" : ""}${dark ? "dark" : ""}-${color}`
     )
   }
 
@@ -43,7 +43,7 @@ const Navbar = ({
       {...otherProps}
     >
       {
-        <Container className='navbar-collapse-wrap' fluid={fluid}>
+        <Container className="navbar-collapse-wrap" fluid={fluid}>
           {children}
         </Container>
       }
@@ -58,11 +58,11 @@ Navbar.propTypes = {
   children: PropTypes.node,
   color: PropTypes.string,
   dark: PropTypes.bool,
-  light: PropTypes.bool,
+  light: PropTypes.bool
 }
 Navbar.defaultProps = {
   fluid: false,
-  themed: false,
+  themed: false
 }
 
 export { Navbar }

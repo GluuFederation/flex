@@ -16,15 +16,12 @@ const profileDetailsSlice = createSlice({
     setUserProfileDetails: (state, action) => {
       state.profileDetails = action.payload
     },
-    getProfileDetails: () => {},
+    getProfileDetails: () => {}
   },
 })
 
-export const {
-  checkIsLoadingDetails,
-  getProfileDetails,
-  setUserProfileDetails,
-} = profileDetailsSlice.actions
+export const { checkIsLoadingDetails, getProfileDetails, setUserProfileDetails } =
+  profileDetailsSlice.actions
 
 export default profileDetailsSlice.reducer
 reducerRegistry.register('profileDetailsReducer', profileDetailsSlice.reducer)

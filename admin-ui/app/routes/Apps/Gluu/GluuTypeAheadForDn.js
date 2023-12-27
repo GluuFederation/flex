@@ -36,7 +36,7 @@ function GluuTypeAheadForDn({
   maxResults = undefined,
   isLoading = false,
   placeholder = undefined,
-  onChange,
+  onChange
 }) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -48,13 +48,7 @@ function GluuTypeAheadForDn({
 
   return (
     <FormGroup row>
-      <GluuLabel
-        label={label}
-        size={lsize}
-        required={required}
-        doc_category={doc_category}
-        doc_entry={doc_entry || name}
-      />
+      <GluuLabel label={label} size={lsize} required={required} doc_category={doc_category} doc_entry={doc_entry || name} />
       <Col sm={rsize}>
         <AsyncTypeahead
           isLoading={isLoading}
@@ -101,7 +95,7 @@ function GluuTypeAheadForDn({
           defaultSelected={value}
         />
         <ThemeProvider theme={theme}>
-          <Typography variant='subtitle1'>
+          <Typography variant="subtitle1">
             {t('placeholders.typeahead_holder_message')}
           </Typography>
         </ThemeProvider>

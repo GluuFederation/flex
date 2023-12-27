@@ -61,13 +61,9 @@ describe('sessions module api calls', () => {
         .withReducer(rootReducer, initialState)
         .run(false)
 
-      const sessions = result.storeState.sessionReducer.items.map(
-        (item) => item.userDn !== testSession.userDn,
-      )
+      const sessions = result.storeState.sessionReducer.items.map((item) => item.userDn !== testSession.userDn)
       expect(result.returnValue instanceof Error).toBe(false)
-      expect(result.storeState.sessionReducer.items?.sort()).toEqual(
-        sessions?.sort(),
-      )
+      expect(result.storeState.sessionReducer.items?.sort()).toEqual(sessions?.sort())
     } else {
       log('sessions are not available or empty.')
     }

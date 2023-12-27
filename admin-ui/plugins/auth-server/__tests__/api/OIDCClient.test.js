@@ -8,10 +8,7 @@ import { reducer as oidcReducer } from 'Plugins/auth-server/redux/features/oidcS
 import authReducer from 'Redux/features/authSlice'
 import { expectSaga } from 'redux-saga-test-plan'
 import { combineReducers } from '@reduxjs/toolkit'
-import {
-  fetchApiTokenWithDefaultScopes,
-  fetchApiAccessToken,
-} from 'Redux/api/backend-api'
+import { fetchApiTokenWithDefaultScopes, fetchApiAccessToken } from 'Redux/api/backend-api'
 import { log } from 'console'
 
 const action_data = {
@@ -109,7 +106,7 @@ const formInitState = (token, issuer) => {
 
 beforeAll(async () => {
   try {
-    await beforeAllAsync()
+    await beforeAllAsync() 
   } catch (error) {
     error(error.message)
   }

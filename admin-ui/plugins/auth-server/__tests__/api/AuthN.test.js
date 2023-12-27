@@ -41,21 +41,19 @@ describe('api tests for authn module', () => {
       .silentRun(false)
 
     result.returnValue?.entries?.find(
-      (item) => item.name === 'simple_password_auth',
+      (item) => item.name === 'simple_password_auth'
     )
     expect(result.returnValue instanceof Error).toBe(false)
     if (result.returnValue.entries) {
       expect(result.storeState.customScriptReducer.items).toBe(
-        result.returnValue.entries,
+        result.returnValue.entries
       )
     }
   })
 
   it('should save the default authn method to simple_password_auth', async () => {
     const result = await expectSaga(editSimpleAuthAcr, {
-      payload: {
-        data: { authenticationMethod: { defaultAcr: 'simple_password_auth' } },
-      },
+      payload: { data: { authenticationMethod: { defaultAcr: "simple_password_auth" } } },
     })
       .withReducer(rootReducer, initialState)
       .silentRun(false)

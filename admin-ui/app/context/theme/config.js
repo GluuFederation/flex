@@ -8,8 +8,8 @@ export const themeConfig = {
       color: '#FFFFFF',
     },
     dashboard: {
-      supportCard: '#274560',
-    },
+      supportCard: '#274560'
+    }
   },
   darkBlue: {
     background: '#284461',
@@ -20,8 +20,8 @@ export const themeConfig = {
       color: '#FFFFFF',
     },
     dashboard: {
-      supportCard: '#9DBDE2',
-    },
+      supportCard: '#9DBDE2'
+    }
   },
   lightBlue: {
     background: '#9DBDE2',
@@ -32,8 +32,8 @@ export const themeConfig = {
       color: '#FFFFFF',
     },
     dashboard: {
-      supportCard: '#274560',
-    },
+      supportCard: '#274560'
+    }
   },
   lightGreen: {
     background: '#3BC391',
@@ -44,9 +44,9 @@ export const themeConfig = {
       color: '#FFFFFF',
     },
     dashboard: {
-      supportCard: '#274560',
-    },
-  },
+      supportCard: '#274560'
+    }
+  }
 }
 
 const getThemeColor = (config) => {

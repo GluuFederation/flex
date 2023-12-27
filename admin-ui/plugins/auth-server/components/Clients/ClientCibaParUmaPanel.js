@@ -180,7 +180,7 @@ function ClientCibaParUmaPanel({
               onChange={(e) => {
                 formik.setFieldValue(
                   'rptAsJwt',
-                  e.target.value === 'true' ? 'true' : 'false',
+                  e.target.value === 'true' ? 'true' : 'false'
                 )
               }}
             >
@@ -393,7 +393,7 @@ function ClientCibaParUmaPanel({
               <GluuLabel label={t('fields.creationTime')} size={3} />
               <Col sm={9} className='top-5'>
                 {moment(selectedUMA?.creationDate).format(
-                  'ddd, MMM DD, YYYY h:mm:ss A',
+                  'ddd, MMM DD, YYYY h:mm:ss A'
                 )}
               </Col>
             </FormGroup>
@@ -427,5 +427,5 @@ ClientCibaParUmaPanel.propTypes = {
   viewOnly: PropTypes.bool,
   setCurrentStep: PropTypes.any,
   sequence: PropTypes.any,
-  umaResources: PropTypes.any,
+  umaResources: PropTypes.any
 }

@@ -12,12 +12,11 @@ function ApiKeyRedirect({
   islicenseCheckResultLoaded,
   isLicenseActivationResultLoaded,
   roleNotFound,
-  isConfigValid,
+  isConfigValid
 }) {
   const { t } = useTranslation()
   const { isTimeout } = useSelector((state) => state.initReducer)
-  const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } =
-    useSelector((state) => state.licenseReducer)
+  const { isValidatingFlow, isNoValidLicenseKeyFound, isUnderThresholdLimit } = useSelector((state) => state.licenseReducer)
   const backendStatus = useSelector((state) => state.authReducer.backendStatus)
 
   return (
@@ -25,51 +24,41 @@ function ApiKeyRedirect({
       <Container>
         {isConfigValid == false ? (
           <UploadSSA />
-        ) : (
-          !isTimeout &&
-          isUnderThresholdLimit && (
-            <>
-              {!isLicenseValid &&
-              islicenseCheckResultLoaded &&
-              isConfigValid &&
-              !isValidatingFlow &&
-              isNoValidLicenseKeyFound ? (
-                <ApiKey />
-              ) : (
-                backendStatus.active && (
-                  <div
-                    style={{
-                      backgroundColor: 'transparent',
-                      margin: 'auto',
-                      marginTop: '25%',
-                    }}
-                  >
-                    <img
-                      style={{
-                        display: 'block',
-                        marginLeft: 'auto',
-                        marginTop: 'auto',
-                        marginRight: 'auto',
-                        width: '260px',
-                        height: 'auto',
-                      }}
-                      src={require('Images/gif/loader.gif')}
-                      alt='loading...'
-                    />
-                    <div className='initial-loader__row'>Redirecting...</div>
-                  </div>
-                )
-              )}
-            </>
-          )
+        ) : !isTimeout && isUnderThresholdLimit && (
+          <>
+            {!isLicenseValid && islicenseCheckResultLoaded && isConfigValid && !isValidatingFlow && isNoValidLicenseKeyFound ? (
+              <ApiKey />
+            ) : backendStatus.active && (
+              <div
+                style={{
+                  backgroundColor: 'transparent',
+                  margin: 'auto',
+                  marginTop: '25%',
+                }}
+              >
+                <img
+                  style={{
+                    display: 'block',
+                    marginLeft: 'auto',
+                    marginTop: 'auto',
+                    marginRight: 'auto',
+                    width: '260px',
+                    height: 'auto',
+                  }}
+                  src={require('Images/gif/loader.gif')}
+                  alt='loading...'
+                />
+                <div className='initial-loader__row'>Redirecting...</div>
+              </div>
+            )}
+          </>
         )}
 
         {!backendStatus.active && (
           <GluuServiceDownModal
             statusCode={backendStatus.statusCode}
             message={
-              backendStatus.errorMessage ||
-              'Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).'
+              backendStatus.errorMessage || 'Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).'
             }
           />
         )}
@@ -82,6 +71,7 @@ function ApiKeyRedirect({
             }
           />
         )}
+
       </Container>
     </React.Fragment>
   )

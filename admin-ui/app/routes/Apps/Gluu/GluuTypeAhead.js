@@ -31,33 +31,23 @@ function GluuTypeAhead({
   disabled,
   showError = false,
   errorMessage,
-  allowNew = true,
+  allowNew = true
 }) {
   const { t } = useTranslation()
   return (
+    
     <FormGroup row>
       {required ? (
-        <GluuLabel
-          label={label}
-          size={lsize}
-          required
-          doc_category={doc_category}
-          doc_entry={doc_entry || name}
-        />
+        <GluuLabel label={label} size={lsize} required doc_category={doc_category} doc_entry={doc_entry || name} />
       ) : (
-        <GluuLabel
-          label={label}
-          size={lsize}
-          doc_category={doc_category}
-          doc_entry={doc_entry || name}
-        />
+        <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} />
       )}
       <Col sm={rsize}>
         <Typeahead
           allowNew={allowNew}
           disabled={disabled}
           ref={forwardRef}
-          emptyLabel=''
+          emptyLabel=""
           labelKey={name}
           onChange={(selected) => {
             if (formik) {
@@ -74,11 +64,11 @@ function GluuTypeAhead({
           options={options}
         />
         <ThemeProvider theme={theme}>
-          <Typography variant='subtitle1'>
+          <Typography variant="subtitle1">
             {t('placeholders.typeahead_holder_message')}
           </Typography>
         </ThemeProvider>
-        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

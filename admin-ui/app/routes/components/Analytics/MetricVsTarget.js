@@ -12,19 +12,19 @@ import {
 const MetricVsTarget = (props) => {
   return (
     <React.Fragment>
-      <h2 className='pt-4 pb-2'>{props.value}</h2>
+      <h2 className="pt-4 pb-2">{props.value}</h2>
       <Progress
         value={`${props.progressbarValue}`}
         color={`${props.progressbarColor}`}
-        className='mb-2'
+        className="mb-2"
         style={{ height: '5px' }}
       />
-      <div className='mb-3'>Target: {props.targetValue}</div>
-      <InputGroup className='mb-1'>
-        <InputGroupAddon addonType='prepend'>
+      <div className="mb-3">Target: {props.targetValue}</div>
+      <InputGroup className="mb-1">
+        <InputGroupAddon addonType="prepend">
           <InputGroupText>Daily Target:</InputGroupText>
         </InputGroupAddon>
-        <Input placeholder='Enter...' />
+        <Input placeholder="Enter..." />
       </InputGroup>
     </React.Fragment>
   )

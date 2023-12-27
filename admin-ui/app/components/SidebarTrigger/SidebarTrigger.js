@@ -18,7 +18,7 @@ const SidebarTrigger = (props) => {
     >
       {pageConfig.sidebarCollapsed && (
         <i
-          className='fa fa-bars fa-fw fa-2x'
+          className="fa fa-bars fa-fw fa-2x"
           style={{
             color: props.color ? props.color : 'white',
             cursor: 'pointer',
@@ -27,7 +27,7 @@ const SidebarTrigger = (props) => {
       )}
       {!pageConfig.sidebarCollapsed && !props.showCollapseonly && (
         <i
-          className='fa fa-times fa-fw fa-2x'
+          className="fa fa-times fa-fw fa-2x"
           style={{
             color: props.color ? props.color : 'white',
             cursor: 'pointer',

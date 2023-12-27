@@ -5,7 +5,7 @@ import styleConfig from './config'
 class CustomPolarGrid extends PolarGrid {
   static defaultProps = {
     ...PolarGrid.defaultProps,
-    ...styleConfig.polarGrid,
+    ...styleConfig.polarGrid
   }
 }
 

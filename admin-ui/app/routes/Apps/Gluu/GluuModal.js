@@ -17,11 +17,11 @@ function GluuModal({ title, modal, handler, onAccept }) {
   const selectedTheme = theme.state.theme
 
   return (
-    <Modal isOpen={modal} toggle={handler} className='modal-outline-primary'>
+    <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
       <ModalHeader toggle={handler}>
         <i
           style={{ color: 'red' }}
-          className='fa fa-2x fa-item fa-fw modal-icon mb-3'
+          className="fa fa-2x fa-item fa-fw modal-icon mb-3"
         ></i>
         {title}
       </ModalHeader>

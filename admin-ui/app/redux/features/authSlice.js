@@ -17,7 +17,7 @@ const initialState = {
   backendStatus: {
     active: true,
     errorMessage: null,
-    statusCode: null,
+    statusCode: null
   },
 }
 
@@ -35,10 +35,7 @@ const authSlice = createSlice({
     },
     getOAuth2ConfigResponse: (state, action) => {
       if (action.payload?.config && action.payload?.config !== -1) {
-        const newDataConfigObject = {
-          ...state.config,
-          ...action.payload.config,
-        }
+        const newDataConfigObject = { ...state.config, ...action.payload.config }
         state.config = newDataConfigObject
       }
     },
@@ -61,10 +58,7 @@ const authSlice = createSlice({
     getAPIAccessToken: (state, action) => {},
     getAPIAccessTokenResponse: (state, action) => {
       if (action.payload?.access_token) {
-        state.token = {
-          access_token: action.payload.access_token,
-          scopes: action.payload.scopes,
-        }
+        state.token = { access_token: action.payload.access_token, scopes: action.payload.scopes }
         state.issuer = action.payload.issuer
         state.permissions = action.payload.scopes
         state.isAuthenticated = true
@@ -80,7 +74,7 @@ const authSlice = createSlice({
       state.defaultToken = action.payload
       state.issuer = action.payload.issuer
     },
-  },
+  }
 })
 
 export const {
@@ -95,7 +89,7 @@ export const {
   getUserLocation,
   getUserLocationResponse,
   setApiDefaultToken,
-  setBackendStatus,
+  setBackendStatus
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)

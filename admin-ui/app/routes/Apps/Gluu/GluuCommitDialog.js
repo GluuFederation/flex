@@ -53,17 +53,12 @@ const GluuCommitDialog = ({
   }
 
   return (
-    <Modal
-      isOpen={modal}
-      size={'lg'}
-      toggle={closeModal}
-      className='modal-outline-primary'
-    >
+    <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">
       <ModalHeader toggle={closeModal}>
         <i
           onClick={closeModal}
           style={{ color: 'green' }}
-          className='fa fa-2x fa-info fa-fw modal-icon mb-3'
+          className="fa fa-2x fa-info fa-fw modal-icon mb-3"
         ></i>
         {!label || label === '' ? t('messages.action_commit_question') : label}
       </ModalHeader>
@@ -73,24 +68,25 @@ const GluuCommitDialog = ({
           operations.map((item, key) => (
             <FormGroup row key={key}>
               <Col sm={1}>Set</Col>
-              <Col sm={5} style={{ overflow: 'auto' }}>
+              <Col sm={5} style={{ overflow:"auto" }}>
                 <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
               </Col>
               <Col sm={1}>to</Col>
-              <Col sm={5} style={{ overflow: 'auto' }}>
-                {Array.isArray(item.value) ? (
+              <Col sm={5} style={{ overflow:"auto" }}>
+                {Array.isArray(item.value) ? 
                   <>
-                    {item.value.map((data, index) => (
-                      <Badge color={`primary-${selectedTheme}`} key={index}>
-                        {String(data)}
-                      </Badge>
-                    ))}
-                  </>
-                ) : (
+                    {
+                      item.value.map((data, index) => 
+                        <Badge color={`primary-${selectedTheme}`} key={index}>
+                          {String(data)}
+                        </Badge>
+                      )
+                    }
+                  </>:
                   <Badge color={`primary-${selectedTheme}`}>
                     {String(item.value)}
                   </Badge>
-                )}
+                }
               </Col>
             </FormGroup>
           ))}
@@ -109,7 +105,7 @@ const GluuCommitDialog = ({
               value={userMessage}
             />
             {userMessage.length < 10 && (
-              <span className='text-danger'>
+              <span className="text-danger">
                 {10 - userMessage.length} {userMessage.length ? ' more' : ''}{' '}
                 characters required
               </span>
@@ -120,12 +116,12 @@ const GluuCommitDialog = ({
       <ModalFooter>
         {active && (
           <Button color={`primary-${selectedTheme}`} onClick={handleAccept}>
-            <i className='fa fa-check-circle me-2'></i>
+            <i className="fa fa-check-circle me-2"></i>
             {t('actions.accept')}
           </Button>
         )}{' '}
         <Button style={applicationStyle.buttonStyle} onClick={closeModal}>
-          <i className='fa fa-remove me-2'></i>
+          <i className="fa fa-remove me-2"></i>
           {t('actions.no')}
         </Button>
       </ModalFooter>

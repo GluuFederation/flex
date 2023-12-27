@@ -15,12 +15,8 @@ function ScopeAddPage() {
   const loading = useSelector((state) => state.scopeReducer.loading)
   const scripts = useSelector((state) => state.initReducer.scripts)
   const attributes = useSelector((state) => state.initReducer.attributes)
-  const saveOperationFlag = useSelector(
-    (state) => state.scopeReducer.saveOperationFlag,
-  )
-  const errorInSaveOperationFlag = useSelector(
-    (state) => state.scopeReducer.errorInSaveOperationFlag,
-  )
+  const saveOperationFlag = useSelector((state) => state.scopeReducer.saveOperationFlag)
+  const errorInSaveOperationFlag = useSelector((state) => state.scopeReducer.errorInSaveOperationFlag)
 
   const dispatch = useDispatch()
 
@@ -73,7 +69,7 @@ function ScopeAddPage() {
         message={t('messages.error_in_saving')}
         show={errorInSaveOperationFlag}
       />
-      <Card className='mb-3' style={applicationStyle.mainCard}>
+      <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <ScopeForm
             scope={scope}

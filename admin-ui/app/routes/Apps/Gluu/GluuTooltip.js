@@ -13,12 +13,12 @@ function GluuTooltip(props) {
     <div data-tooltip-id={props.doc_entry} data-tip data-for={props.doc_entry}>
       {props.children}
       <ReactTooltip
-        type='success'
+        type="success"
         id={props.doc_entry}
         className={`type-${selectedTheme}`}
         data-testid={props.doc_entry}
-        place='bottom'
-        role='tooltip'
+        place="bottom"
+        role="tooltip"
         style={{ zIndex: 101, maxWidth: '45vw' }}
       >
         {props.isDirect

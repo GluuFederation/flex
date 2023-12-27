@@ -8,11 +8,11 @@ import {
   Button,
   Label,
   EmptyLayout,
-  ThemeConsumer,
+  ThemeConsumer
 } from 'Components'
 
-import { HeaderAuth } from 'Routes/components/Pages/HeaderAuth'
-import { FooterAuth } from 'Routes/components/Pages/FooterAuth'
+import { HeaderAuth } from "Routes/components/Pages/HeaderAuth"
+import { FooterAuth } from "Routes/components/Pages/FooterAuth"
 import { useTranslation } from 'react-i18next'
 
 const LockScreen = () => {
@@ -20,43 +20,43 @@ const LockScreen = () => {
   return (
     <EmptyLayout>
       <EmptyLayout.Section center>
-        {/* START Header */}
-        <HeaderAuth title={t('Your Session is Blocked')} />
-        {/* END Header */}
-        {/* START Form */}
-        <Form className='mb-3'>
+        { /* START Header */}
+        <HeaderAuth 
+          title={t("Your Session is Blocked")}
+        />
+        { /* END Header */}
+        { /* START Form */}
+        <Form className="mb-3">
           <FormGroup>
-            <Label for='password'>{t('Password')}</Label>
-            <Input
-              type='password'
-              name='password'
-              id='password'
-              placeholder={t('Enter the password to continue...')}
-              className='bg-white'
-            />
+            <Label for="password">
+              {t("Password")}
+            </Label>
+            <Input type="password" name="password" id="password" placeholder={t("Enter the password to continue...")} className="bg-white" />
           </FormGroup>
           <ThemeConsumer>
-            {({ color }) => (
-              <Button color={color} block tag={Link} to='/'>
-                {t('Unlock')}
-              </Button>
-            )}
+            {
+              ({ color }) => (
+                <Button color={ color } block tag={ Link } to="/">
+                  {t("Unlock")}
+                </Button>
+              )
+            }
           </ThemeConsumer>
         </Form>
-        {/* END Form */}
-        {/* START Bottom Links */}
-        <div className='d-flex mb-5'>
-          <Link to='/pages/login' className='text-decoration-none'>
-            {t('Sign as Diffrent User')}
+        { /* END Form */}
+        { /* START Bottom Links */}
+        <div className="d-flex mb-5">
+          <Link to="/pages/login" className="text-decoration-none">
+            {t("Sign as Diffrent User")}
           </Link>
-          <Link to='/' className='ms-auto text-decoration-none'>
-            <i className='fa fa-angle-left me-2'></i> {t('Back to Home')}
+          <Link to="/" className="ms-auto text-decoration-none">
+            <i className="fa fa-angle-left me-2"></i> {t("Back to Home")}
           </Link>
         </div>
-        {/* END Bottom Links */}
-        {/* START Footer */}
+        { /* END Bottom Links */}
+        { /* START Footer */}
         <FooterAuth />
-        {/* END Footer */}
+        { /* END Footer */}
       </EmptyLayout.Section>
     </EmptyLayout>
   )

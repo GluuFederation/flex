@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import GluuSingleValueCompleter from '../../../../app/routes/Apps/Gluu/GluuSingleValueCompleter'
@@ -72,20 +78,20 @@ const MappingAddDialogForm = ({
       <Modal
         isOpen={modal}
         toggle={handler}
-        className='modal-outline-primary modal-lg'
+        className="modal-outline-primary modal-lg"
       >
         <ModalHeader toggle={handler}>
           <i
             style={{ color: 'green' }}
-            className='fa fa-2x fa-info fa-fw modal-icon mb-3'
+            className="fa fa-2x fa-info fa-fw modal-icon mb-3"
           ></i>
           {t('messages.new_role')}
         </ModalHeader>
         <ModalBody>{t('messages.adding_new_permission')}</ModalBody>
         <ModalBody>
           <GluuSingleValueCompleter
-            name='api_role'
-            label='fields.role'
+            name="api_role"
+            label="fields.role"
             options={autoCompleteRoles}
             value={[]}
             hideHelperMessage
@@ -95,8 +101,8 @@ const MappingAddDialogForm = ({
             doc_category={DOC_CATEGORY}
           ></GluuSingleValueCompleter>
           <GluuTypeAhead
-            name='addMappingRolePermissions'
-            label='Permissions'
+            name="addMappingRolePermissions"
+            label="Permissions"
             onChange={(selected) => {
               setSelectedPermissions(selected)
             }}

@@ -31,37 +31,35 @@ function GluuNavBar() {
   }, [])
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <Navbar expand='lg' themed>
+      <Navbar expand="lg" themed>
         <Nav>
           {showCollapse && (
             <NavItem>
-              <SidebarTrigger id='navToggleBtn' />
+              <SidebarTrigger id="navToggleBtn" />
             </NavItem>
           )}
         </Nav>
-        <Box display='flex' justifyContent='space-between' width='100%'>
-          <h3 className='page-title' id='page-title'>
-            Dashboard
-          </h3>
-          <Nav className='ms-auto' pills>
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <h3 className="page-title" id="page-title">Dashboard</h3>
+          <Nav className="ms-auto" pills>
             <Notifications />
             <LanguageMenu userInfo={userInfo} />
             <ThemeSetting userInfo={userInfo} />
-            <UncontrolledDropdown nav direction='down'>
+            <UncontrolledDropdown nav direction="down">
               <DropdownToggle nav>
                 <Avatar.Image
-                  size='md'
+                  size="md"
                   src={randomAvatar()}
                   addOns={[
                     <AvatarAddOn.Icon
-                      className='fa fa-circle'
-                      color='white'
-                      key='avatar-icon-bg'
+                      className="fa fa-circle"
+                      color="white"
+                      key="avatar-icon-bg"
                     />,
                     <AvatarAddOn.Icon
-                      className='fa fa-circle'
-                      color='success'
-                      key='avatar-icon-fg'
+                      className="fa fa-circle"
+                      color="success"
+                      key="avatar-icon-fg"
                     />,
                   ]}
                 />

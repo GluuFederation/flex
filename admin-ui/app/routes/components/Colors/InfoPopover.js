@@ -1,6 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { UncontrolledPopover, PopoverHeader, PopoverBody } from 'Components'
+import {
+  UncontrolledPopover,
+  PopoverHeader,
+  PopoverBody
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 export const POPOVER_BODY_PARTS = [
@@ -13,35 +17,29 @@ export const POPOVER_BODY_PARTS = [
   '.bb-',
   '.by-',
   '.bx-',
-  '.btn-',
+  '.btn-'
 ]
 
-export const InfoPopover = ({
-  colorId,
-  children,
-  className,
-  tag: Tag,
-  ...otherProps
-}) => {
+export const InfoPopover = ({ colorId, children, className, tag: Tag, ...otherProps }) => {
   const { t } = useTranslation()
   return (
     <React.Fragment>
-      <Tag
-        color='link'
-        id={`color-popover--${colorId}`}
-        className={className}
-        {...otherProps}
-      >
-        {children}
+      <Tag color="link" id={ `color-popover--${ colorId }` } className={ className } { ...otherProps }>
+        { children }
       </Tag>
-      <UncontrolledPopover target={`color-popover--${colorId}`} placement='top'>
+      <UncontrolledPopover
+        target={ `color-popover--${ colorId }` }
+        placement="top"
+      >
         <PopoverHeader>
-          {t('Color Options for') + ' '} {colorId}
+          {t("Color Options for")+" "} { colorId }
         </PopoverHeader>
         <PopoverBody>
-          {POPOVER_BODY_PARTS.map((partText, index) => (
-            <span className='me-1' key={index}>{`${partText}${colorId}`}</span>
-          ))}
+          {
+            POPOVER_BODY_PARTS.map((partText, index) =>
+              <span className="me-1" key={ index }>{ `${partText}${colorId}` }</span>
+            )
+          }   
         </PopoverBody>
       </UncontrolledPopover>
     </React.Fragment>
@@ -51,8 +49,11 @@ InfoPopover.propTypes = {
   colorId: PropTypes.string,
   children: PropTypes.node,
   className: PropTypes.string,
-  tag: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  tag: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func
+  ])
 }
 InfoPopover.defaultProps = {
-  tag: 'a',
+  tag: 'a'
 }

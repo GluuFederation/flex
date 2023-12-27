@@ -1,16 +1,16 @@
-import { JANS_LINK_READ, JANS_LINK_WRITE } from 'Utils/PermChecker'
-import JansLinkPage from './components/CacheRefresh/JansLinkPage'
-import cacheRefreshReducer from './redux/features/CacheRefreshSlice'
-import cacheRefreshSaga from './redux/sagas/CacheRefreshSaga'
-import SourceBackendServerForm from './components/SourceBackendServers/SourceBackendServerForm'
+import { JANS_LINK_READ, JANS_LINK_WRITE } from "Utils/PermChecker";
+import JansLinkPage from "./components/CacheRefresh/JansLinkPage";
+import cacheRefreshReducer from "./redux/features/CacheRefreshSlice";
+import cacheRefreshSaga from "./redux/sagas/CacheRefreshSaga";
+import SourceBackendServerForm from "./components/SourceBackendServers/SourceBackendServerForm";
 
-const PLUGIN_BASE_PATH = '/jans-link'
+const PLUGIN_BASE_PATH = "/jans-link";
 
 const pluginMetadata = {
   menus: [
     {
-      title: 'menus.jans_link',
-      icon: 'jans_link',
+      title: "menus.jans_link", 
+      icon: "jans_link", 
       path: PLUGIN_BASE_PATH,
       permission: JANS_LINK_READ,
     },
@@ -54,6 +54,6 @@ const pluginMetadata = {
   ],
   reducers: [{ name: 'cacheRefreshReducer', reducer: cacheRefreshReducer }],
   sagas: [cacheRefreshSaga()],
-}
+};
 
-export default pluginMetadata
+export default pluginMetadata;

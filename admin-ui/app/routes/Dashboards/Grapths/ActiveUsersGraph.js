@@ -15,16 +15,16 @@ function ActiveUsersGraph({ data }) {
   const { t } = useTranslation()
 
   return (
-    <ResponsiveContainer className='mau' width='98%' height={300}>
+    <ResponsiveContainer className="mau" width="98%" height={300}>
       <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-        <XAxis dataKey='month' />
+        <XAxis dataKey="month" />
         <YAxis />
-        <CartesianGrid stroke='#eee' strokeDasharray='5 5' />
+        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
         <Line
           name={t('fields.monthly_active_users')}
-          type='monotone'
-          dataKey='mau'
-          stroke='#8884d8'
+          type="monotone"
+          dataKey="mau"
+          stroke="#8884d8"
         />
         <Tooltip />
         <Legend />

@@ -23,8 +23,8 @@ class Counter extends React.Component {
     return (
       <ButtonGroup
         disabled={this.state.disabled}
-        size='small'
-        aria-label='small outlined button group'
+        size="small"
+        aria-label="small outlined button group"
       >
         <Button onClick={this.handleIncrement}>+</Button>
         {displayCounter && <Button disabled>{this.state.counter}</Button>}

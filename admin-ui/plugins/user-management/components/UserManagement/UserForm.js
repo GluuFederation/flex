@@ -27,7 +27,7 @@ function UserForm({ onSubmitData }) {
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
   const personAttributes = useSelector(
-    (state) => state.attributesReducerRoot.items,
+    (state) => state.attributesReducerRoot.items
   )
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -47,11 +47,11 @@ function UserForm({ onSubmitData }) {
     for (let i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         let customAttribute = personAttributes.filter(
-          (e) => e.name == userDetails.customAttributes[i].name,
+          (e) => e.name == userDetails.customAttributes[i].name
         )
         if (userDetails.customAttributes[i].name == 'birthdate') {
           initialValues[userDetails.customAttributes[i].name] = moment(
-            userDetails.customAttributes[i].values[0],
+            userDetails.customAttributes[i].values[0]
           ).format('YYYY-MM-DD')
         } else {
           if (customAttribute[0]?.oxMultiValuedAttribute) {
@@ -153,7 +153,7 @@ function UserForm({ onSubmitData }) {
     for (const i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         const data = getCustomAttributeById(
-          userDetails.customAttributes[i].name,
+          userDetails.customAttributes[i].name
         ) && { ...getCustomAttributeById(userDetails.customAttributes[i].name) }
         if (
           data &&
@@ -439,9 +439,9 @@ function UserForm({ onSubmitData }) {
                 onChange={(e) => {
                   setSearchClaims(e.target.value)
                   const delayDebounceFn = debounce(function () {
-                    options['pattern'] = e.target.value
-                    dispatch(getAttributesRoot({ options }))
-                  }, 500)
+                    options['pattern'] = e.target.value;
+                    dispatch(getAttributesRoot({ options })) 
+                  }, 500);
                   delayDebounceFn()
                 }}
                 value={searchClaims}
@@ -450,7 +450,7 @@ function UserForm({ onSubmitData }) {
                 {personAttributes.map((data, key) => {
                   const name = data.displayName.toLowerCase()
                   const alreadyAddedClaim = selectedClaims.some(
-                    (el) => el.name === data.name,
+                    (el) => el.name === data.name
                   )
                   if (
                     data.status.toLowerCase() == 'active' &&

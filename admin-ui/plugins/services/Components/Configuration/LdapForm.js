@@ -112,28 +112,20 @@ function LdapForm({ item, handleSubmit, createLdap }) {
     }
 
     if (testStatus) {
-      dispatch(
-        updateToast(
-          true,
-          'success',
-          `${t('messages.ldap_connection_success')}`,
-        ),
-      )
+      dispatch(updateToast(true, 'success', `${t('messages.ldap_connection_success')}`))
     } else {
-      dispatch(
-        updateToast(true, 'error', `${t('messages.ldap_connection_error')}`),
-      )
+      dispatch(updateToast(true, 'error', `${t('messages.ldap_connection_error')}`))
     }
   }, [testStatus])
 
   return (
     <Form onSubmit={formik.handleSubmit}>
       <GluuLoader blocking={loading}>
-        <FormGroup row>
-          <Col sm={12} className='text-end'>
+      <FormGroup row>
+          <Col sm={12} className="text-end">
             <button
               onClick={checkLdapConnection}
-              type='button'
+              type="button"
               className={`btn btn-primary-${selectedTheme} text-center`}
             >
               {t('fields.test')}
@@ -142,10 +134,10 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label='fields.acr'
+            label="fields.acr"
             required
             doc_category={LDAP}
-            doc_entry='configId'
+            doc_entry="configId"
           />
           <Col sm={9}>
             {!!item.configId ? (
@@ -154,8 +146,8 @@ function LdapForm({ item, handleSubmit, createLdap }) {
                   !formik.errors.configId && !formik.touched.configId && init
                 }
                 placeholder={t('placeholders.ldap_name')}
-                id='configId'
-                name='configId'
+                id="configId"
+                name="configId"
                 defaultValue={item.configId}
                 disabled
                 onKeyUp={toogle}
@@ -167,8 +159,8 @@ function LdapForm({ item, handleSubmit, createLdap }) {
                   !formik.errors.configId && !formik.touched.configId && init
                 }
                 placeholder={t('placeholders.ldap_name')}
-                id='configId'
-                name='configId'
+                id="configId"
+                name="configId"
                 defaultValue={item.configId}
                 onKeyUp={toogle}
                 onChange={formik.handleChange}
@@ -181,17 +173,17 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label='fields.bind_dn'
+            label="fields.bind_dn"
             required
             doc_category={LDAP}
-            doc_entry='bind_dn'
+            doc_entry="bind_dn"
           />
           <Col sm={9}>
             <Input
               placeholder={t('placeholders.ldap_bind_dn')}
-              id='bindDN'
+              id="bindDN"
               valid={!formik.errors.bindDN && !formik.touched.bindDN && init}
-              name='bindDN'
+              name="bindDN"
               defaultValue={item.bindDN}
               onKeyUp={toogle}
               onChange={formik.handleChange}
@@ -203,10 +195,10 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label='fields.max_connections'
+            label="fields.max_connections"
             required
             doc_category={LDAP}
-            doc_entry='max_connections'
+            doc_entry="max_connections"
           />
           <Col sm={9}>
             <InputGroup>
@@ -217,7 +209,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
                   !formik.touched.maxConnections &&
                   init
                 }
-                id='maxConnections'
+                id="maxConnections"
                 onKeyUp={toogle}
                 defaultValue={item.maxConnections}
                 onChange={formik.handleChange}
@@ -230,10 +222,10 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label='fields.remote_primary_key'
+            label="fields.remote_primary_key"
             required
             doc_category={LDAP}
-            doc_entry='primary_key'
+            doc_entry="primary_key"
           />
           <Col sm={9}>
             <InputGroup>
@@ -244,7 +236,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
                   !formik.touched.primaryKey &&
                   init
                 }
-                id='primaryKey'
+                id="primaryKey"
                 onKeyUp={toogle}
                 defaultValue={item.primaryKey}
                 onChange={formik.handleChange}
@@ -257,10 +249,10 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label='fields.local_primary_key'
+            label="fields.local_primary_key"
             required
             doc_category={LDAP}
-            doc_entry='local_primary_key'
+            doc_entry="local_primary_key"
           />
           <Col sm={9}>
             <InputGroup>
@@ -271,7 +263,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
                   !formik.touched.localPrimaryKey &&
                   init
                 }
-                id='localPrimaryKey'
+                id="localPrimaryKey"
                 onKeyUp={toogle}
                 defaultValue={item.localPrimaryKey}
                 onChange={formik.handleChange}
@@ -287,13 +279,13 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         <FormGroup row>
           <Col sm={9}>
             <GluuTypeAhead
-              name='servers'
-              label='fields.remote_ldap_server_post'
+              name="servers"
+              label="fields.remote_ldap_server_post"
               formik={formik}
               required={true}
               options={['localhost:1636']}
               doc_category={LDAP}
-              doc_entry='servers'
+              doc_entry="servers"
               value={item.servers}
               valid={!formik.errors.servers && !formik.touched.servers && init}
               onKeyUp={toogle}
@@ -307,10 +299,10 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         <FormGroup row>
           <Col sm={9}>
             <GluuTypeAhead
-              name='baseDNs'
-              label='fields.base_dns'
+              name="baseDNs"
+              label="fields.base_dns"
               doc_category={LDAP}
-              doc_entry='base_dns'
+              doc_entry="base_dns"
               formik={formik}
               options={[]}
               required={true}
@@ -324,10 +316,10 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label='fields.bind_password'
+            label="fields.bind_password"
             required
             doc_category={LDAP}
-            doc_entry='bind_password'
+            doc_entry="bind_password"
           />
           <Col sm={9}>
             <InputGroup>
@@ -339,8 +331,8 @@ function LdapForm({ item, handleSubmit, createLdap }) {
                   init
                 }
                 onKeyUp={toogle}
-                id='bindPassword'
-                type='password'
+                id="bindPassword"
+                type="password"
                 defaultValue={item.bindPassword}
                 onChange={formik.handleChange}
               />
@@ -352,43 +344,51 @@ function LdapForm({ item, handleSubmit, createLdap }) {
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label='fields.use_ssl'
+            label="fields.use_ssl"
             required
             doc_category={LDAP}
-            doc_entry='use_ssl'
+            doc_entry="use_ssl"
           />
           <Col sm={9}>
             <InputGroup>
-              <GluuToogle value={item.useSSL} formik={formik} name='useSSL' />
+              <GluuToogle
+                value={item.useSSL}
+                formik={formik}
+                name='useSSL'
+              />
+            </InputGroup>
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+         <GluuLabel
+            label="fields.enabled"
+            doc_category={LDAP}
+            doc_entry="activate"
+          />
+          <Col sm={9}>
+            <InputGroup>
+              <GluuToogle
+                value={item.enabled}
+                formik={formik}
+                name='enabled'
+              />
             </InputGroup>
           </Col>
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label='fields.enabled'
-            doc_category={LDAP}
-            doc_entry='activate'
-          />
-          <Col sm={9}>
-            <InputGroup>
-              <GluuToogle value={item.enabled} formik={formik} name='enabled' />
-            </InputGroup>
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel
-            label='fields.level'
+            label="fields.level"
             required
             doc_category={LDAP}
-            doc_entry='level'
+            doc_entry="level"
           />
           <Col sm={9}>
             <InputGroup>
               <Input
-                type='number'
+                type="number"
                 placeholder={t('placeholders.level')}
                 valid={!formik.errors.level && !formik.touched.level && init}
-                id='level'
+                id="level"
                 onKeyUp={toogle}
                 defaultValue={item.level}
                 onChange={formik.handleChange}
@@ -399,12 +399,13 @@ function LdapForm({ item, handleSubmit, createLdap }) {
             ) : null}
           </Col>
         </FormGroup>
+        
 
         <FormGroup row>
           {' '}
           <Input
-            type='hidden'
-            id='moduleProperties'
+            type="hidden"
+            id="moduleProperties"
             defaultValue={item.moduleProperties}
           />
         </FormGroup>

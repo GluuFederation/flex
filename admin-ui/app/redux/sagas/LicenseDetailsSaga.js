@@ -43,10 +43,7 @@ export function* updateLicenseDetailsWorker({ payload }) {
   try {
     //addAdditionalData(audit, UPDATE, UPDATE_LICENSE_DETAILS, payload)
     const roleApi = yield* newFunction()
-    const data = yield call(
-      roleApi.updateLicenseDetails,
-      payload.action.action_data,
-    )
+    const data = yield call(roleApi.updateLicenseDetails, payload.action.action_data)
     yield put(updateLicenseDetailsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -59,14 +56,12 @@ export function* updateLicenseDetailsWorker({ payload }) {
 }
 
 export function* getLicenseWatcher() {
+
   yield takeEvery('licenseDetails/getLicenseDetails', getLicenseDetailsWorker)
 }
 
 export function* updateLicenseWatcher() {
-  yield takeEvery(
-    'licenseDetails/updateLicenseDetails',
-    updateLicenseDetailsWorker,
-  )
+  yield takeEvery('licenseDetails/updateLicenseDetails', updateLicenseDetailsWorker)
 }
 
 export default function* rootSaga() {

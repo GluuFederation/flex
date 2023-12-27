@@ -33,9 +33,7 @@ function GluuFormDetailRow({
           {!isBadge ? (
             value
           ) : (
-            <Badge color={badgeColor ? badgeColor : `primary-${selectedTheme}`}>
-              {value}
-            </Badge>
+            <Badge color={badgeColor ? badgeColor : `primary-${selectedTheme}`}>{value}</Badge>
           )}
         </Label>
       </FormGroup>

@@ -36,10 +36,10 @@ function SqlListPage() {
   const permissions = useSelector((state) => state.authReducer.permissions)
   const testStatus = useSelector((state) => state.sqlReducer.testStatus)
   const persistenceType = useSelector(
-    (state) => state.persistenceTypeReducer.type,
+    (state) => state.persistenceTypeReducer.type
   )
   const persistenceTypeLoading = useSelector(
-    (state) => state.persistenceTypeReducer.loading,
+    (state) => state.persistenceTypeReducer.loading
   )
 
   const dispatch = useDispatch()
@@ -51,7 +51,7 @@ function SqlListPage() {
   const { t } = useTranslation()
   const userAction = {}
   const myActions = []
-  const navigate = useNavigate()
+  const navigate =useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
@@ -178,16 +178,13 @@ function SqlListPage() {
               ]}
               data={sqlConfigurations}
               isLoading={loading}
-              title=''
+              title=""
               actions={myActions}
               options={{
                 search: true,
                 selection: false,
                 pageSize: pageSize,
-                headerStyle: {
-                  ...applicationStyle.tableHeaderStyle,
-                  ...bgThemeColor,
-                },
+                headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
                 actionsColumnIndex: -1,
               }}
               detailPanel={(rowData) => {
@@ -200,7 +197,7 @@ function SqlListPage() {
               }}
             />
           ) : (
-            <Alert severity='info'>
+            <Alert severity="info">
               The current data store provider is not RDBMS.
             </Alert>
           )}
@@ -213,7 +210,7 @@ function SqlListPage() {
             row={item}
             handler={toggle}
             modal={modal}
-            subject='sql'
+            subject="sql"
             onAccept={onDeletionConfirmed}
           />
         </GluuLoader>

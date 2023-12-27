@@ -75,9 +75,7 @@ describe('perform CRUD for schema person module', () => {
   })
 
   it('should create new person', async () => {
-    const result = await expectSaga(addAttribute, {
-      payload: { data: payload },
-    })
+    const result = await expectSaga(addAttribute, { payload: { data: payload } })
       .withReducer(rootReducer, initialState)
       .silentRun(false)
 
@@ -86,19 +84,15 @@ describe('perform CRUD for schema person module', () => {
   })
 
   it('should edit newly created person', async () => {
-    const result = await expectSaga(editAttribute, {
-      payload: { data: { ...attribute, displayName: 'update_test' } },
-    })
+    const result = await expectSaga(editAttribute, { payload: { data: { ...attribute, displayName: 'update_test' } } })
       .withReducer(rootReducer, initialState)
       .silentRun(false)
-
+    
     expect(result.returnValue instanceof Error).toBe(false)
   })
 
   it('should delete newly created person', async () => {
-    const result = await expectSaga(deleteAttribute, {
-      payload: { inum: attribute.inum },
-    })
+    const result = await expectSaga(deleteAttribute, { payload: { inum: attribute.inum } })
       .withReducer(rootReducer, initialState)
       .silentRun(false)
 

@@ -1,5 +1,8 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import {
+  isFourZeroOneError,
+  addAdditionalData,
+} from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { SESSION } from '../audit/Resources'
@@ -8,11 +11,7 @@ import SessionApi from '../api/SessionApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
-import {
-  handleRevokeSession,
-  handleUpdateSessionsResponse,
-  toggleLoader,
-} from '../features/sessionSlice'
+import { handleRevokeSession, handleUpdateSessionsResponse, toggleLoader } from '../features/sessionSlice'
 
 function* newFunction() {
   const wholeToken = yield select((state) => state.authReducer.token)
@@ -35,7 +34,9 @@ export function* getSessions({ payload }) {
     payload = payload ? payload : { action: {} }
     addAdditionalData(audit, FETCH, SESSION, payload)
     const sessionApi = yield* newFunction()
-    const data = yield call(sessionApi.getAllSessions)
+    const data = yield call(
+      sessionApi.getAllSessions,
+    )
     yield put(handleUpdateSessionsResponse({ data: data }))
     yield call(postUserAction, audit)
     return data
@@ -78,5 +79,8 @@ export function* deleteSessionByUserDnWatcher() {
 }
 
 export default function* rootSaga() {
-  yield all([fork(getSessionsWatcher), fork(deleteSessionByUserDnWatcher)])
+  yield all([
+    fork(getSessionsWatcher),
+    fork(deleteSessionByUserDnWatcher),
+  ])
 }

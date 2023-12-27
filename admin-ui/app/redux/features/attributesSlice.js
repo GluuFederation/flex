@@ -24,15 +24,12 @@ const attributesSlice = createSlice({
     },
     toggleInitAttributeLoader: (state, action) => {
       state.initLoading = action.payload
-    },
-  },
+    }
+  }
 })
 
-export const {
-  getAttributesRoot,
-  getAttributesResponseRoot,
-  toggleInitAttributeLoader,
-} = attributesSlice.actions
+export const { getAttributesRoot, getAttributesResponseRoot, toggleInitAttributeLoader } =
+  attributesSlice.actions
 
 export default attributesSlice.reducer
 reducerRegistry.register('attributesReducerRoot', attributesSlice.reducer)

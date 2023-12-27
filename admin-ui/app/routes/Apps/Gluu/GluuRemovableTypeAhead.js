@@ -32,7 +32,7 @@ function GluuRemovableTypeAhead({
           <InputGroup>
             <Typeahead
               allowNew={allowNew}
-              emptyLabel=''
+              emptyLabel=""
               labelKey={name}
               onChange={(selected) => {
                 if (formik) {
@@ -48,7 +48,10 @@ function GluuRemovableTypeAhead({
             />
           </InputGroup>
         </Col>
-        <div style={applicationstyle.removableInputRow} onClick={handler}>
+        <div
+          style={applicationstyle.removableInputRow}
+          onClick={handler}
+        >
           <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
         </div>
       </FormGroup>

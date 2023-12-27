@@ -12,18 +12,16 @@ const DropdownProfile = (props) => {
     <React.Fragment>
       <DropdownMenu end={props.end}>
         <DropdownItem header>
-          {props.userinfo.user_name ||
-            props.userinfo.name ||
-            props.userinfo.given_name}
+          {props.userinfo.user_name || props.userinfo.name || props.userinfo.given_name}
         </DropdownItem>
         <DropdownItem divider />
-        <DropdownItem tag={Link} to='/profile'>
-          {t('menus.my_profile')}
+        <DropdownItem tag={Link} to="/profile">
+          {t("menus.my_profile")}
         </DropdownItem>
         <DropdownItem divider />
-        <DropdownItem tag={Link} to='/logout'>
-          <i className='fa fa-fw fa-sign-out me-2'></i>
-          {t('menus.signout')}
+        <DropdownItem tag={Link} to="/logout">
+          <i className="fa fa-fw fa-sign-out me-2"></i>
+          {t("menus.signout")}
         </DropdownItem>
       </DropdownMenu>
     </React.Fragment>

@@ -3,7 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import MappingAddDialogForm from './MappingAddDialogForm'
-import { Card, Col, CardBody, FormGroup, Button } from 'Components'
+import {
+  Card,
+  Col,
+  CardBody,
+  FormGroup,
+  Button,
+} from 'Components'
 import Box from '@mui/material/Box'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -18,20 +24,18 @@ import {
   hasPermission,
   buildPayload,
   MAPPING_WRITE,
-  MAPPING_READ,
+  MAPPING_READ
 } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 
 function MappingPage() {
   const dispatch = useDispatch()
-  const mapping = useSelector((state) => state.mappingReducer.items)
-  const loading = useSelector((state) => state.mappingReducer.loading)
-  const apiRoles = useSelector((state) => state.apiRoleReducer.items)
-  const permissions = useSelector((state) => state.authReducer.permissions)
-  const permissionLoading = useSelector(
-    (state) => state.apiPermissionReducer.loading,
-  )
+  const mapping = useSelector(state => state.mappingReducer.items);
+  const loading = useSelector(state => state.mappingReducer.loading);
+  const apiRoles = useSelector(state => state.apiRoleReducer.items);
+  const permissions = useSelector(state => state.authReducer.permissions);
+  const permissionLoading = useSelector(state => state.apiPermissionReducer.loading);
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -76,24 +80,23 @@ function MappingPage() {
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={hasPermission(permissions, MAPPING_READ)}>
-            {hasPermission(permissions, MAPPING_WRITE) ? (
-              <FormGroup row>
-                <Col sm={10}></Col>
-                <Col sm={2}>
-                  <Box display='flex' justifyContent='flex-end'>
-                    <Button
-                      type='button'
-                      color={`primary-${selectedTheme}`}
-                      style={applicationStyle.buttonStyle}
-                      onClick={showMappingDialog}
-                    >
-                      <i className='fa fa-plus me-2'></i>
-                      {t('actions.add_mapping')}
-                    </Button>
-                  </Box>
-                </Col>
-              </FormGroup>
-            ) : null}
+            {hasPermission(permissions, MAPPING_WRITE) ? 
+            <FormGroup row>
+              <Col sm={10}></Col>
+              <Col sm={2}>
+                <Box display="flex" justifyContent="flex-end">
+                  <Button
+                    type="button"
+                    color={`primary-${selectedTheme}`}
+                    style={applicationStyle.buttonStyle}
+                    onClick={showMappingDialog}
+                  >
+                    <i className="fa fa-plus me-2"></i>
+                    {t('actions.add_mapping')}
+                  </Button>
+                </Box>
+              </Col>
+            </FormGroup>:null}
             {mapping.map((candidate, idx) => (
               <MappingItem key={idx} candidate={candidate} roles={apiRoles} />
             ))}

@@ -50,7 +50,7 @@ describe('fetch & update json configuration', () => {
     configuration = result.returnValue
     expect(result.returnValue instanceof Error).toBe(false)
     expect(result.returnValue).toEqual(
-      result.storeState.jsonConfigReducer.configuration,
+      result.storeState.jsonConfigReducer.configuration
     )
   })
 

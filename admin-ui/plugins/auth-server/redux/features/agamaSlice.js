@@ -5,7 +5,7 @@ const initialState = {
   agamaList: [],
   loading: false,
   totalItems: 0,
-  entriesCount: 0,
+  entriesCount: 0
 }
 
 const agamaSlice = createSlice({
@@ -31,8 +31,8 @@ const agamaSlice = createSlice({
     },
     getAddAgamaResponse: (state) => {
       state.loading = false
-    },
-  },
+    }
+  }
 })
 
 export const {
@@ -40,7 +40,7 @@ export const {
   getAgamaResponse,
   deleteAgama,
   addAgama,
-  getAddAgamaResponse,
+  getAddAgamaResponse
 } = agamaSlice.actions
 export { initialState }
 export const { actions, reducer, state } = agamaSlice

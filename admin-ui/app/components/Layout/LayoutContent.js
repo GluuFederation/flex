@@ -9,18 +9,17 @@ const LayoutContent = (props) => {
   const themeColors = getThemeColor(selectedTheme)
 
   return (
-    <div
-      className='layout__content'
-      style={{ background: themeColors.background }}
-    >
-      {props.children}
+    <div className="layout__content" style={{ background: themeColors.background }}>
+      { props.children }
     </div>
   )
 }
 
 LayoutContent.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node
 }
-LayoutContent.layoutPartName = 'content'
+LayoutContent.layoutPartName = "content"
 
-export { LayoutContent }
+export {
+  LayoutContent
+}

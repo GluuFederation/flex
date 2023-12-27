@@ -12,7 +12,7 @@ it('Test GluuTypeAheadWithAdd component', async () => {
   const { container } = render(
     <AppTestWrapper>
       <GluuTypeAheadWithAdd
-        doc_category='openid_client'
+        doc_category="openid_client"
         name={NAME}
         value={VALUE}
         label={LABEL}

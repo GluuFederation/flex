@@ -61,7 +61,7 @@ describe('test GET & update action for logging page', () => {
         .withReducer(rootReducer, initialState)
         .silentRun(false)
 
-      expect(result.returnValue instanceof Error).toBe(false)
+        expect(result.returnValue instanceof Error).toBe(false)
     } else {
       log('Error occured while fetching')
     }

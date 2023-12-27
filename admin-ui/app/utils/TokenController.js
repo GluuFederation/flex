@@ -1,4 +1,4 @@
-import { BasicQueryStringUtils } from '@openid/appauth'
+import { BasicQueryStringUtils } from "@openid/appauth"
 
 export const isFourZeroOneError = (error) => {
   return error.status === 401 ? true : false
@@ -39,6 +39,6 @@ export const addAdditionalData = (audit, action, resource, payload) => {
 
 export class NoHashQueryStringUtils extends BasicQueryStringUtils {
   parse(input, useHash) {
-    return super.parse(input, false)
+      return super.parse(input, false);
   }
 }
