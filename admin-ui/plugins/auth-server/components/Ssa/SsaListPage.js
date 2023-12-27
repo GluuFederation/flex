@@ -137,7 +137,7 @@ const SSAListPage = () => {
                 Container: PaperContainer
               }}
               columns={tableColumns}
-              data={items}
+              data={items || []}
               isLoading={loading}
               title=''
               actions={myActions}

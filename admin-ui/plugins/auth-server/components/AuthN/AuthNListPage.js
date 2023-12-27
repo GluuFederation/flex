@@ -78,7 +78,7 @@ function AuthNListPage() {
         setList({ ...list, ldap: updateLDAPItems })
       }
     }
-  }, [ldap])
+  }, [ldap, loading])
 
   useEffect(() => {
     setList({ ...list, scripts: [] })

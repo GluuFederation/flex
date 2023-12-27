@@ -23,6 +23,7 @@ import { getClientScopeByInum } from '../../../../app/utils/Util'
 import { useDispatch, useSelector } from 'react-redux'
 import { PER_PAGE_SCOPES } from '../../common/Constants'
 import _debounce from 'lodash/debounce'
+import PropTypes from 'prop-types'
 import { getScopes, getClientScopes, setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 const DOC_CATEGORY = 'openid_client'
 
@@ -310,9 +311,9 @@ const ClientBasicPanel = ({
 
       <GluuInputRow
         label="fields.redirectUrisRegex"
-        name="redirectUrisRegex"
+        name="attributes.redirectUrisRegex"
         formik={formik}
-        value={formik.values.redirectUrisRegex}
+        value={formik.values?.attributes?.redirectUrisRegex}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -341,3 +342,10 @@ const ClientBasicPanel = ({
 }
 
 export default ClientBasicPanel
+ClientBasicPanel.propTypes = {
+  formik: PropTypes.any,
+  client: PropTypes.any,
+  scopes: PropTypes.any,
+  viewOnly: PropTypes.bool,
+  oidcConfiguration: PropTypes.any,
+}

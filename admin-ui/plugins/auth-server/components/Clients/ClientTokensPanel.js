@@ -6,6 +6,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material'
+import PropTypes from 'prop-types'
 const DOC_CATEGORY = 'openid_client'
 
 const audience_id = 'audience_id'
@@ -61,25 +62,13 @@ function ClientTokensPanel({ formik, viewOnly }) {
             disabled={viewOnly}
           />
         </Col>
-        <Col sm={12}>
-          <GluuToogleRow
-            name="requireAuthTime"
-            lsize={4}
-            rsize={8}
-            formik={formik}
-            label="fields.requireAuthTime"
-            value={formik.values.requireAuthTime}
-            doc_category={DOC_CATEGORY}
-            disabled={viewOnly}
-          />
-        </Col>
       </FormGroup>
 
       <GluuBooleanSelectBox
-        name="runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims"
+        name="attributes.runIntrospectionScriptBeforeJwtCreation"
         label="fields.run_introspection_script_before_accesstoken"
         value={
-          formik.values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
+          formik.values.attributes.runIntrospectionScriptBeforeJwtCreation
         }
         formik={formik}
         lsize={4}
@@ -98,10 +87,10 @@ function ClientTokensPanel({ formik, viewOnly }) {
         disabled={viewOnly}
       />
       <GluuTypeAheadWithAdd
-        name="additionalAudience"
+        name="attributes.additionalAudience"
         label="fields.additionalAudience"
         formik={formik}
-        value={formik.values.additionalAudience || []}
+        value={formik.values.attributes.additionalAudience || []}
         options={[]}
         validator={audienceValidator}
         inputId={audience_id}
@@ -147,3 +136,7 @@ function ClientTokensPanel({ formik, viewOnly }) {
 }
 
 export default ClientTokensPanel
+ClientTokensPanel.propTypes = {
+  formik: PropTypes.any,
+  viewOnly: PropTypes.bool,
+}

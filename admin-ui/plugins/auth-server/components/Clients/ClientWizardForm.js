@@ -71,16 +71,6 @@ function ClientWizardForm({
     softwareStatement: client_data.softwareStatement,
     softwareVersion: client_data.softwareVersion,
     softwareId: client_data.softwareId,
-    softwareSection:
-      client_data.softwareId || client_data.softwareVersion || client_data.softwareStatement
-        ? true
-        : false,
-    cibaSection:
-      client_data.backchannelTokenDeliveryMode ||
-      client_data.backchannelClientNotificationEndpoint ||
-      client_data.backchannelUserCodeParameter
-        ? true
-        : false,
     idTokenSignedResponseAlg: client_data.idTokenSignedResponseAlg,
     idTokenEncryptedResponseAlg: client_data.idTokenEncryptedResponseAlg,
     tokenEndpointAuthMethod: client_data.tokenEndpointAuthMethod,
@@ -92,7 +82,6 @@ function ClientWizardForm({
     userInfoEncryptedResponseAlg: client_data.userInfoEncryptedResponseAlg,
     userInfoSignedResponseAlg: client_data.userInfoSignedResponseAlg,
     userInfoEncryptedResponseEnc: client_data.userInfoEncryptedResponseEnc,
-    authenticationMethod: client_data.authenticationMethod,
     idTokenTokenBindingCnf: client_data.idTokenTokenBindingCnf,
     backchannelUserCodeParameter: client_data.backchannelUserCodeParameter,
     refreshTokenLifetime: client_data.refreshTokenLifetime,
@@ -117,40 +106,8 @@ function ClientWizardForm({
     scopes: client_data.scopes,
     oxAuthClaims: client_data.oxAuthClaims,
     attributes: client_data.attributes,
-    tlsClientAuthSubjectDn: client_data.attributes.tlsClientAuthSubjectDn,
-    introspectionSignedResponseAlg: client_data.attributes?.introspectionSignedResponseAlg,
-    introspectionEncryptedResponseAlg: client_data.attributes?.introspectionEncryptedResponseAlg,
-    introspectionEncryptedResponseEnc: client_data.attributes?.introspectionEncryptedResponseEnc,
     frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired,
-    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
-      client_data.attributes
-        .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims,
-    backchannelLogoutSessionRequired:
-      client_data.attributes.backchannelLogoutSessionRequired,
-    keepClientAuthorizationAfterExpiration:
-      client_data.attributes.keepClientAuthorizationAfterExpiration,
-    allowSpontaneousScopes: client_data.attributes.allowSpontaneousScopes,
-    spontaneousScopes: client_data.attributes.spontaneousScopes || [],
-    introspectionScripts: client_data.attributes.introspectionScripts || [],
-    spontaneousScopeScriptDns:
-      client_data.attributes.spontaneousScopeScriptDns || [],
-    consentGatheringScripts: client_data.attributes.consentGatheringScripts || [],
-    redirectUrisRegex: client_data.attributes.redirectUrisRegex || '',
-    parLifetime: client_data.attributes.parLifetime || '',
-    requirePar: client_data.attributes.requirePar || false,
-    updateTokenScriptDns: client_data.attributes.updateTokenScriptDns || [],
-    ropcScripts: client_data.attributes.ropcScripts || [],
-    jansAuthSignedRespAlg: client_data.attributes.jansAuthSignedRespAlg || '',
-    jansAuthEncRespAlg: client_data.attributes.jansAuthEncRespAlg || '',
-    jansAuthEncRespEnc: client_data.attributes.jansAuthEncRespEnc || '',
-    postAuthnScripts: client_data.attributes.postAuthnScripts || [],
-    rptClaimsScripts: client_data.attributes.rptClaimsScripts || [],
-    additionalAudience: client_data.attributes.additionalAudience,
-    backchannelLogoutUri: client_data.attributes.backchannelLogoutUri,
-    jansDefaultPromptLogin: client_data.attributes.jansDefaultPromptLogin || false,
-    authorizedAcrValues: client_data.attributes.authorizedAcrValues || [],
     customObjectClasses: client_data.customObjectClasses || [],
-    requireAuthTime: client_data.requireAuthTime,
     trustedClient: client_data.trustedClient,
     persistClientAuthorizations: client_data.persistClientAuthorizations,
     includeClaimsInIdToken: client_data.includeClaimsInIdToken,
@@ -245,8 +202,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientTokensPanel
-              client={cloneDeep(client)}
-              scripts={scripts}
               formik={formik}
               viewOnly={viewOnly}
             />
@@ -293,7 +248,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientEncryptionSigningPanel
-              client={cloneDeep(client)}
               formik={formik}
               oidcConfiguration={oidcConfiguration}
               viewOnly={viewOnly}
@@ -316,7 +270,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientScript
-              client={cloneDeep(client)}
               formik={formik}
               scripts={scripts}
               viewOnly={viewOnly}
@@ -345,47 +298,8 @@ function ClientWizardForm({
               rptAsJwt: args[0]?.rptAsJwt && JSON.parse(args[0]?.rptAsJwt),
               [ATTRIBUTE]: args[0][ATTRIBUTE] && { ...args[0][ATTRIBUTE] },
             }
+            delete values.expirable
             values['action_message'] = commitMessage
-            values[ATTRIBUTE].tlsClientAuthSubjectDn =
-              values.tlsClientAuthSubjectDn
-            values[ATTRIBUTE].introspectionSignedResponseAlg =
-              values.introspectionSignedResponseAlg
-            values[ATTRIBUTE].introspectionEncryptedResponseAlg =
-              values.introspectionEncryptedResponseAlg
-            values[ATTRIBUTE].introspectionEncryptedResponseEnc =
-              values.introspectionEncryptedResponseEnc
-            values[
-              ATTRIBUTE
-            ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
-              values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
-            values[ATTRIBUTE].keepClientAuthorizationAfterExpiration =
-              values.keepClientAuthorizationAfterExpiration
-            values[ATTRIBUTE].allowSpontaneousScopes =
-              values.allowSpontaneousScopes
-            values[ATTRIBUTE].backchannelLogoutSessionRequired =
-              values.backchannelLogoutSessionRequired
-            values[ATTRIBUTE].spontaneousScopes = values.spontaneousScopes
-            values[ATTRIBUTE].introspectionScripts = values.introspectionScripts
-            values[ATTRIBUTE].spontaneousScopeScriptDns =
-              values.spontaneousScopeScriptDns
-            values[ATTRIBUTE].consentGatheringScripts =
-              values.consentGatheringScripts
-            values[ATTRIBUTE].rptClaimsScripts = values.rptClaimsScripts
-            values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
-            values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
-            values[ATTRIBUTE].additionalAudience = values.additionalAudience
-            values[ATTRIBUTE].redirectUrisRegex = values.redirectUrisRegex
-            values[ATTRIBUTE].parLifetime = values.parLifetime
-            values[ATTRIBUTE].requirePar = values.requirePar
-            values[ATTRIBUTE].jansDefaultPromptLogin =
-              values.jansDefaultPromptLogin
-            values[ATTRIBUTE].authorizedAcrValues = values.authorizedAcrValues
-            values[ATTRIBUTE].updateTokenScriptDns = values.updateTokenScriptDns
-            values[ATTRIBUTE].ropcScripts = values.ropcScripts
-            values[ATTRIBUTE].jansAuthSignedRespAlg =
-              values.jansAuthSignedRespAlg
-            values[ATTRIBUTE].jansAuthEncRespAlg = values.jansAuthEncRespAlg
-            values[ATTRIBUTE].jansAuthEncRespEnc = values.jansAuthEncRespEnc
             customOnSubmit(JSON.parse(JSON.stringify(values)))
           }}
         >
