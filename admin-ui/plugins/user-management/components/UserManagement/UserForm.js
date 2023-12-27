@@ -453,7 +453,7 @@ function UserForm({ onSubmitData }) {
                     (el) => el.name === data.name
                   )
                   if (
-                    data.status == 'active' &&
+                    data.status.toLowerCase() == 'active' &&
                     !usedClaimes.includes(data.name)
                   ) {
                     if (
