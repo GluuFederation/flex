@@ -202,8 +202,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientTokensPanel
-              client={cloneDeep(client)}
-              scripts={scripts}
               formik={formik}
               viewOnly={viewOnly}
             />
@@ -250,7 +248,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientEncryptionSigningPanel
-              client={cloneDeep(client)}
               formik={formik}
               oidcConfiguration={oidcConfiguration}
               viewOnly={viewOnly}
@@ -273,7 +270,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientScript
-              client={cloneDeep(client)}
               formik={formik}
               scripts={scripts}
               viewOnly={viewOnly}

@@ -138,7 +138,5 @@ function ClientTokensPanel({ formik, viewOnly }) {
 export default ClientTokensPanel
 ClientTokensPanel.propTypes = {
   formik: PropTypes.any,
-  client: PropTypes.any,
-  scripts: PropTypes.any,
-  viewOnly: PropTypes.bool
+  viewOnly: PropTypes.bool,
 }

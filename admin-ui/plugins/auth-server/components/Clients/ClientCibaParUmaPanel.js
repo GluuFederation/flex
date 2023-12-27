@@ -34,7 +34,7 @@ const claim_uri_id = 'claim_uri_id'
 const cibaDeliveryModes = ['poll', 'push', 'ping']
 
 function ClientCibaParUmaPanel({
-  clients,
+  client,
   dispatch,
   umaResources,
   scopes,
@@ -91,8 +91,7 @@ function ClientCibaParUmaPanel({
   }
 
   const handleClientEdit = (inum) => {
-    const currentClient = clients.find((client) => client.inum === inum)
-    dispatch(setCurrentItemClient({ item: currentClient }))
+    dispatch(setCurrentItemClient({ item: client }))
     setOpen(false)
     dispatch(viewOnly(true))
     setCurrentStep(sequence[0])

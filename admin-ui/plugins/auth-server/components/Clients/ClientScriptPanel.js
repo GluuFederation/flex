@@ -103,7 +103,6 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
 export default ClientScriptPanel
 ClientScriptPanel.propTypes = {
   formik: PropTypes.any,
-  client: PropTypes.any,
   scripts: PropTypes.any,
   viewOnly: PropTypes.bool
 }

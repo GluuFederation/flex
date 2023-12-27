@@ -87,7 +87,5 @@ function ClientLogoutPanel({ formik, viewOnly }) {
 export default ClientLogoutPanel
 ClientLogoutPanel.propTypes = {
   formik: PropTypes.any,
-  client: PropTypes.any,
-  scripts: PropTypes.any,
   viewOnly: PropTypes.bool
 }
