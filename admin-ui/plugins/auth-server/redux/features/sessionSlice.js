@@ -21,7 +21,7 @@ const sessionSlice = createSlice({
     handleRevokeSession: (state, action) => {
       state.loading = false
       state.items = state.items.filter(
-        ({ userDn }) => userDn !== action.payload.data
+        ({ userDn }) => userDn !== action.payload.data,
       )
     },
     getSessions: (state) => {

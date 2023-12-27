@@ -9,7 +9,7 @@ const initialState = {
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
   totalItems: 0,
-  entriesCount: 0
+  entriesCount: 0,
 }
 
 const oidcSlice = createSlice({
@@ -60,7 +60,7 @@ const oidcSlice = createSlice({
       state.loading = false
       if (action.payload?.data) {
         const clients = state?.items?.filter(
-          (e) => e.inum !== action.payload.data.inum
+          (e) => e.inum !== action.payload.data.inum,
         )
         state.items = [action.payload.data, ...clients]
         state.saveOperationFlag = true
@@ -90,8 +90,8 @@ const oidcSlice = createSlice({
       if (action.payload) {
         state.view = action.payload?.view
       }
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -105,7 +105,7 @@ export const {
   deleteClient,
   deleteClientResponse,
   setCurrentItem,
-  viewOnly
+  viewOnly,
 } = oidcSlice.actions
 export const { actions, reducer, state } = oidcSlice
 reducerRegistry.register('oidcReducer', reducer)

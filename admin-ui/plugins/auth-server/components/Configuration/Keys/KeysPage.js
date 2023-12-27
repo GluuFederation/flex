@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  UncontrolledTabs,
-  TabPane,
-  Card,
-  CardBody,
-} from 'Components'
+import { UncontrolledTabs, TabPane, Card, CardBody } from 'Components'
 import JwksPage from './Jwks/JwksPage'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -17,9 +12,9 @@ function KeysPage() {
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <UncontrolledTabs initialActiveTabId="jwkpanel">
+        <UncontrolledTabs initialActiveTabId='jwkpanel'>
           <UncontrolledTabs.TabContent>
-            <TabPane tabId="jwkpanel">
+            <TabPane tabId='jwkpanel'>
               <JwksPage />
             </TabPane>
           </UncontrolledTabs.TabContent>

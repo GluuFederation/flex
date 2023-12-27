@@ -26,10 +26,10 @@ const InumDBServerTab = () => {
   const selectedTheme = theme.state.theme
   const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
-    (state) => state.cacheRefreshReducer.configuration
+    (state) => state.cacheRefreshReducer.configuration,
   )
   const { defaultInumServer, targetConfig } = useSelector(
-    (state) => state.cacheRefreshReducer.configuration
+    (state) => state.cacheRefreshReducer.configuration,
   )
   const userAction = {}
   const initialValues = {
@@ -40,7 +40,7 @@ const InumDBServerTab = () => {
       baseDNs: targetConfig?.baseDNs || [],
       bindPassword: targetConfig?.bindPassword || null,
       configId: targetConfig?.configId || null,
-      bindDN: targetConfig?.bindDN || null
+      bindDN: targetConfig?.bindDN || null,
     },
   }
 
@@ -64,22 +64,24 @@ const InumDBServerTab = () => {
           is: false,
           then: () =>
             Yup.object({
-              configId: Yup.string().min(2, 'Mininum 2 characters').required(
-                `${t('fields.name')} ${t('messages.is_required')}`
-              ),
-              bindDN: Yup.string().min(2, 'Mininum 2 characters').required(
-                `${t('fields.bind_dn')} ${t('messages.is_required')}`
-              ),
+              configId: Yup.string()
+                .min(2, 'Mininum 2 characters')
+                .required(`${t('fields.name')} ${t('messages.is_required')}`),
+              bindDN: Yup.string()
+                .min(2, 'Mininum 2 characters')
+                .required(
+                  `${t('fields.bind_dn')} ${t('messages.is_required')}`,
+                ),
               maxConnections: Yup.string().required(
-                `${t('fields.max_connections')} ${t('messages.is_required')}`
+                `${t('fields.max_connections')} ${t('messages.is_required')}`,
               ),
               servers: Yup.array().min(
                 1,
-                `${t('fields.server_port')} ${t('messages.is_required')}`
+                `${t('fields.server_port')} ${t('messages.is_required')}`,
               ),
               baseDNs: Yup.array().min(
                 1,
-                `${t('fields.base_dns')} ${t('messages.is_required')}`
+                `${t('fields.base_dns')} ${t('messages.is_required')}`,
               ),
             }),
         }),
@@ -113,9 +115,7 @@ const InumDBServerTab = () => {
       },
     })
 
-    dispatch(
-      putCacheRefreshConfiguration({ action: userAction })
-    ) 
+    dispatch(putCacheRefreshConfiguration({ action: userAction }))
   }
 
   const handleChangePassword = (updatedPassword) => {
@@ -125,8 +125,8 @@ const InumDBServerTab = () => {
         targetConfig: {
           ...formik.values.targetConfig,
           baseDNs: isStringsArray(formik.values?.targetConfig?.baseDNs || [])
-          ? formik.values.targetConfig.baseDNs
-          : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
+            ? formik.values.targetConfig.baseDNs
+            : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
           servers: isStringsArray(formik.values?.targetConfig?.servers || [])
             ? formik.values.targetConfig.servers
             : convertToStringArray(formik.values?.targetConfig.servers || []),
@@ -135,9 +135,7 @@ const InumDBServerTab = () => {
       },
     })
 
-    dispatch(
-      putCacheRefreshConfiguration({ action: userAction })
-    )
+    dispatch(putCacheRefreshConfiguration({ action: userAction }))
   }
 
   return (
@@ -232,7 +230,10 @@ const InumDBServerTab = () => {
                     isKeys={false}
                     buttonText='actions.add_server'
                     showError={
-                      formik.errors.targetConfig?.servers && formik.touched.targetConfig?.servers ? true : false
+                      formik.errors.targetConfig?.servers &&
+                      formik.touched.targetConfig?.servers
+                        ? true
+                        : false
                     }
                     errorMessage={formik.errors.targetConfig?.servers}
                   />
@@ -258,7 +259,10 @@ const InumDBServerTab = () => {
                     isKeys={false}
                     buttonText='actions.add_base_dn'
                     showError={
-                      formik.errors.targetConfig?.baseDNs && formik.touched.targetConfig?.baseDNs ? true : false
+                      formik.errors.targetConfig?.baseDNs &&
+                      formik.touched.targetConfig?.baseDNs
+                        ? true
+                        : false
                     }
                     errorMessage={formik.errors.targetConfig?.baseDNs}
                   />

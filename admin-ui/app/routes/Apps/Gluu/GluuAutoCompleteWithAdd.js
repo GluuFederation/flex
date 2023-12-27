@@ -58,7 +58,7 @@ function GluuAutoCompleteWithAdd({
             </Col>
             <Button
               color={`primary-${selectedTheme}`}
-              type="button"
+              type='button'
               onClick={addItem}
             >
               {t('actions.add')}
@@ -66,7 +66,7 @@ function GluuAutoCompleteWithAdd({
           </Row>
           &nbsp;
           <Typeahead
-            emptyLabel=""
+            emptyLabel=''
             labelKey={name}
             onChange={(selected) => {
               handleChange(name, selected)

@@ -29,7 +29,7 @@ function AttributeAddPage() {
 
   return (
     <React.Fragment>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
+      <Card className='mb-3' style={applicationStyle.mainCard}>
         <CardBody>
           <AttributeForm item={defautAttribute} customOnSubmit={onSubmit} />
         </CardBody>

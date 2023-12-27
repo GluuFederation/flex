@@ -36,27 +36,26 @@ const dynamicConfigValidationSchema = Yup.object({
   issuer: Yup.string().required('Issuer is required.'),
   baseEndpoint: Yup.string().required('Base Endpoint is required.'),
   cleanServiceInterval: Yup.string().required(
-    'Clean Service Interval is required.'
+    'Clean Service Interval is required.',
   ),
   cleanServiceBatchChunkSize: Yup.string().required(
-    'Clean Service Batch Chunk Size is required.'
+    'Clean Service Batch Chunk Size is required.',
   ),
   useLocalCache: Yup.boolean().required('Use Local Cache is required.'),
   disableJdkLogger: Yup.boolean().required('Disable Jdk Logger is required.'),
   loggingLevel: Yup.string().required('Logging Level is required.'),
   loggingLayout: Yup.string().required('Logging Layout is required.'),
   metricReporterEnabled: Yup.boolean().required(
-    'Metric Reporter Enabled is required.'
+    'Metric Reporter Enabled is required.',
   ),
   metricReporterInterval: Yup.number().required(
-    'Metric Reporter Interval is required.'
+    'Metric Reporter Interval is required.',
   ),
   metricReporterKeepDataDays: Yup.number().required(
-    'Metric Reporter Keep Data Days is required.'
+    'Metric Reporter Keep Data Days is required.',
   ),
   superGluuEnabled: Yup.boolean().required('Enable Super Gluu is required.'),
 })
-
 
 function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido
@@ -70,7 +69,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
     onSubmit: () => {
       toggle()
     },
-    validationSchema: dynamicConfigValidationSchema
+    validationSchema: dynamicConfigValidationSchema,
   })
 
   const submitForm = () => {
@@ -294,7 +293,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
                 options={
                   formik?.values?.personCustomObjectClassList
                     ? formik?.values?.personCustomObjectClassList.map(
-                        (item) => ({ key: '', value: item })
+                        (item) => ({ key: '', value: item }),
                       )
                     : []
                 }

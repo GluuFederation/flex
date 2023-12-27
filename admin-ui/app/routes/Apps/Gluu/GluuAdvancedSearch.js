@@ -17,8 +17,8 @@ function GluuAdvancedSearch({
         <Input
           style={{ width: '100px' }}
           id={limitId}
-          type="number"
-          name="limit"
+          type='number'
+          name='limit'
           data-testid={limitId}
           defaultValue={limit}
           onChange={handler}
@@ -30,8 +30,8 @@ function GluuAdvancedSearch({
         style={{ width: '180px' }}
         id={patternId}
         data-testid={patternId}
-        type="text"
-        name="pattern"
+        type='text'
+        name='pattern'
         defaultValue={pattern}
         placeholder={t('placeholders.search_pattern')}
         onChange={handler}

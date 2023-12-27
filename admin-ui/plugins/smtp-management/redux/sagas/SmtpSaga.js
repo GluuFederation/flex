@@ -8,16 +8,20 @@ import {
   takeEvery,
 } from 'redux-saga/effects'
 import { getAPIAccessToken } from '../../../../app/redux/features/authSlice'
-import {
-  isFourZeroOneError,
-} from '../../../../app/utils/TokenController'
+import { isFourZeroOneError } from '../../../../app/utils/TokenController'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import SmtpApi from '../api/SmtpApi'
-import { getSmptResponse, getSmpts, testSmtpResponse, testSmtpResponseFails, updateSmptResponse } from '../features/smtpSlice'
+import {
+  getSmptResponse,
+  getSmpts,
+  testSmtpResponse,
+  testSmtpResponseFails,
+  updateSmptResponse,
+} from '../features/smtpSlice'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -52,7 +56,7 @@ export function* getSmtpsSaga() {
   const audit = yield* initAudit()
   try {
     const stmpApi = yield* newFunction()
-    const data = yield call(stmpApi.getSmtpConfig);
+    const data = yield call(stmpApi.getSmtpConfig)
     yield put(getSmptResponse({ data }))
     yield call(postUserAction, audit)
     return data
@@ -68,7 +72,6 @@ export function* getSmtpsSaga() {
 
 export function* testSmtp({ payload }) {
   try {
-
     const stmpApi = yield* newFunction()
     const data = yield call(stmpApi.testSmtpConfig, payload.payload)
     yield put(testSmtpResponse({ data }))
@@ -94,12 +97,10 @@ export function* watchTestSmtpConfig() {
   yield takeLatest('smtps/testSmtp', testSmtp)
 }
 
-
-
 export default function* rootSaga() {
   yield all([
     fork(watchGetUsers),
     fork(watchUpdateUser),
-    fork(watchTestSmtpConfig)
+    fork(watchTestSmtpConfig),
   ])
 }

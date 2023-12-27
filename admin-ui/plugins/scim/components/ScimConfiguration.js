@@ -338,7 +338,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
 }
 
 ScimConfiguration.propTypes = {
-  handleSubmit: PropTypes.func
+  handleSubmit: PropTypes.func,
 }
 
 export default ScimConfiguration

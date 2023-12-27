@@ -25,8 +25,8 @@ function ClientLogoutPanel({ formik, viewOnly }) {
   return (
     <Container>
       <GluuInputRow
-        label="fields.frontChannelLogoutUri"
-        name="frontChannelLogoutUri"
+        label='fields.frontChannelLogoutUri'
+        name='frontChannelLogoutUri'
         formik={formik}
         value={formik.values.frontChannelLogoutUri}
         doc_category={DOC_CATEGORY}
@@ -35,8 +35,8 @@ function ClientLogoutPanel({ formik, viewOnly }) {
         disabled={viewOnly}
       />
       <GluuTypeAheadWithAdd
-        name="postLogoutRedirectUris"
-        label="fields.post_logout_redirect_uris"
+        name='postLogoutRedirectUris'
+        label='fields.post_logout_redirect_uris'
         formik={formik}
         placeholder={t('placeholders.post_logout_redirect_uris')}
         value={formik.values.postLogoutRedirectUris || []}
@@ -48,8 +48,8 @@ function ClientLogoutPanel({ formik, viewOnly }) {
       ></GluuTypeAheadWithAdd>
 
       <GluuTypeAheadWithAdd
-        name="attributes.backchannelLogoutUri"
-        label="fields.backchannelLogoutUri"
+        name='attributes.backchannelLogoutUri'
+        label='fields.backchannelLogoutUri'
         formik={formik}
         placeholder={t('Enter a valid uri with pattern') + ' https://'}
         value={formik.values.attributes.backchannelLogoutUri || []}
@@ -60,8 +60,8 @@ function ClientLogoutPanel({ formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
       <GluuBooleanSelectBox
-        name="attributes.backchannelLogoutSessionRequired"
-        label="fields.backchannelLogoutSessionRequired"
+        name='attributes.backchannelLogoutSessionRequired'
+        label='fields.backchannelLogoutSessionRequired'
         value={formik.values.attributes.backchannelLogoutSessionRequired}
         formik={formik}
         lsize={4}
@@ -71,11 +71,11 @@ function ClientLogoutPanel({ formik, viewOnly }) {
       />
 
       <GluuToogleRow
-        name="frontChannelLogoutSessionRequired"
+        name='frontChannelLogoutSessionRequired'
         lsize={4}
         rsize={8}
         formik={formik}
-        label="fields.frontChannelLogoutSessionRequired"
+        label='fields.frontChannelLogoutSessionRequired'
         value={formik.values.frontChannelLogoutSessionRequired}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -89,5 +89,5 @@ ClientLogoutPanel.propTypes = {
   formik: PropTypes.any,
   client: PropTypes.any,
   scripts: PropTypes.any,
-  viewOnly: PropTypes.bool
+  viewOnly: PropTypes.bool,
 }

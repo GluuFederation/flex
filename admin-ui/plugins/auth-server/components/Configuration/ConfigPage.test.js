@@ -136,11 +136,11 @@ const CONFIG_STATE = {
 }
 
 const ACER_STATE = {
-  acrReponse: {}
+  acrReponse: {},
 }
 
 const SCRIPTS_STATE = {
-  scripts: []
+  scripts: [],
 }
 
 const INIT_STATE = {
@@ -156,7 +156,7 @@ const INIT_STATE = {
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     jsonConfigReducer: (state = CONFIG_STATE) => state,
     noReducer: (state = {}) => state,

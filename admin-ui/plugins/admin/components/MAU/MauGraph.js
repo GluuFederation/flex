@@ -15,13 +15,13 @@ import {
   CardBody,
   FormGroup,
   Col,
-  Row
+  Row,
 } from 'Components'
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
-  STAT_JANS_READ
+  STAT_JANS_READ,
 } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,13 +30,15 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import dayjs from 'dayjs'
 
-const ActiveUsersGraph = lazy(() => import('Routes/Dashboards/Grapths/ActiveUsersGraph'))
+const ActiveUsersGraph = lazy(
+  () => import('Routes/Dashboards/Grapths/ActiveUsersGraph'),
+)
 
 function MauGraph() {
   const dispatch = useDispatch()
-  const statData = useSelector(state => state.mauReducer.stat);
-  const loading = useSelector(state => state.mauReducer.loading);
-  const permissions = useSelector(state => state.authReducer.permissions);
+  const statData = useSelector((state) => state.mauReducer.stat)
+  const loading = useSelector((state) => state.mauReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -44,7 +46,7 @@ function MauGraph() {
   const [endDate, setEndDate] = useState(dayjs())
   const userAction = {}
   const options = {}
-  
+
   useEffect(() => {
     if (statData.length === 0 || !statData) {
       search()
@@ -79,7 +81,7 @@ function MauGraph() {
         }
       }
       return Array.from(new Set(stat)).sort(
-        (a, b) => parseInt(a.month, 10) - parseInt(b.month, 10)
+        (a, b) => parseInt(a.month, 10) - parseInt(b.month, 10),
       )
     }
     return stat
@@ -145,7 +147,7 @@ function MauGraph() {
                   style={{
                     position: 'relative',
                     top: '55px',
-                    ...applicationStyle.customButtonStyle
+                    ...applicationStyle.customButtonStyle,
                   }}
                   color={`primary-${selectedTheme}`}
                   onClick={search}
@@ -159,7 +161,9 @@ function MauGraph() {
             <FormGroup row />
             <FormGroup row>
               <Col sm={12}>
-                <Suspense fallback={<div>Loading...</div>}><ActiveUsersGraph data={doDataAugmentation(statData)} /></Suspense>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ActiveUsersGraph data={doDataAugmentation(statData)} />
+                </Suspense>
               </Col>
             </FormGroup>
           </CardBody>

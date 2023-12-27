@@ -40,30 +40,31 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
       <Modal
         isOpen={modal}
         toggle={closeModal}
-        className="modal-outline-primary"
+        className='modal-outline-primary'
       >
         <ModalHeader toggle={closeModal}>
           <i
             style={{ color: 'red' }}
-            className="fa fa-2x fa-warning fa-fw modal-icon mb-3"
+            className='fa fa-2x fa-warning fa-fw modal-icon mb-3'
           ></i>
-          {t('messages.action_deletion_for')} {subject} ({name}-{row.inum ? row.inum : row.id})
+          {t('messages.action_deletion_for')} {subject} ({name}-
+          {row.inum ? row.inum : row.id})
         </ModalHeader>
         <ModalBody>{t('messages.action_deletion_question')}</ModalBody>
         <ModalBody>
           <FormGroup row>
             <Col sm={12}>
               <Input
-                id="user_action_message"
-                type="textarea"
-                name="user_action_message"
+                id='user_action_message'
+                type='textarea'
+                name='user_action_message'
                 onChange={(e) => setUserMessage(e.target.value)}
                 placeholder={t('placeholders.action_commit_message')}
-                defaultValue=""
+                defaultValue=''
                 value={userMessage}
               />
               {userMessage.length < 10 && (
-                <span className="text-danger">
+                <span className='text-danger'>
                   {10 - userMessage.length} {userMessage.length ? ' more' : ''}{' '}
                   characters required
                 </span>

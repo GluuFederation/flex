@@ -10,19 +10,18 @@ const LayoutNavbar = (props) => {
   const navbar = React.Children.only(props.children)
 
   return (
-    <div className="layout__navbar" style={{ background: themeColors.background }}>
-      {
-        React.cloneElement(navbar, { fixed: null })
-      }
+    <div
+      className='layout__navbar'
+      style={{ background: themeColors.background }}
+    >
+      {React.cloneElement(navbar, { fixed: null })}
     </div>
   )
 }
 
 LayoutNavbar.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 }
-LayoutNavbar.layoutPartName = "navbar"
+LayoutNavbar.layoutPartName = 'navbar'
 
-export {
-  LayoutNavbar
-}
+export { LayoutNavbar }

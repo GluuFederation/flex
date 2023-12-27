@@ -23,10 +23,10 @@ const data = [
 ]
 
 const SimpleBarChart = () => (
-  <ResponsiveContainer width="100%" aspect={6.0 / 3.0}>
+  <ResponsiveContainer width='100%' aspect={6.0 / 3.0}>
     <BarChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
+      <CartesianGrid strokeDasharray='3 3' />
+      <XAxis dataKey='name' />
       <YAxis />
       <Tooltip
         contentStyle={{
@@ -36,8 +36,8 @@ const SimpleBarChart = () => (
         }}
       />
       <Legend wrapperStyle={{ color: colors['900'] }} />
-      <Bar dataKey="pv" fill={colors['primary']} barSize={5} />
-      <Bar dataKey="uv" fill={colors['purple']} barSize={5} />
+      <Bar dataKey='pv' fill={colors['primary']} barSize={5} />
+      <Bar dataKey='uv' fill={colors['purple']} barSize={5} />
     </BarChart>
   </ResponsiveContainer>
 )

@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useContext } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Button,
   Modal,
@@ -7,82 +7,82 @@ import {
   ModalBody,
   ModalFooter,
   Row,
-} from "reactstrap";
-import applicationstyle from "Routes/Apps/Gluu/styles/applicationstyle";
-import { ThemeContext } from "Context/theme/themeContext";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import { FormGroup } from "Components";
-import { useFormik } from "formik";
+} from 'reactstrap'
+import applicationstyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import { FormGroup } from 'Components'
+import { useFormik } from 'formik'
 
 const BindPasswordModal = ({ handler, isOpen, handleChangePassword }) => {
-  const { t } = useTranslation();
-  const theme = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
+  const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const formik = useFormik({
     initialValues: {
-      new_password: "",
-      confirm_new_password: "",
+      new_password: '',
+      confirm_new_password: '',
       isValid: true,
-      errorMessage: "",
+      errorMessage: '',
     },
     setFieldValue: (field) => {
-      delete values[field];
+      delete values[field]
     },
-  });
+  })
 
   const handleSetNewPassword = () => {
     if (formik.values.new_password !== formik.values.confirm_new_password) {
       formik.setFieldValue(
-        "errorMessage",
-        `${t("messages.both_password_should_match")}.`
-      );
-      formik.setFieldValue("isValid", false);
-      return;
+        'errorMessage',
+        `${t('messages.both_password_should_match')}.`,
+      )
+      formik.setFieldValue('isValid', false)
+      return
     }
-    handler();
-    handleChangePassword(formik.values.new_password);
-  };
+    handler()
+    handleChangePassword(formik.values.new_password)
+  }
 
   return (
     <Modal
       centered
       isOpen={isOpen}
-      style={{ minWidth: "45vw" }}
+      style={{ minWidth: '45vw' }}
       toggle={handler}
-      className="modal-outline-primary"
+      className='modal-outline-primary'
     >
-      <ModalHeader style={{ padding: "16px" }} toggle={handler}>
+      <ModalHeader style={{ padding: '16px' }} toggle={handler}>
         <p
           style={{ fontWeight: 500 }}
-          data-testid={t("titles.change_backend_bind_password")}
+          data-testid={t('titles.change_backend_bind_password')}
         >
-          {t("titles.change_backend_bind_password")}
+          {t('titles.change_backend_bind_password')}
         </p>
       </ModalHeader>
-      <ModalBody style={{ overflowX: "auto", maxHeight: "60vh" }}>
+      <ModalBody style={{ overflowX: 'auto', maxHeight: '60vh' }}>
         <FormGroup row>
           <Row>
             <GluuInputRow
-              label="fields.enter_new_password"
-              name="new_password"
+              label='fields.enter_new_password'
+              name='new_password'
               value={formik.values.new_password}
-              type="password"
+              type='password'
               formik={formik}
               required
             />
           </Row>
           <Row>
             <GluuInputRow
-              label="fields.confirm_the_new_password"
-              name="confirm_new_password"
+              label='fields.confirm_the_new_password'
+              name='confirm_new_password'
               value={formik.values.confirm_new_password}
-              type="password"
+              type='password'
               formik={formik}
               required
             />
           </Row>
           {!formik.values.isValid && (
-            <div style={{ color: "red" }}>{formik.values.errorMessage}</div>
+            <div style={{ color: 'red' }}>{formik.values.errorMessage}</div>
           )}
         </FormGroup>
       </ModalBody>
@@ -92,18 +92,18 @@ const BindPasswordModal = ({ handler, isOpen, handleChangePassword }) => {
           style={applicationstyle.buttonStyle}
           onClick={handler}
         >
-          {t("actions.close")}
+          {t('actions.close')}
         </Button>
         <Button
           color={`primary-${selectedTheme}`}
           style={applicationstyle.buttonStyle}
           onClick={handleSetNewPassword}
         >
-          {t("actions.set_password")}
+          {t('actions.set_password')}
         </Button>
       </ModalFooter>
     </Modal>
-  );
-};
+  )
+}
 
-export default BindPasswordModal;
+export default BindPasswordModal

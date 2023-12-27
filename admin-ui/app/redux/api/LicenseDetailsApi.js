@@ -1,15 +1,15 @@
 import { handleResponse, handleError } from 'Utils/ApiUtils'
-const MAX_RETRIES = 1;
+const MAX_RETRIES = 1
 export default class LicenseDetailsApi {
   constructor(api) {
     this.api = api
   }
 
   getLicenseDetails = () => {
-    let retries = 0;
+    let retries = 0
     return new Promise((resolve, reject) => {
       const makeRequest = (retries) => {
-        (new Promise((resolve, reject) => {
+        new Promise((resolve, reject) => {
           this.api.getAdminuiLicense((error, data) => {
             if (error) {
               reject(error)
@@ -17,19 +17,23 @@ export default class LicenseDetailsApi {
               resolve(data)
             }
           })
-        }))
-          .then(response => { resolve(response) })
-          .catch(error => {
+        })
+          .then((response) => {
+            resolve(response)
+          })
+          .catch((error) => {
             if (retries < MAX_RETRIES) {
-              console.error(`Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`);
-              retries++;
-              makeRequest(retries);
+              console.error(
+                `Request failed. Retrying... (${retries + 1}/${MAX_RETRIES})`,
+              )
+              retries++
+              makeRequest(retries)
             } else {
               handleError(error, reject)
             }
           })
-      };
-      makeRequest(retries);
+      }
+      makeRequest(retries)
     })
   }
 

@@ -11,7 +11,7 @@ function UiRoleDetailPage({ row }) {
         <Row>
           <Col sm={3}>
             <GluuFormDetailRow
-              label="fields.name"
+              label='fields.name'
               value={rowData.role}
               isBadge={true}
               doc_category={ROLES}
@@ -20,7 +20,7 @@ function UiRoleDetailPage({ row }) {
           </Col>
           <Col sm={9}>
             <GluuFormDetailRow
-              label="fields.description"
+              label='fields.description'
               value={rowData.description}
               lsize={3}
               rsize={9}

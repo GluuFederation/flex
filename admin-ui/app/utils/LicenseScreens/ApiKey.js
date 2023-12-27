@@ -9,7 +9,7 @@ function ApiKey() {
   const serverError = useSelector((state) => state.licenseReducer.error)
   const isLoading = useSelector((state) => state.licenseReducer.isLoading)
   const generatingTrialKey = useSelector(
-    (state) => state.licenseReducer.generatingTrialKey
+    (state) => state.licenseReducer.generatingTrialKey,
   )
 
   return (
@@ -22,10 +22,7 @@ function ApiKey() {
       <div className='container text-dark'>
         <div className='row'>
           <div className='col-md-12 text-center my-5'>
-            <img
-              src={logo}
-              className='img-fluid license-screen-logo'
-            />
+            <img src={logo} className='img-fluid license-screen-logo' />
           </div>
         </div>
         <div className='row'>

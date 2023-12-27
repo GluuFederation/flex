@@ -44,7 +44,9 @@ describe('fetch & update jans-link configuration', () => {
     expect(result.returnValue instanceof Error).toBe(false)
     if (!(result.returnValue instanceof Error)) {
       configurations = result.returnValue
-      expect(result.returnValue).toEqual(result.storeState.cacheRefreshReducer.configuration)
+      expect(result.returnValue).toEqual(
+        result.storeState.cacheRefreshReducer.configuration,
+      )
     }
   })
 

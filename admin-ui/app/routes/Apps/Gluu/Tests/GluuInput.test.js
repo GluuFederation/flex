@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import GluuInput from '../GluuInput' 
+import GluuInput from '../GluuInput'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 
 it('Should show input text', () => {

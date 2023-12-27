@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useRef,
+} from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
@@ -33,7 +39,7 @@ import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
 
 function UserList(props) {
   const dispatch = useDispatch()
-  const renders = useRef(0);
+  const renders = useRef(0)
   const opt = {}
   useEffect(() => {
     opt['limit'] = 10
@@ -120,7 +126,9 @@ function UserList(props) {
       onClick: () => {
         setLimit(memoLimit)
         setPattern(memoPattern)
-        dispatch(getUsers({ action: { limit: memoLimit, pattern: memoPattern } }))
+        dispatch(
+          getUsers({ action: { limit: memoLimit, pattern: memoPattern } }),
+        )
       },
     })
   }
@@ -176,7 +184,7 @@ function UserList(props) {
 
   useEffect(() => {
     let usedAttributes = []
-    if(usersList?.length && renders.current < 1) {
+    if (usersList?.length && renders.current < 1) {
       renders.current = 1
       for (let i in usersList) {
         for (let j in usersList[i].customAttributes) {
@@ -190,7 +198,7 @@ function UserList(props) {
         dispatch(
           getAttributesRoot({
             options: { pattern: usedAttributes.toString(), limit: 100 },
-          })
+          }),
         )
       }
     }
@@ -198,7 +206,7 @@ function UserList(props) {
 
   const PaperContainer = useCallback(
     (props) => <Paper {...props} elevation={0} />,
-    []
+    [],
   )
 
   const DetailPanel = useCallback((rowData) => {
@@ -221,7 +229,7 @@ function UserList(props) {
         }
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
+    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
   )
 
   return (

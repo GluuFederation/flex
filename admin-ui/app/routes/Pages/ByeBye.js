@@ -20,7 +20,7 @@ function ByeBye() {
   }, [])
 
   return (
-    <div className="fullscreen">
+    <div className='fullscreen'>
       <EmptyLayout.Section center>
         <Label style={{ fontSize: '2em', fontWeight: 'bold' }}>
           {t('Thanks for using the admin ui')}.

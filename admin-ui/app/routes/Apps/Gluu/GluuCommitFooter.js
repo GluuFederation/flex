@@ -10,7 +10,7 @@ function GluuCommitFooter({
   saveHandler,
   extraLabel,
   hideButtons,
-  type = "button"
+  type = 'button',
 }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -22,23 +22,32 @@ function GluuCommitFooter({
   return (
     <>
       <Divider></Divider>
-      <Box display='flex' my={2} justifyContent='space-between' alignItems='center' gap={1}>
+      <Box
+        display='flex'
+        my={2}
+        justifyContent='space-between'
+        alignItems='center'
+        gap={1}
+      >
         {!hideButtons || !hideButtons['back'] ? (
           <Button
             color={`primary-${selectedTheme}`}
-            style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
-            type="button"
+            style={{
+              ...applicationStyle.buttonStyle,
+              ...applicationStyle.buttonFlexIconStyles,
+            }}
+            type='button'
             onClick={goBack}
             className='d-flex m-1 mx-5'
           >
-            <i className="fa fa-arrow-circle-left me-2"></i>
+            <i className='fa fa-arrow-circle-left me-2'></i>
             {t('actions.cancel')}
           </Button>
         ) : null}
         {extraLabel && extraOnClick && (
           <Button
             color={`primary-${selectedTheme}`}
-            type="button"
+            type='button'
             style={applicationStyle.buttonStyle}
             onClick={extraOnClick}
           >
@@ -46,34 +55,41 @@ function GluuCommitFooter({
           </Button>
         )}
         <Button
-          type="submit"
+          type='submit'
           color={`primary-${selectedTheme}`}
-          className="UserActionSubmitButton"
+          className='UserActionSubmitButton'
           style={{ visibility: 'hidden' }}
         >
           {t('actions.submit')}
         </Button>
 
-        {type === "submit" && <Button
-          type="submit"
-          color={`primary-${selectedTheme}`}
-          style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
-          className="ms-auto px-4"
-        >
-          <i className="fa fa-check-circle me-2"></i>
-          {t('actions.apply')}
-        </Button>
-        }
+        {type === 'submit' && (
+          <Button
+            type='submit'
+            color={`primary-${selectedTheme}`}
+            style={{
+              ...applicationStyle.buttonStyle,
+              ...applicationStyle.buttonFlexIconStyles,
+            }}
+            className='ms-auto px-4'
+          >
+            <i className='fa fa-check-circle me-2'></i>
+            {t('actions.apply')}
+          </Button>
+        )}
 
         {!hideButtons || !hideButtons['save'] ? (
           <Button
-            type="button"
+            type='button'
             color={`primary-${selectedTheme}`}
-            style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
-            className="ms-auto px-4"
+            style={{
+              ...applicationStyle.buttonStyle,
+              ...applicationStyle.buttonFlexIconStyles,
+            }}
+            className='ms-auto px-4'
             onClick={saveHandler}
           >
-            <i className="fa fa-check-circle me-2"></i>
+            <i className='fa fa-check-circle me-2'></i>
             {t('actions.apply')}
           </Button>
         ) : null}

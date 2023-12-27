@@ -1,5 +1,5 @@
 import React from 'react'
-import BlockUi from "../../../components/BlockUi/BlockUi";
+import BlockUi from '../../../components/BlockUi/BlockUi'
 import { useTranslation } from 'react-i18next'
 
 function GluuLoader(props) {
@@ -7,7 +7,7 @@ function GluuLoader(props) {
   return (
     <React.Fragment>
       <BlockUi
-        tag="div"
+        tag='div'
         blocking={props.blocking}
         keepInView={true}
         renderChildren={true}

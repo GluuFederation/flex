@@ -4,7 +4,7 @@ import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { ThemeContext } from "Context/theme/themeContext"
+import { ThemeContext } from 'Context/theme/themeContext'
 import darkBlackThumbnail from 'Images/theme-thumbnail/darkBlack.jpg'
 import darkBlueThumbnail from 'Images/theme-thumbnail/darkBlue.jpg'
 import lightBlueThumbnail from 'Images/theme-thumbnail/lightBlue.jpg'
@@ -17,10 +17,14 @@ export function ThemeSettings({ userInfo }) {
   const themeContext = useContext(ThemeContext)
 
   const themeList = [
-    { value: 'darkBlack', thumbnail: darkBlackThumbnail, text: 'Dark Black' }, 
-    { value: 'darkBlue', thumbnail: darkBlueThumbnail, text: 'Dark Blue' }, 
-    { value: 'lightBlue', thumbnail: lightBlueThumbnail, text: 'Light Blue' }, 
-    { value: 'lightGreen', thumbnail: lightGreenThumbnail, text: 'Light Green' },
+    { value: 'darkBlack', thumbnail: darkBlackThumbnail, text: 'Dark Black' },
+    { value: 'darkBlue', thumbnail: darkBlueThumbnail, text: 'Dark Blue' },
+    { value: 'lightBlue', thumbnail: lightBlueThumbnail, text: 'Light Blue' },
+    {
+      value: 'lightGreen',
+      thumbnail: lightGreenThumbnail,
+      text: 'Light Green',
+    },
   ]
   const existingConfig = JSON.parse(localStorage.getItem('userConfig'))
   const lang = existingConfig?.lang || {}
@@ -41,7 +45,10 @@ export function ThemeSettings({ userInfo }) {
   }
 
   const toggleDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
       return
     }
 
@@ -53,21 +60,25 @@ export function ThemeSettings({ userInfo }) {
       className={clsx(classes.list, {
         [classes.fullList]: anchor === 'top' || anchor === 'bottom',
       })}
-      role="presentation"
+      role='presentation'
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <Box className={classes.selectContainer}>
         <Box className={classes.selectInfo}>Choose Theme: </Box>
-        {themeList.map(text => (
-          <Box 
+        {themeList.map((text) => (
+          <Box
             className={clsx(classes.selectItem, {
-              [classes.selectedItem]: themeContext.state.theme === text.value
-            })} 
-            onClick={() => onChangeTheme(text.value)} 
+              [classes.selectedItem]: themeContext.state.theme === text.value,
+            })}
+            onClick={() => onChangeTheme(text.value)}
             key={text.value}
           >
-            <img className={classes.selectImage} src={text.thumbnail} alt={`thumbnail-${text.value}`} />
+            <img
+              className={classes.selectImage}
+              src={text.thumbnail}
+              alt={`thumbnail-${text.value}`}
+            />
             <div className={classes.selectTitle}>{text.text}</div>
           </Box>
         ))}
@@ -78,9 +89,14 @@ export function ThemeSettings({ userInfo }) {
   return (
     <React.Fragment>
       <Button onClick={toggleDrawer(true)} className={classes.whiteColor}>
-        <SettingsIcon  style={{color: "white"}}/>
+        <SettingsIcon style={{ color: 'white' }} />
       </Button>
-      <Drawer className={classes.drawerContainer} anchor={'right'} open={open} onClose={toggleDrawer(false)}>
+      <Drawer
+        className={classes.drawerContainer}
+        anchor={'right'}
+        open={open}
+        onClose={toggleDrawer(false)}
+      >
         {list('right')}
       </Drawer>
     </React.Fragment>

@@ -1,8 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getHealthStatusResponse } from '../features/healthSlice'
 import { getAPIAccessToken } from '../features/authSlice'
 import { postUserAction } from '../api/backend-api'
@@ -26,11 +23,13 @@ export function* getHealthStatus({ payload }) {
     payload = payload ? payload : { action: {} }
     addAdditionalData(audit, 'FETCH', 'Health', payload)
     const healthApi = yield* newFunction()
-    const data = yield call(healthApi.getHealthStatus, payload.action.action_data)
+    const data = yield call(
+      healthApi.getHealthStatus,
+      payload.action.action_data,
+    )
     yield put(getHealthStatusResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
-
     yield put(getHealthStatusResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

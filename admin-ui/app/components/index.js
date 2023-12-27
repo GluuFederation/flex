@@ -10,10 +10,7 @@ import FloatGrid from './FloatGrid'
 import HolderProvider from './HolderProvider'
 import IconWithBadge from './IconWithBadge'
 import InputGroupAddon from './InputGroupAddon'
-import Layout, {
-  withPageConfig,
-  setupPage
-} from './Layout'
+import Layout, { withPageConfig, setupPage } from './Layout'
 import Nav from './Nav'
 import Navbar from './Navbar'
 import NavSearch from './NavSearch'
@@ -25,11 +22,7 @@ import Progress from './Progress'
 import Sidebar from './Sidebar'
 import SidebarMenu from './SidebarMenu'
 import SidebarTrigger from './SidebarTrigger'
-import {
-  ThemeClass,
-  ThemeProvider,
-  ThemeConsumer,
-} from './Theme'
+import { ThemeClass, ThemeProvider, ThemeConsumer } from './Theme'
 import ThemeSetting from './ThemeSetting'
 import UncontrolledTabs from './UncontrolledTabs'
 import Wizard from './Wizard'
@@ -103,7 +96,7 @@ export {
   UncontrolledButtonDropdown,
   UncontrolledDropdown,
   UncontrolledCollapse,
-  UncontrolledTooltip
+  UncontrolledTooltip,
 } from 'reactstrap'
 export {
   Accordion,
@@ -138,5 +131,5 @@ export {
   ThemeProvider,
   ThemeSetting,
   UncontrolledTabs,
-  Wizard
+  Wizard,
 }

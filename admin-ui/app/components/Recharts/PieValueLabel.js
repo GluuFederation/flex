@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import config from './config'
 
-const RADIAN = Math.PI / 180                    
+const RADIAN = Math.PI / 180
 
 export const PieValueLabel = (props) => {
   const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props
@@ -13,12 +13,12 @@ export const PieValueLabel = (props) => {
 
   return (
     <text
-      x={ x }
-      y={ y }
-      textAnchor={ x > cx ? 'start' : 'end' }
-      dominantBaseline="central"
-      fill={ props.color || config.pieLabel.fill }
-      fontSize={ config.pieLabel.fontSize }
+      x={x}
+      y={y}
+      textAnchor={x > cx ? 'start' : 'end'}
+      dominantBaseline='central'
+      fill={props.color || config.pieLabel.fill}
+      fontSize={config.pieLabel.fontSize}
     >
       {`${(percent * 100).toFixed(0)}%`}
     </text>
@@ -31,5 +31,5 @@ PieValueLabel.propTypes = {
   innerRadius: PropTypes.number,
   outerRadius: PropTypes.number,
   percent: PropTypes.number,
-  color: PropTypes.string
+  color: PropTypes.string,
 }

@@ -1,49 +1,49 @@
 /* React Grid Layout Overrides */
-@import "./../variables.scss";
+@import './../variables.scss';
 
 .react-grid-layout {
-    margin: 0 -#{calc($grid-gutter-width / 2)};
+  margin: 0 -#{calc($grid-gutter-width / 2)};
 
-    .react-grid-item.react-grid-placeholder {
-        background: none;
-        z-index: 2;
-        transition-duration: 100ms;
-        user-select: none;
-        position: relative;
-        opacity: 0.7;
+  .react-grid-item.react-grid-placeholder {
+    background: none;
+    z-index: 2;
+    transition-duration: 100ms;
+    user-select: none;
+    position: relative;
+    opacity: 0.7;
 
-        &:after {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            transform: translate(-50%, 0);
-            content: " ";
-            background: rgba($primary, 0.3);
-            border-radius: 4px;
-            border: 2px dashed $primary;
-            height: calc(100% - #{calc($grid-gutter-width / 2)});
-            width: calc(100% - #{$grid-gutter-width});
-        }
+    &:after {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translate(-50%, 0);
+      content: ' ';
+      background: rgba($primary, 0.3);
+      border-radius: 4px;
+      border: 2px dashed $primary;
+      height: calc(100% - #{calc($grid-gutter-width / 2)});
+      width: calc(100% - #{$grid-gutter-width});
     }
+  }
 }
 
 .float-column {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    > .card {
-        flex: 1 1 auto;
-        margin-bottom: calc($grid-gutter-width / 2);
+  > .card {
+    flex: 1 1 auto;
+    margin-bottom: calc($grid-gutter-width / 2);
 
-        + .react-resizable-handle {
-            bottom: calc($grid-gutter-width / 2);
-            right: calc($grid-gutter-width / 2);
-        }
+    + .react-resizable-handle {
+      bottom: calc($grid-gutter-width / 2);
+      right: calc($grid-gutter-width / 2);
+    }
 
-        > .card-header {
-            cursor: move;
-            user-select: none;
-            /*
+    > .card-header {
+      cursor: move;
+      user-select: none;
+      /*
             &:before {
                 position: absolute;
                 font: normal normal normal 14px/1 FontAwesome;
@@ -54,23 +54,23 @@
                 color: $text-muted;
             }
             */
-        }
     }
+  }
 }
 
 // Internal Breakpoint System
 //=====================================
 .float-column {
-    // Reset column sizes
-    [class^="col-"] {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
+  // Reset column sizes
+  [class^='col-'] {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 
-    &--size-lg {
-        .col-md-4 {
-            flex: 0 0 calc(100% / 3);
-            max-width: calc(100% / 3);            
-        }
+  &--size-lg {
+    .col-md-4 {
+      flex: 0 0 calc(100% / 3);
+      max-width: calc(100% / 3);
     }
+  }
 }

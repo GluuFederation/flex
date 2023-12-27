@@ -6,9 +6,13 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import TablePagination from '@mui/material/TablePagination';
-import Paper from '@mui/material/Paper';
-import { getAgama, deleteAgama, addAgama } from '../../redux/features/agamaSlice'
+import TablePagination from '@mui/material/TablePagination'
+import Paper from '@mui/material/Paper'
+import {
+  getAgama,
+  deleteAgama,
+  addAgama,
+} from '../../redux/features/agamaSlice'
 import { hasPermission, AGAMA_READ, AGAMA_WRITE } from 'Utils/PermChecker'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
@@ -17,7 +21,7 @@ import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
 import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
 import CircularProgress from '@mui/material/CircularProgress'
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from '@mui/icons-material/Info'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
@@ -29,8 +33,8 @@ const dateTimeFormatOptions = {
   month: '2-digit',
   day: '2-digit',
   hour: '2-digit',
-  minute: '2-digit'
-};
+  minute: '2-digit',
+}
 
 function AgamaListPage() {
   const { t } = useTranslation()
@@ -52,9 +56,13 @@ function AgamaListPage() {
   const [shaFileName, setShaFileName] = useState('')
   const [listData, setListData] = useState([])
   const [selectedRow, setSelectedRow] = useState({})
-  const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
+  const configuration = useSelector(
+    (state) => state.jsonConfigReducer.configuration,
+  )
   const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
-  const isConfigLoading = useSelector((state) => state.jsonConfigReducer.loading)
+  const isConfigLoading = useSelector(
+    (state) => state.jsonConfigReducer.loading,
+  )
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -75,7 +83,7 @@ function AgamaListPage() {
   }
 
   useEffect(() => {
-    if(isEmpty(configuration)) {
+    if (isEmpty(configuration)) {
       dispatch(getJsonConfig({ action: {} }))
     }
   }, [])
@@ -84,7 +92,7 @@ function AgamaListPage() {
     let file = await convertFileToByteArray(selectedFile)
     let object = {
       name: projectName,
-      file: file
+      file: file,
     }
 
     dispatch(addAgama(object))
@@ -146,9 +154,7 @@ function AgamaListPage() {
     },
   })
 
-  const { totalItems, loading } = useSelector(
-    (state) => state.agamaReducer,
-  )
+  const { totalItems, loading } = useSelector((state) => state.agamaReducer)
   const agamaList = useSelector((state) => state.agamaReducer.agamaList)
   const permissions = useSelector((state) => state.authReducer.permissions)
   SetTitle(t('titles.agama'))
@@ -165,10 +171,25 @@ function AgamaListPage() {
     let data = []
     if (agamaList.length) {
       for (const project of agamaList) {
-        const error = project?.finishedAt && project?.details?.error ? 'Yes' : project?.finishedAt ? 'No' : ''
+        const error =
+          project?.finishedAt && project?.details?.error
+            ? 'Yes'
+            : project?.finishedAt
+              ? 'No'
+              : ''
         const status = project?.finishedAt ? 'Processed' : 'Pending'
-        const deployed_on = project?.finishedAt ? new Intl.DateTimeFormat('en-US', dateTimeFormatOptions).format(new Date(project.createdAt)) : '-'
-        data.push({ ...project, deployed_on, type: project?.details?.projectMetadata?.type ?? '-', status, error })
+        const deployed_on = project?.finishedAt
+          ? new Intl.DateTimeFormat('en-US', dateTimeFormatOptions).format(
+              new Date(project.createdAt),
+            )
+          : '-'
+        data.push({
+          ...project,
+          deployed_on,
+          type: project?.details?.projectMetadata?.type ?? '-',
+          status,
+          error,
+        })
       }
     }
 
@@ -203,10 +224,12 @@ function AgamaListPage() {
         setSelectedFileName(null)
         setGetProjectName(false)
         setSHAfile(null)
-        if(isAgamaEnabled) {
+        if (isAgamaEnabled) {
           setShowAddModal(true)
         } else {
-          dispatch(updateToast(true, 'error', t('messages.agama_is_not_enabled')))
+          dispatch(
+            updateToast(true, 'error', t('messages.agama_is_not_enabled')),
+          )
         }
       },
     })
@@ -265,17 +288,36 @@ function AgamaListPage() {
   }, [shaFile, selectedFile])
 
   const handleUpdateRowData = (updatedData) => {
-    const foundIndex = listData.findIndex(item => item.dn == updatedData.dn)
+    const foundIndex = listData.findIndex((item) => item.dn == updatedData.dn)
 
     if (foundIndex) {
-
-      const error = updatedData?.finishedAt && updatedData?.details?.error ? 'Yes' : updatedData?.finishedAt ? 'No' : ''
+      const error =
+        updatedData?.finishedAt && updatedData?.details?.error
+          ? 'Yes'
+          : updatedData?.finishedAt
+            ? 'No'
+            : ''
       const status = updatedData?.finishedAt ? 'Processed' : 'Pending'
-      const deployed_on = updatedData?.finishedAt ? new Intl.DateTimeFormat('en-US', dateTimeFormatOptions).format(new Date(updatedData.createdAt)) : '-'
+      const deployed_on = updatedData?.finishedAt
+        ? new Intl.DateTimeFormat('en-US', dateTimeFormatOptions).format(
+            new Date(updatedData.createdAt),
+          )
+        : '-'
 
-      const updatedList = foundIndex >= 0 ? listData.map((project, index) => {
-        return index === foundIndex ? { ...project, error: error, status: status, deployed_on: deployed_on, details: { ...project.details, ...updatedData } } : project
-      }) : [...listData]
+      const updatedList =
+        foundIndex >= 0
+          ? listData.map((project, index) => {
+              return index === foundIndex
+                ? {
+                    ...project,
+                    error: error,
+                    status: status,
+                    deployed_on: deployed_on,
+                    details: { ...project.details, ...updatedData },
+                  }
+                : project
+            })
+          : [...listData]
       setListData(updatedList)
     }
   }
@@ -289,7 +331,7 @@ function AgamaListPage() {
           handleUpdateRowData={handleUpdateRowData}
           manageConfig={manageConfig}
           handler={() => {
-            if(manageConfig) {
+            if (manageConfig) {
               setManageConfig(false)
             }
             setShowConfigModal(false)
@@ -345,7 +387,7 @@ function AgamaListPage() {
               ]}
               data={listData}
               isLoading={loading}
-              title=""
+              title=''
               actions={myActions}
               options={{
                 search: true,
@@ -365,10 +407,14 @@ function AgamaListPage() {
                 isDeleteHidden: () => !hasPermission(permissions, AGAMA_DELETE),
                 onRowDelete: (oldData) => {
                   return new Promise((resolve, reject) => {
-                    dispatch(deleteAgama({ name: oldData.details.projectMetadata.projectName }))
+                    dispatch(
+                      deleteAgama({
+                        name: oldData.details.projectMetadata.projectName,
+                      }),
+                    )
                     resolve()
                   })
-                }
+                },
               }}
             />
           </GluuViewWrapper>
@@ -383,10 +429,10 @@ function AgamaListPage() {
                 {selectedFileName ? (
                   <strong>Selected File : {selectedFileName}</strong>
                 ) : (
-                  <p>{t(('messages.drag_agama_file'))}</p>
+                  <p>{t('messages.drag_agama_file')}</p>
                 )}
               </div>
-              <div className="mt-2"></div>
+              <div className='mt-2'></div>
               <div
                 {...getRootProps2()}
                 className={isDragActive2 ? 'active' : 'dropzone'}
@@ -395,25 +441,23 @@ function AgamaListPage() {
                 {shaFile ? (
                   <strong>Selected File : {shaFileName}</strong>
                 ) : (
-                  <p>
-                    {t(('messages.drag_sha_file'))}
-                  </p>
+                  <p>{t('messages.drag_sha_file')}</p>
                 )}
               </div>
-              <div className="mt-2"></div>
-              <div className="text-danger">
+              <div className='mt-2'></div>
+              <div className='text-danger'>
                 {shaFile &&
                   selectedFileName &&
                   !shaStatus &&
                   'SHA256 not verified'}
               </div>
-              <div className="text-success">
+              <div className='text-success'>
                 {shaFile && selectedFileName && shaStatus && 'SHA256 verified'}
               </div>
               {getProjectName && (
                 <Input
-                  type="text"
-                  placeholder="Project name"
+                  type='text'
+                  placeholder='Project name'
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                 />
@@ -424,12 +468,19 @@ function AgamaListPage() {
                 color={`primary-${selectedTheme}`}
                 style={applicationStyle.buttonStyle}
                 onClick={() => submitData()}
-                disabled={(shaFile && selectedFileName && shaStatus && projectName != '') ? loading || isConfigLoading ? true : false : true}
+                disabled={
+                  shaFile && selectedFileName && shaStatus && projectName != ''
+                    ? loading || isConfigLoading
+                      ? true
+                      : false
+                    : true
+                }
               >
-
-                {loading || isConfigLoading ? <>
-                  <CircularProgress size={12} /> &nbsp;
-                </> : null}
+                {loading || isConfigLoading ? (
+                  <>
+                    <CircularProgress size={12} /> &nbsp;
+                  </>
+                ) : null}
                 {t('actions.add')}
               </Button>
               &nbsp;

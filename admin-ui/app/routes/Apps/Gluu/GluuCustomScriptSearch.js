@@ -8,23 +8,27 @@ function GluuCustomScriptSearch({
   typeId,
   scriptType,
   pattern = '',
-  options = []
+  options = [],
 }) {
   const { t } = useTranslation()
   return (
     <FormGroup row style={{ marginTop: '10px' }}>
       <InputGroup style={{ width: '210px' }}>
         <CustomInput
-          type="select"
-          name="type"
+          type='select'
+          name='type'
           data-testid={typeId}
           id={typeId}
           defaultValue={scriptType}
           onChange={handler}
-          className="search-select"
+          className='search-select'
         >
           {options.map((option) => {
-            return <option key={option.value} value={option.value}>{option.name}</option>
+            return (
+              <option key={option.value} value={option.value}>
+                {option.name}
+              </option>
+            )
           })}
         </CustomInput>
       </InputGroup>
@@ -32,9 +36,9 @@ function GluuCustomScriptSearch({
       <Input
         style={{ width: '180px' }}
         id={patternId}
-        type="text"
+        type='text'
         data-testid={patternId}
-        name="pattern"
+        name='pattern'
         onChange={handler}
         defaultValue={pattern}
         placeholder={t('placeholders.search_pattern')}

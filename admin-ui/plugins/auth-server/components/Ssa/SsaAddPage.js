@@ -56,11 +56,13 @@ const SsaAddPage = () => {
     validationSchema: Yup.object({
       software_id: Yup.mixed().required('Software ID is required'),
       software_roles: Yup.array()
-        .min(1, "Software Roles are mandatory to select.")
+        .min(1, 'Software Roles are mandatory to select.')
         .required('Software Roles are mandatory to select.'),
       description: Yup.mixed().required('Description is required'),
       org_id: Yup.mixed().required('Organization is required'),
-      grant_types: Yup.array().min(1, "Please add a grant type.").required('Please add a grant type.'),
+      grant_types: Yup.array()
+        .min(1, 'Please add a grant type.')
+        .required('Please add a grant type.'),
     }),
     onSubmit: (values) => {
       toggle()
@@ -79,7 +81,7 @@ const SsaAddPage = () => {
       rotate_ssa,
       org_id,
     } = formik.values
-    
+
     const timestamp = new Date(expirationDate).getTime()
 
     const date = expirationDate ? Math.floor(timestamp / 1000) : null

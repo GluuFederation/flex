@@ -2,13 +2,11 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import {
   getAttributesResponseRoot,
-  toggleInitAttributeLoader
+  toggleInitAttributeLoader,
 } from '../features/attributesSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { postUserAction } from 'Redux/api/backend-api'
-import {
-  FETCH,
-} from '../../audit/UserActionType'
+import { FETCH } from '../../audit/UserActionType'
 // } from '../../../../app/audit/UserActionType'
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from 'Redux/api/base'
@@ -29,7 +27,7 @@ function* newFunction() {
 
 export function* getAttributesRoot({ payload }) {
   const audit = yield* initAudit()
-  if(payload.init) {
+  if (payload.init) {
     yield put(toggleInitAttributeLoader(true))
   }
   try {
@@ -54,7 +52,5 @@ export function* watchGetAttributesRoot() {
 }
 
 export default function* rootSaga() {
-  yield all([
-    fork(watchGetAttributesRoot),
-  ])
+  yield all([fork(watchGetAttributesRoot)])
 }

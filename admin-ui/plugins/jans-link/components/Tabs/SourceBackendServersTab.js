@@ -23,14 +23,14 @@ const SourceBackendServersTab = () => {
   let actions = []
   const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
-    (state) => state.cacheRefreshReducer.configuration
+    (state) => state.cacheRefreshReducer.configuration,
   )
   const userAction = {}
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
   const { sourceConfigs } = useSelector(
-    (state) => state.cacheRefreshReducer.configuration
+    (state) => state.cacheRefreshReducer.configuration,
   )
   const loading = useSelector((state) => state.ldapReducer.loading)
 
@@ -41,7 +41,9 @@ const SourceBackendServersTab = () => {
 
   const navigateToEdit = (rowData) => {
     delete rowData?.tableData
-    navigate('/jans-link/source-backend-ldap-servers/edit', { state: { sourceConfig: rowData } })
+    navigate('/jans-link/source-backend-ldap-servers/edit', {
+      state: { sourceConfig: rowData },
+    })
   }
 
   const deleteConfig = (data) => {
@@ -84,16 +86,15 @@ const SourceBackendServersTab = () => {
 
   const PaperContainer = useCallback(
     (props) => <Paper {...props} elevation={0} />,
-    []
+    [],
   )
 
-  const DeleteIcon = useCallback(
-    (props) => <DeleteOutlined />,
-    []
-  )
+  const DeleteIcon = useCallback((props) => <DeleteOutlined />, [])
 
   function onDeletionConfirmed(message) {
-    const sourceConfigs = cacheRefreshConfiguration.sourceConfigs?.filter((config) => config.configId !== item.configId)
+    const sourceConfigs = cacheRefreshConfiguration.sourceConfigs?.filter(
+      (config) => config.configId !== item.configId,
+    )
     buildPayload(userAction, message, {
       appConfiguration2: {
         ...cacheRefreshConfiguration,

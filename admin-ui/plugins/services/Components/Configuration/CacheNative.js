@@ -12,16 +12,16 @@ function CacheNative({ config, formik }) {
       <CardBody>
         <FormGroup row>
           <Col
-            xs="12"
+            xs='12'
             style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
           >
             {t('fields.native_persistence_configuration')}:
           </Col>
         </FormGroup>
         <GluuInputRow
-          label="fields.default_put_expiration"
-          name="nativeDefaultPutExpiration"
-          type="number"
+          label='fields.default_put_expiration'
+          name='nativeDefaultPutExpiration'
+          type='number'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -29,9 +29,9 @@ function CacheNative({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.default_cleanup_batch_size"
-          name="defaultCleanupBatchSize"
-          type="number"
+          label='fields.default_cleanup_batch_size'
+          name='defaultCleanupBatchSize'
+          type='number'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -39,8 +39,8 @@ function CacheNative({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuToogleRow
-          label="fields.delete_expired_on_get_request"
-          name="deleteExpiredOnGetRequest"
+          label='fields.delete_expired_on_get_request'
+          name='deleteExpiredOnGetRequest'
           lsize={6}
           rsize={6}
           formik={formik}

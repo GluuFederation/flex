@@ -1,8 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import {
   getLdapResponse,
@@ -10,9 +7,9 @@ import {
   addLdapResponse,
   deleteLdapResponse,
   testLdapResponse,
-  toggleSavedFormFlag
+  toggleSavedFormFlag,
 } from '../features/ldapSlice'
-import {updateToast} from 'Redux/features/toastSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { LDAP } from '../audit/Resources'
 import {

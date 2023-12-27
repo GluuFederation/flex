@@ -31,18 +31,10 @@ import getThemeColor from 'Context/theme/config'
 function AttributeListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const attributes = useSelector(
-    (state) => state.attributeReducer.items
-  )
-  const loading = useSelector(
-    (state) => state.attributeReducer.loading
-  )
-  const permissions = useSelector(
-    (state) => state.authReducer.permissions
-  )
-  const { totalItems } = useSelector(
-    (state) => state.attributeReducer
-  )
+  const attributes = useSelector((state) => state.attributeReducer.items)
+  const loading = useSelector((state) => state.attributeReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const { totalItems } = useSelector((state) => state.attributeReducer)
   const options = {}
   const pageSize = localStorage.getItem('paggingSize')
     ? parseInt(localStorage.getItem('paggingSize'))
@@ -122,7 +114,7 @@ function AttributeListPage() {
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const DetailsPanel = useCallback(
     (rowData) => <AttributeDetailPage row={rowData.rowData} />,
-    []
+    [],
   )
 
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
@@ -232,12 +224,12 @@ function AttributeListPage() {
         }
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
+    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
   )
 
   const PaperContainer = useCallback(
     (props) => <Paper {...props} elevation={0} />,
-    []
+    [],
   )
 
   return (

@@ -25,7 +25,9 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
     formik.values.expirationDate ? formik.values.expirationDate : false,
   )
   const [scopesModal, setScopesModal] = useState(false)
-  const [expirationDate, setExpirationDate] = useState(expirable ? dayjs(expirable) : undefined)
+  const [expirationDate, setExpirationDate] = useState(
+    expirable ? dayjs(expirable) : undefined,
+  )
   const handler = () => {
     setScopesModal(!scopesModal)
   }
@@ -33,7 +35,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
   const filteredScripts = scripts
     ?.filter((item) => item.scriptType == 'person_authentication')
     ?.filter((item) => item.enabled)
-    ?.map((item) => (item.name))
+    ?.map((item) => item.name)
   function uriValidator(uri) {
     return uri
   }
@@ -56,20 +58,20 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
     <Container>
       <ClientShowSpontaneousScopes handler={handler} isOpen={scopesModal} />
       <GluuToogleRow
-        name="persistClientAuthorizations"
+        name='persistClientAuthorizations'
         lsize={3}
         rsize={9}
         handler={(e) => {
           formik.setFieldValue('persistClientAuthorizations', e.target.checked)
         }}
-        label="fields.persist_client_authorizations"
+        label='fields.persist_client_authorizations'
         value={formik.values.persistClientAuthorizations}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuBooleanSelectBox
-        name="attributes.allowSpontaneousScopes"
-        label="fields.allow_spontaneous_scopes"
+        name='attributes.allowSpontaneousScopes'
+        label='fields.allow_spontaneous_scopes'
         value={formik.values?.attributes?.allowSpontaneousScopes}
         formik={formik}
         lsize={3}
@@ -78,8 +80,8 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         disabled={viewOnly}
       />
       <GluuTypeAheadForDn
-        name="attributes.spontaneousScopes"
-        label="fields.spontaneousScopesREGEX"
+        name='attributes.spontaneousScopes'
+        label='fields.spontaneousScopesREGEX'
         formik={formik}
         value={formik.values?.attributes?.spontaneousScopes || []}
         options={formik.values?.attributes?.spontaneousScopes || []}
@@ -93,13 +95,13 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
 
       <GluuTooltip
         doc_category={DOC_CATEGORY}
-        doc_entry="spontaneousScopesViewContent"
+        doc_entry='spontaneousScopesViewContent'
       >
         {client.inum && (
           <FormGroup row>
-            <GluuLabel label="fields.spontaneousScopes" />
+            <GluuLabel label='fields.spontaneousScopes' />
             <Col sm={9}>
-              <a onClick={handler} className="common-link">
+              <a onClick={handler} className='common-link'>
                 View Current
               </a>
             </Col>
@@ -107,16 +109,16 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         )}
       </GluuTooltip>
       <GluuInputRow
-        label="fields.initiateLoginUri"
-        name="initiateLoginUri"
+        label='fields.initiateLoginUri'
+        name='initiateLoginUri'
         formik={formik}
         value={formik.values.initiateLoginUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuTypeAheadWithAdd
-        name="requestUris"
-        label="fields.requestUris"
+        name='requestUris'
+        label='fields.requestUris'
         formik={formik}
         placeholder={t('Enter a valid request uri eg') + ' https://...'}
         value={formik.values.requestUris || []}
@@ -129,8 +131,8 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAhead
-        name="defaultAcrValues"
-        label="fields.defaultAcrValues"
+        name='defaultAcrValues'
+        label='fields.defaultAcrValues'
         formik={formik}
         value={getMapping(formik.values.defaultAcrValues, filteredScripts)}
         options={filteredScripts}
@@ -140,10 +142,15 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAhead>
       <GluuTypeAhead
-        name="attributes.authorizedAcrValues"
-        label="fields.authorizedAcrValues"
+        name='attributes.authorizedAcrValues'
+        label='fields.authorizedAcrValues'
         formik={formik}
-        value={getMapping(formik.values?.attributes?.authorizedAcrValues || [], filteredScripts) || []}
+        value={
+          getMapping(
+            formik.values?.attributes?.authorizedAcrValues || [],
+            filteredScripts,
+          ) || []
+        }
         options={filteredScripts}
         doc_category={DOC_CATEGORY}
         lsize={3}
@@ -151,20 +158,23 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAhead>
       <GluuToogleRow
-        name="attributes.jansDefaultPromptLogin"
+        name='attributes.jansDefaultPromptLogin'
         lsize={3}
         rsize={9}
-        label="fields.defaultPromptLogin"
+        label='fields.defaultPromptLogin'
         value={formik.values.attributes.jansDefaultPromptLogin}
         handler={(e) => {
-          formik.setFieldValue('attributes.jansDefaultPromptLogin', e.target.checked)
+          formik.setFieldValue(
+            'attributes.jansDefaultPromptLogin',
+            e.target.checked,
+          )
         }}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuInputRow
-        label="fields.tls_client_auth_subject_dn"
-        name="attributes.tlsClientAuthSubjectDn"
+        label='fields.tls_client_auth_subject_dn'
+        name='attributes.tlsClientAuthSubjectDn'
         formik={formik}
         value={formik.values?.attributes?.tlsClientAuthSubjectDn}
         doc_category={DOC_CATEGORY}
@@ -173,16 +183,16 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
 
       <FormGroup row>
         <Col sm={6}>
-            <GluuToogleRow
-              name="expirable"
-              formik={formik}
-              label="fields.is_expirable_client"
-              value={formik.values.expirable}
-              doc_category={DOC_CATEGORY}
-              lsize={6}
-              rsize={6}
-              disabled={viewOnly}
-            />
+          <GluuToogleRow
+            name='expirable'
+            formik={formik}
+            label='fields.is_expirable_client'
+            value={formik.values.expirable}
+            doc_category={DOC_CATEGORY}
+            lsize={6}
+            rsize={6}
+            disabled={viewOnly}
+          />
         </Col>
         <Col sm={6}>
           {formik.values.expirable ? (
@@ -190,8 +200,8 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
               <Col sm={12}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateTimePicker
-                    id="expirationDate"
-                    name="expirationDate"
+                    id='expirationDate'
+                    name='expirationDate'
                     disablePast
                     value={expirationDate}
                     onChange={(date) => {
@@ -199,7 +209,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
                       setExpirationDate(date)
                     }}
                   />
-                </LocalizationProvider> 
+                </LocalizationProvider>
               </Col>
             </FormGroup>
           ) : null}
@@ -214,5 +224,5 @@ ClientAdvancedPanel.propTypes = {
   formik: PropTypes.any,
   client: PropTypes.any,
   scripts: PropTypes.any,
-  viewOnly: PropTypes.bool
+  viewOnly: PropTypes.bool,
 }

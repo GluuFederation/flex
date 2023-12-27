@@ -86,7 +86,11 @@ function UiRoleListPage() {
                 field: 'role',
                 width: '40%',
                 editable: false,
-                render: (rowData) => <Badge color={`primary-${selectedTheme}`}>{rowData.role}</Badge>,
+                render: (rowData) => (
+                  <Badge color={`primary-${selectedTheme}`}>
+                    {rowData.role}
+                  </Badge>
+                ),
               },
               { title: `${t('fields.description')}`, field: 'description' },
               {
@@ -139,15 +143,18 @@ function UiRoleListPage() {
               rowStyle: (rowData) => ({
                 backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              headerStyle: {
+                ...applicationStyle.tableHeaderStyle,
+                ...bgThemeColor,
+              },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
               return <UiRoleDetailPage row={rowData} />
             }}
             editable={{
-              isDeleteHidden:() => !hasPermission(permissions, ROLE_DELETE),
-              isEditHidden:() => !hasPermission(permissions, ROLE_WRITE),
+              isDeleteHidden: () => !hasPermission(permissions, ROLE_DELETE),
+              isEditHidden: () => !hasPermission(permissions, ROLE_WRITE),
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit role', newData)

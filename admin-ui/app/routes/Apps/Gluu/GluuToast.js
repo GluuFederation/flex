@@ -1,34 +1,40 @@
 import React, { useEffect } from 'react'
-import { ToastContainer, toast } from "react-toastify"
+import { ToastContainer, toast } from 'react-toastify'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { updateToast } from 'Redux/features/toastSlice'
-function GluuToast(){
+function GluuToast() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { showToast, message, type } = useSelector(state => state.toastReducer)
-    
+  const { showToast, message, type } = useSelector(
+    (state) => state.toastReducer,
+  )
+
   const ToastDesign = () => {
     return (
-      <div style={{ textAlign:"left" }}>
-        <strong>{type == 'success' ? "Success" : "Error" }</strong><br/>
-        {message == "" ? type == "success" ? t('messages.success_in_saving') : t('messages.error_processiong_request') : message}
+      <div style={{ textAlign: 'left' }}>
+        <strong>{type == 'success' ? 'Success' : 'Error'}</strong>
+        <br />
+        {message == ''
+          ? type == 'success'
+            ? t('messages.success_in_saving')
+            : t('messages.error_processiong_request')
+          : message}
       </div>
     )
   }
   const showTheToast = () => {
-    if(type == "success"){
+    if (type == 'success') {
       toast.success(<ToastDesign />)
-    }else{
+    } else {
       toast.error(<ToastDesign />)
     }
-  }  
+  }
 
   useEffect(() => {
-    if(showToast){
+    if (showToast) {
       showTheToast()
       dispatch(updateToast(false, 'success', ''))
-            
     }
   }, [showToast])
 

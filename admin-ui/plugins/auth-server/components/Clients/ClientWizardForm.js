@@ -106,7 +106,8 @@ function ClientWizardForm({
     scopes: client_data.scopes,
     oxAuthClaims: client_data.oxAuthClaims,
     attributes: client_data.attributes,
-    frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired,
+    frontChannelLogoutSessionRequired:
+      client_data.frontChannelLogoutSessionRequired,
     customObjectClasses: client_data.customObjectClasses || [],
     trustedClient: client_data.trustedClient,
     persistClientAuthorizations: client_data.persistClientAuthorizations,
@@ -298,7 +299,9 @@ function ClientWizardForm({
           onSubmit={(...args) => {
             let values = {
               ...args[0],
-              accessTokenAsJwt: args[0]?.accessTokenAsJwt && JSON.parse(args[0]?.accessTokenAsJwt),
+              accessTokenAsJwt:
+                args[0]?.accessTokenAsJwt &&
+                JSON.parse(args[0]?.accessTokenAsJwt),
               rptAsJwt: args[0]?.rptAsJwt && JSON.parse(args[0]?.rptAsJwt),
               [ATTRIBUTE]: args[0][ATTRIBUTE] && { ...args[0][ATTRIBUTE] },
             }
@@ -378,9 +381,7 @@ function ClientWizardForm({
                     </Wizard.Step>
                   </Wizard>
                 </CardBody>
-                <CardBody className='p-2'>
-                  {activeClientStep(formik)}
-                </CardBody>
+                <CardBody className='p-2'>{activeClientStep(formik)}</CardBody>
                 <CardFooter className='p-4 bt-0'>
                   <div className='d-flex'>
                     <div style={{ flex: 1 }}>
@@ -467,6 +468,6 @@ ClientWizardForm.propTypes = {
   customOnSubmit: PropTypes.func,
   oidcConfiguration: PropTypes.object,
   umaResources: PropTypes.array,
-};
+}
 
 export default ClientWizardForm

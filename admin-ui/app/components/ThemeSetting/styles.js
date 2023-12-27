@@ -1,4 +1,4 @@
-import { makeStyles } from "tss-react/mui";
+import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()({
   list: {
@@ -20,7 +20,7 @@ const styles = makeStyles()({
   },
   selectContainer: {
     textAlign: 'center',
-    marginTop: '25%'
+    marginTop: '25%',
   },
   selectItem: {
     marginBottom: 20,
@@ -35,8 +35,8 @@ const styles = makeStyles()({
   },
   selectTitle: {
     fontSize: 16,
-    fontWeight: '600'
-  }
+    fontWeight: '600',
+  },
 })
 
 export default styles

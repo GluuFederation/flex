@@ -21,9 +21,9 @@ function ReportPiChartItem({ data }) {
       <text
         x={x}
         y={y}
-        fill="white"
+        fill='white'
         textAnchor={x > cx ? 'start' : 'end'}
-        dominantBaseline="central"
+        dominantBaseline='central'
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
@@ -39,14 +39,14 @@ function ReportPiChartItem({ data }) {
         labelLine={false}
         label={renderCustomizedLabel}
         outerRadius={80}
-        fill="#8884d8"
-        dataKey="value"
+        fill='#8884d8'
+        dataKey='value'
       >
         {data.map((e, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>
-      <Legend iconType="star" />
+      <Legend iconType='star' />
       <Tooltip contentStyle={applicationStyle.homeStatTooltip} />
     </PieChart>
   )

@@ -14,7 +14,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
   const [timeoutCountdown, setTimeoutCountdown] = useState(0)
   const idleTimer = useRef(null)
   const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES
-  const navigate =useNavigate()
+  const navigate = useNavigate()
 
   const clearSessionTimeout = () => {
     clearTimeout(timeout)

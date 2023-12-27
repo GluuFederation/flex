@@ -7,7 +7,7 @@ const initialState = {
   loading: false,
   redirectToUserListPage: false,
   totalItems: 0,
-  entriesCount: 0
+  entriesCount: 0,
 }
 
 const userSlice = createSlice({
@@ -52,8 +52,8 @@ const userSlice = createSlice({
     },
     deleteUserResponse: (state, action) => {
       state.loading = false
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -67,7 +67,7 @@ export const {
   changeUserPassword,
   changeUserPasswordResponse,
   deleteUser,
-  deleteUserResponse
+  deleteUserResponse,
 } = userSlice.actions
 export { initialState }
 export default userSlice.reducer

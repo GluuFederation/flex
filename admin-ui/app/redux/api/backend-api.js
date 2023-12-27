@@ -28,18 +28,22 @@ export const getUserIpAndLocation = () => {
 }
 
 // Retrieve user information
-export const fetchUserInformation = ({ userInfoEndpoint, token_type, access_token }) => {
+export const fetchUserInformation = ({
+  userInfoEndpoint,
+  token_type,
+  access_token,
+}) => {
   const headers = { Authorization: `${token_type} ${access_token}` }
   return axios
-  .get(userInfoEndpoint, { headers })
-  .then((response) => response.data)
-  .catch((error) => {
-    console.error(
-      'Problems fetching user information with the provided code.',
-      error,
-    )
-    return -1
-  })
+    .get(userInfoEndpoint, { headers })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error(
+        'Problems fetching user information with the provided code.',
+        error,
+      )
+      return -1
+    })
 }
 
 // post user action
@@ -60,7 +64,10 @@ export const postUserAction = (userAction) => {
 // Get API Access Token
 export const fetchApiAccessToken = (jwt, permissionTag) => {
   return axios
-    .post('/app/admin-ui/oauth2/api-protection-token', { ujwt: jwt, permissionTag: permissionTag || [] })
+    .post('/app/admin-ui/oauth2/api-protection-token', {
+      ujwt: jwt,
+      permissionTag: permissionTag || [],
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error(

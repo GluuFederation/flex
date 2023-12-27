@@ -18,21 +18,15 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
       <FormGroup row>
         <Col sm={4} md={2}>
           {extraLabel && extraOnClick && (
-            <Button
-              color={`primary-${selectedTheme}`}
-              onClick={extraOnClick}
-            >
+            <Button color={`primary-${selectedTheme}`} onClick={extraOnClick}>
               {t(extraLabel)}
             </Button>
           )}
         </Col>
         {!hideButtons || !hideButtons['back'] ? (
           <Col sm={4} md={2}>
-            <Button
-              color={`primary-${selectedTheme}`}
-              onClick={goBack}
-            >
-              <i className="fa fa-arrow-circle-left me-2"></i>
+            <Button color={`primary-${selectedTheme}`} onClick={goBack}>
+              <i className='fa fa-arrow-circle-left me-2'></i>
               {t('actions.cancel')}
             </Button>
           </Col>
@@ -42,11 +36,8 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         &nbsp;
         {!hideButtons || !hideButtons['save'] ? (
           <Col sm={4} md={2}>
-            <Button
-              color={`primary-${selectedTheme}`}
-              type="submit"
-            >
-              <i className="fa fa-check-circle me-2"></i>
+            <Button color={`primary-${selectedTheme}`} type='submit'>
+              <i className='fa fa-check-circle me-2'></i>
               {t('actions.save')}
             </Button>
           </Col>

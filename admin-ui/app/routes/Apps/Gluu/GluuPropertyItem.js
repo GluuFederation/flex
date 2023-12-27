@@ -12,36 +12,38 @@ function GluuPropertyItem({
   onPropertyRemove,
   disabled = false,
   isInputLables = false,
-  keyLabel = "",
-  valueLabel = "",
+  keyLabel = '',
+  valueLabel = '',
   isRemoveButton,
   isKeys,
   sm = 6,
   multiProperties = false,
   destinationPlaceholder = '',
-  sourcePlaceholder = ''
+  sourcePlaceholder = '',
 }) {
   const { t } = useTranslation()
   return (
-    <FormGroup row >
-      {isKeys && <Col sm={4}>
-        {isInputLables && <label>{keyLabel}</label>}
-        <Input
-          name={'key'}
-          defaultValue={property.key}
-          value={property.key}
-          disabled={disabled}
-          onChange={(event) => onPropertyChange(position, event)}
-          placeholder={
-            keyPlaceholder
-              ? t(keyPlaceholder)
-              : t('placeholders.enter_property_key')
-          }
-        />
-      </Col>}
+    <FormGroup row>
+      {isKeys && (
+        <Col sm={4}>
+          {isInputLables && <label>{keyLabel}</label>}
+          <Input
+            name={'key'}
+            defaultValue={property.key}
+            value={property.key}
+            disabled={disabled}
+            onChange={(event) => onPropertyChange(position, event)}
+            placeholder={
+              keyPlaceholder
+                ? t(keyPlaceholder)
+                : t('placeholders.enter_property_key')
+            }
+          />
+        </Col>
+      )}
       <Col sm={sm}>
         {isInputLables && <label>{valueLabel}</label>}
-        {!multiProperties ?
+        {!multiProperties ? (
           <>
             <Input
               name={'value'}
@@ -56,7 +58,7 @@ function GluuPropertyItem({
               }
             />
           </>
-          :
+        ) : (
           <Box display='flex' gap={2} alignItems={'center'}>
             <Input
               name={'source'}
@@ -83,20 +85,21 @@ function GluuPropertyItem({
               }
             />
           </Box>
-        }
-
+        )}
       </Col>
-      {isRemoveButton && <Col sm={2} className="mt-4">
-        <Button
-          type="button"
-          color="danger"
-          disabled={disabled}
-          onClick={() => onPropertyRemove(position)}
-        >
-          <i className="fa fa-fw fa-trash me-2"></i>
-          {t('actions.remove')}
-        </Button>
-      </Col>}
+      {isRemoveButton && (
+        <Col sm={2} className='mt-4'>
+          <Button
+            type='button'
+            color='danger'
+            disabled={disabled}
+            onClick={() => onPropertyRemove(position)}
+          >
+            <i className='fa fa-fw fa-trash me-2'></i>
+            {t('actions.remove')}
+          </Button>
+        </Col>
+      )}
     </FormGroup>
   )
 }

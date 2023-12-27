@@ -17,7 +17,12 @@ function GluuInput({
       <FormGroup row>
         <GluuLabel label={label} size={lsize} required={required} />
         <Col sm={rsize}>
-          <Input id={name} data-testid={name} type={type} defaultValue={value} />
+          <Input
+            id={name}
+            data-testid={name}
+            type={type}
+            defaultValue={value}
+          />
         </Col>
       </FormGroup>
     </GluuTooltip>

@@ -13,14 +13,14 @@ function GluuBooleanInput({ label, name, value, lsize, rsize, doc_category }) {
         <Col sm={rsize}>
           <InputGroup>
             <CustomInput
-              type="select"
+              type='select'
               id={name}
               name={name}
               data-testid={name}
               defaultValue={value}
             >
-              <option value="false">{t('options.false')}</option>
-              <option value="true">{t('options.true')}</option>
+              <option value='false'>{t('options.false')}</option>
+              <option value='true'>{t('options.true')}</option>
             </CustomInput>
           </InputGroup>
         </Col>

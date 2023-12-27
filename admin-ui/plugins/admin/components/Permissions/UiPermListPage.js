@@ -20,7 +20,7 @@ import {
   buildPayload,
   PERMISSION_READ,
   PERMISSION_WRITE,
-  PERMISSION_DELETE
+  PERMISSION_DELETE,
 } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -28,11 +28,11 @@ import getThemeColor from 'Context/theme/config'
 import { isEmpty } from 'lodash'
 
 function UiPermListPage() {
-  const apiPerms = useSelector(state => state.apiPermissionReducer.items);
-  const loading = useSelector(state => state.apiPermissionReducer.loading);
-  const permissions = useSelector(state => state.authReducer.permissions);
+  const apiPerms = useSelector((state) => state.apiPermissionReducer.items)
+  const loading = useSelector((state) => state.apiPermissionReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -76,13 +76,10 @@ function UiPermListPage() {
 
   const PaperContainer = useCallback(
     (props) => <Paper {...props} elevation={0} />,
-    []
+    [],
   )
 
-  const DetailPanel = useCallback(
-    (rowD) => <UiPermDetailPage row={rowD} />,
-    []
-  )
+  const DetailPanel = useCallback((rowD) => <UiPermDetailPage row={rowD} />, [])
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -99,7 +96,9 @@ function UiPermListPage() {
                 editable: false,
                 width: '50%',
                 render: (rowData) => (
-                  <Badge color={`primary-${selectedTheme}`}>{rowData.permission}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>
+                    {rowData.permission}
+                  </Badge>
                 ),
               },
               {
@@ -116,7 +115,7 @@ function UiPermListPage() {
             ]}
             data={apiPerms}
             isLoading={loading || false}
-            title=""
+            title=''
             actions={myActions}
             options={{
               search: true,
@@ -126,13 +125,17 @@ function UiPermListPage() {
               rowStyle: (rowData) => ({
                 backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              headerStyle: {
+                ...applicationStyle.tableHeaderStyle,
+                ...bgThemeColor,
+              },
               actionsColumnIndex: -1,
             }}
             detailPanel={DetailPanel}
             editable={{
-              isDeleteHidden:() => !hasPermission(permissions, PERMISSION_DELETE),
-              isEditHidden:() => !hasPermission(permissions, PERMISSION_WRITE),
+              isDeleteHidden: () =>
+                !hasPermission(permissions, PERMISSION_DELETE),
+              isEditHidden: () => !hasPermission(permissions, PERMISSION_WRITE),
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit permision', newData)
@@ -140,7 +143,7 @@ function UiPermListPage() {
                   resolve()
                   doFetchList()
                 }),
-              onRowDelete: (oldData) => 
+              onRowDelete: (oldData) =>
                 new Promise((resolve, reject) => {
                   if (!isEmpty(oldData)) {
                     buildPayload(userAction, 'Remove permission', oldData)

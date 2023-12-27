@@ -40,7 +40,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   let associatedClientsSelectedValues = []
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const client = scope.clients || []
 
@@ -164,9 +164,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             ...values,
             attributes: {
               ...scope.attributes,
-              ...values.attributes
-            }
-          };
+              ...values.attributes,
+            },
+          }
           result['id'] = result.id
           result['creatorType'] = 'user'
           result['creatorId'] = authReducer.userinfo.inum
@@ -180,82 +180,98 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
       >
         {(formik) => (
           <Form onSubmit={formik.handleSubmit}>
-            
-              <FormGroup row>
-                <GluuLabel label="fields.id" size={4} required doc_category={SCOPE} doc_entry="id" />
-                <Col sm={8}>
-                  <Input
-                    placeholder={t('placeholders.id')}
-                    id="id"
-                    valid={!formik.errors.id && !formik.touched.id && init}
-                    name="id"
-                    defaultValue={scope.id}
-                    onKeyUp={activate}
-                    onChange={formik.handleChange}
-                  />
-                </Col>
-                <ErrorMessage name="id">
-                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-                </ErrorMessage>
-              </FormGroup>
+            <FormGroup row>
+              <GluuLabel
+                label='fields.id'
+                size={4}
+                required
+                doc_category={SCOPE}
+                doc_entry='id'
+              />
+              <Col sm={8}>
+                <Input
+                  placeholder={t('placeholders.id')}
+                  id='id'
+                  valid={!formik.errors.id && !formik.touched.id && init}
+                  name='id'
+                  defaultValue={scope.id}
+                  onKeyUp={activate}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+              <ErrorMessage name='id'>
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+              </ErrorMessage>
+            </FormGroup>
             {scope.inum && (
               <GluuInumInput
-                label="fields.inum"
-                name="inum"
+                label='fields.inum'
+                name='inum'
                 value={scope.inum}
                 doc_category={SCOPE}
               />
             )}
-            
-              <FormGroup row>
-                <GluuLabel label="fields.displayname" size={4} required doc_category={SCOPE} doc_entry="displayName"/>
-                <Col sm={8}>
-                  <Input
-                    placeholder={t('placeholders.display_name')}
-                    id="displayName"
-                    valid={
-                      !formik.errors.displayName &&
-                      !formik.touched.displayName &&
-                      init
-                    }
-                    name="displayName"
-                    defaultValue={scope.displayName}
-                    onKeyUp={activate}
-                    onChange={formik.handleChange}
-                  />
-                </Col>
-                <ErrorMessage name="displayName">
-                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-                </ErrorMessage>
-              </FormGroup>
-            
-              <FormGroup row>
-                <GluuLabel label="fields.description" size={4} doc_category={SCOPE} doc_entry="description"/>
-                <Col sm={8}>
-                  <Input
-                    type="textarea"
-                    placeholder={t('placeholders.description')}
-                    maxLength="4000"
-                    id="description"
-                    name="description"
-                    defaultValue={scope.description}
-                    onKeyUp={activate}
-                    onChange={formik.handleChange}
-                  />
-                </Col>
-              </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label='fields.displayname'
+                size={4}
+                required
+                doc_category={SCOPE}
+                doc_entry='displayName'
+              />
+              <Col sm={8}>
+                <Input
+                  placeholder={t('placeholders.display_name')}
+                  id='displayName'
+                  valid={
+                    !formik.errors.displayName &&
+                    !formik.touched.displayName &&
+                    init
+                  }
+                  name='displayName'
+                  defaultValue={scope.displayName}
+                  onKeyUp={activate}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+              <ErrorMessage name='displayName'>
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+              </ErrorMessage>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label='fields.description'
+                size={4}
+                doc_category={SCOPE}
+                doc_entry='description'
+              />
+              <Col sm={8}>
+                <Input
+                  type='textarea'
+                  placeholder={t('placeholders.description')}
+                  maxLength='4000'
+                  id='description'
+                  name='description'
+                  defaultValue={scope.description}
+                  onKeyUp={activate}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+            </FormGroup>
             {!showSpontaneousPanel && (
               <div>
                 <GluuToogleRow
-                  label="fields.default_scope"
-                  name="defaultScope"
+                  label='fields.default_scope'
+                  name='defaultScope'
                   formik={formik}
                   value={scope.defaultScope}
                   doc_category={SCOPE}
                 />
                 <GluuToogleRow
-                  label="fields.show_in_configuration_endpoint"
-                  name="attributes.showInConfigurationEndpoint"
+                  label='fields.show_in_configuration_endpoint'
+                  name='attributes.showInConfigurationEndpoint'
                   formik={formik}
                   value={scope.attributes.showInConfigurationEndpoint}
                   doc_category={SCOPE}
@@ -263,48 +279,56 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </div>
             )}
             {showSpontaneousPanel ? (
-              
-                <FormGroup row>
-                  <GluuLabel label="fields.scope_type" size={4} doc_category={SCOPE} doc_entry="scopeType"/>
-                  <Col sm={8}>
-                    <Badge key={scope.inum} color={`primary-${selectedTheme}`}>
-                      {scope.scopeType}
-                    </Badge>
-                  </Col>
-                </FormGroup>
+              <FormGroup row>
+                <GluuLabel
+                  label='fields.scope_type'
+                  size={4}
+                  doc_category={SCOPE}
+                  doc_entry='scopeType'
+                />
+                <Col sm={8}>
+                  <Badge key={scope.inum} color={`primary-${selectedTheme}`}>
+                    {scope.scopeType}
+                  </Badge>
+                </Col>
+              </FormGroup>
             ) : (
-              
-                <FormGroup row>
-                  <GluuLabel label="fields.scope_type" size={4} doc_category={SCOPE} doc_entry="scopeType" />
-                  <Col sm={8}>
-                    <InputGroup>
-                      <CustomInput
-                        type="select"
-                        id="scopeType"
-                        name="scopeType"
-                        defaultValue={scope.scopeType}
-                        onChange={(e) => {
-                          handleScopeTypeChanged(e.target.value)
-                          formik.setFieldValue('scopeType', e.target.value)
-                        }}
-                      >
-                        <option value="">{t('actions.choose')}...</option>
-                        <option value="oauth">OAuth</option>
-                        <option value="openid">OpenID</option>
-                        <option value="dynamic">Dynamic</option>
-                        <option value="uma">UMA</option>
-                      </CustomInput>
-                    </InputGroup>
-                  </Col>
-                  <ErrorMessage name="scopeType">
-                    {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-                  </ErrorMessage>
-                </FormGroup>
+              <FormGroup row>
+                <GluuLabel
+                  label='fields.scope_type'
+                  size={4}
+                  doc_category={SCOPE}
+                  doc_entry='scopeType'
+                />
+                <Col sm={8}>
+                  <InputGroup>
+                    <CustomInput
+                      type='select'
+                      id='scopeType'
+                      name='scopeType'
+                      defaultValue={scope.scopeType}
+                      onChange={(e) => {
+                        handleScopeTypeChanged(e.target.value)
+                        formik.setFieldValue('scopeType', e.target.value)
+                      }}
+                    >
+                      <option value=''>{t('actions.choose')}...</option>
+                      <option value='oauth'>OAuth</option>
+                      <option value='openid'>OpenID</option>
+                      <option value='dynamic'>Dynamic</option>
+                      <option value='uma'>UMA</option>
+                    </CustomInput>
+                  </InputGroup>
+                </Col>
+                <ErrorMessage name='scopeType'>
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
+              </FormGroup>
             )}
             {showDynamicPanel && (
               <GluuTypeAheadForDn
-                name="dynamicScopeScripts"
-                label="fields.dynamic_scope_scripts"
+                name='dynamicScopeScripts'
+                label='fields.dynamic_scope_scripts'
                 formik={formik}
                 value={getMapping(
                   scope.dynamicScopeScripts,
@@ -315,15 +339,15 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               />
             )}
             {(showClaimsPanel || showDynamicPanel) && (
-              <Accordion className="mb-2 b-primary" initialOpen>
-                <Accordion.Header className="text-primary">
+              <Accordion className='mb-2 b-primary' initialOpen>
+                <Accordion.Header className='text-primary'>
                   {t('fields.claims').toUpperCase()}
                 </Accordion.Header>
                 <Accordion.Body>
                   <FormGroup row> </FormGroup>
                   <GluuTypeAheadForDn
-                    name="claims"
-                    label="fields.claims"
+                    name='claims'
+                    label='fields.claims'
                     formik={formik}
                     value={getMapping(scope.claims, claims)}
                     options={claims}
@@ -335,27 +359,27 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             {showUmaPanel && (
               <>
                 <FormGroup row>
-                  <GluuLabel label="fields.iconUrl" size={4} />
+                  <GluuLabel label='fields.iconUrl' size={4} />
                   <Col sm={8}>
                     <Input
                       placeholder={t('placeholders.iconUrl')}
-                      id="iconUrl"
-                      name="iconUrl"
+                      id='iconUrl'
+                      name='iconUrl'
                       defaultValue={scope.iconUrl}
                       onChange={formik.handleChange}
                       disabled={scope.inum ? true : false}
                     />
                   </Col>
                 </FormGroup>
-                <Accordion className="mb-2 b-primary" initialOpen>
-                  <Accordion.Header className="text-primary">
+                <Accordion className='mb-2 b-primary' initialOpen>
+                  <Accordion.Header className='text-primary'>
                     {t('fields.umaAuthorizationPolicies').toUpperCase()}
                   </Accordion.Header>
                   <Accordion.Body>
                     <FormGroup row> </FormGroup>
                     <GluuTypeAheadForDn
-                      name="umaAuthorizationPolicies"
-                      label="fields.umaAuthorizationPolicies"
+                      name='umaAuthorizationPolicies'
+                      label='fields.umaAuthorizationPolicies'
                       formik={formik}
                       value={getMapping(
                         scope.umaAuthorizationPolicies,
@@ -370,7 +394,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 {scope.inum && (
                   <>
                     <FormGroup row>
-                      <GluuLabel label="fields.associatedClients" size={4} />
+                      <GluuLabel label='fields.associatedClients' size={4} />
                       <Col sm={8}>
                         {client.map((item, key) => (
                           <div key={'uma-client' + key}>
@@ -378,7 +402,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                               onClick={() =>
                                 goToClientViewPage(item.inum, item)
                               }
-                              className="common-link"
+                              className='common-link'
                             >
                               {item.displayName ? item.displayName : item.inum}
                             </a>
@@ -387,7 +411,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label="fields.creationDate" size={4} />
+                      <GluuLabel label='fields.creationDate' size={4} />
                       <Col sm={8}>
                         <Input
                           defaultValue={moment(scope.creationDate).format(
@@ -398,7 +422,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label="fields.creatorType" size={4} />
+                      <GluuLabel label='fields.creatorType' size={4} />
                       <Col sm={8}>
                         <Input
                           defaultValue={
@@ -418,19 +442,19 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </>
             )}
             {showSpontaneousPanel && (
-              <Accordion className="mb-2 b-primary" initialOpen>
-                <Accordion.Header className="text-primary">
+              <Accordion className='mb-2 b-primary' initialOpen>
+                <Accordion.Header className='text-primary'>
                   {t('fields.spontaneous_scopes').toUpperCase()}
                 </Accordion.Header>
                 <Accordion.Body>
                   <FormGroup row> </FormGroup>
                   <GluuTooltip
                     doc_category={SCOPE}
-                    doc_entry="spontaneousClientId"
+                    doc_entry='spontaneousClientId'
                   >
                     <FormGroup row>
                       <GluuLabel
-                        label="fields.spontaneous_client_id"
+                        label='fields.spontaneous_client_id'
                         size={4}
                       />
                       <Col sm={8}>
@@ -440,7 +464,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                               onClick={() =>
                                 goToClientViewPage(item.inum, item)
                               }
-                              className="common-link"
+                              className='common-link'
                             >
                               {item.displayName ? item.displayName : item.inum}
                             </a>
@@ -452,11 +476,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
 
                   <GluuTooltip
                     doc_category={SCOPE}
-                    doc_entry="spontaneousClientScopes"
+                    doc_entry='spontaneousClientScopes'
                   >
                     <FormGroup row>
                       <GluuLabel
-                        label="fields.spontaneous_client_scopes"
+                        label='fields.spontaneous_client_scopes'
                         size={4}
                       />
                       <Col sm={8}>
@@ -477,7 +501,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   </GluuTooltip>
 
                   <FormGroup row>
-                    <GluuLabel label="fields.creationDate" size={4} />
+                    <GluuLabel label='fields.creationDate' size={4} />
                     <Col sm={8}>
                       <Input
                         defaultValue={moment(scope.creationDate).format(

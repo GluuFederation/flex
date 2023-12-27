@@ -36,7 +36,7 @@ const INIT_ATTRIBUTE_STATE = {
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     attributeReducer: (state = INIT_ATTRIBUTE_STATE) => state,
     noReducer: (state = {}) => state,

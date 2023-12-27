@@ -20,7 +20,7 @@ const ConfigurationTab = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const cacheRefreshConfiguration = useSelector(
-    (state) => state.cacheRefreshReducer.configuration
+    (state) => state.cacheRefreshReducer.configuration,
   )
   const userAction = {}
   const [modal, setModal] = useState(false)
@@ -42,7 +42,7 @@ const ConfigurationTab = () => {
     lastUpdateCount = null,
     lastUpdate = null,
     loggingLevel = [],
-    useSearchLimit = false
+    useSearchLimit = false,
   } = useSelector((state) => state.cacheRefreshReducer.configuration)
 
   const initialValues = {
@@ -59,7 +59,7 @@ const ConfigurationTab = () => {
     lastUpdateCount,
     lastUpdate,
     loggingLevel,
-    useSearchLimit
+    useSearchLimit,
   }
 
   const formik = useFormik({
@@ -67,17 +67,17 @@ const ConfigurationTab = () => {
     enableReinitialize: true,
     validationSchema: Yup.object({
       snapshotMaxCount: Yup.mixed().required(
-        `${t('fields.snapshots_count')} ${t('messages.is_required')}`
+        `${t('fields.snapshots_count')} ${t('messages.is_required')}`,
       ),
       snapshotFolder: Yup.string().required(
-        `${t('fields.snapshot_folder')} ${t('messages.is_required')}`
+        `${t('fields.snapshot_folder')} ${t('messages.is_required')}`,
       ),
       updateMethod: Yup.string().required(
-        `${t('fields.refresh_method')} ${t('messages.is_required')}`
+        `${t('fields.refresh_method')} ${t('messages.is_required')}`,
       ),
       attributeMapping: Yup.array().min(
         1,
-        `${t('fields.mandatory_fields_required')}`
+        `${t('fields.mandatory_fields_required')}`,
       ),
     }),
     onSubmit: () => {
@@ -105,9 +105,7 @@ const ConfigurationTab = () => {
       },
     })
 
-    dispatch(
-      putCacheRefreshConfiguration({ action: userAction })
-    )
+    dispatch(putCacheRefreshConfiguration({ action: userAction }))
   }
 
   return (
@@ -123,7 +121,13 @@ const ConfigurationTab = () => {
           <Col sm={12}>
             <Row>
               <GluuLabel label={'fields.last_run'} size={3} />
-              <Col sm={9}>{formik.values.lastUpdate ? moment(formik.values.lastUpdate).format('YYYY-MM-DD HH:mm:ss') : null}</Col>
+              <Col sm={9}>
+                {formik.values.lastUpdate
+                  ? moment(formik.values.lastUpdate).format(
+                      'YYYY-MM-DD HH:mm:ss',
+                    )
+                  : null}
+              </Col>
             </Row>
           </Col>
           <Col sm={12}>
@@ -144,7 +148,10 @@ const ConfigurationTab = () => {
               name='updateMethod'
               value={formik.values.updateMethod}
               defaultValue={formik.values.updateMethod}
-              values={[{ value: 'copy', label: 'COPY' }, { value: 'vds', label: 'VDS' }]}
+              values={[
+                { value: 'copy', label: 'COPY' },
+                { value: 'vds', label: 'VDS' },
+              ]}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -161,7 +168,15 @@ const ConfigurationTab = () => {
               name='loggingLevel'
               value={formik.values.loggingLevel}
               defaultValue={formik.values.loggingLevel}
-              values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
+              values={[
+                'TRACE',
+                'DEBUG',
+                'INFO',
+                'WARN',
+                'ERROR',
+                'FATAL',
+                'OFF',
+              ]}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -169,7 +184,11 @@ const ConfigurationTab = () => {
           </Col>
           <Col sm={12}>
             <Row>
-              <GluuLabel required label='fields.change_attribute_name_from_source_to_estination' size={3} />
+              <GluuLabel
+                required
+                label='fields.change_attribute_name_from_source_to_estination'
+                size={3}
+              />
               <Col sm={9}>
                 <GluuProperties
                   compName='attributeMapping'
@@ -183,7 +202,7 @@ const ConfigurationTab = () => {
                           ({ source, destination }) => ({
                             source,
                             destination,
-                          })
+                          }),
                         )
                       : []
                   }

@@ -20,16 +20,16 @@ export const WizardStep = (props) => {
       className={stepClass}
       onClick={() => !props.disabled && props.onClick()}
     >
-      <div className="wizard-step__icon">
+      <div className='wizard-step__icon'>
         {!props.complete ? props.icon : props.successIcon}
       </div>
-      <div className="wizard-step__content">{props.children}</div>
+      <div className='wizard-step__content'>{props.children}</div>
     </a>
   )
 }
 
 WizardStep.defaultProps = {
-  successIcon: <i className="fa fa-check fa-fw"></i>,
+  successIcon: <i className='fa fa-check fa-fw'></i>,
   onClick: () => {},
 }
 

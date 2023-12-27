@@ -12,10 +12,10 @@ import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 
 function Reports() {
-  const attributes = useSelector(state => state.initReducer.attributes);
-  const clients = useSelector(state => state.initReducer.clients);
-  const scopes = useSelector(state => state.initReducer.scopes);
-  const scripts = useSelector(state => state.initReducer.scripts);
+  const attributes = useSelector((state) => state.initReducer.attributes)
+  const clients = useSelector((state) => state.initReducer.clients)
+  const scopes = useSelector((state) => state.initReducer.scopes)
+  const scripts = useSelector((state) => state.initReducer.scripts)
   const dispatch = useDispatch()
   const { t } = useTranslation()
 

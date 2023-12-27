@@ -14,8 +14,8 @@ const logoutSlice = createSlice({
       if (userConfig && userConfig !== 'null') {
         localStorage.setItem('userConfig', userConfig)
       }
-    }
-  }
+    },
+  },
 })
 
 export const { logoutUser } = logoutSlice.actions

@@ -9,7 +9,7 @@ const VALUE = 'Public'
 
 it('Should show the disabled input with proper text wit sa', () => {
   function handler() {
-    console.log("========")
+    console.log('========')
   }
   render(
     <AppTestWrapper>

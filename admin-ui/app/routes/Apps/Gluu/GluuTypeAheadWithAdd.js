@@ -31,7 +31,7 @@ function GluuTypeAheadWithAdd({
     document.getElementById(inputId).value = ''
     if (validator(newItem)) {
       const updatedItems = [...items]
-      updatedItems.push(newItem) 
+      updatedItems.push(newItem)
       opts.push(newItem)
       setItems(updatedItems)
       formik.setFieldValue(name, updatedItems)
@@ -45,9 +45,13 @@ function GluuTypeAheadWithAdd({
   }
 
   return (
-    
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <GluuLabel
+        label={label}
+        size={lsize}
+        doc_category={doc_category}
+        doc_entry={name}
+      />
       <Col
         sm={rsize}
         style={{
@@ -56,34 +60,34 @@ function GluuTypeAheadWithAdd({
           borderColor: '#03a96d',
         }}
       >
-          &nbsp;
+        &nbsp;
         <Row>
           <Col sm={10}>
             <Input
               placeholder={placeholder}
               id={inputId}
               disabled={disabled}
-              data-testid="new_entry"
-              aria-label="new_entry"
+              data-testid='new_entry'
+              aria-label='new_entry'
             />
           </Col>
           <Col>
             <Button
               color={`primary-${selectedTheme}`}
-              type="button"
+              type='button'
               disabled={disabled}
               style={applicationStyle.buttonStyle}
               onClick={addItem}
               data-testid={t('actions.add')}
             >
-              <i className="fa fa-plus-circle me-2"></i>
+              <i className='fa fa-plus-circle me-2'></i>
               {t('actions.add')}
             </Button>
           </Col>
         </Row>
-          &nbsp;
+        &nbsp;
         <Typeahead
-          emptyLabel=""
+          emptyLabel=''
           labelKey={name}
           disabled={disabled}
           onChange={(selected) => {
@@ -96,7 +100,7 @@ function GluuTypeAheadWithAdd({
           selected={items}
           options={opts}
         />
-          &nbsp;
+        &nbsp;
       </Col>
     </FormGroup>
   )

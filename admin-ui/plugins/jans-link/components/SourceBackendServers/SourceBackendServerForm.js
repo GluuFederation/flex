@@ -40,7 +40,7 @@ const SourceBackendServerForm = () => {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const cacheRefreshConfiguration = useSelector(
-    (state) => state.cacheRefreshReducer.configuration
+    (state) => state.cacheRefreshReducer.configuration,
   )
   const loading = useSelector((state) => state.cacheRefreshReducer.loading)
   const loadingTest = useSelector((state) => state.ldapReducer.loading)
@@ -82,15 +82,15 @@ const SourceBackendServerForm = () => {
         .min(2, 'Mininum 2 characters')
         .required(`${t('fields.bind_dn')} ${t('messages.is_required')}`),
       maxConnections: Yup.string().required(
-        `${t('fields.max_connections')} ${t('messages.is_required')}`
+        `${t('fields.max_connections')} ${t('messages.is_required')}`,
       ),
       servers: Yup.array().min(
         1,
-        `${t('fields.server_port')} ${t('messages.is_required')}`
+        `${t('fields.server_port')} ${t('messages.is_required')}`,
       ),
       baseDNs: Yup.array().min(
         1,
-        `${t('fields.base_dns')} ${t('messages.is_required')}`
+        `${t('fields.base_dns')} ${t('messages.is_required')}`,
       ),
     }),
   })
@@ -117,11 +117,15 @@ const SourceBackendServerForm = () => {
     }
     if (testStatus) {
       dispatch(
-        updateToast(true, 'success', `${t('messages.ldap_connection_success')}`)
+        updateToast(
+          true,
+          'success',
+          `${t('messages.ldap_connection_success')}`,
+        ),
       )
     } else {
       dispatch(
-        updateToast(true, 'error', `${t('messages.ldap_connection_error')}`)
+        updateToast(true, 'error', `${t('messages.ldap_connection_error')}`),
       )
     }
   }, [testStatus])
@@ -284,7 +288,7 @@ const SourceBackendServerForm = () => {
                                   (item) => ({
                                     key: '',
                                     value: item,
-                                  })
+                                  }),
                                 )
                               : []
                           }
@@ -313,7 +317,7 @@ const SourceBackendServerForm = () => {
                                   (item) => ({
                                     key: '',
                                     value: item,
-                                  })
+                                  }),
                                 )
                               : []
                           }
@@ -347,7 +351,7 @@ const SourceBackendServerForm = () => {
                       handler={(e) => {
                         formik.setFieldValue(
                           'sourceConfigs.useSSL',
-                          e.target.checked
+                          e.target.checked,
                         )
                       }}
                       lsize={4}
@@ -363,7 +367,7 @@ const SourceBackendServerForm = () => {
                       handler={(e) => {
                         formik.setFieldValue(
                           'sourceConfigs.enabled',
-                          e.target.checked
+                          e.target.checked,
                         )
                       }}
                       lsize={4}

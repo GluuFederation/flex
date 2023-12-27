@@ -30,7 +30,7 @@ const pageConfig = {}
 const Wrapper = ({ children }) => (
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
-      <Router basename="/admin">
+      <Router basename='/admin'>
         <Sidebar.MobileFluid pageConfig={pageConfig}>
           <Sidebar.Section fluid cover>
             {children}

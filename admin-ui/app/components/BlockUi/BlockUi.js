@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
-import DefaultLoader from "./DefaultLoader";
-import safeActiveElement from "./safeActiveElement";
+import React, { useState, useRef, useEffect } from 'react'
+import DefaultLoader from './DefaultLoader'
+import safeActiveElement from './safeActiveElement'
 
 export default function BlockUi(props) {
   const {
-    tag: Tag = "div",
+    tag: Tag = 'div',
     blocking,
     className,
     children,
@@ -12,21 +12,21 @@ export default function BlockUi(props) {
     loader: Loader = DefaultLoader,
     renderChildren = true,
     keepInView,
-    ariaLabel = "loading",
+    ariaLabel = 'loading',
     ...attributes
-  } = props;
+  } = props
 
-  const classes = blocking ? `block-ui ${className}` : className;
-  const renderChilds = !blocking || renderChildren;
+  const classes = blocking ? `block-ui ${className}` : className
+  const renderChilds = !blocking || renderChildren
 
-  const [top] = useState("50%");
-  const [focused, setFocused] = useState(null);
+  const [top] = useState('50%')
+  const [focused, setFocused] = useState(null)
 
-  const helper = useRef(null);
-  const blocker = useRef(null);
-  const topFocus = useRef(null);
-  const container = useRef(null);
-  const messageContainer = useRef(null);
+  const helper = useRef(null)
+  const blocker = useRef(null)
+  const topFocus = useRef(null)
+  const container = useRef(null)
+  const messageContainer = useRef(null)
 
   useEffect(() => {
     if (blocking) {
@@ -36,22 +36,22 @@ export default function BlockUi(props) {
         helper.current.parentNode.contains &&
         helper.current.parentNode.contains(safeActiveElement())
       ) {
-        setFocused(safeActiveElement());
+        setFocused(safeActiveElement())
         if (focused && focused !== document.body) {
-          (window.setImmediate || setTimeout)(
+          ;(window.setImmediate || setTimeout)(
             () =>
-              focused && typeof focused.blur === "function" && focused.blur()
-          );
+              focused && typeof focused.blur === 'function' && focused.blur(),
+          )
         }
       }
     } else {
-      detachListeners();
-      const ae = safeActiveElement();
+      detachListeners()
+      const ae = safeActiveElement()
       if (focused && (!ae || ae === document.body || ae === topFocus.current)) {
-        if (typeof focused.focus === "function") {
-          focused.focus();
+        if (typeof focused.focus === 'function') {
+          focused.focus()
         }
-        setFocused(null);
+        setFocused(null)
       }
     }
     if (
@@ -59,109 +59,109 @@ export default function BlockUi(props) {
       (keepInView !== props.keepInView ||
         (blocking && blocking !== props.blocking))
     ) {
-      attachListeners();
-      keepInViewFunc();
+      attachListeners()
+      keepInViewFunc()
     }
     return () => {
-      detachListeners();
-    };
-  }, [blocking, keepInView, focused]);
+      detachListeners()
+    }
+  }, [blocking, keepInView, focused])
 
   const blockingTab = (e, withShift = false) => {
     return (
       blocking &&
-      (e.key === "Tab" || e.keyCode === 9) &&
+      (e.key === 'Tab' || e.keyCode === 9) &&
       e.shiftKey == withShift
-    );
-  };
+    )
+  }
 
   const tabbedUpTop = (e) => {
     if (blockingTab(e)) {
-      blocker.current.focus();
+      blocker.current.focus()
     }
-  };
+  }
 
   const tabbedDownTop = (e) => {
     if (blockingTab(e)) {
-      e.preventDefault();
-      blocker.current.focus();
+      e.preventDefault()
+      blocker.current.focus()
     }
-  };
+  }
 
   const tabbedUpBottom = (e) => {
     if (blockingTab(e, true)) {
-      topFocus.current.focus();
+      topFocus.current.focus()
     }
-  };
+  }
 
   const tabbedDownBottom = (e) => {
     if (blockingTab(e, true)) {
-      e.preventDefault();
-      topFocus.current.focus();
+      e.preventDefault()
+      topFocus.current.focus()
     }
-  };
+  }
 
   const attachListeners = () => {
-    window.addEventListener("scroll", handleScroll);
-  };
+    window.addEventListener('scroll', handleScroll)
+  }
 
   const detachListeners = () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
+    window.removeEventListener('scroll', handleScroll)
+  }
 
   const keepInViewFunc = () => {
     if (props.blocking && props.keepInView && container.current) {
-      const containerBounds = container.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
+      const containerBounds = container.current.getBoundingClientRect()
+      const windowHeight = window.innerHeight
       if (containerBounds.top > windowHeight || containerBounds.bottom < 0)
-        return;
+        return
       if (containerBounds.top >= 0 && containerBounds.bottom <= windowHeight)
-        return;
-      const topDelta = Math.min(containerBounds.top, 0);
-      const bottomDelta = Math.max(containerBounds.bottom - windowHeight, 0);
-      const scrollDelta = topDelta || bottomDelta;
+        return
+      const topDelta = Math.min(containerBounds.top, 0)
+      const bottomDelta = Math.max(containerBounds.bottom - windowHeight, 0)
+      const scrollDelta = topDelta || bottomDelta
       window.scrollBy({
         top: scrollDelta,
         left: 0,
-        behavior: "smooth",
-      });
+        behavior: 'smooth',
+      })
     }
-  };
+  }
 
   function handleScroll() {
-    keepInView();
+    keepInView()
   }
 
   return (
     <Tag {...attributes} className={classes} aria-busy={blocking}>
       {blocking && (
         <div
-          tabIndex="0"
+          tabIndex='0'
           onKeyUp={tabbedUpTop}
           onKeyDown={tabbedDownTop}
           ref={topFocus}
         >
-          <div className="sr-only">{message || ariaLabel}</div>
+          <div className='sr-only'>{message || ariaLabel}</div>
         </div>
       )}
       {renderChilds && children}
       {blocking && (
         <div
-          className="block-ui-container"
-          tabIndex="0"
+          className='block-ui-container'
+          tabIndex='0'
           ref={blocker}
           style={{ minHeight: '100px' }}
           onKeyUp={tabbedUpBottom}
           onKeyDown={tabbedDownBottom}
         >
-          <div className="block-ui-overlay" ref={container} />
+          <div className='block-ui-overlay' ref={container} />
           <div
-            className="block-ui-message-container"
+            className='block-ui-message-container'
             ref={messageContainer}
             style={{ top: keepInView ? top : undefined }}
           >
-            <div className="block-ui-message">
-              {message || <span className="sr-only">{ariaLabel}</span>}
+            <div className='block-ui-message'>
+              {message || <span className='sr-only'>{ariaLabel}</span>}
               <div aria-hidden>
                 {React.isValidElement(Loader) ? Loader : <Loader />}
               </div>
@@ -171,5 +171,5 @@ export default function BlockUi(props) {
       )}
       <span ref={helper} />
     </Tag>
-  );
+  )
 }

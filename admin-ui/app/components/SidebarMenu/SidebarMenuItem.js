@@ -21,8 +21,8 @@ const SidebarMenuItemLink = (props) =>
     ) : (
       <a
         href={props.href}
-        target="_blank"
-        rel="noopener noreferrer"
+        target='_blank'
+        rel='noopener noreferrer'
         className={`${props.classBase}__entry__link`}
         style={props.textStyle}
       >
@@ -46,7 +46,7 @@ SidebarMenuItemLink.propTypes = {
   children: PropTypes.node,
   classBase: PropTypes.string,
   textStyle: PropTypes.object,
-  sidebarMenuActive: PropTypes.string
+  sidebarMenuActive: PropTypes.string,
 }
 
 /**
@@ -73,7 +73,7 @@ export class SidebarMenuItem extends React.Component {
     exact: PropTypes.bool,
     noCaret: PropTypes.bool,
     textStyle: PropTypes.object,
-    sidebarMenuActiveClass: PropTypes.string
+    sidebarMenuActiveClass: PropTypes.string,
   }
 
   static defaultProps = {
@@ -117,7 +117,10 @@ export class SidebarMenuItem extends React.Component {
 
   render() {
     const entry = this.getEntry()
-    const sidebarMenuActive = entry && entry.active && this.props.sidebarMenuActiveClass ? this.props.sidebarMenuActiveClass : ''
+    const sidebarMenuActive =
+      entry && entry.active && this.props.sidebarMenuActiveClass
+        ? this.props.sidebarMenuActiveClass
+        : ''
     const classBase = this.props.isSubNode ? 'sidebar-submenu' : `sidebar-menu`
     const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
       [`${classBase}__entry--nested`]: !!this.props.children,
@@ -170,9 +173,9 @@ export class SidebarMenuItem extends React.Component {
               React.cloneElement(this.props.icon, {
                 className: classNames(
                   this.props.icon.props.className,
-                  `${classBase}__entry__icon`
+                  `${classBase}__entry__icon`,
                 ),
-                fill: sidebarMenuActive ? '#FFF' : '#323b47'
+                fill: sidebarMenuActive ? '#FFF' : '#323b47',
               })}
             {typeof this.props.title === 'string' ? (
               <span style={this.props.textStyle}>{this.props.title}</span>
@@ -182,7 +185,7 @@ export class SidebarMenuItem extends React.Component {
           </SidebarMenuItemLink>
         )}
         {this.props.children && (
-          <ul className="sidebar-submenu">
+          <ul className='sidebar-submenu'>
             {React.Children.map(this.props.children, (child) => (
               <MenuContext.Consumer>
                 {(ctx) =>

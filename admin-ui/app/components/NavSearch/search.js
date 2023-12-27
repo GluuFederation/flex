@@ -9,9 +9,16 @@ export default function Search({ isTabletOrMobile }) {
   const { classes } = styles()
 
   return (
-    <Paper component="form" className={`${classes.root} ${isTabletOrMobile ? classes.mobile : ''}`}>
+    <Paper
+      component='form'
+      className={`${classes.root} ${isTabletOrMobile ? classes.mobile : ''}`}
+    >
       <InputBase className={classes.input} />
-      <IconButton type="submit" className={classes.iconButton} aria-label="search">
+      <IconButton
+        type='submit'
+        className={classes.iconButton}
+        aria-label='search'
+      >
         <SearchIcon />
       </IconButton>
     </Paper>

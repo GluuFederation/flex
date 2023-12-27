@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
-import { addLdap, toggleSavedFormFlag } from 'Plugins/services/redux/features/ldapSlice'
+import {
+  addLdap,
+  toggleSavedFormFlag,
+} from 'Plugins/services/redux/features/ldapSlice'
 import { buildPayload } from 'Utils/PermChecker'
 
 function LdapAddPage() {

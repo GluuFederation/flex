@@ -44,7 +44,7 @@ const pluginMetadata = {
               title: 'menus.ldap',
               path: '/config/ldap',
               permission: LDAP_READ,
-            }
+            },
           ],
         },
       ],

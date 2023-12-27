@@ -37,8 +37,12 @@ function LdapListPage() {
   const loading = useSelector((state) => state.ldapReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
   const testStatus = useSelector((state) => state.ldapReducer.testStatus)
-  const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
-  const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
+  const persistenceType = useSelector(
+    (state) => state.persistenceTypeReducer.type,
+  )
+  const persistenceTypeLoading = useSelector(
+    (state) => state.persistenceTypeReducer.loading,
+  )
 
   const dispatch = useDispatch()
 
@@ -49,7 +53,7 @@ function LdapListPage() {
   const { t } = useTranslation()
   const userAction = {}
   const myActions = []
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const [testRunning, setTestRunning] = useState(false)
@@ -144,11 +148,10 @@ function LdapListPage() {
       resolve()
     })
 
-    testPromise
-      .then(() => {
-        setTestRunning(true)
-        dispatch(testLdap({ data: row }))
-      })
+    testPromise.then(() => {
+      setTestRunning(true)
+      dispatch(testLdap({ data: row }))
+    })
   }
 
   useEffect(() => {
@@ -205,13 +208,16 @@ function LdapListPage() {
               ]}
               data={ldapConfigurations?.length ? ldapConfigurations : []}
               isLoading={loading}
-              title=""
+              title=''
               actions={myActions}
               options={{
                 search: true,
                 selection: false,
                 pageSize: pageSize,
-                headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+                headerStyle: {
+                  ...applicationStyle.tableHeaderStyle,
+                  ...bgThemeColor,
+                },
                 actionsColumnIndex: -1,
               }}
               detailPanel={(rowData) => {
@@ -224,7 +230,7 @@ function LdapListPage() {
               }}
             />
           ) : (
-            <Alert severity="info">
+            <Alert severity='info'>
               {!persistenceTypeLoading &&
                 'The current data store provider is not LDAP based.'}
             </Alert>
@@ -238,7 +244,7 @@ function LdapListPage() {
             row={item}
             handler={toggle}
             modal={modal}
-            subject="ldap"
+            subject='ldap'
             onAccept={onDeletionConfirmed}
           />
         </GluuLoader>

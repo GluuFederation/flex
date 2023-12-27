@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   items: [],
-  loading: false
+  loading: false,
 }
 
 const umaResourceSlice = createSlice({
@@ -31,8 +31,8 @@ const umaResourceSlice = createSlice({
     resetUMAResources: (state) => {
       state.items = initialState.items
       state.loading = initialState.loading
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -40,7 +40,7 @@ export const {
   getUMAResourcesByClientResponse,
   deleteUMAResource,
   deleteUMAResourceResponse,
-  resetUMAResources
+  resetUMAResources,
 } = umaResourceSlice.actions
 export const { actions, reducer, state } = umaResourceSlice
 reducerRegistry.register('UMAResourceReducer', reducer)

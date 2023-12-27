@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   fido: {},
-  loading: false
+  loading: false,
 }
 
 const fidoSlice = createSlice({
@@ -19,14 +19,14 @@ const fidoSlice = createSlice({
     getFidoConfigurationResponse: (state, action) => {
       state.fido = action.payload ? action.payload : {}
       state.loading = false
-    }
-  }
+    },
+  },
 })
 
 export const {
   getFidoConfiguration,
   putFidoConfiguration,
-  getFidoConfigurationResponse
+  getFidoConfigurationResponse,
 } = fidoSlice.actions
 export const { actions, reducer } = fidoSlice
 reducerRegistry.register('fidoReducer', reducer)

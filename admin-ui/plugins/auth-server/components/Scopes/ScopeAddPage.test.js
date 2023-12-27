@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import ScopeAddPage from './ScopeAddPage' 
+import ScopeAddPage from './ScopeAddPage'
 import { Provider } from 'react-redux'
 import scopes from './scopes.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
@@ -26,7 +26,7 @@ const STATE = {
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     initReducer: (state = STATE) => state,
     scopeReducer: (state = SCPOPES_STATE) => state,

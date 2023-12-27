@@ -27,7 +27,7 @@ export default function* rootSaga() {
         healthSaga(),
         licenseDetailsSaga(),
         attributes(),
-        profileDetails()
+        profileDetails(),
       ],
       pluginSagaArr,
     ),

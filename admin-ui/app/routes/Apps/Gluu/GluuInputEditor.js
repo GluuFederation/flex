@@ -17,7 +17,7 @@ function GluuInputEditor({
   rsize,
   doc_category,
   readOnly = false,
-  label
+  label,
 }) {
   const handleChange = (scripts) => {
     formik.handleChange(name)(scripts)
@@ -39,11 +39,11 @@ function GluuInputEditor({
         <AceEditor
           mode={language}
           readOnly={readOnly}
-          theme="xcode"
-          placeholder="Write your custom script here"
+          theme='xcode'
+          placeholder='Write your custom script here'
           fontSize={16}
-          width="95%"
-          height="300px"
+          width='95%'
+          height='300px'
           onChange={(e) => handleChange(e)}
           name={name}
           defaultValue={value}

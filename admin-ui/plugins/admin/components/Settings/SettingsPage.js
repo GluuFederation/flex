@@ -30,56 +30,64 @@ function SettingsPage() {
     <React.Fragment>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          
-            <FormGroup row>
-              <GluuLabel label={t('fields.list_paging_size')} size={4} doc_category={SETTINGS} doc_entry="pageSize"/>
-              <Col sm={8}>
-                <InputGroup>
-                  <CustomInput
-                    type="select"
-                    id="pagingSize"
-                    name="pagingSize"
-                    defaultValue={
-                      levels[
-                        levels.findIndex((element) => {
-                          return element == paggingSize
-                        })
-                      ]
-                    }
-                    onChange={(value) => {
-                      const size = levels[value.target.options.selectedIndex]
-                      setPaggingSize(size)
-                      localStorage.setItem('paggingSize', size)
-                    }}
-                  >
-                    {levels.map((item, key) => (
-                      <option value={item} key={key}>
-                        {item}
-                      </option>
-                    ))}
-                  </CustomInput>
-                </InputGroup>
-              </Col>
-            </FormGroup>
-          
-            <FormGroup row style={{ justifyContent: 'space-between' }}>
-              <GluuLabel label={t('fields.config_api_url')} doc_category={SETTINGS} doc_entry="configApiUrl" />
-              <Label
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  paddingLeft: '15px',
-                  paddingRight: '15px',
-                }}
-              >
-                <h3>
-                  <Badge color={`primary-${selectedTheme}`}>
-                    {process.env.CONFIG_API_BASE_URL}
-                  </Badge>
-                </h3>
-              </Label>
-            </FormGroup>
+          <FormGroup row>
+            <GluuLabel
+              label={t('fields.list_paging_size')}
+              size={4}
+              doc_category={SETTINGS}
+              doc_entry='pageSize'
+            />
+            <Col sm={8}>
+              <InputGroup>
+                <CustomInput
+                  type='select'
+                  id='pagingSize'
+                  name='pagingSize'
+                  defaultValue={
+                    levels[
+                      levels.findIndex((element) => {
+                        return element == paggingSize
+                      })
+                    ]
+                  }
+                  onChange={(value) => {
+                    const size = levels[value.target.options.selectedIndex]
+                    setPaggingSize(size)
+                    localStorage.setItem('paggingSize', size)
+                  }}
+                >
+                  {levels.map((item, key) => (
+                    <option value={item} key={key}>
+                      {item}
+                    </option>
+                  ))}
+                </CustomInput>
+              </InputGroup>
+            </Col>
+          </FormGroup>
+
+          <FormGroup row style={{ justifyContent: 'space-between' }}>
+            <GluuLabel
+              label={t('fields.config_api_url')}
+              doc_category={SETTINGS}
+              doc_entry='configApiUrl'
+            />
+            <Label
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                paddingLeft: '15px',
+                paddingRight: '15px',
+              }}
+            >
+              <h3>
+                <Badge color={`primary-${selectedTheme}`}>
+                  {process.env.CONFIG_API_BASE_URL}
+                </Badge>
+              </h3>
+            </Label>
+          </FormGroup>
         </CardBody>
       </Card>
     </React.Fragment>

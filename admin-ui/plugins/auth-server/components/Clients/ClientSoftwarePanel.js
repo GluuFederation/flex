@@ -28,42 +28,46 @@ function ClientSoftwarePanel({ formik, viewOnly }) {
   return (
     <Container>
       <GluuInputRow
-        label="fields.clientUri"
-        name="clientUri"
+        label='fields.clientUri'
+        name='clientUri'
         formik={formik}
-        value={isEmpty(formik.values.clientUri) ? EMPTY : formik.values.clientUri}
+        value={
+          isEmpty(formik.values.clientUri) ? EMPTY : formik.values.clientUri
+        }
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuInputRow
-        label="fields.policy_uri"
-        name="policyUri"
+        label='fields.policy_uri'
+        name='policyUri'
         formik={formik}
-        value={isEmpty(formik.values.policyUri) ? EMPTY : formik.values.policyUri}
+        value={
+          isEmpty(formik.values.policyUri) ? EMPTY : formik.values.policyUri
+        }
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuInputRow
-        label="fields.logo_uri"
-        name="logoUri"
+        label='fields.logo_uri'
+        name='logoUri'
         formik={formik}
         value={isEmpty(formik.values.logoUri) ? EMPTY : formik.values.logoUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuInputRow
-        label="fields.tosUri"
-        name="tosUri"
+        label='fields.tosUri'
+        name='tosUri'
         formik={formik}
         value={isEmpty(formik.values.tosUri) ? EMPTY : formik.values.tosUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuTypeAheadWithAdd
-        name="contacts"
-        label="fields.contacts"
+        name='contacts'
+        label='fields.contacts'
         formik={formik}
-        placeholder="Eg. sample@org.com"
+        placeholder='Eg. sample@org.com'
         value={formik.values.contacts || []}
         options={contacts}
         validator={emailValidator}
@@ -74,8 +78,8 @@ function ClientSoftwarePanel({ formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
-        name="authorizedOrigins"
-        label="fields.authorizedOrigins"
+        name='authorizedOrigins'
+        label='fields.authorizedOrigins'
         formik={formik}
         placeholder={t('Enter a valid origin uri eg') + ' https://...'}
         value={formik.values.authorizedOrigins || []}
@@ -89,8 +93,8 @@ function ClientSoftwarePanel({ formik, viewOnly }) {
       ></GluuTypeAheadWithAdd>
 
       <GluuInputRow
-        label="fields.softwareId"
-        name="softwareId"
+        label='fields.softwareId'
+        name='softwareId'
         formik={formik}
         value={formik.values.softwareId}
         doc_category={DOC_CATEGORY}
@@ -98,8 +102,8 @@ function ClientSoftwarePanel({ formik, viewOnly }) {
       />
 
       <GluuInputRow
-        label="fields.softwareVersion"
-        name="softwareVersion"
+        label='fields.softwareVersion'
+        name='softwareVersion'
         formik={formik}
         value={formik.values.softwareVersion}
         doc_category={DOC_CATEGORY}
@@ -107,8 +111,8 @@ function ClientSoftwarePanel({ formik, viewOnly }) {
       />
 
       <GluuInputRow
-        label="fields.softwareStatement"
-        name="softwareStatement"
+        label='fields.softwareStatement'
+        name='softwareStatement'
         formik={formik}
         value={formik.values.softwareStatement}
         doc_category={DOC_CATEGORY}

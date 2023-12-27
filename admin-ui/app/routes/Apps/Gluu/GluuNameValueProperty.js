@@ -40,16 +40,16 @@ function GluuNameValueProperty({
   }
 
   return (
-    <Accordion className="mb-2 b-primary" initialOpen>
+    <Accordion className='mb-2 b-primary' initialOpen>
       <Accordion.Header>{t(nameValueLabel).toUpperCase()}</Accordion.Header>
       <Accordion.Body>
         <Button
           style={{ float: 'right', marginTop: -30 }}
-          type="button"
+          type='button'
           color={`primary-${selectedTheme}`}
           onClick={addClick}
         >
-          <i className="fa fa-fw fa-plus me-2"></i>
+          <i className='fa fa-fw fa-plus me-2'></i>
           {t('actions.add_property')}
         </Button>
         <FormGroup row>
@@ -84,11 +84,11 @@ function GluuNameValueProperty({
                 </Col>
                 <Col sm={2}>
                   <Button
-                    type="button"
-                    color="danger"
+                    type='button'
+                    color='danger'
                     onClick={() => removeClick(index)}
                   >
-                    <i className="fa fa-fw fa-trash me-2"></i>
+                    <i className='fa fa-fw fa-trash me-2'></i>
                     {t('actions.remove')}
                   </Button>
                 </Col>

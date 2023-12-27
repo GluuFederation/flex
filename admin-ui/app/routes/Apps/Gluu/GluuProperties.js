@@ -52,7 +52,7 @@ function GluuProperties({
     setProperties(data)
     formik.setFieldValue(
       compName,
-      data.filter((element) => element != null)
+      data.filter((element) => element != null),
     )
   }
 

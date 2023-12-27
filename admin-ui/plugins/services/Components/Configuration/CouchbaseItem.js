@@ -1,12 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Col,
-  FormGroup,
-  Input,
-  Card,
-  CardBody,
-  Badge,
-} from 'Components'
+import { Col, FormGroup, Input, Card, CardBody, Badge } from 'Components'
 import { COUCHBASE } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -29,20 +22,20 @@ function CouchbaseItem({ couchbase, index, formik }) {
         {(!couchbase.buckets || !couchbase.defaultBucket) && (
           <FormGroup row>
             <Col style={{ marginBottom: 15 }}>
-              <div className="alert alert-warning" role="alert">
+              <div className='alert alert-warning' role='alert'>
                 {t('messages.alert_couchbase')}
               </div>
             </Col>
           </FormGroup>
         )}
         {couchbase.configId && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="configId">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='configId'>
             <FormGroup row>
-              <GluuLabel label="fields.configuration_id" size={4} />
+              <GluuLabel label='fields.configuration_id' size={4} />
               <Col sm={8}>
                 <Input
-                  id="configId"
-                  name="configId"
+                  id='configId'
+                  name='configId'
                   disabled
                   defaultValue={couchbase.configId}
                   onChange={formik.handleChange}
@@ -52,13 +45,17 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.servers && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="servers">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='servers'>
             <FormGroup row>
-              <GluuLabel label="fields.servers" size={4} />
+              <GluuLabel label='fields.servers' size={4} />
               <Col sm={8}>
                 {couchbase.servers.length &&
                   couchbase.servers.map((server, index) => (
-                    <Badge key={index} color={`primary-${selectedTheme}`} className="ms-1">
+                    <Badge
+                      key={index}
+                      color={`primary-${selectedTheme}`}
+                      className='ms-1'
+                    >
                       {server}
                     </Badge>
                   ))}
@@ -67,13 +64,17 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.buckets && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="buckets">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='buckets'>
             <FormGroup row>
-              <GluuLabel label="fields.buckets" size={4} />
+              <GluuLabel label='fields.buckets' size={4} />
               <Col sm={8}>
                 {couchbase.buckets.length &&
                   couchbase.buckets.map((bucket, index) => (
-                    <Badge key={index} color={`primary-${selectedTheme}`} className="ms-1">
+                    <Badge
+                      key={index}
+                      color={`primary-${selectedTheme}`}
+                      className='ms-1'
+                    >
                       {bucket}
                     </Badge>
                   ))}
@@ -82,13 +83,13 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.defaultBucket && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="defaultBucket">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='defaultBucket'>
             <FormGroup row>
-              <GluuLabel label="fields.default_bucket" size={4} />
+              <GluuLabel label='fields.default_bucket' size={4} />
               <Col sm={8}>
                 <Input
-                  id="defaultBucket"
-                  name="defaultBucket"
+                  id='defaultBucket'
+                  name='defaultBucket'
                   disabled
                   defaultValue={couchbase.defaultBucket}
                   onChange={formik.handleChange}
@@ -99,13 +100,13 @@ function CouchbaseItem({ couchbase, index, formik }) {
         )}
 
         {couchbase.connectTimeout !== 0 && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="connectTimeout">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='connectTimeout'>
             <FormGroup row>
-              <GluuLabel label="fields.connection_timeout" size={4} />
+              <GluuLabel label='fields.connection_timeout' size={4} />
               <Col sm={8}>
                 <Input
-                  id="connectTimeout"
-                  name="connectTimeout"
+                  id='connectTimeout'
+                  name='connectTimeout'
                   disabled
                   defaultValue={couchbase.connectTimeout}
                   onChange={formik.handleChange}
@@ -115,13 +116,13 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.computationPoolSize !== 0 && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="computationPoolSize">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='computationPoolSize'>
             <FormGroup row>
-              <GluuLabel label="fields.computation_pool_size" size={4} />
+              <GluuLabel label='fields.computation_pool_size' size={4} />
               <Col sm={8}>
                 <Input
-                  id="computationPoolSize"
-                  name="computationPoolSize"
+                  id='computationPoolSize'
+                  name='computationPoolSize'
                   disabled
                   defaultValue={couchbase.computationPoolSize}
                   onChange={formik.handleChange}
@@ -131,14 +132,14 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.useSSL && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="useSSL">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='useSSL'>
             <FormGroup row>
-              <GluuLabel label="fields.use_ssl" size={4} />
+              <GluuLabel label='fields.use_ssl' size={4} />
               <Col sm={8}>
                 <Input
-                  id="useSSL"
-                  name="useSSL"
-                  type="checkbox"
+                  id='useSSL'
+                  name='useSSL'
+                  type='checkbox'
                   disabled
                   defaultChecked={couchbase.useSSL}
                   onChange={formik.handleChange}
@@ -148,13 +149,13 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.sslTrustStoreFile && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="sslTrustStoreFile">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='sslTrustStoreFile'>
             <FormGroup row>
-              <GluuLabel label="fields.ssl_trust_store_file" size={4} />
+              <GluuLabel label='fields.ssl_trust_store_file' size={4} />
               <Col sm={8}>
                 <Input
-                  id="sslTrustStoreFile"
-                  name="sslTrustStoreFile"
+                  id='sslTrustStoreFile'
+                  name='sslTrustStoreFile'
                   disabled
                   defaultValue={couchbase.sslTrustStoreFile}
                   onChange={formik.handleChange}
@@ -164,13 +165,13 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.sslTrustStoreFormat && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="sslTrustStoreFormat">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='sslTrustStoreFormat'>
             <FormGroup row>
-              <GluuLabel label="fields.ssl_trust_store_format" size={4} />
+              <GluuLabel label='fields.ssl_trust_store_format' size={4} />
               <Col sm={8}>
                 <Input
-                  id="sslTrustStoreFormat"
-                  name="sslTrustStoreFormat"
+                  id='sslTrustStoreFormat'
+                  name='sslTrustStoreFormat'
                   disabled
                   defaultValue={couchbase.sslTrustStoreFormat}
                   onChange={formik.handleChange}
@@ -180,13 +181,13 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.sslTrustStorePin && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="sslTrustStorePin">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='sslTrustStorePin'>
             <FormGroup row>
-              <GluuLabel label="fields.ssl_trust_store_pin" size={4} />
+              <GluuLabel label='fields.ssl_trust_store_pin' size={4} />
               <Col sm={8}>
                 <Input
-                  id="sslTrustStorePin"
-                  name="sslTrustStorePin"
+                  id='sslTrustStorePin'
+                  name='sslTrustStorePin'
                   disabled
                   defaultChecked={couchbase.sslTrustStorePin}
                   onChange={formik.handleChange}
@@ -196,13 +197,13 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.userName && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="userName">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='userName'>
             <FormGroup row>
-              <GluuLabel label="fields.user_name" size={4} />
+              <GluuLabel label='fields.user_name' size={4} />
               <Col sm={8}>
                 <Input
-                  id="userName"
-                  name="userName"
+                  id='userName'
+                  name='userName'
                   disabled
                   defaultChecked={couchbase.userName}
                   onChange={formik.handleChange}
@@ -212,13 +213,13 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
         {couchbase.userPassword && (
-          <GluuTooltip doc_category={COUCHBASE} doc_entry="userPassword">
+          <GluuTooltip doc_category={COUCHBASE} doc_entry='userPassword'>
             <FormGroup row>
-              <GluuLabel label="fields.user_password" size={4} />
+              <GluuLabel label='fields.user_password' size={4} />
               <Col sm={8}>
                 <Input
-                  id="userPassword"
-                  name="userPassword"
+                  id='userPassword'
+                  name='userPassword'
                   disabled
                   defaultChecked={couchbase.userPassword}
                   onChange={formik.handleChange}
@@ -228,7 +229,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
       </CardBody>
-    </Card >
+    </Card>
   )
 }
 

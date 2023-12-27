@@ -4,7 +4,7 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const initialState = {
   serverStatus: null,
   dbStatus: null,
-  loading: false
+  loading: false,
 }
 
 const healthSlice = createSlice({
@@ -20,8 +20,8 @@ const healthSlice = createSlice({
         state.serverStatus = action.payload.data.status
         state.dbStatus = action.payload.data.db_status
       }
-    }
-  }
+    },
+  },
 })
 
 export const { getHealthStatus, getHealthStatusResponse } = healthSlice.actions

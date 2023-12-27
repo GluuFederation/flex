@@ -1,20 +1,22 @@
 import React, { useEffect } from 'react'
-import BlockUi from "../../../../app/components/BlockUi/BlockUi";
+import BlockUi from '../../../../app/components/BlockUi/BlockUi'
 import { Formik } from 'formik'
 import { Form, Container, Card, CardBody } from 'Components'
 import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
 import LdapItem from './LdapItem'
 import { useDispatch, useSelector } from 'react-redux'
-import { getLdapConfig, editLdap } from 'Plugins/services/redux/features/ldapSlice'
+import {
+  getLdapConfig,
+  editLdap,
+} from 'Plugins/services/redux/features/ldapSlice'
 import { useTranslation } from 'react-i18next'
 
 function LdapPage() {
   const { t } = useTranslation()
-  const ldap = useSelector((state) => state.ldapReducer.ldap);
-  const loading = useSelector((state) => state.ldapReducer.loading);
+  const ldap = useSelector((state) => state.ldapReducer.ldap)
+  const loading = useSelector((state) => state.ldapReducer.loading)
 
-  const dispatch = useDispatch();
-
+  const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getLdapConfig())
@@ -24,7 +26,7 @@ function LdapPage() {
     <React.Fragment>
       <Container>
         <BlockUi
-          tag="div"
+          tag='div'
           blocking={loading}
           keepInView={true}
           renderChildren={true}

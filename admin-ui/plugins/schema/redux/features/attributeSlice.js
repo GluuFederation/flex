@@ -6,7 +6,7 @@ const initialState = {
   item: {},
   loading: false,
   totalItems: 0,
-  entriesCount: 0
+  entriesCount: 0,
 }
 
 const attributeSlice = createSlice({
@@ -60,8 +60,8 @@ const attributeSlice = createSlice({
     setCurrentItem: (state, action) => {
       state.item = action.payload?.item
       state.loading = false
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -74,7 +74,7 @@ export const {
   editAttributeResponse,
   deleteAttribute,
   deleteAttributeResponse,
-  setCurrentItem
+  setCurrentItem,
 } = attributeSlice.actions
 export { initialState }
 export const { actions, reducer } = attributeSlice

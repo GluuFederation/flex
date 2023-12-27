@@ -128,7 +128,7 @@ const scopeSlice = createSlice({
     },
     setClientSelectedScopes: (state, action) => {
       state.selectedClientScopes = action.payload
-    }
+    },
   },
 })
 

@@ -113,8 +113,8 @@ export const SCIM_CONFIG_WRITE = 'https://jans.io/scim/config.write'
 export const hasPermission = (scopes, scope) => {
   let available = false
   if (scopes) {
-    for(const i in scopes){
-      if(scopes[i] === scope){
+    for (const i in scopes) {
+      if (scopes[i] === scope) {
         available = true
       }
     }

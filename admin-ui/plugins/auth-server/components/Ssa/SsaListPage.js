@@ -46,7 +46,7 @@ const SSAListPage = () => {
 
   const PaperContainer = useCallback(
     (props) => <Paper {...props} elevation={0} />,
-    []
+    [],
   )
 
   const tableColumns = [
@@ -76,11 +76,14 @@ const SSAListPage = () => {
       title: t('fields.expiration'),
       field: 'expiration',
       render: (rowData) => {
-        const date = new Date(rowData.expiration * 1000).toLocaleDateString('en-US', {
-          month: '2-digit',
-          day: '2-digit',
-          year: 'numeric',
-        })
+        const date = new Date(rowData.expiration * 1000).toLocaleDateString(
+          'en-US',
+          {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric',
+          },
+        )
         return date
       },
     },
@@ -134,7 +137,7 @@ const SSAListPage = () => {
             <MaterialTable
               key={limit ? limit : 0}
               components={{
-                Container: PaperContainer
+                Container: PaperContainer,
               }}
               columns={tableColumns}
               data={items || []}

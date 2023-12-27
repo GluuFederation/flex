@@ -1,7 +1,7 @@
 import i18n from '../../../../../i18n'
 import { ThemeProvider } from 'Context/theme/themeContext'
 import { I18nextProvider } from 'react-i18next'
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom'
 
 const AppTestWrapper = (props) => {
   return (
@@ -10,7 +10,7 @@ const AppTestWrapper = (props) => {
         <ThemeProvider>{props.children}</ThemeProvider>
       </I18nextProvider>
     </BrowserRouter>
-  );
-};
+  )
+}
 
-export default AppTestWrapper;
+export default AppTestWrapper

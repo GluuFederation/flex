@@ -5,6 +5,6 @@ import styleConfig from './config'
 export class PolarRadiusAxis extends RCPolarRadiusAxis {
   static defaultProps = {
     ...RCPolarRadiusAxis.defaultProps,
-    ...styleConfig.polarRadiusAxis
+    ...styleConfig.polarRadiusAxis,
   }
 }

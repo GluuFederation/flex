@@ -4,7 +4,7 @@ export default class FigoApi {
   constructor(api) {
     this.api = api
   }
-  
+
   // Get FIDO Config
   getPropertiesFido2 = () => {
     return new Promise((resolve, reject) => {
@@ -12,7 +12,7 @@ export default class FigoApi {
         handleResponse(error, reject, resolve, data)
       })
     })
-  } 
+  }
 
   // update FIDO Config
   putPropertiesFido2 = (input) => {

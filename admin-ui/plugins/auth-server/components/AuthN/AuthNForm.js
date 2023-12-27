@@ -387,7 +387,11 @@ function AuthNForm({ item, handleSubmit }) {
             </FormGroup>
           </>
         )}
-        <GluuCommitFooter saveHandler={toggle}  hideButtons={{ save: true }} type="submit"/>
+        <GluuCommitFooter
+          saveHandler={toggle}
+          hideButtons={{ save: true }}
+          type='submit'
+        />
         <GluuCommitDialog
           handler={toggle}
           modal={modal}

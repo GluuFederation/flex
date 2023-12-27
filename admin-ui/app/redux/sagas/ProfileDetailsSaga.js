@@ -7,7 +7,10 @@ import UserApi from 'Plugins/user-management/redux/api/UserApi'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
 import { setUserProfileDetails } from 'Redux/features/ProfileDetailsSlice'
-import { getProfileDetails, checkIsLoadingDetails } from '../features/ProfileDetailsSlice'
+import {
+  getProfileDetails,
+  checkIsLoadingDetails,
+} from '../features/ProfileDetailsSlice'
 const JansConfigApi = require('jans_config_api')
 import { getClient } from 'Redux/api/base'
 
@@ -15,7 +18,7 @@ function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.ConfigurationUserManagementApi(
-    getClient(JansConfigApi, token, issuer)
+    getClient(JansConfigApi, token, issuer),
   )
   return new UserApi(api)
 }

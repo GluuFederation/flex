@@ -26,7 +26,7 @@ import {
   createUserResponse,
   getUsers,
 } from '../features/userSlice'
-import {updateToast} from 'Redux/features/toastSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -122,7 +122,7 @@ export function* deleteUserSaga({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(getUsers({}))
     yield put(deleteUserResponse(data))
-    return  data
+    return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteUserResponse(null))

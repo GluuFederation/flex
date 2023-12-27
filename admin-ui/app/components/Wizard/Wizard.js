@@ -10,7 +10,7 @@ export class Wizard extends React.Component {
     children: PropTypes.node,
     onStepChanged: PropTypes.func,
     activeStep: PropTypes.string,
-    initialActiveStep: PropTypes.string
+    initialActiveStep: PropTypes.string,
   }
 
   componentDidMount() {
@@ -20,20 +20,20 @@ export class Wizard extends React.Component {
       // eslint-disable-next-line no-console
       console.warn(
         'Warning: You need to provide onStepChanged props if you want the ' +
-                'component to be controlled. For uncontrolled type, use initialActiveStep.'
+          'component to be controlled. For uncontrolled type, use initialActiveStep.',
       )
     }
 
     if (!onStepChanged) {
       this.setState({
-        activeStep: initialActiveStep || activeStep
+        activeStep: initialActiveStep || activeStep,
       })
     }
   }
 
   stepClick(id) {
     this.setState({
-      activeStep: id
+      activeStep: id,
     })
 
     this.props.onStepChanged(id)
@@ -53,15 +53,15 @@ export class Wizard extends React.Component {
 
     return (
       <div className='wizard'>
-        {
-          map(children, (child, index) => (
-            React.cloneElement(child, {
-              onClick: () => {this.stepClick(child.props.id || '')},
-              active: child.props.id === activeStep,
-              key: index
-            })
-          ))
-        }
+        {map(children, (child, index) =>
+          React.cloneElement(child, {
+            onClick: () => {
+              this.stepClick(child.props.id || '')
+            },
+            active: child.props.id === activeStep,
+            key: index,
+          }),
+        )}
       </div>
     )
   }

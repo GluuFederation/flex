@@ -4,7 +4,7 @@ import ClientAddPage from 'Plugins/auth-server/components/Clients/ClientAddPage'
 import { Provider } from 'react-redux'
 import { reducer as initReducer } from 'Redux/features/initSlice'
 import oidcDiscoveryReducer from 'Redux/features/oidcDiscoverySlice'
-import { reducer as scopeReducer} from 'Plugins/auth-server/redux/features/scopeSlice'
+import { reducer as scopeReducer } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { reducer as umaResourceReducer } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
@@ -36,7 +36,7 @@ const INIT_SCPOPES_STATE = {
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     oidcReducer: (state = INIT_SCPOPES_STATE) => state,
     umaResourceReducer,
@@ -49,9 +49,7 @@ const store = configureStore({
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>
-    <Provider store={store}>
-      {children}
-    </Provider>
+    <Provider store={store}>{children}</Provider>
   </AppTestWrapper>
 )
 

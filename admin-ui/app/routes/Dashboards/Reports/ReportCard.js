@@ -5,19 +5,19 @@ import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 
 function ReportCard({ title, data, upValue, downValue }) {
   return (
-    <Card className="mb-3" style={{ borderRadius: '10px' }}>
+    <Card className='mb-3' style={{ borderRadius: '10px' }}>
       <CardBody>
-        <CardTitle tag="h6" className="mb-4">
+        <CardTitle tag='h6' className='mb-4'>
           <GluuRibbon title={title} fromLeft />
         </CardTitle>
         <ReportPiChartItem data={data} />
         <div>
-          <div className="mb-3">
+          <div className='mb-3'>
             <h2>{upValue}</h2>
           </div>
           <div>
-            <i className="fa fa-caret-down fa-fw text-success"></i>
-            <Badge pill color="primary">
+            <i className='fa fa-caret-down fa-fw text-success'></i>
+            <Badge pill color='primary'>
               {downValue}
             </Badge>
           </div>

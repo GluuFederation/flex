@@ -1,4 +1,4 @@
-import { makeStyles } from "tss-react/mui";
+import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()((theme) => ({
   root: {
@@ -22,7 +22,7 @@ const styles = makeStyles()((theme) => ({
     width: '90%',
     marginTop: 20,
     padding: '0 10px 0 10px',
-  }
+  },
 }))
 
 export default styles

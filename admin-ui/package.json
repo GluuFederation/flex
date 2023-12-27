@@ -38,7 +38,9 @@
     "plugin:showAll": "node ./build/plugin-cli.js --showAllPlugins",
     "plugin:add": "node ./build/plugin-cli.js --addPlugin",
     "plugin:remove": "node ./build/plugin-cli.js --removePlugin",
-    "plugin:clean": "node ./build/plugin-cli.js --cleanExceptDefault admin,auth-server --resetPluginConfig"
+    "plugin:clean": "node ./build/plugin-cli.js --cleanExceptDefault admin,auth-server --resetPluginConfig",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
   },
   "author": "gluu inc.",
   "license": "Apache",
@@ -83,6 +85,7 @@
     "mini-css-extract-plugin": "^2.7.5",
     "mkdirp": "^2.1.6",
     "postcss-loader": "^7.2.4",
+    "prettier": "^3.1.1",
     "purgecss-webpack-plugin": "^5.0.0",
     "raw-loader": "^4.0.2",
     "redux-saga-test-plan": "^4.0.6",

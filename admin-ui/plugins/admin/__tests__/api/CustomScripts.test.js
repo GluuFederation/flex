@@ -81,7 +81,7 @@ describe('fetch & update custom scripts', () => {
     expect(result.returnValue instanceof Error).toBe(false)
     if (!(result.returnValue instanceof Error)) {
       expect(result.returnValue.entries).toEqual(
-        result.storeState.customScriptReducer.items
+        result.storeState.customScriptReducer.items,
       )
     }
   })
@@ -126,7 +126,7 @@ describe('fetch & update custom scripts', () => {
       })
         .withReducer(rootReducer, initialState)
         .silentRun(false)
-        expect(result.returnValue instanceof Error).toBe(false)
+      expect(result.returnValue instanceof Error).toBe(false)
     } else {
       log('failed to created script, ABORTING delete test')
     }

@@ -5,7 +5,7 @@ const initialState = {
   smtp: {},
   loading: true,
   testStatus: null,
-  openModal: false
+  openModal: false,
 }
 
 const smtpSlice = createSlice({
@@ -41,8 +41,8 @@ const smtpSlice = createSlice({
     clearSmtpConfig: (state) => {
       state.openModal = false
       state.testStatus = null
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -54,7 +54,7 @@ export const {
   testSmtp,
   testSmtpResponse,
   testSmtpResponseFails,
-  clearSmtpConfig
+  clearSmtpConfig,
 } = smtpSlice.actions
 export { initialState }
 export default smtpSlice.reducer

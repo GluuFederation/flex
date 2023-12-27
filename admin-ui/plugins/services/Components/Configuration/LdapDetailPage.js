@@ -1,12 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Container,
-  Badge,
-  Row,
-  Col,
-  FormGroup,
-  Label,
-} from 'Components'
+import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 
@@ -34,20 +27,20 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label for="input" sm={6}>
+              <Label for='input' sm={6}>
                 {t('fields.configuration_id')}:
               </Label>
-              <Label for="input" sm={6}>
+              <Label for='input' sm={6}>
                 {row.configId}
               </Label>
             </FormGroup>
           </Col>
           <Col sm={6}>
             <FormGroup row>
-              <Label for="input" sm={6}>
+              <Label for='input' sm={6}>
                 {t('fields.bind_dn')}:
               </Label>
-              <Label for="input" sm={6}>
+              <Label for='input' sm={6}>
                 {row.bindDN}
               </Label>
             </FormGroup>
@@ -136,7 +129,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
           <Col sm={4}>
             <button
               onClick={checkLdapConnection}
-              type="button"
+              type='button'
               className={`btn btn-primary-${selectedTheme} text-center`}
             >
               {t('fields.test_connection')}

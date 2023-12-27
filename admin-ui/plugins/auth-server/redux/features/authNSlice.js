@@ -13,13 +13,13 @@ const initialState = {
       passwordAttribute: 'userPassword',
       hashAlgorithm: 'bcrypt',
       defaultAuthNMethod: false,
-      acrName: 'simple_password_auth'
-    }
+      acrName: 'simple_password_auth',
+    },
   ],
   item: {},
   loading: false,
   acrAUTHReponse: {},
-  isSuccess: false
+  isSuccess: false,
 }
 
 const authNSlice = createSlice({
@@ -62,7 +62,7 @@ const authNSlice = createSlice({
     setSuccess: (state, action) => {
       state.isSuccess = action.payload?.data
     },
-  }
+  },
 })
 
 export const {

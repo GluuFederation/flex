@@ -14,7 +14,10 @@ import { initAudit } from 'Redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from 'Redux/api/backend-api'
 import FidoApi from '../api/FidoApi'
-import { getFidoConfiguration, getFidoConfigurationResponse } from '../features/fidoSlice'
+import {
+  getFidoConfiguration,
+  getFidoConfigurationResponse,
+} from '../features/fidoSlice'
 
 const JansConfigApi = require('jans_config_api')
 function* newFunction() {
@@ -49,7 +52,7 @@ export function* getFidoSaga() {
   const audit = yield* initAudit()
   try {
     const fidoApi = yield* newFunction()
-    const data = yield call(fidoApi.getPropertiesFido2);
+    const data = yield call(fidoApi.getPropertiesFido2)
     yield put(getFidoConfigurationResponse(data))
     yield call(postUserAction, audit)
     return data
@@ -63,7 +66,6 @@ export function* getFidoSaga() {
   }
 }
 
-
 export function* watchGetFido() {
   yield takeEvery('fido2/getFidoConfiguration', getFidoSaga)
 }
@@ -72,10 +74,6 @@ export function* watchUpdateFido() {
   yield takeLatest('fido2/putFidoConfiguration', updateFidoSaga)
 }
 
-
 export default function* rootSaga() {
-  yield all([
-    fork(watchGetFido),
-    fork(watchUpdateFido)
-  ])
+  yield all([fork(watchGetFido), fork(watchUpdateFido)])
 }

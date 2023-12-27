@@ -39,26 +39,26 @@ const generateActiveDot = (props) => (
 )
 
 const SimpleLineChart = () => (
-  <ResponsiveContainer width="100%" aspect={6.0 / 3.0}>
+  <ResponsiveContainer width='100%' aspect={6.0 / 3.0}>
     <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-      <XAxis dataKey="name" />
+      <XAxis dataKey='name' />
       <YAxis />
-      <CartesianGrid strokeDasharray="3 3" />
+      <CartesianGrid strokeDasharray='3 3' />
       <Tooltip />
       <Legend />
       <Line
-        dataKey="pv"
+        dataKey='pv'
         stroke={colors['success']}
         dot={generateDot}
         activeDot={generateActiveDot}
-        name="Success"
+        name='Success'
       />
       <Line
-        dataKey="uv"
+        dataKey='uv'
         stroke={colors['purple']}
         dot={generateDot}
         activeDot={generateActiveDot}
-        name="Fail"
+        name='Fail'
       />
     </LineChart>
   </ResponsiveContainer>

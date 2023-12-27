@@ -19,7 +19,9 @@ const ProfilePage = lazy(() => import('./Apps/Profile/ProfilePage'))
 const Gluu404Error = lazy(() => import('./Apps/Gluu/Gluu404Error'))
 const ByeBye = lazy(() => import('./Pages/ByeBye'))
 const GluuNavBar = lazy(() => import('./Apps/Gluu/GluuNavBar'))
-const DefaultSidebar = lazy(() => import('./../layout/components/DefaultSidebar'))
+const DefaultSidebar = lazy(
+  () => import('./../layout/components/DefaultSidebar'),
+)
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -34,16 +36,37 @@ export const RoutedContent = () => {
 
   return (
     <Routes>
-      <Route path="/home/dashboard" element={<Suspense fallback={<GluuSuspenseLoader />}><DashboardPage /></Suspense>} />
-      <Route path="/" element={ <Navigate to="/home/dashboard" /> } />
-      <Route path="/home/health" element={<Suspense fallback={<GluuSuspenseLoader />}><HealthPage /></Suspense>} />
-      <Route path="/home/licenseDetails" element={<Suspense fallback={<GluuSuspenseLoader />}><LicenseDetailsPage /></Suspense>} />
-      {/*    Layouts     */}
-      <Route path="/layouts/navbar" element={<NavbarOnly />} />
-      <Route path="/layouts/sidebar" element={<SidebarDefault />} />
-      <Route path="/layouts/sidebar-a" element={<SidebarA />} />
       <Route
-        path="/layouts/sidebar-with-navbar"
+        path='/home/dashboard'
+        element={
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <DashboardPage />
+          </Suspense>
+        }
+      />
+      <Route path='/' element={<Navigate to='/home/dashboard' />} />
+      <Route
+        path='/home/health'
+        element={
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <HealthPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path='/home/licenseDetails'
+        element={
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <LicenseDetailsPage />
+          </Suspense>
+        }
+      />
+      {/*    Layouts     */}
+      <Route path='/layouts/navbar' element={<NavbarOnly />} />
+      <Route path='/layouts/sidebar' element={<SidebarDefault />} />
+      <Route path='/layouts/sidebar-a' element={<SidebarA />} />
+      <Route
+        path='/layouts/sidebar-with-navbar'
         element={<SidebarWithNavbar />}
       />
 
@@ -55,12 +78,33 @@ export const RoutedContent = () => {
           ),
       )}
       {/*    Pages Routes    */}
-      <Route element={<Suspense fallback={<GluuSuspenseLoader />}><ProfilePage /></Suspense>} path="/profile" />
-      <Route element={<Suspense fallback={<GluuSuspenseLoader />}><ByeBye /></Suspense>} path="/logout" />
-      <Route element={<Suspense fallback={<GluuSuspenseLoader />}><Gluu404Error /></Suspense>} path="/error-404" />
+      <Route
+        element={
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <ProfilePage />
+          </Suspense>
+        }
+        path='/profile'
+      />
+      <Route
+        element={
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <ByeBye />
+          </Suspense>
+        }
+        path='/logout'
+      />
+      <Route
+        element={
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <Gluu404Error />
+          </Suspense>
+        }
+        path='/error-404'
+      />
 
       {/*    404    */}
-      <Route path="*" element={ <Navigate to="/error-404" /> } />
+      <Route path='*' element={<Navigate to='/error-404' />} />
     </Routes>
   )
 }
@@ -69,9 +113,15 @@ export const RoutedContent = () => {
 export const RoutedNavbars = () => (
   <Routes>
     <Route
-      path="/*"
+      path='/*'
       element={
-        <Suspense fallback={<GluuSuspenseLoader />}><GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" /></Suspense>
+        <Suspense fallback={<GluuSuspenseLoader />}>
+          <GluuNavBar
+            themeStyle='color'
+            themeColor='primary'
+            navStyle='accent'
+          />
+        </Suspense>
       }
     />
   </Routes>
@@ -79,6 +129,13 @@ export const RoutedNavbars = () => (
 
 export const RoutedSidebars = () => (
   <Routes>
-    <Route path="/*" element={<Suspense fallback={<GluuSuspenseLoader />}><DefaultSidebar /></Suspense>} />
+    <Route
+      path='/*'
+      element={
+        <Suspense fallback={<GluuSuspenseLoader />}>
+          <DefaultSidebar />
+        </Suspense>
+      }
+    />
   </Routes>
 )

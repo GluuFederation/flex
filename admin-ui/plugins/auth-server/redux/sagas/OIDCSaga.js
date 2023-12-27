@@ -6,11 +6,11 @@ import {
   addClientResponse,
   editClientResponse,
   deleteClientResponse,
-  getOpenidClients
+  getOpenidClients,
 } from '../features/oidcSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { OIDC } from '../audit/Resources'
-import {updateToast} from 'Redux/features/toastSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import {
   CREATE,
   UPDATE,

@@ -25,7 +25,7 @@ function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.SCIMConfigManagementApi(
-    getClient(JansConfigApi, token, issuer)
+    getClient(JansConfigApi, token, issuer),
   )
   return new ScimApi(api)
 }
@@ -37,7 +37,7 @@ export function* updateScimSaga({ payload }) {
     const scimApi = yield* newFunction()
     const data = yield call(
       scimApi.updateScimConfig,
-      payload.action.action_data
+      payload.action.action_data,
     )
     yield put(updateToast(true, 'success'))
     yield put(getScimConfigurationResponse(data))

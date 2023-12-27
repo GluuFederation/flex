@@ -13,7 +13,7 @@ const Scim = ({ className, style }) => {
 
 Scim.propTypes = {
   className: PropTypes.any,
-  style: PropTypes.any
+  style: PropTypes.any,
 }
 
 export default Scim

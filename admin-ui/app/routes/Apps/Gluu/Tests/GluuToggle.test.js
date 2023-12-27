@@ -11,7 +11,7 @@ describe('Toggle switch', () => {
 
     // Render the component with initial props and state
     render(
-      <GluuToogle name={name} value={initialChecked} handler={handlerMock} />
+      <GluuToogle name={name} value={initialChecked} handler={handlerMock} />,
     )
 
     // Find the Toggle component in the DOM

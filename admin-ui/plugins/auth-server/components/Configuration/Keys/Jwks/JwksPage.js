@@ -18,13 +18,13 @@ function JwksPage() {
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuLabel label="fields.json_web_keys" size={3} />
+      <GluuLabel label='fields.json_web_keys' size={3} />
       <Card>
         <CardBody>
           {Object.keys(jwks).length
             ? Array.from(jwks['keys']).map((item, index) => (
-              <JwkItem key={index} item={item} index={index} />
-            ))
+                <JwkItem key={index} item={item} index={index} />
+              ))
             : ''}
         </CardBody>
       </Card>

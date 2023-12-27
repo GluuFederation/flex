@@ -15,11 +15,17 @@ function GluuCheckBoxRow({
 }) {
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} required={required} doc_category={doc_category} doc_entry={name}/>
+      <GluuLabel
+        label={label}
+        size={lsize}
+        required={required}
+        doc_category={doc_category}
+        doc_entry={name}
+      />
       <Col sm={rsize}>
         <Input
           id={name}
-          type="checkbox"
+          type='checkbox'
           name={name}
           data-testid={name}
           defaultChecked={value}

@@ -4,7 +4,7 @@ export default class ScimApi {
   constructor(api) {
     this.api = api
   }
-  
+
   // Get SCIM Config
   getScimConfig = () => {
     return new Promise((resolve, reject) => {
@@ -12,7 +12,7 @@ export default class ScimApi {
         handleResponse(error, reject, resolve, data)
       })
     })
-  } 
+  }
 
   // update SCIM Config
   updateScimConfig = (input) => {

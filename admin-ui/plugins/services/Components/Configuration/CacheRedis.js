@@ -26,54 +26,54 @@ function CacheRedis({ config, formik }) {
       <CardBody>
         <FormGroup row>
           <Col
-            sm="12"
+            sm='12'
             style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
           >
             {t('fields.redis_configuration')}:
           </Col>
         </FormGroup>
-        <GluuTooltip doc_category={CACHE} doc_entry="redisProviderType">
+        <GluuTooltip doc_category={CACHE} doc_entry='redisProviderType'>
           <FormGroup row>
-            <GluuLabel label="fields.redis_provider_type" size={6} />
+            <GluuLabel label='fields.redis_provider_type' size={6} />
             <Col sm={6}>
               <InputGroup>
                 <CustomInput
-                  type="select"
-                  id="redisProviderType"
-                  name="redisProviderType"
+                  type='select'
+                  id='redisProviderType'
+                  name='redisProviderType'
                   defaultValue={config.redisProviderType}
                   onChange={formik.handleChange}
                 >
-                  <option value="STANDALONE">{t('options.standalone')}</option>
-                  <option value="CLUSTER">{t('options.cluster')}</option>
-                  <option value="SHARDED">{t('options.sharded')}</option>
-                  <option value="SENTINEL">{t('options.sentinel')}</option>
+                  <option value='STANDALONE'>{t('options.standalone')}</option>
+                  <option value='CLUSTER'>{t('options.cluster')}</option>
+                  <option value='SHARDED'>{t('options.sharded')}</option>
+                  <option value='SENTINEL'>{t('options.sentinel')}</option>
                 </CustomInput>
               </InputGroup>
             </Col>
           </FormGroup>
         </GluuTooltip>
-        <GluuTooltip doc_category={CACHE} doc_entry="servers">
+        <GluuTooltip doc_category={CACHE} doc_entry='servers'>
           <FormGroup row>
-            <GluuLabel label="fields.servers" size={6} />
+            <GluuLabel label='fields.servers' size={6} />
             <Col sm={6}>
               <Badge color={`primary-${selectedTheme}`}>{config.servers}</Badge>
             </Col>
           </FormGroup>
         </GluuTooltip>
         <GluuToogleRow
-          name="useSSL"
+          name='useSSL'
           formik={formik}
           lsize={6}
           rsize={6}
-          label="fields.use_ssl"
+          label='fields.use_ssl'
           value={config.useSSL}
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.password"
-          name="password"
-          type="password"
+          label='fields.password'
+          name='password'
+          type='password'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -81,8 +81,8 @@ function CacheRedis({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.sentinel_master_group_name"
-          name="sentinelMasterGroupName"
+          label='fields.sentinel_master_group_name'
+          name='sentinelMasterGroupName'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -90,8 +90,8 @@ function CacheRedis({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.ssl_trust_store_file_path"
-          name="sslTrustStoreFilePath"
+          label='fields.ssl_trust_store_file_path'
+          name='sslTrustStoreFilePath'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -99,9 +99,9 @@ function CacheRedis({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.default_put_expiration"
-          name="redisDefaultPutExpiration"
-          type="number"
+          label='fields.default_put_expiration'
+          name='redisDefaultPutExpiration'
+          type='number'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -109,9 +109,9 @@ function CacheRedis({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.max_retry_attempts"
-          name="maxRetryAttempts"
-          type="number"
+          label='fields.max_retry_attempts'
+          name='maxRetryAttempts'
+          type='number'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -119,9 +119,9 @@ function CacheRedis({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.so_timeout"
-          name="soTimeout"
-          type="number"
+          label='fields.so_timeout'
+          name='soTimeout'
+          type='number'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -129,9 +129,9 @@ function CacheRedis({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.max_idle_connections"
-          name="maxIdleConnections"
-          type="number"
+          label='fields.max_idle_connections'
+          name='maxIdleConnections'
+          type='number'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -139,9 +139,9 @@ function CacheRedis({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.max_total_connections"
-          name="maxTotalConnections"
-          type="number"
+          label='fields.max_total_connections'
+          name='maxTotalConnections'
+          type='number'
           lsize={6}
           rsize={6}
           formik={formik}
@@ -149,9 +149,9 @@ function CacheRedis({ config, formik }) {
           doc_category={CACHE}
         />
         <GluuInputRow
-          label="fields.connection_timeout"
-          name="connectionTimeout"
-          type="number"
+          label='fields.connection_timeout'
+          name='connectionTimeout'
+          type='number'
           lsize={6}
           rsize={6}
           formik={formik}

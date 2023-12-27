@@ -6,23 +6,25 @@ import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
-import HomeIcon from "Components/SVG/menu/Home"
-import AdministratorIcon from "Components/SVG/menu/Administrator"
-import OAuthIcon from "Components/SVG/menu/OAuth"
-import SchemaIcon from "Components/SVG/menu/Schema"
-import ServicesIcon from "Components/SVG/menu/Services"
-import UsersIcon from "Components/SVG/menu/Users"
-import StmpIcon from "Components/SVG/menu/Smtp"
-import FidoIcon from "Components/SVG/menu/Fido"
-import ScimIcon from "Components/SVG/menu/Scim"
+import HomeIcon from 'Components/SVG/menu/Home'
+import AdministratorIcon from 'Components/SVG/menu/Administrator'
+import OAuthIcon from 'Components/SVG/menu/OAuth'
+import SchemaIcon from 'Components/SVG/menu/Schema'
+import ServicesIcon from 'Components/SVG/menu/Services'
+import UsersIcon from 'Components/SVG/menu/Users'
+import StmpIcon from 'Components/SVG/menu/Smtp'
+import FidoIcon from 'Components/SVG/menu/Fido'
+import ScimIcon from 'Components/SVG/menu/Scim'
 import { ThemeContext } from 'Context/theme/themeContext'
 import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
-import CachedIcon from '@mui/icons-material/Cached';
+import CachedIcon from '@mui/icons-material/Cached'
 import styles from './styles/GluuAppSidebar.style'
 
 function GluuAppSidebar() {
-  const scopes = useSelector(({ authReducer }) => authReducer.token? authReducer.token.scopes : authReducer.permissions)
+  const scopes = useSelector(({ authReducer }) =>
+    authReducer.token ? authReducer.token.scopes : authReducer.permissions,
+  )
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -38,33 +40,37 @@ function GluuAppSidebar() {
   function getMenuIcon(name) {
     switch (name) {
       case 'admin':
-        return <AdministratorIcon className="menu-icon" />
+        return <AdministratorIcon className='menu-icon' />
 
       case 'oauthserver':
-        return <OAuthIcon className="menu-icon" />
+        return <OAuthIcon className='menu-icon' />
 
       case 'services':
-        return <ServicesIcon className="menu-icon" />
+        return <ServicesIcon className='menu-icon' />
 
       case 'schema':
-        return <SchemaIcon className="menu-icon" />
+        return <SchemaIcon className='menu-icon' />
 
       case 'usersmanagement':
-        return <UsersIcon className="menu-icon" style={{ top: '-2px' }} />
+        return <UsersIcon className='menu-icon' style={{ top: '-2px' }} />
 
       case 'stmpmanagement':
-        return <StmpIcon className="menu-icon" style={{ top: '-2px' }} />
+        return <StmpIcon className='menu-icon' style={{ top: '-2px' }} />
 
       case 'fidomanagement':
-        return <FidoIcon className="menu-icon" style={{ top: '-2px' }} />
+        return <FidoIcon className='menu-icon' style={{ top: '-2px' }} />
       case 'scim':
-        return <ScimIcon className="menu-icon" style={{ top: '-2px' }} />
+        return <ScimIcon className='menu-icon' style={{ top: '-2px' }} />
       case 'jans_link':
-        return <CachedIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+        return (
+          <CachedIcon
+            className='menu-icon'
+            style={{ top: '-2px', height: '28px', width: '28px' }}
+          />
+        )
       default:
         return null
     }
-
   }
 
   function getMenuPath(menu) {
@@ -82,26 +88,26 @@ function GluuAppSidebar() {
       <SidebarMenu>
         {/* -------- Home ---------*/}
         <SidebarMenu.Item
-          icon={<HomeIcon className="menu-icon" />}
+          icon={<HomeIcon className='menu-icon' />}
           title={t('menus.home')}
           textStyle={{ fontSize: '18px' }}
           sidebarMenuActiveClass={sidebarMenuActiveClass}
         >
           <SidebarMenu.Item
             title={t('menus.dashboard')}
-            to="/home/dashboard"
+            to='/home/dashboard'
             textStyle={{ fontSize: '15px', color: '#323b47' }}
             exact
           />
           <SidebarMenu.Item
             title={t('menus.health')}
-            to="/home/health"
+            to='/home/health'
             textStyle={{ fontSize: '15px' }}
             exact
           />
           <SidebarMenu.Item
             title={t('menus.licenseDetails')}
-            to="/home/licenseDetails"
+            to='/home/licenseDetails'
             textStyle={{ fontSize: '15px' }}
             exact
           />
@@ -150,16 +156,19 @@ function GluuAppSidebar() {
 
         {/* -------- Plugins ---------*/}
         <SidebarMenu.Item
-          icon={<i className="fa fa-fw fa-sign-out mr-2" style={{ fontSize: 28 }}></i>}
+          icon={
+            <i
+              className='fa fa-fw fa-sign-out mr-2'
+              style={{ fontSize: 28 }}
+            ></i>
+          }
           title={t('menus.signout')}
-          to="/logout"
+          to='/logout'
           textStyle={{ fontSize: '18px' }}
         />
         <div className={classes.waveContainer}>
           <Wave className={classes.wave} fill={themeColors.menu.background} />
-          <div className={classes.powered}>
-            Powered by Gluu
-          </div>
+          <div className={classes.powered}>Powered by Gluu</div>
         </div>
       </SidebarMenu>
     </ErrorBoundary>

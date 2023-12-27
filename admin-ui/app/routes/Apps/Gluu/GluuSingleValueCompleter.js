@@ -24,20 +24,30 @@ function GluuSingleValueCompleter({
   doc_category,
   doc_entry,
   onChange = null,
-  hideHelperMessage = false
+  hideHelperMessage = false,
 }) {
   const { t } = useTranslation()
   return (
-    
     <FormGroup row>
       {required ? (
-        <GluuLabel label={label} size={4} required doc_category={doc_category} doc_entry={doc_entry || name}/>
+        <GluuLabel
+          label={label}
+          size={4}
+          required
+          doc_category={doc_category}
+          doc_entry={doc_entry || name}
+        />
       ) : (
-        <GluuLabel label={label} size={4} doc_category={doc_category} doc_entry={doc_entry || name} />
+        <GluuLabel
+          label={label}
+          size={4}
+          doc_category={doc_category}
+          doc_entry={doc_entry || name}
+        />
       )}
       <Col sm={8}>
         <Typeahead
-          emptyLabel=""
+          emptyLabel=''
           labelKey={name}
           id={name}
           data-testid={name}
@@ -50,11 +60,13 @@ function GluuSingleValueCompleter({
             }
           }}
         />
-        {!hideHelperMessage && <ThemeProvider theme={theme}>
-          <Typography variant="subtitle1">
-            {t('placeholders.typeahead_holder_message')}
-          </Typography>
-        </ThemeProvider>}
+        {!hideHelperMessage && (
+          <ThemeProvider theme={theme}>
+            <Typography variant='subtitle1'>
+              {t('placeholders.typeahead_holder_message')}
+            </Typography>
+          </ThemeProvider>
+        )}
       </Col>
     </FormGroup>
   )

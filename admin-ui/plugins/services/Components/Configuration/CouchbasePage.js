@@ -16,7 +16,9 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 function CouchbasePage() {
   const couchbase = useSelector((state) => state.couchbaseReducer.couchbase)
   const loading = useSelector((state) => state.couchbaseReducer.loading)
-  const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
+  const persistenceType = useSelector(
+    (state) => state.persistenceTypeReducer.type,
+  )
 
   const dispatch = useDispatch()
 
@@ -62,7 +64,7 @@ function CouchbasePage() {
       ) : (
         <Card style={applicationStyle.mainCard}>
           <CardBody>
-            <Alert severity="info">
+            <Alert severity='info'>
               The current data store provider is not Couchbase.
             </Alert>
           </CardBody>

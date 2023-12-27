@@ -23,17 +23,17 @@ const cacheRefreshSlice = createSlice({
     },
     toggleSavedFormFlag: (state, action) => {
       state.savedForm = action.payload || false
-    }
-  }
+    },
+  },
 })
 
 export const {
   getCacheRefreshConfiguration,
   getCacheRefreshConfigurationResponse,
   putCacheRefreshConfiguration,
-  toggleSavedFormFlag
+  toggleSavedFormFlag,
 } = cacheRefreshSlice.actions
 
 export default cacheRefreshSlice.reducer
 
-reducerRegistry.register('cacheRefreshReducer', cacheRefreshSlice.reducer);
+reducerRegistry.register('cacheRefreshReducer', cacheRefreshSlice.reducer)

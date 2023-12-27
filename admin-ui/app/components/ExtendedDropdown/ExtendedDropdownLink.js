@@ -9,8 +9,8 @@ const ExtendedDropdownLink = (props) => {
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={toggle} {...otherProps}>
-      { children }
-    </Dropdown>   
+      {children}
+    </Dropdown>
   )
 }
 

@@ -6,7 +6,7 @@ import {
   CustomInput,
   Form,
   FormGroup,
-  Input
+  Input,
 } from 'Components'
 import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -31,7 +31,7 @@ function AttributeForm(props) {
   }
 
   const [validation, setValidation] = useState(getInitialState(item))
-  
+
   function handleValidation() {
     setValidation(!validation)
   }
@@ -47,10 +47,10 @@ function AttributeForm(props) {
     if (result.maxLength !== null) {
       result['attributeValidation'].maxLength = result.maxLength
     }
-    if(result.minLength !== null) {
+    if (result.minLength !== null) {
       result['attributeValidation'].minLength = result.minLength
     }
-    if(result.regexp !== null) {
+    if (result.regexp !== null) {
       result['attributeValidation'].regexp = result.regexp
     }
     customOnSubmit(JSON.stringify(result))
@@ -68,7 +68,7 @@ function AttributeForm(props) {
     status: Yup.string().required('Required!'),
     dataType: Yup.string().required('Required!'),
     editType: Yup.array().required('Required!'),
-    usageType: Yup.array().required('Required!')
+    usageType: Yup.array().required('Required!'),
   })
 
   const getInitialAttributeValues = (item) => {
@@ -87,7 +87,7 @@ function AttributeForm(props) {
       scimCustomAttr: item.scimCustomAttr,
       maxLength: item.attributeValidation.maxLength,
       minLength: item.attributeValidation.minLength,
-      regexp: item.attributeValidation.regexp
+      regexp: item.attributeValidation.regexp,
     }
   }
 
@@ -145,7 +145,7 @@ function AttributeForm(props) {
               <InputGroup>
                 <Input
                   placeholder={t(
-                    'placeholders.enter_the_attribute_display_name'
+                    'placeholders.enter_the_attribute_display_name',
                   )}
                   valid={
                     !formik.errors.displayName &&
@@ -177,7 +177,7 @@ function AttributeForm(props) {
                   type='textarea'
                   rows='3'
                   placeholder={t(
-                    'placeholders.enter_the_attribute_description'
+                    'placeholders.enter_the_attribute_description',
                   )}
                   id='description'
                   name='description'

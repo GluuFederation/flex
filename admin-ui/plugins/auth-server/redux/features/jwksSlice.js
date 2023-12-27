@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   jwks: {},
-  loading: false
+  loading: false,
 }
 
 const jwksSlice = createSlice({
@@ -18,8 +18,8 @@ const jwksSlice = createSlice({
       if (action.payload?.data) {
         state.jwks = action.payload.data
       }
-    }
-  }
+    },
+  },
 })
 
 export const { getJwks, getJwksResponse } = jwksSlice.actions

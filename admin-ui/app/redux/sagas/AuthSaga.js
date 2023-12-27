@@ -17,21 +17,32 @@ import {
 } from '../api/backend-api'
 
 function* getApiTokenWithDefaultScopes() {
-    const response = yield call(fetchApiTokenWithDefaultScopes)
+  const response = yield call(fetchApiTokenWithDefaultScopes)
 
-    if (response?.access_token) {
-      return response.access_token
-    } else if(response?.name === "AxiosError") {
-      yield(put(setBackendStatus({ active: false, errorMessage: response?.response?.data?.responseMessage, statusCode: response?.response?.status })))
-      return null
-    }
+  if (response?.access_token) {
+    return response.access_token
+  } else if (response?.name === 'AxiosError') {
+    yield put(
+      setBackendStatus({
+        active: false,
+        errorMessage: response?.response?.data?.responseMessage,
+        statusCode: response?.response?.status,
+      }),
+    )
+    return null
+  }
 }
 
 function* getOAuth2ConfigWorker({ payload }) {
   try {
-    const token = !payload?.access_token ? yield* getApiTokenWithDefaultScopes() : payload.access_token
+    const token = !payload?.access_token
+      ? yield* getApiTokenWithDefaultScopes()
+      : payload.access_token
     const response = yield call(fetchServerConfiguration, token)
-    localStorage.setItem('postLogoutRedirectUri', response.postLogoutRedirectUri)
+    localStorage.setItem(
+      'postLogoutRedirectUri',
+      response.postLogoutRedirectUri,
+    )
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))
       return

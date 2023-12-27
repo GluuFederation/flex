@@ -47,7 +47,7 @@ function ClientListPage() {
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.oidcReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
-  let clients = [...nonExtensibleClients ?? []]
+  let clients = [...(nonExtensibleClients ?? [])]
   clients = clients?.map(addOrg)
   const userAction = {}
   const options = {}
@@ -146,7 +146,7 @@ function ClientListPage() {
       render: (rowData) => {
         return (
           <Link
-            className="common-link"
+            className='common-link'
             onClick={() => setScopeData(rowData.scopes)}
           >
             {rowData.scopes?.length || '0'}
@@ -370,7 +370,7 @@ function ClientListPage() {
             columns={tableColumns}
             data={haveScopeINUMParam ? scopeClients : clients}
             isLoading={isPageLoading ? isPageLoading : loading}
-            title=""
+            title=''
             actions={myActions}
             options={{
               search: false,
@@ -394,7 +394,7 @@ function ClientListPage() {
             name={item?.clientName?.value || ''}
             handler={toggle}
             modal={modal}
-            subject="openid connect client"
+            subject='openid connect client'
             onAccept={onDeletionConfirmed}
           />
         )}

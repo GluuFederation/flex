@@ -4,7 +4,7 @@ export default class OidcDiscoveryApi {
   constructor(api) {
     this.api = api
   }
-  
+
   // Get OIDC Discovery
   getOidcDiscovery = () => {
     return new Promise((resolve, reject) => {

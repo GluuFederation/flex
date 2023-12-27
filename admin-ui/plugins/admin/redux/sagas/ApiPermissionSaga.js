@@ -16,11 +16,8 @@ import {
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
-import {updateToast} from 'Redux/features/toastSlice'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import { updateToast } from 'Redux/features/toastSlice'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -76,7 +73,9 @@ export function* addPermission({ payload }) {
     const data = yield call(permApi.addPermission, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield call(postUserAction, audit)
-    yield* getPermissions({ payload: { action: { action_data: [], action_message: 'PERMISSIONS' } } })
+    yield* getPermissions({
+      payload: { action: { action_data: [], action_message: 'PERMISSIONS' } },
+    })
     yield put(addPermissionResponse({ data }))
     return data
   } catch (e) {
@@ -120,11 +119,16 @@ export function* deletePermission({ payload }) {
   try {
     addAdditionalData(audit, DELETION, API_PERMISSION, payload)
     const permApi = yield* newFunction()
-    const data = yield call(permApi.deletePermission, payload.action.action_data)
+    const data = yield call(
+      permApi.deletePermission,
+      payload.action.action_data,
+    )
     yield put(updateToast(true, 'success'))
     yield put(deletePermissionResponse({ inum: payload.action.action_data }))
     yield call(postUserAction, audit)
-    yield getPermissions({ payload: { action: { action_data: [], action_message: 'PERMISSIONS' } } })
+    yield getPermissions({
+      payload: { action: { action_data: [], action_message: 'PERMISSIONS' } },
+    })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))

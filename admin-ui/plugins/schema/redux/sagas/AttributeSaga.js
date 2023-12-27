@@ -8,7 +8,7 @@ import {
 } from '../features/attributeSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { postUserAction } from 'Redux/api/backend-api'
-import {updateToast} from 'Redux/features/toastSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import {
   CREATE,
   UPDATE,
