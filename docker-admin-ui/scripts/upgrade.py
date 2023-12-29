@@ -319,6 +319,11 @@ class Upgrade:
             resp_types.append("token")
             should_update = True
 
+        # add SSA admin scope
+        if "inum=B9D2-D6E5,ou=scopes,o=jans" not in scopes:
+            scopes.append("inum=B9D2-D6E5,ou=scopes,o=jans")
+            should_update = True
+
         if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
             entry.attrs["jansScope"]["v"] = scopes
             entry.attrs["jansGrantTyp"]["v"] = grant_types
