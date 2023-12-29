@@ -110,6 +110,9 @@ export const ATTRIBUTES_TAG = 'attributes'
 export const SCIM_CONFIG_READ = 'https://jans.io/scim/config.readonly'
 export const SCIM_CONFIG_WRITE = 'https://jans.io/scim/config.write'
 
+export const MESSAGE_READ = BASE_URL + '/config/message.readonly'
+export const MESSAGE_WRITE = BASE_URL + '/config/message.write'
+
 export const hasPermission = (scopes, scope) => {
   let available = false
   if (scopes) {

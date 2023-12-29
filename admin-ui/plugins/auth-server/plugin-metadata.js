@@ -23,6 +23,7 @@ import { reducer as loggingReducer } from './redux/features/loggingSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import { reducer as sessionReducer } from './redux/features/sessionSlice'
 import ssaReducer from './redux/features/SsaSlice'
+import messageReducer from './redux/features/MessageSlice'
 
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
@@ -35,6 +36,7 @@ import sessionSaga from './redux/sagas/SessionSaga'
 import agamaSaga from './redux/sagas/AgamaSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
 import ssaSaga from './redux/sagas/SsaSaga' 
+import messageSaga from './redux/sagas/MessageSaga' 
 
 import {
   ACR_READ,
@@ -47,7 +49,8 @@ import {
   PROPERTIES_READ,
   LOGGING_READ,
   AGAMA_READ,
-  SSA_PORTAL
+  SSA_PORTAL,
+  MESSAGE_READ,
 } from 'Utils/PermChecker'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import AuthNListPage from './components/AuthN/AuthNListPage'
@@ -56,6 +59,7 @@ import AuthNEditPage from './components/AuthN/AuthNEditPage'
 import SsaListPage from './components/Ssa/SsaListPage' 
 import SsaAddPage from './components/Ssa/SsaAddPage'
 import React, { Suspense, lazy } from 'react'
+import MessagePage from './components/Message/MessagePage'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
 function AgamaListPageWrapper() {
@@ -119,6 +123,11 @@ const pluginMetadata = {
           title: 'menus.agama',
           path: PLUGIN_BASE_APTH + '/agama',
           permission: AGAMA_READ,
+        },
+        {
+          title: 'menus.message',
+          path: PLUGIN_BASE_APTH + '/message',
+          permission: MESSAGE_READ,
         },
       ],
     },
@@ -203,6 +212,11 @@ const pluginMetadata = {
       component: SsaAddPage,
       path: PLUGIN_BASE_APTH + '/config/ssa/new',
       permission: SSA_PORTAL,
+    },
+    {
+      component: MessagePage,
+      path: PLUGIN_BASE_APTH + '/message',
+      permission: MESSAGE_READ,
     }
   ],
   reducers: [
@@ -217,6 +231,7 @@ const pluginMetadata = {
     { name: 'agamaReducer', reducer: agamaReducer },
     { name: 'authNReducer', reducer: authNReducer },
     { name: 'SsaReducer', reducer: ssaReducer },
+    { name: 'messageReducer', reducer: messageReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -229,7 +244,8 @@ const pluginMetadata = {
     sessionSaga(),
     agamaSaga(),
     authnSaga(),
-    ssaSaga()
+    ssaSaga(),
+    messageSaga()
   ],
 }
 
