@@ -548,6 +548,7 @@
     "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",
     "all_custom_scripts": "Tous les scripts personnalisés",
+    "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
     "all_scopes": "Toutes les portées",
     "client_advanced": "Avancée",
