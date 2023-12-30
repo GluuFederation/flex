@@ -1,0 +1,10 @@
+dn: inum=2002.3534E1,ou=scopes,o=jans
+description: SSA Admin
+displayName: ssa_admin
+inum: 2002.3534E1
+jansAttrs: {"spontaneousClientId":"","spontaneousClientScopes":[],"showInConfigurationEndpoint":true}
+jansDefScope: false
+jansId: https://jans.io/auth/ssa.admin
+jansScopeTyp: openid
+objectClass: top
+objectClass: jansScope
