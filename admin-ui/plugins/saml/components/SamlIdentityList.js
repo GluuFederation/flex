@@ -7,7 +7,13 @@ import {
 import MaterialTable from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { hasPermission, SAML_READ, SAML_WRITE, SAML_DELETE, buildPayload } from 'Utils/PermChecker'
+import {
+  hasPermission,
+  SAML_READ,
+  SAML_WRITE,
+  SAML_DELETE,
+  buildPayload,
+} from 'Utils/PermChecker'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -120,26 +126,45 @@ const SamlIdentityList = () => {
     }
   }
 
+  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
+
+  const PaginationWrapper = useCallback(
+    (props) => (
+      <TablePagination
+        count={totalItems}
+        page={pageNumber}
+        onPageChange={(prop, page) => {
+          onPageChangeClick(page)
+        }}
+        rowsPerPage={limit}
+        onRowsPerPageChange={(prop, count) =>
+          onRowCountChangeClick(count.props.value)
+        }
+      />
+    ),
+    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
+  )
+
+  const GluuSearch = useCallback(() => {
+    return (
+      <GluuAdvancedSearch
+        limitId={'searchLimit'}
+        patternId={'searchPattern'}
+        limit={limit}
+        pattern={pattern}
+        handler={handleOptionsChange}
+        showLimit={false}
+      />
+    )
+  }, [limit, pattern, handleOptionsChange])
+
   return (
     <>
       <GluuViewWrapper canShow={hasPermission(permissions, SAML_READ)}>
         <MaterialTable
-          key={limit ? limit : 0}
           components={{
             Container: PaperContainer,
-            Pagination: (props) => (
-              <TablePagination
-                count={totalItems}
-                page={pageNumber}
-                onPageChange={(prop, page) => {
-                  onPageChangeClick(page)
-                }}
-                rowsPerPage={limit}
-                onRowsPerPageChange={(prop, count) =>
-                  onRowCountChangeClick(count.props.value)
-                }
-              />
-            ),
+            Pagination: PaginationWrapper,
           }}
           columns={tableColumns}
           data={items}
@@ -164,7 +189,7 @@ const SamlIdentityList = () => {
               disabled: !hasPermission(permissions, SAML_READ),
             },
             {
-              icon: () => <DeleteOutlined />,
+              icon: DeleteOutlinedIcon,
               iconProps: {
                 color: 'secondary',
               },
@@ -173,16 +198,7 @@ const SamlIdentityList = () => {
               disabled: !hasPermission(permissions, SAML_DELETE),
             },
             {
-              icon: () => (
-                <GluuAdvancedSearch
-                  limitId={'searchLimit'}
-                  patternId={'searchPattern'}
-                  limit={limit}
-                  pattern={pattern}
-                  handler={handleOptionsChange}
-                  showLimit={false}
-                />
-              ),
+              icon: GluuSearch,
               tooltip: `${t('messages.advanced_search')}`,
               iconProps: { color: 'primary' },
               isFreeAction: true,
