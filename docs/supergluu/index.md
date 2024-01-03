@@ -36,6 +36,7 @@ Super Gluu for strong authentication.
 
 ### Workflows
 Super Gluu supports multiple workflows, including:
+
 - A one-step, passwordless authentication, where the person scans a QR code with their Super Gluu app and the Gluu Flex
   looks up which person is associated with that device.
 - A two-step authentication, where the person enters their username and then receives an out-of-band push notification
