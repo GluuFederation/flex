@@ -78,6 +78,12 @@
     "default_permission_in_token": "Default permission in token",
     "introspection_signed_response_alg": "Introspection Signed Response Alg",
     "introspection_encrypted_response_alg": "Introspection Encrypted Response Alg",
+    "http_request_body": "Request Body",
+    "webhook_name": "Webhook Name",
+    "webhook_url": "URL",
+    "http_method": "HTTP Method",
+    "url": "URL",
+    "http_headers": "Webhook Headers",
     "introspection_encrypted_response_enc": "Introspection Encrypted Response Enc",
     "tag": "Tag",
     "activate": "Activate",
@@ -444,6 +450,7 @@
     "adminui": "Admin",
     "config-api": "Config-API",
     "authn": "Authn",
+    "webhook": "Webhook",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
@@ -498,6 +505,11 @@
   "messages": {
     "add_permission": "Add Permission",
     "add_configuration": "Add Configuration",
+    "add_webhook": "Add Webhook",
+    "http_method_error": "Please select a HTTP Method.",
+    "display_name_error": "Please enter display name.",
+    "url_error": "Please enter URL.",
+    "invalid_json_error": "Invalid JSON value.",
     "license_api_not_enabled": "The License API is not enabled for this application.",
     "edit_configuration": "Edit Configuration",
     "delete_configuration": "Delete Configuration",
@@ -630,6 +642,7 @@
     "all_custom_scripts": "Custom Scripts",
     "all_oidc_clients": "OpenID Clients",
     "all_scopes": "OAuth/OpenID Scopes",
+    "webhook": "Webhook",
     "authn": "Authn",
     "couchbase_authentication": "Couchbase Authentication",
     "client_advanced": "Advanced Client Properties",
@@ -720,6 +733,9 @@
     "yes": "Yes"
   },
   "documentation": {
+    "webhook": {
+      "url": "Set variables using {}"
+    },
     "jans_link": {
       "enabled": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
       "useSSL": "Use this feature if the backend server allows SSL connectivity."

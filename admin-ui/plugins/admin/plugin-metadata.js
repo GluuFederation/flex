@@ -8,16 +8,19 @@ import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
 import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
 import SettingsPage from './components/Settings/SettingsPage'
 import MauGraph from './components/MAU/MauGraph'
+import WebhookListPage from './components/Webhook/WebhookListPage'
 
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
+import webhookSaga from './redux/sagas/WebhookSaga'
 
 import { reducer as scriptReducer } from 'Plugins/admin/redux/features/customScriptSlice'
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
+import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
 import {
   ACR_READ,
   ROLE_READ,
@@ -25,7 +28,11 @@ import {
   SCRIPT_READ,
   SCRIPT_WRITE,
   MAPPING_READ,
+  WEBHOOK_READ,
+  WEBHOOK_WRITE
 } from 'Utils/PermChecker'
+import WebhookAddPage from './components/Webhook/WebhookAddPage'
+import WebhookEditPage from './components/Webhook/WebhookEditPage'
 
 const PLUGIN_BASE_APTH = '/adm'
 
@@ -69,6 +76,11 @@ const pluginMetadata = {
           title: 'menus.settings',
           path: PLUGIN_BASE_APTH + '/settings',
           permission: ACR_READ,
+        },
+        {
+          title: 'menus.webhook',
+          path: PLUGIN_BASE_APTH + '/webhook',
+          permission: WEBHOOK_READ,
         },
       ],
     },
@@ -124,14 +136,30 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/settings',
       permission: ACR_READ,
     },
+    {
+      component: WebhookListPage,
+      path: PLUGIN_BASE_APTH + '/webhook',
+      permission: WEBHOOK_READ,
+    },
+    {
+      component: WebhookAddPage,
+      path: PLUGIN_BASE_APTH + '/webhook/add',
+      permission: WEBHOOK_WRITE,
+    },
+    {
+      component: WebhookEditPage,
+      path: PLUGIN_BASE_APTH + '/webhook/edit/:id',
+      permission: WEBHOOK_WRITE,
+    },
   ],
   reducers: [
     { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
+    { name: 'webhookReducer', reducer: webhookReducer }
   ],
-  sagas: [scriptSaga(), apiRoleSaga(), apiPermissionSaga(), mappingSaga()],
+  sagas: [scriptSaga(), apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga()],
 }
 
 export default pluginMetadata

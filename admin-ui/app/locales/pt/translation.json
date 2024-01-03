@@ -123,6 +123,12 @@
     "introspection_encrypted_response_alg": "Algoritmo de criptografia da resposta de introspeção",
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
+    "http_request_body": "Corpo da solicitação HTTP",
+    "webhook_name": "Nome do Webhook",
+    "webhook_url": "URL",
+    "http_method": "Método HTTP",
+    "url": "URL",
+    "http_headers": "Cabeçalhos do Webhook HTTP",
     "base_endpoint": "Endpoint Base",
     "clean_service_interval": "Intervalo de Limpeza do Serviço",
     "use_search_limit": "Carregar dados de origem com pesquisa limitada",
@@ -440,6 +446,11 @@
     "add_configuration": "Adicionar configuração",
     "edit_configuration": "Excluir configuração",
     "new_role": "Novo papel",
+    "add_webhook": "Adicionar Webhook",
+    "http_method_error": "Por favor, selecione um método HTTP.",
+    "display_name_error": "Por favor, insira um nome de exibição.",
+    "url_error": "Por favor, insira uma URL.",
+    "invalid_json_error": "Valor JSON inválido.",
     "license_api_not_enabled": "A API de licença não está habilitada para este aplicativo.",
     "adding_new_permission": "Adicionando nova permissão",
     "add_role": "Adicionar função",
@@ -618,6 +629,9 @@
     "yes": "sim"
   },
   "documentation": {
+    "webhook": {
+      "url": "Defina variáveis usando {}"
+    },
     "openid_client": {
       "displayName": "Nome do cliente a ser apresentado ao usuário final.",
       "clientName": "Nome do cliente a ser apresentado ao usuário final.",

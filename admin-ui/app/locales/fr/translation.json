@@ -30,6 +30,7 @@
   "menus": {
     "adminui": "Administratrice",
     "config-api": "Config-API",
+    "webhook": "Webhook",
     "api": {
       "roles": "Rôles d'accès",
       "permissions": "Autorisations",
@@ -124,6 +125,12 @@
     "introspection_encrypted_response_alg": "Algorithme de chiffrement de réponse d'inspection",
     "introspection_encrypted_response_enc": "Algorithme de chiffrement de réponse d'inspection",
     "default_permission_in_token": "Permission par défaut dans le jeton",
+    "http_request_body": "Corps de la requête HTTP",
+    "webhook_name": "Nom du Webhook",
+    "webhook_url": "URL",
+    "http_method": "Méthode HTTP",
+    "url": "URL",
+    "http_headers": "En-têtes HTTP du Webhook",
     "base_endpoint": "Point d'Accès de Base",
     "use_search_limit": "Charger les données sources avec une recherche limitée",
     "clean_service_interval": "Intervalle de Nettoyage du Service",
@@ -441,10 +448,15 @@
     "add_permission": "Ajouter une autorisation",
     "add_configuration": "Ajouter une configuration",
     "new_role": "Nouveau rôle",
+    "add_webhook": "Ajouter un Webhook",
     "adding_new_permission": "Ajout d'une nouvelle autorisation",
     "license_api_not_enabled": "L'API de licence n'est pas activée pour cette application.",
     "edit_configuration": "Supprimer la configuration",
     "add_role": "Ajouter un rôle",
+    "http_method_error": "Veuillez sélectionner une méthode HTTP.",
+    "display_name_error": "Veuillez entrer un nom d'affichage.",
+    "url_error": "Veuillez entrer une URL.",
+    "invalid_json_error": "Valeur JSON invalide.",
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
     "action_deletion_question": "Voulez-vous vraiment supprimer cet élément ?",
     "action_deletion_for": "Confirmation de suppression pour",
@@ -620,6 +632,9 @@
     "yes": "Oui"
   },
   "documentation": {
+    "webhook": {
+      "url": "Définir des variables en utilisant {}"
+    },
     "couchbase": {
       "configId": "Nom unique de la configuration.",
       "servers": "Entrez l'adresse IP ou le nom d'hôte de vos nœuds Couchbase.",
