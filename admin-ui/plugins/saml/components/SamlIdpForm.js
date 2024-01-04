@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { Card, CardBody, Form, FormGroup, Col, Row, Button } from 'Components'
 import Toggle from 'react-toggle'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -9,6 +9,8 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   createSamlIdentity,
   toggleSavedFormFlag,
@@ -17,8 +19,10 @@ import {
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { Box } from '@mui/material'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
+  const [showUploadBtn, setShowUploadBtn] = useState(false)
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
   const loading = useSelector((state) => state.idpSamlReducer.loading)
   const { t } = useTranslation()
@@ -26,6 +30,8 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
   const navigate = useNavigate()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   const [metaDataFile, setMetadaDataFile] = useState(null)
   const initialValues = {
@@ -80,13 +86,8 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
     },
   })
 
-  const onHandleFileSelection = (checked) => {
-    if (checked) {
-      inputFile.current.click()
-    } else {
-      setMetadaDataFile(null)
-      formik.setFieldValue('importMetadataFile', false)
-    }
+  const onHandleFileSelection = () => {
+    inputFile.current.click()
   }
 
   const handleFileChange = (event) => {
@@ -244,13 +245,34 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                     size={4}
                   />
                   <Col sm={8}>
-                    <Toggle
-                      onChange={(event) => {
-                        onHandleFileSelection(event.target.checked)
-                      }}
-                      checked={formik.values.importMetadataFile}
-                      disabled={viewOnly}
-                    />
+                    <Box display='flex' gap={1} alignItems='center'>
+                      <Toggle
+                        onChange={(event) => {
+                          if (event.target.checked) {
+                            setShowUploadBtn(true)
+                          } else {
+                            setMetadaDataFile(null)
+                            formik.setFieldValue('importMetadataFile', false)
+                            setShowUploadBtn(false)
+                          }
+                        }}
+                        checked={showUploadBtn}
+                        disabled={viewOnly}
+                      />
+                      {showUploadBtn && (
+                        <Button
+                          disabled={viewOnly}
+                          color={`primary-${selectedTheme}`}
+                          style={{
+                            ...applicationStyle.buttonStyle,
+                            ...applicationStyle.buttonFlexIconStyles,
+                          }}
+                          onClick={onHandleFileSelection}
+                        >
+                          {t('fields.import_file')}
+                        </Button>
+                      )}
+                    </Box>
                   </Col>
                 </FormGroup>
               </Col>

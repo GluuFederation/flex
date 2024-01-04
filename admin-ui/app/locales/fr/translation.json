@@ -124,6 +124,7 @@
   "fields": {
     "tag": "Étiqueter",
     "issuer": "Émetteur",
+    "import_file": "Importer un fichier",
     "introspection_signed_response_alg": "Algorithme de signature de réponse d'inspection",
     "introspection_encrypted_response_alg": "Algorithme de chiffrement de réponse d'inspection",
     "introspection_encrypted_response_enc": "Algorithme de chiffrement de réponse d'inspection",
