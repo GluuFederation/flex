@@ -85,13 +85,7 @@ export function* putSamlProperties({ payload }) {
     yield put(putSamlPropertiesResponse(data))
     yield call(postUserAction, audit)
   } catch (error) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.data?.message || error.message
-      )
-    )
+    yield* errorToast({ error })
     yield put(putSamlPropertiesResponse())
     if (isFourZeroOneError(error)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -115,13 +109,7 @@ export function* postSamlIdentity({ payload }) {
     yield call(postUserAction, audit)
   } catch (error) {
     console.log('Error: ', error)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.data?.message || error.message
-      )
-    )
+    yield* errorToast({ error })
 
     yield put(toggleSavedFormFlag(false))
     if (isFourZeroOneError(error)) {
@@ -148,13 +136,7 @@ export function* updateSamlIdentity({ payload }) {
     yield call(postUserAction, audit)
   } catch (error) {
     console.log('Error: ', error)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.data?.message || error.message
-      )
-    )
+    yield* errorToast({ error })
 
     yield put(toggleSavedFormFlag(false))
     if (isFourZeroOneError(error)) {
@@ -180,13 +162,7 @@ export function* deleteSamlIdentity({ payload }) {
     yield put(getSamlIdentites())
     yield call(postUserAction, audit)
   } catch (error) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        error?.response?.data?.message || error.message
-      )
-    )
+    yield* errorToast({ error })
 
     yield put(deleteSamlIdentityResponse())
     if (isFourZeroOneError(error)) {
@@ -195,6 +171,16 @@ export function* deleteSamlIdentity({ payload }) {
     }
     return error
   }
+}
+
+function* errorToast({ error }) {
+  yield put(
+    updateToast(
+      true,
+      'error',
+      error?.response?.data?.message || error.message
+    )
+  )
 }
 
 export function* watchGetSamlConfig() {
