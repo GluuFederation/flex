@@ -11,9 +11,12 @@ import {
   putSamlPropertiesResponse,
   samlIdentityResponse,
   deleteSamlIdentityResponse,
-  updateSamlIdentityResponse
+  updateSamlIdentityResponse,
+  getSamlIdentites,
 } from '../features/SamlSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
+import { updateToast } from 'Redux/features/toastSlice'
+import { CREATE, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
 
 const JansConfigApi = require('jans_config_api')
 
@@ -21,15 +24,6 @@ function* newSamlConfigFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.SAMLConfigurationApi(
-    getClient(JansConfigApi, token, issuer)
-  )
-  return new SamlApi(api)
-}
-
-function* newTrustRelationshipsFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.SAMLTrustRelationshipApi(
     getClient(JansConfigApi, token, issuer)
   )
   return new SamlApi(api)
@@ -83,7 +77,7 @@ export function* getTrustRelationshipsSaga({ payload }) {
 export function* putSamlProperties({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, 'UPDATE', 'SAML', payload)
+    addAdditionalData(audit, UPDATE, 'SAML', payload)
     const api = yield* newSamlConfigFunction()
     const data = yield call(api.putSamlProperties, {
       samlAppConfiguration: payload.action.action_data,
@@ -91,6 +85,13 @@ export function* putSamlProperties({ payload }) {
     yield put(putSamlPropertiesResponse(data))
     yield call(postUserAction, audit)
   } catch (error) {
+    yield put(
+      updateToast(
+        true,
+        'error',
+        error?.response?.data?.message || error.message
+      )
+    )
     yield put(putSamlPropertiesResponse())
     if (isFourZeroOneError(error)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -103,7 +104,7 @@ export function* putSamlProperties({ payload }) {
 export function* postSamlIdentity({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, 'CREATE', 'SAML', payload)
+    addAdditionalData(audit, CREATE, 'SAML', payload)
     const token = yield select((state) => state.authReducer.token.access_token)
     const api = yield* newSamlIdentityFunction()
     yield call(api.postSamlIdentityProvider, {
@@ -114,6 +115,14 @@ export function* postSamlIdentity({ payload }) {
     yield call(postUserAction, audit)
   } catch (error) {
     console.log('Error: ', error)
+    yield put(
+      updateToast(
+        true,
+        'error',
+        error?.response?.data?.message || error.message
+      )
+    )
+
     yield put(toggleSavedFormFlag(false))
     if (isFourZeroOneError(error)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -126,10 +135,9 @@ export function* postSamlIdentity({ payload }) {
 }
 
 export function* updateSamlIdentity({ payload }) {
-  console.log('update identity')
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, 'UPDATE', 'SAML', payload)
+    addAdditionalData(audit, UPDATE, 'SAML', payload)
     const token = yield select((state) => state.authReducer.token.access_token)
     const api = yield* newSamlIdentityFunction()
     yield call(api.updateSamlIdentityProvider, {
@@ -140,6 +148,14 @@ export function* updateSamlIdentity({ payload }) {
     yield call(postUserAction, audit)
   } catch (error) {
     console.log('Error: ', error)
+    yield put(
+      updateToast(
+        true,
+        'error',
+        error?.response?.data?.message || error.message
+      )
+    )
+
     yield put(toggleSavedFormFlag(false))
     if (isFourZeroOneError(error)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -154,16 +170,24 @@ export function* updateSamlIdentity({ payload }) {
 export function* deleteSamlIdentity({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, 'DELETE', 'SAML', payload)
+    addAdditionalData(audit, DELETION, 'SAML', payload)
     const api = yield* newSamlIdentityFunction()
     const data = yield call(
       api.deleteSamlIdentityProvider,
       payload.action.action_data
     )
     yield put(deleteSamlIdentityResponse(data))
-    yield* getTrustRelationshipsSaga()
+    yield put(getSamlIdentites())
     yield call(postUserAction, audit)
   } catch (error) {
+    yield put(
+      updateToast(
+        true,
+        'error',
+        error?.response?.data?.message || error.message
+      )
+    )
+
     yield put(deleteSamlIdentityResponse())
     if (isFourZeroOneError(error)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

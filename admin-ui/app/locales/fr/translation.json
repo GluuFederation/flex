@@ -477,6 +477,7 @@
     "add_configuration": "Ajouter une configuration",
     "new_role": "Nouveau rôle",
     "add_idp": "Ajouter un IDP SAML",
+    "view_idp_details": "Voir les détails de l'IDP",
     "edit_idp": "Modifier un IDP SAML",
     "delete_idp": "Supprimer un IDP SAML",
     "adding_new_permission": "Ajout d'une nouvelle autorisation",

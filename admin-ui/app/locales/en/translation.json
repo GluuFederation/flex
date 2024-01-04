@@ -534,6 +534,7 @@
     "add_permission": "Add Permission",
     "add_configuration": "Add Configuration",
     "add_idp": "Add SAML IDP",
+    "view_idp_details": "View IDP Details",
     "edit_idp": "Edit SAML IDP",
     "delete_idp": "Delete SAML IDP",
     "license_api_not_enabled": "The License API is not enabled for this application.",

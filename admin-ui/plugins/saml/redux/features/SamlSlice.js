@@ -44,16 +44,20 @@ const samlSlice = createSlice({
       state.loading = false
       state.configuration = action.payload || {}
     },
-    createSamlIdentity: (state, action) => {
+    createSamlIdentity: (state) => {
+      state.loading = true
       state.loadingSamlIdentity = true
     },
-    samlIdentityResponse: (state, action) => {
+    samlIdentityResponse: (state) => {
+      state.loading = false
       state.loadingSamlIdentity = false
     },
     updateSamlIdentity: (state) => {
+      state.loading = true
       state.loadingSamlIdentity = true
     },
-    updateSamlIdentityResponse: (state, action) => {
+    updateSamlIdentityResponse: (state) => {
+      state.loading = false
       state.loadingSamlIdentity = false
     },
     deleteSamlIdentity: (state) => {

@@ -33,7 +33,6 @@ export default class SamlApi {
   postSamlIdentityProvider = ({ formdata, token }) => {
     return new Promise((resolve, reject) => {
       axios.post("/kc/saml/idp/upload", formdata, { headers: { Authorization: `Bearer ${token}` } })
-        .then(response => response.text())
         .then(result => handleResponse(undefined, reject, resolve, result))
         .catch(error => handleResponse(error, reject, resolve, undefined));
     })
@@ -43,14 +42,12 @@ export default class SamlApi {
     // put-saml-identity-provider
     return new Promise((resolve, reject) => {
       axios.put("/kc/saml/idp/upload", formdata, { headers: { Authorization: `Bearer ${token}` } })
-        .then(response => response.text())
         .then(result => handleResponse(undefined, reject, resolve, result))
         .catch(error => handleResponse(error, reject, resolve, undefined));
     })
   }
 
   deleteSamlIdentityProvider = (inum) => {
-    console.log(`inum`, inum)
     return new Promise((resolve, reject) => {
       this.api.deleteSamlIdentityProvider(inum, (error, data) => {
         handleResponse(error, reject, resolve, data)

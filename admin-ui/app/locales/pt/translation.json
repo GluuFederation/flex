@@ -476,6 +476,7 @@
     "add_idp": "Adicionar IDP SAML",
     "edit_idp": "Editar IDP SAML",
     "delete_idp": "Excluir IDP SAML",
+    "view_idp_details": "Ver Detalhes do IDP",
     "edit_configuration": "Excluir configuração",
     "new_role": "Novo papel",
     "license_api_not_enabled": "A API de licença não está habilitada para este aplicativo.",
