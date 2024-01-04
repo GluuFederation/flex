@@ -54,6 +54,7 @@ jansLogoutSessRequired: false
 jansRespTyp: token
 jansRptAsJwt: false
 jansScope: inum=F0C4,ou=scopes,o=jans
+jansScope: inum=B9D2-D6E5,ou=scopes,o=jans
 jansSubjectTyp: pairwise
 jansTknEndpointAuthMethod: client_secret_basic
 jansTrustedClnt: false
