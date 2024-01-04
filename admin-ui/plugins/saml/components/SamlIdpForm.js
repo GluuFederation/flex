@@ -23,6 +23,7 @@ import { Box } from '@mui/material'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
+  const [fileError, setFileError] = useState(false)
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
   const loading = useSelector((state) => state.idpSamlReducer.loading)
   const { t } = useTranslation()
@@ -87,6 +88,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
   })
 
   const onHandleFileSelection = () => {
+    setFileError(false)
     inputFile.current.click()
   }
 
@@ -165,7 +167,18 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
     <GluuLoader blocking={loading}>
       <Card>
         <CardBody className=''>
-          <Form onSubmit={formik.handleSubmit} className='mt-4'>
+          <Form
+            onSubmit={(event) => {
+              event.preventDefault()
+              if (!metaDataFile) {
+                setFileError(true)
+                return
+              }
+              setFileError(false)
+              formik.handleSubmit(event)
+            }}
+            className='mt-4'
+          >
             <FormGroup row>
               <Col sm={10}>
                 <GluuInputRow
@@ -273,6 +286,11 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                         </Button>
                       )}
                     </Box>
+                    {fileError && (
+                      <div style={{ color: 'red' }}>
+                        {t('messages.import_metadata_file')}
+                      </div>
+                    )}
                   </Col>
                 </FormGroup>
               </Col>
@@ -284,7 +302,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                 ref={inputFile}
                 style={{ display: 'none' }}
               />
-              {!formik.values.importMetadataFile && (
+              {!showUploadBtn && (
                 <>
                   <Col sm={10}>
                     <GluuInputRow

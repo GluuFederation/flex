@@ -480,6 +480,7 @@
     "add_idp": "Ajouter un IDP SAML",
     "view_idp_details": "Voir les détails de l'IDP",
     "edit_idp": "Modifier un IDP SAML",
+    "import_metadata_file": "Veuillez importer le fichier de métadonnées.",
     "delete_idp": "Supprimer un IDP SAML",
     "adding_new_permission": "Ajout d'une nouvelle autorisation",
     "license_api_not_enabled": "L'API de licence n'est pas activée pour cette application.",

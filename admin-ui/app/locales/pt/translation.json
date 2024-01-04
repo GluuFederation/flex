@@ -477,6 +477,7 @@
     "add_idp": "Adicionar IDP SAML",
     "edit_idp": "Editar IDP SAML",
     "delete_idp": "Excluir IDP SAML",
+    "import_metadata_file": "Por favor, importe o arquivo de metadados.",
     "view_idp_details": "Ver Detalhes do IDP",
     "edit_configuration": "Excluir configuração",
     "new_role": "Novo papel",
