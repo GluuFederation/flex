@@ -170,7 +170,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
           <Form
             onSubmit={(event) => {
               event.preventDefault()
-              if (!metaDataFile) {
+              if (!metaDataFile && showUploadBtn) {
                 setFileError(true)
                 return
               }
@@ -258,7 +258,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                     size={4}
                   />
                   <Col sm={8}>
-                    <Box display='flex' gap={1} alignItems='center'>
+                    <Box display='flex' flexWrap='wrap' gap={1} alignItems='center'>
                       <Toggle
                         onChange={(event) => {
                           if (event.target.checked) {
@@ -285,6 +285,14 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                           {t('fields.import_file')}
                         </Button>
                       )}
+                      {metaDataFile ? (
+                        <>
+                          <span className='d-inline'>{metaDataFile?.name}</span>
+                          <p className='mb-0'>
+                            ({((metaDataFile?.size || 0) / 1000).toFixed(0)}K)
+                          </p>
+                        </>
+                      ) : null}
                     </Box>
                     {fileError && (
                       <div style={{ color: 'red' }}>
@@ -294,14 +302,16 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   </Col>
                 </FormGroup>
               </Col>
-              <input
-                type='file'
-                accept='text/xml,application/json'
-                onChange={handleFileChange}
-                id='metdaDateFile'
-                ref={inputFile}
-                style={{ display: 'none' }}
-              />
+              {showUploadBtn && (
+                <input
+                  type='file'
+                  accept='text/xml,application/json'
+                  onChange={handleFileChange}
+                  id='metdaDateFile'
+                  ref={inputFile}
+                  style={{ display: 'none' }}
+                />
+              )}
               {!showUploadBtn && (
                 <>
                   <Col sm={10}>
