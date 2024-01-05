@@ -3,7 +3,7 @@ import UserAddPage from './components/UserManagement/UserAddPage'
 import UserEditPage from './components/UserManagement/UserEditPage'
 import userSaga from './redux/sagas/UserSaga'
 import userReducer from './redux/features/userSlice'
-import { USER_READ, USER_WRITE } from '../../app/utils/PermChecker'
+import { USER_READ, USER_WRITE } from 'Utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/user'
 
