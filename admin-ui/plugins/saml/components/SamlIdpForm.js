@@ -73,6 +73,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
         Yup.string().required(`${t('fields.name_policy_format')} is Required!`),
     }),
     name: Yup.string().required(`${t('fields.name')} is Required!`),
+    realm: Yup.string().required(`${t('fields.realm')} is Required!`),
   })
 
   const toggle = () => {
@@ -124,7 +125,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
       })
       formdata.append('metaDataFile', blob)
     }
-    console.log(`payload.identityProvider`, payload.identityProvider)
+
     const blob = new Blob(
       [
         JSON.stringify({
@@ -232,6 +233,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   formik={formik}
                   lsize={4}
                   rsize={8}
+                  required
                   showError={formik.errors.realm && formik.touched.realm}
                   errorMessage={formik.errors.realm}
                   disabled={viewOnly}
