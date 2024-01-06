@@ -47,6 +47,13 @@ export const SCOPE_DELETE = BASE_URL + '/config/scopes.delete'
 export const SSA_PORTAL = 'https://jans.io/auth/ssa.portal'
 export const SSA_ADMIN = 'https://jans.io/auth/ssa.admin'
 
+export const SAML_READ = 'https://jans.io/idp/saml.readonly'
+export const SAML_WRITE = 'https://jans.io/idp/saml.write'
+export const SAML_DELETE = 'https://jans.io/idp/saml.delete'
+
+export const SAML_CONFIG_READ = BASE_URL + '/config/saml-config.readonly'
+export const SAML_CONFIG_WRITE = BASE_URL + '/config/saml-config.write'
+
 export const SCRIPT_READ = BASE_URL + '/config/scripts.readonly'
 export const SCRIPT_WRITE = BASE_URL + '/config/scripts.write'
 export const SCRIPT_DELETE = BASE_URL + '/config/scripts.delete'
