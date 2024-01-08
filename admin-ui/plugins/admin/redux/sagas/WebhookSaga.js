@@ -7,6 +7,10 @@ import {
   updateWebhookResponse,
   getFeaturesResponse,
   getFeaturesByWebhookIdResponse,
+  getWebhooksByFeatureIdResponse,
+  triggerWebhookResponse,
+  setWebhookModal,
+  setWebhookTriggerErrors
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import {
   CREATE,
@@ -202,6 +206,67 @@ export function* getFeaturesByWebhookId({ payload }) {
   }
 }
 
+export function* getWebhooksByFeatureId({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, 'aui-features', payload)
+    const webhookApi = yield* newFunction()
+    const data = yield call(webhookApi.getWebhooksByFeatureId, payload)
+    yield put(getWebhooksByFeatureIdResponse(data?.body || []))
+    yield call(postUserAction, audit)
+    return data
+  } catch (e) {
+    console.log('error: ', e)
+    yield put(
+      updateToast(
+        true,
+        'error',
+        e?.response?.body?.responseMessage || e.message
+      )
+    )
+    yield put(getWebhooksByFeatureIdResponse([]))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+    return e
+  }
+}
+
+export function* triggerWebhook({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, 'aui-features', payload)
+    const webhookApi = yield* newFunction()
+    const data = yield call(webhookApi.triggerWebhook, payload)
+    const all_succeded = data?.body?.every((item) => item.success)
+    if (all_succeded) yield put(setWebhookModal(false)) 
+    else {
+      const errors = data?.body?.map((item) => item.responseMessage)
+      yield put(setWebhookTriggerErrors(errors))
+      yield put(triggerWebhookResponse('Something went wrong while triggering webhook.'))
+    }    
+    yield call(postUserAction, audit)
+    return data
+  } catch (e) {
+    console.log('error: ', e)
+    yield put(
+      updateToast(
+        true,
+        'error',
+        e?.response?.body?.responseMessage || e.message
+      )
+    )
+    yield put(setWebhookModal(true))
+    yield put(triggerWebhookResponse(e?.response?.body?.responseMessage || e.message))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+    return e
+  }
+}
+
 export function* watchGetWebhook() {
   yield takeLatest('webhook/getWebhook', getWebhooks)
 }
@@ -226,6 +291,14 @@ export function* watchGetFeaturesByWebhookId() {
   yield takeLatest('webhook/getFeaturesByWebhookId', getFeaturesByWebhookId)
 }
 
+export function* watchGetWebhooksByFeatureId() {
+  yield takeLatest('webhook/getWebhooksByFeatureId', getWebhooksByFeatureId)
+}
+
+export function* watchGetTriggerWebhook() {
+  yield takeLatest('webhook/triggerWebhook', triggerWebhook)
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watchGetWebhook),
@@ -233,6 +306,8 @@ export default function* rootSaga() {
     fork(watchDeleteWebhook),
     fork(watchUpdateWebhook),
     fork(watchGetFeatures),
-    fork(watchGetFeaturesByWebhookId)
+    fork(watchGetFeaturesByWebhookId),
+    fork(watchGetWebhooksByFeatureId),
+    fork(watchGetTriggerWebhook)
   ])
 }

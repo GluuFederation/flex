@@ -12,7 +12,13 @@ const initialState = {
   loadingFeatures: false,
   features: [],
   webhookFeatures: [],
-  loadingWebhookFeatures: false
+  loadingWebhookFeatures: false,
+  loadingWebhooks: false,
+  featureWebhooks: [],
+  webhookModal: false,
+  triggerWebhookInProgress: false,
+  triggerWebhookMessage: '',
+  webhookTriggerErrors: []
 }
 
 const webhookSlice = createSlice({
@@ -31,10 +37,12 @@ const webhookSlice = createSlice({
       }
     },
     createWebhook: (state) => {
+      state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
     createWebhookResponse: (state, action) => {
+      state.loading = false
       state.saveOperationFlag = true
       if (action.payload?.data) {
         state.errorInSaveOperationFlag = false
@@ -83,6 +91,26 @@ const webhookSlice = createSlice({
       state.loadingWebhookFeatures = false
       state.webhookFeatures = action.payload
     },
+    getWebhooksByFeatureId: (state) => {
+      state.loadingWebhooks = true
+    },
+    getWebhooksByFeatureIdResponse: (state, action) => {
+      state.loadingWebhooks = false
+      state.featureWebhooks = action.payload
+    },
+    setWebhookModal: (state, action) => {
+      state.webhookModal = action.payload
+    },
+    triggerWebhook: (state) => {
+      state.triggerWebhookInProgress = true
+    },
+    triggerWebhookResponse: (state, action) => {
+      state.triggerWebhookInProgress = false
+      state.triggerWebhookMessage = action.payload
+    },
+    setWebhookTriggerErrors: (state, action) => {
+      state.webhookTriggerErrors = action.payload
+    }
   },
 })
 
@@ -100,7 +128,13 @@ export const {
   getFeaturesResponse,
   getFeatures,
   getFeaturesByWebhookId,
-  getFeaturesByWebhookIdResponse
+  getFeaturesByWebhookIdResponse,
+  getWebhooksByFeatureId,
+  getWebhooksByFeatureIdResponse,
+  setWebhookModal,
+  triggerWebhook,
+  triggerWebhookResponse,
+  setWebhookTriggerErrors
 } = webhookSlice.actions
 export const { actions, reducer, state } = webhookSlice
 export default reducer

@@ -58,4 +58,20 @@ export default class MappingApi {
       })
     })
   }
+
+  getWebhooksByFeatureId = (featureId) => {
+    return new Promise((resolve, reject) => {
+      this.api.getWebhooksByFeatureId(featureId, (error, _data, response) => {
+        handleResponse(error, reject, resolve, response)
+      })
+    })
+  }
+
+  triggerWebhook = (featureId) => {
+    return new Promise((resolve, reject) => {
+      this.api.triggerWebhook(featureId, (error, _data, response) => {
+        handleResponse(error, reject, resolve, response)
+      })
+    })
+  }
 }
