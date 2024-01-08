@@ -4,7 +4,9 @@ import {
   getWebhookResponse,
   createWebhookResponse,
   deleteWebhookResponse,
-  updateWebhookResponse
+  updateWebhookResponse,
+  getFeaturesResponse,
+  getFeaturesByWebhookIdResponse,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import {
   CREATE,
@@ -146,6 +148,60 @@ export function* updateWebhook({ payload }) {
   }
 }
 
+export function* getFeatures() {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, 'aui-features', {})
+    const webhookApi = yield* newFunction()
+    const data = yield call(webhookApi.getAllFeatures)
+    yield put(getFeaturesResponse(data?.body || []))
+    yield call(postUserAction, audit)
+    return data
+  } catch (e) {
+    console.log('error: ', e)
+    yield put(
+      updateToast(
+        true,
+        'error',
+        e?.response?.body?.responseMessage || e.message
+      )
+    )
+    yield put(getFeaturesResponse([]))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+    return e
+  }
+}
+
+export function* getFeaturesByWebhookId({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, 'aui-features', payload)
+    const webhookApi = yield* newFunction()
+    const data = yield call(webhookApi.getFeaturesByWebhookId, payload)
+    yield put(getFeaturesByWebhookIdResponse(data?.body || []))
+    yield call(postUserAction, audit)
+    return data
+  } catch (e) {
+    console.log('error: ', e)
+    yield put(
+      updateToast(
+        true,
+        'error',
+        e?.response?.body?.responseMessage || e.message
+      )
+    )
+    yield put(getFeaturesByWebhookIdResponse([]))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+    return e
+  }
+}
+
 export function* watchGetWebhook() {
   yield takeLatest('webhook/getWebhook', getWebhooks)
 }
@@ -162,11 +218,21 @@ export function* watchUpdateWebhook() {
   yield takeLatest('webhook/updateWebhook', updateWebhook)
 }
 
+export function* watchGetFeatures() {
+  yield takeLatest('webhook/getFeatures', getFeatures)
+}
+
+export function* watchGetFeaturesByWebhookId() {
+  yield takeLatest('webhook/getFeaturesByWebhookId', getFeaturesByWebhookId)
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watchGetWebhook),
     fork(watchCreateWebhook),
     fork(watchDeleteWebhook),
-    fork(watchUpdateWebhook)
+    fork(watchUpdateWebhook),
+    fork(watchGetFeatures),
+    fork(watchGetFeaturesByWebhookId)
   ])
 }

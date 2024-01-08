@@ -13,6 +13,7 @@ import {
   createWebhook,
   updateWebhook,
   resetFlags,
+  getFeatures,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 import { buildPayload } from 'Utils/PermChecker'
@@ -20,11 +21,14 @@ import { useNavigate, useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { WEBHOOK } from 'Utils/ApiResources'
+import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 
 const WebhookForm = () => {
   const { id } = useParams()
   const userAction = {}
-  const { selectedWebhook } = useSelector((state) => state.webhookReducer)
+  const { selectedWebhook, features, webhookFeatures } = useSelector(
+    (state) => state.webhookReducer
+  )
 
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -85,6 +89,7 @@ const WebhookForm = () => {
       httpHeaders: getHttpHeaders(),
       jansEnabled: selectedWebhook?.jansEnabled || false,
       description: selectedWebhook?.description || '',
+      auiFeatureIds: webhookFeatures?.map((feature) => feature.auiFeatureId) || [],
     },
     onSubmit: (values) => {
       const faulty = validatePayload(values)
@@ -142,6 +147,7 @@ const WebhookForm = () => {
   )
 
   useEffect(() => {
+    dispatch(getFeatures())
     if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/webhook')
 
     return function cleanup() {
@@ -259,6 +265,17 @@ const WebhookForm = () => {
             />
           </Col>
         </FormGroup>
+
+        <GluuTypeAhead
+          name='auiFeatureIds'
+          label='fields.aui_feature_ids'
+          formik={formik}
+          value={formik.values.auiFeatureIds}
+          options={features?.map((feature) => feature.auiFeatureId) || []}
+          lsize={4}
+          rsize={8}
+          allowNew={false}
+        />
 
         <Row>
           <Col>

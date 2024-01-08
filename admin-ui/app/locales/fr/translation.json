@@ -126,6 +126,7 @@
     "tag": "Étiqueter",
     "issuer": "Émetteur",
     "import_file": "Importer un fichier",
+    "aui_feature_ids": "Identifiants de fonctionnalités",
     "introspection_signed_response_alg": "Algorithme de signature de réponse d'inspection",
     "introspection_encrypted_response_alg": "Algorithme de chiffrement de réponse d'inspection",
     "introspection_encrypted_response_enc": "Algorithme de chiffrement de réponse d'inspection",

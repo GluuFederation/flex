@@ -9,6 +9,10 @@ const initialState = {
   totalItems: 0,
   entriesCount: 0,
   selectedWebhook: {},
+  loadingFeatures: false,
+  features: [],
+  webhookFeatures: [],
+  loadingWebhookFeatures: false
 }
 
 const webhookSlice = createSlice({
@@ -64,7 +68,21 @@ const webhookSlice = createSlice({
     resetFlags: (state) => {
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
-    }
+    },
+    getFeatures: (state) => {
+      state.loadingFeatures = true
+    },
+    getFeaturesResponse: (state, action) => {
+      state.loadingFeatures = false
+      state.features = action.payload
+    },
+    getFeaturesByWebhookId: (state) => {
+      state.loadingWebhookFeatures = true
+    },
+    getFeaturesByWebhookIdResponse: (state, action) => {
+      state.loadingWebhookFeatures = false
+      state.webhookFeatures = action.payload
+    },
   },
 })
 
@@ -78,7 +96,11 @@ export const {
   setSelectedWebhook,
   updateWebhook,
   updateWebhookResponse,
-  resetFlags
+  resetFlags,
+  getFeaturesResponse,
+  getFeatures,
+  getFeaturesByWebhookId,
+  getFeaturesByWebhookIdResponse
 } = webhookSlice.actions
 export const { actions, reducer, state } = webhookSlice
 export default reducer

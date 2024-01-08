@@ -109,6 +109,7 @@ const WebhookListPage = () => {
   )
 
   const navigateToAddPage = useCallback(() => {
+    dispatch(setSelectedWebhook({}))
     navigate('/adm/webhook/add')
   }, [])
 

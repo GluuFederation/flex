@@ -42,4 +42,20 @@ export default class MappingApi {
       })
     })
   }
+
+  getAllFeatures = () => {
+    return new Promise((resolve, reject) => {
+      this.api.getAllFeatures((error, _data, response) => {
+        handleResponse(error, reject, resolve, response)
+      })
+    })
+  }
+
+  getFeaturesByWebhookId = (webhookId) => {
+    return new Promise((resolve, reject) => {
+      this.api.getFeaturesByWebhookId(webhookId, (error, _data, response) => {
+        handleResponse(error, reject, resolve, response)
+      })
+    })
+  }
 }
