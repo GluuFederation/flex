@@ -2,6 +2,7 @@ import React from 'react'
 import { Col, FormGroup } from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
 import AceEditor from 'react-ace'
+import PropTypes from 'prop-types'
 import 'ace-builds/src-noconflict/mode-java'
 import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/theme-xcode'
@@ -60,3 +61,9 @@ function GluuInputEditor({
 }
 
 export default GluuInputEditor
+GluuInputEditor.propTypes = {
+  errorMessage: PropTypes.string,
+  theme: PropTypes.string,
+  placeholder: PropTypes.string,
+  showError: PropTypes.bool
+}

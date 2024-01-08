@@ -39,7 +39,7 @@ function* newFunction() {
 export function* getWebhooks({ payload }) {
   const audit = yield* initAudit()
   try {
-    payload = payload ? payload : { action: {} }
+    payload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'webhook', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getAllWebhooks, payload.action)

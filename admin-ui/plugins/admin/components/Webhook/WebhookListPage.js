@@ -12,6 +12,7 @@ import {
   WEBHOOK_WRITE,
   WEBHOOK_READ,
   WEBHOOK_DELETE,
+  buildPayload
 } from 'Utils/PermChecker'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -23,7 +24,6 @@ import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { useNavigate } from 'react-router'
 import { getWebhook, deleteWebhook, setSelectedWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-import { buildPayload } from 'Utils/PermChecker'
 
 const WebhookListPage = () => {
   const dispatch = useDispatch()

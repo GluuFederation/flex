@@ -101,16 +101,14 @@ const GluuCommitDialog = ({
 
   if (loadingWebhooks && modal) {
     return (
-      <>
-        <Modal
-          isOpen={loadingWebhooks}
-          size={'lg'}
-          toggle={() => {}}
-          className='modal-outline-primary'
-        >
-          <ModalHeader toggle={() => {}}>Loading....</ModalHeader>
-        </Modal>
-      </>
+      <Modal
+        isOpen={loadingWebhooks}
+        size={'lg'}
+        toggle={() => {}}
+        className='modal-outline-primary'
+      >
+        <ModalHeader toggle={() => {}}>Loading....</ModalHeader>
+      </Modal>
     )
   }
 
@@ -137,34 +135,26 @@ const GluuCommitDialog = ({
             </Typography>
             <p>{triggerWebhookMessage}</p>
             {webhookTriggerErrors.length ? (
-              <>
-                <ul>
-                  {webhookTriggerErrors.map((str) => (
-                    <li key={str} style={{ color: 'red' }}>
-                      {str}
-                    </li>
-                  ))}
-                </ul>
-              </>
+              <ul>
+                {webhookTriggerErrors.map((str) => (
+                  <li key={str} style={{ color: 'red' }}>
+                    {str}
+                  </li>
+                ))}
+              </ul>
             ) : null}
-            {enabledFeatureWebhooks &&
-              enabledFeatureWebhooks.map((item, key) => (
-                <Fragment key={key}>
-                  <Badge>{item.displayName}</Badge>
-                  {key + 1 === enabledFeatureWebhooks.length ? (
-                    ''
-                  ) : (
-                    <span>,</span>
-                  )}
-                  {/* <span
-                    style={{ display: 'block' }}
-                    color={`primary-${selectedTheme}`}
-                  >
-                    {item.displayName}{' '}
-                    {key + 1 === featureWebhooks.length ? '' : ','}
-                  </span> */}
-                </Fragment>
-              ))}
+            {enabledFeatureWebhooks?.length
+              ? enabledFeatureWebhooks.map((item, key) => (
+                  <Fragment key={key}>
+                    <Badge>{item.displayName}</Badge>
+                    {key + 1 === enabledFeatureWebhooks.length ? (
+                      ''
+                    ) : (
+                      <span>,</span>
+                    )}
+                  </Fragment>
+                ))
+              : null}
           </ModalBody>
           <ModalFooter>
             <Button
@@ -175,7 +165,11 @@ const GluuCommitDialog = ({
               <i className='fa fa-check-circle me-2'></i>
               {t('actions.accept')}
             </Button>
-            <Button disabled={triggerWebhookInProgress} style={applicationStyle.buttonStyle} onClick={closeModal}>
+            <Button
+              disabled={triggerWebhookInProgress}
+              style={applicationStyle.buttonStyle}
+              onClick={closeModal}
+            >
               <i className='fa fa-remove me-2'></i>
               {t('actions.no')}
             </Button>
@@ -191,8 +185,10 @@ const GluuCommitDialog = ({
           <ModalHeader toggle={closeModal}>
             <i
               onClick={closeModal}
+              onKeyDown={() => {}}
               style={{ color: 'green' }}
               className='fa fa-2x fa-info fa-fw modal-icon mb-3'
+              role='img'
             ></i>
             {!label || label === ''
               ? t('messages.action_commit_question')
@@ -214,7 +210,7 @@ const GluuCommitDialog = ({
                     {Array.isArray(item.value) ? (
                       <>
                         {item.value.map((data, index) => (
-                          <Badge color={`primary-${selectedTheme}`} key={index}>
+                          <Badge color={`primary-${selectedTheme}`} key={String(data)}>
                             {String(data)}
                           </Badge>
                         ))}
