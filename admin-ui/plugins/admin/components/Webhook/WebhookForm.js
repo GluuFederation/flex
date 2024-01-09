@@ -147,7 +147,7 @@ const WebhookForm = () => {
   )
 
   useEffect(() => {
-    dispatch(getFeatures())
+    if (!features?.length) dispatch(getFeatures()) // cache features response using redux store
     if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/webhook')
 
     return function cleanup() {

@@ -21,6 +21,7 @@ import {
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
   triggerWebhook,
+  setWebhookTriggerErrors
 } from 'Plugins/admin/redux/features/WebhookSlice'
 
 const USER_MESSAGE = 'user_action_message'
@@ -34,7 +35,6 @@ const GluuCommitDialog = ({
   label,
   placeholderLabel,
   inputType,
-  isLoading,
   feature,
 }) => {
   const dispatch = useDispatch()
@@ -42,7 +42,6 @@ const GluuCommitDialog = ({
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [active, setActive] = useState(false)
-  const [loading, setLoading] = useState(isLoading)
   const [userMessage, setUserMessage] = useState('')
   const {
     featureWebhooks,
@@ -68,7 +67,6 @@ const GluuCommitDialog = ({
     if (formik) {
       formik.setFieldValue('action_message', userMessage)
     }
-    setLoading(true)
     onAccept(userMessage)
     setUserMessage('')
   }
@@ -124,8 +122,11 @@ const GluuCommitDialog = ({
           <ModalHeader toggle={closeModal}>
             <i
               onClick={closeModal}
+              onKeyDown={() => {}}
               style={{ color: 'green' }}
               className='fa fa-2x fa-info fa-fw modal-icon mb-3'
+              role='img'
+              aria-hidden='true'
             ></i>{' '}
             Webhook Trigger
           </ModalHeader>
@@ -145,7 +146,7 @@ const GluuCommitDialog = ({
             ) : null}
             {enabledFeatureWebhooks?.length
               ? enabledFeatureWebhooks.map((item, key) => (
-                  <Fragment key={key}>
+                  <Fragment key={item.displayName}>
                     <Badge>{item.displayName}</Badge>
                     {key + 1 === enabledFeatureWebhooks.length ? (
                       ''
@@ -189,6 +190,7 @@ const GluuCommitDialog = ({
               style={{ color: 'green' }}
               className='fa fa-2x fa-info fa-fw modal-icon mb-3'
               role='img'
+              aria-hidden='true'
             ></i>
             {!label || label === ''
               ? t('messages.action_commit_question')
@@ -267,4 +269,14 @@ const GluuCommitDialog = ({
 export default GluuCommitDialog
 GluuCommitDialog.propTypes = {
   feature: PropTypes.string,
+  operations: PropTypes.any,
+  handler: PropTypes.func,
+  modal: PropTypes.bool.isRequired,
+  onAccept: PropTypes.func,
+  subject: PropTypes.any,
+  name: PropTypes.string,
+  placeholderLabel: PropTypes.string,
+  inputType: PropTypes.string,
+  label: PropTypes.string,
+  formik: PropTypes.string
 }

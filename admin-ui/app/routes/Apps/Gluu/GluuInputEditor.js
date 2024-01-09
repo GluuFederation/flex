@@ -65,5 +65,15 @@ GluuInputEditor.propTypes = {
   errorMessage: PropTypes.string,
   theme: PropTypes.string,
   placeholder: PropTypes.string,
-  showError: PropTypes.bool
+  showError: PropTypes.bool,
+  label: PropTypes.string,
+  readOnly: PropTypes.bool,
+  doc_category: PropTypes.string,
+  rsize: PropTypes.number,
+  lsize: PropTypes.number,
+  required: PropTypes.bool,
+  formik: PropTypes.any,
+  value: PropTypes.any,
+  language: PropTypes.string,
+  name: PropTypes.string,
 }

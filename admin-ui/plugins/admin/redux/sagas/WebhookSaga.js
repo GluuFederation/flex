@@ -240,9 +240,11 @@ export function* triggerWebhook({ payload }) {
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.triggerWebhook, payload)
     const all_succeded = data?.body?.every((item) => item.success)
-    if (all_succeded) yield put(setWebhookModal(false)) 
-    else {
-      const errors = data?.body?.map((item) => item.responseMessage)
+    if (all_succeded) {
+      yield put(setWebhookModal(false)) 
+      yield put(triggerWebhookResponse())
+    } else {
+      const errors = data?.body?.map((item) => !item.success && item.responseMessage)?.filter((err) => err)
       yield put(setWebhookTriggerErrors(errors))
       yield put(triggerWebhookResponse('Something went wrong while triggering webhook.'))
     }    
