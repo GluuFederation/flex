@@ -31,7 +31,8 @@ function GluuTypeAhead({
   disabled,
   showError = false,
   errorMessage,
-  allowNew = true
+  allowNew = true,
+  isLoading
 }) {
   const { t } = useTranslation()
   return (
@@ -49,6 +50,7 @@ function GluuTypeAhead({
           ref={forwardRef}
           emptyLabel=""
           labelKey={name}
+          isLoading={isLoading}
           onChange={(selected) => {
             if (formik) {
               formik.setFieldValue(name, selected)
@@ -79,6 +81,7 @@ GluuTypeAhead.defaultProps = {
   rsize: 8,
   required: false,
   disabled: false,
+  isLoading: false
 }
 
 export default GluuTypeAhead

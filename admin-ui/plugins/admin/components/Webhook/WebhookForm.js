@@ -26,7 +26,7 @@ import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 const WebhookForm = () => {
   const { id } = useParams()
   const userAction = {}
-  const { selectedWebhook, features, webhookFeatures } = useSelector(
+  const { selectedWebhook, features, webhookFeatures, loadingFeatures } = useSelector(
     (state) => state.webhookReducer
   )
 
@@ -275,6 +275,7 @@ const WebhookForm = () => {
           lsize={4}
           rsize={8}
           allowNew={false}
+          isLoading={loadingFeatures}
         />
 
         <Row>

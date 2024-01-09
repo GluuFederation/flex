@@ -327,6 +327,7 @@ const InumDBServerTab = () => {
         modal={auditModal}
         onAccept={submitForm}
         formik={formik}
+        feature='jans_link_write'
       />
     </Form>
   )

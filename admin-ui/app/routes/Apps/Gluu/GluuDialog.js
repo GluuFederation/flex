@@ -107,6 +107,9 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }) =
             <i
               onClick={closeModal}
               style={{ color: 'green' }}
+              onKeyDown={() => {}}
+              role='img'
+              aria-hidden='true'
               className='fa fa-2x fa-info fa-fw modal-icon mb-3'
             ></i>{' '}
             Webhook Trigger

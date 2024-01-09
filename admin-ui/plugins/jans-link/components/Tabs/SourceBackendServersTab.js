@@ -134,6 +134,7 @@ const SourceBackendServersTab = () => {
         modal={modal}
         subject='openid connect client'
         onAccept={onDeletionConfirmed}
+        feature='jans_link_write'
       />
     </>
   )

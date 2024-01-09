@@ -204,6 +204,7 @@ const CustomerBackendKeyTab = () => {
         modal={modal}
         onAccept={submitForm}
         formik={formik}
+        feature='jans_link_write'
       />
     </Form>
   )
