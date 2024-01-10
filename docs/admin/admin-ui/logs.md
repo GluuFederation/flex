@@ -32,7 +32,7 @@ Within this configuration file, you can adjust various settings such as log leve
 The default log location for the Admin UI backend is:
 
 ```text
-/opt/jans/jetty/jans-config-api/logs
+/var/log/adminui
 ```
 
 It is also recommended to check the browser's console log and network tab for any failing requests, as this can provide additional information to diagnose and troubleshoot issues.
