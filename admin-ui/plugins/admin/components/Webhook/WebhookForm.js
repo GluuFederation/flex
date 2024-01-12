@@ -22,13 +22,13 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { WEBHOOK } from 'Utils/ApiResources'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 
 const WebhookForm = () => {
   const { id } = useParams()
   const userAction = {}
-  const { selectedWebhook, features, webhookFeatures, loadingFeatures } = useSelector(
-    (state) => state.webhookReducer
-  )
+  const { selectedWebhook, features, webhookFeatures, loadingFeatures } =
+    useSelector((state) => state.webhookReducer)
 
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -55,29 +55,11 @@ const WebhookForm = () => {
       }
     }
 
-    if (values.httpHeaders) {
-      try {
-        JSON.parse(values.httpHeaders)
-      } catch (error) {
-        faulty = true
-        formik.setFieldError('httpHeaders', t('messages.invalid_json_error'))
-      }
-    }
-
     return faulty
   }
 
   const getHttpHeaders = () => {
-    const headers = {}
-    if (selectedWebhook?.httpHeaders?.length) {
-      for (const httpHeaders of selectedWebhook.httpHeaders) {
-        headers[httpHeaders['key']] = httpHeaders['value']
-      }
-
-      return JSON.stringify(headers)
-    }
-
-    return ''
+    return selectedWebhook?.httpHeaders || []
   }
 
   const formik = useFormik({
@@ -89,7 +71,8 @@ const WebhookForm = () => {
       httpHeaders: getHttpHeaders(),
       jansEnabled: selectedWebhook?.jansEnabled || false,
       description: selectedWebhook?.description || '',
-      auiFeatureIds: webhookFeatures?.map((feature) => feature.auiFeatureId) || [],
+      auiFeatureIds:
+        webhookFeatures?.map((feature) => feature.auiFeatureId) || [],
     },
     onSubmit: (values) => {
       const faulty = validatePayload(values)
@@ -115,25 +98,24 @@ const WebhookForm = () => {
     (userMessage) => {
       toggle()
 
-      const httpHeaders = []
-
-      if (formik.values.httpHeaders) {
-        for (const httpHeader in JSON.parse(formik.values.httpHeaders)) {
-          httpHeaders.push({
-            key: httpHeader,
-            value: JSON.parse(formik.values.httpHeaders)[httpHeader],
-          })
-        }
-      }
+      const httpHeaders = formik.values.httpHeaders?.map((header) => {
+        return { key: header.key || header.source, value: header.destination || header.destination }
+      })
 
       const payload = {
         ...formik.values,
-        httpHeaders: httpHeaders,
+        httpHeaders: httpHeaders || [],
         httpRequestBody:
           formik.values.httpMethod === 'GET' ||
           formik.values.httpMethod === 'DELETE'
             ? ''
             : formik.values.httpRequestBody,
+      }
+
+      if (id) {
+        payload['webhookId'] = selectedWebhook.webhookId
+        payload['dn'] = selectedWebhook.webhookId
+        payload['baseDn'] = selectedWebhook.baseDn
       }
 
       buildPayload(userAction, userMessage, payload)
@@ -155,6 +137,17 @@ const WebhookForm = () => {
     }
   }, [saveOperationFlag, errorInSaveOperationFlag])
 
+  function getPropertiesConfig(entry, key) {
+    if (entry[key] && Array.isArray(entry[key])) {
+      return entry[key].map((e) => ({
+        source: e.key,
+        destination: e.value,
+      }))
+    } else {
+      return []
+    }
+  }
+
   return (
     <>
       <Form onSubmit={formik.handleSubmit}>
@@ -164,9 +157,11 @@ const WebhookForm = () => {
             formik={formik}
             value={formik.values?.displayName}
             lsize={4}
+            doc_entry='webhook_name'
             rsize={8}
             required
             name='displayName'
+            doc_category={WEBHOOK}
             errorMessage={formik.errors.displayName}
             showError={formik.errors.displayName && formik.touched.displayName}
           />
@@ -188,6 +183,8 @@ const WebhookForm = () => {
             label='fields.http_method'
             formik={formik}
             value={formik.values?.httpMethod}
+            doc_category={WEBHOOK}
+            doc_entry='http_method'
             values={[
               { value: 'GET', label: 'GET' },
               { value: 'POST', label: 'POST' },
@@ -207,28 +204,39 @@ const WebhookForm = () => {
             label='fields.description'
             formik={formik}
             value={formik.values?.description}
+            doc_category={WEBHOOK}
+            doc_entry='description'
             lsize={4}
             rsize={8}
             name='description'
           />
-
-          <Suspense fallback={<GluuSuspenseLoader />}>
-            <GluuInputEditor
-              name='httpHeaders'
-              language={'json'}
+          <FormGroup row>
+            <GluuLabel
+              doc_category={WEBHOOK}
+              doc_entry='http_headers'
+              required
               label='fields.http_headers'
-              lsize={4}
-              rsize={8}
-              theme='monokai'
-              formik={formik}
-              value={formik.values?.httpHeaders}
-              errorMessage={formik.errors.httpHeaders}
-              showError={
-                formik.errors.httpHeaders && formik.touched.httpHeaders
-              }
-              placeholder=''
+              size={4}
             />
-          </Suspense>
+            <Col sm={8}>
+              <GluuProperties
+                compName='httpHeaders'
+                isInputLables={true}
+                formik={formik}
+                multiProperties
+                inputSm={10}
+                destinationPlaceholder={'placeholders.enter_key_value'}
+                sourcePlaceholder={'placeholders.enter_header_key'}
+                options={getPropertiesConfig(selectedWebhook, 'httpHeaders')}
+                isKeys={false}
+                buttonText='actions.add_header'
+                showError={
+                  formik.errors.httpHeaders && formik.touched.httpHeaders
+                }
+                errorMessage={formik.errors.httpHeaders}
+              />
+            </Col>
+          </FormGroup>
 
           {formik.values.httpMethod &&
             formik.values.httpMethod !== 'GET' &&
@@ -241,6 +249,8 @@ const WebhookForm = () => {
                   lsize={4}
                   rsize={8}
                   theme='monokai'
+                  doc_category={WEBHOOK}
+                  doc_entry='http_request_body'
                   formik={formik}
                   value={formik.values?.httpRequestBody}
                   errorMessage={formik.errors.httpRequestBody}
@@ -255,7 +265,12 @@ const WebhookForm = () => {
         </Col>
 
         <FormGroup row>
-          <GluuLabel label='options.enabled' size={4} />
+          <GluuLabel
+            label='options.enabled'
+            size={4}
+            doc_category={WEBHOOK}
+            doc_entry='enabled'
+          />
           <Col sm={1}>
             <Toggle
               id='jansEnabled'
@@ -273,6 +288,8 @@ const WebhookForm = () => {
           value={formik.values.auiFeatureIds}
           options={features?.map((feature) => feature.auiFeatureId) || []}
           lsize={4}
+          doc_category={WEBHOOK}
+          doc_entry='aui_feature_ids'
           rsize={8}
           allowNew={false}
           isLoading={loadingFeatures}

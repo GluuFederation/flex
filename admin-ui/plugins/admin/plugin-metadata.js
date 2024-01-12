@@ -78,7 +78,7 @@ const pluginMetadata = {
           permission: ACR_READ,
         },
         {
-          title: 'menus.webhook',
+          title: 'menus.webhooks',
           path: PLUGIN_BASE_APTH + '/webhook',
           permission: WEBHOOK_READ,
         },

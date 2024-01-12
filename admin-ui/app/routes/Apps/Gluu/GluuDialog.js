@@ -34,8 +34,10 @@ const GluuDialog = ({
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  const { loadingModalState, webhookTriggerModal, onCloseModal } =
-    useWebhookDialogAction({ feature })
+  const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
+    feature,
+    modal,
+  })
 
   useEffect(() => {
     if (userMessage.length >= 10) {
@@ -58,13 +60,9 @@ const GluuDialog = ({
     return <></>
   }
 
-  if (loadingWebhooks && modal) {
-    return loadingModalState
-  }
-
   return (
     <>
-      {webhookModal ? (
+      {webhookModal || loadingWebhooks ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal
@@ -114,7 +112,6 @@ const GluuDialog = ({
             )}{' '}
             <Button
               color={`primary-${selectedTheme}`}
-              style={applicationStyle.buttonStyle}
               onClick={closeModal}
             >
               {t('actions.no')}

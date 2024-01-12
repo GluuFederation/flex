@@ -16,7 +16,8 @@ function GluuInputRow({
   disabled,
   showError = false,
   errorMessage = '',
-  handleChange = null
+  handleChange = null,
+  doc_entry
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -29,7 +30,7 @@ function GluuInputRow({
   }
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} required={required} doc_entry={name} />
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} required={required} doc_entry={doc_entry || name} />
       <Col sm={rsize} style={{ position: 'relative' }}>
         <Input
           id={name}
@@ -65,6 +66,7 @@ GluuInputRow.defaultProps = {
   rsize: 9,
   required: false,
   disabled: false,
+  doc_entry: undefined
 }
 
 export default GluuInputRow

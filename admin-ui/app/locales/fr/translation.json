@@ -30,7 +30,7 @@
   "menus": {
     "adminui": "Administratrice",
     "config-api": "Config-API",
-    "webhook": "Webhook",
+    "webhooks": "Webhooks",
     "saml": "SAML",
     "idp_config": "Configurations de l'IDP",
     "trust_relationships": "Relations de confiance",
@@ -90,6 +90,8 @@
     "add_ldap_configuration": "Ajouter une configuration LDAP",
     "add_mapping": "Ajouter un Mapping",
     "add_property": "Ajouter une propriété",
+    "reject": "Rejeter",
+    "add_header": "Ajouter un en-tête",
     "apply": "Appliquer",
     "back_home": "Retour à la maison",
     "cancel": "Annuler",
@@ -126,7 +128,7 @@
     "tag": "Étiqueter",
     "issuer": "Émetteur",
     "import_file": "Importer un fichier",
-    "aui_feature_ids": "Identifiants de fonctionnalités",
+    "aui_feature_ids": "Fonctionnalités de l'interface utilisateur d'administration",
     "introspection_signed_response_alg": "Algorithme de signature de réponse d'inspection",
     "introspection_encrypted_response_alg": "Algorithme de chiffrement de réponse d'inspection",
     "introspection_encrypted_response_enc": "Algorithme de chiffrement de réponse d'inspection",
@@ -486,7 +488,10 @@
     "add_configuration": "Ajouter une configuration",
     "new_role": "Nouveau rôle",
     "add_webhook": "Ajouter un Webhook",
+    "webhook_execution_information": "Informations sur l'exécution du webhook",
+    "webhook_dialog_dec": "Dans le cadre du processus de soumission, le système déclenchera automatiquement les webhooks associés suivants pour effectuer des tâches de traitement supplémentaires.",
     "add_idp": "Ajouter un IDP SAML",
+    "request_body_error": "Le corps de la requête HTTP est requis pour la méthode HTTP sélectionnée",
     "view_idp_details": "Voir les détails de l'IDP",
     "edit_idp": "Modifier un IDP SAML",
     "import_metadata_file": "Veuillez importer le fichier de métadonnées.",
@@ -563,6 +568,8 @@
     "client_name": "Entrez le nom du client",
     "description": "Entrer la description",
     "display_name": "Entrez le nom d'affichage",
+    "enter_header_key": "Entrer la clé d'en-tête",
+    "enter_key_value": "Entrer la valeur de la clé",
     "enable_ssl_communication": "Activer la communication SSL entre le serveur d'authentification et le serveur LDAP",
     "enter_property_key": "Entrez la clé de propriété",
     "enter_property_value": "Entrez la valeur de la propriété",
@@ -676,7 +683,14 @@
   },
   "documentation": {
     "webhook": {
-      "url": "Définir des variables en utilisant {}"
+      "url": "Définir des variables en utilisant {}",
+      "enabled": "Basculer pour activer ou désactiver la fonctionnalité du webhook.",
+      "webhook_name": "Identifiant unique pour le webhook.",
+      "http_method": "Le type de requête HTTP utilisé pour la communication (par exemple, POST, PUT).",
+      "description": "Informations brèves expliquant le but ou la fonctionnalité du webhook.",
+      "http_headers": "Informations personnalisées incluses dans les en-têtes de la requête HTTP.",
+      "http_request_body": "Données envoyées dans la charge utile de la requête HTTP pour transmettre des informations.",
+      "aui_feature_ids": "Mapping des fonctionnalités spécifiques de l'interface d'administration vers le webhook."
     },
     "couchbase": {
       "configId": "Nom unique de la configuration.",

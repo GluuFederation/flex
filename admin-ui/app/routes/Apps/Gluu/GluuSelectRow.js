@@ -16,12 +16,13 @@ function GluuSelectRow({
   handleChange,
   required,
   showError = false,
-  errorMessage
+  errorMessage,
+  doc_entry
 }) {
   const { t } = useTranslation()
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name} required={required}/>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} required={required}/>
       <Col sm={rsize}>
         <InputGroup>
           <CustomInput
@@ -59,6 +60,7 @@ GluuSelectRow.defaultProps = {
   lsize: 3,
   rsize: 9,
   disabled: false,
+  doc_entry: undefined
 }
 
 export default GluuSelectRow

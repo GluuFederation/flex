@@ -39,8 +39,10 @@ const GluuCommitDialog = ({
     (state) => state.webhookReducer
   )
 
-  const { loadingModalState, webhookTriggerModal, onCloseModal } =
-    useWebhookDialogAction({ feature })
+  const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
+    feature,
+    modal,
+  })
 
   useEffect(() => {
     if (userMessage.length >= 10) {
@@ -67,13 +69,9 @@ const GluuCommitDialog = ({
     return <></>
   }
 
-  if (loadingWebhooks && modal) {
-    return loadingModalState
-  }
-
   return (
     <>
-      {webhookModal ? (
+      {webhookModal || loadingWebhooks ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal
@@ -157,7 +155,7 @@ const GluuCommitDialog = ({
                 {t('actions.accept')}
               </Button>
             )}{' '}
-            <Button style={applicationStyle.buttonStyle} onClick={closeModal}>
+            <Button onClick={closeModal}>
               <i className='fa fa-remove me-2'></i>
               {t('actions.no')}
             </Button>

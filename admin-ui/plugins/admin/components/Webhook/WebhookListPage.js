@@ -41,7 +41,7 @@ const WebhookListPage = () => {
   const theme = useContext(ThemeContext)
   const themeColors = getThemeColor(theme.state.theme)
   const bgThemeColor = { background: themeColors.background }
-  SetTitle(t('titles.webhook'))
+  SetTitle(t('titles.webhooks'))
 
   const [modal, setModal] = useState(false)
   const [deleteData, setDeleteData] = useState(null)

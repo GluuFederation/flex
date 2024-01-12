@@ -22,7 +22,8 @@ function GluuInputEditor({
   showError = false,
   errorMessage,
   theme = 'xcode',
-  placeholder = 'Write your custom script here'
+  placeholder = 'Write your custom script here',
+  doc_entry
 }) {
   const handleChange = (scripts) => {
     formik.handleChange(name)(scripts)
@@ -32,7 +33,7 @@ function GluuInputEditor({
     <FormGroup row>
       <GluuLabel
         doc_category={doc_category}
-        doc_entry={name}
+        doc_entry={doc_entry || name}
         label={label}
         size={lsize}
         required={required}
@@ -76,4 +77,5 @@ GluuInputEditor.propTypes = {
   value: PropTypes.any,
   language: PropTypes.string,
   name: PropTypes.string,
+  doc_entry: PropTypes.string
 }

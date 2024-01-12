@@ -95,8 +95,8 @@ const webhookSlice = createSlice({
       state.loadingWebhooks = true
     },
     getWebhooksByFeatureIdResponse: (state, action) => {
-      state.loadingWebhooks = false
       state.featureWebhooks = action.payload
+      state.loadingWebhooks = false
     },
     setWebhookModal: (state, action) => {
       state.webhookModal = action.payload

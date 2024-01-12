@@ -40,7 +40,7 @@ export function* getWebhooks({ payload }) {
   const audit = yield* initAudit()
   try {
     payload = payload || { action: {} }
-    addAdditionalData(audit, FETCH, 'webhook', payload)
+    addAdditionalData(audit, FETCH, 'webhooks', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getAllWebhooks, payload.action)
     yield put(getWebhookResponse({ data }))
@@ -66,7 +66,7 @@ export function* getWebhooks({ payload }) {
 export function* createWebhook({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, CREATE, 'webhook', payload)
+    addAdditionalData(audit, CREATE, 'webhooks', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(
       webhookApi.createWebhook,
@@ -95,7 +95,7 @@ export function* createWebhook({ payload }) {
 export function* deleteWebhook({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, DELETION, 'webhook', payload)
+    addAdditionalData(audit, DELETION, 'webhooks', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(
       webhookApi.deleteWebhookByInum,
@@ -125,7 +125,7 @@ export function* deleteWebhook({ payload }) {
 export function* updateWebhook({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, 'webhook', payload)
+    addAdditionalData(audit, UPDATE, 'webhooks', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(
       webhookApi.updateWebhook,
@@ -155,7 +155,7 @@ export function* updateWebhook({ payload }) {
 export function* getFeatures() {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, 'aui-features', {})
+    addAdditionalData(audit, FETCH, 'webhooks', {})
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getAllFeatures)
     yield put(getFeaturesResponse(data?.body || []))
@@ -182,7 +182,7 @@ export function* getFeatures() {
 export function* getFeaturesByWebhookId({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, 'aui-features', payload)
+    addAdditionalData(audit, FETCH, 'webhooks', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getFeaturesByWebhookId, payload)
     yield put(getFeaturesByWebhookIdResponse(data?.body || []))
@@ -209,9 +209,12 @@ export function* getFeaturesByWebhookId({ payload }) {
 export function* getWebhooksByFeatureId({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, 'aui-features', payload)
+    addAdditionalData(audit, FETCH, `webhooks-${payload}`, payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getWebhooksByFeatureId, payload)
+    if (data?.body?.length) {
+      yield put(setWebhookModal(true))
+    }
     yield put(getWebhooksByFeatureIdResponse(data?.body || []))
     yield call(postUserAction, audit)
     return data
@@ -234,11 +237,11 @@ export function* getWebhooksByFeatureId({ payload }) {
 }
 
 export function* triggerWebhook({ payload }) {
-  const audit = yield* initAudit()
+    const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, 'aui-features', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.triggerWebhook, payload)
+    addAdditionalData(audit, FETCH, `webhooks-${payload}-trigger`, { action: { action_data: data?.body || [] } })
     const all_succeded = data?.body?.every((item) => item.success)
     if (all_succeded) {
       yield put(setWebhookModal(false)) 
@@ -265,6 +268,8 @@ export function* triggerWebhook({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    addAdditionalData(audit, FETCH, `webhooks-${payload}-trigger`, { action: { action_data: { error: e, success: false } } })
+    yield call(postUserAction, audit)
     return e
   }
 }
