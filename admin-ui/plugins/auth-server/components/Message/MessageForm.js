@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next'
 
 const POSTGRES = 'POSTGRES'
 const REDIS = 'REDIS'
-const NULL = 'NULL'
+const DISABLED = 'DISABLED'
 
 const MessageForm = () => {
   const { t } = useTranslation()
@@ -54,14 +54,15 @@ const MessageForm = () => {
     if (config.messageProviderType !== formik.values.messageProviderType) {
       // save provider type
       const userAction = {}
-      buildPayload(userAction, userMessage, [
+      const postBody = {}
+      postBody['requestBody'] = [
         {
           op: 'replace',
           path: 'messageProviderType',
           value: formik.values.messageProviderType,
         },
-      ])
-
+      ]
+      buildPayload(userAction, userMessage, postBody)
       dispatch(editMessageConfig(userAction))
     }
 
@@ -91,7 +92,7 @@ const MessageForm = () => {
             formik={formik}
             value={formik.values.messageProviderType}
             values={[
-              { value: NULL, label: NULL },
+              { value: DISABLED, label: DISABLED },
               { value: REDIS, label: REDIS },
               { value: POSTGRES, label: POSTGRES },
             ]}

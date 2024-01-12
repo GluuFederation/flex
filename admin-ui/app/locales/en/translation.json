@@ -465,7 +465,7 @@
       "permissions": "Permissions",
       "mapping": "Mapping"
     },
-    "message": "Message",
+    "lock": "Lock",
     "cache": "Cache",
     "clients": "Clients",
     "configuration": "Configuration",

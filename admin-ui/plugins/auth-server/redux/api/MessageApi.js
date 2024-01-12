@@ -18,17 +18,11 @@ export default class MessageApi {
     })
   }
 
-  patchConfigMessage = ({ data, token }) => {
+  patchConfigMessage = (data) => {
     return new Promise((resolve, reject) => {
-      axios
-        .patch('/api/v1/config/message', data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json-patch+json',
-          },
-        })
-        .then((result) => handleResponse(undefined, reject, resolve, result))
-        .catch((error) => handleResponse(error, reject, resolve, undefined))
+      this.api.patchConfigMessage(data, (error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
     })
   }
 

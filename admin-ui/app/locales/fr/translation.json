@@ -35,7 +35,7 @@
       "permissions": "Autorisations",
       "mapping": "Mapping"
     },
-    "message": "Message",
+    "lock": "Verrouillage",
     "cache": "Cacher",
     "clients": "Clientes",
     "configuration": "Configuration",

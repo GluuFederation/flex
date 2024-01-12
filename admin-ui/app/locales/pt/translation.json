@@ -35,7 +35,7 @@
       "permissions": "Permissões",
       "mapping": "Mapeamento"
     },
-    "message": "Mensagem",
+    "lock": "Trancar",
     "cache": "Cache",
     "clients": "Clientes",
     "configuration": "Configuração",

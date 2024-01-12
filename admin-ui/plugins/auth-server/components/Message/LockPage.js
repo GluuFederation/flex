@@ -8,11 +8,11 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 
-const MessagePage = () => {
+const LockPage = () => {
   const { loading, savingConfig } = useSelector((state) => state.messageReducer)
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  SetTitle(t('menus.message'))
+  SetTitle(t('menus.lock'))
 
   useEffect(() => {
     dispatch(getConfigMessage())
@@ -29,4 +29,4 @@ const MessagePage = () => {
   )
 }
 
-export default MessagePage
+export default LockPage
