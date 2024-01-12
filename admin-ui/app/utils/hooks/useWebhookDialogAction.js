@@ -60,7 +60,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   const handleAcceptWebhookTrigger = () => {
     dispatch(triggerWebhook(feature))
   }
-
+  
   const webhookTriggerModal = ({ closeModal }) => {
     return (
       <Modal
@@ -97,9 +97,9 @@ const useWebhookDialogAction = ({ feature, modal }) => {
           <>
             <ModalBody>
               <Box flex flexDirection='column' px={2}>
-                <Typography variant='subtitle1' fontWeight={600}>
+                <p style={{ fontWeight: 600 }}>
                   {t('messages.webhook_dialog_dec')}
-                </Typography>
+                </p>
                 {triggerWebhookMessage ? <Box component='div' my={2} style={{ color: 'red' }}>{triggerWebhookMessage}</Box> : null}
                 {webhookTriggerErrors.length ? (
                   <ul>
