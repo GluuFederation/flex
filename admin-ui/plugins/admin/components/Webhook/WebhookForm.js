@@ -158,6 +158,19 @@ const WebhookForm = () => {
     <>
       <Form onSubmit={formik.handleSubmit}>
         <Col sm={12}>
+          {id ? (
+            <GluuInputRow
+              label='fields.webhook_id'
+              formik={formik}
+              value={selectedWebhook?.webhookId}
+              lsize={4}
+              doc_entry='webhook_id'
+              rsize={8}
+              doc_category={WEBHOOK}
+              name='webhookId'
+              disabled={true}
+            />
+          ) : null}
           <GluuInputRow
             label='fields.webhook_name'
             formik={formik}

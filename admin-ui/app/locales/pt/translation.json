@@ -130,6 +130,7 @@
     "aui_feature_ids": "Recursos da interface do administrador",
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
+    "webhook_id": "ID do webhook",
     "http_request_body": "Corpo da solicitação HTTP",
     "webhook_name": "Nome do Webhook",
     "webhook_url": "URL",
@@ -680,14 +681,15 @@
   },
   "documentation": {
     "webhook": {
-      "url": "Defina variáveis usando {}",
+      "url": "URL do webhook.",
       "enabled": "Ative ou desative a funcionalidade do webhook.",
-      "webhook_name": "Identificador único para o webhook.",
-      "http_method": "O tipo de solicitação HTTP usado para comunicação (por exemplo, POST, PUT).",
-      "description": "Informações breves explicando o propósito ou funcionalidade do webhook.",
+      "webhook_name": "Nome do webhook.",
+      "webhook_id": "Identificador único para o webhook.",
+      "http_method": "O tipo de solicitação HTTP usado para comunicação.",
+      "description": "Informações breves explicando o propósito ou a funcionalidade do webhook.",
       "http_headers": "Informações personalizadas incluídas nos cabeçalhos da solicitação HTTP.",
       "http_request_body": "Dados enviados na carga útil da solicitação HTTP para transmitir informações.",
-      "aui_feature_ids": "Mapeando recursos específicos da interface de administração para o webhook."
+      "aui_feature_ids": "Mapeamento de recursos específicos da interface de administração para o webhook."
     },
     "openid_client": {
       "displayName": "Nome do cliente a ser apresentado ao usuário final.",

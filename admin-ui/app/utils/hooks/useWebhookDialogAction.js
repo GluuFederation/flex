@@ -116,14 +116,14 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ fontSize: 16, fontWeight: 600 , width: '50%'}}>
-                        <b>{t('fields.webhook_name')}</b>
-                      </TableCell>
                       <TableCell
                         sx={{ fontSize: 16, fontWeight: 600, width: '50%' }}
                         align='left'
                       >
-                        <b>{t('fields.webhook_url')}</b>
+                        <b>{t('fields.webhook_name')}</b>
+                      </TableCell>
+                      <TableCell sx={{ fontSize: 16, fontWeight: 600 , width: '50%'}}>
+                        <b>{t('fields.webhook_id')}</b>
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -146,7 +146,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                           {item.displayName}
                         </TableCell>
                         <TableCell sx={{ fontSize: 16 }} align='left'>
-                          {item.url}
+                          {item.webhookId}
                         </TableCell>
                       </TableRow>
                     ))}

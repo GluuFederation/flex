@@ -84,6 +84,7 @@
     "http_request_body": "Request Body",
     "webhook_name": "Webhook Name",
     "webhook_url": "URL",
+    "webhook_id": "Webhook Id",
     "http_method": "HTTP Method",
     "url": "URL",
     "http_headers": "Webhook Headers",
@@ -784,10 +785,11 @@
   },
   "documentation": {
     "webhook": {
-      "url": "Set variables using {}",
+      "url": "Webhook URL.",
       "enabled": "Toggle to activate or deactivate the webhook functionality.",
-      "webhook_name": "Unique identifier for the webhook.",
-      "http_method": "The type of HTTP request used for communication (e.g., POST, PUT).",
+      "webhook_name": "Name of the webhook.",
+      "webhook_id": "Unique identifier for the webhook.",
+      "http_method": "The type of HTTP request used for communication.",
       "description": "Brief information explaining the purpose or functionality of the webhook.",
       "http_headers": "Custom information included in the HTTP request headers.",
       "http_request_body": "Data sent in the payload of the HTTP request to convey information.",

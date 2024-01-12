@@ -129,6 +129,7 @@
     "issuer": "Émetteur",
     "import_file": "Importer un fichier",
     "aui_feature_ids": "Fonctionnalités de l'interface utilisateur d'administration",
+    "webhook_id": "Identifiant du webhook",
     "introspection_signed_response_alg": "Algorithme de signature de réponse d'inspection",
     "introspection_encrypted_response_alg": "Algorithme de chiffrement de réponse d'inspection",
     "introspection_encrypted_response_enc": "Algorithme de chiffrement de réponse d'inspection",
@@ -683,14 +684,15 @@
   },
   "documentation": {
     "webhook": {
-      "url": "Définir des variables en utilisant {}",
-      "enabled": "Basculer pour activer ou désactiver la fonctionnalité du webhook.",
-      "webhook_name": "Identifiant unique pour le webhook.",
-      "http_method": "Le type de requête HTTP utilisé pour la communication (par exemple, POST, PUT).",
-      "description": "Informations brèves expliquant le but ou la fonctionnalité du webhook.",
+      "url": "URL du webhook.",
+      "enabled": "Basculez pour activer ou désactiver la fonctionnalité du webhook.",
+      "webhook_name": "Nom du webhook.",
+      "webhook_id": "Identifiant unique du webhook.",
+      "http_method": "Le type de requête HTTP utilisé pour la communication.",
+      "description": "Informations succinctes expliquant le but ou la fonctionnalité du webhook.",
       "http_headers": "Informations personnalisées incluses dans les en-têtes de la requête HTTP.",
       "http_request_body": "Données envoyées dans la charge utile de la requête HTTP pour transmettre des informations.",
-      "aui_feature_ids": "Mapping des fonctionnalités spécifiques de l'interface d'administration vers le webhook."
+      "aui_feature_ids": "Association d'identifiants de fonctionnalités spécifiques de l'interface d'administration au webhook."
     },
     "couchbase": {
       "configId": "Nom unique de la configuration.",
