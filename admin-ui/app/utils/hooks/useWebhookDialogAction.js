@@ -11,7 +11,6 @@ import {
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import PropTypes from 'prop-types'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { Typography } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
@@ -83,7 +82,6 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 onClick={closeModal}
                 onKeyDown={() => {}}
                 style={{ color: 'green' }}
-                New
                 code
                 className='fa fa-2x fa-info fa-fw modal-icon mb-3'
                 role='img'

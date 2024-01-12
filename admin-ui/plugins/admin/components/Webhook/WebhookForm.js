@@ -89,7 +89,7 @@ const WebhookForm = () => {
       url: Yup.string().required(t('messages.url_error')),
       httpRequestBody: Yup.string().when('httpMethod', {
         is: (value) => {
-          return value === 'GET' || value === 'DELETE' ? false : true
+          return !(value === 'GET' || value === 'DELETE')
         },
         then: () => Yup.string().required(t('messages.request_body_error')),
       }),

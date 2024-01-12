@@ -2,10 +2,10 @@ import React from 'react'
 import { FormGroup, Col } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
-import GluuTooltip from './GluuTooltip'
 import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 
 const theme = createTheme({
   typography: {
@@ -83,5 +83,23 @@ GluuTypeAhead.defaultProps = {
   disabled: false,
   isLoading: false
 }
-
+GluuTypeAhead.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.any,
+  options: PropTypes.array,
+  formik: PropTypes.object,
+  required: PropTypes.bool,
+  doc_category: PropTypes.string,
+  doc_entry: PropTypes.any,
+  forwardRef: PropTypes.object,
+  onChange: PropTypes.func,
+  lsize: PropTypes.number,
+  rsize: PropTypes.number,
+  disabled: PropTypes.bool,
+  showError: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  allowNew: PropTypes.bool,
+  isLoading: PropTypes.bool,
+};
 export default GluuTypeAhead
