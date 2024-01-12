@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { Col, FormGroup, Input } from 'Components'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import GluuLabel from './GluuLabel'
-import GluuTooltip from './GluuTooltip'
+import PropTypes from 'prop-types';
+
 function GluuInputRow({
   label,
   name,
@@ -70,3 +71,20 @@ GluuInputRow.defaultProps = {
 }
 
 export default GluuInputRow
+
+GluuInputRow.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  type: PropTypes.string,
+  value: PropTypes.any,
+  formik: PropTypes.object,
+  required: PropTypes.bool,
+  lsize: PropTypes.number,
+  rsize: PropTypes.number,
+  doc_category: PropTypes.string,
+  disabled: PropTypes.bool,
+  showError: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  handleChange: PropTypes.func,
+  doc_entry: PropTypes.string,
+};

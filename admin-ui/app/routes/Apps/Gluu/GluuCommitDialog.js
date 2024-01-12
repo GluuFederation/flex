@@ -11,7 +11,6 @@ import {
   ModalFooter,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from './styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'

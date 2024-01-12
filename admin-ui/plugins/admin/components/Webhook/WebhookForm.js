@@ -87,6 +87,12 @@ const WebhookForm = () => {
       httpMethod: Yup.string().required(t('messages.http_method_error')),
       displayName: Yup.string().required(t('messages.display_name_error')),
       url: Yup.string().required(t('messages.url_error')),
+      httpRequestBody: Yup.string().when('httpMethod', {
+        is: (value) => {
+          return value === 'GET' || value === 'DELETE' ? false : true
+        },
+        then: () => Yup.string().required(t('messages.request_body_error')),
+      }),
     }),
   })
 
@@ -99,7 +105,7 @@ const WebhookForm = () => {
       toggle()
 
       const httpHeaders = formik.values.httpHeaders?.map((header) => {
-        return { key: header.key || header.source, value: header.destination || header.destination }
+        return { key: header.key || header.source, value: header.value || header.destination }
       })
 
       const payload = {
@@ -214,7 +220,6 @@ const WebhookForm = () => {
             <GluuLabel
               doc_category={WEBHOOK}
               doc_entry='http_headers'
-              required
               label='fields.http_headers'
               size={4}
             />
@@ -247,6 +252,7 @@ const WebhookForm = () => {
                   language={'json'}
                   label='fields.http_request_body'
                   lsize={4}
+                  required
                   rsize={8}
                   theme='monokai'
                   doc_category={WEBHOOK}

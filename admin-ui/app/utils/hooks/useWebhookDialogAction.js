@@ -1,19 +1,13 @@
 import React, { useCallback, useContext, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  Button,
-  Modal,
-  Badge,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
   getWebhooksByFeatureId,
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
   triggerWebhook,
   setWebhookTriggerErrors,
+  triggerWebhookResponse
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import PropTypes from 'prop-types'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -75,6 +69,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
         toggle={() => {
           if (!loadingWebhooks) {
             closeModal()
+            dispatch(triggerWebhookResponse(''))
           }
         }}
         className='modal-outline-primary'
@@ -105,7 +100,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 <Typography variant='subtitle1' fontWeight={600}>
                   {t('messages.webhook_dialog_dec')}
                 </Typography>
-                <div style={{ color: 'red' }}>{triggerWebhookMessage}</div>
+                {triggerWebhookMessage ? <Box component='div' my={2} style={{ color: 'red' }}>{triggerWebhookMessage}</Box> : null}
                 {webhookTriggerErrors.length ? (
                   <ul>
                     {webhookTriggerErrors.map((str) => (
@@ -117,47 +112,48 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 ) : null}
               </Box>
               {enabledFeatureWebhooks?.length ? (
-                <>
-                  <Table sx={{ minWidth: 650, marginTop: '20px' }} aria-label='webhook table'>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontSize: 16, fontWeight: 600 }}>
-                          {t('fields.webhook_name')}
-                        </TableCell>
+                <Table
+                  sx={{ minWidth: 650, marginTop: '20px' }}
+                  aria-label='webhook table'
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontSize: 16, fontWeight: 600 , width: '50%'}}>
+                        <b>{t('fields.webhook_name')}</b>
+                      </TableCell>
+                      <TableCell
+                        sx={{ fontSize: 16, fontWeight: 600, width: '50%' }}
+                        align='left'
+                      >
+                        <b>{t('fields.webhook_url')}</b>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {enabledFeatureWebhooks.map((item) => (
+                      <TableRow
+                        key={item.displayName + item.url}
+                        sx={{
+                          '&:last-child td, &:last-child th': {
+                            border: 0,
+                          },
+                          fontSize: 14,
+                        }}
+                      >
                         <TableCell
-                          sx={{ fontSize: 16, fontWeight: 600 }}
-                          align='right'
+                          sx={{ fontSize: 14 }}
+                          component='th'
+                          scope='row'
                         >
-                          {t('fields.webhook_url')}
+                          {item.displayName}
+                        </TableCell>
+                        <TableCell sx={{ fontSize: 16 }} align='left'>
+                          {item.url}
                         </TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {enabledFeatureWebhooks.map((item) => (
-                        <TableRow
-                          key={item.displayName + item.url}
-                          sx={{
-                            '&:last-child td, &:last-child th': {
-                              border: 0,
-                            },
-                            fontSize: 14,
-                          }}
-                        >
-                          <TableCell
-                            sx={{ fontSize: 14 }}
-                            component='th'
-                            scope='row'
-                          >
-                            {item.displayName}
-                          </TableCell>
-                          <TableCell sx={{ fontSize: 16 }} align='right'>
-                            {item.url}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </>
+                    ))}
+                  </TableBody>
+                </Table>
               ) : null}
             </ModalBody>
             <ModalFooter>
