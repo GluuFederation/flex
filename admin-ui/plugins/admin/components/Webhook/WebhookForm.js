@@ -29,6 +29,9 @@ const WebhookForm = () => {
   const userAction = {}
   const { selectedWebhook, features, webhookFeatures, loadingFeatures } =
     useSelector((state) => state.webhookReducer)
+  const [selectedFeatures, setSelectedFeatures] = useState(
+    webhookFeatures || []
+  )
 
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -64,15 +67,13 @@ const WebhookForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      httpRequestBody: selectedWebhook?.httpRequestBody || '',
+      httpRequestBody: selectedWebhook?.httpRequestBody ? JSON.stringify(selectedWebhook.httpRequestBody, null, 2) : '',
       httpMethod: selectedWebhook?.httpMethod || '',
       url: selectedWebhook?.url || '',
       displayName: selectedWebhook?.displayName || '',
       httpHeaders: getHttpHeaders(),
       jansEnabled: selectedWebhook?.jansEnabled || false,
       description: selectedWebhook?.description || '',
-      auiFeatureIds:
-        webhookFeatures?.map((feature) => feature.auiFeatureId) || [],
     },
     onSubmit: (values) => {
       const faulty = validatePayload(values)
@@ -105,7 +106,10 @@ const WebhookForm = () => {
       toggle()
 
       const httpHeaders = formik.values.httpHeaders?.map((header) => {
-        return { key: header.key || header.source, value: header.value || header.destination }
+        return {
+          key: header.key || header.source,
+          value: header.value || header.destination,
+        }
       })
 
       const payload = {
@@ -115,7 +119,9 @@ const WebhookForm = () => {
           formik.values.httpMethod === 'GET' ||
           formik.values.httpMethod === 'DELETE'
             ? ''
-            : formik.values.httpRequestBody,
+            : JSON.parse(formik.values.httpRequestBody),
+        auiFeatureIds:
+          selectedFeatures.map((feature) => feature.auiFeatureId) || [],
       }
 
       if (id) {
@@ -301,11 +307,13 @@ const WebhookForm = () => {
         </FormGroup>
 
         <GluuTypeAhead
-          name='auiFeatureIds'
+          name={(lookuplist) => `${lookuplist.displayName}`}
           label='fields.aui_feature_ids'
-          formik={formik}
-          value={formik.values.auiFeatureIds}
-          options={features?.map((feature) => feature.auiFeatureId) || []}
+          value={selectedFeatures}
+          options={features}
+          onChange={(options) => {
+            setSelectedFeatures(options)
+          }}
           lsize={4}
           doc_category={WEBHOOK}
           doc_entry='aui_feature_ids'
