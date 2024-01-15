@@ -113,3 +113,7 @@ This is a line graph showing month-wise active users under a selected date range
 
 ![image](../../assets/admin-ui/mau.png)
 
+## Webhooks
+
+Webhooks are a mechanism for automating workflows by allowing external systems to be notified of specific events. Follow this [tutorial](./webhooks.md) for more details.
+
