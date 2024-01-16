@@ -115,5 +115,5 @@ This is a line graph showing month-wise active users under a selected date range
 
 ## Webhooks
 
-Webhooks are a mechanism for automating workflows by allowing external systems to be notified of specific events. Follow this [tutorial](./webhooks.md) for more details.
+Webhooks can be created and mapped to various Admin UI features to execute custom business logic when events associated with those features occur. Follow this [tutorial](./webhooks.md) for more details.
 

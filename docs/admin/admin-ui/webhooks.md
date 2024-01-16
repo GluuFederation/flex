@@ -54,6 +54,6 @@ The webhooks can be mapped with one or more Admin UI feature(s) using the [webho
 |Users|Add/Edit|https://jans.io/oauth/config/user.write|
 |Users|Delete|https://jans.io/oauth/config/user.delete|
 
-When the feature action is performed (e.g. submitting the "create new user" form), the Admin UI displays the consent dialog with a list of webhooks that will be triggered upon the successful execution of the event. If the user clicks on the Accept button, all the mapped and enabled webhooks will be triggered during the event execution.      
+When the feature action is performed (e.g. submitting the "create new user" form), the Admin UI displays the consent dialog with a list of webhooks that will be triggered upon the successful execution of the event. If the user clicks on the Accept button, all the enabled webhooks will be triggered during the event execution. The Admin UI is unable to proceed with event execution if any webhook fails during the process.       
 
 ![image](../../assets/admin-ui/webhooks-trigger.png)
