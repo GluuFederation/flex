@@ -6,25 +6,21 @@ Gluu Flex currently provides packages for these Linux distros:
 
 - Ubuntu (versions: 20.04 and 22.04)
 - SUSE Distributions
-  - SUSE Linux Enterprise Server (SLES) 15
-  - openSUSE Leap 15.4
-  - openSUSE Tumbleweed (non-production)
+    - SUSE Linux Enterprise Server (SLES) 15
+    - openSUSE Leap 15.4
+    - openSUSE Tumbleweed
 - RedHat Enterprise Linux (version: 8)
+
+!!! Note
+    This document is intended exclusively for dev and staging environments. For production deployment on a VM, refer to this [documentation](https://docs.gluu.org/vreplace-flex-version/install/helm-install/rancher) which utilizes Rancher and Helm deployments.
 
 ## Hardware Requirements
 
 A single-VM deployment is where all services are running on one server. Although, the requirements can vary based on the size of the data and the required concurrency, the following guidelines can help you plan:
 
-### Development and Test Environments
 - 4 GB RAM
 - 2 CPU
 - 20 GB Disk
-
-### Production Environment Recommendation:
-- 8 GB RAM
-- 4 CPU
-- 4 GB swap space
-- 50 GB Disk
 
 ## Port Configuration
 
