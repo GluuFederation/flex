@@ -8,7 +8,7 @@ import {
   getFeaturesResponse,
   getFeaturesByWebhookIdResponse,
   getWebhooksByFeatureIdResponse,
-  triggerWebhookResponse,
+  setTriggerWebhookResponse,
   setWebhookModal,
   setWebhookTriggerErrors
 } from 'Plugins/admin/redux/features/WebhookSlice'
@@ -245,11 +245,11 @@ export function* triggerWebhook({ payload }) {
     const all_succeded = data?.body?.every((item) => item.success)
     if (all_succeded) {
       yield put(setWebhookModal(false)) 
-      yield put(triggerWebhookResponse())
+      yield put(setTriggerWebhookResponse(''))
     } else {
-      const errors = data?.body?.map((item) => !item.success && item.responseMessage)?.filter((err) => err)
+      const errors = data?.body?.map((item) => !item.success && item)?.filter((err) => err)
       yield put(setWebhookTriggerErrors(errors))
-      yield put(triggerWebhookResponse('Something went wrong while triggering webhook.'))
+      yield put(setTriggerWebhookResponse('Something went wrong while triggering webhook.'))
     }    
     yield call(postUserAction, audit)
     return data
@@ -263,7 +263,7 @@ export function* triggerWebhook({ payload }) {
       )
     )
     yield put(setWebhookModal(true))
-    yield put(triggerWebhookResponse(e?.response?.body?.responseMessage || e.message))
+    yield put(setTriggerWebhookResponse(e?.response?.body?.responseMessage || e.message))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

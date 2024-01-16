@@ -104,7 +104,7 @@ const webhookSlice = createSlice({
     triggerWebhook: (state) => {
       state.triggerWebhookInProgress = true
     },
-    triggerWebhookResponse: (state, action) => {
+    setTriggerWebhookResponse: (state, action) => {
       state.triggerWebhookInProgress = false
       state.triggerWebhookMessage = action.payload
     },
@@ -133,7 +133,7 @@ export const {
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
   triggerWebhook,
-  triggerWebhookResponse,
+  setTriggerWebhookResponse,
   setWebhookTriggerErrors
 } = webhookSlice.actions
 export const { actions, reducer, state } = webhookSlice

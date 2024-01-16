@@ -486,6 +486,8 @@
     "add_configuration": "Adicionar configuração",
     "add_idp": "Adicionar IDP SAML",
     "webhook_execution_information": "Informações de execução do webhook",
+    "error_message": "Mensagem de erro",
+    "webhook_dialog_note": "NOTA: A execução do webhook falhou, e você não poderá continuar no momento.",
     "webhook_dialog_dec": "Como parte do processo de envio, o sistema acionará automaticamente os seguintes webhooks associados para realizar tarefas adicionais de processamento.",
     "edit_idp": "Editar IDP SAML",
     "delete_idp": "Excluir IDP SAML",

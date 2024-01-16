@@ -490,6 +490,8 @@
     "new_role": "Nouveau rôle",
     "add_webhook": "Ajouter un Webhook",
     "webhook_execution_information": "Informations sur l'exécution du webhook",
+    "error_message": "Message d'erreur",
+    "webhook_dialog_note": "NOTE : L'exécution du webhook a échoué, et vous ne pourrez pas continuer pour le moment.",
     "webhook_dialog_dec": "Dans le cadre du processus de soumission, le système déclenchera automatiquement les webhooks associés suivants pour effectuer des tâches de traitement supplémentaires.",
     "add_idp": "Ajouter un IDP SAML",
     "request_body_error": "Le corps de la requête HTTP est requis pour la méthode HTTP sélectionnée",
