@@ -212,7 +212,10 @@ export function* getWebhooksByFeatureId({ payload }) {
     addAdditionalData(audit, FETCH, `webhooks-${payload}`, payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getWebhooksByFeatureId, payload)
-    if (data?.body?.length) {
+    if (
+      data?.body?.length &&
+      data?.body?.filter((item) => item.jansEnabled)?.length
+    ) {
       yield put(setWebhookModal(true))
     }
     yield put(getWebhooksByFeatureIdResponse(data?.body || []))
