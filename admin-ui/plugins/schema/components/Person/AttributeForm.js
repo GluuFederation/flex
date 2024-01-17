@@ -15,12 +15,18 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import * as Yup from 'yup'
 
 function AttributeForm(props) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
+  const [values, setValues] = useState({})
+  const [modal, setModal] = useState(false)
+  const toggleModal = () => {
+    setModal(!modal)
+  }
 
   const getInitialState = (item) => {
     return (
@@ -42,7 +48,11 @@ function AttributeForm(props) {
     }
   }
 
-  const handleAttributeSubmit = ({ item, values, customOnSubmit }) => {
+  const submitForm = (userMessage) => {
+    handleAttributeSubmit({ values, item, customOnSubmit, userMessage })
+  }
+
+  const handleAttributeSubmit = ({ item, values, customOnSubmit, userMessage }) => {
     const result = Object.assign(item, values)
     if (result.maxLength !== null) {
       result['attributeValidation'].maxLength = result.maxLength
@@ -53,7 +63,7 @@ function AttributeForm(props) {
     if(result.regexp !== null) {
       result['attributeValidation'].regexp = result.regexp
     }
-    customOnSubmit(JSON.stringify(result))
+    customOnSubmit({ data: JSON.stringify(result), userMessage })
   }
 
   const attributeValidationSchema = Yup.object({
@@ -68,7 +78,8 @@ function AttributeForm(props) {
     status: Yup.string().required('Required!'),
     dataType: Yup.string().required('Required!'),
     editType: Yup.array().required('Required!'),
-    usageType: Yup.array().required('Required!')
+    usageType: Yup.array().required('Required!'),
+    viewType: Yup.array().required('Required!'),
   })
 
   const getInitialAttributeValues = (item) => {
@@ -95,9 +106,10 @@ function AttributeForm(props) {
     <Formik
       initialValues={getInitialAttributeValues(item)}
       validationSchema={attributeValidationSchema}
-      onSubmit={(values) =>
-        handleAttributeSubmit({ values, item, customOnSubmit })
-      }
+      onSubmit={(values) => {
+        setValues(values)
+        toggleModal()
+      }}
     >
       {(formik) => (
         <Form onSubmit={formik.handleSubmit}>
@@ -282,6 +294,7 @@ function AttributeForm(props) {
               label='fields.view_type'
               doc_category={ATTRIBUTE}
               doc_entry='viewType'
+              required
             />
             <Col sm={9}>
               <Input
@@ -295,6 +308,9 @@ function AttributeForm(props) {
                 <option value='admin'>{t('options.admin')}</option>
                 <option value='user'>{t('options.user')}</option>
               </Input>
+              <ErrorMessage name='viewType'>
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+              </ErrorMessage>
             </Col>
           </FormGroup>
 
@@ -418,6 +434,13 @@ function AttributeForm(props) {
             doc_category={ATTRIBUTE}
           />
           <GluuFooter hideButtons={hideButtons} />
+          <GluuCommitDialog
+            handler={toggleModal}
+            modal={modal}
+            onAccept={submitForm}
+            feature='attributes_write'
+            formik={formik}
+          />
         </Form>
       )}
     </Formik>

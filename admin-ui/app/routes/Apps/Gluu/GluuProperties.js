@@ -3,6 +3,7 @@ import { FormGroup, Col, Button, Accordion } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import PropTypes from 'prop-types'
 
 function GluuProperties({
   compName,
@@ -23,6 +24,8 @@ function GluuProperties({
   showError = false,
   errorMessage,
   inputSm,
+  sourcePlaceholder,
+  destinationPlaceholder
 }) {
   const [properties, setProperties] = useState(options)
   const { t } = useTranslation()
@@ -96,6 +99,8 @@ function GluuProperties({
                     sm={inputSm}
                     isRemoveButton={isRemoveButton}
                     isKeys={isKeys}
+                    sourcePlaceholder={sourcePlaceholder}
+                    destinationPlaceholder={destinationPlaceholder}
                   ></GluuPropertyItem>
                 )}
               </div>
@@ -109,3 +114,25 @@ function GluuProperties({
 }
 
 export default GluuProperties
+GluuProperties.propTypes = {
+  compName: PropTypes.string,
+  label: PropTypes.string,
+  formik: PropTypes.object,
+  keyPlaceholder: PropTypes.string,
+  valuePlaceholder: PropTypes.string,
+  options: PropTypes.array,
+  disabled: PropTypes.bool,
+  buttonText: PropTypes.string,
+  isInputLables: PropTypes.bool,
+  keyLabel: PropTypes.string,
+  valueLabel: PropTypes.string,
+  isAddButton: PropTypes.bool,
+  isRemoveButton: PropTypes.bool,
+  isKeys: PropTypes.bool,
+  multiProperties: PropTypes.bool,
+  showError: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  inputSm: PropTypes.any,
+  sourcePlaceholder: PropTypes.string,
+  destinationPlaceholder: PropTypes.string,
+}

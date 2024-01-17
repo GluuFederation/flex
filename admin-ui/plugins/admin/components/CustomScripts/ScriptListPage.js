@@ -303,6 +303,7 @@ function ScriptListTable() {
             modal={modal}
             subject='script'
             onAccept={onDeletionConfirmed}
+            feature='custom_script_delete'
           />
         )}
       </CardBody>

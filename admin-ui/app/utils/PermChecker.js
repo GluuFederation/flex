@@ -117,6 +117,10 @@ export const ATTRIBUTES_TAG = 'attributes'
 export const SCIM_CONFIG_READ = 'https://jans.io/scim/config.readonly'
 export const SCIM_CONFIG_WRITE = 'https://jans.io/scim/config.write'
 
+export const WEBHOOK_READ = BASE_URL + '/jans-auth-server/config/adminui/webhook.readonly'
+export const WEBHOOK_WRITE = BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
+export const WEBHOOK_DELETE = BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'
+
 export const hasPermission = (scopes, scope) => {
   let available = false
   if (scopes) {

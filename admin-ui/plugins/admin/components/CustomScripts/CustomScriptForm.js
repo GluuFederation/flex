@@ -619,6 +619,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
           onAccept={submitForm}
           formik={formik}
           disabled={viewOnly}
+          feature='custom_script_write'
         />
       </Form>
     </>
