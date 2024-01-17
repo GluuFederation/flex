@@ -15,6 +15,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
+import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
 
 const GluuDialog = ({
   row,
@@ -25,6 +26,7 @@ const GluuDialog = ({
   name,
   feature,
 }) => {
+  const permissions = useSelector((state) => state.authReducer.permissions)
   const [active, setActive] = useState(false)
   const { t } = useTranslation()
   const [userMessage, setUserMessage] = useState('')
@@ -62,7 +64,7 @@ const GluuDialog = ({
 
   return (
     <>
-      {webhookModal || loadingWebhooks ? (
+      {(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ) ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal
