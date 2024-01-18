@@ -19,10 +19,12 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Box from '@mui/material/Box'
+import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
 
 const useWebhookDialogAction = ({ feature, modal }) => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const permissions = useSelector((state) => state.authReducer.permissions)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const {
@@ -45,13 +47,14 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   }, [dispatch, enabledFeatureWebhooks])
 
   useEffect(() => {
-    if (modal) {
-      if (feature) {
-        dispatch(getWebhooksByFeatureId(feature))
-      } else {
-        dispatch(getWebhooksByFeatureIdResponse([]))
+    if (hasPermission(permissions, WEBHOOK_READ))
+      if (modal) {
+        if (feature) {
+          dispatch(getWebhooksByFeatureId(feature))
+        } else {
+          dispatch(getWebhooksByFeatureIdResponse([]))
+        }
       }
-    }
   }, [modal])
 
   useEffect(() => {
@@ -65,7 +68,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   const webhookTriggerModal = ({ closeModal }) => {
     return (
       <Modal
-        isOpen={webhookModal || loadingWebhooks}
+        isOpen={(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ)}
         size={'lg'}
         toggle={() => {
           if (!loadingWebhooks) {

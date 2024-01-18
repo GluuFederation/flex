@@ -15,6 +15,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
+import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -29,6 +30,7 @@ const GluuCommitDialog = ({
   inputType,
   feature,
 }) => {
+  const permissions = useSelector((state) => state.authReducer.permissions)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -70,7 +72,7 @@ const GluuCommitDialog = ({
 
   return (
     <>
-      {webhookModal || loadingWebhooks ? (
+      {(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ) ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal
