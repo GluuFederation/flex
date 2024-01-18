@@ -1,8 +1,8 @@
 import React from 'react'
-import GluuRemovableInputRow from '../../../../app/routes/Apps/Gluu/GluuRemovableInputRow'
-import GluuRemovableSelectRow from '../../../../app/routes/Apps/Gluu/GluuRemovableSelectRow'
-import GluuRemovableTypeAhead from '../../../../app/routes/Apps/Gluu/GluuRemovableTypeAhead'
-import { countries } from '../../common/countries'
+import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
+import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
+import GluuRemovableTypeAhead from 'Routes/Apps/Gluu/GluuRemovableTypeAhead'
+import { countries } from 'Plugins/user-management/common/countries'
 import { useSelector } from 'react-redux'
 
 function UserClaimEntry({ data, type, entry, formik, handler }) {
@@ -44,6 +44,7 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
           doc_category={data.description}
           lsize={3}
           rsize={9}
+          isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
         />
       )}
       {data.name == 'c' && !data.oxMultiValuedAttribute && (
