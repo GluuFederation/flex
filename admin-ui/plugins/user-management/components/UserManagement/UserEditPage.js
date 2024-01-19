@@ -10,6 +10,7 @@ import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import moment from 'moment'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
+import isEmpty from 'lodash/isEmpty'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -51,7 +52,9 @@ function UserEditPage() {
             let val = []
             let value = values[key]
             if (key != 'birthdate') {
-              val.push(values[key])
+              if (!isEmpty(values[key]) || typeof values[key] === 'boolean' || typeof values[key] === 'number') {
+                val.push(values[key])
+              }
             } else {
               values[key]
                 ? val.push(
@@ -62,10 +65,13 @@ function UserEditPage() {
                 ? moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
                 : null
             }
-            obj = {
-              name: key,
-              multiValued: false,
-              values: val,
+
+            if (!isEmpty(val)) {
+              obj = {
+                name: key,
+                multiValued: false,
+                values: val,
+              }
             }
           } else {
             let valE = []
@@ -84,7 +90,10 @@ function UserEditPage() {
               values: valE,
             }
           }
-          customAttributes.push(obj)
+          
+          if (!isEmpty(obj)) {
+            customAttributes.push(obj)
+          }
         }
       }
       return customAttributes
