@@ -4,8 +4,9 @@ import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
 import GluuRemovableTypeAhead from 'Routes/Apps/Gluu/GluuRemovableTypeAhead'
 import { countries } from 'Plugins/user-management/common/countries'
 import { useSelector } from 'react-redux'
+import PropTypes from 'prop-types';
 
-function UserClaimEntry({ data, type, entry, formik, handler }) {
+function UserClaimEntry({ data, entry, formik, handler }) {
   const doHandle = () => {
     handler(data.name)
   }
@@ -65,5 +66,10 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
     </div>
   )
 }
-
+UserClaimEntry.propTypes = {
+  data: PropTypes.any,
+  entry: PropTypes.any,
+  formik: PropTypes.object,
+  handler: PropTypes.func,
+};
 export default UserClaimEntry

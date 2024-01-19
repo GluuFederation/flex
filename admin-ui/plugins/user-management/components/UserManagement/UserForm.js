@@ -400,7 +400,6 @@ function UserForm({ onSubmitData }) {
                 data={data}
                 formik={formik}
                 handler={removeSelectedClaimsFromState}
-                type='input'
               />
             ))}
             {showButtons && (

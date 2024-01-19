@@ -35,8 +35,8 @@ function GluuRemovableInputRow({
             }}
             label={label}
             value={formik.values[name] || false}
-            lsize={3}
-            rsize={9}
+            lsize={lsize}
+            rsize={rsize - 1}
             disabled={false}
           />
         ) : (
@@ -54,7 +54,7 @@ function GluuRemovableInputRow({
             </Col>
           </>
         )}
-        <div style={applicationStyle.removableInputRow} onClick={handler}>
+        <div role='button' style={applicationStyle.removableInputRow} onKeyDown={handler} onClick={handler}>
           <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
         </div>
       </FormGroup>
