@@ -1,5 +1,4 @@
 import { handleResponse } from 'Utils/ApiUtils'
-import axios from 'Redux/api/axios'
 
 export default class MessageApi {
   constructor(api) {
