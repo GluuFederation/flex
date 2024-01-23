@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   scim: {},
-  loading: false
+  loading: true
 }
 
 const scimSlice = createSlice({

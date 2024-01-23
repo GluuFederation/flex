@@ -331,6 +331,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
         handler={toggle}
         modal={modal}
         onAccept={submitForm}
+        feature='scim_configuration_edit'
         formik={formik}
       />
     </Form>

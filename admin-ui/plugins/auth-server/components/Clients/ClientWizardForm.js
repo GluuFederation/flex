@@ -449,7 +449,7 @@ function ClientWizardForm({
           )}
         </Formik>
       </Card>
-      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
+      <GluuCommitDialog feature='oidc_clients_write' handler={toggle} modal={modal} onAccept={submitForm} />
     </React.Fragment>
   )
 }

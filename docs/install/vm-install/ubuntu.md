@@ -83,11 +83,11 @@ Choose the correct command from below based on the OS version.
 
 ```shell
 #Ubuntu 22.04
-apt install -y ./flex_replace-flex-version.ubuntu22.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
 ```
 ```shell
 #Ubuntu 20.04
-apt install -y ./flex_replace-flex-version.ubuntu20.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 ```
 
 ### Run the setup script

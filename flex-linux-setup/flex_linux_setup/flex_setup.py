@@ -291,7 +291,6 @@ class flex_installer(JettyInstaller):
         self.source_dir = os.path.join(Config.install_dir, 'flex')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
-
         self.admin_ui_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/node_modules/admin-ui-{0}-node_modules.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
         self.config_api_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/OpenApi/jans_config_api/admin-ui-{0}-jans_config_api.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
 
@@ -307,6 +306,7 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
         self.simple_auth_scr_inum = 'A51E-76DA'
         self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
+        self.admin_ui_web_hook_ldif_fn = os.path.join(self.templates_dir, 'aui_webhook.ldif')
 
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
@@ -476,7 +476,10 @@ class flex_installer(JettyInstaller):
                 ldif_writer.unparse('inum=%(admin_ui_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
 
             config_api_installer.renderTemplateInOut(client_tmp_fn, self.templates_dir, self.source_dir)
-            self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(client_tmp_fn))])
+            self.dbUtils.import_ldif([
+                        os.path.join(self.source_dir, os.path.basename(client_tmp_fn)),
+                        self.admin_ui_web_hook_ldif_fn
+                        ])
 
 
         client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
@@ -489,7 +492,7 @@ class flex_installer(JettyInstaller):
             ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client {}'.format(ssa_json.get('org_id', ''))]
             ldif_parser.entries[0][1]['jansGrantTyp'] = ['client_credentials']
             ldif_parser.entries[0][1]['jansRespTyp'] = ['token']
-            ldif_parser.entries[0][1]['jansScope'] = ['inum=F0C4,ou=scopes,o=jans']
+            ldif_parser.entries[0][1]['jansScope'] = ['inum=F0C4,ou=scopes,o=jans', 'inum=B9D2-D6E5,ou=scopes,o=jans']
             ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['client_secret_basic']
             ldif_parser.entries[0][1]['jansTrustedClnt'] = ['FALSE']
             for del_entry in ('jansLogoutURI', 'jansPostLogoutRedirectURI', 'jansRedirectURI', 'jansSignedRespAlg'):

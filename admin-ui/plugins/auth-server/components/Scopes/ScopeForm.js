@@ -501,6 +501,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             <GluuCommitDialog
               handler={toggle}
               modal={modal}
+              feature={'scopes_write'}
               onAccept={submitForm}
               formik={formik}
             />

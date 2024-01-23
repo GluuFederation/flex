@@ -396,6 +396,7 @@ function ClientListPage() {
             modal={modal}
             subject="openid connect client"
             onAccept={onDeletionConfirmed}
+            feature='oidc_clients_delete'
           />
         )}
       </CardBody>

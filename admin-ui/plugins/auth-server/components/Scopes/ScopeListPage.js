@@ -277,6 +277,7 @@ function ScopeListPage() {
             modal={modal}
             subject="scope"
             onAccept={onDeletionConfirmed}
+            feature='scopes_delete'
           />
         )}
       </CardBody>
