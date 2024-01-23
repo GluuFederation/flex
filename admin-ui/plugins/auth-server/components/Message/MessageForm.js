@@ -58,7 +58,7 @@ const MessageForm = () => {
       postBody['requestBody'] = [
         {
           op: 'replace',
-          path: 'messageProviderType',
+          path: '/messageProviderType',
           value: formik.values.messageProviderType,
         },
       ]
