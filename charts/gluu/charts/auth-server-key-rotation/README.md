@@ -36,6 +36,9 @@ Kubernetes: `>=v1.21.0-0`
 | image.repository | string | `"janssenproject/certmanager"` | Image  to use for deploying. |
 | image.tag | string | `"1.0.22_dev"` | Image  tag to use for deploying. |
 | keysLife | int | `48` | Auth server key rotation keys life in hours |
+| keysPushDelay | int | `0` | Delay (in seconds) before pushing private keys to Auth server |
+| keysPushStrategy | string | `"NEWER"` | Set key selection strategy after pushing private keys to Auth server (only takes effect when keysPushDelay value is greater than 0) |
+| keysStrategy | string | `"NEWER"` | Set key selection strategy used by Auth server |
 | lifecycle | object | `{}` |  |
 | nodeSelector | object | `{}` |  |
 | resources | object | `{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}}` | Resource specs. |

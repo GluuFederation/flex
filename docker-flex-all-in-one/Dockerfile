@@ -2,13 +2,13 @@
 # Assets sources
 # ==============
 
+# original Janssen base version (without suffix)
+ARG BASE_VERSION=1.0.22
+
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
-ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:1.0.22_dev 
-ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:1.0.22_dev 
-
-# original Janssen version
-ARG CN_VERSION="1.0.22" 
+ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:${BASE_VERSION}_dev
+ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:${BASE_VERSION}_dev
 
 # -----------
 # base images
@@ -49,6 +49,9 @@ COPY --from=jans-aio-src /opt/jans /opt/jans
 COPY --from=jans-aio-src /opt/prometheus /opt/prometheus
 COPY --from=jans-aio-src /usr/local/bin/facter /usr/local/bin/facter
 COPY --from=jans-aio-src /etc/nginx/jans-aio /etc/nginx/jans-aio
+COPY --from=jans-aio-src /var/jans/cr-snapshots /var/jans/cr-snapshots
+COPY --from=jans-aio-src /opt/keycloak /opt/keycloak
+COPY --from=jans-aio-src /opt/idp /opt/idp
 
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
@@ -86,6 +89,9 @@ COPY app /app
 # set directory contains installer code that will be added to Python sys.path
 ENV PYTHONPATH=/app
 
+# CN version as env var (with suffix if any, i.e. SNAPSHOT)
+ENV CN_VERSION=1.0.22-SNAPSHOT
+
 ENV JETTY_BASE=/opt/jans/jetty \
     JETTY_HOME=/opt/jetty \
     CN_AIO_COMPONENTS="" \
@@ -121,10 +127,30 @@ ENV JETTY_BASE=/opt/jans/jetty \
     CN_COUCHBASE_SUPERUSER_PASSWORD_FILE=/etc/jans/conf/couchbase_superuser_password \
     CN_LDAP_PASSWORD_FILE=/etc/jans/conf/ldap_password \
     CN_LDAP_TRUSTSTORE_PASSWORD_FILE=/etc/jans/conf/ldap_truststore_password \
+    CN_KEYCLOAK_LINK_JETTY_HOST=127.0.0.1 \
+    CN_KEYCLOAK_LINK_JETTY_PORT=9092 \
+    CN_KEYCLOAK_LINK_JAVA_OPTIONS="" \
+    CN_SAML_HTTP_HOST=127.0.0.1 \
+    CN_SAML_HTTP_PORT=8083 \
+    CN_SAML_JAVA_OPTIONS="" \
+    CN_SAML_KC_ADMIN_CREDENTIALS_FILE=/etc/jans/conf/kc_admin_creds \
+    CN_SAML_KC_DB_PASSWORD_FILE=/etc/jans/conf/kc_db_password \
+    KC_HEALTH_ENABLED=true \
+    KC_METRICS_ENABLED=true \
+    KC_LOG_LEVEL=INFO \
+    KC_PROXY=edge \
+    KC_DB=mysql \
+    KC_DB_USERNAME=keycloak \
+    KC_DB_SCHEMA=keycloak \
+    KC_DB_URL_HOST=localhost \
+    KC_DB_URL_PORT=3306 \
+    KC_DB_URL_DATABASE=keycloak \
+    KC_DB_URL_PROPERTIES=?useUnicode=true&characterEncoding=UTF-8&character_set_server=utf8mb4 \
+    QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY=false \
     GLUU_ADMIN_UI_ENABLE_NGINX=false \
     GLUU_ADMIN_UI_PUBLIC_DIR=/var/lib/nginx/html/admin
 
-LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/all-in-one" \
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/flex-all-in-one" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
     org.opencontainers.image.version="1.0.22" \
@@ -170,6 +196,8 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     ${JETTY_BASE}/jans-casa/logs \
     ${JETTY_BASE}/jans-link/resources \
     ${JETTY_BASE}/jans-link/logs \
+    ${JETTY_BASE}/jans-keycloak-link/resources \
+    ${JETTY_BASE}/jans-keycloak-link/logs \
     /etc/certs \
     /etc/jans \
     /opt/jans/python/libs \
@@ -180,6 +208,10 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     /var/log/nginx \
     /etc/nginx/jans-aio \
     /usr/share/java \
+    /var/jans/cr-snapshots \
+    /opt/idp \
+    /opt/keycloak/logs \
+    /opt/keycloak/conf \
     /opt/flex/admin-ui/_plugins
 
 RUN chmod -R g=u ${JETTY_HOME}/temp \
@@ -204,6 +236,8 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     ${JETTY_BASE}/jans-casa/logs \
     ${JETTY_BASE}/jans-link/resources \
     ${JETTY_BASE}/jans-link/logs \
+    ${JETTY_BASE}/jans-keycloak-link/resources \
+    ${JETTY_BASE}/jans-keycloak-link/logs \
     /etc/certs \
     /etc/jans \
     /opt/jans/python/libs \
@@ -214,6 +248,10 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     /var/log/nginx \
     /etc/nginx/jans-aio \
     /usr/share/java \
+    /var/jans/cr-snapshots \
+    /opt/idp \
+    /opt/keycloak/logs \
+    /opt/keycloak/conf \
     /opt/flex/admin-ui/_plugins
 
 RUN chown 1000:1000 /opt/java/lib/security/cacerts \

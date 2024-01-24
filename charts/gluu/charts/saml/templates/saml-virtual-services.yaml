@@ -1,12 +1,12 @@
-{{- if and (.Values.global.istio.ingress) (.Values.global.casa.ingress.casaEnabled) }}
+{{- if and (.Values.global.istio.ingress) (.Values.global.saml.ingress.samlEnabled) }}
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ .Release.Name }}-istio-casa
+  name: {{ .Release.Name }}-istio-saml
   namespace: {{.Release.Namespace}}
   labels:
-    APP_NAME: casa
-{{ include "casa.labels" . | indent 4 }}
+    APP_NAME: saml
+{{ include "saml.labels" . | indent 4 }}
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
@@ -25,14 +25,14 @@ spec:
   hosts:
   - {{ .Values.global.fqdn }}
   http:
-  - name: {{ .Release.Name }}-istio-casa
+  - name: {{ .Release.Name }}-istio-saml
     match:
     - uri:
-        prefix: /jans-casa
+        prefix: /kc
     route:
     - destination:
-        host: {{ .Values.global.casa.casaServiceName }}.{{.Release.Namespace}}.svc.cluster.local
+        host: {{ .Values.global.saml.samlServiceName }}.{{.Release.Namespace}}.svc.cluster.local
         port:
-          number: 8080
+          number: 8083
       weight: 100
 {{- end }}

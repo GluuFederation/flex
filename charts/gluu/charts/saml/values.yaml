@@ -1,4 +1,4 @@
-# -- Jans Casa ("Casa") is a self-service web portal for end-users to manage authentication and authorization preferences for their account in a Jans Server.
+# -- Jans SAML
 # -- Configure the HorizontalPodAutoscaler
 hpa:
   enabled: true
@@ -25,9 +25,9 @@ image:
   # -- Image pullPolicy to use for deploying.
   pullPolicy: IfNotPresent
   # -- Image  to use for deploying.
-  repository: janssenproject/casa
+  repository: janssenproject/saml
   # -- Image  tag to use for deploying.
-  tag: 1.0.22_dev
+  tag: 1.0.22-1
   # -- Image Pull Secrets
   pullSecrets: [ ]
 # -- Service replica number.
@@ -45,34 +45,37 @@ resources:
     # -- Memory request.
     memory: 500Mi
 service:
-  # -- Port of the casa service. Please keep it as default.
-  port: 8080
-  # -- The name of the casa port within the casa service. Please keep it as default.
-  name: http-casa
+  # -- Port of the saml service. Please keep it as default.
+  port: 8083
+  # -- The name of the saml port within the saml service. Please keep it as default.
+  name: http-saml
   # -- Default set to None If you want to make sure that connections from a particular client are passed to the same Pod each time, you can select the session affinity based on the client's IP addresses by setting this to ClientIP
   sessionAffinity: None
   # -- the maximum session sticky time if sessionAffinity is ClientIP
   sessionAffinityConfig:
     clientIP:
       timeoutSeconds: 10800
-# -- Configure the liveness healthcheck for casa if needed.
+# -- Configure the liveness healthcheck for saml if needed.
 livenessProbe:
-  httpGet:
-    # -- http liveness probe endpoint
-    path: /jans-casa/health-check
-    port: http-casa
-  initialDelaySeconds: 25
-  periodSeconds: 25
-  timeoutSeconds: 5
-# -- Configure the readiness healthcheck for the casa if needed.
-readinessProbe:
-  httpGet:
-    # -- http readiness probe endpoint
-    path: /jans-casa/health-check
-    port: http-casa
+  # -- Executes the python3 healthcheck.
+  exec:
+    command:
+      - python3
+      - /app/scripts/healthcheck.py
   initialDelaySeconds: 30
   periodSeconds: 30
   timeoutSeconds: 5
+  failureThreshold: 10
+# -- Configure the readiness healthcheck for the saml if needed.
+readinessProbe:
+  exec:
+    command:
+      - python3
+      - /app/scripts/healthcheck.py
+  initialDelaySeconds: 25
+  periodSeconds: 25
+  timeoutSeconds: 5
+  failureThreshold: 10
 # -- Configure any additional volumes that need to be attached to the pod
 volumes: []
 # -- Configure any additional volumesMounts that need to be attached to the containers

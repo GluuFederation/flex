@@ -1,26 +1,25 @@
-# config-api
+# link
 
 ![Version: 5.0.25-dev](https://img.shields.io/badge/Version-5.0.25--dev-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.0](https://img.shields.io/badge/AppVersion-5.0.0-informational?style=flat-square)
 
-Jans Config Api endpoints can be used to configure jans-auth-server, which is an open-source OpenID Connect Provider (OP) and UMA Authorization Server (AS)
+Jans Link
 
-**Homepage:** <https://docs.gluu.org>
+**Homepage:** <https://jans.io>
 
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Mohammad Abudayyeh | <team@gluu.org> | <https://github.com/moabu> |
+| Mohammad Abudayyeh | <support@jans.io> | <https://github.com/moabu> |
 
 ## Source Code
 
-* <https://github.com/JanssenProject/jans/jans-config-api>
-* <https://github.com/JanssenProject/jans/docker-jans-config-api>
-* <https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/config-api>
+* <https://github.com/JanssenProject/jans/jans-link>
+* <https://github.com/JanssenProject/jans/docker-jans-link>
 
 ## Requirements
 
-Kubernetes: `>=v1.21.0-0`
+Kubernetes: `>=v1.22.0-0`
 
 ## Values
 
@@ -38,21 +37,21 @@ Kubernetes: `>=v1.21.0-0`
 | hpa.metrics | list | `[]` | metrics if targetCPUUtilizationPercentage is not set |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
-| image.repository | string | `"janssenproject/config-api"` | Image  to use for deploying. |
+| image.repository | string | `"ghcr.io/janssenproject/jans/link"` | Image  to use for deploying. |
 | image.tag | string | `"1.0.22_dev"` | Image  tag to use for deploying. |
 | lifecycle | object | `{}` |  |
-| livenessProbe | object | `{"httpGet":{"path":"/jans-config-api/api/v1/health/live","port":8074},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}` | Configure the liveness healthcheck for the auth server if needed. |
-| livenessProbe.httpGet | object | `{"path":"/jans-config-api/api/v1/health/live","port":8074}` | Executes the python3 healthcheck. |
+| livenessProbe | object | `{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}` | Configure the liveness healthcheck for the link if needed. |
+| livenessProbe.exec | object | `{"command":["python3","/app/scripts/healthcheck.py"]}` | Executes the python3 healthcheck. |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
-| readinessProbe | object | `{"httpGet":{"path":"/jans-config-api/api/v1/health/ready","port":8074},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5}` | Configure the readiness healthcheck for the auth server if needed. |
+| readinessProbe | object | `{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5}` | Configure the readiness healthcheck for the link if needed. |
 | replicas | int | `1` | Service replica number. |
-| resources | object | `{"limits":{"cpu":"2500m","memory":"2500Mi"},"requests":{"cpu":"2500m","memory":"2500Mi"}}` | Resource specs. |
-| resources.limits.cpu | string | `"2500m"` | CPU limit. |
-| resources.limits.memory | string | `"2500Mi"` | Memory limit. |
-| resources.requests.cpu | string | `"2500m"` | CPU request. |
-| resources.requests.memory | string | `"2500Mi"` | Memory request. |
-| service.name | string | `"http-config-api"` | The name of the config-api port within the config-api service. Please keep it as default. |
+| resources | object | `{"limits":{"cpu":"500m","memory":"1000Mi"},"requests":{"cpu":"500m","memory":"1000Mi"}}` | Resource specs. |
+| resources.limits.cpu | string | `"500m"` | CPU limit. |
+| resources.limits.memory | string | `"1000Mi"` | Memory limit. |
+| resources.requests.cpu | string | `"500m"` | CPU request. |
+| resources.requests.memory | string | `"1000Mi"` | Memory request. |
+| service.name | string | `"http-link"` | The name of the link port within the link service. Please keep it as default. |
 | service.sessionAffinity | string | `"None"` | Default set to None If you want to make sure that connections from a particular client are passed to the same Pod each time, you can select the session affinity based on the client's IP addresses by setting this to ClientIP |
 | service.sessionAffinityConfig | object | `{"clientIP":{"timeoutSeconds":10800}}` | the maximum session sticky time if sessionAffinity is ClientIP |
 | tolerations | list | `[]` |  |

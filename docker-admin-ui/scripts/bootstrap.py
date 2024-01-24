@@ -145,7 +145,7 @@ class PersistenceSetup:
 
     @cached_property
     def ldif_files(self):
-        filenames = ["clients.ldif"]
+        filenames = ["clients.ldif", "aui_webhook.ldif"]
         return [f"/app/templates/admin-ui/{filename}" for filename in filenames]
 
     def import_ldif_files(self):
