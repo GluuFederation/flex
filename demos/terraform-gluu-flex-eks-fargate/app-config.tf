@@ -152,7 +152,7 @@ resource "kubernetes_config_map" "janssen_config" {
     CN_CONTAINER_METADATA          = "kubernetes"
     CN_MAX_RAM_PERCENTAGE          = 75.0
     CN_CACHE_TYPE                  = var.cache_type
-    CN_DOCUMENT_STORE_TYPE         = "LOCAL"
+    CN_DOCUMENT_STORE_TYPE         = "DB"
     DOMAIN                         = var.fqdn
     CN_AUTH_SERVER_BACKEND         = "janssen-auth-server:8080"
     CN_AUTH_APP_LOGGERS            = <<EOT
