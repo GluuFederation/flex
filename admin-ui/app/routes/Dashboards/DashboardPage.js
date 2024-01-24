@@ -3,8 +3,8 @@ import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import { useMediaQuery } from 'react-responsive'
-import GluuLoader from '../Apps/Gluu/GluuLoader'
-import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getClients } from 'Redux/features/initSlice'
 import {
   hasBoth,
