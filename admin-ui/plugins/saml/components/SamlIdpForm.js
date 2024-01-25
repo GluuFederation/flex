@@ -156,7 +156,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
   useEffect(() => {
     if (savedForm) {
-      navigate('/saml')
+      navigate('/saml/idp')
     }
 
     return () => {

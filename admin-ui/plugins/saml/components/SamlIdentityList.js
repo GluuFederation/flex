@@ -72,11 +72,11 @@ const SamlIdentityList = () => {
   )
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
-    navigate('/saml/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
+    navigate('/saml/idp/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
   }, [])
 
   const handleGoToAddPage = useCallback(() => {
-    navigate('/saml/add')
+    navigate('/saml/idp/add')
   }, [])
 
   function handleDelete(row) {
@@ -239,10 +239,10 @@ const SamlIdentityList = () => {
       {hasPermission(permissions, SAML_DELETE) && (
         <GluuDialog
           row={item}
-          name={item?.clientName?.value || ''}
+          name={item?.displayName || ''}
           handler={toggle}
           modal={modal}
-          subject='openid connect client'
+          subject='saml idp'
           onAccept={onDeletionConfirmed}
         />
       )}

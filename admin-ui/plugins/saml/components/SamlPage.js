@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import IdpConfigTab from './IdpConfigTab'
 import SamlIdentityList from './SamlIdentityList'
 import { useSelector } from 'react-redux'
+import TrustRelationshipList from './TrustRelationshipList'
 
 const SamlPage = () => {
   const { t } = useTranslation()
@@ -18,8 +19,9 @@ const SamlPage = () => {
   SetTitle(t('titles.saml_management'))
 
   const tabNames = [
-    { name: t('menus.saml_idp'), path: '/saml' },
     { name: t('menus.idp_config'), path: '/saml/config' },
+    { name: t('menus.saml_idp'), path: '/saml/idp' },
+    { name: t('menus.trust_relationships'), path: '/saml/trust-relationship' },
   ]
 
   const tabToShow = (tabName) => {
@@ -28,6 +30,8 @@ const SamlPage = () => {
         return <SamlIdentityList />
       case t('menus.idp_config'):
         return <IdpConfigTab />
+      case t('menus.trust_relationships'):
+        return <TrustRelationshipList />
     }
   }
 
