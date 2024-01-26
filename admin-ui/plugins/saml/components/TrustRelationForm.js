@@ -42,13 +42,13 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const navigate = useNavigate()
   const loading = useSelector((state) => state.idpSamlReducer.loading)
   const dispatch = useDispatch()
-  const [userScopeAction] = useState({
+  const userScopeAction = {
     limit: PER_PAGE_SCOPES,
     pattern: '',
     startIndex: 0,
-  })
+  }
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
-  const [metaDataFile, setMetadaDataFile] = useState(null)
+  const [metaDataFile, setMetaDataFile] = useState(null)
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
   const theme = useContext(ThemeContext)
@@ -88,24 +88,40 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     spMetaDataSourceType: Yup.string().required(
       `${t('fields.metadata_location')} is Required!`
     ),
+    spMetaDataFN: Yup.string().when('spMetaDataSourceType', {
+      is: (value) => {
+        return value === 'uri'
+      },
+      then: () =>
+        Yup.string().required(`${t('fields.metadata_url')} is Required!`),
+    }),
   })
 
   const toggle = () => {
     setModal(!modal)
   }
 
+  const getDefault = (value, defaultValue) =>
+    value !== undefined ? value : defaultValue
+
   const initialValues = {
     ...(configs || {}),
-    enabled: configs?.enabled || false,
-    displayName: configs?.displayName || '',
-    description: configs?.description || '',
-    spMetaDataSourceType: configs?.spMetaDataSourceType
-      ? configs?.spMetaDataSourceType
-      : configs?.inum
-        ? ''
-        : 'file',
-    spMetaDataFN: configs?.spMetaDataFN || '',
-    releasedAttributes: configs?.releasedAttributes || [],
+    enabled: getDefault(configs?.enabled, false),
+    displayName: getDefault(configs?.displayName, ''),
+    description: getDefault(configs?.description, ''),
+    spMetaDataSourceType: getConfiguredType(configs),
+    spMetaDataFN: getDefault(configs?.spMetaDataFN, ''),
+    releasedAttributes: getDefault(configs?.releasedAttributes, []),
+  }
+
+  function getConfiguredType(configs) {
+    if (configs?.spMetaDataSourceType) {
+      return configs.spMetaDataSourceType
+    } else if (configs?.inum) {
+      return ''
+    } else {
+      return 'file'
+    }
   }
 
   const formik = useFormik({
@@ -173,7 +189,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0]
-    if (file) setMetadaDataFile(file)
+    if (file) setMetaDataFile(file)
   }
 
   const debounceFn = useCallback(
@@ -316,49 +332,70 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   disabled={viewOnly}
                   defaultValue={formik.values.spMetaDataSourceType}
                   showError={
-                    formik.errors.description && formik.touched.description
+                    formik.errors.spMetaDataSourceType &&
+                    formik.touched.spMetaDataSourceType
                   }
-                  errorMessage={formik.errors.description}
+                  errorMessage={formik.errors.spMetaDataSourceType}
                   required
                 />
               </Col>
               <Col sm={10}>
-                <FormGroup row>
-                  <GluuLabel label={'fields.metadata_file'} size={4} />
-                  <Col sm={8}>
-                    <Box
-                      display='flex'
-                      flexWrap='wrap'
-                      gap={1}
-                      alignItems='center'
-                    >
-                      <Button
-                        disabled={viewOnly}
-                        color={`primary-${selectedTheme}`}
-                        style={{
-                          ...applicationStyle.buttonStyle,
-                          ...applicationStyle.buttonFlexIconStyles,
-                        }}
-                        onClick={onHandleFileSelection}
+                {formik.values.spMetaDataSourceType?.toLowerCase() ===
+                'file' ? (
+                  <FormGroup row>
+                    <GluuLabel label={'fields.metadata_file'} size={4} />
+                    <Col sm={8}>
+                      <Box
+                        display='flex'
+                        flexWrap='wrap'
+                        gap={1}
+                        alignItems='center'
                       >
-                        {t('fields.import_file')}
-                      </Button>
-                      {metaDataFile ? (
-                        <>
-                          <span className='d-inline'>{metaDataFile?.name}</span>
-                          <p className='mb-0'>
-                            ({((metaDataFile?.size || 0) / 1000).toFixed(0)}K)
-                          </p>
-                        </>
-                      ) : null}
-                    </Box>
-                    {fileError && (
-                      <div style={{ color: 'red' }}>
-                        {t('messages.import_metadata_file')}
-                      </div>
-                    )}
-                  </Col>
-                </FormGroup>
+                        <Button
+                          disabled={viewOnly}
+                          color={`primary-${selectedTheme}`}
+                          style={{
+                            ...applicationStyle.buttonStyle,
+                            ...applicationStyle.buttonFlexIconStyles,
+                          }}
+                          onClick={onHandleFileSelection}
+                        >
+                          {t('fields.import_file')}
+                        </Button>
+                        {metaDataFile ? (
+                          <>
+                            <span className='d-inline'>
+                              {metaDataFile?.name}
+                            </span>
+                            <p className='mb-0'>
+                              ({((metaDataFile?.size || 0) / 1000).toFixed(0)}K)
+                            </p>
+                          </>
+                        ) : null}
+                      </Box>
+                      {fileError && (
+                        <div style={{ color: 'red' }}>
+                          {t('messages.import_metadata_file')}
+                        </div>
+                      )}
+                    </Col>
+                  </FormGroup>
+                ) : (
+                  <GluuInputRow
+                    label='fields.metadata_url'
+                    name='spMetaDataFN'
+                    value={formik.values.spMetaDataFN}
+                    formik={formik}
+                    lsize={4}
+                    rsize={8}
+                    showError={
+                      formik.errors.spMetaDataFN && formik.touched.spMetaDataFN
+                    }
+                    errorMessage={formik.errors.spMetaDataFN}
+                    disabled={viewOnly}
+                    required
+                  />
+                )}
               </Col>
               <Col sm={10}>
                 {isLoading ? (

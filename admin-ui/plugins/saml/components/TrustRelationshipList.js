@@ -23,7 +23,6 @@ const TrustRelationshipList = () => {
   const themeColors = getThemeColor(theme.state.theme)
   const bgThemeColor = { background: themeColors.background }
   const [modal, setModal] = useState(false)
-  const [limit] = useState(10)
   const [item, setItem] = useState({})
 
   const toggle = () => setModal(!modal)
@@ -134,7 +133,7 @@ const TrustRelationshipList = () => {
             search: true,
             searchFieldAlignment: 'left',
             selection: false,
-            pageSize: limit,
+            pageSize: 10,
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
               ...bgThemeColor,

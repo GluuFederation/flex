@@ -57,8 +57,8 @@ export default class SamlApi {
 
   getTrustRelationship = () => {
     return new Promise((resolve, reject) => {
-      this.api.getTrustRelationship((error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getTrustRelationship((error, _data, respones) => {
+        handleResponse(error, reject, resolve, respones)
       })
     })
   }

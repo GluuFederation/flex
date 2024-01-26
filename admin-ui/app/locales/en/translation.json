@@ -86,6 +86,7 @@
     "metadata_location": "Metadata Location",
     "released_attributes": "Released Attributes",
     "metadata_file": "Metadata File",
+    "metadata_url": "Metadata URL",
     "webhook_url": "URL",
     "webhook_id": "Webhook Id",
     "http_method": "HTTP Method",

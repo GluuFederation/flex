@@ -60,10 +60,7 @@ export function* getSamlConfigSaga() {
     return data
   } catch (e) {
     yield put(getSamlConfigurationResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(e)
     return e
   }
 }
@@ -78,10 +75,7 @@ export function* getSamlIdentityProvider({ payload }) {
     return data
   } catch (e) {
     yield put(getSamlIdentitiesResponse())
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(e)
     return e
   }
 }
@@ -99,10 +93,7 @@ export function* putSamlProperties({ payload }) {
   } catch (error) {
     yield* errorToast({ error })
     yield put(putSamlPropertiesResponse())
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   }
 }
@@ -124,10 +115,7 @@ export function* postSamlIdentity({ payload }) {
     yield* errorToast({ error })
 
     yield put(toggleSavedFormFlag(false))
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   } finally {
     yield put(samlIdentityResponse())
@@ -139,15 +127,12 @@ export function* getTrustRelationshipsSaga() {
   try {
     const api = yield* newTrustRelationFunction()
     const data = yield call(api.getTrustRelationship)
-    yield put(getTrustRelationshipResponse({ data }))
+    yield put(getTrustRelationshipResponse({ data: data?.body || [] }))
     yield call(postUserAction, audit)
     return data
   } catch (e) {
     yield put(getTrustRelationshipResponse())
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(e)
     return e
   }
 }
@@ -169,10 +154,7 @@ export function* postTrustRelationship({ payload }) {
     yield* errorToast({ error })
 
     yield put(toggleSavedFormFlag(false))
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   } finally {
     yield put(samlIdentityResponse())
@@ -196,10 +178,7 @@ export function* updateTrustRelationship({ payload }) {
     yield* errorToast({ error })
 
     yield put(toggleSavedFormFlag(false))
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   } finally {
     yield put(updateTrustRelationshipResponse())
@@ -222,10 +201,7 @@ export function* deleteTrustRelationship({ payload }) {
     yield* errorToast({ error })
 
     yield put(deleteTrustRelationshipResponse())
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   }
 }
@@ -247,10 +223,7 @@ export function* updateSamlIdentity({ payload }) {
     yield* errorToast({ error })
 
     yield put(toggleSavedFormFlag(false))
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   } finally {
     yield put(updateSamlIdentityResponse())
@@ -273,10 +246,7 @@ export function* deleteSamlIdentity({ payload }) {
     yield* errorToast({ error })
 
     yield put(deleteSamlIdentityResponse())
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   }
 }
@@ -289,6 +259,13 @@ function* errorToast({ error }) {
       error?.response?.data?.message || error.message
     )
   )
+}
+
+function* handleFourZeroOneError(error) {
+  if (isFourZeroOneError(error)) {
+    const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+    yield put(getAPIAccessToken(jwt))
+  }
 }
 
 export function* watchGetSamlConfig() {

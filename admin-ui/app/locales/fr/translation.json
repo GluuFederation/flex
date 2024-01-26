@@ -135,6 +135,7 @@
     "metadata_location": "Emplacement des métadonnées",
     "released_attributes": "Attributs publiés",
     "metadata_file": "Fichier de métadonnées",
+    "metadata_url": "URL des métadonnées",
     "driver_class_name": "Nom de la classe du pilote",
     "db_schema_name": "Nom du schéma de la base de données",
     "connection_uri": "URI de connexion",

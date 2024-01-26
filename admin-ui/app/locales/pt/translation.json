@@ -134,6 +134,7 @@
     "metadata_location": "Localização dos Metadados",
     "released_attributes": "Atributos Liberados",
     "metadata_file": "Arquivo de Metadados",
+    "metadata_url": "URL dos metadados",
     "message_provider_type": "Tipo de provedor de mensagens",
     "ssl_key_store_file_path": "Caminho do arquivo de armazenamento de chaves SSL",
     "ssl_trust_store_password": "Senha do armazenamento de confiança SSL",
