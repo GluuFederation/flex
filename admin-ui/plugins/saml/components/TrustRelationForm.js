@@ -13,12 +13,12 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { Card, CardBody, Form, FormGroup, Col, Row, Button } from 'Components'
-import Toggle from 'react-toggle'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import * as Yup from 'yup'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -138,7 +138,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   }
 
   function handleSubmit(values, user_message) {
-    delete values.importMetadataFile
     let formdata = new FormData()
 
     let payload = {
@@ -230,8 +229,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
 
     return () => {
       dispatch(toggleSavedFormFlag(false))
-      // dispatch(getClientScopesResponse({ data: [] }))
-      // dispatch(setClientSelectedScopes([]))
+      dispatch(setClientSelectedScopes([]))
     }
   }, [savedForm])
 
@@ -288,18 +286,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                <FormGroup row>
-                  <GluuLabel label={'fields.enabled'} size={4} />
-                  <Col sm={8}>
-                    <Toggle
-                      onChange={(event) => {
-                        formik.setFieldValue('enabled', event.target.checked)
-                      }}
-                      checked={formik.values.enabled}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                </FormGroup>
+                <GluuToggleRow label={'fields.enabled'} name='enabled' viewOnly={viewOnly} formik={formik} />
               </Col>
               <Col sm={10}>
                 <GluuInputRow

@@ -15,8 +15,8 @@ import getThemeColor from 'Context/theme/config'
 import { useNavigate } from 'react-router'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { Paper } from '@mui/material'
 import { getTrustRelationship, deleteTrustRelationship } from 'Plugins/saml/redux/features/SamlSlice'
+import { PaperContainer, getTableCols } from './SamlIdentityList'
 
 const TrustRelationshipList = () => {
   const theme = useContext(ThemeContext)
@@ -39,26 +39,6 @@ const TrustRelationshipList = () => {
   useEffect(() => {
     dispatch(getTrustRelationship())
   }, [])
-
-  const tableColumns = [
-    {
-      title: `${t('fields.inum')}`,
-      field: 'inum',
-    },
-    {
-      title: `${t('fields.displayName')}`,
-      field: 'displayName',
-    },
-    {
-      title: `${t('fields.enabled')}`,
-      field: 'enabled',
-    },
-  ]
-
-  const PaperContainer = useCallback(
-    (props) => <Paper {...props} elevation={0} />,
-    []
-  )
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
     navigate('/saml/trust-relationship/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
@@ -89,7 +69,7 @@ const TrustRelationshipList = () => {
           components={{
             Container: PaperContainer,
           }}
-          columns={tableColumns}
+          columns={getTableCols(t)}
           data={trustRelationships}
           isLoading={loadingTrustRelationship}
           title=''

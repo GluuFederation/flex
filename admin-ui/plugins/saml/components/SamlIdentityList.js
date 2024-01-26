@@ -23,6 +23,23 @@ import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { Paper, TablePagination } from '@mui/material'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 
+export const getTableCols = (t) => {
+  return [
+    {
+      title: `${t('fields.inum')}`,
+      field: 'inum',
+    },
+    {
+      title: `${t('fields.displayName')}`,
+      field: 'displayName',
+    },
+    {
+      title: `${t('fields.enabled')}`,
+      field: 'enabled',
+    },
+  ]
+}
+
 const SamlIdentityList = () => {
   const options = {}
   const theme = useContext(ThemeContext)
@@ -50,26 +67,6 @@ const SamlIdentityList = () => {
     makeOptions()
     dispatch(getSamlIdentites(options))
   }, [])
-
-  const tableColumns = [
-    {
-      title: `${t('fields.inum')}`,
-      field: 'inum',
-    },
-    {
-      title: `${t('fields.displayName')}`,
-      field: 'displayName',
-    },
-    {
-      title: `${t('fields.enabled')}`,
-      field: 'enabled',
-    },
-  ]
-
-  const PaperContainer = useCallback(
-    (props) => <Paper {...props} elevation={0} />,
-    []
-  )
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
     navigate('/saml/idp/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
@@ -166,7 +163,7 @@ const SamlIdentityList = () => {
             Container: PaperContainer,
             Pagination: PaginationWrapper,
           }}
-          columns={tableColumns}
+          columns={getTableCols(t)}
           data={items}
           isLoading={loadingSamlIdp}
           title=''
@@ -251,3 +248,4 @@ const SamlIdentityList = () => {
 }
 
 export default SamlIdentityList
+export const PaperContainer = (props) => <Paper {...props} elevation={0} />
