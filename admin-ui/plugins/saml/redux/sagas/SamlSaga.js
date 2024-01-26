@@ -13,6 +13,9 @@ import {
   deleteSamlIdentityResponse,
   updateSamlIdentityResponse,
   getSamlIdentites,
+  getTrustRelationshipResponse,
+  deleteTrustRelationshipResponse,
+  updateTrustRelationshipResponse
 } from '../features/SamlSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -38,6 +41,15 @@ function* newSamlIdentityFunction() {
   return new SamlApi(api)
 }
 
+function* newTrustRelationFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.SAMLTrustRelationshipApi(
+    getClient(JansConfigApi, token, issuer)
+  )
+  return new SamlApi(api)
+}
+
 export function* getSamlConfigSaga() {
   const audit = yield* initAudit()
   try {
@@ -48,15 +60,12 @@ export function* getSamlConfigSaga() {
     return data
   } catch (e) {
     yield put(getSamlConfigurationResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(e)
     return e
   }
 }
 
-export function* getTrustRelationshipsSaga({ payload }) {
+export function* getSamlIdentityProvider({ payload }) {
   const audit = yield* initAudit()
   try {
     const api = yield* newSamlIdentityFunction()
@@ -66,10 +75,7 @@ export function* getTrustRelationshipsSaga({ payload }) {
     return data
   } catch (e) {
     yield put(getSamlIdentitiesResponse())
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(e)
     return e
   }
 }
@@ -87,10 +93,7 @@ export function* putSamlProperties({ payload }) {
   } catch (error) {
     yield* errorToast({ error })
     yield put(putSamlPropertiesResponse())
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   }
 }
@@ -112,13 +115,94 @@ export function* postSamlIdentity({ payload }) {
     yield* errorToast({ error })
 
     yield put(toggleSavedFormFlag(false))
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   } finally {
     yield put(samlIdentityResponse())
+  }
+}
+
+export function* getTrustRelationshipsSaga() {
+  const audit = yield* initAudit()
+  try {
+    const api = yield* newTrustRelationFunction()
+    const data = yield call(api.getTrustRelationship)
+    yield put(getTrustRelationshipResponse({ data: data?.body || [] }))
+    yield call(postUserAction, audit)
+    return data
+  } catch (e) {
+    yield put(getTrustRelationshipResponse())
+    yield* handleFourZeroOneError(e)
+    return e
+  }
+}
+
+export function* postTrustRelationship({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, CREATE, 'TRUST-RELATIONSHIP', payload)
+    const token = yield select((state) => state.authReducer.token.access_token)
+    const api = yield* newTrustRelationFunction()
+    yield call(api.postTrustRelationship, {
+      formdata: payload.action.action_data,
+      token,
+    })
+    yield put(toggleSavedFormFlag(true))
+    yield call(postUserAction, audit)
+  } catch (error) {
+    console.log('Error: ', error)
+    yield* errorToast({ error })
+
+    yield put(toggleSavedFormFlag(false))
+    yield* handleFourZeroOneError(error)
+    return error
+  } finally {
+    yield put(samlIdentityResponse())
+  }
+}
+
+export function* updateTrustRelationship({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, UPDATE, 'TRUST-RELATIONSHIP', payload)
+    const token = yield select((state) => state.authReducer.token.access_token)
+    const api = yield* newTrustRelationFunction()
+    yield call(api.updateTrustRelationship, {
+      formdata: payload.action.action_data,
+      token,
+    })
+    yield put(toggleSavedFormFlag(true))
+    yield call(postUserAction, audit)
+  } catch (error) {
+    console.log('Error: ', error)
+    yield* errorToast({ error })
+
+    yield put(toggleSavedFormFlag(false))
+    yield* handleFourZeroOneError(error)
+    return error
+  } finally {
+    yield put(updateTrustRelationshipResponse())
+  }
+}
+
+export function* deleteTrustRelationship({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, DELETION, 'TRUST-RELATIONSHIP', payload)
+    const api = yield* newTrustRelationFunction()
+    const data = yield call(
+      api.deleteTrustRelationship,
+      payload.action.action_data
+    )
+    yield put(deleteTrustRelationshipResponse(data))
+    yield getTrustRelationshipsSaga()
+    yield call(postUserAction, audit)
+  } catch (error) {
+    yield* errorToast({ error })
+
+    yield put(deleteTrustRelationshipResponse())
+    yield* handleFourZeroOneError(error)
+    return error
   }
 }
 
@@ -139,10 +223,7 @@ export function* updateSamlIdentity({ payload }) {
     yield* errorToast({ error })
 
     yield put(toggleSavedFormFlag(false))
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   } finally {
     yield put(updateSamlIdentityResponse())
@@ -165,10 +246,7 @@ export function* deleteSamlIdentity({ payload }) {
     yield* errorToast({ error })
 
     yield put(deleteSamlIdentityResponse())
-    if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleFourZeroOneError(error)
     return error
   }
 }
@@ -183,12 +261,23 @@ function* errorToast({ error }) {
   )
 }
 
+function* handleFourZeroOneError(error) {
+  if (isFourZeroOneError(error)) {
+    const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+    yield put(getAPIAccessToken(jwt))
+  }
+}
+
 export function* watchGetSamlConfig() {
   yield takeEvery('idpSaml/getSamlConfiguration', getSamlConfigSaga)
 }
 
+export function* watchGetSamlIdentityProvider() {
+  yield takeEvery('idpSaml/getSamlIdentites', getSamlIdentityProvider)
+}
+
 export function* watchGetTrustRelationshipsSaga() {
-  yield takeEvery('idpSaml/getSamlIdentites', getTrustRelationshipsSaga)
+  yield takeEvery('idpSaml/getTrustRelationship', getTrustRelationshipsSaga)
 }
 
 export function* watchPutSamlProperties() {
@@ -199,6 +288,10 @@ export function* watchCreateSamlIdentity() {
   yield takeEvery('idpSaml/createSamlIdentity', postSamlIdentity)
 }
 
+export function* watchCreateTrustRelationship() {
+  yield takeEvery('idpSaml/createTrustRelationship', postTrustRelationship)
+}
+
 export function* watchDeleteSamlIdentityProvider() {
   yield takeEvery('idpSaml/deleteSamlIdentity', deleteSamlIdentity)
 }
@@ -207,13 +300,25 @@ export function* watchUpdateSamlIdentity() {
   yield takeEvery('idpSaml/updateSamlIdentity', updateSamlIdentity)
 }
 
+export function* watchDeleteTrustRelationship() {
+  yield takeEvery('idpSaml/deleteTrustRelationship', deleteTrustRelationship)
+}
+
+export function* watchUpdateTrustRelationship() {
+  yield takeEvery('idpSaml/updateTrustRelationship', updateTrustRelationship)
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watchGetSamlConfig),
-    fork(watchGetTrustRelationshipsSaga),
+    fork(watchGetSamlIdentityProvider),
     fork(watchPutSamlProperties),
     fork(watchCreateSamlIdentity),
     fork(watchDeleteSamlIdentityProvider),
-    fork(watchUpdateSamlIdentity)
+    fork(watchUpdateSamlIdentity),
+    fork(watchCreateTrustRelationship),
+    fork(watchGetTrustRelationshipsSaga),
+    fork(watchUpdateTrustRelationship),
+    fork(watchDeleteTrustRelationship),
   ])
 }

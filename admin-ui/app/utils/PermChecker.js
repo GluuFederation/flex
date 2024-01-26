@@ -51,6 +51,9 @@ export const SAML_READ = 'https://jans.io/idp/saml.readonly'
 export const SAML_WRITE = 'https://jans.io/idp/saml.write'
 export const SAML_DELETE = 'https://jans.io/idp/saml.delete'
 
+export const SAML_TR_READ = BASE_URL + '/config/saml.readonly'
+export const SAML_TR_WRITE = BASE_URL + '/config/saml.write'
+
 export const SAML_CONFIG_READ = BASE_URL + '/config/saml-config.readonly'
 export const SAML_CONFIG_WRITE = BASE_URL + '/config/saml-config.write'
 

@@ -20,6 +20,7 @@ import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { Box } from '@mui/material'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
@@ -156,7 +157,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
   useEffect(() => {
     if (savedForm) {
-      navigate('/saml')
+      navigate('/saml/idp')
     }
 
     return () => {
@@ -240,18 +241,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                <FormGroup row>
-                  <GluuLabel label={'fields.enabled'} size={4} />
-                  <Col sm={8}>
-                    <Toggle
-                      onChange={(event) => {
-                        formik.setFieldValue('enabled', event.target.checked)
-                      }}
-                      checked={formik.values.enabled}
-                      disabled={viewOnly}
-                    />
-                  </Col>
-                </FormGroup>
+                <GluuToggleRow label={'fields.enabled'} name='enabled' viewOnly={viewOnly} formik={formik} />
               </Col>
               <Col sm={10}>
                 <FormGroup row>

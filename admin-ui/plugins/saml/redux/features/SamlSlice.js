@@ -8,8 +8,10 @@ const initialState = {
   items: [],
   loadingSamlIdp: false,
   loadingSamlIdentity: false,
+  loadingTrustRelationship: false,
   totalItems: 0,
-  entriesCount: 0
+  entriesCount: 0,
+  trustRelationships: []
 }
 
 const samlSlice = createSlice({
@@ -65,6 +67,31 @@ const samlSlice = createSlice({
     },
     deleteSamlIdentityResponse: (state) => {
       state.loading = false
+    },
+    deleteTrustRelationship: (state) => {
+      state.loadingTrustRelationship = true
+    },
+    deleteTrustRelationshipResponse: (state) => {
+      state.loadingTrustRelationship = false
+    },
+    getTrustRelationship: (state) => {
+      state.loadingTrustRelationship = true
+    },
+    getTrustRelationshipResponse: (state, action) => {
+      state.loadingTrustRelationship = false
+      state.trustRelationships = action.payload?.data || []
+    },
+    createTrustRelationship: (state) => {
+      state.loading = true
+      state.loadingTrustRelationship = true
+    },
+    updateTrustRelationship: (state) => {
+      state.loading = true
+      state.loadingTrustRelationship = true
+    },
+    updateTrustRelationshipResponse: (state) => {
+      state.loading = false
+      state.loadingTrustRelationship = false
     }
   },
 })
@@ -82,7 +109,14 @@ export const {
   deleteSamlIdentity,
   deleteSamlIdentityResponse,
   updateSamlIdentityResponse,
-  updateSamlIdentity
+  updateSamlIdentity,
+  getTrustRelationship,
+  getTrustRelationshipResponse,
+  deleteTrustRelationship,
+  deleteTrustRelationshipResponse,
+  createTrustRelationship,
+  updateTrustRelationship,
+  updateTrustRelationshipResponse
 } = samlSlice.actions
 
 export default samlSlice.reducer
