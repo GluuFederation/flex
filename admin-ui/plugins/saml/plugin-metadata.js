@@ -31,32 +31,32 @@ const pluginMetadata = {
     },
     {
       component: SamlPage,
-      path: PLUGIN_BASE_APTH + '/trust-relationship',
+      path: PLUGIN_BASE_APTH + '/service-providers',
       permission: SAML_TR_READ,
     },
     {
       component: SamlPage,
-      path: PLUGIN_BASE_APTH + '/idp',
+      path: PLUGIN_BASE_APTH + '/identity-providers',
       permission: SAML_READ,
     },
     {
       component: SamlIdpEditPage,
-      path: PLUGIN_BASE_APTH + '/idp/edit',
+      path: PLUGIN_BASE_APTH + '/identity-providers/edit',
       permission: SAML_WRITE,
     },
     {
       component: SamlIdpAddPage,
-      path: PLUGIN_BASE_APTH + '/idp/add',
+      path: PLUGIN_BASE_APTH + '/identity-providers/add',
       permission: SAML_WRITE,
     },
     {
       component: TrustRelationshipEditPage,
-      path: PLUGIN_BASE_APTH + '/trust-relationship/edit',
+      path: PLUGIN_BASE_APTH + '/service-providers/edit',
       permission: SAML_WRITE,
     },
     {
       component: TrustRelationshipAddPage,
-      path: PLUGIN_BASE_APTH + '/trust-relationship/add',
+      path: PLUGIN_BASE_APTH + '/service-providers/add',
       permission: SAML_WRITE,
     },
   ],
