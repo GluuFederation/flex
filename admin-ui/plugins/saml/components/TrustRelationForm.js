@@ -224,7 +224,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
 
   useEffect(() => {
     if (savedForm) {
-      navigate('/saml/trust-relationship')
+      navigate('/saml/service-providers')
     }
 
     return () => {

@@ -157,7 +157,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
   useEffect(() => {
     if (savedForm) {
-      navigate('/saml/idp')
+      navigate('/saml/identity-providers')
     }
 
     return () => {

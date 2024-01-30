@@ -19,18 +19,18 @@ const SamlPage = () => {
   SetTitle(t('titles.saml_management'))
 
   const tabNames = [
-    { name: t('menus.idp_config'), path: '/saml/config' },
-    { name: t('menus.saml_idp'), path: '/saml/idp' },
-    { name: t('menus.trust_relationships'), path: '/saml/trust-relationship' },
+    { name: t('menus.configuration'), path: '/saml/config' },
+    { name: t('menus.identity_providers'), path: '/saml/identity-providers' },
+    { name: t('menus.service_providers'), path: '/saml/service-providers' },
   ]
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case t('menus.saml_idp'):
+      case t('menus.identity_providers'):
         return <SamlIdentityList />
-      case t('menus.idp_config'):
+      case t('menus.configuration'):
         return <IdpConfigTab />
-      case t('menus.trust_relationships'):
+      case t('menus.service_providers'):
         return <TrustRelationshipList />
     }
   }

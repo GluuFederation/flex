@@ -41,11 +41,11 @@ const TrustRelationshipList = () => {
   }, [])
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
-    navigate('/saml/trust-relationship/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
+    navigate('/saml/service-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
   }, [])
 
   const handleGoToAddPage = useCallback(() => {
-    navigate('/saml/trust-relationship/add')
+    navigate('/saml/service-providers/add')
   }, [])
 
   function handleDelete(row) {
@@ -76,7 +76,7 @@ const TrustRelationshipList = () => {
           actions={[
             {
               icon: 'edit',
-              tooltip: `${t('messages.edit_trust_relationship')}`,
+              tooltip: `${t('messages.edit_service_provider')}`,
               iconProps: { color: 'primary' },
               onClick: (event, rowData) => {
                 const data = { ...rowData }
@@ -87,7 +87,7 @@ const TrustRelationshipList = () => {
             },
             {
               icon: 'visibility',
-              tooltip: `${t('messages.view_trust_relationshi_details')}`,
+              tooltip: `${t('messages.view_service_provider')}`,
               onClick: (event, rowData) => handleGoToEditPage(rowData, true),
               disabled: !hasPermission(permissions, SAML_TR_READ),
             },
@@ -96,13 +96,13 @@ const TrustRelationshipList = () => {
               iconProps: {
                 color: 'secondary',
               },
-              tooltip: `${t('messages.delete_trust_relationship')}`,
+              tooltip: `${t('messages.delete_service_provider')}`,
               onClick: (event, rowData) => handleDelete(rowData),
               disabled: !hasPermission(permissions, SAML_TR_WRITE),
             },
             {
               icon: 'add',
-              tooltip: `${t('messages.add_trust_relationship')}`,
+              tooltip: `${t('messages.add_service_provider')}`,
               iconProps: { color: 'primary' },
               isFreeAction: true,
               onClick: () => handleGoToAddPage(),

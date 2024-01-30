@@ -69,11 +69,11 @@ const SamlIdentityList = () => {
   }, [])
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
-    navigate('/saml/idp/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
+    navigate('/saml/identity-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
   }, [])
 
   const handleGoToAddPage = useCallback(() => {
-    navigate('/saml/idp/add')
+    navigate('/saml/identity-providers/add')
   }, [])
 
   function handleDelete(row) {
@@ -170,7 +170,7 @@ const SamlIdentityList = () => {
           actions={[
             {
               icon: 'edit',
-              tooltip: `${t('messages.edit_idp')}`,
+              tooltip: `${t('messages.edit_identity_provider')}`,
               iconProps: { color: 'primary' },
               onClick: (event, rowData) => {
                 const data = { ...rowData }
@@ -181,7 +181,7 @@ const SamlIdentityList = () => {
             },
             {
               icon: 'visibility',
-              tooltip: `${t('messages.view_idp_details')}`,
+              tooltip: `${t('messages.view_identity_provider')}`,
               onClick: (event, rowData) => handleGoToEditPage(rowData, true),
               disabled: !hasPermission(permissions, SAML_READ),
             },
@@ -190,7 +190,7 @@ const SamlIdentityList = () => {
               iconProps: {
                 color: 'secondary',
               },
-              tooltip: `${t('messages.delete_idp')}`,
+              tooltip: `${t('messages.delete_identity_provider')}`,
               onClick: (event, rowData) => handleDelete(rowData),
               disabled: !hasPermission(permissions, SAML_DELETE),
             },
@@ -214,7 +214,7 @@ const SamlIdentityList = () => {
             },
             {
               icon: 'add',
-              tooltip: `${t('messages.add_idp')}`,
+              tooltip: `${t('messages.add_identity_provider')}`,
               iconProps: { color: 'primary' },
               isFreeAction: true,
               onClick: () => handleGoToAddPage(),
