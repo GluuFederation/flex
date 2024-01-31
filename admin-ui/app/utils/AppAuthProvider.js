@@ -30,7 +30,7 @@ import {
   GRANT_TYPE_AUTHORIZATION_CODE,
 } from '@openid/appauth'
 import { fetchUserInformation } from 'Redux/api/backend-api'
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 export default function AppAuthProvider(props) {
   const dispatch = useDispatch()
@@ -148,7 +148,7 @@ export default function AppAuthProvider(props) {
           })
           .then((ujwt) => {
             if(!userinfo) {
-              dispatch(getUserInfoResponse({ userinfo: jwt_decode(ujwt), ujwt: ujwt }))
+              dispatch(getUserInfoResponse({ userinfo: jwtDecode(ujwt), ujwt: ujwt }))
               dispatch(getAPIAccessToken(ujwt))
               setShowAdminUI(true)
             } else {
