@@ -134,6 +134,7 @@
     "ssl_key_store_password": "Mot de passe du magasin de clés SSL",
     "metadata_location": "Emplacement des métadonnées",
     "released_attributes": "Attributs publiés",
+    "download_summary": "Télécharger le résumé",
     "metadata_file": "Fichier de métadonnées",
     "metadata_url": "URL des métadonnées",
     "driver_class_name": "Nom de la classe du pilote",

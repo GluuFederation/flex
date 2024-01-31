@@ -285,6 +285,25 @@ function ClientWizardForm({
     }
   }
 
+  const downloadClientData = (values) => {
+    const jsonData = JSON.stringify(values, null, 2)
+
+    const blob = new Blob([jsonData], { type: 'application/json' })
+
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = values.displayName
+      ? `${values.displayName}.json`
+      : 'client-summary.json'
+
+    document.body.appendChild(link)
+
+    link.click()
+
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+  }
+
   return (
     <React.Fragment>
       <Card style={applicationStyle.mainCard}>
@@ -306,7 +325,23 @@ function ClientWizardForm({
           {(formik) => (
             <Form onSubmit={formik.handleSubmit} onKeyDown={onKeyDown}>
               <Card>
-                <CardBody className='d-flex justify-content-center pt-5 wizard-wrapper'>
+                <div className='d-flex justify-content-end pt-3 pe-3'>
+                  <Button
+                    color={`primary-${selectedTheme}`}
+                    style={{
+                      ...applicationStyle.buttonStyle,
+                      ...applicationStyle.buttonFlexIconStyles,
+                      margin: 0,
+                    }}
+                    type='button'
+                    onClick={() => downloadClientData(formik.values)}
+                    className='d-flex m-1'
+                  >
+                    <i className='fa fa-download'></i>
+                    {t('fields.download_summary')}
+                  </Button>
+                </div>
+                <CardBody className='d-flex justify-content-center pt-3 wizard-wrapper'>
                   <Wizard activeStep={currentStep} onStepChanged={changeStep}>
                     <Wizard.Step
                       data-testid={sequence[0]}
@@ -463,6 +498,6 @@ ClientWizardForm.propTypes = {
   customOnSubmit: PropTypes.func,
   oidcConfiguration: PropTypes.object,
   umaResources: PropTypes.array,
-};
+}
 
 export default ClientWizardForm
