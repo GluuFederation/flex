@@ -83,6 +83,7 @@
     "introspection_encrypted_response_alg": "Introspection Encrypted Response Alg",
     "http_request_body": "Request Body",
     "webhook_name": "Webhook Name",
+    "download_summary": "Download Summary",
     "metadata_location": "Metadata Location",
     "released_attributes": "Released Attributes",
     "metadata_file": "Metadata File",
