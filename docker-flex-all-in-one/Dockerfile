@@ -52,6 +52,7 @@ COPY --from=jans-aio-src /etc/nginx/jans-aio /etc/nginx/jans-aio
 COPY --from=jans-aio-src /var/jans/cr-snapshots /var/jans/cr-snapshots
 COPY --from=jans-aio-src /opt/keycloak /opt/keycloak
 COPY --from=jans-aio-src /opt/idp /opt/idp
+COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
 
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
@@ -86,15 +87,15 @@ RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
 
 COPY app /app
 
-# set directory contains installer code that will be added to Python sys.path
-ENV PYTHONPATH=/app
-
 # CN version as env var (with suffix if any, i.e. SNAPSHOT)
 ENV CN_VERSION=1.0.22-SNAPSHOT
 
+# set directory contains installer code that will be added to Python sys.path
+ENV PYTHONPATH=/app
+
 ENV JETTY_BASE=/opt/jans/jetty \
     JETTY_HOME=/opt/jetty \
-    CN_AIO_COMPONENTS="" \
+    CN_AIO_COMPONENTS="configurator,persistence-loader,jans-auth,jans-config-api,jans-fido2,jans-scim,jans-casa" \
     CN_AIO_ENABLE_MONITOR=false \
     CN_AIO_PLUGINS="flex_aio.plugins.FlexPlugin" \
     CN_ENABLE_STDOUT_LOG_PREFIX=true \
@@ -206,6 +207,7 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     /app \
     /var/lib/nginx \
     /var/log/nginx \
+    /var/log/adminui \
     /etc/nginx/jans-aio \
     /usr/share/java \
     /var/jans/cr-snapshots \
@@ -246,6 +248,7 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     /app \
     /var/lib/nginx \
     /var/log/nginx \
+    /var/log/adminui \
     /etc/nginx/jans-aio \
     /usr/share/java \
     /var/jans/cr-snapshots \
