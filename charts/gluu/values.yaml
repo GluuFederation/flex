@@ -474,6 +474,10 @@ config:
     kcDbUrlDatabase: keycloak
     # -- Keycloak database connection properties. If using postgresql, the value can be set to empty string.
     kcDbUrlProperties: "?useUnicode=true&characterEncoding=UTF-8&character_set_server=utf8mb4"
+    # -- URL of OPA API
+    cnOpaUrl: http://opa.opa.svc.cluster.cluster.local:8181/v1
+    # -- Message type (one of POSTGRES, REDIS, or DISABLED)
+    cnMessageType: DISABLED
   # -- Country code. Used for certificate creation.
   countryCode: US
   # -- Email address of the administrator usually. Used for certificate creation.
@@ -943,6 +947,9 @@ global:
       authServerProtectedToken: false
       # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio.
       authServerProtectedRegister: false
+    # -- Enable jans-lock as service running inside auth-server
+    lockEnabled: false
+
   auth-server-key-rotation:
     # -- Boolean flag to enable/disable the auth-server-key rotation cronjob chart.
     enabled: true
@@ -978,7 +985,7 @@ global:
     testEnviroment: false
   # -- Port used by Prometheus JMX agent (default to empty string). To enable Prometheus JMX agent, set the value to a number.
   cnPrometheusPort: ""
-  # -- Document store type to use for shibboleth files DBL.
+  # -- Document store type to use for shibboleth files DB.
   cnDocumentStoreType: DB
   # -- Persistence backend to run Gluu with ldap|couchbase|hybrid|sql|spanner.
   cnPersistenceType: sql
@@ -1065,6 +1072,8 @@ global:
     ingress:
       # Enable config API endpoints /jans-config-api
       configApiEnabled: true
+    # -- Comma-separated values of enabled plugins (supported plugins are "admin-ui","fido2","scim","user-mgt","jans-link","kc-saml")
+    plugins: "admin-ui,fido2,scim,user-mgt"
   # -- Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services.
   fqdn: demoexample.gluu.org
   fido2:
