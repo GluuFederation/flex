@@ -176,7 +176,7 @@ class PersistenceSetup:
             if should_update:
                 logger.info("Updating admin-ui config app")
                 entry["jansConfApp"] = json.dumps(merged_conf)
-                entry["jansRevision"] += 1
+                entry["jansRevision"] = entry.get("jansRevision", 0) + 1
                 self.client.update(table_name, dn, entry)
 
         elif self.persistence_type == "couchbase":
