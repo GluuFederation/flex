@@ -30,9 +30,9 @@ configmap:
   # -- SQL database port.
   cnSqlDbPort: 3306
   # -- SQL database name.
-  cnSqlDbName: jans
+  cnSqlDbName: gluu
   # -- SQL database username.
-  cnSqlDbUser: jans
+  cnSqlDbUser: gluu
   # -- SQL database timezone.
   cnSqlDbTimezone: UTC
   # -- SQL password  injected the secrets .
@@ -54,9 +54,9 @@ configmap:
   # -- Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol
   cnCouchbaseSuperUserPassword: Test1234#
   # -- Couchbase URL. Used only when cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster
-  cnCouchbaseUrl: cbjanssen.default.svc.cluster.local
+  cnCouchbaseUrl: cbgluu.default.svc.cluster.local
   # -- Couchbase restricted user. Used only when cnPersistenceType is hybrid or couchbase.
-  cnCouchbaseUser: janssen
+  cnCouchbaseUser: gluu
   # [google_envs] Envs related to using Google
   # -- Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when configAdapterName and configSecretAdapter is set to google.
   cnGoogleSecretManagerServiceAccount: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
@@ -71,8 +71,8 @@ configmap:
   # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
   # -- Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when configAdapterName and configSecretAdapter is set to google.
   cnGoogleSecretVersionId: "latest"
-  # -- Prefix for Gluu secret in Google Secret Manager. Defaults to janssen. If left janssen-secret secret will be created. Used only when configAdapterName and configSecretAdapter is set to google.
-  cnGoogleSecretNamePrefix: janssen
+  # -- Prefix for Gluu secret in Google Secret Manager. Defaults to gluu. If left janssen-secret secret will be created. Used only when configAdapterName and configSecretAdapter is set to google.
+  cnGoogleSecretNamePrefix: gluu
   # [google_secret_manager_envs] END
   # [google_envs] END
   # [aws_envs] Envs related to using AWS
@@ -84,11 +84,11 @@ configmap:
   # The URL of AWS secretsmanager service (if omitted, will use the one in the specified default region. Example: https://secretsmanager.us-west-1.amazonaws.com). Used only when configAdapterName and configSecretAdapter is set to aws.
   cnAwsSecretsEndpointUrl: ""
   # The prefix name of the secrets. Used only when configAdapterName and configSecretAdapter is set to aws.
-  cnAwsSecretsNamePrefix: janssen
+  cnAwsSecretsNamePrefix: gluu
   # The default AWS Region to use, for example, `us-west-1` or `us-west-2`.
   cnAwsDefaultRegion: us-west-1
   # The aws named profile to use. Has to be created first. This is a sensible default and it's good to leave it as is. https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
-  cnAwsProfile: janssen
+  cnAwsProfile: gluu
   # Example replicated region [{"Region": "us-west-1"}, {"Region": "us-west-2"}]
   cnAwsSecretsReplicaRegions: []
   # [aws_secret_manager_envs] END
@@ -666,7 +666,7 @@ image:
   # -- Image pullPolicy to use for deploying.
   pullPolicy: IfNotPresent
   # -- Image  to use for deploying.
-  repository: ghcr.io/janssenproject/jans/all-in-one
+  repository: ghcr.io/gluufederation/flex/flex-all-in-one
   # -- Image  tag to use for deploying.
   tag: 1.0.22_dev
   # -- Image Pull Secrets

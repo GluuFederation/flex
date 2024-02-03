@@ -142,10 +142,10 @@ Kubernetes: `>=v1.22.0-0`
 | configSecretAdapter | string | `"kubernetes"` | The config backend adapter that will hold Gluu secret layer. aws|google|kubernetes |
 | configmap.cnAwsAccessKeyId | string | `""` |  |
 | configmap.cnAwsDefaultRegion | string | `"us-west-1"` |  |
-| configmap.cnAwsProfile | string | `"janssen"` |  |
+| configmap.cnAwsProfile | string | `"gluu"` |  |
 | configmap.cnAwsSecretAccessKey | string | `""` |  |
 | configmap.cnAwsSecretsEndpointUrl | string | `""` |  |
-| configmap.cnAwsSecretsNamePrefix | string | `"janssen"` |  |
+| configmap.cnAwsSecretsNamePrefix | string | `"gluu"` |  |
 | configmap.cnAwsSecretsReplicaRegions | list | `[]` |  |
 | configmap.cnCacheType | string | `"NATIVE_PERSISTENCE"` | Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` . |
 | configmap.cnConfigKubernetesConfigMap | string | `"cn"` | The name of the Kubernetes ConfigMap that will hold the configuration layer |
@@ -155,11 +155,11 @@ Kubernetes: `>=v1.22.0-0`
 | configmap.cnCouchbasePassword | string | `"P@ssw0rd"` | Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol . |
 | configmap.cnCouchbaseSuperUser | string | `"admin"` | The Couchbase super user (admin) username. This user is used during initialization only. |
 | configmap.cnCouchbaseSuperUserPassword | string | `"Test1234#"` | Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol |
-| configmap.cnCouchbaseUrl | string | `"cbjanssen.default.svc.cluster.local"` | Couchbase URL. Used only when cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster |
-| configmap.cnCouchbaseUser | string | `"janssen"` | Couchbase restricted user. Used only when cnPersistenceType is hybrid or couchbase. |
+| configmap.cnCouchbaseUrl | string | `"cbgluu.default.svc.cluster.local"` | Couchbase URL. Used only when cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster |
+| configmap.cnCouchbaseUser | string | `"gluu"` | Couchbase restricted user. Used only when cnPersistenceType is hybrid or couchbase. |
 | configmap.cnGoogleProjectId | string | `"google-project-to-save-config-and-secrets-to"` | Project id of the Google project the secret manager belongs to. Used only when configAdapterName and configSecretAdapter is set to google. |
 | configmap.cnGoogleSecretManagerServiceAccount | string | `"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="` | Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when configAdapterName and configSecretAdapter is set to google. |
-| configmap.cnGoogleSecretNamePrefix | string | `"janssen"` | Prefix for Gluu secret in Google Secret Manager. Defaults to janssen. If left janssen-secret secret will be created. Used only when configAdapterName and configSecretAdapter is set to google. |
+| configmap.cnGoogleSecretNamePrefix | string | `"gluu"` | Prefix for Gluu secret in Google Secret Manager. Defaults to gluu. If left janssen-secret secret will be created. Used only when configAdapterName and configSecretAdapter is set to google. |
 | configmap.cnGoogleSecretVersionId | string | `"latest"` | Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when configAdapterName and configSecretAdapter is set to google. |
 | configmap.cnGoogleSpannerDatabaseId | string | `""` | Google Spanner Database ID. Used only when cnPersistenceType is spanner. |
 | configmap.cnGoogleSpannerInstanceId | string | `""` | Google Spanner ID. Used only when cnPersistenceType is spanner. |
@@ -178,11 +178,11 @@ Kubernetes: `>=v1.22.0-0`
 | configmap.cnSecretKubernetesSecret | string | `"cn"` | Kubernetes secret name holding configuration keys. Used when configSecretAdapter is set to kubernetes which is the default. |
 | configmap.cnSqlDbDialect | string | `"mysql"` | SQL database dialect. `mysql` or `pgsql` |
 | configmap.cnSqlDbHost | string | `"my-release-mysql.default.svc.cluster.local"` | SQL database host uri. |
-| configmap.cnSqlDbName | string | `"jans"` | SQL database name. |
+| configmap.cnSqlDbName | string | `"gluu"` | SQL database name. |
 | configmap.cnSqlDbPort | int | `3306` | SQL database port. |
 | configmap.cnSqlDbSchema | string | `""` | Schema name used by SQL database (default to empty-string; if using MySQL, the schema name will be resolved as the database name, whereas in PostgreSQL the schema name will be resolved as `"public"`). |
 | configmap.cnSqlDbTimezone | string | `"UTC"` | SQL database timezone. |
-| configmap.cnSqlDbUser | string | `"jans"` | SQL database username. |
+| configmap.cnSqlDbUser | string | `"gluu"` | SQL database username. |
 | configmap.cnSqldbUserPassword | string | `"Test1234#"` | SQL password  injected the secrets . |
 | configmap.kcDbPassword | string | `"Test1234#"` | Password for Keycloak database access |
 | configmap.kcDbSchema | string | `"keycloak"` | Keycloak database schema name (note that PostgreSQL may using "public" schema). |
@@ -222,7 +222,7 @@ Kubernetes: `>=v1.22.0-0`
 | hpa.metrics | list | `[]` | metrics if targetCPUUtilizationPercentage is not set |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
-| image.repository | string | `"ghcr.io/janssenproject/jans/all-in-one"` | Image  to use for deploying. |
+| image.repository | string | `"ghcr.io/gluufederation/flex/flex-all-in-one"` | Image  to use for deploying. |
 | image.tag | string | `"1.0.22_dev"` | Image  tag to use for deploying. |
 | isFqdnRegistered | bool | `false` | Boolean flag to enable mapping lbIp  to fqdn inside pods on clouds that provide static ip for load balancers. On cloud that provide only addresses to the LB this flag will enable a script to actively scan config.configmap.lbAddr and update the hosts file inside the pods automatically. |
 | istio.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
