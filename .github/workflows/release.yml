@@ -18,6 +18,15 @@ on:
         description: 'next anticipated Mega release version'
         required: true
         default: '5.0.23'
+      # to be removed once we equate the mega release to the helm version
+      helm_release_as:
+        description: ' anticipated helm release version'
+        required: true
+        default: '5.0.25'
+      next_helm_release_as:
+        description: 'next anticipated helm release version'
+        required: true
+        default: '5.0.26'
 
 jobs:
   mega-release-pr:
@@ -62,13 +71,15 @@ jobs:
         SETUP_VERSION=${{ github.event.inputs.jans_release_as }}
         DOCKER_VERSION=${{ github.event.inputs.jans_release_as }}
         ADMIN_UI_VERSION=${{ github.event.inputs.jans_release_as }}
-        
+        HELM_RELEASE=${{ github.event.inputs.helm_release_as }}
+
         NEXT_VERSION=${{ github.event.inputs.next_mega_release_as }}
         NEXT_JANS_VERSION=${{ github.event.inputs.next_jans_release_as }}
         NEXT_SETUP_VERSION=${{ github.event.inputs.next_jans_release_as }}
         NEXT_DOCKER_VERSION=${{ github.event.inputs.next_jans_release_as }}
         NEXT_ADMIN_UI_VERSION=${{ github.event.inputs.next_jans_release_as }}
-        
+        NEXT_HELM_RELEASE=${{ github.event.inputs.next_helm_release_as }}
+
         echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token
         git checkout -b chore-$VERSION
         git pull origin chore-$VERSION || echo "Nothing to pull"
@@ -87,7 +98,7 @@ jobs:
         git commit -a -S -m "chore: modify app_info.json and python version files" || echo "Nothing to commit"
         # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
         egrep -lRZ --include=Chart.yaml . | xargs -0 -l sed -i -e "s/appVersion: .*/appVersion: \"$VERSION\"/g"
-        egrep -lRZ --include=Chart.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/version: .*/version: $VERSION/g"
+        egrep -lRZ --include=Chart.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/version: .*/version: $HELM_RELEASE/g" # This should be $VERSION
         egrep -lRZ --include=Chart.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/:1.*_dev/:$JANS_VERSION-1/g"
         egrep -lRZ --include=values.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/:1.*_dev/: $JANS_VERSION-1/g"
         # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
@@ -123,7 +134,7 @@ jobs:
         git commit -a -S -m "chore: modify app_info.json and python version files" || echo "Nothing to commit"
         # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
         egrep -lRZ --include=Chart.yaml . | xargs -0 -l sed -i -e "s/appVersion: .*/appVersion: \"$NEXT_VERSION-dev\"/g"
-        egrep -lRZ --include=Chart.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/version: .*/version: $NEXT_VERSION/g"
+        egrep -lRZ --include=Chart.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/version: .*/version: $NEXT_HELM_RELEASE-dev/g" #This should be $NEXT_VERSION
         egrep -lRZ --include=Chart.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/:1.*_dev/:$NEXT_JANS_VERSION_dev/g"
         egrep -lRZ --include=values.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/:1.*_dev/: $NEXT_JANS_VERSION_dev/g"
         # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
