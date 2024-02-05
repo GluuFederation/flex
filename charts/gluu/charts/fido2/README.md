@@ -1,6 +1,6 @@
 # fido2
 
-![Version: 5.0.22](https://img.shields.io/badge/Version-5.0.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.22](https://img.shields.io/badge/AppVersion-5.0.22-informational?style=flat-square)
+![Version: 5.0.23](https://img.shields.io/badge/Version-5.0.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.23-dev](https://img.shields.io/badge/AppVersion-5.0.23--dev-informational?style=flat-square)
 
 FIDO 2.0 (FIDO2) is an open authentication standard that enables leveraging common devices to authenticate to online services in both mobile and desktop environments.
 

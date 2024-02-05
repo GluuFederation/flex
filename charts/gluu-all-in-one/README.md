@@ -1,6 +1,6 @@
 # gluu-all-in-one
 
-![Version: 1.0.23-SNAPSHOT](https://img.shields.io/badge/Version-1.0.23-SNAPSHOT-informational?style=flat-square) ![AppVersion: 5.0.22](https://img.shields.io/badge/AppVersion-5.0.22-informational?style=flat-square)
+![Version: 1.0.23](https://img.shields.io/badge/Version-1.0.23-informational?style=flat-square) ![AppVersion: 5.0.23-dev](https://img.shields.io/badge/AppVersion-5.0.23--dev-informational?style=flat-square)
 
 Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
 

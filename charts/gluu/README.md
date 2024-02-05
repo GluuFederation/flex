@@ -1,6 +1,6 @@
 # gluu
 
-![Version: 5.0.22](https://img.shields.io/badge/Version-5.0.22-informational?style=flat-square) ![AppVersion: 5.0.22](https://img.shields.io/badge/AppVersion-5.0.22-informational?style=flat-square)
+![Version: 5.0.23](https://img.shields.io/badge/Version-5.0.23-informational?style=flat-square) ![AppVersion: 5.0.23-dev](https://img.shields.io/badge/AppVersion-5.0.23--dev-informational?style=flat-square)
 
 Gluu Access and Identity Management
 
@@ -22,20 +22,20 @@ Kubernetes: `>=v1.21.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | admin-ui | 5.0.22 |
-|  | auth-server | 5.0.22 |
-|  | auth-server-key-rotation | 5.0.22 |
-|  | casa | 5.0.22 |
-|  | cn-istio-ingress | 5.0.22 |
-|  | config | 5.0.22 |
-|  | config-api | 5.0.22 |
-|  | fido2 | 5.0.22 |
-|  | link | 5.0.22 |
-|  | nginx-ingress | 5.0.22 |
-|  | opendj | 5.0.22 |
-|  | persistence | 5.0.22 |
-|  | saml | 5.0.22 |
-|  | scim | 5.0.22 |
+|  | admin-ui | 5.0.23 |
+|  | auth-server | 5.0.23 |
+|  | auth-server-key-rotation | 5.0.23 |
+|  | casa | 5.0.23 |
+|  | cn-istio-ingress | 5.0.23 |
+|  | config | 5.0.23 |
+|  | config-api | 5.0.23 |
+|  | fido2 | 5.0.23 |
+|  | link | 5.0.23 |
+|  | nginx-ingress | 5.0.23 |
+|  | opendj | 5.0.23 |
+|  | persistence | 5.0.23 |
+|  | saml | 5.0.23 |
+|  | scim | 5.0.23 |
 
 ## Values
 
