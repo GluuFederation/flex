@@ -103,8 +103,6 @@ jobs:
         egrep -lRZ --include=values.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/:1.*_dev/: $JANS_VERSION-1/g"
         # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
         egrep -lRZ --include=Chart.yaml --exclude-dir=gluu . | xargs -0 -l sed -i -e "s/version: .*/version: $JANS_VERSION/g"
-        egrep -lRZ --include=Chart.yaml --exclude-dir=gluu . | xargs -0 -l sed -i -e "s/:1.*_dev/:$VERSION-1/g"
-        egrep -lRZ --include=values.yaml --exclude-dir=gluu . | xargs -0 -l sed -i -e "s/:1.*_dev/: $VERSION-1/g"
         helm-docs ./charts
         git commit -a -S -m "chore: update flex helm chart image tags" || echo "Nothing to commit"
         # Update versions files
@@ -130,7 +128,6 @@ jobs:
         # Modify `./flex-linux-setup/flex_linux_setup/flex_setup.py` `JANS_BUILD` setting it to `"-SNAPSHOT"`
         sed -i -e "s/\"JANS_BUILD\": \"\"/\"JANS_BUILD\": \"-SNAPSHOT\"/g" ./flex-linux-setup/flex_linux_setup/flex_setup.py
         egrep -lRZ --include=version.py . | xargs -0 -l sed -i -e "s/__version__ = \"$SETUP_VERSION\"/__version__ = \"$NEXT_SETUP_VERSION\"/g"
-        egrep -lRZ --exclude=CONTRIBUTING.md --exclude-dir=workflows . | xargs -0 -l sed -i -e "s/$SETUP_VERSION/$NEXT_SETUP_VERSION-SNAPSHOT/g"
         git commit -a -S -m "chore: modify app_info.json and python version files" || echo "Nothing to commit"
         # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
         egrep -lRZ --include=Chart.yaml . | xargs -0 -l sed -i -e "s/appVersion: .*/appVersion: \"$NEXT_VERSION-dev\"/g"
@@ -139,9 +136,8 @@ jobs:
         egrep -lRZ --include=values.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/:1.*_dev/: $NEXT_JANS_VERSION_dev/g"
         # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
         egrep -lRZ --include=Chart.yaml --exclude-dir=gluu . | xargs -0 -l sed -i -e "s/version: .*/version: $NEXT_JANS_VERSION/g"
-        egrep -lRZ --include=Chart.yaml --exclude-dir=gluu . | xargs -0 -l sed -i -e "s/:1.*_dev/:$NEXT_VERSION_dev/g"
-        egrep -lRZ --include=values.yaml --exclude-dir=gluu . | xargs -0 -l sed -i -e "s/:1.*_dev/: $NEXT_VERSION_dev/g"
         helm-docs ./charts
+        egrep -lRZ --exclude=CONTRIBUTING.md --exclude-dir=workflows . | xargs -0 -l sed -i -e "s/$SETUP_VERSION/$NEXT_SETUP_VERSION-SNAPSHOT/g"
         git commit -a -S -m "chore: update flex helm chart image tags" || echo "Nothing to commit"
         # Update versions files
         echo "$NEXT_VERSION-dev" > docker-flex-monolith/version.txt
