@@ -29,7 +29,7 @@ annotations:
   catalog.cattle.io/release-name: gluu
   catalog.cattle.io/display-name: Gluu Cloud Identity and Access Management
 apiVersion: v2
-appVersion: "5.0.22"
+appVersion: "5.0.23-dev"
 icon: https://gluu.org/docs/gluu-server/favicon.ico
 home: https://www.gluu.org
 sources:
@@ -39,60 +39,60 @@ maintainers:
   email: team@gluu.org
 description: Gluu Access and Identity Management
 name: gluu
-version: 5.0.25
+version: 5.0.26-dev
 dependencies:
     - name: config
       condition: global.config.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: config-api
       condition: global.config-api.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: opendj
       condition: global.opendj.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: auth-server
       condition: global.auth-server.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: admin-ui
       condition: global.admin-ui.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: fido2
       condition: global.fido2.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: scim
       condition: global.scim.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: nginx-ingress
       condition: global.nginx-ingress.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: casa
-      version: 5.0.25
+      version: 5.0.26-dev
       condition: global.casa.enabled
 
     - name: auth-server-key-rotation
       condition: global.auth-server-key-rotation.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: persistence
       condition: global.persistence.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: cn-istio-ingress
       condition: global.istio.ingress
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: link
       condition: global.link.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
 
     - name: saml
       condition: global.saml.enabled
-      version: 5.0.25
+      version: 5.0.26-dev
