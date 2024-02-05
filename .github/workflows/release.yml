@@ -42,6 +42,7 @@ jobs:
         git config user.name "mo-auto"
         git config user.email "54212639+mo-auto@users.noreply.github.com"
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
+        git config --global pull.rebase true
 
     - name: Prepare release
       run: |
@@ -105,7 +106,6 @@ jobs:
         git commit -a -S -m "chore: update version files"
         
         # Push the changes to the repository
-        git pull --ff-only || echo "Nothing to pull"
         git push --set-upstream origin chore-$VERSION
         MESSAGE="chore: release $VERSION"
         PR=$(gh pr create --body "Auto generated $VERSION release" --title "${MESSAGE}" --label "autorelease:pending")
@@ -142,7 +142,6 @@ jobs:
         git commit -a -S -m "chore: update version files"
         
         # Push the changes to the repository
-        git pull --ff-only || echo "Nothing to pull"
         git push --set-upstream origin chore-$NEXT_VERSION-SNAPSHOT
         MESSAGE="chore: release chore-$NEXT_VERSION-SNAPSHOT"
         SNAP_PR=$(gh pr create --body "Auto generated $NEXT_VERSION-SNAPSHOT release" --title "${MESSAGE}" --label "autorelease:pending")
