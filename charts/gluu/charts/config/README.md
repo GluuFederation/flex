@@ -1,6 +1,6 @@
 # config
 
-![Version: 5.0.25](https://img.shields.io/badge/Version-5.0.25-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.22](https://img.shields.io/badge/AppVersion-5.0.22-informational?style=flat-square)
+![Version: 5.0.26-dev](https://img.shields.io/badge/Version-5.0.26--dev-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.0.23-dev](https://img.shields.io/badge/AppVersion-5.0.23--dev-informational?style=flat-square)
 
 Configuration parameters for setup and initial configuration secret and config layers used by Gluu services.
 
@@ -95,7 +95,7 @@ Kubernetes: `>=v1.21.0-0`
 | fullNameOverride | string | `""` |  |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
 | image.repository | string | `"janssenproject/configurator"` | Image  to use for deploying. |
-| image.tag | string | `"1.0.22_dev"` | Image  tag to use for deploying. |
+| image.tag | string | `"1.0.23-SNAPSHOT_dev"` | Image  tag to use for deploying. |
 | ldapPassword | string | `"P@ssw0rds"` | LDAP admin password if OpennDJ is used for persistence. |
 | ldapTruststorePassword | string | `"changeit"` | LDAP truststore password if OpenDJ is used for persistence |
 | lifecycle | object | `{}` |  |
