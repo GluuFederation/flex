@@ -99,7 +99,7 @@ jobs:
         # Push the changes to the repository
         git push --set-upstream origin chore-$VERSION
         MESSAGE="chore: release $VERSION"
-        PR=$(gh pr create --body "Auto generated $VERSION release" --title "${MESSAGE}" --label "autorelease: pending")
+        PR=$(gh pr create --body "Auto generated $VERSION release" --title "${MESSAGE}" --label "autorelease:pending")
         
         # Report it in RocketChat
         curl -X POST -H 'Content-Type: application/json' --data '{"alias":"Mo-Auto","emoji":":robot:","text":":rocket: I am getting ready for releasing Flex $VERSION.","attachments":[{"title":"Gluu Release bot","title_link":"$PR","text":"$PR","color":"#764FA5"}]}' ${{ secrets.GITHUBUSERBEHAVIORROCKETCHATREPORTER }}
@@ -135,7 +135,7 @@ jobs:
         # Push the changes to the repository
         git push --set-upstream origin chore-$NEXT_VERSION-SNAPSHOT
         MESSAGE="chore: release chore-$NEXT_VERSION-SNAPSHOT"
-        SNAP_PR=$(gh pr create --body "Auto generated $NEXT_VERSION-SNAPSHOT release" --title "${MESSAGE}" --label "autorelease: pending")
+        SNAP_PR=$(gh pr create --body "Auto generated $NEXT_VERSION-SNAPSHOT release" --title "${MESSAGE}" --label "autorelease:pending")
         
         # Report it in RocketChat
         curl -X POST -H 'Content-Type: application/json' --data '{"alias":"Mo-Auto","emoji":":robot:","text":":rocket: I am getting ready for releasing Flex $VERSION-SNAPSHOT. DO NOT MERGE THIS BEFORE $PR","attachments":[{"title":"Gluu Release bot","title_link":"$SNAP_PR","text":"Remember the flow. First $PR gets reviewed be code owners and then merged for a release. QA then does post release tests and upon an approval from QA does $SNAP_PR get merged.","color":"#764FA5"}]}' ${{ secrets.GITHUBUSERBEHAVIORROCKETCHATREPORTER }}
