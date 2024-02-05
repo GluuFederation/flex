@@ -45,6 +45,16 @@ jobs:
 
     - name: Prepare release
       run: |
+        
+        # echo "Install helm docs
+        mkdir helmtemp
+        cd helmtemp
+        HELM_DOCS_VERSION=$(curl "https://api.github.com/repos/norwoodj/helm-docs/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c2-)
+        curl -sSL https://github.com/norwoodj/helm-docs/releases/download/v"${HELM_DOCS_VERSION}"/helm-docs_"${HELM_DOCS_VERSION}"_Linux_x86_64.tar.gz  -o helm-docs_"${HELM_DOCS_VERSION}"_Linux_x86_64.tar.gz
+        tar xvf helm-docs_"${HELM_DOCS_VERSION}"_Linux_x86_64.tar.gz
+        sudo cp helm-docs /usr/local/bin/
+        cd ..
+        
         VERSION=${{ github.event.inputs.mega_release_as }}
         JANS_VERSION=${{ github.event.inputs.jans_release_as }}
         SETUP_VERSION=${{ github.event.inputs.jans_release_as }}
