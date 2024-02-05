@@ -66,11 +66,13 @@ Run the command below from the directory where the downloaded package and the `.
 Choose the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
-sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
+cd /tmp;
+sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum;
 ```
 ```shell
 #Ubuntu 20.04
-sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
+cd /tmp;
+sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum;
 ```
 Output similar to below should confirm the integrity of the downloaded package.
 ```shell
