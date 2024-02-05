@@ -88,7 +88,7 @@ RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
 COPY app /app
 
 # CN version as env var (with suffix if any, i.e. SNAPSHOT)
-ENV CN_VERSION=1.0.22-SNAPSHOT
+ENV CN_VERSION=1.0.22
 
 # set directory contains installer code that will be added to Python sys.path
 ENV PYTHONPATH=/app
