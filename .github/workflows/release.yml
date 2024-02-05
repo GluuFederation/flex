@@ -57,10 +57,7 @@ jobs:
         NEXT_DOCKER_VERSION=${{ github.event.inputs.next_jans_release_as }}
         NEXT_ADMIN_UI_VERSION=${{ github.event.inputs.next_jans_release_as }}
         
-        # This section prepares the git repository for the release
-        mkdir temp && cd temp
-        git clone  https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/GluuFederation/flex.git
-        cd flex
+        echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token
         git checkout -b chore-$VERSION
         git pull origin chore-$VERSION || echo "Nothing to pull"
         
