@@ -12,8 +12,6 @@ annotations:
       image: ghcr.io/janssenproject/jans/config-api:1.0.22_dev
     - name: fido2
       image: ghcr.io/janssenproject/jans/fido2:1.0.22_dev
-    - name: opendj
-      image: gluufederation/opendj:5.0.0_dev
     - name: persistence
       image: ghcr.io/janssenproject/jans/persistence-loader:1.0.22_dev
     - name: scim
@@ -27,7 +25,6 @@ annotations:
     - name: saml
       image: ghcr.io/janssenproject/jans/saml:1.0.22_dev
   artifacthub.io/license: Apache-2.0
-  artifacthub.io/prerelease: "true"
   catalog.cattle.io/certified: partner
   catalog.cattle.io/release-name: gluu
   catalog.cattle.io/display-name: Gluu Cloud Identity and Access Management

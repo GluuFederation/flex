@@ -1,0 +1,37 @@
+name: Activate Release
+
+on:
+# upon merge of PR with label autorelease: pending into main
+  pull_request:
+    types:
+      - closed
+jobs:
+  create_release:
+    if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'autorelease:pending')) }}
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: create version
+      id: version
+      continue-on-error: false
+      if: ${{ github.event_name }} == 'schedule' || ${{ github.event.inputs.nightly }} == 'true'
+      run: |
+        VERSION=`curl  "https://api.github.com/repos/cli/cli/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c2-` 
+        echo $VERSION
+        curl -sSL https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_linux_amd64.tar.gz -o gh_${VERSION}_linux_amd64.tar.gz
+        tar xvf gh_${VERSION}_linux_amd64.tar.gz
+        sudo cp gh_${VERSION}_linux_amd64/bin/gh /usr/local/bin/
+        gh version
+        echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token
+        LATEST_VERSION=$(cat docker-flex-all-in-one/Dockerfile | grep "ENV CN_VERSION" | awk -F "[=-]" '{print $2}')
+        # Clean up old release
+        gh release delete v${LATEST_VERSION} --cleanup-tag --yes || echo "v${LATEST_VERSION}" does not exist
+        git push --delete origin v${LATEST_VERSION} || echo "v${LATEST_VERSION}" does not exist
+        # Create new release
+        gh release delete v${LATEST_VERSION} --cleanup-tag --yes || echo "v${LATEST_VERSION}" does not exist
+        gh release delete v${LATEST_VERSION} --cleanup-tag --yes || echo "v${LATEST_VERSION}" does not exist
+        git push --delete origin v${LATEST_VERSION} || echo "v${LATEST_VERSION}" does not exist
+        
+        gh release create v${LATEST_VERSION} --generate-notes --prerelease --title "v${LATEST_VERSION}"

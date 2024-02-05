@@ -5,7 +5,6 @@ annotations:
     - name: all-in-one
       image: ghcr.io/gluufederation/flex/flex-all-in-one:1.0.22_dev
   artifacthub.io/license: Apache-2.0
-  artifacthub.io/prerelease: 'true'
   catalog.cattle.io/certified: partner
   catalog.cattle.io/release-name: gluu-all-in-one
   catalog.cattle.io/display-name: Gluu Flex Cloud Identity and Access Management All-in-One
