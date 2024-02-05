@@ -7,17 +7,20 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=523ae4cc2ddc460c922b363632f84b85925d0684
+ENV FLEX_SOURCE_VERSION=2da69d2a4bca09eb9dad239d2fcb0d30b472bafd
+ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
 
-RUN mkdir -p /opt/flex
+RUN mkdir -p /opt/flex /app/templates/admin-ui
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
 RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
     && cd /tmp/flex \
     && git sparse-checkout init --cone \
-    && git checkout ${ADMIN_UI_VERSION} \
+    && git checkout ${FLEX_SOURCE_VERSION} \
     && git sparse-checkout add admin-ui \
+    && git sparse-checkout add flex-linux-setup/flex_linux_setup/templates \
+    && cp flex-linux-setup/flex_linux_setup/templates/aui_webhook.ldif /app/templates/admin-ui \
     && mv /tmp/flex/admin-ui /opt/flex/admin-ui
 
 # pre-packaged node modules and openapi
@@ -68,7 +71,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=ef2943edbc728d55041175c6467a22395545ec58
+ENV JANS_SOURCE_VERSION=06b1a7a14e5f0b01d47eb5121d68bbf162905e66
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -96,6 +99,7 @@ RUN cd /tmp/jans \
 # ========
 
 COPY --from=builder /opt/flex/admin-ui /opt/flex/admin-ui
+COPY --from=builder /app/templates/admin-ui /app/templates/admin-ui
 
 # =======
 # Cleanup
