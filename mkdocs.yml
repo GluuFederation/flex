@@ -109,7 +109,7 @@ nav:
 - 'Overview': 'README.md'
 - 'Installation':
     - 'install/README.md'
-    - 'Getting an SSA': 'install/software-statements/ssa.md'
+    - 'Prerequisites': 'install/agama/prerequisites.md'
     - 'Helm Deployments':
         - 'install/helm-install/README.md'
         - 'Local Kubernetes Cluster': 'install/helm-install/local.md'

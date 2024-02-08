@@ -9,7 +9,7 @@ tags:
 
 ## Obtaining an SSA
 
-In order to set up Super Gluu, the administrator must obtain a Software Statement Assertion from [Agama Lab](https://cloud.gluu.org/agama-lab). Login with GitHub, then sign up for a SCAN subscription. The free tier will give you 500 credits, which can be used for 500 SuperGluu API calls (1 call = 1 credit). Then, go over to the SSA tab and create a new SSA with the `supergluu` software role and an expiry date of your choice. Your SSA will no longer be useable after that date.
+In order to set up Super Gluu, the administrator must obtain a Software Statement Assertion from [Agama Lab](https://cloud.gluu.org/agama-lab). Login with GitHub or email, then sign up for a SCAN subscription. The free tier will give you 500 credits, which can be used for 500 SuperGluu API calls (1 call = 1 credit). Then, go over to the SSA tab and create a new SSA with the `supergluu` software role and an expiry date of your choice. Your SSA will no longer be useable after that date.
 
 ![supergluu-ssa](../../assets/supergluu/admin-guide/create_ssa.png)
 
