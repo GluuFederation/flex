@@ -18,7 +18,12 @@ const initialState = {
   webhookModal: false,
   triggerWebhookInProgress: false,
   triggerWebhookMessage: '',
-  webhookTriggerErrors: []
+  webhookTriggerErrors: [],
+  tiggerPayload: {
+    feature: null,
+    payload: null
+  },
+  featureToTrigger: ''
 }
 
 const webhookSlice = createSlice({
@@ -110,6 +115,12 @@ const webhookSlice = createSlice({
     },
     setWebhookTriggerErrors: (state, action) => {
       state.webhookTriggerErrors = action.payload
+    },
+    setTriggerPayload: (state, action) => {
+      state.tiggerPayload = action.payload
+    },
+    setFeatureToTrigger: (state, action) => {
+      state.featureToTrigger = action.payload
     }
   },
 })
@@ -134,7 +145,9 @@ export const {
   setWebhookModal,
   triggerWebhook,
   setTriggerWebhookResponse,
-  setWebhookTriggerErrors
+  setWebhookTriggerErrors,
+  setTriggerPayload,
+  setFeatureToTrigger
 } = webhookSlice.actions
 export const { actions, reducer, state } = webhookSlice
 export default reducer

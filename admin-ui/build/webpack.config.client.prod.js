@@ -60,6 +60,7 @@ module.exports = {
       Routes: path.resolve(__dirname, '../app/routes'),
       Styles: path.resolve(__dirname, '../app/styles'),
       Utils: path.resolve(__dirname, '../app/utils'),
+      Locales: path.resolve(__dirname, '../app/locales'),
     },
   },
   plugins: [

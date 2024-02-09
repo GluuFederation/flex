@@ -23,7 +23,9 @@ function GluuInputEditor({
   errorMessage,
   theme = 'xcode',
   placeholder = 'Write your custom script here',
-  doc_entry
+  doc_entry,
+  shortcode,
+  onCursorChange
 }) {
   const handleChange = (scripts) => {
     formik.handleChange(name)(scripts)
@@ -41,18 +43,20 @@ function GluuInputEditor({
       {formik.errors.script && formik.touched.script ? (
         <div style={{ color: 'red' }}>{formik.errors.script}</div>
       ) : null}
-      <Col sm={rsize}>
+      <Col sm={rsize} style={{ position: 'relative' }}>
+        {shortcode ? shortcode : null}
         <AceEditor
           mode={language}
           readOnly={readOnly}
           theme={theme}
           placeholder={placeholder}
           fontSize={16}
+          onCursorChange={onCursorChange}
           width='95%'
           height='300px'
           onChange={(e) => handleChange(e)}
           name={name}
-          defaultValue={value}
+          value={value}
           editorProps={{ $blockScrolling: true }}
         />
         {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
@@ -77,5 +81,7 @@ GluuInputEditor.propTypes = {
   value: PropTypes.any,
   language: PropTypes.string,
   name: PropTypes.string,
-  doc_entry: PropTypes.string
+  doc_entry: PropTypes.string,
+  shortcode: PropTypes.element,
+  onCursorChange: PropTypes.func
 }

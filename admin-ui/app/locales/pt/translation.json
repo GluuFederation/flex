@@ -509,6 +509,7 @@
     "add_idp": "Adicionar IDP SAML",
     "view_trust_relationshi_details": "Visualizar Detalhes da Relação de Confiança",
     "add_trust_relationship": "Adicionar Relação de Confiança",
+    "no_spaces": "não deve conter espaços",
     "webhook_execution_information": "Informações de execução do webhook",
     "error_message": "Mensagem de erro",
     "add_service_provider": "Adicionar Provedor de Serviços",

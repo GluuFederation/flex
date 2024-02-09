@@ -23,6 +23,7 @@ import { postUserAction } from 'Redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { triggerWebhook } from './WebhookSaga'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -76,6 +77,7 @@ export function* addScript({ payload }) {
       scriptApi.addCustomScript,
       payload.action.action_data,
     )
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(addCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success'))
@@ -103,6 +105,7 @@ export function* editScript({ payload }) {
     yield put(editCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success'))
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     console.log('error', e)

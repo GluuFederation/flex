@@ -5,9 +5,9 @@ import {
   getWebhooksByFeatureId,
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
-  triggerWebhook,
   setWebhookTriggerErrors,
   setTriggerWebhookResponse,
+  setFeatureToTrigger
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import PropTypes from 'prop-types'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -60,9 +60,10 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   useEffect(() => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
   }, [featureWebhooks?.length])
-
+  
   const handleAcceptWebhookTrigger = () => {
-    dispatch(triggerWebhook(feature))
+    dispatch(setWebhookModal(false))
+    dispatch(setFeatureToTrigger(feature))
   }
   
   const webhookTriggerModal = ({ closeModal }) => {
