@@ -24,7 +24,7 @@ import { WEBHOOK } from 'Utils/ApiResources'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import ShortcodePopover from './ShortcodePopover'
-import translations from 'Locales/en/translation.json'
+import ShortCodes from 'Plugins/admin/components/Webhook/ShortCodes.json'
 
 const WebhookForm = () => {
   const { id } = useParams()
@@ -176,7 +176,7 @@ const WebhookForm = () => {
   }
 
   const featureShortcodes = selectedFeatures?.[0]?.auiFeatureId
-    ? translations.short_codes[selectedFeatures?.[0]?.auiFeatureId]?.fields ||
+    ? ShortCodes?.[selectedFeatures?.[0]?.auiFeatureId]?.fields ||
       []
     : []
 
