@@ -151,7 +151,7 @@ jobs:
         # Push the changes to the repository
         git push --set-upstream origin chore-$NEXT_VERSION-SNAPSHOT
         MESSAGE="chore: release chore-$NEXT_VERSION-SNAPSHOT"
-        SNAP_PR=$(gh pr create --body "Auto generated $NEXT_VERSION-SNAPSHOT release. DO NOT MERGE THIS BEFORE $PR. Remember the flow. First $PR gets reviewed be code owners and then merged for a release. QA then does post release tests and upon an approval from QA does $SNAP_PR get merged." --title "${MESSAGE}" --label "autorelease:pending" || echo "PR already exists")
+        SNAP_PR=$(gh pr create --body "Auto generated $NEXT_VERSION-SNAPSHOT release. DO NOT MERGE THIS BEFORE $PR. Remember the flow. Firstly, QA runs tests on nightly build to confirm the intended release is operational. Once approved by QA, the $PR gets reviewed by code owners and then merged for a release. After the release has been finished QA  does post release tests and approves the snapshot PR. The snapshot PR then gets reviewed by codeonwers and  merged." --title "${MESSAGE}" --label "autorelease:pending" || echo "PR already exists")
         
         # Report it in RocketChat
         curl -X POST -H 'Content-Type: application/json' --data "{\"alias\":\"Mo-Auto\",\"emoji\":\":robot:\",\"text\":\":rocket: I am getting ready for releasing Flex $VERSION.\",\"attachments\":[{\"title\":\"Gluu Release bot\",\"title_link\":\"$PR\",\"text\":\"$PR\",\"color\":\"#764FA5\"}]}" ${{ secrets.GITHUBUSERBEHAVIORROCKETCHATREPORTER }}
