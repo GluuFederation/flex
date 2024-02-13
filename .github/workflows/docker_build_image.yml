@@ -93,7 +93,7 @@ jobs:
           DOCKER_IMAGE=ghcr.io/$REPOSITORY/${{ matrix.docker-images }}
           VERSION=${MAIN_VERSION}_dev
           if [[ ${{ matrix.docker-images }} == "flex-monolith" ]]; then
-            VERSION=5.0.0_dev
+            VERSION=5.1.0_dev
             DOCKER_IMAGE=ghcr.io/$REPOSITORY/monolith
           fi
           BUILD=true
