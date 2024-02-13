@@ -112,6 +112,7 @@ jobs:
           if [ ! -z "$MANUAL_IMAGE_TAG" ]
           then
             TAGS="$TAGS,${DOCKER_IMAGE}:${MANUAL_IMAGE_TAG}"
+            VERSION=$MANUAL_IMAGE_TAG
             echo "Manual image tag has been inputed by the user"
           else
             echo "$TAGS"
