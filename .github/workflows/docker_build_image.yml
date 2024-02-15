@@ -56,9 +56,8 @@ jobs:
         with:
           fetch-depth: 0
           sparse-checkout: |
-            docker-${{ matrix.docker-images }}
-            automation          
-
+            automation
+            docker-*
       - name: Check docker directories that changed
         id: build_docker_image
         run: |
