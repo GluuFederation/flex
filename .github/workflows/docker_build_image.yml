@@ -52,9 +52,12 @@ jobs:
         docker-images: ["admin-ui", "flex-monolith", "flex-all-in-one"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          sparse-checkout: |
+            docker-${{ matrix.docker-images }}
+            automation          
 
       - name: Check docker directories that changed
         id: build_docker_image
