@@ -57,7 +57,9 @@ jobs:
           fetch-depth: 0
           sparse-checkout: |
             automation
-            docker-*
+            docker-admin-ui
+            docker-flex-monolith
+            docker-flex-all-in-one
       - name: Check docker directories that changed
         id: build_docker_image
         run: |
