@@ -5,28 +5,28 @@ on:
       jans_release_as:
         description: 'Release version for the python projects, admin ui, docker images, and helm charts'
         required: true
-        default: '1.0.22'
+        default: '1.1.0'
       mega_release_as:
         description: 'Mega release version'
         required: true
-        default: '5.0.22'
+        default: '5.1.0'
       next_jans_release_as:
         description: 'next anticipated jans Mega release version'
         required: true
-        default: '1.0.23'
+        default: '1.1.1'
       next_mega_release_as:
         description: 'next anticipated Mega release version'
         required: true
-        default: '5.0.23'
+        default: '5.1.1'
       # to be removed once we equate the mega release to the helm version
       helm_release_as:
         description: ' anticipated helm release version'
         required: true
-        default: '5.0.25'
+        default: '5.1.0'
       next_helm_release_as:
         description: 'next anticipated helm release version'
         required: true
-        default: '5.0.26'
+        default: '5.1.1'
 
 jobs:
   mega-release-pr:
