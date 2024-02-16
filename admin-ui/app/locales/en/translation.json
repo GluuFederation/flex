@@ -573,6 +573,7 @@
     "edit_service_provider": "Edit Service Provider",
     "view_service_provider": "View Service Provider",
     "delete_service_provider": "Delete Service Provider",
+    "delete_script": "Delete script",
     "no_spaces": "should not contain spaces",
     "webhook_execution_information": "Webhook Execution Information",
     "webhook_dialog_dec": "As part of the submission process, the system will automatically trigger the following associated webhooks to perform additional processing tasks.",

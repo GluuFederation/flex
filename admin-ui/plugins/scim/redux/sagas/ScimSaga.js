@@ -16,6 +16,7 @@ import { postUserAction } from 'Redux/api/backend-api'
 import ScimApi from '../api/ScimApi'
 import { getScimConfigurationResponse } from '../features/ScimSlice'
 import { PATCH, FETCH } from '../../../../app/audit/UserActionType'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 const UPDATE_SCIM_CONFIG = 'update_scim_config'
 const GET_SCIM_CONFIG = 'get_scim_config'
@@ -42,6 +43,7 @@ export function* updateScimSaga({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(getScimConfigurationResponse(data))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))

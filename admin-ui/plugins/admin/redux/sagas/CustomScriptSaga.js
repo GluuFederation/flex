@@ -23,7 +23,7 @@ import { postUserAction } from 'Redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
-import { triggerWebhook } from './WebhookSaga'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -124,9 +124,10 @@ export function* deleteScript({ payload }) {
   try {
     addAdditionalData(audit, DELETION, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data  =yield call(scriptApi.deleteCustomScript, payload.action.action_data)
+    const data = yield call(scriptApi.deleteCustomScript, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield put(deleteCustomScriptResponse({ inum: payload.action.action_data }))
+    yield* triggerWebhook({ payload: { createdFeatureValue: { inum: payload.action.action_data } } })
     yield call(postUserAction, audit)
     return data
   } catch (e) {

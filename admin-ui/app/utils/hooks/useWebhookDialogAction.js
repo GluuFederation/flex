@@ -43,7 +43,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
     dispatch(setWebhookTriggerErrors([]))
     dispatch(setTriggerWebhookResponse(''))
-
+    dispatch(setFeatureToTrigger(''))
   }, [dispatch, enabledFeatureWebhooks])
 
   useEffect(() => {
@@ -67,6 +67,10 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   }
   
   const webhookTriggerModal = ({ closeModal }) => {
+    const closeWebhookTriggerModal = () => {
+      closeModal()
+      dispatch(setFeatureToTrigger(''))
+    }
     return (
       <Modal
         isOpen={(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ)}
@@ -74,17 +78,18 @@ const useWebhookDialogAction = ({ feature, modal }) => {
         toggle={() => {
           if (!loadingWebhooks) {
             closeModal()
+            dispatch(setFeatureToTrigger(''))
           }
         }}
         className='modal-outline-primary'
       >
-        <ModalHeader toggle={closeModal}>
+        <ModalHeader toggle={closeWebhookTriggerModal}>
           {loadingWebhooks ? (
             <>Loading....</>
           ) : (
             <>
               <i
-                onClick={closeModal}
+                onClick={closeWebhookTriggerModal}
                 onKeyDown={() => {}}
                 style={{ color: 'green' }}
                 code
@@ -192,7 +197,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 <Button
                   disabled={triggerWebhookInProgress}
                   color={`primary-${selectedTheme}`}
-                  onClick={closeModal}
+                  onClick={closeWebhookTriggerModal}
                   style={applicationStyle.buttonStyle}
                 >
                   <i className='fa fa-check-circle me-2'></i>
@@ -211,7 +216,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                   </Button>
                   <Button
                     disabled={triggerWebhookInProgress}
-                    onClick={closeModal}
+                    onClick={closeWebhookTriggerModal}
                   >
                     <i className='fa fa-remove me-2'></i>
                     {t('actions.reject')}

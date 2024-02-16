@@ -208,8 +208,17 @@ const WebhookListPage = () => {
                   title: `${t('fields.name')}`,
                   field: 'displayName',
                 },
+                {
+                  title: `${t('fields.url')}`,
+                  field: 'url',
+                  width: '40%',
+                  render: rowData => (
+                    <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
+                      {rowData.url}
+                    </div>
+                  )
+                },
                 { title: `${t('fields.http_method')}`, field: 'httpMethod' },
-                { title: `${t('fields.url')}`, field: 'url' },
                 { title: `${t('fields.enabled')}`, field: 'jansEnabled' }
               ]}
               data={webhooks}

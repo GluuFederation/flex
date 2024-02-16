@@ -27,7 +27,7 @@ import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
-import { webhookOutputObject } from '../../components/Webhook/utils'
+import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -252,6 +252,12 @@ export function* triggerWebhook({ payload }) {
       (state) => state.webhookReducer.featureWebhooks
     )
     const enabledFeatureWebhooks = featureWebhooks?.filter((item) => item.jansEnabled)
+
+    if (!enabledFeatureWebhooks.length || !featureToTrigger) {
+      yield put(setFeatureToTrigger(''))
+      return;
+    }
+
     const outputObject = webhookOutputObject(
       enabledFeatureWebhooks,
       payload.createdFeatureValue
@@ -268,6 +274,13 @@ export function* triggerWebhook({ payload }) {
     if (all_succeded) {
       yield put(setWebhookModal(false))
       yield put(setTriggerWebhookResponse(''))
+      yield put(
+        updateToast(
+          true,
+          'success',
+          'All webhooks triggered successfully.'
+        )
+      )
     } else {
       const errors = data?.body
         ?.map((item) => !item.success && item)
@@ -275,6 +288,13 @@ export function* triggerWebhook({ payload }) {
       yield put(setWebhookTriggerErrors(errors))
       yield put(
         setTriggerWebhookResponse(
+          'Something went wrong while triggering webhook.'
+        )
+      )
+      yield put(
+        updateToast(
+          true,
+          'error',
           'Something went wrong while triggering webhook.'
         )
       )

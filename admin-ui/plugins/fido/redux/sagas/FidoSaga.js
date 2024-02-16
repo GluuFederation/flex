@@ -15,6 +15,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from 'Redux/api/backend-api'
 import FidoApi from '../api/FidoApi'
 import { getFidoConfiguration, getFidoConfigurationResponse } from '../features/fidoSlice'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 const JansConfigApi = require('jans_config_api')
 function* newFunction() {
@@ -34,6 +35,7 @@ export function* updateFidoSaga({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(getFidoConfiguration())
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))

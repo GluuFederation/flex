@@ -1,5 +1,10 @@
 import cloneDeep from "lodash/cloneDeep";
 
+// Helper function to get nested object values
+const getNestedValue = (obj, path) => {
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+};
+
 export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue) => {
   return enabledFeatureWebhooks.map((originalWebhook) => {
     const webhook = cloneDeep(originalWebhook); // Create a deep copy of the webhook
@@ -9,12 +14,7 @@ export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue)
     // Replace placeholders in the URL
     url.match(/\{([^}]+)\}/g)?.forEach((placeholder) => {
       const key = placeholder.slice(1, -1);
-      let value = createdFeatureValue[key];
-
-      if (value === undefined) {
-        const moduleProperty = createdFeatureValue.moduleProperties.find(prop => prop.value1 === key);
-        value = moduleProperty ? moduleProperty.value2 : undefined;
-      }
+      let value = key?.includes('.') ? getNestedProperty(createdFeatureValue, key) : createdFeatureValue[key];
 
       if (value !== undefined) {
         shortcodeValueMap[key] = value;
@@ -28,13 +28,7 @@ export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue)
         if (typeof templateValue === 'string' && templateValue.includes("{")) {
           templateValue.match(/\{([^}]+)\}/g)?.forEach((placeholder) => {
             const placeholderKey = placeholder.slice(1, -1);
-            let value = createdFeatureValue[placeholderKey];
-
-            if (value === undefined) {
-              const moduleProperty = createdFeatureValue.moduleProperties.find(prop => prop.value1 === placeholderKey);
-              value = moduleProperty ? moduleProperty.value2 : undefined;
-            }
-
+            const value = placeholderKey.includes('.') ? getNestedValue(createdFeatureValue, placeholderKey) : createdFeatureValue[placeholderKey];
             if (value !== undefined) {
               webhook.httpRequestBody[key] = templateValue.replace(new RegExp(`\\{${placeholderKey}\\}`, 'g'), value);
               shortcodeValueMap[placeholderKey] = value;
@@ -50,3 +44,17 @@ export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue)
     };
   });
 };
+
+function getNestedProperty(obj, path) {
+  const keys = path.split('.');
+  let current = obj;
+
+  for (let key of keys) {
+      if (current[key] === undefined) {
+          return undefined;
+      }
+      current = current[key];
+  }
+
+  return current;
+}

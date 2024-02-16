@@ -20,6 +20,7 @@ import {
 } from "../features/CacheRefreshSlice";
 import { getAPIAccessToken } from "Redux/features/authSlice";
 import { UPDATE } from "../../../../app/audit/UserActionType";
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 const JansConfigApi = require("jans_config_api");
 
@@ -64,6 +65,7 @@ export function* editCacheConfig({ payload }) {
     yield put(getCacheRefreshConfiguration());
     yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit);
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     yield put(toggleSavedFormFlag(false))

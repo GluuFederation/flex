@@ -24,7 +24,7 @@ import { WEBHOOK } from 'Utils/ApiResources'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import ShortcodePopover from './ShortcodePopover'
-import ShortCodes from 'Plugins/admin/components/Webhook/ShortCodes.json'
+import ShortCodes from 'Plugins/admin/helper/ShortCodes.json'
 
 const WebhookForm = () => {
   const { id } = useParams()
@@ -137,6 +137,8 @@ const WebhookForm = () => {
         formik.values.httpMethod !== 'DELETE'
       ) {
         payload['httpRequestBody'] = JSON.parse(formik.values.httpRequestBody)
+      } else {
+        delete payload.httpRequestBody
       }
 
       if (id) {
