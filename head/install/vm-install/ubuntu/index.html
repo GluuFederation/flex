@@ -1810,9 +1810,11 @@ Verify package integrity of the package that has been downloaded by checking has
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
+<span class="nb">cd</span> /tmp
 sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
+<span class="nb">cd</span> /tmp
 sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
@@ -1993,7 +1995,7 @@ Remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-01-07T04:50:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-01-07</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-13T10:00:21+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-13</span>
       
         <br>
         Created:
