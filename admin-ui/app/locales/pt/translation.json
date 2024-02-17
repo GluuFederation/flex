@@ -130,6 +130,7 @@
     "introspection_encrypted_response_alg": "Algoritmo de criptografia da resposta de introspeção",
     "aui_feature_ids": "Recursos da interface do administrador",
     "download_summary": "Baixar Resumo",
+    "customAttributes": "atributos personalizados",
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
     "metadata_location": "Localização dos Metadados",

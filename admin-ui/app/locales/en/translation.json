@@ -91,6 +91,7 @@
     "webhook_url": "URL",
     "webhook_id": "Webhook Id",
     "http_method": "HTTP Method",
+    "customAttributes": "Custom attributes",
     "url": "URL",
     "http_headers": "Webhook Headers",
     "introspection_encrypted_response_enc": "Introspection Encrypted Response Enc",
