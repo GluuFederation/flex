@@ -874,5 +874,73 @@
         "description": "documentation.smtp.signing_algorithm"
       }
     ]
+  },
+  "users_edit": {
+    "fields": [
+      {
+        "key": "givenName",
+        "label": "First Name",
+        "description": "documentation.user.givenName"
+      },
+      {
+        "key": "inum",
+        "label": "INUM",
+        "description": "documentation.user.INUM"
+      },
+      {
+        "key": "middleName",
+        "label": "Middle Name",
+        "description": "documentation.user.middleName"
+      },
+      {
+        "key": "sn",
+        "label": "Last Name",
+        "description": "documentation.user.sn"
+      },
+      {
+        "key": "userId",
+        "label": "User Name",
+        "description": "documentation.user.userId"
+      },
+      {
+        "key": "displayName",
+        "label": "Display Name",
+        "description": "documentation.user.displayName"
+      },
+      {
+        "key": "mail",
+        "label": "Email",
+        "description": "documentation.user.mail"
+      },
+      {
+        "key": "jansStatus",
+        "label": "Status",
+        "description": "documentation.user.jansStatus"
+      },
+      {
+        "key": "userPassword",
+        "label": "Password",
+        "description": "documentation.user.userPassword"
+      },
+      {
+        "key": "userConfirmPassword",
+        "label": "Confirm Password",
+        "description": "documentation.user.userConfirmPassword"
+      }
+    ]
+  },
+  "users_delete": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "INUM",
+        "description": "documentation.user.INUM"
+      },
+      {
+        "key": "userId",
+        "label": "User Name",
+        "description": "documentation.user.userId"
+      }
+    ]
   }
 }
