@@ -805,5 +805,74 @@
         "description": "documentation.scim.use_local_cache"
       }
     ]
+  },
+  "smtp_configuration_edit": {
+    "fields": [
+      {
+        "key": "host",
+        "label": "fields.smtp_host",
+        "description": "documentation.smtp.smtp_host"
+      },
+      {
+        "key": "port",
+        "label": "fields.smtp_port",
+        "description": "documentation.smtp.smtp_port"
+      },
+      {
+        "key": "connect_protection",
+        "label": "fields.connect_protection",
+        "description": "documentation.smtp.connect_protection"
+      },
+      {
+        "key": "from_name",
+        "label": "fields.from_name",
+        "description": "documentation.smtp.from_name"
+      },
+      {
+        "key": "from_email_address",
+        "label": "fields.from_email_address",
+        "description": "documentation.smtp.from_email_address"
+      },
+      {
+        "key": "requires_authentication",
+        "label": "fields.requires_authentication",
+        "description": "documentation.smtp.requires_authentication"
+      },
+      {
+        "key": "smtp_authentication_account_username",
+        "label": "fields.smtp_user_name",
+        "description": "documentation.smtp.smtp_user_name"
+      },
+      {
+        "key": "smtp_authentication_account_password",
+        "label": "fields.smtp_user_password",
+        "description": "documentation.smtp.smtp_user_password"
+      },
+      {
+        "key": "trust_host",
+        "label": "fields.trust_host",
+        "description": "documentation.smtp.trust_host"
+      },
+      {
+        "key": "key_store",
+        "label": "fields.key_store",
+        "description": "documentation.smtp.key_store"
+      },
+      {
+        "key": "key_store_password",
+        "label": "fields.key_store_password",
+        "description": "documentation.smtp.key_store_password"
+      },
+      {
+        "key": "key_store_alias",
+        "label": "fields.key_store_alias",
+        "description": "documentation.smtp.key_store_alias"
+      },
+      {
+        "key": "signing_algorithm",
+        "label": "fields.signing_algorithm",
+        "description": "documentation.smtp.signing_algorithm"
+      }
+    ]
   }
 }
