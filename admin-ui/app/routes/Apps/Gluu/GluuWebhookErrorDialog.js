@@ -3,7 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { setShowErrorModal } from 'Plugins/admin/redux/features/WebhookSlice'
+import {
+  setShowErrorModal,
+  setWebhookTriggerErrors,
+  setTriggerWebhookResponse,
+} from 'Plugins/admin/redux/features/WebhookSlice'
 import { Box } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -23,6 +27,12 @@ const GluuWebhookErrorDialog = () => {
 
   const closeModal = () => {
     dispatch(setShowErrorModal(!showErrorModal))
+    dispatch(setWebhookTriggerErrors([]))
+    dispatch(
+      setTriggerWebhookResponse(
+        'Something went wrong while triggering webhook.'
+      )
+    )
   }
 
   return (

@@ -92,7 +92,7 @@ export function* editAClient({ payload }) {
     yield put(editClientResponse({ data }))
     yield put(updateToast(true, 'success'))
     yield call(postUserAction, audit)
-    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
+    yield* triggerWebhook({ payload: { createdFeatureValue: data?.client } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))

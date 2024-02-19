@@ -12,7 +12,7 @@ export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue)
     const shortcodeValueMap = {};
 
     // Replace placeholders in the URL
-    url.match(/\{([^}]+?)\}/g)?.forEach((placeholder) => {
+    url.match(/\{([^{}]+?)\}/g)?.forEach((placeholder) => {
       const key = placeholder.slice(1, -1);
       let value = key?.includes('.') ? getNestedProperty(createdFeatureValue, key) : createdFeatureValue[key];
 

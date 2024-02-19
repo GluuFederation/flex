@@ -356,6 +356,11 @@
   "oidc_clients_write": {
     "fields": [
       {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.openid_client.inum"
+      },
+      {
         "key": "displayName",
         "label": "fields.displayName",
         "description": "documentation.openid_client.displayName"
