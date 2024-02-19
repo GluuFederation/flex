@@ -41,6 +41,7 @@ export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue)
     return {
       webhookId: webhook.webhookId,
       shortcodeValueMap,
+      url: webhook.url,
     };
   });
 };
