@@ -44,7 +44,7 @@ function GluuInputEditor({
         <div style={{ color: 'red' }}>{formik.errors.script}</div>
       ) : null}
       <Col sm={rsize} style={{ position: 'relative' }}>
-        {shortcode ? shortcode : null}
+        {shortcode}
         <AceEditor
           mode={language}
           readOnly={readOnly}

@@ -49,7 +49,7 @@ function GluuInputRow({
           onKeyDown={(evt) => evt.key === 'e' && type === "number" && evt.preventDefault()}
           disabled={disabled}
         />
-        {shortcode ? shortcode : null}
+        {shortcode}
         {type == 'password' && (
           <div style={{ position: 'absolute', right: 20, top: 7 }}>
             {customType == 'text' ? (
