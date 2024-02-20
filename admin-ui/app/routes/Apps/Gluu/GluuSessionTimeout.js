@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
 import { useNavigate } from 'react-router-dom'
 import { withIdleTimer } from 'react-idle-timer'
+import { useSelector } from 'react-redux'
 
 let countdownInterval
 let timeout
@@ -13,7 +14,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
   const [timeoutModalOpen, setTimeoutModalOpen] = useState(false)
   const [timeoutCountdown, setTimeoutCountdown] = useState(0)
   const idleTimer = useRef(null)
-  const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES
+  const sessionTimeout = useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) || 5
   const navigate =useNavigate()
 
   const clearSessionTimeout = () => {
@@ -73,7 +74,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
         onActive={onActive}
         onIdle={onIdle}
         debounce={250}
-        timeout={SESSION_TIMEOUT_IN_MINUTES * 60 * 1000}
+        timeout={sessionTimeout * 60 * 1000}
       />
       <SessionTimeoutDialog
         countdown={timeoutCountdown}
