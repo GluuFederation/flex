@@ -31,8 +31,8 @@
       ]
     }
   },
-  "uiConfig":{
-    "sessionTimeoutInMins":30
+  "uiConfig": {
+    "sessionTimeoutInMins": 30
   },
   "licenseConfig": {
     "ssa": "%(ssa)s",
