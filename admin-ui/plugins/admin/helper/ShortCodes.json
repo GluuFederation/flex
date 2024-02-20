@@ -371,11 +371,6 @@
         "description": "documentation.openid_client.deletable"
       },
       {
-        "key": "clientSecret",
-        "label": "fields.client_secret",
-        "description": "documentation.openid_client.clientSecret"
-      },
-      {
         "key": "frontChannelLogoutSessionRequired",
         "label": "fields.frontChannelLogoutSessionRequired",
         "description": "documentation.openid_client.frontChannelLogoutSessionRequired"
@@ -849,11 +844,6 @@
         "description": "documentation.smtp.smtp_user_name"
       },
       {
-        "key": "smtp_authentication_account_password",
-        "label": "fields.smtp_user_password",
-        "description": "documentation.smtp.smtp_user_password"
-      },
-      {
         "key": "trust_host",
         "label": "fields.trust_host",
         "description": "documentation.smtp.trust_host"
@@ -862,11 +852,6 @@
         "key": "key_store",
         "label": "fields.key_store",
         "description": "documentation.smtp.key_store"
-      },
-      {
-        "key": "key_store_password",
-        "label": "fields.key_store_password",
-        "description": "documentation.smtp.key_store_password"
       },
       {
         "key": "key_store_alias",
@@ -921,16 +906,6 @@
         "key": "jansStatus",
         "label": "Status",
         "description": "documentation.user.jansStatus"
-      },
-      {
-        "key": "userPassword",
-        "label": "Password",
-        "description": "documentation.user.userPassword"
-      },
-      {
-        "key": "userConfirmPassword",
-        "label": "Confirm Password",
-        "description": "documentation.user.userConfirmPassword"
       }
     ]
   },
@@ -945,6 +920,203 @@
         "key": "userId",
         "label": "User Name",
         "description": "documentation.user.userId"
+      }
+    ]
+  },
+  "saml_configuration_write": {
+    "fields": [
+      {
+        "key": "spMetadataFilePattern",
+        "label": "fields.sp_metadata_file_pattern",
+        "description": "documentation.saml.sp_metadata_file_pattern"
+      },
+      {
+        "key": "spMetadataFile",
+        "label": "fields.sp_metadata_file",
+        "description": "documentation.saml.sp_metadata_file"
+      },
+      {
+        "key": "samlTrustRelationshipDn",
+        "label": "fields.saml_trust_relationship_dn",
+        "description": "documentation.saml.saml_trust_relationship_dn"
+      },
+      {
+        "key": "trustedIdpDn",
+        "label": "fields.trustedIdpDn",
+        "description": "documentation.saml.trustedIdpDn"
+      },
+      {
+        "key": "enabled",
+        "label": "fields.enable_saml",
+        "description": "documentation.saml.enable_saml"
+      },
+      {
+        "key": "ignoreValidation",
+        "label": "fields.ignore_validation",
+        "description": "documentation.saml.ignore_validation"
+      },
+      {
+        "key": "selectedIdp",
+        "label": "fields.selected_idp",
+        "description": "documentation.saml.selected_idp"
+      },
+      {
+        "key": "realmDn",
+        "label": "fields.realm_dn",
+        "description": "documentation.saml.realm_dn"
+      },
+      {
+        "key": "serverUrl",
+        "label": "fields.server_url",
+        "description": "documentation.saml.server_url"
+      },
+      {
+        "key": "realm",
+        "label": "fields.realm",
+        "description": "documentation.saml.realm"
+      },
+      {
+        "key": "idpMetadataMandatoryAttributes",
+        "label": "fields.idpMetadataMandatoryAttributes",
+        "description": "documentation.saml.idpMetadataMandatoryAttributes"
+      },
+      {
+        "key": "clientId",
+        "label": "fields.clientId",
+        "description": "documentation.saml.clientId"
+      },
+      {
+        "key": "applicationName",
+        "label": "fields.application_name",
+        "description": "documentation.saml.application_name"
+      },
+      {
+        "key": "grantType",
+        "label": "fields.grant_type",
+        "description": "documentation.saml.grant_type"
+      },
+      {
+        "key": "username",
+        "label": "fields.username",
+        "description": "documentation.saml.username"
+      },
+      {
+        "key": "idpRootDir",
+        "label": "fields.idp_root_dir",
+        "description": "documentation.saml.idp_root_dir"
+      },
+      {
+        "key": "idpMetadataRootDir",
+        "label": "fields.idp_metadata_root_dir",
+        "description": "documentation.saml.idp_metadata_root_dir"
+      },
+      {
+        "key": "idpMetadataTempDir",
+        "label": "fields.idp_metadata_temp_dir",
+        "description": "documentation.saml.idp_metadata_temp_dir"
+      },
+      {
+        "key": "idpMetadataFilePattern",
+        "label": "fields.idp_metadata_file_pattern",
+        "description": "documentation.saml.idp_metadata_file_pattern"
+      },
+      {
+        "key": "idpMetadataFile",
+        "label": "fields.idp_metadata_file",
+        "description": "documentation.saml.idp_metadata_file"
+      },
+      {
+        "key": "spMetadataUrl",
+        "label": "fields.sp_metadata_url",
+        "description": "documentation.saml.sp_metadata_url"
+      },
+      {
+        "key": "spMetadataRootDir",
+        "label": "fields.sp_metadata_root_dir",
+        "description": "documentation.saml.sp_metadata_root_dir"
+      },
+      {
+        "key": "spMetadataTempDir",
+        "label": "fields.sp_metadata_temp_dir",
+        "description": "documentation.saml.sp_metadata_temp_dir"
+      }
+    ]
+  },
+  "saml_idp_write": {
+    "fields": [
+      {
+        "key": "name",
+        "label": "fields.name",
+        "description": "documentation.saml.name"
+      },
+      {
+        "key": "displayName",
+        "label": "fields.displayName",
+        "description": "documentation.saml.displayName"
+      },
+      {
+        "key": "description",
+        "label": "fields.description",
+        "description": "documentation.saml.description"
+      },
+      {
+        "key": "realm",
+        "label": "fields.realm",
+        "description": "documentation.saml.realm"
+      },
+      {
+        "key": "enabled",
+        "label": "fields.enabled",
+        "description": "documentation.saml.enabled"
+      },
+      {
+        "key": "idpEntityId",
+        "label": "fields.idp_entity_id",
+        "description": "documentation.saml.idp_entity_id"
+      },
+      {
+        "key": "signingCertificate",
+        "label": "fields.signing_certificate",
+        "description": "documentation.saml.signing_certificate"
+      },
+      {
+        "key": "nameIDPolicyFormat",
+        "label": "fields.name_policy_format",
+        "description": "documentation.saml.name_policy_format"
+      },
+      {
+        "key": "singleSignOnServiceUrl",
+        "label": "fields.single_signon_service_url",
+        "description": "documentation.saml.single_signon_service_url"
+      },
+      {
+        "key": "encryptionPublicKey",
+        "label": "fields.encryption_public_key",
+        "description": "documentation.saml.encryption_public_key"
+      },
+      {
+        "key": "singleLogoutServiceUrl",
+        "label": "fields.single_logout_service_url",
+        "description": "documentation.saml.single_logout_service_url"
+      }
+    ]
+  },
+  "saml_idp_delete": {
+    "fields": [
+      {
+        "key": "name",
+        "label": "fields.name",
+        "description": "documentation.saml.name"
+      },
+      {
+        "key": "realm",
+        "label": "fields.realm",
+        "description": "documentation.saml.realm"
+      },
+      {
+        "key": "idpEntityId",
+        "label": "fields.idp_entity_id",
+        "description": "documentation.saml.idp_entity_id"
       }
     ]
   }

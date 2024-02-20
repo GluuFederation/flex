@@ -20,6 +20,7 @@ import {
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { CREATE, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 const JansConfigApi = require('jans_config_api')
 
@@ -88,6 +89,7 @@ export function* putSamlProperties({ payload }) {
     const data = yield call(api.putSamlProperties, {
       samlAppConfiguration: payload.action.action_data,
     })
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(putSamlPropertiesResponse(data))
     yield call(postUserAction, audit)
   } catch (error) {
@@ -104,10 +106,11 @@ export function* postSamlIdentity({ payload }) {
     addAdditionalData(audit, CREATE, 'SAML', payload)
     const token = yield select((state) => state.authReducer.token.access_token)
     const api = yield* newSamlIdentityFunction()
-    yield call(api.postSamlIdentityProvider, {
+    const data =yield call(api.postSamlIdentityProvider, {
       formdata: payload.action.action_data,
       token,
     })
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit)
   } catch (error) {
@@ -212,11 +215,12 @@ export function* updateSamlIdentity({ payload }) {
     addAdditionalData(audit, UPDATE, 'SAML', payload)
     const token = yield select((state) => state.authReducer.token.access_token)
     const api = yield* newSamlIdentityFunction()
-    yield call(api.updateSamlIdentityProvider, {
+    const data = yield call(api.updateSamlIdentityProvider, {
       formdata: payload.action.action_data,
       token,
     })
     yield put(toggleSavedFormFlag(true))
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield call(postUserAction, audit)
   } catch (error) {
     console.log('Error: ', error)
@@ -242,6 +246,7 @@ export function* deleteSamlIdentity({ payload }) {
     yield put(deleteSamlIdentityResponse(data))
     yield put(getSamlIdentites())
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
   } catch (error) {
     yield* errorToast({ error })
 

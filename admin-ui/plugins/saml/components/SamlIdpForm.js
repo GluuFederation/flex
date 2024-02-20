@@ -423,6 +423,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
               modal={modal}
               onAccept={submitForm}
               formik={formik}
+              feature='saml_idp_write'
             />
           </Form>
         </CardBody>
