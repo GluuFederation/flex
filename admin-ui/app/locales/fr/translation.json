@@ -132,6 +132,7 @@
     "ssl_key_store_file_path": "Chemin du fichier du magasin de clés SSL",
     "ssl_trust_store_password": "Mot de passe du magasin de confiance SSL",
     "ssl_key_store_password": "Mot de passe du magasin de clés SSL",
+    "sessionTimeoutInMins": "Durée de la session en minutes",
     "metadata_location": "Emplacement des métadonnées",
     "released_attributes": "Attributs publiés",
     "download_summary": "Télécharger le résumé",
@@ -513,6 +514,8 @@
     "view_trust_relationshi_details": "Voir les détails de la relation de confiance",
     "add_trust_relationship": "Ajouter une relation de confiance",
     "add_webhook": "Ajouter un Webhook",
+    "session_timeout_error": "La durée de la session doit être d'au moins 1 minute",
+    "session_timeout_required_error": "La durée de la session est requise",
     "webhook_execution_information": "Informations sur l'exécution du webhook",
     "error_message": "Message d'erreur",
     "add_service_provider": "Ajouter un fournisseur de services",
@@ -808,7 +811,8 @@
     "settings": {
       "pageSize": "La taille par défaut pour toutes les pages de liste.",
       "darkMode": "Indique si le mode sombre est activé ou désactivé.",
-      "configApiUrl": "L'URL de l'API de configuration actuellement utilisée."
+      "configApiUrl": "L'URL de l'API de configuration actuellement utilisée.",
+      "sessionTimeoutInMins": "Détermine la durée d'inactivité autorisée avant l'expiration de la session en cours."
     },
     "script": {
       "inum": "Identifiant unique identifiant le script",
