@@ -83,6 +83,7 @@
     "introspection_encrypted_response_alg": "Introspection Encrypted Response Alg",
     "http_request_body": "Request Body",
     "webhook_name": "Webhook Name",
+    "sessionTimeoutInMins": "Session Timeout In Mins",
     "download_summary": "Download Summary",
     "metadata_location": "Metadata Location",
     "released_attributes": "Released Attributes",
@@ -585,6 +586,8 @@
     "request_body_error": "HTTP Request Body is required for selected HTTP Method",
     "display_name_error": "Please enter display name.",
     "url_error": "Please enter URL.",
+    "session_timeout_error": "Session timeout must be at least 1 minute",
+    "session_timeout_required_error": "Session timeout is required",
     "invalid_json_error": "Invalid JSON value.",
     "add_identity_provider": "Add Identity Provider",
     "view_idp_details": "View IDP Details",
@@ -1258,7 +1261,8 @@
     "settings": {
       "pageSize": "The default size for all list page.",
       "darkMode": "Whether to enable or disable adrk mode.",
-      "configApiUrl": "The URL of the config api currently in used."
+      "configApiUrl": "The URL of the config api currently in used.",
+      "sessionTimeoutInMins": "Determines the duration of inactivity allowed before the current session expires."
     },
     "license": {
       "productName": "The license is registered under following product.",

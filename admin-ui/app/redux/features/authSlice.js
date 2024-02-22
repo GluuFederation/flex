@@ -19,6 +19,7 @@ const initialState = {
     errorMessage: null,
     statusCode: null
   },
+  loadingConfig: false
 }
 
 const authSlice = createSlice({
@@ -74,6 +75,12 @@ const authSlice = createSlice({
       state.defaultToken = action.payload
       state.issuer = action.payload.issuer
     },
+    putConfigWorker: (state) => {
+      state.loadingConfig = true
+    },
+    putConfigWorkerResponse: (state) => {
+      state.loadingConfig = false
+    },
   }
 })
 
@@ -89,7 +96,9 @@ export const {
   getUserLocation,
   getUserLocationResponse,
   setApiDefaultToken,
-  setBackendStatus
+  setBackendStatus,
+  putConfigWorker,
+  putConfigWorkerResponse
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)

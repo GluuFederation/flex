@@ -131,6 +131,7 @@
     "aui_feature_ids": "Recursos da interface do administrador",
     "download_summary": "Baixar Resumo",
     "customAttributes": "atributos personalizados",
+    "sessionTimeoutInMins": "Tempo Limite da Sessão em Minutos",
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
     "metadata_location": "Localização dos Metadados",
@@ -512,6 +513,8 @@
     "add_trust_relationship": "Adicionar Relação de Confiança",
     "no_spaces": "não deve conter espaços",
     "webhook_execution_information": "Informações de execução do webhook",
+    "session_timeout_error": "O tempo limite da sessão deve ser de pelo menos 1 minuto",
+    "session_timeout_required_error": "O tempo limite da sessão é obrigatório",
     "error_message": "Mensagem de erro",
     "add_service_provider": "Adicionar Provedor de Serviços",
     "delete_script": "Excluir roteiro",
@@ -905,7 +908,8 @@
     "settings": {
       "pageSize": "O tamanho padrão para todas as páginas de lista.",
       "darkMode": "Se deve ativar ou desativar o modo escuro.",
-      "configApiUrl": "A URL da API de configuração atualmente em uso."
+      "configApiUrl": "A URL da API de configuração atualmente em uso.",
+      "sessionTimeoutInMins": "Determina a duração da inatividade permitida antes que a sessão atual expire."
     },
     "script": {
       "inum": "ID único identificando o script",

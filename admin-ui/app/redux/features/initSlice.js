@@ -7,15 +7,19 @@ const initialState = {
   scopes: [],
   attributes: [],
   totalClientsEntries: 0,
-  isTimeout: false
+  isTimeout: false,
+  loadingScripts: false,
 }
 
 const initSlice = createSlice({
   name: 'init',
   initialState,
   reducers: {
-    getScripts: () => {},
+    getScripts: (state) => {
+      state.loadingScripts = true
+    },
     getScriptsResponse: (state, action) => {
+      state.loadingScripts = false
       if (action.payload?.data) {
         state.scripts = action.payload.data?.entries
       }

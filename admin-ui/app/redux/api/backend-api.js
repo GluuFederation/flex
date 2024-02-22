@@ -5,14 +5,29 @@ const JansConfigApi = require('jans_config_api')
 export const fetchServerConfiguration = (token) => {
   const headers = { Authorization: `Bearer ${token}` }
   return axios
-    .get('/app/admin-ui/oauth2/config', { headers })
+    .get('/admin-ui/config', { headers })
     .then((response) => response.data)
     .catch((error) => {
       console.error(
-        'Problems getting OAuth2 configuration in order to process authz code flow.',
+        'Problems getting configuration in order to process authz code flow.',
         error,
       )
       return -1
+    })
+}
+
+export const putServerConfiguration = (payload) => {
+  const { token, props } = payload
+  const headers = { Authorization: `Bearer ${token}` }
+  return axios
+    .put('/admin-ui/config', props, { headers })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error(
+        'Problems updating configuration.',
+        error,
+      )
+      throw Error(`Problems updating configuration. ${error?.message}`)
     })
 }
 

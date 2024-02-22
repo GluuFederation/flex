@@ -1,12 +1,13 @@
 /**
  * Auth Sagas
  */
-import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
+import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects'
 import {
   getOAuth2ConfigResponse,
   getAPIAccessTokenResponse,
   getUserLocationResponse,
   setBackendStatus,
+  putConfigWorkerResponse
 } from '../features/authSlice'
 
 import {
@@ -14,7 +15,11 @@ import {
   fetchApiAccessToken,
   getUserIpAndLocation,
   fetchApiTokenWithDefaultScopes,
+  putServerConfiguration,
 } from '../api/backend-api'
+import { updateToast } from 'Redux/features/toastSlice'
+import { getAPIAccessToken } from 'Redux/features/authSlice'
+import { isFourZeroOneError } from 'Utils/TokenController'
 
 function* getApiTokenWithDefaultScopes() {
     const response = yield call(fetchApiTokenWithDefaultScopes)
@@ -40,6 +45,29 @@ function* getOAuth2ConfigWorker({ payload }) {
     console.log('Problems getting OAuth2 configuration.', error)
   }
   yield put(getOAuth2ConfigResponse())
+}
+
+function* putConfigWorker({ payload }) {
+  try {
+    console.log(`payload`, payload);
+    const token = yield select((state) => state.authReducer.token.access_token)
+    console.log(`token`, token);
+    const response = yield call(putServerConfiguration, { token, props: payload })
+    if (response) {
+      yield put(updateToast(true, 'success'))
+      return
+    }
+  } catch (error) {
+    console.log('Problems udpating configuration.', error)
+    yield put(updateToast(true, 'error'))
+    if (isFourZeroOneError(error)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+    return error
+  } finally {
+    yield put(putConfigWorkerResponse())
+  }
 }
 
 function* getAPIAccessTokenWorker(jwt) {
@@ -79,7 +107,9 @@ export function* getOAuth2ConfigWatcher() {
 export function* getLocationWatcher() {
   yield takeEvery('auth/getUserLocation', getLocationWorker)
 }
-
+export function* putConfigWorkerWatcher() {
+  yield takeEvery('auth/putConfigWorker', putConfigWorker)
+}
 /**
  * Auth Root Saga
  */
@@ -88,5 +118,6 @@ export default function* rootSaga() {
     fork(getOAuth2ConfigWatcher),
     fork(getApiTokenWatcher),
     fork(getLocationWatcher),
+    fork(putConfigWorkerWatcher),
   ])
 }
