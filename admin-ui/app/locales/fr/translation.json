@@ -132,6 +132,8 @@
     "ssl_key_store_file_path": "Chemin du fichier du magasin de clés SSL",
     "ssl_trust_store_password": "Mot de passe du magasin de confiance SSL",
     "ssl_key_store_password": "Mot de passe du magasin de clés SSL",
+    "sessionTimeoutInMins": "Délai d'expiration de la session de l'interface administrateur (en minutes)",
+    "adminui_default_acr": "Méthode d'authentification de l'interface administrateur (ACR)",
     "metadata_location": "Emplacement des métadonnées",
     "released_attributes": "Attributs publiés",
     "download_summary": "Télécharger le résumé",
@@ -513,6 +515,10 @@
     "view_trust_relationshi_details": "Voir les détails de la relation de confiance",
     "add_trust_relationship": "Ajouter une relation de confiance",
     "add_webhook": "Ajouter un Webhook",
+    "permission_name_error": "Veuillez vous assurer que le nom de la permission comporte au moins 5 caractères.",
+    "role_name_error": "Veuillez vous assurer que le nom du rôle comporte au moins 5 caractères.",
+    "session_timeout_error": "La durée de la session doit être d'au moins 1 minute",
+    "session_timeout_required_error": "La durée de la session est requise",
     "webhook_execution_information": "Informations sur l'exécution du webhook",
     "error_message": "Message d'erreur",
     "add_service_provider": "Ajouter un fournisseur de services",
@@ -808,7 +814,9 @@
     "settings": {
       "pageSize": "La taille par défaut pour toutes les pages de liste.",
       "darkMode": "Indique si le mode sombre est activé ou désactivé.",
-      "configApiUrl": "L'URL de l'API de configuration actuellement utilisée."
+      "configApiUrl": "L'URL de l'API de configuration actuellement utilisée.",
+      "sessionTimeoutInMins": "Détermine la durée d'inactivité autorisée avant l'expiration de la session en cours.",
+      "adminui_default_acr": "Ce champ contrôle le mécanisme d'authentification par défaut utilisé dans l'interface administrateur."
     },
     "script": {
       "inum": "Identifiant unique identifiant le script",
