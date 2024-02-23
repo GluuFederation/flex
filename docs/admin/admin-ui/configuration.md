@@ -86,7 +86,7 @@ The information is stored in json format with following attributes.
 
 |Attribute Name|Description|
 |--------------|-----------|
-|authServerClient|Object with Auth Server client details|
+|auiWebClient|Object with Web OIDC client details|
 |opHost|Auth Server hostname|
 |clientId| Client Id of OIDC client used to access Auth server|
 |clientSecret| Client Secret of OIDC client used to access Auth server|
@@ -96,19 +96,26 @@ The information is stored in json format with following attributes.
 |postLogoutUri|Url to be redirected after Admin UI logout|
 |frontchannelLogoutUri|Front channel Logout Uri|
 
-### OIDC Client Details for Token Server
+### OIDC Client Details for Backend API Server
 
-Similarly, Gluu Flex Admin UI needs OIDC client details to interact with the Token Server. This enables the UI to request and manage access tokens required to access `Jans Config API` protected resources.
+Similarly, Gluu Flex Admin UI needs OIDC client details to interact with the Janssen Server via. `Jans Config API` protected APIs. The Backend API client enables the UI to request and manage access tokens required to access `Jans Config API` protected resources.
 
 The information is stored in json format with following attributes.
 
 |Attribute Name|Description|
 |--------------|-----------|
-|tokenServerClient|Object with Token Server client details|
+|auiBackendApiClient|Object with Backend API client details|
 |opHost|Token Server hostname|
 |clientId| Client Id of OIDC client used to access Token server|
 |clientSecret| Client Secret of OIDC client used to access Token server|
 |tokenEndpoint|Token endpoint of token server|
+
+### Configuration Properties for User-Interface
+
+|Attribute Name|Description|
+|--------------|-----------|
+|uiConfig|Object with UI configuration attributes|
+|sessionTimeoutInMins|The admin UI will auto-logout after a period of inactivity defined in this field.|  
 
 ### OIDC Client Details for License Server
 
@@ -140,7 +147,7 @@ The information is stored in json format with following attributes.
 ```text
 {
   "oidcConfig": {
-    "authServerClient": {
+    "auiWebClient": {
       "redirectUri": "https://your.host.com/admin",
       "postLogoutUri": "https://your.gost.com/admin",
       "frontchannelLogoutUri": "https://your.host.com/admin/logout",
@@ -157,7 +164,7 @@ The information is stored in json format with following attributes.
       "clientId": "2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568",
       "clientSecret": "GGO4t1uixrTpl4Rizt3zag=="
     },
-    "tokenServerClient": {
+    "auiBackendApiClient": {
       "tokenEndpoint": "https://your.host.com/jans-auth/restv1/token",
       "scopes": [
         "openid",
