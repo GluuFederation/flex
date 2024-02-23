@@ -1013,8 +1013,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#oidc-client-details-for-token-server" class="md-nav__link">
-    OIDC Client Details for Token Server
+  <a href="#oidc-client-details-for-backend-api-server" class="md-nav__link">
+    OIDC Client Details for Backend API Server
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-properties-for-user-interface" class="md-nav__link">
+    Configuration Properties for User-Interface
   </a>
   
 </li>
@@ -1577,8 +1584,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#oidc-client-details-for-token-server" class="md-nav__link">
-    OIDC Client Details for Token Server
+  <a href="#oidc-client-details-for-backend-api-server" class="md-nav__link">
+    OIDC Client Details for Backend API Server
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-properties-for-user-interface" class="md-nav__link">
+    Configuration Properties for User-Interface
   </a>
   
 </li>
@@ -1771,8 +1785,8 @@
 </thead>
 <tbody>
 <tr>
-<td>authServerClient</td>
-<td>Object with Auth Server client details</td>
+<td>auiWebClient</td>
+<td>Object with Web OIDC client details</td>
 </tr>
 <tr>
 <td>opHost</td>
@@ -1808,8 +1822,8 @@
 </tr>
 </tbody>
 </table>
-<h3 id="oidc-client-details-for-token-server">OIDC Client Details for Token Server<a class="headerlink" href="#oidc-client-details-for-token-server" title="Permanent link">#</a></h3>
-<p>Similarly, Gluu Flex Admin UI needs OIDC client details to interact with the Token Server. This enables the UI to request and manage access tokens required to access <code>Jans Config API</code> protected resources.</p>
+<h3 id="oidc-client-details-for-backend-api-server">OIDC Client Details for Backend API Server<a class="headerlink" href="#oidc-client-details-for-backend-api-server" title="Permanent link">#</a></h3>
+<p>Similarly, Gluu Flex Admin UI needs OIDC client details to interact with the Janssen Server via. <code>Jans Config API</code> protected APIs. The Backend API client enables the UI to request and manage access tokens required to access <code>Jans Config API</code> protected resources.</p>
 <p>The information is stored in json format with following attributes.</p>
 <table>
 <thead>
@@ -1820,8 +1834,8 @@
 </thead>
 <tbody>
 <tr>
-<td>tokenServerClient</td>
-<td>Object with Token Server client details</td>
+<td>auiBackendApiClient</td>
+<td>Object with Backend API client details</td>
 </tr>
 <tr>
 <td>opHost</td>
@@ -1838,6 +1852,25 @@
 <tr>
 <td>tokenEndpoint</td>
 <td>Token endpoint of token server</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configuration-properties-for-user-interface">Configuration Properties for User-Interface<a class="headerlink" href="#configuration-properties-for-user-interface" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Attribute Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>uiConfig</td>
+<td>Object with UI configuration attributes</td>
+</tr>
+<tr>
+<td>sessionTimeoutInMins</td>
+<td>The admin UI will auto-logout after a period of inactivity defined in this field.</td>
 </tr>
 </tbody>
 </table>
@@ -1898,7 +1931,7 @@
 <p><strong>Sample configuration stored in persistence</strong></p>
 <div class="highlight"><pre><span></span><code>{
   &quot;oidcConfig&quot;: {
-    &quot;authServerClient&quot;: {
+    &quot;auiWebClient&quot;: {
       &quot;redirectUri&quot;: &quot;https://your.host.com/admin&quot;,
       &quot;postLogoutUri&quot;: &quot;https://your.gost.com/admin&quot;,
       &quot;frontchannelLogoutUri&quot;: &quot;https://your.host.com/admin/logout&quot;,
@@ -1915,7 +1948,7 @@
       &quot;clientId&quot;: &quot;2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568&quot;,
       &quot;clientSecret&quot;: &quot;GGO4t1uixrTpl4Rizt3zag==&quot;
     },
-    &quot;tokenServerClient&quot;: {
+    &quot;auiBackendApiClient&quot;: {
       &quot;tokenEndpoint&quot;: &quot;https://your.host.com/jans-auth/restv1/token&quot;,
       &quot;scopes&quot;: [
         &quot;openid&quot;,
@@ -1927,6 +1960,9 @@
       &quot;clientId&quot;: &quot;2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568&quot;,
       &quot;clientSecret&quot;: &quot;GGO4t1uixrTpl4Rizt3zag==&quot;
     }
+  },
+  &quot;uiConfig&quot;: {
+    &quot;sessionTimeoutInMins&quot;: 30
   },
   &quot;licenseConfig&quot;: {
     &quot;ssa&quot;: &quot;...ssa in jwt format...&quot;,
@@ -1947,7 +1983,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-12T12:33:38+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-12</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-23T12:42:31+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-23</span>
       
         <br>
         Created:
