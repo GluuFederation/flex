@@ -130,7 +130,8 @@
     "introspection_encrypted_response_alg": "Algoritmo de criptografia da resposta de introspeção",
     "aui_feature_ids": "Recursos da interface do administrador",
     "download_summary": "Baixar Resumo",
-    "sessionTimeoutInMins": "Tempo Limite da Sessão em Minutos",
+    "sessionTimeoutInMins": "Tempo limite da sessão da interface de administração (em minutos)",
+    "adminui_default_acr": "Método de autenticação da interface de administração (ACR)",
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
     "metadata_location": "Localização dos Metadados",
@@ -906,7 +907,8 @@
       "pageSize": "O tamanho padrão para todas as páginas de lista.",
       "darkMode": "Se deve ativar ou desativar o modo escuro.",
       "configApiUrl": "A URL da API de configuração atualmente em uso.",
-      "sessionTimeoutInMins": "Determina a duração da inatividade permitida antes que a sessão atual expire."
+      "sessionTimeoutInMins": "Determina a duração da inatividade permitida antes que a sessão atual expire.",
+      "adminui_default_acr": "Este campo controla o mecanismo de autenticação padrão usado na interface de administração."
     },
     "script": {
       "inum": "ID único identificando o script",
