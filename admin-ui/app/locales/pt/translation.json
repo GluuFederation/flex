@@ -514,6 +514,8 @@
     "add_trust_relationship": "Adicionar Relação de Confiança",
     "no_spaces": "não deve conter espaços",
     "webhook_execution_information": "Informações de execução do webhook",
+    "permission_name_error": "Por favor, certifique-se de que o nome da permissão tenha pelo menos 5 caracteres.",
+    "role_name_error": "Por favor, certifique-se de que o nome do papel tenha pelo menos 5 caracteres.",
     "session_timeout_error": "O tempo limite da sessão deve ser de pelo menos 1 minuto",
     "session_timeout_required_error": "O tempo limite da sessão é obrigatório",
     "error_message": "Mensagem de erro",

@@ -190,8 +190,8 @@ function SettingsForm() {
               onChange={formik.handleChange}
             >
               <option value=''>{t('actions.choose')}...</option>
-              {authScripts.map((item, key) => (
-                <option key={key}>{item}</option>
+              {authScripts.map((item) => (
+                <option key={item.toString()}>{item}</option>
               ))}
             </CustomInput>
           </InputGroup>
