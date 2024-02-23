@@ -175,6 +175,9 @@
     "jspdf": "^2.4.0",
     "autoprefixer": "^10.4.14"
   },
+  "overrides": {
+    "terser": "5.27.2"
+  },
   "eslintConfig": {
     "root": true,
     "env": {
