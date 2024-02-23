@@ -90,6 +90,7 @@
     "rimraf": "^5.0.5",
     "sass-loader": "^13.2.2",
     "style-loader": "^3.3.2",
+    "terser": "^5.27.0",
     "webpack": "^5.77.0",
     "webpack-bundle-analyzer": "^4.8.0",
     "webpack-cli": "^5.0.1",
