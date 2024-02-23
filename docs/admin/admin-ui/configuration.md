@@ -177,6 +177,9 @@ The information is stored in json format with following attributes.
       "clientSecret": "GGO4t1uixrTpl4Rizt3zag=="
     }
   },
+  "uiConfig": {
+    "sessionTimeoutInMins": 30
+  },
   "licenseConfig": {
     "ssa": "...ssa in jwt format...",
     "scanLicenseApiHostname": "https://cloud-dev.gluu.cloud",
