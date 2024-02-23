@@ -578,6 +578,8 @@
     "webhook_execution_information": "Webhook Execution Information",
     "webhook_dialog_dec": "As part of the submission process, the system will automatically trigger the following associated webhooks to perform additional processing tasks.",
     "add_webhook": "Add Webhook",
+    "permission_name_error": "Please ensure the permission name is at least 5 characters long.",
+    "role_name_error": "Please ensure the role name is at least 5 characters long.",
     "error_message": "Error Message",
     "webhook_dialog_note": "NOTE: Webhook execution has failed, and you won't be able to continue at the moment.",
     "http_method_error": "Please select a HTTP Method.",

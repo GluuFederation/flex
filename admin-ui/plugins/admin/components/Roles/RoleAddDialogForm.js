@@ -16,26 +16,22 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 
 const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
-  const [active, setActive] = useState(false)
   const [deletable, setDeletable] = useState(false)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-
-  function handleStatus() {
-    const value = document.getElementById('api_role').value
-    if (value.length >= 5) {
-      setActive(true)
-    } else {
-      setActive(false)
-    }
-  }
+  const [errorMessages, setErrorMessages] = useState('')
 
   function handleAccept() {
     const roleData = {}
     roleData['role'] = document.getElementById('api_role').value
     roleData['description'] = document.getElementById('api_description').value
     roleData['deletable'] = deletable
+    if (roleData['role']?.length < 5) {
+      setErrorMessages(t('messages.role_name_error'))
+      return
+    }
+
     onAccept(roleData)
   }
   return (
@@ -57,7 +53,6 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
                 id='api_role'
                 type='text'
                 name='api_role'
-                onKeyUp={handleStatus}
                 defaultValue=''
               />
             </Col>
@@ -87,24 +82,21 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
               />
             </Col>
           </FormGroup>
+
+          {errorMessages ? (
+            <span style={{ color: '#e74c3c' }}>{errorMessages}</span>
+          ) : null}
+
         </ModalBody>
         <ModalFooter>
-          {active && (
-            <Button
-              color={`primary-${selectedTheme}`}
-              style={applicationStyle.buttonStyle}
-              onClick={handleAccept}
-            >
-              {t('actions.yes')}
-            </Button>
-          )}{' '}
           <Button
             color={`primary-${selectedTheme}`}
             style={applicationStyle.buttonStyle}
-            onClick={handler}
+            onClick={handleAccept}
           >
-            {t('actions.no')}
+            {t('actions.save')}
           </Button>
+          <Button onClick={handler}>{t('actions.cancel')}</Button>
         </ModalFooter>
       </Modal>
     </>
