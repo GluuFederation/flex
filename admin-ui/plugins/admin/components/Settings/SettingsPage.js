@@ -25,7 +25,6 @@ import * as Yup from 'yup'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import { getScripts } from 'Redux/features/initSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { getAcrsConfig } from 'Plugins/auth-server/redux/features/acrSlice'
 
 const levels = [1, 5, 10, 20]
 
@@ -35,7 +34,6 @@ function SettingsPage() {
   const loadingScripts = useSelector(
     (state) => state.initReducer.loadingScripts
   )
-  const loadingAcr = useSelector((state) => state.acrReducer.loading)
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -45,13 +43,12 @@ function SettingsPage() {
   SetTitle(t('titles.application_settings'))
 
   useEffect(() => {
-    dispatch(getAcrsConfig())
     dispatch(getScripts({ action: {} }))
   }, [])
 
   return (
     <React.Fragment>
-      <GluuLoader blocking={loadingScripts || loadingConfig || loadingAcr}>
+      <GluuLoader blocking={loadingScripts || loadingConfig}>
         <Card style={applicationStyle.mainCard}>
           <CardBody>
             <FormGroup row>
@@ -115,7 +112,7 @@ function SettingsPage() {
               </Col>
             </FormGroup>
 
-            {!loadingScripts && !loadingAcr && <SettingsForm />}
+            {!loadingScripts && <SettingsForm />}
           </CardBody>
         </Card>
       </GluuLoader>
@@ -128,10 +125,10 @@ function SettingsForm() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
+  const acrValues = useSelector((state) => state.authReducer?.config?.acrValues)
   const sessionTimeout =
     useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) || 5
   const scripts = useSelector((state) => state.initReducer.scripts)
-  const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const dispatch = useDispatch()
 
   const authScripts = scripts
@@ -144,7 +141,7 @@ function SettingsForm() {
   const formik = useFormik({
     initialValues: {
       sessionTimeoutInMins: sessionTimeout,
-      acrValues: acrs?.defaultAcr || '',
+      acrValues: acrValues || '',
     },
     onSubmit: (values) => {
       dispatch(putConfigWorker(values))
@@ -178,9 +175,9 @@ function SettingsForm() {
       <FormGroup row>
         <GluuLabel
           size={4}
-          doc_category='json_properties'
-          doc_entry={'defaultAcr'}
-          label={t('fields.default_acr')}
+          doc_category='settings'
+          doc_entry={'adminui_default_acr'}
+          label={t('fields.adminui_default_acr')}
         />
         <Col sm={8}>
           <InputGroup>

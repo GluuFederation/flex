@@ -54,6 +54,7 @@ function* putConfigWorker({ payload }) {
     console.log(`token`, token);
     const response = yield call(putServerConfiguration, { token, props: payload })
     if (response) {
+      yield put(getOAuth2ConfigResponse({ config: response }))
       yield put(updateToast(true, 'success'))
       return
     }

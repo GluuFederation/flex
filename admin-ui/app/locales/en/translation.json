@@ -83,7 +83,8 @@
     "introspection_encrypted_response_alg": "Introspection Encrypted Response Alg",
     "http_request_body": "Request Body",
     "webhook_name": "Webhook Name",
-    "sessionTimeoutInMins": "Session Timeout In Mins",
+    "sessionTimeoutInMins": "Admin UI Session Timeout (In Minutes)",
+    "adminui_default_acr": "Admin UI authentication method (ACR)",
     "download_summary": "Download Summary",
     "metadata_location": "Metadata Location",
     "released_attributes": "Released Attributes",
@@ -1262,7 +1263,8 @@
       "pageSize": "The default size for all list page.",
       "darkMode": "Whether to enable or disable adrk mode.",
       "configApiUrl": "The URL of the config api currently in used.",
-      "sessionTimeoutInMins": "Determines the duration of inactivity allowed before the current session expires."
+      "sessionTimeoutInMins": "Determines the duration of inactivity allowed before the current session expires.",
+      "adminui_default_acr": "This field controls the default authentication mechanism used in Admin UI."
     },
     "license": {
       "productName": "The license is registered under following product.",
