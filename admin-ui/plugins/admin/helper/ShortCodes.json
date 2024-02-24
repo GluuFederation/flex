@@ -1,0 +1,1123 @@
+{
+  "custom_script_write": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.script.inum"
+      },
+      {
+        "key": "name",
+        "label": "fields.name",
+        "description": "documentation.script.name"
+      },
+      {
+        "key": "description",
+        "label": "fields.description",
+        "description": "documentation.script.description"
+      },
+      {
+        "key": "script",
+        "label": "fields.script",
+        "description": "documentation.script.script"
+      },
+      {
+        "key": "scriptType",
+        "label": "fields.script_type",
+        "description": "documentation.script.scriptType"
+      },
+      {
+        "key": "programmingLanguage",
+        "label": "fields.programming_language",
+        "description": "documentation.script.programmingLanguage"
+      },
+      {
+        "key": "locationType",
+        "label": "fields.location_type",
+        "description": "documentation.script.locationType"
+      },
+      {
+        "key": "enabled",
+        "label": "fields.enabled",
+        "description": "documentation.script.enabled"
+      },
+      {
+        "key": "level",
+        "label": "fields.level",
+        "description": "documentation.script.level"
+      },
+      {
+        "key": "configurationProperties",
+        "label": "fields.custom_properties"
+      },
+      {
+        "key": "moduleProperties",
+        "label": "fields.module_properties"
+      }
+    ]
+  },
+  "custom_script_delete": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.script.inum"
+      }
+    ]
+  },
+  "fido_configuration_write": {
+    "fields": [
+      {
+        "key": "issuer",
+        "label": "fields.issuer",
+        "description": "documentation.fido_configuration.issuer"
+      },
+      {
+        "key": "baseEndpoint",
+        "label": "fields.base_endpoint",
+        "description": "documentation.fido_configuration.baseEndpoint"
+      },
+      {
+        "key": "cleanServiceInterval",
+        "label": "fields.clean_service_interval",
+        "description": "documentation.fido_configuration.cleanServiceInterval"
+      },
+      {
+        "key": "cleanServiceBatchChunkSize",
+        "label": "fields.clean_service_batch_chunk",
+        "description": "documentation.fido_configuration.cleanServiceBatchChunkSize"
+      },
+      {
+        "key": "useLocalCache",
+        "label": "fields.use_local_cache",
+        "description": "documentation.fido_configuration.useLocalCache"
+      },
+      {
+        "key": "disableJdkLogger",
+        "label": "fields.disable_jdk_logger",
+        "description": "documentation.fido_configuration.disableJdkLogger"
+      },
+      {
+        "key": "loggingLevel",
+        "label": "fields.loggingLevel",
+        "description": "documentation.fido_configuration.loggingLevel"
+      },
+      {
+        "key": "loggingLayout",
+        "label": "fields.logging_layout",
+        "description": "documentation.fido_configuration.loggingLayout"
+      },
+      {
+        "key": "externalLoggerConfiguration",
+        "label": "fields.external_logger_configuration",
+        "description": "documentation.fido_configuration.externalLoggerConfiguration"
+      },
+      {
+        "key": "metricReporterInterval",
+        "label": "fields.metric_reporter_interval",
+        "description": "documentation.fido_configuration.metricReporterInterval"
+      },
+      {
+        "key": "metricReporterKeepDataDays",
+        "label": "fields.metric_reporter_keep_data_days",
+        "description": "documentation.fido_configuration.metricReporterKeepDataDays"
+      },
+      {
+        "key": "metricReporterEnabled",
+        "label": "fields.metric_reporter_enabled",
+        "description": "documentation.fido_configuration.metricReporterEnabled"
+      },
+      {
+        "key": "personCustomObjectClassList",
+        "label": "fields.person_custom_object_classes",
+        "description": "documentation.fido_configuration.personCustomObjectClassList"
+      },
+      {
+        "key": "superGluuEnabled",
+        "label": "fields.enable_super_gluu",
+        "description": "documentation.fido_configuration.superGluuEnabled"
+      },
+      {
+        "key": "authenticatorCertsFolder",
+        "label": "fields.authenticator_certificates_folder",
+        "description": "documentation.fido_configuration.authenticatorCertsFolder"
+      },
+      {
+        "key": "mdsAccessToken",
+        "label": "fields.mds_access_token",
+        "description": "documentation.fido_configuration.mdsAccessToken"
+      },
+      {
+        "key": "fido2Configuration.mdsCertsFolder",
+        "label": "fields.mds_toc_certificates_folder",
+        "description": "documentation.fido_configuration.mdsCertsFolder"
+      },
+      {
+        "key": "fido2Configuration.mdsTocsFolder",
+        "label": "fields.mds_toc_files_folder",
+        "description": "documentation.fido_configuration.mdsTocsFolder"
+      },
+      {
+        "key": "fido2Configuration.checkU2fAttestations",
+        "label": "fields.check_u2f_attestations",
+        "description": "documentation.fido_configuration.checkU2fAttestations"
+      },
+      {
+        "key": "fido2Configuration.unfinishedRequestExpiration",
+        "label": "fields.unfinished_request_expiration",
+        "description": "documentation.fido_configuration.unfinishedRequestExpiration"
+      },
+      {
+        "key": "fido2Configuration.authenticationHistoryExpiration",
+        "label": "fields.authentication_history_expiration",
+        "description": "documentation.fido_configuration.authenticationHistoryExpiration"
+      },
+      {
+        "key": "fido2Configuration.serverMetadataFolder",
+        "label": "fields.server_metadata_folder",
+        "description": "documentation.fido_configuration.serverMetadataFolder"
+      },
+      {
+        "key": "fido2Configuration.userAutoEnrollment",
+        "label": "fields.user_auto_enrollment",
+        "description": "documentation.fido_configuration.userAutoEnrollment"
+      },
+      {
+        "key": "fido2Configuration.requestedCredentialTypes",
+        "label": "fields.requested_credential_types",
+        "description": "documentation.fido_configuration.requestedCredentialTypes"
+      },
+      {
+        "key": "fido2Configuration.requestedParties",
+        "label": "fields.requested_parties_name",
+        "description": "documentation.fido_configuration.requestedParties"
+      }
+    ]
+  },
+  "jans_link_write": {
+    "fields": [
+      {
+        "key": "sourceConfigs",
+        "label": "menus.source_backend_ldap_servers",
+        "description": "documentation.jans_link.sourceConfigs"
+      },
+      {
+        "key": "targetConfig",
+        "label": "menus.inum_db_server",
+        "description": "documentation.jans_link.targetConfig"
+      },
+      {
+        "key": "ldapSearchSizeLimit",
+        "label": "fields.search_size_limit",
+        "description": "documentation.jans_link.ldapSearchSizeLimit"
+      },
+      {
+        "key": "keyAttributes",
+        "label": "fields.key_attribute",
+        "description": "documentation.jans_link.keyAttributes"
+      },
+      {
+        "key": "keyObjectClasses",
+        "label": "fields.object_class",
+        "description": "documentation.jans_link.keyObjectClasses"
+      },
+      {
+        "key": "sourceAttributes",
+        "label": "fields.source_attribute",
+        "description": "documentation.jans_link.sourceAttributes"
+      },
+      {
+        "key": "customLdapFilter",
+        "label": "fields.custom_ldap_filter",
+        "description": "documentation.jans_link.customLdapFilter"
+      },
+      {
+        "key": "updateMethod",
+        "label": "fields.refresh_method",
+        "description": "documentation.jans_link.refresh_method"
+      },
+      {
+        "key": "defaultInumServer",
+        "label": "fields.default_inum_server",
+        "description": "documentation.jans_link.defaultInumServer"
+      },
+      {
+        "key": "keepExternalPerson",
+        "label": "fields.keep_external_persons",
+        "description": "documentation.jans_link.keepExternalPerson"
+      },
+      {
+        "key": "useSearchLimit",
+        "label": "fields.use_search_limit",
+        "description": "documentation.jans_link.useSearchLimit"
+      },
+      {
+        "key": "attributeMapping",
+        "label": "fields.change_attribute_name_from_source_to_estination",
+        "description": "documentation.jans_link.attributeMapping"
+      },
+      {
+        "key": "snapshotFolder",
+        "label": "fields.snapshot_folder",
+        "description": "documentation.jans_link.snapshotFolder"
+      },
+      {
+        "key": "snapshotMaxCount",
+        "label": "fields.snapshots_count",
+        "description": "documentation.jans_link.snapshotMaxCount"
+      },
+      {
+        "key": "baseDN",
+        "label": "fields.base_dn",
+        "description": "documentation.jans_link.baseDN"
+      },
+      {
+        "key": "personCustomObjectClass",
+        "label": "fields.person_custom_object_class",
+        "description": "documentation.jans_link.personCustomObjectClass"
+      },
+      {
+        "key": "loggingLevel",
+        "label": "fields.logging_level",
+        "description": "documentation.jans_link.loggingLevel"
+      },
+      {
+        "key": "loggingLayout",
+        "label": "fields.loggingLayout",
+        "description": "documentation.jans_link.loggingLayout"
+      },
+      {
+        "key": "externalLoggerConfiguration",
+        "label": "fields.external_logger_configuration",
+        "description": "documentation.jans_link.externalLoggerConfiguration"
+      },
+      {
+        "key": "metricReporterInterval",
+        "label": "fields.metric_reporter_interval",
+        "description": "documentation.jans_link.metricReporterInterval"
+      },
+      {
+        "key": "metricReporterKeepDataDays",
+        "label": "fields.metric_reporter_keep_data_days",
+        "description": "documentation.jans_link.metricReporterKeepDataDays"
+      },
+      {
+        "key": "metricReporterEnabled",
+        "label": "fields.metric_reporter_enabled",
+        "description": "documentation.jans_link.metricReporterEnabled"
+      },
+      {
+        "key": "disableJdkLogger",
+        "label": "fields.disable_jdk_logger",
+        "description": "documentation.jans_link.disableJdkLogger"
+      },
+      {
+        "key": "cleanServiceInterval",
+        "label": "fields.clean_service_interval",
+        "description": "documentation.jans_link.cleanServiceInterval"
+      },
+      {
+        "key": "linkEnabled",
+        "label": "fields.enabled",
+        "description": "documentation.jans_link.linkEnabled"
+      },
+      {
+        "key": "serverIpAddress",
+        "label": "fields.server_ip_address",
+        "description": "documentation.jans_link.serverIpAddress"
+      },
+      {
+        "key": "pollingInterval",
+        "label": "fields.polling_interval_mins",
+        "description": "documentation.jans_link.pollingInterval"
+      },
+      {
+        "key": "lastUpdate",
+        "label": "fields.last_run",
+        "description": "documentation.jans_link.lastUpdate"
+      },
+      {
+        "key": "lastUpdateCount",
+        "label": "fields.updates_at_last_run",
+        "description": "documentation.jans_link.lastUpdateCount"
+      },
+      {
+        "key": "problemCount",
+        "label": "fields.problems_at_last_run",
+        "description": "documentation.jans_link.problemCount"
+      },
+      {
+        "key": "useLocalCache",
+        "label": "fields.use_local_cache",
+        "description": "documentation.jans_link.useLocalCache"
+      }
+    ]
+  },
+  "oidc_clients_write": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.openid_client.inum"
+      },
+      {
+        "key": "displayName",
+        "label": "fields.displayName",
+        "description": "documentation.openid_client.displayName"
+      },
+      {
+        "key": "deletable",
+        "label": "fields.deletable",
+        "description": "documentation.openid_client.deletable"
+      },
+      {
+        "key": "frontChannelLogoutSessionRequired",
+        "label": "fields.frontChannelLogoutSessionRequired",
+        "description": "documentation.openid_client.frontChannelLogoutSessionRequired"
+      },
+      {
+        "key": "redirectUris",
+        "label": "fields.redirect_uris",
+        "description": "documentation.openid_client.redirectUris"
+      },
+      {
+        "key": "responseTypes",
+        "label": "fields.response_types",
+        "description": "documentation.openid_client.responseTypes"
+      },
+      {
+        "key": "grantTypes",
+        "label": "fields.grant_types",
+        "description": "documentation.openid_client.grantTypes"
+      },
+      {
+        "key": "applicationType",
+        "label": "fields.application_type",
+        "description": "documentation.openid_client.applicationType"
+      },
+      {
+        "key": "clientName",
+        "label": "fields.client_name",
+        "description": "documentation.openid_client.clientName"
+      },
+      {
+        "key": "logoUri",
+        "label": "fields.logo_uri",
+        "description": "documentation.openid_client.logoUri"
+      },
+      {
+        "key": "clientUri",
+        "label": "fields.clientUri",
+        "description": "documentation.openid_client.clientUri"
+      },
+      {
+        "key": "policyUri",
+        "label": "fields.policy_uri",
+        "description": "documentation.openid_client.policyUri"
+      },
+      {
+        "key": "tosUri",
+        "label": "fields.tosUri",
+        "description": "documentation.openid_client.tosUri"
+      },
+      {
+        "key": "subjectType",
+        "label": "fields.subject_type_basic",
+        "description": "documentation.openid_client.subjectType"
+      },
+      {
+        "key": "idTokenSignedResponseAlg",
+        "label": "fields.id_token_signed_response_alg",
+        "description": "documentation.openid_client.idTokenSignedResponseAlg"
+      },
+      {
+        "key": "tokenEndpointAuthMethod",
+        "label": "fields.token_endpoint_auth_method",
+        "description": "documentation.openid_client.tokenEndpointAuthMethod"
+      },
+      {
+        "key": "scopes",
+        "label": "fields.scopes",
+        "description": "documentation.openid_client.scopes"
+      },
+      {
+        "key": "trustedClient",
+        "label": "fields.is_trusted_client",
+        "description": "documentation.openid_client.trustedClient"
+      },
+      {
+        "key": "persistClientAuthorizations",
+        "label": "fields.persist_client_authorizations",
+        "description": "documentation.openid_client.persistClientAuthorizations"
+      },
+      {
+        "key": "includeClaimsInIdToken",
+        "label": "fields.includeClaimsInIdToken",
+        "description": "documentation.openid_client.includeClaimsInIdToken"
+      },
+      {
+        "key": "customAttributes",
+        "label": "fields.customAttributes",
+        "description": "documentation.openid_client.customAttributes"
+      },
+      {
+        "key": "rptAsJwt",
+        "label": "fields.rptAsJwt",
+        "description": "documentation.openid_client.rptAsJwt"
+      },
+      {
+        "key": "accessTokenAsJwt",
+        "label": "fields.accessTokenAsJwt",
+        "description": "documentation.openid_client.accessTokenAsJwt"
+      },
+      {
+        "key": "accessTokenSigningAlg",
+        "label": "fields.id_token_signed_response_alg",
+        "description": "documentation.openid_client.accessTokenSigningAlg"
+      },
+      {
+        "key": "disabled",
+        "label": "fields.disabled",
+        "description": "documentation.openid_client.disabled"
+      },
+      {
+        "key": "attributes.runIntrospectionScriptBeforeJwtCreation",
+        "label": "fields.run_introspection_script_before_accesstoken",
+        "description": "documentation.openid_client.runIntrospectionScriptBeforeJwtCreation"
+      },
+      {
+        "key": "attributes.allowSpontaneousScopes",
+        "label": "fields.allow_spontaneous_scopes",
+        "description": "documentation.openid_client.allowSpontaneousScopes"
+      },
+      {
+        "key": "attributes.backchannelLogoutSessionRequired",
+        "label": "fields.backchannelLogoutSessionRequired",
+        "description": "documentation.openid_client.backchannelLogoutSessionRequired"
+      },
+      {
+        "key": "attributes.parLifetime",
+        "label": "fields.parLifetime",
+        "description": "documentation.openid_client.parLifetime"
+      },
+      {
+        "key": "attributes.requirePar",
+        "label": "fields.requirePar",
+        "description": "documentation.openid_client.requirePar"
+      },
+      {
+        "key": "attributes.jansDefaultPromptLogin",
+        "label": "fields.defaultPromptLogin",
+        "description": "documentation.openid_client.jansDefaultPromptLogin"
+      },
+      {
+        "key": "authenticationMethod",
+        "label": "fields.authentication_method",
+        "description": "documentation.openid_client.authenticationMethod"
+      }
+    ]
+  },
+  "oidc_clients_delete": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.oidc_clients_delete.inum"
+      },
+      {
+        "key": "clientId",
+        "label": "fields.clientId",
+        "description": "documentation.oidc_clients_delete.clientId"
+      }
+    ]
+  },
+  "scopes_write": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.scope.inum"
+      },
+      {
+        "key": "claims",
+        "label": "fields.claims",
+        "description": "documentation.scope.claims"
+      },
+      {
+        "key": "dynamicScopeScripts",
+        "label": "fields.dynamic_scope_scripts",
+        "description": "documentation.scope.dynamicScopeScripts"
+      },
+      {
+        "key": "defaultScope",
+        "label": "fields.default_scope",
+        "description": "documentation.scope.defaultScope"
+      },
+      {
+        "key": "attributes",
+        "label": "fields.attributes",
+        "description": "documentation.scope.attribute"
+      },
+      {
+        "key": "id",
+        "label": "fields.id",
+        "description": "documentation.scope.id"
+      },
+      {
+        "key": "displayName",
+        "label": "fields.displayName",
+        "description": "documentation.scope.displayName"
+      },
+      {
+        "key": "description",
+        "label": "fields.description",
+        "description": "documentation.scope.description"
+      },
+      {
+        "key": "scopeType",
+        "label": "fields.scope_type",
+        "description": "documentation.scope.scopeType"
+      },
+      {
+        "key": "iconUrl",
+        "label": "fields.iconUrl",
+        "description": "documentation.scope.iconUrl"
+      },
+      {
+        "key": "umaAuthorizationPolicies",
+        "label": "fields.umaAuthorizationPolicies",
+        "description": "documentation.scope.umaAuthorizationPolicies"
+      }
+    ]
+  },
+  "scopes_delete": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.scope.inum"
+      },
+      {
+        "key": "id",
+        "label": "fields.id",
+        "description": "documentation.scope.id"
+      }
+    ]
+  },
+  "attributes_write": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.attribute.inum"
+      },
+      {
+        "key": "dataType",
+        "label": "fields.data_type",
+        "description": "documentation.attribute.dataType"
+      },
+      {
+        "key": "description",
+        "label": "fields.description",
+        "description": "documentation.attribute.description"
+      },
+      {
+        "key": "displayName",
+        "label": "fields.displayName",
+        "description": "documentation.attribute.displayName"
+      },
+      {
+        "key": "editType",
+        "label": "fields.edit_type",
+        "description": "documentation.attribute.editType"
+      },
+      {
+        "key": "name",
+        "label": "fields.name",
+        "description": "documentation.attribute.name"
+      },
+      {
+        "key": "status",
+        "label": "fields.status",
+        "description": "documentation.attribute.status"
+      },
+      {
+        "key": "attributeValidation.regexp",
+        "label": "fields.regular_expression",
+        "description": "documentation.attribute.regexp"
+      },
+      {
+        "key": "attributeValidation.minLength",
+        "label": "fields.regular_expression",
+        "description": "documentation.attribute.minLength"
+      },
+      {
+        "key": "attributeValidation.maxLength",
+        "label": "fields.regular_expression",
+        "description": "documentation.attribute.maxcLength"
+      },
+      {
+        "key": "viewType",
+        "label": "fields.view_type",
+        "description": "documentation.attribute.viewType"
+      },
+      {
+        "key": "usageType",
+        "label": "fields.usage_type",
+        "description": "documentation.attribute.usageType"
+      },
+      {
+        "key": "oxMultiValuedAttribute",
+        "label": "fields.multivalued",
+        "description": "documentation.attribute.oxMultiValuedAttribute"
+      },
+      {
+        "key": "jansHideOnDiscovery",
+        "label": "fields.hide_on_discovery",
+        "description": "documentation.attribute.jansHideOnDiscovery"
+      },
+      {
+        "key": "scimCustomAttr",
+        "label": "fields.include_in_scim_extension",
+        "description": "documentation.attribute.scimCustomAttr"
+      },
+      {
+        "key": "claimName",
+        "label": "fields.oxauth_claim_name",
+        "description": "documentation.attribute.claimName"
+      },
+      {
+        "key": "saml1Uri",
+        "label": "fields.saml1_uri",
+        "description": "documentation.attribute.saml1Uri"
+      },
+      {
+        "key": "saml2Uri",
+        "label": "fields.saml2_uri",
+        "description": "documentation.attribute.saml2Uri"
+      }
+    ]
+  },
+  "attributes_delete": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "fields.inum",
+        "description": "documentation.attribute.inum"
+      },
+      {
+        "key": "name",
+        "label": "fields.name",
+        "description": "documentation.attribute.name"
+      }
+    ]
+  },
+  "scim_configuration_edit": {
+    "fields": [
+      {
+        "key": "baseDN",
+        "label": "fields.base_dn",
+        "description": "documentation.scim.base_dn"
+      },
+      {
+        "key": "applicationUrl",
+        "label": "fields.application_url",
+        "description": "documentation.scim.application_url"
+      },
+      {
+        "key": "baseEndpoint",
+        "label": "fields.base_endpoint",
+        "description": "documentation.scim.base_endpoint"
+      },
+      {
+        "key": "personCustomObjectClass",
+        "label": "fields.person_custom_object_class",
+        "description": "documentation.scim.person_custom_object_class"
+      },
+      {
+        "key": "oxAuthIssuer",
+        "label": "fields.ox_auth_issuer",
+        "description": "documentation.scim.ox_auth_issuer"
+      },
+      {
+        "key": "protectionMode",
+        "label": "fields.protection_mode",
+        "description": "documentation.scim.protection_mode"
+      },
+      {
+        "key": "maxCount",
+        "label": "fields.max_count",
+        "description": "documentation.scim.max_count"
+      },
+      {
+        "key": "bulkMaxOperations",
+        "label": "fields.bulk_max_operations",
+        "description": "documentation.scim.bulk_max_operations"
+      },
+      {
+        "key": "bulkMaxPayloadSize",
+        "label": "fields.bulk_max_payload_size",
+        "description": "documentation.scim.bulk_max_payload_size"
+      },
+      {
+        "key": "userExtensionSchemaURI",
+        "label": "fields.user_extension_schema_uri",
+        "description": "documentation.scim.user_extension_schema_uri"
+      },
+      {
+        "key": "loggingLevel",
+        "label": "fields.logging_level",
+        "description": "documentation.scim.logging_level"
+      },
+      {
+        "key": "loggingLayout",
+        "label": "fields.logging_layout",
+        "description": "documentation.scim.logging_layout"
+      },
+      {
+        "key": "externalLoggerConfiguration",
+        "label": "fields.external_logger_configuration",
+        "description": "documentation.scim.external_logger_configuration"
+      },
+      {
+        "key": "metricReporterInterval",
+        "label": "fields.metric_reporter_interval",
+        "description": "documentation.scim.metric_reporter_interval"
+      },
+      {
+        "key": "metricReporterKeepDataDays",
+        "label": "fields.metric_reporter_keep_data_days",
+        "description": "documentation.scim.metric_reporter_keep_data_days"
+      },
+      {
+        "key": "metricReporterEnabled",
+        "label": "fields.metric_reporter_enabled",
+        "description": "documentation.scim.metric_reporter_enabled"
+      },
+      {
+        "key": "disableJdkLogger",
+        "label": "fields.disable_jdk_logger",
+        "description": "documentation.scim.disable_jdk_logger"
+      },
+      {
+        "key": "useLocalCache",
+        "label": "fields.use_local_cache",
+        "description": "documentation.scim.use_local_cache"
+      }
+    ]
+  },
+  "smtp_configuration_edit": {
+    "fields": [
+      {
+        "key": "host",
+        "label": "fields.smtp_host",
+        "description": "documentation.smtp.smtp_host"
+      },
+      {
+        "key": "port",
+        "label": "fields.smtp_port",
+        "description": "documentation.smtp.smtp_port"
+      },
+      {
+        "key": "connect_protection",
+        "label": "fields.connect_protection",
+        "description": "documentation.smtp.connect_protection"
+      },
+      {
+        "key": "from_name",
+        "label": "fields.from_name",
+        "description": "documentation.smtp.from_name"
+      },
+      {
+        "key": "from_email_address",
+        "label": "fields.from_email_address",
+        "description": "documentation.smtp.from_email_address"
+      },
+      {
+        "key": "requires_authentication",
+        "label": "fields.requires_authentication",
+        "description": "documentation.smtp.requires_authentication"
+      },
+      {
+        "key": "smtp_authentication_account_username",
+        "label": "fields.smtp_user_name",
+        "description": "documentation.smtp.smtp_user_name"
+      },
+      {
+        "key": "trust_host",
+        "label": "fields.trust_host",
+        "description": "documentation.smtp.trust_host"
+      },
+      {
+        "key": "key_store",
+        "label": "fields.key_store",
+        "description": "documentation.smtp.key_store"
+      },
+      {
+        "key": "key_store_alias",
+        "label": "fields.key_store_alias",
+        "description": "documentation.smtp.key_store_alias"
+      },
+      {
+        "key": "signing_algorithm",
+        "label": "fields.signing_algorithm",
+        "description": "documentation.smtp.signing_algorithm"
+      }
+    ]
+  },
+  "users_edit": {
+    "fields": [
+      {
+        "key": "givenName",
+        "label": "First Name",
+        "description": "documentation.user.givenName"
+      },
+      {
+        "key": "inum",
+        "label": "INUM",
+        "description": "documentation.user.INUM"
+      },
+      {
+        "key": "middleName",
+        "label": "Middle Name",
+        "description": "documentation.user.middleName"
+      },
+      {
+        "key": "sn",
+        "label": "Last Name",
+        "description": "documentation.user.sn"
+      },
+      {
+        "key": "userId",
+        "label": "User Name",
+        "description": "documentation.user.userId"
+      },
+      {
+        "key": "displayName",
+        "label": "Display Name",
+        "description": "documentation.user.displayName"
+      },
+      {
+        "key": "mail",
+        "label": "Email",
+        "description": "documentation.user.mail"
+      },
+      {
+        "key": "jansStatus",
+        "label": "Status",
+        "description": "documentation.user.jansStatus"
+      }
+    ]
+  },
+  "users_delete": {
+    "fields": [
+      {
+        "key": "inum",
+        "label": "INUM",
+        "description": "documentation.user.INUM"
+      },
+      {
+        "key": "userId",
+        "label": "User Name",
+        "description": "documentation.user.userId"
+      }
+    ]
+  },
+  "saml_configuration_write": {
+    "fields": [
+      {
+        "key": "spMetadataFilePattern",
+        "label": "fields.sp_metadata_file_pattern",
+        "description": "documentation.saml.sp_metadata_file_pattern"
+      },
+      {
+        "key": "spMetadataFile",
+        "label": "fields.sp_metadata_file",
+        "description": "documentation.saml.sp_metadata_file"
+      },
+      {
+        "key": "samlTrustRelationshipDn",
+        "label": "fields.saml_trust_relationship_dn",
+        "description": "documentation.saml.saml_trust_relationship_dn"
+      },
+      {
+        "key": "trustedIdpDn",
+        "label": "fields.trustedIdpDn",
+        "description": "documentation.saml.trustedIdpDn"
+      },
+      {
+        "key": "enabled",
+        "label": "fields.enable_saml",
+        "description": "documentation.saml.enable_saml"
+      },
+      {
+        "key": "ignoreValidation",
+        "label": "fields.ignore_validation",
+        "description": "documentation.saml.ignore_validation"
+      },
+      {
+        "key": "selectedIdp",
+        "label": "fields.selected_idp",
+        "description": "documentation.saml.selected_idp"
+      },
+      {
+        "key": "realmDn",
+        "label": "fields.realm_dn",
+        "description": "documentation.saml.realm_dn"
+      },
+      {
+        "key": "serverUrl",
+        "label": "fields.server_url",
+        "description": "documentation.saml.server_url"
+      },
+      {
+        "key": "realm",
+        "label": "fields.realm",
+        "description": "documentation.saml.realm"
+      },
+      {
+        "key": "idpMetadataMandatoryAttributes",
+        "label": "fields.idpMetadataMandatoryAttributes",
+        "description": "documentation.saml.idpMetadataMandatoryAttributes"
+      },
+      {
+        "key": "clientId",
+        "label": "fields.clientId",
+        "description": "documentation.saml.clientId"
+      },
+      {
+        "key": "applicationName",
+        "label": "fields.application_name",
+        "description": "documentation.saml.application_name"
+      },
+      {
+        "key": "grantType",
+        "label": "fields.grant_type",
+        "description": "documentation.saml.grant_type"
+      },
+      {
+        "key": "username",
+        "label": "fields.username",
+        "description": "documentation.saml.username"
+      },
+      {
+        "key": "idpRootDir",
+        "label": "fields.idp_root_dir",
+        "description": "documentation.saml.idp_root_dir"
+      },
+      {
+        "key": "idpMetadataRootDir",
+        "label": "fields.idp_metadata_root_dir",
+        "description": "documentation.saml.idp_metadata_root_dir"
+      },
+      {
+        "key": "idpMetadataTempDir",
+        "label": "fields.idp_metadata_temp_dir",
+        "description": "documentation.saml.idp_metadata_temp_dir"
+      },
+      {
+        "key": "idpMetadataFilePattern",
+        "label": "fields.idp_metadata_file_pattern",
+        "description": "documentation.saml.idp_metadata_file_pattern"
+      },
+      {
+        "key": "idpMetadataFile",
+        "label": "fields.idp_metadata_file",
+        "description": "documentation.saml.idp_metadata_file"
+      },
+      {
+        "key": "spMetadataUrl",
+        "label": "fields.sp_metadata_url",
+        "description": "documentation.saml.sp_metadata_url"
+      },
+      {
+        "key": "spMetadataRootDir",
+        "label": "fields.sp_metadata_root_dir",
+        "description": "documentation.saml.sp_metadata_root_dir"
+      },
+      {
+        "key": "spMetadataTempDir",
+        "label": "fields.sp_metadata_temp_dir",
+        "description": "documentation.saml.sp_metadata_temp_dir"
+      }
+    ]
+  },
+  "saml_idp_write": {
+    "fields": [
+      {
+        "key": "name",
+        "label": "fields.name",
+        "description": "documentation.saml.name"
+      },
+      {
+        "key": "displayName",
+        "label": "fields.displayName",
+        "description": "documentation.saml.displayName"
+      },
+      {
+        "key": "description",
+        "label": "fields.description",
+        "description": "documentation.saml.description"
+      },
+      {
+        "key": "realm",
+        "label": "fields.realm",
+        "description": "documentation.saml.realm"
+      },
+      {
+        "key": "enabled",
+        "label": "fields.enabled",
+        "description": "documentation.saml.enabled"
+      },
+      {
+        "key": "idpEntityId",
+        "label": "fields.idp_entity_id",
+        "description": "documentation.saml.idp_entity_id"
+      },
+      {
+        "key": "signingCertificate",
+        "label": "fields.signing_certificate",
+        "description": "documentation.saml.signing_certificate"
+      },
+      {
+        "key": "nameIDPolicyFormat",
+        "label": "fields.name_policy_format",
+        "description": "documentation.saml.name_policy_format"
+      },
+      {
+        "key": "singleSignOnServiceUrl",
+        "label": "fields.single_signon_service_url",
+        "description": "documentation.saml.single_signon_service_url"
+      },
+      {
+        "key": "encryptionPublicKey",
+        "label": "fields.encryption_public_key",
+        "description": "documentation.saml.encryption_public_key"
+      },
+      {
+        "key": "singleLogoutServiceUrl",
+        "label": "fields.single_logout_service_url",
+        "description": "documentation.saml.single_logout_service_url"
+      }
+    ]
+  },
+  "saml_idp_delete": {
+    "fields": [
+      {
+        "key": "name",
+        "label": "fields.name",
+        "description": "documentation.saml.name"
+      },
+      {
+        "key": "realm",
+        "label": "fields.realm",
+        "description": "documentation.saml.realm"
+      },
+      {
+        "key": "idpEntityId",
+        "label": "fields.idp_entity_id",
+        "description": "documentation.saml.idp_entity_id"
+      }
+    ]
+  }
+}

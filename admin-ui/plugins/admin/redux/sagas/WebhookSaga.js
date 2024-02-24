@@ -10,7 +10,9 @@ import {
   getWebhooksByFeatureIdResponse,
   setTriggerWebhookResponse,
   setWebhookModal,
-  setWebhookTriggerErrors
+  setWebhookTriggerErrors,
+  setFeatureToTrigger,
+  setShowErrorModal
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import {
   CREATE,
@@ -26,6 +28,7 @@ import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -40,7 +43,7 @@ export function* getWebhooks({ payload }) {
   const audit = yield* initAudit()
   try {
     payload = payload || { action: {} }
-    addAdditionalData(audit, FETCH, 'webhooks', payload)
+    addAdditionalData(audit, FETCH, 'webhook', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getAllWebhooks, payload.action)
     yield put(getWebhookResponse({ data }))
@@ -66,7 +69,7 @@ export function* getWebhooks({ payload }) {
 export function* createWebhook({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, CREATE, 'webhooks', payload)
+    addAdditionalData(audit, CREATE, 'webhook', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(
       webhookApi.createWebhook,
@@ -95,7 +98,7 @@ export function* createWebhook({ payload }) {
 export function* deleteWebhook({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, DELETION, 'webhooks', payload)
+    addAdditionalData(audit, DELETION, 'webhook', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(
       webhookApi.deleteWebhookByInum,
@@ -125,7 +128,7 @@ export function* deleteWebhook({ payload }) {
 export function* updateWebhook({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, 'webhooks', payload)
+    addAdditionalData(audit, UPDATE, 'webhook', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(
       webhookApi.updateWebhook,
@@ -155,7 +158,7 @@ export function* updateWebhook({ payload }) {
 export function* getFeatures() {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, 'webhooks', {})
+    addAdditionalData(audit, FETCH, 'webhook', {})
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getAllFeatures)
     yield put(getFeaturesResponse(data?.body || []))
@@ -182,7 +185,7 @@ export function* getFeatures() {
 export function* getFeaturesByWebhookId({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, 'webhooks', payload)
+    addAdditionalData(audit, FETCH, 'webhook', payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getFeaturesByWebhookId, payload)
     yield put(getFeaturesByWebhookIdResponse(data?.body || []))
@@ -209,7 +212,7 @@ export function* getFeaturesByWebhookId({ payload }) {
 export function* getWebhooksByFeatureId({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, `webhooks-${payload}`, payload)
+    addAdditionalData(audit, FETCH, `/webhook/${payload}`, payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getWebhooksByFeatureId, payload)
     if (
@@ -240,20 +243,77 @@ export function* getWebhooksByFeatureId({ payload }) {
 }
 
 export function* triggerWebhook({ payload }) {
-    const audit = yield* initAudit()
+  const audit = yield* initAudit()
   try {
     const webhookApi = yield* newFunction()
-    const data = yield call(webhookApi.triggerWebhook, payload)
-    addAdditionalData(audit, FETCH, `webhooks-${payload}-trigger`, { action: { action_data: data?.body || [] } })
+    const featureToTrigger = yield select(
+      (state) => state.webhookReducer.featureToTrigger
+    )
+    const featureWebhooks = yield select(
+      (state) => state.webhookReducer.featureWebhooks
+    )
+    const enabledFeatureWebhooks = featureWebhooks?.filter((item) => item.jansEnabled)
+
+    if (!enabledFeatureWebhooks.length || !featureToTrigger) {
+      yield put(setFeatureToTrigger(''))
+      return;
+    }
+
+    const outputObject = webhookOutputObject(
+      enabledFeatureWebhooks,
+      payload.createdFeatureValue
+    )
+    const data = yield call(webhookApi.triggerWebhook, {
+      feature: featureToTrigger,
+      outputObject,
+    })
+
+    const action_data = data?.body?.map((body) => {
+      for (const output of outputObject) {
+        if (output.webhookId === body?.responseObject?.webhookId) {
+          return {
+            ...body,
+            url: output?.url
+          }
+        }
+      }
+    })?.filter((item) => item)
+
+    addAdditionalData(audit, FETCH, `/webhook/${featureToTrigger}`, {
+      action: { action_data: action_data || [] },
+    })
+    yield put(setFeatureToTrigger(''))
     const all_succeded = data?.body?.every((item) => item.success)
     if (all_succeded) {
-      yield put(setWebhookModal(false)) 
+      yield put(setShowErrorModal(false))
+      yield put(setWebhookModal(false))
       yield put(setTriggerWebhookResponse(''))
+      yield put(
+        updateToast(
+          true,
+          'success',
+          'All webhooks triggered successfully.'
+        )
+      )
     } else {
-      const errors = data?.body?.map((item) => !item.success && item)?.filter((err) => err)
+      const errors = data?.body
+        ?.map((item) => !item.success && item)
+        ?.filter((err) => err)
       yield put(setWebhookTriggerErrors(errors))
-      yield put(setTriggerWebhookResponse('Something went wrong while triggering webhook.'))
-    }    
+      yield put(
+        setTriggerWebhookResponse(
+          'Something went wrong while triggering webhook.'
+        )
+      )
+      yield put(
+        updateToast(
+          true,
+          'error',
+          'Something went wrong while triggering webhook.'
+        )
+      )
+      yield put(setShowErrorModal(true))
+    }
     yield call(postUserAction, audit)
     return data
   } catch (e) {
@@ -266,12 +326,16 @@ export function* triggerWebhook({ payload }) {
       )
     )
     yield put(setWebhookModal(true))
-    yield put(setTriggerWebhookResponse(e?.response?.body?.responseMessage || e.message))
+    yield put(
+      setTriggerWebhookResponse(e?.response?.body?.responseMessage || e.message)
+    )
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    addAdditionalData(audit, FETCH, `webhooks-${payload}-trigger`, { action: { action_data: { error: e, success: false } } })
+    addAdditionalData(audit, FETCH, `/webhook/${payload}`, {
+      action: { action_data: { error: e, success: false } },
+    })
     yield call(postUserAction, audit)
     return e
   }
@@ -318,6 +382,6 @@ export default function* rootSaga() {
     fork(watchGetFeatures),
     fork(watchGetFeaturesByWebhookId),
     fork(watchGetWebhooksByFeatureId),
-    fork(watchGetTriggerWebhook)
+    fork(watchGetTriggerWebhook),
   ])
 }

@@ -15,7 +15,7 @@ export default class MappingApi {
 
   createWebhook = (body) => {
     const options = {
-      webhookEntry: body
+      webhookEntry: body,
     }
     return new Promise((resolve, reject) => {
       this.api.postWebhook(options, (error, data) => {
@@ -34,7 +34,7 @@ export default class MappingApi {
 
   updateWebhook = (body) => {
     const options = {
-      webhookEntry: body
+      webhookEntry: body,
     }
     return new Promise((resolve, reject) => {
       this.api.putWebhook(options, (error, data) => {
@@ -67,11 +67,18 @@ export default class MappingApi {
     })
   }
 
-  triggerWebhook = (featureId) => {
+  triggerWebhook = (payload) => {
+    const shortCodeRequest = {
+      shortCodeRequest: payload.outputObject,
+    }
     return new Promise((resolve, reject) => {
-      this.api.triggerWebhook(featureId, (error, _data, response) => {
-        handleResponse(error, reject, resolve, response)
-      })
+      this.api.triggerWebhook(
+        payload.feature,
+        shortCodeRequest,
+        (error, _data, response) => {
+          handleResponse(error, reject, resolve, response)
+        }
+      )
     })
   }
 }

@@ -5,9 +5,9 @@ import {
   getWebhooksByFeatureId,
   getWebhooksByFeatureIdResponse,
   setWebhookModal,
-  triggerWebhook,
   setWebhookTriggerErrors,
   setTriggerWebhookResponse,
+  setFeatureToTrigger,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import PropTypes from 'prop-types'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -31,8 +31,6 @@ const useWebhookDialogAction = ({ feature, modal }) => {
     featureWebhooks,
     loadingWebhooks,
     webhookModal,
-    triggerWebhookMessage,
-    webhookTriggerErrors,
     triggerWebhookInProgress,
   } = useSelector((state) => state.webhookReducer)
   const enabledFeatureWebhooks = featureWebhooks.filter(
@@ -43,7 +41,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
     dispatch(setWebhookTriggerErrors([]))
     dispatch(setTriggerWebhookResponse(''))
-
+    dispatch(setFeatureToTrigger(''))
   }, [dispatch, enabledFeatureWebhooks])
 
   useEffect(() => {
@@ -62,28 +60,37 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   }, [featureWebhooks?.length])
 
   const handleAcceptWebhookTrigger = () => {
-    dispatch(triggerWebhook(feature))
+    dispatch(setWebhookModal(false))
+    dispatch(setFeatureToTrigger(feature))
   }
-  
+
   const webhookTriggerModal = ({ closeModal }) => {
+    const closeWebhookTriggerModal = () => {
+      closeModal()
+      dispatch(setFeatureToTrigger(''))
+    }
     return (
       <Modal
-        isOpen={(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ)}
+        isOpen={
+          (webhookModal || loadingWebhooks) &&
+          hasPermission(permissions, WEBHOOK_READ)
+        }
         size={'lg'}
         toggle={() => {
           if (!loadingWebhooks) {
             closeModal()
+            dispatch(setFeatureToTrigger(''))
           }
         }}
         className='modal-outline-primary'
       >
-        <ModalHeader toggle={closeModal}>
+        <ModalHeader toggle={closeWebhookTriggerModal}>
           {loadingWebhooks ? (
             <>Loading....</>
           ) : (
             <>
               <i
-                onClick={closeModal}
+                onClick={closeWebhookTriggerModal}
                 onKeyDown={() => {}}
                 style={{ color: 'green' }}
                 code
@@ -149,74 +156,24 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                   </TableBody>
                 </Table>
               ) : null}
-              <Box px={2} flex flexDirection='column'>
-                {triggerWebhookMessage ? (
-                  <Box component='div' my={2} style={{ color: 'red' }}>
-                    {triggerWebhookMessage}
-                  </Box>
-                ) : null}
-                {webhookTriggerErrors.length ? (
-                  <ul>
-                    {webhookTriggerErrors.map((item) => (
-                      <li
-                        key={item.responseMessage}
-                        style={{
-                          color: 'red',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          position: 'relative'
-                        }}
-                      >
-                        <Box width={'10px'} height={'10px'} sx={{ background: 'red', borderRadius: '100%', position: 'absolute', left: '-20px', top: 0, mt: '6px' }} />
-                        <span>{t('fields.webhook_id')}: {item.responseObject.webhookId}</span>
-                        <span>
-                        {t('fields.webhook_name')}: {item.responseObject.webhookName}
-                        </span>
-                        <span>
-                        {t('messages.error_message')}: {item.responseMessage}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {webhookTriggerErrors.length ? (
-                  <p>
-                    {t('messages.webhook_dialog_note')}
-                  </p>
-                ) : null}
-              </Box>
             </ModalBody>
             <ModalFooter>
-              {webhookTriggerErrors.length ? (
-                <Button
-                  disabled={triggerWebhookInProgress}
-                  color={`primary-${selectedTheme}`}
-                  onClick={closeModal}
-                  style={applicationStyle.buttonStyle}
-                >
-                  <i className='fa fa-check-circle me-2'></i>
-                  {t('actions.ok')}
-                </Button>
-              ) : (
-                <>
-                  <Button
-                    disabled={triggerWebhookInProgress}
-                    color={`primary-${selectedTheme}`}
-                    onClick={handleAcceptWebhookTrigger}
-                    style={applicationStyle.buttonStyle}
-                  >
-                    <i className='fa fa-check-circle me-2'></i>
-                    {t('actions.accept')}
-                  </Button>
-                  <Button
-                    disabled={triggerWebhookInProgress}
-                    onClick={closeModal}
-                  >
-                    <i className='fa fa-remove me-2'></i>
-                    {t('actions.reject')}
-                  </Button>
-                </>
-              )}
+              <Button
+                disabled={triggerWebhookInProgress}
+                color={`primary-${selectedTheme}`}
+                onClick={handleAcceptWebhookTrigger}
+                style={applicationStyle.buttonStyle}
+              >
+                <i className='fa fa-check-circle me-2'></i>
+                {t('actions.accept')}
+              </Button>
+              <Button
+                disabled={triggerWebhookInProgress}
+                onClick={closeWebhookTriggerModal}
+              >
+                <i className='fa fa-remove me-2'></i>
+                {t('actions.reject')}
+              </Button>
             </ModalFooter>
           </>
         ) : (

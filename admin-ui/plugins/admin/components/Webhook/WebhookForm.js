@@ -23,6 +23,8 @@ import Toggle from 'react-toggle'
 import { WEBHOOK } from 'Utils/ApiResources'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import ShortcodePopover from './ShortcodePopover'
+import ShortCodes from 'Plugins/admin/helper/ShortCodes.json'
 
 const WebhookForm = () => {
   const { id } = useParams()
@@ -30,8 +32,12 @@ const WebhookForm = () => {
   const { selectedWebhook, features, webhookFeatures, loadingFeatures } =
     useSelector((state) => state.webhookReducer)
   const [selectedFeatures, setSelectedFeatures] = useState(
-    webhookFeatures || []
+    webhookFeatures || {}
   )
+  const [cursorPosition, setCursorPosition] = useState({
+    url: 0,
+    httpRequestBody: 0,
+  })
 
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -67,7 +73,9 @@ const WebhookForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      httpRequestBody: selectedWebhook?.httpRequestBody ? JSON.stringify(selectedWebhook.httpRequestBody, null, 2) : '',
+      httpRequestBody: selectedWebhook?.httpRequestBody
+        ? JSON.stringify(selectedWebhook.httpRequestBody, null, 2)
+        : '',
       httpMethod: selectedWebhook?.httpMethod || '',
       url: selectedWebhook?.url || '',
       displayName: selectedWebhook?.displayName || '',
@@ -86,7 +94,12 @@ const WebhookForm = () => {
     },
     validationSchema: Yup.object().shape({
       httpMethod: Yup.string().required(t('messages.http_method_error')),
-      displayName: Yup.string().required(t('messages.display_name_error')),
+      displayName: Yup.string()
+        .required(t('messages.display_name_error'))
+        .matches(
+          /^\S*$/,
+          `${t('fields.webhook_name')} ${t('messages.no_spaces')}`
+        ),
       url: Yup.string().required(t('messages.url_error')),
       httpRequestBody: Yup.string().when('httpMethod', {
         is: (value) => {
@@ -115,13 +128,17 @@ const WebhookForm = () => {
       const payload = {
         ...formik.values,
         httpHeaders: httpHeaders || [],
-        httpRequestBody:
-          formik.values.httpMethod === 'GET' ||
-          formik.values.httpMethod === 'DELETE'
-            ? ''
-            : JSON.parse(formik.values.httpRequestBody),
         auiFeatureIds:
-          selectedFeatures.map((feature) => feature.auiFeatureId) || [],
+          selectedFeatures?.map((feature) => feature.auiFeatureId) || [],
+      }
+
+      if (
+        formik.values.httpMethod !== 'GET' &&
+        formik.values.httpMethod !== 'DELETE'
+      ) {
+        payload['httpRequestBody'] = JSON.parse(formik.values.httpRequestBody)
+      } else {
+        delete payload.httpRequestBody
       }
 
       if (id) {
@@ -160,6 +177,31 @@ const WebhookForm = () => {
     }
   }
 
+  const featureShortcodes = selectedFeatures?.[0]?.auiFeatureId
+    ? ShortCodes?.[selectedFeatures?.[0]?.auiFeatureId]?.fields ||
+      []
+    : []
+
+  const handleSelectShortcode = (code, name) => {
+    const _code = `{${code}}`
+    const currentPosition = cursorPosition[name]
+    let value = formik.values[name] || ''
+    if (currentPosition >= 0 && value) {
+      const str = formik.values[name]
+      value = str.slice(0, currentPosition) + _code + str.slice(currentPosition)
+    } else if (value) {
+      value += _code
+    } else {
+      value = _code
+    }
+
+    setCursorPosition((prevState) => ({
+      ...prevState,
+      [name]: currentPosition + _code.length,
+    }))
+    formik.setFieldValue(name, value)
+  }
+
   return (
     <>
       <Form onSubmit={formik.handleSubmit}>
@@ -190,6 +232,23 @@ const WebhookForm = () => {
             errorMessage={formik.errors.displayName}
             showError={formik.errors.displayName && formik.touched.displayName}
           />
+          <GluuTypeAhead
+            name={(lookuplist) => `${lookuplist.displayName}`}
+            label='fields.aui_feature_ids'
+            value={selectedFeatures}
+            options={features}
+            onChange={(options) => {
+              setSelectedFeatures(options || [])
+            }}
+            lsize={4}
+            doc_category={WEBHOOK}
+            doc_entry='aui_feature_ids'
+            rsize={8}
+            allowNew={false}
+            isLoading={loadingFeatures}
+            multiple={false}
+            hideHelperMessage
+          />
           <GluuInputRow
             label='fields.webhook_url'
             formik={formik}
@@ -198,10 +257,34 @@ const WebhookForm = () => {
             rsize={8}
             required
             doc_category={WEBHOOK}
+            handleChange={(event) => {
+              const currentPosition = event.target.selectionStart
+              setCursorPosition((prevState) => ({
+                ...prevState,
+                url: currentPosition,
+              }))
+            }}
+            onFocus={(event) => {
+              setTimeout(() => {
+                const currentPosition = event.target.selectionStart
+                setCursorPosition((prevState) => ({
+                  ...prevState,
+                  url: currentPosition,
+                }))
+              }, 0)
+            }}
             doc_entry='url'
             name='url'
             errorMessage={formik.errors.url}
             showError={formik.errors.url && formik.touched.url}
+            shortcode={
+              <ShortcodePopover
+                codes={featureShortcodes}
+                handleSelectShortcode={(code) =>
+                  handleSelectShortcode(code, 'url')
+                }
+              />
+            }
           />
 
           <GluuSelectRow
@@ -273,6 +356,24 @@ const WebhookForm = () => {
                   lsize={4}
                   required
                   rsize={8}
+                  onCursorChange={(value) => {
+                    setTimeout(() => {
+                      const cursorPos = value.cursor
+                      const lines = value.cursor?.document?.$lines
+
+                      let index = 0
+                      for (let i = 0; i < cursorPos.row; i++) {
+                        index += lines[i].length + 1 // +1 for the newline character
+                      }
+
+                      index += cursorPos.column
+
+                      setCursorPosition((prevState) => ({
+                        ...prevState,
+                        httpRequestBody: index,
+                      }))
+                    }, 0)
+                  }}
                   theme='monokai'
                   doc_category={WEBHOOK}
                   doc_entry='http_request_body'
@@ -284,6 +385,19 @@ const WebhookForm = () => {
                     formik.touched.httpRequestBody
                   }
                   placeholder=''
+                  shortcode={
+                    <ShortcodePopover
+                      codes={featureShortcodes}
+                      buttonWrapperStyles={{
+                        top: '10%',
+                        zIndex: 1,
+                        marginRight: '2.5rem',
+                      }}
+                      handleSelectShortcode={(code) =>
+                        handleSelectShortcode(code, 'httpRequestBody')
+                      }
+                    />
+                  }
                 />
               </Suspense>
             )}
@@ -305,22 +419,6 @@ const WebhookForm = () => {
             />
           </Col>
         </FormGroup>
-
-        <GluuTypeAhead
-          name={(lookuplist) => `${lookuplist.displayName}`}
-          label='fields.aui_feature_ids'
-          value={selectedFeatures}
-          options={features}
-          onChange={(options) => {
-            setSelectedFeatures(options)
-          }}
-          lsize={4}
-          doc_category={WEBHOOK}
-          doc_entry='aui_feature_ids'
-          rsize={8}
-          allowNew={false}
-          isLoading={loadingFeatures}
-        />
 
         <Row>
           <Col>
