@@ -86,7 +86,7 @@ function UserList(props) {
   }
 
   function handleUserDelete(row) {
-    dispatch(deleteUser(row.inum))
+    dispatch(deleteUser(row))
   }
 
   const GluuSearch = useCallback(() => {

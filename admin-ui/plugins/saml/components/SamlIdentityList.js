@@ -241,6 +241,7 @@ const SamlIdentityList = () => {
           modal={modal}
           subject='saml idp'
           onAccept={onDeletionConfirmed}
+          feature='saml_idp_write'
         />
       )}
     </>

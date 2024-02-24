@@ -29,7 +29,7 @@ const fidoApiPayload = ({ fidoConfiguration, data }) => {
   payload.requestedParties = data.requestedParties.map((item) => {
     return {
       name: item.key,
-      domains: [item.key],
+      domains: [item.value],
     }
   })
   

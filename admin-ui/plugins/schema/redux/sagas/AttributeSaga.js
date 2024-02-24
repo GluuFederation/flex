@@ -18,6 +18,7 @@ import {
 import AttributeApi from 'Plugins/schema/redux/api/AttributeApi'
 import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 const PERSON_SCHEMA = 'person schema'
 
@@ -76,6 +77,7 @@ export function* addAttribute({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(addAttributeResponse({ data }))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -97,6 +99,7 @@ export function* editAttribute({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(editAttributeResponse({ data }))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -118,6 +121,7 @@ export function* deleteAttribute({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(deleteAttributeResponse({ inum: payload.inum }))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: { inum: payload?.inum, name: payload?.name } } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
