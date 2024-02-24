@@ -41,7 +41,7 @@ const ConfigurationTab = () => {
     problemCount = null,
     lastUpdateCount = null,
     lastUpdate = null,
-    loggingLevel = [],
+    loggingLevel = '',
     useSearchLimit = false
   } = useSelector((state) => state.cacheRefreshReducer.configuration)
 

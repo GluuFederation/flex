@@ -387,6 +387,7 @@ const SamlConfigurationForm = () => {
         modal={modal}
         onAccept={submitForm}
         formik={formik}
+        feature='saml_configuration_write'
       />
     </Form>
   )

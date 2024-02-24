@@ -136,7 +136,7 @@ function ScopeListPage() {
   }
 
   function onDeletionConfirmed(message) {
-    buildPayload(userAction, message, item.inum)
+    buildPayload(userAction, message, item)
     dispatch(deleteScope({ action: userAction }))
     navigate('/auth-server/scopes')
     toggle()

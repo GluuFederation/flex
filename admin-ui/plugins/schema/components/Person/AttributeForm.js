@@ -91,7 +91,7 @@ function AttributeForm(props) {
       dataType: item.dataType,
       editType: item.editType,
       viewType: item.viewType,
-      usageType: item.usageType,
+      usageType: item.usageType || [],
       jansHideOnDiscovery: item.jansHideOnDiscovery,
       oxMultiValuedAttribute: item.oxMultiValuedAttribute,
       attributeValidation: item.attributeValidation,
