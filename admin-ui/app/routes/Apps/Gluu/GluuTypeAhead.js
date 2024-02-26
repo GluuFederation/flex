@@ -32,7 +32,9 @@ function GluuTypeAhead({
   showError = false,
   errorMessage,
   allowNew = true,
-  isLoading
+  isLoading,
+  multiple = true,
+  hideHelperMessage = false
 }) {
   const { t } = useTranslation()
   return (
@@ -61,15 +63,15 @@ function GluuTypeAhead({
           id={name}
           data-testid={name}
           name={name}
-          multiple={true}
+          multiple={multiple}
           defaultSelected={value}
           options={options}
         />
-        <ThemeProvider theme={theme}>
+        {!hideHelperMessage && <ThemeProvider theme={theme}>
           <Typography variant="subtitle1">
             {t('placeholders.typeahead_holder_message')}
           </Typography>
-        </ThemeProvider>
+        </ThemeProvider>}
         {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
@@ -101,5 +103,7 @@ GluuTypeAhead.propTypes = {
   errorMessage: PropTypes.string,
   allowNew: PropTypes.bool,
   isLoading: PropTypes.bool,
+  multiple: PropTypes.bool,
+  hideHelperMessage: PropTypes.bool
 };
 export default GluuTypeAhead

@@ -1,4 +1,4 @@
-export const OIDC = 'openid-client'
+export const OIDC = '/openid/clients'
 export const SCOPE = 'scope'
 export const UMA = 'uma'
 export const SESSION = 'session'

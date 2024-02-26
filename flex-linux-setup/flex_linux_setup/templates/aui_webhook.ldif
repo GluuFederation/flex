@@ -110,3 +110,24 @@ objectClass: top
 auiFeatureId: users_delete
 displayName: Users - Delete
 jansScope: https://jans.io/oauth/config/user.delete
+
+dn: auiFeatureId=saml_configuration_write,ou=auiFeatures,ou=admin-ui,o=jans
+objectClass: auiFeatures
+objectClass: top
+auiFeatureId: saml_configuration_write
+displayName: SAML Configuration - Edit
+jansScope: https://jans.io/oauth/config/saml.write
+
+dn: auiFeatureId=saml_idp_write,ou=auiFeatures,ou=admin-ui,o=jans
+objectClass: auiFeatures
+objectClass: top
+auiFeatureId: saml_idp_write
+displayName: SAML IDP - Add/Edit
+jansScope: https://jans.io/idp/saml.write
+
+dn: auiFeatureId=saml_idp_delete,ou=auiFeatures,ou=admin-ui,o=jans
+objectClass: auiFeatures
+objectClass: top
+auiFeatureId: saml_idp_delete
+displayName: SAML IDP - Delete
+jansScope: https://jans.io/idp/saml.delete

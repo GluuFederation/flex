@@ -213,7 +213,7 @@ function AttributeListPage() {
     }
   }
   function onDeletionConfirmed() {
-    dispatch(deleteAttribute({ inum: item.inum }))
+    dispatch(deleteAttribute({ inum: item.inum, name: item?.name }))
     navigate('/attributes')
     toggle()
   }

@@ -18,7 +18,9 @@ function GluuInputRow({
   showError = false,
   errorMessage = '',
   handleChange = null,
-  doc_entry
+  doc_entry,
+  shortcode = null,
+  onFocus
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -38,14 +40,16 @@ function GluuInputRow({
           data-testid={name}
           type={customType || type}
           name={name}
-          defaultValue={value}
+          value={value}
           onChange={(event) => {
             if (handleChange) { formik.handleChange(event); handleChange(event) }
             else { formik.handleChange(event); }
           }}
+          onFocus={onFocus}
           onKeyDown={(evt) => evt.key === 'e' && type === "number" && evt.preventDefault()}
           disabled={disabled}
         />
+        {shortcode}
         {type == 'password' && (
           <div style={{ position: 'absolute', right: 20, top: 7 }}>
             {customType == 'text' ? (
@@ -87,4 +91,6 @@ GluuInputRow.propTypes = {
   errorMessage: PropTypes.string,
   handleChange: PropTypes.func,
   doc_entry: PropTypes.string,
-};
+  shortcode: PropTypes.element,
+  onFocus: PropTypes.func
+}

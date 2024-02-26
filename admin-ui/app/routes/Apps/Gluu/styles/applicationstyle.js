@@ -59,4 +59,11 @@ export default {
     marginTop: '0px',
     marginRight: '-10px',
   },
+  shortCodesWrapperStyles: {
+    position: 'absolute',
+    right: 0,
+    marginRight: '0.5rem',
+    top: '50%',
+    transform: 'translateY(-70%)',
+  }
 } 
