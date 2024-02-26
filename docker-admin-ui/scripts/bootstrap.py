@@ -300,6 +300,11 @@ def resolve_conf_app(old_conf, new_conf):
             old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] = new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]
             should_update = True
 
+        # add missing uiConfig
+        if "uiConfig" not in old_conf:
+            old_conf["uiConfig"] = {"sessionTimeoutInMins": 30}
+            should_update = True
+
     # finalized status and conf
     return should_update, old_conf
 
