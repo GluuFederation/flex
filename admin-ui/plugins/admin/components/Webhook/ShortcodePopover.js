@@ -9,23 +9,8 @@ import { useTranslation } from 'react-i18next'
 import { HelpOutline } from '@mui/icons-material'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import PropTypes from 'prop-types'
-
-const Icon = () => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    fill='none'
-    viewBox='0 0 24 24'
-    strokeWidth='1.5'
-    stroke='currentColor'
-    style={{ width: '18px' }}
-  >
-    <path
-      strokeLinecap='round'
-      strokeLinejoin='round'
-      d='M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5'
-    />
-  </svg>
-)
+import applicationstyle from "Routes/Apps/Gluu/styles/applicationstyle"
+import ShortCodesIcon from 'Components/SVG/menu/ShortCodesIcon'
 
 export default function ShortcodePopover({
   codes,
@@ -44,24 +29,15 @@ export default function ShortcodePopover({
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
-  const wrapperStyles = {
-    position: 'absolute',
-    right: 0,
-    marginRight: '0.5rem',
-    top: '50%',
-    transform: 'translateY(-70%)',
-    ...buttonWrapperStyles,
-  }
-
   return (
-    <div style={wrapperStyles}>
+    <div style={{ ...applicationstyle.shortCodesWrapperStyles, buttonWrapperStyles }}>
       <Button
         aria-describedby={id}
         variant='text'
         sx={{ border: 0 }}
         onClick={handleClick}
       >
-        <Icon />
+        <ShortCodesIcon />
       </Button>
       <Popover
         id={id}
