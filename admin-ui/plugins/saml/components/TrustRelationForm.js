@@ -112,6 +112,15 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     spMetaDataSourceType: getConfiguredType(configs),
     spMetaDataFN: getDefault(configs?.spMetaDataFN, ''),
     releasedAttributes: getDefault(configs?.releasedAttributes, []),
+    rootUrl: getDefault(configs?.rootUrl, ''),
+    adminUrl: getDefault(configs?.adminUrl, ''),
+    surrogateAuthRequired: getDefault(configs?.surrogateAuthRequired, false),
+    spLogoutURL: getDefault(configs?.spLogoutURL, ''),
+    samlMetadata: {
+      nameIDPolicyFormat: '',
+      entityId: '',
+      singleLogoutServiceUrl: '',
+    }
   }
 
   function getConfiguredType(configs) {
@@ -286,9 +295,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                <GluuToggleRow label={'fields.enabled'} name='enabled' viewOnly={viewOnly} formik={formik} />
-              </Col>
-              <Col sm={10}>
                 <GluuInputRow
                   label='fields.description'
                   name='description'
@@ -305,6 +311,55 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
+                <GluuToggleRow
+                  label={'fields.enabled'}
+                  name='enabled'
+                  viewOnly={viewOnly}
+                  formik={formik}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuToggleRow
+                  label={'fields.surrogate_auth_required'}
+                  name='surrogateAuthRequired'
+                  viewOnly={viewOnly}
+                  formik={formik}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.root_url'
+                  name='rootUrl'
+                  value={formik.values.rootUrl}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.admin_url'
+                  name='adminUrl'
+                  value={formik.values.adminUrl}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.service_provider_logout_url'
+                  name='spLogoutURL'
+                  value={formik.values.spLogoutURL}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
                 <GluuSelectRow
                   label='fields.metadata_location'
                   formik={formik}
@@ -312,6 +367,9 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   values={[
                     { value: 'file', label: 'File' },
                     { value: 'uri', label: 'URL' },
+                    { value: 'federation', label: 'Federation' },
+                    { value: 'manual', label: 'Manual' },
+                    { value: 'mdq', label: 'MDQ' },
                   ]}
                   lsize={4}
                   rsize={8}
@@ -384,6 +442,59 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   />
                 )}
               </Col>
+              <input
+                type='file'
+                accept='text/xml,application/json'
+                onChange={handleFileChange}
+                id='metdaDateFile'
+                ref={inputFile}
+                style={{ display: 'none' }}
+              />
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.single_logout_service_url'
+                  name='samlMetadata.singleLogoutServiceUrl'
+                  value={formik.values.samlMetadata.singleLogoutServiceUrl}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={
+                    formik.errors.samlMetadata?.singleLogoutServiceUrl &&
+                    formik.touched.samlMetadata?.singleLogoutServiceUrl
+                  }
+                  errorMessage={formik.errors.samlMetadata?.singleLogoutServiceUrl}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.entity_id'
+                  name='samlMetadata.entityId'
+                  value={formik.values.samlMetadata.entityId}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={formik.errors.samlMetadata?.entityId && formik.touched.samlMetadata?.entityId}
+                  errorMessage={formik.errors.samlMetadata?.entityId}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.name_id_policy_format'
+                  name='samlMetadata.nameIDPolicyFormat'
+                  value={formik.values.samlMetadata.nameIDPolicyFormat}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={
+                    formik.errors.samlMetadata?.nameIDPolicyFormat &&
+                    formik.touched.samlMetadata?.nameIDPolicyFormat
+                  }
+                  errorMessage={formik.errors.samlMetadata?.nameIDPolicyFormat}
+                  disabled={viewOnly}
+                />
+              </Col>
               <Col sm={10}>
                 {isLoading ? (
                   'Fetching attributes...'
@@ -409,14 +520,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   />
                 )}
               </Col>
-              <input
-                type='file'
-                accept='text/xml,application/json'
-                onChange={handleFileChange}
-                id='metdaDateFile'
-                ref={inputFile}
-                style={{ display: 'none' }}
-              />
             </FormGroup>
             {!viewOnly && (
               <Row>
