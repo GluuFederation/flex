@@ -112,6 +112,10 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     spMetaDataSourceType: getConfiguredType(configs),
     spMetaDataFN: getDefault(configs?.spMetaDataFN, ''),
     releasedAttributes: getDefault(configs?.releasedAttributes, []),
+    rootUrl: getDefault(configs?.rootUrl, ''),
+    adminUrl: getDefault(configs?.adminUrl, ''),
+    surrogateAuthRequired: getDefault(configs?.surrogateAuthRequired, false),
+    spLogoutURL: getDefault(configs?.spLogoutURL, ''),
     samlMetadata: {
       nameIDPolicyFormat: '',
       entityId: '',
@@ -291,14 +295,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                <GluuToggleRow
-                  label={'fields.enabled'}
-                  name='enabled'
-                  viewOnly={viewOnly}
-                  formik={formik}
-                />
-              </Col>
-              <Col sm={10}>
                 <GluuInputRow
                   label='fields.description'
                   name='description'
@@ -315,6 +311,55 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
+                <GluuToggleRow
+                  label={'fields.enabled'}
+                  name='enabled'
+                  viewOnly={viewOnly}
+                  formik={formik}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuToggleRow
+                  label={'fields.surrogate_auth_required'}
+                  name='surrogateAuthRequired'
+                  viewOnly={viewOnly}
+                  formik={formik}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.root_url'
+                  name='rootUrl'
+                  value={formik.values.rootUrl}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.admin_url'
+                  name='adminUrl'
+                  value={formik.values.adminUrl}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.service_provider_logout_url'
+                  name='spLogoutURL'
+                  value={formik.values.spLogoutURL}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
                 <GluuSelectRow
                   label='fields.metadata_location'
                   formik={formik}
@@ -322,6 +367,9 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   values={[
                     { value: 'file', label: 'File' },
                     { value: 'uri', label: 'URL' },
+                    { value: 'federation', label: 'Federation' },
+                    { value: 'manual', label: 'Manual' },
+                    { value: 'mdq', label: 'MDQ' },
                   ]}
                   lsize={4}
                   rsize={8}
@@ -394,31 +442,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   />
                 )}
               </Col>
-              <Col sm={10}>
-                {isLoading ? (
-                  'Fetching attributes...'
-                ) : (
-                  <GluuTypeAheadForDn
-                    name='releasedAttributes'
-                    label='fields.released_attributes'
-                    formik={formik}
-                    value={scopeFieldValue}
-                    options={scopeOptions}
-                    lsize={4}
-                    rsize={8}
-                    disabled={viewOnly}
-                    onChange={saveSelectedScopes}
-                    paginate={true}
-                    onSearch={debounceFn}
-                    onPaginate={handlePagination}
-                    maxResults={
-                      scopeOptions?.length ? scopeOptions.length - 1 : undefined
-                    }
-                    isLoading={scopeLoading}
-                    placeholder='Search for an attribute...'
-                  />
-                )}
-              </Col>
               <input
                 type='file'
                 accept='text/xml,application/json'
@@ -471,6 +494,31 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   errorMessage={formik.errors.samlMetadata?.nameIDPolicyFormat}
                   disabled={viewOnly}
                 />
+              </Col>
+              <Col sm={10}>
+                {isLoading ? (
+                  'Fetching attributes...'
+                ) : (
+                  <GluuTypeAheadForDn
+                    name='releasedAttributes'
+                    label='fields.released_attributes'
+                    formik={formik}
+                    value={scopeFieldValue}
+                    options={scopeOptions}
+                    lsize={4}
+                    rsize={8}
+                    disabled={viewOnly}
+                    onChange={saveSelectedScopes}
+                    paginate={true}
+                    onSearch={debounceFn}
+                    onPaginate={handlePagination}
+                    maxResults={
+                      scopeOptions?.length ? scopeOptions.length - 1 : undefined
+                    }
+                    isLoading={scopeLoading}
+                    placeholder='Search for an attribute...'
+                  />
+                )}
               </Col>
             </FormGroup>
             {!viewOnly && (
