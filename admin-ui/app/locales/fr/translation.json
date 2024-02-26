@@ -143,6 +143,8 @@
     "db_schema_name": "Nom du schéma de la base de données",
     "connection_uri": "URI de connexion",
     "auth_user_name": "Nom d'utilisateur d'authentification",
+    "entity_id": "Identifiant de l'entité",
+    "name_id_policy_format": "Format de la politique de nom ID",
     "auth_user_password": "Mot de passe d'utilisateur d'authentification",
     "connection_pool_max_total": "Total maximal du pool de connexions",
     "connection_pool_max_idle": "Nombre maximal de connexions inactives dans le pool",

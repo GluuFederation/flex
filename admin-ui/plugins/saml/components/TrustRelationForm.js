@@ -112,6 +112,11 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     spMetaDataSourceType: getConfiguredType(configs),
     spMetaDataFN: getDefault(configs?.spMetaDataFN, ''),
     releasedAttributes: getDefault(configs?.releasedAttributes, []),
+    samlMetadata: {
+      nameIDPolicyFormat: '',
+      entityId: '',
+      singleLogoutServiceUrl: '',
+    }
   }
 
   function getConfiguredType(configs) {
@@ -286,7 +291,12 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                <GluuToggleRow label={'fields.enabled'} name='enabled' viewOnly={viewOnly} formik={formik} />
+                <GluuToggleRow
+                  label={'fields.enabled'}
+                  name='enabled'
+                  viewOnly={viewOnly}
+                  formik={formik}
+                />
               </Col>
               <Col sm={10}>
                 <GluuInputRow
@@ -417,6 +427,51 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 ref={inputFile}
                 style={{ display: 'none' }}
               />
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.single_logout_service_url'
+                  name='samlMetadata.singleLogoutServiceUrl'
+                  value={formik.values.samlMetadata.singleLogoutServiceUrl}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={
+                    formik.errors.samlMetadata?.singleLogoutServiceUrl &&
+                    formik.touched.samlMetadata?.singleLogoutServiceUrl
+                  }
+                  errorMessage={formik.errors.samlMetadata?.singleLogoutServiceUrl}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.entity_id'
+                  name='samlMetadata.entityId'
+                  value={formik.values.samlMetadata.entityId}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={formik.errors.samlMetadata?.entityId && formik.touched.samlMetadata?.entityId}
+                  errorMessage={formik.errors.samlMetadata?.entityId}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.name_id_policy_format'
+                  name='samlMetadata.nameIDPolicyFormat'
+                  value={formik.values.samlMetadata.nameIDPolicyFormat}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={
+                    formik.errors.samlMetadata?.nameIDPolicyFormat &&
+                    formik.touched.samlMetadata?.nameIDPolicyFormat
+                  }
+                  errorMessage={formik.errors.samlMetadata?.nameIDPolicyFormat}
+                  disabled={viewOnly}
+                />
+              </Col>
             </FormGroup>
             {!viewOnly && (
               <Row>

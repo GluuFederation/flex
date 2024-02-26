@@ -94,6 +94,8 @@
     "webhook_id": "Webhook Id",
     "http_method": "HTTP Method",
     "url": "URL",
+    "entity_id": "Entity ID",
+    "name_id_policy_format": "Name ID Format",
     "http_headers": "Webhook Headers",
     "introspection_encrypted_response_enc": "Introspection Encrypted Response Enc",
     "message_provider_type": "Message Provider Type",
