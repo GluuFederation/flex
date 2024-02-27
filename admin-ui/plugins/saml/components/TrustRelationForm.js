@@ -82,6 +82,9 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     displayName: Yup.string().required(
       `${t('fields.displayName')} is Required!`
     ),
+    name: Yup.string().required(
+      `${t('fields.name')} is Required!`
+    ),
     description: Yup.string().required(
       `${t('fields.description')} is Required!`
     ),
@@ -107,6 +110,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const initialValues = {
     ...(configs || {}),
     enabled: getDefault(configs?.enabled, false),
+    name: getDefault(configs?.name, ''),
     displayName: getDefault(configs?.displayName, ''),
     description: getDefault(configs?.description, ''),
     spMetaDataSourceType: getConfiguredType(configs),
@@ -278,6 +282,20 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
             className='mt-4'
           >
             <FormGroup row>
+              <Col sm={10}>
+                <GluuInputRow
+                  label='fields.name'
+                  name='name'
+                  value={formik.values.name || ''}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={formik.errors.name && formik.touched.name}
+                  errorMessage={formik.errors.name}
+                  disabled={viewOnly}
+                  required
+                />
+              </Col>
               <Col sm={10}>
                 <GluuInputRow
                   label='fields.displayName'
@@ -462,7 +480,9 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                     formik.errors.samlMetadata?.singleLogoutServiceUrl &&
                     formik.touched.samlMetadata?.singleLogoutServiceUrl
                   }
-                  errorMessage={formik.errors.samlMetadata?.singleLogoutServiceUrl}
+                  errorMessage={
+                    formik.errors.samlMetadata?.singleLogoutServiceUrl
+                  }
                   disabled={viewOnly}
                 />
               </Col>
@@ -474,7 +494,10 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   formik={formik}
                   lsize={4}
                   rsize={8}
-                  showError={formik.errors.samlMetadata?.entityId && formik.touched.samlMetadata?.entityId}
+                  showError={
+                    formik.errors.samlMetadata?.entityId &&
+                    formik.touched.samlMetadata?.entityId
+                  }
                   errorMessage={formik.errors.samlMetadata?.entityId}
                   disabled={viewOnly}
                 />
