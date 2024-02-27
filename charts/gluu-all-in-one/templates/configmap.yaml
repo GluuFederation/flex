@@ -49,7 +49,7 @@ data:
   # [aws_envs] END
   {{- end }}
   # [vault_envs] Envs related to Hashicorp vault 
-  {{ if eq .Values.global.configSecretAdapter "vault" }}
+  {{ if eq .Values.configSecretAdapter "vault" }}
   CN_SECRET_VAULT_ADDR: {{ .Values.configmap.cnVaultAddr | quote }}
   CN_SECRET_VAULT_VERIFY: {{ .Values.configmap.cnVaultVerify | quote }}
   CN_SECRET_VAULT_ROLE_ID_FILE: {{ .Values.configmap.cnVaultRoleIdFile | quote }}
