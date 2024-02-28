@@ -65,7 +65,7 @@ export const postUserAction = (userAction) => {
         'Content-Type': 'application/json',
       },
       userAction,
-    })
+    }, { headers: { Authorization: userAction?.headers?.Authorization } })
     .then((response) => response)
     .catch((e) => {
       return -1
