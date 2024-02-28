@@ -59,13 +59,15 @@ export const fetchUserInformation = ({ userInfoEndpoint, token_type, access_toke
 
 // post user action
 export const postUserAction = (userAction) => {
+  const token = userAction?.headers?.Authorization
+  delete userAction?.headers
   return axios
     .post('/admin-ui/logging/audit', {
       headers: {
         'Content-Type': 'application/json',
       },
       userAction,
-    }, { headers: { Authorization: userAction?.headers?.Authorization } })
+    }, { headers: { Authorization: token } })
     .then((response) => response)
     .catch((e) => {
       return -1
