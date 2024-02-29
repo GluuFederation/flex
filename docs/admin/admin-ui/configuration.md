@@ -95,6 +95,7 @@ The information is stored in json format with following attributes.
 |redirectUri|Redirect UI which is Admin UI home page|
 |postLogoutUri|Url to be redirected after Admin UI logout|
 |frontchannelLogoutUri|Front channel Logout Uri|
+|additionalParameters|The custom parameters allow you to pass additional information to the authorization server during Admin UI authentication. Format: [{"key": "custom-param-key", "value": "custom-param-value"}, ...]|
 
 ### OIDC Client Details for Backend API Server
 
@@ -162,7 +163,8 @@ The information is stored in json format with following attributes.
       ],
       "opHost": "https://your.host.com",
       "clientId": "2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568",
-      "clientSecret": "GGO4t1uixrTpl4Rizt3zag=="
+      "clientSecret": "GGO4t1uixrTpl4Rizt3zag==".
+      "additionalParameters": []
     },
     "auiBackendApiClient": {
       "tokenEndpoint": "https://your.host.com/jans-auth/restv1/token",
