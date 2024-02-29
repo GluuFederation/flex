@@ -305,6 +305,11 @@ def resolve_conf_app(old_conf, new_conf):
             old_conf["uiConfig"] = {"sessionTimeoutInMins": 30}
             should_update = True
 
+        # add missing additionalParameters
+        if "additionalParameters" not in old_conf["oidcConfig"]["auiWebClient"]:
+            old_conf["oidcConfig"]["auiWebClient"]["additionalParameters"] = []
+            should_update = True
+
     # finalized status and conf
     return should_update, old_conf
 
