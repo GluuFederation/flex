@@ -136,7 +136,7 @@
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
     "metadata_location": "Localização dos Metadados",
-    "additional_params_auth": "Parâmetros adicionais (para autenticação)",
+    "custom_params_auth": "Parâmetros personalizados (para autenticação)",
     "released_attributes": "Atributos Liberados",
     "metadata_file": "Arquivo de Metadados",
     "metadata_url": "URL dos metadados",
@@ -914,7 +914,8 @@
       "darkMode": "Se deve ativar ou desativar o modo escuro.",
       "configApiUrl": "A URL da API de configuração atualmente em uso.",
       "sessionTimeoutInMins": "Determina a duração da inatividade permitida antes que a sessão atual expire.",
-      "adminui_default_acr": "Este campo controla o mecanismo de autenticação padrão usado na interface de administração."
+      "adminui_default_acr": "Este campo controla o mecanismo de autenticação padrão usado na interface de administração.",
+      "custom_params": "Os parâmetros personalizados permitem que você passe informações adicionais para o servidor de autorização durante a autenticação da UI de Administração."
     },
     "script": {
       "inum": "ID único identificando o script",

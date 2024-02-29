@@ -204,11 +204,12 @@ function SettingsForm() {
       <div className='mb-3'>
         <GluuProperties
           compName='additionalParameters'
-          label='fields.additional_params_auth'
+          label='fields.custom_params_auth'
           formik={formik}
           keyPlaceholder={t('placeholders.enter_property_key')}
           valuePlaceholder={t('placeholders.enter_property_value')}
           options={additionalParameters}
+          tooltip='documentation.settings.custom_params'
         />
       </div>
       <Button

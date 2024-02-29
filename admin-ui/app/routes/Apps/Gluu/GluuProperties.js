@@ -4,6 +4,8 @@ import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import PropTypes from 'prop-types'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
+import { HelpOutline } from '@mui/icons-material'
 
 function GluuProperties({
   compName,
@@ -25,10 +27,11 @@ function GluuProperties({
   errorMessage,
   inputSm,
   sourcePlaceholder,
-  destinationPlaceholder
+  destinationPlaceholder,
+  tooltip,
 }) {
   const [properties, setProperties] = useState(options)
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
@@ -59,9 +62,43 @@ function GluuProperties({
     )
   }
 
+  function TooltipHeader() {
+    return (
+      <Accordion.Header>
+
+        {t(label)}
+
+        {tooltip &&
+          i18n.exists(tooltip) && (
+            <>
+              <ReactTooltip
+                tabIndex='-1'
+                id={tooltip}
+                place='right'
+                role='tooltip'
+                style={{ zIndex: 101, maxWidth: '45vw' }}
+              >
+                {t(tooltip)}
+              </ReactTooltip>
+              <HelpOutline
+                tabIndex='-1'
+                style={{ width: 18, height: 18, marginLeft: 6, marginRight: 6 }}
+                data-tooltip-id={tooltip} 
+                data-for={tooltip}
+              />
+            </>
+          )}
+      </Accordion.Header>
+    )
+  }
+
   return (
     <Accordion className='mb-2 b-primary' initialOpen>
-      <Accordion.Header>{t(label).toUpperCase()}</Accordion.Header>
+      {tooltip ? (
+        <TooltipHeader />
+      ) : (
+        <Accordion.Header>{t(label).toUpperCase()}</Accordion.Header>
+      )}
       <Accordion.Body>
         {isAddButton && (
           <Button
