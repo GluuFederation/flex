@@ -120,4 +120,7 @@ The Gluu Flex Admin UI provides a user-friendly interface for managing various U
 - **List paging size:**  This field allows to define the default paging size for all search pages within the Admin UI.
 - **Config API URL:** The read-only URL of the Jans Config API is used by the Admin UI for interaction.
 - **Admin UI Session Timeout (In Minutes):** This field determines the maximum idle time allowed before a user is automatically logged out of the Admin UI.
-- **Admin UI authentication method (ACR)** This dropdown enables user to select the default authentication method to be used in the Admin UI.
+- **Admin UI authentication method (ACR):** This dropdown enables user to select the default authentication method to be used in the Admin UI.
+- **Custom Parameters (for authentication):** The custom parameters allow you to pass additional information to the authorization server during Admin UI authentication.
+
+![image](../../assets/admin-ui/settings.png)
