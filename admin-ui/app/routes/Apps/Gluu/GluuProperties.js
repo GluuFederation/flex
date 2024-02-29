@@ -66,7 +66,7 @@ function GluuProperties({
     return (
       <Accordion.Header>
 
-        {t(label)}
+        <h5 className='d-flex' aria-label={label}>{t(label)}
 
         {tooltip &&
           i18n.exists(tooltip) && (
@@ -88,6 +88,7 @@ function GluuProperties({
               />
             </>
           )}
+          </h5>
       </Accordion.Header>
     )
   }
