@@ -1,10 +1,10 @@
-----
--tags:
--- administration
--- reference
--- kubernetes
--- docker image
-----
+---
+tags:
+- administration
+- reference
+- kubernetes
+- docker image
+---
 
 # docker-admin-ui
 
