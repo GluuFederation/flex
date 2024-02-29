@@ -25,6 +25,7 @@ import * as Yup from 'yup'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import { getScripts } from 'Redux/features/initSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 
 const levels = [1, 5, 10, 20]
 
@@ -125,6 +126,9 @@ function SettingsForm() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
+  const additionalParameters =
+    useSelector((state) => state.authReducer?.config?.additionalParameters) ||
+    []
   const acrValues = useSelector((state) => state.authReducer?.config?.acrValues)
   const sessionTimeout =
     useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) || 5
@@ -197,6 +201,17 @@ function SettingsForm() {
           </InputGroup>
         </Col>
       </FormGroup>
+      <div className='mb-3'>
+        <GluuProperties
+          compName='additionalParameters'
+          label='fields.custom_params_auth'
+          formik={formik}
+          keyPlaceholder={t('placeholders.enter_property_key')}
+          valuePlaceholder={t('placeholders.enter_property_value')}
+          options={additionalParameters}
+          tooltip='documentation.settings.custom_params'
+        />
+      </div>
       <Button
         type='submit'
         color={`primary-${selectedTheme}`}

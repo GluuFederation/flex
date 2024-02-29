@@ -49,9 +49,7 @@ function* getOAuth2ConfigWorker({ payload }) {
 
 function* putConfigWorker({ payload }) {
   try {
-    console.log(`payload`, payload);
     const token = yield select((state) => state.authReducer.token.access_token)
-    console.log(`token`, token);
     const response = yield call(putServerConfiguration, { token, props: payload })
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))

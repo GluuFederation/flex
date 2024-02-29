@@ -82,8 +82,17 @@ export default function AppAuthProvider(props) {
         new FetchRequestor()
       )
         .then((response) => {
+          const additionalParameters = {}
+
+          if (config?.additionalParameters?.length) {
+            for (const { key = '', value = '' } of config.additionalParameters) {
+              additionalParameters[key] = value
+            }
+          }
+
           let extras = {
             acr_values: config.acrValues,
+            ...additionalParameters,
           }
           const authRequest = new AuthorizationRequest({
             client_id: config.clientId,
