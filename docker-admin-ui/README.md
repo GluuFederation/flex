@@ -1,3 +1,11 @@
+----
+-tags:
+-- administration
+-- reference
+-- kubernetes
+-- docker image
+----
+
 # docker-admin-ui
 
 A containerized application for Gluu Admin UI frontend.
