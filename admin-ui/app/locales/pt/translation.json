@@ -136,6 +136,7 @@
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
     "metadata_location": "Localização dos Metadados",
+    "additional_params_auth": "Parâmetros adicionais (para autenticação)",
     "released_attributes": "Atributos Liberados",
     "metadata_file": "Arquivo de Metadados",
     "metadata_url": "URL dos metadados",

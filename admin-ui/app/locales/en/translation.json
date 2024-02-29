@@ -91,6 +91,7 @@
     "metadata_file": "Metadata File",
     "metadata_url": "Metadata URL",
     "webhook_url": "URL",
+    "additional_params_auth": "Additional Params (for authentication)",
     "webhook_id": "Webhook Id",
     "http_method": "HTTP Method",
     "customAttributes": "Custom attributes",

@@ -137,6 +137,7 @@
     "adminui_default_acr": "Méthode d'authentification de l'interface administrateur (ACR)",
     "metadata_location": "Emplacement des métadonnées",
     "released_attributes": "Attributs publiés",
+    "additional_params_auth": "Paramètres supplémentaires (pour l'authentification)",
     "download_summary": "Télécharger le résumé",
     "metadata_file": "Fichier de métadonnées",
     "metadata_url": "URL des métadonnées",
