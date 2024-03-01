@@ -769,7 +769,7 @@
     "schemaName": "Schema Name",
     "user_management": "User Management",
     "fido_management": "FIDO Configuration",
-    "saml_management": "SAML Configuration",
+    "saml_management": "SAML",
     "scim_management": "SCIM Configuration",
     "jans_ink": "Jans Link",
     "error": "error",

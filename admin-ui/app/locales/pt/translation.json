@@ -654,7 +654,7 @@
     "all_custom_scripts": "Todos os scripts personalizados",
     "jans_json_property": "Propriedades",
     "all_oidc_clients": "Todos os clientes OIDC",
-    "saml_management": "Configuração SAML",
+    "saml_management": "SAML",
     "all_scopes": "Todos os escopos",
     "client_advanced": "Avançado",
     "client_attributes": "Atributos do cliente",

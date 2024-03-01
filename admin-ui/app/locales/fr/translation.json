@@ -661,7 +661,7 @@
     "client_advanced": "Avancée",
     "client_attributes": "Attributs client",
     "client_basic": "De base",
-    "saml_management": "Configuration SAML",
+    "saml_management": "SAML",
     "client_encryption_signing": "Cryptage/Signature",
     "client_scripts": "Scripts clients",
     "config_api_roles": "Configurer les rôles d'API",
