@@ -20,7 +20,9 @@ function GluuInputRow({
   handleChange = null,
   doc_entry,
   shortcode = null,
-  onFocus
+  onFocus,
+  rows,
+  cols
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -48,6 +50,8 @@ function GluuInputRow({
           onFocus={onFocus}
           onKeyDown={(evt) => evt.key === 'e' && type === "number" && evt.preventDefault()}
           disabled={disabled}
+          rows={rows} 
+          cols={cols}
         />
         {shortcode}
         {type == 'password' && (
@@ -92,5 +96,7 @@ GluuInputRow.propTypes = {
   handleChange: PropTypes.func,
   doc_entry: PropTypes.string,
   shortcode: PropTypes.element,
-  onFocus: PropTypes.func
+  onFocus: PropTypes.func,
+  rows: PropTypes.string,
+  cols: PropTypes.string
 }
