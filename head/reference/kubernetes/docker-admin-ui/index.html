@@ -1641,22 +1641,24 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
 <li><code>CN_CONFIG_KUBERNETES_CONFIGMAP</code>: Kubernetes configmaps name (default to <code>jans</code>).</li>
 <li><code>CN_CONFIG_KUBERNETES_USE_KUBE_CONFIG</code>: Load credentials from <code>$HOME/.kube/config</code>, only useful for non-container environment (default to <code>false</code>).</li>
 <li><code>CN_SECRET_ADAPTER</code>: The secrets' adapter, can be <code>vault</code> (default), <code>kubernetes</code>, or <code>google</code>.</li>
-<li><code>CN_SECRET_VAULT_SCHEME</code>: supported Vault scheme (<code>http</code> or <code>https</code>).</li>
-<li><code>CN_SECRET_VAULT_HOST</code>: hostname or IP of Vault (default to <code>localhost</code>).</li>
-<li><code>CN_SECRET_VAULT_PORT</code>: port of Vault (default to <code>8200</code>).</li>
 <li><code>CN_SECRET_VAULT_VERIFY</code>: whether to verify cert or not (default to <code>false</code>).</li>
 <li><code>CN_SECRET_VAULT_ROLE_ID_FILE</code>: path to file contains Vault AppRole role ID (default to <code>/etc/certs/vault_role_id</code>).</li>
 <li><code>CN_SECRET_VAULT_SECRET_ID_FILE</code>: path to file contains Vault AppRole secret ID (default to <code>/etc/certs/vault_secret_id</code>).</li>
 <li><code>CN_SECRET_VAULT_CERT_FILE</code>: path to Vault cert file (default to <code>/etc/certs/vault_client.crt</code>).</li>
 <li><code>CN_SECRET_VAULT_KEY_FILE</code>: path to Vault key file (default to <code>/etc/certs/vault_client.key</code>).</li>
 <li><code>CN_SECRET_VAULT_CACERT_FILE</code>: path to Vault CA cert file (default to <code>/etc/certs/vault_ca.crt</code>). This file will be used if it exists and <code>CN_SECRET_VAULT_VERIFY</code> set to <code>true</code>.</li>
+<li><code>CN_SECRET_VAULT_ADDR</code>: URL of Vault (default to <code>http://localhost:8200</code>).</li>
+<li><code>CN_SECRET_VAULT_NAMESPACE</code>: Namespace used to access secrets (default to empty string).</li>
+<li><code>CN_SECRET_VAULT_KV_PATH</code>: Path to KV secrets engine (default to <code>secret</code>).</li>
+<li><code>CN_SECRET_VAULT_PREFIX</code>: Base prefix name used to build secret path (default to <code>jans</code>).</li>
+<li><code>CN_SECRET_VAULT_APPROLE_PATH</code>: Path to AppRole (default to <code>approle</code>).</li>
 <li><code>CN_SECRET_KUBERNETES_NAMESPACE</code>: Kubernetes namespace (default to <code>default</code>).</li>
 <li><code>CN_SECRET_KUBERNETES_CONFIGMAP</code>: Kubernetes secrets name (default to <code>jans</code>).</li>
 <li><code>CN_SECRET_KUBERNETES_USE_KUBE_CONFIG</code>: Load credentials from <code>$HOME/.kube/config</code>, only useful for non-container environment (default to <code>false</code>).</li>
 <li><code>CN_WAIT_MAX_TIME</code>: How long the startup "health checks" should run (default to <code>300</code> seconds).</li>
 <li><code>CN_WAIT_SLEEP_DURATION</code>: Delay between startup "health checks" (default to <code>10</code> seconds).</li>
 <li><code>GOOGLE_PROJECT_ID</code>: Google Project ID (default to empty string). Used when <code>CN_CONFIG_ADAPTER</code> or <code>CN_SECRET_ADAPTER</code> set to <code>google</code>.</li>
-<li><code>GOOGLE_APPLICATION_CREDENTIALS</code>: Path to Google credentials JSON file (default to <code>/etc/jans/conf/google-credentials.json</code>). Used when <code>CN_CONFIG_ADAPTER</code> or <code>CN_SECRET_ADAPTER</code> set to <code>google</code>.</li>
+<li><code>GOOGLE_APPLICATION_CREDENTIALS</code>: Optional JSON file (contains Google credentials) that can be injected into container for authentication. Refer to https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to for supported credentials.</li>
 <li><code>CN_GOOGLE_SECRET_VERSION_ID</code>: Janssen secret version ID in Google Secret Manager. Defaults to <code>latest</code>, which is recommended.</li>
 <li><code>CN_GOOGLE_SECRET_NAME_PREFIX</code>: Prefix for Janssen secret in Google Secret Manager. Defaults to <code>jans</code>. If left <code>jans-secret</code> secret will be created.</li>
 <li><code>CN_GOOGLE_SECRET_MANAGER_PASSPHRASE</code>: Passphrase for Janssen secret in Google Secret Manager. This is recommended to be changed and defaults to <code>secret</code>.</li>
@@ -1689,14 +1691,14 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
 <li><code>CN_SQL_DB_USER</code>: Username to interact with SQL backend (default to <code>jans</code>).</li>
 <li><code>CN_GOOGLE_SPANNER_INSTANCE_ID</code>: Instance ID of Google Spanner (default to empty string).</li>
 <li><code>CN_GOOGLE_SPANNER_DATABASE_ID</code>: Database ID of Google Spanner (default to empty string).</li>
-<li><code>GOOGLE_APPLICATION_CREDENTIALS</code>: Path to Google credentials JSON file (default to <code>/etc/jans/conf/google-credentials.json</code>).</li>
 <li><code>GOOGLE_PROJECT_ID</code>: Google Project ID (default to empty string).</li>
 <li><code>GOOGLE_PROJECT_ID</code>: Google Project ID (default to empty string). Used when <code>CN_CONFIG_ADAPTER</code> or <code>CN_SECRET_ADAPTER</code> set to <code>google</code>.</li>
-<li><code>GOOGLE_APPLICATION_CREDENTIALS</code>: Path to Google credentials JSON file (default to <code>/etc/jans/conf/google-credentials.json</code>). Used when <code>CN_CONFIG_ADAPTER</code> or <code>CN_SECRET_ADAPTER</code> set to <code>google</code>.</li>
 <li><code>CN_GOOGLE_SPANNER_INSTANCE_ID</code>: Google Spanner instance ID.</li>
 <li><code>CN_GOOGLE_SPANNER_DATABASE_ID</code>: Google Spanner database ID.</li>
 <li><code>GLUU_ADMIN_UI_PLUGINS</code>: Comma-separated additional plugins to be enabled (default to empty string). See <a href="#adding-plugins">Adding plugins</a> for details.</li>
 <li><code>GLUU_ADMIN_UI_AUTH_METHOD</code>: Authentication method for admin-ui (one of <code>basic</code> or <code>casa</code>; default to <code>basic</code>). Note, changing the value require restart to jans-config-api.</li>
+<li><code>GLUU_SCAN_AUTH_URL</code>: Base URL to auth server to register license client (i.e. <code>https://account-dev.gluu.cloud</code>; default to empty string). If omitted or use default value, the URL will be pre-populated from <code>iss</code> claim included in SSA file.</li>
+<li><code>GLUU_SCAN_API_URL</code>: Base URL to SCAN API host (i.e. <code>https://cloud-dev.gluu.cloud</code>; default to empty string). If omitted or use default value, the URL will be pre-populated and modified based on <code>iss</code> claim included in SSA file.</li>
 </ul>
 <h3 id="hybrid-mapping">Hybrid mapping<a class="headerlink" href="#hybrid-mapping" title="Permanent link">#</a></h3>
 <p>Hybrid persistence supports all available persistence types. To configure hybrid persistence and its data mapping, follow steps below:</p>
@@ -1739,7 +1741,7 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-01-11T14:01:55+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-01-11</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-03-05T10:11:17+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-03-05</span>
       
         <br>
         Created:
