@@ -19,8 +19,12 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import { Box } from '@mui/material'
+import Toggle from 'react-toggle'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
+  const [showUploadBtn, setShowUploadBtn] = useState(false)
+  const [fileError, setFileError] = useState(false)
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
   const loading = useSelector((state) => state.idpSamlReducer.loading)
   const { t } = useTranslation()
@@ -66,6 +70,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
         Yup.string().required(`${t('fields.name_policy_format')} is Required!`),
     }),
     name: Yup.string().required(`${t('fields.name')} is Required!`),
+    displayName: Yup.string().required(`${t('fields.displayName')} is Required!`),
   })
 
   const toggle = () => {
@@ -135,6 +140,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
     if (file) {
       formik.setFieldValue('importMetadataFile', true)
       setMetadaDataFile(file)
+      setFileError('')
     } else formik.setFieldValue('importMetadataFile', false)
   }
 
@@ -158,7 +164,15 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
       <Card>
         <CardBody className=''>
           <Form
-            onSubmit={formik.handleSubmit}
+            onSubmit={(event) => {
+              event.preventDefault()
+              if (!metaDataFile && showUploadBtn) {
+                setFileError(true)
+                return
+              }
+              setFileError(false)
+              formik.handleSubmit(event)
+            }}
             className='mt-4'
           >
             <FormGroup row>
@@ -184,6 +198,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   formik={formik}
                   lsize={4}
                   rsize={8}
+                  required
                   showError={
                     formik.errors.displayName && formik.touched.displayName
                   }
@@ -221,20 +236,48 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                     size={4}
                   />
                   <Col sm={8}>
-                    <GluuUploadFile
-                      accept={{
-                        'text/xml': ['.xml'],
-                        'application/json': ['.json'],
-                      }}
-                      placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
-                      onDrop={handleDrop}
-                      onClearFiles={handleClearFiles}
-                      disabled={viewOnly}
-                    />
+                    <Box
+                      display='flex'
+                      flexWrap={{ sm: 'wrap', md: 'nowrap' }}
+                      gap={1}
+                      alignItems='center'
+                    >
+                      <Toggle
+                        onChange={(event) => {
+                          if (event.target.checked) {
+                            setShowUploadBtn(true)
+                          } else {
+                            setMetadaDataFile(null)
+                            formik.setFieldValue('importMetadataFile', false)
+                            setShowUploadBtn(false)
+                            setFileError('')
+                          }
+                        }}
+                        checked={showUploadBtn}
+                        disabled={viewOnly}
+                      />
+                      {showUploadBtn && (
+                        <GluuUploadFile
+                          accept={{
+                            'text/xml': ['.xml'],
+                            'application/json': ['.json'],
+                          }}
+                          placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
+                          onDrop={handleDrop}
+                          onClearFiles={handleClearFiles}
+                          disabled={viewOnly}
+                        />
+                      )}
+                    </Box>
+                    {fileError && (
+                      <div style={{ color: 'red' }}>
+                        {t('messages.import_metadata_file')}
+                      </div>
+                    )}
                   </Col>
                 </FormGroup>
               </Col>
-              {!metaDataFile && (
+              {!showUploadBtn && (
                 <>
                   <Col sm={10}>
                     <GluuInputRow
