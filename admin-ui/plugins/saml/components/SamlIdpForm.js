@@ -302,14 +302,45 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       value={formik.values.nameIDPolicyFormat}
                       defaultValue={formik.values.nameIDPolicyFormat}
                       values={[
-                        'unspecified',
-                        'emailAddress',
-                        'X509SubjectName',
-                        'WindowsDomainQualifiedName',
-                        'kerberos',
-                        'entity',
-                        'persistent',
-                        'transient',
+                        {
+                          label: 'Unspecified',
+                          value:
+                            'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
+                        },
+                        {
+                          label: 'EmailAddress',
+                          value:
+                            'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+                        },
+                        {
+                          label: 'X509SubjectName',
+                          value:
+                            'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName',
+                        },
+                        {
+                          label: 'Windows Domain Qualified Name',
+                          value:
+                            'urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName',
+                        },
+                        {
+                          label: 'Kerberos Principal Name',
+                          value:
+                            'urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos',
+                        },
+                        {
+                          label: 'Entity',
+                          value: 'urn:oasis:names:tc:SAML:2.0:nameid-format:entity',
+                        },
+                        {
+                          label: 'Persistent',
+                          value:
+                            'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+                        },
+                        {
+                          label: 'Transient',
+                          value:
+                            'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+                        },
                       ]}
                       formik={formik}
                       lsize={4}
