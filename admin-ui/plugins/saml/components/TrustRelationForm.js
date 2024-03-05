@@ -82,22 +82,13 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     displayName: Yup.string().required(
       `${t('fields.displayName')} is Required!`
     ),
-    name: Yup.string().required(
-      `${t('fields.name')} is Required!`
-    ),
+    name: Yup.string().required(`${t('fields.name')} is Required!`),
     description: Yup.string().required(
       `${t('fields.description')} is Required!`
     ),
     spMetaDataSourceType: Yup.string().required(
       `${t('fields.metadata_location')} is Required!`
     ),
-    spMetaDataFN: Yup.string().when('spMetaDataSourceType', {
-      is: (value) => {
-        return value === 'uri'
-      },
-      then: () =>
-        Yup.string().required(`${t('fields.metadata_url')} is Required!`),
-    }),
   })
 
   const toggle = () => {
@@ -114,17 +105,17 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     displayName: getDefault(configs?.displayName, ''),
     description: getDefault(configs?.description, ''),
     spMetaDataSourceType: getConfiguredType(configs),
-    spMetaDataFN: getDefault(configs?.spMetaDataFN, ''),
     releasedAttributes: getDefault(configs?.releasedAttributes, []),
     rootUrl: getDefault(configs?.rootUrl, ''),
     adminUrl: getDefault(configs?.adminUrl, ''),
+    url: getDefault(configs?.url, ''),
     surrogateAuthRequired: getDefault(configs?.surrogateAuthRequired, false),
     spLogoutURL: getDefault(configs?.spLogoutURL, ''),
     samlMetadata: {
       nameIDPolicyFormat: '',
       entityId: '',
       singleLogoutServiceUrl: '',
-    }
+    },
   }
 
   function getConfiguredType(configs) {
@@ -368,6 +359,17 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
               </Col>
               <Col sm={10}>
                 <GluuInputRow
+                  label='fields.url'
+                  name='url'
+                  value={formik.values.url}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  disabled={viewOnly}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
                   label='fields.service_provider_logout_url'
                   name='spLogoutURL'
                   value={formik.values.spLogoutURL}
@@ -384,10 +386,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   value={formik.values.spMetaDataSourceType}
                   values={[
                     { value: 'file', label: 'File' },
-                    { value: 'uri', label: 'URL' },
-                    { value: 'federation', label: 'Federation' },
                     { value: 'manual', label: 'Manual' },
-                    { value: 'mdq', label: 'MDQ' },
                   ]}
                   lsize={4}
                   rsize={8}
@@ -403,62 +402,42 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                {formik.values.spMetaDataSourceType?.toLowerCase() ===
-                'file' ? (
-                  <FormGroup row>
-                    <GluuLabel label={'fields.metadata_file'} size={4} />
-                    <Col sm={8}>
-                      <Box
-                        display='flex'
-                        flexWrap='wrap'
-                        gap={1}
-                        alignItems='center'
+                <FormGroup row>
+                  <GluuLabel label={'fields.metadata_file'} size={4} />
+                  <Col sm={8}>
+                    <Box
+                      display='flex'
+                      flexWrap='wrap'
+                      gap={1}
+                      alignItems='center'
+                    >
+                      <Button
+                        disabled={viewOnly}
+                        color={`primary-${selectedTheme}`}
+                        style={{
+                          ...applicationStyle.buttonStyle,
+                          ...applicationStyle.buttonFlexIconStyles,
+                        }}
+                        onClick={onHandleFileSelection}
                       >
-                        <Button
-                          disabled={viewOnly}
-                          color={`primary-${selectedTheme}`}
-                          style={{
-                            ...applicationStyle.buttonStyle,
-                            ...applicationStyle.buttonFlexIconStyles,
-                          }}
-                          onClick={onHandleFileSelection}
-                        >
-                          {t('fields.import_file')}
-                        </Button>
-                        {metaDataFile ? (
-                          <>
-                            <span className='d-inline'>
-                              {metaDataFile?.name}
-                            </span>
-                            <p className='mb-0'>
-                              ({((metaDataFile?.size || 0) / 1000).toFixed(0)}K)
-                            </p>
-                          </>
-                        ) : null}
-                      </Box>
-                      {fileError && (
-                        <div style={{ color: 'red' }}>
-                          {t('messages.import_metadata_file')}
-                        </div>
-                      )}
-                    </Col>
-                  </FormGroup>
-                ) : (
-                  <GluuInputRow
-                    label='fields.metadata_url'
-                    name='spMetaDataFN'
-                    value={formik.values.spMetaDataFN}
-                    formik={formik}
-                    lsize={4}
-                    rsize={8}
-                    showError={
-                      formik.errors.spMetaDataFN && formik.touched.spMetaDataFN
-                    }
-                    errorMessage={formik.errors.spMetaDataFN}
-                    disabled={viewOnly}
-                    required
-                  />
-                )}
+                        {t('fields.import_file')}
+                      </Button>
+                      {metaDataFile ? (
+                        <>
+                          <span className='d-inline'>{metaDataFile?.name}</span>
+                          <p className='mb-0'>
+                            ({((metaDataFile?.size || 0) / 1000).toFixed(0)}K)
+                          </p>
+                        </>
+                      ) : null}
+                    </Box>
+                    {fileError && (
+                      <div style={{ color: 'red' }}>
+                        {t('messages.import_metadata_file')}
+                      </div>
+                    )}
+                  </Col>
+                </FormGroup>
               </Col>
               <input
                 type='file'
@@ -503,10 +482,52 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                <GluuInputRow
+                <GluuSelectRow
                   label='fields.name_id_policy_format'
                   name='samlMetadata.nameIDPolicyFormat'
                   value={formik.values.samlMetadata.nameIDPolicyFormat}
+                  defaultValue={formik.values.samlMetadata.nameIDPolicyFormat}
+                  values={[
+                    {
+                      label: 'Unspecified',
+                      value:
+                        'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
+                    },
+                    {
+                      label: 'EmailAddress',
+                      value:
+                        'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+                    },
+                    {
+                      label: 'X509SubjectName',
+                      value:
+                        'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName',
+                    },
+                    {
+                      label: 'Windows Domain Qualified Name',
+                      value:
+                        'urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName',
+                    },
+                    {
+                      label: 'Kerberos Principal Name',
+                      value:
+                        'urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos',
+                    },
+                    {
+                      label: 'Entity',
+                      value: 'urn:oasis:names:tc:SAML:2.0:nameid-format:entity',
+                    },
+                    {
+                      label: 'Persistent',
+                      value:
+                        'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+                    },
+                    {
+                      label: 'Transient',
+                      value:
+                        'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+                    },
+                  ]}
                   formik={formik}
                   lsize={4}
                   rsize={8}
