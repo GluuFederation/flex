@@ -22,7 +22,7 @@ FROM ${FLEX_ADMIN_UI_IMAGE} AS flex-admin-ui-src
 # app
 # ===
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.8
+FROM bellsoft/liberica-openjdk-alpine:17.0.9@sha256:915d7a6c5874638a735296a99ac28c4a9cefb9bfda2bef796fc564449d44d6cc
 
 # hadolint ignore=DL3018
 RUN apk update \
