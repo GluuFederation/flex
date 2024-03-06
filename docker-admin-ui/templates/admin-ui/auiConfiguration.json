@@ -29,6 +29,9 @@
             "introspectionEndpoint": "%(token_server_introspection_url)s"
         }
     },
+    "uiConfig": {
+      "sessionTimeoutInMins": 30
+    },
     "licenseConfig": {
         "ssa": "%(ssa)s",
         "scanLicenseApiHostname": "%(scan_license_api_hostname)s",

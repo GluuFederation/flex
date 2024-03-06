@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV FLEX_SOURCE_VERSION=de06fe49102cf8df497449b6dda40eecc56b4593
+ENV FLEX_SOURCE_VERSION=a9b05ef3a52975854141d69b142e6981cfd42d54
 ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
 
 RUN mkdir -p /opt/flex /app/templates/admin-ui
