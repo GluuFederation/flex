@@ -1,8 +1,6 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
-  useRef,
   useState,
 } from 'react'
 import {
@@ -12,7 +10,7 @@ import {
 } from 'Plugins/saml/redux/features/SamlSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { Card, CardBody, Form, FormGroup, Col, Row, Button } from 'Components'
+import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -21,9 +19,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import * as Yup from 'yup'
-import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Box } from '@mui/material'
 import { getClientScopeByInum } from 'Utils/Util'
 import { PER_PAGE_SCOPES } from 'Plugins/auth-server/common/Constants'
@@ -65,9 +61,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const inputFile = useRef(null)
   const isLoading = useSelector(
     (state) => state.scopeReducer.loadingClientScopes
   )
