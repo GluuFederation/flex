@@ -194,7 +194,7 @@
     "sp_metadata_file": "Arquivo de metadados do SP",
     "displayName": "Nome de exibição",
     "enable_tr": "Ativar TR",
-    "import_metadata_from_file": "Arquivo de Metadados",
+    "import_metadata_from_file": "Carregar arquivo de metadados",
     "idp_entity_id": "ID da entidade do IDP",
     "signing_certificate": "Certificado de assinatura",
     "name_policy_format": "Formato de Política de NameID",

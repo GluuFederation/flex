@@ -184,7 +184,7 @@
     "sp_metadata_file": "Fichier de métadonnées du SP",
     "displayName": "Nom d'affichage",
     "enable_tr": "Activer TR",
-    "import_metadata_from_file": "Fichier de métadonnées",
+    "import_metadata_from_file": "Télécharger le fichier de métadonnées",
     "idp_entity_id": "ID de l'entité de l'IDP",
     "signing_certificate": "Certificat de signature",
     "name_policy_format": "Format de la politique d'identifiant de nom",

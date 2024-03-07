@@ -146,7 +146,7 @@
     "sp_metadata_file": "IDP Metadata File",
     "displayName": "Display Name",
     "enable_tr": "Enable TR",
-    "import_metadata_from_file": "Metadata file",
+    "import_metadata_from_file": "Upload Metadata file",
     "idp_entity_id": "Entity Id",
     "signing_certificate": "Signing Certificate",
     "name_policy_format": "NameID Policy Format",

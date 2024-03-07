@@ -1,8 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   createTrustRelationship,
   toggleSavedFormFlag,
@@ -20,7 +16,6 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
-import { Box } from '@mui/material'
 import { getClientScopeByInum } from 'Utils/Util'
 import { PER_PAGE_SCOPES } from 'Plugins/auth-server/common/Constants'
 import PropTypes from 'prop-types'
@@ -33,7 +28,6 @@ import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import _debounce from 'lodash/debounce'
 import { useNavigate } from 'react-router'
 import { nameIDPolicyFormat } from '../helper'
-import Toggle from 'react-toggle'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
 
@@ -58,7 +52,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   }
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
   const [metaDataFile, setMetaDataFile] = useState(null)
-  const [showUploadBtn, setShowUploadBtn] = useState(false)
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
   const isLoading = useSelector(
@@ -83,7 +76,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const scopeFieldValue = selectedClientScopes?.length
     ? selectedClientScopes
     : defaultScopeValue
-  const scopeOptions = clientScopeOptions
 
   const validationSchema = Yup.object().shape({
     displayName: Yup.string().required(
@@ -275,8 +267,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
               if (
                 !metaDataFile &&
                 formik.values.spMetaDataSourceType?.toLowerCase() === 'file' &&
-                !configs &&
-                showUploadBtn
+                !configs
               ) {
                 setFileError(true)
                 return
@@ -335,7 +326,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
               </Col>
               <Col sm={10}>
                 <GluuToggleRow
-                  label={'fields.enabled'}
+                  label={'fields.enable_tr'}
                   name='enabled'
                   viewOnly={viewOnly}
                   formik={formik}
@@ -394,6 +385,31 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
+                {isLoading ? (
+                  'Fetching attributes...'
+                ) : (
+                  <GluuTypeAheadForDn
+                    name='releasedAttributes'
+                    label='fields.released_attributes'
+                    formik={formik}
+                    value={scopeFieldValue}
+                    options={clientScopeOptions}
+                    lsize={4}
+                    rsize={8}
+                    disabled={viewOnly}
+                    onChange={saveSelectedScopes}
+                    paginate={true}
+                    onSearch={debounceFn}
+                    onPaginate={handlePagination}
+                    maxResults={
+                      clientScopeOptions?.length ? clientScopeOptions.length - 1 : undefined
+                    }
+                    isLoading={scopeLoading}
+                    placeholder='Search for an attribute...'
+                  />
+                )}
+              </Col>
+              <Col sm={10}>
                 <GluuSelectRow
                   label='fields.metadata_location'
                   formik={formik}
@@ -415,80 +431,34 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   required
                 />
               </Col>
-              <Col sm={10}>
-                {isLoading ? (
-                  'Fetching attributes...'
-                ) : (
-                  <GluuTypeAheadForDn
-                    name='releasedAttributes'
-                    label='fields.released_attributes'
-                    formik={formik}
-                    value={scopeFieldValue}
-                    options={scopeOptions}
-                    lsize={4}
-                    rsize={8}
-                    disabled={viewOnly}
-                    onChange={saveSelectedScopes}
-                    paginate={true}
-                    onSearch={debounceFn}
-                    onPaginate={handlePagination}
-                    maxResults={
-                      scopeOptions?.length ? scopeOptions.length - 1 : undefined
-                    }
-                    isLoading={scopeLoading}
-                    placeholder='Search for an attribute...'
-                  />
-                )}
-              </Col>
-              <Col sm={10}>
-                <FormGroup row>
-                  <GluuLabel
-                    label={'fields.import_metadata_from_file'}
-                    size={4}
-                  />
-                  <Col sm={8}>
-                    <Box
-                      display='flex'
-                      flexWrap={{ sm: 'wrap', md: 'nowrap' }}
-                      gap={1}
-                      alignItems='center'
-                    >
-                      <Toggle
-                        onChange={(event) => {
-                          if (event.target.checked) {
-                            setShowUploadBtn(true)
-                          } else {
-                            setMetaDataFile(null)
-                            formik.setFieldValue('importMetadataFile', false)
-                            setShowUploadBtn(false)
-                            setFileError('')
-                          }
+              {formik.values.spMetaDataSourceType?.toLowerCase() === 'file' && (
+                <Col sm={10}>
+                  <FormGroup row>
+                    <GluuLabel
+                      label={'fields.import_metadata_from_file'}
+                      size={4}
+                    />
+                    <Col sm={8}>
+                      <GluuUploadFile
+                        accept={{
+                          'text/xml': ['.xml'],
+                          'application/json': ['.json'],
                         }}
-                        checked={showUploadBtn}
+                        placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
+                        onDrop={handleDrop}
+                        onClearFiles={handleClearFiles}
                         disabled={viewOnly}
                       />
-                      {showUploadBtn && (
-                        <GluuUploadFile
-                          accept={{
-                            'text/xml': ['.xml'],
-                            'application/json': ['.json'],
-                          }}
-                          placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
-                          onDrop={handleDrop}
-                          onClearFiles={handleClearFiles}
-                          disabled={viewOnly}
-                        />
+                      {fileError && (
+                        <div style={{ color: 'red' }}>
+                          {t('messages.import_metadata_file')}
+                        </div>
                       )}
-                    </Box>
-                    {fileError && (
-                      <div style={{ color: 'red' }}>
-                        {t('messages.import_metadata_file')}
-                      </div>
-                    )}
-                  </Col>
-                </FormGroup>
-              </Col>
-              {!showUploadBtn && (
+                    </Col>
+                  </FormGroup>
+                </Col>
+              )}
+              {formik.values.spMetaDataSourceType?.toLowerCase() === 'manual' && (
                 <>
                   <Col sm={10}>
                     <GluuInputRow
