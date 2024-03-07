@@ -36,9 +36,22 @@ import {
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import _debounce from 'lodash/debounce'
 import { useNavigate } from 'react-router'
+import { nameIDPolicyFormat } from '../helper'
+import Toggle from 'react-toggle'
+import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
+import SetTitle from 'Utils/SetTitle'
 
 const TrustRelationForm = ({ configs, viewOnly }) => {
   const { t } = useTranslation()
+  
+  if (viewOnly) {
+    SetTitle(t('titles.sp'))
+  } else if (configs) {
+    SetTitle(t('titles.edit_sp'))
+  } else {
+    SetTitle(t('titles.create_sp'))
+  }
+  
   const navigate = useNavigate()
   const loading = useSelector((state) => state.idpSamlReducer.loading)
   const dispatch = useDispatch()
@@ -49,6 +62,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   }
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
   const [metaDataFile, setMetaDataFile] = useState(null)
+  const [showUploadBtn, setShowUploadBtn] = useState(false)
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
   const theme = useContext(ThemeContext)
@@ -112,10 +126,13 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     surrogateAuthRequired: getDefault(configs?.surrogateAuthRequired, false),
     spLogoutURL: getDefault(configs?.spLogoutURL, ''),
     samlMetadata: {
-      nameIDPolicyFormat: '',
-      entityId: '',
-      singleLogoutServiceUrl: '',
+      nameIDPolicyFormat: getDefault(configs?.samlMetadata?.nameIDPolicyFormat, ''),
+      entityId: getDefault(configs?.samlMetadata?.entityId, ''),
+      singleLogoutServiceUrl: getDefault(configs?.samlMetadata?.singleLogoutServiceUrl, ''),
+      jansAssertionConsumerServiceGetURL: getDefault(configs?.samlMetadata?.jansAssertionConsumerServiceGetURL, ''),
+      jansAssertionConsumerServicePostURL: getDefault(configs?.samlMetadata?.jansAssertionConsumerServicePostURL, ''),
     },
+    importMetadataFile: false,
   }
 
   function getConfiguredType(configs) {
@@ -184,17 +201,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
       )
     }
   }
-
-  const onHandleFileSelection = () => {
-    setFileError(false)
-    inputFile.current.click()
-  }
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0]
-    if (file) setMetaDataFile(file)
-  }
-
   const debounceFn = useCallback(
     _debounce((query) => {
       query && handleDebounceFn(query)
@@ -252,6 +258,20 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     }
   }, [])
 
+  const handleDrop = (files) => {
+    const file = files[0]
+    if (file) {
+      formik.setFieldValue('importMetadataFile', true)
+      setMetaDataFile(file)
+      setFileError('')
+    } else formik.setFieldValue('importMetadataFile', false)
+  }
+
+  const handleClearFiles = () => {
+    formik.setFieldValue('importMetadataFile', false)
+    setMetaDataFile(null)
+  }
+
   return (
     <GluuLoader blocking={loading}>
       <Card>
@@ -262,7 +282,8 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
               if (
                 !metaDataFile &&
                 formik.values.spMetaDataSourceType?.toLowerCase() === 'file' &&
-                !configs
+                !configs &&
+                showUploadBtn
               ) {
                 setFileError(true)
                 return
@@ -402,144 +423,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                <FormGroup row>
-                  <GluuLabel label={'fields.metadata_file'} size={4} />
-                  <Col sm={8}>
-                    <Box
-                      display='flex'
-                      flexWrap='wrap'
-                      gap={1}
-                      alignItems='center'
-                    >
-                      <Button
-                        disabled={viewOnly}
-                        color={`primary-${selectedTheme}`}
-                        style={{
-                          ...applicationStyle.buttonStyle,
-                          ...applicationStyle.buttonFlexIconStyles,
-                        }}
-                        onClick={onHandleFileSelection}
-                      >
-                        {t('fields.import_file')}
-                      </Button>
-                      {metaDataFile ? (
-                        <>
-                          <span className='d-inline'>{metaDataFile?.name}</span>
-                          <p className='mb-0'>
-                            ({((metaDataFile?.size || 0) / 1000).toFixed(0)}K)
-                          </p>
-                        </>
-                      ) : null}
-                    </Box>
-                    {fileError && (
-                      <div style={{ color: 'red' }}>
-                        {t('messages.import_metadata_file')}
-                      </div>
-                    )}
-                  </Col>
-                </FormGroup>
-              </Col>
-              <input
-                type='file'
-                accept='text/xml,application/json'
-                onChange={handleFileChange}
-                id='metdaDateFile'
-                ref={inputFile}
-                style={{ display: 'none' }}
-              />
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.single_logout_service_url'
-                  name='samlMetadata.singleLogoutServiceUrl'
-                  value={formik.values.samlMetadata.singleLogoutServiceUrl}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  showError={
-                    formik.errors.samlMetadata?.singleLogoutServiceUrl &&
-                    formik.touched.samlMetadata?.singleLogoutServiceUrl
-                  }
-                  errorMessage={
-                    formik.errors.samlMetadata?.singleLogoutServiceUrl
-                  }
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.entity_id'
-                  name='samlMetadata.entityId'
-                  value={formik.values.samlMetadata.entityId}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  showError={
-                    formik.errors.samlMetadata?.entityId &&
-                    formik.touched.samlMetadata?.entityId
-                  }
-                  errorMessage={formik.errors.samlMetadata?.entityId}
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuSelectRow
-                  label='fields.name_id_policy_format'
-                  name='samlMetadata.nameIDPolicyFormat'
-                  value={formik.values.samlMetadata.nameIDPolicyFormat}
-                  defaultValue={formik.values.samlMetadata.nameIDPolicyFormat}
-                  values={[
-                    {
-                      label: 'Unspecified',
-                      value:
-                        'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-                    },
-                    {
-                      label: 'EmailAddress',
-                      value:
-                        'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-                    },
-                    {
-                      label: 'X509SubjectName',
-                      value:
-                        'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName',
-                    },
-                    {
-                      label: 'Windows Domain Qualified Name',
-                      value:
-                        'urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName',
-                    },
-                    {
-                      label: 'Kerberos Principal Name',
-                      value:
-                        'urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos',
-                    },
-                    {
-                      label: 'Entity',
-                      value: 'urn:oasis:names:tc:SAML:2.0:nameid-format:entity',
-                    },
-                    {
-                      label: 'Persistent',
-                      value:
-                        'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-                    },
-                    {
-                      label: 'Transient',
-                      value:
-                        'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-                    },
-                  ]}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  showError={
-                    formik.errors.samlMetadata?.nameIDPolicyFormat &&
-                    formik.touched.samlMetadata?.nameIDPolicyFormat
-                  }
-                  errorMessage={formik.errors.samlMetadata?.nameIDPolicyFormat}
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
                 {isLoading ? (
                   'Fetching attributes...'
                 ) : (
@@ -564,6 +447,162 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   />
                 )}
               </Col>
+              <Col sm={10}>
+                <FormGroup row>
+                  <GluuLabel
+                    label={'fields.import_metadata_from_file'}
+                    size={4}
+                  />
+                  <Col sm={8}>
+                    <Box
+                      display='flex'
+                      flexWrap={{ sm: 'wrap', md: 'nowrap' }}
+                      gap={1}
+                      alignItems='center'
+                    >
+                      <Toggle
+                        onChange={(event) => {
+                          if (event.target.checked) {
+                            setShowUploadBtn(true)
+                          } else {
+                            setMetaDataFile(null)
+                            formik.setFieldValue('importMetadataFile', false)
+                            setShowUploadBtn(false)
+                            setFileError('')
+                          }
+                        }}
+                        checked={showUploadBtn}
+                        disabled={viewOnly}
+                      />
+                      {showUploadBtn && (
+                        <GluuUploadFile
+                          accept={{
+                            'text/xml': ['.xml'],
+                            'application/json': ['.json'],
+                          }}
+                          placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
+                          onDrop={handleDrop}
+                          onClearFiles={handleClearFiles}
+                          disabled={viewOnly}
+                        />
+                      )}
+                    </Box>
+                    {fileError && (
+                      <div style={{ color: 'red' }}>
+                        {t('messages.import_metadata_file')}
+                      </div>
+                    )}
+                  </Col>
+                </FormGroup>
+              </Col>
+              {!showUploadBtn && (
+                <>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label='fields.single_logout_service_url'
+                      name='samlMetadata.singleLogoutServiceUrl'
+                      value={formik.values.samlMetadata.singleLogoutServiceUrl}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.samlMetadata?.singleLogoutServiceUrl &&
+                        formik.touched.samlMetadata?.singleLogoutServiceUrl
+                      }
+                      errorMessage={
+                        formik.errors.samlMetadata?.singleLogoutServiceUrl
+                      }
+                      disabled={viewOnly}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label='fields.entity_id'
+                      name='samlMetadata.entityId'
+                      value={formik.values.samlMetadata.entityId}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.samlMetadata?.entityId &&
+                        formik.touched.samlMetadata?.entityId
+                      }
+                      errorMessage={formik.errors.samlMetadata?.entityId}
+                      disabled={viewOnly}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuSelectRow
+                      label='fields.name_id_policy_format'
+                      name='samlMetadata.nameIDPolicyFormat'
+                      value={formik.values.samlMetadata.nameIDPolicyFormat}
+                      defaultValue={
+                        formik.values.samlMetadata.nameIDPolicyFormat
+                      }
+                      values={nameIDPolicyFormat}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.samlMetadata?.nameIDPolicyFormat &&
+                        formik.touched.samlMetadata?.nameIDPolicyFormat
+                      }
+                      errorMessage={
+                        formik.errors.samlMetadata?.nameIDPolicyFormat
+                      }
+                      disabled={viewOnly}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label='fields.jans_assertion_consumer_service_get_url'
+                      name='samlMetadata.jansAssertionConsumerServiceGetURL'
+                      value={
+                        formik.values.samlMetadata
+                          .jansAssertionConsumerServiceGetURL
+                      }
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.samlMetadata
+                          ?.jansAssertionConsumerServiceGetURL &&
+                        formik.touched.samlMetadata
+                          ?.jansAssertionConsumerServiceGetURL
+                      }
+                      errorMessage={
+                        formik.errors.samlMetadata
+                          ?.jansAssertionConsumerServiceGetURL
+                      }
+                      disabled={viewOnly}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label='fields.jans_assertion_consumer_service_post_url'
+                      name='samlMetadata.jansAssertionConsumerServicePostURL'
+                      value={
+                        formik.values.samlMetadata
+                          .jansAssertionConsumerServicePostURL
+                      }
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.samlMetadata
+                          ?.jansAssertionConsumerServicePostURL &&
+                        formik.touched.samlMetadata
+                          ?.jansAssertionConsumerServicePostURL
+                      }
+                      errorMessage={
+                        formik.errors.samlMetadata
+                          ?.jansAssertionConsumerServicePostURL
+                      }
+                      disabled={viewOnly}
+                    />
+                  </Col>
+                </>
+              )}
             </FormGroup>
             {!viewOnly && (
               <Row>
