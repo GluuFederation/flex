@@ -47,7 +47,8 @@ export function* createUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
-    yield put(updateToast(true, 'error'))
+    const errMsg = e?.response?.body?.description || e?.response?.text
+    yield* errorToast(errMsg)
     yield put(createUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -67,7 +68,8 @@ export function* updateUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
-    yield put(updateToast(true, 'error'))
+    const errMsg = e?.response?.body?.description || e?.response?.text
+    yield* errorToast(errMsg)
     yield put(updateUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -86,7 +88,8 @@ export function* changeUserPasswordSaga({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(changeUserPasswordResponse(data))
   } catch (e) {
-    yield put(updateToast(true, 'error'))
+    const errMsg = e?.response?.body?.description || e?.response?.text
+    yield* errorToast(errMsg)
     yield put(changeUserPasswordResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -105,7 +108,8 @@ export function* getUsersSaga({ payload }) {
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    yield put(getUserResponse(null))
+    const errMsg = e?.response?.body?.description || e?.response?.text
+    yield* errorToast(errMsg)
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -126,7 +130,8 @@ export function* deleteUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: payload } })
     return data
   } catch (e) {
-    yield put(updateToast(true, 'error'))
+    const errMsg = e?.response?.body?.description || e?.response?.text
+    yield* errorToast(errMsg)
     yield put(deleteUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -134,6 +139,16 @@ export function* deleteUserSaga({ payload }) {
     }
     return e
   }
+}
+
+function* errorToast(errMsg) {
+  yield put(
+    updateToast(
+      true,
+      'error',
+      errMsg
+    )
+  )
 }
 
 export function* watchGetUsers() {
