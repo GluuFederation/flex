@@ -9,8 +9,6 @@ import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
 import { getUMAResourcesByClient } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import { getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
-import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { useTranslation } from 'react-i18next'
 import isEmpty from 'lodash/isEmpty'
 
 function ClientEditPage() {
@@ -22,7 +20,6 @@ function ClientEditPage() {
   const permissions = useSelector((state) => state.authReducer.permissions)
   const oidcConfiguration = useSelector((state) => state.oidcDiscoveryReducer.configuration)
   const saveOperationFlag = useSelector((state) => state.oidcReducer.saveOperationFlag)
-  const errorInSaveOperationFlag = useSelector((state) => state.oidcReducer.errorInSaveOperationFlag)
   const umaResources = useSelector((state) => state.umaResourceReducer.items)
   const loadingOidcDiscovevry = useSelector((state) => state.oidcDiscoveryReducer.loading)
 
@@ -30,7 +27,6 @@ function ClientEditPage() {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
-  const { t } = useTranslation()
   const navigate =useNavigate()
 
   useEffect(() => {
@@ -61,16 +57,12 @@ function ClientEditPage() {
   function handleSubmit(data) {
     if (data) {
       buildPayload(userAction, data.action_message, data)
+      delete userAction?.action_data?.action_message
       dispatch(editClient({ action: userAction }))
     }
   }
   return (
     <GluuLoader blocking={loading || loadingOidcDiscovevry}>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={t('messages.error_in_saving')}
-        show={errorInSaveOperationFlag}
-      />
       {!(loadingOidcDiscovevry || loading) && 
         <>
           <ClientWizardForm

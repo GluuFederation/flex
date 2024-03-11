@@ -33,3 +33,13 @@ export function getMonth(aDate) {
     return '0' + value
   }
 }
+
+export function formatDate(date) {
+  if (!date) {
+    return '-'
+  }
+  if (date.length > 10) {
+    return date.substring(0, 10)
+  }
+  return '-'
+}

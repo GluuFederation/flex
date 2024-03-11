@@ -11,7 +11,7 @@ const initialState = {
   entriesCount: 0,
   clientScopes: [],
   loadingClientScopes: false,
-  selectedClientScopes: []
+  selectedClientScopes: [],
 }
 
 const scopeSlice = createSlice({
@@ -115,7 +115,6 @@ const scopeSlice = createSlice({
       state.errorInSaveOperationFlag = false
     },
     getScopeByCreator: () => {},
-    getScopeByPattern: () => {},
     getScopeByInum: (state) => {
       state.loading = true
       state.saveOperationFlag = false
@@ -152,7 +151,7 @@ export const {
   getScopeByInum,
   getClientScopes,
   emptyScopes,
-  setClientSelectedScopes
+  setClientSelectedScopes,
 } = scopeSlice.actions
 export { initialState }
 export const { actions, reducer, state } = scopeSlice

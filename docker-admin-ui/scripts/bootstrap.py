@@ -5,7 +5,6 @@ from uuid import uuid4
 from functools import cached_property
 
 from jans.pycloudlib import get_manager
-from jans.pycloudlib.utils import as_boolean
 from jans.pycloudlib.utils import get_random_chars
 from jans.pycloudlib.utils import encode_text
 from jans.pycloudlib.persistence import CouchbaseClient
@@ -41,9 +40,10 @@ def main():
 
     render_env(manager)
 
-    persistence_setup = PersistenceSetup(manager)
-    persistence_setup.import_ldif_files()
-    persistence_setup.save_config()
+    with manager.lock.create_lock("admin-ui-setup"):
+        persistence_setup = PersistenceSetup(manager)
+        persistence_setup.import_ldif_files()
+        persistence_setup.save_config()
 
 
 def read_from_file(path):
@@ -101,7 +101,7 @@ class PersistenceSetup:
 
         ctx = {
             "hostname": self.manager.config.get("hostname"),
-            "admin_ui_auth_method": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic"),
+            "adminui_authentication_mode": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic"),
         }
 
         # admin-ui client for auth server
@@ -145,7 +145,7 @@ class PersistenceSetup:
 
     @cached_property
     def ldif_files(self):
-        filenames = ["clients.ldif"]
+        filenames = ["clients.ldif", "aui_webhook.ldif"]
         return [f"/app/templates/admin-ui/{filename}" for filename in filenames]
 
     def import_ldif_files(self):
@@ -176,14 +176,14 @@ class PersistenceSetup:
             if should_update:
                 logger.info("Updating admin-ui config app")
                 entry["jansConfApp"] = json.dumps(merged_conf)
-                entry["jansRevision"] += 1
+                entry["jansRevision"] = entry.get("jansRevision", 0) + 1
                 self.client.update(table_name, dn, entry)
 
         elif self.persistence_type == "couchbase":
             bucket = os.environ.get("CN_COUCHBASE_BUCKET_PREFIX", "jans")
             dn = id_from_dn(dn)
 
-            req = self.client.exec_query(f"SELECT META().id, {bucket}.* FROM {bucket} USE KEYS '{dn}'")
+            req = self.client.exec_query(f"SELECT META().id, {bucket}.* FROM {bucket} USE KEYS '{dn}'")  # nosec: B608
             entry = req.json()["results"][0]
 
             conf = entry.get("jansConfApp") or {}
@@ -196,7 +196,7 @@ class PersistenceSetup:
             if should_update:
                 logger.info("Updating admin-ui config app")
                 rev = entry["jansRevision"] + 1
-                self.client.exec_query(f"UPDATE {bucket} USE KEYS '{dn}' SET jansConfApp={json.dumps(merged_conf)}, jansRevision={rev}")
+                self.client.exec_query(f"UPDATE {bucket} USE KEYS '{dn}' SET jansConfApp={json.dumps(merged_conf)}, jansRevision={rev}")  # nosec: B608
 
         else:
             entry = self.client.get(dn)
@@ -269,11 +269,46 @@ def resolve_conf_app(old_conf, new_conf):
             old_conf["licenseConfig"]["licenseHardwareKey"] = new_conf["licenseConfig"]["licenseHardwareKey"]
             should_update = True
 
-        # opHost changes on authServerClient and tokenServerClient
-        for srv_client in ("authServerClient", "tokenServerClient"):
+        client_changes = [
+            # authServerClient is renamed to auiWebClient
+            ("auiWebClient", "authServerClient"),
+            # tokenServerClient is renamed to auiBackendApiClient
+            ("auiBackendApiClient", "tokenServerClient"),
+        ]
+        for new_client, old_client in client_changes:
+            if new_client in old_conf["oidcConfig"]:
+                continue
+
+            old_conf["oidcConfig"][new_client] = old_conf["oidcConfig"].pop(
+                old_client, new_conf["oidcConfig"][new_client],
+            )
+            should_update = True
+
+        # opHost changes on auiWebClient and auiBackendApiClient
+        for srv_client in ("auiWebClient", "auiBackendApiClient"):
             if new_conf["oidcConfig"][srv_client]["opHost"] != old_conf["oidcConfig"][srv_client]["opHost"]:
                 old_conf["oidcConfig"][srv_client]["opHost"] = new_conf["oidcConfig"][srv_client]["opHost"]
                 should_update = True
+
+        # add missing introspectionEndpoint
+        if "introspectionEndpoint" not in old_conf["oidcConfig"]["auiBackendApiClient"]:
+            old_conf["oidcConfig"]["auiBackendApiClient"]["introspectionEndpoint"] = new_conf["oidcConfig"]["auiBackendApiClient"]["introspectionEndpoint"]
+            should_update = True
+
+        # set scope to openid only
+        if old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] != new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]:
+            old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] = new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]
+            should_update = True
+
+        # add missing uiConfig
+        if "uiConfig" not in old_conf:
+            old_conf["uiConfig"] = {"sessionTimeoutInMins": 30}
+            should_update = True
+
+        # add missing additionalParameters
+        if "additionalParameters" not in old_conf["oidcConfig"]["auiWebClient"]:
+            old_conf["oidcConfig"]["auiWebClient"]["additionalParameters"] = []
+            should_update = True
 
     # finalized status and conf
     return should_update, old_conf

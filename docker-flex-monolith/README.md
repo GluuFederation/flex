@@ -1,6 +1,6 @@
 # Overview
 
-**This image is for testing and development purposes only! Use Flex [helm charts](../flex-cn-setup/pygluu/kubernetes/templates/helm/gluu) for production setups**
+**This image is for testing and development purposes only! Use Flex [helm charts](../charts/gluu) for production setups**
 
 Docker monolith image packaging for Gluu Flex.This image packs janssen services including, the auth-server, config-api, fido2, scim, casa and the Gluu admin ui.
 
@@ -19,7 +19,7 @@ The following environment variables are supported by the container:
 | `CN_HOSTNAME`           | Hostname to install gluu with.                                                                                                                                  | `demoexample.gluu.org`                           |
 | `CN_ADMIN_PASS`         | Password of the admin user.                                                                                                                                     | `1t5Fin3#security`                               |
 | `CN_ORG_NAME`           | Organization name. Used for ssl cert generation.                                                                                                                | `Gluu`                                           |
-| `CN_EMAIL`              | Email. Used for ssl cert generation.                                                                                                                            | `support@gluu.org`                               |
+| `CN_EMAIL`              | Email. Used for ssl cert generation.                                                                                                                            | `team@gluu.org`                               |
 | `CN_CITY`               | City. Used for ssl cert generation.                                                                                                                             | `Austin`                                         |
 | `CN_STATE`              | State. Used for ssl cert generation                                                                                                                             | `TX`                                             |
 | `CN_COUNTRY`            | Country. Used for ssl cert generation.                                                                                                                          | `US`                                             |
@@ -85,3 +85,4 @@ Grab a fresh ubuntu 22.04 lts VM and run:
 ```bash
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startflexmonolithdemo.sh && chmod u+x startflexmonolithdemo.sh && sudo bash startflexmonolithdemo.sh demoexample.gluu.org MYSQL
 ```
+

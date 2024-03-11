@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - 'docs/**'
-      - 'flex-cn-setup/pygluu/kubernetes/templates/helm/**'
+      - 'charts/**'
       - 'mkdocs.yml'
       - 'docker-**/README.md'
   pull_request:
@@ -13,7 +13,7 @@ on:
       - main
     paths:
       - 'docs/**'
-      - 'flex-cn-setup/pygluu/kubernetes/templates/helm/**'
+      - 'charts/**'
       - 'mkdocs.yml'
       - 'docker-**/README.md'
   release:
@@ -69,7 +69,8 @@ jobs:
 
       - name: Copy generated chart from main
         run: |
-          helm package flex-cn-setup/pygluu/kubernetes/templates/helm/gluu
+          helm package charts/gluu
+          helm package charts/gluu-all-in-one
           cp gluu-*.tgz ../
 
       - name: Import GPG key
@@ -90,6 +91,8 @@ jobs:
 
       - name: Generate docs
         continue-on-error: true
+        if: >-
+          github.event_name != 'pull_request'
         env:
           VERSION: ${{ github.event.release.tag_name }}
         run: |
@@ -102,21 +105,7 @@ jobs:
           
          # Run cn docs 
          sudo bash ./automation/docs/generated-cn-docs.sh . || echo "something went wrong with generating the cn docs"
-          
-         echo "Generating property docs and push to main"
-         sudo bash ./automation/docs/generate-property-docs.sh . || echo "something went wrong with generating the property docs"
-         cd docs
-         git add . || echo "Nothing to add"
-         git commit -a -S -m "docs: automated property doc generation" || echo "Nothing to commit"
-         cd ..
-          
-         echo "Generating javadocs"
-         sudo bash ./automation/docs/generate-javadocs.sh . || echo "something went wrong with generating the java docs"
-         cd docs
-         git add . || echo "Nothing to add"
-         git commit -a -S -m "docs: generate and add javadocs" || echo "Nothing to commit"
-         cd ..
-         
+                             
          git push --set-upstream origin cn-flex-update-auto-generated-docs
          MESSAGE="fix(docs): autogenerate docs"
          PR=$(gh pr create --body "Auto generated docs" --title "${MESSAGE}")
@@ -172,8 +161,8 @@ jobs:
       # Commits if the files were changed
       # Finally pushes if there are unpushed commits
       - name: Create version files
-        #if: >-
-        #  github.event_name != 'workflow_dispatch'
+        if: >-
+          github.event_name != 'pull_request'
         env:
           VERSION: ${{ github.event.release.tag_name }}
         run: |

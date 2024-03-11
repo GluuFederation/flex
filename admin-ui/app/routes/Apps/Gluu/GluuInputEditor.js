@@ -2,6 +2,7 @@ import React from 'react'
 import { Col, FormGroup } from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
 import AceEditor from 'react-ace'
+import PropTypes from 'prop-types'
 import 'ace-builds/src-noconflict/mode-java'
 import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/theme-xcode'
@@ -17,7 +18,14 @@ function GluuInputEditor({
   rsize,
   doc_category,
   readOnly = false,
-  label
+  label,
+  showError = false,
+  errorMessage,
+  theme = 'xcode',
+  placeholder = 'Write your custom script here',
+  doc_entry,
+  shortcode,
+  onCursorChange
 }) {
   const handleChange = (scripts) => {
     formik.handleChange(name)(scripts)
@@ -27,7 +35,7 @@ function GluuInputEditor({
     <FormGroup row>
       <GluuLabel
         doc_category={doc_category}
-        doc_entry={name}
+        doc_entry={doc_entry || name}
         label={label}
         size={lsize}
         required={required}
@@ -35,23 +43,45 @@ function GluuInputEditor({
       {formik.errors.script && formik.touched.script ? (
         <div style={{ color: 'red' }}>{formik.errors.script}</div>
       ) : null}
-      <Col sm={rsize}>
+      <Col sm={rsize} style={{ position: 'relative' }}>
+        {shortcode}
         <AceEditor
           mode={language}
           readOnly={readOnly}
-          theme="xcode"
-          placeholder="Write your custom script here"
+          theme={theme}
+          placeholder={placeholder}
           fontSize={16}
-          width="95%"
-          height="300px"
+          onCursorChange={onCursorChange}
+          width='95%'
+          height='300px'
           onChange={(e) => handleChange(e)}
           name={name}
-          defaultValue={value}
+          value={value}
           editorProps={{ $blockScrolling: true }}
         />
+        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )
 }
 
 export default GluuInputEditor
+GluuInputEditor.propTypes = {
+  errorMessage: PropTypes.string,
+  theme: PropTypes.string,
+  placeholder: PropTypes.string,
+  showError: PropTypes.bool,
+  label: PropTypes.string,
+  readOnly: PropTypes.bool,
+  doc_category: PropTypes.string,
+  rsize: PropTypes.number,
+  lsize: PropTypes.number,
+  required: PropTypes.bool,
+  formik: PropTypes.any,
+  value: PropTypes.any,
+  language: PropTypes.string,
+  name: PropTypes.string,
+  doc_entry: PropTypes.string,
+  shortcode: PropTypes.element,
+  onCursorChange: PropTypes.func
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Container, FormGroup, InputGroup, CustomInput } from 'Components'
+import { Col, Container, FormGroup } from 'Components'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
@@ -13,6 +13,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
+import PropTypes from 'prop-types'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
@@ -54,40 +55,22 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
   return (
     <Container>
       <ClientShowSpontaneousScopes handler={handler} isOpen={scopesModal} />
-      <FormGroup row>
-        <GluuLabel label="fields.subject_type" />
-        <Col sm={9}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="subjectType"
-              name="subjectType"
-              disabled={viewOnly}
-              defaultValue={formik.values.subjectType}
-              onChange={formik.handleChange}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              <option>pairwise</option>
-              <option>public</option>
-            </CustomInput>
-          </InputGroup>
-        </Col>
-      </FormGroup>
-
       <GluuToogleRow
         name="persistClientAuthorizations"
         lsize={3}
         rsize={9}
-        formik={formik}
+        handler={(e) => {
+          formik.setFieldValue('persistClientAuthorizations', e.target.checked)
+        }}
         label="fields.persist_client_authorizations"
         value={formik.values.persistClientAuthorizations}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuBooleanSelectBox
-        name="allowSpontaneousScopes"
+        name="attributes.allowSpontaneousScopes"
         label="fields.allow_spontaneous_scopes"
-        value={formik.values.allowSpontaneousScopes}
+        value={formik.values?.attributes?.allowSpontaneousScopes}
         formik={formik}
         lsize={3}
         rsize={9}
@@ -95,11 +78,11 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         disabled={viewOnly}
       />
       <GluuTypeAheadForDn
-        name="spontaneousScopes"
+        name="attributes.spontaneousScopes"
         label="fields.spontaneousScopesREGEX"
         formik={formik}
-        value={formik.values.spontaneousScopes || []}
-        options={formik.values.spontaneousScopes || []}
+        value={formik.values?.attributes?.spontaneousScopes || []}
+        options={formik.values?.attributes?.spontaneousScopes || []}
         haveLabelKey={false}
         allowNew={true}
         doc_category={DOC_CATEGORY}
@@ -157,10 +140,10 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAhead>
       <GluuTypeAhead
-        name="authorizedAcrValues"
+        name="attributes.authorizedAcrValues"
         label="fields.authorizedAcrValues"
         formik={formik}
-        value={getMapping(formik.values.authorizedAcrValues, filteredScripts)}
+        value={getMapping(formik.values?.attributes?.authorizedAcrValues || [], filteredScripts) || []}
         options={filteredScripts}
         doc_category={DOC_CATEGORY}
         lsize={3}
@@ -168,20 +151,22 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAhead>
       <GluuToogleRow
-        name="jansDefaultPromptLogin"
+        name="attributes.jansDefaultPromptLogin"
         lsize={3}
         rsize={9}
-        formik={formik}
         label="fields.defaultPromptLogin"
-        value={formik.values.jansDefaultPromptLogin}
+        value={formik.values.attributes.jansDefaultPromptLogin}
+        handler={(e) => {
+          formik.setFieldValue('attributes.jansDefaultPromptLogin', e.target.checked)
+        }}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
       <GluuInputRow
         label="fields.tls_client_auth_subject_dn"
-        name="tlsClientAuthSubjectDn"
+        name="attributes.tlsClientAuthSubjectDn"
         formik={formik}
-        value={formik.values.tlsClientAuthSubjectDn}
+        value={formik.values?.attributes?.tlsClientAuthSubjectDn}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -225,3 +210,9 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
 }
 
 export default ClientAdvancedPanel
+ClientAdvancedPanel.propTypes = {
+  formik: PropTypes.any,
+  client: PropTypes.any,
+  scripts: PropTypes.any,
+  viewOnly: PropTypes.bool
+}

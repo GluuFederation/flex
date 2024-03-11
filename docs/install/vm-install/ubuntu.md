@@ -66,10 +66,12 @@ Run the command below from the directory where the downloaded package and the `.
 Choose the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
+cd /tmp
 sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
 ```
 ```shell
 #Ubuntu 20.04
+cd /tmp
 sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
 ```
 Output similar to below should confirm the integrity of the downloaded package.
@@ -83,11 +85,11 @@ Choose the correct command from below based on the OS version.
 
 ```shell
 #Ubuntu 22.04
-apt install -y ./flex_replace-flex-version.ubuntu22.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
 ```
 ```shell
 #Ubuntu 20.04
-apt install -y ./flex_replace-flex-version.ubuntu20.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 ```
 
 ### Run the setup script
@@ -126,8 +128,15 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 
 - Access Casa using URI below
 ```text
-https://FQDN/casa
+https://FQDN/jans-casa
 ```
+## Enabling HTTPS
+
+To enable communication with Janssen Server over TLS (https) in a production
+environment, Janssen Server needs details about CA certificate.
+
+!!! Note
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
 
 ## Uninstallation
 Removing Flex is a two step process:

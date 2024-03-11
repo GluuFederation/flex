@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        docker-images: ["admin-ui", "flex-monolith"]
+        docker-images: ["admin-ui", "flex-monolith", "flex-all-in-one"]
     steps:
     - uses: actions/checkout@v3
     - name: Build the Container image

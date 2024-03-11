@@ -15,19 +15,21 @@ import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import items from './scriptTypes'
 import { Alert, Button } from "reactstrap";
 import ErrorIcon from '@mui/icons-material/Error';
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+import { useSelector } from 'react-redux'
+import { Skeleton } from '@mui/material'
+import PropTypes from 'prop-types'
 
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('Components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
-function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
+function CustomScriptForm({ item, handleSubmit, viewOnly }) {
+  const { scriptTypes, loadingScriptTypes } = useSelector((state) => state.customScriptReducer)
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -67,12 +69,12 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
-  function getPropertiesConfig(entry) {
+  function getPropertiesConfig(entry, key) {
     if (
-      entry.configurationProperties &&
-      Array.isArray(entry.configurationProperties)
+      entry[key] &&
+      Array.isArray(entry[key])
     ) {
-      return entry.configurationProperties.map((e) => ({
+      return entry[key].map((e) => ({
         key: e.value1,
         value: e.value2,
       }))
@@ -147,10 +149,19 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       }
 
       values.level = item.level
-      values.moduleProperties = item.moduleProperties
       // eslint-disable-next-line no-extra-boolean-cast
       if (!!values.configurationProperties) {
         values.configurationProperties = values.configurationProperties
+          .filter((e) => e != null)
+          .filter((e) => Object.keys(e).length !== 0)
+          .map((e) => ({
+            value1: e.key || e.value1,
+            value2: e.value || e.value2,
+            hide: false,
+          }))
+      }
+      if (!!values.moduleProperties && item.locationType !== 'db') {
+        values.moduleProperties = values.moduleProperties
           .filter((e) => e != null)
           .filter((e) => Object.keys(e).length !== 0)
           .map((e) => ({
@@ -385,7 +396,12 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
         <FormGroup row>
           <GluuLabel label="fields.script_type" required doc_category={SCRIPT} doc_entry="scriptType"/>
           <Col sm={9}>
-            <InputGroup>
+              {loadingScriptTypes ? 
+              <Skeleton
+                variant='text'
+                width='100%'
+                sx={{ fontSize: '3rem' }}
+              /> : <InputGroup>
               <CustomInput
                 type="select"
                 id="scriptType"
@@ -398,13 +414,13 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                {items.map((ele, index) => (
+                {scriptTypes.map((ele, index) => (
                   <option key={index} value={ele.value}>
                     {ele.name}
                   </option>
                 ))}
               </CustomInput>
-            </InputGroup>
+            </InputGroup>}
             {formik.errors.scriptType && formik.touched.scriptType ? (
               <div style={{ color: 'red' }}>{formik.errors.scriptType}</div>
             ) : null}
@@ -555,7 +571,16 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
           formik={formik}
           keyPlaceholder={t('placeholders.enter_property_key')}
           valuePlaceholder={t('placeholders.enter_property_value')}
-          options={getPropertiesConfig(item)}
+          options={getPropertiesConfig(item, 'configurationProperties')}
+          disabled={viewOnly}
+        ></GluuProperties>
+        <GluuProperties
+          compName="moduleProperties"
+          label="fields.module_properties"
+          formik={formik}
+          keyPlaceholder={t('placeholders.enter_property_key')}
+          valuePlaceholder={t('placeholders.enter_property_value')}
+          options={getPropertiesConfig(item, 'moduleProperties')}
           disabled={viewOnly}
         ></GluuProperties>
         {!scriptPath && (
@@ -587,16 +612,6 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             />
           </Col>
         </FormGroup>
-        <GluuTooltip doc_category={SCRIPT} doc_entry="moduleProperties">
-          <FormGroup row>
-            <Input
-              type="hidden"
-              id="moduleProperties"
-              defaultValue={item.moduleProperties}
-              disabled={viewOnly}
-            />
-          </FormGroup>
-        </GluuTooltip>
         {!viewOnly && <GluuCommitFooter saveHandler={toggle} />}
         <GluuCommitDialog
           handler={toggle}
@@ -604,10 +619,23 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
           onAccept={submitForm}
           formik={formik}
           disabled={viewOnly}
+          feature='custom_script_write'
         />
       </Form>
     </>
   )
+}
+
+CustomScriptForm.propTypes = {
+  item: PropTypes.any,
+  handleSubmit: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.any
+  ]),
+  viewOnly: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.any
+  ])
 }
 
 export default CustomScriptForm

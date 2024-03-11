@@ -15,11 +15,11 @@ if [[ ! "$GLUU_PERSISTENCE" ]]; then
 fi
 
 if [[ -z $EXT_IP ]]; then
-  EXT_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+  EXT_IP=$(curl ipinfo.io/ip)
 fi
 
 if [[ ! "$GLUU_LICENSE_SSA" ]]; then
-  read -rp "Enter the License SSA in base64 format provided from Gluu:          " GLUU_LICENSE_SSA
+  read -rp "Enter the License SSA provided by Gluu:          " GLUU_LICENSE_SSA
 fi
 sudo apt-get update
 # Install Docker and Docker compose plugin
@@ -69,8 +69,8 @@ if [[ "$FLEX_BUILD_COMMIT" ]]; then
 
   python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-ldap-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; del data['services']['flex']['image'] ; yaml.dump(data, compose)"
 fi
-
-python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['CN_GLUU_LICENSE_SSA'] = '$GLUU_LICENSE_SSA'"
+ENCODED_GLUU_LICENSE_SSA=$(echo -n "$GLUU_LICENSE_SSA" | base64 -w0)
+python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['CN_GLUU_LICENSE_SSA'] = '$ENCODED_GLUU_LICENSE_SSA'"
 # --
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
   docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d

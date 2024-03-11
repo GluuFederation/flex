@@ -17,6 +17,7 @@ import uuid
 from pathlib import Path
 from urllib import request
 from urllib.parse import urljoin
+from xml.etree import ElementTree
 
 
 argsp = None
@@ -258,8 +259,8 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.19-SNAPSHOT",
-  "JANS_BUILD": "",
+  "JANS_APP_VERSION": "1.1.0",
+  "JANS_BUILD": "-SNAPSHOT",
   "NODE_VERSION": "v18.16.0",
   "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
 }
@@ -281,7 +282,7 @@ class flex_installer(JettyInstaller):
 
         self.jans_auth_dir = os.path.join(Config.jetty_base, jansAuthInstaller.service_name)
         self.jans_auth_custom_lib_dir = os.path.join(self.jans_auth_dir, 'custom/libs')
-
+        self.admin_ui_log_dir = '/var/log/adminui'
         self.gluu_admin_ui_source_path = os.path.join(Config.dist_jans_dir, 'gluu-admin-ui.zip')
         self.log4j2_adminui_path = os.path.join(Config.dist_jans_dir, 'log4j2-adminui.xml')
         self.log4j2_path = os.path.join(Config.dist_jans_dir, 'log4j2.xml')
@@ -290,7 +291,6 @@ class flex_installer(JettyInstaller):
         self.source_dir = os.path.join(Config.install_dir, 'flex')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
-
         self.admin_ui_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/node_modules/admin-ui-{0}-node_modules.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
         self.config_api_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/OpenApi/jans_config_api/admin-ui-{0}-jans_config_api.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
 
@@ -306,6 +306,7 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
         self.simple_auth_scr_inum = 'A51E-76DA'
         self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
+        self.admin_ui_web_hook_ldif_fn = os.path.join(self.templates_dir, 'aui_webhook.ldif')
 
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
@@ -410,6 +411,12 @@ class flex_installer(JettyInstaller):
         print("Extracting admin-ui from", self.flex_path)
         base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
 
+        print("Stopping Jans Auth")
+        config_api_installer.stop('jans-auth')
+
+        print("Stopping Janssen Config Api")
+        config_api_installer.stop()
+
         print("Building Gluu Admin UI Frontend")
         env_tmp = os.path.join(self.source_dir, '.env.tmp')
         config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
@@ -446,7 +453,7 @@ class flex_installer(JettyInstaller):
 
             return ldif_parser
 
-        print("Creating Gluu Flex Admin UI Client")
+        print("Creating Gluu Flex Admin UI Web Client")
 
         client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
         if client_check_result['2001.'] == -1:
@@ -455,45 +462,53 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Client {}'.format(ssa_json.get('org_id', ''))]
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client {}'.format(ssa_json.get('org_id', ''))]
             ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['none']
+            ldif_parser.entries[0][1]['jansAttrs'] = ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']
 
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
 
-            print("\033[1mAdmin UI Client ID:\033[0m", Config.admin_ui_client_id)
-            print("\033[1mAdmin UI Client Secret:\033[0m", Config.admin_ui_client_pw)
+            print("\033[1mAdmin UI Web Client ID:\033[0m", Config.admin_ui_client_id)
+            print("\033[1mAdmin UI Web Client Secret:\033[0m", Config.admin_ui_client_pw)
 
             with open(client_tmp_fn, 'wb') as w:
                 ldif_writer = LDIFWriter(w)
                 ldif_writer.unparse('inum=%(admin_ui_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
 
             config_api_installer.renderTemplateInOut(client_tmp_fn, self.templates_dir, self.source_dir)
-            self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(client_tmp_fn))])
+            self.dbUtils.import_ldif([
+                        os.path.join(self.source_dir, os.path.basename(client_tmp_fn)),
+                        self.admin_ui_web_hook_ldif_fn
+                        ])
 
 
-
-        client_check_result = config_api_installer.check_clients([('admin_ui_token_client_id', '2002.')])
+        client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == -1:
 
             ldif_parser = get_client_parser()
 
-            ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_token_client_id)s']
-            ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_token_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Token Client {}'.format(ssa_json.get('org_id', ''))]
+            ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_web_client_id)s']
+            ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_web_client_encoded_pw)s']
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client {}'.format(ssa_json.get('org_id', ''))]
             ldif_parser.entries[0][1]['jansGrantTyp'] = ['client_credentials']
+            ldif_parser.entries[0][1]['jansRespTyp'] = ['token']
+            ldif_parser.entries[0][1]['jansScope'] = ['inum=F0C4,ou=scopes,o=jans', 'inum=B9D2-D6E5,ou=scopes,o=jans']
+            ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['client_secret_basic']
+            ldif_parser.entries[0][1]['jansTrustedClnt'] = ['FALSE']
+            for del_entry in ('jansLogoutURI', 'jansPostLogoutRedirectURI', 'jansRedirectURI', 'jansSignedRespAlg'):
+                del ldif_parser.entries[0][1][del_entry]
 
-            token_client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_token_client.ldif')
+            web_client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_web_client.ldif')
 
-            print("\033[1mAdmin UI Token Client ID:\033[0m", Config.admin_ui_token_client_id)
-            print("\033[1mAdmin UI Token Client Secret:\033[0m", Config.admin_ui_token_client_encoded_pw)
+            print("\033[1mAdmin UI Backend API Client ID:\033[0m", Config.admin_ui_web_client_id)
+            print("\033[1mAdmin UI Backend API Secret:\033[0m", Config.admin_ui_web_client_encoded_pw)
 
-            with open(token_client_tmp_fn, 'wb') as w:
+            with open(web_client_tmp_fn, 'wb') as w:
                 ldif_writer = LDIFWriter(w)
-                ldif_writer.unparse('inum=%(admin_ui_token_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
+                ldif_writer.unparse('inum=%(admin_ui_web_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
 
-            config_api_installer.renderTemplateInOut(token_client_tmp_fn, self.templates_dir, self.source_dir)
-            self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(token_client_tmp_fn))])
-
+            config_api_installer.renderTemplateInOut(web_client_tmp_fn, self.templates_dir, self.source_dir)
+            self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(web_client_tmp_fn))])
 
         self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
 
@@ -528,8 +543,32 @@ class flex_installer(JettyInstaller):
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir, backup=False)
         config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
-        for logfn in (self.log4j2_adminui_path, self.log4j2_path):
-            config_api_installer.copyFile(logfn, config_api_installer.custom_config_dir)
+        config_api_installer.copyFile(self.log4j2_path, config_api_installer.custom_config_dir)
+
+        log4j2_adminui_path_target_path = os.path.join(
+                                config_api_installer.custom_config_dir,
+                                os.path.basename(self.log4j2_adminui_path)
+                                )
+
+        print("Reading XML", self.log4j2_adminui_path)
+        tree = ElementTree.parse(self.log4j2_adminui_path)
+        root = tree.getroot()
+
+        for appenders in root.findall('Appenders'):
+            for child in appenders:
+                if child.tag=='RollingFile' and child.get('name') in ('ADMINUI-AUDIT', 'ADMINUI-LOG'):
+                    for prop in ('fileName', 'filePattern'):
+                        file_name = child.get(prop)
+                        if file_name:
+                            file_base_name = os.path.basename(file_name)
+                            new_file_path = os.path.join(self.admin_ui_log_dir, file_base_name)
+                            child.set(prop, new_file_path)
+        print("Writing XML", log4j2_adminui_path_target_path)
+        tree.write(log4j2_adminui_path_target_path, encoding='utf-8', xml_declaration=True)
+
+        if not os.path.exists(self.admin_ui_log_dir):
+            os.makedirs(self.admin_ui_log_dir)
+        config_api_installer.chown(self.admin_ui_log_dir, Config.jetty_user, Config.jetty_group)
 
         config_api_installer.set_class_path(glob.glob(os.path.join(config_api_installer.libDir, '*.jar')))
 
@@ -587,13 +626,13 @@ class flex_installer(JettyInstaller):
 
         client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
         if client_check_result['2001.'] == 1:
-            print("  - Deleting Gluu Flex Admin UI Client ", Config.admin_ui_client_id)
+            print("  - Deleting Gluu Flex Admin UI Web Client ", Config.admin_ui_client_id)
             self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_client_id))
 
-        client_check_result = config_api_installer.check_clients([('admin_ui_token_client_id', '2002.')])
+        client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == 1:
-            print("  - Deleting Gluu Flex Admin UI Token Client ", Config.admin_ui_token_client_id)
-            self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_token_client_id))
+            print("  - Deleting Gluu Flex Admin UI Backend API Client ", Config.admin_ui_web_client_id)
+            self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_web_client_id))
 
 
         self.dbUtils.set_configuration("jansConfApp", None, self.admin_ui_dn)

@@ -3,6 +3,7 @@ import { Col, Container, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
@@ -171,11 +172,11 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
           <GluuSelectRow
             label="fields.authorizationSignedResponseAlg"
             formik={formik}
-            value={formik.values.jansAuthSignedRespAlg}
+            value={formik.values?.attributes?.jansAuthSignedRespAlg}
             values={idTokenSignedResponseAlg}
             lsize={6}
             rsize={6}
-            name="jansAuthSignedRespAlg"
+            name="attributes.jansAuthSignedRespAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
           />
@@ -186,9 +187,9 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             formik={formik}
             lsize={6}
             rsize={6}
-            value={formik.values.jansAuthEncRespAlg}
+            value={formik.values?.attributes?.jansAuthEncRespAlg}
             values={idTokenEncryptedResponseAlg}
-            name="jansAuthEncRespAlg"
+            name="attributes.jansAuthEncRespAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
           />
@@ -197,11 +198,11 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
           <GluuSelectRow
             label="fields.authorizationEncryptedResponseEnc"
             formik={formik}
-            value={formik.values.jansAuthEncRespEnc}
+            value={formik.values?.attributes?.jansAuthEncRespEnc}
             values={idTokenEncryptedResponseEnc}
             lsize={6}
             rsize={6}
-            name="jansAuthEncRespEnc"
+            name="attributes.jansAuthEncRespEnc"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
           />
@@ -249,8 +250,57 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
           />
         </Col>
       </FormGroup>
+      <h2>{t(`titles.introspection_object`)}</h2>
+      <FormGroup row>
+        <Col sm={6}>
+          <GluuSelectRow
+            label="fields.introspection_signed_response_alg"
+            formik={formik}
+            value={formik.values?.attributes?.introspectionSignedResponseAlg}
+            values={idTokenSignedResponseAlg}
+            lsize={6}
+            rsize={6}
+            name="attributes.introspectionSignedResponseAlg"
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+          />
+        </Col>
+        <Col sm={6}>
+          <GluuSelectRow
+            label="fields.introspection_encrypted_response_alg"
+            formik={formik}
+            value={formik.values?.attributes?.introspectionEncryptedResponseAlg}
+            values={idTokenEncryptedResponseAlg}
+            lsize={6}
+            rsize={6}
+            name="attributes.introspectionEncryptedResponseAlg"
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+          />
+        </Col>
+        <Col sm={6}>
+          <GluuSelectRow
+            label="fields.introspection_encrypted_response_enc"
+            formik={formik}
+            value={formik.values?.attributes?.introspectionEncryptedResponseEnc}
+            values={idTokenEncryptedResponseEnc}
+            lsize={6}
+            rsize={6}
+            name="attributes.introspectionEncryptedResponseEnc"
+            doc_category={DOC_CATEGORY}
+            disabled={viewOnly}
+          />
+        </Col>
+      </FormGroup>
     </Container>
   )
 }
+
+ClientEncryptionSigningPanel.propTypes = {
+  formik: PropTypes.shape({
+    values: PropTypes.any,
+  }),
+};
+
 
 export default ClientEncryptionSigningPanel

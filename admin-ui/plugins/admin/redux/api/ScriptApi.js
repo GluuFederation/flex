@@ -11,6 +11,15 @@ export default class ScriptApi {
       })
     })
   }
+
+  getCustomScriptTypes = () => {
+    return new Promise((resolve, reject) => {
+      this.api.getCustomScriptType((error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+
   getScriptsByType = (options) => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScriptsByType(

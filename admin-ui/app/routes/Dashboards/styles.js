@@ -94,7 +94,7 @@ const styles = makeStyles()({
   userInfo: {
     borderRadius: 24,
     marginLeft: 20,
-    height: 280,
+    height: 'auto',
     background: '#FFF',
     color: '#303641',
     display: 'block',

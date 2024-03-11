@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.0.21](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.20...flex-linux-setup-v1.0.21) (2023-12-18)
+
+
+### Features
+
+* **flex-linux-setup:** replace jwt token with reference token to access config-api ([7296ce1](https://github.com/GluuFederation/flex/commit/7296ce1db8efb8d69b688741dd94aefcf6d538ca))
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** stop jans-auth and config-api before building admin-ui ([7081ffe](https://github.com/GluuFederation/flex/commit/7081ffec0e17e1340750734a561af55d7fa5e04e))
+* prepare for 5.0.0-21 release ([cee44ca](https://github.com/GluuFederation/flex/commit/cee44ca8f5e66e5d1861fe499665f9dac40183ce))
+
+## [1.0.20](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.19...flex-linux-setup-v1.0.20) (2023-11-16)
+
+
+### Features
+
+* **flex-linux-setup:** change admin-ui log location to /var/log/adminui ([9d1d3e0](https://github.com/GluuFederation/flex/commit/9d1d3e0e6ce0aa3a87be4a604b18012746fa57d0))
+* **flex-linux-setup:** change client name ([5d04770](https://github.com/GluuFederation/flex/commit/5d047708aa05a1e66dbf71519a8e1cc44d68a82f))
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** typo auiBackenApiClient ([c4df77c](https://github.com/GluuFederation/flex/commit/c4df77c7fa0f22eb0e64eac0f94178b09be62d20))
+* prepare for 5.0.0-20 release ([f74643c](https://github.com/GluuFederation/flex/commit/f74643c6aa0aee9d4c218b90fb1f9237171324f8))
+* version 1.0.20-SNAPSHOT ([#1402](https://github.com/GluuFederation/flex/issues/1402)) ([26aed88](https://github.com/GluuFederation/flex/commit/26aed8803f0248bceccd426ce29a31e752858a86))
+
+## [1.0.19](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.18...flex-linux-setup-v1.0.19) (2023-10-12)
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** remove casa installer form flex setup ([#1366](https://github.com/GluuFederation/flex/issues/1366)) ([70e1781](https://github.com/GluuFederation/flex/commit/70e1781455dbffd18129b2f57d0d8295acc1d1cb))
+* prepare for 5.0.0-19 release ([2d8e13d](https://github.com/GluuFederation/flex/commit/2d8e13deb4364063ffc7270d617697eb0994ead7))
+
 ## [1.0.18](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.16...flex-linux-setup-v1.0.18) (2023-09-23)
 
 

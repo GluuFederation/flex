@@ -51,7 +51,7 @@ const InumDBServerTab = () => {
 
   const [auditModal, setAuditModal] = useState(false)
   const toggleAudit = () => {
-    setAuditModal(!modal)
+    setAuditModal(!auditModal)
   }
 
   const formik = useFormik({
@@ -126,10 +126,10 @@ const InumDBServerTab = () => {
           ...formik.values.targetConfig,
           baseDNs: isStringsArray(formik.values?.targetConfig?.baseDNs || [])
           ? formik.values.targetConfig.baseDNs
-          : convertToStringArray(formik.values?.targetConfig.baseDNs || []),
+          : convertToStringArray(formik.values?.targetConfig?.baseDNs || []),
           servers: isStringsArray(formik.values?.targetConfig?.servers || [])
             ? formik.values.targetConfig.servers
-            : convertToStringArray(formik.values?.targetConfig.servers || []),
+            : convertToStringArray(formik.values?.targetConfig?.servers || []),
           bindPassword: updatedPassword,
         },
       },
@@ -223,7 +223,7 @@ const InumDBServerTab = () => {
                     formik={formik}
                     options={
                       formik.values.targetConfig?.servers
-                        ? formik.values.targetConfig?.servers.map((item) => ({
+                        ? formik.values.targetConfig?.servers?.map((item) => ({
                             key: '',
                             value: item,
                           }))
@@ -249,7 +249,7 @@ const InumDBServerTab = () => {
                     formik={formik}
                     options={
                       formik.values.targetConfig?.baseDNs
-                        ? formik.values.targetConfig?.baseDNs.map((item) => ({
+                        ? formik.values.targetConfig?.baseDNs?.map((item) => ({
                             key: '',
                             value: item,
                           }))
@@ -281,13 +281,25 @@ const InumDBServerTab = () => {
               <GluuToogleRow
                 label='fields.use_ssl'
                 name='useSSL'
-                required
                 handler={(e) => {
                   formik.setFieldValue('targetConfig.useSSL', e.target.checked)
                 }}
                 lsize={3}
                 rsize={9}
                 value={formik.values.targetConfig?.useSSL}
+                doc_category='jans_link'
+              />
+            </Col>
+            <Col sm={12} className='mt-3'>
+              <GluuToogleRow
+                label='fields.enabled'
+                name='enabled'
+                handler={(e) => {
+                  formik.setFieldValue('targetConfig.enabled', e.target.checked)
+                }}
+                lsize={3}
+                rsize={9}
+                value={formik.values.targetConfig?.enabled}
                 doc_category='jans_link'
               />
             </Col>
@@ -315,6 +327,7 @@ const InumDBServerTab = () => {
         modal={auditModal}
         onAccept={submitForm}
         formik={formik}
+        feature='jans_link_write'
       />
     </Form>
   )

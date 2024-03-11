@@ -47,6 +47,16 @@ export const SCOPE_DELETE = BASE_URL + '/config/scopes.delete'
 export const SSA_PORTAL = 'https://jans.io/auth/ssa.portal'
 export const SSA_ADMIN = 'https://jans.io/auth/ssa.admin'
 
+export const SAML_READ = 'https://jans.io/idp/saml.readonly'
+export const SAML_WRITE = 'https://jans.io/idp/saml.write'
+export const SAML_DELETE = 'https://jans.io/idp/saml.delete'
+
+export const SAML_TR_READ = BASE_URL + '/config/saml.readonly'
+export const SAML_TR_WRITE = BASE_URL + '/config/saml.write'
+
+export const SAML_CONFIG_READ = BASE_URL + '/config/saml-config.readonly'
+export const SAML_CONFIG_WRITE = BASE_URL + '/config/saml-config.write'
+
 export const SCRIPT_READ = BASE_URL + '/config/scripts.readonly'
 export const SCRIPT_WRITE = BASE_URL + '/config/scripts.write'
 export const SCRIPT_DELETE = BASE_URL + '/config/scripts.delete'
@@ -103,6 +113,18 @@ export const AGAMA_DELETE = BASE_URL + '/config/agama.delete'
 
 export const SESSION_READ = BASE_URL + '/jans-auth-server/session.readonly'
 export const SESSION_DELETE = BASE_URL + '/jans-auth-server/session.delete'
+
+export const SCOPE_TAG = 'scopes'
+export const ATTRIBUTES_TAG = 'attributes'
+
+export const SCIM_CONFIG_READ = 'https://jans.io/scim/config.readonly'
+export const SCIM_CONFIG_WRITE = 'https://jans.io/scim/config.write'
+
+export const MESSAGE_READ = BASE_URL + '/config/message.readonly'
+export const MESSAGE_WRITE = BASE_URL + '/config/message.write'
+export const WEBHOOK_READ = BASE_URL + '/jans-auth-server/config/adminui/webhook.readonly'
+export const WEBHOOK_WRITE = BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
+export const WEBHOOK_DELETE = BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'
 
 export const hasPermission = (scopes, scope) => {
   let available = false

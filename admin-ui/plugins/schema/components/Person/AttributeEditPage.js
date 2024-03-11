@@ -22,9 +22,9 @@ function AttributeEditPage() {
       minLength: null,
     }
   }
-  function customHandleSubmit(data) {
+  function customHandleSubmit({ data, userMessage }) {
     if (data) {
-      dispatch(editAttribute({ data }))
+      dispatch(editAttribute({ action: { action_data: data, action_message: userMessage } }))
       navigate('/attributes')
     }
   }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
-import { Paper, TablePagination } from '@mui/material'
+import { Paper, Skeleton, TablePagination } from '@mui/material'
 import { Badge } from 'reactstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -16,6 +16,7 @@ import {
   getCustomScriptByType,
   setCurrentItem,
   viewOnly,
+  getScriptTypes,
 } from 'Plugins/admin/redux/features/customScriptSlice'
 import {
   hasPermission,
@@ -31,8 +32,6 @@ import {
   PATTERN_ID,
   TYPE,
   TYPE_ID,
-  FETCHING_SCRIPTS,
-  SEARCHING_SCRIPTS,
 } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -59,9 +58,12 @@ function ScriptListTable() {
   const bgThemeColor = { background: themeColors.background }
   const scripts = useSelector((state) => state.customScriptReducer.items)
   const loading = useSelector((state) => state.customScriptReducer.loading)
+  const hasFetchedScriptTypes = useSelector(
+    (state) => state.customScriptReducer.hasFetchedScriptTypes
+  )
   const permissions = useSelector((state) => state.authReducer.permissions)
-  const { totalItems, entriesCount } = useSelector(
-    (state) => state.customScriptReducer,
+  const { totalItems, scriptTypes, loadingScriptTypes } = useSelector(
+    (state) => state.customScriptReducer
   )
   const [pageNumber, setPageNumber] = useState(0)
   let memoPattern = pattern
@@ -83,6 +85,13 @@ function ScriptListTable() {
     makeOptions()
     dispatch(getCustomScriptByType({ action: options }))
   }, [])
+
+  useEffect(() => {
+    if (!hasFetchedScriptTypes) {
+      dispatch(getScriptTypes())
+    }
+  }, [hasFetchedScriptTypes])
+
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -90,7 +99,9 @@ function ScriptListTable() {
         id: 'editCustomScript' + rowData.inum,
       },
       tooltip: `${t('messages.edit_script')}`,
-      onClick: (event, entry) => {handleGoToCustomScriptEditPage(entry)},
+      onClick: (event, entry) => {
+        handleGoToCustomScriptEditPage(entry)
+      },
       disabled: false,
     }))
   }
@@ -109,15 +120,28 @@ function ScriptListTable() {
   if (hasPermission(permissions, SCRIPT_READ)) {
     myActions.push({
       icon: () => (
-        <GluuCustomScriptSearch
-          limitId={LIMIT_ID}
-          limit={limit}
-          typeId={TYPE_ID}
-          patternId={PATTERN_ID}
-          scriptType={type}
-          pattern={pattern}
-          handler={handleOptionsChange}
-        />
+        <>
+          {loadingScriptTypes ? (
+            <>
+              <Skeleton
+                variant='text'
+                width='10rem'
+                sx={{ fontSize: '3rem' }}
+              />
+            </>
+          ) : (
+            <GluuCustomScriptSearch
+              limitId={LIMIT_ID}
+              limit={limit}
+              typeId={TYPE_ID}
+              patternId={PATTERN_ID}
+              scriptType={type}
+              pattern={pattern}
+              handler={handleOptionsChange}
+              options={scriptTypes}
+            />
+          )}
+        </>
       ),
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
@@ -246,16 +270,18 @@ function ScriptListTable() {
             ]}
             data={scripts}
             isLoading={loading}
-            title=""
+            title=''
             actions={myActions}
             options={{
-              search: true,
+              search: false,
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: limit,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled && rowData?.scriptError?.stackTrace
-                  ? '#FF5858' : rowData.enabled
+                backgroundColor:
+                  rowData.enabled && rowData?.scriptError?.stackTrace
+                    ? '#FF5858'
+                    : rowData.enabled
                     ? themeColors.lightBackground
                     : '#FFF',
               }),
@@ -275,8 +301,9 @@ function ScriptListTable() {
             row={item}
             handler={toggle}
             modal={modal}
-            subject="script"
+            subject='script'
             onAccept={onDeletionConfirmed}
+            feature='custom_script_delete'
           />
         )}
       </CardBody>

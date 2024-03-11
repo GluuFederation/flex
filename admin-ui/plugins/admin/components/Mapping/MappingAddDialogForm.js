@@ -94,6 +94,7 @@ const MappingAddDialogForm = ({
             label="fields.role"
             options={autoCompleteRoles}
             value={[]}
+            hideHelperMessage
             onChange={(selected) =>
               setApiRole(selected.length ? selected[0] : '')
             }

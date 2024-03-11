@@ -88,6 +88,7 @@ def get_license_config(manager):
         "oidc_client_id": client_id,
         "oidc_client_secret": client_secret,
         "scan_license_api_hostname": scan_url,
-        "scan_license_auth_server_hostname": auth_url,
+        "op_host": auth_url,
         "ssa": ssa,
+        "org_id": payload.get("org_id", ""),
     }

@@ -19,12 +19,6 @@ jobs:
     strategy:
       matrix:
         include:
-            # pygluu kubernetes
-          - os: ubuntu-latest
-            artifact_name: pygluu-kubernetes.pyz
-            asset_name: pygluu-kubernetes-linux-amd64.pyz
-            asset_directory: flex-cn-setup
-            python_version: 3.8
             # flex linux setup
           - os: ubuntu-latest
             artifact_name: flex-linux-setup.pyz
@@ -41,7 +35,7 @@ jobs:
           - os: ubuntu-latest
             artifact_name: helm # Will be changed automatically
             asset_name: helm # Will be changed automatically
-            asset_directory: flex-cn-setup/pygluu/kubernetes/templates/helm/gluu
+            asset_directory: charts/gluu
             python_version: 3.8
 
     steps:

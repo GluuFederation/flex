@@ -8,8 +8,6 @@ import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
 import { emptyScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { getScripts } from 'Redux/features/initSlice'
 import { buildPayload } from 'Utils/PermChecker'
-import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { useTranslation } from 'react-i18next'
 
 function ClientAddPage() {
   const permissions = useSelector((state) => state.authReducer.permissions)
@@ -26,7 +24,6 @@ function ClientAddPage() {
   const options = {}
   options['limit'] = parseInt(100000)
   const navigate =useNavigate()
-  const { t } = useTranslation()
   useEffect(() => {
     dispatch(emptyScopes())
     buildPayload(userAction, '', options)
@@ -47,6 +44,7 @@ function ClientAddPage() {
       const postBody = {}
       postBody['client'] = data
       buildPayload(userAction, data.action_message, postBody)
+      delete userAction.action_data.client.action_message
       dispatch(addNewClientAction({ action: userAction }))
     }
   }
@@ -57,7 +55,6 @@ function ClientAddPage() {
     claimRedirectUris: [],
     responseTypes: [],
     grantTypes: [],
-    requireAuthTime: false,
     postLogoutRedirectUris: [],
     oxAuthScopes: [],
     trustedClient: false,
@@ -68,13 +65,9 @@ function ClientAddPage() {
     accessTokenAsJwt: false,
     backchannelUserCodeParameter: false,
     disabled: false,
-    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
-    keepClientAuthorizationAfterExpiration: false,
-    allowSpontaneousScopes: false,
-    backchannelLogoutSessionRequired: false,
     attributes: {
       tlsClientAuthSubjectDn: null,
-      runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
+      runIntrospectionScriptBeforeJwtCreation: false,
       keepClientAuthorizationAfterExpiration: false,
       allowSpontaneousScopes: false,
       backchannelLogoutSessionRequired: false,
@@ -89,11 +82,6 @@ function ClientAddPage() {
   }
   return (
     <GluuLoader blocking={loading}>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={t('messages.error_in_saving')}
-        show={errorInSaveOperationFlag}
-      />
       <ClientWizardForm
         client_data={clientData}
         scopes={scopes}

@@ -81,7 +81,11 @@ function AuthNEditPage() {
       }
 
       payload.customScript = scriptPayload
-      dispatch(editScriptAuthAcr({ data: payload }))
+      const scriptData = { ...payload }
+      delete scriptData?.customScript?.acrName
+      delete scriptData?.customScript?.tableData
+      delete scriptData?.customScript?.samlACR
+      dispatch(editScriptAuthAcr({ data: scriptData }))
     }
   }
 

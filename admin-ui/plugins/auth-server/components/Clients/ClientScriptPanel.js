@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container } from 'Components'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
+import PropTypes from 'prop-types'
 
 const DOC_CATEGORY = 'openid_client'
 
@@ -42,55 +43,55 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
   return (
     <Container>
       <GluuTypeAheadForDn
-        name="spontaneousScopeScriptDns"
+        name="attributes.spontaneousScopeScriptDns"
         label="fields.spontaneous_scopes"
         formik={formik}
-        value={getMapping(formik.values?.spontaneousScopeScriptDns,spontaneousScripts)}
+        value={getMapping((formik.values?.attributes?.spontaneousScopeScriptDns || []),spontaneousScripts) || []}
         options={spontaneousScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
-        name="updateTokenScriptDns"
+        name="attributes.updateTokenScriptDns"
         label="fields.updateTokenScriptDns"
         formik={formik}
-        value={getMapping(formik.values?.updateTokenScriptDns, updateTokenScriptDns)}
+        value={getMapping((formik.values?.attributes?.updateTokenScriptDns || []), updateTokenScriptDns) || []}
         options={updateTokenScriptDns}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
-        name="postAuthnScripts"
+        name="attributes.postAuthnScripts"
         label="fields.post_authn_scripts"
         formik={formik}
-        value={getMapping(formik.values?.postAuthnScripts, postScripts)}
+        value={getMapping(formik.values?.attributes?.postAuthnScripts || [], postScripts) || []}
         options={postScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
-        name="introspectionScripts"
+        name="attributes.introspectionScripts"
         label="fields.introspection_scripts"
         formik={formik}
-        value={getMapping(formik.values?.introspectionScripts, instrospectionScripts)}
+        value={getMapping((formik.values?.attributes?.introspectionScripts || []), instrospectionScripts) || []}
         options={instrospectionScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
-        name="ropcScripts"
+        name="attributes.ropcScripts"
         label="fields.ropcScripts"
         formik={formik}
-        value={getMapping(formik.values?.ropcScripts, ropcScripts)}
+        value={getMapping(formik.values?.attributes?.ropcScripts || [], ropcScripts) || []}
         options={ropcScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
-        name="consentGatheringScripts"
+        name="attributes.consentGatheringScripts"
         label="fields.consent_gathering_scripts"
         formik={formik}
-        value={getMapping(formik.values?.consentGatheringScripts, consentScripts)}
+        value={getMapping((formik.values?.attributes?.consentGatheringScripts || []), consentScripts) || []}
         options={consentScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -100,3 +101,8 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
 }
 
 export default ClientScriptPanel
+ClientScriptPanel.propTypes = {
+  formik: PropTypes.any,
+  scripts: PropTypes.any,
+  viewOnly: PropTypes.bool
+}

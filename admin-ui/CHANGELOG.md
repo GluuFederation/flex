@@ -1,5 +1,78 @@
 # Changelog
 
+## [1.0.21](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.20...admin-ui-v1.0.21) (2023-12-18)
+
+
+### Features
+
+* **admin-ui:** add config api spec file ([344035e](https://github.com/GluuFederation/flex/commit/344035e0ad34d178845271a320d5a067984447f4))
+* **admin-ui:** the algorithm to secure the JWT for a particular introspection response [#1409](https://github.com/GluuFederation/flex/issues/1409) ([67f1e40](https://github.com/GluuFederation/flex/commit/67f1e4095dc3e81e0d813bc4e6a206df2ae69a62))
+
+
+### Bug Fixes
+
+* **admin-ui:** auth server properties page crashes on visit [#1506](https://github.com/GluuFederation/flex/issues/1506) ([b58ae74](https://github.com/GluuFederation/flex/commit/b58ae74124945197511d9e5848a7756887367d50))
+* **admin-ui:** code smells ([3861710](https://github.com/GluuFederation/flex/commit/3861710f87fad9baa6378b5a6619ead32e59ef96))
+* **admin-ui:** code smells ([5c2d228](https://github.com/GluuFederation/flex/commit/5c2d228665b0493c7afcad863c89ee9558b7e2e1))
+* **admin-ui:** need to change the font color for Enabled header in the scripts grid [#1472](https://github.com/GluuFederation/flex/issues/1472) ([3fcc963](https://github.com/GluuFederation/flex/commit/3fcc963387a6da31401c4a961532054b094839cd))
+* **admin-ui:** recover adminuitest script ([a11be8a](https://github.com/GluuFederation/flex/commit/a11be8ae416a17c9a666c15a97380d546dccefd8))
+* **admin-ui:** remove generation of specific access_token [#1477](https://github.com/GluuFederation/flex/issues/1477) ([b927d1a](https://github.com/GluuFederation/flex/commit/b927d1a189db65f93bf806f447d4e39e89f9f032))
+* **admin-ui:** remove unused import ([d06bdcf](https://github.com/GluuFederation/flex/commit/d06bdcf40c1c10db8fdbcdaa03d8298aac618715))
+* **admin-ui:** target html tag for table colum styles [#1472](https://github.com/GluuFederation/flex/issues/1472) ([3efaa21](https://github.com/GluuFederation/flex/commit/3efaa2177dddcad1b7b0912dd949d0bd1bacc01b))
+* **admin-ui:** unable to generate valid jans-config-api client using kc plugin specs [#1504](https://github.com/GluuFederation/flex/issues/1504) ([f06233f](https://github.com/GluuFederation/flex/commit/f06233f396b004f6319ee0823b9df19c00ca941f))
+* **admin-ui:** use yaml configs for auth server properties configuration [#1475](https://github.com/GluuFederation/flex/issues/1475) ([79efbfc](https://github.com/GluuFederation/flex/commit/79efbfcb46a8939055b9114b8c66ff40f98435ce))
+* prepare for 5.0.0-21 release ([cee44ca](https://github.com/GluuFederation/flex/commit/cee44ca8f5e66e5d1861fe499665f9dac40183ce))
+
+## [1.0.20](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.19...admin-ui-v1.0.20) (2023-11-16)
+
+
+### Features
+
+* **admin-ui:** config api tag column [#1444](https://github.com/GluuFederation/flex/issues/1444) ([4c33de0](https://github.com/GluuFederation/flex/commit/4c33de081da2d9066f47f7aa8b65cff3d0251e34))
+* **admin-ui:** config api tag column [#1444](https://github.com/GluuFederation/flex/issues/1444) [#1447](https://github.com/GluuFederation/flex/issues/1447) ([008fc9c](https://github.com/GluuFederation/flex/commit/008fc9c4a4e02197e6f6ab222df084c6de03c1a7))
+* **admin-ui:** integrate GET endpoint to fetch script-types ([b5ef76c](https://github.com/GluuFederation/flex/commit/b5ef76c4d24e9030a0275b8d4424f40105977842))
+* release aio chart ([e6fd336](https://github.com/GluuFederation/flex/commit/e6fd336e21f3fcfb26e23296dc6235dc74761c91))
+
+
+### Bug Fixes
+
+* **admin-ui:** accepting character in number type fields [#1437](https://github.com/GluuFederation/flex/issues/1437) ([685975e](https://github.com/GluuFederation/flex/commit/685975eadd4fceab6b678c835a082a9d3d463b25))
+* **admin-ui:** code review changes ([d825300](https://github.com/GluuFederation/flex/commit/d8253003e25ced0c5884a4431cffcd93837d56f5))
+* **admin-ui:** code smells ([3d4f9d3](https://github.com/GluuFederation/flex/commit/3d4f9d3005b5b083a6a8fade95069370bd478678))
+* **admin-ui:** code smells ([4976da8](https://github.com/GluuFederation/flex/commit/4976da87c92357dbc820d74c66586ef24d7ce26d))
+* **admin-ui:** getting blank page for user management [#1421](https://github.com/GluuFederation/flex/issues/1421) ([210a29b](https://github.com/GluuFederation/flex/commit/210a29b7dd0bbd6f7ac500d0e78114995832a03e))
+* **admin-ui:** large header issue [#1398](https://github.com/GluuFederation/flex/issues/1398) ([c6d7eab](https://github.com/GluuFederation/flex/commit/c6d7eab92fae14f4e482a36e7ac28bb4d49db800))
+* **admin-ui:** pr code smells ([b0b8d1d](https://github.com/GluuFederation/flex/commit/b0b8d1d79831c217b041099f924f3724e525d29e))
+* **admin-ui:** remove input label ([500c49c](https://github.com/GluuFederation/flex/commit/500c49c2b34781149ec3a8c2734320de557fecf2))
+* **admin-ui:** remove subjectType field & update field label on tokens tab ([17e8575](https://github.com/GluuFederation/flex/commit/17e857519d11eb2855a283b510d58819be5157ee))
+* **admin-ui:** scim config permission added ([2c68f7e](https://github.com/GluuFederation/flex/commit/2c68f7ec459628bf990a0e8c2f3e3b0267685272))
+* **admin-ui:** search Pattern field [#1435](https://github.com/GluuFederation/flex/issues/1435) ([f00971e](https://github.com/GluuFederation/flex/commit/f00971ea971028cb977d3a33340fea0556b7fa20))
+* **admin-ui:** show error message on api failure ([00a1236](https://github.com/GluuFederation/flex/commit/00a123626759e2dd99a55615e8a36402a4ef2069))
+* **admin-ui:** use getCustomScriptType to fetch script-types ([136990a](https://github.com/GluuFederation/flex/commit/136990a032e3e38e737ab488a7968085d3e21a6a))
+* dashboard card language translation [#1419](https://github.com/GluuFederation/flex/issues/1419) ([3976b68](https://github.com/GluuFederation/flex/commit/3976b682492be2a6b7fa15bc4412ee7d14daf363))
+* inaccuracy in displaying license details [#1411](https://github.com/GluuFederation/flex/issues/1411) ([6a171c0](https://github.com/GluuFederation/flex/commit/6a171c029d9e39cc4c4e42e599422ef9f4eb4559))
+* prepare for 5.0.0-20 release ([f74643c](https://github.com/GluuFederation/flex/commit/f74643c6aa0aee9d4c218b90fb1f9237171324f8))
+
+## [1.0.19](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.18...admin-ui-v1.0.19) (2023-10-12)
+
+
+### Features
+
+* **admin-ui:** add test cases in client wizard form [#1358](https://github.com/GluuFederation/flex/issues/1358) ([4a9e3d5](https://github.com/GluuFederation/flex/commit/4a9e3d5ed575867f1cb194ae8ed0ccaf7c6942e0))
+* **admin-ui:** logging level in jans-link [#1351](https://github.com/GluuFederation/flex/issues/1351) ([165cf5f](https://github.com/GluuFederation/flex/commit/165cf5f3f15dbed3ca1d6ce966b211bfb92f868f))
+* upgrade i18next from 22.5.1 to 23.5.1 ([cf2421c](https://github.com/GluuFederation/flex/commit/cf2421c90f4921f93028ba2a70fd12044c390725))
+
+
+### Bug Fixes
+
+* **admin-ui:** allow user to login page on emtpy stat results [#1356](https://github.com/GluuFederation/flex/issues/1356) ([a854b70](https://github.com/GluuFederation/flex/commit/a854b70d218d6a7172ff2171985dda5626748eca))
+* **admin-ui:** change to dropdown fido logging level ([e960d6b](https://github.com/GluuFederation/flex/commit/e960d6b524bde6940d7ccb63a641e2b5ce3ba6e3))
+* **admin-ui:** code smell ([b0564e1](https://github.com/GluuFederation/flex/commit/b0564e10e60fca1350ca0dff79a41b5fde926327))
+* **admin-ui:** isActive endpoint called twice on ssa upload [#1369](https://github.com/GluuFederation/flex/issues/1369) ([9f6697a](https://github.com/GluuFederation/flex/commit/9f6697abe67f2f974388b9311c9cdc5f99b3b15e))
+* **admin-ui:** save form value of client in state while navigating between tabs [#1341](https://github.com/GluuFederation/flex/issues/1341) ([6fca50a](https://github.com/GluuFederation/flex/commit/6fca50a0fc8b98aad8b011976591ea5d9e9556eb))
+* prepare for 5.0.0-19 release ([2d8e13d](https://github.com/GluuFederation/flex/commit/2d8e13deb4364063ffc7270d617697eb0994ead7))
+* upgrade react-router-dom from 6.11.2 to 6.16.0 ([e927319](https://github.com/GluuFederation/flex/commit/e927319b64da225516dcd24c7a40ab4cdd5a9636))
+
 ## [1.0.18](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.16...admin-ui-v1.0.18) (2023-09-23)
 
 

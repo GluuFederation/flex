@@ -5,6 +5,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 const DOC_CATEGORY = 'openid_client'
 
 function uriValidator(uri) {
@@ -47,11 +48,11 @@ function ClientLogoutPanel({ formik, viewOnly }) {
       ></GluuTypeAheadWithAdd>
 
       <GluuTypeAheadWithAdd
-        name="backchannelLogoutUri"
+        name="attributes.backchannelLogoutUri"
         label="fields.backchannelLogoutUri"
         formik={formik}
         placeholder={t('Enter a valid uri with pattern') + ' https://'}
-        value={formik.values.backchannelLogoutUri || []}
+        value={formik.values.attributes.backchannelLogoutUri || []}
         options={backchannelLogoutUris}
         validator={uriValidator}
         inputId={backchannel_uri_id}
@@ -59,9 +60,9 @@ function ClientLogoutPanel({ formik, viewOnly }) {
         disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
       <GluuBooleanSelectBox
-        name="backchannelLogoutSessionRequired"
+        name="attributes.backchannelLogoutSessionRequired"
         label="fields.backchannelLogoutSessionRequired"
-        value={formik.values.backchannelLogoutSessionRequired}
+        value={formik.values.attributes.backchannelLogoutSessionRequired}
         formik={formik}
         lsize={4}
         rsize={8}
@@ -84,3 +85,7 @@ function ClientLogoutPanel({ formik, viewOnly }) {
 }
 
 export default ClientLogoutPanel
+ClientLogoutPanel.propTypes = {
+  formik: PropTypes.any,
+  viewOnly: PropTypes.bool
+}

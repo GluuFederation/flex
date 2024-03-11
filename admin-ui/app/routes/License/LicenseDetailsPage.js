@@ -10,6 +10,7 @@ import { buildPayload } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
+import { formatDate } from 'Utils/Util'
 
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
@@ -26,15 +27,6 @@ function LicenseDetailsPage() {
     dispatch(getLicenseDetails({}))
   }, [])
 
-  function formatDate(date) {
-    if (!date) {
-      return '-'
-    }
-    if (date.length > 10) {
-      return date.substring(0, 10)
-    }
-    return '-'
-  }
   SetTitle(t('fields.licenseDetails'))
   return (
     <GluuLoader blocking={loading}>
@@ -105,7 +97,7 @@ function LicenseDetailsPage() {
                 <Col sm={6}>
                   <GluuFormDetailRow
                     label="fields.customerName"
-                    value={`${item.customerFirstName} ${item.customerLastName}`}
+                    value={!item.customerFirstName && !item.customerLastName ? undefined : (item.customerFirstName + item.customerLastName)}
                     isBadge={true}
                     lsize={3}
                     rsize={9}

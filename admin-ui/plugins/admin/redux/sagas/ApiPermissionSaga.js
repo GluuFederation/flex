@@ -81,7 +81,7 @@ export function* addPermission({ payload }) {
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(addPermissionResponse(null))
+    yield put(addPermissionResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -94,19 +94,24 @@ export function* editPermission({ payload }) {
   try {
     addAdditionalData(audit, UPDATE, API_PERMISSION, payload)
     const permApi = yield* newFunction()
-    const data = yield call(permApi.editPermission, payload.action.action_data)
+    const editPayload = { ...payload?.action?.action_data }
+    if (editPayload?.tableData) {
+      delete editPayload.tableData
+    }
+    const data = yield call(permApi.editPermission, editPayload)
     yield put(updateToast(true, 'success'))
     yield put(editPermissionResponse({ data }))
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    yield put(updateToast(true, 'error'))
-    yield put(editPermissionResponse(null))
+    const errorMessage = e?.response?.body?.responseMessage || e.message
+    yield put(updateToast(true, 'error', errorMessage))
+    yield put(editPermissionResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    return data
+    return e
   }
 }
 
@@ -123,7 +128,7 @@ export function* deletePermission({ payload }) {
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(deletePermissionResponse(null))
+    yield put(deletePermissionResponse({ inum: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

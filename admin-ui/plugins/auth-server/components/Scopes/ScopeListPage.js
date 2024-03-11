@@ -136,7 +136,7 @@ function ScopeListPage() {
   }
 
   function onDeletionConfirmed(message) {
-    buildPayload(userAction, message, item.inum)
+    buildPayload(userAction, message, item)
     dispatch(deleteScope({ action: userAction }))
     navigate('/auth-server/scopes')
     toggle()
@@ -277,6 +277,7 @@ function ScopeListPage() {
             modal={modal}
             subject="scope"
             onAccept={onDeletionConfirmed}
+            feature='scopes_delete'
           />
         )}
       </CardBody>

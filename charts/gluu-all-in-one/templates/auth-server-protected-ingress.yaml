@@ -1,0 +1,97 @@
+{{ if index .Values "auth-server" "ingress" "authServerProtectedToken" -}}
+{{ $fullName := include "flex-all-in-one.fullname" . -}}
+{{- $ingressPath := index .Values "nginx-ingress" "ingress" "path" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-auth-server-protected-token
+  labels:
+    app: {{ $fullName }}-auth-server-protected-token
+{{- if index .Values "nginx-ingress" "ingress" "additionalLabels" }}
+{{ toYaml index .Values "nginx-ingress" "ingress" "additionalLabels" | indent 4 }}
+{{- end }}
+{{- if index .Values "nginx-ingress" "ingress" "authServerLabels" }}
+{{ toYaml index .Values "nginx-ingress" "ingress" "authServerLabels" | indent 4 }}
+{{- end }}
+  annotations:
+    nginx.org/ssl-services: "auth-server"
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
+{{- if index .Values "nginx-ingress" "ingress" "authServerAdditionalAnnotations" }}
+{{ toYaml index .Values "nginx-ingress" "ingress" "authServerAdditionalAnnotations" | indent 4 }}
+{{- end }}
+{{- if index .Values "nginx-ingress" "ingress" "additionalAnnotations" }}
+{{ toYaml index .Values "nginx-ingress" "ingress" "additionalAnnotations" | indent 4 }}
+{{- end }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+            if ($ssl_client_verify != SUCCESS) {return 403;}
+            proxy_set_header X-ClientCert $ssl_client_escaped_cert;
+spec:
+  ingressClassName: {{ index .Values "nginx-ingress" "ingress" "ingressClassName" }}
+{{- if index .Values "nginx-ingress" "ingress" "tlsSecretName" }}
+  tls:
+    - hosts:
+        - {{ .Values.fqdn | quote }}
+      secretName: {{ index .Values "nginx-ingress" "ingress" "tlsSecretName" }}
+{{- end }}
+  rules:
+    - host: {{ .Values.fqdn | quote }}
+      http:
+        paths:
+          - path: /jans-auth/restv1/token
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: 8080
+{{- end }}
+
+---
+
+{{ if index .Values "auth-server" "ingress" "authServerProtectedRegister" -}}
+{{ $fullName := include "flex-all-in-one.fullname" . -}}
+{{- $ingressPath := index .Values "nginx-ingress" "ingress" "path" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-auth-server-protected-register
+  labels:
+    app: {{ $fullName }}-auth-server-protected-register
+{{- if index .Values "nginx-ingress" "ingress" "additionalLabels" }}
+{{ toYaml index .Values "nginx-ingress" "ingress" "additionalLabels" | indent 4 }}
+{{- end }}
+{{- if index .Values "nginx-ingress" "ingress" "authServerLabels" }}
+{{ toYaml index .Values "nginx-ingress" "ingress" "authServerLabels" | indent 4 }}
+{{- end }}
+  annotations:
+    nginx.org/ssl-services: "auth-server"
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
+{{- if index .Values "nginx-ingress" "ingress" "authServerAdditionalAnnotations" }}
+{{ toYaml index .Values "nginx-ingress" "ingress" "authServerAdditionalAnnotations" | indent 4 }}
+{{- end }}
+{{- if index .Values "nginx-ingress" "ingress" "additionalAnnotations" }}
+{{ toYaml index .Values "nginx-ingress" "ingress" "additionalAnnotations" | indent 4 }}
+{{- end }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+            if ($ssl_client_verify != SUCCESS) {return 403;}
+            proxy_set_header X-ClientCert $ssl_client_escaped_cert;
+spec:
+  ingressClassName: {{ index .Values "nginx-ingress" "ingress" "ingressClassName" }}
+{{- if index .Values "nginx-ingress" "ingress" "tlsSecretName" }}
+  tls:
+    - hosts:
+        - {{ .Values.fqdn | quote }}
+      secretName: {{ index .Values "nginx-ingress" "ingress" "tlsSecretName" }}
+{{- end }}
+  rules:
+    - host: {{ .Values.fqdn | quote }}
+      http:
+        paths:
+          - path: /jans-auth/restv1/register
+            pathType: Exact
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: 8080
+{{- end }}

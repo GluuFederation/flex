@@ -114,9 +114,28 @@ When troubleshooting issues with Admin UI access, it's advisable to check the [l
 
 - Access Casa using URI below
 ```text
-https://FQDN/casa
+https://FQDN/jans-casa
 ```
+## Enabling HTTPS 
+To enable communication with Janssen Server over TLS (https) in a production 
+environment, Janssen Server needs details about CA certificate. Update the 
+HTTPS cofiguration file `https_jans.conf` as shown below:
 
+!!! Note
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
+- Open `_https_jans.conf` 
+```bash
+ sudo vi /etc/apache2/vhosts.d/_https_jans.conf
+ ```
+ - Update `SSLCertificateFile` and `SSLCertificateKeyFile` parameters values
+ ```bash
+SSLCertificateFile location_of_fullchain.pem
+SSLCertificateKeyFile location_of_privkey.pem
+```
+- Restart `apache` service for changes to take effect
+```bash
+sudo /usr/sbin/rcapache2 restart
+```
 ## Uninstallation
 Removing Flex is a two step process:
 
@@ -232,14 +251,6 @@ sudo rpm -qa | grep flex
 Remove package with: 
 ```
 sudo zypper remove flex
-```
-
-### Uninstalling Admin UI
-
-To uninstall the Admin UI from your Flex installation, execute this command:
-
-```shell
-sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
 
 ### Updating Admin UI

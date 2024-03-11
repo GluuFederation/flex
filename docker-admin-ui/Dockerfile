@@ -1,4 +1,4 @@
-FROM node:hydrogen-alpine3.17 AS builder
+FROM node:hydrogen-alpine3.18 AS builder
 
 RUN apk update \
     && apk upgrade --available \
@@ -7,17 +7,20 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=2b8a7f7543631a0109365cca417c0f3c5943fb8d
+ENV FLEX_SOURCE_VERSION=a9b05ef3a52975854141d69b142e6981cfd42d54
+ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
 
-RUN mkdir -p /opt/flex
+RUN mkdir -p /opt/flex /app/templates/admin-ui
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
 RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
     && cd /tmp/flex \
     && git sparse-checkout init --cone \
-    && git checkout ${ADMIN_UI_VERSION} \
+    && git checkout ${FLEX_SOURCE_VERSION} \
     && git sparse-checkout add admin-ui \
+    && git sparse-checkout add flex-linux-setup/flex_linux_setup/templates \
+    && cp flex-linux-setup/flex_linux_setup/templates/aui_webhook.ldif /app/templates/admin-ui \
     && mv /tmp/flex/admin-ui /opt/flex/admin-ui
 
 # pre-packaged node modules and openapi
@@ -34,7 +37,7 @@ RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 # Application
 # ===========
 
-FROM node:hydrogen-alpine3.17
+FROM node:hydrogen-alpine3.18
 
 # ======
 # alpine
@@ -68,7 +71,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=be475a7b2f51148f72184e39fb9708a99cfc0398
+ENV JANS_SOURCE_VERSION=97aafe8efb77f1dca7080ed2b89284f3baf75c2e
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -96,6 +99,7 @@ RUN cd /tmp/jans \
 # ========
 
 COPY --from=builder /opt/flex/admin-ui /opt/flex/admin-ui
+COPY --from=builder /app/templates/admin-ui /app/templates/admin-ui
 
 # =======
 # Cleanup
@@ -136,16 +140,17 @@ ENV CN_CONFIG_ADAPTER=consul \
 # ==========
 
 ENV CN_SECRET_ADAPTER=vault \
-    CN_SECRET_VAULT_SCHEME=http \
-    CN_SECRET_VAULT_HOST=localhost \
-    CN_SECRET_VAULT_PORT=8200 \
     CN_SECRET_VAULT_VERIFY=false \
     CN_SECRET_VAULT_ROLE_ID_FILE=/etc/certs/vault_role_id \
     CN_SECRET_VAULT_SECRET_ID_FILE=/etc/certs/vault_secret_id \
     CN_SECRET_VAULT_CERT_FILE=/etc/certs/vault_client.crt \
     CN_SECRET_VAULT_KEY_FILE=/etc/certs/vault_client.key \
     CN_SECRET_VAULT_CACERT_FILE=/etc/certs/vault_ca.crt \
-    CN_SECRET_VAULT_NAMESPACE=jans \
+    CN_SECRET_VAULT_NAMESPACE="" \
+    CN_SECRET_VAULT_ADDR=http://localhost:8200 \
+    CN_SECRET_VAULT_KV_PATH=secret \
+    CN_SECRET_VAULT_PREFIX=jans \
+    CN_SECRET_VAULT_APPROLE_PATH=approle \
     CN_SECRET_KUBERNETES_NAMESPACE=default \
     CN_SECRET_KUBERNETES_SECRET=jans \
     CN_SECRET_KUBERNETES_USE_KUBE_CONFIG=false
@@ -189,9 +194,9 @@ ENV CN_WAIT_MAX_TIME=300 \
 # ==========
 
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
-    org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
+    org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="1.0.19" \
+    org.opencontainers.image.version="1.1.0" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 

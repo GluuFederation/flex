@@ -1,11 +1,12 @@
 import React from 'react'
-import GluuRemovableInputRow from '../../../../app/routes/Apps/Gluu/GluuRemovableInputRow'
-import GluuRemovableSelectRow from '../../../../app/routes/Apps/Gluu/GluuRemovableSelectRow'
-import GluuRemovableTypeAhead from '../../../../app/routes/Apps/Gluu/GluuRemovableTypeAhead'
-import { countries } from '../../common/countries'
+import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
+import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
+import GluuRemovableTypeAhead from 'Routes/Apps/Gluu/GluuRemovableTypeAhead'
+import { countries } from 'Plugins/user-management/common/countries'
 import { useSelector } from 'react-redux'
+import PropTypes from 'prop-types';
 
-function UserClaimEntry({ data, type, entry, formik, handler }) {
+function UserClaimEntry({ data, entry, formik, handler }) {
   const doHandle = () => {
     handler(data.name)
   }
@@ -44,6 +45,7 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
           doc_category={data.description}
           lsize={3}
           rsize={9}
+          isBoolean={data?.dataType?.toLowerCase() === 'boolean'}
         />
       )}
       {data.name == 'c' && !data.oxMultiValuedAttribute && (
@@ -64,5 +66,10 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
     </div>
   )
 }
-
+UserClaimEntry.propTypes = {
+  data: PropTypes.any,
+  entry: PropTypes.any,
+  formik: PropTypes.object,
+  handler: PropTypes.func,
+};
 export default UserClaimEntry

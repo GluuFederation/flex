@@ -5,7 +5,7 @@ import unionBy from 'lodash/unionBy'
 const initialState = {
   items: [],
   loading: false,
-  initLoading: true
+  initLoading: true,
 }
 
 const attributesSlice = createSlice({

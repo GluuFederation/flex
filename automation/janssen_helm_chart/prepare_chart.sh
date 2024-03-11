@@ -3,7 +3,7 @@ set -e
 
 temp_chart_folder="charts/janssen"
 mkdir -p ${temp_chart_folder}
-cp -r ./flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/* ${temp_chart_folder}
+cp -r ./charts/gluu/* ${temp_chart_folder}
 rm ${temp_chart_folder}/openbanking-values.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/config/templates/upgrade-ldap-101-jans.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/config/templates/ob-secrets.yaml || echo "file doesn't exist"

@@ -42,7 +42,7 @@ sudo echo "$EXT_IP $JANS_FQDN" >> /etc/hosts
 cat << EOF > override.yaml
 config:
   countryCode: US
-  email: support@gluu.org
+  email: team@gluu.org
   orgName: Gluu
   city: Austin
   configmap:

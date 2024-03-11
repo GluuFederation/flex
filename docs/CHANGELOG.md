@@ -1,5 +1,40 @@
 # Changelog
 
+## [5.0.0-21](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-20...docs-v5.0.0-21) (2023-12-18)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-21 release ([cee44ca](https://github.com/GluuFederation/flex/commit/cee44ca8f5e66e5d1861fe499665f9dac40183ce))
+
+## [5.0.0-20](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-19...docs-v5.0.0-20) (2023-11-16)
+
+
+### Features
+
+* aio chart ([#1436](https://github.com/GluuFederation/flex/issues/1436)) ([a20a695](https://github.com/GluuFederation/flex/commit/a20a695e913faca0b5033d5bc532449ce5c11ade))
+
+
+### Bug Fixes
+
+* **docs:** update casa base URI ([#1440](https://github.com/GluuFederation/flex/issues/1440)) ([495536c](https://github.com/GluuFederation/flex/commit/495536cefedfe27116df174c3c73ac05369f90a1))
+* prepare for 5.0.0-20 release ([f74643c](https://github.com/GluuFederation/flex/commit/f74643c6aa0aee9d4c218b90fb1f9237171324f8))
+
+## [5.0.0-19](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-18...docs-v5.0.0-19) (2023-10-12)
+
+
+### Features
+
+* **docs:** remove Casa files from Flex ([a5b7fcd](https://github.com/GluuFederation/flex/commit/a5b7fcd302924c5f77df89a074de98e6ae78b888))
+
+
+### Bug Fixes
+
+* **docs:** remove Casa image assets ([0b9f0b4](https://github.com/GluuFederation/flex/commit/0b9f0b4cc467ef61b66707cd4b8d8b3bf7ae354f))
+* **docs:** update docs w.r.t casa move to Jans ([5b7d3fd](https://github.com/GluuFederation/flex/commit/5b7d3fd5fd04d0853b2f3339c283db5948f1c84c))
+* **docs:** update docs w.r.t casa move to Jans ([16f647c](https://github.com/GluuFederation/flex/commit/16f647c78ecfac33317ae108c0283782c0354eaa))
+* prepare for 5.0.0-19 release ([2d8e13d](https://github.com/GluuFederation/flex/commit/2d8e13deb4364063ffc7270d617697eb0994ead7))
+
 ## [5.0.0-18](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-16...docs-v5.0.0-18)(2023-09-23)
 
 

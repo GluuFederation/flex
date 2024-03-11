@@ -1,5 +1,5 @@
 const program = require('commander');
-const rimraf = require('rimraf');
+const { rimraf } = require('rimraf');
 const mkdirp = require('mkdirp');
 
 const config = require('./../config');

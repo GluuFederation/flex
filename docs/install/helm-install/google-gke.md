@@ -205,7 +205,7 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
             cnSqlDbName: gluu
             cnSqlDbPort: 5432
             cnSqlDbDialect: pgsql
-            cnSqlDbHost: my-release-mysql.gluu.svc
+            cnSqlDbHost: my-release-postgresql.gluu.svc
             cnSqlDbUser: postgres
             cnSqlDbTimezone: UTC
             cnSqldbUserPassword: Test1234#

@@ -20,6 +20,7 @@ import ScopeApi from '../api/ScopeApi'
 import { getClient } from 'Redux/api/base'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -113,23 +114,6 @@ export function* getClientScopes({ payload }) {
   }
 }
 
-export function* getScopeBasedOnOpts({ payload }) {
-  const audit = yield* initAudit()
-  try {
-    addAdditionalData(audit, FETCH, SCOPE, payload)
-    const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.getScopeByOpts, payload.action.action_data)
-    yield put(getScopeByPatternResponse({ data }))
-    yield call(postUserAction, audit)
-  } catch (e) {
-    yield put(getScopeByPatternResponse(null))
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
-  }
-}
-
 export function* addAScope({ payload }) {
   const audit = yield* initAudit()
   try {
@@ -140,6 +124,7 @@ export function* addAScope({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(addScopeResponse({ data }))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -162,6 +147,7 @@ export function* editAnScope({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(editScopeResponse({ data }))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -180,10 +166,11 @@ export function* deleteAnScope({ payload }) {
     yield put(scopeHandleLoading())
     addAdditionalData(audit, DELETION, SCOPE, payload)
     const scopeApi = yield* newFunction()
-    yield call(scopeApi.deleteAScope, payload.action.action_data)
+    yield call(scopeApi.deleteAScope, payload.action.action_data?.inum)
     yield put(updateToast(true, 'success'))
-    yield put(deleteScopeResponse({ data: payload.action.action_data }))
+    yield put(deleteScopeResponse({ data: payload.action.action_data?.inum }))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: payload.action.action_data } })
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteScopeResponse({ data: null}))
@@ -209,9 +196,6 @@ export function* watchGetClientScopes() {
 export function* watchSearchScopes() {
   yield takeLatest('scope/searchScopes', getScopes)
 }
-export function* watchGetScopeByOpts() {
-  yield takeLatest('scope/getScopeByPattern', getScopeBasedOnOpts)
-}
 export function* watchAddScope() {
   yield takeLatest('scope/addScope', addAScope)
 }
@@ -227,7 +211,6 @@ export default function* rootSaga() {
     fork(watchGetScopeByInum),
     fork(watchGetScopes),
     fork(watchSearchScopes),
-    fork(watchGetScopeByOpts),
     fork(watchAddScope),
     fork(watchEditScope),
     fork(watchDeleteScope),

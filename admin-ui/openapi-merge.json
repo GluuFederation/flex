@@ -14,6 +14,12 @@
       },
       {
         "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-link-plugin-swagger.yaml"
+      },
+      {
+        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/scim-plugin-swagger.yaml"
+      },
+      {
+        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/kc-saml-plugin-swagger.yaml"
       }
     ], 
     "output": "./configApiSpecs.yaml"

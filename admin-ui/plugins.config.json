@@ -30,5 +30,13 @@
   {
     "key": "jans-link",
     "metadataFile": "./jans-link/plugin-metadata"
+  },
+  {
+    "key": "scim",
+    "metadataFile": "./scim/plugin-metadata"
+  },
+  {
+    "key": "saml",
+    "metadataFile": "./saml/plugin-metadata"
   }
 ]

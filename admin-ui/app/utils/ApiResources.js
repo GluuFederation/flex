@@ -13,3 +13,4 @@ export const AUTHN = "authn"
 export const SSA = 'ssa'
 export const ROLES = 'roles'
 export const PERMISSIONS = "permissions"
+export const WEBHOOK = 'webhook'

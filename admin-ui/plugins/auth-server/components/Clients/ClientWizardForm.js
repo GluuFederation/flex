@@ -18,6 +18,7 @@ import { toast } from 'react-toastify'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { cloneDeep } from 'lodash'
 import { useDispatch } from 'react-redux'
+import PropTypes from 'prop-types'
 const sequence = [
   'Basic',
   'Tokens',
@@ -70,16 +71,6 @@ function ClientWizardForm({
     softwareStatement: client_data.softwareStatement,
     softwareVersion: client_data.softwareVersion,
     softwareId: client_data.softwareId,
-    softwareSection:
-      client_data.softwareId || client_data.softwareVersion || client_data.softwareStatement
-        ? true
-        : false,
-    cibaSection:
-      client_data.backchannelTokenDeliveryMode ||
-      client_data.backchannelClientNotificationEndpoint ||
-      client_data.backchannelUserCodeParameter
-        ? true
-        : false,
     idTokenSignedResponseAlg: client_data.idTokenSignedResponseAlg,
     idTokenEncryptedResponseAlg: client_data.idTokenEncryptedResponseAlg,
     tokenEndpointAuthMethod: client_data.tokenEndpointAuthMethod,
@@ -91,7 +82,6 @@ function ClientWizardForm({
     userInfoEncryptedResponseAlg: client_data.userInfoEncryptedResponseAlg,
     userInfoSignedResponseAlg: client_data.userInfoSignedResponseAlg,
     userInfoEncryptedResponseEnc: client_data.userInfoEncryptedResponseEnc,
-    authenticationMethod: client_data.authenticationMethod,
     idTokenTokenBindingCnf: client_data.idTokenTokenBindingCnf,
     backchannelUserCodeParameter: client_data.backchannelUserCodeParameter,
     refreshTokenLifetime: client_data.refreshTokenLifetime,
@@ -116,37 +106,8 @@ function ClientWizardForm({
     scopes: client_data.scopes,
     oxAuthClaims: client_data.oxAuthClaims,
     attributes: client_data.attributes,
-    tlsClientAuthSubjectDn: client_data.attributes.tlsClientAuthSubjectDn,
     frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired,
-    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
-      client_data.attributes
-        .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims,
-    backchannelLogoutSessionRequired:
-      client_data.attributes.backchannelLogoutSessionRequired,
-    keepClientAuthorizationAfterExpiration:
-      client_data.attributes.keepClientAuthorizationAfterExpiration,
-    allowSpontaneousScopes: client_data.attributes.allowSpontaneousScopes,
-    spontaneousScopes: client_data.attributes.spontaneousScopes || [],
-    introspectionScripts: client_data.attributes.introspectionScripts || [],
-    spontaneousScopeScriptDns:
-      client_data.attributes.spontaneousScopeScriptDns || [],
-    consentGatheringScripts: client_data.attributes.consentGatheringScripts || [],
-    redirectUrisRegex: client_data.attributes.redirectUrisRegex || '',
-    parLifetime: client_data.attributes.parLifetime || '',
-    requirePar: client_data.attributes.requirePar || false,
-    updateTokenScriptDns: client_data.attributes.updateTokenScriptDns || [],
-    ropcScripts: client_data.attributes.ropcScripts || [],
-    jansAuthSignedRespAlg: client_data.attributes.jansAuthSignedRespAlg || '',
-    jansAuthEncRespAlg: client_data.attributes.jansAuthEncRespAlg || '',
-    jansAuthEncRespEnc: client_data.attributes.jansAuthEncRespEnc || '',
-    postAuthnScripts: client_data.attributes.postAuthnScripts || [],
-    rptClaimsScripts: client_data.attributes.rptClaimsScripts || [],
-    additionalAudience: client_data.attributes.additionalAudience,
-    backchannelLogoutUri: client_data.attributes.backchannelLogoutUri,
-    jansDefaultPromptLogin: client_data.attributes.jansDefaultPromptLogin || false,
-    authorizedAcrValues: client_data.attributes.authorizedAcrValues || [],
     customObjectClasses: client_data.customObjectClasses || [],
-    requireAuthTime: client_data.requireAuthTime,
     trustedClient: client_data.trustedClient,
     persistClientAuthorizations: client_data.persistClientAuthorizations,
     includeClaimsInIdToken: client_data.includeClaimsInIdToken,
@@ -241,8 +202,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientTokensPanel
-              client={cloneDeep(client)}
-              scripts={scripts}
               formik={formik}
               viewOnly={viewOnly}
             />
@@ -289,7 +248,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientEncryptionSigningPanel
-              client={cloneDeep(client)}
               formik={formik}
               oidcConfiguration={oidcConfiguration}
               viewOnly={viewOnly}
@@ -312,7 +270,6 @@ function ClientWizardForm({
         return (
           <div>
             <ClientScript
-              client={cloneDeep(client)}
               formik={formik}
               scripts={scripts}
               viewOnly={viewOnly}
@@ -328,6 +285,25 @@ function ClientWizardForm({
     }
   }
 
+  const downloadClientData = (values) => {
+    const jsonData = JSON.stringify(values, null, 2)
+
+    const blob = new Blob([jsonData], { type: 'application/json' })
+
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = values.displayName
+      ? `${values.displayName}.json`
+      : 'client-summary.json'
+
+    document.body.appendChild(link)
+
+    link.click()
+
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+  }
+
   return (
     <React.Fragment>
       <Card style={applicationStyle.mainCard}>
@@ -341,48 +317,31 @@ function ClientWizardForm({
               rptAsJwt: args[0]?.rptAsJwt && JSON.parse(args[0]?.rptAsJwt),
               [ATTRIBUTE]: args[0][ATTRIBUTE] && { ...args[0][ATTRIBUTE] },
             }
+            delete values.expirable
             values['action_message'] = commitMessage
-            values[ATTRIBUTE].tlsClientAuthSubjectDn =
-              values.tlsClientAuthSubjectDn
-            values[
-              ATTRIBUTE
-            ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
-              values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
-            values[ATTRIBUTE].keepClientAuthorizationAfterExpiration =
-              values.keepClientAuthorizationAfterExpiration
-            values[ATTRIBUTE].allowSpontaneousScopes =
-              values.allowSpontaneousScopes
-            values[ATTRIBUTE].backchannelLogoutSessionRequired =
-              values.backchannelLogoutSessionRequired
-            values[ATTRIBUTE].spontaneousScopes = values.spontaneousScopes
-            values[ATTRIBUTE].introspectionScripts = values.introspectionScripts
-            values[ATTRIBUTE].spontaneousScopeScriptDns =
-              values.spontaneousScopeScriptDns
-            values[ATTRIBUTE].consentGatheringScripts =
-              values.consentGatheringScripts
-            values[ATTRIBUTE].rptClaimsScripts = values.rptClaimsScripts
-            values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
-            values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
-            values[ATTRIBUTE].additionalAudience = values.additionalAudience
-            values[ATTRIBUTE].redirectUrisRegex = values.redirectUrisRegex
-            values[ATTRIBUTE].parLifetime = values.parLifetime
-            values[ATTRIBUTE].requirePar = values.requirePar
-            values[ATTRIBUTE].jansDefaultPromptLogin =
-              values.jansDefaultPromptLogin
-            values[ATTRIBUTE].authorizedAcrValues = values.authorizedAcrValues
-            values[ATTRIBUTE].updateTokenScriptDns = values.updateTokenScriptDns
-            values[ATTRIBUTE].ropcScripts = values.ropcScripts
-            values[ATTRIBUTE].jansAuthSignedRespAlg =
-              values.jansAuthSignedRespAlg
-            values[ATTRIBUTE].jansAuthEncRespAlg = values.jansAuthEncRespAlg
-            values[ATTRIBUTE].jansAuthEncRespEnc = values.jansAuthEncRespEnc
             customOnSubmit(JSON.parse(JSON.stringify(values)))
           }}
         >
           {(formik) => (
             <Form onSubmit={formik.handleSubmit} onKeyDown={onKeyDown}>
               <Card>
-                <CardBody className='d-flex justify-content-center pt-5 wizard-wrapper'>
+                <div className='d-flex justify-content-end pt-3 pe-3'>
+                  <Button
+                    color={`primary-${selectedTheme}`}
+                    style={{
+                      ...applicationStyle.buttonStyle,
+                      ...applicationStyle.buttonFlexIconStyles,
+                      margin: 0,
+                    }}
+                    type='button'
+                    onClick={() => downloadClientData(formik.values)}
+                    className='d-flex m-1'
+                  >
+                    <i className='fa fa-download'></i>
+                    {t('fields.download_summary')}
+                  </Button>
+                </div>
+                <CardBody className='d-flex justify-content-center pt-3 wizard-wrapper'>
                   <Wizard activeStep={currentStep} onStepChanged={changeStep}>
                     <Wizard.Step
                       data-testid={sequence[0]}
@@ -525,9 +484,20 @@ function ClientWizardForm({
           )}
         </Formik>
       </Card>
-      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
+      <GluuCommitDialog feature='oidc_clients_write' handler={toggle} modal={modal} onAccept={submitForm} />
     </React.Fragment>
   )
+}
+
+ClientWizardForm.propTypes = {
+  client_data: PropTypes.any,
+  viewOnly: PropTypes.bool,
+  scopes: PropTypes.array,
+  scripts: PropTypes.array,
+  permissions: PropTypes.array,
+  customOnSubmit: PropTypes.func,
+  oidcConfiguration: PropTypes.object,
+  umaResources: PropTypes.array,
 }
 
 export default ClientWizardForm

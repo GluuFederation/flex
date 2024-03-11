@@ -18,7 +18,7 @@ The key services of Flex include:
  
 - **Jans SCIM**: System for Cross-domain Identity Management ([SCIM](http://www.simplecloud.info/)) is JSON/REST API to manage user data. Use it to add, edit and update user information. This service should not be Internet-facing.
 
-- **Gluu Casa**: A self-service web portal for end-users to manage authentication and authorization preferences for their account in the Gluu Flex server. Typically, it enables people to manage their MFA credentials, like FIDO tokens and OTP authenticators. It's also extensible if your organization has any other self-service requirements.
+- **Jans Casa**: A self-service web portal for end-users to manage authentication and authorization preferences for their account in the Gluu Flex server. Typically, it enables people to manage their MFA credentials, like FIDO tokens and OTP authenticators. It's also extensible if your organization has any other self-service requirements.
 
 ## Building Blocks
 
@@ -72,7 +72,7 @@ kubectl get secret cn -o json -n <namespace>
 
 | Key                                           | Example Values                                     |
 | --------------------------------------------- | -------------------------------------------------- |
-| `admin_email`                                 | `support@gluu.org`                                 |
+| `admin_email`                                 | `team@gluu.org`                                 |
 | `admin_inum`                                  | `d3afef58-c026-4514-9d4c-e0a3efb4c29d `            |
 | `admin_ui_client_id`                          | `1901.a6575c1e-4688-4c11-8c95-d9e570b13ee8`        |
 | `auth_enc_keys`                               | `RSA1_5 RSA-OAEP`                                  |
@@ -91,7 +91,7 @@ kubectl get secret cn -o json -n <namespace>
 | `jca_client_id`                               | `1801.4df6c3ba-ebf6-4836-8fb5-6da927586f61`        |
 | `optional_scopes`                             | `[\"casa\", \"sql\", \"fido2\", \"scim\"]`         |
 | `orgName`                                     | `Gluu`                                             |
-| `role_based_client_id`                        | `2000.9313cd4b-147c-4a67-96be-8a69ddbaf7e9`        |
+| `tui_client_id`                               | `2000.9313cd4b-147c-4a67-96be-8a69ddbaf7e9`        |
 | `scim_client_id`                              | `1201.1cbcc731-3fca-4668-a480-1b5f5a7d6a53`        |
 | `state`                                       | `TX`                                               |
 | `token_server_admin_ui_client_id`             | `1901.57a858dc-69f3-4967-befe-e089fe376638`        |
@@ -116,8 +116,8 @@ kubectl get secret cn -o json -n <namespace>
 | `pairwiseCalculationKey`                      | `ZHd2VW01Y3VOUW6638ZHd2VW`                         |
 | `pairwiseCalculationSalt`                     | `ZHd2VW01Y3VOUW6638ZHd2VW0`                        |
 | `plugins_admin_ui_properties`                 | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`           |
-| `role_based_client_encoded_pw`                | `ZHd2VW01Y3VOUW66388PS512`                         |
-| `role_based_client_pw`                        | `AusZHd2VW01Y3VOUW6638`                            |
+| `tui_client_encoded_pw`                       | `ZHd2VW01Y3VOUW66388PS512`                         |
+| `tui_client_pw`                               | `AusZHd2VW01Y3VOUW6638`                            |
 | `scim_client_encoded_pw`                      | `UZHd2VW01Y3VOUW6638ZHd2VW01Y3VOUW6638`            |
 | `scim_client_pw`                              | `ZHd2VW01Y3VOUW6638`                               |
 | `sql_password`                                | `ZHd2VW01Y3V638`                                   |
@@ -159,7 +159,7 @@ kubectl get secret cn -o json -n <namespace>
     !!! Note
         For the `Database test setup` to work, a PV provisioner support must be present in the underlying infrastructure.
 
-    ### Install PostgreSQL database:
+    ### Install PostgreSQL database
 
     !!! Note
         If you are willing to use MySQL installation, skip this section and head to the [Install MySQL](#install-mysql-database) section.
@@ -228,11 +228,11 @@ kubectl get secret cn -o json -n <namespace>
     - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
     - Add `License SSA`. Before initiating the setup, please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.
     - Click on the `Persistence` section. Change `SQL database host uri` to `postgresql.postgres.svc.cluster.local` in the case of `PostgreSQL` or `my-release-mysql.gluu.svc.cluster.local` in the case of `MySQL`. Also set `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
+    - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. You can also enable different services like `Client API` and `Jackrabbit`.
+    - Click on the  section named `Ingress` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`. 
     - To pass your `FQDN` or `Domain` that is intended to serve the Gluu Flex IDP, head to the `Configuration` section:
         1.  Add your `FQDN` and check the box `Is the FQDN globally resolvable`.
-        2.  Click on the `Edit YAML` tab and add your `FQDN` to `nginx-ingress.ingress.hosts` and `nginx-ingress.ingress.tls.hosts`.
-    - Click on the  section named `NGINX` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`. 
-    - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. You can also enable different services like `Client API` and `Jackrabbit`. 
+        2.  Click on the `Edit YAML` tab and add your `FQDN` to `nginx-ingress.ingress.hosts` and `nginx-ingress.ingress.tls.hosts`. 
     - Click on `Install` on the bottom right of the window.
 
     !!! NOTE
@@ -312,11 +312,11 @@ After inputting the license keys, you can then use `admin` and the password you 
 
 ## Testing Casa
 
-Gluu Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins.
+Jans Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins.
 
 Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation. 
 
-8. Point your browser to https://demoexample.gluu.org/casa and you should be welcomed by the Casa login page as shown below.
+8. Point your browser to https://demoexample.gluu.org/jans-casa and you should be welcomed by the Casa login page as shown below.
 
     <img width="1503" alt="Screenshot 2022-07-06 at 22 39 49" src="https://user-images.githubusercontent.com/17182751/177629838-20b3140f-3d28-4b63-a275-c8ce54f6a096.png">
 
@@ -390,18 +390,18 @@ On the Janssen server, we are going to register a new client using the jans-cli.
 
 Here we will use manual client registration. We will use jans-tui tool provided by the Janssen server. jans-tui has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.
 
-Download or build [config-cli-tui](https://docs.jans.io/v1.0.13/admin/config-guide/jans-tui/) then:
+Download or build [config-cli-tui](https://docs.jans.io/head/admin/config-guide/jans-cli/) then:
 
-1. Get the role based client id and secret:
+1. Get the tui client id and secret:
 
    ```bash
-   # Notice the namespace is jans here . Change it if it was changed during installation of janssen previously
-   ROLE_BASED_CLIENT_ID=$(kubectl get cm cn -o json -n jans | grep '"role_based_client_id":' | sed -e 's#.*:\(\)#\1#' | tr -d '"' | tr -d "," | tr -d '[:space:]')
-   ROLE_BASED_CLIENT_SECRET=$(kubectl get secret cn -o json -n jans | grep '"role_based_client_pw":' | sed -e 's#.*:\(\)#\1#' | tr -d '"' | tr -d "," | tr -d '[:space:]' | base64 -d)
+    FQDN= #Add your FQDN here
+    TUI_CLIENT_ID=$(kubectl get cm cn -n <namespace> --template={{.data.tui_client_id}})
+    TUI_CLIENT_SECRET=$(kubectl get secret cn -n <namespace> --template={{.data.tui_client_pw}} | base64 -d)
    ```
 2. Get schema file using this command
 
-    `./config-cli-tui.pyz --host <FQDN> --client-id <ROLE_BASED_CLIENT_ID> --client-secret <ROLE_BASED_CLIENT_SECRET> --no-tui --schema /components/schemas/Client`
+    `./config-cli-tui.pyz --host <FQDN> --client-id <TUI_CLIENT_ID> --client-secret <TUI_CLIENT_SECRET> --no-tui --schema /components/schemas/Client`
 
 3. Add values for required params and store this JSON in a text file. Take keynote of the following properties.
 
@@ -493,7 +493,7 @@ Download or build [config-cli-tui](https://docs.jans.io/v1.0.13/admin/config-gui
 
 4. Now you can use that JSON file as input to the command below and register your client
 
-    `./config-cli-tui.pyz --host <FQDN> --client-id <ROLE_BASED_CLIENT_ID> --client-secret <ROLE_BASED_CLIENT_SECRET> --no-tui --operation-id=post-oauth-openid-client --data <path>/schema-json-file.json`
+    `./config-cli-tui.pyz --host <FQDN> --client-id <TUI_CLIENT_ID> --client-secret <TUI_CLIENT_SECRET> --no-tui --operation-id=post-oauth-openid-client --data <path>/schema-json-file.json`
 
 5. After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like `inum` and `clientSecret`, will be required before we configure `mod_auth_openidc` So keep in mind that we shall get back to this.
 

@@ -213,7 +213,7 @@ function AttributeListPage() {
     }
   }
   function onDeletionConfirmed() {
-    dispatch(deleteAttribute({ inum: item.inum }))
+    dispatch(deleteAttribute({ inum: item.inum, name: item?.name }))
     navigate('/attributes')
     toggle()
   }
@@ -269,7 +269,7 @@ function AttributeListPage() {
             title=''
             actions={myActions}
             options={{
-              search: true,
+              search: false,
               selection: false,
               searchFieldAlignment: 'left',
               pageSize: limit,
@@ -289,6 +289,7 @@ function AttributeListPage() {
             modal={modal}
             subject='attribute'
             onAccept={onDeletionConfirmed}
+            feature='attributes_delete'
           />
         )}
       </CardBody>

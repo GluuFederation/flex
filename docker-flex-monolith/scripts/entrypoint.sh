@@ -7,7 +7,7 @@ set -e
 # FLEX_SOURCE_VERSION: Specifies the exact commit version to build off of
 # CN_HOSTNAME : hostname i.e test.gluu.org
 # CN_ORG_NAME : Organization name i.e Janssen
-# CN_EMAIL: i.e support@gluu.org
+# CN_EMAIL: i.e team@gluu.org
 # CN_CITY: i.e Austin
 # CN_STATE: i.e TX
 # CN_COUNTRY: i.e US
