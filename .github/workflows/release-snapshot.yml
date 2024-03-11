@@ -64,26 +64,36 @@ jobs:
         ADMIN_UI_VERSION=${{ github.event.inputs.jans_release_as }}
         HELM_RELEASE=${{ github.event.inputs.mega_release_as }}
 
+        NEXT_VERSION=${{ github.event.inputs.next_mega_release_as }}
+        NEXT_JANS_VERSION=${{ github.event.inputs.next_jans_release_as }}
+        NEXT_SETUP_VERSION=${{ github.event.inputs.next_jans_release_as }}
+        NEXT_DOCKER_VERSION=${{ github.event.inputs.next_jans_release_as }}
+        NEXT_ADMIN_UI_VERSION=${{ github.event.inputs.next_jans_release_as }}
+        NEXT_HELM_RELEASE=${{ github.event.inputs.next_mega_release_as }}
+
         echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token
         git checkout -b chore-$VERSION
         git pull origin chore-$VERSION || echo "Nothing to pull"
         
+        # Open snapshot PR
+        git checkout -b chore-$NEXT_VERSION-SNAPSHOT
+        git pull origin chore-$NEXT_VERSION-SNAPSHOT || echo "Nothing to pull"
+        
         chmod +x ./automation/release/release.sh
         source ./automation/release/release.sh
-        modify_jans_commit_id
-        modify_flex_commit_id
-        git commit -a -S -m "chore: update admin ui and flex version" || echo "Nothing to commit"
-        modify_version
+        modify_snapshot_version
         git commit -a -S -m "chore: modify app_info.json and python version files" || echo "Nothing to commit"
-        modify_helm_chart
+
+        modify_snapshot_helm_chart
         git commit -a -S -m "chore: update flex helm chart image tags" || echo "Nothing to commit"
-        modify_version_files
+        # Update versions files
+        modify_snapshot_version_files 
         git commit -a -S -m "chore: update version files" || echo "Nothing to commit"
         
         # Push the changes to the repository
-        git push --set-upstream origin chore-$VERSION
-        MESSAGE="chore: release $VERSION"
-        PR=$(gh pr create --body "Auto generated $VERSION release" --title "${MESSAGE}" --label "autorelease:pending" || echo "PR already exists")
+        git push --set-upstream origin chore-$NEXT_VERSION-SNAPSHOT
+        MESSAGE="chore: release chore-$NEXT_VERSION-SNAPSHOT"
+        SNAP_PR=$(gh pr create --body "Auto generated $NEXT_VERSION-SNAPSHOT release. DO NOT MERGE THIS BEFORE $PR. Remember the flow. Firstly, QA runs tests on nightly build to confirm the intended release is operational. Once approved by QA, the $PR gets reviewed by code owners and then merged for a release. After the release has been finished QA  does post release tests and approves the snapshot PR. The snapshot PR then gets reviewed by codeonwers and  merged." --title "${MESSAGE}" --label "autorelease:pending" || echo "PR already exists")
         
         # Report it in RocketChat
         curl -X POST -H 'Content-Type: application/json' --data "{\"alias\":\"Mo-Auto\",\"emoji\":\":robot:\",\"text\":\":rocket: I am getting ready for releasing Flex $VERSION.\",\"attachments\":[{\"title\":\"Gluu Release bot\",\"title_link\":\"$PR\",\"text\":\"$PR\",\"color\":\"#764FA5\"}]}" ${{ secrets.GITHUBUSERBEHAVIORROCKETCHATREPORTER }}
