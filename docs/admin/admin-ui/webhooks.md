@@ -33,6 +33,29 @@ Once a webhook is created it can be searched, edited or deleted.
 
 ![image](../../assets/admin-ui/webhook-view.png)
 
+## Shortcodes
+
+When working with webhooks, **shortcodes** play a crucial role in dynamically injecting data into URLs and request bodies. They allow for flexible and customizable communication between different systems. Shortcode is denoted by curly braces `{}`.
+
+- **Using shortcodes in webhook url:** Shortcodes can be used in path parameters or query parameters of webhook url.
+
+```bash
+https://example.com/webhook/{inum}/update
+https://example.com/webhook?action={action}&user_id={userId}
+```
+
+- **Using shortcodes in webhook request-body:** Webhook request bodies can utilize placeholders to dynamically populate data sent to the recipient system.
+
+```bash
+{
+  "username": "{username}",
+  "email": "{email}",
+  "password": "{password}"
+}
+```
+
+![image](../../assets/admin-ui/shortcodes.png)
+
 ## Triggering webhooks
 
 The webhooks can be mapped with one or more Admin UI feature(s) using the [webhook create/update form](./webhooks.md#webhook-management-on-the-ui). The following Admin UI features can be mapped to the webhooks.
