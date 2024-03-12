@@ -9,6 +9,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useTranslation } from 'react-i18next'
 import { putSamlProperties } from 'Plugins/saml/redux/features/SamlSlice'
+import SetTitle from 'Utils/SetTitle'
 
 const SamlConfigurationForm = () => {
   const { t } = useTranslation()
@@ -18,7 +19,7 @@ const SamlConfigurationForm = () => {
   const configuration = useSelector(
     (state) => state.idpSamlReducer.configuration
   )
-
+  SetTitle(t('titles.saml_management'))
   const toggle = () => {
     setModal(!modal)
   }

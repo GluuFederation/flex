@@ -21,6 +21,8 @@ import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { Box } from '@mui/material'
 import Toggle from 'react-toggle'
+import { nameIDPolicyFormat } from '../helper'
+import SetTitle from 'Utils/SetTitle'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
@@ -31,6 +33,14 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
   const navigate = useNavigate()
+
+  if (viewOnly) {
+    SetTitle(t('titles.idp'))
+  } else if (configs) {
+    SetTitle(t('titles.edit_idp'))
+  } else {
+    SetTitle(t('titles.create_idp'))
+  }
 
   const [metaDataFile, setMetadaDataFile] = useState(null)
   const initialValues = {
@@ -301,47 +311,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       name='nameIDPolicyFormat'
                       value={formik.values.nameIDPolicyFormat}
                       defaultValue={formik.values.nameIDPolicyFormat}
-                      values={[
-                        {
-                          label: 'Unspecified',
-                          value:
-                            'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-                        },
-                        {
-                          label: 'EmailAddress',
-                          value:
-                            'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-                        },
-                        {
-                          label: 'X509SubjectName',
-                          value:
-                            'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName',
-                        },
-                        {
-                          label: 'Windows Domain Qualified Name',
-                          value:
-                            'urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName',
-                        },
-                        {
-                          label: 'Kerberos Principal Name',
-                          value:
-                            'urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos',
-                        },
-                        {
-                          label: 'Entity',
-                          value: 'urn:oasis:names:tc:SAML:2.0:nameid-format:entity',
-                        },
-                        {
-                          label: 'Persistent',
-                          value:
-                            'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-                        },
-                        {
-                          label: 'Transient',
-                          value:
-                            'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-                        },
-                      ]}
+                      values={nameIDPolicyFormat}
                       formik={formik}
                       lsize={4}
                       rsize={8}
