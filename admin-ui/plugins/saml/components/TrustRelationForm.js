@@ -444,6 +444,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                           'text/xml': ['.xml'],
                           'application/json': ['.json'],
                         }}
+                        fileName={configs?.spMetaDataFN}
                         placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
                         onDrop={handleDrop}
                         onClearFiles={handleClearFiles}

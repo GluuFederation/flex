@@ -11,8 +11,10 @@ const GluuUploadFile = ({
   onDrop,
   placeholder,
   onClearFiles,
-  disabled
+  disabled,
+  fileName,
 }) => {
+  const [preDefinedFileName, setPreDefinedFileName] = useState(fileName || null)
   const [selectedFile, setSelectedFile] = useState(null)
   const handleDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0]
@@ -27,13 +29,14 @@ const GluuUploadFile = ({
   } = useDropzone({
     onDrop: handleDrop,
     accept,
-    disabled
+    disabled,
   })
 
   const clearFiles = useCallback((event) => {
     event.stopPropagation()
     setSelectedFile(null)
     onClearFiles()
+    setPreDefinedFileName(null)
   }, [])
 
   return (
@@ -43,7 +46,7 @@ const GluuUploadFile = ({
         className={isDragActive1 ? 'active' : 'dropzone'}
       >
         <input {...getInputProps1()} />
-        {selectedFile ? (
+        {(selectedFile || preDefinedFileName) ? (
           <Box
             display={'flex'}
             justifyContent={'space-between'}
@@ -55,10 +58,12 @@ const GluuUploadFile = ({
               alignItems='center'
               gap={1}
             >
-              <strong>{selectedFile?.name}</strong>{' '}
-              <p className='m-0'>
-                ({((selectedFile?.size || 0) / 1000).toFixed(0)}K)
-              </p>
+              <strong>{preDefinedFileName || selectedFile?.name}</strong>
+              {selectedFile ? (
+                <p className='m-0'>
+                  ({((selectedFile?.size || 0) / 1000).toFixed(0)}K)
+                </p>
+              ) : null}
             </Box>
             <Button onClick={clearFiles}>
               <i className='fa fa-remove me-2'></i>
@@ -80,5 +85,6 @@ GluuUploadFile.propTypes = {
   placeholder: PropTypes.string,
   onDrop: PropTypes.func,
   onClearFiles: PropTypes.func,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  fileName: PropTypes.string,
 }
