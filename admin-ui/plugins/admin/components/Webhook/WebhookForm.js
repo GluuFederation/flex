@@ -182,8 +182,8 @@ const WebhookForm = () => {
       []
     : []
 
-  const handleSelectShortcode = (code, name) => {
-    const _code = `"{${code}}"`
+  const handleSelectShortcode = (code, name, withString = false) => {
+    const _code = withString ? `"{${code}}"` : `{${code}}`
     const currentPosition = cursorPosition[name]
     let value = formik.values[name] || ''
     if (currentPosition >= 0 && value) {
@@ -394,7 +394,7 @@ const WebhookForm = () => {
                         marginRight: '2.5rem',
                       }}
                       handleSelectShortcode={(code) =>
-                        handleSelectShortcode(code, 'httpRequestBody')
+                        handleSelectShortcode(code, 'httpRequestBody', true)
                       }
                     />
                   }
