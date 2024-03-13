@@ -1,2 +1,2 @@
 -r requirements.txt
-jwcrypto==1.4.2
+jwcrypto==1.5.1

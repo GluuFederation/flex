@@ -21,6 +21,7 @@ import OIDCApi from '../api/OIDCApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 function* newFunction() {
   const wholeToken = yield select((state) => state.authReducer.token)
@@ -66,6 +67,7 @@ export function* addNewClient({ payload }) {
     yield put(addClientResponse({ data }))
     yield put(updateToast(true, 'success'))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data?.client } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -90,6 +92,7 @@ export function* editAClient({ payload }) {
     yield put(editClientResponse({ data }))
     yield put(updateToast(true, 'success'))
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data?.client } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -108,10 +111,11 @@ export function* deleteAClient({ payload }) {
   try {
     addAdditionalData(audit, DELETION, OIDC, payload)
     const api = yield* newFunction()
-    yield call(api.deleteAClient, payload.action.action_data)
+    yield call(api.deleteAClient, payload.action.action_data.inum)
     yield put(updateToast(true, 'success'))
     yield put(getOpenidClients())
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: payload.action.action_data } })
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(deleteClientResponse(null))

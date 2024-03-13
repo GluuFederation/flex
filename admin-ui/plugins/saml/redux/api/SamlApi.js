@@ -24,15 +24,15 @@ export default class SamlApi {
 
   getSamlIdentityProvider = (options) => {
     return new Promise((resolve, reject) => {
-      this.api.getSamlIdentityProvider(options, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getSamlIdentityProvider(options, (error, data, response) => {
+        handleResponse(error, reject, resolve, response?.body || data)
       })
     })
   }
 
   postSamlIdentityProvider = ({ formdata, token }) => {
     return new Promise((resolve, reject) => {
-      axios.post("/kc/saml/idp/upload", formdata, { headers: { Authorization: `Bearer ${token}` } })
+      axios.post('/kc/saml/idp/upload', formdata, { headers: { Authorization: `Bearer ${token}` } })
         .then(result => handleResponse(undefined, reject, resolve, result))
         .catch(error => handleResponse(error, reject, resolve, undefined));
     })
@@ -41,7 +41,7 @@ export default class SamlApi {
   updateSamlIdentityProvider = ({ formdata, token }) => {
     // put-saml-identity-provider
     return new Promise((resolve, reject) => {
-      axios.put("/kc/saml/idp/upload", formdata, { headers: { Authorization: `Bearer ${token}` } })
+      axios.put('/kc/saml/idp/upload', formdata, { headers: { Authorization: `Bearer ${token}` } })
         .then(result => handleResponse(undefined, reject, resolve, result))
         .catch(error => handleResponse(error, reject, resolve, undefined));
     })
@@ -50,6 +50,38 @@ export default class SamlApi {
   deleteSamlIdentityProvider = (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteSamlIdentityProvider(inum, (error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+
+  getTrustRelationship = () => {
+    return new Promise((resolve, reject) => {
+      this.api.getTrustRelationships((error, _data, respones) => {
+        handleResponse(error, reject, resolve, respones)
+      })
+    })
+  }
+
+  postTrustRelationship = ({ formdata, token }) => {
+    return new Promise((resolve, reject) => {
+      axios.post('/kc/saml/trust-relationship/upload', formdata, { headers: { Authorization: `Bearer ${token}` } })
+        .then(result => handleResponse(undefined, reject, resolve, result))
+        .catch(error => handleResponse(error, reject, resolve, undefined));
+    })
+  }
+  
+  updateTrustRelationship = ({ formdata, token }) => {
+    return new Promise((resolve, reject) => {
+      axios.put('/kc/saml/trust-relationship/upload', formdata, { headers: { Authorization: `Bearer ${token}` } })
+        .then(result => handleResponse(undefined, reject, resolve, result))
+        .catch(error => handleResponse(error, reject, resolve, undefined));
+    })
+  }
+  
+  deleteTrustRelationship = (inum) => {
+    return new Promise((resolve, reject) => {
+      this.api.deleteTrustRelationship(inum, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })

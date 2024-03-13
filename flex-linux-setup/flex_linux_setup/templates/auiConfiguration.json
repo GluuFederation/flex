@@ -15,7 +15,8 @@
       ],
       "redirectUri": "https://%(hostname)s/admin",
       "postLogoutUri": "https://%(hostname)s/admin",
-      "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
+      "frontchannelLogoutUri": "https://%(hostname)s/admin/logout",
+      "additionalParameters": []
     },
     "auiBackendApiClient": {
       "opHost": "https://%(hostname)s",
@@ -30,6 +31,9 @@
         "email"
       ]
     }
+  },
+  "uiConfig": {
+    "sessionTimeoutInMins": 30
   },
   "licenseConfig": {
     "ssa": "%(ssa)s",

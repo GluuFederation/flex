@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Button, Col, Form, FormGroup } from '../../../../app/components'
-import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import { Button, Col, Form, FormGroup } from 'Components'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
 import UserClaimEntry from './UserClaimEntry'
 import { useSelector, useDispatch } from 'react-redux'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { changeUserPassword } from '../../redux/features/userSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { getAttributesRoot } from '../../../../app/redux/actions'
+import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { debounce } from 'lodash'
@@ -281,6 +281,7 @@ function UserForm({ onSubmitData }) {
               doc_category={DOC_SECTION}
               label='First Name'
               name='givenName'
+              required
               value={formik.values.givenName || ''}
               formik={formik}
               lsize={3}
@@ -304,6 +305,7 @@ function UserForm({ onSubmitData }) {
               doc_category={DOC_SECTION}
               label='Last Name'
               name='sn'
+              required
               value={formik.values.sn || ''}
               formik={formik}
               lsize={3}
@@ -315,6 +317,7 @@ function UserForm({ onSubmitData }) {
               doc_category={DOC_SECTION}
               label='User Name'
               name='userId'
+              required
               value={formik.values.userId || ''}
               formik={formik}
               lsize={3}
@@ -326,6 +329,7 @@ function UserForm({ onSubmitData }) {
               doc_category={DOC_SECTION}
               label='Display Name'
               name='displayName'
+              required
               value={formik.values.displayName || ''}
               formik={formik}
               lsize={3}
@@ -339,6 +343,7 @@ function UserForm({ onSubmitData }) {
               doc_category={DOC_SECTION}
               label='Email'
               name='mail'
+              required
               type='email'
               value={formik.values.mail || ''}
               formik={formik}
@@ -363,6 +368,7 @@ function UserForm({ onSubmitData }) {
               <GluuInputRow
                 doc_category={DOC_SECTION}
                 label='Password'
+                required
                 name='userPassword'
                 type='password'
                 value={formik.values.userPassword || ''}
@@ -375,6 +381,7 @@ function UserForm({ onSubmitData }) {
               <GluuInputRow
                 doc_category={DOC_SECTION}
                 label='Confirm Password'
+                required
                 name='userConfirmPassword'
                 type='password'
                 value={formik.values.userConfirmPassword || ''}
@@ -393,7 +400,6 @@ function UserForm({ onSubmitData }) {
                 data={data}
                 formik={formik}
                 handler={removeSelectedClaimsFromState}
-                type='input'
               />
             ))}
             {showButtons && (
@@ -486,6 +492,7 @@ function UserForm({ onSubmitData }) {
           handler={toggle}
           modal={modal}
           onAccept={submitForm}
+          feature='users_edit'
           formik={formik}
         />
       </Form>

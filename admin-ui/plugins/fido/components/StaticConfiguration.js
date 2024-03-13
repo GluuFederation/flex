@@ -251,6 +251,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
       <GluuCommitDialog
         handler={toggle}
         modal={modal}
+        feature='fido_configuration_write'
         onAccept={submitForm}
         formik={formik}
       />

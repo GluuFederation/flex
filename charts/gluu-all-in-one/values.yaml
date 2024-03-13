@@ -16,6 +16,8 @@ orgName: Gluu
 state: TX
 # -- Persistence backend to run Gluu with couchbase|hybrid|sql|spanner.
 cnPersistenceType: sql
+# -- Salt. Used for encoding/decoding sensitive data. If omitted or set to empty string, the value will be self-generated. Otherwise, a 24 alphanumeric characters are allowed as its value.
+salt: ""
 configmap:
   # -- Jetty header size in bytes in the auth server
   cnJettyRequestHeaderSize: 8192
@@ -28,15 +30,16 @@ configmap:
   # -- SQL database port.
   cnSqlDbPort: 3306
   # -- SQL database name.
-  cnSqlDbName: jans
+  cnSqlDbName: gluu
   # -- SQL database username.
-  cnSqlDbUser: jans
+  cnSqlDbUser: gluu
   # -- SQL database timezone.
   cnSqlDbTimezone: UTC
   # -- SQL password  injected the secrets .
   cnSqldbUserPassword: Test1234#
   # -- Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` .
   cnCacheType: NATIVE_PERSISTENCE
+  containerMetadataName: kubernetes
   # -- The name of the Kubernetes ConfigMap that will hold the configuration layer
   cnConfigKubernetesConfigMap: cn
   # -- The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Gluu.
@@ -52,9 +55,9 @@ configmap:
   # -- Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol
   cnCouchbaseSuperUserPassword: Test1234#
   # -- Couchbase URL. Used only when cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster
-  cnCouchbaseUrl: cbjanssen.default.svc.cluster.local
+  cnCouchbaseUrl: cbgluu.default.svc.cluster.local
   # -- Couchbase restricted user. Used only when cnPersistenceType is hybrid or couchbase.
-  cnCouchbaseUser: janssen
+  cnCouchbaseUser: gluu
   # [google_envs] Envs related to using Google
   # -- Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when configAdapterName and configSecretAdapter is set to google.
   cnGoogleSecretManagerServiceAccount: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
@@ -69,8 +72,8 @@ configmap:
   # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
   # -- Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when configAdapterName and configSecretAdapter is set to google.
   cnGoogleSecretVersionId: "latest"
-  # -- Prefix for Gluu secret in Google Secret Manager. Defaults to janssen. If left janssen-secret secret will be created. Used only when configAdapterName and configSecretAdapter is set to google.
-  cnGoogleSecretNamePrefix: janssen
+  # -- Prefix for Gluu secret in Google Secret Manager. Defaults to gluu. If left janssen-secret secret will be created. Used only when configAdapterName and configSecretAdapter is set to google.
+  cnGoogleSecretNamePrefix: gluu
   # [google_secret_manager_envs] END
   # [google_envs] END
   # [aws_envs] Envs related to using AWS
@@ -82,15 +85,37 @@ configmap:
   # The URL of AWS secretsmanager service (if omitted, will use the one in the specified default region. Example: https://secretsmanager.us-west-1.amazonaws.com). Used only when configAdapterName and configSecretAdapter is set to aws.
   cnAwsSecretsEndpointUrl: ""
   # The prefix name of the secrets. Used only when configAdapterName and configSecretAdapter is set to aws.
-  cnAwsSecretsNamePrefix: janssen
+  cnAwsSecretsNamePrefix: gluu
   # The default AWS Region to use, for example, `us-west-1` or `us-west-2`.
   cnAwsDefaultRegion: us-west-1
   # The aws named profile to use. Has to be created first. This is a sensible default and it's good to leave it as is. https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
-  cnAwsProfile: janssen
+  cnAwsProfile: gluu
   # Example replicated region [{"Region": "us-west-1"}, {"Region": "us-west-2"}]
   cnAwsSecretsReplicaRegions: []
   # [aws_secret_manager_envs] END
   # [aws_envs] END
+  # [vault_envs] Envs related to Hashicorp vault
+  # -- Vault AppRole RoleID.
+  cnVaultRoleId: ""
+  # -- Vault AppRole SecretID.
+  cnVaultSecretId: ""
+  # -- Base URL of Vault.
+  cnVaultAddr: http://localhost:8200
+  # -- Verify connection to Vault.
+  cnVaultVerify: false
+  # -- Path to file contains Vault AppRole role ID.
+  cnVaultRoleIdFile: /etc/certs/vault_role_id
+  # -- Path to file contains Vault AppRole secret ID.
+  cnVaultSecretIdFile: /etc/certs/vault_secret_id
+  # -- Vault namespace used to access the secrets.
+  cnVaultNamespace: ""
+  # -- Path to Vault KV secrets engine.
+  cnVaultKvPath: secret
+  # -- Base prefix name used to access secrets.
+  cnVaultPrefix: jans
+  # -- Path to Vault AppRole.
+  cnVaultAppRolePath: approle
+  # [vault_envs] END
   # -- Value passed to Java option -XX:MaxRAMPercentage
   cnMaxRamPercent: "75.0"
   # -- SCIM protection mode OAUTH|TEST|UMA
@@ -113,6 +138,32 @@ configmap:
   cnLdapCrt: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
   # -- OpenDJ key string. This must be encoded using base64.
   cnLdapKey: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
+  # -- Quarkus transaction recovery. When using MySQL, there could be issue regarding XA_RECOVER_ADMIN; refer to https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_xa-recover-admin for details.
+  quarkusTransactionEnableRecovery: true
+  # -- Keycloak logging level
+  kcLogLevel: INFO
+  # -- Keycloak proxy mode (for most deployments, this doesn't need to be changed)
+  kcProxy: edge
+  # -- Keycloak database vendor name (default to MySQL server). To use PostgreSQL server, change the value to postgres.
+  kcDbVendor: mysql
+  # -- Keycloak database username
+  kcDbUsername: keycloak
+  # -- Password for Keycloak database access
+  kcDbPassword: Test1234#
+  # -- Keycloak database schema name (note that PostgreSQL may using "public" schema).
+  kcDbSchema: keycloak
+  # -- Keycloak database host
+  kcDbUrlHost: mysql.kc.svc.cluster.local
+  # -- Keycloak database port (default to port 3306 for mysql).
+  kcDbUrlPort: 3306
+  # -- Keycloak database name
+  kcDbUrlDatabase: keycloak
+  # -- Keycloak database connection properties. If using postgresql, the value can be set to empty string.
+  kcDbUrlProperties: "?useUnicode=true&characterEncoding=UTF-8&character_set_server=utf8mb4"
+  # -- URL of OPA server
+  cnOpaUrl: http://opa.opa.svc.cluster.cluster.local:8181/v1
+  # -- Message type (one of POSTGRES, REDIS, or DISABLED)
+  cnMessageType: DISABLED
 nameOverride: ""
 fullNameOverride: ""
 # -- Redis admin password if `configmap.cnCacheType` is set to `REDIS`.
@@ -192,6 +243,8 @@ auth-server:
     authServerProtectedToken: false
     # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio.
     authServerProtectedRegister: false
+  # -- Enable jans-lock as service running inside auth-server
+  lockEnabled: false
 # -- Responsible for regenerating auth-keys per x hours
 auth-server-key-rotation:
   # -- Add custom normal and secret envs to the service
@@ -212,7 +265,7 @@ auth-server-key-rotation:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/certmanager
     # -- Image  tag to use for deploying.
-    tag: 1.0.22_dev
+    tag: 1.1.0_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Auth server key rotation keys life in hours
@@ -253,6 +306,8 @@ auth-server-key-rotation:
   additionalAnnotations: {}
   # -- Boolean flag to enable/disable the auth-server-key rotation cronjob.
   enabled: true
+  # -- The initial auth server key rotation keys life in hours
+  initKeysLife: 48
   # -- Add custom scripts that have been mounted to run before the entrypoint.
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
@@ -331,6 +386,8 @@ config-api:
   ingress:
     # Enable config API endpoints /jans-config-api
     configApiEnabled: true
+  # -- Comma-separated values of enabled plugins (supported plugins are "admin-ui","fido2","scim","user-mgt","jans-link","kc-saml")
+  plugins: "admin-ui,fido2,scim,user-mgt"
 fido2:
   # -- Name of the fido2 service. Please keep it as default.
   fido2ServiceName: fido2
@@ -360,6 +417,8 @@ fido2:
   ingress:
     # -- Enable endpoint /.well-known/fido2-configuration
     fido2ConfigEnabled: false
+    # -- Enable endpoint /jans-fido2
+    fido2Enabled: false
 scim:
   # -- Name of the scim service. Please keep it as default.
   scimServiceName: scim
@@ -428,6 +487,15 @@ link:
   ingress:
     # Enable link endpoints /jans-link
     linkEnabled: true
+saml:
+  # -- Name of the saml service. Please keep it as default.
+  samlServiceName: saml
+  # -- Boolean flag to enable/disable the saml chart.
+  enabled: false
+  # -- Enable endpoints in either istio or nginx ingress depending on users choice
+  ingress:
+    # Enable saml endpoints /kc
+    samlEnabled: false
 
 
 # Global properties
@@ -439,7 +507,7 @@ lbIp: 22.22.22.22
 testEnviroment: false
 # -- The config backend adapter that will hold Gluu configuration layer. aws|google|kubernetes
 configAdapterName: kubernetes
-# -- The config backend adapter that will hold Gluu secret layer. aws|google|kubernetes
+# -- The config backend adapter that will hold Gluu secret layer. vault|aws|google|kubernetes
 configSecretAdapter: kubernetes
 # -- Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets and roles/spanner.databaseUser to use Spanner. Leave as this is a sensible default.
 cnGoogleApplicationCredentials: /etc/jans/conf/google-credentials.json
@@ -451,14 +519,18 @@ cnAwsConfigFile: /etc/jans/conf/aws_config_file
 cnAwsSecretsReplicaRegionsFile: /etc/jans/conf/aws_secrets_replica_regions
 # -- Port used by Prometheus JMX agent (default to empty string). To enable Prometheus JMX agent, set the value to a number.
 cnPrometheusPort: ""
-# -- Document store type to use for shibboleth files LOCAL.
-cnDocumentStoreType: LOCAL
+# -- Document store type to use for shibboleth files DB.
+cnDocumentStoreType: DB
 # -- Path to SQL password file
 cnSqlPasswordFile: /etc/jans/conf/sql_password
 # -- Path to Couchbase password file
 cnCouchbasePasswordFile: /etc/jans/conf/couchbase_password
 # -- Path to Couchbase superuser password file
 cnCouchbaseSuperuserPasswordFile: /etc/jans/conf/couchbase_superuser_password
+# -- Path to file contains password for database access
+kcDbPasswordFile: /etc/jans/conf/kc_db_password
+# -- Path to file contains Keycloak admin credentials (username and password)
+kcAdminCredentialsFile: /etc/jans/conf/kc_admin_creds
 
 # ingress properties
 istio:
@@ -532,6 +604,10 @@ nginx-ingress:
     fido2ConfigLabels: { }
     # -- fido2 config ingress resource additional annotations.
     fido2ConfigAdditionalAnnotations: { }
+    # -- fido2 ingress resource labels. key app is taken
+    fido2Labels: { }
+    # -- fido2 ingress resource additional annotations.
+    fido2AdditionalAnnotations: { }
     # -- Auth server ingress resource labels. key app is taken
     authServerLabels: { }
     # -- Auth server ingress resource additional annotations.
@@ -540,6 +616,10 @@ nginx-ingress:
     casaLabels: { }
     # -- Casa ingress resource additional annotations.
     casaAdditionalAnnotations: { }
+    # -- SAML config ingress resource labels. key app is taken
+    samlLabels: { }
+    # -- SAML ingress resource additional annotations.
+    samlAdditionalAnnotations: { }
     # -- Additional labels that will be added across all ingress definitions in the format of {mylabel: "myapp"}
     additionalLabels: { }
     # -- Additional annotations that will be added across all ingress definitions in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
@@ -617,9 +697,9 @@ image:
   # -- Image pullPolicy to use for deploying.
   pullPolicy: IfNotPresent
   # -- Image  to use for deploying.
-  repository: ghcr.io/janssenproject/jans/all-in-one
+  repository: ghcr.io/gluufederation/flex/flex-all-in-one
   # -- Image  tag to use for deploying.
-  tag: 1.0.22_dev
+  tag: 1.1.0_dev
   # -- Image Pull Secrets
   pullSecrets: [ ]
 # -- Service replica number.
@@ -628,9 +708,9 @@ replicas: 1
 resources:
   limits:
     # -- CPU limit.
-    cpu: 2500m
+    cpu: 16000m
     # -- Memory limit.
-    memory: 2500Mi
+    memory: 16000Mi
   requests:
     # -- CPU request.
     cpu: 2500m

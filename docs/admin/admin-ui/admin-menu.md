@@ -113,7 +113,20 @@ This is a line graph showing month-wise active users under a selected date range
 
 ![image](../../assets/admin-ui/mau.png)
 
+
 ## Webhooks
 
 Webhooks can be created and mapped to various Admin UI features to execute custom business logic when events associated with those features occur. Follow this [tutorial](./webhooks.md) for more details.
+
+## Settings
+
+The Gluu Flex Admin UI provides a user-friendly interface for managing various UI settings of this web application. This page has the following fields.
+
+- **List paging size:**  This field allows to define the default paging size for all search pages within the Admin UI.
+- **Config API URL:** The read-only URL of the Jans Config API is used by the Admin UI for interaction.
+- **Admin UI Session Timeout (In Minutes):** This field determines the maximum idle time allowed before a user is automatically logged out of the Admin UI.
+- **Admin UI authentication method (ACR):** This dropdown enables user to select the default authentication method to be used in the Admin UI.
+- **Custom Parameters (for authentication):** The custom parameters allow you to pass additional information to the authorization server during Admin UI authentication.
+
+![image](../../assets/admin-ui/settings.png)
 

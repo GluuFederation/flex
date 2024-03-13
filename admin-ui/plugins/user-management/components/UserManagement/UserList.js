@@ -9,21 +9,21 @@ import {
   deleteUser,
 } from '../../redux/features/userSlice'
 
-import { getAttributesRoot } from '../../../../app/redux/features/attributesSlice'
+import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useNavigate } from 'react-router-dom'
 import {
   hasPermission,
   USER_WRITE,
   USER_READ,
   USER_DELETE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
 import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -86,7 +86,7 @@ function UserList(props) {
   }
 
   function handleUserDelete(row) {
-    dispatch(deleteUser(row.inum))
+    dispatch(deleteUser(row))
   }
 
   const GluuSearch = useCallback(() => {
@@ -268,6 +268,7 @@ function UserList(props) {
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
+          feature='users_delete'
           onAccept={submitForm}
         />
       </Card>

@@ -41,7 +41,7 @@ const ConfigurationTab = () => {
     problemCount = null,
     lastUpdateCount = null,
     lastUpdate = null,
-    loggingLevel = [],
+    loggingLevel = '',
     useSearchLimit = false
   } = useSelector((state) => state.cacheRefreshReducer.configuration)
 
@@ -303,6 +303,7 @@ const ConfigurationTab = () => {
           modal={modal}
           onAccept={submitForm}
           formik={formik}
+          feature='jans_link_write'
         />
       </Form>
     </>

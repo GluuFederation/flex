@@ -328,6 +328,7 @@ function SmtpForm({ item, handleSubmit }) {
         </Col>
       </Row>
       <GluuCommitDialog
+        feature='smtp_configuration_edit'
         handler={toggle}
         modal={modal}
         onAccept={submitForm}

@@ -145,7 +145,7 @@ class PersistenceSetup:
 
     @cached_property
     def ldif_files(self):
-        filenames = ["clients.ldif"]
+        filenames = ["clients.ldif", "aui_webhook.ldif"]
         return [f"/app/templates/admin-ui/{filename}" for filename in filenames]
 
     def import_ldif_files(self):
@@ -176,7 +176,7 @@ class PersistenceSetup:
             if should_update:
                 logger.info("Updating admin-ui config app")
                 entry["jansConfApp"] = json.dumps(merged_conf)
-                entry["jansRevision"] += 1
+                entry["jansRevision"] = entry.get("jansRevision", 0) + 1
                 self.client.update(table_name, dn, entry)
 
         elif self.persistence_type == "couchbase":
@@ -298,6 +298,16 @@ def resolve_conf_app(old_conf, new_conf):
         # set scope to openid only
         if old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] != new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]:
             old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] = new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]
+            should_update = True
+
+        # add missing uiConfig
+        if "uiConfig" not in old_conf:
+            old_conf["uiConfig"] = {"sessionTimeoutInMins": 30}
+            should_update = True
+
+        # add missing additionalParameters
+        if "additionalParameters" not in old_conf["oidcConfig"]["auiWebClient"]:
+            old_conf["oidcConfig"]["auiWebClient"]["additionalParameters"] = []
             should_update = True
 
     # finalized status and conf

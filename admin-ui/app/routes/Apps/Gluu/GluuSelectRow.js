@@ -2,6 +2,7 @@ import React from 'react'
 import GluuLabel from './GluuLabel'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types';
 
 function GluuSelectRow({
   label,
@@ -16,12 +17,13 @@ function GluuSelectRow({
   handleChange,
   required,
   showError = false,
-  errorMessage
+  errorMessage,
+  doc_entry
 }) {
   const { t } = useTranslation()
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name} required={required}/>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} required={required}/>
       <Col sm={rsize}>
         <InputGroup>
           <CustomInput
@@ -59,6 +61,23 @@ GluuSelectRow.defaultProps = {
   lsize: 3,
   rsize: 9,
   disabled: false,
+  doc_entry: undefined
 }
+GluuSelectRow.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.any,
+  formik: PropTypes.object,
+  values: PropTypes.array,
+  lsize: PropTypes.number,
+  rsize: PropTypes.number,
+  doc_category: PropTypes.string,
+  disabled: PropTypes.bool,
+  handleChange: PropTypes.func,
+  required: PropTypes.bool,
+  showError: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  doc_entry: PropTypes.string,
+};
 
 export default GluuSelectRow

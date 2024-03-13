@@ -230,7 +230,7 @@ function ClientListPage() {
     }
   }
   function onDeletionConfirmed(message) {
-    buildPayload(userAction, message, item.inum)
+    buildPayload(userAction, message, item)
     dispatch(deleteClient({ action: userAction }))
     navigate('/auth-server/clients')
     toggle()
@@ -396,6 +396,7 @@ function ClientListPage() {
             modal={modal}
             subject="openid connect client"
             onAccept={onDeletionConfirmed}
+            feature='oidc_clients_delete'
           />
         )}
       </CardBody>

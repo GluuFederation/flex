@@ -26,8 +26,8 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
   const selectedTheme = theme.state.theme
 
   function handleAccept() {
-    if (permission?.length <= 5) {
-      setErrorMessages('Permission name length should be atleast 5.')
+    if (permission?.length < 5) {
+      setErrorMessages(t('messages.permission_name_error'))
       return
     }
 
@@ -131,15 +131,9 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
             style={applicationStyle.buttonStyle}
             onClick={handleAccept}
           >
-            {t('actions.yes')}
+            {t('actions.save')}
           </Button>
-          <Button
-            color={`primary-${selectedTheme}`}
-            style={applicationStyle.buttonStyle}
-            onClick={handler}
-          >
-            {t('actions.no')}
-          </Button>
+          <Button onClick={handler}>{t('actions.cancel')}</Button>
         </ModalFooter>
       </Modal>
     </>

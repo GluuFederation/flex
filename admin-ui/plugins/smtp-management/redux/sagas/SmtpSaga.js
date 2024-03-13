@@ -18,6 +18,8 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import SmtpApi from '../api/SmtpApi'
 import { getSmptResponse, getSmpts, testSmtpResponse, testSmtpResponseFails, updateSmptResponse } from '../features/smtpSlice'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
+
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -36,6 +38,7 @@ export function* updateStmpSaga({ payload }) {
     yield put(updateSmptResponse({ data }))
     yield put(getSmpts())
     yield call(postUserAction, audit)
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
