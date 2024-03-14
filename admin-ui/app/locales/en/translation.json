@@ -142,6 +142,7 @@
     "idp_metadata_file": "IDP Metadata File",
     "idpMetadataMandatoryAttributes": "IDP Metadat Attribute",
     "realm": "Realm",
+    "rrealm": "Rrealm",
     "server_url": "Server URL",
     "realm_dn": "Realm DN",
     "idp_root_dir": "IDP Root Directory",

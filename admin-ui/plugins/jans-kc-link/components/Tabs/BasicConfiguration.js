@@ -46,7 +46,7 @@ const BasicConfiguration = () => {
     useLocalCache = false,
     loggingLevel = '',
     keycloakLinkServerIpAddress = '',
-    keycloakLinkPollingInterval,
+    keycloakLinkPollingInterval = 0,
     keycloakLinkLastUpdate,
     keycloakLinkLastUpdateCount,
     keycloakLinkProblemCount,
