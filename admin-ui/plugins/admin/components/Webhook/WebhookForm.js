@@ -179,16 +179,20 @@ const WebhookForm = () => {
 
   const featureShortcodes = selectedFeatures?.[0]?.auiFeatureId
     ? shortCodes?.[selectedFeatures?.[0]?.auiFeatureId]?.fields ||
-      []
+    []
     : []
 
   const handleSelectShortcode = (code, name, withString = false) => {
-    const _code = withString ? `"{${code}}"` : `{${code}}`
+    const _code = withString ? "\"${" + `${code}` + "}\"" : "${" + `${code}` + "}"
     const currentPosition = cursorPosition[name]
     let value = formik.values[name] || ''
     if (currentPosition >= 0 && value) {
       const str = formik.values[name]
+      console.log(str.slice(0, currentPosition))
+      console.log(_code)
+      console.log(str.slice(currentPosition))
       value = str.slice(0, currentPosition) + _code + str.slice(currentPosition)
+      console.log(value)
     } else if (value) {
       value += _code
     } else {
