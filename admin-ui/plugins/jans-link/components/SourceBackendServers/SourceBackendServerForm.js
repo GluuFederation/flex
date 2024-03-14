@@ -28,8 +28,8 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
-const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
-const convertToStringArray = (arr) => {
+export const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
+export const convertToStringArray = (arr) => {
   return arr.map((item) => item.value)
 }
 

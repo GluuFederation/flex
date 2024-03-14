@@ -1,4 +1,4 @@
-import { JANS_KC_LINK_READ, JANS_KC_LINK_WRITE } from 'Utils/PermChecker'
+import { JANS_KC_LINK_READ } from 'Utils/PermChecker'
 import JansKcLinkPage from './components/JansKcLinkPage'
 import jansKcLinkSaga from './redux/sagas/JansKcLinkSaga'
 import jansKcLinkReducer from './redux/features/JansKcLinkSlice'

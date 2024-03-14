@@ -62,21 +62,19 @@ const JansKcLinkPage = () => {
   }
 
   return (
-    <React.Fragment>
-      <GluuLoader blocking={isLoading}>
-        <Card className='mb-3' style={applicationStyle.mainCard}>
-          <CardBody>
-            {!isLoading && (
-              <GluuTabs
-                tabNames={tabNames}
-                tabToShow={tabToShow}
-                withNavigation={true}
-              />
-            )}
-          </CardBody>
-        </Card>
-      </GluuLoader>
-    </React.Fragment>
+    <GluuLoader blocking={isLoading}>
+      <Card className='mb-3' style={applicationStyle.mainCard}>
+        <CardBody>
+          {!isLoading && (
+            <GluuTabs
+              tabNames={tabNames}
+              tabToShow={tabToShow}
+              withNavigation={true}
+            />
+          )}
+        </CardBody>
+      </Card>
+    </GluuLoader>
   )
 }
 
