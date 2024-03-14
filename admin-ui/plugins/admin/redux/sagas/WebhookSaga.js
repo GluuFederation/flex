@@ -102,7 +102,7 @@ export function* deleteWebhook({ payload }) {
     const webhookApi = yield* newFunction()
     const data = yield call(
       webhookApi.deleteWebhookByInum,
-      payload.action.action_data.webhookId
+      payload.action.action_data.inum
     )
     yield put(deleteWebhookResponse({ data }))
     yield call(postUserAction, audit)
@@ -270,7 +270,7 @@ export function* triggerWebhook({ payload }) {
 
     const action_data = data?.body?.map((body) => {
       for (const output of outputObject) {
-        if (output.webhookId === body?.responseObject?.webhookId) {
+        if (output.inum === body?.responseObject?.inum) {
           return {
             ...body,
             url: output?.url

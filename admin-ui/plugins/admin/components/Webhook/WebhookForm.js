@@ -142,8 +142,8 @@ const WebhookForm = () => {
       }
 
       if (id) {
-        payload['webhookId'] = selectedWebhook.webhookId
-        payload['dn'] = selectedWebhook.webhookId
+        payload['inum'] = selectedWebhook.inum
+        payload['dn'] = selectedWebhook.dn
         payload['baseDn'] = selectedWebhook.baseDn
       }
 
@@ -182,8 +182,8 @@ const WebhookForm = () => {
       []
     : []
 
-  const handleSelectShortcode = (code, name) => {
-    const _code = `{${code}}`
+  const handleSelectShortcode = (code, name, withString = false) => {
+    const _code = withString ? `"{${code}}"` : `{${code}}`
     const currentPosition = cursorPosition[name]
     let value = formik.values[name] || ''
     if (currentPosition >= 0 && value) {
@@ -210,7 +210,7 @@ const WebhookForm = () => {
             <GluuInputRow
               label='fields.webhook_id'
               formik={formik}
-              value={selectedWebhook?.webhookId}
+              value={selectedWebhook?.inum}
               lsize={4}
               doc_entry='webhook_id'
               rsize={8}
@@ -394,7 +394,7 @@ const WebhookForm = () => {
                         marginRight: '2.5rem',
                       }}
                       handleSelectShortcode={(code) =>
-                        handleSelectShortcode(code, 'httpRequestBody')
+                        handleSelectShortcode(code, 'httpRequestBody', true)
                       }
                     />
                   }

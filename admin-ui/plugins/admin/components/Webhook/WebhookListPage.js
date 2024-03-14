@@ -115,7 +115,7 @@ const WebhookListPage = () => {
 
   const navigateToEditPage = useCallback((data) => {
     dispatch(setSelectedWebhook(data))
-    navigate(`/adm/webhook/edit/${data.webhookId}`)
+    navigate(`/adm/webhook/edit/${data.inum}`)
   }, [])
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])

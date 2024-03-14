@@ -24,8 +24,8 @@ export default class SamlApi {
 
   getSamlIdentityProvider = (options) => {
     return new Promise((resolve, reject) => {
-      this.api.getSamlIdentityProvider(options, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getSamlIdentityProvider(options, (error, data, response) => {
+        handleResponse(error, reject, resolve, response?.body || data)
       })
     })
   }
@@ -57,7 +57,7 @@ export default class SamlApi {
 
   getTrustRelationship = () => {
     return new Promise((resolve, reject) => {
-      this.api.getTrustRelationship((error, _data, respones) => {
+      this.api.getTrustRelationships((error, _data, respones) => {
         handleResponse(error, reject, resolve, respones)
       })
     })

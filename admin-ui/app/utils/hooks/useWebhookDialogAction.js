@@ -149,7 +149,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                           {item.displayName}
                         </TableCell>
                         <TableCell sx={{ fontSize: 16 }} align='left'>
-                          {item.webhookId}
+                          {item.inum}
                         </TableCell>
                       </TableRow>
                     ))}

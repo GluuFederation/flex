@@ -14,7 +14,7 @@ import ShortCodesIcon from 'Components/SVG/menu/ShortCodesIcon'
 
 export default function ShortcodePopover({
   codes,
-  buttonWrapperStyles,
+  buttonWrapperStyles = {},
   handleSelectShortcode,
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -30,7 +30,7 @@ export default function ShortcodePopover({
   const id = open ? 'simple-popover' : undefined
 
   return (
-    <div style={{ ...applicationstyle.shortCodesWrapperStyles, buttonWrapperStyles }}>
+    <div style={{ ...applicationstyle.shortCodesWrapperStyles, ...buttonWrapperStyles }}>
       <Button
         aria-describedby={id}
         variant='text'

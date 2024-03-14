@@ -264,7 +264,7 @@ function* errorToast({ error }) {
     updateToast(
       true,
       'error',
-      error?.response?.data?.message || error.message
+      error?.response?.data?.description || error?.response?.data?.message || error.message
     )
   )
 }

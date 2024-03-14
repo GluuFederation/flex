@@ -113,6 +113,11 @@ This is a line graph showing month-wise active users under a selected date range
 
 ![image](../../assets/admin-ui/mau.png)
 
+
+## Webhooks
+
+Webhooks can be created and mapped to various Admin UI features to execute custom business logic when events associated with those features occur. Follow this [tutorial](./webhooks.md) for more details.
+
 ## Settings
 
 The Gluu Flex Admin UI provides a user-friendly interface for managing various UI settings of this web application. This page has the following fields.
@@ -124,3 +129,4 @@ The Gluu Flex Admin UI provides a user-friendly interface for managing various U
 - **Custom Parameters (for authentication):** The custom parameters allow you to pass additional information to the authorization server during Admin UI authentication.
 
 ![image](../../assets/admin-ui/settings.png)
+

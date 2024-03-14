@@ -39,7 +39,7 @@ export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue)
     }
 
     return {
-      webhookId: webhook.webhookId,
+      webhookId: webhook.inum,
       shortcodeValueMap,
       url: webhook.url,
     };
