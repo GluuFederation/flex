@@ -1,4 +1,4 @@
-CN_VERSION?=5.0.0
+CN_VERSION?=5.1.1
 IMAGE_NAME=ghcr.io/gluufederation/flex/monolith
 UNSTABLE_VERSION?=dev
 
