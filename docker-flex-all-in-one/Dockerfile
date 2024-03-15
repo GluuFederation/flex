@@ -2,13 +2,12 @@
 # Assets sources
 # ==============
 
-# original Janssen base version (without suffix)
 ARG BASE_VERSION=1.1.0
-
+ARG FLEX_BASE_VERSION=5.1.0
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
 ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:${BASE_VERSION}_dev
-ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:${BASE_VERSION}_dev
+ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:${FLEX_BASE_VERSION}_dev
 
 # -----------
 # base images
