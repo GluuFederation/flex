@@ -283,7 +283,7 @@
       },
       {
         "key": "loggingLayout",
-        "label": "fields.loggingLayout",
+        "label": "fields.logging_layout",
         "description": "documentation.jans_link.loggingLayout"
       },
       {
