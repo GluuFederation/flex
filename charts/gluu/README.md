@@ -23,19 +23,19 @@ Kubernetes: `>=v1.21.0-0`
 | Repository | Name | Version |
 |------------|------|---------|
 |  | admin-ui | 5.1.0 |
-|  | auth-server | 5.1.0 |
-|  | auth-server-key-rotation | 5.1.0 |
-|  | casa | 5.1.0 |
+|  | auth-server | 1.1.0 |
+|  | auth-server-key-rotation | 1.1.0 |
+|  | casa | 1.1.0 |
 |  | cn-istio-ingress | 5.1.0 |
-|  | config | 5.1.0 |
-|  | config-api | 5.1.0 |
-|  | fido2 | 5.1.0 |
-|  | link | 5.1.0 |
+|  | config | 1.1.0 |
+|  | config-api | 1.1.0 |
+|  | fido2 | 1.1.0 |
+|  | link | 1.1.0 |
 |  | nginx-ingress | 5.1.0 |
 |  | opendj | 5.1.0 |
-|  | persistence | 5.1.0 |
-|  | saml | 5.1.0 |
-|  | scim | 5.1.0 |
+|  | persistence | 1.1.0 |
+|  | saml | 1.1.0 |
+|  | scim | 1.1.0 |
 
 ## Values
 
