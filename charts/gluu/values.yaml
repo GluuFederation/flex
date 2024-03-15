@@ -106,7 +106,7 @@ admin-ui:
     # -- Image  to use for deploying.
     repository: ghcr.io/gluufederation/flex/admin-ui
     # -- Image  tag to use for deploying.
-    tag: 1.1.0-1
+    tag: 5.1.0-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.

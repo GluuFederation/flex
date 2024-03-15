@@ -19,7 +19,7 @@ annotations:
     - name: casa
       image: ghcr.io/janssenproject/jans/casa:1.1.0-1
     - name: admin-ui
-      image: ghcr.io/gluufederation/flex/admin-ui:1.1.0-1
+      image: ghcr.io/gluufederation/flex/admin-ui:5.1.0-1
     - name: link
       image: ghcr.io/janssenproject/jans/link:1.1.0-1
     - name: saml
@@ -39,60 +39,60 @@ maintainers:
   email: team@gluu.org
 description: Gluu Access and Identity Management
 name: gluu
-version: 5.1.0-dev
+version: 5.1.0
 dependencies:
     - name: config
       condition: global.config.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: config-api
       condition: global.config-api.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: opendj
       condition: global.opendj.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: auth-server
       condition: global.auth-server.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: admin-ui
       condition: global.admin-ui.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: fido2
       condition: global.fido2.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: scim
       condition: global.scim.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: nginx-ingress
       condition: global.nginx-ingress.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: casa
-      version: 5.1.0-dev
+      version: 5.1.0
       condition: global.casa.enabled
 
     - name: auth-server-key-rotation
       condition: global.auth-server-key-rotation.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: persistence
       condition: global.persistence.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: cn-istio-ingress
       condition: global.istio.ingress
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: link
       condition: global.link.enabled
-      version: 5.1.0-dev
+      version: 5.1.0
 
     - name: saml
       condition: global.saml.enabled
-      version: 5.1.0-dev
+      version: 5.1.0

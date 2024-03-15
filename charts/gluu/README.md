@@ -1,6 +1,6 @@
 # gluu
 
-![Version: 5.1.0-dev](https://img.shields.io/badge/Version-5.1.0--dev-informational?style=flat-square) ![AppVersion: 5.1.0](https://img.shields.io/badge/AppVersion-5.1.0-informational?style=flat-square)
+![Version: 5.1.0](https://img.shields.io/badge/Version-5.1.0-informational?style=flat-square) ![AppVersion: 5.1.0](https://img.shields.io/badge/AppVersion-5.1.0-informational?style=flat-square)
 
 Gluu Access and Identity Management
 
@@ -22,26 +22,26 @@ Kubernetes: `>=v1.21.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-|  | admin-ui | 5.1.0-dev |
-|  | auth-server | 5.1.0-dev |
-|  | auth-server-key-rotation | 5.1.0-dev |
-|  | casa | 5.1.0-dev |
-|  | cn-istio-ingress | 5.1.0-dev |
-|  | config | 5.1.0-dev |
-|  | config-api | 5.1.0-dev |
-|  | fido2 | 5.1.0-dev |
-|  | link | 5.1.0-dev |
-|  | nginx-ingress | 5.1.0-dev |
-|  | opendj | 5.1.0-dev |
-|  | persistence | 5.1.0-dev |
-|  | saml | 5.1.0-dev |
-|  | scim | 5.1.0-dev |
+|  | admin-ui | 5.1.0 |
+|  | auth-server | 5.1.0 |
+|  | auth-server-key-rotation | 5.1.0 |
+|  | casa | 5.1.0 |
+|  | cn-istio-ingress | 5.1.0 |
+|  | config | 5.1.0 |
+|  | config-api | 5.1.0 |
+|  | fido2 | 5.1.0 |
+|  | link | 5.1.0 |
+|  | nginx-ingress | 5.1.0 |
+|  | opendj | 5.1.0 |
+|  | persistence | 5.1.0 |
+|  | saml | 5.1.0 |
+|  | scim | 5.1.0 |
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| admin-ui | object | `{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/gluufederation/flex/admin-ui","tag":"1.1.0-1"},"lifecycle":{},"livenessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"2000m","memory":"2000Mi"},"requests":{"cpu":"2000m","memory":"2000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Admin GUI for configuration of the auth-server |
+| admin-ui | object | `{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/gluufederation/flex/admin-ui","tag":"5.1.0-1"},"lifecycle":{},"livenessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"2000m","memory":"2000Mi"},"requests":{"cpu":"2000m","memory":"2000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Admin GUI for configuration of the auth-server |
 | admin-ui.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
 | admin-ui.additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
 | admin-ui.customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
@@ -53,7 +53,7 @@ Kubernetes: `>=v1.21.0-0`
 | admin-ui.image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | admin-ui.image.pullSecrets | list | `[]` | Image Pull Secrets |
 | admin-ui.image.repository | string | `"ghcr.io/gluufederation/flex/admin-ui"` | Image  to use for deploying. |
-| admin-ui.image.tag | string | `"1.1.0-1"` | Image  tag to use for deploying. |
+| admin-ui.image.tag | string | `"5.1.0-1"` | Image  tag to use for deploying. |
 | admin-ui.livenessProbe | object | `{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5}` | Configure the liveness healthcheck for the admin ui if needed. |
 | admin-ui.pdb | object | `{"enabled":true,"maxUnavailable":"90%"}` | Configure the PodDisruptionBudget |
 | admin-ui.readinessProbe | object | `{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5}` | Configure the readiness healthcheck for the admin ui if needed. |
