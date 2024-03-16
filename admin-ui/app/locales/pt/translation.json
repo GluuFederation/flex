@@ -534,6 +534,7 @@
   "messages": {
     "add_permission": "Adicionar permissão",
     "add_configuration": "Adicionar configuração",
+    "view_configuration": "Ver Configuração",
     "add_idp": "Adicionar IDP SAML",
     "view_trust_relationshi_details": "Visualizar Detalhes da Relação de Confiança",
     "add_trust_relationship": "Adicionar Relação de Confiança",

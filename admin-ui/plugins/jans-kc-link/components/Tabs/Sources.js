@@ -11,11 +11,12 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { putConfiguration } from 'Plugins/jans-kc-link/redux/features/JansKcLinkSlice'
-import { buildPayload } from 'Utils/PermChecker'
+import { buildPayload, hasPermission, JANS_KC_LINK_WRITE, JANS_KC_LINK_READ } from 'Utils/PermChecker'
 
 const Sources = () => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  const permissions = useSelector((state) => state.authReducer.permissions)
   const navigate = useNavigate()
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
@@ -51,9 +52,9 @@ const Sources = () => {
     toggle()
   }
 
-  const navigateToAdd = () => {
-    navigate('/jans-kc-link/sources/add')
-  }
+  const navigateToAdd = () => navigate('/jans-kc-link/sources/add')
+
+  const navigateToView = (rowData) => navigate('/jans-kc-link/sources/view', { state: { sourceConfig: rowData, viewOnly: true } })
 
   actions.push((rowData) => ({
     icon: 'edit',
@@ -62,7 +63,7 @@ const Sources = () => {
     },
     tooltip: `${t('messages.edit_configuration')}`,
     onClick: (event, rowData) => navigateToEdit(rowData),
-    disabled: false,
+    disabled: !hasPermission(permissions, JANS_KC_LINK_WRITE),
   }))
 
   actions.push((rowData) => ({
@@ -73,7 +74,7 @@ const Sources = () => {
     },
     tooltip: `${t('messages.delete_configuration')}`,
     onClick: (event, rowData) => deleteConfig(rowData),
-    disabled: false,
+    disabled: !hasPermission(permissions, JANS_KC_LINK_WRITE),
   }))
 
   actions.push({
@@ -82,6 +83,14 @@ const Sources = () => {
     iconProps: { color: 'primary' },
     isFreeAction: true,
     onClick: () => navigateToAdd(),
+    disabled: !hasPermission(permissions, JANS_KC_LINK_WRITE),
+  })
+
+  actions.push({
+    icon: 'visibility',
+    tooltip: `${t('messages.view_configuration')}`,
+    onClick: (event, rowData) => navigateToView(rowData),
+    disabled: !hasPermission(permissions, JANS_KC_LINK_READ),
   })
 
   const PaperContainer = useCallback(

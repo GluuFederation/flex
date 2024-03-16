@@ -9,12 +9,19 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import PropTypes from 'prop-types'
+import { useLocation } from 'react-router'
+import { useSelector } from 'react-redux'
+import { hasPermission, JANS_KC_LINK_WRITE } from 'Utils/PermChecker'
 
 const ConfigurationForm = ({
   initialValues,
   validationSchema,
   handleFormSubmission,
 }) => {
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const disabled = !hasPermission(permissions, JANS_KC_LINK_WRITE)
+  const viewOnly = useLocation().state?.viewOnly || false
+
   const userAction = {}
   const [modal, setModal] = useState(false)
   const toggle = () => {
@@ -55,6 +62,7 @@ const ConfigurationForm = ({
             required
             showError={formik.errors.configId && formik.touched.configId}
             errorMessage={formik.errors.configId}
+            disabled={viewOnly || disabled}
           />
         </Col>
         <Col sm={12}>
@@ -68,6 +76,7 @@ const ConfigurationForm = ({
             required
             showError={formik.errors?.bindDN && formik.touched?.bindDN}
             errorMessage={formik.errors?.bindDN}
+            disabled={viewOnly || disabled}
           />
         </Col>
         <Col sm={12}>
@@ -84,6 +93,7 @@ const ConfigurationForm = ({
               formik.errors?.bindPassword && formik.touched?.bindPassword
             }
             errorMessage={formik.errors?.bindPassword}
+            disabled={viewOnly || disabled}
           />
         </Col>
         <Col sm={12}>
@@ -100,6 +110,7 @@ const ConfigurationForm = ({
               formik.errors?.maxConnections && formik.touched?.maxConnections
             }
             errorMessage={formik.errors?.maxConnections}
+            disabled={viewOnly || disabled}
           />
         </Col>
         <Col sm={12}>
@@ -122,6 +133,7 @@ const ConfigurationForm = ({
                 buttonText='actions.add_server'
                 showError={formik.errors?.servers && formik.touched?.servers}
                 errorMessage={formik.errors?.servers}
+                disabled={viewOnly || disabled}
               />
             </Col>
           </Row>
@@ -146,6 +158,7 @@ const ConfigurationForm = ({
                 buttonText='actions.add_base_dn'
                 showError={formik.errors?.baseDNs && formik.touched?.baseDNs}
                 errorMessage={formik.errors?.baseDNs}
+                disabled={viewOnly || disabled}
               />
             </Col>
           </Row>
@@ -158,6 +171,7 @@ const ConfigurationForm = ({
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={viewOnly || disabled}
           />
         </Col>
         <Col sm={12}>
@@ -168,6 +182,7 @@ const ConfigurationForm = ({
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={viewOnly || disabled}
           />
         </Col>
         <Col sm={12}>
@@ -180,6 +195,7 @@ const ConfigurationForm = ({
             lsize={3}
             rsize={9}
             value={formik.values.useAnonymousBind}
+            disabled={viewOnly || disabled}
           />
         </Col>
         <Col sm={12}>
@@ -192,6 +208,7 @@ const ConfigurationForm = ({
             lsize={3}
             rsize={9}
             value={formik.values.useSSL}
+            disabled={viewOnly || disabled}
           />
         </Col>
         <Col sm={12}>
@@ -204,19 +221,22 @@ const ConfigurationForm = ({
             lsize={3}
             rsize={9}
             value={formik.values.enabled}
+            disabled={viewOnly || disabled}
           />
         </Col>
       </FormGroup>
 
-      <Row>
-        <Col>
-          <GluuCommitFooter
-            hideButtons={{ save: true, back: false }}
-            type='submit'
-            saveHandler={toggle}
-          />
-        </Col>
-      </Row>
+      {(!viewOnly && !disabled) && 
+        <Row>
+          <Col>
+            <GluuCommitFooter
+              hideButtons={{ save: true, back: false }}
+              type='submit'
+              saveHandler={toggle}
+            />
+          </Col>
+        </Row>
+      }
       <GluuCommitDialog
         handler={toggle}
         modal={modal}

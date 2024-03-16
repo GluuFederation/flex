@@ -47,6 +47,11 @@ const pluginMetadata = {
       permission: JANS_KC_LINK_WRITE,
     },
     {
+      component: JansKcSourceForm,
+      path: PLUGIN_BASE_PATH + '/sources/view',
+      permission: JANS_KC_LINK_READ,
+    },
+    {
       component: JansKcLinkPage,
       path: PLUGIN_BASE_PATH + '/target-configuration',
       permission: JANS_KC_LINK_READ,

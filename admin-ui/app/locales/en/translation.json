@@ -597,6 +597,7 @@
   "messages": {
     "add_permission": "Add Permission",
     "add_configuration": "Add Configuration",
+    "view_configuration": "View Configuration",
     "view_trust_relationshi_details": "View Trust Relationship Details",
     "add_trust_relationship": "Add Trust Relationship",
     "add_service_provider": "Add Service Provider",

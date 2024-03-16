@@ -539,6 +539,7 @@
   "messages": {
     "add_permission": "Ajouter une autorisation",
     "add_configuration": "Ajouter une configuration",
+    "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",
     "view_trust_relationshi_details": "Voir les détails de la relation de confiance",
     "add_trust_relationship": "Ajouter une relation de confiance",

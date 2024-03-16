@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
-import { buildPayload } from 'Utils/PermChecker'
+import { buildPayload, hasPermission, JANS_KC_LINK_WRITE } from 'Utils/PermChecker'
 import { isEmpty } from 'lodash'
 import { putConfiguration } from 'Plugins/jans-kc-link/redux/features/JansKcLinkSlice'
 import { useFormik } from 'formik'
@@ -26,6 +26,8 @@ const BasicConfiguration = () => {
   const configuration = useSelector(
     (state) => state.jansKcLinkReducer.configuration
   )
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const disabled = !hasPermission(permissions, JANS_KC_LINK_WRITE)
   const userAction = {}
   const [modal, setModal] = useState(false)
   const toggle = () => {
@@ -145,6 +147,7 @@ const BasicConfiguration = () => {
             lsize={3}
             rsize={9}
             value={formik.values.keycloakLinkEnabled}
+            disabled={disabled}
           />
         </Col>
 
@@ -157,6 +160,7 @@ const BasicConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
 
@@ -168,6 +172,7 @@ const BasicConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
 
@@ -193,6 +198,7 @@ const BasicConfiguration = () => {
                   formik.errors.keyAttributes && formik.touched.keyAttributes
                 }
                 errorMessage={formik.errors.keyAttributes}
+                disabled={disabled}
               />
             </Col>
           </Row>
@@ -221,6 +227,7 @@ const BasicConfiguration = () => {
                   formik.touched.sourceAttributes
                 }
                 errorMessage={formik.errors.sourceAttributes}
+                disabled={disabled}
               />
             </Col>
           </Row>
@@ -239,6 +246,7 @@ const BasicConfiguration = () => {
               formik.errors.snapshotFolder && formik.touched.snapshotFolder
             }
             errorMessage={formik.errors.snapshotFolder}
+            disabled={disabled}
           />
         </Col>
 
@@ -259,6 +267,7 @@ const BasicConfiguration = () => {
               formik.errors.updateMethod && formik.touched.updateMethod
             }
             errorMessage={formik.errors.updateMethod}
+            disabled={disabled}
           />
         </Col>
 
@@ -273,6 +282,7 @@ const BasicConfiguration = () => {
             rsize={9}
             value={formik.values.defaultInumServer}
             doc_category={null}
+            disabled={disabled}
           />
         </Col>
 
@@ -286,6 +296,7 @@ const BasicConfiguration = () => {
             lsize={3}
             rsize={9}
             value={formik.values.keepExternalPerson}
+            disabled={disabled}
           />
         </Col>
 
@@ -299,6 +310,7 @@ const BasicConfiguration = () => {
             lsize={3}
             rsize={9}
             value={formik.values.useSearchLimit}
+            disabled={disabled}
           />
         </Col>
 
@@ -312,6 +324,7 @@ const BasicConfiguration = () => {
             lsize={3}
             rsize={9}
             value={formik.values.allowPersonModification}
+            disabled={disabled}
           />
         </Col>
 
@@ -342,6 +355,7 @@ const BasicConfiguration = () => {
                   formik.touched.attributeMapping
                 }
                 errorMessage={formik.errors.attributeMapping}
+                disabled={disabled}
               />
             </Col>
           </Row>
@@ -356,6 +370,7 @@ const BasicConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
 
@@ -368,6 +383,7 @@ const BasicConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
 
@@ -385,6 +401,7 @@ const BasicConfiguration = () => {
             }
             errorMessage={formik.errors.cleanServiceInterval}
             type='number'
+            disabled={disabled}
           />
         </Col>
 
@@ -398,6 +415,7 @@ const BasicConfiguration = () => {
             lsize={3}
             rsize={9}
             value={formik.values.disableJdkLogger}
+            disabled={disabled}
           />
         </Col>
 
@@ -411,6 +429,7 @@ const BasicConfiguration = () => {
             lsize={3}
             rsize={9}
             value={formik.values.useLocalCache}
+            disabled={disabled}
           />
         </Col>
 
@@ -422,6 +441,7 @@ const BasicConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
 
@@ -464,19 +484,22 @@ const BasicConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
       </FormGroup>
 
-      <Row>
-        <Col>
-          <GluuCommitFooter
-            hideButtons={{ save: true, back: false }}
-            type='submit'
-            saveHandler={toggle}
-          />
-        </Col>
-      </Row>
+      {!disabled && 
+        <Row>
+          <Col>
+            <GluuCommitFooter
+              hideButtons={{ save: true, back: false }}
+              type='submit'
+              saveHandler={toggle}
+            />
+          </Col>
+        </Row>
+      }
       <GluuCommitDialog
         handler={toggle}
         modal={modal}

@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { buildPayload } from 'Utils/PermChecker'
+import { buildPayload, hasPermission, JANS_KC_LINK_WRITE } from 'Utils/PermChecker'
 import { putConfiguration } from 'Plugins/jans-kc-link/redux/features/JansKcLinkSlice'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -13,6 +13,9 @@ const KeycloackConfiguration = () => {
   const configuration = useSelector(
     (state) => state.jansKcLinkReducer.configuration
   )
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const disabled = !hasPermission(permissions, JANS_KC_LINK_WRITE)
+
   const userAction = {}
   const [modal, setModal] = useState(false)
   const toggle = () => {
@@ -82,6 +85,7 @@ const KeycloackConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
         <Col sm={12}>
@@ -92,6 +96,7 @@ const KeycloackConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
         <Col sm={12}>
@@ -102,6 +107,7 @@ const KeycloackConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
         <Col sm={12}>
@@ -113,6 +119,7 @@ const KeycloackConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
         <Col sm={12}>
@@ -123,6 +130,7 @@ const KeycloackConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
         <Col sm={12}>
@@ -133,6 +141,7 @@ const KeycloackConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
         <Col sm={12}>
@@ -144,19 +153,22 @@ const KeycloackConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
+            disabled={disabled}
           />
         </Col>
       </FormGroup>
 
-      <Row>
-        <Col>
-          <GluuCommitFooter
-            hideButtons={{ save: true, back: false }}
-            type='submit'
-            saveHandler={toggle}
-          />
-        </Col>
-      </Row>
+      {!disabled && 
+        <Row>
+          <Col>
+            <GluuCommitFooter
+              hideButtons={{ save: true, back: false }}
+              type='submit'
+              saveHandler={toggle}
+            />
+          </Col>
+        </Row>
+      }
       <GluuCommitDialog
         handler={toggle}
         modal={modal}
