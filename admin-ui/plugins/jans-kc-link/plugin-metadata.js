@@ -1,7 +1,8 @@
-import { JANS_KC_LINK_READ } from 'Utils/PermChecker'
+import { JANS_KC_LINK_READ, JANS_KC_LINK_WRITE } from 'Utils/PermChecker'
 import JansKcLinkPage from './components/JansKcLinkPage'
 import jansKcLinkSaga from './redux/sagas/JansKcLinkSaga'
 import jansKcLinkReducer from './redux/features/JansKcLinkSlice'
+import JansKcSourceForm from './components/JansKcSourceForm'
 
 const PLUGIN_BASE_PATH = '/jans-kc-link'
 
@@ -34,6 +35,16 @@ const pluginMetadata = {
       component: JansKcLinkPage,
       path: PLUGIN_BASE_PATH + '/sources',
       permission: JANS_KC_LINK_READ,
+    },
+    {
+      component: JansKcSourceForm,
+      path: PLUGIN_BASE_PATH + '/sources/add',
+      permission: JANS_KC_LINK_WRITE,
+    },
+    {
+      component: JansKcSourceForm,
+      path: PLUGIN_BASE_PATH + '/sources/edit',
+      permission: JANS_KC_LINK_WRITE,
     },
     {
       component: JansKcLinkPage,

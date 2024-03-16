@@ -1,0 +1,132 @@
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router'
+import {
+  convertToStringArray,
+  isStringsArray,
+} from 'Plugins/jans-link/components/SourceBackendServers/SourceBackendServerForm'
+import { buildPayload } from 'Utils/PermChecker'
+import { putConfiguration, toggleSavedFormFlag } from 'Plugins/jans-kc-link/redux/features/JansKcLinkSlice'
+import ConfigurationForm from './ConfigurationForm'
+import * as Yup from 'yup'
+import { useTranslation } from 'react-i18next'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import { Card, CardBody } from 'Components'
+
+const JansKcSourceForm = () => {
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const sourceConfig = useLocation().state?.sourceConfig
+  const configuration = useSelector(
+    (state) => state.jansKcLinkReducer.configuration
+  )
+  const savedForm = useSelector((state) => state.jansKcLinkReducer.savedForm)
+  const loading = useSelector((state) => state.jansKcLinkReducer.loading)
+
+  const initValues = {
+    useAnonymousBind: sourceConfig?.useAnonymousBind || false,
+    useSSL: sourceConfig?.useSSL || false,
+    localPrimaryKey: sourceConfig?.localPrimaryKey || '',
+    primaryKey: sourceConfig?.primaryKey || '',
+    servers: sourceConfig?.servers || [],
+    baseDNs: sourceConfig?.baseDNs || [],
+    bindPassword: sourceConfig?.bindPassword || null,
+    configId: sourceConfig?.configId || '',
+    bindDN: sourceConfig?.bindDN || '',
+    maxConnections: sourceConfig?.maxConnections || null,
+    enabled: sourceConfig?.enabled || false,
+  }
+
+  const schema = Yup.object({
+    configId: Yup.string()
+      .min(2, 'Mininum 2 characters')
+      .required(`${t('fields.name')} ${t('messages.is_required')}`),
+    bindDN: Yup.string()
+      .min(2, 'Mininum 2 characters')
+      .required(`${t('fields.bind_dn')} ${t('messages.is_required')}`),
+    maxConnections: Yup.string().required(
+      `${t('fields.max_connections')} ${t('messages.is_required')}`
+    ),
+    bindPassword: Yup.string().required(
+      `${t('fields.bind_password')} ${t('messages.is_required')}`
+    ),
+    servers: Yup.array().min(
+      1,
+      `${t('fields.server_port')} ${t('messages.is_required')}`
+    ),
+    baseDNs: Yup.array().min(
+      1,
+      `${t('fields.base_dns')} ${t('messages.is_required')}`
+    ),
+  })
+
+  const handleSubmit = ({ userAction, userMessage, values }) => {
+    const baseDNs = isStringsArray(values?.baseDNs || [])
+      ? values.baseDNs
+      : convertToStringArray(values?.baseDNs || [])
+    const servers = isStringsArray(values?.servers || [])
+      ? values?.servers
+      : convertToStringArray(values?.servers || [])
+
+    let payload
+
+    if (!sourceConfig?.configId) {
+      const sourceConfigs = [...(configuration.sourceConfigs || [])]
+      payload = [
+        ...sourceConfigs,
+        {
+          ...values,
+          baseDNs: baseDNs,
+          servers: servers,
+        },
+      ]
+    } else {
+      payload = configuration.sourceConfigs?.map((config) => {
+        return config.configId === sourceConfig.configId
+          ? {
+              ...config,
+              ...values,
+              baseDNs: baseDNs,
+              servers: servers,
+            }
+          : config
+      })
+    }
+    buildPayload(userAction, userMessage, {
+      appConfiguration4: {
+        ...configuration,
+        sourceConfigs: payload,
+      },
+    })
+
+    dispatch(putConfiguration({ action: userAction }))
+  }
+
+  useEffect(() => {
+    if (savedForm) {
+      navigate('/jans-kc-link/sources')
+    }
+
+    return () => {
+      dispatch(toggleSavedFormFlag(false))
+    }
+  }, [savedForm])
+
+  return (
+    <GluuLoader blocking={loading}>
+      <Card className='mb-3' style={applicationStyle.mainCard}>
+        <CardBody>
+          <ConfigurationForm
+            handleFormSubmission={handleSubmit}
+            validationSchema={schema}
+            initialValues={initValues}
+          />
+        </CardBody>
+      </Card>
+    </GluuLoader>
+  )
+}
+
+export default JansKcSourceForm

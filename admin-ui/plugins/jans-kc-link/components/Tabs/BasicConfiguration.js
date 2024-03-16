@@ -15,6 +15,10 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import moment from 'moment/moment'
+import {
+  convertToStringArray,
+  isStringsArray,
+} from 'Plugins/jans-link/components/SourceBackendServers/SourceBackendServerForm'
 
 const BasicConfiguration = () => {
   const { t } = useTranslation()
@@ -102,6 +106,12 @@ const BasicConfiguration = () => {
       appConfiguration4: {
         ...configuration,
         ...formik.values,
+        sourceAttributes: isStringsArray(formik.values?.sourceAttributes || [])
+          ? formik.values.sourceAttributes
+          : convertToStringArray(formik.values?.sourceAttributes || []),
+        keyAttributes: isStringsArray(formik.values.keyAttributes || [])
+          ? formik.values.keyAttributes
+          : convertToStringArray(formik.values?.keyAttributes || []),
         attributeMapping: formik.values.attributeMapping?.length
           ? formik.values.attributeMapping.map((attribute) => {
               return {
