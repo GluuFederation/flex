@@ -8,11 +8,11 @@ import {
 import { buildPayload } from 'Utils/PermChecker'
 import { putConfiguration, toggleSavedFormFlag } from 'Plugins/jans-kc-link/redux/features/JansKcLinkSlice'
 import ConfigurationForm from './ConfigurationForm'
-import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { Card, CardBody } from 'Components'
+import { getInitalValues, getValidationSchema } from 'Plugins/jans-kc-link/helper/index'
 
 const JansKcSourceForm = () => {
   const navigate = useNavigate()
@@ -24,43 +24,6 @@ const JansKcSourceForm = () => {
   )
   const savedForm = useSelector((state) => state.jansKcLinkReducer.savedForm)
   const loading = useSelector((state) => state.jansKcLinkReducer.loading)
-
-  const initValues = {
-    useAnonymousBind: sourceConfig?.useAnonymousBind || false,
-    useSSL: sourceConfig?.useSSL || false,
-    localPrimaryKey: sourceConfig?.localPrimaryKey || '',
-    primaryKey: sourceConfig?.primaryKey || '',
-    servers: sourceConfig?.servers || [],
-    baseDNs: sourceConfig?.baseDNs || [],
-    bindPassword: sourceConfig?.bindPassword || null,
-    configId: sourceConfig?.configId || '',
-    bindDN: sourceConfig?.bindDN || '',
-    maxConnections: sourceConfig?.maxConnections || null,
-    enabled: sourceConfig?.enabled || false,
-  }
-
-  const schema = Yup.object({
-    configId: Yup.string()
-      .min(2, 'Mininum 2 characters')
-      .required(`${t('fields.name')} ${t('messages.is_required')}`),
-    bindDN: Yup.string()
-      .min(2, 'Mininum 2 characters')
-      .required(`${t('fields.bind_dn')} ${t('messages.is_required')}`),
-    maxConnections: Yup.string().required(
-      `${t('fields.max_connections')} ${t('messages.is_required')}`
-    ),
-    bindPassword: Yup.string().required(
-      `${t('fields.bind_password')} ${t('messages.is_required')}`
-    ),
-    servers: Yup.array().min(
-      1,
-      `${t('fields.server_port')} ${t('messages.is_required')}`
-    ),
-    baseDNs: Yup.array().min(
-      1,
-      `${t('fields.base_dns')} ${t('messages.is_required')}`
-    ),
-  })
 
   const handleSubmit = ({ userAction, userMessage, values }) => {
     const baseDNs = isStringsArray(values?.baseDNs || [])
@@ -120,8 +83,8 @@ const JansKcSourceForm = () => {
         <CardBody>
           <ConfigurationForm
             handleFormSubmission={handleSubmit}
-            validationSchema={schema}
-            initialValues={initValues}
+            validationSchema={getValidationSchema(t)}
+            initialValues={getInitalValues(sourceConfig)}
           />
         </CardBody>
       </Card>

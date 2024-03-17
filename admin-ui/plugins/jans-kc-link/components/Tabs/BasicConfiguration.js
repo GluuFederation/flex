@@ -7,8 +7,6 @@ import { isEmpty } from 'lodash'
 import { putConfiguration } from 'Plugins/jans-kc-link/redux/features/JansKcLinkSlice'
 import { useFormik } from 'formik'
 import { Row, Col, Form, FormGroup } from 'Components'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -19,6 +17,7 @@ import {
   convertToStringArray,
   isStringsArray,
 } from 'Plugins/jans-link/components/SourceBackendServers/SourceBackendServerForm'
+import SharedFooter from '../SharedFooter'
 
 const BasicConfiguration = () => {
   const { t } = useTranslation()
@@ -489,24 +488,7 @@ const BasicConfiguration = () => {
         </Col>
       </FormGroup>
 
-      {!disabled && 
-        <Row>
-          <Col>
-            <GluuCommitFooter
-              hideButtons={{ save: true, back: false }}
-              type='submit'
-              saveHandler={toggle}
-            />
-          </Col>
-        </Row>
-      }
-      <GluuCommitDialog
-        handler={toggle}
-        modal={modal}
-        onAccept={submitForm}
-        formik={formik}
-        feature='jans_kc_link_write'
-      />
+      <SharedFooter disabled={disabled} toggle={toggle} formik={formik} modal={modal} submitForm={submitForm} feature='jans_kc_link_write' />
     </Form>
   )
 }

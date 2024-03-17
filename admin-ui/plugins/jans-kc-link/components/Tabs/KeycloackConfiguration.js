@@ -3,10 +3,9 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { buildPayload, hasPermission, JANS_KC_LINK_WRITE } from 'Utils/PermChecker'
 import { putConfiguration } from 'Plugins/jans-kc-link/redux/features/JansKcLinkSlice'
-import { Row, Col, Form, FormGroup } from 'Components'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import { Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import SharedFooter from '../SharedFooter'
 
 const KeycloackConfiguration = () => {
   const dispatch = useDispatch()
@@ -158,24 +157,7 @@ const KeycloackConfiguration = () => {
         </Col>
       </FormGroup>
 
-      {!disabled && 
-        <Row>
-          <Col>
-            <GluuCommitFooter
-              hideButtons={{ save: true, back: false }}
-              type='submit'
-              saveHandler={toggle}
-            />
-          </Col>
-        </Row>
-      }
-      <GluuCommitDialog
-        handler={toggle}
-        modal={modal}
-        onAccept={submitForm}
-        formik={formik}
-        feature='jans_kc_link_write'
-      />
+      <SharedFooter disabled={disabled} toggle={toggle} formik={formik} modal={modal} submitForm={submitForm} feature='jans_kc_link_write' />
     </Form>
   )
 }
