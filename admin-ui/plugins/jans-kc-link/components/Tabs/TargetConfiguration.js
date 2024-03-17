@@ -40,20 +40,6 @@ const TargetConfiguration = () => {
 
   const { targetConfig = {} } = configuration
 
-  const {
-    bindDN = '',
-    configId = '',
-    bindPassword,
-    maxConnections = 0,
-    baseDNs = [],
-    servers = [],
-    useAnonymousBind = false,
-    useSSL = false,
-    enabled = false,
-    localPrimaryKey = '',
-    primaryKey = '',
-  } = targetConfig
-
   return (
     <ConfigurationForm
       handleFormSubmission={handleFormSubmission}
