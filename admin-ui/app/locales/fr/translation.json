@@ -31,6 +31,9 @@
     "adminui": "Administratrice",
     "config-api": "Config-API",
     "webhooks": "Webhooks",
+    "add_source": "Ajouter une source",
+    "edit_source": "Modifier la source",
+    "view_source": "Afficher la source",
     "saml": "SAML",
     "trust_relationships": "Relations de confiance",
     "api": {

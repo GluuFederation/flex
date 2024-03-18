@@ -16,6 +16,7 @@ import StmpIcon from "Components/SVG/menu/Smtp"
 import FidoIcon from "Components/SVG/menu/Fido"
 import ScimIcon from "Components/SVG/menu/Scim"
 import SamlIcon from 'Components/SVG/menu/Saml'
+import JansKcLinkIcon from 'Components/SVG/menu/JansKcLinkIcon'
 import { ThemeContext } from 'Context/theme/themeContext'
 import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
@@ -62,6 +63,8 @@ function GluuAppSidebar() {
         return <ScimIcon className="menu-icon" style={{ top: '-2px' }} />
       case 'jans_link':
         return <CachedIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+      case 'jans_kc_link':
+          return <JansKcLinkIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
       case 'saml':
         return <SamlIcon className="menu-icon" style={{ top: 0, height: '28px', width: '28px' }} />
       default:

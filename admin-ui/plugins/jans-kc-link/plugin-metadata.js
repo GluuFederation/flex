@@ -10,7 +10,7 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.jans_kc_link',
-      icon: 'jans_link',
+      icon: 'jans_kc_link',
       path: PLUGIN_BASE_PATH,
       permission: JANS_KC_LINK_READ,
     },

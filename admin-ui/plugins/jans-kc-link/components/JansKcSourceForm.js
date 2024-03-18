@@ -13,17 +13,27 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { Card, CardBody } from 'Components'
 import { getInitalValues, getValidationSchema } from 'Plugins/jans-kc-link/helper/index'
+import SetTitle from 'Utils/SetTitle'
 
 const JansKcSourceForm = () => {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const sourceConfig = useLocation().state?.sourceConfig
+  const sourceConfig = useLocation().state?.sourceConfig || {}
   const configuration = useSelector(
     (state) => state.jansKcLinkReducer.configuration
   )
   const savedForm = useSelector((state) => state.jansKcLinkReducer.savedForm)
   const loading = useSelector((state) => state.jansKcLinkReducer.loading)
+  const viewOnly = useLocation().state?.viewOnly || false
+
+  if (viewOnly) {
+    SetTitle(t('menus.view_source'))
+  } else if (sourceConfig?.configId) {
+    SetTitle(t('menus.edit_source'))
+  } else {
+    SetTitle(t('menus.add_source'))
+  }
 
   const handleSubmit = ({ userAction, userMessage, values }) => {
     const baseDNs = isStringsArray(values?.baseDNs || [])
@@ -36,7 +46,7 @@ const JansKcSourceForm = () => {
     let payload
 
     if (!sourceConfig?.configId) {
-      const sourceConfigs = [...(configuration.sourceConfigs || [])]
+      const sourceConfigs = [...(configuration?.sourceConfigs || [])]
       payload = [
         ...sourceConfigs,
         {
