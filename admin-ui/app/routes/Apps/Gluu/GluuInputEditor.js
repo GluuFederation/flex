@@ -52,7 +52,7 @@ function GluuInputEditor({
           placeholder={placeholder}
           fontSize={16}
           onCursorChange={onCursorChange}
-          width='95%'
+          width='90%'
           height='300px'
           onChange={(e) => handleChange(e)}
           name={name}
