@@ -1594,20 +1594,20 @@
 <p>Once a webhook is created it can be searched, edited or deleted.   </p>
 <p><img alt="image" src="../../../assets/admin-ui/webhook-view.png" /></p>
 <h2 id="shortcodes">Shortcodes<a class="headerlink" href="#shortcodes" title="Permanent link">#</a></h2>
-<p>When working with webhooks, <strong>shortcodes</strong> play a crucial role in dynamically injecting data into URLs and request bodies. They allow for flexible and customizable communication between different systems. Shortcode is denoted by curly braces <code>{}</code>.</p>
+<p>When working with webhooks, <strong>shortcodes</strong> play a crucial role in dynamically injecting data into URLs and request bodies. They allow for flexible and customizable communication between different systems. Shortcode is denoted by curly braces <code>${}</code>.</p>
 <ul>
 <li><strong>Using shortcodes in webhook url:</strong> Shortcodes can be used in path parameters or query parameters of webhook url.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>https://example.com/webhook/<span class="o">{</span>inum<span class="o">}</span>/update
-https://example.com/webhook?action<span class="o">={</span>action<span class="o">}</span><span class="p">&amp;</span><span class="nv">user_id</span><span class="o">={</span>userId<span class="o">}</span>
+<div class="highlight"><pre><span></span><code>https://example.com/webhook/<span class="si">${</span><span class="nv">inum</span><span class="si">}</span>/update
+https://example.com/webhook?action<span class="o">=</span><span class="si">${</span><span class="nv">action</span><span class="si">}</span><span class="p">&amp;</span><span class="nv">user_id</span><span class="o">=</span><span class="si">${</span><span class="nv">userId</span><span class="si">}</span>
 </code></pre></div>
 <ul>
 <li><strong>Using shortcodes in webhook request-body:</strong> Webhook request bodies can utilize placeholders to dynamically populate data sent to the recipient system.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="o">{</span>
-  <span class="s2">&quot;username&quot;</span>: <span class="s2">&quot;{username}&quot;</span>,
-  <span class="s2">&quot;email&quot;</span>: <span class="s2">&quot;{email}&quot;</span>,
-  <span class="s2">&quot;password&quot;</span>: <span class="s2">&quot;{password}&quot;</span>
+  <span class="s2">&quot;username&quot;</span>: <span class="s2">&quot;</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span><span class="s2">&quot;</span>,
+  <span class="s2">&quot;email&quot;</span>: <span class="s2">&quot;</span><span class="si">${</span><span class="nv">email</span><span class="si">}</span><span class="s2">&quot;</span>,
+  <span class="s2">&quot;password&quot;</span>: <span class="s2">&quot;</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 </code></pre></div>
 <p><img alt="image" src="../../../assets/admin-ui/shortcodes.png" /></p>
@@ -1702,7 +1702,7 @@ https://example.com/webhook?action<span class="o">={</span>action<span class="o"
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-03-12T18:36:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-03-12</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-03-19T15:50:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-03-19</span>
       
         <br>
         Created:
