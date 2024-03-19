@@ -32,6 +32,10 @@
     "metadataFile": "./jans-link/plugin-metadata"
   },
   {
+    "key": "jans-kc-link",
+    "metadataFile": "./jans-kc-link/plugin-metadata"
+  },
+  {
     "key": "scim",
     "metadataFile": "./scim/plugin-metadata"
   },
