@@ -144,7 +144,7 @@ const Sources = () => {
         modal={modal}
         subject='jans kc source'
         onAccept={onDeletionConfirmed}
-        feature='jans_kc_link_write'
+        feature='jans_keycloak_link_write'
       />
     </>
   )
