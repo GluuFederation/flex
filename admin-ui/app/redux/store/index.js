@@ -30,7 +30,7 @@ process()
 const persistedReducer = persistReducer(persistConfig, reducers)
 
 const store = configureStore({
-  middleware: middlewares,
+  middleware: () => middlewares,
   reducer: persistedReducer
 })
 
