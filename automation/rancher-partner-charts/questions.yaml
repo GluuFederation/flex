@@ -1,16 +1,5 @@
 questions:
 # ==================
-# License SSA group
-# ==================
-- variable: global.licenseSsa
-  default: ""
-  required: true
-  type: string
-  label: License SSA
-  description: "Before initiating the setup, please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded."
-  group: "License SSA"
-
-# ==================
 # Distribution group
 # ==================
 - variable: global.distribution
