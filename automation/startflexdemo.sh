@@ -2,7 +2,6 @@
 set -eo pipefail
 GLUU_FQDN=$1
 GLUU_PERSISTENCE=$2
-GLUU_LICENSE_SSA=$3
 GLUU_CI_CD_RUN=$4
 EXT_IP=$5
 INSTALL_ISTIO=$6
@@ -21,9 +20,7 @@ if [[ $GLUU_PERSISTENCE != "LDAP" ]] && [[ $GLUU_PERSISTENCE != "MYSQL" ]] && [[
   echo "[E] Incorrect entry. Please enter either LDAP, MYSQL or PGSQL"
   exit 1
 fi
-if [[ ! "$GLUU_LICENSE_SSA" ]]; then
-  read -rp "Enter the License SSA provided by Gluu:                           " GLUU_LICENSE_SSA
-fi
+
 LOG_TARGET="FILE"
 LOG_LEVEL="TRACE"
 if [[ -z $GLUU_CI_CD_RUN ]]; then
@@ -145,10 +142,8 @@ EOF
 fi
 
 echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
-ENCODED_GLUU_LICENSE_SSA=$(echo -n "$GLUU_LICENSE_SSA" | base64 -w0)
 cat << EOF >> override.yaml
 global:
-  licenseSsa: $ENCODED_GLUU_LICENSE_SSA
   cloud:
     testEnviroment: true
   istio:
