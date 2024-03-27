@@ -242,7 +242,7 @@ const ConfigurationForm = ({
         modal={modal}
         onAccept={submitForm}
         formik={formik}
-        feature='jans_kc_link_write'
+        feature='jans_keycloak_link_write'
       />
     </Form>
   )

@@ -488,7 +488,7 @@ const BasicConfiguration = () => {
         </Col>
       </FormGroup>
 
-      <SharedFooter disabled={disabled} toggle={toggle} formik={formik} modal={modal} submitForm={submitForm} feature='jans_kc_link_write' />
+      <SharedFooter disabled={disabled} toggle={toggle} formik={formik} modal={modal} submitForm={submitForm} feature='jans_keycloak_link_write' />
     </Form>
   )
 }
