@@ -7,7 +7,6 @@ Docker monolith image packaging for Gluu Flex.This image packs janssen services 
 ## Versions
 
 See [Releases](https://github.com/GluuFederation/docker-flex-monolith/releases) for stable versions. This image should never be used in production.
-For bleeding-edge/unstable version, use `gluufederation/monolith:5.0.0_dev`.
 
 ## Environment Variables
 
@@ -15,7 +14,6 @@ The following environment variables are supported by the container:
 
 | ENV                     | Description                                                                                                                                                     | Default                                          |
 |-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
-| `CN_GLUU_LICENSE_SSA`   | **REQUIRED** The organization/user that intends to use this needs to register with Gluu to trial Flex, after which you are issued a JWT you can use to install. | ``                                               |
 | `CN_HOSTNAME`           | Hostname to install gluu with.                                                                                                                                  | `demoexample.gluu.org`                           |
 | `CN_ADMIN_PASS`         | Password of the admin user.                                                                                                                                     | `1t5Fin3#security`                               |
 | `CN_ORG_NAME`           | Organization name. Used for ssl cert generation.                                                                                                                | `Gluu`                                           |

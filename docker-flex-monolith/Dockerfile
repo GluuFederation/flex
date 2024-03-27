@@ -41,7 +41,7 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-ENV FLEX_SOURCE_VERSION=f448591bbdfb24226e41b9f0ce26854e426e8928
+ENV FLEX_SOURCE_VERSION=ee491be66c5a480c12ac8f3e34d2d029968b7834
 # cleanup
 RUN rm -rf /tmp/jans
 
@@ -55,8 +55,7 @@ COPY LICENSE /licenses/LICENSE
 # SETUP ENVS
 # ==========
 
-ENV CN_GLUU_LICENSE_SSA="" \
-    CN_HOSTNAME="demoexample.gluu.org" \
+ENV CN_HOSTNAME="demoexample.gluu.org" \
     CN_ADMIN_PASS="" \
     CN_ORG_NAME="Gluu" \
     CN_EMAIL="support.gluu.org" \
