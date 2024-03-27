@@ -593,7 +593,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
               lsize={2}
               rsize={10}
               formik={formik}
-              value={item.script}
+              value={formik.values.script}
               readOnly={viewOnly}
               required
             />
