@@ -16,7 +16,6 @@ from jans.pycloudlib.persistence import id_from_dn
 from jans.pycloudlib.persistence.utils import PersistenceMapper
 
 from settings import LOGGING_CONFIG
-from ssa import get_license_config
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("admin-ui")
@@ -138,7 +137,15 @@ class PersistenceSetup:
 
         ctx.update(self.get_token_server_ctx())
 
-        ctx.update(get_license_config(self.manager))
+        ctx.update({
+            "license_hardware_key": "",
+            "oidc_client_id": "",
+            "oidc_client_secret": "",
+            "scan_license_api_hostname": "",
+            "op_host": "",
+            "ssa": "",
+            "org_id": "",
+        })
 
         # finalized contexts
         return ctx
@@ -235,14 +242,10 @@ def resolve_conf_app(old_conf, new_conf):
         old_conf["licenseConfig"] = new_conf["licenseConfig"]
         should_update = True
 
-    # there are various attributes need to be updated in the config
+    # there are various attributes need to be updated in the config (beware licenseConfig modification)
     else:
-        if any([
-            # licenseConfig.ssa is added as per v1.0.11
-            "ssa" not in old_conf["licenseConfig"],
-            # SSA may be changed
-            new_conf["licenseConfig"]["ssa"] != old_conf["licenseConfig"].get("ssa", ""),
-        ]):
+        # licenseConfig.ssa is added as per v1.0.11
+        if "ssa" not in old_conf["licenseConfig"]:
             old_conf["licenseConfig"]["ssa"] = new_conf["licenseConfig"]["ssa"]
             should_update = True
 
@@ -256,17 +259,6 @@ def resolve_conf_app(old_conf, new_conf):
         # credentialsEncryptionKey is removed post 1.0.12
         if "credentialsEncryptionKey" in old_conf["licenseConfig"]:
             old_conf["licenseConfig"].pop("credentialsEncryptionKey", None)
-            should_update = True
-
-        # check client ID and secret
-        for attr in ["clientId", "clientSecret"]:
-            if new_conf["licenseConfig"]["oidcClient"][attr] != old_conf["licenseConfig"]["oidcClient"][attr]:
-                old_conf["licenseConfig"]["oidcClient"][attr] = new_conf["licenseConfig"]["oidcClient"][attr]
-                should_update = True
-
-        # license hardware key is changed to org_id
-        if old_conf["licenseConfig"]["licenseHardwareKey"] != new_conf["licenseConfig"]["licenseHardwareKey"]:
-            old_conf["licenseConfig"]["licenseHardwareKey"] = new_conf["licenseConfig"]["licenseHardwareKey"]
             should_update = True
 
         client_changes = [
