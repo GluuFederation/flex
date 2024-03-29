@@ -23,6 +23,7 @@ import { Box } from '@mui/material'
 import Toggle from 'react-toggle'
 import { nameIDPolicyFormat } from '../helper'
 import SetTitle from 'Utils/SetTitle'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
@@ -413,7 +414,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
               modal={modal}
               onAccept={submitForm}
               formik={formik}
-              feature='saml_idp_write'
+              feature={adminUiFeatures.saml_idp_write}
             />
           </Form>
         </CardBody>

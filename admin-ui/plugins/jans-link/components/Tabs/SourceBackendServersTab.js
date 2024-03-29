@@ -12,6 +12,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/CacheRefreshSlice'
 import { buildPayload } from 'Utils/PermChecker'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SourceBackendServersTab = () => {
   const { t } = useTranslation()
@@ -134,7 +135,7 @@ const SourceBackendServersTab = () => {
         modal={modal}
         subject='openid connect client'
         onAccept={onDeletionConfirmed}
-        feature='jans_link_write'
+        feature={adminUiFeatures.jans_link_write}
       />
     </>
   )

@@ -22,6 +22,7 @@ import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { Paper, TablePagination } from '@mui/material'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 export const getTableCols = (t) => {
   return [
@@ -241,7 +242,7 @@ const SamlIdentityList = () => {
           modal={modal}
           subject='saml idp'
           onAccept={onDeletionConfirmed}
-          feature='saml_idp_write'
+          feature={adminUiFeatures.saml_idp_write}
         />
       )}
     </>

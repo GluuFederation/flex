@@ -15,6 +15,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { buildPayload } from 'Utils/PermChecker'
 import moment from 'moment/moment'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const ConfigurationTab = () => {
   const { t } = useTranslation()
@@ -303,7 +304,7 @@ const ConfigurationTab = () => {
           modal={modal}
           onAccept={submitForm}
           formik={formik}
-          feature='jans_link_write'
+          feature={adminUiFeatures.jans_link_write}
         />
       </Form>
     </>
