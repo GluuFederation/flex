@@ -10,6 +10,7 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useTranslation } from 'react-i18next'
 import { putSamlProperties } from 'Plugins/saml/redux/features/SamlSlice'
 import SetTitle from 'Utils/SetTitle'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SamlConfigurationForm = () => {
   const { t } = useTranslation()
@@ -106,7 +107,7 @@ const SamlConfigurationForm = () => {
         modal={modal}
         onAccept={submitForm}
         formik={formik}
-        feature='saml_configuration_write'
+        feature={adminUiFeatures.saml_configuration_write}
       />
     </Form>
   )

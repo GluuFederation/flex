@@ -12,6 +12,7 @@ import PropTypes from 'prop-types'
 import { useLocation } from 'react-router'
 import { useSelector } from 'react-redux'
 import { hasPermission, JANS_KC_LINK_WRITE } from 'Utils/PermChecker'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const ConfigurationForm = ({
   initialValues,
@@ -242,7 +243,7 @@ const ConfigurationForm = ({
         modal={modal}
         onAccept={submitForm}
         formik={formik}
-        feature='jans_kc_link_write'
+        feature={adminUiFeatures.jans_keycloak_link_write}
       />
     </Form>
   )

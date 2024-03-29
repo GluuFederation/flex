@@ -27,6 +27,7 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function AttributeListPage() {
   const { t } = useTranslation()
@@ -289,7 +290,7 @@ function AttributeListPage() {
             modal={modal}
             subject='attribute'
             onAccept={onDeletionConfirmed}
-            feature='attributes_delete'
+            feature={adminUiFeatures.attributes_delete}
           />
         )}
       </CardBody>

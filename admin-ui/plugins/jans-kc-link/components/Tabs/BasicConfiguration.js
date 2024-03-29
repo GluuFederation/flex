@@ -18,6 +18,7 @@ import {
   isStringsArray,
 } from 'Plugins/jans-link/components/SourceBackendServers/SourceBackendServerForm'
 import SharedFooter from '../SharedFooter'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const BasicConfiguration = () => {
   const { t } = useTranslation()
@@ -488,7 +489,7 @@ const BasicConfiguration = () => {
         </Col>
       </FormGroup>
 
-      <SharedFooter disabled={disabled} toggle={toggle} formik={formik} modal={modal} submitForm={submitForm} feature='jans_kc_link_write' />
+      <SharedFooter disabled={disabled} toggle={toggle} formik={formik} modal={modal} submitForm={submitForm} feature={adminUiFeatures.jans_keycloak_link_write} />
     </Form>
   )
 }

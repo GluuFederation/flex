@@ -131,3 +131,10 @@ objectClass: top
 auiFeatureId: saml_idp_delete
 displayName: SAML IDP - Delete
 jansScope: https://jans.io/idp/saml.delete
+
+dn: auiFeatureId=jans_keycloak_link_write,ou=auiFeatures,ou=admin-ui,o=jans
+objectClass: auiFeatures
+objectClass: top
+auiFeatureId: jans_keycloak_link_write
+displayName: Jans Keycloak Link - Edit
+jansScope: https://jans.io/oauth/config/jans-keycloak-link.write

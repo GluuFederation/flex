@@ -17,6 +17,7 @@ import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import * as Yup from 'yup'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function AttributeForm(props) {
   const { item, customOnSubmit, hideButtons } = props
@@ -438,7 +439,7 @@ function AttributeForm(props) {
             handler={toggleModal}
             modal={modal}
             onAccept={submitForm}
-            feature='attributes_write'
+            feature={adminUiFeatures.attributes_write}
             formik={formik}
           />
         </Form>

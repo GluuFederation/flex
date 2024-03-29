@@ -18,8 +18,6 @@ import {
   LIMIT,
   PATTERN,
   PATTERN_ID,
-  SEARCHING_OIDC_CLIENTS,
-  FETCHING_OIDC_CLIENTS,
 } from 'Plugins/auth-server/common/Constants'
 import {
   getOpenidClients,
@@ -38,6 +36,7 @@ import ClientShowScopes from './ClientShowScopes'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function ClientListPage() {
   const { t } = useTranslation()
@@ -396,7 +395,7 @@ function ClientListPage() {
             modal={modal}
             subject="openid connect client"
             onAccept={onDeletionConfirmed}
-            feature='oidc_clients_delete'
+            feature={adminUiFeatures.oidc_clients_delete}
           />
         )}
       </CardBody>

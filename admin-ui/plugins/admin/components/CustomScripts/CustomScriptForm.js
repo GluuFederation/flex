@@ -23,6 +23,7 @@ import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import { useSelector } from 'react-redux'
 import { Skeleton } from '@mui/material'
 import PropTypes from 'prop-types'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('Components/Widgets/GroupedButtons/Counter'))
@@ -619,7 +620,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
           onAccept={submitForm}
           formik={formik}
           disabled={viewOnly}
-          feature='custom_script_write'
+          feature={adminUiFeatures.custom_script_write}
         />
       </Form>
     </>

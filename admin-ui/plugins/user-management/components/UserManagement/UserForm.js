@@ -14,6 +14,8 @@ import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { debounce } from 'lodash'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import moment from 'moment/moment'
 
 function UserForm({ onSubmitData }) {
   const dispatch = useDispatch()
@@ -492,7 +494,7 @@ function UserForm({ onSubmitData }) {
           handler={toggle}
           modal={modal}
           onAccept={submitForm}
-          feature='users_edit'
+          feature={adminUiFeatures.users_edit}
           formik={formik}
         />
       </Form>
