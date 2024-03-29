@@ -29,6 +29,7 @@
   },
   "menus": {
     "adminui": "Administratrice",
+    "assets": "Assets",
     "config-api": "Config-API",
     "webhooks": "Webhooks",
     "add_source": "Ajouter une source",
@@ -680,6 +681,7 @@
   },
   "titles": {
     "acrs": "ACR",
+    "assets": "Jans Assets",
     "algorithmic_keys": "Clés algorithmiques",
     "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",

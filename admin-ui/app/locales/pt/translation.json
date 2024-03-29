@@ -29,6 +29,7 @@
   },
   "menus": {
     "adminui": "Admin",
+    "assets": "Assets",
     "config-api": "Config-API",
     "saml": "SAML",
     "add_source": "Adicionar Fonte",
@@ -676,6 +677,7 @@
   },
   "titles": {
     "acrs": "ACRs",
+    "assets": "Jans Assets",
     "algorithmic_keys": "Chaves Algorítmicas",
     "introspection_object": "Objeto de introspecção",
     "all_attributes": "Todos os Atributos",

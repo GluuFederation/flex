@@ -527,6 +527,7 @@
     "portuguese": "Portuguese"
   },
   "menus": {
+    "assets": "Assets",
     "scim": "SCIM",
     "saml": "SAML",
     "trust_relationships": "Trust Relationships",
@@ -756,6 +757,7 @@
   "titles": {
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",
+    "assets": "Jans Assets",
     "introspection_object": "Introspection Object",
     "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",
