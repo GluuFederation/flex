@@ -64,6 +64,18 @@ function AttributeForm(props) {
     if(result.regexp !== null) {
       result['attributeValidation'].regexp = result.regexp
     }
+
+    if (!validation) {
+      delete result['attributeValidation']['regexp']
+      delete result['regexp']
+
+      delete result['attributeValidation']['maxLength']
+      delete result['maxLength']
+
+      delete result['attributeValidation']['minLength']
+      delete result['minLength']
+    }
+  
     customOnSubmit({ data: JSON.stringify(result), userMessage })
   }
 
@@ -85,9 +97,10 @@ function AttributeForm(props) {
 
   const getInitialAttributeValues = (item) => {
     return {
+      ...item,
       name: item.name,
       displayName: item.displayName,
-      description: item.displayName,
+      description: item.description,
       status: item.status,
       dataType: item.dataType,
       editType: item.editType,
@@ -342,7 +355,7 @@ function AttributeForm(props) {
             label='fields.oxauth_claim_name'
             name='claimName'
             formik={formik}
-            value={item.claimName}
+            value={formik.values?.claimName}
             doc_category={ATTRIBUTE}
           />
           <FormGroup row>
@@ -353,7 +366,7 @@ function AttributeForm(props) {
                 lsize={6}
                 rsize={6}
                 label='fields.multivalued'
-                value={item.oxMultiValuedAttribute}
+                value={formik.values?.oxMultiValuedAttribute}
                 doc_category={ATTRIBUTE}
               />
             </Col>
@@ -364,7 +377,7 @@ function AttributeForm(props) {
                 lsize={6}
                 rsize={6}
                 label='fields.hide_on_discovery'
-                value={item.jansHideOnDiscovery}
+                value={formik.values?.jansHideOnDiscovery}
                 doc_category={ATTRIBUTE}
               />
             </Col>
@@ -375,7 +388,7 @@ function AttributeForm(props) {
                 lsize={6}
                 rsize={6}
                 label='fields.include_in_scim_extension'
-                value={item.scimCustomAttr}
+                value={formik.values?.scimCustomAttr}
                 doc_category={ATTRIBUTE}
               />
             </Col>
@@ -392,7 +405,7 @@ function AttributeForm(props) {
               label='fields.regular_expression'
               name='regexp'
               formik={formik}
-              value={item.attributeValidation.regexp}
+              value={formik.values?.regexp}
               doc_category={ATTRIBUTE}
             />
           )}
@@ -404,7 +417,9 @@ function AttributeForm(props) {
                   name='minLength'
                   formik={formik}
                   type='number'
-                  value={item.attributeValidation.minLength}
+                  lsize={6}
+                  rsize={6}
+                  value={formik.values?.minLength}
                   doc_category={ATTRIBUTE}
                 />
               </Col>
@@ -414,7 +429,9 @@ function AttributeForm(props) {
                   name='maxLength'
                   formik={formik}
                   type='number'
-                  value={item.attributeValidation.maxLength}
+                  lsize={4}
+                  rsize={6}
+                  value={formik.values?.maxLength}
                   doc_category={ATTRIBUTE}
                 />
               </Col>
@@ -424,14 +441,14 @@ function AttributeForm(props) {
             label='fields.saml1_uri'
             name='saml1Uri'
             formik={formik}
-            value={item.saml1Uri}
+            value={formik.values?.saml1Uri}
             doc_category={ATTRIBUTE}
           />
           <GluuInputRow
             label='fields.saml2_uri'
             name='saml2Uri'
             formik={formik}
-            value={item.saml2Uri}
+            value={formik.values?.saml2Uri}
             doc_category={ATTRIBUTE}
           />
           <GluuFooter hideButtons={hideButtons} />
