@@ -180,9 +180,9 @@ jobs:
           # END move generated chart from a previous step
 
           echo "Replacing release number markers with actual release number"
-          cd ${VERSION}
-          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${VERSION:1}/g"
-          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${VERSION:1}/g"
+          cd ${LATEST}
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${LATEST:1}/g"
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${LATEST:1}/g"
           git add . && git update-index --refresh
           cd ..
 
