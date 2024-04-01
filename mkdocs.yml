@@ -15,7 +15,6 @@ edit_uri: edit/main/docs/
 
 # Plugins
 plugins:
-   - include-markdown
    - tags
    - search
    - git-revision-date-localized:
