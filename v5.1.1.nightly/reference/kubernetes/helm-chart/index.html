@@ -1575,25 +1575,6 @@
                   
   
 
-  <nav class="md-tags" >
-    
-      
-      
-        <span class="md-tag">administration</span>
-      
-    
-      
-      
-        <span class="md-tag">reference</span>
-      
-    
-      
-      
-        <span class="md-tag">kubernetes</span>
-      
-    
-  </nav>
-
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/reference/kubernetes/helm-chart.md" title="Edit this page" class="md-content__button md-icon">
@@ -1603,7 +1584,7 @@
 
 
 <h1 id="gluu">gluu<a class="headerlink" href="#gluu" title="Permanent link">#</a></h1>
-<p><img alt="Version: 5.0.21" src="https://img.shields.io/badge/Version-5.0.21-informational?style=flat-square" /> <img alt="AppVersion: 5.0.0" src="https://img.shields.io/badge/AppVersion-5.0.0-informational?style=flat-square" /></p>
+<p><img alt="Version: 5.1.1-dev" src="https://img.shields.io/badge/Version-5.1.1--dev-informational?style=flat-square" /> <img alt="AppVersion: 5.1.1" src="https://img.shields.io/badge/AppVersion-5.1.1-informational?style=flat-square" /></p>
 <p>Gluu Access and Identity Management</p>
 <p><strong>Homepage:</strong> <a href="https://www.gluu.org">https://www.gluu.org</a></p>
 <h2 id="maintainers">Maintainers<a class="headerlink" href="#maintainers" title="Permanent link">#</a></h2>
@@ -1625,7 +1606,7 @@
 </table>
 <h2 id="source-code">Source Code<a class="headerlink" href="#source-code" title="Permanent link">#</a></h2>
 <ul>
-<li><a href="https://gluu.org/docs/gluu-server">https://gluu.org/docs/gluu-server</a></li>
+<li><a href="https://docs.gluu.org">https://docs.gluu.org</a></li>
 </ul>
 <h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">#</a></h2>
 <p>Kubernetes: <code>&gt;=v1.21.0-0</code></p>
@@ -1641,72 +1622,72 @@
 <tr>
 <td></td>
 <td>admin-ui</td>
-<td>5.0.21</td>
+<td>5.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>auth-server</td>
-<td>5.0.21</td>
+<td>1.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>auth-server-key-rotation</td>
-<td>5.0.21</td>
+<td>1.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>casa</td>
-<td>5.0.21</td>
+<td>1.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>cn-istio-ingress</td>
-<td>5.0.21</td>
+<td>5.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>config</td>
-<td>5.0.21</td>
+<td>1.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>config-api</td>
-<td>5.0.21</td>
+<td>1.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>fido2</td>
-<td>5.0.21</td>
+<td>1.1.1-dev</td>
+</tr>
+<tr>
+<td></td>
+<td>link</td>
+<td>1.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>nginx-ingress</td>
-<td>5.0.21</td>
+<td>5.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>opendj</td>
-<td>5.0.21</td>
-</tr>
-<tr>
-<td></td>
-<td>oxpassport</td>
-<td>5.0.21</td>
-</tr>
-<tr>
-<td></td>
-<td>oxshibboleth</td>
-<td>5.0.21</td>
+<td>5.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>persistence</td>
-<td>5.0.21</td>
+<td>1.1.1-dev</td>
+</tr>
+<tr>
+<td></td>
+<td>saml</td>
+<td>1.1.1-dev</td>
 </tr>
 <tr>
 <td></td>
 <td>scim</td>
-<td>5.0.21</td>
+<td>1.1.1-dev</td>
 </tr>
 </tbody>
 </table>
@@ -1724,7 +1705,7 @@
 <tr>
 <td>admin-ui</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/gluufederation/flex/admin-ui","tag":"1.0.16-1"},"lifecycle":{},"livenessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"2000m","memory":"2000Mi"},"requests":{"cpu":"2000m","memory":"2000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/gluufederation/flex/admin-ui","tag":"5.1.1_dev"},"lifecycle":{},"livenessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":8080},"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"2000m","memory":"2000Mi"},"requests":{"cpu":"2000m","memory":"2000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>Admin GUI for configuration of the auth-server</td>
 </tr>
 <tr>
@@ -1738,6 +1719,12 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>admin-ui.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>admin-ui.dnsConfig</td>
@@ -1790,7 +1777,7 @@
 <tr>
 <td>admin-ui.image.tag</td>
 <td>string</td>
-<td><code>"1.0.16-1"</code></td>
+<td><code>"5.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -1886,13 +1873,13 @@
 <tr>
 <td>auth-server</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/auth-server","tag":"1.0.16-1"},"lifecycle":{},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"2500m","memory":"2500Mi"},"requests":{"cpu":"2500m","memory":"2500Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/auth-server","tag":"1.1.1_dev"},"lifecycle":{},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"2500m","memory":"2500Mi"},"requests":{"cpu":"2500m","memory":"2500Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>OAuth Authorization Server, the OpenID Connect Provider, the UMA Authorization Server--this is the main Internet facing component of Gluu. It's the service that returns tokens, JWT's and identity assertions. This service must be Internet facing.</td>
 </tr>
 <tr>
 <td>auth-server-key-rotation</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/certmanager","tag":"1.0.16-1"},"keysLife":48,"lifecycle":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/certmanager","tag":"1.1.1_dev"},"keysLife":48,"keysPushDelay":0,"keysPushStrategy":"NEWER","keysStrategy":"NEWER","lifecycle":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>Responsible for regenerating auth-keys per x hours</td>
 </tr>
 <tr>
@@ -1906,6 +1893,12 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>auth-server-key-rotation.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>auth-server-key-rotation.dnsConfig</td>
@@ -1940,7 +1933,7 @@
 <tr>
 <td>auth-server-key-rotation.image.tag</td>
 <td>string</td>
-<td><code>"1.0.16-1"</code></td>
+<td><code>"1.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -1948,6 +1941,24 @@
 <td>int</td>
 <td><code>48</code></td>
 <td>Auth server key rotation keys life in hours</td>
+</tr>
+<tr>
+<td>auth-server-key-rotation.keysPushDelay</td>
+<td>int</td>
+<td><code>0</code></td>
+<td>Delay (in seconds) before pushing private keys to Auth server</td>
+</tr>
+<tr>
+<td>auth-server-key-rotation.keysPushStrategy</td>
+<td>string</td>
+<td><code>"NEWER"</code></td>
+<td>Set key selection strategy after pushing private keys to Auth server (only takes effect when keysPushDelay value is greater than 0)</td>
+</tr>
+<tr>
+<td>auth-server-key-rotation.keysStrategy</td>
+<td>string</td>
+<td><code>"NEWER"</code></td>
+<td>Set key selection strategy used by Auth server</td>
 </tr>
 <tr>
 <td>auth-server-key-rotation.resources</td>
@@ -2022,6 +2033,12 @@
 <td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
 </tr>
 <tr>
+<td>auth-server.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
+</tr>
+<tr>
 <td>auth-server.dnsConfig</td>
 <td>object</td>
 <td><code>{}</code></td>
@@ -2072,7 +2089,7 @@
 <tr>
 <td>auth-server.image.tag</td>
 <td>string</td>
-<td><code>"1.0.16-1"</code></td>
+<td><code>"1.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -2174,8 +2191,8 @@
 <tr>
 <td>casa</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/gluufederation/flex/casa","tag":"5.0.0-15"},"lifecycle":{},"livenessProbe":{"httpGet":{"path":"/casa/health-check","port":"http-casa"},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"httpGet":{"path":"/casa/health-check","port":"http-casa"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"500Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
-<td>Gluu Casa ("Casa") is a self-service web portal for end-users to manage authentication and authorization preferences for their account in a Gluu Server.</td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/casa","tag":"1.1.1_dev"},"lifecycle":{},"livenessProbe":{"httpGet":{"path":"/jans-casa/health-check","port":"http-casa"},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"httpGet":{"path":"/jans-casa/health-check","port":"http-casa"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"500Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td>Janssen Casa ("Casa") is a self-service web portal for end-users to manage authentication and authorization preferences for their account in a Janssen Auth Server.</td>
 </tr>
 <tr>
 <td>casa.additionalAnnotations</td>
@@ -2188,6 +2205,12 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>casa.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>casa.dnsConfig</td>
@@ -2234,25 +2257,25 @@
 <tr>
 <td>casa.image.repository</td>
 <td>string</td>
-<td><code>"ghcr.io/gluufederation/flex/casa"</code></td>
+<td><code>"ghcr.io/janssenproject/jans/casa"</code></td>
 <td>Image  to use for deploying.</td>
 </tr>
 <tr>
 <td>casa.image.tag</td>
 <td>string</td>
-<td><code>"5.0.0-15"</code></td>
+<td><code>"1.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
 <td>casa.livenessProbe</td>
 <td>object</td>
-<td><code>{"httpGet":{"path":"/casa/health-check","port":"http-casa"},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5}</code></td>
+<td><code>{"httpGet":{"path":"/jans-casa/health-check","port":"http-casa"},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5}</code></td>
 <td>Configure the liveness healthcheck for casa if needed.</td>
 </tr>
 <tr>
 <td>casa.livenessProbe.httpGet.path</td>
 <td>string</td>
-<td><code>"/casa/health-check"</code></td>
+<td><code>"/jans-casa/health-check"</code></td>
 <td>http liveness probe endpoint</td>
 </tr>
 <tr>
@@ -2264,13 +2287,13 @@
 <tr>
 <td>casa.readinessProbe</td>
 <td>object</td>
-<td><code>{"httpGet":{"path":"/casa/health-check","port":"http-casa"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}</code></td>
+<td><code>{"httpGet":{"path":"/jans-casa/health-check","port":"http-casa"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}</code></td>
 <td>Configure the readiness healthcheck for the casa if needed.</td>
 </tr>
 <tr>
 <td>casa.readinessProbe.httpGet.path</td>
 <td>string</td>
-<td><code>"/casa/health-check"</code></td>
+<td><code>"/jans-casa/health-check"</code></td>
 <td>http readiness probe endpoint</td>
 </tr>
 <tr>
@@ -2348,13 +2371,13 @@
 <tr>
 <td>config</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"adminPassword":"Test1234#","city":"Austin","configmap":{"cnAwsAccessKeyId":"","cnAwsDefaultRegion":"us-west-1","cnAwsProfile":"gluu","cnAwsSecretAccessKey":"","cnAwsSecretsEndpointUrl":"","cnAwsSecretsNamePrefix":"gluu","cnAwsSecretsReplicaRegions":[],"cnCacheType":"NATIVE_PERSISTENCE","cnConfigKubernetesConfigMap":"cn","cnCouchbaseBucketPrefix":"jans","cnCouchbaseCrt":"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=","cnCouchbaseIndexNumReplica":0,"cnCouchbasePassword":"P@ssw0rd","cnCouchbaseSuperUser":"admin","cnCouchbaseSuperUserPassword":"Test1234#","cnCouchbaseUrl":"cbgluu.default.svc.cluster.local","cnCouchbaseUser":"gluu","cnGoogleProjectId":"google-project-to-save-config-and-secrets-to","cnGoogleSecretManagerServiceAccount":"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=","cnGoogleSecretNamePrefix":"gluu","cnGoogleSecretVersionId":"latest","cnGoogleSpannerDatabaseId":"","cnGoogleSpannerInstanceId":"","cnJettyRequestHeaderSize":8192,"cnLdapUrl":"opendj:1636","cnMaxRamPercent":"75.0","cnPersistenceHybridMapping":"{}","cnRedisSentinelGroup":"","cnRedisSslTruststore":"","cnRedisType":"STANDALONE","cnRedisUrl":"redis.redis.svc.cluster.local:6379","cnRedisUseSsl":false,"cnScimProtectionMode":"OAUTH","cnSecretKubernetesSecret":"cn","cnSqlDbDialect":"mysql","cnSqlDbHost":"my-release-mysql.default.svc.cluster.local","cnSqlDbName":"gluu","cnSqlDbPort":3306,"cnSqlDbSchema":"","cnSqlDbTimezone":"UTC","cnSqlDbUser":"gluu","cnSqldbUserPassword":"Test1234#","lbAddr":""},"countryCode":"US","dnsConfig":{},"dnsPolicy":"","email":"team@gluu.org","image":{"pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/configurator","tag":"1.0.16-1"},"ldapPassword":"P@ssw0rds","lifecycle":{},"migration":{"enabled":false,"migrationDataFormat":"ldif","migrationDir":"/ce-migration"},"orgName":"Gluu","redisPassword":"P@assw0rd","resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"state":"TX","usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"adminPassword":"Test1234#","city":"Austin","configmap":{"cnAwsAccessKeyId":"","cnAwsDefaultRegion":"us-west-1","cnAwsProfile":"gluu","cnAwsSecretAccessKey":"","cnAwsSecretsEndpointUrl":"","cnAwsSecretsNamePrefix":"gluu","cnAwsSecretsReplicaRegions":[],"cnCacheType":"NATIVE_PERSISTENCE","cnConfigKubernetesConfigMap":"cn","cnCouchbaseBucketPrefix":"jans","cnCouchbaseCrt":"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=","cnCouchbaseIndexNumReplica":0,"cnCouchbasePassword":"P@ssw0rd","cnCouchbaseSuperUser":"admin","cnCouchbaseSuperUserPassword":"Test1234#","cnCouchbaseUrl":"cbgluu.default.svc.cluster.local","cnCouchbaseUser":"gluu","cnGoogleProjectId":"google-project-to-save-config-and-secrets-to","cnGoogleSecretManagerServiceAccount":"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=","cnGoogleSecretNamePrefix":"gluu","cnGoogleSecretVersionId":"latest","cnGoogleSpannerDatabaseId":"","cnGoogleSpannerInstanceId":"","cnJettyRequestHeaderSize":8192,"cnLdapCrt":"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=","cnLdapKey":"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=","cnLdapUrl":"opendj:1636","cnMaxRamPercent":"75.0","cnMessageType":"DISABLED","cnOpaUrl":"http://opa.opa.svc.cluster.cluster.local:8181/v1","cnPersistenceHybridMapping":"{}","cnRedisSentinelGroup":"","cnRedisSslTruststore":"","cnRedisType":"STANDALONE","cnRedisUrl":"redis.redis.svc.cluster.local:6379","cnRedisUseSsl":false,"cnScimProtectionMode":"OAUTH","cnSecretKubernetesSecret":"cn","cnSqlDbDialect":"mysql","cnSqlDbHost":"my-release-mysql.default.svc.cluster.local","cnSqlDbName":"gluu","cnSqlDbPort":3306,"cnSqlDbSchema":"","cnSqlDbTimezone":"UTC","cnSqlDbUser":"gluu","cnSqldbUserPassword":"Test1234#","cnVaultAddr":"http://localhost:8200","cnVaultAppRolePath":"approle","cnVaultKvPath":"secret","cnVaultNamespace":"","cnVaultPrefix":"jans","cnVaultRoleId":"","cnVaultRoleIdFile":"/etc/certs/vault_role_id","cnVaultSecretId":"","cnVaultSecretIdFile":"/etc/certs/vault_secret_id","cnVaultVerify":false,"kcDbPassword":"Test1234#","kcDbSchema":"keycloak","kcDbUrlDatabase":"keycloak","kcDbUrlHost":"mysql.kc.svc.cluster.local","kcDbUrlPort":3306,"kcDbUrlProperties":"?useUnicode=true&amp;characterEncoding=UTF-8&amp;character_set_server=utf8mb4","kcDbUsername":"keycloak","kcDbVendor":"mysql","kcLogLevel":"INFO","kcProxy":"edge","lbAddr":"","quarkusTransactionEnableRecovery":true},"countryCode":"US","customScripts":[],"dnsConfig":{},"dnsPolicy":"","email":"team@gluu.org","image":{"pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/configurator","tag":"1.1.1_dev"},"ldapPassword":"P@ssw0rds","ldapTruststorePassword":"changeit","lifecycle":{},"migration":{"enabled":false,"migrationDataFormat":"ldif","migrationDir":"/ce-migration"},"orgName":"Gluu","redisPassword":"P@assw0rd","resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"salt":"","state":"TX","usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>Configuration parameters for setup and initial configuration secret and config layers used by Gluu services.</td>
 </tr>
 <tr>
 <td>config-api</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/config-api","tag":"1.0.16-1"},"lifecycle":{},"livenessProbe":{"httpGet":{"path":"/jans-config-api/api/v1/health/live","port":8074},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"httpGet":{"path":"jans-config-api/api/v1/health/ready","port":8074},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"1000m","memory":"1000Mi"},"requests":{"cpu":"1000m","memory":"1000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/config-api","tag":"1.1.1_dev"},"lifecycle":{},"livenessProbe":{"httpGet":{"path":"/jans-config-api/api/v1/health/live","port":8074},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"httpGet":{"path":"jans-config-api/api/v1/health/ready","port":8074},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"1000m","memory":"1000Mi"},"requests":{"cpu":"1000m","memory":"1000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>Config Api endpoints can be used to configure the auth-server, which is an open-source OpenID Connect Provider (OP) and UMA Authorization Server (AS).</td>
 </tr>
 <tr>
@@ -2368,6 +2391,12 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>config-api.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>config-api.dnsConfig</td>
@@ -2420,7 +2449,7 @@
 <tr>
 <td>config-api.image.tag</td>
 <td>string</td>
-<td><code>"1.0.16-1"</code></td>
+<td><code>"1.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -2646,6 +2675,18 @@
 <td>Jetty header size in bytes in the auth server</td>
 </tr>
 <tr>
+<td>config.configmap.cnLdapCrt</td>
+<td>string</td>
+<td><code>"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="</code></td>
+<td>OpenDJ certificate string. This must be encoded using base64.</td>
+</tr>
+<tr>
+<td>config.configmap.cnLdapKey</td>
+<td>string</td>
+<td><code>"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="</code></td>
+<td>OpenDJ key string. This must be encoded using base64.</td>
+</tr>
+<tr>
 <td>config.configmap.cnLdapUrl</td>
 <td>string</td>
 <td><code>"opendj:1636"</code></td>
@@ -2656,6 +2697,18 @@
 <td>string</td>
 <td><code>"75.0"</code></td>
 <td>Value passed to Java option -XX:MaxRAMPercentage</td>
+</tr>
+<tr>
+<td>config.configmap.cnMessageType</td>
+<td>string</td>
+<td><code>"DISABLED"</code></td>
+<td>Message type (one of POSTGRES, REDIS, or DISABLED)</td>
+</tr>
+<tr>
+<td>config.configmap.cnOpaUrl</td>
+<td>string</td>
+<td><code>"http://opa.opa.svc.cluster.cluster.local:8181/v1"</code></td>
+<td>URL of OPA API</td>
 </tr>
 <tr>
 <td>config.configmap.cnPersistenceHybridMapping</td>
@@ -2754,16 +2807,148 @@
 <td>SQL password  injected the secrets .</td>
 </tr>
 <tr>
+<td>config.configmap.cnVaultAddr</td>
+<td>string</td>
+<td><code>"http://localhost:8200"</code></td>
+<td>Base URL of Vault.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultAppRolePath</td>
+<td>string</td>
+<td><code>"approle"</code></td>
+<td>Path to Vault AppRole.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultKvPath</td>
+<td>string</td>
+<td><code>"secret"</code></td>
+<td>Path to Vault KV secrets engine.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultNamespace</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>Vault namespace used to access the secrets.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultPrefix</td>
+<td>string</td>
+<td><code>"jans"</code></td>
+<td>Base prefix name used to access secrets.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultRoleId</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>Vault AppRole RoleID.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultRoleIdFile</td>
+<td>string</td>
+<td><code>"/etc/certs/vault_role_id"</code></td>
+<td>Path to file contains Vault AppRole role ID.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultSecretId</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>Vault AppRole SecretID.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultSecretIdFile</td>
+<td>string</td>
+<td><code>"/etc/certs/vault_secret_id"</code></td>
+<td>Path to file contains Vault AppRole secret ID.</td>
+</tr>
+<tr>
+<td>config.configmap.cnVaultVerify</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Verify connection to Vault.</td>
+</tr>
+<tr>
+<td>config.configmap.kcDbPassword</td>
+<td>string</td>
+<td><code>"Test1234#"</code></td>
+<td>Password for Keycloak database access</td>
+</tr>
+<tr>
+<td>config.configmap.kcDbSchema</td>
+<td>string</td>
+<td><code>"keycloak"</code></td>
+<td>Keycloak database schema name (note that PostgreSQL may be using "public" schema).</td>
+</tr>
+<tr>
+<td>config.configmap.kcDbUrlDatabase</td>
+<td>string</td>
+<td><code>"keycloak"</code></td>
+<td>Keycloak database name.</td>
+</tr>
+<tr>
+<td>config.configmap.kcDbUrlHost</td>
+<td>string</td>
+<td><code>"mysql.kc.svc.cluster.local"</code></td>
+<td>Keycloak database host uri</td>
+</tr>
+<tr>
+<td>config.configmap.kcDbUrlPort</td>
+<td>int</td>
+<td><code>3306</code></td>
+<td>Keycloak database port (default to port 3306 for mysql).</td>
+</tr>
+<tr>
+<td>config.configmap.kcDbUrlProperties</td>
+<td>string</td>
+<td><code>"?useUnicode=true&amp;characterEncoding=UTF-8&amp;character_set_server=utf8mb4"</code></td>
+<td>Keycloak database connection properties. If using postgresql, the value can be set to empty string.</td>
+</tr>
+<tr>
+<td>config.configmap.kcDbUsername</td>
+<td>string</td>
+<td><code>"keycloak"</code></td>
+<td>Keycloak database username</td>
+</tr>
+<tr>
+<td>config.configmap.kcDbVendor</td>
+<td>string</td>
+<td><code>"mysql"</code></td>
+<td>Keycloak database vendor name (default to MySQL server). To use PostgreSQL server, change the value to postgres.</td>
+</tr>
+<tr>
+<td>config.configmap.kcLogLevel</td>
+<td>string</td>
+<td><code>"INFO"</code></td>
+<td>Keycloak logging level</td>
+</tr>
+<tr>
+<td>config.configmap.kcProxy</td>
+<td>string</td>
+<td><code>"edge"</code></td>
+<td>Keycloak proxy mode (for most deployments, this doesn't need to be changed)</td>
+</tr>
+<tr>
 <td>config.configmap.lbAddr</td>
 <td>string</td>
 <td><code>""</code></td>
 <td>Load balancer address for AWS if the FQDN is not registered.</td>
 </tr>
 <tr>
+<td>config.configmap.quarkusTransactionEnableRecovery</td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Quarkus transaction recovery. When using MySQL, there could be issue regarding XA_RECOVER_ADMIN; refer to https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_xa-recover-admin for details.</td>
+</tr>
+<tr>
 <td>config.countryCode</td>
 <td>string</td>
 <td><code>"US"</code></td>
 <td>Country code. Used for certificate creation.</td>
+</tr>
+<tr>
+<td>config.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>config.dnsConfig</td>
@@ -2798,7 +2983,7 @@
 <tr>
 <td>config.image.tag</td>
 <td>string</td>
-<td><code>"1.0.16-1"</code></td>
+<td><code>"1.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -2806,6 +2991,12 @@
 <td>string</td>
 <td><code>"P@ssw0rds"</code></td>
 <td>LDAP admin password if OpenDJ is used for persistence.</td>
+</tr>
+<tr>
+<td>config.ldapTruststorePassword</td>
+<td>string</td>
+<td><code>"changeit"</code></td>
+<td>LDAP truststore password if OpenDJ is used for persistence</td>
 </tr>
 <tr>
 <td>config.migration</td>
@@ -2874,6 +3065,12 @@
 <td>Memory request.</td>
 </tr>
 <tr>
+<td>config.salt</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>Salt. Used for encoding/decoding sensitive data. If omitted or set to empty string, the value will be self-generated. Otherwise, a 24 alphanumeric characters are allowed as its value.</td>
+</tr>
+<tr>
 <td>config.state</td>
 <td>string</td>
 <td><code>"TX"</code></td>
@@ -2912,7 +3109,7 @@
 <tr>
 <td>fido2</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/fido2","tag":"1.0.16-1"},"lifecycle":{},"livenessProbe":{"httpGet":{"path":"/jans-fido2/sys/health-check","port":"http-fido2"},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"httpGet":{"path":"/jans-fido2/sys/health-check","port":"http-fido2"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"500Mi"}},"service":{"name":"http-fido2","port":8080},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/fido2","tag":"1.1.1_dev"},"lifecycle":{},"livenessProbe":{"httpGet":{"path":"/jans-fido2/sys/health-check","port":"http-fido2"},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"httpGet":{"path":"/jans-fido2/sys/health-check","port":"http-fido2"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"500Mi"}},"service":{"name":"http-fido2","port":8080},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>FIDO 2.0 (FIDO2) is an open authentication standard that enables leveraging common devices to authenticate to online services in both mobile and desktop environments.</td>
 </tr>
 <tr>
@@ -2926,6 +3123,12 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>fido2.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>fido2.dnsConfig</td>
@@ -2978,7 +3181,7 @@
 <tr>
 <td>fido2.image.tag</td>
 <td>string</td>
-<td><code>"1.0.16-1"</code></td>
+<td><code>"1.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -3092,7 +3295,7 @@
 <tr>
 <td>global</td>
 <td>object</td>
-<td><code>{"admin-ui":{"adminUiServiceName":"admin-ui","enabled":true,"ingress":{"adminUiEnabled":false}},"alb":{"ingress":false},"auth-server":{"appLoggers":{"auditStatsLogLevel":"INFO","auditStatsLogTarget":"FILE","authLogLevel":"INFO","authLogTarget":"STDOUT","enableStdoutLogPrefix":"true","httpLogLevel":"INFO","httpLogTarget":"FILE","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"authEncKeys":"RSA1_5 RSA-OAEP","authServerServiceName":"auth-server","authSigKeys":"RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512","enabled":true,"ingress":{"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"deviceCodeEnabled":true,"firebaseMessagingEnabled":true,"openidConfigEnabled":true,"u2fConfigEnabled":true,"uma2ConfigEnabled":true,"webdiscoveryEnabled":true,"webfingerEnabled":true}},"auth-server-key-rotation":{"enabled":false},"awsStorageType":"io1","azureStorageAccountType":"Standard_LRS","azureStorageKind":"Managed","casa":{"appLoggers":{"casaLogLevel":"INFO","casaLogTarget":"STDOUT","enableStdoutLogPrefix":"true","timerLogLevel":"INFO","timerLogTarget":"FILE"},"casaServiceName":"casa","enabled":true,"ingress":{"casaEnabled":false}},"cloud":{"testEnviroment":false},"cnAwsConfigFile":"/etc/jans/conf/aws_config_file","cnAwsSecretsReplicaRegionsFile":"/etc/jans/conf/aws_secrets_replica_regions","cnAwsSharedCredentialsFile":"/etc/jans/conf/aws_shared_credential_file","cnDocumentStoreType":"DB","cnGoogleApplicationCredentials":"/etc/jans/conf/google-credentials.json","cnObExtSigningAlias":"","cnObExtSigningJwksCrt":"","cnObExtSigningJwksKey":"","cnObExtSigningJwksKeyPassPhrase":"","cnObExtSigningJwksUri":"","cnObStaticSigningKeyKid":"","cnObTransportAlias":"","cnObTransportCrt":"","cnObTransportKey":"","cnObTransportKeyPassPhrase":"","cnObTransportTrustStore":"","cnPersistenceType":"sql","cnPrometheusPort":"","config":{"enabled":true},"config-api":{"adminUiAppLoggers":{"adminUiAuditLogLevel":"INFO","adminUiAuditLogTarget":"FILE","adminUiLogLevel":"INFO","adminUiLogTarget":"FILE","enableStdoutLogPrefix":"true"},"appLoggers":{"configApiLogLevel":"INFO","configApiLogTarget":"STDOUT","enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"configApiServerServiceName":"config-api","enabled":true,"ingress":{"configApiEnabled":true}},"configAdapterName":"kubernetes","configSecretAdapter":"kubernetes","distribution":"default","fido2":{"appLoggers":{"enableStdoutLogPrefix":"true","fido2LogLevel":"INFO","fido2LogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"enabled":true,"fido2ServiceName":"fido2","ingress":{"fido2ConfigEnabled":false}},"fqdn":"demoexample.gluu.org","gcePdStorageType":"pd-standard","isFqdnRegistered":false,"istio":{"additionalAnnotations":{},"additionalLabels":{},"enabled":false,"gateways":[],"ingress":false,"namespace":"istio-system"},"jobTtlSecondsAfterFinished":300,"lbIp":"22.22.22.22","licenseSsa":"","nginx-ingress":{"enabled":true},"opendj":{"enabled":false,"ldapServiceName":"opendj"},"oxpassport":{"enabled":false,"oxPassportServiceName":"oxpassport"},"oxshibboleth":{"appLoggers":{"auditStatsLogLevel":"INFO","auditStatsLogTarget":"FILE","consentAuditLogLevel":"INFO","consentAuditLogTarget":"FILE","containerLogLevel":"","encryptionLogLevel":"","httpclientLogLevel":"","idpLogLevel":"INFO","idpLogTarget":"STDOUT","ldapLogLevel":"","messagesLogLevel":"","opensamlLogLevel":"","propsLogLevel":"","scriptLogLevel":"INFO","scriptLogTarget":"FILE","springLogLevel":"","xmlsecLogLevel":""},"enabled":false,"oxShibbolethServiceName":"oxshibboleth"},"persistence":{"enabled":true},"scim":{"appLoggers":{"enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scimLogLevel":"INFO","scimLogTarget":"STDOUT","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"enabled":true,"ingress":{"scimConfigEnabled":false,"scimEnabled":false},"scimServiceName":"scim"},"storageClass":{"allowVolumeExpansion":true,"allowedTopologies":[],"mountOptions":["debug"],"parameters":{},"provisioner":"microk8s.io/hostpath","reclaimPolicy":"Retain","volumeBindingMode":"WaitForFirstConsumer"},"usrEnvs":{"normal":{},"secret":{}}}</code></td>
+<td><code>{"admin-ui":{"adminUiServiceName":"admin-ui","enabled":true,"ingress":{"adminUiEnabled":false}},"alb":{"ingress":false},"auth-server":{"appLoggers":{"auditStatsLogLevel":"INFO","auditStatsLogTarget":"FILE","authLogLevel":"INFO","authLogTarget":"STDOUT","enableStdoutLogPrefix":"true","httpLogLevel":"INFO","httpLogTarget":"FILE","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"authEncKeys":"RSA1_5 RSA-OAEP","authServerServiceName":"auth-server","authSigKeys":"RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512","cnCustomJavaOptions":"","enabled":true,"ingress":{"authServerEnabled":true,"authServerProtectedRegister":false,"authServerProtectedToken":false,"deviceCodeEnabled":true,"firebaseMessagingEnabled":true,"openidConfigEnabled":true,"u2fConfigEnabled":true,"uma2ConfigEnabled":true,"webdiscoveryEnabled":true,"webfingerEnabled":true},"lockEnabled":false},"auth-server-key-rotation":{"enabled":true,"initKeysLife":48},"awsStorageType":"io1","azureStorageAccountType":"Standard_LRS","azureStorageKind":"Managed","casa":{"appLoggers":{"casaLogLevel":"INFO","casaLogTarget":"STDOUT","enableStdoutLogPrefix":"true","timerLogLevel":"INFO","timerLogTarget":"FILE"},"casaServiceName":"casa","cnCustomJavaOptions":"","enabled":true,"ingress":{"casaEnabled":false}},"cloud":{"testEnviroment":false},"cnAwsConfigFile":"/etc/jans/conf/aws_config_file","cnAwsSecretsReplicaRegionsFile":"/etc/jans/conf/aws_secrets_replica_regions","cnAwsSharedCredentialsFile":"/etc/jans/conf/aws_shared_credential_file","cnCouchbasePasswordFile":"/etc/jans/conf/couchbase_password","cnCouchbaseSuperuserPasswordFile":"/etc/jans/conf/couchbase_superuser_password","cnDocumentStoreType":"DB","cnGoogleApplicationCredentials":"/etc/jans/conf/google-credentials.json","cnLdapCacertFile":"/etc/certs/opendj.pem","cnLdapCertFile":"/etc/certs/opendj.crt","cnLdapKeyFile":"/etc/certs/opendj.key","cnLdapPasswordFile":"/etc/jans/conf/ldap_password","cnLdapTruststoreFile":"/etc/certs/opendj.pkcs12","cnLdapTruststorePasswordFile":"/etc/jans/conf/ldap_truststore_password","cnObExtSigningAlias":"","cnObExtSigningJwksCrt":"","cnObExtSigningJwksKey":"","cnObExtSigningJwksKeyPassPhrase":"","cnObExtSigningJwksUri":"","cnObStaticSigningKeyKid":"","cnObTransportAlias":"","cnObTransportCrt":"","cnObTransportKey":"","cnObTransportKeyPassPhrase":"","cnObTransportTrustStore":"","cnPersistenceType":"sql","cnPrometheusPort":"","cnSqlPasswordFile":"/etc/jans/conf/sql_password","config":{"enabled":true},"config-api":{"adminUiAppLoggers":{"adminUiAuditLogLevel":"INFO","adminUiAuditLogTarget":"FILE","adminUiLogLevel":"INFO","adminUiLogTarget":"FILE","enableStdoutLogPrefix":"true"},"appLoggers":{"configApiLogLevel":"INFO","configApiLogTarget":"STDOUT","enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"cnCustomJavaOptions":"","configApiServerServiceName":"config-api","enabled":true,"ingress":{"configApiEnabled":true},"plugins":"admin-ui,fido2,scim,user-mgt"},"configAdapterName":"kubernetes","configSecretAdapter":"kubernetes","distribution":"default","fido2":{"appLoggers":{"enableStdoutLogPrefix":"true","fido2LogLevel":"INFO","fido2LogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"cnCustomJavaOptions":"","enabled":true,"fido2ServiceName":"fido2","ingress":{"fido2ConfigEnabled":false,"fido2Enabled":false}},"fqdn":"demoexample.gluu.org","gcePdStorageType":"pd-standard","isFqdnRegistered":false,"istio":{"additionalAnnotations":{},"additionalLabels":{},"enabled":false,"gateways":[],"ingress":false,"namespace":"istio-system"},"jobTtlSecondsAfterFinished":300,"kcAdminCredentialsFile":"/etc/jans/conf/kc_admin_creds","kcDbPasswordFile":"/etc/jans/conf/kc_db_password","lbIp":"22.22.22.22","link":{"appLoggers":{"enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","linkLogLevel":"INFO","linkLogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"cnCustomJavaOptions":"","enabled":false,"ingress":{"linkEnabled":true},"linkServiceName":"link"},"nginx-ingress":{"enabled":true},"opendj":{"enabled":false,"ldapServiceName":"opendj"},"persistence":{"enabled":true},"saml":{"cnCustomJavaOptions":"","enabled":false,"ingress":{"samlEnabled":false},"samlServiceName":"saml"},"scim":{"appLoggers":{"enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scimLogLevel":"INFO","scimLogTarget":"STDOUT","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"cnCustomJavaOptions":"","enabled":true,"ingress":{"scimConfigEnabled":false,"scimEnabled":false},"scimServiceName":"scim"},"storageClass":{"allowVolumeExpansion":true,"allowedTopologies":[],"mountOptions":["debug"],"parameters":{},"provisioner":"microk8s.io/hostpath","reclaimPolicy":"Retain","volumeBindingMode":"WaitForFirstConsumer"},"usrEnvs":{"normal":{},"secret":{}}}</code></td>
 <td>Parameters used globally across all services helm charts.</td>
 </tr>
 <tr>
@@ -3122,8 +3325,14 @@
 <tr>
 <td>global.auth-server-key-rotation.enabled</td>
 <td>bool</td>
-<td><code>false</code></td>
+<td><code>true</code></td>
 <td>Boolean flag to enable/disable the auth-server-key rotation cronjob chart.</td>
+</tr>
+<tr>
+<td>global.auth-server-key-rotation.initKeysLife</td>
+<td>int</td>
+<td><code>48</code></td>
+<td>The initial auth server key rotation keys life in hours</td>
 </tr>
 <tr>
 <td>global.auth-server.appLoggers</td>
@@ -3240,6 +3449,12 @@
 <td>space-separated key algorithm for signing (default to <code>RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512</code>)</td>
 </tr>
 <tr>
+<td>global.auth-server.cnCustomJavaOptions</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>passing custom java options to auth-server. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs.</td>
+</tr>
+<tr>
 <td>global.auth-server.enabled</td>
 <td>bool</td>
 <td><code>true</code></td>
@@ -3312,6 +3527,12 @@
 <td>Enable endpoint /.well-known/webfinger</td>
 </tr>
 <tr>
+<td>global.auth-server.lockEnabled</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Enable jans-lock as service running inside auth-server</td>
+</tr>
+<tr>
 <td>global.awsStorageType</td>
 <td>string</td>
 <td><code>"io1"</code></td>
@@ -3372,6 +3593,12 @@
 <td>Name of the casa service. Please keep it as default.</td>
 </tr>
 <tr>
+<td>global.casa.cnCustomJavaOptions</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>passing custom java options to casa. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs.</td>
+</tr>
+<tr>
 <td>global.casa.enabled</td>
 <td>bool</td>
 <td><code>true</code></td>
@@ -3396,6 +3623,18 @@
 <td>Boolean flag if enabled will strip resources requests and limits from all services.</td>
 </tr>
 <tr>
+<td>global.cnCouchbasePasswordFile</td>
+<td>string</td>
+<td><code>"/etc/jans/conf/couchbase_password"</code></td>
+<td>Path to Couchbase password file</td>
+</tr>
+<tr>
+<td>global.cnCouchbaseSuperuserPasswordFile</td>
+<td>string</td>
+<td><code>"/etc/jans/conf/couchbase_superuser_password"</code></td>
+<td>Path to Couchbase superuser password file</td>
+</tr>
+<tr>
 <td>global.cnDocumentStoreType</td>
 <td>string</td>
 <td><code>"DB"</code></td>
@@ -3406,6 +3645,42 @@
 <td>string</td>
 <td><code>"/etc/jans/conf/google-credentials.json"</code></td>
 <td>Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets and roles/spanner.databaseUser to use Spanner. Leave as this is a sensible default.</td>
+</tr>
+<tr>
+<td>global.cnLdapCacertFile</td>
+<td>string</td>
+<td><code>"/etc/certs/opendj.pem"</code></td>
+<td>Path to OpenDJ CA cert file</td>
+</tr>
+<tr>
+<td>global.cnLdapCertFile</td>
+<td>string</td>
+<td><code>"/etc/certs/opendj.crt"</code></td>
+<td>Path to OpenDJ cert file</td>
+</tr>
+<tr>
+<td>global.cnLdapKeyFile</td>
+<td>string</td>
+<td><code>"/etc/certs/opendj.key"</code></td>
+<td>Path to OpenDJ key file</td>
+</tr>
+<tr>
+<td>global.cnLdapPasswordFile</td>
+<td>string</td>
+<td><code>"/etc/jans/conf/ldap_password"</code></td>
+<td>Path to LDAP password file</td>
+</tr>
+<tr>
+<td>global.cnLdapTruststoreFile</td>
+<td>string</td>
+<td><code>"/etc/certs/opendj.pkcs12"</code></td>
+<td>Path to OpenDJ truststore file</td>
+</tr>
+<tr>
+<td>global.cnLdapTruststorePasswordFile</td>
+<td>string</td>
+<td><code>"/etc/jans/conf/ldap_truststore_password"</code></td>
+<td>Path to LDAP truststore password file</td>
 </tr>
 <tr>
 <td>global.cnObExtSigningAlias</td>
@@ -3484,6 +3759,12 @@
 <td>string</td>
 <td><code>""</code></td>
 <td>Port used by Prometheus JMX agent (default to empty string). To enable Prometheus JMX agent, set the value to a number.</td>
+</tr>
+<tr>
+<td>global.cnSqlPasswordFile</td>
+<td>string</td>
+<td><code>"/etc/jans/conf/sql_password"</code></td>
+<td>Path to SQL password file</td>
 </tr>
 <tr>
 <td>global.config-api.adminUiAppLoggers.adminUiAuditLogLevel</td>
@@ -3588,6 +3869,12 @@
 <td>config-api_script.log target</td>
 </tr>
 <tr>
+<td>global.config-api.cnCustomJavaOptions</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>passing custom java options to config-api. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs.</td>
+</tr>
+<tr>
 <td>global.config-api.configApiServerServiceName</td>
 <td>string</td>
 <td><code>"config-api"</code></td>
@@ -3606,6 +3893,12 @@
 <td>Enable endpoints in either istio or nginx ingress depending on users choice</td>
 </tr>
 <tr>
+<td>global.config-api.plugins</td>
+<td>string</td>
+<td><code>"admin-ui,fido2,scim,user-mgt"</code></td>
+<td>Comma-separated values of enabled plugins (supported plugins are "admin-ui","fido2","scim","user-mgt","jans-link","kc-saml")</td>
+</tr>
+<tr>
 <td>global.config.enabled</td>
 <td>bool</td>
 <td><code>true</code></td>
@@ -3621,7 +3914,7 @@
 <td>global.configSecretAdapter</td>
 <td>string</td>
 <td><code>"kubernetes"</code></td>
-<td>The config backend adapter that will hold Gluu secret layer. aws</td>
+<td>The config backend adapter that will hold Gluu secret layer. vault</td>
 </tr>
 <tr>
 <td>global.distribution</td>
@@ -3690,6 +3983,12 @@
 <td>fido2_script.log target</td>
 </tr>
 <tr>
+<td>global.fido2.cnCustomJavaOptions</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>passing custom java options to fido2. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs.</td>
+</tr>
+<tr>
 <td>global.fido2.enabled</td>
 <td>bool</td>
 <td><code>true</code></td>
@@ -3704,7 +4003,7 @@
 <tr>
 <td>global.fido2.ingress</td>
 <td>object</td>
-<td><code>{"fido2ConfigEnabled":false}</code></td>
+<td><code>{"fido2ConfigEnabled":false,"fido2Enabled":false}</code></td>
 <td>Enable endpoints in either istio or nginx ingress depending on users choice</td>
 </tr>
 <tr>
@@ -3712,6 +4011,12 @@
 <td>bool</td>
 <td><code>false</code></td>
 <td>Enable endpoint /.well-known/fido2-configuration</td>
+</tr>
+<tr>
+<td>global.fido2.ingress.fido2Enabled</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Enable endpoint /jans-fido2</td>
 </tr>
 <tr>
 <td>global.fqdn</td>
@@ -3774,16 +4079,118 @@
 <td>https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/</td>
 </tr>
 <tr>
+<td>global.kcAdminCredentialsFile</td>
+<td>string</td>
+<td><code>"/etc/jans/conf/kc_admin_creds"</code></td>
+<td>Path to file contains Keycloak admin credentials (username and password)</td>
+</tr>
+<tr>
+<td>global.kcDbPasswordFile</td>
+<td>string</td>
+<td><code>"/etc/jans/conf/kc_db_password"</code></td>
+<td>Path to file contains password for database access</td>
+</tr>
+<tr>
 <td>global.lbIp</td>
 <td>string</td>
 <td><code>"22.22.22.22"</code></td>
 <td>The Loadbalancer IP created by nginx or istio on clouds that provide static IPs. This is not needed if <code>global.fqdn</code> is globally resolvable.</td>
 </tr>
 <tr>
-<td>global.licenseSsa</td>
+<td>global.link.appLoggers</td>
+<td>object</td>
+<td><code>{"enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","linkLogLevel":"INFO","linkLogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}</code></td>
+<td>App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.enableStdoutLogPrefix</td>
+<td>string</td>
+<td><code>"true"</code></td>
+<td>Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e link-persistence ===&gt; 2022-12-20 17:49:55,744 INFO</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.ldapStatsLogLevel</td>
+<td>string</td>
+<td><code>"INFO"</code></td>
+<td>cacherefresh_persistence_ldap_statistics.log level</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.ldapStatsLogTarget</td>
+<td>string</td>
+<td><code>"FILE"</code></td>
+<td>cacherefresh_persistence_ldap_statistics.log target</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.linkLogLevel</td>
+<td>string</td>
+<td><code>"INFO"</code></td>
+<td>cacherefresh.log level</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.linkLogTarget</td>
+<td>string</td>
+<td><code>"STDOUT"</code></td>
+<td>cacherefresh.log target</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.persistenceDurationLogLevel</td>
+<td>string</td>
+<td><code>"INFO"</code></td>
+<td>cacherefresh_persistence_duration.log level</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.persistenceDurationLogTarget</td>
+<td>string</td>
+<td><code>"FILE"</code></td>
+<td>cacherefresh_persistence_duration.log target</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.persistenceLogLevel</td>
+<td>string</td>
+<td><code>"INFO"</code></td>
+<td>cacherefresh_persistence.log level</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.persistenceLogTarget</td>
+<td>string</td>
+<td><code>"FILE"</code></td>
+<td>cacherefresh_persistence.log target</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.scriptLogLevel</td>
+<td>string</td>
+<td><code>"INFO"</code></td>
+<td>cacherefresh_script.log level</td>
+</tr>
+<tr>
+<td>global.link.appLoggers.scriptLogTarget</td>
+<td>string</td>
+<td><code>"FILE"</code></td>
+<td>cacherefresh_script.log target</td>
+</tr>
+<tr>
+<td>global.link.cnCustomJavaOptions</td>
 <td>string</td>
 <td><code>""</code></td>
-<td>Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.</td>
+<td>passing custom java options to link. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs.</td>
+</tr>
+<tr>
+<td>global.link.enabled</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Boolean flag to enable/disable the link chart.</td>
+</tr>
+<tr>
+<td>global.link.ingress</td>
+<td>object</td>
+<td><code>{"linkEnabled":true}</code></td>
+<td>Enable endpoints in either istio or nginx ingress depending on users choice</td>
+</tr>
+<tr>
+<td>global.link.linkServiceName</td>
+<td>string</td>
+<td><code>"link"</code></td>
+<td>Name of the link service. Please keep it as default.</td>
 </tr>
 <tr>
 <td>global.nginx-ingress.enabled</td>
@@ -3804,94 +4211,34 @@
 <td>Name of the OpenDJ service. Please keep it as default.</td>
 </tr>
 <tr>
-<td>global.oxpassport.enabled</td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Boolean flag to enable/disable passport chart</td>
-</tr>
-<tr>
-<td>global.oxpassport.oxPassportServiceName</td>
-<td>string</td>
-<td><code>"oxpassport"</code></td>
-<td>Name of the oxPassport service. Please keep it as default.</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers</td>
-<td>object</td>
-<td><code>{"auditStatsLogLevel":"INFO","auditStatsLogTarget":"FILE","consentAuditLogLevel":"INFO","consentAuditLogTarget":"FILE","containerLogLevel":"","encryptionLogLevel":"","httpclientLogLevel":"","idpLogLevel":"INFO","idpLogTarget":"STDOUT","ldapLogLevel":"","messagesLogLevel":"","opensamlLogLevel":"","propsLogLevel":"","scriptLogLevel":"INFO","scriptLogTarget":"FILE","springLogLevel":"","xmlsecLogLevel":""}</code></td>
-<td>App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. log levels are "OFF", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE" Targets are "STDOUT" and "FILE"</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.auditStatsLogLevel</td>
-<td>string</td>
-<td><code>"INFO"</code></td>
-<td>idp-audit.log level</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.auditStatsLogTarget</td>
-<td>string</td>
-<td><code>"FILE"</code></td>
-<td>idp-audit.log target</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.consentAuditLogLevel</td>
-<td>string</td>
-<td><code>"INFO"</code></td>
-<td>idp-consent-audit.log level</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.consentAuditLogTarget</td>
-<td>string</td>
-<td><code>"FILE"</code></td>
-<td>idp-consent-audit.log target</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.idpLogLevel</td>
-<td>string</td>
-<td><code>"INFO"</code></td>
-<td>idp-process.log level</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.idpLogTarget</td>
-<td>string</td>
-<td><code>"STDOUT"</code></td>
-<td>idp-process.log target</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.ldapLogLevel</td>
-<td>string</td>
-<td><code>""</code></td>
-<td>https://github.com/GluuFederation/docker-oxshibboleth#additional-logger-configuration The below are very noisy logs and are better left untouched</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.scriptLogLevel</td>
-<td>string</td>
-<td><code>"INFO"</code></td>
-<td>idp-script.log level</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.appLoggers.scriptLogTarget</td>
-<td>string</td>
-<td><code>"FILE"</code></td>
-<td>idp-script.log target</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.enabled</td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Boolean flag to enable/disable the oxShibbboleth chart.</td>
-</tr>
-<tr>
-<td>global.oxshibboleth.oxShibbolethServiceName</td>
-<td>string</td>
-<td><code>"oxshibboleth"</code></td>
-<td>Name of the oxShibboleth service. Please keep it as default.</td>
-</tr>
-<tr>
 <td>global.persistence.enabled</td>
 <td>bool</td>
 <td><code>true</code></td>
 <td>Boolean flag to enable/disable the persistence chart.</td>
+</tr>
+<tr>
+<td>global.saml.cnCustomJavaOptions</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>passing custom java options to saml. DO NOT PASS JAVA_OPTIONS in envs.</td>
+</tr>
+<tr>
+<td>global.saml.enabled</td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Boolean flag to enable/disable the saml chart.</td>
+</tr>
+<tr>
+<td>global.saml.ingress</td>
+<td>object</td>
+<td><code>{"samlEnabled":false}</code></td>
+<td>Enable endpoints in either istio or nginx ingress depending on users choice</td>
+</tr>
+<tr>
+<td>global.saml.samlServiceName</td>
+<td>string</td>
+<td><code>"saml"</code></td>
+<td>Name of the saml service. Please keep it as default.</td>
 </tr>
 <tr>
 <td>global.scim.appLoggers</td>
@@ -3966,6 +4313,12 @@
 <td>jans-scim_script.log target</td>
 </tr>
 <tr>
+<td>global.scim.cnCustomJavaOptions</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>passing custom java options to scim. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs.</td>
+</tr>
+<tr>
 <td>global.scim.enabled</td>
 <td>bool</td>
 <td><code>true</code></td>
@@ -4032,9 +4385,183 @@
 <td>Only used by the installer. These settings do not affect nor are used by the chart</td>
 </tr>
 <tr>
+<td>link</td>
+<td>object</td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/link","tag":"1.1.1_dev"},"lifecycle":{},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"1000Mi"},"requests":{"cpu":"500m","memory":"1000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td>Link.</td>
+</tr>
+<tr>
+<td>link.additionalAnnotations</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td _letsencrypt-prod_="&quot;letsencrypt-prod&quot;" cert-manager.io_issuer:="cert-manager.io/issuer:">Additional annotations that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>link.additionalLabels</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>link.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
+</tr>
+<tr>
+<td>link.dnsConfig</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Add custom dns config</td>
+</tr>
+<tr>
+<td>link.dnsPolicy</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>Add custom dns policy</td>
+</tr>
+<tr>
+<td>link.hpa</td>
+<td>object</td>
+<td><code>{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50}</code></td>
+<td>Configure the HorizontalPodAutoscaler</td>
+</tr>
+<tr>
+<td>link.hpa.behavior</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Scaling Policies</td>
+</tr>
+<tr>
+<td>link.hpa.metrics</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>metrics if targetCPUUtilizationPercentage is not set</td>
+</tr>
+<tr>
+<td>link.image.pullPolicy</td>
+<td>string</td>
+<td><code>"IfNotPresent"</code></td>
+<td>Image pullPolicy to use for deploying.</td>
+</tr>
+<tr>
+<td>link.image.pullSecrets</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Image Pull Secrets</td>
+</tr>
+<tr>
+<td>link.image.repository</td>
+<td>string</td>
+<td><code>"ghcr.io/janssenproject/jans/link"</code></td>
+<td>Image  to use for deploying.</td>
+</tr>
+<tr>
+<td>link.image.tag</td>
+<td>string</td>
+<td><code>"1.1.1_dev"</code></td>
+<td>Image  tag to use for deploying.</td>
+</tr>
+<tr>
+<td>link.livenessProbe</td>
+<td>object</td>
+<td><code>{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}</code></td>
+<td>Configure the liveness healthcheck for the auth server if needed.</td>
+</tr>
+<tr>
+<td>link.livenessProbe.exec</td>
+<td>object</td>
+<td><code>{"command":["python3","/app/scripts/healthcheck.py"]}</code></td>
+<td>http liveness probe endpoint</td>
+</tr>
+<tr>
+<td>link.pdb</td>
+<td>object</td>
+<td><code>{"enabled":true,"maxUnavailable":"90%"}</code></td>
+<td>Configure the PodDisruptionBudget</td>
+</tr>
+<tr>
+<td>link.readinessProbe.exec</td>
+<td>object</td>
+<td><code>{"command":["python3","/app/scripts/healthcheck.py"]}</code></td>
+<td>http readiness probe endpoint</td>
+</tr>
+<tr>
+<td>link.replicas</td>
+<td>int</td>
+<td><code>1</code></td>
+<td>Service replica number.</td>
+</tr>
+<tr>
+<td>link.resources</td>
+<td>object</td>
+<td><code>{"limits":{"cpu":"500m","memory":"1000Mi"},"requests":{"cpu":"500m","memory":"1000Mi"}}</code></td>
+<td>Resource specs.</td>
+</tr>
+<tr>
+<td>link.resources.limits.cpu</td>
+<td>string</td>
+<td><code>"500m"</code></td>
+<td>CPU limit.</td>
+</tr>
+<tr>
+<td>link.resources.limits.memory</td>
+<td>string</td>
+<td><code>"1000Mi"</code></td>
+<td>Memory limit.</td>
+</tr>
+<tr>
+<td>link.resources.requests.cpu</td>
+<td>string</td>
+<td><code>"500m"</code></td>
+<td>CPU request.</td>
+</tr>
+<tr>
+<td>link.resources.requests.memory</td>
+<td>string</td>
+<td><code>"1000Mi"</code></td>
+<td>Memory request.</td>
+</tr>
+<tr>
+<td>link.topologySpreadConstraints</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Configure the topology spread constraints. Notice this is a map NOT a list as in the upstream API https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/</td>
+</tr>
+<tr>
+<td>link.usrEnvs</td>
+<td>object</td>
+<td><code>{"normal":{},"secret":{}}</code></td>
+<td>Add custom normal and secret envs to the service</td>
+</tr>
+<tr>
+<td>link.usrEnvs.normal</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Add custom normal envs to the service variable1: value1</td>
+</tr>
+<tr>
+<td>link.usrEnvs.secret</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Add custom secret envs to the service variable1: value1</td>
+</tr>
+<tr>
+<td>link.volumeMounts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Configure any additional volumesMounts that need to be attached to the containers</td>
+</tr>
+<tr>
+<td>link.volumes</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Configure any additional volumes that need to be attached to the pod</td>
+</tr>
+<tr>
 <td>nginx-ingress</td>
 <td>object</td>
-<td><code>{"certManager":{"certificate":{"enabled":false,"issuerGroup":"cert-manager.io","issuerKind":"ClusterIssuer","issuerName":""}},"ingress":{"additionalAnnotations":{},"additionalLabels":{},"adminUiAdditionalAnnotations":{},"adminUiLabels":{},"authServerAdditionalAnnotations":{},"authServerLabels":{},"authServerProtectedRegisterAdditionalAnnotations":{},"authServerProtectedRegisterLabels":{},"authServerProtectedTokenAdditionalAnnotations":{},"authServerProtectedTokenLabels":{},"casaAdditionalAnnotations":{},"casaLabels":{},"configApiAdditionalAnnotations":{},"configApiLabels":{},"deviceCodeAdditionalAnnotations":{},"deviceCodeLabels":{},"fido2ConfigAdditionalAnnotations":{},"fido2ConfigLabels":{},"firebaseMessagingAdditionalAnnotations":{},"firebaseMessagingLabels":{},"hosts":["demoexample.gluu.org"],"ingressClassName":"nginx","openidAdditionalAnnotations":{},"openidConfigLabels":{},"path":"/","scimAdditionalAnnotations":{},"scimConfigAdditionalAnnotations":{},"scimConfigLabels":{},"scimLabels":{},"tls":[{"hosts":["demoexample.gluu.org"],"secretName":"tls-certificate"}],"u2fAdditionalAnnotations":{},"u2fConfigLabels":{},"uma2AdditionalAnnotations":{},"uma2ConfigLabels":{},"webdiscoveryAdditionalAnnotations":{},"webdiscoveryLabels":{},"webfingerAdditionalAnnotations":{},"webfingerLabels":{}}}</code></td>
+<td><code>{"certManager":{"certificate":{"enabled":false,"issuerGroup":"cert-manager.io","issuerKind":"ClusterIssuer","issuerName":""}},"ingress":{"additionalAnnotations":{},"additionalLabels":{},"adminUiAdditionalAnnotations":{},"adminUiLabels":{},"authServerAdditionalAnnotations":{},"authServerLabels":{},"authServerProtectedRegisterAdditionalAnnotations":{},"authServerProtectedRegisterLabels":{},"authServerProtectedTokenAdditionalAnnotations":{},"authServerProtectedTokenLabels":{},"casaAdditionalAnnotations":{},"casaLabels":{},"configApiAdditionalAnnotations":{},"configApiLabels":{},"deviceCodeAdditionalAnnotations":{},"deviceCodeLabels":{},"fido2AdditionalAnnotations":{},"fido2ConfigAdditionalAnnotations":{},"fido2ConfigLabels":{},"fido2Labels":{},"firebaseMessagingAdditionalAnnotations":{},"firebaseMessagingLabels":{},"hosts":["demoexample.gluu.org"],"ingressClassName":"nginx","openidAdditionalAnnotations":{},"openidConfigLabels":{},"path":"/","samlAdditionalAnnotations":{},"samlLabels":{},"scimAdditionalAnnotations":{},"scimConfigAdditionalAnnotations":{},"scimConfigLabels":{},"scimLabels":{},"tls":[{"hosts":["demoexample.gluu.org"],"secretName":"tls-certificate"}],"u2fAdditionalAnnotations":{},"u2fConfigLabels":{},"uma2AdditionalAnnotations":{},"uma2ConfigLabels":{},"webdiscoveryAdditionalAnnotations":{},"webdiscoveryLabels":{},"webfingerAdditionalAnnotations":{},"webfingerLabels":{}}}</code></td>
 <td>Nginx ingress definitions chart</td>
 </tr>
 <tr>
@@ -4134,6 +4661,12 @@
 <td>device-code ingress resource labels. key app is taken</td>
 </tr>
 <tr>
+<td>nginx-ingress.ingress.fido2AdditionalAnnotations</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>fido2 ingress resource additional annotations.</td>
+</tr>
+<tr>
 <td>nginx-ingress.ingress.fido2ConfigAdditionalAnnotations</td>
 <td>object</td>
 <td><code>{}</code></td>
@@ -4144,6 +4677,12 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td>fido2 config ingress resource labels. key app is taken</td>
+</tr>
+<tr>
+<td>nginx-ingress.ingress.fido2Labels</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>fido2 ingress resource labels. key app is taken</td>
 </tr>
 <tr>
 <td>nginx-ingress.ingress.firebaseMessagingAdditionalAnnotations</td>
@@ -4168,6 +4707,18 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td>openid-configuration ingress resource labels. key app is taken</td>
+</tr>
+<tr>
+<td>nginx-ingress.ingress.samlAdditionalAnnotations</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>SAML ingress resource additional annotations.</td>
+</tr>
+<tr>
+<td>nginx-ingress.ingress.samlLabels</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>SAML config ingress resource labels. key app is taken</td>
 </tr>
 <tr>
 <td>nginx-ingress.ingress.scimAdditionalAnnotations</td>
@@ -4250,7 +4801,7 @@
 <tr>
 <td>opendj</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"backup":{"cronJobSchedule":"*/59 * * * *","enabled":true},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"gluufederation/opendj","tag":"5.0.0-12"},"lifecycle":{"preStop":{"exec":{"command":["/bin/sh","-c","python3 /app/scripts/deregister_peer.py 1&gt;&amp;/proc/1/fd/1"]}}},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":20,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":1},"persistence":{"size":"5Gi"},"ports":{"tcp-admin":{"nodePort":"","port":4444,"protocol":"TCP","targetPort":4444},"tcp-ldap":{"nodePort":"","port":1389,"protocol":"TCP","targetPort":1389},"tcp-ldaps":{"nodePort":"","port":1636,"protocol":"TCP","targetPort":1636},"tcp-repl":{"nodePort":"","port":8989,"protocol":"TCP","targetPort":8989},"tcp-serf":{"nodePort":"","port":7946,"protocol":"TCP","targetPort":7946},"udp-serf":{"nodePort":"","port":7946,"protocol":"UDP","targetPort":7946}},"readinessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":1636},"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"1500m","memory":"2000Mi"},"requests":{"cpu":"1500m","memory":"2000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"backup":{"cronJobSchedule":"*/59 * * * *","enabled":true},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"gluufederation/opendj","tag":"5.0.0_dev"},"lifecycle":{"preStop":{"exec":{"command":["/bin/sh","-c","python3 /app/scripts/deregister_peer.py 1&gt;&amp;/proc/1/fd/1"]}}},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":20,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":1},"persistence":{"size":"5Gi"},"ports":{"tcp-admin":{"nodePort":"","port":4444,"protocol":"TCP","targetPort":4444},"tcp-ldap":{"nodePort":"","port":1389,"protocol":"TCP","targetPort":1389},"tcp-ldaps":{"nodePort":"","port":1636,"protocol":"TCP","targetPort":1636},"tcp-repl":{"nodePort":"","port":8989,"protocol":"TCP","targetPort":8989},"tcp-serf":{"nodePort":"","port":7946,"protocol":"TCP","targetPort":7946},"udp-serf":{"nodePort":"","port":7946,"protocol":"UDP","targetPort":7946}},"readinessProbe":{"failureThreshold":20,"initialDelaySeconds":60,"periodSeconds":25,"tcpSocket":{"port":1636},"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"1500m","memory":"2000Mi"},"requests":{"cpu":"1500m","memory":"2000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>OpenDJ is a directory server which implements a wide range of Lightweight Directory Access Protocol and related standards, including full compliance with LDAPv3 but also support for Directory Service Markup Language (DSMLv2).Written in Java, OpenDJ offers multi-master replication, access control, and many extensions.</td>
 </tr>
 <tr>
@@ -4270,6 +4821,12 @@
 <td>object</td>
 <td><code>{"cronJobSchedule":"*/59 * * * *","enabled":true}</code></td>
 <td>Configure ldap backup cronjob</td>
+</tr>
+<tr>
+<td>opendj.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>opendj.dnsConfig</td>
@@ -4322,7 +4879,7 @@
 <tr>
 <td>opendj.image.tag</td>
 <td>string</td>
-<td><code>"5.0.0-12"</code></td>
+<td><code>"5.0.0_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -4428,357 +4985,9 @@
 <td>Configure any additional volumes that need to be attached to the pod</td>
 </tr>
 <tr>
-<td>oxpassport</td>
-<td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"gluufederation/oxpassport","tag":"5.0.0-12"},"lifecycle":{},"livenessProbe":{"failureThreshold":20,"httpGet":{"path":"/passport/health-check","port":"http-passport"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"failureThreshold":20,"httpGet":{"path":"/passport/health-check","port":"http-passport"},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"700m","memory":"900Mi"},"requests":{"cpu":"700m","memory":"900Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
-<td>Gluu interface to Passport.js to support social login and inbound identity.</td>
-</tr>
-<tr>
-<td>oxpassport.additionalAnnotations</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td _letsencrypt-prod_="&quot;letsencrypt-prod&quot;" cert-manager.io_issuer:="cert-manager.io/issuer:">Additional annotations that will be added across the gateway in the format of</td>
-</tr>
-<tr>
-<td>oxpassport.additionalLabels</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
-</tr>
-<tr>
-<td>oxpassport.dnsConfig</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Add custom dns config</td>
-</tr>
-<tr>
-<td>oxpassport.dnsPolicy</td>
-<td>string</td>
-<td><code>""</code></td>
-<td>Add custom dns policy</td>
-</tr>
-<tr>
-<td>oxpassport.hpa</td>
-<td>object</td>
-<td><code>{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50}</code></td>
-<td>Configure the HorizontalPodAutoscaler</td>
-</tr>
-<tr>
-<td>oxpassport.hpa.behavior</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Scaling Policies</td>
-</tr>
-<tr>
-<td>oxpassport.hpa.metrics</td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>metrics if targetCPUUtilizationPercentage is not set</td>
-</tr>
-<tr>
-<td>oxpassport.image.pullPolicy</td>
-<td>string</td>
-<td><code>"IfNotPresent"</code></td>
-<td>Image pullPolicy to use for deploying.</td>
-</tr>
-<tr>
-<td>oxpassport.image.pullSecrets</td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Image Pull Secrets</td>
-</tr>
-<tr>
-<td>oxpassport.image.repository</td>
-<td>string</td>
-<td><code>"gluufederation/oxpassport"</code></td>
-<td>Image  to use for deploying.</td>
-</tr>
-<tr>
-<td>oxpassport.image.tag</td>
-<td>string</td>
-<td><code>"5.0.0-12"</code></td>
-<td>Image  tag to use for deploying.</td>
-</tr>
-<tr>
-<td>oxpassport.livenessProbe</td>
-<td>object</td>
-<td><code>{"failureThreshold":20,"httpGet":{"path":"/passport/health-check","port":"http-passport"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}</code></td>
-<td>Configure the liveness healthcheck for oxPassport if needed.</td>
-</tr>
-<tr>
-<td>oxpassport.livenessProbe.httpGet.path</td>
-<td>string</td>
-<td><code>"/passport/health-check"</code></td>
-<td>http liveness probe endpoint</td>
-</tr>
-<tr>
-<td>oxpassport.pdb</td>
-<td>object</td>
-<td><code>{"enabled":true,"maxUnavailable":"90%"}</code></td>
-<td>Configure the PodDisruptionBudget</td>
-</tr>
-<tr>
-<td>oxpassport.readinessProbe</td>
-<td>object</td>
-<td><code>{"failureThreshold":20,"httpGet":{"path":"/passport/health-check","port":"http-passport"},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5}</code></td>
-<td>Configure the readiness healthcheck for the oxPassport if needed.</td>
-</tr>
-<tr>
-<td>oxpassport.readinessProbe.httpGet.path</td>
-<td>string</td>
-<td><code>"/passport/health-check"</code></td>
-<td>http readiness probe endpoint</td>
-</tr>
-<tr>
-<td>oxpassport.replicas</td>
-<td>int</td>
-<td><code>1</code></td>
-<td>Service replica number</td>
-</tr>
-<tr>
-<td>oxpassport.resources</td>
-<td>object</td>
-<td><code>{"limits":{"cpu":"700m","memory":"900Mi"},"requests":{"cpu":"700m","memory":"900Mi"}}</code></td>
-<td>Resource specs.</td>
-</tr>
-<tr>
-<td>oxpassport.resources.limits.cpu</td>
-<td>string</td>
-<td><code>"700m"</code></td>
-<td>CPU limit.</td>
-</tr>
-<tr>
-<td>oxpassport.resources.limits.memory</td>
-<td>string</td>
-<td><code>"900Mi"</code></td>
-<td>Memory limit.</td>
-</tr>
-<tr>
-<td>oxpassport.resources.requests.cpu</td>
-<td>string</td>
-<td><code>"700m"</code></td>
-<td>CPU request.</td>
-</tr>
-<tr>
-<td>oxpassport.resources.requests.memory</td>
-<td>string</td>
-<td><code>"900Mi"</code></td>
-<td>Memory request.</td>
-</tr>
-<tr>
-<td>oxpassport.topologySpreadConstraints</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Configure the topology spread constraints. Notice this is a map NOT a list as in the upstream API https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/</td>
-</tr>
-<tr>
-<td>oxpassport.usrEnvs</td>
-<td>object</td>
-<td><code>{"normal":{},"secret":{}}</code></td>
-<td>Add custom normal and secret envs to the service</td>
-</tr>
-<tr>
-<td>oxpassport.usrEnvs.normal</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Add custom normal envs to the service variable1: value1</td>
-</tr>
-<tr>
-<td>oxpassport.usrEnvs.secret</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Add custom secret envs to the service variable1: value1</td>
-</tr>
-<tr>
-<td>oxpassport.volumeMounts</td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Configure any additional volumesMounts that need to be attached to the containers</td>
-</tr>
-<tr>
-<td>oxpassport.volumes</td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Configure any additional volumes that need to be attached to the pod</td>
-</tr>
-<tr>
-<td>oxshibboleth</td>
-<td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"gluufederation/oxshibboleth","tag":"5.0.0-12"},"lifecycle":{},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":20,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":1},"readinessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":20,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"1000m","memory":"1000Mi"},"requests":{"cpu":"1000m","memory":"1000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
-<td>Shibboleth project for the Gluu Server's SAML IDP functionality.</td>
-</tr>
-<tr>
-<td>oxshibboleth.additionalAnnotations</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td _letsencrypt-prod_="&quot;letsencrypt-prod&quot;" cert-manager.io_issuer:="cert-manager.io/issuer:">Additional annotations that will be added across the gateway in the format of</td>
-</tr>
-<tr>
-<td>oxshibboleth.additionalLabels</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
-</tr>
-<tr>
-<td>oxshibboleth.dnsConfig</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Add custom dns config</td>
-</tr>
-<tr>
-<td>oxshibboleth.dnsPolicy</td>
-<td>string</td>
-<td><code>""</code></td>
-<td>Add custom dns policy</td>
-</tr>
-<tr>
-<td>oxshibboleth.hpa</td>
-<td>object</td>
-<td><code>{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50}</code></td>
-<td>Configure the HorizontalPodAutoscaler</td>
-</tr>
-<tr>
-<td>oxshibboleth.hpa.behavior</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Scaling Policies</td>
-</tr>
-<tr>
-<td>oxshibboleth.hpa.metrics</td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>metrics if targetCPUUtilizationPercentage is not set</td>
-</tr>
-<tr>
-<td>oxshibboleth.image.pullPolicy</td>
-<td>string</td>
-<td><code>"IfNotPresent"</code></td>
-<td>Image pullPolicy to use for deploying.</td>
-</tr>
-<tr>
-<td>oxshibboleth.image.pullSecrets</td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Image Pull Secrets</td>
-</tr>
-<tr>
-<td>oxshibboleth.image.repository</td>
-<td>string</td>
-<td><code>"gluufederation/oxshibboleth"</code></td>
-<td>Image  to use for deploying.</td>
-</tr>
-<tr>
-<td>oxshibboleth.image.tag</td>
-<td>string</td>
-<td><code>"5.0.0-12"</code></td>
-<td>Image  tag to use for deploying.</td>
-</tr>
-<tr>
-<td>oxshibboleth.livenessProbe</td>
-<td>object</td>
-<td><code>{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":20,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}</code></td>
-<td>Configure the liveness healthcheck for oxshibboleth if needed. https://github.com/GluuFederation/docker-oxshibboleth/blob/master/scripts/healthcheck.py</td>
-</tr>
-<tr>
-<td>oxshibboleth.livenessProbe.exec</td>
-<td>object</td>
-<td><code>{"command":["python3","/app/scripts/healthcheck.py"]}</code></td>
-<td>Executes the python3 healthcheck.</td>
-</tr>
-<tr>
-<td>oxshibboleth.pdb</td>
-<td>object</td>
-<td><code>{"enabled":true,"maxUnavailable":1}</code></td>
-<td>Configure the PodDisruptionBudget</td>
-</tr>
-<tr>
-<td>oxshibboleth.readinessProbe</td>
-<td>object</td>
-<td><code>{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":20,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}</code></td>
-<td>Configure the readiness healthcheck for the casa if needed.</td>
-</tr>
-<tr>
-<td>oxshibboleth.readinessProbe.exec</td>
-<td>object</td>
-<td><code>{"command":["python3","/app/scripts/healthcheck.py"]}</code></td>
-<td>Executes the python3 healthcheck.</td>
-</tr>
-<tr>
-<td>oxshibboleth.replicas</td>
-<td>int</td>
-<td><code>1</code></td>
-<td>Service replica number.</td>
-</tr>
-<tr>
-<td>oxshibboleth.resources</td>
-<td>object</td>
-<td><code>{"limits":{"cpu":"1000m","memory":"1000Mi"},"requests":{"cpu":"1000m","memory":"1000Mi"}}</code></td>
-<td>Resource specs.</td>
-</tr>
-<tr>
-<td>oxshibboleth.resources.limits.cpu</td>
-<td>string</td>
-<td><code>"1000m"</code></td>
-<td>CPU limit.</td>
-</tr>
-<tr>
-<td>oxshibboleth.resources.limits.memory</td>
-<td>string</td>
-<td><code>"1000Mi"</code></td>
-<td>Memory limit.</td>
-</tr>
-<tr>
-<td>oxshibboleth.resources.requests.cpu</td>
-<td>string</td>
-<td><code>"1000m"</code></td>
-<td>CPU request.</td>
-</tr>
-<tr>
-<td>oxshibboleth.resources.requests.memory</td>
-<td>string</td>
-<td><code>"1000Mi"</code></td>
-<td>Memory request.</td>
-</tr>
-<tr>
-<td>oxshibboleth.topologySpreadConstraints</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Configure the topology spread constraints. Notice this is a map NOT a list as in the upstream API https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/</td>
-</tr>
-<tr>
-<td>oxshibboleth.usrEnvs</td>
-<td>object</td>
-<td><code>{"normal":{},"secret":{}}</code></td>
-<td>Add custom normal and secret envs to the service</td>
-</tr>
-<tr>
-<td>oxshibboleth.usrEnvs.normal</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Add custom normal envs to the service variable1: value1</td>
-</tr>
-<tr>
-<td>oxshibboleth.usrEnvs.secret</td>
-<td>object</td>
-<td><code>{}</code></td>
-<td>Add custom secret envs to the service variable1: value1</td>
-</tr>
-<tr>
-<td>oxshibboleth.volumeMounts</td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Configure any additional volumesMounts that need to be attached to the containers</td>
-</tr>
-<tr>
-<td>oxshibboleth.volumes</td>
-<td>list</td>
-<td><code>[]</code></td>
-<td>Configure any additional volumes that need to be attached to the pod</td>
-</tr>
-<tr>
 <td>persistence</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/persistence-loader","tag":"1.0.16-1"},"lifecycle":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/persistence-loader","tag":"1.1.1_dev"},"lifecycle":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>Job to generate data and initial config for Gluu Server persistence layer.</td>
 </tr>
 <tr>
@@ -4792,6 +5001,12 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>persistence.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>persistence.dnsConfig</td>
@@ -4826,7 +5041,7 @@
 <tr>
 <td>persistence.image.tag</td>
 <td>string</td>
-<td><code>"1.0.16-1"</code></td>
+<td><code>"1.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -4890,9 +5105,183 @@
 <td>Configure any additional volumes that need to be attached to the pod</td>
 </tr>
 <tr>
+<td>saml</td>
+<td>object</td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/saml","tag":"1.1.1_dev"},"lifecycle":{},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":10,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":10,"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"1000Mi"},"requests":{"cpu":"500m","memory":"1000Mi"}},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td>SAML.</td>
+</tr>
+<tr>
+<td>saml.additionalAnnotations</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td _letsencrypt-prod_="&quot;letsencrypt-prod&quot;" cert-manager.io_issuer:="cert-manager.io/issuer:">Additional annotations that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>saml.additionalLabels</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>saml.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
+</tr>
+<tr>
+<td>saml.dnsConfig</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Add custom dns config</td>
+</tr>
+<tr>
+<td>saml.dnsPolicy</td>
+<td>string</td>
+<td><code>""</code></td>
+<td>Add custom dns policy</td>
+</tr>
+<tr>
+<td>saml.hpa</td>
+<td>object</td>
+<td><code>{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50}</code></td>
+<td>Configure the HorizontalPodAutoscaler</td>
+</tr>
+<tr>
+<td>saml.hpa.behavior</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Scaling Policies</td>
+</tr>
+<tr>
+<td>saml.hpa.metrics</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>metrics if targetCPUUtilizationPercentage is not set</td>
+</tr>
+<tr>
+<td>saml.image.pullPolicy</td>
+<td>string</td>
+<td><code>"IfNotPresent"</code></td>
+<td>Image pullPolicy to use for deploying.</td>
+</tr>
+<tr>
+<td>saml.image.pullSecrets</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Image Pull Secrets</td>
+</tr>
+<tr>
+<td>saml.image.repository</td>
+<td>string</td>
+<td><code>"ghcr.io/janssenproject/jans/saml"</code></td>
+<td>Image  to use for deploying.</td>
+</tr>
+<tr>
+<td>saml.image.tag</td>
+<td>string</td>
+<td><code>"1.1.1_dev"</code></td>
+<td>Image  tag to use for deploying.</td>
+</tr>
+<tr>
+<td>saml.livenessProbe</td>
+<td>object</td>
+<td><code>{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":10,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}</code></td>
+<td>Configure the liveness healthcheck for the auth server if needed.</td>
+</tr>
+<tr>
+<td>saml.livenessProbe.exec</td>
+<td>object</td>
+<td><code>{"command":["python3","/app/scripts/healthcheck.py"]}</code></td>
+<td>http liveness probe endpoint</td>
+</tr>
+<tr>
+<td>saml.pdb</td>
+<td>object</td>
+<td><code>{"enabled":true,"maxUnavailable":"90%"}</code></td>
+<td>Configure the PodDisruptionBudget</td>
+</tr>
+<tr>
+<td>saml.readinessProbe.exec</td>
+<td>object</td>
+<td><code>{"command":["python3","/app/scripts/healthcheck.py"]}</code></td>
+<td>http readiness probe endpoint</td>
+</tr>
+<tr>
+<td>saml.replicas</td>
+<td>int</td>
+<td><code>1</code></td>
+<td>Service replica number.</td>
+</tr>
+<tr>
+<td>saml.resources</td>
+<td>object</td>
+<td><code>{"limits":{"cpu":"500m","memory":"1000Mi"},"requests":{"cpu":"500m","memory":"1000Mi"}}</code></td>
+<td>Resource specs.</td>
+</tr>
+<tr>
+<td>saml.resources.limits.cpu</td>
+<td>string</td>
+<td><code>"500m"</code></td>
+<td>CPU limit.</td>
+</tr>
+<tr>
+<td>saml.resources.limits.memory</td>
+<td>string</td>
+<td><code>"1000Mi"</code></td>
+<td>Memory limit.</td>
+</tr>
+<tr>
+<td>saml.resources.requests.cpu</td>
+<td>string</td>
+<td><code>"500m"</code></td>
+<td>CPU request.</td>
+</tr>
+<tr>
+<td>saml.resources.requests.memory</td>
+<td>string</td>
+<td><code>"1000Mi"</code></td>
+<td>Memory request.</td>
+</tr>
+<tr>
+<td>saml.topologySpreadConstraints</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Configure the topology spread constraints. Notice this is a map NOT a list as in the upstream API https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/</td>
+</tr>
+<tr>
+<td>saml.usrEnvs</td>
+<td>object</td>
+<td><code>{"normal":{},"secret":{}}</code></td>
+<td>Add custom normal and secret envs to the service</td>
+</tr>
+<tr>
+<td>saml.usrEnvs.normal</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Add custom normal envs to the service variable1: value1</td>
+</tr>
+<tr>
+<td>saml.usrEnvs.secret</td>
+<td>object</td>
+<td><code>{}</code></td>
+<td>Add custom secret envs to the service variable1: value1</td>
+</tr>
+<tr>
+<td>saml.volumeMounts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Configure any additional volumesMounts that need to be attached to the containers</td>
+</tr>
+<tr>
+<td>saml.volumes</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Configure any additional volumes that need to be attached to the pod</td>
+</tr>
+<tr>
 <td>scim</td>
 <td>object</td>
-<td><code>{"additionalAnnotations":{},"additionalLabels":{},"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/scim","tag":"1.0.16-1"},"lifecycle":{},"livenessProbe":{"httpGet":{"path":"/jans-scim/sys/health-check","port":8080},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"httpGet":{"path":"/jans-scim/sys/health-check","port":8080},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"1000m","memory":"1000Mi"},"requests":{"cpu":"1000m","memory":"1000Mi"}},"service":{"name":"http-scim","port":8080},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
+<td><code>{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/scim","tag":"1.1.1_dev"},"lifecycle":{},"livenessProbe":{"httpGet":{"path":"/jans-scim/sys/health-check","port":8080},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"httpGet":{"path":"/jans-scim/sys/health-check","port":8080},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"1000m","memory":"1000Mi"},"requests":{"cpu":"1000m","memory":"1000Mi"}},"service":{"name":"http-scim","port":8080},"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}</code></td>
 <td>System for Cross-domain Identity Management (SCIM) version 2.0</td>
 </tr>
 <tr>
@@ -4906,6 +5295,12 @@
 <td>object</td>
 <td><code>{}</code></td>
 <td _myapp_="&quot;myapp&quot;" mylabel:="mylabel:">Additional labels that will be added across the gateway in the format of</td>
+</tr>
+<tr>
+<td>scim.customScripts</td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh</td>
 </tr>
 <tr>
 <td>scim.dnsConfig</td>
@@ -4958,7 +5353,7 @@
 <tr>
 <td>scim.image.tag</td>
 <td>string</td>
-<td><code>"1.0.16-1"</code></td>
+<td><code>"1.1.1_dev"</code></td>
 <td>Image  tag to use for deploying.</td>
 </tr>
 <tr>
@@ -5079,7 +5474,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-05T07:26:15+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-05</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-03-28T11:50:36+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-03-28</span>
       
         <br>
         Created:
@@ -5145,7 +5540,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright &copy; 2022, Gluu Flex
+      Copyright &copy; 2024, Gluu Flex
     </div>
   
   
