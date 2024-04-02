@@ -13,6 +13,7 @@ from jans.pycloudlib.persistence import SpannerClient
 from jans.pycloudlib.persistence import SqlClient
 from jans.pycloudlib.persistence import doc_id_from_dn
 from jans.pycloudlib.persistence import id_from_dn
+from jans.pycloudlib.persistence import sync_ldap_password
 from jans.pycloudlib.persistence.utils import PersistenceMapper
 
 from settings import LOGGING_CONFIG
@@ -38,6 +39,11 @@ def main():
     manager = get_manager()
 
     render_env(manager)
+
+    persistence_groups = PersistenceMapper().groups().keys()
+
+    if "ldap" in persistence_groups:
+        sync_ldap_password(manager)
 
     with manager.lock.create_lock("admin-ui-setup"):
         persistence_setup = PersistenceSetup(manager)
