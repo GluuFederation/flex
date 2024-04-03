@@ -1,11 +1,10 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
-    getAssets,
-    getAssetResponse,
+    getJansAssetResponse,
     createAssetResponse,
     deleteAssetResponse,
     updateAssetResponse,
-} from 'Plugins/admin/redux/features/assetSlice'
+} from 'Plugins/admin/redux/features/AssetSlice'
 import {
     CREATE,
     FETCH,
@@ -30,15 +29,14 @@ function* newFunction() {
     return new AssetApi(api)
 }
 
-export function* getAllAssets({ payload }) {
-    console.log("=====================", payload)
+export function* getJansAssets({ payload }) {
     const audit = yield* initAudit()
     try {
         payload = payload || { action: {} }
         addAdditionalData(audit, FETCH, 'asset', payload)
         const assetApi = yield* newFunction()
         const data = yield call(assetApi.getAllJansAssets, payload.action)
-        yield put(getAssetResponse({ data }))
+        yield put(getJansAssetResponse({ data }))
         yield call(postUserAction, audit)
         return data
     } catch (e) {
@@ -49,7 +47,7 @@ export function* getAllAssets({ payload }) {
                 e?.response?.body?.responseMessage || e.message
             )
         )
-        yield put(getAssetResponse({ data: null }))
+        yield put(getJansAssetResponse({ data: null }))
         if (isFourZeroOneError(e)) {
             const jwt = yield select((state) => state.authReducer.userinfo_jwt)
             yield put(getAPIAccessToken(jwt))
@@ -58,7 +56,7 @@ export function* getAllAssets({ payload }) {
     }
 }
 
-export function* createAsset({ payload }) {
+export function* createJansAsset({ payload }) {
     const audit = yield* initAudit()
     try {
         addAdditionalData(audit, CREATE, 'asset', payload)
@@ -87,7 +85,7 @@ export function* createAsset({ payload }) {
     }
 }
 
-export function* deleteAsset({ payload }) {
+export function* deleteJansAsset({ payload }) {
     const audit = yield* initAudit()
     try {
         addAdditionalData(audit, DELETION, 'asset', payload)
@@ -98,7 +96,7 @@ export function* deleteAsset({ payload }) {
         )
         yield put(deleteAssetResponse({ data }))
         yield call(postUserAction, audit)
-        yield put(getAssets())
+        yield put(getAllAssets())
         return data
     } catch (e) {
         yield put(
@@ -117,7 +115,7 @@ export function* deleteAsset({ payload }) {
     }
 }
 
-export function* updateAsset({ payload }) {
+export function* updateJansAsset({ payload }) {
     const audit = yield* initAudit()
     try {
         addAdditionalData(audit, UPDATE, 'asset', payload)
@@ -128,7 +126,7 @@ export function* updateAsset({ payload }) {
         )
         yield put(updateAssetResponse({ data }))
         yield call(postUserAction, audit)
-        yield put(getAssets())
+        yield put(getAllAssets())
         return data
     } catch (e) {
         yield put(
@@ -147,29 +145,29 @@ export function* updateAsset({ payload }) {
     }
 }
 
-export function* watchGetAllAssets() {
-    yield takeLatest('asset/getAssets', getAllAssets)
+export function* watchGetJansAssets() {
+    yield takeLatest('asset/getJansAssets', getJansAssets)
 }
 
-export function* watchCreateAsset() {
-    yield takeLatest('asset/createAsset', createAsset)
+export function* watchCreateJansAsset() {
+    yield takeLatest('asset/createJansAsset', createJansAsset)
 }
 
-export function* watchDeleteAsset() {
-    yield takeLatest('asset/deleteAsset', deleteAsset)
+export function* watchDeleteJansAsset() {
+    yield takeLatest('asset/deleteJansAsset', deleteJansAsset)
 }
 
-export function* watchUpdateAsset() {
-    yield takeLatest('asset/updateAsset', updateAsset)
+export function* watchUpdateJansAsset() {
+    yield takeLatest('asset/updateJansAsset', updateJansAsset)
 }
 
 
 
 export default function* rootSaga() {
     yield all([
-        fork(watchGetAllAssets),
-        fork(watchCreateAsset),
-        fork(watchDeleteAsset),
-        fork(watchUpdateAsset),
+        fork(watchGetJansAssets),
+        fork(watchCreateJansAsset),
+        fork(watchDeleteJansAsset),
+        fork(watchUpdateJansAsset),
     ])
 }

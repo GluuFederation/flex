@@ -77,6 +77,7 @@
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
+    "asset_name": "Asset Name",
     "default_permission_in_token": "Default permission in token",
     "aui_feature_ids": "Admin UI Features",
     "introspection_signed_response_alg": "Introspection Signed Response Alg",
@@ -600,6 +601,7 @@
   },
   "messages": {
     "add_permission": "Add Permission",
+    "add_asset":"Add Jans Asset",
     "add_configuration": "Add Configuration",
     "view_configuration": "View Configuration",
     "view_trust_relationshi_details": "View Trust Relationship Details",
@@ -758,6 +760,8 @@
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",
     "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "introspection_object": "Introspection Object",
     "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",

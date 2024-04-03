@@ -2,7 +2,39 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    assets: [],
+    assets: [{
+        "dn": "inum=0b436302-b729-4eb2-b211-335980dcab43,ou=document,o=jans",
+        "selected": false,
+        "inum": "0b436302-b729-4eb2-b211-335980dcab43",
+        "displayName": "mermaid-extra.css",
+        "description": "/opt/jans/jetty/jans-config-api/",
+        "creationDate": "2024-04-1T12:53:00",
+        "document": ".mermaid {\r\n\toverflow: auto;\r\n}\r\n\r\n.mermaid svg {\r\n\twidth: 1315px;\r\n\theight: 600px;\r\n}\r\n",
+        "jansModuleProperty": [
+            "config-api",
+            "jar",
+            "/opt/jans/jetty/jans-config-api/custom/lib"
+        ],
+        "jansLevel": "1",
+        "jansRevision": "2",
+        "jansEnabled": true,
+        "baseDn": "inum=0b436302-b729-4eb2-b211-335980dcab43,ou=document,o=jans"
+    },
+    {
+        "dn": "inum=9d2f39f5-a910-4a03-a888-6f0f1ee03445,ou=document,o=jans",
+        "selected": false,
+        "inum": "9d2f39f5-a910-4a03-a888-6f0f1ee03445",
+        "displayName": "kc-saml-plugin.jar",
+        "description": "/opt/jans/jetty/jans-config-api/",
+        "creationDate": "2024-03-14T12:53:00",
+        "jansModuleProperty": [
+            "config-api",
+            "jar",
+            "/opt/jans/jetty/jans-config-api/custom/lib"
+        ],
+        "jansEnabled": true,
+        "baseDn": "inum=9d2f39f5-a910-4a03-a888-6f0f1ee03445,ou=document,o=jans"
+    }],
     loading: false,
     saveOperationFlag: false,
     errorInSaveOperationFlag: false,
@@ -15,13 +47,14 @@ const initialState = {
 }
 
 const assetSlice = createSlice({
-    name: 'assets',
+    name: 'asset',
     initialState,
     reducers: {
-        getAssets: (state, action) => {
+        getJansAssets: (state, action) => {
             state.loading = true
         },
-        getAssetResponse: (state, action) => {
+        getJansAssetResponse: (state, action) => {
+            console.log("closing asset", action.payload)
             state.loading = false
             if (action.payload?.data) {
                 state.assets = action.payload.data.entries
@@ -80,8 +113,8 @@ const assetSlice = createSlice({
 })
 
 export const {
-    getAssets,
-    getAssetResponse,
+    getJansAssets,
+    getJansAssetResponse,
     createAsset,
     createAssetResponse,
     deleteAsset,

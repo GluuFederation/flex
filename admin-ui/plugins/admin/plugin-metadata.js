@@ -22,7 +22,7 @@ import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleS
 import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
-import { reducer as assetReducer } from 'Plugins/admin/redux/features/assetSlice'
+import { reducer as assetReducer } from 'Plugins/admin/redux/features/AssetSlice'
 import {
   ACR_READ,
   ROLE_READ,

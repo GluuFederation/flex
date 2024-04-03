@@ -23,12 +23,13 @@ import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { useNavigate } from 'react-router'
-import { getAssets, deleteAsset, setSelectedAsset } from 'Plugins/admin/redux/features/assetSlice'
+import { getJansAssets, deleteAsset, setSelectedAsset } from 'Plugins/admin/redux/features/AssetSlice'
 
 const JansAssetListPage = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { t } = useTranslation()
+    SetTitle(t('titles.assets'))
     const [pageNumber, setPageNumber] = useState(0)
     const { totalItems, assets } = useSelector((state) => state.assetReducer)
     const permissions = useSelector((state) => state.authReducer.permissions)
@@ -41,7 +42,6 @@ const JansAssetListPage = () => {
     const theme = useContext(ThemeContext)
     const themeColors = getThemeColor(theme.state.theme)
     const bgThemeColor = { background: themeColors.background }
-    SetTitle(t('titles.assets'))
 
     const [modal, setModal] = useState(false)
     const [deleteData, setDeleteData] = useState(null)
@@ -61,7 +61,7 @@ const JansAssetListPage = () => {
 
     useEffect(() => {
         options['limit'] = 10
-        dispatch(getAssets({ action: options }))
+        dispatch(getJansAssets({ action: options }))
     }, [])
 
     let memoLimit = limit
@@ -81,14 +81,14 @@ const JansAssetListPage = () => {
         options['limit'] = limit
         options['pattern'] = pattern
         setPageNumber(page)
-        dispatch(getAssets({ action: options }))
+        dispatch(getJansAssets({ action: options }))
     }
     const onRowCountChangeClick = (count) => {
         options['limit'] = count
         options['pattern'] = pattern
         setPageNumber(0)
         setLimit(count)
-        dispatch(getAssets({ action: options }))
+        dispatch(getJansAssets({ action: options }))
     }
 
     const PaginationWrapper = useCallback(
@@ -152,7 +152,7 @@ const JansAssetListPage = () => {
             onClick: () => {
                 setLimit(memoLimit)
                 setPattern(memoPattern)
-                dispatch(getAssets({ action: { limit: memoLimit, pattern: memoPattern } }))
+                dispatch(getJansAssets({ action: { limit: memoLimit, pattern: memoPattern } }))
             },
         })
     }
@@ -209,16 +209,16 @@ const JansAssetListPage = () => {
                                     field: 'displayName',
                                 },
                                 {
-                                    title: `${t('fields.url')}`,
-                                    field: 'url',
+                                    title: `${t('fields.description')}`,
+                                    field: 'description',
                                     width: '40%',
                                     render: rowData => (
                                         <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
-                                            {rowData.url}
+                                            {rowData.description}
                                         </div>
                                     )
                                 },
-                                { title: `${t('fields.http_method')}`, field: 'httpMethod' },
+                                { title: `${t('fields.creationDate')}`, field: 'creationDate' },
                                 { title: `${t('fields.enabled')}`, field: 'jansEnabled' }
                             ]}
                             data={assets}

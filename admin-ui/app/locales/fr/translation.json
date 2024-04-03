@@ -136,6 +136,7 @@
     "copy_to_clipboard": "Copier dans le presse-papier"
   },
   "fields": {
+    "asset_name": "Asset Name",
     "tag": "Étiqueter",
     "issuer": "Émetteur",
     "message_provider_type": "Type de fournisseur de messages",
@@ -542,6 +543,7 @@
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
+    "add_asset":"Add Jans Asset",
     "add_configuration": "Ajouter une configuration",
     "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",
@@ -682,6 +684,8 @@
   "titles": {
     "acrs": "ACR",
     "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "algorithmic_keys": "Clés algorithmiques",
     "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",
