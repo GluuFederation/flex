@@ -1,30 +1,55 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { Col, Form, Row, FormGroup } from 'Components'
+import React, { useCallback, useState, useEffect, useContext } from 'react'
+import { Col, Form, Row, FormGroup, Button } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useFormik } from 'formik'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
+import { useFilePicker } from 'use-file-picker'
 import {
-    createAsset,
-    updateAsset,
+    FileAmountLimitValidator,
+    FileTypeValidator,
+    FileSizeValidator,
+} from 'use-file-picker/validators'
+import {
+    createJansAsset,
+    updateJansAsset,
+    resetFlags,
 } from 'Plugins/admin/redux/features/AssetSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import { useNavigate, useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
-import { WEBHOOK } from 'Utils/ApiResources'
+import { ASSET } from 'Utils/ApiResources'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const AssetForm = () => {
     const { id } = useParams()
     const userAction = {}
-    const { selectedAsset } =
-        useSelector((state) => state.assetReducer)
-
+    const { selectedAsset } = useSelector((state) => state.assetReducer)
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const theme = useContext(ThemeContext)
+    const selectedTheme = theme.state.theme
+    const { openFilePicker, filesContent, clear } = useFilePicker({
+        accept: [".css", ".html", ".js", ".jar"],
+        multiple: false,
+        validators: [
+            new FileAmountLimitValidator({ max: 1 }),
+            new FileTypeValidator(['js', 'css', 'html', 'jar']),
+            new FileSizeValidator({ maxFileSize: 10 * 1024 * 1024 /* 5 MB */ }),
+        ],
+        onFilesRejected: ({ errors }) => {
+            console.log('Failed to import flow file:', errors)
+            //toast.error('Failed to import flow file: Only JSON,css,html,jar, js files are allowed with max size 10MB.')
+        },
+        onFilesSuccessfullySelected: () => {
+            console.log('File imported successfully.')
+        },
+    })
     const saveOperationFlag = useSelector(
         (state) => state.assetReducer.saveOperationFlag
     )
@@ -36,18 +61,6 @@ const AssetForm = () => {
 
     const validatePayload = (values) => {
         let faulty = false
-        if (values.httpRequestBody) {
-            try {
-                JSON.parse(values.httpRequestBody)
-            } catch (error) {
-                faulty = true
-                formik.setFieldError(
-                    'httpRequestBody',
-                    t('messages.invalid_json_error')
-                )
-            }
-        }
-
         return faulty
     }
 
@@ -80,13 +93,19 @@ const AssetForm = () => {
     })
 
     const toggle = () => {
+        console.log('toggle')
         setModal(!modal)
+    }
+
+    function flowUpload() {
+        formik.setFieldValue('displayName', filesContent[0].name)
+        formik.setFieldValue('document', filesContent[0])
+        clear()
     }
 
     const submitForm = useCallback(
         (userMessage) => {
             toggle()
-
             const jansModuleProperties = formik.values.jansModuleProperty?.map((header) => {
                 return {
                     key: header.key || header.source,
@@ -107,9 +126,9 @@ const AssetForm = () => {
 
             buildPayload(userAction, userMessage, payload)
             if (id) {
-                dispatch(updateAsset({ action: userAction }))
+                dispatch(updateJansAsset({ action: userAction }))
             } else {
-                dispatch(createAsset({ action: userAction }))
+                dispatch(createJansAsset({ action: userAction }))
             }
         },
         [formik]
@@ -117,11 +136,16 @@ const AssetForm = () => {
 
     useEffect(() => {
         if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/assets')
-
         return function cleanup() {
             dispatch(resetFlags())
         }
     }, [saveOperationFlag, errorInSaveOperationFlag])
+
+    useEffect(() => {
+        if (filesContent.length >= 1) {
+            flowUpload()
+        }
+    }, [filesContent])
 
 
     return (
@@ -136,11 +160,33 @@ const AssetForm = () => {
                             lsize={4}
                             doc_entry='asset_id'
                             rsize={8}
-                            doc_category={WEBHOOK}
+                            doc_category={ASSET}
                             name='assetId'
                             disabled={true}
                         />
                     ) : null}
+                    <FormGroup row>
+                        <GluuLabel
+                            label='fields.upload'
+                            size={4}
+                            doc_category={ASSET}
+                            doc_entry='upload'
+                        />
+                        <Col sm={1}>
+                            <Button
+                                color={`primary-${selectedTheme}`}
+                                type="button"
+                                style={applicationStyle.buttonStyle}
+                                onClick={() => {
+                                    openFilePicker()
+                                }}
+                            >
+                                Import
+                            </Button>
+                            {filesContent[0]?.name}
+                        </Col>
+                    </FormGroup>
+
                     <GluuInputRow
                         label='fields.asset_name'
                         formik={formik}
@@ -150,7 +196,7 @@ const AssetForm = () => {
                         rsize={8}
                         required
                         name='displayName'
-                        doc_category={WEBHOOK}
+                        doc_category={ASSET}
                         errorMessage={formik.errors.displayName}
                         showError={formik.errors.displayName && formik.touched.displayName}
                     />
@@ -159,7 +205,7 @@ const AssetForm = () => {
                         label='fields.description'
                         formik={formik}
                         value={formik.values?.description}
-                        doc_category={WEBHOOK}
+                        doc_category={ASSET}
                         doc_entry='description'
                         lsize={4}
                         rsize={8}
@@ -171,7 +217,7 @@ const AssetForm = () => {
                     <GluuLabel
                         label='options.enabled'
                         size={4}
-                        doc_category={WEBHOOK}
+                        doc_category={ASSET}
                         doc_entry='enabled'
                     />
                     <Col sm={1}>
@@ -183,7 +229,6 @@ const AssetForm = () => {
                         />
                     </Col>
                 </FormGroup>
-
                 <Row>
                     <Col>
                         <GluuCommitFooter

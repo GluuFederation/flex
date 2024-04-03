@@ -78,6 +78,7 @@
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
     "asset_name": "Asset Name",
+    "upload": "Select a file to upload",
     "default_permission_in_token": "Default permission in token",
     "aui_feature_ids": "Admin UI Features",
     "introspection_signed_response_alg": "Introspection Signed Response Alg",

@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
-
 import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -23,7 +22,7 @@ import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { useNavigate } from 'react-router'
-import { getJansAssets, deleteAsset, setSelectedAsset } from 'Plugins/admin/redux/features/AssetSlice'
+import { getJansAssets, deleteJansAsset, setSelectedAsset } from 'Plugins/admin/redux/features/AssetSlice'
 
 const JansAssetListPage = () => {
     const dispatch = useDispatch()
@@ -38,11 +37,9 @@ const JansAssetListPage = () => {
         (props) => <Paper {...props} elevation={0} />,
         []
     )
-
     const theme = useContext(ThemeContext)
     const themeColors = getThemeColor(theme.state.theme)
     const bgThemeColor = { background: themeColors.background }
-
     const [modal, setModal] = useState(false)
     const [deleteData, setDeleteData] = useState(null)
     const toggle = () => setModal(!modal)
@@ -50,15 +47,12 @@ const JansAssetListPage = () => {
         const userAction = {}
         toggle()
         buildPayload(userAction, userMessage, deleteData)
-        dispatch(deleteAsset({ action: userAction }))
+        dispatch(deleteJansAsset({ action: userAction }))
     }
-
     const myActions = []
     const options = {}
-
     const [limit, setLimit] = useState(10)
     const [pattern, setPattern] = useState(null)
-
     useEffect(() => {
         options['limit'] = 10
         dispatch(getJansAssets({ action: options }))

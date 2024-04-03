@@ -54,7 +54,6 @@ const assetSlice = createSlice({
             state.loading = true
         },
         getJansAssetResponse: (state, action) => {
-            console.log("closing asset", action.payload)
             state.loading = false
             if (action.payload?.data) {
                 state.assets = action.payload.data.entries
@@ -62,12 +61,12 @@ const assetSlice = createSlice({
                 state.entriesCount = action.payload.data.entriesCount
             }
         },
-        createAsset: (state) => {
+        createJansAsset: (state) => {
             state.loading = true
             state.saveOperationFlag = false
             state.errorInSaveOperationFlag = false
         },
-        createAssetResponse: (state, action) => {
+        createJansAssetResponse: (state, action) => {
             state.loading = false
             state.saveOperationFlag = true
             if (action.payload?.data) {
@@ -76,21 +75,21 @@ const assetSlice = createSlice({
                 state.errorInSaveOperationFlag = true
             }
         },
-        deleteAsset: (state) => {
+        deleteJansAsset: (state) => {
             state.loading = true
         },
-        deleteAssetResponse: (state) => {
+        deleteJansAssetResponse: (state) => {
             state.loading = false
         },
         setSelectedAsset: (state, action) => {
             state.selectedAsset = action.payload
         },
-        updateAsset: (state) => {
+        updateJansAsset: (state) => {
             state.loading = true
             state.saveOperationFlag = false
             state.errorInSaveOperationFlag = false
         },
-        updateAssetResponse: (state, action) => {
+        updateJansAssetResponse: (state, action) => {
             state.saveOperationFlag = true
             state.loading = false
             if (action.payload?.data) {
@@ -115,13 +114,13 @@ const assetSlice = createSlice({
 export const {
     getJansAssets,
     getJansAssetResponse,
-    createAsset,
-    createAssetResponse,
-    deleteAsset,
-    deleteAssetResponse,
+    createJansAsset,
+    createJansAssetResponse,
+    deleteJansAsset,
+    deleteJansAssetResponse,
     setSelectedAsset,
-    updateAsset,
-    updateAssetResponse,
+    updateJansAsset,
+    updateJansAssetResponse,
     resetFlags,
     setAssetModal,
     setShowErrorModal

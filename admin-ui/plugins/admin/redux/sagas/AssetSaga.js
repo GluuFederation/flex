@@ -1,9 +1,9 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
     getJansAssetResponse,
-    createAssetResponse,
-    deleteAssetResponse,
-    updateAssetResponse,
+    createJansAssetResponse,
+    deleteJansAssetResponse,
+    updateJansAssetResponse,
 } from 'Plugins/admin/redux/features/AssetSlice'
 import {
     CREATE,
@@ -65,7 +65,7 @@ export function* createJansAsset({ payload }) {
             assetApi.createJansAsset,
             payload.action.action_data
         )
-        yield put(createAssetResponse({ data }))
+        yield put(createJansAssetResponse({ data }))
         yield call(postUserAction, audit)
         return data
     } catch (e) {
@@ -76,7 +76,7 @@ export function* createJansAsset({ payload }) {
                 e?.response?.body?.responseMessage || e.message
             )
         )
-        yield put(createAssetResponse({ data: null }))
+        yield put(createJansAssetResponse({ data: null }))
         if (isFourZeroOneError(e)) {
             const jwt = yield select((state) => state.authReducer.userinfo_jwt)
             yield put(getAPIAccessToken(jwt))
@@ -94,7 +94,7 @@ export function* deleteJansAsset({ payload }) {
             assetApi.deleteJansAssetByInum,
             payload.action.action_data.inum
         )
-        yield put(deleteAssetResponse({ data }))
+        yield put(deleteJansAssetResponse({ data }))
         yield call(postUserAction, audit)
         yield put(getAllAssets())
         return data
@@ -106,7 +106,7 @@ export function* deleteJansAsset({ payload }) {
                 e?.response?.body?.responseMessage || e.message
             )
         )
-        yield put(deleteAssetResponse({ data: null }))
+        yield put(deleteJansAssetResponse({ data: null }))
         if (isFourZeroOneError(e)) {
             const jwt = yield select((state) => state.authReducer.userinfo_jwt)
             yield put(getAPIAccessToken(jwt))
@@ -124,7 +124,7 @@ export function* updateJansAsset({ payload }) {
             assetApi.updateJansAsset,
             payload.action.action_data
         )
-        yield put(updateAssetResponse({ data }))
+        yield put(updateJansAssetResponse({ data }))
         yield call(postUserAction, audit)
         yield put(getAllAssets())
         return data
@@ -136,7 +136,7 @@ export function* updateJansAsset({ payload }) {
                 e?.response?.body?.responseMessage || e.message
             )
         )
-        yield put(updateAssetResponse({ data: null }))
+        yield put(updateJansAssetResponse({ data: null }))
         if (isFourZeroOneError(e)) {
             const jwt = yield select((state) => state.authReducer.userinfo_jwt)
             yield put(getAPIAccessToken(jwt))
