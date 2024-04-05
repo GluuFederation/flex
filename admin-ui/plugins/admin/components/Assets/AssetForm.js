@@ -40,11 +40,10 @@ const AssetForm = () => {
         validators: [
             new FileAmountLimitValidator({ max: 1 }),
             new FileTypeValidator(['js', 'css', 'html', 'jar']),
-            new FileSizeValidator({ maxFileSize: 10 * 1024 * 1024 /* 5 MB */ }),
+            new FileSizeValidator({ maxFileSize: 20 * 1024 * 1024 /* 20 MB */ }),
         ],
         onFilesRejected: ({ errors }) => {
             console.log('Failed to import flow file:', errors)
-            //toast.error('Failed to import flow file: Only JSON,css,html,jar, js files are allowed with max size 10MB.')
         },
         onFilesSuccessfullySelected: () => {
             console.log('File imported successfully.')
@@ -97,10 +96,9 @@ const AssetForm = () => {
         setModal(!modal)
     }
 
-    function flowUpload() {
+    function assetUpload() {
         formik.setFieldValue('displayName', filesContent[0].name)
         formik.setFieldValue('document', filesContent[0])
-        clear()
     }
 
     const submitForm = useCallback(
@@ -143,7 +141,7 @@ const AssetForm = () => {
 
     useEffect(() => {
         if (filesContent.length >= 1) {
-            flowUpload()
+            assetUpload()
         }
     }, [filesContent])
 
