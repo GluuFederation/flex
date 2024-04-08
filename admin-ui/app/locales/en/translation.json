@@ -602,7 +602,8 @@
   },
   "messages": {
     "add_permission": "Add Permission",
-    "add_asset":"Add Jans Asset",
+    "add_asset": "Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Add Configuration",
     "view_configuration": "View Configuration",
     "view_trust_relationshi_details": "View Trust Relationship Details",

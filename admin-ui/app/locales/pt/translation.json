@@ -540,6 +540,7 @@
   "messages": {
     "add_permission": "Adicionar permissão",
     "add_asset":"Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
     "view_configuration": "Ver Configuração",
     "add_idp": "Adicionar IDP SAML",

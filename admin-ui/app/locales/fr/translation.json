@@ -545,6 +545,7 @@
   "messages": {
     "add_permission": "Ajouter une autorisation",
     "add_asset":"Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
     "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",

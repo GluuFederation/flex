@@ -59,11 +59,12 @@ export function* getJansAssets({ payload }) {
 export function* createJansAsset({ payload }) {
     const audit = yield* initAudit()
     try {
+        const token = yield select((state) => state.authReducer.token.access_token)
         addAdditionalData(audit, CREATE, 'asset', payload)
         const assetApi = yield* newFunction()
         const data = yield call(
             assetApi.createJansAsset,
-            payload.action.action_data
+            payload.action.action_data, token
         )
         yield put(createJansAssetResponse({ data }))
         yield call(postUserAction, audit)

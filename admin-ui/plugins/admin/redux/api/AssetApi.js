@@ -1,12 +1,11 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
+import axios from 'Redux/api/axios'
 export default class AssetApi {
     constructor(api) {
         this.api = api
     }
 
     getAllJansAssets = (opts) => {
-        console.log("==============get all")
         return new Promise((resolve, reject) => {
             this.api.getAllAssets(opts, (error, data) => {
                 handleResponse(error, reject, resolve, data)
@@ -14,11 +13,31 @@ export default class AssetApi {
         })
     }
 
-    createJansAsset = (body) => {
+    createJansAsset = (body, token) => {
+        const document = {
+            "displayName": body.displayName, "description": body.description,
+            "document": body.displayName, "jansModuleProperty": [], "jansEnabled": body.jansEnabled
+        }
+        const formData = new FormData();
+        const assetFileBlob = new Blob([body.document], {
+            type: 'application/octet-stream',
+        })
+        const documentBlob = new Blob(
+            [
+                JSON.stringify({
+                    ...document,
+                }),
+            ],
+            {
+                type: 'application/json',
+            }
+        )
+        formData.append('document', documentBlob);
+        formData.append('assetFile', assetFileBlob);
         return new Promise((resolve, reject) => {
-            this.api.postNewAsset(document, assetfile, (error, data) => {
-                handleResponse(error, reject, resolve, data)
-            })
+            axios.postForm('/api/v1/jans-assets/upload', formData, { headers: { Authorization: `Bearer ${token}` } })
+                .then(result => handleResponse(undefined, reject, resolve, result))
+                .catch(error => handleResponse(error, reject, resolve, undefined));
         })
     }
 

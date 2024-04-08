@@ -1,19 +1,13 @@
-import React, { useCallback, useState, useEffect, useContext } from 'react'
-import { Col, Form, Row, FormGroup, Button } from 'Components'
+import React, { useCallback, useState, useEffect } from 'react'
+import { Col, Form, Row, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useFormik } from 'formik'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
-import { useFilePicker } from 'use-file-picker'
-import {
-    FileAmountLimitValidator,
-    FileTypeValidator,
-    FileSizeValidator,
-} from 'use-file-picker/validators'
 import {
     createJansAsset,
     updateJansAsset,
@@ -24,31 +18,14 @@ import { useNavigate, useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { ASSET } from 'Utils/ApiResources'
-import { ThemeContext } from 'Context/theme/themeContext'
 
 const AssetForm = () => {
     const { id } = useParams()
+    const [assetFile, setAssetFile] = useState(null)
     const userAction = {}
     const { selectedAsset } = useSelector((state) => state.assetReducer)
     const { t } = useTranslation()
     const navigate = useNavigate()
-    const theme = useContext(ThemeContext)
-    const selectedTheme = theme.state.theme
-    const { openFilePicker, filesContent, clear } = useFilePicker({
-        accept: [".css", ".html", ".js", ".jar"],
-        multiple: false,
-        validators: [
-            new FileAmountLimitValidator({ max: 1 }),
-            new FileTypeValidator(['js', 'css', 'html', 'jar']),
-            new FileSizeValidator({ maxFileSize: 20 * 1024 * 1024 /* 20 MB */ }),
-        ],
-        onFilesRejected: ({ errors }) => {
-            console.log('Failed to import flow file:', errors)
-        },
-        onFilesSuccessfullySelected: () => {
-            console.log('File imported successfully.')
-        },
-    })
     const saveOperationFlag = useSelector(
         (state) => state.assetReducer.saveOperationFlag
     )
@@ -63,11 +40,23 @@ const AssetForm = () => {
         return faulty
     }
 
+    const handleFileDrop = (files) => {
+        const file = files[0]
+        if (file) {
+            setAssetFile(file)
+            formik.setFieldValue('document', assetFile)
+        }
+    }
+
+    const handleClearFiles = () => {
+        setAssetFile(null)
+    }
+
 
     const formik = useFormik({
         initialValues: {
-            creationDate: selectedAsset?.creationDate,
-            document: selectedAsset?.document || '',
+            creationDate: selectedAsset?.creationDate || '',
+            document: selectedAsset?.document || null,
             displayName: selectedAsset?.displayName || '',
             jansEnabled: selectedAsset?.jansEnabled || false,
             description: selectedAsset?.description || '',
@@ -80,7 +69,6 @@ const AssetForm = () => {
             toggle()
         },
         validationSchema: Yup.object().shape({
-            document: Yup.string().required(t('messages.asset_document_error')),
             displayName: Yup.string()
                 .required(t('messages.display_name_error'))
                 .matches(
@@ -92,13 +80,7 @@ const AssetForm = () => {
     })
 
     const toggle = () => {
-        console.log('toggle')
         setModal(!modal)
-    }
-
-    function assetUpload() {
-        formik.setFieldValue('displayName', filesContent[0].name)
-        formik.setFieldValue('document', filesContent[0])
     }
 
     const submitForm = useCallback(
@@ -139,12 +121,6 @@ const AssetForm = () => {
         }
     }, [saveOperationFlag, errorInSaveOperationFlag])
 
-    useEffect(() => {
-        if (filesContent.length >= 1) {
-            assetUpload()
-        }
-    }, [filesContent])
-
 
     return (
         <>
@@ -165,23 +141,20 @@ const AssetForm = () => {
                     ) : null}
                     <FormGroup row>
                         <GluuLabel
-                            label='fields.upload'
+                            label={'fields.upload'}
                             size={4}
-                            doc_category={ASSET}
-                            doc_entry='upload'
                         />
-                        <Col sm={1}>
-                            <Button
-                                color={`primary-${selectedTheme}`}
-                                type="button"
-                                style={applicationStyle.buttonStyle}
-                                onClick={() => {
-                                    openFilePicker()
+                        <Col sm={8}>
+                            <GluuUploadFile
+                                accept={{
+                                    'text/xml': ['.jar'],
+                                    'application/json': ['.json'],
                                 }}
-                            >
-                                Import
-                            </Button>
-                            {filesContent[0]?.name}
+                                placeholder={`Drag 'n' drop .jar/.css/.html/.js file here, or click to select file`}
+                                onDrop={handleFileDrop}
+                                onClearFiles={handleClearFiles}
+                                disabled={false}
+                            />
                         </Col>
                     </FormGroup>
 
