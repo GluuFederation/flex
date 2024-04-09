@@ -24,7 +24,7 @@ function CacheInMemory({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.defaultPutExpiration}
+          value={formik.values.memoryDefaultPutExpiration}
           doc_category={CACHE}
         />
       </CardBody>

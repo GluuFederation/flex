@@ -54,7 +54,7 @@ function CacheMemcached({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.maxOperationQueueLength}
+          value={formik.values.maxOperationQueueLength}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -64,7 +64,7 @@ function CacheMemcached({ config, formik }) {
           formik={formik}
           lsize={6}
           rsize={6}
-          value={config.bufferSize}
+          value={formik.values.bufferSize}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -74,7 +74,7 @@ function CacheMemcached({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.defaultPutExpiration}
+          value={formik.values.memDefaultPutExpiration}
           doc_category={CACHE}
         />
       </CardBody>

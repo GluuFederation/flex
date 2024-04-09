@@ -25,7 +25,7 @@ function CacheNative({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.defaultPutExpiration}
+          value={formik.values.nativeDefaultPutExpiration}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -35,7 +35,7 @@ function CacheNative({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.defaultCleanupBatchSize}
+          value={formik.values.defaultCleanupBatchSize}
           doc_category={CACHE}
         />
         <GluuToogleRow
@@ -44,7 +44,7 @@ function CacheNative({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.deleteExpiredOnGetRequest}
+          value={formik.values.deleteExpiredOnGetRequest}
           doc_category={CACHE}
         />
       </CardBody>
