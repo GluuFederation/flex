@@ -13,6 +13,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import PropTypes from 'prop-types'
 
 function CacheMemcached({ config, formik }) {
   const { t } = useTranslation()
@@ -83,3 +84,7 @@ function CacheMemcached({ config, formik }) {
 }
 
 export default CacheMemcached
+CacheMemcached.propTypes = {
+  formik: PropTypes.object,
+  config: PropTypes.any
+}

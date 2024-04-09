@@ -4,8 +4,9 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
 
-function CacheNative({ config, formik }) {
+function CacheNative({ formik }) {
   const { t } = useTranslation()
   return (
     <Card>
@@ -53,3 +54,6 @@ function CacheNative({ config, formik }) {
 }
 
 export default CacheNative
+CacheNative.propTypes = {
+  formik: PropTypes.object
+}

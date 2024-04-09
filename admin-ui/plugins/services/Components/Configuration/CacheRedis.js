@@ -15,6 +15,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import PropTypes from 'prop-types'
 
 function CacheRedis({ config, formik }) {
   const { t } = useTranslation()
@@ -164,3 +165,7 @@ function CacheRedis({ config, formik }) {
 }
 
 export default CacheRedis
+CacheRedis.propTypes = {
+  formik: PropTypes.object,
+  config: PropTypes.any
+}
