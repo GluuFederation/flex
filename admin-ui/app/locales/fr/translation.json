@@ -140,6 +140,7 @@
     "tag": "Étiqueter",
     "issuer": "Émetteur",
     "upload": "Select a file to upload",
+    "jansModuleProperty": "Jans Module Properties",
     "message_provider_type": "Type de fournisseur de messages",
     "ssl_key_store_file_path": "Chemin du fichier du magasin de clés SSL",
     "ssl_trust_store_password": "Mot de passe du magasin de confiance SSL",

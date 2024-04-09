@@ -16,29 +16,32 @@ const theme = createTheme({
 })
 
 function GluuArrayCompleter({
+  formik,
   label,
   name,
   value,
   options,
   required,
   doc_category,
+  lsize,
+  rsize,
 }) {
   const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
         {required ? (
-          <GluuLabel label={label} size={6} required />
+          <GluuLabel label={label} size={lsize || 6} required />
         ) : (
-          <GluuLabel label={label} size={6} />
+          <GluuLabel label={label} size={lsize || 6} />
         )}
-        <Col sm={6}>
+        <Col sm={rsize || 6}>
           <Typeahead
             allowNew
             emptyLabel=""
             labelKey={name}
             onChange={(selected) => {
-              console.log(selected)
+              formik.setFieldValue(name, selected.map(value => value[name]))
             }}
             id={name}
             name={name}

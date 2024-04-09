@@ -16,7 +16,7 @@ export default class AssetApi {
     createJansAsset = (body, token) => {
         const document = {
             "displayName": body.displayName, "description": body.description,
-            "document": body.displayName, "jansModuleProperty": [], "jansEnabled": body.jansEnabled
+            "document": body.displayName, "jansModuleProperty": body?.jansModuleProperty || [], "jansEnabled": body.jansEnabled
         }
         const formData = new FormData();
         const assetFileBlob = new Blob([body.document], {
@@ -41,6 +41,14 @@ export default class AssetApi {
         })
     }
 
+    updateJansAsset = (body) => {
+        return new Promise((resolve, reject) => {
+            this.api.putAsset(document, assetfile, (error, data) => {
+                handleResponse(error, reject, resolve, data)
+            })
+        })
+    }
+
     deleteJansAssetByInum = (id) => {
         return new Promise((resolve, reject) => {
             this.api.deleteAsset(id, (error, data) => {
@@ -60,14 +68,6 @@ export default class AssetApi {
     getJansAssetByName = (name) => {
         return new Promise((resolve, reject) => {
             this.api.getAssetByName(name, (error, data) => {
-                handleResponse(error, reject, resolve, data)
-            })
-        })
-    }
-
-    updateJansAsset = (body) => {
-        return new Promise((resolve, reject) => {
-            this.api.putAsset(document, assetfile, (error, data) => {
                 handleResponse(error, reject, resolve, data)
             })
         })

@@ -1,5 +1,6 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
+    fetchJansAssets,
     getJansAssetResponse,
     createJansAssetResponse,
     deleteJansAssetResponse,
@@ -97,7 +98,7 @@ export function* deleteJansAsset({ payload }) {
         )
         yield put(deleteJansAssetResponse({ data }))
         yield call(postUserAction, audit)
-        yield put(getAllAssets())
+        yield put(fetchJansAssets())
         return data
     } catch (e) {
         yield put(
@@ -127,7 +128,7 @@ export function* updateJansAsset({ payload }) {
         )
         yield put(updateJansAssetResponse({ data }))
         yield call(postUserAction, audit)
-        yield put(getAllAssets())
+        yield put(fetchJansAssets())
         return data
     } catch (e) {
         yield put(

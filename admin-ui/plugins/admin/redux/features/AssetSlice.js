@@ -50,6 +50,9 @@ const assetSlice = createSlice({
     name: 'asset',
     initialState,
     reducers: {
+        fetchJansAssets: (state, action) => {
+            state.loading = true
+        },
         getJansAssets: (state, action) => {
             state.loading = true
         },
@@ -112,6 +115,7 @@ const assetSlice = createSlice({
 })
 
 export const {
+    fetchJansAssets,
     getJansAssets,
     getJansAssetResponse,
     createJansAsset,
