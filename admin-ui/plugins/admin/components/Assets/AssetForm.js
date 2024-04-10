@@ -35,7 +35,6 @@ const AssetForm = () => {
     )
     const dispatch = useDispatch()
     const [modal, setModal] = useState(false)
-
     const validatePayload = (values) => {
         let faulty = false
         return faulty
@@ -46,6 +45,7 @@ const AssetForm = () => {
         if (file) {
             setAssetFile(file)
             formik.setFieldValue('document', assetFile)
+            formik.setFieldValue('displayName', file?.name || '')
         }
     }
 
@@ -64,7 +64,6 @@ const AssetForm = () => {
             jansModuleProperty: selectedAsset?.jansModuleProperty || []
         },
         onSubmit: (values) => {
-            console.log(values)
             const faulty = validatePayload(values)
             if (faulty) {
                 return
@@ -89,24 +88,14 @@ const AssetForm = () => {
     const submitForm = useCallback(
         (userMessage) => {
             toggle()
-            const jansModuleProperties = formik.values.jansModuleProperty?.map((header) => {
-                return {
-                    key: header.key || header.source,
-                    value: header.value || header.destination,
-                }
-            })
-
             const payload = {
                 ...formik.values,
-                jansModuleProperty: jansModuleProperties || [],
             }
-
             if (id) {
                 payload['inum'] = selectedAsset.inum
                 payload['dn'] = selectedAsset.dn
                 payload['baseDn'] = selectedAsset.baseDn
             }
-
             buildPayload(userAction, userMessage, payload)
             if (id) {
                 dispatch(updateJansAsset({ action: userAction }))

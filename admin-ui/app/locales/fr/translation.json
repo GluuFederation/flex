@@ -773,6 +773,9 @@
     "yes": "Oui"
   },
   "documentation": {
+    "asset":{
+      "jansModuleProperty": "Jans Module Properties"
+     },
     "webhook": {
       "url": "URL du webhook.",
       "enabled": "Basculez pour activer ou désactiver la fonctionnalité du webhook.",

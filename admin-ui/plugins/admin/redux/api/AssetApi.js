@@ -42,10 +42,30 @@ export default class AssetApi {
     }
 
     updateJansAsset = (body) => {
+        const document = {
+            "displayName": body.displayName, "description": body.description,
+            "document": body.displayName, "jansModuleProperty": body?.jansModuleProperty || [], "jansEnabled": body.jansEnabled
+        }
+        const formData = new FormData();
+        const assetFileBlob = new Blob([body.document], {
+            type: 'application/octet-stream',
+        })
+        const documentBlob = new Blob(
+            [
+                JSON.stringify({
+                    ...document,
+                }),
+            ],
+            {
+                type: 'application/json',
+            }
+        )
+        formData.append('document', documentBlob);
+        formData.append('assetFile', assetFileBlob);
         return new Promise((resolve, reject) => {
-            this.api.putAsset(document, assetfile, (error, data) => {
-                handleResponse(error, reject, resolve, data)
-            })
+            axios.putForm('/api/v1/jans-assets/upload', formData, { headers: { Authorization: `Bearer ${token}` } })
+                .then(result => handleResponse(undefined, reject, resolve, result))
+                .catch(error => handleResponse(error, reject, resolve, undefined));
         })
     }
 

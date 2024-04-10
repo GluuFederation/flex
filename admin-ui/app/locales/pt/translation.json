@@ -770,6 +770,9 @@
     "yes": "sim"
   },
   "documentation": {
+    "asset":{
+      "jansModuleProperty": "Jans Module Properties"
+     },
     "webhook": {
       "url": "URL do webhook.",
       "enabled": "Ative ou desative a funcionalidade do webhook.",
