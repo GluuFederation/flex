@@ -13,6 +13,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import PropTypes from 'prop-types'
 
 function CacheMemcached({ config, formik }) {
   const { t } = useTranslation()
@@ -54,7 +55,7 @@ function CacheMemcached({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.maxOperationQueueLength}
+          value={formik.values.maxOperationQueueLength}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -64,7 +65,7 @@ function CacheMemcached({ config, formik }) {
           formik={formik}
           lsize={6}
           rsize={6}
-          value={config.bufferSize}
+          value={formik.values.bufferSize}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -74,7 +75,7 @@ function CacheMemcached({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.defaultPutExpiration}
+          value={formik.values.memDefaultPutExpiration}
           doc_category={CACHE}
         />
       </CardBody>
@@ -83,3 +84,7 @@ function CacheMemcached({ config, formik }) {
 }
 
 export default CacheMemcached
+CacheMemcached.propTypes = {
+  formik: PropTypes.object,
+  config: PropTypes.any
+}

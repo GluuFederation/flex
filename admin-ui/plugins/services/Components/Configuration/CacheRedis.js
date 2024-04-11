@@ -15,6 +15,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import PropTypes from 'prop-types'
 
 function CacheRedis({ config, formik }) {
   const { t } = useTranslation()
@@ -77,7 +78,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.password}
+          value={formik.values.password}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -86,7 +87,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.sentinelMasterGroupName}
+          value={formik.values.sentinelMasterGroupName}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -95,7 +96,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.sslTrustStoreFilePath}
+          value={formik.values.sslTrustStoreFilePath}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -105,7 +106,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.defaultPutExpiration}
+          value={formik.values.redisDefaultPutExpiration}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -115,7 +116,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.maxRetryAttempts}
+          value={formik.values.maxRetryAttempts}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -125,7 +126,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.soTimeout}
+          value={formik.values.soTimeout}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -135,7 +136,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.maxIdleConnections}
+          value={formik.values.maxIdleConnections}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -145,7 +146,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.maxTotalConnections}
+          value={formik.values.maxTotalConnections}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -155,7 +156,7 @@ function CacheRedis({ config, formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={config.connectionTimeout}
+          value={formik.values.connectionTimeout}
           doc_category={CACHE}
         />
       </CardBody>
@@ -164,3 +165,7 @@ function CacheRedis({ config, formik }) {
 }
 
 export default CacheRedis
+CacheRedis.propTypes = {
+  formik: PropTypes.object,
+  config: PropTypes.any
+}
