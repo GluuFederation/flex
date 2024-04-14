@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV FLEX_SOURCE_VERSION=ee491be66c5a480c12ac8f3e34d2d029968b7834
+ENV FLEX_SOURCE_VERSION=f13caae804a95a626f0ec69b5ddc24ff02ec3713
 ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
 
 RUN mkdir -p /opt/flex /app/templates/admin-ui
@@ -71,7 +71,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=60310a02c67aafda44cfa7640db78e790808de4c
+ENV JANS_SOURCE_VERSION=392a1e9a55c3526aff21dcf094fe7825063d4d97
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
