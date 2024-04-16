@@ -1387,7 +1387,7 @@
       "givenName": "Given Name",
       "displayName": "Display Name",
       "mail": "Email",
-      "jansStatus": "Status",
+      "status": "Status",
       "gender": "Gender",
       "userPassword": "User password",
       "INUM": "INUM",

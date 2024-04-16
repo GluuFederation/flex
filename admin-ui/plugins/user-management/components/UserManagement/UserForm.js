@@ -42,7 +42,7 @@ function UserForm({ onSubmitData }) {
     userId: userDetails?.userId || '',
     sn: '',
     middleName: '',
-    jansStatus: userDetails?.jansStatus || '',
+    status: userDetails?.status || '',
   }
 
   if (userDetails) {
@@ -134,7 +134,7 @@ function UserForm({ onSubmitData }) {
     'userId',
     'displayName',
     'mail',
-    'jansStatus',
+    'status',
     'userPassword',
     'givenName',
     'middleName',
@@ -358,8 +358,8 @@ function UserForm({ onSubmitData }) {
             <GluuSelectRow
               doc_category={DOC_SECTION}
               label='Status'
-              name='jansStatus'
-              value={formik.values.jansStatus || ''}
+              name='status'
+              value={formik.values.status || ''}
               values={['active', 'inactive']}
               formik={formik}
               lsize={3}
