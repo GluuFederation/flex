@@ -265,7 +265,7 @@ auth-server-key-rotation:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/certmanager
     # -- Image  tag to use for deploying.
-    tag: 1.1.1-1
+    tag: 1.1.2_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Auth server key rotation keys life in hours
@@ -697,7 +697,7 @@ image:
   # -- Image  to use for deploying.
   repository: ghcr.io/gluufederation/flex/flex-all-in-one
   # -- Image  tag to use for deploying.
-  tag: 5.1.1-1
+  tag: 5.1.2_dev
   # -- Image Pull Secrets
   pullSecrets: [ ]
 # -- Service replica number.
