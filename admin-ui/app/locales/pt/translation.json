@@ -901,7 +901,7 @@
       "givenName": "Nome Próprio",
       "displayName": "Nome de Exibição",
       "mail": "E-mail",
-      "jansStatus": "Status",
+      "status": "Status",
       "gender": "Gênero",
       "userPassword": "Senha do Usuário",
       "INUM": "INUM",

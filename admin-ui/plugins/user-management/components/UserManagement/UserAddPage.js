@@ -68,7 +68,7 @@ function UserAddPage() {
       userId: values.userId || '',
       mail: values.mail,
       displayName: values.displayName || '',
-      jansStatus: values.jansStatus || '',
+      status: values.status || '',
       userPassword: values.userPassword || '',
       givenName: values.givenName || '',
       customAttributes: customAttributes,

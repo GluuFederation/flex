@@ -807,7 +807,7 @@
       "givenName": "Prénom",
       "displayName": "Nom d'affichage",
       "mail": "Courriel",
-      "jansStatus": "Statut",
+      "status": "Statut",
       "gender": "Genre",
       "userPassword": "Mot de passe utilisateur",
       "INUM": "INUM",
