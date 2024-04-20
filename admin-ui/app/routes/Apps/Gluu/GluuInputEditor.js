@@ -40,9 +40,6 @@ function GluuInputEditor({
         size={lsize}
         required={required}
       />
-      {formik.errors.script && formik.touched.script ? (
-        <div style={{ color: 'red' }}>{formik.errors.script}</div>
-      ) : null}
       <Col sm={rsize} style={{ position: 'relative' }}>
         {shortcode}
         <AceEditor
