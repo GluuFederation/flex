@@ -54,13 +54,15 @@ The following environment variables are supported by the container:
 - `CN_GOOGLE_SECRET_VERSION_ID`: Janssen secret version ID in Google Secret Manager. Defaults to `latest`, which is recommended.
 - `CN_GOOGLE_SECRET_NAME_PREFIX`: Prefix for Janssen secret in Google Secret Manager. Defaults to `jans`. If left `jans-secret` secret will be created.
 - `CN_GOOGLE_SECRET_MANAGER_PASSPHRASE`: Passphrase for Janssen secret in Google Secret Manager. This is recommended to be changed and defaults to `secret`.
-- `CN_TOKEN_SERVER_BASE_HOSTNAME`: Hostname of token server (default to `localhost`).
-- `CN_TOKEN_SERVER_AUTHZ_ENDPOINT`: Authorization endpoint at token server (default to `/jans-auth/authorize.htm`).
-- `CN_TOKEN_SERVER_TOKEN_ENDPOINT`: Token endpoint at token server (default to `/jans-auth/restv1/token`).
-- `CN_TOKEN_SERVER_INTROSPECTION_ENDPOINT`: Introspection endpoint at token server (default to `/jans-auth/restv1/introspection`).
-- `CN_TOKEN_SERVER_USERINFO_ENDPOINT`: User info endpoint at token server (default to `/jans-auth/restv1/userinfo`).
-- `CN_TOKEN_SERVER_CLIENT_ID`: Client ID registered at token server.
-- `CN_TOKEN_SERVER_CERT_FILE`: Path to token server certificate (default to `/etc/certs/token_server.crt`).
+- `GLUU_CONFIG_API_BASE_URL`: Base URL of jans-config-api server (default to `https://$HOSTNAME` where `$HOSTNAME` refers to FQDN).
+- `GLUU_AUTH_BASE_URL`: Base URL of jans-auth server (default to `https://$HOSTNAME` where `$HOSTNAME` refers to FQDN).
+- `GLUU_TOKEN_SERVER_BASE_URL`: Base URL of token server (default to `https://$HOSTNAME` where `$HOSTNAME` refers to FQDN).
+- `GLUU_TOKEN_SERVER_AUTHZ_ENDPOINT`: Authorization endpoint at token server (default to `/jans-auth/authorize.htm`).
+- `GLUU_TOKEN_SERVER_TOKEN_ENDPOINT`: Token endpoint at token server (default to `/jans-auth/restv1/token`).
+- `GLUU_TOKEN_SERVER_INTROSPECTION_ENDPOINT`: Introspection endpoint at token server (default to `/jans-auth/restv1/introspection`).
+- `GLUU_TOKEN_SERVER_USERINFO_ENDPOINT`: User info endpoint at token server (default to `/jans-auth/restv1/userinfo`).
+- `GLUU_TOKEN_SERVER_CLIENT_ID`: Client ID registered at token server.
+- `GLUU_TOKEN_SERVER_CERT_FILE`: Path to token server certificate (default to `/etc/certs/token_server.crt`).
 - `CN_PERSISTENCE_TYPE`: Persistence backend being used (one of `ldap`, `couchbase`, or `hybrid`; default to `ldap`).
 - `CN_HYBRID_MAPPING`: Specify data mapping for each persistence (default to `"{}"`). Note this environment only takes effect when `CN_PERSISTENCE_TYPE` is set to `hybrid`. See [hybrid mapping](#hybrid-mapping) section for details.
 - `CN_LDAP_URL`: Address and port of LDAP server (default to `localhost:1636`).
