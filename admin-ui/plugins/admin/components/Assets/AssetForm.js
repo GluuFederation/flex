@@ -6,6 +6,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import GluuArrayCompleter from 'Routes/Apps/Gluu/GluuArrayCompleter'
+import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
@@ -175,16 +176,29 @@ const AssetForm = () => {
                         name='description'
                     />
                 </Col>
-                <GluuArrayCompleter
+                <GluuTypeAhead
+                    name='services'
+                    label={t('fields.jansModuleProperty')}
                     formik={formik}
-                    name='jansModuleProperty'
-                    rsize={8}
+                    options={["config-api","auth-server","scim","casa"]}
                     lsize={4}
+                    rsize={8}
+                    required
+                    value={[]}
                     doc_category={ASSET}
-                    label='fields.jansModuleProperty'
-                    value={selectedAsset.jansModuleProperty || []}
-                    options={selectedAsset.jansModuleProperty || []}   >
-                </GluuArrayCompleter>
+                />
+                {false &&
+                    <GluuArrayCompleter
+                        formik={formik}
+                        name='jansModuleProperty'
+                        rsize={8}
+                        lsize={4}
+                        doc_category={ASSET}
+                        label='fields.jansModuleProperty'
+                        value={selectedAsset.jansModuleProperty || []}
+                        options={selectedAsset.jansModuleProperty || []}   >
+                    </GluuArrayCompleter>
+                }
                 <FormGroup row>
                     <GluuLabel
                         label='options.enabled'

@@ -128,7 +128,7 @@ export const MESSAGE_WRITE = BASE_URL + '/config/message.write'
 export const WEBHOOK_READ = BASE_URL + '/jans-auth-server/config/adminui/webhook.readonly'
 export const WEBHOOK_WRITE = BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
 export const WEBHOOK_DELETE = BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'
-export const ASSETS_READ = BASE_URL + '/jans_asset-read'
+export const ASSETS_READ = BASE_URL + '/config/jans_asset-read'
 export const ASSETS_WRITE = BASE_URL + '/config/jans_asset-write'
 export const ASSETS_DELETE = BASE_URL + '/config/jans_asset-delete'
 
