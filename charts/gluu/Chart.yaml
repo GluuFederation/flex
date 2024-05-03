@@ -24,6 +24,8 @@ annotations:
       image: ghcr.io/janssenproject/jans/link:1.1.2_dev
     - name: saml
       image: ghcr.io/janssenproject/jans/saml:1.1.2_dev
+    - name: kc-scheduler
+      image: ghcr.io/janssenproject/jans/kc-scheduler:1.1.2_dev
   artifacthub.io/license: Apache-2.0
   catalog.cattle.io/certified: partner
   catalog.cattle.io/release-name: gluu
@@ -95,4 +97,8 @@ dependencies:
 
     - name: saml
       condition: global.saml.enabled
+      version: 1.1.2-dev
+
+    - name: kc-scheduler
+      condition: global.kc-scheduler.enabled
       version: 1.1.2-dev
