@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import 'ace-builds/src-noconflict/mode-java'
 import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/theme-xcode'
+import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/ext-language_tools'
 
 function GluuInputEditor({
@@ -45,6 +46,7 @@ function GluuInputEditor({
         <AceEditor
           mode={language}
           readOnly={readOnly}
+          setOptions={{ useWorker: false }}
           theme={theme}
           placeholder={placeholder}
           fontSize={16}

@@ -233,8 +233,9 @@ const WebhookForm = () => {
             showError={formik.errors.displayName && formik.touched.displayName}
           />
           <GluuTypeAhead
-            name={(lookuplist) => `${lookuplist.displayName}`}
+            name="auiFeatureIds"
             label='fields.aui_feature_ids'
+            labelKey="displayName"
             value={selectedFeatures}
             options={features}
             onChange={(options) => {
@@ -360,14 +361,11 @@ const WebhookForm = () => {
                     setTimeout(() => {
                       const cursorPos = value.cursor
                       const lines = value.cursor?.document?.$lines
-
                       let index = 0
                       for (let i = 0; i < cursorPos.row; i++) {
                         index += lines[i].length + 1 // +1 for the newline character
                       }
-
                       index += cursorPos.column
-
                       setCursorPosition((prevState) => ({
                         ...prevState,
                         httpRequestBody: index,
