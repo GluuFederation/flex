@@ -219,7 +219,7 @@ const ConfigurationTab = () => {
               label='fields.snapshots_count'
               name='snapshotMaxCount'
               type='number'
-              value={formik.values.snapshotMaxCount}
+              value={formik.values.snapshotMaxCount || 0}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -248,7 +248,7 @@ const ConfigurationTab = () => {
               label='fields.polling_interval_mins'
               name='pollingInterval'
               type='number'
-              value={formik.values.pollingInterval}
+              value={formik.values.pollingInterval || 0}
               formik={formik}
               lsize={3}
               rsize={9}
