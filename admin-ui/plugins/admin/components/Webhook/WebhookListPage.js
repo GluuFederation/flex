@@ -226,6 +226,7 @@ const WebhookListPage = () => {
               title=''
               actions={myActions}
               options={{
+                idSynonym: 'inum',
                 search: false,
                 searchFieldAlignment: 'left',
                 selection: false,
