@@ -372,7 +372,7 @@ const WebhookForm = () => {
                       }))
                     }, 0)
                   }}
-                  theme='monokai'
+                  theme='xcode'
                   doc_category={WEBHOOK}
                   doc_entry='http_request_body'
                   formik={formik}
