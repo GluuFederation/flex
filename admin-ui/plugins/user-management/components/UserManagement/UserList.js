@@ -250,6 +250,7 @@ function UserList(props) {
               actions={myActions}
               options={{
                 search: false,
+                idSynonym: 'inum',
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
