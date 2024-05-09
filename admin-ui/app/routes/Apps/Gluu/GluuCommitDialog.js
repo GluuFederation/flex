@@ -177,5 +177,5 @@ GluuCommitDialog.propTypes = {
   placeholderLabel: PropTypes.string,
   inputType: PropTypes.string,
   label: PropTypes.string,
-  formik: PropTypes.string
+  formik: PropTypes.object
 }
