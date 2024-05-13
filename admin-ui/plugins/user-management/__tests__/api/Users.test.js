@@ -42,7 +42,7 @@ const payload = {
   userId: 'test_modle',
   mail: 'example@email.com',
   displayName: 'test display name',
-  jansStatus: 'inactive',
+  status: 'inactive',
   userPassword: '12345678',
   givenName: 'test',
   customAttributes: [

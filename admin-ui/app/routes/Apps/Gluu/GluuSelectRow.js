@@ -21,9 +21,13 @@ function GluuSelectRow({
   doc_entry
 }) {
   const { t } = useTranslation()
+
+  function removeDuplicates(values) {
+    return Array.from(new Set(values));
+}
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} required={required}/>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} required={required} />
       <Col sm={rsize}>
         <InputGroup>
           <CustomInput
@@ -39,13 +43,11 @@ function GluuSelectRow({
             disabled={disabled}
           >
             <option value="">{t('actions.choose')}...</option>
-            {values.map((item) => {
-              const value = typeof item === 'string' ? item : item.value
-              const label = typeof item === 'string' ? item : item.label
+            {removeDuplicates(values).map((item) => {
+              const value = typeof item === 'string' ? item : item?.value
+              const label = typeof item === 'string' ? item : item?.label
               return (
-                <option value={value} key={value}>
-                  {label}
-                </option>
+                <option key={value} value={value}>{label}</option>
               )
             })}
           </CustomInput>
