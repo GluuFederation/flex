@@ -21,13 +21,13 @@ const initSlice = createSlice({
     getScriptsResponse: (state, action) => {
       state.loadingScripts = false
       if (action.payload?.data) {
-        state.scripts = action.payload.data?.entries
+        state.scripts = action.payload.data?.entries || []
       }
     },
     getClients: () => {},
     getClientsResponse: (state, action) => {
       if (action.payload?.data) {
-        state.clients = action.payload.data?.entries
+        state.clients = action.payload.data?.entries || []
         state.totalClientsEntries = action.payload.data.totalEntriesCount
       }
     },
@@ -40,7 +40,7 @@ const initSlice = createSlice({
     getAttributes: () => {},
     getAttributesResponse: (state, action) => {
       if (action.payload?.data) {
-        state.attributes = action.payload.data?.entries
+        state.attributes = action.payload.data?.entries || []
       }
     },
     handleApiTimeout: (state, action) => {

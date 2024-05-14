@@ -96,7 +96,7 @@ function UiPermListPage() {
               {
                 title: `${t('fields.name')}`,
                 field: 'permission',
-                editable: false,
+                editable: 'never',
                 width: '50%',
                 render: (rowData) => (
                   <Badge color={`primary-${selectedTheme}`}>{rowData.permission}</Badge>
@@ -105,12 +105,12 @@ function UiPermListPage() {
               {
                 title: `${t('fields.tag')}`,
                 field: 'tag',
-                editable: false,
+                editable: 'never',
               },
               {
                 title: `${t('fields.default_permission_in_token')}`,
                 field: 'defaultPermissionInToken',
-                editable: false,
+                editable: 'never',
               },
               { title: `${t('fields.description')}`, field: 'description' },
             ]}
@@ -120,6 +120,7 @@ function UiPermListPage() {
             actions={myActions}
             options={{
               search: true,
+              idSynonym: 'inum',
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
@@ -131,8 +132,8 @@ function UiPermListPage() {
             }}
             detailPanel={DetailPanel}
             editable={{
-              isDeleteHidden:() => !hasPermission(permissions, PERMISSION_DELETE),
-              isEditHidden:() => !hasPermission(permissions, PERMISSION_WRITE),
+              isDeleteHidden: () => !hasPermission(permissions, PERMISSION_DELETE),
+              isEditHidden: () => !hasPermission(permissions, PERMISSION_WRITE),
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit permision', newData)
@@ -140,7 +141,7 @@ function UiPermListPage() {
                   resolve()
                   doFetchList()
                 }),
-              onRowDelete: (oldData) => 
+              onRowDelete: (oldData) =>
                 new Promise((resolve, reject) => {
                   if (!isEmpty(oldData)) {
                     buildPayload(userAction, 'Remove permission', oldData)

@@ -25,8 +25,7 @@ cur_dir = os.path.dirname(__file__)
 jans_installer_downloaded = bool(os.environ.get('JANS_INSTALLER'))
 flex_installer_downloaded = False
 install_py_path = os.path.join(cur_dir, 'jans_install.py')
-installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
-ssa_json = {}
+installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
 if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
@@ -58,7 +57,6 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs Gluu Flex Admin UI", action='store_true')
     parser.add_argument('--update-admin-ui', help="Updates Gluu Flex Admin UI", action='store_true')
-    parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file or jwt")
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
@@ -462,7 +460,7 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client {}'.format(ssa_json.get('org_id', ''))]
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client']
             ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['none']
             ldif_parser.entries[0][1]['jansAttrs'] = ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']
 
@@ -489,7 +487,7 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_web_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_web_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client {}'.format(ssa_json.get('org_id', ''))]
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client']
             ldif_parser.entries[0][1]['jansGrantTyp'] = ['client_credentials']
             ldif_parser.entries[0][1]['jansRespTyp'] = ['token']
             ldif_parser.entries[0][1]['jansScope'] = ['inum=F0C4,ou=scopes,o=jans', 'inum=B9D2-D6E5,ou=scopes,o=jans']
@@ -512,12 +510,11 @@ class flex_installer(JettyInstaller):
 
         self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
 
-        oidc_client = installed_components.get('oidc_client', {})
-        Config.templateRenderingDict['ssa'] = installed_components['ssa']
-        Config.templateRenderingDict['op_host'] = ssa_json.get('iss', '')
-        Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
-        Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
-        Config.templateRenderingDict['license_hardware_key'] = ssa_json.get('org_id', str(uuid.uuid4()))
+        Config.templateRenderingDict['ssa'] = ''
+        Config.templateRenderingDict['op_host'] = ''
+        Config.templateRenderingDict['oidc_client_id'] = ''
+        Config.templateRenderingDict['oidc_client_secret'] = ''
+        Config.templateRenderingDict['license_hardware_key'] = ''
         Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
@@ -690,29 +687,6 @@ class flex_installer(JettyInstaller):
         jansAuthInstaller.chown(keystore_pw_fn, Config.jetty_user, Config.root_user)
         jansAuthInstaller.run([base.paths.cmd_chmod, '640', keystore_pw_fn])
 
-def read_or_get_ssa():
-    if os.path.isfile(argsp.admin_ui_ssa):
-        with open(argsp.admin_ui_ssa) as f:
-            installed_components['ssa'] = f.read().strip()
-    else:
-        installed_components['ssa'] = argsp.admin_ui_ssa
-
-
-def decode_ssa_jwt():
-
-    print("Decoding SSA")
-
-    ssa_decoded = jwt.decode(
-        installed_components['ssa'],
-        options={
-                'verify_signature': False,
-                'verify_exp': True,
-                'verify_aud': False
-                }
-        )
-
-    ssa_json.update(ssa_decoded)
-
 
 def prompt_for_installation():
 
@@ -720,28 +694,6 @@ def prompt_for_installation():
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
         if not prompt_admin_ui_install.strip().lower().startswith('n'):
             install_components['admin_ui'] = True
-            if argsp.admin_ui_ssa:
-                read_or_get_ssa()
-                try:
-                    decode_ssa_jwt()
-                except Exception as e:
-                    argsp.admin_ui_ssa = None
-                    print("\033[31mSSA you provided via argument is not valid.\033[0m")
-                    print(e)
-
-            while not argsp.admin_ui_ssa:
-                ssa_text = input("Please enter path of file containing SSA or paste SSA (q to exit): ")
-                if ssa_text.strip().lower() == 'q':
-                    print("Can't continue without SSA. Exiting...")
-                    sys.exit()
-                argsp.admin_ui_ssa = ssa_text
-                read_or_get_ssa()
-                try:
-                    decode_ssa_jwt()
-                except Exception as e:
-                    argsp.admin_ui_ssa = None
-                    print("Error decoding SSA")
-                    print(e)
 
     else:
         print("Admin UI is allready installed on this system")
@@ -776,13 +728,6 @@ def install_post_setup():
 def prepare_for_installation():
     if not (argsp.flex_non_interactive or argsp.download_exit):
         prompt_for_installation()
-    else:
-        if argsp.install_admin_ui:
-            if not argsp.admin_ui_ssa:
-                print("Please provide Admin UI SSA")
-                sys.exit()
-            read_or_get_ssa()
-            decode_ssa_jwt()
 
 def get_components_from_setup_properties():
     if argsp.f:
@@ -792,46 +737,11 @@ def get_components_from_setup_properties():
         if not (argsp.install_admin_ui or install_components['admin_ui']):
             install_components['admin_ui'] = base.as_bool(setup_properties.get('install-admin-ui'))
 
-        if not argsp.admin_ui_ssa and install_components['admin_ui']:
-            argsp.admin_ui_ssa = setup_properties.get('admin-ui-ssa')
-            read_or_get_ssa()
-            decode_ssa_jwt()
-
         if not (argsp.install_casa or install_components['casa']):
             install_components['casa'] = base.as_bool(setup_properties.get('install-casa'))
 
         if 'adminui-authentication-mode' in setup_properties:
             argsp.adminui_authentication_mode = setup_properties['adminui-authentication-mode']
-
-
-def obtain_oidc_client_credidentials():
-
-    data = {
-        "software_statement": installed_components['ssa'],
-        "response_types": ["token"],
-        "redirect_uris": ["{}".format(ssa_json['iss'])],
-        "client_name": "test-ui-client"
-    }
-
-    registration_url = urljoin(ssa_json['iss'], 'jans-auth/restv1/register')
-
-    req = request.Request(registration_url)
-    req.add_header('Content-Type', 'application/json')
-    jsondata = json.dumps(data)
-    jsondataasbytes = jsondata.encode('utf-8')
-    req.add_header('Content-Length', len(jsondataasbytes))
-
-    print("Requesting OIDC Client from", registration_url)
-
-    try:
-        response = request.urlopen(req, jsondataasbytes)
-        result = response.read()
-        installed_components['oidc_client'] = json.loads(result.decode())
-        print("OIDC Client ID is", installed_components['oidc_client']['client_id'])
-    except Exception as e:
-        print("Error sending request to {}".format(registration_url))
-        print(e)
-        sys.exit()
 
 
 def restart_services():
@@ -869,8 +779,6 @@ def main(uninstall):
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
 
     else:
-        if install_components['admin_ui'] and argsp.admin_ui_ssa:
-            obtain_oidc_client_credidentials()
 
         if not flex_installer_downloaded or argsp.download_exit:
             installer_obj.download_files(argsp.download_exit)

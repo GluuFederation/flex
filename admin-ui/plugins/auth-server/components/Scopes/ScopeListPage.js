@@ -170,7 +170,7 @@ function ScopeListPage() {
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   if (hasPermission(permissions, SCOPE_READ)) {
@@ -255,6 +255,7 @@ function ScopeListPage() {
             title=""
             actions={myActions}
             options={{
+              idSynonym: 'inum',
               columnsButton: true,
               search: false,
               selection: false,

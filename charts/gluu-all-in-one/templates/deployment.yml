@@ -134,6 +134,9 @@ spec:
           - name: cb-pass
             mountPath: {{ .Values.cnCouchbasePasswordFile }}
             subPath: couchbase_password
+          - name: cb-pass
+            mountPath: {{ .Values.cnCouchbaseSuperuserPasswordFile }}
+            subPath: couchbase_superuser_password  
         {{- end }}
         {{- if or (eq .Values.cnPersistenceType "sql") (eq .Values.cnPersistenceType "hybrid") }}
           - name: sql-pass
@@ -220,6 +223,8 @@ spec:
               # we mostly need non-superuser couchbase password file here
               - key: couchbase_password
                 path: couchbase_password
+              - key: couchbase_superuser_password
+                path: couchbase_superuser_password  
       {{- end }}
       {{- if not .Values.isFqdnRegistered }}
         - name: {{ include "flex-all-in-one.fullname" . }}-updatelbip

@@ -275,6 +275,7 @@ function ScriptListTable() {
             actions={myActions}
             options={{
               search: false,
+              idSynonym: 'inum',
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: limit,
@@ -283,8 +284,8 @@ function ScriptListTable() {
                   rowData.enabled && rowData?.scriptError?.stackTrace
                     ? '#FF5858'
                     : rowData.enabled
-                    ? themeColors.lightBackground
-                    : '#FFF',
+                      ? themeColors.lightBackground
+                      : '#FFF',
               }),
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,

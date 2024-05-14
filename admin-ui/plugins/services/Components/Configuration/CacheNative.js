@@ -26,7 +26,7 @@ function CacheNative({ formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={formik.values.nativeDefaultPutExpiration}
+          value={formik.values.nativeDefaultPutExpiration || 0}
           doc_category={CACHE}
         />
         <GluuInputRow
@@ -36,7 +36,7 @@ function CacheNative({ formik }) {
           lsize={6}
           rsize={6}
           formik={formik}
-          value={formik.values.defaultCleanupBatchSize}
+          value={formik.values.defaultCleanupBatchSize || 0}
           doc_category={CACHE}
         />
         <GluuToogleRow

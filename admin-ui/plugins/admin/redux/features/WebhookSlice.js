@@ -37,7 +37,7 @@ const webhookSlice = createSlice({
     getWebhookResponse: (state, action) => {
       state.loading = false
       if (action.payload?.data) {
-        state.webhooks = action.payload.data.entries
+        state.webhooks = action.payload.data?.entries || []
         state.totalItems = action.payload.data.totalEntriesCount
         state.entriesCount = action.payload.data.entriesCount
       }

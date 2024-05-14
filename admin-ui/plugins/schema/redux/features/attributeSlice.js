@@ -21,7 +21,7 @@ const attributeSlice = createSlice({
     },
     getAttributesResponse: (state, action) => {
       if (action.payload.data) {
-        state.items = action.payload.data.entries
+        state.items = action.payload.data?.entries || []
         state.totalItems = action.payload.data.totalEntriesCount
         state.entriesCount = action.payload.data.entriesCount
         state.loading = false

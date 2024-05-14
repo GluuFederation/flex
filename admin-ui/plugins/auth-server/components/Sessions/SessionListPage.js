@@ -128,6 +128,7 @@ function SessionListPage() {
             title=""
             actions={myActions}
             options={{
+              idSynonym: 'username',
               columnsButton: true,
               search: true,
               searchFieldAlignment: 'left',

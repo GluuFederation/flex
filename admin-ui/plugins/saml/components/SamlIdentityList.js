@@ -225,6 +225,7 @@ const SamlIdentityList = () => {
           options={{
             search: false,
             selection: false,
+            idSynonym: 'inum',
             pageSize: limit,
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
