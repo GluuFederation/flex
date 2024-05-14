@@ -529,7 +529,7 @@
   
     <li class="md-nav__item">
       <a href="../../../install/helm-install/rancher/" class="md-nav__link">
-        Using Rancher Marketplace
+        Rancher Marketplace
       </a>
     </li>
   
@@ -1374,15 +1374,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#testing-admin-ui" class="md-nav__link">
-    Testing Admin UI
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#login-and-add-a-new-user" class="md-nav__link">
-    Login and Add a New User.
+    Login and Add a New User
   </a>
   
 </li>
@@ -1396,7 +1389,7 @@
       
         <li class="md-nav__item">
   <a href="#enabling-two-factor-authentication" class="md-nav__link">
-    Enabling Two Factor Authentication
+    Enabling Two-Factor Authentication
   </a>
   
 </li>
@@ -1811,15 +1804,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#testing-admin-ui" class="md-nav__link">
-    Testing Admin UI
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#login-and-add-a-new-user" class="md-nav__link">
-    Login and Add a New User.
+    Login and Add a New User
   </a>
   
 </li>
@@ -1833,7 +1819,7 @@
       
         <li class="md-nav__item">
   <a href="#enabling-two-factor-authentication" class="md-nav__link">
-    Enabling Two Factor Authentication
+    Enabling Two-Factor Authentication
   </a>
   
 </li>
@@ -1912,13 +1898,13 @@
   <h1>Getting Started with Rancher</h1>
 
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
-<p>Gluu Flex (“Flex”) is a cloud-native digital identity platform that enables organizations to authenticate and authorize people and software through the use of open standards like OpenID Connect, OAuth, and FIDO. </p>
-<p>It is a downstream commercial distribution of the Linux Foundation Janssen Project software, plus two tools from Gluu: a web administration tool and a self-service web portal.</p>
+<p>Gluu Flex (“Flex”) is a cloud-native digital identity platform that enables organizations to authenticate and authorize people and software through the use of open standards like OpenID Connect, OAuth, and FIDO.</p>
+<p>It is a downstream commercial distribution of the Linux Foundation Janssen Project software, plus a web administration tool(Gluu Admin-UI).</p>
 <p>SUSE Rancher’s helm-based deployment approach simplifies the deployment and configuration of Flex, enabling organizations to take advantage of Flex’s modular design to improve their security posture while simultaneously enabling just-in-time auto-scaling.</p>
 <p>The key services of Flex include:</p>
 <ul>
 <li>
-<p><strong>(REQUIRED) Jans Auth Server</strong>: This component is the OAuth Authorization Server, the OpenID Connect Provider, the UMA Authorization Server for person and software authentication. This service must be Internet-facing.</p>
+<p><strong>(REQUIRED) Jans Auth Server</strong>: This component is the OAuth Authorization Server, the OpenID Connect Provider, and the UMA Authorization Server for person and software authentication. This service must be Internet-facing.</p>
 </li>
 <li>
 <p><strong>(REQUIRED) Jans Config API</strong>: The API to configure the auth-server and other components is consolidated in this component. This service should not be Internet-facing.</p>
@@ -1941,8 +1927,8 @@
 <h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">#</a></h2>
 <p>In this Quickstart Guide, we will: </p>
 <ol>
-<li>Deploy Flex and add some users</li>
-<li>Enable two-factor authentication</li>
+<li>Deploy Flex and add some users.</li>
+<li>Enable two-factor authentication.</li>
 <li>Protect content on an Apache web server with OpenID Connect.</li>
 </ol>
 <h2 id="audience">Audience<a class="headerlink" href="#audience" title="Permanent link">#</a></h2>
@@ -1956,10 +1942,10 @@
 <li><code>PostgreSQL/MySQL</code>: SQL database dialect used to store configuration, people clients, sessions and other data needed for <code>Gluu Flex</code> operation.</li>
 <li><code>Cert Manager</code>: Used for managing X.509 certificates and crypto keys lifecycle in Janssen Server.</li>
 <li><code>Key Rotation</code>: A cronjob that implements <code>Cert Manager</code> to rotate the auth keys</li>
-<li><code>Configuration job</code>: This job loads (generate/restore) and dumps (backup) the configuration and secrets.</li>
-<li><code>ConfigMap</code>: Stores configuration about Flex environment setup.</li>
+<li><code>Configuration job</code>: loads (generate/restore) and dumps (backup) the configuration and secrets.</li>
+<li><code>Persistence job</code>: This job loads initial data for the backend used (SQL, LDAP, or Couchbase).</li>
+<li><code>ConfigMaps</code>: Stores configuration needed for Flex environment setup.</li>
 <li><code>Secrets</code>: Contains sensitive or confidential data such as a password, a token, or a key.</li>
-<li><code>Persistence job</code>: This job loads initial data for LDAP or Couchbase.</li>
 </ul>
 <h2 id="config-and-secret-keys">Config and Secret keys<a class="headerlink" href="#config-and-secret-keys" title="Permanent link">#</a></h2>
 <p>The <code>Configuration job</code> creates a set of configurations and secrets used by all services in the Flex setup.</p>
@@ -2217,7 +2203,7 @@
 <p>Docker running locally (Linux preferred)</p>
 </li>
 <li>
-<p>Essential tools and CLI utilities installed on your local workstation and are available in your <code>$PATH</code>: <code>curl</code>, <code>kubectl</code></p>
+<p>Essential tools and CLI utilities are installed on your local workstation and are available in your <code>$PATH</code>: <code>curl</code>, <code>kubectl</code></p>
 </li>
 <li>
 <p>An entry in the <code>/etc/hosts</code> file of your local workstation to resolve the hostname of the Gluu Flex installation. This step is for testing purposes. </p>
@@ -2352,7 +2338,7 @@ helm install nginx ingress-nginx/ingress-nginx
 </code></pre></div>
 </li>
 <li>
-<p>You can do the same edit for every each component you want to access publicly from the browser.</p>
+<p>You can do the same edit for every component you want to access publicly from the browser.</p>
 </li>
 </ol>
 <h2 id="testing-configuration-endpoints">Testing Configuration endpoints<a class="headerlink" href="#testing-configuration-endpoints" title="Permanent link">#</a></h2>
@@ -2369,44 +2355,19 @@ helm install nginx ingress-nginx/ingress-nginx
 <p><code>{"version":"1.1","issuer":"https://demoexample.gluu.org","attestation":{"base_path":"https://demoexample.gluu.org/jans-fido2/restv1/attestation","options_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/attestation/options","result_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/attestation/result"},"assertion":{"base_path":"https://demoexample.gluu.org/jans-fido2/restv1/assertion","options_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/assertion/options","result_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/assertion/result"}}</code></p>
 </li>
 </ol>
-<h2 id="testing-admin-ui">Testing Admin UI<a class="headerlink" href="#testing-admin-ui" title="Permanent link">#</a></h2>
-<ol>
-<li>
-<p>Go to the browser and open https://demoexample.gluu.org/admin which should load the Admin UI license page.</p>
-<p>You would need to provide 4 keys to get access the Admin UI as shown in the screenshot below. Reach out to support management of Gluu on how to acquire the license keys which have an expiry date but can be renewed.</p>
-<ul>
-<li>API Key</li>
-<li>Product Code</li>
-<li>Shared Key</li>
-<li>Management Key</li>
-</ul>
-<p><img width="1507" alt="Screenshot 2022-07-06 at 22 34 47" src="https://user-images.githubusercontent.com/17182751/177629024-2f113b9e-b2d9-4046-841b-ef57f8329a1c.png"></p>
-<p>Reach out if you need test-keys that you can test with.</p>
-</li>
-</ol>
-<h2 id="login-and-add-a-new-user">Login and Add a New User.<a class="headerlink" href="#login-and-add-a-new-user" title="Permanent link">#</a></h2>
+<h2 id="login-and-add-a-new-user">Login and Add a New User<a class="headerlink" href="#login-and-add-a-new-user" title="Permanent link">#</a></h2>
 <p>After inputting the license keys, you can then use <code>admin</code> and the password you set to login to the Admin UI and you should see the Admin UI dashboard.</p>
-<ol>
-<li>
 <p>You could also add another test user via the admin UI that will be used for testing Casa and 2FA as shown in the screenshot below.</p>
 <p>Navigate to <code>Users</code> and click on <code>+</code> in the top right corner to add a user.</p>
 <p><img width="1077" alt="Screenshot 2022-07-26 at 15 51 58" src="https://user-images.githubusercontent.com/17182751/181010315-b900bfba-5863-40aa-b791-e7711a69675d.png"></p>
-</li>
-</ol>
 <h2 id="testing-casa">Testing Casa<a class="headerlink" href="#testing-casa" title="Permanent link">#</a></h2>
 <p>Jans Casa ("Casa") is a self-service web portal for managing account security preferences. The primary use case for Casa is self-service 2FA, but other use cases and functionalities can be supported via Casa plugins.</p>
 <p>Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation. </p>
-<ol>
-<li>
-<p>Point your browser to https://demoexample.gluu.org/jans-casa and you should be welcomed by the Casa login page as shown below.</p>
+<p>Point your browser to <code>https://demoexample.gluu.org/jans-casa</code> and you should be welcomed by the Casa login page as shown below.</p>
 <p><img width="1503" alt="Screenshot 2022-07-06 at 22 39 49" src="https://user-images.githubusercontent.com/17182751/177629838-20b3140f-3d28-4b63-a275-c8ce54f6a096.png"></p>
-</li>
-<li>
 <p>After logging in, you'll be welcomed by the home page as shown below.</p>
 <p><img alt="Screenshot 2022-08-24 at 19 13 24" src="https://user-images.githubusercontent.com/17182751/186470113-9955cfa3-8364-4248-9be1-7d51c94a2633.png" /></p>
-</li>
-</ol>
-<h2 id="enabling-two-factor-authentication">Enabling Two Factor Authentication<a class="headerlink" href="#enabling-two-factor-authentication" title="Permanent link">#</a></h2>
+<h2 id="enabling-two-factor-authentication">Enabling Two-Factor Authentication<a class="headerlink" href="#enabling-two-factor-authentication" title="Permanent link">#</a></h2>
 <p>In this part, we are going to enable two standard authentication mechanisms: OTP and FIDO. </p>
 <p>This can be done through the admin UI. 2FA can be turned on by clicking the switch in the Second Factor Authentication widget. By default, you will be able to choose from a few 2FA policies:</p>
 <ul>
@@ -2442,9 +2403,7 @@ helm install nginx ingress-nginx/ingress-nginx
 <h2 id="register-an-openid-connect-client">Register an OpenID Connect client<a class="headerlink" href="#register-an-openid-connect-client" title="Permanent link">#</a></h2>
 <p>On the Janssen server, you can register a new client in the Flex Admin UI or the jans-cli. In this section, we are going to show both ways of doing it from the Admin UI and using jans-cli</p>
 <h4 id="admin-ui"><code>Admin UI</code><a class="headerlink" href="#admin-ui" title="Permanent link">#</a></h4>
-<ol>
-<li>Navigate to <code>Auth server</code> -&gt; <code>Clients</code> and click on <code>+</code> in the top right corner to create a client.</li>
-</ol>
+<p>Navigate to <code>Auth server</code> -&gt; <code>Clients</code> and click on <code>+</code> in the top right corner to create a client.</p>
 <p>Take note of the following keys:values because they configure the right client that we need</p>
 <div class="highlight"><pre><span></span><code>scopes: email_,openid_,profile
 responseTypes: code
@@ -2454,19 +2413,24 @@ responseTypes: code
 <h4 id="jans-tui"><code>Jans TUI</code><a class="headerlink" href="#jans-tui" title="Permanent link">#</a></h4>
 <p>On the Janssen server, we are going to register a new client using the jans-cli. There are two ways you can register an OIDC client with the Janssen server, Manual Client Registration and Dynamic Client Registration (DCR).</p>
 <p>Here we will use manual client registration. We will use jans-tui tool provided by the Janssen server. jans-tui has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.</p>
-<p>Download or build <a href="https://docs.jans.io/head/admin/config-guide/jans-cli/">config-cli-tui</a> then:</p>
 <ol>
-<li>Get the tui client id and secret:</li>
-</ol>
-<p><div class="highlight"><pre><span></span><code> <span class="nv">FQDN</span><span class="o">=</span> <span class="c1">#Add your FQDN here</span>
- <span class="nv">TUI_CLIENT_ID</span><span class="o">=</span><span class="k">$(</span>kubectl get cm cn -n &lt;namespace&gt; --template<span class="o">={{</span>.data.tui_client_id<span class="o">}}</span><span class="k">)</span>
- <span class="nv">TUI_CLIENT_SECRET</span><span class="o">=</span><span class="k">$(</span>kubectl get secret cn -n &lt;namespace&gt; --template<span class="o">={{</span>.data.tui_client_pw<span class="o">}}</span> <span class="p">|</span> base64 -d<span class="k">)</span>
-</code></pre></div>
-2. Get schema file using this command</p>
-<div class="codehilite"><pre><span></span><code>`./config-cli-tui.pyz --host &lt;FQDN&gt; --client-id &lt;TUI_CLIENT_ID&gt; --client-secret &lt;TUI_CLIENT_SECRET&gt; --no-tui --schema /components/schemas/Client`
-</code></pre></div>
-
-<ol>
+<li>
+<p>Download jans-cli-tui from the <a href="https://github.com/JanssenProject/jans/releases">release</a> assets depending on your OS. For example: </p>
+<p><code>wget https://github.com/JanssenProject/jans/releases/download/vreplace-janssen-version/jans-cli-tui-linux-ubuntu-X86-64.pyz</code></p>
+<p>Now we have <code>jans-cli-tui-linux-ubuntu-X86-64.pyz</code> downloaded.</p>
+</li>
+<li>
+<p>Now we can grab the FQDN, client-id, client-secret, and connect using the following commands:
+    <div class="highlight"><pre><span></span><code>FQDN= #Add your FQDN here
+TUI_CLIENT_ID=$(kubectl get cm cn -n &lt;namespace&gt; --template={{.data.tui_client_id}})
+TUI_CLIENT_SECRET=$(kubectl get secret cn -n &lt;namespace&gt; --template={{.data.tui_client_pw}} | base64 -d)
+#add -noverify if your FQDN is not registered
+</code></pre></div></p>
+</li>
+<li>
+<p>Get schema file using this command</p>
+<p><code>python3 jans-cli-tui-linux-ubuntu-X86-64.pyz --host &lt;FQDN&gt; --client-id &lt;TUI_CLIENT_ID&gt; --client-secret &lt;TUI_CLIENT_SECRET&gt; --no-tui --schema /components/schemas/Client</code></p>
+</li>
 <li>
 <p>Add values for required params and store this JSON in a text file. Take keynote of the following properties.</p>
 <p><code>schema-json-file.json</code></p>
@@ -2555,7 +2519,7 @@ responseTypes: code
 </li>
 <li>
 <p>Now you can use that JSON file as input to the command below and register your client</p>
-<p><code>./config-cli-tui.pyz --host &lt;FQDN&gt; --client-id &lt;TUI_CLIENT_ID&gt; --client-secret &lt;TUI_CLIENT_SECRET&gt; --no-tui --operation-id=post-oauth-openid-client --data &lt;path&gt;/schema-json-file.json</code></p>
+<p><code>python3 jans-cli-tui-linux-ubuntu-X86-64.pyz --host &lt;FQDN&gt; --client-id &lt;TUI_CLIENT_ID&gt; --client-secret &lt;TUI_CLIENT_SECRET&gt; --no-tui --operation-id=post-oauth-openid-client --data &lt;path&gt;/schema-json-file.json</code></p>
 </li>
 <li>
 <p>After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like <code>inum</code> and <code>clientSecret</code>, will be required before we configure <code>mod_auth_openidc</code> So keep in mind that we shall get back to this.</p>
@@ -2564,8 +2528,8 @@ responseTypes: code
 <h2 id="create-an-application-container">Create an Application Container<a class="headerlink" href="#create-an-application-container" title="Permanent link">#</a></h2>
 <p>An application docker container will be run locally which will act as the protected resource (PR) / external application. The following files have code for the small application. We shall create a directory locally / on your machine called <code>test</code> and add the required files.</p>
 <ol>
-<li>Firstly create a project folder named <code>test</code> by running <code>mkdir test &amp;&amp; cd test</code> and add the following files with their content; </li>
-</ol>
+<li>
+<p>Firstly create a project folder named <code>test</code> by running <code>mkdir test &amp;&amp; cd test</code> and add the following files with their content; </p>
 <p><code>app.conf</code></p>
 <div class="highlight"><pre><span></span><code>ServerRoot &quot;/usr/local/apache2&quot;
 Listen 80
@@ -2584,19 +2548,19 @@ User daemon
 Group daemon
 
 &lt;Directory /&gt;
-  AllowOverride none
-  Require all denied
+AllowOverride none
+Require all denied
 &lt;/Directory&gt;
 
 DocumentRoot &quot;/usr/local/apache2/htdocs&quot;
 &lt;Directory &quot;/usr/local/apache2/htdocs&quot;&gt;
-  Options Indexes FollowSymLinks Includes
-  AllowOverride None
-  Require all granted
+Options Indexes FollowSymLinks Includes
+AllowOverride None
+Require all granted
 
-  SetEnvIf X-Remote-User &quot;(.*)&quot; REMOTE_USER=$0
-  SetEnvIf X-Remote-User-Name &quot;(.*)&quot; REMOTE_USER_NAME=$0
-  SetEnvIf X-Remote-User-Email &quot;(.*)&quot; REMOTE_USER_EMAIL=$0
+SetEnvIf X-Remote-User &quot;(.*)&quot; REMOTE_USER=$0
+SetEnvIf X-Remote-User-Name &quot;(.*)&quot; REMOTE_USER_NAME=$0
+SetEnvIf X-Remote-User-Email &quot;(.*)&quot; REMOTE_USER_EMAIL=$0
 &lt;/Directory&gt;
 
 DirectoryIndex index.html
@@ -2645,13 +2609,13 @@ AddOutputFilter INCLUDES .shtml
 # &quot;Created&quot;: &quot;2022-06-08T18:45:46.260791323Z&quot; , &quot;Version&quot;:&quot;2.4.54&quot;
 
 RUN apt-get update \
-  &amp;&amp; apt-get install -y --no-install-recommends wget ca-certificates libcjose0 libhiredis0.14 apache2-api-20120211 apache2-bin\
-  &amp;&amp; wget https://github.com/zmartzone/mod_auth_openidc/releases/download/v2.4.11.2/libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
-  &amp;&amp; dpkg -i libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
-  &amp;&amp; ln -s /usr/lib/apache2/modules/mod_auth_openidc.so /usr/local/apache2/modules/mod_auth_openidc.so \
-  &amp;&amp; rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt \
-  &amp;&amp; touch /usr/local/apache2/conf/extra/secret.conf \
-  &amp;&amp; touch /usr/local/apache2/conf/extra/oidc.conf
+&amp;&amp; apt-get install -y --no-install-recommends wget ca-certificates libcjose0 libhiredis0.14 apache2-api-20120211 apache2-bin\
+&amp;&amp; wget https://github.com/zmartzone/mod_auth_openidc/releases/download/v2.4.11.2/libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
+&amp;&amp; dpkg -i libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
+&amp;&amp; ln -s /usr/lib/apache2/modules/mod_auth_openidc.so /usr/local/apache2/modules/mod_auth_openidc.so \
+&amp;&amp; rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt \
+&amp;&amp; touch /usr/local/apache2/conf/extra/secret.conf \
+&amp;&amp; touch /usr/local/apache2/conf/extra/oidc.conf
 
 RUN echo &quot;\n\nLoadModule auth_openidc_module modules/mod_auth_openidc.so\n\nInclude conf/extra/secret.conf\nInclude conf/extra/oidc.conf\n&quot; &gt;&gt; /usr/local/apache2/conf/httpd.conf
 </code></pre></div>
@@ -2670,7 +2634,7 @@ OIDCCryptoPassphrase &lt;crypto-passphrase-of-choice&gt;
     AuthType openid-connect
 &lt;/Location&gt;
 </code></pre></div>
-<ol>
+</li>
 <li>
 <p>After, run an Apache container which will play the role of an application being protected by the authenticating reverse proxy.</p>
 <div class="highlight"><pre><span></span><code>docker run -dit -p 8110:80 \
@@ -2679,10 +2643,8 @@ OIDCCryptoPassphrase &lt;crypto-passphrase-of-choice&gt;
        -v &quot;$PWD/user.shtml&quot;:/usr/local/apache2/htdocs/user.shtml \
        --name apache-app httpd:2.4
 </code></pre></div>
-</li>
-</ol>
 <p>Note that we are using a popular pre-built image useful for acting as a reverse proxy for authentication in front of an application. It contains a stripped-down Apache with minimal modules, and adds the <code>mod_auth_openidc</code> module for performing OpenID Connect authentication.</p>
-<ol>
+</li>
 <li>
 <p>Make a test curl command call to ensure you get back some content as shown in the screenshot below</p>
 <div class="highlight"><pre><span></span><code>curl http://localhost:8110/user.shtml
@@ -2694,8 +2656,8 @@ OIDCCryptoPassphrase &lt;crypto-passphrase-of-choice&gt;
 <p>We shall use Apache, but this time we use a Docker image that has <code>mod_auth_oidc</code> installed and configured. This proxy will require authentication, handle the authentication flow with redirects, and then forward requests to the application.</p>
 <p>In order to use this, you will need to have registered a new OpenID Connect client on the Janssen server. We did that in the step 1 above</p>
 <ol>
-<li>Add the following files to the <code>test</code> folder.</li>
-</ol>
+<li>
+<p>Add the following files to the <code>test</code> folder.</p>
 <p><code>oidc.conf</code></p>
 <div class="highlight"><pre><span></span><code># Unset to make sure clients can&#39;t control these
 RequestHeader unset X-Remote-User
@@ -2715,15 +2677,15 @@ OIDCRemoteUserClaim principal
 OIDCPassClaimsAs environment
 
 &lt;Location /&gt;
-   AuthType openid-connect
-   Require valid-user
+AuthType openid-connect
+Require valid-user
 
-   ProxyPass http://app:80/
-   ProxyPassReverse http://app:80/
+ProxyPass http://app:80/
+ProxyPassReverse http://app:80/
 
-   RequestHeader set X-Remote-User %{OIDC_CLAIM_principal}e
-   RequestHeader set X-Remote-User-Name %{OIDC_CLAIM_name}e
-   RequestHeader set X-Remote-User-Email %{OIDC_CLAIM_email}e
+RequestHeader set X-Remote-User %{OIDC_CLAIM_principal}e
+RequestHeader set X-Remote-User-Name %{OIDC_CLAIM_name}e
+RequestHeader set X-Remote-User-Email %{OIDC_CLAIM_email}e
 &lt;/Location&gt;
 </code></pre></div>
 <p><code>proxy.conf</code></p>
@@ -2796,7 +2758,7 @@ LogLevel warn
     LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%{Referer}i\&quot; \&quot;%{User-Agent}i\&quot;&quot; combined
     LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b&quot; common
     &lt;IfModule logio_module&gt;
-      LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%{Referer}i\&quot; \&quot;%{User-Agent}i\&quot; %I %O&quot; combinedio
+    LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b \&quot;%{Referer}i\&quot; \&quot;%{User-Agent}i\&quot; %I %O&quot; combinedio
     &lt;/IfModule&gt;
     CustomLog /proc/self/fd/1 common
 &lt;/IfModule&gt;
@@ -2832,7 +2794,7 @@ LoadModule auth_openidc_module modules/mod_auth_openidc.so
 Include conf/extra/secret.conf
 Include conf/extra/oidc.conf
 </code></pre></div>
-<ol>
+</li>
 <li>
 <p>Edit the file to include the client secret for the client you created during DCR, and add a securely generated pass phrase for the session keys</p>
 <div class="highlight"><pre><span></span><code>docker build --pull -t apache-oidc -f Dockerfile .
@@ -2861,7 +2823,7 @@ docker run -dit -p 8111:80 \
 </code></pre></div>
 </li>
 <li>
-<p>Should you modify the configuration files, just restart the proxy.</p>
+<p>If you modified the configuration files, just restart the proxy.</p>
 <div class="highlight"><pre><span></span><code>docker restart apache-proxy
 </code></pre></div>
 </li>
@@ -2872,7 +2834,7 @@ docker run -dit -p 8111:80 \
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-12-20T12:52:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-12-20</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-05-14T09:39:59+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-05-14</span>
       
         <br>
         Created:
