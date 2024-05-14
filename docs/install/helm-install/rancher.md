@@ -7,11 +7,10 @@ tags:
 
 # Install Gluu Server Using Rancher Marketplace
 
-For this quick start we will use a [single node Kubernetes install in docker with a self-signed certificate](https://ranchermanager.docs.rancher.com/pages-for-subheaders/rancher-on-a-single-node-with-docker).
+For a more generic `Gluu Flex` installation on Rancher, you can follow [this](https://docs.gluu.org/vreplace-flex-version/admin/recipes/getting-started-rancher/) comprehensive guide.
 
-!!! note
-    For a more generic setup, use Rancher UI to deploy the setup. For more options please follow this [link](https://ranchermanager.docs.rancher.com/pages-for-subheaders/installation-and-upgrade).
-
+Also, there are multiple `Rancher` installation [options](https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade#overview-of-installation-options). For this quick start setup we will use a [single node Kubernetes install in docker with a self-signed certificate](https://ranchermanager.docs.rancher.com/pages-for-subheaders/rancher-on-a-single-node-with-docker).
+    
 
 ## Installation Steps
 !!! note
