@@ -25,6 +25,7 @@ import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import ShortcodePopover from './ShortcodePopover'
 import shortCodes from 'Plugins/admin/helper/shortCodes.json'
+import { isValid } from './WebhookURLChecker'
 
 const WebhookForm = () => {
   const { id } = useParams()
@@ -63,6 +64,14 @@ const WebhookForm = () => {
         )
       }
     }
+    const isCool = isValid(values.url)
+    if (isValid(values.url) === false) {
+      faulty = true
+      formik.setFieldError(
+        'url',
+        "Invalid url or url not allowed."
+      )
+    }
 
     return faulty
   }
@@ -85,11 +94,9 @@ const WebhookForm = () => {
     },
     onSubmit: (values) => {
       const faulty = validatePayload(values)
-
       if (faulty) {
         return
       }
-
       toggle()
     },
     validationSchema: Yup.object().shape({
