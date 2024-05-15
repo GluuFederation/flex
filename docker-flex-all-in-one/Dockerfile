@@ -74,11 +74,6 @@ RUN apk add --no-cache --virtual .pip-deps py3-pip py3-wheel \
     && rm -rf "$HOME/.config/pip/pip.conf" \
     && apk del .pip-deps
 
-# RUN python3 -m ensurepip \
-#     && pip3 install --no-cache-dir -U pip wheel setuptools \
-#     && pip3 install --no-cache-dir --default-timeout=300 -r /app/requirements.flex.txt \
-#     && pip3 uninstall -y pip wheel
-
 # -------
 # Cleanup
 # -------

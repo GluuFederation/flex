@@ -56,14 +56,18 @@ def _build_src() -> None:
     os.chdir(ADMIN_UI_DIR)
 
     try:
-        proc = sh.npm("run", "build:prod", _out=_emit_to_log, _bg=True)
+        err = ""
+        proc = sh.npm("run", "build:prod", _out=_emit_to_log, _err_to_out=True, _bg=True, _truncate_exc=False)
         proc.wait()
     except sh.SignalException_SIGKILL:
-        logger.warning("Process is killed")
+        err = "Process is killed"
+    except sh.ErrorReturnCode as exc:
+        err = exc.stderr.decode() or "Error running command"
 
     if proc.exit_code != 0:
-        sys.exit("Unable to build admin-ui app")
-        # sys.exit(proc.exit_code)
+        err = err or proc.stderr.decode()
+        logger.error(f"Unable to build admin-ui app; exit code={proc.exit_code}, reason={err}")
+        sys.exit(proc.exit_code)
 
     shutil.copytree(
         os.path.join(ADMIN_UI_DIR, "dist"),
