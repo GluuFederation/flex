@@ -50,7 +50,6 @@ const WebhookForm = () => {
   )
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
-
   const validatePayload = (values) => {
     let faulty = false
     if (values.httpRequestBody) {
@@ -64,8 +63,7 @@ const WebhookForm = () => {
         )
       }
     }
-    const isCool = isValid(values.url)
-    if (isValid(values.url) === false) {
+    if (!isValid(values.url)) {
       faulty = true
       formik.setFieldError(
         'url',
