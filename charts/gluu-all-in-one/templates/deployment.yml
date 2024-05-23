@@ -42,6 +42,7 @@ spec:
       topologySpreadConstraints:
         {{- include "flex-all-in-one.topology-spread-constraints" . | indent 8 }}
       {{- end }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
       containers:
       - name: {{ include "flex-all-in-one.name" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}

@@ -15,6 +15,7 @@ spec:
           dnsConfig:
     {{ toYaml . | indent 12 }}
         {{- end }}
+          serviceAccountName: {{ .Values.global.serviceAccountName }}
           containers:
             - name: {{ include "opendj.fullname" . }}-backup
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

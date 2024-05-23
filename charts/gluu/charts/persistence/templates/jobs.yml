@@ -9,9 +9,17 @@ metadata:
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.additionalAnnotations }}
+{{- if or (.Values.additionalAnnotations) (.Values.customAnnotations.configMaps) (.Values.customAnnotations.secrets) }}
   annotations:
+{{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.configMaps }}
+{{ toYaml .Values.customAnnotations.configMaps | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.secrets }}
+{{ toYaml .Values.customAnnotations.secrets | indent 4 }}
+{{- end }}
 {{- end }}
 spec:
   ttlSecondsAfterFinished: {{ .Values.global.jobTtlSecondsAfterFinished }}
@@ -32,6 +40,7 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       restartPolicy: Never
+      serviceAccountName: {{ .Values.global.serviceAccountName }}
       containers:
       - name: {{ include "persistence.name" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -119,6 +128,9 @@ spec:
             mountPath: {{ .Values.global.cnLdapPasswordFile }}
             subPath: ldap_password
         {{- end }}
+          - name: custom-sql-types
+            mountPath: "/etc/jans/conf/sql_data_types.custom.json"
+            subPath: sql_data_types.custom.json
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
       volumes:
@@ -186,3 +198,7 @@ spec:
               - key: ldap_password
                 path: ldap_password
       {{- end }}
+        - name: custom-sql-types
+          configMap:
+            name: {{ .Release.Name }}-custom-sql-types
+

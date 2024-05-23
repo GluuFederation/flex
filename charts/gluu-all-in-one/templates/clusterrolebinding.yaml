@@ -41,5 +41,5 @@ roleRef:
   name: edit
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: {{ .Values.global.serviceAccountName }}
   namespace: {{ .Release.Namespace }}
