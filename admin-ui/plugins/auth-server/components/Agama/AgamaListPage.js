@@ -349,6 +349,7 @@ function AgamaListPage() {
               actions={myActions}
               options={{
                 search: true,
+                idSynonym: 'inum',
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,

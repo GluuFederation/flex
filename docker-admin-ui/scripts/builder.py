@@ -4,6 +4,8 @@ import os
 import shutil
 import sys
 
+import sh
+
 from jans.pycloudlib.utils import exec_cmd
 
 from settings import LOGGING_CONFIG
@@ -12,6 +14,12 @@ logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("admin-ui")
 
 ADMIN_UI_DIR = "/opt/flex/admin-ui"
+
+
+def _emit_to_log(line, stdin, process):
+    line = line.strip().replace("\n", "")
+    if line:
+        logger.info(line)
 
 
 def _discover_plugins():
@@ -47,13 +55,20 @@ def _build_src() -> None:
 
     os.chdir(ADMIN_UI_DIR)
 
-    cmd = "npm run build:prod"
-    out, err, code = exec_cmd(cmd)
+    try:
+        err = ""
+        proc = sh.npm("run", "build:prod", _out=_emit_to_log, _err_to_out=True, _bg=True, _truncate_exc=False)
+        proc.wait()
+    except sh.SignalException_SIGKILL:
+        err = "Process is killed"
+    except sh.ErrorReturnCode as exc:
+        err = exc.stderr.decode() or "Error running command"
 
-    if code != 0:
-        sys.exit(err.decode())
+    if proc.exit_code != 0:
+        err = err or proc.stderr.decode()
+        logger.error(f"Unable to build admin-ui app; exit code={proc.exit_code}, reason={err}")
+        sys.exit(proc.exit_code)
 
-    logger.info(out.decode())
     shutil.copytree(
         os.path.join(ADMIN_UI_DIR, "dist"),
         public_dir,

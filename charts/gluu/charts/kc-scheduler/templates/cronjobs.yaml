@@ -1,12 +1,13 @@
+{ if and (index .Values "global" "kc-scheduler" "enabled") (.Values.global.saml.enabled) -}}
 kind: CronJob
 apiVersion: batch/v1
 metadata:
-  name: {{ include "auth-server-key-rotation.fullname" . }}
+  name: {{ include "kc-scheduler.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    APP_NAME: auth-server-key-rotation
+    APP_NAME: kc-scheduler
     release: {{ .Release.Name }}
-{{ include "auth-server-key-rotation.labels" . | indent 4 }}
+{{ include "kc-scheduler.labels" . | indent 4 }}
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
@@ -15,7 +16,7 @@ metadata:
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
 spec:
-  schedule: "@every {{ .Values.keysLife }}h"
+  schedule: "@every {{ .Values.interval }}m"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -34,7 +35,7 @@ spec:
 {{ toYaml . | indent 12 }}
         {{- end }}
           containers:
-            - name: {{ include "auth-server-key-rotation.name" . }}
+            - name: {{ include "kc-scheduler.name" . }}
               {{- if .Values.customScripts }}
               command:
                 - /bin/sh
@@ -47,8 +48,8 @@ spec:
               {{- end}}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
               env:
-                {{- include "auth-server-key-rotation.usr-envs" . | indent 16 }}
-                {{- include "auth-server-key-rotation.usr-secret-envs" . | indent 16 }}
+                {{- include "kc-scheduler.usr-envs" . | indent 16 }}
+                {{- include "kc-scheduler.usr-secret-envs" . | indent 16 }}
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               lifecycle:
 {{- toYaml .Values.lifecycle | nindent 16 }}
@@ -69,14 +70,14 @@ spec:
                   name: google-sa
                   subPath: google-credentials.json
                 {{- end }}
-                {{ if eq .Values.global.configSecretAdapter "vault" }}
+              {{ if eq .Values.global.configSecretAdapter "vault" }}
                 - name: vault
                   mountPath: /etc/certs/vault_role_id
                   subPath: vault_role_id
                 - name: vault
                   mountPath: /etc/certs/vault_secret_id
                   subPath: vault_secret_id
-                {{- end }}
+              {{- end }}
               {{- with .Values.volumeMounts }}
 {{- toYaml . | nindent 16 }}
               {{- end }}
@@ -119,7 +120,6 @@ spec:
               resources:
 {{- toYaml .Values.resources | nindent 16 }}
               {{- end }}
-              args: ["patch", "auth", "--opts", "interval:{{ .Values.keysLife }}", "--opts", "key-strategy:{{ .Values.keysStrategy }}", "--opts", "privkey-push-delay:{{ .Values.keysPushDelay }}", "--opts", "privkey-push-strategy:{{ .Values.keysPushStrategy }}"]
           volumes:
           {{- with .Values.volumes }}
 {{- toYaml . | nindent 12 }}
@@ -169,7 +169,7 @@ spec:
               secret:
                 secretName: {{ .Release.Name }}-cb-pass
                 items:
-                  # we mostly need non-superuser couchbase password file here
+                  # we are mostly need non-superuser couchbase password file here
                   - key: couchbase_password
                     path: couchbase_password
           {{- end }}
@@ -187,3 +187,10 @@ spec:
                   path: ldap_password
           {{- end }}
           restartPolicy: Never
+          {{- if not .Values.global.isFqdnRegistered }}
+          hostAliases:
+            - ip: {{ .Values.global.lbIp }}
+              hostnames:
+                - {{ .Values.global.fqdn }}
+          {{- end }}
+{{- end }}

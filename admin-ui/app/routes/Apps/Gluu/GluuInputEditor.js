@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import 'ace-builds/src-noconflict/mode-java'
 import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/theme-xcode'
+import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/ext-language_tools'
 
 function GluuInputEditor({
@@ -25,7 +26,8 @@ function GluuInputEditor({
   placeholder = 'Write your custom script here',
   doc_entry,
   shortcode,
-  onCursorChange
+  onCursorChange,
+  width = '100%'
 }) {
   const handleChange = (scripts) => {
     formik.handleChange(name)(scripts)
@@ -45,11 +47,12 @@ function GluuInputEditor({
         <AceEditor
           mode={language}
           readOnly={readOnly}
+          setOptions={{ useWorker: false }}
           theme={theme}
           placeholder={placeholder}
           fontSize={16}
           onCursorChange={onCursorChange}
-          width='90%'
+          width={width}
           height='300px'
           onChange={(e) => handleChange(e)}
           name={name}
@@ -80,5 +83,6 @@ GluuInputEditor.propTypes = {
   name: PropTypes.string,
   doc_entry: PropTypes.string,
   shortcode: PropTypes.element,
-  onCursorChange: PropTypes.func
+  onCursorChange: PropTypes.func,
+  width: PropTypes.string
 }

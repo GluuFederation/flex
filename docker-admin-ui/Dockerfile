@@ -1,4 +1,4 @@
-FROM node:hydrogen-alpine3.18 AS builder
+FROM node:hydrogen-alpine3.19 AS builder
 
 RUN apk update \
     && apk upgrade --available \
@@ -8,7 +8,7 @@ RUN apk update \
 # - use NODE_ENV=production
 # - download build package (not git clone)
 
-ENV FLEX_SOURCE_VERSION=5fd1779e1b6aacc8338eac0632262a1859f34a92
+ENV FLEX_SOURCE_VERSION=b12e9a0bd5c083fd5d6916ca57faf7c5e084484d
 ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
 
 RUN mkdir -p /opt/flex /app/templates/admin-ui
@@ -38,7 +38,7 @@ RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 # Application
 # ===========
 
-FROM node:hydrogen-alpine3.18
+FROM node:hydrogen-alpine3.19
 
 # ======
 # alpine
@@ -46,7 +46,7 @@ FROM node:hydrogen-alpine3.18
 
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio curl \
+    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio py3-packaging \
     && apk add --no-cache --virtual .build-deps git shadow
 
 RUN usermod -m -d /home/1000 node
@@ -63,17 +63,18 @@ EXPOSE 8080
 # ======
 
 COPY requirements.txt /app/requirements.txt
-RUN python3 -m ensurepip \
-    && pip3 install --no-cache-dir -U pip wheel setuptools \
+RUN apk add --no-cache --virtual .pip-deps py3-pip py3-wheel \
+    && mkdir -p "$HOME/.config/pip" \
+    && printf "[global]\nbreak-system-packages = true" > "$HOME/.config/pip/pip.conf" \
     && pip3 install --no-cache-dir -r /app/requirements.txt \
-    && pip3 uninstall -y pip wheel
+    && rm -rf "$HOME/.config/pip/pip.conf" \
+    && apk del .pip-deps
 
 # =====================
 # jans-linux-setup sync
 # =====================
 
-
-ENV JANS_SOURCE_VERSION=7a2800d8b660d53aaf8265ee4d1767f20a692ba6
+ENV JANS_SOURCE_VERSION=af7e99f6dc280f5e4afbe8be2d006a52316de9d1
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
