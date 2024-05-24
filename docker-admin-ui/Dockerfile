@@ -46,7 +46,7 @@ FROM node:hydrogen-alpine3.19
 
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio py3-packaging \
+    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
     && apk add --no-cache --virtual .build-deps git shadow
 
 RUN usermod -m -d /home/1000 node
@@ -63,12 +63,11 @@ EXPOSE 8080
 # ======
 
 COPY requirements.txt /app/requirements.txt
-RUN apk add --no-cache --virtual .pip-deps py3-pip py3-wheel \
-    && mkdir -p "$HOME/.config/pip" \
-    && printf "[global]\nbreak-system-packages = true" > "$HOME/.config/pip/pip.conf" \
+RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled \
+    && python3 -m ensurepip \
+    && pip3 install --no-cache-dir -U pip wheel setuptools \
     && pip3 install --no-cache-dir -r /app/requirements.txt \
-    && rm -rf "$HOME/.config/pip/pip.conf" \
-    && apk del .pip-deps
+    && pip3 uninstall -y pip wheel
 
 # =====================
 # jans-linux-setup sync
