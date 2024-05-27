@@ -47,7 +47,7 @@ export function* createUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
-    const errMsg = e?.response?.body?.description || e?.response?.text
+    const errMsg = e?.response?.body?.description || e?.response?.body?.message || e?.response?.text
     yield* errorToast(errMsg)
     yield put(createUserResponse(null))
     if (isFourZeroOneError(e)) {
@@ -68,7 +68,7 @@ export function* updateUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
-    const errMsg = e?.response?.body?.description || e?.response?.text
+    const errMsg = e?.response?.body?.description || e?.response?.body?.message || e?.response?.text
     yield* errorToast(errMsg)
     yield put(updateUserResponse(null))
     if (isFourZeroOneError(e)) {
@@ -88,7 +88,7 @@ export function* changeUserPasswordSaga({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(changeUserPasswordResponse(data))
   } catch (e) {
-    const errMsg = e?.response?.body?.description || e?.response?.text
+    const errMsg = e?.response?.body?.description || e?.response?.body?.message || e?.response?.text
     yield* errorToast(errMsg)
     yield put(changeUserPasswordResponse(null))
     if (isFourZeroOneError(e)) {
@@ -108,7 +108,7 @@ export function* getUsersSaga({ payload }) {
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    const errMsg = e?.response?.body?.description || e?.response?.text
+    const errMsg = e?.response?.body?.description || e?.response?.body?.message || e?.response?.text
     yield* errorToast(errMsg)
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -130,7 +130,7 @@ export function* deleteUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: payload } })
     return data
   } catch (e) {
-    const errMsg = e?.response?.body?.description || e?.response?.text
+    const errMsg = e?.response?.body?.description || e?.response?.body?.message || e?.response?.text
     yield* errorToast(errMsg)
     yield put(deleteUserResponse(null))
     if (isFourZeroOneError(e)) {
