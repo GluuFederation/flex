@@ -106,7 +106,7 @@ function SettingsPage() {
                 >
                   <h3>
                     <Badge color={`primary-${selectedTheme}`}>
-                      {process.env.CONFIG_API_BASE_URL}
+                      {window.configApiBaseUrl}
                     </Badge>
                   </h3>
                 </Label>
