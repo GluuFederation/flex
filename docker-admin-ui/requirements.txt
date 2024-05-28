@@ -1,4 +1,4 @@
 # pinned to py3-grpcio version to avoid failure on native extension build
-sh==2.0.6
+#sh==2.0.6
 grpcio==1.59.3
 /tmp/jans/jans-pycloudlib

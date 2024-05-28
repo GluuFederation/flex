@@ -8,7 +8,7 @@ RUN apk update \
 # - use NODE_ENV=production
 # - download build package (not git clone)
 
-ENV FLEX_SOURCE_VERSION=2d580667e5642e594dcc8a91dd5f6d84e3628117
+ENV FLEX_SOURCE_VERSION=b897e1bc0570628fb5145a9aec876b6b8ee67331
 ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
 
 RUN mkdir -p /opt/flex /app/templates/admin-ui
@@ -31,8 +31,10 @@ RUN wget -q https://jenkins.gluu.org/npm/admin_ui/main/node_modules/admin-ui-mai
 RUN wget -q https://jenkins.gluu.org/npm/admin_ui/main/OpenApi/jans_config_api/admin-ui-main-jans_config_api.tar.gz -P /tmp \
     && tar xzf /tmp/admin-ui-main-jans_config_api.tar.gz -C /opt/flex/admin-ui
 
+COPY templates/admin-ui/env /opt/flex/admin-ui/.env
+
 # add missing node-sass binding for musl (alpine)
-RUN cd /opt/flex/admin-ui && npm rebuild node-sass
+RUN cd /opt/flex/admin-ui && npm rebuild node-sass && npm run build:prod
 
 # ===========
 # Application
@@ -86,11 +88,35 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
+# ENV FLEX_SOURCE_VERSION=b897e1bc0570628fb5145a9aec876b6b8ee67331
+# ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
+
+# RUN mkdir -p /app/templates/admin-ui
+
+
+# @FIXME: using pre-built admin-ui app returns blank page when accessing /admin URL; the issue caused by /admin/ base path
+
+#  RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
+#      && cd /tmp/flex \
+#      && git sparse-checkout init --cone \
+#      && git checkout ${FLEX_SOURCE_VERSION} \
+#      && git sparse-checkout add admin-ui \
+#      && git sparse-checkout add flex-linux-setup/flex_linux_setup/templates \
+#      && cp flex-linux-setup/flex_linux_setup/templates/aui_webhook.ldif /app/templates/admin-ui
+
 # ========
 # Admin UI
 # ========
 
-COPY --from=builder /opt/flex/admin-ui /opt/flex/admin-ui
+# ENV ADMIN_UI_VERSION=main
+# ENV GLUU_BUILD_DATE='2024-05-28 17:19'
+
+# RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
+#     && mkdir -p /opt/flex/admin-ui \
+#     && tar xvf /tmp/admin-ui.tar.gz -C /opt/flex/admin-ui \
+#     && rm -rf /tmp/admin-ui.tar.gz
+
+COPY --from=builder /opt/flex/admin-ui/dist /opt/flex/admin-ui/dist
 COPY --from=builder /app/templates/admin-ui /app/templates/admin-ui
 
 # ======
@@ -217,9 +243,16 @@ RUN cp /app/templates/admin-ui/nginx-default.conf /etc/nginx/http.d/default.conf
 # add existing node user to root group
 RUN addgroup node root
 
+RUN touch /run/nginx/nginx.pid
+
 # make empty files and folders
-RUN mkdir -p /opt/flex/admin-ui/_plugins \
-    && touch /run/nginx/nginx.pid
+# RUN mkdir -p /opt/flex/admin-ui/_plugins
+
+# @TODO: re-enable plugins once upstream admin-ui supports modular plugin
+# && chown 1000:0 /opt/flex/admin-ui/.env \
+# && chown -R 1000:0 /opt/flex/admin-ui/_plugins \
+# && chown 1000:0 /opt/flex/admin-ui/plugins.config.json \
+# && chown -R 1000:0 /opt/flex/admin-ui/plugins
 
 # adjust ownership
 RUN chown -R 1000:0 /var/lib/nginx \
@@ -230,11 +263,7 @@ RUN chown -R 1000:0 /var/lib/nginx \
     && chown -R 1000:0 /etc/jans \
     && chown -R 1000:0 /etc/certs \
     && chown 1000:0 /run/nginx/nginx.pid \
-    && chown -R 1000:0 /opt/flex/admin-ui/_plugins \
-    && chown 1000:0 /opt/flex/admin-ui \
-    && chown 1000:0 /opt/flex/admin-ui/.env \
-    && chown 1000:0 /opt/flex/admin-ui/plugins.config.json \
-    && chown -R 1000:0 /opt/flex/admin-ui/plugins
+    && chown -R 1000:0 /opt/flex/admin-ui
 
 USER 1000
 
