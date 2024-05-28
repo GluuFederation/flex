@@ -61,6 +61,20 @@ COPY --from=flex-admin-ui-src /run/nginx/nginx.pid /run/nginx/nginx.pid
 COPY --from=flex-admin-ui-src /app/scripts /app/flex_aio/admin_ui
 RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 
+# ===========
+# Assets sync
+# ===========
+
+ENV JANS_SOURCE_VERSION=c89fb50f1ccfdba8ac8f6e050ff3648e3106bdb3
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the assets
+RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+    && cd /tmp/jans \
+    && git sparse-checkout init --cone \
+    && git checkout ${JANS_SOURCE_VERSION} \
+    && git sparse-checkout add jans-pycloudlib
+
 # ------
 # Python
 # ------
@@ -77,7 +91,7 @@ RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MAN
 # -------
 
 RUN apk del .build-deps \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* /tmp/jans
 
 # ----
 # misc
