@@ -8,14 +8,14 @@ RUN apk update \
 # - use NODE_ENV=production
 # - download build package (not git clone)
 
-ENV FLEX_SOURCE_VERSION=b12e9a0bd5c083fd5d6916ca57faf7c5e084484d
+ENV FLEX_SOURCE_VERSION=2d580667e5642e594dcc8a91dd5f6d84e3628117
 ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
 
 RUN mkdir -p /opt/flex /app/templates/admin-ui
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
-RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
+RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
     && cd /tmp/flex \
     && git sparse-checkout init --cone \
     && git checkout ${FLEX_SOURCE_VERSION} \
@@ -58,31 +58,21 @@ RUN usermod -m -d /home/1000 node
 # Ports for nginx
 EXPOSE 8080
 
-# ======
-# Python
-# ======
+# ===========
+# Assets sync
+# ===========
 
-COPY requirements.txt /app/requirements.txt
-RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled \
-    && python3 -m ensurepip \
-    && pip3 install --no-cache-dir -U pip wheel setuptools \
-    && pip3 install --no-cache-dir -r /app/requirements.txt \
-    && pip3 uninstall -y pip wheel
-
-# =====================
-# jans-linux-setup sync
-# =====================
-
-ENV JANS_SOURCE_VERSION=af7e99f6dc280f5e4afbe8be2d006a52316de9d1
+ENV JANS_SOURCE_VERSION=c89fb50f1ccfdba8ac8f6e050ff3648e3106bdb3
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
-# we are using partial-clone and sparse-checkout to get the jans-linux-setup code
-RUN git clone --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+# we are using partial-clone and sparse-checkout to get the assets
+RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
     && cd /tmp/jans \
     && git sparse-checkout init --cone \
     && git checkout ${JANS_SOURCE_VERSION} \
-    && git sparse-checkout set ${JANS_SETUP_DIR}
+    && git sparse-checkout add ${JANS_SETUP_DIR} \
+    && git sparse-checkout add jans-pycloudlib
 
 RUN mkdir -p /app/static/rdbm /app/schema
 
@@ -102,6 +92,17 @@ RUN cd /tmp/jans \
 
 COPY --from=builder /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=builder /app/templates/admin-ui /app/templates/admin-ui
+
+# ======
+# Python
+# ======
+
+COPY requirements.txt /app/requirements.txt
+RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled \
+    && python3 -m ensurepip \
+    && pip3 install --no-cache-dir -U pip wheel setuptools \
+    && pip3 install --no-cache-dir -r /app/requirements.txt \
+    && pip3 uninstall -y pip wheel
 
 # =======
 # Cleanup
