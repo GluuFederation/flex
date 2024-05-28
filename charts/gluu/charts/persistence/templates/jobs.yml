@@ -128,9 +128,6 @@ spec:
             mountPath: {{ .Values.global.cnLdapPasswordFile }}
             subPath: ldap_password
         {{- end }}
-          - name: custom-sql-types
-            mountPath: "/etc/jans/conf/sql_data_types.custom.json"
-            subPath: sql_data_types.custom.json
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
       volumes:
@@ -198,7 +195,4 @@ spec:
               - key: ldap_password
                 path: ldap_password
       {{- end }}
-        - name: custom-sql-types
-          configMap:
-            name: {{ .Release.Name }}-custom-sql-types
 
