@@ -10,9 +10,16 @@ metadata:
 {{- if (index .Values "auth-server-key-rotation" "additionalLabels") }}
 {{ toYaml (index .Values "auth-server-key-rotation" "additionalLabels") | indent 4 }}
 {{- end }}
-{{- if (index .Values "auth-server-key-rotation" "additionalAnnotations") }}
+{{- if or (index .Values "auth-server-key-rotation" "additionalAnnotations") (index .Values "auth-server-key-rotation" "customAnnotations" "configMaps") (index .Values "auth-server-key-rotation" "customAnnotations" "secrets") }}
   annotations:
-{{ toYaml (index .Values "auth-server-key-rotation" "additionalAnnotations") | indent 4  }}
+{{- if .Values.additionalAnnotations }}
+{{ toYaml .Values.additionalAnnotations | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.configMaps }}
+{{ toYaml .Values.customAnnotations.configMaps | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.secrets }}
+{{ toYaml .Values.customAnnotations.secrets | indent 4 }}
 {{- end }}
 spec:
   schedule: "@every {{ index .Values "auth-server-key-rotation" "keysLife" }}h"

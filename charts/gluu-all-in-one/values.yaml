@@ -19,6 +19,9 @@ cnPersistenceType: sql
 # -- Salt. Used for encoding/decoding sensitive data. If omitted or set to empty string, the value will be self-generated. Otherwise, a 24 alphanumeric characters are allowed as its value.
 salt: ""
 serviceAccountName: default
+customAnnotations:
+  configMaps: { } 
+  secrets: { }
 configmap:
   # -- Jetty header size in bytes in the auth server
   cnJettyRequestHeaderSize: 8192
@@ -300,6 +303,9 @@ auth-server-key-rotation:
   #     exec:
   #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
   lifecycle: {}
+  customAnnotations:
+    configMaps: { } 
+    secrets: { }
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
