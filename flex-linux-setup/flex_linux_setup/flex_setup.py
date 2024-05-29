@@ -316,7 +316,6 @@ class flex_installer(JettyInstaller):
         print("Extracting", self.flex_path)
         base.extract_from_zip(self.flex_path, 'flex-linux-setup/flex_linux_setup', self.flex_setup_dir)
 
-        
 
         if install_components['admin_ui'] or argsp.download_exit or argsp.update_admin_ui:
             self.source_files += [
@@ -326,7 +325,7 @@ class flex_installer(JettyInstaller):
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
                     (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
                     ]
-        
+
             if argsp.update_admin_ui:
                 self.source_files.pop(0) 
 
