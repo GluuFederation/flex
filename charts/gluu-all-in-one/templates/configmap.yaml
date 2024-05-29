@@ -20,6 +20,7 @@ metadata:
 {{- if .Values.customAnnotations.secrets }}
 {{ toYaml .Values.customAnnotations.secrets | indent 4 }}
 {{- end }}
+{{- end }}
 data:
   # Jetty header size in bytes in the auth server
   CN_JETTY_REQUEST_HEADER_SIZE: {{ .Values.configmap.cnJettyRequestHeaderSize | quote }}
@@ -366,6 +367,7 @@ metadata:
 {{- if .Values.customAnnotations.secrets }}
 {{ toYaml .Values.customAnnotations.secrets | indent 4 }}
 {{- end }}
+{{- end }}
 
 ---
 
@@ -469,4 +471,5 @@ metadata:
 {{- end }}
 {{- if .Values.customAnnotations.secrets }}
 {{ toYaml .Values.customAnnotations.secrets | indent 4 }}
+{{- end }}
 {{- end }}

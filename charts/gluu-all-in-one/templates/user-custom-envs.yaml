@@ -20,6 +20,7 @@ metadata:
 {{- if .Values.customAnnotations.secrets }}
 {{ toYaml .Values.customAnnotations.secrets | indent 4 }}
 {{- end }}
+{{- end }}
 type: Opaque
 data:
   {{- range $key, $val := .Values.usrEnvs.secret }}
@@ -49,6 +50,7 @@ metadata:
 {{- if .Values.customAnnotations.secrets }}
 {{ toYaml .Values.customAnnotations.secrets | indent 4 }}
 {{- end }}
+{{- end }}
 data:
   {{- range $key, $val := .Values.usrEnvs.normal }}
   {{ $key }}: {{ $val | quote }}
@@ -76,6 +78,7 @@ metadata:
 {{- end }}
 {{- if .Values.customAnnotations.secrets }}
 {{ toYaml .Values.customAnnotations.secrets | indent 4 }}
+{{- end }}
 {{- end }}
 type: Opaque
 data:
