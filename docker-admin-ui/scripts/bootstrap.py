@@ -21,19 +21,6 @@ logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("admin-ui")
 
 
-# def render_env(manager):
-#     hostname = manager.config.get("hostname")
-#     ctx = {
-#         "hostname": hostname,
-#     }
-
-#     with open("/app/templates/admin-ui/env") as fr:
-#         txt = fr.read() % ctx
-
-#     with open("/opt/flex/admin-ui/.env", "w") as fw:
-#         fw.write(txt)
-
-
 def main():
     manager = get_manager()
 
