@@ -2,8 +2,9 @@
 set -eo pipefail
 GLUU_FQDN=$1
 GLUU_PERSISTENCE=$2
-GLUU_CI_CD_RUN=$4
-EXT_IP=$5
+GLUU_VERSION=$3
+EXT_IP=$4
+GLUU_CI_CD_RUN=$5
 INSTALL_ISTIO=$6
 if [[ ! "$GLUU_FQDN" ]]; then
   read -rp "Enter Hostname [demoexample.gluu.org]:                           " GLUU_FQDN
@@ -235,7 +236,7 @@ auth-server:
 EOF
 sudo helm repo add gluu-flex https://docs.gluu.org/charts
 sudo helm repo update
-sudo helm install gluu gluu-flex/gluu -n gluu -f override.yaml --kubeconfig="$KUBECONFIG"
+sudo helm install gluu gluu-flex/gluu -n gluu -f override.yaml --kubeconfig="$KUBECONFIG" --version="$GLUU_VERSION"
 echo "Waiting for auth-server to come up. This may take 5-10 mins....Please do not cancel out...This will wait for the auth-server to be ready.."
 sleep 300
 cat << EOF > testendpoints.sh
