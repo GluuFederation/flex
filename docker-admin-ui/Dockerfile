@@ -46,7 +46,7 @@ FROM node:hydrogen-alpine3.19
 
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
+    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio curl \
     && apk add --no-cache --virtual .build-deps git shadow
 
 RUN usermod -m -d /home/1000 node

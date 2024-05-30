@@ -1,7 +1,7 @@
 {
     "oidcConfig": {
         "auiWebClient": {
-            "opHost": "https://%(hostname)s",
+            "opHost": "%(jans_auth_base_url)s",
             "clientId": "%(admin_ui_client_id)s",
             "clientSecret": "%(admin_ui_client_encoded_pw)s",
             "scopes": [
@@ -19,7 +19,7 @@
             "additionalParameters": []
         },
         "auiBackendApiClient": {
-            "opHost": "https://%(hostname)s",
+            "opHost": "%(token_server_base_url)s",
             "clientId": "%(token_server_admin_ui_client_id)s",
             "clientSecret": "%(token_server_admin_ui_client_encoded_pw)s",
             "tokenEndpoint": "%(token_server_token_url)s",
