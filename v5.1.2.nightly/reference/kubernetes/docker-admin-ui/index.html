@@ -1383,13 +1383,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#adding-plugins" class="md-nav__link">
-    Adding plugins
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1560,13 +1553,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#adding-plugins" class="md-nav__link">
-    Adding plugins
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1695,10 +1681,7 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
 <li><code>GOOGLE_PROJECT_ID</code>: Google Project ID (default to empty string). Used when <code>CN_CONFIG_ADAPTER</code> or <code>CN_SECRET_ADAPTER</code> set to <code>google</code>.</li>
 <li><code>CN_GOOGLE_SPANNER_INSTANCE_ID</code>: Google Spanner instance ID.</li>
 <li><code>CN_GOOGLE_SPANNER_DATABASE_ID</code>: Google Spanner database ID.</li>
-<li><code>GLUU_ADMIN_UI_PLUGINS</code>: Comma-separated additional plugins to be enabled (default to empty string). See <a href="#adding-plugins">Adding plugins</a> for details.</li>
 <li><code>GLUU_ADMIN_UI_AUTH_METHOD</code>: Authentication method for admin-ui (one of <code>basic</code> or <code>casa</code>; default to <code>basic</code>). Note, changing the value require restart to jans-config-api.</li>
-<li><code>GLUU_SCAN_AUTH_URL</code>: Base URL to auth server to register license client (i.e. <code>https://account-dev.gluu.cloud</code>; default to empty string). If omitted or use default value, the URL will be pre-populated from <code>iss</code> claim included in SSA file.</li>
-<li><code>GLUU_SCAN_API_URL</code>: Base URL to SCAN API host (i.e. <code>https://cloud-dev.gluu.cloud</code>; default to empty string). If omitted or use default value, the URL will be pre-populated and modified based on <code>iss</code> claim included in SSA file.</li>
 </ul>
 <h3 id="hybrid-mapping">Hybrid mapping<a class="headerlink" href="#hybrid-mapping" title="Permanent link">#</a></h3>
 <p>Hybrid persistence supports all available persistence types. To configure hybrid persistence and its data mapping, follow steps below:</p>
@@ -1729,19 +1712,13 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
 </code></pre></div>
 </li>
 </ol>
-<h3 id="adding-plugins">Adding plugins<a class="headerlink" href="#adding-plugins" title="Permanent link">#</a></h3>
-<p>To add plugins to AdminUI, for example <code>myplugin.zip</code></p>
-<ol>
-<li>Set the name of the plugin (without the extension name) in environment variable <code>GLUU_ADMIN_UI_PLUGINS</code>, for example: <code>GLUU_ADMIN_UI_PLUGINS=myplugin</code>.</li>
-<li>Mount <code>myplugin.zip</code> to <code>/app/plugins/myplugin.zip</code> inside the pod/container. Note that if <code>/app/plugins/myplugin.zip</code> is not exist, plugin will be ignored.</li>
-</ol>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-03-05T10:11:17+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-03-05</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-05-31T09:13:20+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-05-31</span>
       
         <br>
         Created:
