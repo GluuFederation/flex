@@ -229,8 +229,7 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     /var/jans/cr-snapshots \
     /opt/idp \
     /opt/keycloak/logs \
-    /opt/keycloak/conf \
-    /opt/flex/admin-ui/_plugins
+    /opt/keycloak/conf
 
 RUN chmod -R g=u ${JETTY_HOME}/temp \
     ${JETTY_BASE}/common/libs \
@@ -270,8 +269,7 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     /var/jans/cr-snapshots \
     /opt/idp \
     /opt/keycloak/logs \
-    /opt/keycloak/conf \
-    /opt/flex/admin-ui/_plugins
+    /opt/keycloak/conf
 
 RUN chown 1000:1000 /opt/java/lib/security/cacerts \
     /run/nginx/nginx.pid \
