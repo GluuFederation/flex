@@ -40,7 +40,8 @@
     "api": {
       "roles": "Papéis de acesso",
       "permissions": "Permissões",
-      "mapping": "Mapeamento"
+      "mapping": "Mapeamento",
+      "api_config": "API de Configuração"
     },
     "lock": "Trancar",
     "cache": "Cache",
@@ -685,6 +686,7 @@
     "all_attributes": "Todos os Atributos",
     "all_custom_scripts": "Todos os scripts personalizados",
     "jans_json_property": "Propriedades",
+    "config_api_configuration": "Configuração da API de Configuração",
     "idp": "IDP",
     "sp": "SP",
     "create_sp": "Criar Provedor de Serviços",
