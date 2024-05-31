@@ -546,7 +546,8 @@
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
-      "mapping": "Mapping"
+      "mapping": "Mapping",
+      "api_config": "Config API"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -763,6 +764,7 @@
     "introspection_object": "Introspection Object",
     "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",
+    "config_api_configuration": "Config API Configuration",
     "idp": "IDP",
     "sp": "SP",
     "create_sp": "Create Service Provider",

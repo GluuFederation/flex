@@ -15,12 +15,14 @@ import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
 import webhookSaga from './redux/sagas/WebhookSaga'
+import configApiSaga from './redux/sagas/configApiSaga'
 
 import { reducer as scriptReducer } from 'Plugins/admin/redux/features/customScriptSlice'
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
+import configApiReducer from 'Plugins/admin/redux/features/configApiSlice'
 import {
   ACR_READ,
   ROLE_READ,
@@ -29,10 +31,12 @@ import {
   SCRIPT_WRITE,
   MAPPING_READ,
   WEBHOOK_READ,
-  WEBHOOK_WRITE
+  WEBHOOK_WRITE,
+  API_CONFIG_READ
 } from 'Utils/PermChecker'
 import WebhookAddPage from './components/Webhook/WebhookAddPage'
 import WebhookEditPage from './components/Webhook/WebhookEditPage'
+import ConfigApiPage from './components/Configuration/ConfigApiPage'
 
 const PLUGIN_BASE_APTH = '/adm'
 
@@ -59,6 +63,11 @@ const pluginMetadata = {
               title: 'menus.api.mapping',
               path: PLUGIN_BASE_APTH + '/mapping',
               permission: MAPPING_READ,
+            },
+            {
+              title: 'menus.api.api_config',
+              path: PLUGIN_BASE_APTH + '/config-api-configuration',
+              permission: API_CONFIG_READ,
             },
           ],
         },
@@ -151,15 +160,21 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/webhook/edit/:id',
       permission: WEBHOOK_WRITE,
     },
+    {
+      component: ConfigApiPage,
+      path: PLUGIN_BASE_APTH + '/config-api-configuration',
+      permission: API_CONFIG_READ,
+    },
   ],
   reducers: [
     { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
-    { name: 'webhookReducer', reducer: webhookReducer }
+    { name: 'webhookReducer', reducer: webhookReducer },
+    { name: 'configApiReducer', reducer: configApiReducer },
   ],
-  sagas: [scriptSaga(), apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga()],
+  sagas: [scriptSaga(), apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga(), configApiSaga()],
 }
 
 export default pluginMetadata

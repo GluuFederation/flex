@@ -129,6 +129,9 @@ export const WEBHOOK_READ = BASE_URL + '/jans-auth-server/config/adminui/webhook
 export const WEBHOOK_WRITE = BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
 export const WEBHOOK_DELETE = BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'
 
+export const API_CONFIG_READ = BASE_URL + '/config/properties.readonly'
+export const API_CONFIG_WRITE = BASE_URL + '/config/properties.write'
+
 export const hasPermission = (scopes, scope) => {
   let available = false
   if (scopes) {

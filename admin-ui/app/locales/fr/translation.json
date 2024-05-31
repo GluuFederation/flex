@@ -39,7 +39,8 @@
     "api": {
       "roles": "Rôles d'accès",
       "permissions": "Autorisations",
-      "mapping": "Mapping"
+      "mapping": "Mapping",
+      "api_config": "API de Configuration"
     },
     "lock": "Verrouillage",
     "cache": "Cacher",
@@ -688,6 +689,7 @@
     "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",
     "all_custom_scripts": "Tous les scripts personnalisés",
+    "config_api_configuration": "Configuration de l'API de configuration",
     "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
     "jans_kc_link": "Lien KC Jans",
