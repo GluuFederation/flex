@@ -17,7 +17,6 @@ const schema = spec.components.schemas.ApiAppConfiguration.properties
 const ApiConfigForm = () => {
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
-  const [put, setPut] = useState([])
   const [patches, setPatches] = useState([])
   const [operations, setOperations] = useState([])
 
@@ -38,7 +37,7 @@ const ApiConfigForm = () => {
   }, [])
 
   const handleSubmit = (message) => {
-    if (patches.length >= 0) {
+    if (patches.length) {
       const postBody = {}
       postBody['requestBody'] = patches
       buildPayload(userAction, message, postBody)
@@ -57,7 +56,7 @@ const ApiConfigForm = () => {
     const newPatches = patches
     newPatches.push(patch)
     setPatches(newPatches)
-    setOperations(newPatches.concat(put))
+    setOperations(newPatches)
   }
 
   return (
