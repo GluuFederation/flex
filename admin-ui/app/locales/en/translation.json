@@ -547,7 +547,7 @@
       "roles": "Access roles",
       "permissions": "Permissions",
       "mapping": "Mapping",
-      "api_config": "Config API"
+      "api_config": "Config API properties"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -575,7 +575,7 @@
     "oauthserver": "Auth server",
     "persistence": "Persistence",
     "person": "Person",
-    "properties": "Properties",
+    "properties": "Auth server properties",
     "reports": "Reports",
     "roles": "Roles",
     "fido": "FIDO",

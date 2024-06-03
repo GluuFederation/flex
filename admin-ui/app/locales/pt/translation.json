@@ -41,7 +41,7 @@
       "roles": "Papéis de acesso",
       "permissions": "Permissões",
       "mapping": "Mapeamento",
-      "api_config": "API de Configuração"
+      "api_config": "Configurar propriedades da API"
     },
     "lock": "Trancar",
     "cache": "Cache",
@@ -69,7 +69,7 @@
     "oauthserver": "Servidor Auth",
     "persistence": "Persistência",
     "person": "Pessoa",
-    "properties": "Propriedades",
+    "propriedades": "Propriedades do servidor de autenticação",
     "reports": "Relatórios",
     "roles": "Funções",
     "schema": "Esquema",

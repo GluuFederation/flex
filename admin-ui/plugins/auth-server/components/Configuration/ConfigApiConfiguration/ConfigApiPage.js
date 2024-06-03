@@ -6,7 +6,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
-import { getConfigApiConfiguration } from 'Plugins/admin/redux/features/configApiSlice'
+import { getConfigApiConfiguration } from 'Plugins/auth-server/redux/features/configApiSlice'
 
 function ConfigApiPage() {
   const dispatch = useDispatch()

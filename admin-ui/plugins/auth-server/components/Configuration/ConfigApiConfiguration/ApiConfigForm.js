@@ -3,14 +3,14 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import PropertyBuilder from 'Plugins/auth-server/components/Configuration/JsonPropertyBuilder'
-import spec from '../../../../configApiSpecs.yaml'
+import spec from '../../../../../configApiSpecs.yaml'
 import {
   buildPayload,
   hasPermission,
   API_CONFIG_WRITE,
 } from 'Utils/PermChecker'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { patchApiConfigConfiguration } from 'Plugins/admin/redux/features/configApiSlice'
+import { patchApiConfigConfiguration } from 'Plugins/auth-server/redux/features/configApiSlice'
 
 const schema = spec.components.schemas.ApiAppConfiguration.properties
 

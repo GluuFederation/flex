@@ -40,7 +40,7 @@
       "roles": "Rôles d'accès",
       "permissions": "Autorisations",
       "mapping": "Mapping",
-      "api_config": "API de Configuration"
+      "api_config": "Configurer les propriétés de l'API"
     },
     "lock": "Verrouillage",
     "cache": "Cacher",
@@ -70,7 +70,7 @@
     "oauthserver": "Serveur Auth",
     "persistence": "Persistance",
     "person": "Personne",
-    "properties": "Propriétés",
+    "propriétés": "Propriétés du serveur d'authentification",
     "reports": "Rapports",
     "roles": "Les rôles",
     "schema": "Schéma",
