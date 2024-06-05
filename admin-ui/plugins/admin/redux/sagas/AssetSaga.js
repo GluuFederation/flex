@@ -2,6 +2,8 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
     fetchJansAssets,
     getJansAssetResponse,
+    getAssetServicesResponse,
+    getAssetTypesResponse,
     createJansAssetResponse,
     deleteJansAssetResponse,
     updateJansAssetResponse,
@@ -56,6 +58,61 @@ export function* getJansAssets({ payload }) {
         return e
     }
 }
+
+export function* getAssetServices({ payload }) {
+    const audit = yield* initAudit()
+    try {
+        payload = payload || { action: {} }
+        addAdditionalData(audit, FETCH, 'assetServices', payload)
+        const assetApi = yield* newFunction()
+        const data = yield call(assetApi.getAssetServices, payload.action)
+        yield put(getAssetServicesResponse({ data }))
+        yield call(postUserAction, audit)
+        return data
+    } catch (e) {
+        yield put(
+            updateToast(
+                true,
+                'error',
+                e?.response?.body?.responseMessage || e.message
+            )
+        )
+        yield put(getAssetServicesResponse({ data: null }))
+        if (isFourZeroOneError(e)) {
+            const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+            yield put(getAPIAccessToken(jwt))
+        }
+        return e
+    }
+}
+
+export function* getAssetTypes({ payload }) {
+    const audit = yield* initAudit()
+    try {
+        payload = payload || { action: {} }
+        addAdditionalData(audit, FETCH, 'assetTypes', payload)
+        const assetApi = yield* newFunction()
+        const data = yield call(assetApi.getAssetTypes, payload.action)
+        yield put(getAssetTypesResponse({ data }))
+        yield call(postUserAction, audit)
+        return data
+    } catch (e) {
+        yield put(
+            updateToast(
+                true,
+                'error',
+                e?.response?.body?.responseMessage || e.message
+            )
+        )
+        yield put(getAssetTypesResponse({ data: null }))
+        if (isFourZeroOneError(e)) {
+            const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+            yield put(getAPIAccessToken(jwt))
+        }
+        return e
+    }
+}
+
 
 export function* createJansAsset({ payload }) {
     const audit = yield* initAudit()
@@ -151,6 +208,14 @@ export function* watchGetJansAssets() {
     yield takeLatest('asset/getJansAssets', getJansAssets)
 }
 
+export function* watchGetAssetTypes() {
+    yield takeLatest('asset/getAssetTypes', getAssetTypes)
+}
+
+export function* watchGetAssetServices() {
+    yield takeLatest('asset/getAssetServices', getAssetServices)
+}
+
 export function* watchCreateJansAsset() {
     yield takeLatest('asset/createJansAsset', createJansAsset)
 }
@@ -167,6 +232,8 @@ export function* watchUpdateJansAsset() {
 
 export default function* rootSaga() {
     yield all([
+        fork(watchGetAssetServices),
+        fork(watchGetAssetTypes),
         fork(watchGetJansAssets),
         fork(watchCreateJansAsset),
         fork(watchDeleteJansAsset),

@@ -13,10 +13,27 @@ export default class AssetApi {
         })
     }
 
+    getAssetServices = () => {
+        return new Promise((resolve, reject) => {
+            this.api.getAssetServices((error, data) => {
+                handleResponse(error, reject, resolve, data)
+            })
+        })
+    }
+
+    getAssetTypes = () => {
+        return new Promise((resolve, reject) => {
+            this.api.getAssetTypes((error, data) => {
+                handleResponse(error, reject, resolve, data)
+            })
+        })
+    }
+
+
     createJansAsset = (body, token) => {
         const document = {
             "displayName": body.displayName, "description": body.description,
-            "document": body.displayName, "jansModuleProperty": body?.jansModuleProperty || [], "jansEnabled": body.jansEnabled
+            "document": body.displayName, "jansServices": body?.jansServices || [], "jansEnabled": body.jansEnabled
         }
         const formData = new FormData();
         const assetFileBlob = new Blob([body.document], {
@@ -44,7 +61,7 @@ export default class AssetApi {
     updateJansAsset = (body) => {
         const document = {
             "displayName": body.displayName, "description": body.description,
-            "document": body.displayName, "jansModuleProperty": body?.jansModuleProperty || [], "jansEnabled": body.jansEnabled
+            "document": body.displayName, "jansServices": body?.jansServices || [], "jansEnabled": body.jansEnabled
         }
         const formData = new FormData();
         const assetFileBlob = new Blob([body.document], {

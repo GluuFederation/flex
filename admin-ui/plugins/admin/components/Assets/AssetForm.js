@@ -62,7 +62,7 @@ const AssetForm = () => {
             displayName: selectedAsset?.displayName || '',
             jansEnabled: selectedAsset?.jansEnabled || false,
             description: selectedAsset?.description || '',
-            jansModuleProperty: selectedAsset?.jansModuleProperty || []
+            jansServices: selectedAsset?.jansServices || []
         },
         onSubmit: (values) => {
             const faulty = validatePayload(values)
@@ -150,7 +150,6 @@ const AssetForm = () => {
                             />
                         </Col>
                     </FormGroup>
-
                     <GluuInputRow
                         label='fields.asset_name'
                         formik={formik}
@@ -164,7 +163,6 @@ const AssetForm = () => {
                         errorMessage={formik.errors.displayName}
                         showError={formik.errors.displayName && formik.touched.displayName}
                     />
-
                     <GluuInputRow
                         label='fields.description'
                         formik={formik}
@@ -178,9 +176,9 @@ const AssetForm = () => {
                 </Col>
                 <GluuTypeAhead
                     name='services'
-                    label={t('fields.jansModuleProperty')}
+                    label={t('fields.jansServices')}
                     formik={formik}
-                    options={["config-api","auth-server","scim","casa"]}
+                    options={["config-api", "auth-server", "scim", "casa"]}
                     lsize={4}
                     rsize={8}
                     required
@@ -190,13 +188,13 @@ const AssetForm = () => {
                 {false &&
                     <GluuArrayCompleter
                         formik={formik}
-                        name='jansModuleProperty'
+                        name='jansServices'
                         rsize={8}
                         lsize={4}
                         doc_category={ASSET}
-                        label='fields.jansModuleProperty'
-                        value={selectedAsset.jansModuleProperty || []}
-                        options={selectedAsset.jansModuleProperty || []}   >
+                        label='fields.jansServices'
+                        value={selectedAsset.jansServices || []}
+                        options={selectedAsset.jansServices || []}   >
                     </GluuArrayCompleter>
                 }
                 <FormGroup row>

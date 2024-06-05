@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     assets: [],
+    services: [],
+    fileTypes: [],
     loading: false,
     saveOperationFlag: false,
     errorInSaveOperationFlag: false,
@@ -30,6 +32,24 @@ const assetSlice = createSlice({
                 state.assets = action.payload.data.entries
                 state.totalItems = action.payload.data.totalEntriesCount
                 state.entriesCount = action.payload.data.entriesCount
+            }
+        },
+        getAssetServices: (state, action) => {
+            state.loading = true
+        },
+        getAssetServicesResponse: (state, action) => {
+            state.loading = false
+            if (action.payload?.data) {
+                state.services = action.payload.data
+            }
+        },
+        getAssetTypes: (state, action) => {
+            state.loading = true
+        },
+        getAssetTypesResponse: (state, action) => {
+            state.loading = false
+            if (action.payload?.data) {
+                state.fileTypes = action.payload.data
             }
         },
         createJansAsset: (state) => {
@@ -86,6 +106,10 @@ export const {
     fetchJansAssets,
     getJansAssets,
     getJansAssetResponse,
+    getAssetServices,
+    getAssetServicesResponse,
+    getAssetTypes,
+    getAssetTypesResponse,
     createJansAsset,
     createJansAssetResponse,
     deleteJansAsset,

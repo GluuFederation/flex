@@ -22,7 +22,7 @@ import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { useNavigate } from 'react-router'
-import { getJansAssets, deleteJansAsset, setSelectedAsset } from 'Plugins/admin/redux/features/AssetSlice'
+import { getJansAssets, deleteJansAsset, setSelectedAsset, getAssetServices, getAssetTypes } from 'Plugins/admin/redux/features/AssetSlice'
 
 const JansAssetListPage = () => {
     const dispatch = useDispatch()
@@ -54,6 +54,8 @@ const JansAssetListPage = () => {
     const [limit, setLimit] = useState(10)
     const [pattern, setPattern] = useState(null)
     useEffect(() => {
+        dispatch(getAssetServices({ action: options }))
+        dispatch(getAssetTypes({ action: options }))
         options['limit'] = 10
         dispatch(getJansAssets({ action: options }))
     }, [])

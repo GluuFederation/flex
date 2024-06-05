@@ -138,7 +138,7 @@
     "asset_name": "Asset Name",
     "tag": "Marcação",
     "upload": "Select a file to upload",
-    "jansModuleProperty": "Related Services",
+    "jansServices": "Related Services",
     "default_permission_in_token": "Permissão padrão no token",
     "introspection_signed_response_alg": "Algoritmo de assinatura da resposta de introspeção",
     "introspection_encrypted_response_alg": "Algoritmo de criptografia da resposta de introspeção",
@@ -776,7 +776,7 @@
   },
   "documentation": {
     "asset":{
-      "jansModuleProperty": "Related Services"
+      "jansServices": "Related Services"
      },
     "webhook": {
       "url": "URL do webhook.",
