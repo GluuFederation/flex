@@ -1,7 +1,7 @@
 
 apiVersion: v2
 name:  cn-istio-ingress
-version: 5.1.1-dev
+version: 5.1.2-dev
 kubeVersion: ">=v1.21.0-0"
 description: Istio Gateway
 type: application
@@ -17,4 +17,4 @@ maintainers:
     email: team@gluu.org
     url: https://github.com/moabu
 icon: https://gluu.org/docs/gluu-server/favicon.ico
-appVersion: "5.1.1"
+appVersion: "5.1.2"

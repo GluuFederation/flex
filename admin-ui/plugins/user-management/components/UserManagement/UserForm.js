@@ -14,6 +14,8 @@ import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { debounce } from 'lodash'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import moment from 'moment/moment'
 
 function UserForm({ onSubmitData }) {
   const dispatch = useDispatch()
@@ -40,7 +42,7 @@ function UserForm({ onSubmitData }) {
     userId: userDetails?.userId || '',
     sn: '',
     middleName: '',
-    jansStatus: userDetails?.jansStatus || '',
+    status: userDetails?.status || '',
   }
 
   if (userDetails) {
@@ -132,7 +134,7 @@ function UserForm({ onSubmitData }) {
     'userId',
     'displayName',
     'mail',
-    'jansStatus',
+    'status',
     'userPassword',
     'givenName',
     'middleName',
@@ -356,8 +358,8 @@ function UserForm({ onSubmitData }) {
             <GluuSelectRow
               doc_category={DOC_SECTION}
               label='Status'
-              name='jansStatus'
-              value={formik.values.jansStatus || ''}
+              name='status'
+              value={formik.values.status || ''}
               values={['active', 'inactive']}
               formik={formik}
               lsize={3}
@@ -492,7 +494,7 @@ function UserForm({ onSubmitData }) {
           handler={toggle}
           modal={modal}
           onAccept={submitForm}
-          feature='users_edit'
+          feature={adminUiFeatures.users_edit}
           formik={formik}
         />
       </Form>

@@ -6,6 +6,7 @@ import { putConfiguration } from 'Plugins/jans-kc-link/redux/features/JansKcLink
 import { Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import SharedFooter from '../SharedFooter'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const KeycloackConfiguration = () => {
   const dispatch = useDispatch()
@@ -157,7 +158,7 @@ const KeycloackConfiguration = () => {
         </Col>
       </FormGroup>
 
-      <SharedFooter disabled={disabled} toggle={toggle} formik={formik} modal={modal} submitForm={submitForm} feature='jans_kc_link_write' />
+      <SharedFooter disabled={disabled} toggle={toggle} formik={formik} modal={modal} submitForm={submitForm} feature={adminUiFeatures.jans_keycloak_link_write} />
     </Form>
   )
 }

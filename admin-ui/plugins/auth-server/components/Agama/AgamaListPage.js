@@ -8,14 +8,14 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
-import { getAgama, deleteAgama, addAgama } from '../../redux/features/agamaSlice'
+import { getAgama, deleteAgama, addAgama } from 'Plugins/auth-server/redux/features/agamaSlice'
 import { hasPermission, AGAMA_READ, AGAMA_WRITE } from 'Utils/PermChecker'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
-import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
+import { AGAMA_DELETE } from 'Utils/PermChecker'
 import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@mui/icons-material/Info';
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
@@ -179,14 +179,14 @@ function AgamaListPage() {
     let startCount = page * limit
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
-    options['pattern'] = pattern
+    options['pattern'] = null
     setPageNumber(page)
     dispatch(getAgama(options))
   }
 
   const onRowCountChangeClick = (count) => {
     options['limit'] = count
-    options['pattern'] = pattern
+    options['pattern'] = null
     setPageNumber(0)
     setLimit(count)
     dispatch(getAgama(options))
@@ -349,6 +349,7 @@ function AgamaListPage() {
               actions={myActions}
               options={{
                 search: true,
+                idSynonym: 'inum',
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,

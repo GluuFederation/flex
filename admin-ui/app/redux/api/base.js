@@ -2,7 +2,7 @@ export const getDefaultClient = (JansConfigApi) => {
   let defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['jans-auth']
-  defaultClient =
+  defaultClient = window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
     'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
   const headers = {
@@ -22,7 +22,7 @@ export const getClient = (JansConfigApi, r_token, r_issuer) => {
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
-  defaultClient.basePath =
+  defaultClient.basePath = window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
     'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
   const headers = {
@@ -41,7 +41,7 @@ export const getClientWithToken = (JansConfigApi, token) => {
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
-  defaultClient.basePath =
+  defaultClient.basePath = window['configApiBaseUrl'] ||
     process.env.CONFIG_API_BASE_URL ||
     'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
   const headers = {

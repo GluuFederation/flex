@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Formik, ErrorMessage } from 'formik'
@@ -24,14 +24,14 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import IconButton from '@mui/material/IconButton'
-import Visibility from '@mui/icons-material/Visibility'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { LIMIT, PATTERN } from 'Plugins/auth-server/common/Constants'
 import moment from 'moment'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
@@ -501,7 +501,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             <GluuCommitDialog
               handler={toggle}
               modal={modal}
-              feature={'scopes_write'}
+              feature={adminUiFeatures.scopes_write}
               onAccept={submitForm}
               formik={formik}
             />

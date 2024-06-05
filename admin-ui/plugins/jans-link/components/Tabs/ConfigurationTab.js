@@ -15,6 +15,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import { buildPayload } from 'Utils/PermChecker'
 import moment from 'moment/moment'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const ConfigurationTab = () => {
   const { t } = useTranslation()
@@ -218,7 +219,7 @@ const ConfigurationTab = () => {
               label='fields.snapshots_count'
               name='snapshotMaxCount'
               type='number'
-              value={formik.values.snapshotMaxCount}
+              value={formik.values.snapshotMaxCount || 0}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -247,7 +248,7 @@ const ConfigurationTab = () => {
               label='fields.polling_interval_mins'
               name='pollingInterval'
               type='number'
-              value={formik.values.pollingInterval}
+              value={formik.values.pollingInterval || 0}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -303,7 +304,7 @@ const ConfigurationTab = () => {
           modal={modal}
           onAccept={submitForm}
           formik={formik}
-          feature='jans_link_write'
+          feature={adminUiFeatures.jans_link_write}
         />
       </Form>
     </>

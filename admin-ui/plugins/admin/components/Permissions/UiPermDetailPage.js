@@ -53,7 +53,7 @@ function UiPermDetailPage({ row }) {
             <Col sm={6}>
               <GluuFormDetailRow
                 label='fields.description'
-                value={rowData.description}
+                value={rowData?.description || '-'}
                 lsize={3}
                 rsize={9}
                 doc_category={PERMISSIONS}
@@ -70,7 +70,7 @@ function UiPermDetailPage({ row }) {
 UiPermDetailPage.propTypes = {
   row: PropTypes.shape({
     rowData: PropTypes.shape({
-      description: PropTypes.string.isRequired,
+      description: PropTypes.string,
       permission: PropTypes.string.isRequired,
       tag: PropTypes.string.isRequired,
       defaultPermissionInToken: PropTypes.bool.isRequired,

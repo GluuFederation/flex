@@ -12,6 +12,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { putConfiguration } from 'Plugins/jans-kc-link/redux/features/JansKcLinkSlice'
 import { buildPayload, hasPermission, JANS_KC_LINK_WRITE, JANS_KC_LINK_READ } from 'Utils/PermChecker'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const Sources = () => {
   const { t } = useTranslation()
@@ -144,7 +145,7 @@ const Sources = () => {
         modal={modal}
         subject='jans kc source'
         onAccept={onDeletionConfirmed}
-        feature='jans_kc_link_write'
+        feature={adminUiFeatures.jans_keycloak_link_write}
       />
     </>
   )

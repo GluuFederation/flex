@@ -31,6 +31,7 @@ import {
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function ScopeListPage() {
   const { t } = useTranslation()
@@ -169,7 +170,7 @@ function ScopeListPage() {
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   if (hasPermission(permissions, SCOPE_READ)) {
@@ -254,6 +255,7 @@ function ScopeListPage() {
             title=""
             actions={myActions}
             options={{
+              idSynonym: 'inum',
               columnsButton: true,
               search: false,
               selection: false,
@@ -277,7 +279,7 @@ function ScopeListPage() {
             modal={modal}
             subject="scope"
             onAccept={onDeletionConfirmed}
-            feature='scopes_delete'
+            feature={adminUiFeatures.scopes_delete}
           />
         )}
       </CardBody>

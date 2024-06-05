@@ -3,8 +3,8 @@
 # ==============
 
 # original Janssen base version (without suffix)
-ARG BASE_VERSION=1.1.1
-ARG FLEX_BASE_VERSION=5.1.1
+ARG BASE_VERSION=1.1.2
+ARG FLEX_BASE_VERSION=5.1.2
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
@@ -23,7 +23,7 @@ FROM ${FLEX_ADMIN_UI_IMAGE} AS flex-admin-ui-src
 # app
 # ===
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.9@sha256:915d7a6c5874638a735296a99ac28c4a9cefb9bfda2bef796fc564449d44d6cc
+FROM bellsoft/liberica-openjdk-alpine:17.0.11@sha256:b544e908068565e9f2932f8ac850d0471ec153e711e0fd416d9131d090f1f10d
 
 # hadolint ignore=DL3018
 RUN apk update \
@@ -61,14 +61,29 @@ COPY --from=flex-admin-ui-src /run/nginx/nginx.pid /run/nginx/nginx.pid
 COPY --from=flex-admin-ui-src /app/scripts /app/flex_aio/admin_ui
 RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 
+# ===========
+# Assets sync
+# ===========
+
+ENV JANS_SOURCE_VERSION=c89fb50f1ccfdba8ac8f6e050ff3648e3106bdb3
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the assets
+RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+    && cd /tmp/jans \
+    && git sparse-checkout init --cone \
+    && git checkout ${JANS_SOURCE_VERSION} \
+    && git sparse-checkout add jans-pycloudlib
+
 # ------
 # Python
 # ------
 
 COPY app/requirements.flex.txt /app/
-RUN python3 -m ensurepip \
+RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled \
+    && python3 -m ensurepip \
     && pip3 install --no-cache-dir -U pip wheel setuptools \
-    && pip3 install --no-cache-dir --default-timeout=300 -r /app/requirements.flex.txt \
+    && pip3 install --no-cache-dir -r /app/requirements.flex.txt \
     && pip3 uninstall -y pip wheel
 
 # -------
@@ -76,7 +91,7 @@ RUN python3 -m ensurepip \
 # -------
 
 RUN apk del .build-deps \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* /tmp/jans
 
 # ----
 # misc
@@ -89,7 +104,7 @@ RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
 COPY app /app
 
 # CN version as env var (with suffix if any, i.e. SNAPSHOT)
-ENV CN_VERSION=1.1.1-SNAPSHOT
+ENV CN_VERSION=1.1.2-SNAPSHOT
 
 # set directory contains installer code that will be added to Python sys.path
 ENV PYTHONPATH=/app
@@ -155,7 +170,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/flex-all-in-one" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.1" \
+    org.opencontainers.image.version="5.1.2" \
     org.opencontainers.image.title="Gluu Flex All-in-One" \
     org.opencontainers.image.description=""
 
@@ -214,8 +229,7 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     /var/jans/cr-snapshots \
     /opt/idp \
     /opt/keycloak/logs \
-    /opt/keycloak/conf \
-    /opt/flex/admin-ui/_plugins
+    /opt/keycloak/conf
 
 RUN chmod -R g=u ${JETTY_HOME}/temp \
     ${JETTY_BASE}/common/libs \
@@ -255,8 +269,7 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     /var/jans/cr-snapshots \
     /opt/idp \
     /opt/keycloak/logs \
-    /opt/keycloak/conf \
-    /opt/flex/admin-ui/_plugins
+    /opt/keycloak/conf
 
 RUN chown 1000:1000 /opt/java/lib/security/cacerts \
     /run/nginx/nginx.pid \

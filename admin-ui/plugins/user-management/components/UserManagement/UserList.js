@@ -30,6 +30,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function UserList(props) {
   const dispatch = useDispatch()
@@ -249,6 +250,7 @@ function UserList(props) {
               actions={myActions}
               options={{
                 search: false,
+                idSynonym: 'inum',
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
@@ -268,7 +270,7 @@ function UserList(props) {
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
-          feature='users_delete'
+          feature={adminUiFeatures.users_delete}
           onAccept={submitForm}
         />
       </Card>

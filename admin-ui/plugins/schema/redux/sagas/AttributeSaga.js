@@ -80,7 +80,8 @@ export function* addAttribute({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
-    yield put(updateToast(true, 'error'))
+    const errorMessage = e?.response?.body?.message || e.message
+    yield put(updateToast(true, 'error', errorMessage))
     yield put(addAttributeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -102,7 +103,8 @@ export function* editAttribute({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e) {
-    yield put(updateToast(true, 'error'))
+    const errorMessage = e?.response?.body?.message || e.message
+    yield put(updateToast(true, 'error', errorMessage))
     yield put(editAttributeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

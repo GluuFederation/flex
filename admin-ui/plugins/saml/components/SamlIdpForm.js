@@ -23,6 +23,7 @@ import { Box } from '@mui/material'
 import Toggle from 'react-toggle'
 import { nameIDPolicyFormat } from '../helper'
 import SetTitle from 'Utils/SetTitle'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
@@ -53,6 +54,8 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
     description: configs?.description || '',
     importMetadataFile: false,
     enabled: configs?.enabled || false,
+    principalAttribute: configs?.principalAttribute || '',
+    principalType: configs?.principalType || '',
   }
 
   const validationSchema = Yup.object().shape({
@@ -394,6 +397,38 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       rows={10}
                     />
                   </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label='fields.principal_attribute'
+                      name='principalAttribute'
+                      value={formik.values.principalAttribute || ''}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.principalAttribute &&
+                        formik.touched.principalAttribute
+                      }
+                      errorMessage={formik.errors.principalAttribute}
+                      disabled={viewOnly}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label='fields.principal_type'
+                      name='principalType'
+                      value={formik.values.principalType || ''}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.principalType &&
+                        formik.touched.principalType
+                      }
+                      errorMessage={formik.errors.principalType}
+                      disabled={viewOnly}
+                    />
+                  </Col>
                 </>
               )}
             </FormGroup>
@@ -413,7 +448,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
               modal={modal}
               onAccept={submitForm}
               formik={formik}
-              feature='saml_idp_write'
+              feature={adminUiFeatures.saml_idp_write}
             />
           </Form>
         </CardBody>

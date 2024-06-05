@@ -37,6 +37,7 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function ScriptListTable() {
   const { t } = useTranslation()
@@ -274,6 +275,7 @@ function ScriptListTable() {
             actions={myActions}
             options={{
               search: false,
+              idSynonym: 'inum',
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: limit,
@@ -282,8 +284,8 @@ function ScriptListTable() {
                   rowData.enabled && rowData?.scriptError?.stackTrace
                     ? '#FF5858'
                     : rowData.enabled
-                    ? themeColors.lightBackground
-                    : '#FFF',
+                      ? themeColors.lightBackground
+                      : '#FFF',
               }),
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
@@ -303,7 +305,7 @@ function ScriptListTable() {
             modal={modal}
             subject='script'
             onAccept={onDeletionConfirmed}
-            feature='custom_script_delete'
+            feature={adminUiFeatures.custom_script_delete}
           />
         )}
       </CardBody>

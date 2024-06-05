@@ -8,6 +8,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import PropTypes from 'prop-types'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const ScimConfiguration = ({ handleSubmit }) => {
   const scimConfigs = useSelector((state) => state.scimReducer.scim)
@@ -331,7 +332,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
         handler={toggle}
         modal={modal}
         onAccept={submitForm}
-        feature='scim_configuration_edit'
+        feature={adminUiFeatures.scim_configuration_edit}
         formik={formik}
       />
     </Form>

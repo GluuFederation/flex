@@ -903,9 +903,9 @@
         "description": "documentation.user.mail"
       },
       {
-        "key": "jansStatus",
+        "key": "status",
         "label": "Status",
-        "description": "documentation.user.jansStatus"
+        "description": "documentation.user.status"
       }
     ]
   },
@@ -1117,6 +1117,145 @@
         "key": "idpEntityId",
         "label": "fields.idp_entity_id",
         "description": "documentation.saml.idp_entity_id"
+      }
+    ]
+  },
+  "jans_keycloak_link_write": {
+    "fields": [
+      {
+        "key": "sourceConfigs",
+        "label": "menus.sources",
+        "description": "documentation.jans_kc_link.sourceConfigs"
+      },
+      {
+        "key": "targetConfig",
+        "label": "menus.target_configuration",
+        "description": "documentation.jans_kc_link.targetConfig"
+      },
+      {
+        "key": "inumConfig",
+        "label": "menus.inum_configuration",
+        "description": "documentation.jans_kc_link.targetConfig"
+      },
+      {
+        "key": "keycloakConfiguration",
+        "label": "menus.keycloack_configuration",
+        "description": "documentation.jans_kc_link.keycloakConfiguration"
+      },
+      {
+        "key": "keycloakLinkEnabled",
+        "label": "fields.enable_kc",
+        "description": "documentation.jans_kc_link.keycloakLinkEnabled"
+      },
+      {
+        "key": "ldapSearchSizeLimit",
+        "label": "fields.ldap_search_limit",
+        "description": "documentation.jans_kc_link.ldapSearchSizeLimit"
+      },
+      {
+        "key": "customLdapFilter",
+        "label": "fields.custom_ldap_filter",
+        "description": "documentation.jans_kc_link.customLdapFilter"
+      },
+      {
+        "key": "keyAttributes",
+        "label": "fields.key_attribute",
+        "description": "documentation.jans_kc_link.keyAttributes"
+      },
+      {
+        "key": "sourceAttributes",
+        "label": "fields.source_attribute",
+        "description": "documentation.jans_kc_link.sourceAttributes"
+      },
+      {
+        "key": "snapshotFolder",
+        "label": "fields.snapshot_folder",
+        "description": "documentation.jans_kc_link.snapshotFolder"
+      },
+      {
+        "key": "updateMethod",
+        "label": "fields.update_method",
+        "description": "documentation.jans_kc_link.update_method"
+      },
+      {
+        "key": "defaultInumServer",
+        "label": "fields.default_inum_server",
+        "description": "documentation.jans_kc_link.defaultInumServer"
+      },
+      {
+        "key": "keepExternalPerson",
+        "label": "fields.keep_external_persons",
+        "description": "documentation.jans_kc_link.keepExternalPerson"
+      },
+      {
+        "key": "useSearchLimit",
+        "label": "fields.use_search_limit",
+        "description": "documentation.jans_kc_link.useSearchLimit"
+      },
+      {
+        "key": "allowPersonModification",
+        "label": "fields.allow_person_modification",
+        "description": "documentation.jans_kc_link.allowPersonModification"
+      },
+      {
+        "key": "attributeMapping",
+        "label": "fields.attribute_mappings",
+        "description": "documentation.jans_kc_link.attributeMapping"
+      },
+      {
+        "key": "metricReporterInterval",
+        "label": "fields.metric_reporter_interval",
+        "description": "documentation.jans_kc_link.metric_reporter_interval"
+      },
+      {
+        "key": "metricReporterKeepDataDays",
+        "label": "fields.metric_reporter_keep_data_days",
+        "description": "documentation.jans_kc_link.metric_reporter_keep_data_days"
+      },
+      {
+        "key": "cleanServiceInterval",
+        "label": "fields.clean_service_interval",
+        "description": "documentation.jans_kc_link.cleanServiceInterval"
+      },
+      {
+        "key": "disableJdkLogger",
+        "label": "fields.disable_jdk_logger",
+        "description": "documentation.jans_kc_link.disableJdkLogger"
+      },
+      {
+        "key": "useLocalCache",
+        "label": "fields.use_local_cache",
+        "description": "documentation.jans_kc_link.useLocalCache"
+      },
+      {
+        "key": "keycloakLinkServerIpAddress",
+        "label": "fields.kc_server_ip",
+        "description": "documentation.jans_kc_link.keycloakLinkServerIpAddress"
+      },
+      {
+        "key": "keycloakLinkPollingInterval",
+        "label": "fields.kc_polling_interval",
+        "description": "documentation.jans_kc_link.keycloakLinkPollingInterval"
+      },
+      {
+        "key": "keycloakLinkLastUpdate",
+        "label": "fields.kc_link_last_update",
+        "description": "documentation.jans_kc_link.keycloakLinkLastUpdate"
+      },
+      {
+        "key": "keycloakLinkLastUpdateCount",
+        "label": "fields.kc_last_update_count",
+        "description": "documentation.jans_kc_link.keycloakLinkLastUpdateCount"
+      },
+      {
+        "key": "keycloakLinkProblemCount",
+        "label": "fields.kc_problem_count",
+        "description": "documentation.jans_kc_link.keycloakLinkProblemCount"
+      },
+      {
+        "key": "loggingLevel",
+        "label": "fields.logging_level",
+        "description": "documentation.jans_kc_link.loggingLevel"
       }
     ]
   }

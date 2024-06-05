@@ -17,6 +17,7 @@ const theme = createTheme({
 
 function GluuTypeAhead({
   label,
+  labelKey,
   name,
   value,
   options,
@@ -51,7 +52,7 @@ function GluuTypeAhead({
           disabled={disabled}
           ref={forwardRef}
           emptyLabel=""
-          labelKey={name}
+          labelKey={labelKey || name}
           isLoading={isLoading}
           onChange={(selected) => {
             if (formik) {

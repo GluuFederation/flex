@@ -1,16 +1,17 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { Button, Row, Col, Form, FormGroup } from '../../../../app/components'
-import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import React, { useState, useContext } from 'react'
+import {  Row, Col, Form, FormGroup } from 'Components'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
-import { testSmtp } from '../../redux/features/smtpSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { testSmtp } from 'Plugins/smtp-management/redux/features/smtpSlice'
+import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function SmtpForm({ item, handleSubmit }) {
   const { t } = useTranslation()
@@ -328,7 +329,7 @@ function SmtpForm({ item, handleSubmit }) {
         </Col>
       </Row>
       <GluuCommitDialog
-        feature='smtp_configuration_edit'
+        feature={adminUiFeatures.smtp_configuration_edit}
         handler={toggle}
         modal={modal}
         onAccept={submitForm}

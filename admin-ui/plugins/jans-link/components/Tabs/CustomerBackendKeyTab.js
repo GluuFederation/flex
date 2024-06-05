@@ -12,6 +12,7 @@ import { isEmpty } from 'lodash'
 import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/CacheRefreshSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const isStringsArray = (arr) => arr.every((i) => typeof i === 'string')
 const convertToStringArray = (arr) => {
@@ -204,7 +205,7 @@ const CustomerBackendKeyTab = () => {
         modal={modal}
         onAccept={submitForm}
         formik={formik}
-        feature='jans_link_write'
+        feature={adminUiFeatures.jans_link_write}
       />
     </Form>
   )

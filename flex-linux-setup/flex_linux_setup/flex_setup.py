@@ -25,8 +25,7 @@ cur_dir = os.path.dirname(__file__)
 jans_installer_downloaded = bool(os.environ.get('JANS_INSTALLER'))
 flex_installer_downloaded = False
 install_py_path = os.path.join(cur_dir, 'jans_install.py')
-installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
-ssa_json = {}
+installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
 if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
@@ -58,7 +57,6 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs Gluu Flex Admin UI", action='store_true')
     parser.add_argument('--update-admin-ui', help="Updates Gluu Flex Admin UI", action='store_true')
-    parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file or jwt")
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
@@ -119,11 +117,11 @@ if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
 
 if not jans_installer_downloaded:
-    jans_archieve_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
+    jans_archive_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
     with tempfile.TemporaryDirectory() as tmp_dir:
-        jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archieve_url))
-        print("Downloading {} as {}".format(jans_archieve_url, jans_zip_file))
-        request.urlretrieve(jans_archieve_url, jans_zip_file)
+        jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archive_url))
+        print("Downloading {} as {}".format(jans_archive_url, jans_zip_file))
+        request.urlretrieve(jans_archive_url, jans_zip_file)
         if argsp.download_exit:
             dist_dir = '/opt/dist/jans/'
             if not os.path.exists(dist_dir):
@@ -259,7 +257,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.1.1",
+  "JANS_APP_VERSION": "1.1.2",
   "JANS_BUILD": "-SNAPSHOT",
   "NODE_VERSION": "v18.16.0",
   "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
@@ -291,13 +289,8 @@ class flex_installer(JettyInstaller):
         self.source_dir = os.path.join(Config.install_dir, 'flex')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
-        self.admin_ui_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/node_modules/admin-ui-{0}-node_modules.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
-        self.config_api_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/OpenApi/jans_config_api/admin-ui-{0}-jans_config_api.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
-
-        self.admin_ui_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.admin_ui_node_modules_url))
-        self.config_api_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.config_api_node_modules_url))
-
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
+        self.adimin_ui_bin_url = 'https://jenkins.gluu.org/npm/admin_ui/main/built/admin-ui-main-built.tar.gz'
 
         if not argsp.download_exit:
             self.dbUtils.bind(force=True)
@@ -311,6 +304,7 @@ class flex_installer(JettyInstaller):
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
+        self.source_files = []
 
     def download_files(self, force=False):
         print("Downloading Gluu Flex components")
@@ -322,22 +316,20 @@ class flex_installer(JettyInstaller):
         print("Extracting", self.flex_path)
         base.extract_from_zip(self.flex_path, 'flex-linux-setup/flex_linux_setup', self.flex_setup_dir)
 
-        download_files = []
 
         if install_components['admin_ui'] or argsp.download_exit or argsp.update_admin_ui:
-            download_files += [
+            self.source_files += [
                     ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
                     (urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
-                    (self.admin_ui_node_modules_url, self.admin_ui_node_modules_path),
-                    (self.config_api_node_modules_url, self.config_api_node_modules_path),
+                    (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
                     ]
 
             if argsp.update_admin_ui:
-                download_files.pop(0) 
+                self.source_files.pop(0) 
 
-        for download_url, target in download_files:
+        for download_url, target in self.source_files:
             if force or not os.path.exists(target):
                 base.download(download_url, target, verbose=True)
 
@@ -407,43 +399,29 @@ class flex_installer(JettyInstaller):
             cli_config.chmod(0o600)
 
 
-    def build_gluu_admin_ui(self):
-        print("Extracting admin-ui from", self.flex_path)
-        base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
-
-        print("Stopping Jans Auth")
-        config_api_installer.stop('jans-auth')
-
-        print("Stopping Janssen Config Api")
-        config_api_installer.stop()
-
-        print("Building Gluu Admin UI Frontend")
-        env_tmp = os.path.join(self.source_dir, '.env.tmp')
-        config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
-        config_api_installer.copyFile(os.path.join(self.source_dir, '.env.tmp'), os.path.join(self.source_dir, '.env'))
-
-        for module_pack in (self.admin_ui_node_modules_path, self.config_api_node_modules_path):
-            print("Unpacking", module_pack)
-            shutil.unpack_archive(module_pack, self.source_dir)
-
-        config_api_installer.run([paths.cmd_chown, '-R', 'node:node', self.source_dir])
-        cmd_path = 'PATH=$PATH:{}/bin:{}/bin'.format(Config.jre_home, Config.node_home)
-
-        for cmd in ('npm run build:prod',):
-            print("Executing `{}`".format(cmd))
-            run_cmd = '{} {}'.format(cmd_path, cmd)
-            config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
-
-
-        print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
-        config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
-
-
     def install_gluu_admin_ui(self):
 
         print("Installing Gluu Admin UI Frontend")
-        self.build_gluu_admin_ui()
 
+        admin_ui_bin_archive = os.path.basename(self.adimin_ui_bin_url)
+        print("Extracting", admin_ui_bin_archive)
+
+        shutil.unpack_archive(
+            os.path.join(Config.dist_jans_dir, admin_ui_bin_archive),
+            httpd_installer.server_root
+            )
+
+        os.rename(
+                os.path.join(httpd_installer.server_root, 'dist'),
+                Config.templateRenderingDict['admin_ui_apache_root']
+                
+            )
+
+        config_api_installer.renderTemplateInOut(
+                os.path.join(self.templates_dir, 'env-config.js'),
+                self.templates_dir,
+                Config.templateRenderingDict['admin_ui_apache_root']
+            )
 
         def get_client_parser():
 
@@ -462,7 +440,7 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client {}'.format(ssa_json.get('org_id', ''))]
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client']
             ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['none']
             ldif_parser.entries[0][1]['jansAttrs'] = ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']
 
@@ -489,7 +467,7 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_web_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_web_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client {}'.format(ssa_json.get('org_id', ''))]
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client']
             ldif_parser.entries[0][1]['jansGrantTyp'] = ['client_credentials']
             ldif_parser.entries[0][1]['jansRespTyp'] = ['token']
             ldif_parser.entries[0][1]['jansScope'] = ['inum=F0C4,ou=scopes,o=jans', 'inum=B9D2-D6E5,ou=scopes,o=jans']
@@ -512,12 +490,11 @@ class flex_installer(JettyInstaller):
 
         self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
 
-        oidc_client = installed_components.get('oidc_client', {})
-        Config.templateRenderingDict['ssa'] = installed_components['ssa']
-        Config.templateRenderingDict['op_host'] = ssa_json.get('iss', '')
-        Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
-        Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
-        Config.templateRenderingDict['license_hardware_key'] = ssa_json.get('org_id', str(uuid.uuid4()))
+        Config.templateRenderingDict['ssa'] = ''
+        Config.templateRenderingDict['op_host'] = ''
+        Config.templateRenderingDict['oidc_client_id'] = ''
+        Config.templateRenderingDict['oidc_client_secret'] = ''
+        Config.templateRenderingDict['license_hardware_key'] = ''
         Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
@@ -690,29 +667,6 @@ class flex_installer(JettyInstaller):
         jansAuthInstaller.chown(keystore_pw_fn, Config.jetty_user, Config.root_user)
         jansAuthInstaller.run([base.paths.cmd_chmod, '640', keystore_pw_fn])
 
-def read_or_get_ssa():
-    if os.path.isfile(argsp.admin_ui_ssa):
-        with open(argsp.admin_ui_ssa) as f:
-            installed_components['ssa'] = f.read().strip()
-    else:
-        installed_components['ssa'] = argsp.admin_ui_ssa
-
-
-def decode_ssa_jwt():
-
-    print("Decoding SSA")
-
-    ssa_decoded = jwt.decode(
-        installed_components['ssa'],
-        options={
-                'verify_signature': False,
-                'verify_exp': True,
-                'verify_aud': False
-                }
-        )
-
-    ssa_json.update(ssa_decoded)
-
 
 def prompt_for_installation():
 
@@ -720,28 +674,6 @@ def prompt_for_installation():
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
         if not prompt_admin_ui_install.strip().lower().startswith('n'):
             install_components['admin_ui'] = True
-            if argsp.admin_ui_ssa:
-                read_or_get_ssa()
-                try:
-                    decode_ssa_jwt()
-                except Exception as e:
-                    argsp.admin_ui_ssa = None
-                    print("\033[31mSSA you provided via argument is not valid.\033[0m")
-                    print(e)
-
-            while not argsp.admin_ui_ssa:
-                ssa_text = input("Please enter path of file containing SSA or paste SSA (q to exit): ")
-                if ssa_text.strip().lower() == 'q':
-                    print("Can't continue without SSA. Exiting...")
-                    sys.exit()
-                argsp.admin_ui_ssa = ssa_text
-                read_or_get_ssa()
-                try:
-                    decode_ssa_jwt()
-                except Exception as e:
-                    argsp.admin_ui_ssa = None
-                    print("Error decoding SSA")
-                    print(e)
 
     else:
         print("Admin UI is allready installed on this system")
@@ -776,13 +708,6 @@ def install_post_setup():
 def prepare_for_installation():
     if not (argsp.flex_non_interactive or argsp.download_exit):
         prompt_for_installation()
-    else:
-        if argsp.install_admin_ui:
-            if not argsp.admin_ui_ssa:
-                print("Please provide Admin UI SSA")
-                sys.exit()
-            read_or_get_ssa()
-            decode_ssa_jwt()
 
 def get_components_from_setup_properties():
     if argsp.f:
@@ -792,46 +717,11 @@ def get_components_from_setup_properties():
         if not (argsp.install_admin_ui or install_components['admin_ui']):
             install_components['admin_ui'] = base.as_bool(setup_properties.get('install-admin-ui'))
 
-        if not argsp.admin_ui_ssa and install_components['admin_ui']:
-            argsp.admin_ui_ssa = setup_properties.get('admin-ui-ssa')
-            read_or_get_ssa()
-            decode_ssa_jwt()
-
         if not (argsp.install_casa or install_components['casa']):
             install_components['casa'] = base.as_bool(setup_properties.get('install-casa'))
 
         if 'adminui-authentication-mode' in setup_properties:
             argsp.adminui_authentication_mode = setup_properties['adminui-authentication-mode']
-
-
-def obtain_oidc_client_credidentials():
-
-    data = {
-        "software_statement": installed_components['ssa'],
-        "response_types": ["token"],
-        "redirect_uris": ["{}".format(ssa_json['iss'])],
-        "client_name": "test-ui-client"
-    }
-
-    registration_url = urljoin(ssa_json['iss'], 'jans-auth/restv1/register')
-
-    req = request.Request(registration_url)
-    req.add_header('Content-Type', 'application/json')
-    jsondata = json.dumps(data)
-    jsondataasbytes = jsondata.encode('utf-8')
-    req.add_header('Content-Length', len(jsondataasbytes))
-
-    print("Requesting OIDC Client from", registration_url)
-
-    try:
-        response = request.urlopen(req, jsondataasbytes)
-        result = response.read()
-        installed_components['oidc_client'] = json.loads(result.decode())
-        print("OIDC Client ID is", installed_components['oidc_client']['client_id'])
-    except Exception as e:
-        print("Error sending request to {}".format(registration_url))
-        print(e)
-        sys.exit()
 
 
 def restart_services():
@@ -853,7 +743,6 @@ def main(uninstall):
     if argsp.update_admin_ui:
         if os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
             installer_obj.download_files(force=True)
-            installer_obj.build_gluu_admin_ui()
             installer_obj.install_config_api_plugin()
             restart_services()
         else:
@@ -869,8 +758,6 @@ def main(uninstall):
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
 
     else:
-        if install_components['admin_ui'] and argsp.admin_ui_ssa:
-            obtain_oidc_client_credidentials()
 
         if not flex_installer_downloaded or argsp.download_exit:
             installer_obj.download_files(argsp.download_exit)

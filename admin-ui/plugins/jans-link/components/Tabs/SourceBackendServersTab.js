@@ -12,6 +12,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { putCacheRefreshConfiguration } from 'Plugins/jans-link/redux/features/CacheRefreshSlice'
 import { buildPayload } from 'Utils/PermChecker'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SourceBackendServersTab = () => {
   const { t } = useTranslation()
@@ -93,7 +94,7 @@ const SourceBackendServersTab = () => {
   )
 
   function onDeletionConfirmed(message) {
-    const sourceConfigs = cacheRefreshConfiguration.sourceConfigs?.filter((config) => config.configId !== item.configId)
+    const sourceConfigs = cacheRefreshConfiguration?.sourceConfigs?.filter((config) => config.configId !== item.configId)
     buildPayload(userAction, message, {
       appConfiguration2: {
         ...cacheRefreshConfiguration,
@@ -113,7 +114,7 @@ const SourceBackendServersTab = () => {
             Container: PaperContainer,
           }}
           columns={tableColumns}
-          data={sourceConfigs}
+          data={sourceConfigs || []}
           isLoading={loading}
           title=''
           actions={actions}
@@ -134,7 +135,7 @@ const SourceBackendServersTab = () => {
         modal={modal}
         subject='openid connect client'
         onAccept={onDeletionConfirmed}
-        feature='jans_link_write'
+        feature={adminUiFeatures.jans_link_write}
       />
     </>
   )

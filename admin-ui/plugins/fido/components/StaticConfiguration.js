@@ -9,6 +9,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const staticConfigInitValues = (staticConfiguration) => {
   return {
@@ -251,7 +252,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
       <GluuCommitDialog
         handler={toggle}
         modal={modal}
-        feature='fido_configuration_write'
+        feature={adminUiFeatures.fido_configuration_write}
         onAccept={submitForm}
         formik={formik}
       />

@@ -19,6 +19,8 @@ import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scop
 import { cloneDeep } from 'lodash'
 import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+
 const sequence = [
   'Basic',
   'Tokens',
@@ -484,7 +486,7 @@ function ClientWizardForm({
           )}
         </Formik>
       </Card>
-      <GluuCommitDialog feature='oidc_clients_write' handler={toggle} modal={modal} onAccept={submitForm} />
+      <GluuCommitDialog feature={adminUiFeatures.oidc_clients_write} handler={toggle} modal={modal} onAccept={submitForm} />
     </React.Fragment>
   )
 }

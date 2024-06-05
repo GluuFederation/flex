@@ -5,7 +5,7 @@ site_author: Gluu, Inc.
 site_url: https://docs.gluu.org
 
 # Copyright
-copyright: Copyright &copy; 2022, Gluu Flex
+copyright: Copyright &copy; 2024, Gluu Flex
 
 # Repository
 docs_dir: ./docs
@@ -15,7 +15,6 @@ edit_uri: edit/main/docs/
 
 # Plugins
 plugins:
-   - include-markdown
    - tags
    - search
    - git-revision-date-localized:
@@ -117,7 +116,7 @@ nav:
         - 'Amazon EKS': 'install/helm-install/amazon-eks.md'
         - 'Google GKE': 'install/helm-install/google-gke.md'
         - 'Microsoft Azure AKS': 'install/helm-install/microsoft-azure.md'
-        - 'Using Rancher Marketplace': 'install/helm-install/rancher.md'
+        - 'Rancher Marketplace': 'install/helm-install/rancher.md'
     - 'Docker Deployments':
         - 'Quick Start': 'install/docker-install/quick-start.md'
         - 'Docker compose': 'install/docker-install/compose.md'
