@@ -158,6 +158,7 @@ function AuthNListPage() {
             options={{
               columnsButton: true,
               search: false,
+              idSynonym: 'inum',
               selection: false,
               pageSize: limit,
               headerStyle: {

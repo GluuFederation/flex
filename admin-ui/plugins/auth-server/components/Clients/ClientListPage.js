@@ -373,6 +373,7 @@ function ClientListPage() {
             actions={myActions}
             options={{
               search: false,
+              idSynonym: 'inum',
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: limit,

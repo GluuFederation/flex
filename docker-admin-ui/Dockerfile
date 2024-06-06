@@ -1,43 +1,4 @@
-FROM node:hydrogen-alpine3.18 AS builder
-
-RUN apk update \
-    && apk upgrade --available \
-    && apk add --no-cache git
-
-# TODO:
-# - use NODE_ENV=production
-# - download build package (not git clone)
-ENV FLEX_SOURCE_VERSION=b6e4b9f747b5a8f927856f6f30e1f9e5e2cfe917
-ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
-
-RUN mkdir -p /opt/flex /app/templates/admin-ui
-
-# note that as we're pulling from a monorepo (with multiple project in it)
-# we are using partial-clone and sparse-checkout to get the admin-ui code
-RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
-    && cd /tmp/flex \
-    && git sparse-checkout init --cone \
-    && git checkout ${FLEX_SOURCE_VERSION} \
-    && git sparse-checkout add admin-ui \
-    && git sparse-checkout add flex-linux-setup/flex_linux_setup/templates \
-    && cp flex-linux-setup/flex_linux_setup/templates/aui_webhook.ldif /app/templates/admin-ui \
-    && mv /tmp/flex/admin-ui /opt/flex/admin-ui
-
-# pre-packaged node modules and openapi
-RUN wget -q https://jenkins.gluu.org/npm/admin_ui/main/node_modules/admin-ui-main-node_modules.tar.gz -P /tmp \
-    && tar xzf /tmp/admin-ui-main-node_modules.tar.gz -C /opt/flex/admin-ui
-
-RUN wget -q https://jenkins.gluu.org/npm/admin_ui/main/OpenApi/jans_config_api/admin-ui-main-jans_config_api.tar.gz -P /tmp \
-    && tar xzf /tmp/admin-ui-main-jans_config_api.tar.gz -C /opt/flex/admin-ui
-
-# add missing node-sass binding for musl (alpine)
-RUN cd /opt/flex/admin-ui && npm rebuild node-sass
-
-# ===========
-# Application
-# ===========
-
-FROM node:hydrogen-alpine3.18
+FROM alpine:3.19
 
 # ======
 # alpine
@@ -46,9 +7,7 @@ FROM node:hydrogen-alpine3.18
 RUN apk update \
     && apk upgrade --available \
     && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
-    && apk add --no-cache --virtual .build-deps git shadow
-
-RUN usermod -m -d /home/1000 node
+    && apk add --no-cache --virtual .build-deps git
 
 # =====
 # nginx
@@ -57,30 +16,21 @@ RUN usermod -m -d /home/1000 node
 # Ports for nginx
 EXPOSE 8080
 
-# ======
-# Python
-# ======
+# ===========
+# Assets sync
+# ===========
 
-COPY requirements.txt /app/requirements.txt
-RUN python3 -m ensurepip \
-    && pip3 install --no-cache-dir -U pip wheel setuptools \
-    && pip3 install --no-cache-dir -r /app/requirements.txt \
-    && pip3 uninstall -y pip wheel
-
-# =====================
-# jans-linux-setup sync
-# =====================
-
-ENV JANS_SOURCE_VERSION=1cec7e3a5a4285407dfbc2208fba46d486441ad6
+ENV JANS_SOURCE_VERSION=0bfa1717298f0bdf511d56b67560dc464b6a610e
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
-# we are using partial-clone and sparse-checkout to get the jans-linux-setup code
-RUN git clone --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+# we are using partial-clone and sparse-checkout to get the assets
+RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
     && cd /tmp/jans \
     && git sparse-checkout init --cone \
     && git checkout ${JANS_SOURCE_VERSION} \
-    && git sparse-checkout set ${JANS_SETUP_DIR}
+    && git sparse-checkout add ${JANS_SETUP_DIR} \
+    && git sparse-checkout add jans-pycloudlib
 
 RUN mkdir -p /app/static/rdbm /app/schema
 
@@ -94,12 +44,40 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
+ENV FLEX_SOURCE_VERSION=33acd2f005a7cc1373f2d6fd3861f088e844622a
+
+RUN mkdir -p /app/templates/admin-ui
+
+ RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
+     && cd /tmp/flex \
+     && git sparse-checkout init --cone \
+     && git checkout ${FLEX_SOURCE_VERSION} \
+     && git sparse-checkout add admin-ui \
+     && git sparse-checkout add flex-linux-setup/flex_linux_setup/templates \
+     && cp flex-linux-setup/flex_linux_setup/templates/aui_webhook.ldif /app/templates/admin-ui
+
 # ========
 # Admin UI
 # ========
 
-COPY --from=builder /opt/flex/admin-ui /opt/flex/admin-ui
-COPY --from=builder /app/templates/admin-ui /app/templates/admin-ui
+ENV ADMIN_UI_VERSION=main
+ENV GLUU_BUILD_DATE='2024-06-06 05:59'
+
+RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
+    && mkdir -p /opt/flex/admin-ui \
+    && tar xvf /tmp/admin-ui.tar.gz -C /opt/flex/admin-ui \
+    && rm -rf /tmp/admin-ui.tar.gz
+
+# ======
+# Python
+# ======
+
+COPY requirements.txt /app/requirements.txt
+RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled \
+    && python3 -m ensurepip \
+    && pip3 install --no-cache-dir -U pip wheel setuptools \
+    && pip3 install --no-cache-dir -r /app/requirements.txt \
+    && pip3 uninstall -y pip wheel
 
 # =======
 # Cleanup
@@ -186,7 +164,7 @@ ENV CN_WAIT_MAX_TIME=300 \
     CN_GOOGLE_SECRET_MANAGER_PASSPHRASE=secret \
     CN_GOOGLE_SECRET_VERSION_ID=latest \
     CN_GOOGLE_SECRET_NAME_PREFIX=jans \
-    GLUU_ADMIN_UI_PUBLIC_DIR=/var/lib/nginx/html \
+    GLUU_ADMIN_UI_PUBLIC_DIR=/var/lib/nginx/html/admin \
     GLUU_ADMIN_UI_ENABLE_NGINX=true
 
 # ==========
@@ -196,11 +174,11 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.1" \
+    org.opencontainers.image.version="5.1.2" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 
-RUN mkdir -p /etc/jans/conf /etc/certs
+RUN mkdir -p /etc/jans/conf /etc/certs /var/lib/nginx/html/admin
 COPY templates /app/templates/
 COPY scripts /app/scripts/
 RUN chmod +x /app/scripts/entrypoint.sh
@@ -209,14 +187,18 @@ RUN chmod +x /app/scripts/entrypoint.sh
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN cp /app/templates/admin-ui/nginx-default.conf /etc/nginx/http.d/default.conf
-
-# add existing node user to root group
-RUN addgroup node root
-
-# make empty files and folders
-RUN mkdir -p /opt/flex/admin-ui/_plugins \
+RUN cp /app/templates/admin-ui/nginx-default.conf /etc/nginx/http.d/default.conf \
     && touch /run/nginx/nginx.pid
+
+
+# create non-root user
+RUN adduser -s /bin/sh -h /home/1000 -D -G root -u 1000 1000
+
+# @TODO: re-enable plugins once upstream admin-ui supports modular plugin
+# && chown 1000:0 /opt/flex/admin-ui/.env \
+# && chown -R 1000:0 /opt/flex/admin-ui/_plugins \
+# && chown 1000:0 /opt/flex/admin-ui/plugins.config.json \
+# && chown -R 1000:0 /opt/flex/admin-ui/plugins
 
 # adjust ownership
 RUN chown -R 1000:0 /var/lib/nginx \
@@ -227,11 +209,7 @@ RUN chown -R 1000:0 /var/lib/nginx \
     && chown -R 1000:0 /etc/jans \
     && chown -R 1000:0 /etc/certs \
     && chown 1000:0 /run/nginx/nginx.pid \
-    && chown -R 1000:0 /opt/flex/admin-ui/_plugins \
-    && chown 1000:0 /opt/flex/admin-ui \
-    && chown 1000:0 /opt/flex/admin-ui/.env \
-    && chown 1000:0 /opt/flex/admin-ui/plugins.config.json \
-    && chown -R 1000:0 /opt/flex/admin-ui/plugins
+    && chown -R 1000:0 /opt/flex/admin-ui
 
 USER 1000
 

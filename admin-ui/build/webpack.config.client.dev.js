@@ -6,8 +6,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const config = require('./../config')
 require('dotenv').config({
-  path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
+  path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env.local',
 })
+
 
 const BASE_PATH = process.env.BASE_PATH || '/'
 const CONFIG_API_BASE_URL =

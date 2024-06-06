@@ -94,7 +94,7 @@ const SourceBackendServersTab = () => {
   )
 
   function onDeletionConfirmed(message) {
-    const sourceConfigs = cacheRefreshConfiguration.sourceConfigs?.filter((config) => config.configId !== item.configId)
+    const sourceConfigs = cacheRefreshConfiguration?.sourceConfigs?.filter((config) => config.configId !== item.configId)
     buildPayload(userAction, message, {
       appConfiguration2: {
         ...cacheRefreshConfiguration,
@@ -114,7 +114,7 @@ const SourceBackendServersTab = () => {
             Container: PaperContainer,
           }}
           columns={tableColumns}
-          data={sourceConfigs}
+          data={sourceConfigs || []}
           isLoading={loading}
           title=''
           actions={actions}

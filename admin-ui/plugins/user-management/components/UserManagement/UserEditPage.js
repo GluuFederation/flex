@@ -100,7 +100,7 @@ function UserEditPage() {
       userId: values.userId || '',
       mail: values.mail,
       displayName: values.displayName || '',
-      jansStatus: values.jansStatus || '',
+      status: values.status || '',
       givenName: values.givenName || '',
       customAttributes: customAttributes,
       dn: userDetails.dn,

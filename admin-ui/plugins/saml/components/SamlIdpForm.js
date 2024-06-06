@@ -54,6 +54,8 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
     description: configs?.description || '',
     importMetadataFile: false,
     enabled: configs?.enabled || false,
+    principalAttribute: configs?.principalAttribute || '',
+    principalType: configs?.principalType || '',
   }
 
   const validationSchema = Yup.object().shape({
@@ -393,6 +395,38 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       errorMessage={formik.errors.encryptionPublicKey}
                       disabled={viewOnly}
                       rows={10}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label='fields.principal_attribute'
+                      name='principalAttribute'
+                      value={formik.values.principalAttribute || ''}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.principalAttribute &&
+                        formik.touched.principalAttribute
+                      }
+                      errorMessage={formik.errors.principalAttribute}
+                      disabled={viewOnly}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label='fields.principal_type'
+                      name='principalType'
+                      value={formik.values.principalType || ''}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.principalType &&
+                        formik.touched.principalType
+                      }
+                      errorMessage={formik.errors.principalType}
+                      disabled={viewOnly}
                     />
                   </Col>
                 </>

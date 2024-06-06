@@ -85,7 +85,7 @@ function UiRoleListPage() {
                 title: `${t('fields.name')}`,
                 field: 'role',
                 width: '40%',
-                editable: false,
+                editable: 'never',
                 render: (rowData) => <Badge color={`primary-${selectedTheme}`}>{rowData.role}</Badge>,
               },
               { title: `${t('fields.description')}`, field: 'description' },
@@ -97,28 +97,10 @@ function UiRoleListPage() {
                     <select
                       onChange={(e) => rowData.onChange(e.target.value)}
                       className='form-control'
+                      value={String(rowData.rowData.deletable) == 'true' ? true : false}
                     >
-                      <option
-                        selected={
-                          String(rowData.rowData.deletable) == 'true'
-                            ? true
-                            : false
-                        }
-                        value={true}
-                      >
-                        true
-                      </option>
-                      <option
-                        selected={
-                          String(rowData.rowData.deletable) == 'false' ||
-                          !rowData.rowData.deletable
-                            ? true
-                            : false
-                        }
-                        value={false}
-                      >
-                        false
-                      </option>
+                      <option value={true}>true</option>
+                      <option value={false} >false</option>
                     </select>
                   )
                 },
@@ -133,6 +115,7 @@ function UiRoleListPage() {
             actions={myActions}
             options={{
               search: true,
+              idSynonym: 'inum',
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
@@ -146,8 +129,8 @@ function UiRoleListPage() {
               return <UiRoleDetailPage row={rowData} />
             }}
             editable={{
-              isDeleteHidden:() => !hasPermission(permissions, ROLE_DELETE),
-              isEditHidden:() => !hasPermission(permissions, ROLE_WRITE),
+              isDeleteHidden: () => !hasPermission(permissions, ROLE_DELETE),
+              isEditHidden: () => !hasPermission(permissions, ROLE_WRITE),
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit role', newData)
