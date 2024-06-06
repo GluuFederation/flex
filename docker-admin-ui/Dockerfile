@@ -45,7 +45,6 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
 ENV FLEX_SOURCE_VERSION=33acd2f005a7cc1373f2d6fd3861f088e844622a
-ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
 
 RUN mkdir -p /app/templates/admin-ui
 
@@ -62,7 +61,7 @@ RUN mkdir -p /app/templates/admin-ui
 # ========
 
 ENV ADMIN_UI_VERSION=main
-ENV GLUU_BUILD_DATE='2024-05-28 17:19'
+ENV GLUU_BUILD_DATE='2024-06-06 05:59'
 
 RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
     && mkdir -p /opt/flex/admin-ui \
