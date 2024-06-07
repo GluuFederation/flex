@@ -12,7 +12,7 @@ const CustomScriptDetailPage = ({ row }) => {
 
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: '#F5F5F5' }}>
+      <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
         <Row>
           <Col sm={4}>
             <GluuFormDetailRow
