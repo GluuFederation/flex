@@ -1202,7 +1202,7 @@
         "enabled": "Drapeau pour activer et désactiver la conversion de données",
         "self": "Configuration pour la conversion de type de données."
       },
-      "pluginConf": {
+      "plugins": {
         "name": "Nom du plugin.",
         "description": "Description du plugin.",
         "className": "Classe d'application du plugin.",
