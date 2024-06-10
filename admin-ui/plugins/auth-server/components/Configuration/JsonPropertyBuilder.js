@@ -11,8 +11,7 @@ function JsonPropertyBuilder({
   path,
   handler,
   parentIsArray,
-  schema,
-  doc_category = "json_properties",
+  schema
 }) {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
@@ -78,7 +77,6 @@ function JsonPropertyBuilder({
         value={propValue}
         parentIsArray={parentIsArray}
         path={path}
-        doc_category={doc_category}
       />
     )
   }
@@ -94,7 +92,6 @@ function JsonPropertyBuilder({
         value={propValue}
         parentIsArray={parentIsArray}
         path={path}
-        doc_category={doc_category}
       />
     )
   }
@@ -111,7 +108,6 @@ function JsonPropertyBuilder({
         value={propValue}
         parentIsArray={parentIsArray}
         path={path}
-        doc_category={doc_category}
       />
     )
   }
@@ -129,7 +125,6 @@ function JsonPropertyBuilder({
         options={schema?.items?.enum || propValue || []}
         parentIsArray={parentIsArray}
         path={path}
-        doc_category={doc_category}
       />
     )
   }
@@ -150,7 +145,6 @@ function JsonPropertyBuilder({
               lSize={lSize}
               parentIsArray={true}
               path={path}
-              doc_category={doc_category}
             />
           ))}
         </Accordion.Body>

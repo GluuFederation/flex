@@ -163,7 +163,7 @@ function JsonPropertyBuilderConfigApi({
           {Object.keys(propValue)?.map((item, idx) => {
             return (
               <JsonPropertyBuilderConfigApi
-                key={idx}
+                key={item}
                 propKey={item}
                 propValue={propValue[item]}
                 handler={handler}
@@ -219,7 +219,7 @@ function JsonPropertyBuilderConfigApi({
                   : objKey
                 return (
                   <JsonPropertyBuilderConfigApi
-                    key={idx}
+                    key={objKey}
                     propKey={objKey}
                     tooltipPropKey={tooltipPropKey}
                     propValue={propValue[objKey]}
@@ -243,6 +243,14 @@ function JsonPropertyBuilderConfigApi({
 
 JsonPropertyBuilderConfigApi.propTypes = {
   schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string }),
+  propKey: PropTypes.string,
+  propValue: PropTypes.any,
+  lSize: PropTypes.number,
+  path: PropTypes.string,
+  handler: PropTypes.func,
+  parentIsArray: PropTypes.bool,
+  doc_category: PropTypes.string,
+  tooltipPropKey: PropTypes.string,
 }
 
 export default JsonPropertyBuilderConfigApi
