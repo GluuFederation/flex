@@ -200,7 +200,8 @@ function JsonPropertyBuilderConfigApi({
                   </Col>
                 </FormGroup>
               )}
-              {Object.keys(propValue)?.map((objKey, idx) => {
+              {Object.keys(propValue)?.map((objKey) => {
+                console.log(`propValue?.constructor?.name`, propValue?.constructor?.name, `propValue`, propValue)
                 const tooltipPropKey = propValue?.constructor?.name
                   ? `${pascalToCamel(propValue?.constructor?.name)}.${objKey}`
                   : objKey
