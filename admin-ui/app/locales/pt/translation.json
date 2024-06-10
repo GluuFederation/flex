@@ -1018,6 +1018,74 @@
       "name": "Nome do papel",
       "description": "Descrição da função"
     },
+    "config_api_properties": {
+      "configOauthEnabled": "Bandeira para habilitar/desabilitar autenticação OAuth. Valor padrão verdadeiro.",
+      "disableLoggerTimer": "Bandeira para habilitar/desabilitar temporizador para refletir dinamicamente as mudanças de configuração de log. Valor padrão verdadeiro.",
+      "disableAuditLogger": "Bandeira para habilitar/desabilitar auditoria de requisição. Valor padrão falso.",
+      "customAttributeValidationEnabled": "Bandeira para habilitar/desabilitar a verificação se o atributo personalizado está declarado no esquema. Volume padrão verdadeiro.",
+      "apiProtectionType": "Nome do mecanismo de proteção da API suportado. Tipo suportado é OAuth2.",
+      "apiClientId": "ID do cliente da Config-API.",
+      "apiClientPassword": "Senha do cliente da Config-API.",
+      "endpointInjectionEnabled": "Bandeira para habilitar/desabilitar a injeção de endpoint. Sem valor padrão especificado.",
+      "authIssuerUrl": "Identificador do emissor do Provedor OpenID Connect da Jans.",
+      "authOpenidConfigurationUrl": "URL de Configuração Conhecida do Provedor OpenID Connect da Jans.",
+      "authOpenidIntrospectionUrl": "URL da Jans do Endpoint de Autorização OAuth 2.0 do Provedor OpenID Connect.",
+      "authOpenidTokenUrl": "URL da Jans do Endpoint de Token OAuth 2.0 do Provedor OpenID Connect.",
+      "authOpenidRevokeUrl": "URL da Jans do Endpoint de Revogação de Token OAuth 2.0 do Provedor OpenID Connect.",
+      "loggingLevel": "Especificar nível de log dos loggers. Nível padrão é INFO.",
+      "loggingLayout": "Layout de log Log4j. Valor padrão TEXTO.",
+      "externalLoggerConfiguration": "Caminho para a configuração de log externa log4j2.",
+      "disableJdkLogger": "Escolha se desativar os loggers JDK. Sem valor padrão especificado.",
+      "maxCount": "Número máximo de resultados por página nos endpoints de busca.",
+      "apiApprovedIssuer": "Lista de servidor Auth externo aprovado para validar token.",
+      "exclusiveAuthScopes": "Lista de escopos OAuth que podem ser validade para tokens de acesso apenas pelo servidor Auth Jans subjacente.",
+      "corsConfigurationFilters": "Propriedades de configuração de filtros CORS.",
+      "userMandatoryAttributes": "Lista de atributos obrigatórios para solicitação de criação de usuário.",
+      "ignoreHttpMethod": "Métodos HTTP para os quais a auditoria é desativada.",
+      "auditLogConf": {
+        "headerAttributes": "Lista de atributos HTTP de cabeçalho cujo valor deve ser registrado.",
+        "enabled": "Bandeira para habilitar e desabilitar o log de auditoria.",
+        "self": "Detalhes da configuração de log de auditoria."
+      },
+      "agamaConfiguration": {
+        "mandatoryAttributes": "Lista de atributos necessários para criar o Fluxo Agama.",
+        "optionalAttributes": "Lista de atributos que são opcionais.",
+        "self": "Detalhes da configuração Agama."
+      },
+      "dataFormatConversionConf": {
+        "ignoreHttpMethod": "Métodos HTTP para os quais a conversão de dados deve ser desativada.",
+        "enabled": "Bandeira para habilitar e desabilitar a conversão de dados",
+        "self": "Configuração para conversão de tipo de dados."
+      },
+      "pluginConf": {
+        "name": "Nome do plugin.",
+        "description": "Descrição do plugin.",
+        "className": "Classe de aplicação do plugin.",
+        "self": "Detalhes dos plugins habilitados."
+      },
+      "assetMgtConfiguration": {
+        "assetMgtEnabled": "Bandeira indicando se a funcionalidade de gestão de ativos está habilitada.",
+        "assetServerUploadEnabled": "Bandeira indicando se o upload de ativos para o servidor está habilitado.",
+        "fileExtensionValidationEnabled": "Bandeira indicando se a validação de extensão de arquivo está habilitada.",
+        "moduleNameValidationEnabled": "Bandeira indicando se a validação de extensão de nome de módulo de serviço está habilitada.",
+        "assetBaseDirectory": "Diretório base no servidor para upload do ativo.",
+        "jansServiceModule": "Lista de módulos de serviço suportados onde o ativo pode ser carregado.",
+        "self": "Detalhes da configuração de gestão de ativos."
+      },
+      "assetDirMapping": {
+        "directory": "Caminho relativo ao diretório base de ativos.",
+        "type": "Lista de extensão de arquivo que são armazenadas no diretório.",
+        "description": "Descrição dos ativos armazenados no diretório.",
+        "self": "Tipo de ativo mapeado ao diretório do servidor."
+      },
+      "assetMgtEnabled": "Bandeira indicando se a funcionalidade de gestão de ativos está habilitada.",
+      "assetServerUploadEnabled": "Bandeira indicando se o upload de ativos para o servidor está habilitado.",
+      "fileExtensionValidationEnabled": "Bandeira indicando se a validação de extensão de arquivo está habilitada.",
+      "moduleNameValidationEnabled": "Bandeira indicando se a validação de extensão de nome de módulo de serviço está habilitada.",
+      "assetBaseDirectory": "Diretório base no servidor para upload do ativo.",
+      "jansServiceModule": "Lista de módulos de serviço suportados onde o ativo pode ser carregado.",
+      "userExclusionAttributes": "Atributo do usuário que não deve ser retornado na resposta."
+    },
     "json_properties": {
       "parEndpoint": "URL para endpoint de solicitação de autorização push (PAR)",
       "requirePar": "Valor booleano para indicar se o Pedido de Autorização Pushed (PAR) é necessário",
