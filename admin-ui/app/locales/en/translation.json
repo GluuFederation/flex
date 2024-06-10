@@ -918,6 +918,74 @@
       "tag": "Tag-name to identify permission to be included in the API access token.",
       "default_permission_in_token": "If set to true the permission will be available by default in the authorization token to access API (before authentication)."
     },
+    "config_api_properties": {
+      "configOauthEnabled": "OAuth authentication enable/disable flag. Default value true.",
+      "disableLoggerTimer": "Flag to enable/disable timer to dynamically reflect log configuration changes. Default value true.",
+      "disableAuditLogger": "Flag to enable/disable request audit. Default value false.",
+      "customAttributeValidationEnabled": "Flag to enable/disable check if custom attribute is declared in schema. Default volume true.",
+      "apiProtectionType": "Name of supported API protection mechanism. Supported type is OAuth2.",
+      "apiClientId": "Config-API client ID.",
+      "apiClientPassword": "Config-API client password.",
+      "endpointInjectionEnabled": "Flag to enable/disable endpoint injection. No default value specified.",
+      "authIssuerUrl": "Issuer Identifier of Jans OpenID Connect Provider.",
+      "authOpenidConfigurationUrl": "Jans OpenID Connect Provider Well-Known Configuration URL.",
+      "authOpenidIntrospectionUrl": "Jans URL of the OpenID Connect Provider's OAuth 2.0 Authorization Endpoint.",
+      "authOpenidTokenUrl": "Jans URL of the OpenID Connect Provider's OAuth 2.0 Token Endpoint.",
+      "authOpenidRevokeUrl": "Jans URL of the OpenID Connect Provider's OAuth 2.0 Revoke Token Endpoint.",
+      "loggingLevel": "Specify logging level of Loggers. Default level is INFO.",
+      "loggingLayout": "Log4j logging layout. Default value TEXT.",
+      "externalLoggerConfiguration": "The path to the external log4j2 logging configuration.",
+      "disableJdkLogger": "Choose whether to disable JDK loggers. No default value specified.",
+      "maxCount": "Maximum number of results per page in search endpoints.",
+      "apiApprovedIssuer": "List of approved external Auth server to validate token.",
+      "exclusiveAuthScopes": "List of oAuth scope that can be validity for an access tokens only by underlying Jans Auth server.",
+      "corsConfigurationFilters": "CORS configuration filter properties.",
+      "userMandatoryAttributes": "List of User mandatory attribute for user creation request.",
+      "ignoreHttpMethod": "HTTP methods for which audit is disabled.",
+      "auditLogConf": {
+        "headerAttributes": "List of header HTTP attributes whose value is to be logged.",
+        "enabled": "Flag to enable and disable audit log.",
+        "self": "Audit Log configuration details."
+      },
+      "agamaConfiguration": {
+        "mandatoryAttributes": "List of attributes required to create the Agama Flow.",
+        "optionalAttributes": "List of attributes that are optional.",
+        "self": "Agama configuration details."
+      },
+      "dataFormatConversionConf": {
+        "ignoreHttpMethod": "HTTP methods for which data conversion is to be disabled.",
+        "enabled": "Flag to enable and disable data conversion",
+        "self": "Configuration for data-type converstion."
+      },
+      "pluginConf": {
+        "name": "Name of the plugin.",
+        "description": "Description of the plugin.",
+        "className": "Plugin application class.",
+        "self": "Details of enabled plugins."
+      },
+      "assetMgtConfiguration": {
+        "assetMgtEnabled": "Flag indicating if asset management functionality is enabled.",
+        "assetServerUploadEnabled": "Flag indicating if asset upload to server is enabled.",
+        "fileExtensionValidationEnabled": "Flag indicating if file extension validation is enabled.",
+        "moduleNameValidationEnabled": "Flag indicating if service module name extension validation is enabled.",
+        "assetBaseDirectory": "Base directory on server to upload the asset.",
+        "jansServiceModule": "List of supported service module where asset can be uploaded.",
+        "self": "Asset management configuration details."
+      },
+      "assetDirMapping": {
+        "directory": "Relative path to asset base directory.",
+        "type": "List of file extention that are stored in directory.",
+        "description": "Description of assets stored in directory.",
+        "self": "Asset type mapped to server directory."
+      },
+      "assetMgtEnabled": "Flag indicating if asset management functionality is enabled.",
+      "assetServerUploadEnabled": "Flag indicating if asset upload to server is enabled.",
+      "fileExtensionValidationEnabled": "Flag indicating if file extension validation is enabled.",
+      "moduleNameValidationEnabled": "Flag indicating if service module name extension validation is enabled.",
+      "assetBaseDirectory": "Base directory on server to upload the asset.",
+      "jansServiceModule": "List of supported service module where asset can be uploaded.",
+      "userExclusionAttributes": "User attribute that should not be returned in response."
+    },
     "json_properties": {
       "parEndpoint": "URL for Pushed Authorisation Request (PAR) Endpoint",
       "requirePar": "Boolean value to indicate if Pushed Authorisation Request (PAR) is required",

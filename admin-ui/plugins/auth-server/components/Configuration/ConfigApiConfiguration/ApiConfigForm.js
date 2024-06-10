@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
-import PropertyBuilder from 'Plugins/auth-server/components/Configuration/JsonPropertyBuilder'
 import spec from '../../../../../configApiSpecs.yaml'
 import {
   buildPayload,
@@ -11,6 +10,7 @@ import {
 } from 'Utils/PermChecker'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { patchApiConfigConfiguration } from 'Plugins/auth-server/redux/features/configApiSlice'
+import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
 
 const schema = spec.components.schemas.ApiAppConfiguration.properties
 
@@ -64,13 +64,14 @@ const ApiConfigForm = () => {
       {Object.keys(configuration).map((propKey) => {
         if (generateLabel(propKey)) {
           return (
-            <PropertyBuilder
+            <JsonPropertyBuilderConfigApi
               key={propKey}
               propKey={propKey}
               propValue={configuration[propKey]}
               lSize={6}
               handler={patchHandler}
               schema={schema[propKey]}
+              doc_category="config_api_properties"
             />
           )
         }

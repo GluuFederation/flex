@@ -26,6 +26,7 @@ function GluuInlineInput({
   handler,
   options,
   path,
+  doc_category,
 }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -80,8 +81,7 @@ function GluuInlineInput({
             label={label}
             size={lsize}
             required={required}
-            withTooltip={false}
-            doc_category="json_properties" 
+            doc_category={doc_category}
             doc_entry={name}
           />
           <Col sm={rsize}>
