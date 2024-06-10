@@ -4,6 +4,7 @@ import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import { generateLabel, isObject, isObjectArray } from '../JsonPropertyBuilder'
 
 function pascalToCamel(s) {
   // Check if the string is non-empty
@@ -11,6 +12,27 @@ function pascalToCamel(s) {
 
   // Convert first character to lowercase
   return s.charAt(0).toLowerCase() + s.slice(1)
+}
+
+function _isNumber(item) {
+  return typeof item === 'number' || typeof item === 'bigint'
+}
+
+function _isBoolean(item, schema) {
+  return typeof item === 'boolean' || schema?.type === 'boolean'
+}
+
+function _isString(item, schema) {
+  return typeof item === 'string' || schema?.type === 'string'
+}
+
+function isStringArray(item, schema) {
+  return (
+    (Array.isArray(item) &&
+      item.length >= 1 &&
+      typeof item[0] === 'string') ||
+    (schema?.type === 'array' && schema?.items?.type === 'string')
+  )
 }
 
 function JsonPropertyBuilderConfigApi({
@@ -31,54 +53,19 @@ function JsonPropertyBuilderConfigApi({
   } else {
     path = path + '/' + propKey
   }
-  function isBoolean(item) {
-    return typeof item === 'boolean' || schema?.type === 'boolean'
-  }
 
-  function isString(item) {
-    return typeof item === 'string' || schema?.type === 'string'
-  }
-
-  function isNumber(item) {
-    return typeof item === 'number' || typeof item === 'bigint'
-  }
   const removeHandler = () => {
-    const patch = {}
-    patch['path'] = path
-    patch['value'] = propValue
-    patch['op'] = 'remove'
+    let patch = {}
+    patch = {
+      path,
+      value: propValue,
+      op: 'remove'
+    }
     handler(patch)
     setShow(false)
   }
 
-  function isStringArray(item) {
-    return (
-      (Array.isArray(item) &&
-        item.length >= 1 &&
-        typeof item[0] === 'string') ||
-      (schema?.type === 'array' && schema?.items?.type === 'string')
-    )
-  }
-
-  function isObjectArray(item) {
-    return (
-      Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
-    )
-  }
-  function isObject(item) {
-    if (item != null) {
-      return typeof item === 'object'
-    } else {
-      return false
-    }
-  }
-
-  function generateLabel(name) {
-    const result = name.replace(/([A-Z])/g, ' $1')
-    return result.charAt(0).toUpperCase() + result.slice(1)
-  }
-
-  if (isBoolean(propValue)) {
+  if (_isBoolean(propValue, schema)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -95,7 +82,7 @@ function JsonPropertyBuilderConfigApi({
       />
     )
   }
-  if (isString(propValue)) {
+  if (_isString(propValue, schema)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -111,7 +98,7 @@ function JsonPropertyBuilderConfigApi({
       />
     )
   }
-  if (isNumber(propValue)) {
+  if (_isNumber(propValue)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -128,7 +115,7 @@ function JsonPropertyBuilderConfigApi({
       />
     )
   }
-  if (isStringArray(propValue)) {
+  if (isStringArray(propValue, schema)) {
     return (
       <GluuInlineInput
         id={propKey}
@@ -180,7 +167,7 @@ function JsonPropertyBuilderConfigApi({
   }
   if (isObject(propValue)) {
     return (
-      <div>
+      <>
         {show && (
           <Accordion className='mb-2 b-primary' initialOpen>
             <Accordion.Header className='text-primary'>
@@ -235,10 +222,10 @@ function JsonPropertyBuilderConfigApi({
             </Accordion.Body>
           </Accordion>
         )}
-      </div>
+      </>
     )
   }
-  return <div></div>
+  return <></>
 }
 
 JsonPropertyBuilderConfigApi.propTypes = {
