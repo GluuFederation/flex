@@ -6,14 +6,6 @@ import PropTypes from 'prop-types'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { generateLabel, isObject, isObjectArray } from '../JsonPropertyBuilder'
 
-function pascalToCamel(s) {
-  // Check if the string is non-empty
-  if (!s) return ''
-
-  // Convert first character to lowercase
-  return s.charAt(0).toLowerCase() + s.slice(1)
-}
-
 function _isNumber(item) {
   return typeof item === 'number' || typeof item === 'bigint'
 }
@@ -28,9 +20,7 @@ function _isString(item, schema) {
 
 function isStringArray(item, schema) {
   return (
-    (Array.isArray(item) &&
-      item.length >= 1 &&
-      typeof item[0] === 'string') ||
+    (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') ||
     (schema?.type === 'array' && schema?.items?.type === 'string')
   )
 }
@@ -45,6 +35,7 @@ function JsonPropertyBuilderConfigApi({
   schema,
   doc_category = 'json_properties',
   tooltipPropKey = '',
+  parent
 }) {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
@@ -147,7 +138,7 @@ function JsonPropertyBuilderConfigApi({
           />
         </Accordion.Header>
         <Accordion.Body>
-          {Object.keys(propValue)?.map((item, idx) => {
+          {Object.keys(propValue)?.map((item) => {
             return (
               <JsonPropertyBuilderConfigApi
                 key={item}
@@ -156,6 +147,7 @@ function JsonPropertyBuilderConfigApi({
                 handler={handler}
                 lSize={lSize}
                 parentIsArray={true}
+                parent={propKey}
                 path={path}
                 doc_category={doc_category}
               />
@@ -201,10 +193,14 @@ function JsonPropertyBuilderConfigApi({
                 </FormGroup>
               )}
               {Object.keys(propValue)?.map((objKey) => {
-                console.log(`propValue?.constructor?.name`, propValue?.constructor?.name, `propValue`, propValue)
-                const tooltipPropKey = propValue?.constructor?.name
-                  ? `${pascalToCamel(propValue?.constructor?.name)}.${objKey}`
-                  : objKey
+                let tooltipPropKey = ''
+
+                if (isNaN(parseInt(propKey))) {
+                  tooltipPropKey = `${propKey}.${objKey}`
+                } else if (parent) {
+                  tooltipPropKey = `${parent}.${objKey}`
+                }
+
                 return (
                   <JsonPropertyBuilderConfigApi
                     key={objKey}
@@ -239,6 +235,7 @@ JsonPropertyBuilderConfigApi.propTypes = {
   parentIsArray: PropTypes.bool,
   doc_category: PropTypes.string,
   tooltipPropKey: PropTypes.string,
+  parent: PropTypes.string,
 }
 
 export default JsonPropertyBuilderConfigApi

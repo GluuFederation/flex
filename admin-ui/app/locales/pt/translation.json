@@ -1057,7 +1057,7 @@
         "enabled": "Bandeira para habilitar e desabilitar a conversão de dados",
         "self": "Configuração para conversão de tipo de dados."
       },
-      "pluginConf": {
+      "plugins": {
         "name": "Nome do plugin.",
         "description": "Descrição do plugin.",
         "className": "Classe de aplicação do plugin.",

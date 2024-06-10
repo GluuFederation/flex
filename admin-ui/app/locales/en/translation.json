@@ -957,7 +957,7 @@
         "enabled": "Flag to enable and disable data conversion",
         "self": "Configuration for data-type converstion."
       },
-      "pluginConf": {
+      "plugins": {
         "name": "Name of the plugin.",
         "description": "Description of the plugin.",
         "className": "Plugin application class.",
