@@ -20,7 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=0bfa1717298f0bdf511d56b67560dc464b6a610e
+ENV JANS_SOURCE_VERSION=61ea9acae3760be11d7ca543127e223ce4281b31
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -174,7 +174,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.2" \
+    org.opencontainers.image.version="5.1.3" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 
