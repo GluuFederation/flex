@@ -54,10 +54,10 @@ const JansAssetListPage = () => {
     const [limit, setLimit] = useState(10)
     const [pattern, setPattern] = useState(null)
     useEffect(() => {
-        dispatch(getAssetServices({ action: options }))
         dispatch(getAssetTypes({ action: options }))
         options['limit'] = 10
         dispatch(getJansAssets({ action: options }))
+        dispatch(getAssetServices({ action: options }))
     }, [])
 
     let memoLimit = limit

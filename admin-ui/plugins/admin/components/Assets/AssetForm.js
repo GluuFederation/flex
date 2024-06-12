@@ -25,7 +25,7 @@ const AssetForm = () => {
     const { id } = useParams()
     const [assetFile, setAssetFile] = useState(null)
     const userAction = {}
-    const { selectedAsset } = useSelector((state) => state.assetReducer)
+    const { selectedAsset, fileTypes, services } = useSelector((state) => state.assetReducer)
     const { t } = useTranslation()
     const navigate = useNavigate()
     const saveOperationFlag = useSelector(
@@ -178,7 +178,7 @@ const AssetForm = () => {
                     name='services'
                     label={t('fields.jansServices')}
                     formik={formik}
-                    options={["config-api", "auth-server", "scim", "casa"]}
+                    options={services || []}
                     lsize={4}
                     rsize={8}
                     required
