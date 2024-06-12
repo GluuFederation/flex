@@ -23,6 +23,7 @@ import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { useNavigate } from 'react-router'
 import { getJansAssets, deleteJansAsset, setSelectedAsset, getAssetServices, getAssetTypes } from 'Plugins/admin/redux/features/AssetSlice'
+import moment from 'moment';
 
 const JansAssetListPage = () => {
     const dispatch = useDispatch()
@@ -214,7 +215,14 @@ const JansAssetListPage = () => {
                                         </div>
                                     )
                                 },
-                                { title: `${t('fields.creationDate')}`, field: 'creationDate' },
+                                {
+                                    title: `${t('fields.creationDate')}`, field: 'creationDate',
+                                    render: rowData => (
+                                        <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
+                                            {moment(rowData.creationDate).format('YYYY-MM-DD')}
+                                        </div>
+                                    )
+                                },
                                 { title: `${t('fields.enabled')}`, field: 'jansEnabled' }
                             ]}
                             data={assets}

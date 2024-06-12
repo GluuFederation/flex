@@ -26,6 +26,7 @@ const AssetForm = () => {
     const [assetFile, setAssetFile] = useState(null)
     const userAction = {}
     const { selectedAsset, fileTypes, services } = useSelector((state) => state.assetReducer)
+    const allServices = ["jans-auth", "jans-casa", "jans-config-api"]
     const { t } = useTranslation()
     const navigate = useNavigate()
     const saveOperationFlag = useSelector(
@@ -62,7 +63,7 @@ const AssetForm = () => {
             displayName: selectedAsset?.displayName || '',
             jansEnabled: selectedAsset?.jansEnabled || false,
             description: selectedAsset?.description || '',
-            jansServices: selectedAsset?.jansServices || []
+            jansService: selectedAsset?.jansService || []
         },
         onSubmit: (values) => {
             const faulty = validatePayload(values)
@@ -175,26 +176,26 @@ const AssetForm = () => {
                     />
                 </Col>
                 <GluuTypeAhead
-                    name='services'
-                    label={t('fields.jansServices')}
+                    name='jansService'
+                    label={t('fields.jansService')}
                     formik={formik}
-                    options={services || []}
+                    options={allServices}
                     lsize={4}
                     rsize={8}
                     required
-                    value={[]}
+                    value={selectedAsset.jansService || []}
                     doc_category={ASSET}
                 />
                 {false &&
                     <GluuArrayCompleter
                         formik={formik}
-                        name='jansServices'
+                        name='jansService'
                         rsize={8}
                         lsize={4}
                         doc_category={ASSET}
-                        label='fields.jansServices'
-                        value={selectedAsset.jansServices || []}
-                        options={selectedAsset.jansServices || []}   >
+                        label='fields.jansService'
+                        value={selectedAsset.jansService || []}
+                        options={selectedAsset.jansService || []}   >
                     </GluuArrayCompleter>
                 }
                 <FormGroup row>

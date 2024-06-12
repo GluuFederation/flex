@@ -33,7 +33,7 @@ export default class AssetApi {
     createJansAsset = (body, token) => {
         const document = {
             "displayName": body.displayName, "description": body.description,
-            "document": body.displayName, "jansServices": body?.jansServices || [], "jansEnabled": body.jansEnabled
+            "document": body.displayName, "jansService": body?.jansService || [], "jansEnabled": body.jansEnabled
         }
         const formData = new FormData();
         const assetFileBlob = new Blob([body.document], {
@@ -61,7 +61,7 @@ export default class AssetApi {
     updateJansAsset = (body) => {
         const document = {
             "displayName": body.displayName, "description": body.description,
-            "document": body.displayName, "jansServices": body?.jansServices || [], "jansEnabled": body.jansEnabled
+            "document": body.displayName, "jansService": body?.jansService || [], "jansEnabled": body.jansEnabled
         }
         const formData = new FormData();
         const assetFileBlob = new Blob([body.document], {

@@ -142,7 +142,7 @@
     "tag": "Étiqueter",
     "issuer": "Émetteur",
     "upload": "Select a file to upload",
-    "jansServices": "Jans Module Properties",
+    "jansService": "Jans Module Properties",
     "message_provider_type": "Type de fournisseur de messages",
     "ssl_key_store_file_path": "Chemin du fichier du magasin de clés SSL",
     "principal_attribute": "Attribut Principal",
@@ -779,7 +779,7 @@
   },
   "documentation": {
     "asset":{
-      "jansServices": "Jans Module Properties"
+      "jansService": "Jans Module Properties"
      },
     "webhook": {
       "url": "URL du webhook.",

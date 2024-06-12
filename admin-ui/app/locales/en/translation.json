@@ -81,7 +81,7 @@
     "access_token_signing_alg": "JWS alg for signing",
     "asset_name": "Asset Name",
     "upload": "Select a file to upload",
-    "jansServices": "Related Services",
+    "jansService": "Related Services",
     "default_permission_in_token": "Default permission in token",
     "aui_feature_ids": "Admin UI Features",
     "introspection_signed_response_alg": "Introspection Signed Response Alg",
@@ -878,7 +878,7 @@
   },
   "documentation": {
     "asset":{
-     "jansServices": "Related Services"
+     "jansService": "Related Services"
     },
     "webhook": {
       "url": "Webhook URL.",

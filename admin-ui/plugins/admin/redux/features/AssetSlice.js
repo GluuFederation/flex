@@ -38,7 +38,6 @@ const assetSlice = createSlice({
             state.loading = true
         },
         getAssetServicesResponse: (state, action) => {
-            console.log("response", action)
             state.loading = false
             if (action.payload?.data) {
                 state.services = action.payload.data
