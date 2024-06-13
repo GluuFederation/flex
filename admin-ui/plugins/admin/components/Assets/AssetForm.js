@@ -5,7 +5,6 @@ import { useFormik } from 'formik'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
-import GluuArrayCompleter from 'Routes/Apps/Gluu/GluuArrayCompleter'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
@@ -25,8 +24,9 @@ const AssetForm = () => {
     const { id } = useParams()
     const [assetFile, setAssetFile] = useState(null)
     const userAction = {}
-    const { selectedAsset, fileTypes, services } = useSelector((state) => state.assetReducer)
-    const allServices = ["jans-auth", "jans-casa", "jans-config-api"]
+    const { selectedAsset, services } = useSelector((state) => state.assetReducer)
+    const allServices = ['jans-auth', 'jans-casa', 'jans-config-api']
+    console.log(selectedAsset)
     const { t } = useTranslation()
     const navigate = useNavigate()
     const saveOperationFlag = useSelector(
@@ -40,6 +40,20 @@ const AssetForm = () => {
     const validatePayload = (values) => {
         let faulty = false
         return faulty
+    }
+
+    const buildAcceptFileTypes = () => {
+        let acceptFileTypes = {
+            'text/plain': ['.properties'],
+            'text/css': ['.css'],
+            'text/javascript': ['.js'],
+            'application/java-archive': ['.jar'],
+            'image/jpeg': ['.jpeg', '.jpg'],
+            'image/png': ['.png'],
+            'image/gif': ['.gif'],
+            'application/xhtml+xml': ['.xhtml']
+        }
+        return acceptFileTypes
     }
 
     const handleFileDrop = (files) => {
@@ -66,11 +80,13 @@ const AssetForm = () => {
             jansService: selectedAsset?.jansService || []
         },
         onSubmit: (values) => {
+            console.log(values);
             const faulty = validatePayload(values)
             if (faulty) {
                 return
             }
             toggle()
+
         },
         validationSchema: Yup.object().shape({
             displayName: Yup.string()
@@ -140,11 +156,8 @@ const AssetForm = () => {
                         />
                         <Col sm={8}>
                             <GluuUploadFile
-                                accept={{
-                                    'text/xml': ['.jar'],
-                                    'application/json': ['.json'],
-                                }}
-                                placeholder={`Drag 'n' drop .jar/.css/.html/.js file here, or click to select file`}
+                                accept={buildAcceptFileTypes()}
+                                placeholder={`Drag 'n' drop .jar/.css/.xhtml/.js/.png/.jpeg/.jpg/.gif/.properties file here, or click to select file`}
                                 onDrop={handleFileDrop}
                                 onClearFiles={handleClearFiles}
                                 disabled={false}
@@ -186,18 +199,6 @@ const AssetForm = () => {
                     value={selectedAsset.jansService || []}
                     doc_category={ASSET}
                 />
-                {false &&
-                    <GluuArrayCompleter
-                        formik={formik}
-                        name='jansService'
-                        rsize={8}
-                        lsize={4}
-                        doc_category={ASSET}
-                        label='fields.jansService'
-                        value={selectedAsset.jansService || []}
-                        options={selectedAsset.jansService || []}   >
-                    </GluuArrayCompleter>
-                }
                 <FormGroup row>
                     <GluuLabel
                         label='options.enabled'
