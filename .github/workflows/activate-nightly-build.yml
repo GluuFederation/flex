@@ -23,7 +23,7 @@ jobs:
         sudo cp gh_${VERSION}_linux_amd64/bin/gh /usr/local/bin/
         gh version
         echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token
-        BASE_VERSION=$(cat charts/gluu/Chart.yaml | grep "appVersion" | awk -F ": " '{print $2}' | tr -d '"')
+        BASE_VERSION=$(cat charts/gluu/Chart.yaml | grep "appVersion" | awk -F ": " '{print $2}' | tr -d '"' | sed 's/-dev//')
         # Clean up old nightly release
         gh release delete v${BASE_VERSION}.nightly --cleanup-tag --yes || echo "v${BASE_VERSION}.nightly" does not exist
         git push --delete origin v${BASE_VERSION}.nightly || echo "v${BASE_VERSION}.nightly" does not exist
