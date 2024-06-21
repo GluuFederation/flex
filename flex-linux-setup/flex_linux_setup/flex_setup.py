@@ -117,11 +117,11 @@ if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
 
 if not jans_installer_downloaded:
-    jans_archieve_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
+    jans_archive_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
     with tempfile.TemporaryDirectory() as tmp_dir:
-        jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archieve_url))
-        print("Downloading {} as {}".format(jans_archieve_url, jans_zip_file))
-        request.urlretrieve(jans_archieve_url, jans_zip_file)
+        jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archive_url))
+        print("Downloading {} as {}".format(jans_archive_url, jans_zip_file))
+        request.urlretrieve(jans_archive_url, jans_zip_file)
         if argsp.download_exit:
             dist_dir = '/opt/dist/jans/'
             if not os.path.exists(dist_dir):
@@ -257,7 +257,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.1.2",
+  "JANS_APP_VERSION": "1.1.3",
   "JANS_BUILD": "-SNAPSHOT",
   "NODE_VERSION": "v18.16.0",
   "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
@@ -289,13 +289,8 @@ class flex_installer(JettyInstaller):
         self.source_dir = os.path.join(Config.install_dir, 'flex')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
-        self.admin_ui_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/node_modules/admin-ui-{0}-node_modules.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
-        self.config_api_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/OpenApi/jans_config_api/admin-ui-{0}-jans_config_api.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
-
-        self.admin_ui_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.admin_ui_node_modules_url))
-        self.config_api_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.config_api_node_modules_url))
-
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
+        self.adimin_ui_bin_url = 'https://jenkins.gluu.org/npm/admin_ui/main/built/admin-ui-main-built.tar.gz'
 
         if not argsp.download_exit:
             self.dbUtils.bind(force=True)
@@ -309,6 +304,7 @@ class flex_installer(JettyInstaller):
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
+        self.source_files = []
 
     def download_files(self, force=False):
         print("Downloading Gluu Flex components")
@@ -320,22 +316,20 @@ class flex_installer(JettyInstaller):
         print("Extracting", self.flex_path)
         base.extract_from_zip(self.flex_path, 'flex-linux-setup/flex_linux_setup', self.flex_setup_dir)
 
-        download_files = []
 
         if install_components['admin_ui'] or argsp.download_exit or argsp.update_admin_ui:
-            download_files += [
+            self.source_files += [
                     ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
                     (urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
-                    (self.admin_ui_node_modules_url, self.admin_ui_node_modules_path),
-                    (self.config_api_node_modules_url, self.config_api_node_modules_path),
+                    (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
                     ]
 
             if argsp.update_admin_ui:
-                download_files.pop(0) 
+                self.source_files.pop(0) 
 
-        for download_url, target in download_files:
+        for download_url, target in self.source_files:
             if force or not os.path.exists(target):
                 base.download(download_url, target, verbose=True)
 
@@ -405,43 +399,29 @@ class flex_installer(JettyInstaller):
             cli_config.chmod(0o600)
 
 
-    def build_gluu_admin_ui(self):
-        print("Extracting admin-ui from", self.flex_path)
-        base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
-
-        print("Stopping Jans Auth")
-        config_api_installer.stop('jans-auth')
-
-        print("Stopping Janssen Config Api")
-        config_api_installer.stop()
-
-        print("Building Gluu Admin UI Frontend")
-        env_tmp = os.path.join(self.source_dir, '.env.tmp')
-        config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
-        config_api_installer.copyFile(os.path.join(self.source_dir, '.env.tmp'), os.path.join(self.source_dir, '.env'))
-
-        for module_pack in (self.admin_ui_node_modules_path, self.config_api_node_modules_path):
-            print("Unpacking", module_pack)
-            shutil.unpack_archive(module_pack, self.source_dir)
-
-        config_api_installer.run([paths.cmd_chown, '-R', 'node:node', self.source_dir])
-        cmd_path = 'PATH=$PATH:{}/bin:{}/bin'.format(Config.jre_home, Config.node_home)
-
-        for cmd in ('npm run build:prod',):
-            print("Executing `{}`".format(cmd))
-            run_cmd = '{} {}'.format(cmd_path, cmd)
-            config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
-
-
-        print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
-        config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
-
-
     def install_gluu_admin_ui(self):
 
         print("Installing Gluu Admin UI Frontend")
-        self.build_gluu_admin_ui()
 
+        admin_ui_bin_archive = os.path.basename(self.adimin_ui_bin_url)
+        print("Extracting", admin_ui_bin_archive)
+
+        shutil.unpack_archive(
+            os.path.join(Config.dist_jans_dir, admin_ui_bin_archive),
+            httpd_installer.server_root
+            )
+
+        os.rename(
+                os.path.join(httpd_installer.server_root, 'dist'),
+                Config.templateRenderingDict['admin_ui_apache_root']
+                
+            )
+
+        config_api_installer.renderTemplateInOut(
+                os.path.join(self.templates_dir, 'env-config.js'),
+                self.templates_dir,
+                Config.templateRenderingDict['admin_ui_apache_root']
+            )
 
         def get_client_parser():
 
@@ -763,7 +743,6 @@ def main(uninstall):
     if argsp.update_admin_ui:
         if os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
             installer_obj.download_files(force=True)
-            installer_obj.build_gluu_admin_ui()
             installer_obj.install_config_api_plugin()
             restart_services()
         else:

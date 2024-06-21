@@ -29,7 +29,7 @@ import {
   SCRIPT_WRITE,
   MAPPING_READ,
   WEBHOOK_READ,
-  WEBHOOK_WRITE
+  WEBHOOK_WRITE,
 } from 'Utils/PermChecker'
 import WebhookAddPage from './components/Webhook/WebhookAddPage'
 import WebhookEditPage from './components/Webhook/WebhookEditPage'
@@ -157,7 +157,7 @@ const pluginMetadata = {
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
-    { name: 'webhookReducer', reducer: webhookReducer }
+    { name: 'webhookReducer', reducer: webhookReducer },
   ],
   sagas: [scriptSaga(), apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga()],
 }

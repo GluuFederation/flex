@@ -13,6 +13,7 @@ import KeysPage from './components/Configuration/Keys/KeysPage'
 import LoggingPage from './components/Configuration/Defaults/LoggingPage'
 
 import ReportPage from './components/Reports/ReportPage'
+import ConfigApiPage from './components/Configuration/ConfigApiConfiguration/ConfigApiPage'
 
 import { reducer as oidcReducer } from './redux/features/oidcSlice'
 import { reducer as scopeReducer } from './redux/features/scopeSlice'
@@ -37,6 +38,7 @@ import agamaSaga from './redux/sagas/AgamaSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
 import ssaSaga from './redux/sagas/SsaSaga' 
 import messageSaga from './redux/sagas/MessageSaga' 
+import configApiSaga from './redux/sagas/configApiSaga'
 
 import {
   ACR_READ,
@@ -51,8 +53,10 @@ import {
   AGAMA_READ,
   SSA_PORTAL,
   MESSAGE_READ,
+  API_CONFIG_READ
 } from 'Utils/PermChecker'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
+import configApiReducer from 'Plugins/auth-server/redux/features/configApiSlice'
 import AuthNListPage from './components/AuthN/AuthNListPage'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
@@ -101,6 +105,11 @@ const pluginMetadata = {
               title: 'menus.ssa',
               path: PLUGIN_BASE_APTH + '/config/ssa',
               permission: SSA_PORTAL,
+            },
+            {
+              title: 'menus.api.api_config',
+              path: PLUGIN_BASE_APTH + '/config-api-configuration',
+              permission: API_CONFIG_READ,
             },
           ],
         },
@@ -217,7 +226,12 @@ const pluginMetadata = {
       component: LockPage,
       path: PLUGIN_BASE_APTH + '/lock',
       permission: MESSAGE_READ,
-    }
+    },
+    {
+      component: ConfigApiPage,
+      path: PLUGIN_BASE_APTH + '/config-api-configuration',
+      permission: API_CONFIG_READ,
+    },
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
@@ -232,6 +246,7 @@ const pluginMetadata = {
     { name: 'authNReducer', reducer: authNReducer },
     { name: 'SsaReducer', reducer: ssaReducer },
     { name: 'messageReducer', reducer: messageReducer },
+    { name: 'configApiReducer', reducer: configApiReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -245,7 +260,8 @@ const pluginMetadata = {
     agamaSaga(),
     authnSaga(),
     ssaSaga(),
-    messageSaga()
+    messageSaga(),
+    configApiSaga()
   ],
 }
 

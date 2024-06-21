@@ -21,23 +21,10 @@ logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("admin-ui")
 
 
-def render_env(manager):
-    hostname = manager.config.get("hostname")
-    ctx = {
-        "hostname": hostname,
-    }
-
-    with open("/app/templates/admin-ui/env") as fr:
-        txt = fr.read() % ctx
-
-    with open("/opt/flex/admin-ui/.env", "w") as fw:
-        fw.write(txt)
-
-
 def main():
     manager = get_manager()
 
-    render_env(manager)
+    render_env_config(manager)
 
     with manager.lock.create_lock("admin-ui-setup"):
         persistence_setup = PersistenceSetup(manager)
@@ -304,6 +291,19 @@ def resolve_conf_app(old_conf, new_conf):
 
     # finalized status and conf
     return should_update, old_conf
+
+
+def render_env_config(manager):
+    hostname = manager.config.get("hostname")
+    ctx = {
+        "hostname": hostname,
+    }
+
+    with open("/app/templates/admin-ui/env-config.js") as fr:
+        txt = fr.read() % ctx
+
+    with open("/opt/flex/admin-ui/dist/env-config.js", "w") as fw:
+        fw.write(txt)
 
 
 if __name__ == "__main__":

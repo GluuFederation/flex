@@ -12,6 +12,7 @@ import {
   Button,
 } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
+import PropTypes from 'prop-types'
 
 function GluuInlineInput({
   label,
@@ -26,6 +27,7 @@ function GluuInlineInput({
   handler,
   options,
   path,
+  doc_category = "json_properties",
 }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -80,8 +82,7 @@ function GluuInlineInput({
             label={label}
             size={lsize}
             required={required}
-            withTooltip={false}
-            doc_category="json_properties" 
+            doc_category={doc_category}
             doc_entry={name}
           />
           <Col sm={rsize}>
@@ -147,6 +148,21 @@ GluuInlineInput.defaultProps = {
   lsize: 3,
   rsize: 9,
   required: false,
+}
+GluuInlineInput.propTypes = {
+  doc_category: PropTypes.string,
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.any,
+  type: PropTypes.string,
+  lsize: PropTypes.number,
+  rsize: PropTypes.number,
+  required: PropTypes.bool,
+  isBoolean: PropTypes.bool,
+  isArray: PropTypes.any,
+  handler: PropTypes.func,
+  options: PropTypes.any,
+  path: PropTypes.string,
 }
 
 export default GluuInlineInput
