@@ -5,13 +5,13 @@ kind: Certificate
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
-{{- if or (.Values.additionalAnnotations) (index .Values.global "nginx-ingress" "customAnnotations" "certificate") }}
+{{- if or (.Values.additionalAnnotations) (index .Values "global" "nginx-ingress" "customAnnotations" "certificate") }}
   annotations:
 {{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
-{{- if index .Values.global "nginx-ingress" "customAnnotations" "certificate" }}
-{{ toYaml index .Values.global "nginx-ingress" "customAnnotations" "certificate" | indent 4 }}
+{{- if index .Values "global" "nginx-ingress" "customAnnotations" "certificate" }}
+{{ toYaml index .Values "global" "nginx-ingress" "customAnnotations" "certificate" | indent 4 }}
 {{- end }}
 {{- end }}
 spec:

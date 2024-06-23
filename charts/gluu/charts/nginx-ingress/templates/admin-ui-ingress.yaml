@@ -22,8 +22,8 @@ metadata:
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
 {{- end }}
-{{- if index .Values.global "nginx-ingress" "customAnnotations" "adminUiIngress" }}
-{{ toYaml index .Values.global "nginx-ingress" "customAnnotations" "adminUiIngress" | indent 4 }}
+{{- if index .Values "global" "nginx-ingress" "customAnnotations" "adminUiIngress" }}
+{{ toYaml index .Values "global" "nginx-ingress" "customAnnotations" "adminUiIngress" | indent 4 }}
 {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}

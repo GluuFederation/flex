@@ -10,13 +10,13 @@ metadata:
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if or (.Values.additionalAnnotations) (index .Values.global "auth-server-key-rotation" "customAnnotations" "service") }}
+{{- if or (.Values.additionalAnnotations) (index .Values "global" "auth-server-key-rotation" "customAnnotations" "service") }}
   annotations:
 {{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
-{{- if index .Values.global "auth-server-key-rotation" "customAnnotations" "service" }}
-{{ toYaml index .Values.global "auth-server-key-rotation" "customAnnotations" "service" | indent 4 }}
+{{- if index .Values "global" "auth-server-key-rotation" "customAnnotations" "service" }}
+{{ toYaml index .Values "global" "auth-server-key-rotation" "customAnnotations" "service" | indent 4 }}
 {{- end }}
 {{- end }}
 spec:
