@@ -9,13 +9,13 @@ metadata:
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if or (.Values.additionalAnnotations) (index .Values "global" "admin-ui" "customAnnotations" "podDisruptionBudget") }}
+{{- if or (.Values.additionalAnnotations) (index .Values.global "admin-ui" "customAnnotations" "podDisruptionBudget") }}
   annotations:
 {{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
-{{- if index .Values "global" "admin-ui" "customAnnotations" "podDisruptionBudget" }}
-{{ toYaml index .Values "global" "admin-ui" "customAnnotations" "podDisruptionBudget" | indent 4 }}
+{{- if index .Values.global "admin-ui" "customAnnotations" "podDisruptionBudget" }}
+{{ toYaml index .Values.global "admin-ui" "customAnnotations" "podDisruptionBudget" | indent 4 }}
 {{- end }}
 {{- end }}
 spec:
