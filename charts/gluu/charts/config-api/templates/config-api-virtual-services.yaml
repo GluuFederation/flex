@@ -16,7 +16,7 @@ metadata:
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
 {{- if index .Values.global "config-api" "customAnnotations" "virtualService" }}
-{{ toYaml index .Values.global "config-api" "customAnnotations" "virtualService" | indent 4 }}
+{{ toYaml (index .Values.global "config-api" "customAnnotations" "virtualService") | indent 4 }}
 {{- end }}
 {{- end }}
 spec:

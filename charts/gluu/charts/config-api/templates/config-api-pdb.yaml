@@ -15,7 +15,7 @@ metadata:
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
 {{- if index .Values.global "config-api" "customAnnotations" "podDisruptionBudget" }}
-{{ toYaml index .Values.global "config-api" "customAnnotations" "podDisruptionBudget" | indent 4 }}
+{{ toYaml (index .Values.global "config-api" "customAnnotations" "podDisruptionBudget") | indent 4 }}
 {{- end }}
 {{- end }}    
 spec:

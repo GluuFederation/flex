@@ -16,7 +16,7 @@ metadata:
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
 {{- if index .Values.global "auth-server-key-rotation" "customAnnotations" "cronjob" }}
-{{ toYaml index .Values.global "auth-server-key-rotation" "customAnnotations" "cronjob" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server-key-rotation" "customAnnotations" "cronjob") | indent 4 }}
 {{- end }}
 {{- end }}
 spec:
