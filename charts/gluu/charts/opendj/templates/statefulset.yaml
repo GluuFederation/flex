@@ -9,16 +9,13 @@ metadata:
 {{- if $.Values.additionalLabels }}
 {{ toYaml $.Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if or (.Values.additionalAnnotations) (.Values.customAnnotations.configMaps) (.Values.customAnnotations.secrets) }}
+{{- if or (.Values.additionalAnnotations) (.Values.global.opendj.customAnnotations.statefulset) }}
   annotations:
 {{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
-{{- if .Values.customAnnotations.configMaps }}
-{{ toYaml .Values.customAnnotations.configMaps | indent 4 }}
-{{- end }}
-{{- if .Values.customAnnotations.secrets }}
-{{ toYaml .Values.customAnnotations.secrets | indent 4 }}
+{{- if .Values.global.opendj.customAnnotations.statefulset }}
+{{ toYaml .Values.global.opendj.customAnnotations.statefulset | indent 4 }}
 {{- end }}
 {{- end }}
 spec:

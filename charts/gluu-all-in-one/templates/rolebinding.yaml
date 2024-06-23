@@ -9,9 +9,14 @@ metadata:
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.additionalAnnotations }}
+{{- if or (.Values.additionalAnnotations) (.Values.customAnnotations.roleBinding) }}
   annotations:
+{{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.roleBinding }}
+{{ toYaml .Values.customAnnotations.roleBinding | indent 4 }}
+{{- end }}
 {{- end }}
 subjects:
 - kind: User

@@ -10,16 +10,13 @@ metadata:
 {{- if (index .Values "auth-server-key-rotation" "additionalLabels") }}
 {{ toYaml (index .Values "auth-server-key-rotation" "additionalLabels") | indent 4 }}
 {{- end }}
-{{- if or (index .Values "auth-server-key-rotation" "additionalAnnotations") (index .Values "auth-server-key-rotation" "customAnnotations" "configMaps") (index .Values "auth-server-key-rotation" "customAnnotations" "secrets") }}
+{{- if or (index .Values "auth-server-key-rotation" "additionalAnnotations") (index .Values "auth-server-key-rotation" "customAnnotations" "cronjob") }}
   annotations:
 {{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
-{{- if .Values.customAnnotations.configMaps }}
-{{ toYaml .Values.customAnnotations.configMaps | indent 4 }}
-{{- end }}
-{{- if .Values.customAnnotations.secrets }}
-{{ toYaml .Values.customAnnotations.secrets | indent 4 }}
+{{- if .Values.customAnnotations.cronjob }}
+{{ toYaml .Values.customAnnotations.cronjob | indent 4 }}
 {{- end }}
 {{- end }}
 spec:

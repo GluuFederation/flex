@@ -23,6 +23,9 @@ metadata:
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
 {{- end }}
+{{- if index .Values.global "nginx-ingress" "customAnnotations" "ingress" }}
+{{ toYaml index .Values.global "nginx-ingress" "customAnnotations" "ingress" | indent 4 }}
+{{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
 {{- if .Values.ingress.tls }}

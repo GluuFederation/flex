@@ -20,8 +20,21 @@ cnPersistenceType: sql
 salt: ""
 serviceAccountName: default
 customAnnotations:
-  configMaps: { } 
-  secrets: { }
+  adminUiIngress: {}
+  authServerIngress: {}
+  certificate: {}
+  clusterRoleBinding: {}
+  configMap: {}
+  cronjob: {}
+  deployment: {}
+  destinationRule: {}
+  horizontalPodAutoscaler: {}
+  gateway: {}
+  ingress: {}
+  podDisruptionBudget: {}
+  role: {}
+  roleBinding: {}
+  secret: {}
 configmap:
   # -- Jetty header size in bytes in the auth server
   cnJettyRequestHeaderSize: 8192
@@ -303,10 +316,6 @@ auth-server-key-rotation:
   #     exec:
   #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
   lifecycle: {}
-  customAnnotations:
-    configMaps: { } 
-    secrets: { }
-
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}

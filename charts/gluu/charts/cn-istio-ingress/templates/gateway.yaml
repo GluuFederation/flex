@@ -8,9 +8,14 @@ metadata:
   labels:
 {{ toYaml .Values.global.istio.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.global.istio.additionalAnnotations }}
+{{- if or (.Values.global.istio.additionalAnnotations) (.Values.global.istio.customAnnotations.gateway) }}
   annotations:
+{{- if .Values.global.istio.additionalLabels }}  
 {{ toYaml .Values.global.istio.additionalAnnotations | indent 4 }}
+{{- end }}
+{{- if .Values.global.istio.customAnnotations.gateway }}
+{{ toYaml .Values.global.istio.customAnnotations.gateway | indent 4 }}
+{{- end }}
 {{- end }}
 spec:
   selector:
