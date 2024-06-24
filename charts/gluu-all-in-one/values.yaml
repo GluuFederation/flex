@@ -19,6 +19,7 @@ cnPersistenceType: sql
 # -- Salt. Used for encoding/decoding sensitive data. If omitted or set to empty string, the value will be self-generated. Otherwise, a 24 alphanumeric characters are allowed as its value.
 salt: ""
 serviceAccountName: default
+# — Add custom annotations for kubernetes resources for the service
 customAnnotations:
   adminUiIngress: {}
   authServerIngress: {}
@@ -574,6 +575,10 @@ nginx-ingress:
   # -- Boolean flag to enable/disable the nginx-ingress definitions chart.
   enabled: true
   ingress:
+    # -- admin-ui ingress resource labels. key app is taken
+    adminUiLabels: { }
+    # -- admin-ui ingress resource additional annotations.
+    adminUiAdditionalAnnotations: { }
     # -- openid-configuration ingress resource labels. key app is taken
     openidConfigLabels: { }
     # -- openid-configuration ingress resource additional annotations.
