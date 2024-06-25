@@ -29,6 +29,7 @@
   },
   "menus": {
     "adminui": "Administratrice",
+    "assets": "Assets",
     "config-api": "Config-API",
     "webhooks": "Webhooks",
     "add_source": "Ajouter une source",
@@ -138,8 +139,11 @@
     "copy_to_clipboard": "Copier dans le presse-papier"
   },
   "fields": {
+    "asset_name": "Asset Name",
     "tag": "Étiqueter",
     "issuer": "Émetteur",
+    "upload": "Select a file to upload",
+    "jansService": "Jans Module Properties",
     "message_provider_type": "Type de fournisseur de messages",
     "ssl_key_store_file_path": "Chemin du fichier du magasin de clés SSL",
     "principal_attribute": "Attribut Principal",
@@ -546,6 +550,8 @@
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
+    "add_asset":"Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
     "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",
@@ -685,6 +691,9 @@
   },
   "titles": {
     "acrs": "ACR",
+    "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "algorithmic_keys": "Clés algorithmiques",
     "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",
@@ -771,6 +780,9 @@
     "yes": "Oui"
   },
   "documentation": {
+    "asset":{
+      "jansService": "Jans Module Properties"
+     },
     "webhook": {
       "url": "URL du webhook.",
       "enabled": "Basculez pour activer ou désactiver la fonctionnalité du webhook.",
