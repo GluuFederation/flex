@@ -25,8 +25,6 @@ const AssetForm = () => {
     const [assetFile, setAssetFile] = useState(null)
     const userAction = {}
     const { selectedAsset, services } = useSelector((state) => state.assetReducer)
-    const allServices = ['jans-auth', 'jans-casa', 'jans-config-api']
-    console.log(selectedAsset)
     const { t } = useTranslation()
     const navigate = useNavigate()
     const saveOperationFlag = useSelector(
@@ -72,6 +70,9 @@ const AssetForm = () => {
 
     const formik = useFormik({
         initialValues: {
+            inum: selectedAsset?.inum || undefined,
+            dn: selectedAsset?.dn || undefined,
+            baseDn: selectedAsset?.baseDn || undefined,
             creationDate: selectedAsset?.creationDate || '',
             document: selectedAsset?.document || null,
             displayName: selectedAsset?.displayName || '',
@@ -80,7 +81,6 @@ const AssetForm = () => {
             jansService: selectedAsset?.jansService || []
         },
         onSubmit: (values) => {
-            console.log(values);
             const faulty = validatePayload(values)
             if (faulty) {
                 return
@@ -109,15 +109,16 @@ const AssetForm = () => {
             const payload = {
                 ...formik.values,
             }
+
             if (id) {
                 payload['inum'] = selectedAsset.inum
                 payload['dn'] = selectedAsset.dn
                 payload['baseDn'] = selectedAsset.baseDn
-            }
-            buildPayload(userAction, userMessage, payload)
-            if (id) {
+                buildPayload(userAction, userMessage, payload)
                 dispatch(updateJansAsset({ action: userAction }))
-            } else {
+            }
+            else {
+                buildPayload(userAction, userMessage, payload)
                 dispatch(createJansAsset({ action: userAction }))
             }
         },
@@ -192,7 +193,7 @@ const AssetForm = () => {
                     name='jansService'
                     label={t('fields.jansService')}
                     formik={formik}
-                    options={allServices}
+                    options={services}
                     lsize={4}
                     rsize={8}
                     required

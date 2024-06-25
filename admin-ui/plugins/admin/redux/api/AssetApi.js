@@ -58,9 +58,10 @@ export default class AssetApi {
         })
     }
 
-    updateJansAsset = (body) => {
+    updateJansAsset = (body, token) => {
         const document = {
-            "displayName": body.displayName, "description": body.description,
+            "displayName": body.displayName, "description": body.description, "inum": body.inum,
+            "dn": body.dn, "baseDn": body.baseDn,
             "document": body.displayName, "jansService": body?.jansService || [], "jansEnabled": body.jansEnabled
         }
         const formData = new FormData();

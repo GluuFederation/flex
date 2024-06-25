@@ -22,7 +22,7 @@ import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { useNavigate } from 'react-router'
-import { getJansAssets, deleteJansAsset, setSelectedAsset, getAssetServices, getAssetTypes } from 'Plugins/admin/redux/features/AssetSlice'
+import { fetchJansAssets, deleteJansAsset, setSelectedAsset, getAssetServices, getAssetTypes } from 'Plugins/admin/redux/features/AssetSlice'
 import moment from 'moment';
 
 const JansAssetListPage = () => {
@@ -34,6 +34,12 @@ const JansAssetListPage = () => {
     const { totalItems, assets } = useSelector((state) => state.assetReducer)
     const permissions = useSelector((state) => state.authReducer.permissions)
     const loading = useSelector((state) => state.assetReducer.loading)
+    const myActions = []
+    const options = {}
+    const [limit, setLimit] = useState(10)
+    const [pattern, setPattern] = useState(null)
+    let memoLimit = limit
+    let memoPattern = pattern
     const PaperContainer = useCallback(
         (props) => <Paper {...props} elevation={0} />,
         []
@@ -44,25 +50,22 @@ const JansAssetListPage = () => {
     const [modal, setModal] = useState(false)
     const [deleteData, setDeleteData] = useState(null)
     const toggle = () => setModal(!modal)
+
+
     const submitForm = (userMessage) => {
         const userAction = {}
         toggle()
         buildPayload(userAction, userMessage, deleteData)
         dispatch(deleteJansAsset({ action: userAction }))
     }
-    const myActions = []
-    const options = {}
-    const [limit, setLimit] = useState(10)
-    const [pattern, setPattern] = useState(null)
+
     useEffect(() => {
         dispatch(getAssetTypes({ action: options }))
         options['limit'] = 10
-        dispatch(getJansAssets({ action: options }))
+        dispatch(fetchJansAssets({ action: options }))
         dispatch(getAssetServices({ action: options }))
     }, [])
 
-    let memoLimit = limit
-    let memoPattern = pattern
 
     function handleOptionsChange(event) {
         if (event.target.name == 'limit') {
@@ -78,14 +81,14 @@ const JansAssetListPage = () => {
         options['limit'] = limit
         options['pattern'] = pattern
         setPageNumber(page)
-        dispatch(getJansAssets({ action: options }))
+        dispatch(fetchJansAssets({ action: options }))
     }
     const onRowCountChangeClick = (count) => {
         options['limit'] = count
         options['pattern'] = pattern
         setPageNumber(0)
         setLimit(count)
-        dispatch(getJansAssets({ action: options }))
+        dispatch(fetchJansAssets({ action: options }))
     }
 
     const PaginationWrapper = useCallback(
@@ -149,7 +152,7 @@ const JansAssetListPage = () => {
             onClick: () => {
                 setLimit(memoLimit)
                 setPattern(memoPattern)
-                dispatch(getJansAssets({ action: { limit: memoLimit, pattern: memoPattern } }))
+                dispatch(fetchJansAssets({ action: { limit: memoLimit, pattern: memoPattern } }))
             },
         })
     }
@@ -231,7 +234,7 @@ const JansAssetListPage = () => {
                             actions={myActions}
                             options={{
                                 search: false,
-                                idSynonym:'inum',
+                                idSynonym: 'inum',
                                 searchFieldAlignment: 'left',
                                 selection: false,
                                 pageSize: limit,

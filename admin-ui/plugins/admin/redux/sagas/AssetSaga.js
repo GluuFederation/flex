@@ -32,7 +32,7 @@ function* newFunction() {
     return new AssetApi(api)
 }
 
-export function* getJansAssets({ payload }) {
+export function* getAllJansAssets({ payload }) {
     const audit = yield* initAudit()
     try {
         payload = payload || { action: {} }
@@ -175,13 +175,14 @@ export function* deleteJansAsset({ payload }) {
 }
 
 export function* updateJansAsset({ payload }) {
+    const token = yield select((state) => state.authReducer.token.access_token)
     const audit = yield* initAudit()
     try {
         addAdditionalData(audit, UPDATE, 'asset', payload)
         const assetApi = yield* newFunction()
         const data = yield call(
             assetApi.updateJansAsset,
-            payload.action.action_data
+            payload.action.action_data, token
         )
         yield put(updateJansAssetResponse({ data }))
         yield call(postUserAction, audit)
@@ -204,8 +205,8 @@ export function* updateJansAsset({ payload }) {
     }
 }
 
-export function* watchGetJansAssets() {
-    yield takeLatest('asset/getJansAssets', getJansAssets)
+export function* watchFetchJansAssets() {
+    yield takeLatest('asset/fetchJansAssets', getAllJansAssets)
 }
 
 export function* watchGetAssetTypes() {
@@ -234,7 +235,7 @@ export default function* rootSaga() {
     yield all([
         fork(watchGetAssetServices),
         fork(watchGetAssetTypes),
-        fork(watchGetJansAssets),
+        fork(watchFetchJansAssets),
         fork(watchCreateJansAsset),
         fork(watchDeleteJansAsset),
         fork(watchUpdateJansAsset),
