@@ -36,12 +36,11 @@ const AssetForm = () => {
     const dispatch = useDispatch()
     const [modal, setModal] = useState(false)
     const validatePayload = (values) => {
-        let faulty = false
-        return faulty
+        return false
     }
 
     const buildAcceptFileTypes = () => {
-        let acceptFileTypes = {
+        return {
             'text/plain': ['.properties'],
             'text/css': ['.css'],
             'text/javascript': ['.js'],
@@ -51,7 +50,7 @@ const AssetForm = () => {
             'image/gif': ['.gif'],
             'application/xhtml+xml': ['.xhtml']
         }
-        return acceptFileTypes
+
     }
 
     const handleFileDrop = (files) => {
@@ -70,9 +69,6 @@ const AssetForm = () => {
 
     const formik = useFormik({
         initialValues: {
-            inum: selectedAsset?.inum || undefined,
-            dn: selectedAsset?.dn || undefined,
-            baseDn: selectedAsset?.baseDn || undefined,
             creationDate: selectedAsset?.creationDate || '',
             document: selectedAsset?.document || null,
             displayName: selectedAsset?.displayName || '',
@@ -86,7 +82,6 @@ const AssetForm = () => {
                 return
             }
             toggle()
-
         },
         validationSchema: Yup.object().shape({
             displayName: Yup.string()
@@ -109,7 +104,6 @@ const AssetForm = () => {
             const payload = {
                 ...formik.values,
             }
-
             if (id) {
                 payload['inum'] = selectedAsset.inum
                 payload['dn'] = selectedAsset.dn

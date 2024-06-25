@@ -35,22 +35,7 @@ export default class AssetApi {
             "displayName": body.displayName, "description": body.description,
             "document": body.displayName, "jansService": body?.jansService || [], "jansEnabled": body.jansEnabled
         }
-        const formData = new FormData();
-        const assetFileBlob = new Blob([body.document], {
-            type: 'application/octet-stream',
-        })
-        const documentBlob = new Blob(
-            [
-                JSON.stringify({
-                    ...document,
-                }),
-            ],
-            {
-                type: 'application/json',
-            }
-        )
-        formData.append('document', documentBlob);
-        formData.append('assetFile', assetFileBlob);
+        const formData = this.buildFormData(body, document)
         return new Promise((resolve, reject) => {
             axios.postForm('/api/v1/jans-assets/upload', formData, { headers: { Authorization: `Bearer ${token}` } })
                 .then(result => handleResponse(undefined, reject, resolve, result))
@@ -64,22 +49,7 @@ export default class AssetApi {
             "dn": body.dn, "baseDn": body.baseDn,
             "document": body.displayName, "jansService": body?.jansService || [], "jansEnabled": body.jansEnabled
         }
-        const formData = new FormData();
-        const assetFileBlob = new Blob([body.document], {
-            type: 'application/octet-stream',
-        })
-        const documentBlob = new Blob(
-            [
-                JSON.stringify({
-                    ...document,
-                }),
-            ],
-            {
-                type: 'application/json',
-            }
-        )
-        formData.append('document', documentBlob);
-        formData.append('assetFile', assetFileBlob);
+        const formData = this.buildFormData(body, document)
         return new Promise((resolve, reject) => {
             axios.putForm('/api/v1/jans-assets/upload', formData, { headers: { Authorization: `Bearer ${token}` } })
                 .then(result => handleResponse(undefined, reject, resolve, result))
@@ -109,5 +79,25 @@ export default class AssetApi {
                 handleResponse(error, reject, resolve, data)
             })
         })
+    }
+
+    buildFormData(body, document) {
+        const formData = new FormData()
+        const assetFileBlob = new Blob([body.document], {
+            type: 'application/octet-stream',
+        })
+        const documentBlob = new Blob(
+            [
+                JSON.stringify({
+                    ...document,
+                }),
+            ],
+            {
+                type: 'application/json',
+            }
+        )
+        formData.append('document', documentBlob)
+        formData.append('assetFile', assetFileBlob)
+        return formData
     }
 }
