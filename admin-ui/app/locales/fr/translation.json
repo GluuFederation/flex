@@ -40,7 +40,8 @@
     "api": {
       "roles": "Rôles d'accès",
       "permissions": "Autorisations",
-      "mapping": "Mapping"
+      "mapping": "Mapping",
+      "api_config": "Configurer les propriétés de l'API"
     },
     "lock": "Verrouillage",
     "cache": "Cacher",
@@ -70,7 +71,7 @@
     "oauthserver": "Serveur Auth",
     "persistence": "Persistance",
     "person": "Personne",
-    "properties": "Propriétés",
+    "propriétés": "Propriétés du serveur d'authentification",
     "reports": "Rapports",
     "roles": "Les rôles",
     "schema": "Schéma",
@@ -697,6 +698,7 @@
     "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",
     "all_custom_scripts": "Tous les scripts personnalisés",
+    "config_api_configuration": "Configuration de l'API de configuration",
     "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
     "jans_kc_link": "Lien KC Jans",
@@ -1172,6 +1174,74 @@
     "roles": {
       "name": "Nom de rôle",
       "description": "Description du rôle"
+    },
+    "config_api_properties": {
+      "configOauthEnabled": "Drapeau d'activation/désactivation de l'authentification OAuth. Valeur par défaut vraie.",
+      "disableLoggerTimer": "Drapeau pour activer/désactiver le timer pour refléter dynamiquement les changements de configuration des logs. Valeur par défaut vraie.",
+      "disableAuditLogger": "Drapeau pour activer/désactiver l'audit de requête. Valeur par défaut faux.",
+      "customAttributeValidationEnabled": "Drapeau pour activer/désactiver la vérification si l'attribut personnalisé est déclaré dans le schéma. Valeur par défaut vraie.",
+      "apiProtectionType": "Nom du mécanisme de protection API supporté. Type supporté est OAuth2.",
+      "apiClientId": "Identifiant du client Config-API.",
+      "apiClientPassword": "Mot de passe du client Config-API.",
+      "endpointInjectionEnabled": "Drapeau pour activer/désactiver l'injection de point d'accès. Aucune valeur par défaut spécifiée.",
+      "authIssuerUrl": "Identifiant de l'émetteur du fournisseur OpenID Connect de Jans.",
+      "authOpenidConfigurationUrl": "URL de configuration bien connue du fournisseur OpenID Connect de Jans.",
+      "authOpenidIntrospectionUrl": "URL de Jans du point d'extrémité d'autorisation OAuth 2.0 du fournisseur OpenID Connect.",
+      "authOpenidTokenUrl": "URL de Jans du point d'extrémité de token OAuth 2.0 du fournisseur OpenID Connect.",
+      "authOpenidRevokeUrl": "URL de Jans du point d'extrémité de révocation de token OAuth 2.0 du fournisseur OpenID Connect.",
+      "loggingLevel": "Spécifiez le niveau de journalisation des loggers. Niveau par défaut est INFO.",
+      "loggingLayout": "Disposition de journalisation Log4j. Valeur par défaut TEXTE.",
+      "externalLoggerConfiguration": "Chemin vers la configuration de journalisation log4j2 externe.",
+      "disableJdkLogger": "Choisissez si désactiver les loggers JDK. Aucune valeur par défaut spécifiée.",
+      "maxCount": "Nombre maximum de résultats par page dans les points d'accès de recherche.",
+      "apiApprovedIssuer": "Liste des serveurs Auth externes approuvés pour valider le token.",
+      "exclusiveAuthScopes": "Liste des portées OAuth qui peuvent être validées pour des tokens d'accès uniquement par le serveur Auth Jans sous-jacent.",
+      "corsConfigurationFilters": "Propriétés de configuration des filtres CORS.",
+      "userMandatoryAttributes": "Liste des attributs obligatoires pour la demande de création d'utilisateur.",
+      "ignoreHttpMethod": "Méthodes HTTP pour lesquelles l'audit est désactivé.",
+      "auditLogConf": {
+        "headerAttributes": "Liste des attributs HTTP d'en-tête dont la valeur doit être journalisée.",
+        "enabled": "Drapeau pour activer et désactiver le journal d'audit.",
+        "self": "Détails de la configuration du journal d'audit."
+      },
+      "agamaConfiguration": {
+        "mandatoryAttributes": "Liste des attributs nécessaires pour créer le flux Agama.",
+        "optionalAttributes": "Liste des attributs qui sont optionnels.",
+        "self": "Détails de la configuration Agama."
+      },
+      "dataFormatConversionConf": {
+        "ignoreHttpMethod": "Méthodes HTTP pour lesquelles la conversion de données doit être désactivée.",
+        "enabled": "Drapeau pour activer et désactiver la conversion de données",
+        "self": "Configuration pour la conversion de type de données."
+      },
+      "plugins": {
+        "name": "Nom du plugin.",
+        "description": "Description du plugin.",
+        "className": "Classe d'application du plugin.",
+        "self": "Détails des plugins activés."
+      },
+      "assetMgtConfiguration": {
+        "assetMgtEnabled": "Drapeau indiquant si la fonctionnalité de gestion des actifs est activée.",
+        "assetServerUploadEnabled": "Drapeau indiquant si le téléchargement d'actifs sur le serveur est activé.",
+        "fileExtensionValidationEnabled": "Drapeau indiquant si la validation des extensions de fichier est activée.",
+        "moduleNameValidationEnabled": "Drapeau indiquant si la validation de l'extension du nom du module de service est activée.",
+        "assetBaseDirectory": "Répertoire de base sur le serveur pour télécharger l'actif.",
+        "jansServiceModule": "Liste des modules de service pris en charge où l'actif peut être téléchargé.",
+        "self": "Détails de la configuration de gestion des actifs."
+      },
+      "assetDirMapping": {
+        "directory": "Chemin relatif au répertoire de base des actifs.",
+        "type": "Liste des extensions de fichier stockées dans le répertoire.",
+        "description": "Description des actifs stockés dans le répertoire.",
+        "self": "Type d'actif mappé au répertoire du serveur."
+      },
+      "assetMgtEnabled": "Drapeau indiquant si la fonctionnalité de gestion des actifs est activée.",
+      "assetServerUploadEnabled": "Drapeau indiquant si le téléchargement d'actifs sur le serveur est activé.",
+      "fileExtensionValidationEnabled": "Drapeau indiquant si la validation des extensions de fichier est activée.",
+      "moduleNameValidationEnabled": "Drapeau indiquant si la validation de l'extension du nom du module de service est activée.",
+      "assetBaseDirectory": "Répertoire de base sur le serveur pour télécharger l'actif.",
+      "jansServiceModule": "Liste des modules de service pris en charge où l'actif peut être téléchargé.",
+      "userExclusionAttributes": "Attribut utilisateur qui ne doit pas être retourné dans la réponse."
     },
     "ssa": {
       "org_id": "L'org_id est utilisé pour l'identification de l'organisation.",

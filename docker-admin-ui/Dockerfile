@@ -20,7 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=c89fb50f1ccfdba8ac8f6e050ff3648e3106bdb3
+ENV JANS_SOURCE_VERSION=61ea9acae3760be11d7ca543127e223ce4281b31
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -44,8 +44,7 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=b897e1bc0570628fb5145a9aec876b6b8ee67331
-ENV ADMIN_UI_VERSION=${FLEX_SOURCE_VERSION}
+ENV FLEX_SOURCE_VERSION=33acd2f005a7cc1373f2d6fd3861f088e844622a
 
 RUN mkdir -p /app/templates/admin-ui
 
@@ -62,7 +61,7 @@ RUN mkdir -p /app/templates/admin-ui
 # ========
 
 ENV ADMIN_UI_VERSION=main
-ENV GLUU_BUILD_DATE='2024-05-28 17:19'
+ENV GLUU_BUILD_DATE='2024-06-06 05:59'
 
 RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
     && mkdir -p /opt/flex/admin-ui \
@@ -175,7 +174,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.2" \
+    org.opencontainers.image.version="5.1.3" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 

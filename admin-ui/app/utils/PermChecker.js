@@ -132,6 +132,9 @@ export const ASSETS_READ = BASE_URL + '/config/jans_asset-read'
 export const ASSETS_WRITE = BASE_URL + '/config/jans_asset-write'
 export const ASSETS_DELETE = BASE_URL + '/config/jans_asset-delete'
 
+export const API_CONFIG_READ = BASE_URL + '/config/properties.readonly'
+export const API_CONFIG_WRITE = BASE_URL + '/config/properties.write'
+
 export const hasPermission = (scopes, scope) => {
   let available = false
   if (scopes) {

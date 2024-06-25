@@ -4,6 +4,23 @@ import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
 
+export function generateLabel(name) {
+  const result = name.replace(/([A-Z])/g, ' $1')
+  return result.charAt(0).toUpperCase() + result.slice(1)
+}
+export function isObjectArray(item) {
+  return (
+    Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
+  )
+}
+
+export function isObject(item) {
+  if (item != null) {
+    return typeof item === 'object'
+  } else {
+    return false
+  }
+}
 function JsonPropertyBuilder({
   propKey,
   propValue,
@@ -44,24 +61,6 @@ function JsonPropertyBuilder({
     return (
       (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') || (schema?.type === 'array' && schema?.items?.type === 'string')
     )
-  }
-
-  function isObjectArray(item) {
-    return (
-      Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
-    )
-  }
-  function isObject(item) {
-    if(item != null){
-      return typeof item === 'object'
-    }else{
-      return false;
-    }
-  }
-
-  function generateLabel(name) {
-    const result = name.replace(/([A-Z])/g, ' $1')
-    return result.charAt(0).toUpperCase() + result.slice(1)
   }
 
   if (isBoolean(propValue)) {

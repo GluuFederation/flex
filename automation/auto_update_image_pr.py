@@ -42,11 +42,7 @@ def update_image(image, source_url_env, build_date_env):
 
 
 # This is a temp function until the dockerfile for the admin-ui starts using packages
-def update_git_commit():
-    dfparser = DockerfileParser(f'docker-admin-ui')
-    repo = git.Repo(".")
-    commit = repo.head.commit
-    dfparser.envs["ADMIN_UI_VERSION"] = str(commit)
+
 
 
 def main():
@@ -59,9 +55,6 @@ def main():
         except KeyError:
             print(f'Docker image {image} does not contain any packages to update')
             continue
-
-    # This is a temp function until the dockerfile for the admin-ui starts using packages
-    update_git_commit()
 
 
 if __name__ == "__main__":
