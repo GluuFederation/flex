@@ -18,7 +18,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/.well-known/openid-configuration
 {{- if index .Values.global "auth-server" "ingress" "openidAdditionalAnnotations" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "openidAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "openidAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
@@ -67,14 +67,14 @@ metadata:
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
 {{- if index .Values.global "auth-server" "ingress" "deviceCodeLabels" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "deviceCodeLabels" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "deviceCodeLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/device_authorization.htm
 {{- if index .Values.global "auth-server" "ingress" "deviceCodeAdditionalAnnotations" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "deviceCodeAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "deviceCodeAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
@@ -123,14 +123,14 @@ metadata:
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
 {{- if index .Values.global "auth-server" "ingress" "firebaseMessagingLabels" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "firebaseMessagingLabels" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "firebaseMessagingLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/firebase-messaging-sw.js
 {{- if index .Values.global "auth-server" "ingress" "firebaseMessagingAdditionalAnnotations" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "firebaseMessagingAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "firebaseMessagingAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
@@ -179,14 +179,14 @@ metadata:
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
 {{- if index .Values.global "auth-server" "ingress" "uma2ConfigLabels" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "uma2ConfigLabels" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "uma2ConfigLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/restv1/uma2-configuration
 {{- if index .Values.global "auth-server" "ingress" "uma2AdditionalAnnotations" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "uma2AdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "uma2AdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
@@ -235,14 +235,14 @@ metadata:
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
 {{- if index .Values.global "auth-server" "ingress" "webfingerLabels" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "webfingerLabels" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "webfingerLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/.well-known/webfinger
 {{- if index .Values.global "auth-server" "ingress" "webfingerAdditionalAnnotations" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "webfingerAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "webfingerAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
@@ -291,14 +291,14 @@ metadata:
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
 {{- if index .Values.global "auth-server" "ingress" "webdiscoveryLabels" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "webdiscoveryLabels" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "webdiscoveryLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/.well-known/simple-web-discovery
 {{- if index .Values.global "auth-server" "ingress" "webdiscoveryAdditionalAnnotations" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "webdiscoveryAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "webdiscoveryAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
@@ -457,13 +457,13 @@ metadata:
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
 {{- if index .Values.global "config-api" "ingress" "configApiLabels" }}
-{{ toYaml index .Values.global "config-api" "ingress" "configApiLabels" | indent 4 }}
+{{ toYaml (index .Values.global "config-api" "ingress" "configApiLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.org/ssl-services: "configapi"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
 {{- if index .Values.global "config-api" "ingress" "configApiAdditionalAnnotations" }}
-{{ toYaml index .Values.global "config-api" "ingress" "configApiAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "config-api" "ingress" "configApiAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
@@ -512,14 +512,14 @@ metadata:
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
 {{- if index .Values.global "auth-server" "ingress" "u2fConfigLabels" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "u2fConfigLabels" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "u2fConfigLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/restv1/fido-configuration
 {{- if index .Values.global "auth-server" "ingress" "u2fAdditionalAnnotations" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "u2fAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "u2fAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
@@ -682,13 +682,13 @@ metadata:
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
 {{- if index .Values.global "auth-server" "ingress" "authServerLabels" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "authServerLabels" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "authServerLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.org/ssl-services: "auth-server"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
 {{- if index .Values.global "auth-server" "ingress" "authServerAdditionalAnnotations" }}
-{{ toYaml index .Values.global "auth-server" "ingress" "authServerAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "authServerAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}

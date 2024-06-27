@@ -17,7 +17,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 {{- if index .Values "admin-ui" "ingress" "adminUiAdditionalAnnotations" }}
-{{ toYaml index .Values "admin-ui" "ingress" "adminUiAdditionalAnnotations" | indent 4 }}
+{{ toYaml (index .Values "admin-ui" "ingress" "adminUiAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
