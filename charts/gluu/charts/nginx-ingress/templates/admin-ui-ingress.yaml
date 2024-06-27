@@ -16,14 +16,11 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-{{- if .Values.ingress.adminUiAdditionalAnnotations }}
-{{ toYaml .Values.ingress.adminUiAdditionalAnnotations | indent 4 }}
+{{- if index .Values "admin-ui" "ingress" "adminUiAdditionalAnnotations" }}
+{{ toYaml index .Values "admin-ui" "ingress" "adminUiAdditionalAnnotations" | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
-{{- end }}
-{{- if index .Values.global "nginx-ingress" "customAnnotations" "adminUiIngress" }}
-{{ toYaml (index .Values.global "nginx-ingress" "customAnnotations" "adminUiIngress") | indent 4 }}
 {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}

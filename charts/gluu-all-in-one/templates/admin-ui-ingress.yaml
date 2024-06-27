@@ -10,20 +10,20 @@ metadata:
 {{- if index .Values "nginx-ingress" "ingress" "additionalLabels" }}
 {{ toYaml index .Values "nginx-ingress" "ingress" "additionalLabels" | indent 4 }}
 {{- end }}
-{{- if index .Values "nginx-ingress" "ingress" "authServerLabels" }}
-{{ toYaml index .Values "nginx-ingress" "ingress" "authServerLabels" | indent 4 }}
+{{- if index .Values "auth-server" "ingress" "authServerLabels" }}
+{{ toYaml index .Values "auth-server" "ingress" "authServerLabels" | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-{{- if index .Values "nginx-ingress" "ingress" "webfingerAdditionalAnnotations" }}
-{{ toYaml index .Values "nginx-ingress" "ingress" "webfingerAdditionalAnnotations" | indent 4 }}
+{{- if index .Values "auth-server" "ingress" "webfingerAdditionalAnnotations" }}
+{{ toYaml index .Values "auth-server" "ingress" "webfingerAdditionalAnnotations" | indent 4 }}
 {{- end }}
 {{- if index .Values "nginx-ingress" "ingress" "additionalAnnotations" }}
 {{ toYaml index .Values "nginx-ingress" "ingress" "additionalAnnotations" | indent 4 }}
 {{- end }}
-{{- if .Values.customAnnotations.adminUiIngress }}
-{{ toYaml .Values.customAnnotations.adminUiIngress | indent 4 }}
+{{- if index .Values "admin-ui" "ingress" "adminUiAdditionalAnnotations" }}
+{{ toYaml index .Values "admin-ui" "ingress" "adminUiAdditionalAnnotations" | indent 4 }}
 {{- end }}
 spec:
   ingressClassName: {{ index .Values "nginx-ingress" "ingress" "ingressClassName" }}

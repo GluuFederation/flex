@@ -10,20 +10,17 @@ metadata:
 {{- if index .Values "nginx-ingress" "ingress" "additionalLabels" }}
 {{ toYaml index .Values "nginx-ingress" "ingress" "additionalLabels" | indent 4 }}
 {{- end }}
-{{- if index .Values "nginx-ingress" "ingress" "authServerLabels" }}
-{{ toYaml index .Values "nginx-ingress" "ingress" "authServerLabels" | indent 4 }}
+{{- if index .Values "auth-server" "ingress" "authServerLabels" }}
+{{ toYaml index .Values "auth-server" "ingress" "authServerLabels" | indent 4 }}
 {{- end }}
   annotations:
     nginx.org/ssl-services: "auth-server"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
-{{- if index .Values "nginx-ingress" "ingress" "authServerAdditionalAnnotations" }}
-{{ toYaml index .Values "nginx-ingress" "ingress" "authServerAdditionalAnnotations" | indent 4 }}
+{{- if index .Values "auth-server" "ingress" "authServerAdditionalAnnotations" }}
+{{ toYaml index .Values "auth-server" "ingress" "authServerAdditionalAnnotations" | indent 4 }}
 {{- end }}
 {{- if index .Values "nginx-ingress" "ingress" "additionalAnnotations" }}
 {{ toYaml index .Values "nginx-ingress" "ingress" "additionalAnnotations" | indent 4 }}
-{{- end }}
-{{- if .Values.customAnnotations.authServerIngress }}
-{{ toYaml .Values.customAnnotations.authServerIngress | indent 4 }}
 {{- end }}
     nginx.ingress.kubernetes.io/configuration-snippet: |
             if ($ssl_client_verify != SUCCESS) {return 403;}
@@ -63,14 +60,14 @@ metadata:
 {{- if index .Values "nginx-ingress" "ingress" "additionalLabels" }}
 {{ toYaml index .Values "nginx-ingress" "ingress" "additionalLabels" | indent 4 }}
 {{- end }}
-{{- if index .Values "nginx-ingress" "ingress" "authServerLabels" }}
-{{ toYaml index .Values "nginx-ingress" "ingress" "authServerLabels" | indent 4 }}
+{{- if index .Values "auth-server" "ingress" "authServerLabels" }}
+{{ toYaml index .Values "auth-server" "ingress" "authServerLabels" | indent 4 }}
 {{- end }}
   annotations:
     nginx.org/ssl-services: "auth-server"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
-{{- if index .Values "nginx-ingress" "ingress" "authServerAdditionalAnnotations" }}
-{{ toYaml index .Values "nginx-ingress" "ingress" "authServerAdditionalAnnotations" | indent 4 }}
+{{- if index .Values "auth-server" "ingress" "authServerAdditionalAnnotations" }}
+{{ toYaml index .Values "auth-server" "ingress" "authServerAdditionalAnnotations" | indent 4 }}
 {{- end }}
 {{- if index .Values "nginx-ingress" "ingress" "additionalAnnotations" }}
 {{ toYaml index .Values "nginx-ingress" "ingress" "additionalAnnotations" | indent 4 }}
