@@ -289,6 +289,14 @@ auth-server:
     authServerLabels: { }
     # -- Auth server ingress resource additional annotations.
     authServerAdditionalAnnotations: { }
+    # -- Auth server protected token ingress resource labels. key app is taken
+    authServerProtectedTokenLabels: { }
+    # -- Auth server protected token ingress resource additional annotations.
+    authServerProtectedTokenAdditionalAnnotations: { }
+    # -- Auth server protected token ingress resource labels. key app is taken
+    authServerProtectedRegisterLabels: { }
+    # -- Auth server protected register ingress resource additional annotations.
+    authServerProtectedRegisterAdditionalAnnotations: { }    
   # -- Enable jans-lock as service running inside auth-server
   lockEnabled: false
 # -- Responsible for regenerating auth-keys per x hours
