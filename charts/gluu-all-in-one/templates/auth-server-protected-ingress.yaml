@@ -69,8 +69,8 @@ metadata:
 {{- if index .Values "auth-server" "ingress" "authServerLabels" }}
 {{ toYaml (index .Values "auth-server" "ingress" "authServerLabels") | indent 4 }}
 {{- end }}
-{{- if index .Values.global "auth-server" "ingress" "authServerProtectedRegisterLabels" }}
-{{ toYaml (index .Values.global "auth-server" "ingress" "authServerProtectedRegisterLabels") | indent 4 }}
+{{- if index .Values "auth-server" "ingress" "authServerProtectedRegisterLabels" }}
+{{ toYaml (index .Values "auth-server" "ingress" "authServerProtectedRegisterLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.org/ssl-services: "auth-server"
