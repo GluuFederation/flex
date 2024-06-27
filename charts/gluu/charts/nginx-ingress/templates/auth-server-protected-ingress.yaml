@@ -10,12 +10,18 @@ metadata:
 {{- if .Values.ingress.additionalLabels }}
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
+{{- if index .Values.global "auth-server" "ingress" "authServerLabels" }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "authServerLabels") | indent 4 }}
+{{- end }}
 {{- if index .Values.global "auth-server" "ingress" "authServerProtectedTokenLabels" }}
 {{ toYaml (index .Values.global "auth-server" "ingress" "authServerProtectedTokenLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.org/ssl-services: "auth-server"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
+{{- if index .Values.global "auth-server" "ingress" "authServerAdditionalAnnotations" }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "authServerAdditionalAnnotations") | indent 4 }}
+{{- end }}    
 {{- if index .Values.global "auth-server" "ingress" "authServerProtectedTokenAdditionalAnnotations" }}
 {{ toYaml (index .Values.global "auth-server" "ingress" "authServerProtectedTokenAdditionalAnnotations") | indent 4 }}
 {{- end }}
@@ -69,12 +75,18 @@ metadata:
 {{- if .Values.ingress.additionalLabels }}
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
+{{- if index .Values.global "auth-server" "ingress" "authServerLabels" }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "authServerLabels") | indent 4 }}
+{{- end }}
 {{- if index .Values.global "auth-server" "ingress" "authServerProtectedRegisterLabels" }}
 {{ toYaml (index .Values.global "auth-server" "ingress" "authServerProtectedRegisterLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.org/ssl-services: "auth-server"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
+{{- if index .Values.global "auth-server" "ingress" "authServerAdditionalAnnotations" }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "authServerAdditionalAnnotations") | indent 4 }}
+{{- end }}
 {{- if index .Values.global "auth-server" "ingress" "authServerProtectedRegisterAdditionalAnnotations" }}
 {{ toYaml (index .Values.global "auth-server" "ingress" "authServerProtectedRegisterAdditionalAnnotations") | indent 4 }}
 {{- end }}
