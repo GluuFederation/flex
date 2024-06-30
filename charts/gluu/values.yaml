@@ -1304,7 +1304,7 @@ global:
       secret: {}
     # -- Boolean flag to enable/disable the persistence chart.
     enabled: true
-  # -- service account used by kubernetes resources
+  # -- service account used by Kubernetes resources
   serviceAccountName: default  
   scim:
     # — Add custom annotations for kubernetes resources for the service
