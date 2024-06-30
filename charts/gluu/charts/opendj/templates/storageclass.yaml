@@ -14,14 +14,11 @@ metadata:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "3"
     "helm.sh/hook-delete-policy": before-hook-creation
-{{- if or (.Values.additionalAnnotations) (.Values.global.opendj.customAnnotations.storageClass) }}
-  annotations:
 {{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
 {{- if .Values.global.opendj.customAnnotations.storageClass }}
 {{ toYaml .Values.global.opendj.customAnnotations.storageClass | indent 4 }}
-{{- end }}
 {{- end }}
     # Annotation below is to keep the storage class during upgrade. Otherwise, due to the flag at line 1 which is needed, this resource will be deleted.
     helm.sh/resource-policy: keep
