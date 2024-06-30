@@ -10,8 +10,8 @@ metadata:
 {{- if .Values.ingress.additionalLabels }}
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.ingress.openidConfigLabels }}
-{{ toYaml .Values.ingress.openidConfigLabels | indent 4 }}
+{{- if index .Values.global "auth-server" "ingress" "openidConfigLabels" }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "openidConfigLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
