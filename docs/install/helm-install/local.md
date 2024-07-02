@@ -37,7 +37,7 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 ## Installation Steps
 
-Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT. 
+Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
 
 Start a fresh Ubuntu `18.04`/`20.04`/`22.04` VM with ports `443` and `80` open. Then execute the following:
 

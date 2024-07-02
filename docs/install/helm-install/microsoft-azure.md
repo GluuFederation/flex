@@ -16,7 +16,7 @@ tags:
 
 ## Initial Setup
 
-1. Before initiating the setup please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT.
+1. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
 
 2. Install [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
 
@@ -77,7 +77,7 @@ tags:
 
     - FQDN/domain is registered:
 
-        Add the following yaml snippet to your `override.yaml` file`:
+        Add the following yaml snippet to your `override.yaml` file:
 
         ```yaml
         global:
@@ -102,6 +102,18 @@ tags:
 
     -  LDAP/Opendj for persistence storage
 
+          Prepare cert and key for OpenDJ, for example:
+
+          ```
+          openssl req -x509 -newkey rsa:2048 -sha256 -days 365 -nodes -keyout opendj.key -out opendj.crt -subj '/CN=demoexample.gluu.org' -addext 'subjectAltName=DNS:ldap,DNS:opendj'
+          ```
+
+          Extract the contents of OpenDJ cert and key files as base64 string:
+
+          ```
+          OPENDJ_CERT_B64=$(base64 opendj.crt -w0)
+          OPENDJ_KEY_B64=$(base64 opendj.key -w0)
+          ```
 
           Add the following yaml snippet to your `override.yaml` file:
           ```yaml
@@ -111,6 +123,12 @@ tags:
               provisioner: disk.csi.azure.com
             opendj:
               enabled: true
+          config:
+            configmap:
+              # -- contents of OpenDJ cert file in base64-string
+              cnLdapCrt: <OPENDJ_CERT_B64>
+              # -- contents of OpenDJ key file in base64-string
+              cnLdapKey: <OPENDJ_KEY_B64>
           ```
 
           So if your desired configuration has no-FQDN and LDAP, the final `override.yaml` file will look something like that:
@@ -124,15 +142,21 @@ tags:
                provisioner: disk.csi.azure.com
              opendj:
                enabled: true
+           config:
+             configmap:
+               # -- contents of OpenDJ cert file in base64-string
+               cnLdapCrt: <OPENDJ_CERT_B64>
+               # -- contents of OpenDJ key file in base64-string
+               cnLdapKey: <OPENDJ_KEY_B64>
            nginx-ingress:
             ingress:
                 path: /
                 hosts:
-                - demoexample.gluu.org #CHANGE-THIS to the FQDN used for Gluu
+                - demoexample.gluu.org #CHANGE-THIS to the FQDN used for Flex
                 tls:
                 - secretName: tls-certificate
                   hosts:
-                  - demoexample.gluu.org #CHANGE-THIS to the FQDN used for Gluu      
+                  - demoexample.gluu.org #CHANGE-THIS to the FQDN used for Flex      
           ```
 
 

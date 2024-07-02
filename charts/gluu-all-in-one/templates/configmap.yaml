@@ -9,9 +9,14 @@ metadata:
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.additionalAnnotations }}
+{{- if or (.Values.additionalAnnotations) (.Values.customAnnotations.configMap) }}
   annotations:
+{{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.configMap }}
+{{ toYaml .Values.customAnnotations.configMap | indent 4 }}
+{{- end }}
 {{- end }}
 data:
   # Jetty header size in bytes in the auth server
@@ -348,9 +353,14 @@ metadata:
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.additionalAnnotations }}
+{{- if or (.Values.additionalAnnotations) (.Values.customAnnotations.configMap) }}
   annotations:
+{{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.configMap }}
+{{ toYaml .Values.customAnnotations.configMap | indent 4 }}
+{{- end }}
 {{- end }}
 
 ---
@@ -445,7 +455,12 @@ metadata:
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.additionalAnnotations }}
+{{- if or (.Values.additionalAnnotations) (.Values.customAnnotations.configMap) }}
   annotations:
+{{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.configMap }}
+{{ toYaml .Values.customAnnotations.configMap | indent 4 }}
+{{- end }}
 {{- end }}

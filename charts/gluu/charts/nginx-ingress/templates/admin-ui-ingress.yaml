@@ -10,14 +10,14 @@ metadata:
 {{- if .Values.ingress.additionalLabels }}
 {{ toYaml .Values.ingress.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.ingress.adminUiLabels }}
-{{ toYaml .Values.ingress.adminUiLabels | indent 4 }}
+{{- if index .Values.global "admin-ui" "ingress" "adminUiLabels" }}
+{{ toYaml (index .Values.global "admin-ui" "ingress" "adminUiLabels") | indent 4 }}
 {{- end }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-{{- if .Values.ingress.adminUiAdditionalAnnotations }}
-{{ toYaml .Values.ingress.adminUiAdditionalAnnotations | indent 4 }}
+{{- if index .Values.global "admin-ui" "ingress" "adminUiAdditionalAnnotations" }}
+{{ toYaml (index .Values.global "admin-ui" "ingress" "adminUiAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
