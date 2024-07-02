@@ -28,6 +28,10 @@
     "metadataFile": "./fido/plugin-metadata"
   },
   {
+    "key": "jans-lock",
+    "metadataFile": "./jans-lock/plugin-metadata"
+  },
+  {
     "key": "jans-link",
     "metadataFile": "./jans-link/plugin-metadata"
   },
