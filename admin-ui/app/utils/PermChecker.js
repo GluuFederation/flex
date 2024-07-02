@@ -84,6 +84,9 @@ export const FIDO_DELETE = BASE_URL + '/config/fido2.delete'
 export const JANS_LINK_READ = BASE_URL + '/config/jans-link.readonly'
 export const JANS_LINK_WRITE = BASE_URL + '/config/jans-link.write'
 
+export const JANS_LOCK_READ = BASE_URL + '/lock-config.readonly'
+export const JANS_LOCK_WRITE = BASE_URL + '/lock-config.write'
+
 export const JANS_KC_LINK_READ = BASE_URL + '/kc-link-config.readonly'
 export const JANS_KC_LINK_WRITE = BASE_URL + '/kc-link-config.write'
 
