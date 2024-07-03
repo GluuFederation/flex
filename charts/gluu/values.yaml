@@ -1039,9 +1039,9 @@ global:
     enabled: true
     # — Add custom annotations for kubernetes resources for the service
     customAnnotations:
-      cronjob: ""
-      service: ""
-      secret: ""
+      cronjob: {}
+      service: {}
+      secret: {}
     # -- The initial auth server key rotation keys life in hours
     initKeysLife: 48
   # -- Volume storage type if using AWS volumes.
