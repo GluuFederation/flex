@@ -896,6 +896,15 @@ global:
     # -- Activates ALB ingress
     ingress: false
   admin-ui:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      destinationRule: {}
+      podDisruptionBudget: {}
+      virtualService: {}
+      deployment: {}
+      horizontalPodAutoscaler: {}
+      service: {}
+      secret: {}
     # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.
     enabled: true
     # -- Name of the admin-ui service. Please keep it as default.
@@ -903,8 +912,21 @@ global:
     ingress:
       # -- Enable Admin UI endpoints in either istio or nginx ingress depending on users choice
       adminUiEnabled: false
+      # -- Admin UI ingress resource labels. key app is taken.
+      adminUiLabels: { }
+      # -- Admin UI ingress resource additional annotations.
+      adminUiAdditionalAnnotations: { }
 
   auth-server:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      destinationRule: {}
+      podDisruptionBudget: {}
+      virtualService: {}
+      deployment: {}
+      horizontalPodAutoscaler: {}
+      service: {}
+      secret: {}
     # -- Name of the auth-server service. Please keep it as default.
     authServerServiceName: auth-server
     # -- Boolean flag to enable/disable auth-server chart. You should never set this to false.
@@ -969,12 +991,57 @@ global:
       authServerProtectedToken: false
       # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio.
       authServerProtectedRegister: false
+      # -- openid-configuration ingress resource labels. key app is taken
+      openidConfigLabels: { }
+      # -- openid-configuration ingress resource additional annotations.
+      openidAdditionalAnnotations: { }
+      # -- device-code ingress resource labels. key app is taken
+      deviceCodeLabels: { }
+      # -- device-code ingress resource additional annotations.
+      deviceCodeAdditionalAnnotations: { }
+      # -- Firebase Messaging ingress resource labels. key app is taken
+      firebaseMessagingLabels: { }
+      # -- Firebase Messaging ingress resource additional annotations.
+      firebaseMessagingAdditionalAnnotations: { }
+      # -- uma2 config ingress resource labels. key app is taken
+      uma2ConfigLabels: { }
+      # -- uma2 config ingress resource additional annotations.
+      uma2AdditionalAnnotations: { }
+      # -- webfinger ingress resource labels. key app is taken
+      webfingerLabels: { }
+      # -- webfinger ingress resource additional annotations.
+      webfingerAdditionalAnnotations: { }
+      # -- webdiscovery ingress resource labels. key app is taken
+      webdiscoveryLabels: { }
+      # -- webdiscovery ingress resource additional annotations.
+      webdiscoveryAdditionalAnnotations: { }
+      # -- u2f config ingress resource labels. key app is taken
+      u2fConfigLabels: { }
+      # -- u2f config ingress resource additional annotations.
+      u2fAdditionalAnnotations: { }
+      # -- Auth server ingress resource labels. key app is taken
+      authServerLabels: { }
+      # -- Auth server ingress resource additional annotations.
+      authServerAdditionalAnnotations: { }
+      # -- Auth server protected token ingress resource labels. key app is taken
+      authServerProtectedTokenLabels: { }
+      # -- Auth server protected token ingress resource additional annotations.
+      authServerProtectedTokenAdditionalAnnotations: { }
+      # -- Auth server protected token ingress resource labels. key app is taken
+      authServerProtectedRegisterLabels: { }
+      # -- Auth server protected register ingress resource additional annotations.
+      authServerProtectedRegisterAdditionalAnnotations: { }      
     # -- Enable jans-lock as service running inside auth-server
     lockEnabled: false
 
   auth-server-key-rotation:
     # -- Boolean flag to enable/disable the auth-server-key rotation cronjob chart.
     enabled: true
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      cronjob: {}
+      service: {}
+      secret: {}
     # -- The initial auth server key rotation keys life in hours
     initKeysLife: 48
   # -- Volume storage type if using AWS volumes.
@@ -984,6 +1051,15 @@ global:
   # -- Azure storage kind if using Azure disks
   azureStorageKind: Managed
   casa:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      destinationRule: {}
+      podDisruptionBudget: {}
+      virtualService: {}
+      deployment: {}
+      horizontalPodAutoscaler: {}
+      service: {}
+      secret: {}
     # -- passing custom java options to casa. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs.
     cnCustomJavaOptions: ""
     # -- App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.
@@ -1006,6 +1082,10 @@ global:
     ingress:
       # -- Enable casa endpoints /casa
       casaEnabled: false
+      # -- Casa ingress resource labels. key app is taken
+      casaLabels: { }
+      # -- Casa ingress resource additional annotations.
+      casaAdditionalAnnotations: { }
   cloud:
     # -- Boolean flag if enabled will strip resources requests and limits from all services.
     testEnviroment: false
@@ -1038,6 +1118,16 @@ global:
   # -- Open banking AS transport truststore crt. This is normally generated from the OB issuing CA, OB Root CA and Signing CA. Used when .global.cnObExtSigningJwksUri is set. Used in SSA Validation. This must be encoded using base64.
   cnObTransportTrustStore: ""
   config:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      clusterRoleBinding: {}
+      configMap: {}
+      job: {}
+      roleBinding: {}
+      role: {}
+      secret: {}
+      service: {}
+      serviceAccount: {}
     # -- Boolean flag to enable/disable the configuration chart. This normally should never be false
     enabled: true
   # -- https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/
@@ -1055,6 +1145,14 @@ global:
   # The location of file contains replica regions definition (if any). This file is mostly used in primary region. Example of contents of the file: `[{"Region": "us-west-1"}]`.  Used only when global.configAdapterName and global.configSecretAdapter is set to aws. Leave as this is a sensible default.
   cnAwsSecretsReplicaRegionsFile: /etc/jans/conf/aws_secrets_replica_regions
   config-api:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      destinationRule: {}
+      podDisruptionBudget: {}
+      virtualService: {}
+      deployment: {}
+      horizontalPodAutoscaler: {}
+      service: {}
     # -- Name of the config-api service. Please keep it as default.
     configApiServerServiceName: config-api
     # -- Boolean flag to enable/disable the config-api chart.
@@ -1100,11 +1198,24 @@ global:
     ingress:
       # Enable config API endpoints /jans-config-api
       configApiEnabled: true
+      # -- configAPI ingress resource labels. key app is taken
+      configApiLabels: { }
+      # -- ConfigAPI ingress resource additional annotations.
+      configApiAdditionalAnnotations: { }    
     # -- Comma-separated values of enabled plugins (supported plugins are "admin-ui","fido2","scim","user-mgt","jans-link","kc-saml")
     plugins: "admin-ui,fido2,scim,user-mgt"
   # -- Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services.
   fqdn: demoexample.gluu.org
   fido2:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      destinationRule: {}
+      podDisruptionBudget: {}
+      virtualService: {}
+      deployment: {}
+      horizontalPodAutoscaler: {}
+      service: {}
+      secret: {}
     # -- Name of the fido2 service. Please keep it as default.
     fido2ServiceName: fido2
     # -- Boolean flag to enable/disable the fido2 chart.
@@ -1137,6 +1248,14 @@ global:
       fido2ConfigEnabled: false
       # -- Enable endpoint /jans-fido2
       fido2Enabled: false
+      # -- fido2 config ingress resource labels. key app is taken
+      fido2ConfigLabels: { }
+      # -- fido2 config ingress resource additional annotations.
+      fido2ConfigAdditionalAnnotations: { }
+      # -- fido2 ingress resource labels. key app is taken
+      fido2Labels: { }
+      # -- fido2 ingress resource additional annotations.
+      fido2AdditionalAnnotations: { }      
   # -- GCE storage kind if using Google disks
   gcePdStorageType: pd-standard
   # -- Boolean flag to enable mapping global.lbIp  to global.fqdn inside pods on clouds that provide static ip for load balancers. On cloud that provide only addresses to the LB this flag will enable a script to actively scan config.configmap.lbAddr and update the hosts file inside the pods automatically.
@@ -1152,6 +1271,7 @@ global:
     additionalLabels: { }
     # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
     additionalAnnotations: { }
+    
     # -- Override the gateway that can be created by default. This is used when istio ingress has already been setup and the gateway exists.
     gateways: [ ]
   # -- The Loadbalancer IP created by nginx or istio on clouds that provide static IPs. This is not needed if `global.fqdn` is globally resolvable.
@@ -1164,12 +1284,38 @@ global:
     enabled: false
     # -- Name of the OpenDJ service. Please keep it as default.
     ldapServiceName: opendj
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      cronjob: {}
+      horizontalPodAutoscaler: {}
+      destinationRule: {}
+      podDisruptionBudget: {}
+      service: {}
+      statefulset: {}
+      storageClass: {}
+      secret: {}
   # --  Gluu distributions supported are: default|openbanking.
   distribution: default
   persistence:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      job: {}
+      service: {}
+      secret: {}
     # -- Boolean flag to enable/disable the persistence chart.
     enabled: true
+  # -- service account used by Kubernetes resources
+  serviceAccountName: default  
   scim:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      destinationRule: {}
+      podDisruptionBudget: {}
+      virtualService: {}
+      deployment: {}
+      horizontalPodAutoscaler: {}
+      service: {}
+      secret: {}
     # -- Name of the scim service. Please keep it as default.
     scimServiceName: scim
     # -- Boolean flag to enable/disable the SCIM chart.
@@ -1206,6 +1352,14 @@ global:
       scimConfigEnabled: false
       # -- Enable SCIM endpoints /jans-scim
       scimEnabled: false
+      # -- SCIM config ingress resource labels. key app is taken
+      scimConfigLabels: { }
+      # -- SCIM config ingress resource additional annotations.
+      scimConfigAdditionalAnnotations: { }
+      # -- SCIM config ingress resource labels. key app is taken
+      scimLabels: { }
+      # -- SCIM ingress resource additional annotations.
+      scimAdditionalAnnotations: { }
   # -- StorageClass section for OpenDJ charts. This is not currently used by the openbanking distribution. You may specify custom parameters as needed.
   storageClass:
     allowVolumeExpansion: true
@@ -1223,6 +1377,14 @@ global:
     reclaimPolicy: Retain
     volumeBindingMode: WaitForFirstConsumer
   link:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      destinationRule: {}
+      podDisruptionBudget: {}
+      virtualService: {}
+      deployment: {}
+      horizontalPodAutoscaler: {}
+      service: {}
     # -- Name of the link service. Please keep it as default.
     linkServiceName: link
     # -- Boolean flag to enable/disable the link chart.
@@ -1258,6 +1420,15 @@ global:
       # Enable link endpoints /jans-link
       linkEnabled: true
   saml:
+    # — Add custom annotations for kubernetes resources for the service
+    customAnnotations:
+      destinationRule: {}
+      podDisruptionBudget: {}
+      virtualService: {}
+      deployment: {}
+      horizontalPodAutoscaler: {}
+      service: {}
+      secret: {}
     # -- Name of the saml service. Please keep it as default.
     samlServiceName: saml
     # -- Boolean flag to enable/disable the saml chart.
@@ -1266,6 +1437,10 @@ global:
     ingress:
       # Enable saml endpoints /kc
       samlEnabled: false
+      # -- SAML config ingress resource labels. key app is taken
+      samlLabels: { }
+      # -- SAML ingress resource additional annotations.
+      samlAdditionalAnnotations: { }      
     # -- passing custom java options to saml. DO NOT PASS JAVA_OPTIONS in envs.
     cnCustomJavaOptions: ""
 
@@ -1306,78 +1481,6 @@ nginx-ingress:
       issuerName: ""
       issuerGroup: cert-manager.io
   ingress:
-    # -- Admin UI ingress resource labels. key app is taken.
-    adminUiLabels: { }
-    # -- openid-configuration ingress resource additional annotations.
-    adminUiAdditionalAnnotations: { }
-    # -- openid-configuration ingress resource labels. key app is taken
-    openidConfigLabels: { }
-    # -- openid-configuration ingress resource additional annotations.
-    openidAdditionalAnnotations: { }
-    # -- device-code ingress resource labels. key app is taken
-    deviceCodeLabels: { }
-    # -- device-code ingress resource additional annotations.
-    deviceCodeAdditionalAnnotations: { }
-    # -- Firebase Messaging ingress resource labels. key app is taken
-    firebaseMessagingLabels: { }
-    # -- Firebase Messaging ingress resource additional annotations.
-    firebaseMessagingAdditionalAnnotations: { }
-    # -- uma2 config ingress resource labels. key app is taken
-    uma2ConfigLabels: { }
-    # -- uma2 config ingress resource additional annotations.
-    uma2AdditionalAnnotations: { }
-    # -- webfinger ingress resource labels. key app is taken
-    webfingerLabels: { }
-    # -- webfinger ingress resource additional annotations.
-    webfingerAdditionalAnnotations: { }
-    # -- webdiscovery ingress resource labels. key app is taken
-    webdiscoveryLabels: { }
-    # -- webdiscovery ingress resource additional annotations.
-    webdiscoveryAdditionalAnnotations: { }
-    # -- SCIM config ingress resource labels. key app is taken
-    scimConfigLabels: { }
-    # -- SCIM config ingress resource additional annotations.
-    scimConfigAdditionalAnnotations: { }
-    # -- SCIM config ingress resource labels. key app is taken
-    scimLabels: { }
-    # -- SCIM ingress resource additional annotations.
-    scimAdditionalAnnotations: { }
-    # -- configAPI ingress resource labels. key app is taken
-    configApiLabels: { }
-    # -- ConfigAPI ingress resource additional annotations.
-    configApiAdditionalAnnotations: { }
-    # -- u2f config ingress resource labels. key app is taken
-    u2fConfigLabels: { }
-    # -- u2f config ingress resource additional annotations.
-    u2fAdditionalAnnotations: { }
-    # -- fido2 config ingress resource labels. key app is taken
-    fido2ConfigLabels: { }
-    # -- fido2 config ingress resource additional annotations.
-    fido2ConfigAdditionalAnnotations: { }
-    # -- fido2 ingress resource labels. key app is taken
-    fido2Labels: { }
-    # -- fido2 ingress resource additional annotations.
-    fido2AdditionalAnnotations: { }
-    # -- Auth server ingress resource labels. key app is taken
-    authServerLabels: { }
-    # -- Auth server ingress resource additional annotations.
-    authServerAdditionalAnnotations: { }
-    # -- Casa ingress resource labels. key app is taken
-    casaLabels: { }
-    # -- Casa ingress resource additional annotations.
-    casaAdditionalAnnotations: { }
-    # -- SAML config ingress resource labels. key app is taken
-    samlLabels: { }
-    # -- SAML ingress resource additional annotations.
-    samlAdditionalAnnotations: { }
-    # -- Auth server protected token ingress resource labels. key app is taken
-    authServerProtectedTokenLabels: { }
-    # -- Auth server protected token ingress resource additional annotations.
-    authServerProtectedTokenAdditionalAnnotations: { }
-    # -- Auth server protected token ingress resource labels. key app is taken
-    authServerProtectedRegisterLabels: { }
-    # -- Auth server protected register ingress resource additional annotations.
-    authServerProtectedRegisterAdditionalAnnotations: { }
     # -- Additional labels that will be added across all ingress definitions in the format of {mylabel: "myapp"}
     additionalLabels: { }
     # -- Additional annotations that will be added across all ingress definitions in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
