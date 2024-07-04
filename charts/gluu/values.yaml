@@ -991,6 +991,10 @@ global:
       authServerProtectedRegister: false
       # -- Enable endpoint /.well-known/lock-master-configuration
       lockConfigEnabled: false
+      # -- Lock config ingress resource labels. key app is taken
+      lockConfigLabels: { }
+      # -- Lock config ingress resource additional annotations.
+      lockConfigAdditionalAnnotations: { }      
       # -- openid-configuration ingress resource labels. key app is taken
       openidConfigLabels: { }
       # -- openid-configuration ingress resource additional annotations.
@@ -1031,10 +1035,6 @@ global:
       authServerProtectedRegisterLabels: { }
       # -- Auth server protected register ingress resource additional annotations.
       authServerProtectedRegisterAdditionalAnnotations: { }
-      # -- Lock config ingress resource labels. key app is taken
-      lockConfigLabels: { }
-      # -- Lock config ingress resource additional annotations.
-      lockConfigAdditionalAnnotations: { }
     # -- Enable jans-lock as service running inside auth-server
     lockEnabled: false
 
