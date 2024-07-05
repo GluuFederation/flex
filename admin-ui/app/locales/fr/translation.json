@@ -1164,6 +1164,27 @@
       "delayTime": "Temps de délai en secondes après avoir atteint la limite de maximumAllowedAttemptsWithoutDelay.",
       "bruteForceProtectionEnabled": "Activer ou désactiver le service. Cette fonctionnalité peut être activée dynamiquement."
     },
+    "jans_lock": {
+      "baseEndpoint": "URL de base de l'endpoint du verrou",
+      "tokenChannels": "Liste des noms des canaux de jetons",
+      "disableJdkLogger": "Choisir de désactiver les loggers JDK",
+      "loggingLevel": "Spécifier le niveau de journalisation des loggers",
+      "loggingLayout": "Disposition de la journalisation utilisée pour les loggers du serveur d'autorisation Jans",
+      "externalLoggerConfiguration": "Le chemin vers la configuration externe de la journalisation log4j2",
+      "metricChannel": "Canal pour les rapports de métriques",
+      "metricReporterInterval": "L'intervalle du rapporteur de métriques en secondes",
+      "metricReporterKeepDataDays": "Le nombre de jours de conservation des données rapportées par les métriques",
+      "metricReporterEnabled": "Activer le rapporteur de métriques",
+      "cleanServiceInterval": "Intervalle de temps pour le service de nettoyage en secondes",
+      "opaConfiguration": {
+        "baseUrl": "URL de base OPA",
+        "accessToken": "Jeton d'accès OPA"
+      },
+      "policiesJsonUrisAuthorizationToken": "Jeton d'autorisation pour accéder aux URIs Json",
+      "policiesJsonUris": "Liste des URIs Json avec lien vers les politiques Rego",
+      "policiesZipUrisAuthorizationToken": "Jeton d'autorisation pour accéder aux URIs Zip",
+      "policiesZipUris": "Liste des URIs Zip avec des politiques"
+    },
     "jans_link": {
       "enabled": "Cette case à cocher est utilisée pour enregistrer et pousser les modifications. Ne l'utilisez que si l'administrateur du serveur a entré toutes les valeurs requises.",
       "useSSL": "Utilisez cette fonctionnalité si le serveur principal autorise la connectivité SSL."

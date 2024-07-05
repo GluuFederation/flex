@@ -1337,6 +1337,27 @@
       "delayTime": "Tempo de atraso em segundos após atingir o limite de maximumAllowedAttemptsWithoutDelay.",
       "bruteForceProtectionEnabled": "Habilitar ou desabilitar o serviço. Essa funcionalidade pode ser ativada dinamicamente."
     },
+    "jans_lock": {
+      "baseEndpoint": "URL do endpoint base do bloqueio",
+      "tokenChannels": "Lista de nomes dos canais de token",
+      "disableJdkLogger": "Escolher se deseja desativar os loggers do JDK",
+      "loggingLevel": "Especificar o nível de registro dos loggers",
+      "loggingLayout": "Layout de registro usado para os loggers do servidor de autorização Jans",
+      "externalLoggerConfiguration": "O caminho para a configuração externa de registro log4j2",
+      "metricChannel": "Canal para relatórios de métricas",
+      "metricReporterInterval": "O intervalo para o relatador de métricas em segundos",
+      "metricReporterKeepDataDays": "Os dias para manter os dados relatados por métricas",
+      "metricReporterEnabled": "Habilitar o relatador de métricas",
+      "cleanServiceInterval": "Intervalo de tempo para o serviço de limpeza em segundos",
+      "opaConfiguration": {
+        "baseUrl": "URL base do OPA",
+        "accessToken": "Token de acesso OPA"
+      },
+      "policiesJsonUrisAuthorizationToken": "Token de autorização para acessar URIs Json",
+      "policiesJsonUris": "Lista de URIs Json com link para as políticas Rego",
+      "policiesZipUrisAuthorizationToken": "Token de autorização para acessar URIs Zip",
+      "policiesZipUris": "Lista de URIs Zip com políticas"
+    },
     "ssa": {
       "org_id": "L'org_id est utilisé pour l'identification de l'organisation.",
       "description": "Décrire SSA",

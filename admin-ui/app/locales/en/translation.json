@@ -1237,6 +1237,27 @@
       "delayTime": "Delay time in seconds after reaching maximumAllowedAttemptsWithoutDelay limit.",
       "bruteForceProtectionEnabled": "Enable or disable service, This functionality can be enabled dynamically."
     },
+    "jans_lock": {
+      "baseEndpoint": "Lock base endpoint URL",
+      "tokenChannels": "List of token channel names",
+      "disableJdkLogger": "Choose whether to disable JDK loggers",
+      "loggingLevel": "Specify the logging level of loggers",
+      "loggingLayout": "Logging layout used for Jans Authorization Server loggers",
+      "externalLoggerConfiguration": "The path to the external log4j2 logging configuration",
+      "metricChannel": "Channel for metric reports",
+      "metricReporterInterval": "The interval for metric reporter in seconds",
+      "metricReporterKeepDataDays": "The days to keep metric reported data",
+      "metricReporterEnabled": "Enable metric reporter",
+      "cleanServiceInterval": "Time interval for the Clean Service in seconds",
+      "opaConfiguration": {
+        "baseUrl": "Base OPA URL",
+        "accessToken": "OPA access token"
+      },
+      "policiesJsonUrisAuthorizationToken": "Authorization token to access Json Uris",
+      "policiesJsonUris": "List of Json Uris with link to Rego policies",
+      "policiesZipUrisAuthorizationToken": "Authorization token to access Zip Uris",
+      "policiesZipUris": "List of Zip Uris with policies"
+    },
     "openid_client": {
       "displayName": "Name of the Client to be presented to the End-User.",
       "clientName": "Name of the Client to be presented to the End-User.",
