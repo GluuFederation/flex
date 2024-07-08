@@ -730,11 +730,11 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/v1/configuration
-{{- if index .Values "nginx-ingress" "ingress" "lockConfigAdditionalAnnotations" }}
-{{ toYaml (index .Values "nginx-ingress" "ingress" "lockConfigAdditionalAnnotations") | indent 4 }}
+{{- if index .Values "auth-server" "ingress" "lockConfigAdditionalAnnotations" }}
+{{ toYaml (index .Values "auth-server" "ingress" "lockConfigAdditionalAnnotations") | indent 4 }}
 {{- end }}
-{{- if index .Values "auth-server" "ingress" "additionalAnnotations" }}
-{{ toYaml (index .Values "auth-server" "ingress" "additionalAnnotations") | indent 4 }}
+{{- if index .Values "nginx-ingress" "ingress" "additionalAnnotations" }}
+{{ toYaml (index .Values "nginx-ingress" "ingress" "additionalAnnotations") | indent 4 }}
 {{- end }}
 spec:
   ingressClassName: {{ index .Values "nginx-ingress" "ingress" "ingressClassName" }}
