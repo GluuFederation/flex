@@ -478,8 +478,6 @@ config:
     quarkusTransactionEnableRecovery: true
     # -- Keycloak logging level
     kcLogLevel: INFO
-    # -- Keycloak proxy mode (for most deployments, this doesn't need to be changed)
-    kcProxy: edge
     # -- Keycloak database vendor name (default to MySQL server). To use PostgreSQL server, change the value to postgres.
     kcDbVendor: mysql
     # -- Keycloak database username
@@ -991,6 +989,12 @@ global:
       authServerProtectedToken: false
       # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio.
       authServerProtectedRegister: false
+      # -- Enable endpoint /.well-known/lock-master-configuration
+      lockConfigEnabled: false
+      # -- Lock config ingress resource labels. key app is taken
+      lockConfigLabels: { }
+      # -- Lock config ingress resource additional annotations.
+      lockConfigAdditionalAnnotations: { }      
       # -- openid-configuration ingress resource labels. key app is taken
       openidConfigLabels: { }
       # -- openid-configuration ingress resource additional annotations.
@@ -1030,7 +1034,7 @@ global:
       # -- Auth server protected token ingress resource labels. key app is taken
       authServerProtectedRegisterLabels: { }
       # -- Auth server protected register ingress resource additional annotations.
-      authServerProtectedRegisterAdditionalAnnotations: { }      
+      authServerProtectedRegisterAdditionalAnnotations: { }
     # -- Enable jans-lock as service running inside auth-server
     lockEnabled: false
 
