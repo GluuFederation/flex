@@ -65,7 +65,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=74e12c0473795b84e57b57fa6e14cad5e01542d3
+ENV JANS_SOURCE_VERSION=86e9c31f303a02e5d9324ddff5fef78436dfc510
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
@@ -104,7 +104,7 @@ RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
 COPY app /app
 
 # CN version as env var (with suffix if any, i.e. SNAPSHOT)
-ENV CN_VERSION=1.1.3-SNAPSHOT
+ENV CN_VERSION=1.1.3
 
 # set directory contains installer code that will be added to Python sys.path
 ENV PYTHONPATH=/app
