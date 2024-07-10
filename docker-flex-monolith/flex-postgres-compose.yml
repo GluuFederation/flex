@@ -24,7 +24,7 @@ services:
     networks:
       - cloud_bridge
     environment:
-      - CN_HOSTNAME=demoexample.gluu.org
+      #- CN_HOSTNAME=demoexample.gluu.org
       - CN_ADMIN_PASS=1t5Fin3#security
       - CN_ORG_NAME=Janssen
       - CN_EMAIL=team@gluu.org
@@ -38,6 +38,10 @@ services:
       - CN_INSTALL_FIDO2=true
       - CN_INSTALL_CASA=true
       - CN_INSTALL_ADMIN_UI=true
+      - CN_INSTALL_KC_LINK=true
+      - CN_INSTALL_LOCK=true
+      - CN_INSTALL_SAML=true
+      - CN_INSTALL_OPA=true
       - TEST_CLIENT_ID=9876baac-de39-4c23-8a78-674b59df8c09
       - TEST_CLIENT_TRUSTED=true
       - TEST_CLIENT_SECRET=1t5Fin3#security
@@ -51,6 +55,10 @@ services:
       - ./jans-fido2-custom:/opt/jans/jetty/jans-fido2/custom
       - ./jans-scim-custom:/opt/jans/jetty/jans-scim/custom
       - ./jans-casa-custom:/opt/jans/jetty/casa/custom
+      - ./jans-auth-log:/opt/jans/jetty/jans-auth/logs
+      - ./jans-config-api-log:/opt/jans/jetty/jans-config-api/logs
+      - ./jans-scim-log:/opt/jans/jetty/jans-scim/logs
+      - ./jans-fido2-log:/opt/jans/jetty/jans-fido2/log
 volumes:
   db-data:
 networks:

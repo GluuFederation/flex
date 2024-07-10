@@ -41,11 +41,17 @@ install_flex() {
   echo "install_scim_server=""$([[ ${CN_INSTALL_SCIM} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "installFido2=""$([[ ${CN_INSTALL_FIDO2} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install-admin-ui=""$([[ ${CN_INSTALL_ADMIN_UI} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
-  echo "install-casa=""$([[ ${CN_INSTALL_CASA} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
+  echo "install_casa=""$([[ ${CN_INSTALL_CASA} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
+  echo "install_jans_keycloak_link=""$([[ ${CN_INSTALL_KC_LINK} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
+  echo "install_jans_link=""$([[ ${CN_INSTALL_LINK} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
+  echo "install_jans_lock=""$([[ ${CN_INSTALL_LOCK} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
+  echo "install_jans_saml=""$([[ ${CN_INSTALL_SAML} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "adminui-authentication-mode=casa" | tee -a setup.properties > /dev/null
+  echo "install_opa=""$([[ ${CN_INSTALL_OPA} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "test_client_id=${TEST_CLIENT_ID}"| tee -a setup.properties > /dev/null
-  echo "test_client_pw=${TEST_CLIENT_SECRET}" | tee -a setup.properties > /dev/null
+  echo "test_client_pw=${TEST_CLIENT_SECRET}" | tee -a setup.properties > /dev/null1
   echo "test_client_trusted=""$([[ ${TEST_CLIENT_TRUSTED} == true ]] && echo True || echo True)" | tee -a setup.properties > /dev/null
+  echo "loadTestData=True" | tee -a setup.properties > /dev/null
   if [[ "${CN_INSTALL_MYSQL}" == "true" ]] || [[ "${CN_INSTALL_PGSQL}" == "true" ]]; then
     echo "Installing with RDBMS"
     echo "rdbm_install=2" | tee -a setup.properties > /dev/null
@@ -95,9 +101,11 @@ start_services() {
   /etc/init.d/apache2 start
   /opt/dist/scripts/jans-auth start
   /opt/dist/scripts/jans-config-api start
-  /opt/dist/scripts/jans-fido2 start
   /opt/dist/scripts/jans-scim start
-  /opt/dist/scripts/casa start ||:  # no-op if script is missing
+  /opt/dist/scripts/jans-fido2 start
+  /opt/dist/scripts/jans-casa start ||:  # no-op if script is missing
+  /opt/dist/scripts/jans-keycloak-link start ||:  # no-op if script is missing
+  /opt/dist/scripts/jans-link start ||:  # no-op if script is missing
 }
 
 check_installed_flex

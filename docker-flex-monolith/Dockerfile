@@ -66,8 +66,6 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
     TEST_CLIENT_ID="9876baac-de39-4c23-8a78-674b59df8c09" \
     TEST_CLIENT_SECRET="" \
     TEST_CLIENT_TRUSTED="true" \
-    IS_FQDN_REGISTERED="false" \
-    # Install with local mysql by default
     CN_INSTALL_LDAP="false" \
     CN_INSTALL_MYSQL="false" \
     CN_INSTALL_PGSQL="false" \
@@ -76,10 +74,17 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
     CN_INSTALL_FIDO2="true" \
     CN_INSTALL_CASA="true" \
     CN_INSTALL_ADMIN_UI="true" \
+    CN_INSTALL_KC_LINK="true" \
+    CN_INSTALL_LINK="true" \
+    CN_INSTALL_LOCK="true" \
+    CN_INSTALL_SAML="true" \
+    CN_INSTALL_OPA="true" \
     RDBMS_DATABASE="gluu" \
     RDBMS_USER="gluu" \
     RDBMS_PASSWORD="" \
-    RDBMS_HOST=""
+    RDBMS_HOST="" \
+    IS_FQDN_REGISTERED="false" \
+    RUN_TESTS="false"
 
 # ==========
 # misc stuff
