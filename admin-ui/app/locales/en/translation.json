@@ -79,6 +79,9 @@
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
+    "asset_name": "Asset Name",
+    "upload": "Select a file to upload",
+    "jansService": "Related Services",
     "default_permission_in_token": "Default permission in token",
     "aui_feature_ids": "Admin UI Features",
     "introspection_signed_response_alg": "Introspection Signed Response Alg",
@@ -531,6 +534,7 @@
     "portuguese": "Portuguese"
   },
   "menus": {
+    "assets": "Assets",
     "scim": "SCIM",
     "saml": "SAML",
     "trust_relationships": "Trust Relationships",
@@ -604,6 +608,8 @@
   },
   "messages": {
     "add_permission": "Add Permission",
+    "add_asset": "Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Add Configuration",
     "view_configuration": "View Configuration",
     "view_trust_relationshi_details": "View Trust Relationship Details",
@@ -761,6 +767,9 @@
   "titles": {
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",
+    "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "introspection_object": "Introspection Object",
     "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",
@@ -870,6 +879,9 @@
     "yes": "Yes"
   },
   "documentation": {
+    "asset":{
+     "jansService": "Related Services"
+    },
     "webhook": {
       "url": "Webhook URL.",
       "enabled": "Toggle to activate or deactivate the webhook functionality.",
