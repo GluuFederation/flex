@@ -29,6 +29,7 @@
   },
   "menus": {
     "adminui": "Admin",
+    "assets": "Assets",
     "config-api": "Config-API",
     "saml": "SAML",
     "add_source": "Adicionar Fonte",
@@ -135,7 +136,10 @@
     "copy_to_clipboard": "Copiar para área de transferência"
   },
   "fields": {
+    "asset_name": "Asset Name",
     "tag": "Marcação",
+    "upload": "Select a file to upload",
+    "jansService": "Related Services",
     "default_permission_in_token": "Permissão padrão no token",
     "introspection_signed_response_alg": "Algoritmo de assinatura da resposta de introspeção",
     "introspection_encrypted_response_alg": "Algoritmo de criptografia da resposta de introspeção",
@@ -541,6 +545,8 @@
   },
   "messages": {
     "add_permission": "Adicionar permissão",
+    "add_asset":"Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
     "view_configuration": "Ver Configuração",
     "add_idp": "Adicionar IDP SAML",
@@ -681,6 +687,9 @@
   },
   "titles": {
     "acrs": "ACRs",
+    "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "algorithmic_keys": "Chaves Algorítmicas",
     "introspection_object": "Objeto de introspecção",
     "all_attributes": "Todos os Atributos",
@@ -768,6 +777,9 @@
     "yes": "sim"
   },
   "documentation": {
+    "asset":{
+      "jansService": "Related Services"
+     },
     "webhook": {
       "url": "URL do webhook.",
       "enabled": "Ative ou desative a funcionalidade do webhook.",
