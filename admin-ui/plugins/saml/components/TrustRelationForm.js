@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   createTrustRelationship,
   toggleSavedFormFlag,
@@ -16,12 +16,8 @@ import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
-import { getClientScopeByInum } from 'Utils/Util'
-import { PER_PAGE_SCOPES } from 'Plugins/auth-server/common/Constants'
 import PropTypes from 'prop-types'
 import {
-  getClientScopes,
-  getScopes,
   setClientSelectedScopes,
 } from 'Plugins/auth-server/redux/features/scopeSlice'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
@@ -30,10 +26,13 @@ import { useNavigate } from 'react-router'
 import { nameIDPolicyFormat } from '../helper'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
+import {
+  getAttributes
+} from 'Plugins/schema/redux/features/attributeSlice'
 
 const TrustRelationForm = ({ configs, viewOnly }) => {
   const { t } = useTranslation()
-  
+
   if (viewOnly) {
     SetTitle(t('titles.sp'))
   } else if (configs) {
@@ -41,38 +40,32 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   } else {
     SetTitle(t('titles.create_sp'))
   }
-  
+
   const navigate = useNavigate()
   const loading = useSelector((state) => state.idpSamlReducer.loading)
   const dispatch = useDispatch()
-  const userScopeAction = {
-    limit: PER_PAGE_SCOPES,
-    pattern: '',
-    startIndex: 0,
-  }
+
   const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
   const [metaDataFile, setMetaDataFile] = useState(null)
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
-  const isLoading = useSelector(
-    (state) => state.scopeReducer.loadingClientScopes
-  )
-  const totalItems = useSelector((state) => state.scopeReducer.totalItems)
-  const scopeLoading = useSelector((state) => state.scopeReducer.loading)
-  const clientScopes = useSelector(
-    (state) => state.scopeReducer.clientScopes
-  )?.map((item) => ({ dn: item?.dn, name: item?.id }))
 
-  const scopes = useSelector((state) => state.scopeReducer.items)
-  const clientScopeOptions = scopes
-    ?.map((item) => ({ dn: item?.dn, name: item?.id }))
-    ?.filter((o1) => !clientScopes?.some((o2) => o1.dn === o2.dn))
+
+  const attributes = useSelector(
+    (state) => state.attributeReducer
+  )
+
+
+  const attributesList = attributes?.items ? attributes?.items?.map(item => ({ dn: item?.dn, name: item?.displayName })) : [];
+
   const defaultScopeValue = configs?.releasedAttributes?.length
-    ? clientScopes
+    ? attributesList?.filter(item => configs?.releasedAttributes.includes(item.dn))?.map((item) => ({ dn: item?.dn, name: item?.name }))
     : []
+
   const selectedClientScopes = useSelector(
     (state) => state.scopeReducer.selectedClientScopes
   )
+
   const scopeFieldValue = selectedClientScopes?.length
     ? selectedClientScopes
     : defaultScopeValue
@@ -82,12 +75,36 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
       `${t('fields.displayName')} is Required!`
     ),
     name: Yup.string().required(`${t('fields.name')} is Required!`),
-    description: Yup.string().required(
-      `${t('fields.description')} is Required!`
-    ),
     spMetaDataSourceType: Yup.string().required(
       `${t('fields.metadata_location')} is Required!`
     ),
+    samlMetadata: Yup.object().shape({
+      singleLogoutServiceUrl: Yup.string().when("$spMetaDataSourceType", {
+        is: (val) => val === 'manual',
+        then: (s) => s.required(`${t('fields.single_logout_service_URL')} is Required!`),
+        otherwise: (s) => s,
+      }),
+      entityId: Yup.string().when("$spMetaDataSourceType", {
+        is: (val) => val === 'manual',
+        then: (s) => s.required(`${t('fields.entity_id')} is Required!`),
+        otherwise: (s) => s,
+      }),
+      nameIDPolicyFormat: Yup.string().when("$spMetaDataSourceType", {
+        is: (val) => val === 'manual',
+        then: (s) => s.required(`${t('fields.name_id_policy_format')} is Required!`),
+        otherwise: (s) => s,
+      }),
+      jansAssertionConsumerServiceGetURL: Yup.string().when("$spMetaDataSourceType", {
+        is: (val) => val === 'manual',
+        then: (s) => s.required(`${t('fields.jans_assertion_consumer_service_get_url')} is Required!`),
+        otherwise: (s) => s,
+      }),
+      jansAssertionConsumerServicePostURL: Yup.string().when("$spMetaDataSourceType", {
+        is: (val) => val === 'manual',
+        then: (s) => s.required(`${t('fields.jans_assertion_consumer_service_post_url')} is Required!`),
+        otherwise: (s) => s,
+      }),
+    }),
   })
 
   const toggle = () => {
@@ -97,6 +114,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const getDefault = (value, defaultValue) =>
     value !== undefined ? value : defaultValue
 
+
   const initialValues = {
     ...(configs || {}),
     enabled: getDefault(configs?.enabled, false),
@@ -105,10 +123,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     description: getDefault(configs?.description, ''),
     spMetaDataSourceType: getConfiguredType(configs),
     releasedAttributes: getDefault(configs?.releasedAttributes, []),
-    rootUrl: getDefault(configs?.rootUrl, ''),
-    adminUrl: getDefault(configs?.adminUrl, ''),
-    url: getDefault(configs?.url, ''),
-    surrogateAuthRequired: getDefault(configs?.surrogateAuthRequired, false),
     spLogoutURL: getDefault(configs?.spLogoutURL, ''),
     samlMetadata: {
       nameIDPolicyFormat: getDefault(configs?.samlMetadata?.nameIDPolicyFormat, ''),
@@ -170,6 +184,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
       }
     )
 
+
     formdata.append('trustRelationship', blob)
 
     if (!configs) {
@@ -186,36 +201,12 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
       )
     }
   }
-  const debounceFn = useCallback(
-    _debounce((query) => {
-      query && handleDebounceFn(query)
-    }, 500),
-    []
-  )
 
-  function handleDebounceFn(inputValue) {
-    userScopeAction['pattern'] = inputValue
-    delete userScopeAction.startIndex
-    dispatch(getScopes({ action: userScopeAction }))
-  }
 
   const saveSelectedScopes = (scopes) => {
     dispatch(setClientSelectedScopes(scopes))
   }
 
-  const handlePagination = (event, shownResults) => {
-    userScopeAction['limit'] = PER_PAGE_SCOPES
-    userScopeAction['startIndex'] = (userScopeAction['startIndex'] ?? 0) + 10
-    if (!userScopeAction.pattern) {
-      delete userScopeAction.pattern
-    }
-    if (!userScopeAction.startIndex) {
-      delete userScopeAction.startIndex
-    }
-    if (totalItems + PER_PAGE_SCOPES > userScopeAction.limit) {
-      dispatch(getScopes({ action: userScopeAction }))
-    }
-  }
 
   useEffect(() => {
     if (savedForm) {
@@ -229,18 +220,8 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   }, [savedForm])
 
   useEffect(() => {
-    if (configs?.inum) {
-      const scopeInums = []
-      let userAction = {}
-      if (configs?.releasedAttributes?.length) {
-        for (const scope of configs.releasedAttributes) {
-          scopeInums.push(getClientScopeByInum(scope))
-        }
-      }
-      userAction['pattern'] = scopeInums.join(',')
-      userAction['limit'] = PER_PAGE_SCOPES
-      dispatch(getClientScopes({ action: userAction }))
-    }
+    const options = {};
+    dispatch(getAttributes({ options }))
   }, [])
 
   const handleDrop = (files) => {
@@ -266,8 +247,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
               event.preventDefault()
               if (
                 !metaDataFile &&
-                formik.values.spMetaDataSourceType?.toLowerCase() === 'file' &&
-                !configs
+                formik.values.spMetaDataSourceType?.toLowerCase() === 'file'
               ) {
                 setFileError(true)
                 return
@@ -316,61 +296,15 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   formik={formik}
                   lsize={4}
                   rsize={8}
-                  showError={
-                    formik.errors.description && formik.touched.description
-                  }
-                  errorMessage={formik.errors.description}
                   disabled={viewOnly}
-                  required
                 />
               </Col>
               <Col sm={10}>
                 <GluuToggleRow
                   label={'fields.enable_tr'}
                   name='enabled'
-                  viewOnly={viewOnly}
+                  viewOnlyvbc={viewOnly}
                   formik={formik}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuToggleRow
-                  label={'fields.surrogate_auth_required'}
-                  name='surrogateAuthRequired'
-                  viewOnly={viewOnly}
-                  formik={formik}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.root_url'
-                  name='rootUrl'
-                  value={formik.values.rootUrl}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.admin_url'
-                  name='adminUrl'
-                  value={formik.values.adminUrl}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  disabled={viewOnly}
-                />
-              </Col>
-              <Col sm={10}>
-                <GluuInputRow
-                  label='fields.url'
-                  name='url'
-                  value={formik.values.url}
-                  formik={formik}
-                  lsize={4}
-                  rsize={8}
-                  disabled={viewOnly}
                 />
               </Col>
               <Col sm={10}>
@@ -385,29 +319,22 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 />
               </Col>
               <Col sm={10}>
-                {isLoading ? (
-                  'Fetching attributes...'
-                ) : (
-                  <GluuTypeAheadForDn
-                    name='releasedAttributes'
-                    label='fields.released_attributes'
-                    formik={formik}
-                    value={scopeFieldValue}
-                    options={clientScopeOptions}
-                    lsize={4}
-                    rsize={8}
-                    disabled={viewOnly}
-                    onChange={saveSelectedScopes}
-                    paginate={true}
-                    onSearch={debounceFn}
-                    onPaginate={handlePagination}
-                    maxResults={
-                      clientScopeOptions?.length ? clientScopeOptions.length - 1 : undefined
-                    }
-                    isLoading={scopeLoading}
-                    placeholder='Search for an attribute...'
-                  />
-                )}
+
+                <GluuTypeAheadForDn
+                  name='releasedAttributes'
+                  label='fields.released_attributes'
+                  formik={formik}
+                  value={scopeFieldValue}
+                  options={attributesList}
+                  lsize={4}
+                  rsize={8}
+                  disabled={viewOnly}
+                  onChange={saveSelectedScopes}
+                  paginate={false}
+                  hideHelperMessage={true}
+                  defaultSelected={scopeFieldValue}
+                />
+
               </Col>
               <Col sm={10}>
                 <GluuSelectRow
@@ -477,7 +404,9 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                         formik.errors.samlMetadata?.singleLogoutServiceUrl
                       }
                       disabled={viewOnly}
+                      required={formik.values.spMetaDataSourceType.toLowerCase() === 'manual' ? true : false}
                     />
+
                   </Col>
                   <Col sm={10}>
                     <GluuInputRow
@@ -493,6 +422,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                       }
                       errorMessage={formik.errors.samlMetadata?.entityId}
                       disabled={viewOnly}
+                      required={formik.values.spMetaDataSourceType.toLowerCase() === 'manual' ? true : false}
                     />
                   </Col>
                   <Col sm={10}>
@@ -515,6 +445,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                         formik.errors.samlMetadata?.nameIDPolicyFormat
                       }
                       disabled={viewOnly}
+                      required={formik.values.spMetaDataSourceType.toLowerCase() === 'manual' ? true : false}
                     />
                   </Col>
                   <Col sm={10}>
@@ -539,6 +470,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                           ?.jansAssertionConsumerServiceGetURL
                       }
                       disabled={viewOnly}
+                      required={formik.values.spMetaDataSourceType.toLowerCase() === 'manual' ? true : false}
                     />
                   </Col>
                   <Col sm={10}>
@@ -563,6 +495,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                           ?.jansAssertionConsumerServicePostURL
                       }
                       disabled={viewOnly}
+                      required={formik.values.spMetaDataSourceType.toLowerCase() === 'manual' ? true : false}
                     />
                   </Col>
                 </>
