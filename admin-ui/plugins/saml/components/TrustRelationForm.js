@@ -81,7 +81,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     samlMetadata: Yup.object().shape({
       singleLogoutServiceUrl: Yup.string().when("$spMetaDataSourceType", {
         is: (val) => val === 'manual',
-        then: (s) => s.required(`${t('fields.single_logout_service_URL')} is Required!`),
+        then: (s) => s.required(`${t('fields.single_logout_service_url')} is Required!`),
         otherwise: (s) => s,
       }),
       entityId: Yup.string().when("$spMetaDataSourceType", {
