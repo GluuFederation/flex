@@ -120,9 +120,9 @@ spec:
             mountPath: /etc/certs/vault_secret_id
             subPath: vault_secret_id
         {{- end }}
-          - mountPath: /opt/jans/configurator/db/generate.json
+          - mountPath: /opt/jans/configurator/db/configuration.json
             name: {{ include "flex-all-in-one.name" . }}-mount-gen-file
-            subPath: generate.json
+            subPath: configuration.json
           - mountPath: /scripts/tls_generator.py
             name: {{ include "flex-all-in-one.name" . }}-tls-script
             subPath: tls_generator.py
@@ -142,7 +142,7 @@ spec:
             subPath: couchbase_password
           - name: cb-pass
             mountPath: {{ .Values.cnCouchbaseSuperuserPasswordFile }}
-            subPath: couchbase_superuser_password  
+            subPath: couchbase_superuser_password
         {{- end }}
         {{- if or (eq .Values.cnPersistenceType "sql") (eq .Values.cnPersistenceType "hybrid") }}
           - name: sql-pass
@@ -230,7 +230,7 @@ spec:
               - key: couchbase_password
                 path: couchbase_password
               - key: couchbase_superuser_password
-                path: couchbase_superuser_password  
+                path: couchbase_superuser_password
       {{- end }}
       {{- if not .Values.isFqdnRegistered }}
         - name: {{ include "flex-all-in-one.fullname" . }}-updatelbip
