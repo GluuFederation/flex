@@ -45,10 +45,6 @@ export const RoutedContent = () => {
     }
   }, [userinfo]);
 
-  if (isLoading) {
-    return <GluuSuspenseLoader />; // Show loader while checking permissions
-  }
-
   return (
     <Routes>
       <Route path="/home/dashboard" element={<Suspense fallback={<GluuSuspenseLoader />}><DashboardPage /></Suspense>} />
