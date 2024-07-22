@@ -21,6 +21,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached';
+import LockIcon from '@mui/icons-material/Lock';
 import styles from './styles/GluuAppSidebar.style'
 
 function GluuAppSidebar() {
@@ -63,6 +64,8 @@ function GluuAppSidebar() {
         return <ScimIcon className="menu-icon" style={{ top: '-2px' }} />
       case 'jans_link':
         return <CachedIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+      case 'jans_lock':
+        return <LockIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
       case 'jans_kc_link':
           return <JansKcLinkIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
       case 'saml':
