@@ -6,7 +6,7 @@ FROM alpine:3.19
 
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
+    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio curl \
     && apk add --no-cache --virtual .build-deps git
 
 # =====
@@ -44,7 +44,7 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=a53727328019d8dba3c3c3daf01c5d4af0ad8b0e
+ENV FLEX_SOURCE_VERSION=3e17a7e152a5e527c4da4331b580c99e7c3a6692
 
 RUN mkdir -p /app/templates/admin-ui
 

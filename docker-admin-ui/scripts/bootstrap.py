@@ -62,7 +62,8 @@ class PersistenceSetup:
         self.client = client_cls(manager)
 
     def get_token_server_ctx(self):
-        hostname = os.environ.get("CN_TOKEN_SERVER_BASE_HOSTNAME") or self.manager.config.get("hostname")
+        hostname = self.manager.config.get("hostname")
+        base_url = os.environ.get("CN_TOKEN_SERVER_BASE_URL") or f"https://{hostname}"
         authz_endpoint = os.environ.get("CN_TOKEN_SERVER_AUTHZ_ENDPOINT") or "/jans-auth/restv1/authorize"
         token_endpoint = os.environ.get("CN_TOKEN_SERVER_TOKEN_ENDPOINT") or "/jans-auth/restv1/token"
         introspection_endpoint = os.environ.get("CN_TOKEN_SERVER_INTROSPECTION_ENDPOINT") or "/jans-auth/restv1/introspection"
@@ -75,19 +76,22 @@ class PersistenceSetup:
         return {
             "token_server_admin_ui_client_id": os.environ.get("CN_TOKEN_SERVER_CLIENT_ID") or self.manager.config.get("token_server_admin_ui_client_id"),
             "token_server_admin_ui_client_pw": read_from_file(pw_file),
-            "token_server_authz_url": f"https://{hostname}{authz_endpoint}",
-            "token_server_token_url": f"https://{hostname}{token_endpoint}",
-            "token_server_introspection_url": f"https://{hostname}{introspection_endpoint}",
-            "token_server_userinfo_url": f"https://{hostname}{userinfo_endpoint}",
+            "token_server_base_url": base_url,
+            "token_server_authz_url": f"{base_url}{authz_endpoint}",
+            "token_server_token_url": f"{base_url}{token_endpoint}",
+            "token_server_introspection_url": f"{base_url}{introspection_endpoint}",
+            "token_server_userinfo_url": f"{base_url}{userinfo_endpoint}",
         }
 
     @cached_property
     def ctx(self):
         salt = self.manager.secret.get("encoded_salt")
+        hostname = self.manager.config.get("hostname")
 
         ctx = {
-            "hostname": self.manager.config.get("hostname"),
+            "hostname": hostname,
             "adminui_authentication_mode": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic"),
+            "jans_auth_base_url": os.environ.get("CN_AUTH_BASE_URL", f"https://{hostname}"),
         }
 
         # admin-ui client for auth server
@@ -289,6 +293,12 @@ def resolve_conf_app(old_conf, new_conf):
             old_conf["oidcConfig"]["auiWebClient"]["additionalParameters"] = []
             should_update = True
 
+        # changes to auiBackendApiClient endpoints
+        for endpoint in ["tokenEndpoint", "introspectionEndpoint"]:
+            if old_conf["oidcConfig"]["auiBackendApiClient"][endpoint] != new_conf["oidcConfig"]["auiBackendApiClient"][endpoint]:
+                old_conf["oidcConfig"]["auiBackendApiClient"][endpoint] = new_conf["oidcConfig"]["auiBackendApiClient"][endpoint]
+                should_update = True
+
     # finalized status and conf
     return should_update, old_conf
 
@@ -296,7 +306,7 @@ def resolve_conf_app(old_conf, new_conf):
 def render_env_config(manager):
     hostname = manager.config.get("hostname")
     ctx = {
-        "hostname": hostname,
+        "config_api_base_url": os.environ.get("CN_CONFIG_API_BASE_URL", f"https://{hostname}"),
     }
 
     with open("/app/templates/admin-ui/env-config.js") as fr:
