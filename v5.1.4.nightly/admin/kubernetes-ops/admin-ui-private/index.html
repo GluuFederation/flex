@@ -12,14 +12,14 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/v5.1.4.nightly/admin/admin-ui/userMgmt-menu/">
+        <link rel="canonical" href="https://docs.gluu.org/v5.1.4.nightly/admin/kubernetes-ops/admin-ui-private/">
       
       <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
-        <title>Users - Gluu Flex Documentation</title>
+        <title>Admin-UI Private - Gluu Flex Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#users" class="md-skip">
+        <a href="#overview" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Users
+              Admin-UI Private
             
           </span>
         </div>
@@ -785,12 +785,14 @@
               
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" checked>
       
       
       
@@ -808,7 +810,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../kubernetes-ops/">K8s Operations Guide</a>
+          <a href="../">K8s Operations Guide</a>
           
             <label for="__nav_3_3">
               <span class="md-nav__icon md-icon"></span>
@@ -831,7 +833,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../kubernetes-ops/upgrade/" class="md-nav__link">
+      <a href="../upgrade/" class="md-nav__link">
         Upgrade
       </a>
     </li>
@@ -843,11 +845,55 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../kubernetes-ops/admin-ui-private/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Admin-UI Private
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Admin-UI Private
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -864,14 +910,12 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
       
       
       
@@ -908,7 +952,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../introduction/" class="md-nav__link">
+      <a href="../../admin-ui/introduction/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -952,7 +996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../auth-server-interaction/" class="md-nav__link">
+      <a href="../../admin-ui/auth-server-interaction/" class="md-nav__link">
         Auth Server Interaction
       </a>
     </li>
@@ -973,7 +1017,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/" class="md-nav__link">
+      <a href="../../admin-ui/configuration/" class="md-nav__link">
         Configuration
       </a>
     </li>
@@ -987,7 +1031,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../logs/" class="md-nav__link">
+      <a href="../../admin-ui/logs/" class="md-nav__link">
         Logs
       </a>
     </li>
@@ -999,14 +1043,12 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4_5" type="checkbox" id="__nav_3_4_5" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4_5" type="checkbox" id="__nav_3_4_5" >
       
       
       
@@ -1049,7 +1091,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../left-nav-menu/" class="md-nav__link">
+      <a href="../../admin-ui/left-nav-menu/" class="md-nav__link">
         Left Navigation Menu
       </a>
     </li>
@@ -1063,7 +1105,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../dashboard/" class="md-nav__link">
+      <a href="../../admin-ui/dashboard/" class="md-nav__link">
         Home
       </a>
     </li>
@@ -1077,7 +1119,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-menu/" class="md-nav__link">
+      <a href="../../admin-ui/admin-menu/" class="md-nav__link">
         Admin
       </a>
     </li>
@@ -1091,7 +1133,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../auth-server-menu/" class="md-nav__link">
+      <a href="../../admin-ui/auth-server-menu/" class="md-nav__link">
         Auth server
       </a>
     </li>
@@ -1105,7 +1147,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schema-menu/" class="md-nav__link">
+      <a href="../../admin-ui/schema-menu/" class="md-nav__link">
         Schema
       </a>
     </li>
@@ -1119,7 +1161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services-menu/" class="md-nav__link">
+      <a href="../../admin-ui/services-menu/" class="md-nav__link">
         Services
       </a>
     </li>
@@ -1133,7 +1175,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fido-menu/" class="md-nav__link">
+      <a href="../../admin-ui/fido-menu/" class="md-nav__link">
         FIDO
       </a>
     </li>
@@ -1147,7 +1189,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../smtp-menu/" class="md-nav__link">
+      <a href="../../admin-ui/smtp-menu/" class="md-nav__link">
         SMTP
       </a>
     </li>
@@ -1159,21 +1201,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../admin-ui/userMgmt-menu/" class="md-nav__link">
         Users
       </a>
-      
     </li>
   
 
@@ -1192,7 +1224,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../faq/" class="md-nav__link">
+      <a href="../../admin-ui/faq/" class="md-nav__link">
         FAQ & Troubleshooting
       </a>
     </li>
@@ -1491,8 +1523,28 @@
   
   
   
-    
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1516,38 +1568,146 @@
     
       
       
-        <span class="md-tag">admin-ui</span>
+        <span class="md-tag">kubernetes</span>
       
     
       
       
-        <span class="md-tag">users</span>
+        <span class="md-tag">operations</span>
+      
+    
+      
+      
+        <span class="md-tag">private</span>
+      
+    
+      
+      
+        <span class="md-tag">internal</span>
+      
+    
+      
+      
+        <span class="md-tag">admin-ui</span>
       
     
   </nav>
 
 
 
-  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/admin-ui/userMgmt-menu.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/kubernetes-ops/admin-ui-private.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="users">Users<a class="headerlink" href="#users" title="Permanent link">#</a></h1>
-<p>This interface allows the administrator to create, edit, delete and search user records in Janssen persistence. The user creation/modification form has First Name, Middle Name, Last Name, Username, Display Name, Email, Status and Password fields populated by default on it. The administrator can select and add more user attributes to the form from the right <code>Available Claims</code> panel. To add a new user claim, please follow this <a href="https://docs.jans.io/vreplace-janssen-version/admin/auth-server/openid-features/user-claims/custom-claims/">document</a>. Different <a href="../admin-menu/">Admin UI Roles</a> can be assigned to the user in the <code>jansAdminUIRole</code> attribute (to be selected from the <code>Available Claims</code> panel). </p>
-<p><img alt="image" src="../../../assets/admin-ui/user-mgmt.png" /></p>
+  <h1>Admin-UI Private</h1>
+
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
+<p>This document demonstrates a method to override the URLs in the admin-ui used to connect to the backend services, such as the config API. 
+This way the calls are made privately without hitting the FQDN through the internet.</p>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>We will install nginx in <code>ingress-nginx</code> namespace using the following command:
+   <code>helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx</code>
+    and thus, the svc is accessible at <code>ingress-nginx-controller.ingress-nginx.svc.cluster.local</code></p>
+</li>
+<li>
+<p>Modify <code>values.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">admin-ui</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">usrEnvs</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">normal</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">CN_CONFIG_API_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress.local:8443</span><span class="w"></span>
+<span class="w">      </span><span class="nt">CN_AUTH_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress.local:8443</span><span class="w"></span>
+<span class="w">      </span><span class="nt">CN_TOKEN_SERVER_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress-nginx-controller.ingress-nginx.svc.cluster.local</span><span class="w"></span>
+
+<span class="nt">config-api</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">usrEnvs</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">normal</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">CN_TOKEN_SERVER_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress-nginx-controller.ingress-nginx.svc.cluster.local</span><span class="w"></span>
+
+<span class="nt">nginx-ingress</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1"># adjust Gluu FQDN used as needed</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx-controller.ingress-nginx.svc.cluster.local</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress.local</span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>Deploy the flex helm chart using the updated <code>values.yaml</code></p>
+</li>
+<li>
+<p>To allow the browser to access internal service, add an entry inside <code>/etc/hosts</code> file:</p>
+<div class="highlight"><pre><span></span><code>127.0.0.1 ingress.local
+&lt;LB-External-IP&gt; ingress-nginx-controller.ingress-nginx.svc.cluster.local
+</code></pre></div>
+</li>
+<li>
+<p>By default, the <code>ingress-nginx-controller</code> deployment uses fake certificate generated by k8s. Add a new certificate (self-signed certificate and key are sufficient) as the default certificate into the ingress controller.</p>
+<ol>
+<li>
+<p>Generate SSL cert and key using your preferred tool. Make sure to add domain <code>ingress-nginx-controller.ingress-nginx.svc.cluster.local</code> and <code>ingress.local</code> in SAN section.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code>openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes -keyout ingress.local.key -out ingress.local.crt -subj &quot;/CN=ingress.local&quot; -addext &quot;subjectAltName=DNS:ingress.local,DNS:ingress-nginx-controller.ingress-nginx.svc.cluster.local&quot;
+</code></pre></div>
+</li>
+<li>
+<p>Create secrets to store the certificate and key, for example:</p>
+<div class="highlight"><pre><span></span><code>kubectl -n &lt;namespace&gt; create secret tls internal-tls-certificate --cert /path/to/cert --key /path/to/key
+</code></pre></div>
+</li>
+<li>
+<p>Modify the <code>ingress-nginx-controller</code> deployment:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w">                                       </span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w">                         </span>
+<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx-controller</span><span class="w"></span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx</span><span class="w"></span>
+<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">args</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="c1"># some arguments are omitted</span><span class="w"></span>
+<span class="w">          </span><span class="c1"># add a new argument to load self-signed cert</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--default-ssl-certificate=&lt;namespace&gt;/internal-tls-certificate</span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>Rollout restart the <code>ingress-nginx-controller</code> deployment.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Expose the service IP (port 443) to host (port 8443):</p>
+<div class="highlight"><pre><span></span><code>kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8443:443 &amp;
+</code></pre></div>
+</li>
+<li>
+<p><strong>OPTIONAL</strong>: if the K8s cluster is deployed at a remote VM, make SSH tunneling before accessing the admin-ui web:</p>
+<div class="highlight"><pre><span></span><code>ssh -N -L 8443:localhost:8443 &lt;user&gt;@&lt;remote-vm&gt; &amp;
+</code></pre></div>
+</li>
+<li>
+<p>Hit <code>https://ingress.local:8443</code> and allow the browser to skip certificate validation.</p>
+</li>
+<li>
+<p>Visit <code>https://&lt;Gluu-FQDN&gt;/admin</code></p>
+</li>
+</ol>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-11-02T14:47:23+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-11-02</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-05T16:02:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-05</span>
       
         <br>
         Created:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-23T13:51:15+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-23</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-05T16:02:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-05</span>
       
     
   </small>
@@ -1572,7 +1732,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../smtp-menu/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SMTP" rel="prev">
+        <a href="../upgrade/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Upgrade" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1581,20 +1741,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              SMTP
+              Upgrade
             </div>
           </div>
         </a>
       
       
         
-        <a href="../faq/" class="md-footer__link md-footer__link--next" aria-label="Next: FAQ &amp; Troubleshooting" rel="next">
+        <a href="../../admin-ui/introduction/" class="md-footer__link md-footer__link--next" aria-label="Next: Introduction" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              FAQ & Troubleshooting
+              Introduction
             </div>
           </div>
           <div class="md-footer__button md-icon">
