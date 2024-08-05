@@ -131,6 +131,7 @@ nav:
     - 'K8s Operations Guide': 
       - 'admin/kubernetes-ops/README.md'
       - 'Upgrade': 'admin/kubernetes-ops/upgrade.md'
+      - 'Admin-UI Private': 'admin/kubernetes-ops/admin-ui-private.md'
     - 'Admin UI':
         - 'Introduction': 'admin/admin-ui/introduction.md'
         - 'Design & Implementation':
