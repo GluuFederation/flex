@@ -18,6 +18,12 @@ const userSlice = createSlice({
       state.loading = true
       state.redirectToUserListPage = false
     },
+    getUser2FADetails: (state, action) => {
+      state.loading = true
+    },
+    setUser2FADetails: (state, action) => {
+      state.loading = false
+    },
     setSelectedUserData: (state, action) => {
       state.selectedUserData = action.payload
     },
@@ -58,6 +64,8 @@ const userSlice = createSlice({
 
 export const {
   getUsers,
+  getUser2FADetails,
+  setUser2FADetails,
   setSelectedUserData,
   getUserResponse,
   createUser,

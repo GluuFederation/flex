@@ -7,6 +7,7 @@ import {
   getUsers,
   setSelectedUserData,
   deleteUser,
+  getUser2FADetails,
 } from '../../redux/features/userSlice'
 
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
@@ -31,6 +32,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import GluuViewDetailModal from '../../../../app/routes/Apps/Gluu/GluuViewDetailsModal'
 
 function UserList(props) {
   const dispatch = useDispatch()
@@ -46,8 +48,11 @@ function UserList(props) {
   const usersList = useSelector((state) => state.userReducer.items)
   const loading = useSelector((state) => state.userReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
+  const token = useSelector((state) => state.authReducer.token.access_token)
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
+  const [isViewDetailModalOpen, setIsDetailModalOpen] = useState(false)
+  const [faDetai, setFADetails] = useState([]);
   const [deleteData, setDeleteData] = useState(null)
   const toggle = () => setModal(!modal)
   const submitForm = () => {
@@ -61,13 +66,22 @@ function UserList(props) {
   SetTitle(t('titles.user_management'))
 
   const myActions = []
+  const faActions = []
   const options = {}
   const navigate = useNavigate()
+
+
 
   function handleGoToUserAddPage() {
     dispatch(setSelectedUserData(null))
     return navigate('/user/usermanagement/add')
   }
+
+  async function handleView2FADetails(row) {
+    //dispatch(getUser2FADetails({ username: row.displayName, token: token }))
+    setIsDetailModalOpen(!isViewDetailModalOpen)
+  }
+
   function handleGoToUserEditPage(row) {
     dispatch(setSelectedUserData(row))
     return navigate(`/user/usermanagement/edit/:` + row.tableData.uuid)
@@ -109,7 +123,7 @@ function UserList(props) {
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   if (hasPermission(permissions, USER_READ)) {
@@ -144,8 +158,37 @@ function UserList(props) {
       disabled: !hasPermission(permissions, USER_WRITE),
     }))
   }
+
+  if (hasPermission(permissions, USER_READ)) {
+    myActions.push((rowData) => ({
+      icon: 'visibility',
+      iconProps: {
+        id: 'viewDetail' + rowData.inum,
+      },
+      tooltip: `${t('messages.view_2FA_details')}`,
+      onClick: (event, rowData) => handleView2FADetails(rowData),
+      disabled: !hasPermission(permissions, USER_WRITE),
+    }))
+
+  }
+
   if (hasPermission(permissions, USER_DELETE)) {
     myActions.push((rowData) => ({
+      icon: DeleteOutlinedIcon,
+      iconProps: {
+        color: 'secondary',
+        id: 'deleteClient' + rowData.inum,
+      },
+      onClick: (event, rowData) => {
+        setDeleteData(rowData)
+        toggle()
+      },
+      disabled: false,
+    }))
+  }
+
+  if (hasPermission(permissions, USER_DELETE)) {
+    faActions.push((rowData) => ({
       icon: DeleteOutlinedIcon,
       iconProps: {
         color: 'secondary',
@@ -162,7 +205,7 @@ function UserList(props) {
   const onPageChangeClick = (page) => {
     let startCount = page * limit
     options['startIndex'] = parseInt(startCount)
-    options['limit'] = limit
+    options['limit'] = limyActionsmit
     options['pattern'] = pattern
     setPageNumber(page)
     dispatch(getUsers({ action: options }))
@@ -177,7 +220,7 @@ function UserList(props) {
 
   useEffect(() => {
     let usedAttributes = []
-    if(usersList?.length && renders.current < 1) {
+    if (usersList?.length && renders.current < 1) {
       renders.current = 1
       for (let i in usersList) {
         for (let j in usersList[i].customAttributes) {
@@ -227,6 +270,40 @@ function UserList(props) {
 
   return (
     <GluuLoader blocking={loading}>
+      <GluuViewDetailModal isOpen={isViewDetailModalOpen} handleClose={() => setIsDetailModalOpen(!isViewDetailModalOpen)}>
+        <MaterialTable
+          key={limit}
+          columns={[
+            {
+              title: `${t('fields.id')}`,
+              field: 'id',
+            },
+            { title: `${t('fields.nickName')}`, field: 'nickName' },
+            { title: `${t('fields.modality')}`, field: 'modality' },
+            { title: `${t('fields.dateAdded')}`, field: 'dateAdded' },
+          ]}
+          data={usersList}
+          isLoading={loading}
+          title=''
+          actions={faActions}
+          options={{
+            search: false,
+            paging: false,
+            toolbar: false,
+            idSynonym: 'inum',
+            selection: false,
+            rowStyle: (rowData) => ({
+              backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+            }),
+            headerStyle: {
+              ...applicationStyle.tableHeaderStyle,
+              ...bgThemeColor,
+            },
+            actionsColumnIndex: -1,
+          }}
+        />
+      </GluuViewDetailModal>
+
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={hasPermission(permissions, USER_READ)}>
