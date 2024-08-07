@@ -43,7 +43,7 @@ function UserList(props) {
     dispatch(getUsers({ action: opt }))
     dispatch(getRoles({}))
   }, [])
-  const { totalItems } = useSelector((state) => state.userReducer)
+  const { totalItems,fidoDetails } = useSelector((state) => state.userReducer)
   const [pageNumber, setPageNumber] = useState(0)
   const usersList = useSelector((state) => state.userReducer.items)
   const loading = useSelector((state) => state.userReducer.loading)
@@ -52,7 +52,7 @@ function UserList(props) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [isViewDetailModalOpen, setIsDetailModalOpen] = useState(false)
-  const [faDetai, setFADetails] = useState([]);
+  const [faDetails, setFADetails] = useState([]);
   const [deleteData, setDeleteData] = useState(null)
   const toggle = () => setModal(!modal)
   const submitForm = () => {
@@ -78,7 +78,7 @@ function UserList(props) {
   }
 
   async function handleView2FADetails(row) {
-    //dispatch(getUser2FADetails({ username: row.displayName, token: token }))
+    dispatch(getUser2FADetails({ username: row.givenName, token: token }))
     setIsDetailModalOpen(!isViewDetailModalOpen)
   }
 
@@ -240,6 +240,18 @@ function UserList(props) {
     }
   }, [usersList])
 
+  useEffect(() => {
+    const updatedDetails = fidoDetails.map((item) => {
+      return {
+        id: item?.deviceData?.uuid ?? '-',
+        nickName: item?.deviceData?.name ?? '-',
+        modality: item?.deviceData?.platform ?? '-',
+        dateAdded: item.creationDate,
+      }
+    });
+    setFADetails(updatedDetails);
+  },[fidoDetails])
+
   const PaperContainer = useCallback(
     (props) => <Paper {...props} elevation={0} />,
     []
@@ -282,7 +294,7 @@ function UserList(props) {
             { title: `${t('fields.modality')}`, field: 'modality' },
             { title: `${t('fields.dateAdded')}`, field: 'dateAdded' },
           ]}
-          data={usersList}
+          data={faDetails}
           isLoading={loading}
           title=''
           actions={faActions}

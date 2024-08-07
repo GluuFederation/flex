@@ -145,7 +145,8 @@ export function* deleteUserSaga({ payload }) {
 export function* getUser2FADetailsSaga({ payload }) {
   try {
     const userApi = yield* newFunction()
-    const data = yield call(userApi.getUser2FADetails, payload)
+    const data = yield call(userApi.getUser2FADetails, payload);
+    yield put(setUser2FADetails(data))
     return data
   } catch (e) {
     const errMsg = e?.response?.body?.description || e?.response?.body?.message || e?.response?.text
