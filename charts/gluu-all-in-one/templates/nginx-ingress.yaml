@@ -757,8 +757,6 @@ spec:
                   number: 8080
 {{- end }}
 
-{{- end }}
-
 ---
 
 {{ if and (index .Values "auth-server" "lockEnabled") (index .Values "auth-server" "ingress" "lockEnabled") -}}
