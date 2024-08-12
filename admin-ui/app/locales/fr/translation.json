@@ -846,6 +846,22 @@
       "sn": "Nom de famille",
       "userConfirmPassword": "Confirmer le mot de passe"
     },
+    "saml":{
+      "name": "L'ID alphanumérique utilisé pour identifier la Relation de Confiance",
+      "displayName": "Nom d'affichage de la Relation de Confiance",
+      "description": "Description de la Relation de Confiance.",
+      "baseUrl": "URL à utiliser lorsque le serveur d'authentification doit rediriger",
+      "enabled": "Indique si la Relation de Confiance est activée.",
+      "spLogoutURL": "URL de demande de déconnexion.",
+      "singleLogoutServiceUrl": "URL du Service de Déconnexion Unique.",
+      "entityId": "Métadonnées de l'entité SAML.",
+      "nameIDPolicyFormat": "Métadonnées de l'entité SAML.",
+      "releasedAttributes": "Attributs de la Relation de Confiance qui seront libérés pour SAML",
+      "spMetaDataSourceType": "Type de métadonnées SP de la Relation de Confiance - fichier, URI.",
+      "metaLocation": "Emplacement du fichier de métadonnées de la Relation de Confiance.",
+      "jansAssertionConsumerServiceGetURL": "Métadonnées de l'entité SAML.",
+      "jansAssertionConsumerServicePostURL": "Métadonnées de l'entité SAML."
+    },
     "ldap": {
       "configId": "Nom unique de la configuration.",
       "bind_dn": "Ceci contient le nom d'utilisateur pour se connecter au serveur backend. Vous devez utiliser le DN complet ici. Par exemple, cn=gluu,dc=entreprise,dc=org.",

@@ -891,8 +891,8 @@
     "yes": "Yes"
   },
   "documentation": {
-    "asset":{
-     "jansService": "Related Services"
+    "asset": {
+      "jansService": "Related Services"
     },
     "webhook": {
       "url": "Webhook URL.",
@@ -1514,6 +1514,22 @@
       "middleName": "Middle Name",
       "sn": "Last Name",
       "userConfirmPassword": "Confirm Password"
+    },
+    "saml": {
+      "name": "The alphanumeric ID string that is used to identify the Trust Relationship",
+      "displayName": "Trust Relationship display name",
+      "description": "Description of the Trust Relationship.",
+      "baseUrl": "URL to use when the auth server needs to redirect",
+      "enabled": "Indicates if Trust Relationship is enabled.",
+      "spLogoutURL": "Logout request URL.",
+      "singleLogoutServiceUrl": "Single Logout Service URL.",
+      "entityId":"SAML entity metadata.",
+      "nameIDPolicyFormat":"SAML entity metadata.",
+      "releasedAttributes": "Trust Relationship attributes that will be released to SAML",
+      "spMetaDataSourceType":"Trust Relationship SP metadata type - file, URI.",
+      "metaLocation": "Trust Relationship metadata file location.",
+       "jansAssertionConsumerServiceGetURL": "SAML entity metadata.",
+      "jansAssertionConsumerServicePostURL": "SAML entity metadata."
     }
   }
 }
