@@ -256,7 +256,7 @@ auth-server:
     authServerProtectedToken: false
     # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio.
     authServerProtectedRegister: false
-    # -- Enable endpoint /.well-known/lock-master-configuration
+    # -- Enable endpoint /.well-known/lock-server-configuration
     lockConfigEnabled: false
     # -- Enable endpoint /jans-lock
     lockEnabled: false    
