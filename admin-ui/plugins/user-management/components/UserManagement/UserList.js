@@ -52,6 +52,9 @@ function UserList(props) {
     dispatch(getRoles({}));
   }, []);
   const { totalItems, fidoDetails } = useSelector((state) => state.userReducer);
+  const personAttributes = useSelector(
+    (state) => state.attributesReducerRoot.items
+  )
   const [pageNumber, setPageNumber] = useState(0);
   const usersList = useSelector((state) => state.userReducer.items);
   const loading = useSelector((state) => state.userReducer.loading);
@@ -62,6 +65,7 @@ function UserList(props) {
   const [isViewDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [faDetails, setFADetails] = useState([]);
   const [otpDevicesList, setOTPDevicesList] = useState([]);
+  const [userDetails, setUserDetails] = useState(false);
   const [deleteData, setDeleteData] = useState(null);
   const toggle = () => setModal(!modal);
   const submitForm = () => {
@@ -85,6 +89,7 @@ function UserList(props) {
   }
 
   async function handleView2FADetails(row) {
+    setUserDetails(row);
     const getOTPDevices = row?.customAttributes.filter(
       (item) => item.name === "jansOTPDevices"
     );
@@ -225,8 +230,9 @@ function UserList(props) {
         id: "deleteClient" + rowData.inum,
       },
       onClick: (event, rowData) => {
-        setDeleteData(rowData);
-        toggle();
+        handleRemove2Fa(rowData);
+
+        // toggle();
       },
       disabled: false,
     }));
@@ -246,6 +252,32 @@ function UserList(props) {
     setPageNumber(0);
     setLimit(count);
     dispatch(getUsers({ action: options }));
+  };
+
+  const updateUserData = (values) => {
+    let submitableValues = {
+      inum: userDetails.inum,
+      userId: userDetails.userId || "",
+      dn: userDetails.dn,
+      jansOTPDevices: values,
+    };
+    console.log(submitableValues)
+    // dispatch(updateUser(submitableValues))
+  };
+
+  const handleRemove2Fa = (row) => {
+    const getOTPDevices = userDetails?.customAttributes.filter(
+      (item) => item.name === "jansOTPDevices"
+    );
+    const getOTPDevicesValue = getOTPDevices.map((item) =>
+      JSON.parse(item.value)
+    );
+
+    const removedDevice = getOTPDevicesValue[0].devices.filter(
+      (item) => item.id !== row.id
+    );
+    const jansOTPDevices = {devices:removedDevice}
+    updateUserData(JSON.stringify(jansOTPDevices));
   };
 
   useEffect(() => {
