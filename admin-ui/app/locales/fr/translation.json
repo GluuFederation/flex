@@ -853,6 +853,7 @@
       "baseUrl": "URL à utiliser lorsque le serveur d'authentification doit rediriger",
       "enabled": "Indique si la Relation de Confiance est activée.",
       "spLogoutURL": "URL de demande de déconnexion.",
+      "singleSignOnServiceUrl": "URL du Service de Déconnexion Unique.",
       "singleLogoutServiceUrl": "URL du Service de Déconnexion Unique.",
       "entityId": "Métadonnées de l'entité SAML.",
       "nameIDPolicyFormat": "Métadonnées de l'entité SAML.",

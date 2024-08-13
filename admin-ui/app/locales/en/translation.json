@@ -1522,6 +1522,7 @@
       "baseUrl": "URL to use when the auth server needs to redirect",
       "enabled": "Indicates if Trust Relationship is enabled.",
       "spLogoutURL": "Logout request URL.",
+      "singleSignOnServiceUrl": "Single Signon Service URL.",
       "singleLogoutServiceUrl": "Single Logout Service URL.",
       "entityId":"SAML entity metadata.",
       "nameIDPolicyFormat":"SAML entity metadata.",

@@ -947,6 +947,7 @@
       "baseUrl": "URL a ser usada quando o servidor de autenticação precisar redirecionar",
       "enabled": "Indica se a Relação de Confiança está habilitada.",
       "spLogoutURL": "URL de solicitação de logout.",
+      "singleSignOnServiceUrl": "URL do Serviço de Logout Único.",
       "singleLogoutServiceUrl": "URL do Serviço de Logout Único.",
       "entityId": "Metadados da entidade SAML.",
       "nameIDPolicyFormat": "Metadados da entidade SAML.",

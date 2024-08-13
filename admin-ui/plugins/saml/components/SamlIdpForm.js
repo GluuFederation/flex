@@ -354,6 +354,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       }
                       errorMessage={formik.errors.singleSignOnServiceUrl}
                       disabled={viewOnly}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                   <Col sm={10}>
