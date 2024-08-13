@@ -443,6 +443,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                           : false
                       }
                       doc_category={DOC_SECTION}
+                      doc_entry="singleLogoutServiceUrl"
                     />
                   </Col>
                   <Col sm={10}>
