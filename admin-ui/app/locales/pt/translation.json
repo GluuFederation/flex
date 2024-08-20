@@ -41,6 +41,8 @@
     "identity_providers": "Intermediação de Identidade",
     "agama_flows":"Fluxos Agama",
     "default_acr":"ACR padrão",
+    "acrs":"ACRs",
+    "aliases":"Aliases",
     "api": {
       "roles": "Papéis de acesso",
       "permissions": "Permissões",

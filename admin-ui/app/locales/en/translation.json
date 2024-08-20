@@ -560,6 +560,8 @@
     "webhooks": "Webhooks",
     "agama_flows":"Agama Flows",
     "default_acr":"Default ACR",
+    "acrs":"ACRs",
+    "aliases":"Aliases",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",

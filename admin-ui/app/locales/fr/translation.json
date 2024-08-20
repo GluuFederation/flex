@@ -39,6 +39,8 @@
     "saml": "SAML",
     "agama_flows":"Flux Agama",
     "default_acr":"ACR par défaut",
+    "acrs":"ACRs",
+    "aliases":"Aliases",
     "trust_relationships": "Relations de confiance",
     "api": {
       "roles": "Rôles d'accès",

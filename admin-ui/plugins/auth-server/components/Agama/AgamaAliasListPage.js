@@ -36,7 +36,7 @@ const dateTimeFormatOptions = {
   minute: "2-digit",
 };
 
-function AgamaListPage() {
+function AliasesListPage() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const options = {};
@@ -499,4 +499,4 @@ function AgamaListPage() {
   );
 }
 
-export default AgamaListPage;
+export default AliasesListPage;
