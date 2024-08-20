@@ -37,6 +37,8 @@
     "view_source": "Afficher la source",
     "jans_lock": "Verrou Jans",
     "saml": "SAML",
+    "agama_flows":"Flux Agama",
+    "default_acr":"ACR par défaut",
     "trust_relationships": "Relations de confiance",
     "api": {
       "roles": "Rôles d'accès",

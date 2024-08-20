@@ -433,7 +433,7 @@
     "requirePar": "Require PAR",
     "requestUris": "Request URIs",
     "authorizedOrigins": "Authorized JS origins",
-    "defaultAcrValues": "Default ACR ",
+    "defaultAcrValues": "Default ACR",
     "authorizedAcrValues": "Allowed ACRs",
     "defaultPromptLogin": "Default prompt=login",
     "softwareId": "Software id",
@@ -558,6 +558,8 @@
     "config-api": "Config-API",
     "authn": "Authn",
     "webhooks": "Webhooks",
+    "agama_flows":"Agama Flows",
+    "default_acr":"Default ACR",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",

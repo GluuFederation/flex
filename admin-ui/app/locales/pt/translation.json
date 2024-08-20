@@ -39,6 +39,8 @@
     "trust_relationships": "Relacionamentos de confiança",
     "service_providers": "SSO para sites",
     "identity_providers": "Intermediação de Identidade",
+    "agama_flows":"Fluxos Agama",
+    "default_acr":"ACR padrão",
     "api": {
       "roles": "Papéis de acesso",
       "permissions": "Permissões",
