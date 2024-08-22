@@ -861,7 +861,11 @@
       "spMetaDataSourceType": "Type de métadonnées SP de la Relation de Confiance - fichier, URI.",
       "metaLocation": "Emplacement du fichier de métadonnées de la Relation de Confiance.",
       "jansAssertionConsumerServiceGetURL": "Métadonnées de l'entité SAML.",
-      "jansAssertionConsumerServicePostURL": "Métadonnées de l'entité SAML."
+      "jansAssertionConsumerServicePostURL": "Métadonnées de l'entité SAML.",
+      "signingCertificate": "Certificat numérique utilisé pour vérifier l'authenticité de",
+      "encryptionPublicKey": "Clé publique utilisée pour chiffrer le message.",
+      "principalAttribute": "Nom ou Nom convivial de l'attribut utilisé pour identifier les utilisateurs externes.",
+      "principalType": "Moyen d'identifier et de suivre les utilisateurs externes à partir de l'assertion."
     },
     "ldap": {
       "configId": "Nom unique de la configuration.",

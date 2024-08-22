@@ -1524,13 +1524,17 @@
       "spLogoutURL": "Logout request URL.",
       "singleSignOnServiceUrl": "Single Signon Service URL.",
       "singleLogoutServiceUrl": "Single Logout Service URL.",
-      "entityId":"SAML entity metadata.",
-      "nameIDPolicyFormat":"SAML entity metadata.",
+      "entityId": "SAML entity metadata.",
+      "nameIDPolicyFormat": "SAML entity metadata.",
       "releasedAttributes": "Trust Relationship attributes that will be released to SAML",
-      "spMetaDataSourceType":"Trust Relationship SP metadata type - file, URI.",
+      "spMetaDataSourceType": "Trust Relationship SP metadata type - file, URI.",
       "metaLocation": "Trust Relationship metadata file location.",
-       "jansAssertionConsumerServiceGetURL": "SAML entity metadata.",
-      "jansAssertionConsumerServicePostURL": "SAML entity metadata."
+      "jansAssertionConsumerServiceGetURL": "SAML entity metadata.",
+      "jansAssertionConsumerServicePostURL": "SAML entity metadata.",
+      "signingCertificate": "Digital certificate used to verify the authenticity of the",
+      "encryptionPublicKey":"Public key to use to encrypt the message.",
+      "principalAttribute": "Name or Friendly Name of the attribute used to identify external",
+      "principalType": "Way to identify and track external users from the assertion."
     }
   }
 }

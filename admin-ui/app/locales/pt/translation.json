@@ -955,7 +955,12 @@
       "spMetaDataSourceType": "Tipo de metadados SP da Relação de Confiança - arquivo, URI.",
       "metaLocation": "Localização do arquivo de metadados da Relação de Confiança.",
       "jansAssertionConsumerServiceGetURL": "Metadados da entidade SAML.",
-      "jansAssertionConsumerServicePostURL": "Metadados da entidade SAML."
+      "jansAssertionConsumerServicePostURL": "Metadados da entidade SAML.",
+      "signingCertificate": "Certificado digital usado para verificar a autenticidade de",
+      "encryptionPublicKey": "Chave pública usada para criptografar a mensagem.",
+      "principalAttribute": "Nome ou Nome amigável do atributo usado para identificar usuários externos.",
+      "principalType": "Forma de identificar e rastrear usuários externos a partir da asserção."
+
     },
     "ldap": {
       "configId": "Nome único da configuração.",

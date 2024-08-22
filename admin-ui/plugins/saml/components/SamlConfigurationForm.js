@@ -15,6 +15,8 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 const SamlConfigurationForm = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const DOC_SECTION = "saml";
+
   const permissions = useSelector((state) => state.authReducer.permissions)
   const [modal, setModal] = useState(false)
   const configuration = useSelector(

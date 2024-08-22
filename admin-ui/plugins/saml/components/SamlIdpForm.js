@@ -390,6 +390,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       errorMessage={formik.errors.signingCertificate}
                       disabled={viewOnly}
                       rows={10}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                   <Col sm={10}>
@@ -408,6 +409,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       errorMessage={formik.errors.encryptionPublicKey}
                       disabled={viewOnly}
                       rows={10}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                   <Col sm={10}>
@@ -424,6 +426,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       }
                       errorMessage={formik.errors.principalAttribute}
                       disabled={viewOnly}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                   <Col sm={10}>
@@ -440,6 +443,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       }
                       errorMessage={formik.errors.principalType}
                       disabled={viewOnly}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                 </>
