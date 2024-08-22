@@ -174,7 +174,7 @@
     "kc_link_last_update": "Dernière mise à jour du lien Keycloak",
     "kc_last_update_count": "Nombre de dernières mises à jour du lien Keycloak",
     "kc_problem_count": "Nombre de problèmes du lien Keycloak",
-    "update_method": "Méthode de mise à jour",  
+    "update_method": "Méthode de mise à jour",
     "sessionTimeoutInMins": "Délai d'expiration de la session de l'interface administrateur (en minutes)",
     "adminui_default_acr": "Méthode d'authentification de l'interface administrateur (ACR)",
     "metadata_location": "Emplacement des métadonnées",
@@ -561,7 +561,7 @@
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
-    "add_asset":"Add Jans Asset",
+    "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
     "view_configuration": "Afficher la configuration",
@@ -714,7 +714,7 @@
     "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
     "jans_kc_link": "Lien KC Jans",
-    "all_scopes": "Toutes les portées",  
+    "all_scopes": "Toutes les portées",
     "idp": "IDP",
     "sp": "SP",
     "create_sp": "Créer un fournisseur de services",
@@ -792,9 +792,9 @@
     "yes": "Oui"
   },
   "documentation": {
-    "asset":{
+    "asset": {
       "jansService": "Jans Module Properties"
-     },
+    },
     "webhook": {
       "url": "URL du webhook.",
       "enabled": "Basculez pour activer ou désactiver la fonctionnalité du webhook.",
@@ -846,7 +846,7 @@
       "sn": "Nom de famille",
       "userConfirmPassword": "Confirmer le mot de passe"
     },
-    "saml":{
+    "saml": {
       "name": "L'ID alphanumérique utilisé pour identifier la Relation de Confiance",
       "displayName": "Nom d'affichage de la Relation de Confiance",
       "description": "Description de la Relation de Confiance.",
@@ -866,6 +866,21 @@
       "encryptionPublicKey": "Clé publique utilisée pour chiffrer le message.",
       "principalAttribute": "Nom ou Nom convivial de l'attribut utilisé pour identifier les utilisateurs externes.",
       "principalType": "Moyen d'identifier et de suivre les utilisateurs externes à partir de l'assertion."
+    },
+    "samlIDP": {
+      "name": "Nom identifiant de manière unique un fournisseur d'identité.",
+      "displayName": "Nom affiché du fournisseur d'identité.",
+      "description": "Description du fournisseur d'identité.",
+      "baseUrl": "URL à utiliser lorsque le serveur d'authentification doit rediriger.",
+      "enabled": "Indique si le fournisseur d'identité est activé.",
+      "nameIDPolicyFormat": "Référence URI correspondant à un format d'identifiant de nom.",
+      "entityId": "ID de l'entité qui sera utilisé pour identifier de manière unique ce SAML.",
+      "singleSignOnServiceUrl": "URL utilisée pour envoyer des demandes d'authentification SAML.",
+      "singleLogoutServiceUrl": "URL utilisée pour envoyer des demandes de déconnexion.",
+      "signingCertificate": "Certificat numérique utilisé pour vérifier l'authenticité.",
+      "encryptionPublicKey": "Clé publique à utiliser pour chiffrer le message.",
+      "principalAttribute": "Nom ou nom convivial de l'attribut utilisé pour identifier les utilisateurs externes.",
+      "principalType": "Méthode pour identifier et suivre les utilisateurs externes à partir de l'assertion."
     },
     "ldap": {
       "configId": "Nom unique de la configuration.",

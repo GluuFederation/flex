@@ -960,7 +960,21 @@
       "encryptionPublicKey": "Chave pública usada para criptografar a mensagem.",
       "principalAttribute": "Nome ou Nome amigável do atributo usado para identificar usuários externos.",
       "principalType": "Forma de identificar e rastrear usuários externos a partir da asserção."
-
+    },
+    "samlIDP": {
+      "name": "Nome que identifica exclusivamente um provedor de identidade.",
+      "displayName": "Nome exibido do provedor de identidade.",
+      "description": "Descrição do provedor de identidade.",
+      "baseUrl": "URL a ser usada quando o servidor de autenticação precisar redirecionar.",
+      "enabled": "Indica se o provedor de identidade está ativado.",
+      "nameIDPolicyFormat": "Referência URI correspondente a um formato de identificador de nome.",
+      "entityId": "ID da entidade que será usada para identificar exclusivamente este SAML.",
+      "singleSignOnServiceUrl": "URL usada para enviar solicitações de autenticação SAML.",
+      "singleLogoutServiceUrl": "URL usada para enviar solicitações de logout.",
+      "signingCertificate": "Certificado digital usado para verificar a autenticidade.",
+      "encryptionPublicKey": "Chave pública a ser usada para criptografar a mensagem.",
+      "principalAttribute": "Nome ou Nome Amigável do atributo usado para identificar usuários externos.",
+      "principalType": "Forma de identificar e rastrear usuários externos a partir da asserção."
     },
     "ldap": {
       "configId": "Nome único da configuração.",
