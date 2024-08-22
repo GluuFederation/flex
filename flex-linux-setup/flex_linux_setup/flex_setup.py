@@ -257,7 +257,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.1.3",
+  "JANS_APP_VERSION": "1.1.4",
   "JANS_BUILD": "",
   "NODE_VERSION": "v18.16.0",
   "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
