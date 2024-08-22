@@ -1530,9 +1530,21 @@
       "spMetaDataSourceType": "Trust Relationship SP metadata type - file, URI.",
       "metaLocation": "Trust Relationship metadata file location.",
       "jansAssertionConsumerServiceGetURL": "SAML entity metadata.",
-      "jansAssertionConsumerServicePostURL": "SAML entity metadata.",
+      "jansAssertionConsumerServicePostURL": "SAML entity metadata."
+  
+    },
+    "samlIDP": {
+      "name": "Name uniquely identifies an identity provider.",
+      "displayName": "Identity provider display name.",
+      "description": "Description of Identity provider.",
+      "baseUrl": "URL to use when the auth server needs to redirect",
+      "enabled": "Indicates if Identity provider is enabled.",
+      "nameIDPolicyFormat":"URI reference corresponding to a name identifier format.",
+      "entityId":"Entity ID that will be used to uniquely identify this SAML",
+      "singleSignOnServiceUrl":"Url used to send SAML authentication requests.",
+      "singleLogoutServiceUrl":"Url used to send logout requests.",
       "signingCertificate": "Digital certificate used to verify the authenticity of the",
-      "encryptionPublicKey":"Public key to use to encrypt the message.",
+      "encryptionPublicKey": "Public key to use to encrypt the message.",
       "principalAttribute": "Name or Friendly Name of the attribute used to identify external",
       "principalType": "Way to identify and track external users from the assertion."
     }

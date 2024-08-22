@@ -34,7 +34,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
-  const DOC_SECTION = "saml";
+  const DOC_SECTION = "samlIDP";
 
   if (viewOnly) {
     SetTitle(t("titles.idp"));
