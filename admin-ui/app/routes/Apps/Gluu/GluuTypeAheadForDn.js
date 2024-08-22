@@ -31,13 +31,16 @@ function GluuTypeAheadForDn({
   lsize = 4,
   rsize = 8,
   paginate = false,
-  onSearch = () => {},
-  onPaginate = () => {},
+  onSearch = () => { },
+  onPaginate = () => { },
   maxResults = undefined,
   isLoading = false,
   placeholder = undefined,
-  onChange
+  onChange,
+  hideHelperMessage,
+  defaultSelected
 }) {
+
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
 
@@ -92,13 +95,13 @@ function GluuTypeAheadForDn({
           useCache={false}
           allowNew={allowNew}
           multiple={true}
-          defaultSelected={value}
+          selected={defaultSelected}
         />
-        <ThemeProvider theme={theme}>
+        {!hideHelperMessage && <ThemeProvider theme={theme}>
           <Typography variant="subtitle1">
             {t('placeholders.typeahead_holder_message')}
           </Typography>
-        </ThemeProvider>
+        </ThemeProvider>}
       </Col>
     </FormGroup>
   )

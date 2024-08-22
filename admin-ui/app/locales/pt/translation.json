@@ -29,10 +29,12 @@
   },
   "menus": {
     "adminui": "Admin",
+    "assets": "Assets",
     "config-api": "Config-API",
     "saml": "SAML",
     "add_source": "Adicionar Fonte",
     "edit_source": "Editar Fonte",
+    "jans_lock": "Trava Jans",
     "view_source": "Ver Fonte",
     "trust_relationships": "Relacionamentos de confiança",
     "service_providers": "SSO para sites",
@@ -135,13 +137,26 @@
     "copy_to_clipboard": "Copiar para área de transferência"
   },
   "fields": {
+    "asset_name": "Asset Name",
     "tag": "Marcação",
+    "upload": "Select a file to upload",
+    "jansService": "Related Services",
     "default_permission_in_token": "Permissão padrão no token",
     "introspection_signed_response_alg": "Algoritmo de assinatura da resposta de introspeção",
     "introspection_encrypted_response_alg": "Algoritmo de criptografia da resposta de introspeção",
     "aui_feature_ids": "Recursos da interface do administrador",
     "principal_attribute": "Atributo Principal",
     "principal_type": "Tipo Principal",
+    "token_channels": "Canais de token",
+    "metric_channel": "Canal de métrica",
+    "pdp_type": "Tipo de PDP",
+    "opa_configuration": "Configuração OPA",
+    "base_url": "URL base",
+    "access_token": "Token de acesso",
+    "policies_json_uris_authorization_token": "Token de autorização de URIs de políticas JSON",
+    "policies_json_uris": "URIs de políticas JSON",
+    "policies_zip_uris_authorization_token": "Token de autorização de URIs de políticas ZIP",
+    "policies_zip_uris": "URIs de políticas ZIP",
     "jans_assertion_consumer_service_get_url": "URL GET do Serviço de Consumo de Asserção Jans",
     "jans_assertion_consumer_service_post_url": "URL POST do Serviço de Consumo de Asserção Jans",
     "download_summary": "Baixar Resumo",
@@ -541,6 +556,8 @@
   },
   "messages": {
     "add_permission": "Adicionar permissão",
+    "add_asset":"Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
     "view_configuration": "Ver Configuração",
     "add_idp": "Adicionar IDP SAML",
@@ -681,11 +698,15 @@
   },
   "titles": {
     "acrs": "ACRs",
+    "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "algorithmic_keys": "Chaves Algorítmicas",
     "introspection_object": "Objeto de introspecção",
     "all_attributes": "Todos os Atributos",
     "all_custom_scripts": "Todos os scripts personalizados",
     "jans_json_property": "Propriedades",
+    "jans_lock": "Trava Jans",
     "config_api_configuration": "Configuração da API de Configuração",
     "idp": "IDP",
     "sp": "SP",
@@ -768,6 +789,9 @@
     "yes": "sim"
   },
   "documentation": {
+    "asset":{
+      "jansService": "Related Services"
+     },
     "webhook": {
       "url": "URL do webhook.",
       "enabled": "Ative ou desative a funcionalidade do webhook.",
@@ -1324,6 +1348,27 @@
       "maximumAllowedAttemptsWithoutDelay": "Quantas tentativas a aplicação permite sem atraso.",
       "delayTime": "Tempo de atraso em segundos após atingir o limite de maximumAllowedAttemptsWithoutDelay.",
       "bruteForceProtectionEnabled": "Habilitar ou desabilitar o serviço. Essa funcionalidade pode ser ativada dinamicamente."
+    },
+    "jans_lock": {
+      "baseEndpoint": "URL do endpoint base do bloqueio",
+      "tokenChannels": "Lista de nomes dos canais de token",
+      "disableJdkLogger": "Escolher se deseja desativar os loggers do JDK",
+      "loggingLevel": "Especificar o nível de registro dos loggers",
+      "loggingLayout": "Layout de registro usado para os loggers do servidor de autorização Jans",
+      "externalLoggerConfiguration": "O caminho para a configuração externa de registro log4j2",
+      "metricChannel": "Canal para relatórios de métricas",
+      "metricReporterInterval": "O intervalo para o relatador de métricas em segundos",
+      "metricReporterKeepDataDays": "Os dias para manter os dados relatados por métricas",
+      "metricReporterEnabled": "Habilitar o relatador de métricas",
+      "cleanServiceInterval": "Intervalo de tempo para o serviço de limpeza em segundos",
+      "opaConfiguration": {
+        "baseUrl": "URL base do OPA",
+        "accessToken": "Token de acesso OPA"
+      },
+      "policiesJsonUrisAuthorizationToken": "Token de autorização para acessar URIs Json",
+      "policiesJsonUris": "Lista de URIs Json com link para as políticas Rego",
+      "policiesZipUrisAuthorizationToken": "Token de autorização para acessar URIs Zip",
+      "policiesZipUris": "Lista de URIs Zip com políticas"
     },
     "ssa": {
       "org_id": "L'org_id est utilisé pour l'identification de l'organisation.",

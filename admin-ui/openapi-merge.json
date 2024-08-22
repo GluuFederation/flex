@@ -23,6 +23,9 @@
       },
       {
         "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/kc-link-plugin-swagger.yaml"
+      },
+      {
+        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/lock-plugin-swagger.yaml"
       }
     ], 
     "output": "./configApiSpecs.yaml"

@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3.20@sha256:0a4eaa0eecf5f8c050e5bba433f58c052be7587ee8af3e8b3910ef9ab5fbe9f5
 
 # ======
 # alpine
@@ -6,7 +6,7 @@ FROM alpine:3.19
 
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
+    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio curl \
     && apk add --no-cache --virtual .build-deps git
 
 # =====
@@ -73,7 +73,7 @@ RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admi
 # ======
 
 COPY requirements.txt /app/requirements.txt
-RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled \
+RUN mv /usr/lib/python3.12/EXTERNALLY-MANAGED /usr/lib/python3.12/EXTERNALLY-MANAGED.disabled \
     && python3 -m ensurepip \
     && pip3 install --no-cache-dir -U pip wheel setuptools \
     && pip3 install --no-cache-dir -r /app/requirements.txt \

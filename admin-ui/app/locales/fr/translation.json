@@ -29,11 +29,13 @@
   },
   "menus": {
     "adminui": "Administratrice",
+    "assets": "Assets",
     "config-api": "Config-API",
     "webhooks": "Webhooks",
     "add_source": "Ajouter une source",
     "edit_source": "Modifier la source",
     "view_source": "Afficher la source",
+    "jans_lock": "Verrou Jans",
     "saml": "SAML",
     "trust_relationships": "Relations de confiance",
     "api": {
@@ -138,12 +140,25 @@
     "copy_to_clipboard": "Copier dans le presse-papier"
   },
   "fields": {
+    "asset_name": "Asset Name",
     "tag": "Étiqueter",
     "issuer": "Émetteur",
+    "upload": "Select a file to upload",
+    "jansService": "Jans Module Properties",
     "message_provider_type": "Type de fournisseur de messages",
     "ssl_key_store_file_path": "Chemin du fichier du magasin de clés SSL",
     "principal_attribute": "Attribut Principal",
     "principal_type": "Type Principal",
+    "token_channels": "Canaux de jetons",
+    "metric_channel": "Canal de métrique",
+    "pdp_type": "Type de PDP",
+    "opa_configuration": "Configuration OPA",
+    "base_url": "URL de base",
+    "access_token": "Jeton d'accès",
+    "policies_json_uris_authorization_token": "Jeton d'autorisation des URI de politiques JSON",
+    "policies_json_uris": "URI de politiques JSON",
+    "policies_zip_uris_authorization_token": "Jeton d'autorisation des URI de politiques ZIP",
+    "policies_zip_uris": "URI de politiques ZIP",
     "ssl_trust_store_password": "Mot de passe du magasin de confiance SSL",
     "jans_assertion_consumer_service_get_url": "URL GET du service consommateur d'assertions Jans",
     "jans_assertion_consumer_service_post_url": "URL POST du service consommateur d'assertions Jans",
@@ -546,6 +561,8 @@
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
+    "add_asset":"Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
     "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",
@@ -685,10 +702,14 @@
   },
   "titles": {
     "acrs": "ACR",
+    "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "algorithmic_keys": "Clés algorithmiques",
     "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",
     "all_custom_scripts": "Tous les scripts personnalisés",
+    "jans_lock": "Verrou Jans",
     "config_api_configuration": "Configuration de l'API de configuration",
     "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
@@ -771,6 +792,9 @@
     "yes": "Oui"
   },
   "documentation": {
+    "asset":{
+      "jansService": "Jans Module Properties"
+     },
     "webhook": {
       "url": "URL du webhook.",
       "enabled": "Basculez pour activer ou désactiver la fonctionnalité du webhook.",
@@ -1151,6 +1175,27 @@
       "maximumAllowedAttemptsWithoutDelay": "Combien de tentatives l'application autorise-t-elle sans délai.",
       "delayTime": "Temps de délai en secondes après avoir atteint la limite de maximumAllowedAttemptsWithoutDelay.",
       "bruteForceProtectionEnabled": "Activer ou désactiver le service. Cette fonctionnalité peut être activée dynamiquement."
+    },
+    "jans_lock": {
+      "baseEndpoint": "URL de base de l'endpoint du verrou",
+      "tokenChannels": "Liste des noms des canaux de jetons",
+      "disableJdkLogger": "Choisir de désactiver les loggers JDK",
+      "loggingLevel": "Spécifier le niveau de journalisation des loggers",
+      "loggingLayout": "Disposition de la journalisation utilisée pour les loggers du serveur d'autorisation Jans",
+      "externalLoggerConfiguration": "Le chemin vers la configuration externe de la journalisation log4j2",
+      "metricChannel": "Canal pour les rapports de métriques",
+      "metricReporterInterval": "L'intervalle du rapporteur de métriques en secondes",
+      "metricReporterKeepDataDays": "Le nombre de jours de conservation des données rapportées par les métriques",
+      "metricReporterEnabled": "Activer le rapporteur de métriques",
+      "cleanServiceInterval": "Intervalle de temps pour le service de nettoyage en secondes",
+      "opaConfiguration": {
+        "baseUrl": "URL de base OPA",
+        "accessToken": "Jeton d'accès OPA"
+      },
+      "policiesJsonUrisAuthorizationToken": "Jeton d'autorisation pour accéder aux URIs Json",
+      "policiesJsonUris": "Liste des URIs Json avec lien vers les politiques Rego",
+      "policiesZipUrisAuthorizationToken": "Jeton d'autorisation pour accéder aux URIs Zip",
+      "policiesZipUris": "Liste des URIs Zip avec des politiques"
     },
     "jans_link": {
       "enabled": "Cette case à cocher est utilisée pour enregistrer et pousser les modifications. Ne l'utilisez que si l'administrateur du serveur a entré toutes les valeurs requises.",
