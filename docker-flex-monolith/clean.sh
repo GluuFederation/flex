@@ -23,7 +23,7 @@ if [ -z "$INSTALLED_FLEX_NAME" ]; then
 fi
 
 if [ -z "$FLEX_VERSION" ]; then
-    FLEX_VERSION="5.1.4-1"
+    FLEX_VERSION="5.1.5_dev"
 fi
 
 if [ -z "$DATABASE_VOLUME_NAME" ]; then
