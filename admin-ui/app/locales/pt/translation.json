@@ -39,10 +39,10 @@
     "trust_relationships": "Relacionamentos de confiança",
     "service_providers": "SSO para sites",
     "identity_providers": "Intermediação de Identidade",
-    "agama_flows":"Fluxos Agama",
-    "default_acr":"ACR padrão",
-    "acrs":"ACRs",
-    "aliases":"Aliases",
+    "agama_flows": "Fluxos Agama",
+    "default_acr": "ACR padrão",
+    "acrs": "ACRs",
+    "aliases": "Aliases",
     "api": {
       "roles": "Papéis de acesso",
       "permissions": "Permissões",
@@ -556,11 +556,13 @@
     "cache_refresh": "Atualização de Cache",
     "last_run": "Última corrida",
     "updates_at_last_run": "Atualizações na última execução",
-    "problems_at_last_run": "Problemas na última corrida"
+    "problems_at_last_run": "Problemas na última corrida",
+    "mapping": "Mapeamento",
+    "source": "Fonte"
   },
   "messages": {
     "add_permission": "Adicionar permissão",
-    "add_asset":"Add Jans Asset",
+    "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
     "view_configuration": "Ver Configuração",
@@ -640,7 +642,8 @@
     "drag_sha_file": "Arrastar .sha256sum arquivo aqui, ou clique para selecionar o arquivo",
     "see_project_details": "Ver detalhes do projeto",
     "add_ssa": "Adicionar SSA",
-    "copied": "Copiado"
+    "copied": "Copiado",
+    "edit_acr": "Editar ACR"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -793,9 +796,9 @@
     "yes": "sim"
   },
   "documentation": {
-    "asset":{
+    "asset": {
       "jansService": "Related Services"
-     },
+    },
     "webhook": {
       "url": "URL do webhook.",
       "enabled": "Ative ou desative a funcionalidade do webhook.",

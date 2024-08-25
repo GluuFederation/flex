@@ -37,10 +37,10 @@
     "view_source": "Afficher la source",
     "jans_lock": "Verrou Jans",
     "saml": "SAML",
-    "agama_flows":"Flux Agama",
-    "default_acr":"ACR par défaut",
-    "acrs":"ACRs",
-    "aliases":"Aliases",
+    "agama_flows": "Flux Agama",
+    "default_acr": "ACR par défaut",
+    "acrs": "ACRs",
+    "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
     "api": {
       "roles": "Rôles d'accès",
@@ -178,7 +178,7 @@
     "kc_link_last_update": "Dernière mise à jour du lien Keycloak",
     "kc_last_update_count": "Nombre de dernières mises à jour du lien Keycloak",
     "kc_problem_count": "Nombre de problèmes du lien Keycloak",
-    "update_method": "Méthode de mise à jour",  
+    "update_method": "Méthode de mise à jour",
     "sessionTimeoutInMins": "Délai d'expiration de la session de l'interface administrateur (en minutes)",
     "adminui_default_acr": "Méthode d'authentification de l'interface administrateur (ACR)",
     "metadata_location": "Emplacement des métadonnées",
@@ -561,11 +561,13 @@
     "cache_refresh": "Actualisation du cache",
     "last_run": "Dernier tour",
     "updates_at_last_run": "Mises à jour lors de la dernière exécution",
-    "problems_at_last_run": "Problèmes lors de la dernière course"
+    "problems_at_last_run": "Problèmes lors de la dernière course",
+    "mapping": "Mapeamento",
+    "source": "Fonte"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
-    "add_asset":"Add Jans Asset",
+    "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
     "view_configuration": "Afficher la configuration",
@@ -645,7 +647,8 @@
     "drag_sha_file": "Glisser .sha256sum fichier ici, ou cliquez pour sélectionner le fichier",
     "see_project_details": "Voir les détails du projet",
     "add_ssa": "Ajouter SSA",
-    "copied": "Copié"
+    "copied": "Copié",
+    "edit_acr": "Modifier ACR"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
@@ -718,7 +721,7 @@
     "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
     "jans_kc_link": "Lien KC Jans",
-    "all_scopes": "Toutes les portées",  
+    "all_scopes": "Toutes les portées",
     "idp": "IDP",
     "sp": "SP",
     "create_sp": "Créer un fournisseur de services",
@@ -796,9 +799,9 @@
     "yes": "Oui"
   },
   "documentation": {
-    "asset":{
+    "asset": {
       "jansService": "Jans Module Properties"
-     },
+    },
     "webhook": {
       "url": "URL du webhook.",
       "enabled": "Basculez pour activer ou désactiver la fonctionnalité du webhook.",

@@ -536,7 +536,9 @@
     "cache_refresh": "Cache Refresh",
     "last_run": "Last run",
     "updates_at_last_run": "Updates at the last run",
-    "problems_at_last_run": "Problems at the last run"
+    "problems_at_last_run": "Problems at the last run",
+    "mapping": "Mapping",
+    "source": "Source"
   },
   "languages": {
     "french": "French",
@@ -558,10 +560,10 @@
     "config-api": "Config-API",
     "authn": "Authn",
     "webhooks": "Webhooks",
-    "agama_flows":"Agama Flows",
-    "default_acr":"Default ACR",
-    "acrs":"ACRs",
-    "aliases":"Aliases",
+    "agama_flows": "Agama Flows",
+    "default_acr": "Default ACR",
+    "acrs": "ACRs",
+    "aliases": "Aliases",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
@@ -679,6 +681,7 @@
     "edit_scope": "Edit Scope",
     "edit_script": "Edit Script",
     "edit_authn": "Edit AuthN",
+    "edit_acr": "Edit ACR",
     "ldap_connection_error": "LDAP Connection Failed!",
     "ldap_connection_success": "LDAP Connection successful!",
     "not_deletable_client": "This Client can't be detele",
@@ -858,7 +861,9 @@
     "agama": "Agama",
     "ssa_management": "SSA Management",
     "change_backend_bind_password": "Change Backend Bind Password",
-    "add_agama_project": "Add Agama project"
+    "add_agama_project": "Add Agama project",
+    "add_alias": "Add New Mapping",
+    "edit_alias": "Edit Mapping"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -895,8 +900,8 @@
     "yes": "Yes"
   },
   "documentation": {
-    "asset":{
-     "jansService": "Related Services"
+    "asset": {
+      "jansService": "Related Services"
     },
     "webhook": {
       "url": "Webhook URL.",
