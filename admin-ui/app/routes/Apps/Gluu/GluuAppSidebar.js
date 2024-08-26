@@ -23,6 +23,7 @@ import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached';
 import LockIcon from '@mui/icons-material/Lock';
 import styles from './styles/GluuAppSidebar.style'
+import packageJson from '../../../../package.json';
 
 function GluuAppSidebar() {
   const scopes = useSelector(({ authReducer }) => authReducer.token? authReducer.token.scopes : authReducer.permissions)
@@ -167,7 +168,7 @@ function GluuAppSidebar() {
         <div className={classes.waveContainer}>
           <Wave className={classes.wave} fill={themeColors.menu.background} />
           <div className={classes.powered}>
-            Powered by Gluu
+            Powered by Gluu - {packageJson.version}
           </div>
         </div>
       </SidebarMenu>

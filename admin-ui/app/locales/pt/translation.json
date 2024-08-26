@@ -162,6 +162,7 @@
     "download_summary": "Baixar Resumo",
     "customAttributes": "atributos personalizados",
     "sessionTimeoutInMins": "Tempo limite da sessão da interface de administração (em minutos)",
+    "gluuFlexVersion": "Versão Gluu Flex",
     "adminui_default_acr": "Método de autenticação da interface de administração (ACR)",
     "introspection_encrypted_response_enc": "Algoritmo de criptografia da resposta de introspeção",
     "issuer": "Emissor",
@@ -978,6 +979,7 @@
     },
     "settings": {
       "pageSize": "O tamanho padrão para todas as páginas de lista.",
+      "gluuCurrentVersion": "Version actuelle du serveur Gluu",
       "darkMode": "Se deve ativar ou desativar o modo escuro.",
       "configApiUrl": "A URL da API de configuração atualmente em uso.",
       "sessionTimeoutInMins": "Determina a duração da inatividade permitida antes que a sessão atual expire.",
