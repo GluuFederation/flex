@@ -3,8 +3,8 @@
 # ==============
 
 # original Janssen base version (without suffix)
-ARG BASE_VERSION=1.1.4
-ARG FLEX_BASE_VERSION=5.1.4
+ARG BASE_VERSION=1.1.5
+ARG FLEX_BASE_VERSION=5.1.5
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
@@ -65,7 +65,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=1a86124407fdd8adb9f6360c8210b7e86291212f
+ENV JANS_SOURCE_VERSION=51a95f6b1724218bca7bc7a4523f88e1901d4aee
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
@@ -104,7 +104,7 @@ RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
 COPY app /app
 
 # CN version as env var (with suffix if any, i.e. SNAPSHOT)
-ENV CN_VERSION=1.1.4-SNAPSHOT
+ENV CN_VERSION=1.1.5-SNAPSHOT
 
 # set directory contains installer code that will be added to Python sys.path
 ENV PYTHONPATH=/app
@@ -167,7 +167,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/flex-all-in-one" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.4" \
+    org.opencontainers.image.version="5.1.5" \
     org.opencontainers.image.title="Gluu Flex All-in-One" \
     org.opencontainers.image.description=""
 
