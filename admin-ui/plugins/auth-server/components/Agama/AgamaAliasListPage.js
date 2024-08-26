@@ -20,7 +20,6 @@ import {
   getJsonConfig,
   patchJsonConfig,
 } from "Plugins/auth-server/redux/features/jsonConfigSlice";
-import { isEmpty } from "lodash";
 
 function AliasesListPage() {
   const theme = useContext(ThemeContext);
@@ -44,12 +43,7 @@ function AliasesListPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
-  const [dummy, setDummy] = useState({
-    arcMappings: {
-      acr_alias1: "basic",
-      acr_alias2: "otp",
-    },
-  });
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const permissions = useSelector((state) => state.authReducer.permissions);
   const myActions = [];
@@ -87,40 +81,29 @@ function AliasesListPage() {
     },
     validationSchema,
     onSubmit: () => {
-      handleSubmit(formik.values)
+      handleSubmit(formik.values);
     },
   });
 
   const handleSubmit = (values) => {
     const userAction = {};
     const postBody = {};
-    // const value = {
-    //   ...configuration.arcMappings,
-    //   [values.source]: values.mapping,
-    // };
-
-    let value = {...dummy};
+    let value = configuration.acrMappings;
 
     if (isEdit) {
-      //delete value.arcMappings[values.source];
+      delete value[selectedRow.mapping];
     }
-    value = {
-      ...dummy.arcMappings,
-      [values.source]: values.mapping,
-    };
-    setDummy(value);
-
+    value = { ...value, [values.mapping]: values.source };
     postBody["requestBody"] = [
       {
         path: "/acrMappings",
         value: value,
-        op: configuration?.arcMappings ? "replace" : "add",
+        op: configuration?.acrMappings ? "replace" : "add",
       },
     ];
 
     buildPayload(userAction, "changes", postBody);
-    //dispatch(patchJsonConfig({ action: userAction }));
-    //updateData(value.arcMappings);
+    dispatch(patchJsonConfig({ action: userAction }));
     setShowAddModal(false);
   };
 
@@ -128,34 +111,25 @@ function AliasesListPage() {
     setIsEdit(true);
     formik.setFieldValue("source", rowData.source);
     formik.setFieldValue("mapping", rowData.mapping);
+    setSelectedRow(rowData);
     setShowAddModal(true);
   };
 
   useEffect(() => {
-    if (isEmpty(configuration)) {
-      dispatch(getJsonConfig({ action: {} }));
-    }
+    dispatch(getJsonConfig({ action: {} }));
   }, []);
 
   useEffect(() => {
-    const payload = dummy;
-    if (payload?.arcMappings) {
-      updateData(payload.arcMappings);
-    }
+    const data = Object.entries(configuration?.acrMappings || {}).map(
+      ([key, value]) => {
+        return {
+          mapping: key,
+          source: value,
+        };
+      }
+    );
+    setListData(data);
   }, [configuration]);
-
-  const updateData = (payload) => {
-    const data = Object.entries(payload).map(([key, value], index) => {
-      return {
-        id: index,
-        source: key,
-        mapping: value,
-      };
-    });
-
-    const temp = [...data];
-    setListData(temp);
-  };
 
   return (
     <>
@@ -205,30 +179,27 @@ function AliasesListPage() {
             editable={{
               isDeleteHidden: () => false,
               onRowDelete: (oldData) => {
-                return new Promise((resolve, reject) => {
-                  const userAction = {};
-                  const postBody = {};
-                  // const value = {
-                  //   ...configuration.arcMappings,
-                  //   [values.source]: values.mapping,
-                  // };
+                try {
+                  return new Promise((resolve, reject) => {
+                    const userAction = {};
+                    const postBody = {};
 
-                  const value = dummy;
-                  delete value.arcMappings[oldData.source];
-                  postBody["requestBody"] = [
-                    {
-                      path: "/acrMappings",
-                      value: value,
-                      op: configuration?.arcMappings ? "replace" : "add",
-                    },
-                  ];
+                    let value = configuration?.acrMappings;
+                    delete value[oldData.mapping];
 
-                  buildPayload(userAction, "changes", postBody);
-                  setDummy(value);
-                  updateData(value.arcMappings);
-                  //dispatch(patchJsonConfig({ action: userAction }));
-                  resolve(true);
-                });
+                    postBody["requestBody"] = [
+                      {
+                        path: "/acrMappings",
+                        value: value,
+                        op: configuration?.acrMappings ? "replace" : "add",
+                      },
+                    ];
+
+                    buildPayload(userAction, "changes", postBody);
+                    dispatch(patchJsonConfig({ action: userAction }));
+                    resolve(true);
+                  });
+                } catch (error) {}
               },
             }}
           />
@@ -237,7 +208,7 @@ function AliasesListPage() {
           <Form
             onSubmit={(event) => {
               event.preventDefault();
-              formik.handleSubmit(event)
+              formik.handleSubmit(event);
             }}
             className="mt-4"
           >
