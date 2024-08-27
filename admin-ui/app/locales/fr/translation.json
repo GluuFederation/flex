@@ -860,12 +860,8 @@
       "releasedAttributes": "Attributs de la Relation de Confiance qui seront libérés pour SAML",
       "spMetaDataSourceType": "Type de métadonnées SP de la Relation de Confiance - fichier, URI.",
       "metaLocation": "Emplacement du fichier de métadonnées de la Relation de Confiance.",
-      "jansAssertionConsumerServiceGetURL": "Métadonnées de l'entité SAML.",
-      "jansAssertionConsumerServicePostURL": "Métadonnées de l'entité SAML.",
-      "signingCertificate": "Certificat numérique utilisé pour vérifier l'authenticité de",
-      "encryptionPublicKey": "Clé publique utilisée pour chiffrer le message.",
-      "principalAttribute": "Nom ou Nom convivial de l'attribut utilisé pour identifier les utilisateurs externes.",
-      "principalType": "Moyen d'identifier et de suivre les utilisateurs externes à partir de l'assertion."
+      "jansAssertionConsumerServiceGetURL": "URL GET que le fournisseur d'identité (IdP) enverra avec la réponse SAML contenant les assertions.",
+      "jansAssertionConsumerServicePostURL": "URL POST que le fournisseur d'identité (IdP) enverra avec la réponse SAML contenant les assertions."
     },
     "samlIDP": {
       "name": "Nom identifiant de manière unique un fournisseur d'identité.",
@@ -881,6 +877,11 @@
       "encryptionPublicKey": "Clé publique à utiliser pour chiffrer le message.",
       "principalAttribute": "Nom ou nom convivial de l'attribut utilisé pour identifier les utilisateurs externes.",
       "principalType": "Méthode pour identifier et suivre les utilisateurs externes à partir de l'assertion."
+    },
+    "samlConfiguration": {
+      "enabled": "Fonctionnalité SAML activée.",
+      "selectedIdp": "Serveur SAML sélectionné.",
+      "ignoreValidation": "Valeur booléenne pour activer/désactiver la validation SAML."
     },
     "ldap": {
       "configId": "Nom unique de la configuration.",

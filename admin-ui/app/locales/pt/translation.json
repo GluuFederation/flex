@@ -954,12 +954,8 @@
       "releasedAttributes": "Atributos da Relação de Confiança que serão liberados para SAML",
       "spMetaDataSourceType": "Tipo de metadados SP da Relação de Confiança - arquivo, URI.",
       "metaLocation": "Localização do arquivo de metadados da Relação de Confiança.",
-      "jansAssertionConsumerServiceGetURL": "Metadados da entidade SAML.",
-      "jansAssertionConsumerServicePostURL": "Metadados da entidade SAML.",
-      "signingCertificate": "Certificado digital usado para verificar a autenticidade de",
-      "encryptionPublicKey": "Chave pública usada para criptografar a mensagem.",
-      "principalAttribute": "Nome ou Nome amigável do atributo usado para identificar usuários externos.",
-      "principalType": "Forma de identificar e rastrear usuários externos a partir da asserção."
+      "jansAssertionConsumerServiceGetURL": "URL GET que o provedor de identidade (IdP) enviará a Resposta SAML contendo as afirmações.",
+      "jansAssertionConsumerServicePostURL": "URL POST que o provedor de identidade (IdP) enviará a Resposta SAML contendo as afirmações."
     },
     "samlIDP": {
       "name": "Nome que identifica exclusivamente um provedor de identidade.",
@@ -975,6 +971,11 @@
       "encryptionPublicKey": "Chave pública a ser usada para criptografar a mensagem.",
       "principalAttribute": "Nome ou Nome Amigável do atributo usado para identificar usuários externos.",
       "principalType": "Forma de identificar e rastrear usuários externos a partir da asserção."
+    },
+    "samlConfiguration": {
+      "enabled": "Funcionalidade SAML habilitada.",
+      "selectedIdp": "Servidor SAML selecionado.",
+      "ignoreValidation": "Valor booleano para habilitar/desabilitar a validação SAML."
     },
     "ldap": {
       "configId": "Nome único da configuração.",
