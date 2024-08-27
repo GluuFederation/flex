@@ -556,7 +556,7 @@
   },
   "messages": {
     "add_permission": "Adicionar permissão",
-    "add_asset":"Add Jans Asset",
+    "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
     "view_configuration": "Ver Configuração",
@@ -789,9 +789,9 @@
     "yes": "sim"
   },
   "documentation": {
-    "asset":{
+    "asset": {
       "jansService": "Related Services"
-     },
+    },
     "webhook": {
       "url": "URL do webhook.",
       "enabled": "Ative ou desative a funcionalidade do webhook.",
@@ -939,6 +939,43 @@
       "middleName": "Nome do Meio",
       "sn": "Sobrenome",
       "userConfirmPassword": "Confirmar Senha"
+    },
+    "saml": {
+      "name": "O ID alfanumérico usado para identificar a Relação de Confiança",
+      "displayName": "Nome de exibição da Relação de Confiança",
+      "description": "Descrição da Relação de Confiança.",
+      "baseUrl": "URL a ser usada quando o servidor de autenticação precisar redirecionar",
+      "enabled": "Indica se a Relação de Confiança está habilitada.",
+      "spLogoutURL": "URL de solicitação de logout.",
+      "singleSignOnServiceUrl": "URL do Serviço de Logout Único.",
+      "singleLogoutServiceUrl": "URL do Serviço de Logout Único.",
+      "entityId": "Metadados da entidade SAML.",
+      "nameIDPolicyFormat": "Metadados da entidade SAML.",
+      "releasedAttributes": "Atributos da Relação de Confiança que serão liberados para SAML",
+      "spMetaDataSourceType": "Tipo de metadados SP da Relação de Confiança - arquivo, URI.",
+      "metaLocation": "Localização do arquivo de metadados da Relação de Confiança.",
+      "jansAssertionConsumerServiceGetURL": "URL GET que o provedor de identidade (IdP) enviará a Resposta SAML contendo as afirmações.",
+      "jansAssertionConsumerServicePostURL": "URL POST que o provedor de identidade (IdP) enviará a Resposta SAML contendo as afirmações."
+    },
+    "samlIDP": {
+      "name": "Nome que identifica exclusivamente um provedor de identidade.",
+      "displayName": "Nome exibido do provedor de identidade.",
+      "description": "Descrição do provedor de identidade.",
+      "baseUrl": "URL a ser usada quando o servidor de autenticação precisar redirecionar.",
+      "enabled": "Indica se o provedor de identidade está ativado.",
+      "nameIDPolicyFormat": "Referência URI correspondente a um formato de identificador de nome.",
+      "entityId": "ID da entidade que será usada para identificar exclusivamente este SAML.",
+      "singleSignOnServiceUrl": "URL usada para enviar solicitações de autenticação SAML.",
+      "singleLogoutServiceUrl": "URL usada para enviar solicitações de logout.",
+      "signingCertificate": "Certificado digital usado para verificar a autenticidade.",
+      "encryptionPublicKey": "Chave pública a ser usada para criptografar a mensagem.",
+      "principalAttribute": "Nome ou Nome Amigável do atributo usado para identificar usuários externos.",
+      "principalType": "Forma de identificar e rastrear usuários externos a partir da asserção."
+    },
+    "samlConfiguration": {
+      "enabled": "Funcionalidade SAML habilitada.",
+      "selectedIdp": "Servidor SAML selecionado.",
+      "ignoreValidation": "Valor booleano para habilitar/desabilitar a validação SAML."
     },
     "ldap": {
       "configId": "Nome único da configuração.",
