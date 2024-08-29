@@ -176,6 +176,7 @@
     "kc_problem_count": "Nombre de problèmes du lien Keycloak",
     "update_method": "Méthode de mise à jour",
     "sessionTimeoutInMins": "Délai d'expiration de la session de l'interface administrateur (en minutes)",
+    "gluuFlexVersion": "Version Gluu Flex",
     "adminui_default_acr": "Méthode d'authentification de l'interface administrateur (ACR)",
     "metadata_location": "Emplacement des métadonnées",
     "released_attributes": "Attributs publiés",
@@ -921,6 +922,7 @@
     },
     "settings": {
       "pageSize": "La taille par défaut pour toutes les pages de liste.",
+      "gluuCurrentVersion": "Version actuelle du serveur Gluu",
       "darkMode": "Indique si le mode sombre est activé ou désactivé.",
       "configApiUrl": "L'URL de l'API de configuration actuellement utilisée.",
       "sessionTimeoutInMins": "Détermine la durée d'inactivité autorisée avant l'expiration de la session en cours.",
