@@ -5,19 +5,19 @@ on:
       jans_release_as:
         description: 'Release version for the python projects, admin ui, docker images, and helm charts'
         required: true
-        default: '1.1.1'
+        default: '1.1.5'
       mega_release_as:
         description: 'Mega release version'
         required: true
-        default: '5.1.1'
+        default: '5.1.5'
       next_jans_release_as:
         description: 'next anticipated jans Mega release version'
         required: true
-        default: '1.1.1'
+        default: '1.1.5'
       next_mega_release_as:
         description: 'next anticipated Mega release version'
         required: true
-        default: '5.1.1'
+        default: '5.1.5'
 
 jobs:
   mega-release-pr:

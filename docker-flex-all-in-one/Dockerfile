@@ -3,8 +3,8 @@
 # ==============
 
 # original Janssen base version (without suffix)
-ARG BASE_VERSION=1.1.1
-ARG FLEX_BASE_VERSION=5.1.1
+ARG BASE_VERSION=1.1.5
+ARG FLEX_BASE_VERSION=5.1.5
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
@@ -23,7 +23,7 @@ FROM ${FLEX_ADMIN_UI_IMAGE} AS flex-admin-ui-src
 # app
 # ===
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.9@sha256:915d7a6c5874638a735296a99ac28c4a9cefb9bfda2bef796fc564449d44d6cc
+FROM bellsoft/liberica-openjdk-alpine:17.0.12@sha256:877a6ffc273212bd3f695db2a7973a05aa1bfb88ad550ba9ffe7deb7d1e50eee
 
 # hadolint ignore=DL3018
 RUN apk update \
@@ -54,6 +54,7 @@ COPY --from=jans-aio-src /var/jans/cr-snapshots /var/jans/cr-snapshots
 COPY --from=jans-aio-src /opt/keycloak /opt/keycloak
 COPY --from=jans-aio-src /opt/idp /opt/idp
 COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
+COPY --from=jans-aio-src /usr/share/java /usr/share/java
 
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
@@ -61,14 +62,29 @@ COPY --from=flex-admin-ui-src /run/nginx/nginx.pid /run/nginx/nginx.pid
 COPY --from=flex-admin-ui-src /app/scripts /app/flex_aio/admin_ui
 RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 
+# ===========
+# Assets sync
+# ===========
+
+ENV JANS_SOURCE_VERSION=fc9f04fe3b3d3d168f3090214b22ee80be371d92
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the assets
+RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+    && cd /tmp/jans \
+    && git sparse-checkout init --cone \
+    && git checkout ${JANS_SOURCE_VERSION} \
+    && git sparse-checkout add jans-pycloudlib
+
 # ------
 # Python
 # ------
 
 COPY app/requirements.flex.txt /app/
-RUN python3 -m ensurepip \
+RUN mv /usr/lib/python3.12/EXTERNALLY-MANAGED /usr/lib/python3.12/EXTERNALLY-MANAGED.disabled \
+    && python3 -m ensurepip \
     && pip3 install --no-cache-dir -U pip wheel setuptools \
-    && pip3 install --no-cache-dir --default-timeout=300 -r /app/requirements.flex.txt \
+    && pip3 install --no-cache-dir -r /app/requirements.flex.txt \
     && pip3 uninstall -y pip wheel
 
 # -------
@@ -76,7 +92,7 @@ RUN python3 -m ensurepip \
 # -------
 
 RUN apk del .build-deps \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* /tmp/jans
 
 # ----
 # misc
@@ -89,7 +105,7 @@ RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
 COPY app /app
 
 # CN version as env var (with suffix if any, i.e. SNAPSHOT)
-ENV CN_VERSION=1.1.1-SNAPSHOT
+ENV CN_VERSION=1.1.5-SNAPSHOT
 
 # set directory contains installer code that will be added to Python sys.path
 ENV PYTHONPATH=/app
@@ -137,10 +153,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
     CN_SAML_JAVA_OPTIONS="" \
     CN_SAML_KC_ADMIN_CREDENTIALS_FILE=/etc/jans/conf/kc_admin_creds \
     CN_SAML_KC_DB_PASSWORD_FILE=/etc/jans/conf/kc_db_password \
-    KC_HEALTH_ENABLED=true \
-    KC_METRICS_ENABLED=true \
     KC_LOG_LEVEL=INFO \
-    KC_PROXY=edge \
     KC_DB=mysql \
     KC_DB_USERNAME=keycloak \
     KC_DB_SCHEMA=keycloak \
@@ -155,7 +168,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/flex-all-in-one" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.1" \
+    org.opencontainers.image.version="5.1.5" \
     org.opencontainers.image.title="Gluu Flex All-in-One" \
     org.opencontainers.image.description=""
 
@@ -214,8 +227,7 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     /var/jans/cr-snapshots \
     /opt/idp \
     /opt/keycloak/logs \
-    /opt/keycloak/conf \
-    /opt/flex/admin-ui/_plugins
+    /opt/keycloak/conf
 
 RUN chmod -R g=u ${JETTY_HOME}/temp \
     ${JETTY_BASE}/common/libs \
@@ -255,8 +267,7 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     /var/jans/cr-snapshots \
     /opt/idp \
     /opt/keycloak/logs \
-    /opt/keycloak/conf \
-    /opt/flex/admin-ui/_plugins
+    /opt/keycloak/conf
 
 RUN chown 1000:1000 /opt/java/lib/security/cacerts \
     /run/nginx/nginx.pid \

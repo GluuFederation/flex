@@ -15,6 +15,8 @@
     "change_bind_password": "Change Bind Password",
     "set_password": "Set Password",
     "add_classes": "Add Classes",
+    "configuration_copied": "Configuration copied",
+    "copy_configuration": "Copy configuration",
     "apply": "Apply",
     "back_home": "Back Home",
     "cancel": "Cancel",
@@ -77,13 +79,29 @@
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
+    "asset_name": "Asset Name",
+    "upload": "Select a file to upload",
+    "jansService": "Related Services",
     "default_permission_in_token": "Default permission in token",
     "aui_feature_ids": "Admin UI Features",
     "introspection_signed_response_alg": "Introspection Signed Response Alg",
     "introspection_encrypted_response_alg": "Introspection Encrypted Response Alg",
     "http_request_body": "Request Body",
+    "principal_attribute": "Principal Attribute",
+    "token_channels": "Token Channels",
+    "metric_channel": "Metric Channel",
+    "pdp_type": "PDP Type",
+    "opa_configuration": "OPA Configuration",
+    "base_url": "Base URL",
+    "access_token": "Access token",
+    "policies_json_uris_authorization_token": "Policies JSON URIs Authorization Token",
+    "policies_json_uris": "Policies JSON URIs",
+    "policies_zip_uris_authorization_token": "Policies ZIP URIs Authorization Token",
+    "policies_zip_uris": "Policies ZIP URIs",
+    "principal_type": "Principal Type",
     "webhook_name": "Webhook Name",
     "sessionTimeoutInMins": "Admin UI Session Timeout (In Minutes)",
+    "gluuFlexVersion":"Gluu Flex Version",
     "adminui_default_acr": "Admin UI authentication method (ACR)",
     "download_summary": "Download Summary",
     "metadata_location": "Metadata Location",
@@ -416,7 +434,7 @@
     "requirePar": "Require PAR",
     "requestUris": "Request URIs",
     "authorizedOrigins": "Authorized JS origins",
-    "defaultAcrValues": "Default ACR ",
+    "defaultAcrValues": "Default ACR",
     "authorizedAcrValues": "Allowed ACRs",
     "defaultPromptLogin": "Default prompt=login",
     "softwareId": "Software id",
@@ -519,7 +537,9 @@
     "cache_refresh": "Cache Refresh",
     "last_run": "Last run",
     "updates_at_last_run": "Updates at the last run",
-    "problems_at_last_run": "Problems at the last run"
+    "problems_at_last_run": "Problems at the last run",
+    "mapping": "Mapping",
+    "source": "Source"
   },
   "languages": {
     "french": "French",
@@ -527,22 +547,30 @@
     "portuguese": "Portuguese"
   },
   "menus": {
+    "assets": "Assets",
     "scim": "SCIM",
     "saml": "SAML",
     "trust_relationships": "Trust Relationships",
     "service_providers": "Website SSO",
     "identity_providers": "Identity Brokering",
     "add_source": "Add Source",
+    "jans_lock": "Jans Lock",
     "edit_source": "Edit Source",
     "view_source": "View Source",
     "adminui": "Admin",
     "config-api": "Config-API",
     "authn": "Authn",
     "webhooks": "Webhooks",
+    "agama_flows": "Agama Flows",
+    "default_acr": "Default ACR",
+    "acrs": "ACRs",
+    "aliases": "Aliases",
+    "builtIn":"Built-In",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
-      "mapping": "Mapping"
+      "mapping": "Mapping",
+      "api_config": "Config API properties"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -570,7 +598,7 @@
     "oauthserver": "Auth server",
     "persistence": "Persistence",
     "person": "Person",
-    "properties": "Properties",
+    "properties": "Auth server properties",
     "reports": "Reports",
     "roles": "Roles",
     "fido": "FIDO",
@@ -599,6 +627,8 @@
   },
   "messages": {
     "add_permission": "Add Permission",
+    "add_asset": "Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Add Configuration",
     "view_configuration": "View Configuration",
     "view_trust_relationshi_details": "View Trust Relationship Details",
@@ -653,6 +683,7 @@
     "edit_scope": "Edit Scope",
     "edit_script": "Edit Script",
     "edit_authn": "Edit AuthN",
+    "edit_acr": "Edit ACR",
     "ldap_connection_error": "LDAP Connection Failed!",
     "ldap_connection_success": "LDAP Connection successful!",
     "not_deletable_client": "This Client can't be detele",
@@ -756,9 +787,14 @@
   "titles": {
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",
+    "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "introspection_object": "Introspection Object",
     "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",
+    "jans_lock": "Jans Lock",
+    "config_api_configuration": "Config API Configuration",
     "idp": "IDP",
     "sp": "SP",
     "create_sp": "Create Service Provider",
@@ -808,6 +844,7 @@
     "fido_management": "FIDO Configuration",
     "saml_management": "SAML",
     "scim_management": "SCIM Configuration",
+    "project_configuration": "Project Configuration",
     "jans_ink": "Jans Link",
     "error": "error",
     "token": "Tokens",
@@ -826,7 +863,9 @@
     "agama": "Agama",
     "ssa_management": "SSA Management",
     "change_backend_bind_password": "Change Backend Bind Password",
-    "add_agama_project": "Add Agama project"
+    "add_agama_project": "Add Agama project",
+    "add_alias": "Add New Mapping",
+    "edit_alias": "Edit Mapping"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -863,6 +902,9 @@
     "yes": "Yes"
   },
   "documentation": {
+    "asset": {
+      "jansService": "Related Services"
+    },
     "webhook": {
       "url": "Webhook URL.",
       "enabled": "Toggle to activate or deactivate the webhook functionality.",
@@ -910,6 +952,74 @@
       "description": "Permission Description",
       "tag": "Tag-name to identify permission to be included in the API access token.",
       "default_permission_in_token": "If set to true the permission will be available by default in the authorization token to access API (before authentication)."
+    },
+    "config_api_properties": {
+      "configOauthEnabled": "OAuth authentication enable/disable flag. Default value true.",
+      "disableLoggerTimer": "Flag to enable/disable timer to dynamically reflect log configuration changes. Default value true.",
+      "disableAuditLogger": "Flag to enable/disable request audit. Default value false.",
+      "customAttributeValidationEnabled": "Flag to enable/disable check if custom attribute is declared in schema. Default volume true.",
+      "apiProtectionType": "Name of supported API protection mechanism. Supported type is OAuth2.",
+      "apiClientId": "Config-API client ID.",
+      "apiClientPassword": "Config-API client password.",
+      "endpointInjectionEnabled": "Flag to enable/disable endpoint injection. No default value specified.",
+      "authIssuerUrl": "Issuer Identifier of Jans OpenID Connect Provider.",
+      "authOpenidConfigurationUrl": "Jans OpenID Connect Provider Well-Known Configuration URL.",
+      "authOpenidIntrospectionUrl": "Jans URL of the OpenID Connect Provider's OAuth 2.0 Authorization Endpoint.",
+      "authOpenidTokenUrl": "Jans URL of the OpenID Connect Provider's OAuth 2.0 Token Endpoint.",
+      "authOpenidRevokeUrl": "Jans URL of the OpenID Connect Provider's OAuth 2.0 Revoke Token Endpoint.",
+      "loggingLevel": "Specify logging level of Loggers. Default level is INFO.",
+      "loggingLayout": "Log4j logging layout. Default value TEXT.",
+      "externalLoggerConfiguration": "The path to the external log4j2 logging configuration.",
+      "disableJdkLogger": "Choose whether to disable JDK loggers. No default value specified.",
+      "maxCount": "Maximum number of results per page in search endpoints.",
+      "apiApprovedIssuer": "List of approved external Auth server to validate token.",
+      "exclusiveAuthScopes": "List of oAuth scope that can be validity for an access tokens only by underlying Jans Auth server.",
+      "corsConfigurationFilters": "CORS configuration filter properties.",
+      "userMandatoryAttributes": "List of User mandatory attribute for user creation request.",
+      "ignoreHttpMethod": "HTTP methods for which audit is disabled.",
+      "auditLogConf": {
+        "headerAttributes": "List of header HTTP attributes whose value is to be logged.",
+        "enabled": "Flag to enable and disable audit log.",
+        "self": "Audit Log configuration details."
+      },
+      "agamaConfiguration": {
+        "mandatoryAttributes": "List of attributes required to create the Agama Flow.",
+        "optionalAttributes": "List of attributes that are optional.",
+        "self": "Agama configuration details."
+      },
+      "dataFormatConversionConf": {
+        "ignoreHttpMethod": "HTTP methods for which data conversion is to be disabled.",
+        "enabled": "Flag to enable and disable data conversion",
+        "self": "Configuration for data-type converstion."
+      },
+      "plugins": {
+        "name": "Name of the plugin.",
+        "description": "Description of the plugin.",
+        "className": "Plugin application class.",
+        "self": "Details of enabled plugins."
+      },
+      "assetMgtConfiguration": {
+        "assetMgtEnabled": "Flag indicating if asset management functionality is enabled.",
+        "assetServerUploadEnabled": "Flag indicating if asset upload to server is enabled.",
+        "fileExtensionValidationEnabled": "Flag indicating if file extension validation is enabled.",
+        "moduleNameValidationEnabled": "Flag indicating if service module name extension validation is enabled.",
+        "assetBaseDirectory": "Base directory on server to upload the asset.",
+        "jansServiceModule": "List of supported service module where asset can be uploaded.",
+        "self": "Asset management configuration details."
+      },
+      "assetDirMapping": {
+        "directory": "Relative path to asset base directory.",
+        "type": "List of file extention that are stored in directory.",
+        "description": "Description of assets stored in directory.",
+        "self": "Asset type mapped to server directory."
+      },
+      "assetMgtEnabled": "Flag indicating if asset management functionality is enabled.",
+      "assetServerUploadEnabled": "Flag indicating if asset upload to server is enabled.",
+      "fileExtensionValidationEnabled": "Flag indicating if file extension validation is enabled.",
+      "moduleNameValidationEnabled": "Flag indicating if service module name extension validation is enabled.",
+      "assetBaseDirectory": "Base directory on server to upload the asset.",
+      "jansServiceModule": "List of supported service module where asset can be uploaded.",
+      "userExclusionAttributes": "User attribute that should not be returned in response."
     },
     "json_properties": {
       "parEndpoint": "URL for Pushed Authorisation Request (PAR) Endpoint",
@@ -1150,6 +1260,27 @@
       "delayTime": "Delay time in seconds after reaching maximumAllowedAttemptsWithoutDelay limit.",
       "bruteForceProtectionEnabled": "Enable or disable service, This functionality can be enabled dynamically."
     },
+    "jans_lock": {
+      "baseEndpoint": "Lock base endpoint URL",
+      "tokenChannels": "List of token channel names",
+      "disableJdkLogger": "Choose whether to disable JDK loggers",
+      "loggingLevel": "Specify the logging level of loggers",
+      "loggingLayout": "Logging layout used for Jans Authorization Server loggers",
+      "externalLoggerConfiguration": "The path to the external log4j2 logging configuration",
+      "metricChannel": "Channel for metric reports",
+      "metricReporterInterval": "The interval for metric reporter in seconds",
+      "metricReporterKeepDataDays": "The days to keep metric reported data",
+      "metricReporterEnabled": "Enable metric reporter",
+      "cleanServiceInterval": "Time interval for the Clean Service in seconds",
+      "opaConfiguration": {
+        "baseUrl": "Base OPA URL",
+        "accessToken": "OPA access token"
+      },
+      "policiesJsonUrisAuthorizationToken": "Authorization token to access Json Uris",
+      "policiesJsonUris": "List of Json Uris with link to Rego policies",
+      "policiesZipUrisAuthorizationToken": "Authorization token to access Zip Uris",
+      "policiesZipUris": "List of Zip Uris with policies"
+    },
     "openid_client": {
       "displayName": "Name of the Client to be presented to the End-User.",
       "clientName": "Name of the Client to be presented to the End-User.",
@@ -1301,6 +1432,7 @@
     },
     "settings": {
       "pageSize": "The default size for all list page.",
+      "gluuCurrentVersion":"Gluu Server current version",
       "darkMode": "Whether to enable or disable adrk mode.",
       "configApiUrl": "The URL of the config api currently in used.",
       "sessionTimeoutInMins": "Determines the duration of inactivity allowed before the current session expires.",
@@ -1387,13 +1519,51 @@
       "givenName": "Given Name",
       "displayName": "Display Name",
       "mail": "Email",
-      "jansStatus": "Status",
+      "status": "Status",
       "gender": "Gender",
       "userPassword": "User password",
       "INUM": "INUM",
       "middleName": "Middle Name",
       "sn": "Last Name",
       "userConfirmPassword": "Confirm Password"
+    },
+    "saml": {
+      "name": "The alphanumeric ID string that is used to identify the Trust Relationship",
+      "displayName": "Trust Relationship display name",
+      "description": "Description of the Trust Relationship.",
+      "baseUrl": "URL to use when the auth server needs to redirect",
+      "enabled": "Indicates if Trust Relationship is enabled.",
+      "spLogoutURL": "Logout request URL.",
+      "singleSignOnServiceUrl": "Single Signon Service URL.",
+      "singleLogoutServiceUrl": "Single Logout Service URL.",
+      "entityId": "Entity ID that will be used to uniquely identify this SAML.",
+      "nameIDPolicyFormat": "URI reference corresponding to a name identifier format.",
+      "releasedAttributes": "Trust Relationship attributes that will be released to SAML",
+      "spMetaDataSourceType": "Trust Relationship SP metadata type - file, URI.",
+      "metaLocation": "Trust Relationship metadata file location.",
+      "jansAssertionConsumerServiceGetURL": "GET URL the Identity provider (IdP) will send the SAML Response containing the assertions.",
+      "jansAssertionConsumerServicePostURL": "POST URL the Identity provider (IdP) will send the SAML Response containing the assertions."
+    },
+    "samlIDP": {
+      "name": "Name uniquely identifies an identity provider.",
+      "displayName": "Identity provider display name.",
+      "description": "Description of Identity provider.",
+      "baseUrl": "URL to use when the auth server needs to redirect",
+      "enabled": "Indicates if Identity provider is enabled.",
+      "nameIDPolicyFormat": "URI reference corresponding to a name identifier format.",
+      "entityId": "Entity ID that will be used to uniquely identify this SAML",
+      "singleSignOnServiceUrl": "Url used to send SAML authentication requests.",
+      "singleLogoutServiceUrl": "Url used to send logout requests.",
+      "signingCertificate": "Digital certificate used to verify the authenticity of the",
+      "encryptionPublicKey": "Public key to use to encrypt the message.",
+      "principalAttribute": "Name or Friendly Name of the attribute used to identify external",
+      "principalType": "Way to identify and track external users from the assertion."
+    },
+
+    "samlConfiguration": {
+      "enabled": "SAML functionality enabled.",
+      "selectedIdp": "Selected SAML server.",
+      "ignoreValidation": "Boolean value to enable/disable SAML validation."
     }
   }
 }

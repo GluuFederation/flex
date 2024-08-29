@@ -12,6 +12,8 @@ import { processRoutes } from 'Plugins/PluginMenuResolver'
 import { hasPermission } from 'Utils/PermChecker'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
+import { uuidv4 } from 'Utils/Util'
+
 const DashboardPage = lazy(() => import('./Dashboards/DashboardPage'))
 const HealthPage = lazy(() => import('./Health/HealthPage'))
 const LicenseDetailsPage = lazy(() => import('./License/LicenseDetailsPage'))
@@ -32,10 +34,21 @@ export const RoutedContent = () => {
     setPluginMenus(processRoutes())
   }, [])
 
+  const { userinfo } = useSelector((state) => state.authReducer);
+  const config = useSelector((state) => state.authReducer.config)
+
+  useEffect(() => {
+    if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
+      const state = uuidv4()
+      const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
+      window.location.href = sessionEndpoint
+    }
+  }, [userinfo]);
+
   return (
     <Routes>
       <Route path="/home/dashboard" element={<Suspense fallback={<GluuSuspenseLoader />}><DashboardPage /></Suspense>} />
-      <Route path="/" element={ <Navigate to="/home/dashboard" /> } />
+      <Route path="/" element={<Navigate to="/home/dashboard" />} />
       <Route path="/home/health" element={<Suspense fallback={<GluuSuspenseLoader />}><HealthPage /></Suspense>} />
       <Route path="/home/licenseDetails" element={<Suspense fallback={<GluuSuspenseLoader />}><LicenseDetailsPage /></Suspense>} />
       {/*    Layouts     */}
@@ -60,7 +73,7 @@ export const RoutedContent = () => {
       <Route element={<Suspense fallback={<GluuSuspenseLoader />}><Gluu404Error /></Suspense>} path="/error-404" />
 
       {/*    404    */}
-      <Route path="*" element={ <Navigate to="/error-404" /> } />
+      <Route path="*" element={<Navigate to="/error-404" />} />
     </Routes>
   )
 }

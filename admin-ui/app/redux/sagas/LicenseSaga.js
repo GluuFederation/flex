@@ -127,6 +127,12 @@ function* checkMauThreshold(mau_threshold) {
     }
   } catch (error) {
     console.log(error)
+    const errorMessage = error?.response?.body?.responseMessage || error.message
+    yield put(setLicenseError(errorMessage))
+    yield put(
+      retrieveLicenseKeyResponse({ isNoValidLicenseKeyFound: true })
+    )
+    yield put(checkLicensePresentResponse({ isLicenseValid: false }))
   } finally {
     yield put(setValidatingFlow({ isValidatingFlow: false }))
   }

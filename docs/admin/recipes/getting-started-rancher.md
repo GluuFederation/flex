@@ -1,14 +1,14 @@
 ## Overview 
 
-Gluu Flex (“Flex”) is a cloud-native digital identity platform that enables organizations to authenticate and authorize people and software through the use of open standards like OpenID Connect, OAuth, and FIDO. 
+Gluu Flex (“Flex”) is a cloud-native digital identity platform that enables organizations to authenticate and authorize people and software through the use of open standards like OpenID Connect, OAuth, and FIDO.
 
-It is a downstream commercial distribution of the Linux Foundation Janssen Project software, plus two tools from Gluu: a web administration tool and a self-service web portal.
+It is a downstream commercial distribution of the Linux Foundation Janssen Project software, plus a web administration tool(Gluu Admin-UI).
 
 SUSE Rancher’s helm-based deployment approach simplifies the deployment and configuration of Flex, enabling organizations to take advantage of Flex’s modular design to improve their security posture while simultaneously enabling just-in-time auto-scaling.
 
 The key services of Flex include:
 
-- **(REQUIRED) Jans Auth Server**: This component is the OAuth Authorization Server, the OpenID Connect Provider, the UMA Authorization Server for person and software authentication. This service must be Internet-facing.
+- **(REQUIRED) Jans Auth Server**: This component is the OAuth Authorization Server, the OpenID Connect Provider, and the UMA Authorization Server for person and software authentication. This service must be Internet-facing.
  
 - **(REQUIRED) Jans Config API**: The API to configure the auth-server and other components is consolidated in this component. This service should not be Internet-facing.
 
@@ -28,8 +28,8 @@ The key services of Flex include:
 
 In this Quickstart Guide, we will: 
 
-1. Deploy Flex and add some users
-2. Enable two-factor authentication
+1. Deploy Flex and add some users.
+2. Enable two-factor authentication.
 3. Protect content on an Apache web server with OpenID Connect.
 
 ## Audience 
@@ -47,10 +47,11 @@ In addition to the core services listed in the Introduction above, the SUSE Ranc
 - `PostgreSQL/MySQL`: SQL database dialect used to store configuration, people clients, sessions and other data needed for `Gluu Flex` operation.
 - `Cert Manager`: Used for managing X.509 certificates and crypto keys lifecycle in Janssen Server.
 - `Key Rotation`: A cronjob that implements `Cert Manager` to rotate the auth keys
-- `Configuration job`: This job loads (generate/restore) and dumps (backup) the configuration and secrets.
-- `ConfigMap`: Stores configuration about Flex environment setup.
+- `Configuration job`: loads (generate/restore) and dumps (backup) the configuration and secrets.
+- `Persistence job`: This job loads initial data for the backend used (SQL, LDAP, or Couchbase).
+- `ConfigMaps`: Stores configuration needed for Flex environment setup.
 - `Secrets`: Contains sensitive or confidential data such as a password, a token, or a key.
-- `Persistence job`: This job loads initial data for LDAP or Couchbase.
+
 
 ## Config and Secret keys
 
@@ -146,7 +147,7 @@ kubectl get secret cn -o json -n <namespace>
 
 - Docker running locally (Linux preferred)
 
-- Essential tools and CLI utilities installed on your local workstation and are available in your `$PATH`: `curl`, `kubectl`
+- Essential tools and CLI utilities are installed on your local workstation and are available in your `$PATH`: `curl`, `kubectl`
 
 - An entry in the `/etc/hosts` file of your local workstation to resolve the hostname of the Gluu Flex installation. This step is for testing purposes. 
 
@@ -226,7 +227,7 @@ kubectl get secret cn -o json -n <namespace>
     - Click on `Install` on the right side of the window. 
     - Change the namespace from `default` to `gluu`, then click on `Next`.
     - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
-    - Add `License SSA`. Before initiating the setup, please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.
+    - Add `License SSA`. Before initiating the setup, please obtain an [SSA](https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa) for Flex trial, after which you will issued a JWT.
     - Click on the `Persistence` section. Change `SQL database host uri` to `postgresql.postgres.svc.cluster.local` in the case of `PostgreSQL` or `my-release-mysql.gluu.svc.cluster.local` in the case of `MySQL`. Also set `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
     - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. You can also enable different services like `Client API` and `Jackrabbit`.
     - Click on the  section named `Ingress` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`. 
@@ -265,7 +266,7 @@ In the event you used microk8s or your fqdn is not registered, the below steps w
     3.65.27.95 demoexample.gluu.org
     ```
 
-3. You can do the same edit for every each component you want to access publicly from the browser.
+3. You can do the same edit for every component you want to access publicly from the browser.
 
 ## Testing Configuration endpoints
 
@@ -285,30 +286,15 @@ In the event you used microk8s or your fqdn is not registered, the below steps w
 
 
 
-## Testing Admin UI
-
-6. Go to the browser and open https://demoexample.gluu.org/admin which should load the Admin UI license page.
-
-    You would need to provide 4 keys to get access the Admin UI as shown in the screenshot below. Reach out to support management of Gluu on how to acquire the license keys which have an expiry date but can be renewed.
-
-    - API Key
-    - Product Code
-    - Shared Key
-    - Management Key
-
-    <img width="1507" alt="Screenshot 2022-07-06 at 22 34 47" src="https://user-images.githubusercontent.com/17182751/177629024-2f113b9e-b2d9-4046-841b-ef57f8329a1c.png">
-
-    Reach out if you need test-keys that you can test with.
-
-## Login and Add a New User.
+## Login and Add a New User
 
 After inputting the license keys, you can then use `admin` and the password you set to login to the Admin UI and you should see the Admin UI dashboard.
 
-7. You could also add another test user via the admin UI that will be used for testing Casa and 2FA as shown in the screenshot below.
+You could also add another test user via the admin UI that will be used for testing Casa and 2FA as shown in the screenshot below.
 
-    Navigate to `Users` and click on `+` in the top right corner to add a user.
+Navigate to `Users` and click on `+` in the top right corner to add a user.
 
-    <img width="1077" alt="Screenshot 2022-07-26 at 15 51 58" src="https://user-images.githubusercontent.com/17182751/181010315-b900bfba-5863-40aa-b791-e7711a69675d.png">
+<img width="1077" alt="Screenshot 2022-07-26 at 15 51 58" src="https://user-images.githubusercontent.com/17182751/181010315-b900bfba-5863-40aa-b791-e7711a69675d.png">
 
 ## Testing Casa
 
@@ -316,16 +302,16 @@ Jans Casa ("Casa") is a self-service web portal for managing account security pr
 
 Although you have not enabled two-factor authentication yet, you should still be able to login to Casa as the admin user and the password is the one you set during installation. 
 
-8. Point your browser to https://demoexample.gluu.org/jans-casa and you should be welcomed by the Casa login page as shown below.
+Point your browser to `https://demoexample.gluu.org/jans-casa` and you should be welcomed by the Casa login page as shown below.
 
-    <img width="1503" alt="Screenshot 2022-07-06 at 22 39 49" src="https://user-images.githubusercontent.com/17182751/177629838-20b3140f-3d28-4b63-a275-c8ce54f6a096.png">
+<img width="1503" alt="Screenshot 2022-07-06 at 22 39 49" src="https://user-images.githubusercontent.com/17182751/177629838-20b3140f-3d28-4b63-a275-c8ce54f6a096.png">
 
-8. After logging in, you'll be welcomed by the home page as shown below.
+After logging in, you'll be welcomed by the home page as shown below.
 
-    ![Screenshot 2022-08-24 at 19 13 24](https://user-images.githubusercontent.com/17182751/186470113-9955cfa3-8364-4248-9be1-7d51c94a2633.png)
+![Screenshot 2022-08-24 at 19 13 24](https://user-images.githubusercontent.com/17182751/186470113-9955cfa3-8364-4248-9be1-7d51c94a2633.png)
 
 
-## Enabling Two Factor Authentication
+## Enabling Two-Factor Authentication
 
 In this part, we are going to enable two standard authentication mechanisms: OTP and FIDO. 
 
@@ -371,7 +357,7 @@ On the Janssen server, you can register a new client in the Flex Admin UI or the
 
 #### `Admin UI`
 
-1. Navigate to `Auth server` -> `Clients` and click on `+` in the top right corner to create a client.
+   Navigate to `Auth server` -> `Clients` and click on `+` in the top right corner to create a client.
 
    Take note of the following keys:values because they configure the right client that we need
 
@@ -390,20 +376,25 @@ On the Janssen server, we are going to register a new client using the jans-cli.
 
 Here we will use manual client registration. We will use jans-tui tool provided by the Janssen server. jans-tui has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.
 
-Download or build [config-cli-tui](https://docs.jans.io/head/admin/config-guide/jans-cli/) then:
+1.  Download jans-cli-tui from the [release](https://github.com/JanssenProject/jans/releases) assets depending on your OS. For example: 
+    
+    `wget https://github.com/JanssenProject/jans/releases/download/vreplace-janssen-version/jans-cli-tui-linux-ubuntu-X86-64.pyz`
+    
+    Now we have `jans-cli-tui-linux-ubuntu-X86-64.pyz` downloaded.
 
-1. Get the tui client id and secret:
 
-   ```bash
+1. Now we can grab the FQDN, client-id, client-secret, and connect using the following commands:
+    ```
     FQDN= #Add your FQDN here
     TUI_CLIENT_ID=$(kubectl get cm cn -n <namespace> --template={{.data.tui_client_id}})
     TUI_CLIENT_SECRET=$(kubectl get secret cn -n <namespace> --template={{.data.tui_client_pw}} | base64 -d)
-   ```
-2. Get schema file using this command
+    #add -noverify if your FQDN is not registered
+    ```
+1. Get schema file using this command
 
-    `./config-cli-tui.pyz --host <FQDN> --client-id <TUI_CLIENT_ID> --client-secret <TUI_CLIENT_SECRET> --no-tui --schema /components/schemas/Client`
+    `python3 jans-cli-tui-linux-ubuntu-X86-64.pyz --host <FQDN> --client-id <TUI_CLIENT_ID> --client-secret <TUI_CLIENT_SECRET> --no-tui --schema /components/schemas/Client`
 
-3. Add values for required params and store this JSON in a text file. Take keynote of the following properties.
+1. Add values for required params and store this JSON in a text file. Take keynote of the following properties.
 
     `schema-json-file.json`
     
@@ -491,138 +482,138 @@ Download or build [config-cli-tui](https://docs.jans.io/head/admin/config-guide/
     }
     ```
 
-4. Now you can use that JSON file as input to the command below and register your client
+1. Now you can use that JSON file as input to the command below and register your client
 
-    `./config-cli-tui.pyz --host <FQDN> --client-id <TUI_CLIENT_ID> --client-secret <TUI_CLIENT_SECRET> --no-tui --operation-id=post-oauth-openid-client --data <path>/schema-json-file.json`
+    `python3 jans-cli-tui-linux-ubuntu-X86-64.pyz --host <FQDN> --client-id <TUI_CLIENT_ID> --client-secret <TUI_CLIENT_SECRET> --no-tui --operation-id=post-oauth-openid-client --data <path>/schema-json-file.json`
 
-5. After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like `inum` and `clientSecret`, will be required before we configure `mod_auth_openidc` So keep in mind that we shall get back to this.
+1. After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like `inum` and `clientSecret`, will be required before we configure `mod_auth_openidc` So keep in mind that we shall get back to this.
 
 ## Create an Application Container
 
 An application docker container will be run locally which will act as the protected resource (PR) / external application. The following files have code for the small application. We shall create a directory locally / on your machine called `test` and add the required files.
 
-6. Firstly create a project folder named `test` by running `mkdir test && cd test` and add the following files with their content; 
+1. Firstly create a project folder named `test` by running `mkdir test && cd test` and add the following files with their content; 
 
-`app.conf `
+    `app.conf `
 
-```
-ServerRoot "/usr/local/apache2"
-Listen 80
+    ```
+    ServerRoot "/usr/local/apache2"
+    Listen 80
 
-LoadModule mpm_event_module modules/mod_mpm_event.so
-LoadModule authz_core_module modules/mod_authz_core.so
-LoadModule include_module modules/mod_include.so
-LoadModule filter_module modules/mod_filter.so
-LoadModule mime_module modules/mod_mime.so
-LoadModule log_config_module modules/mod_log_config.so
-LoadModule setenvif_module modules/mod_setenvif.so
-LoadModule unixd_module modules/mod_unixd.so
-LoadModule dir_module modules/mod_dir.so
+    LoadModule mpm_event_module modules/mod_mpm_event.so
+    LoadModule authz_core_module modules/mod_authz_core.so
+    LoadModule include_module modules/mod_include.so
+    LoadModule filter_module modules/mod_filter.so
+    LoadModule mime_module modules/mod_mime.so
+    LoadModule log_config_module modules/mod_log_config.so
+    LoadModule setenvif_module modules/mod_setenvif.so
+    LoadModule unixd_module modules/mod_unixd.so
+    LoadModule dir_module modules/mod_dir.so
 
-User daemon
-Group daemon
+    User daemon
+    Group daemon
 
-<Directory />
-  AllowOverride none
-  Require all denied
-</Directory>
-
-DocumentRoot "/usr/local/apache2/htdocs"
-<Directory "/usr/local/apache2/htdocs">
-  Options Indexes FollowSymLinks Includes
-  AllowOverride None
-  Require all granted
-
-  SetEnvIf X-Remote-User "(.*)" REMOTE_USER=$0
-  SetEnvIf X-Remote-User-Name "(.*)" REMOTE_USER_NAME=$0
-  SetEnvIf X-Remote-User-Email "(.*)" REMOTE_USER_EMAIL=$0
-</Directory>
-
-DirectoryIndex index.html
-<Files ".ht*">
+    <Directory />
+    AllowOverride none
     Require all denied
-</Files>
+    </Directory>
 
-ErrorLog /proc/self/fd/2
-LogLevel warn
-LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
-LogFormat "%h %l %u %t \"%r\" %>s %b" common
-CustomLog /proc/self/fd/1 common
+    DocumentRoot "/usr/local/apache2/htdocs"
+    <Directory "/usr/local/apache2/htdocs">
+    Options Indexes FollowSymLinks Includes
+    AllowOverride None
+    Require all granted
 
-TypesConfig conf/mime.types
-AddType application/x-compress .Z
-AddType application/x-gzip .gz .tgz
-AddType text/html .shtml
-AddOutputFilter INCLUDES .shtml
-```
+    SetEnvIf X-Remote-User "(.*)" REMOTE_USER=$0
+    SetEnvIf X-Remote-User-Name "(.*)" REMOTE_USER_NAME=$0
+    SetEnvIf X-Remote-User-Email "(.*)" REMOTE_USER_EMAIL=$0
+    </Directory>
 
-`user.shtml`
+    DirectoryIndex index.html
+    <Files ".ht*">
+        Require all denied
+    </Files>
 
-```
-<html>
-<head>
-<title>Hello User</title>
-</head>
-<body>
-<p>Hello <!--#echo var=REMOTE_USER_NAME -->!</p>
-<p>You authenticated as: <!--#echo var=REMOTE_USER --></p>
-<p>Your email address is: <!--#echo var=REMOTE_USER_EMAIL --></p>
-<p>Environment:</>
-<p><!--#printenv -->!</p>
-</body>
-</html>
-```
+    ErrorLog /proc/self/fd/2
+    LogLevel warn
+    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+    LogFormat "%h %l %u %t \"%r\" %>s %b" common
+    CustomLog /proc/self/fd/1 common
 
-`index.html`
+    TypesConfig conf/mime.types
+    AddType application/x-compress .Z
+    AddType application/x-gzip .gz .tgz
+    AddType text/html .shtml
+    AddOutputFilter INCLUDES .shtml
+    ```
 
-```
-<html>
-<head>
-<title>Hello World</title>
-</head>
-<body>
-<p>Hello world!</p>
-</body>
-</html>
-```
+    `user.shtml`
 
-`Dockerfile`
+    ```
+    <html>
+    <head>
+    <title>Hello User</title>
+    </head>
+    <body>
+    <p>Hello <!--#echo var=REMOTE_USER_NAME -->!</p>
+    <p>You authenticated as: <!--#echo var=REMOTE_USER --></p>
+    <p>Your email address is: <!--#echo var=REMOTE_USER_EMAIL --></p>
+    <p>Environment:</>
+    <p><!--#printenv -->!</p>
+    </body>
+    </html>
+    ```
 
-```
-FROM httpd:2.4.54@sha256:c9eba4494b9d856843b49eb897f9a583a0873b1c14c86d5ab77e5bdedd6ad05d
-# "Created": "2022-06-08T18:45:46.260791323Z" , "Version":"2.4.54"
+    `index.html`
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends wget ca-certificates libcjose0 libhiredis0.14 apache2-api-20120211 apache2-bin\
-  && wget https://github.com/zmartzone/mod_auth_openidc/releases/download/v2.4.11.2/libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
-  && dpkg -i libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
-  && ln -s /usr/lib/apache2/modules/mod_auth_openidc.so /usr/local/apache2/modules/mod_auth_openidc.so \
-  && rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt \
-  && touch /usr/local/apache2/conf/extra/secret.conf \
-  && touch /usr/local/apache2/conf/extra/oidc.conf
+    ```
+    <html>
+    <head>
+    <title>Hello World</title>
+    </head>
+    <body>
+    <p>Hello world!</p>
+    </body>
+    </html>
+    ```
 
-RUN echo "\n\nLoadModule auth_openidc_module modules/mod_auth_openidc.so\n\nInclude conf/extra/secret.conf\nInclude conf/extra/oidc.conf\n" >> /usr/local/apache2/conf/httpd.conf
-```
+    `Dockerfile`
 
-`gluu.secret.conf`
+    ```
+    FROM httpd:2.4.54@sha256:c9eba4494b9d856843b49eb897f9a583a0873b1c14c86d5ab77e5bdedd6ad05d
+    # "Created": "2022-06-08T18:45:46.260791323Z" , "Version":"2.4.54"
 
-```
-OIDCClientID <inum-as-received-in-client-registration-response>
-OIDCCryptoPassphrase <crypto-passphrase-of-choice>
-OIDCClientSecret <as-provided-in-client-registration-request>
-OIDCResponseType code
-OIDCScope "openid email profile"
-OIDCProviderTokenEndpointAuth client_secret_basic
-OIDCSSLValidateServer Off
-OIDCRedirectURI http://localhost:8111/oauth2callback
-OIDCCryptoPassphrase <crypto-passphrase-of-choice>
-<Location "/">
-    Require valid-user
-    AuthType openid-connect
-</Location>
-```
+    RUN apt-get update \
+    && apt-get install -y --no-install-recommends wget ca-certificates libcjose0 libhiredis0.14 apache2-api-20120211 apache2-bin\
+    && wget https://github.com/zmartzone/mod_auth_openidc/releases/download/v2.4.11.2/libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
+    && dpkg -i libapache2-mod-auth-openidc_2.4.11.2-1.buster+1_amd64.deb \
+    && ln -s /usr/lib/apache2/modules/mod_auth_openidc.so /usr/local/apache2/modules/mod_auth_openidc.so \
+    && rm -rf /var/log/dpkg.log /var/log/alternatives.log /var/log/apt \
+    && touch /usr/local/apache2/conf/extra/secret.conf \
+    && touch /usr/local/apache2/conf/extra/oidc.conf
 
-6. After, run an Apache container which will play the role of an application being protected by the authenticating reverse proxy.
+    RUN echo "\n\nLoadModule auth_openidc_module modules/mod_auth_openidc.so\n\nInclude conf/extra/secret.conf\nInclude conf/extra/oidc.conf\n" >> /usr/local/apache2/conf/httpd.conf
+    ```
+
+    `gluu.secret.conf`
+
+    ```
+    OIDCClientID <inum-as-received-in-client-registration-response>
+    OIDCCryptoPassphrase <crypto-passphrase-of-choice>
+    OIDCClientSecret <as-provided-in-client-registration-request>
+    OIDCResponseType code
+    OIDCScope "openid email profile"
+    OIDCProviderTokenEndpointAuth client_secret_basic
+    OIDCSSLValidateServer Off
+    OIDCRedirectURI http://localhost:8111/oauth2callback
+    OIDCCryptoPassphrase <crypto-passphrase-of-choice>
+    <Location "/">
+        Require valid-user
+        AuthType openid-connect
+    </Location>
+    ```
+
+1. After, run an Apache container which will play the role of an application being protected by the authenticating reverse proxy.
 
     ```
     docker run -dit -p 8110:80 \
@@ -632,9 +623,9 @@ OIDCCryptoPassphrase <crypto-passphrase-of-choice>
            --name apache-app httpd:2.4
     ```
 
-Note that we are using a popular pre-built image useful for acting as a reverse proxy for authentication in front of an application. It contains a stripped-down Apache with minimal modules, and adds the `mod_auth_openidc` module for performing OpenID Connect authentication.
+    Note that we are using a popular pre-built image useful for acting as a reverse proxy for authentication in front of an application. It contains a stripped-down Apache with minimal modules, and adds the `mod_auth_openidc` module for performing OpenID Connect authentication.
 
-7. Make a test curl command call to ensure you get back some content as shown in the screenshot below
+1. Make a test curl command call to ensure you get back some content as shown in the screenshot below
 
     ```
     curl http://localhost:8110/user.shtml
@@ -649,151 +640,151 @@ We shall use Apache, but this time we use a Docker image that has `mod_auth_oidc
 
 In order to use this, you will need to have registered a new OpenID Connect client on the Janssen server. We did that in the step 1 above
 
-8. Add the following files to the `test` folder.
+1. Add the following files to the `test` folder.
 
-`oidc.conf`
+    `oidc.conf`
 
-```
-# Unset to make sure clients can't control these
-RequestHeader unset X-Remote-User
-RequestHeader unset X-Remote-User-Name
-RequestHeader unset X-Remote-User-Email
+    ```
+    # Unset to make sure clients can't control these
+    RequestHeader unset X-Remote-User
+    RequestHeader unset X-Remote-User-Name
+    RequestHeader unset X-Remote-User-Email
 
-# If you want to see tons of logs for your experimentation
-#LogLevel trace8
+    # If you want to see tons of logs for your experimentation
+    #LogLevel trace8
 
-OIDCClientID <inum-as-received-in-client-registration-response>
-OIDCProviderMetadataURL https://idp-proxy.med.stanford.edu/auth/realms/med-all/.well-known/openid-configuration
-#OIDCProviderMetadataURL https://idp-proxy-stage.med.stanford.edu/auth/realms/choir/.well-known/openid-configuration
-OIDCRedirectURI http://localhost:8111/oauth2callback
+    OIDCClientID <inum-as-received-in-client-registration-response>
+    OIDCProviderMetadataURL https://idp-proxy.med.stanford.edu/auth/realms/med-all/.well-known/openid-configuration
+    #OIDCProviderMetadataURL https://idp-proxy-stage.med.stanford.edu/auth/realms/choir/.well-known/openid-configuration
+    OIDCRedirectURI http://localhost:8111/oauth2callback
 
-OIDCScope "openid email profile"
-OIDCRemoteUserClaim principal
-OIDCPassClaimsAs environment
+    OIDCScope "openid email profile"
+    OIDCRemoteUserClaim principal
+    OIDCPassClaimsAs environment
 
-<Location />
-   AuthType openid-connect
-   Require valid-user
+    <Location />
+    AuthType openid-connect
+    Require valid-user
 
-   ProxyPass http://app:80/
-   ProxyPassReverse http://app:80/
+    ProxyPass http://app:80/
+    ProxyPassReverse http://app:80/
 
-   RequestHeader set X-Remote-User %{OIDC_CLAIM_principal}e
-   RequestHeader set X-Remote-User-Name %{OIDC_CLAIM_name}e
-   RequestHeader set X-Remote-User-Email %{OIDC_CLAIM_email}e
-</Location>
-```
+    RequestHeader set X-Remote-User %{OIDC_CLAIM_principal}e
+    RequestHeader set X-Remote-User-Name %{OIDC_CLAIM_name}e
+    RequestHeader set X-Remote-User-Email %{OIDC_CLAIM_email}e
+    </Location>
+    ```
 
-`proxy.conf`
+    `proxy.conf`
 
-```
-# This is the main Apache HTTP server configuration file. For documentation, see:
-#   http://httpd.apache.org/docs/2.4/
-#   http://httpd.apache.org/docs/2.4/mod/directives.html
-#
-# This is intended to be a hardened configuration, with minimal security surface area necessary
-# to run mod_auth_openidc.
+    ```
+    # This is the main Apache HTTP server configuration file. For documentation, see:
+    #   http://httpd.apache.org/docs/2.4/
+    #   http://httpd.apache.org/docs/2.4/mod/directives.html
+    #
+    # This is intended to be a hardened configuration, with minimal security surface area necessary
+    # to run mod_auth_openidc.
 
-ServerRoot "/usr/local/apache2"
-Listen 80
+    ServerRoot "/usr/local/apache2"
+    Listen 80
 
-LoadModule mpm_event_module modules/mod_mpm_event.so
-LoadModule authn_file_module modules/mod_authn_file.so
-LoadModule authn_core_module modules/mod_authn_core.so
-LoadModule authz_host_module modules/mod_authz_host.so
-LoadModule authz_groupfile_module modules/mod_authz_groupfile.so
-LoadModule authz_user_module modules/mod_authz_user.so
-LoadModule authz_core_module modules/mod_authz_core.so
-LoadModule access_compat_module modules/mod_access_compat.so
-LoadModule auth_basic_module modules/mod_auth_basic.so
-LoadModule reqtimeout_module modules/mod_reqtimeout.so
-LoadModule filter_module modules/mod_filter.so
-LoadModule mime_module modules/mod_mime.so
-LoadModule log_config_module modules/mod_log_config.so
-LoadModule env_module modules/mod_env.so
-LoadModule headers_module modules/mod_headers.so
-LoadModule setenvif_module modules/mod_setenvif.so
-#LoadModule version_module modules/mod_version.so
-LoadModule proxy_module modules/mod_proxy.so
-LoadModule proxy_http_module modules/mod_proxy_http.so
-LoadModule unixd_module modules/mod_unixd.so
-#LoadModule status_module modules/mod_status.so
-#LoadModule autoindex_module modules/mod_autoindex.so
-LoadModule dir_module modules/mod_dir.so
-LoadModule alias_module modules/mod_alias.so
+    LoadModule mpm_event_module modules/mod_mpm_event.so
+    LoadModule authn_file_module modules/mod_authn_file.so
+    LoadModule authn_core_module modules/mod_authn_core.so
+    LoadModule authz_host_module modules/mod_authz_host.so
+    LoadModule authz_groupfile_module modules/mod_authz_groupfile.so
+    LoadModule authz_user_module modules/mod_authz_user.so
+    LoadModule authz_core_module modules/mod_authz_core.so
+    LoadModule access_compat_module modules/mod_access_compat.so
+    LoadModule auth_basic_module modules/mod_auth_basic.so
+    LoadModule reqtimeout_module modules/mod_reqtimeout.so
+    LoadModule filter_module modules/mod_filter.so
+    LoadModule mime_module modules/mod_mime.so
+    LoadModule log_config_module modules/mod_log_config.so
+    LoadModule env_module modules/mod_env.so
+    LoadModule headers_module modules/mod_headers.so
+    LoadModule setenvif_module modules/mod_setenvif.so
+    #LoadModule version_module modules/mod_version.so
+    LoadModule proxy_module modules/mod_proxy.so
+    LoadModule proxy_http_module modules/mod_proxy_http.so
+    LoadModule unixd_module modules/mod_unixd.so
+    #LoadModule status_module modules/mod_status.so
+    #LoadModule autoindex_module modules/mod_autoindex.so
+    LoadModule dir_module modules/mod_dir.so
+    LoadModule alias_module modules/mod_alias.so
 
-<IfModule unixd_module>
-    User daemon
-    Group daemon
-</IfModule>
-
-ServerAdmin you@example.com
-
-<Directory />
-    AllowOverride none
-    Require all denied
-</Directory>
-
-DocumentRoot "/usr/local/apache2/htdocs"
-<Directory "/usr/local/apache2/htdocs">
-    Options Indexes FollowSymLinks
-    AllowOverride None
-    Require all granted
-</Directory>
-<IfModule dir_module>
-    DirectoryIndex index.html
-</IfModule>
-<Directory /opt/apache/htdocs>
-    Options None
-    Require all denied
-</Directory>
-<Files ".ht*">
-    Require all denied
-</Files>
-ErrorLog /proc/self/fd/2
-LogLevel warn
-<IfModule log_config_module>
-    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
-    LogFormat "%h %l %u %t \"%r\" %>s %b" common
-    <IfModule logio_module>
-      LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+    <IfModule unixd_module>
+        User daemon
+        Group daemon
     </IfModule>
-    CustomLog /proc/self/fd/1 common
-</IfModule>
-<IfModule alias_module>
-    ScriptAlias /cgi-bin/ "/usr/local/apache2/cgi-bin/"
-</IfModule>
-<Directory "/usr/local/apache2/cgi-bin">
-    AllowOverride None
-    Options None
-    Require all granted
-</Directory>
 
-<IfModule headers_module>
-    RequestHeader unset Proxy early
-</IfModule>
+    ServerAdmin you@example.com
 
-<IfModule mime_module>
-    TypesConfig conf/mime.types
-    AddType application/x-compress .Z
-    AddType application/x-gzip .gz .tgz
-</IfModule>
-<IfModule proxy_html_module>
-Include conf/extra/proxy-html.conf
-</IfModule>
-<IfModule ssl_module>
-SSLRandomSeed startup builtin
-SSLRandomSeed connect builtin
-</IfModule>
-TraceEnable off
-ServerTokens Prod
-ServerSignature Off
-LoadModule auth_openidc_module modules/mod_auth_openidc.so
-Include conf/extra/secret.conf
-Include conf/extra/oidc.conf
-```
+    <Directory />
+        AllowOverride none
+        Require all denied
+    </Directory>
 
-9. Edit the file to include the client secret for the client you created during DCR, and add a securely generated pass phrase for the session keys
+    DocumentRoot "/usr/local/apache2/htdocs"
+    <Directory "/usr/local/apache2/htdocs">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+    <IfModule dir_module>
+        DirectoryIndex index.html
+    </IfModule>
+    <Directory /opt/apache/htdocs>
+        Options None
+        Require all denied
+    </Directory>
+    <Files ".ht*">
+        Require all denied
+    </Files>
+    ErrorLog /proc/self/fd/2
+    LogLevel warn
+    <IfModule log_config_module>
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+        LogFormat "%h %l %u %t \"%r\" %>s %b" common
+        <IfModule logio_module>
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+        </IfModule>
+        CustomLog /proc/self/fd/1 common
+    </IfModule>
+    <IfModule alias_module>
+        ScriptAlias /cgi-bin/ "/usr/local/apache2/cgi-bin/"
+    </IfModule>
+    <Directory "/usr/local/apache2/cgi-bin">
+        AllowOverride None
+        Options None
+        Require all granted
+    </Directory>
+
+    <IfModule headers_module>
+        RequestHeader unset Proxy early
+    </IfModule>
+
+    <IfModule mime_module>
+        TypesConfig conf/mime.types
+        AddType application/x-compress .Z
+        AddType application/x-gzip .gz .tgz
+    </IfModule>
+    <IfModule proxy_html_module>
+    Include conf/extra/proxy-html.conf
+    </IfModule>
+    <IfModule ssl_module>
+    SSLRandomSeed startup builtin
+    SSLRandomSeed connect builtin
+    </IfModule>
+    TraceEnable off
+    ServerTokens Prod
+    ServerSignature Off
+    LoadModule auth_openidc_module modules/mod_auth_openidc.so
+    Include conf/extra/secret.conf
+    Include conf/extra/oidc.conf
+    ```
+
+1. Edit the file to include the client secret for the client you created during DCR, and add a securely generated pass phrase for the session keys
 
     ```
     docker build --pull -t apache-oidc -f Dockerfile .
@@ -806,25 +797,25 @@ Include conf/extra/oidc.conf
            --name apache-proxy apache-oidc
     ```
 
-10. Now open a fresh web browser with private (incognito) mode, and go to this url
+1. Now open a fresh web browser with private (incognito) mode, and go to this url
 
     ```
     http://localhost:8111/user.shtml
     ```
 
-11. To check the proxy logs
+1. To check the proxy logs
 
     ```
     docker logs -f apache-proxy
     ```
 
-12. To see the app logs
+1. To see the app logs
 
     ```
     docker logs -f apache-app
     ```
 
-13. Should you modify the configuration files, just restart the proxy.
+1. If you modified the configuration files, just restart the proxy.
 
     ```
     docker restart apache-proxy

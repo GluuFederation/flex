@@ -1,6 +1,6 @@
 # auth-server
 
-![Version: 1.1.1-dev](https://img.shields.io/badge/Version-1.1.1--dev-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.1.1](https://img.shields.io/badge/AppVersion-5.1.1-informational?style=flat-square)
+![Version: 1.1.5-dev](https://img.shields.io/badge/Version-1.1.5--dev-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.1.5-dev](https://img.shields.io/badge/AppVersion-5.1.5--dev-informational?style=flat-square)
 
 OAuth Authorization Server, the OpenID Connect Provider, the UMA Authorization Server--this is the main Internet facing component of Gluu. It's the service that returns tokens, JWT's and identity assertions. This service must be Internet facing.
 
@@ -28,7 +28,7 @@ Kubernetes: `>=v1.21.0-0`
 |-----|------|---------|-------------|
 | additionalAnnotations | object | `{}` | Additional annotations that will be added across all resources  in the format of {cert-manager.io/issuer: "letsencrypt-prod"}. key app is taken |
 | additionalLabels | object | `{}` | Additional labels that will be added across all resources definitions in the format of {mylabel: "myapp"} |
-| customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. |
+| customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
 | dnsConfig | object | `{}` | Add custom dns config |
 | dnsPolicy | string | `""` | Add custom dns policy |
 | hpa | object | `{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50}` | Configure the HorizontalPodAutoscaler |
@@ -37,7 +37,7 @@ Kubernetes: `>=v1.21.0-0`
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
 | image.repository | string | `"janssenproject/auth-server"` | Image  to use for deploying. |
-| image.tag | string | `"1.1.1_dev"` | Image  tag to use for deploying. |
+| image.tag | string | `"1.1.5_dev"` | Image  tag to use for deploying. |
 | lifecycle | object | `{}` |  |
 | livenessProbe | object | `{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}` | Configure the liveness healthcheck for the auth server if needed. |
 | livenessProbe.exec | object | `{"command":["python3","/app/scripts/healthcheck.py"]}` | Executes the python3 healthcheck. |

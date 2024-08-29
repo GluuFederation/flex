@@ -1,18 +1,25 @@
-CN_VERSION?=5.1.1
-IMAGE_NAME=ghcr.io/gluufederation/flex/monolith
-UNSTABLE_VERSION?=dev
+IMAGE_VERSION?=$(shell grep -Po 'org.opencontainers.image.version="\K.*?(?=")' Dockerfile)_dev
+IMAGE_URL=$(shell grep -Po 'org.opencontainers.image.url="\K.*?(?=")' Dockerfile)
+IMAGE?=${IMAGE_URL}:${IMAGE_VERSION}
+
+# pass extra args to the targets, for example:
+#
+# - `make build-dev ARGS="--no-cache"`
+# - `make trivy-scan TRIVY_ARGS="-f json"`
+# - `make grype-scan GRYPE_ARGS="-o json"`
+ARGS?=
 
 .PHONY: test clean all build-dev trivy-scan grype-scan
 .DEFAULT_GOAL := build-dev
 
 build-dev:
-	@echo "[I] Building Docker image ${IMAGE_NAME}:${CN_VERSION}_${UNSTABLE_VERSION}"
-	@docker build --rm --force-rm -t ${IMAGE_NAME}:${CN_VERSION}_${UNSTABLE_VERSION} .
+	@echo "[I] Building OCI image ${IMAGE}"
+	@docker build --rm --force-rm ${ARGS} -t ${IMAGE} .
 
 trivy-scan:
-	@echo "[I] Scanning Docker image ${IMAGE_NAME}:${CN_VERSION}_${UNSTABLE_VERSION} using trivy"
-	@trivy image --security-checks vuln ${IMAGE_NAME}:${CN_VERSION}_${UNSTABLE_VERSION}
+	@echo "[I] Scanning OCI image ${IMAGE} using trivy"
+	@trivy image --security-checks vuln ${ARGS} ${IMAGE}
 
 grype-scan:
-	@echo "[I] Scanning Docker image ${IMAGE_NAME}:${CN_VERSION}_${UNSTABLE_VERSION} using grype"
-	@grype -v ${IMAGE_NAME}:${CN_VERSION}_${UNSTABLE_VERSION}
+	@echo "[I] Scanning OCI image ${IMAGE} using grype"
+	@grype -v ${ARGS} ${IMAGE}

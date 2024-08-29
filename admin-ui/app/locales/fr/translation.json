@@ -29,17 +29,25 @@
   },
   "menus": {
     "adminui": "Administratrice",
+    "assets": "Assets",
     "config-api": "Config-API",
     "webhooks": "Webhooks",
     "add_source": "Ajouter une source",
     "edit_source": "Modifier la source",
     "view_source": "Afficher la source",
+    "jans_lock": "Verrou Jans",
     "saml": "SAML",
+    "agama_flows": "Flux Agama",
+    "default_acr": "ACR par défaut",
+    "acrs": "ACRs",
+    "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
+    "builtIn" : "Intégré",
     "api": {
       "roles": "Rôles d'accès",
       "permissions": "Autorisations",
-      "mapping": "Mapping"
+      "mapping": "Mapping",
+      "api_config": "Configurer les propriétés de l'API"
     },
     "lock": "Verrouillage",
     "cache": "Cacher",
@@ -69,7 +77,7 @@
     "oauthserver": "Serveur Auth",
     "persistence": "Persistance",
     "person": "Personne",
-    "properties": "Propriétés",
+    "propriétés": "Propriétés du serveur d'authentification",
     "reports": "Rapports",
     "roles": "Les rôles",
     "schema": "Schéma",
@@ -100,6 +108,8 @@
     "add_ldap_configuration": "Ajouter une configuration LDAP",
     "add_mapping": "Ajouter un Mapping",
     "add_property": "Ajouter une propriété",
+    "configuration_copied": "Configuration copiée",
+    "copy_configuration": "Copier la configuration",
     "reject": "Rejeter",
     "add_header": "Ajouter un en-tête",
     "apply": "Appliquer",
@@ -135,10 +145,25 @@
     "copy_to_clipboard": "Copier dans le presse-papier"
   },
   "fields": {
+    "asset_name": "Asset Name",
     "tag": "Étiqueter",
     "issuer": "Émetteur",
+    "upload": "Select a file to upload",
+    "jansService": "Jans Module Properties",
     "message_provider_type": "Type de fournisseur de messages",
     "ssl_key_store_file_path": "Chemin du fichier du magasin de clés SSL",
+    "principal_attribute": "Attribut Principal",
+    "principal_type": "Type Principal",
+    "token_channels": "Canaux de jetons",
+    "metric_channel": "Canal de métrique",
+    "pdp_type": "Type de PDP",
+    "opa_configuration": "Configuration OPA",
+    "base_url": "URL de base",
+    "access_token": "Jeton d'accès",
+    "policies_json_uris_authorization_token": "Jeton d'autorisation des URI de politiques JSON",
+    "policies_json_uris": "URI de politiques JSON",
+    "policies_zip_uris_authorization_token": "Jeton d'autorisation des URI de politiques ZIP",
+    "policies_zip_uris": "URI de politiques ZIP",
     "ssl_trust_store_password": "Mot de passe du magasin de confiance SSL",
     "jans_assertion_consumer_service_get_url": "URL GET du service consommateur d'assertions Jans",
     "jans_assertion_consumer_service_post_url": "URL POST du service consommateur d'assertions Jans",
@@ -154,8 +179,9 @@
     "kc_link_last_update": "Dernière mise à jour du lien Keycloak",
     "kc_last_update_count": "Nombre de dernières mises à jour du lien Keycloak",
     "kc_problem_count": "Nombre de problèmes du lien Keycloak",
-    "update_method": "Méthode de mise à jour",  
+    "update_method": "Méthode de mise à jour",
     "sessionTimeoutInMins": "Délai d'expiration de la session de l'interface administrateur (en minutes)",
+    "gluuFlexVersion": "Version Gluu Flex",
     "adminui_default_acr": "Méthode d'authentification de l'interface administrateur (ACR)",
     "metadata_location": "Emplacement des métadonnées",
     "released_attributes": "Attributs publiés",
@@ -537,10 +563,14 @@
     "cache_refresh": "Actualisation du cache",
     "last_run": "Dernier tour",
     "updates_at_last_run": "Mises à jour lors de la dernière exécution",
-    "problems_at_last_run": "Problèmes lors de la dernière course"
+    "problems_at_last_run": "Problèmes lors de la dernière course",
+    "mapping": "Mapeamento",
+    "source": "Fonte"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
+    "add_asset": "Add Jans Asset",
+    "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
     "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",
@@ -619,7 +649,8 @@
     "drag_sha_file": "Glisser .sha256sum fichier ici, ou cliquez pour sélectionner le fichier",
     "see_project_details": "Voir les détails du projet",
     "add_ssa": "Ajouter SSA",
-    "copied": "Copié"
+    "copied": "Copié",
+    "edit_acr": "Modifier ACR"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
@@ -680,14 +711,19 @@
   },
   "titles": {
     "acrs": "ACR",
+    "assets": "Jans Assets",
+    "asset_add": "Adding new Jans Asset",
+    "asset_edit": "Editing new Jans Asset",
     "algorithmic_keys": "Clés algorithmiques",
     "introspection_object": "Objet d'inspection",
     "all_attributes": "Tous les attributs",
     "all_custom_scripts": "Tous les scripts personnalisés",
+    "jans_lock": "Verrou Jans",
+    "config_api_configuration": "Configuration de l'API de configuration",
     "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
     "jans_kc_link": "Lien KC Jans",
-    "all_scopes": "Toutes les portées",  
+    "all_scopes": "Toutes les portées",
     "idp": "IDP",
     "sp": "SP",
     "create_sp": "Créer un fournisseur de services",
@@ -720,6 +756,7 @@
     "public_keys": "Clés publiques",
     "profile_detail": "Détails du profil",
     "roles": "Rôles AdminUI",
+    "project_configuration": "Configuration du projet",
     "scopes": "Portées",
     "scripts": "Scénarios",
     "schemaName": "Nom du schéma",
@@ -764,6 +801,9 @@
     "yes": "Oui"
   },
   "documentation": {
+    "asset": {
+      "jansService": "Jans Module Properties"
+    },
     "webhook": {
       "url": "URL du webhook.",
       "enabled": "Basculez pour activer ou désactiver la fonctionnalité du webhook.",
@@ -807,13 +847,50 @@
       "givenName": "Prénom",
       "displayName": "Nom d'affichage",
       "mail": "Courriel",
-      "jansStatus": "Statut",
+      "status": "Statut",
       "gender": "Genre",
       "userPassword": "Mot de passe utilisateur",
       "INUM": "INUM",
       "middleName": "Deuxième prénom",
       "sn": "Nom de famille",
       "userConfirmPassword": "Confirmer le mot de passe"
+    },
+    "saml": {
+      "name": "L'ID alphanumérique utilisé pour identifier la Relation de Confiance",
+      "displayName": "Nom d'affichage de la Relation de Confiance",
+      "description": "Description de la Relation de Confiance.",
+      "baseUrl": "URL à utiliser lorsque le serveur d'authentification doit rediriger",
+      "enabled": "Indique si la Relation de Confiance est activée.",
+      "spLogoutURL": "URL de demande de déconnexion.",
+      "singleSignOnServiceUrl": "URL du Service de Déconnexion Unique.",
+      "singleLogoutServiceUrl": "URL du Service de Déconnexion Unique.",
+      "entityId": "Métadonnées de l'entité SAML.",
+      "nameIDPolicyFormat": "Métadonnées de l'entité SAML.",
+      "releasedAttributes": "Attributs de la Relation de Confiance qui seront libérés pour SAML",
+      "spMetaDataSourceType": "Type de métadonnées SP de la Relation de Confiance - fichier, URI.",
+      "metaLocation": "Emplacement du fichier de métadonnées de la Relation de Confiance.",
+      "jansAssertionConsumerServiceGetURL": "URL GET que le fournisseur d'identité (IdP) enverra avec la réponse SAML contenant les assertions.",
+      "jansAssertionConsumerServicePostURL": "URL POST que le fournisseur d'identité (IdP) enverra avec la réponse SAML contenant les assertions."
+    },
+    "samlIDP": {
+      "name": "Nom identifiant de manière unique un fournisseur d'identité.",
+      "displayName": "Nom affiché du fournisseur d'identité.",
+      "description": "Description du fournisseur d'identité.",
+      "baseUrl": "URL à utiliser lorsque le serveur d'authentification doit rediriger.",
+      "enabled": "Indique si le fournisseur d'identité est activé.",
+      "nameIDPolicyFormat": "Référence URI correspondant à un format d'identifiant de nom.",
+      "entityId": "ID de l'entité qui sera utilisé pour identifier de manière unique ce SAML.",
+      "singleSignOnServiceUrl": "URL utilisée pour envoyer des demandes d'authentification SAML.",
+      "singleLogoutServiceUrl": "URL utilisée pour envoyer des demandes de déconnexion.",
+      "signingCertificate": "Certificat numérique utilisé pour vérifier l'authenticité.",
+      "encryptionPublicKey": "Clé publique à utiliser pour chiffrer le message.",
+      "principalAttribute": "Nom ou nom convivial de l'attribut utilisé pour identifier les utilisateurs externes.",
+      "principalType": "Méthode pour identifier et suivre les utilisateurs externes à partir de l'assertion."
+    },
+    "samlConfiguration": {
+      "enabled": "Fonctionnalité SAML activée.",
+      "selectedIdp": "Serveur SAML sélectionné.",
+      "ignoreValidation": "Valeur booléenne pour activer/désactiver la validation SAML."
     },
     "ldap": {
       "configId": "Nom unique de la configuration.",
@@ -853,6 +930,7 @@
     },
     "settings": {
       "pageSize": "La taille par défaut pour toutes les pages de liste.",
+      "gluuCurrentVersion": "Version actuelle du serveur Gluu",
       "darkMode": "Indique si le mode sombre est activé ou désactivé.",
       "configApiUrl": "L'URL de l'API de configuration actuellement utilisée.",
       "sessionTimeoutInMins": "Détermine la durée d'inactivité autorisée avant l'expiration de la session en cours.",
@@ -1145,6 +1223,27 @@
       "delayTime": "Temps de délai en secondes après avoir atteint la limite de maximumAllowedAttemptsWithoutDelay.",
       "bruteForceProtectionEnabled": "Activer ou désactiver le service. Cette fonctionnalité peut être activée dynamiquement."
     },
+    "jans_lock": {
+      "baseEndpoint": "URL de base de l'endpoint du verrou",
+      "tokenChannels": "Liste des noms des canaux de jetons",
+      "disableJdkLogger": "Choisir de désactiver les loggers JDK",
+      "loggingLevel": "Spécifier le niveau de journalisation des loggers",
+      "loggingLayout": "Disposition de la journalisation utilisée pour les loggers du serveur d'autorisation Jans",
+      "externalLoggerConfiguration": "Le chemin vers la configuration externe de la journalisation log4j2",
+      "metricChannel": "Canal pour les rapports de métriques",
+      "metricReporterInterval": "L'intervalle du rapporteur de métriques en secondes",
+      "metricReporterKeepDataDays": "Le nombre de jours de conservation des données rapportées par les métriques",
+      "metricReporterEnabled": "Activer le rapporteur de métriques",
+      "cleanServiceInterval": "Intervalle de temps pour le service de nettoyage en secondes",
+      "opaConfiguration": {
+        "baseUrl": "URL de base OPA",
+        "accessToken": "Jeton d'accès OPA"
+      },
+      "policiesJsonUrisAuthorizationToken": "Jeton d'autorisation pour accéder aux URIs Json",
+      "policiesJsonUris": "Liste des URIs Json avec lien vers les politiques Rego",
+      "policiesZipUrisAuthorizationToken": "Jeton d'autorisation pour accéder aux URIs Zip",
+      "policiesZipUris": "Liste des URIs Zip avec des politiques"
+    },
     "jans_link": {
       "enabled": "Cette case à cocher est utilisée pour enregistrer et pousser les modifications. Ne l'utilisez que si l'administrateur du serveur a entré toutes les valeurs requises.",
       "useSSL": "Utilisez cette fonctionnalité si le serveur principal autorise la connectivité SSL."
@@ -1155,6 +1254,74 @@
     "roles": {
       "name": "Nom de rôle",
       "description": "Description du rôle"
+    },
+    "config_api_properties": {
+      "configOauthEnabled": "Drapeau d'activation/désactivation de l'authentification OAuth. Valeur par défaut vraie.",
+      "disableLoggerTimer": "Drapeau pour activer/désactiver le timer pour refléter dynamiquement les changements de configuration des logs. Valeur par défaut vraie.",
+      "disableAuditLogger": "Drapeau pour activer/désactiver l'audit de requête. Valeur par défaut faux.",
+      "customAttributeValidationEnabled": "Drapeau pour activer/désactiver la vérification si l'attribut personnalisé est déclaré dans le schéma. Valeur par défaut vraie.",
+      "apiProtectionType": "Nom du mécanisme de protection API supporté. Type supporté est OAuth2.",
+      "apiClientId": "Identifiant du client Config-API.",
+      "apiClientPassword": "Mot de passe du client Config-API.",
+      "endpointInjectionEnabled": "Drapeau pour activer/désactiver l'injection de point d'accès. Aucune valeur par défaut spécifiée.",
+      "authIssuerUrl": "Identifiant de l'émetteur du fournisseur OpenID Connect de Jans.",
+      "authOpenidConfigurationUrl": "URL de configuration bien connue du fournisseur OpenID Connect de Jans.",
+      "authOpenidIntrospectionUrl": "URL de Jans du point d'extrémité d'autorisation OAuth 2.0 du fournisseur OpenID Connect.",
+      "authOpenidTokenUrl": "URL de Jans du point d'extrémité de token OAuth 2.0 du fournisseur OpenID Connect.",
+      "authOpenidRevokeUrl": "URL de Jans du point d'extrémité de révocation de token OAuth 2.0 du fournisseur OpenID Connect.",
+      "loggingLevel": "Spécifiez le niveau de journalisation des loggers. Niveau par défaut est INFO.",
+      "loggingLayout": "Disposition de journalisation Log4j. Valeur par défaut TEXTE.",
+      "externalLoggerConfiguration": "Chemin vers la configuration de journalisation log4j2 externe.",
+      "disableJdkLogger": "Choisissez si désactiver les loggers JDK. Aucune valeur par défaut spécifiée.",
+      "maxCount": "Nombre maximum de résultats par page dans les points d'accès de recherche.",
+      "apiApprovedIssuer": "Liste des serveurs Auth externes approuvés pour valider le token.",
+      "exclusiveAuthScopes": "Liste des portées OAuth qui peuvent être validées pour des tokens d'accès uniquement par le serveur Auth Jans sous-jacent.",
+      "corsConfigurationFilters": "Propriétés de configuration des filtres CORS.",
+      "userMandatoryAttributes": "Liste des attributs obligatoires pour la demande de création d'utilisateur.",
+      "ignoreHttpMethod": "Méthodes HTTP pour lesquelles l'audit est désactivé.",
+      "auditLogConf": {
+        "headerAttributes": "Liste des attributs HTTP d'en-tête dont la valeur doit être journalisée.",
+        "enabled": "Drapeau pour activer et désactiver le journal d'audit.",
+        "self": "Détails de la configuration du journal d'audit."
+      },
+      "agamaConfiguration": {
+        "mandatoryAttributes": "Liste des attributs nécessaires pour créer le flux Agama.",
+        "optionalAttributes": "Liste des attributs qui sont optionnels.",
+        "self": "Détails de la configuration Agama."
+      },
+      "dataFormatConversionConf": {
+        "ignoreHttpMethod": "Méthodes HTTP pour lesquelles la conversion de données doit être désactivée.",
+        "enabled": "Drapeau pour activer et désactiver la conversion de données",
+        "self": "Configuration pour la conversion de type de données."
+      },
+      "plugins": {
+        "name": "Nom du plugin.",
+        "description": "Description du plugin.",
+        "className": "Classe d'application du plugin.",
+        "self": "Détails des plugins activés."
+      },
+      "assetMgtConfiguration": {
+        "assetMgtEnabled": "Drapeau indiquant si la fonctionnalité de gestion des actifs est activée.",
+        "assetServerUploadEnabled": "Drapeau indiquant si le téléchargement d'actifs sur le serveur est activé.",
+        "fileExtensionValidationEnabled": "Drapeau indiquant si la validation des extensions de fichier est activée.",
+        "moduleNameValidationEnabled": "Drapeau indiquant si la validation de l'extension du nom du module de service est activée.",
+        "assetBaseDirectory": "Répertoire de base sur le serveur pour télécharger l'actif.",
+        "jansServiceModule": "Liste des modules de service pris en charge où l'actif peut être téléchargé.",
+        "self": "Détails de la configuration de gestion des actifs."
+      },
+      "assetDirMapping": {
+        "directory": "Chemin relatif au répertoire de base des actifs.",
+        "type": "Liste des extensions de fichier stockées dans le répertoire.",
+        "description": "Description des actifs stockés dans le répertoire.",
+        "self": "Type d'actif mappé au répertoire du serveur."
+      },
+      "assetMgtEnabled": "Drapeau indiquant si la fonctionnalité de gestion des actifs est activée.",
+      "assetServerUploadEnabled": "Drapeau indiquant si le téléchargement d'actifs sur le serveur est activé.",
+      "fileExtensionValidationEnabled": "Drapeau indiquant si la validation des extensions de fichier est activée.",
+      "moduleNameValidationEnabled": "Drapeau indiquant si la validation de l'extension du nom du module de service est activée.",
+      "assetBaseDirectory": "Répertoire de base sur le serveur pour télécharger l'actif.",
+      "jansServiceModule": "Liste des modules de service pris en charge où l'actif peut être téléchargé.",
+      "userExclusionAttributes": "Attribut utilisateur qui ne doit pas être retourné dans la réponse."
     },
     "ssa": {
       "org_id": "L'org_id est utilisé pour l'identification de l'organisation.",

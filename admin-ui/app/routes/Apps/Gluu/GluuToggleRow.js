@@ -11,10 +11,11 @@ const GluuToggleRow = ({
   lsize = 4,
   rsize = 8,
   name,
+  doc_category
 }) => {
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} />
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
       <Col sm={rsize}>
         <Toggle
           onChange={(event) => {

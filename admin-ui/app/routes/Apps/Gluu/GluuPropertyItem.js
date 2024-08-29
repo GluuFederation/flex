@@ -28,7 +28,6 @@ function GluuPropertyItem({
         {isInputLables && <label>{keyLabel}</label>}
         <Input
           name={'key'}
-          defaultValue={property.key}
           value={property.key}
           disabled={disabled}
           onChange={(event) => onPropertyChange(position, event)}
@@ -45,7 +44,6 @@ function GluuPropertyItem({
           <>
             <Input
               name={'value'}
-              defaultValue={property.value}
               value={property.value}
               disabled={disabled}
               onChange={(event) => onPropertyChange(position, event)}
@@ -60,7 +58,6 @@ function GluuPropertyItem({
           <Box display='flex' gap={2} alignItems={'center'}>
             <Input
               name={'source'}
-              defaultValue={property.source}
               value={property.source}
               disabled={disabled}
               onChange={(event) => onPropertyChange(position, event)}
@@ -72,7 +69,6 @@ function GluuPropertyItem({
             />
             <Input
               name={'destination'}
-              defaultValue={property.destination}
               value={property.destination}
               disabled={disabled}
               onChange={(event) => onPropertyChange(position, event)}

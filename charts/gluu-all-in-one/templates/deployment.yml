@@ -10,9 +10,14 @@ metadata:
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
-{{- if .Values.additionalAnnotations }}
+{{- if or (.Values.additionalAnnotations) (.Values.customAnnotations.deployment) }}
   annotations:
+{{- if .Values.additionalAnnotations }}
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
+{{- end }}
+{{- if .Values.customAnnotations.deployment }}
+{{ toYaml .Values.customAnnotations.deployment | indent 4 }}
+{{- end }}
 {{- end }}
 spec:
   replicas: {{ .Values.replicas }}
@@ -42,6 +47,7 @@ spec:
       topologySpreadConstraints:
         {{- include "flex-all-in-one.topology-spread-constraints" . | indent 8 }}
       {{- end }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
       containers:
       - name: {{ include "flex-all-in-one.name" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -114,9 +120,9 @@ spec:
             mountPath: /etc/certs/vault_secret_id
             subPath: vault_secret_id
         {{- end }}
-          - mountPath: /opt/jans/configurator/db/generate.json
+          - mountPath: /opt/jans/configurator/db/configuration.json
             name: {{ include "flex-all-in-one.name" . }}-mount-gen-file
-            subPath: generate.json
+            subPath: configuration.json
           - mountPath: /scripts/tls_generator.py
             name: {{ include "flex-all-in-one.name" . }}-tls-script
             subPath: tls_generator.py
@@ -134,6 +140,9 @@ spec:
           - name: cb-pass
             mountPath: {{ .Values.cnCouchbasePasswordFile }}
             subPath: couchbase_password
+          - name: cb-pass
+            mountPath: {{ .Values.cnCouchbaseSuperuserPasswordFile }}
+            subPath: couchbase_superuser_password
         {{- end }}
         {{- if or (eq .Values.cnPersistenceType "sql") (eq .Values.cnPersistenceType "hybrid") }}
           - name: sql-pass
@@ -217,9 +226,11 @@ spec:
           secret:
             secretName: {{ .Release.Name }}-cb-pass
             items:
-              # we are mostly need non-superuser couchbase password file here
+              # we mostly need non-superuser couchbase password file here
               - key: couchbase_password
                 path: couchbase_password
+              - key: couchbase_superuser_password
+                path: couchbase_superuser_password
       {{- end }}
       {{- if not .Values.isFqdnRegistered }}
         - name: {{ include "flex-all-in-one.fullname" . }}-updatelbip

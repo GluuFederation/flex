@@ -182,7 +182,7 @@ const ProfileDetails = () => {
                               mb={1}
                             >
                               <Box fontWeight={700}>Status</Box>
-                              <Box>{profileDetails?.jansStatus || '-'}</Box>
+                              <Box>{profileDetails?.status || '-'}</Box>
                             </Box>
                           </>
                         )}

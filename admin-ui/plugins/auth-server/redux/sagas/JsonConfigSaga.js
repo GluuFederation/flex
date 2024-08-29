@@ -62,6 +62,7 @@ export function* patchJsonConfig({ payload }) {
     yield call(postUserAction, audit)
     return data
   } catch (e) {
+    console.log("error",e)
     yield put(updateToast(true, 'error'))
     yield put(patchJsonConfigResponse(null))
     if (isFourZeroOneError(e)) {

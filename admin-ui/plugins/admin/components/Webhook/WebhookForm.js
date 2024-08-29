@@ -25,6 +25,7 @@ import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import ShortcodePopover from './ShortcodePopover'
 import shortCodes from 'Plugins/admin/helper/shortCodes.json'
+import { isValid } from './WebhookURLChecker'
 
 const WebhookForm = () => {
   const { id } = useParams()
@@ -49,7 +50,6 @@ const WebhookForm = () => {
   )
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
-
   const validatePayload = (values) => {
     let faulty = false
     if (values.httpRequestBody) {
@@ -62,6 +62,13 @@ const WebhookForm = () => {
           t('messages.invalid_json_error')
         )
       }
+    }
+    if (!isValid(values.url)) {
+      faulty = true
+      formik.setFieldError(
+        'url',
+        "Invalid url or url not allowed."
+      )
     }
 
     return faulty
@@ -85,11 +92,9 @@ const WebhookForm = () => {
     },
     onSubmit: (values) => {
       const faulty = validatePayload(values)
-
       if (faulty) {
         return
       }
-
       toggle()
     },
     validationSchema: Yup.object().shape({
@@ -233,8 +238,9 @@ const WebhookForm = () => {
             showError={formik.errors.displayName && formik.touched.displayName}
           />
           <GluuTypeAhead
-            name={(lookuplist) => `${lookuplist.displayName}`}
+            name="auiFeatureIds"
             label='fields.aui_feature_ids'
+            labelKey="displayName"
             value={selectedFeatures}
             options={features}
             onChange={(options) => {
@@ -360,21 +366,18 @@ const WebhookForm = () => {
                     setTimeout(() => {
                       const cursorPos = value.cursor
                       const lines = value.cursor?.document?.$lines
-
                       let index = 0
                       for (let i = 0; i < cursorPos.row; i++) {
                         index += lines[i].length + 1 // +1 for the newline character
                       }
-
                       index += cursorPos.column
-
                       setCursorPosition((prevState) => ({
                         ...prevState,
                         httpRequestBody: index,
                       }))
                     }, 0)
                   }}
-                  theme='monokai'
+                  theme='xcode'
                   doc_category={WEBHOOK}
                   doc_entry='http_request_body'
                   formik={formik}

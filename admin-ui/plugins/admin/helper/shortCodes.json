@@ -903,9 +903,9 @@
         "description": "documentation.user.mail"
       },
       {
-        "key": "jansStatus",
+        "key": "status",
         "label": "Status",
-        "description": "documentation.user.jansStatus"
+        "description": "documentation.user.status"
       }
     ]
   },

@@ -1,121 +1,126 @@
-import React, { useEffect, useState } from 'react'
-import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
-import { useFormik } from 'formik'
-import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { useDispatch, useSelector } from 'react-redux'
-import * as Yup from 'yup'
-import { useTranslation } from 'react-i18next'
+import React, { useEffect, useState } from "react";
+import { Card, CardBody, Form, FormGroup, Col, Row } from "Components";
+import { useFormik } from "formik";
+import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
+import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
+import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog";
+import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
+import { useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 import {
   createSamlIdentity,
   toggleSavedFormFlag,
   updateSamlIdentity,
-} from 'Plugins/saml/redux/features/SamlSlice'
-import PropTypes from 'prop-types'
-import { useNavigate } from 'react-router'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
-import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { Box } from '@mui/material'
-import Toggle from 'react-toggle'
-import { nameIDPolicyFormat } from '../helper'
-import SetTitle from 'Utils/SetTitle'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+} from "Plugins/saml/redux/features/SamlSlice";
+import PropTypes from "prop-types";
+import { useNavigate } from "react-router";
+import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
+import GluuToggleRow from "Routes/Apps/Gluu/GluuToggleRow";
+import GluuUploadFile from "Routes/Apps/Gluu/GluuUploadFile";
+import GluuSelectRow from "Routes/Apps/Gluu/GluuSelectRow";
+import { Box } from "@mui/material";
+import Toggle from "react-toggle";
+import { nameIDPolicyFormat } from "../helper";
+import SetTitle from "Utils/SetTitle";
+import { adminUiFeatures } from "Plugins/admin/helper/utils";
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
-  const [showUploadBtn, setShowUploadBtn] = useState(false)
-  const [fileError, setFileError] = useState(false)
-  const savedForm = useSelector((state) => state.idpSamlReducer.savedForm)
-  const loading = useSelector((state) => state.idpSamlReducer.loading)
-  const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const [modal, setModal] = useState(false)
-  const navigate = useNavigate()
+  const [showUploadBtn, setShowUploadBtn] = useState(false);
+  const [fileError, setFileError] = useState(false);
+  const savedForm = useSelector((state) => state.idpSamlReducer.savedForm);
+  const loading = useSelector((state) => state.idpSamlReducer.loading);
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const [modal, setModal] = useState(false);
+  const navigate = useNavigate();
+  const DOC_SECTION = "samlIDP";
 
   if (viewOnly) {
-    SetTitle(t('titles.idp'))
+    SetTitle(t("titles.idp"));
   } else if (configs) {
-    SetTitle(t('titles.edit_idp'))
+    SetTitle(t("titles.edit_idp"));
   } else {
-    SetTitle(t('titles.create_idp'))
+    SetTitle(t("titles.create_idp"));
   }
 
-  const [metaDataFile, setMetadaDataFile] = useState(null)
+  const [metaDataFile, setMetadaDataFile] = useState(null);
   const initialValues = {
     ...(configs || {}),
-    name: configs?.name || '',
-    nameIDPolicyFormat: configs?.nameIDPolicyFormat || '',
-    singleSignOnServiceUrl: configs?.singleSignOnServiceUrl || '',
-    idpEntityId: configs?.idpEntityId || '',
-    displayName: configs?.displayName || '',
-    description: configs?.description || '',
+    name: configs?.name || "",
+    nameIDPolicyFormat: configs?.nameIDPolicyFormat || "",
+    singleSignOnServiceUrl: configs?.singleSignOnServiceUrl || "",
+    idpEntityId: configs?.idpEntityId || "",
+    displayName: configs?.displayName || "",
+    description: configs?.description || "",
     importMetadataFile: false,
     enabled: configs?.enabled || false,
-  }
+    principalAttribute: configs?.principalAttribute || "",
+    principalType: configs?.principalType || "",
+  };
 
   const validationSchema = Yup.object().shape({
-    singleSignOnServiceUrl: Yup.string().when('importMetadataFile', {
+    singleSignOnServiceUrl: Yup.string().when("importMetadataFile", {
       is: (value) => {
-        return value === false
+        return value === false;
       },
       then: () =>
         Yup.string().required(
-          `${t('fields.single_signon_service_url')} is Required!`
+          `${t("fields.single_signon_service_url")} is Required!`
         ),
     }),
-    idpEntityId: Yup.string().when('importMetadataFile', {
+    idpEntityId: Yup.string().when("importMetadataFile", {
       is: (value) => {
-        return value === false
+        return value === false;
       },
       then: () =>
-        Yup.string().required(`${t('fields.idp_entity_id')} is Required!`),
+        Yup.string().required(`${t("fields.idp_entity_id")} is Required!`),
     }),
-    nameIDPolicyFormat: Yup.string().when('importMetadataFile', {
+    nameIDPolicyFormat: Yup.string().when("importMetadataFile", {
       is: (value) => {
-        return value === false
+        return value === false;
       },
       then: () =>
-        Yup.string().required(`${t('fields.name_policy_format')} is Required!`),
+        Yup.string().required(`${t("fields.name_policy_format")} is Required!`),
     }),
-    name: Yup.string().required(`${t('fields.name')} is Required!`),
-    displayName: Yup.string().required(`${t('fields.displayName')} is Required!`),
-  })
+    name: Yup.string().required(`${t("fields.name")} is Required!`),
+    displayName: Yup.string().required(
+      `${t("fields.displayName")} is Required!`
+    ),
+  });
 
   const toggle = () => {
-    setModal(!modal)
-  }
+    setModal(!modal);
+  };
 
   const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: () => {
-      toggle()
+      toggle();
     },
-  })
+  });
 
   const submitForm = (messages) => {
-    toggle()
-    handleSubmit(formik.values, messages)
-  }
+    toggle();
+    handleSubmit(formik.values, messages);
+  };
 
   function handleSubmit(values, user_message) {
-    delete values.importMetadataFile
-    let formdata = new FormData()
+    delete values.importMetadataFile;
+    let formdata = new FormData();
 
     let payload = {
       identityProvider: { ...values },
-    }
+    };
 
     if (metaDataFile) {
-      payload.metaDataFile = metaDataFile
+      payload.metaDataFile = metaDataFile;
 
       const blob = new Blob([payload.metaDataFile], {
-        type: 'application/octet-stream',
-      })
-      formdata.append('metaDataFile', blob)
+        type: "application/octet-stream",
+      });
+      formdata.append("metaDataFile", blob);
     }
 
     const blob = new Blob(
@@ -125,73 +130,73 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
         }),
       ],
       {
-        type: 'application/json',
+        type: "application/json",
       }
-    )
+    );
 
-    formdata.append('identityProvider', blob)
+    formdata.append("identityProvider", blob);
 
     if (!configs) {
       dispatch(
         createSamlIdentity({
           action: { action_message: user_message, action_data: formdata },
         })
-      )
+      );
     } else {
       dispatch(
         updateSamlIdentity({
           action: { action_message: user_message, action_data: formdata },
         })
-      )
+      );
     }
   }
 
   const handleDrop = (files) => {
-    const file = files[0]
+    const file = files[0];
     if (file) {
-      formik.setFieldValue('importMetadataFile', true)
-      setMetadaDataFile(file)
-      setFileError('')
-    } else formik.setFieldValue('importMetadataFile', false)
-  }
+      formik.setFieldValue("importMetadataFile", true);
+      setMetadaDataFile(file);
+      setFileError("");
+    } else formik.setFieldValue("importMetadataFile", false);
+  };
 
   const handleClearFiles = () => {
-    formik.setFieldValue('importMetadataFile', false)
-    setMetadaDataFile(null)
-  }
+    formik.setFieldValue("importMetadataFile", false);
+    setMetadaDataFile(null);
+  };
 
   useEffect(() => {
     if (savedForm) {
-      navigate('/saml/identity-providers')
+      navigate("/saml/identity-providers");
     }
 
     return () => {
-      dispatch(toggleSavedFormFlag(false))
-    }
-  }, [savedForm])
+      dispatch(toggleSavedFormFlag(false));
+    };
+  }, [savedForm]);
 
   return (
     <GluuLoader blocking={loading}>
       <Card>
-        <CardBody className=''>
+        <CardBody className="">
           <Form
             onSubmit={(event) => {
-              event.preventDefault()
+              event.preventDefault();
               if (!metaDataFile && showUploadBtn) {
-                setFileError(true)
-                return
+                setFileError(true);
+                return;
               }
-              setFileError(false)
-              formik.handleSubmit(event)
+              setFileError(false);
+              formik.handleSubmit(event);
             }}
-            className='mt-4'
+            className="mt-4"
           >
             <FormGroup row>
               <Col sm={10}>
                 <GluuInputRow
-                  label='fields.name'
-                  name='name'
-                  value={formik.values.name || ''}
+                  label="fields.name"
+                  name="name"
+                  value={formik.values.name || ""}
                   formik={formik}
                   lsize={4}
                   required
@@ -199,13 +204,14 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   showError={formik.errors.name && formik.touched.name}
                   errorMessage={formik.errors.name}
                   disabled={viewOnly}
+                  doc_category={DOC_SECTION}
                 />
               </Col>
               <Col sm={10}>
                 <GluuInputRow
-                  label='fields.displayName'
-                  name='displayName'
-                  value={formik.values.displayName || ''}
+                  label="fields.displayName"
+                  name="displayName"
+                  value={formik.values.displayName || ""}
                   formik={formik}
                   lsize={4}
                   rsize={8}
@@ -215,13 +221,14 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   }
                   errorMessage={formik.errors.displayName}
                   disabled={viewOnly}
+                  doc_category={DOC_SECTION}
                 />
               </Col>
               <Col sm={10}>
                 <GluuInputRow
-                  label='fields.description'
-                  name='description'
-                  value={formik.values.description || ''}
+                  label="fields.description"
+                  name="description"
+                  value={formik.values.description || ""}
                   formik={formik}
                   lsize={4}
                   rsize={8}
@@ -230,38 +237,40 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   }
                   errorMessage={formik.errors.description}
                   disabled={viewOnly}
+                  doc_category={DOC_SECTION}
                 />
               </Col>
               <Col sm={10}>
                 <GluuToggleRow
-                  label={'fields.enabled'}
-                  name='enabled'
+                  label={"fields.enabled"}
+                  name="enabled"
                   viewOnly={viewOnly}
                   formik={formik}
+                  doc_category={DOC_SECTION}
                 />
               </Col>
               <Col sm={10}>
                 <FormGroup row>
                   <GluuLabel
-                    label={'fields.import_metadata_from_file'}
+                    label={"fields.import_metadata_from_file"}
                     size={4}
                   />
                   <Col sm={8}>
                     <Box
-                      display='flex'
-                      flexWrap={{ sm: 'wrap', md: 'nowrap' }}
+                      display="flex"
+                      flexWrap={{ sm: "wrap", md: "nowrap" }}
                       gap={1}
-                      alignItems='center'
+                      alignItems="center"
                     >
                       <Toggle
                         onChange={(event) => {
                           if (event.target.checked) {
-                            setShowUploadBtn(true)
+                            setShowUploadBtn(true);
                           } else {
-                            setMetadaDataFile(null)
-                            formik.setFieldValue('importMetadataFile', false)
-                            setShowUploadBtn(false)
-                            setFileError('')
+                            setMetadaDataFile(null);
+                            formik.setFieldValue("importMetadataFile", false);
+                            setShowUploadBtn(false);
+                            setFileError("");
                           }
                         }}
                         checked={showUploadBtn}
@@ -270,8 +279,8 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       {showUploadBtn && (
                         <GluuUploadFile
                           accept={{
-                            'text/xml': ['.xml'],
-                            'application/json': ['.json'],
+                            "text/xml": [".xml"],
+                            "application/json": [".json"],
                           }}
                           fileName={configs?.idpMetaDataFN}
                           placeholder={`Drag 'n' drop .xml/.json file here, or click to select file`}
@@ -282,8 +291,8 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       )}
                     </Box>
                     {fileError && (
-                      <div style={{ color: 'red' }}>
-                        {t('messages.import_metadata_file')}
+                      <div style={{ color: "red" }}>
+                        {t("messages.import_metadata_file")}
                       </div>
                     )}
                   </Col>
@@ -293,9 +302,9 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                 <>
                   <Col sm={10}>
                     <GluuInputRow
-                      label='fields.idp_entity_id'
-                      name='idpEntityId'
-                      value={formik.values.idpEntityId || ''}
+                      label="fields.idp_entity_id"
+                      name="idpEntityId"
+                      value={formik.values.idpEntityId || ""}
                       formik={formik}
                       required
                       lsize={4}
@@ -305,12 +314,14 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       }
                       errorMessage={formik.errors.idpEntityId}
                       disabled={viewOnly}
+                      doc_category={DOC_SECTION}
+                      doc_entry="entityId"
                     />
                   </Col>
                   <Col sm={10}>
                     <GluuSelectRow
-                      label='fields.name_policy_format'
-                      name='nameIDPolicyFormat'
+                      label="fields.name_policy_format"
+                      name="nameIDPolicyFormat"
                       value={formik.values.nameIDPolicyFormat}
                       defaultValue={formik.values.nameIDPolicyFormat}
                       values={nameIDPolicyFormat}
@@ -324,12 +335,14 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       }
                       errorMessage={formik.errors.nameIDPolicyFormat}
                       disabled={viewOnly}
+                      doc_category={DOC_SECTION}
+                      doc_entry="nameIDPolicyFormat"
                     />
                   </Col>
                   <Col sm={10}>
                     <GluuInputRow
-                      label='fields.single_signon_service_url'
-                      name='singleSignOnServiceUrl'
+                      label="fields.single_signon_service_url"
+                      name="singleSignOnServiceUrl"
                       value={formik.values.singleSignOnServiceUrl}
                       required
                       formik={formik}
@@ -341,13 +354,14 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       }
                       errorMessage={formik.errors.singleSignOnServiceUrl}
                       disabled={viewOnly}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                   <Col sm={10}>
                     <GluuInputRow
-                      label='fields.single_logout_service_url'
-                      name='singleLogoutServiceUrl'
-                      value={formik.values.singleLogoutServiceUrl || ''}
+                      label="fields.single_logout_service_url"
+                      name="singleLogoutServiceUrl"
+                      value={formik.values.singleLogoutServiceUrl || ""}
                       formik={formik}
                       lsize={4}
                       rsize={8}
@@ -357,17 +371,18 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       }
                       errorMessage={formik.errors.singleLogoutServiceUrl}
                       disabled={viewOnly}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                   <Col sm={10}>
                     <GluuInputRow
-                      label='fields.signing_certificate'
-                      name='signingCertificate'
-                      value={formik.values.signingCertificate || ''}
+                      label="fields.signing_certificate"
+                      name="signingCertificate"
+                      value={formik.values.signingCertificate || ""}
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      type='textarea'
+                      type="textarea"
                       showError={
                         formik.errors.signingCertificate &&
                         formik.touched.signingCertificate
@@ -375,17 +390,18 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       errorMessage={formik.errors.signingCertificate}
                       disabled={viewOnly}
                       rows={10}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                   <Col sm={10}>
                     <GluuInputRow
-                      label='fields.encryption_public_key'
-                      name='encryptionPublicKey'
-                      value={formik.values.encryptionPublicKey || ''}
+                      label="fields.encryption_public_key"
+                      name="encryptionPublicKey"
+                      value={formik.values.encryptionPublicKey || ""}
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      type='textarea'
+                      type="textarea"
                       showError={
                         formik.errors.encryptionPublicKey &&
                         formik.touched.encryptionPublicKey
@@ -393,6 +409,41 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       errorMessage={formik.errors.encryptionPublicKey}
                       disabled={viewOnly}
                       rows={10}
+                      doc_category={DOC_SECTION}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label="fields.principal_attribute"
+                      name="principalAttribute"
+                      value={formik.values.principalAttribute || ""}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.principalAttribute &&
+                        formik.touched.principalAttribute
+                      }
+                      errorMessage={formik.errors.principalAttribute}
+                      disabled={viewOnly}
+                      doc_category={DOC_SECTION}
+                    />
+                  </Col>
+                  <Col sm={10}>
+                    <GluuInputRow
+                      label="fields.principal_type"
+                      name="principalType"
+                      value={formik.values.principalType || ""}
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      showError={
+                        formik.errors.principalType &&
+                        formik.touched.principalType
+                      }
+                      errorMessage={formik.errors.principalType}
+                      disabled={viewOnly}
+                      doc_category={DOC_SECTION}
                     />
                   </Col>
                 </>
@@ -404,7 +455,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   <GluuCommitFooter
                     saveHandler={toggle}
                     hideButtons={{ save: true, back: false }}
-                    type='submit'
+                    type="submit"
                   />
                 </Col>
               </Row>
@@ -420,11 +471,11 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
         </CardBody>
       </Card>
     </GluuLoader>
-  )
-}
+  );
+};
 
-export default SamlIdpForm
+export default SamlIdpForm;
 SamlIdpForm.propTypes = {
   configs: PropTypes.any,
   viewOnly: PropTypes.bool,
-}
+};

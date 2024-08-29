@@ -271,6 +271,7 @@ function AttributeListPage() {
             actions={myActions}
             options={{
               search: false,
+              idSynonym: 'inum',
               selection: false,
               searchFieldAlignment: 'left',
               pageSize: limit,
