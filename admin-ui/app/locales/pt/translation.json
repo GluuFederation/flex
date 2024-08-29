@@ -43,6 +43,7 @@
     "default_acr": "ACR padrão",
     "acrs": "ACRs",
     "aliases": "Aliases",
+    "builtIn" : "Integrado",
     "api": {
       "roles": "Papéis de acesso",
       "permissions": "Permissões",

@@ -15,19 +15,26 @@ function AuthNPage() {
   const isLoading = useSelector((state) => state.cacheRefreshReducer.loading);
 
   const tabNames = [
-    { name: t("menus.acrs"), path: "" },
     {
-      name: t("menus.agama_flows"),
+      name: t("menus.builtIn"),
       path: "",
     },
+    { name: t("menus.acrs"), path: "" },
     {
       name: t("menus.aliases"),
       path: "",
     },
+    {
+      name: t("menus.agama_flows"),
+      path: "",
+    },
+ 
   ];
 
   const tabToShow = (tabName) => {
     switch (tabName) {
+      case t("menus.builtIn"):
+        return <AuthNListPage isBuiltIn={true}/>;
       case t("menus.acrs"):
         return <AuthNListPage />;
       case t("menus.agama_flows"):

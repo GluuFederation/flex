@@ -564,6 +564,7 @@
     "default_acr": "Default ACR",
     "acrs": "ACRs",
     "aliases": "Aliases",
+    "builtIn":"Built-In",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",

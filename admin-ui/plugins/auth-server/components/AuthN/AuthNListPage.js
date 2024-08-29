@@ -18,7 +18,7 @@ import { getCustomScriptByType } from "Plugins/admin/redux/features/customScript
 import { setCurrentItem } from "../../redux/features/authNSlice";
 import { getAcrsConfig } from "Plugins/auth-server/redux/features/acrSlice";
 
-function AuthNListPage() {
+function AuthNListPage({isBuiltIn=false}) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const myActions = [];
@@ -68,6 +68,7 @@ function AuthNListPage() {
 
   useEffect(() => {
     setList({ ...list, ldap: [] });
+    
 
     if (ldap.length > 0 && !loading) {
       const getEnabledldap = ldap.filter((item) => item.enabled === true);
@@ -77,13 +78,18 @@ function AuthNListPage() {
           name: "default_ldap_password",
           acrName: item.configId,
         }));
+
+
         setList({ ...list, ldap: updateLDAPItems });
+
+        console.log(list,updateLDAPItems)
       }
     }
   }, [ldap, loading]);
 
   useEffect(() => {
     setList({ ...list, scripts: [] });
+    console.log("list",list)
     if (scripts.length > 0 && !scriptsLoading) {
       const getEnabledscripts = scripts.filter((item) => item.enabled === true);
       if (getEnabledscripts?.length > 0) {
@@ -93,6 +99,7 @@ function AuthNListPage() {
           acrName: item.name,
         }));
         setList({ ...list, scripts: updateScriptsItems });
+        console.log(list,updateScriptsItems)
       }
     }
   }, [scripts]);
@@ -148,7 +155,7 @@ function AuthNListPage() {
         data={
           loading || customScriptloading
             ? []
-            : [...authN, ...list.ldap, ...list.scripts].sort(
+            : isBuiltIn ? authN : [...list.ldap, ...list.scripts].sort(
                 (item1, item2) => item1.level - item2.level
               )
         }

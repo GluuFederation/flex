@@ -42,6 +42,7 @@
     "acrs": "ACRs",
     "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
+    "builtIn" : "Intégré",
     "api": {
       "roles": "Rôles d'accès",
       "permissions": "Autorisations",
