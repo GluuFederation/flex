@@ -54,6 +54,7 @@ COPY --from=jans-aio-src /var/jans/cr-snapshots /var/jans/cr-snapshots
 COPY --from=jans-aio-src /opt/keycloak /opt/keycloak
 COPY --from=jans-aio-src /opt/idp /opt/idp
 COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
+COPY --from=jans-aio-src /usr/share/java /usr/share/java
 
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
@@ -65,7 +66,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=51a95f6b1724218bca7bc7a4523f88e1901d4aee
+ENV JANS_SOURCE_VERSION=fc9f04fe3b3d3d168f3090214b22ee80be371d92
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
