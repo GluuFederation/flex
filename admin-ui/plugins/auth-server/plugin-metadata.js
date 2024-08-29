@@ -129,11 +129,6 @@ const pluginMetadata = {
           path: PLUGIN_BASE_APTH + '/authn',
           permission: SCOPE_READ,
         },
-        // {
-        //   title: 'menus.agama',
-        //   path: PLUGIN_BASE_APTH + '/agama',
-        //   permission: AGAMA_READ,
-        // },
         {
           title: 'menus.lock',
           path: PLUGIN_BASE_APTH + '/lock',

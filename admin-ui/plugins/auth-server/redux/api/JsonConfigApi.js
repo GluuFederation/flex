@@ -15,7 +15,6 @@ export default class JsonConfigApi {
   }
   // patch json Config
   patchJsonConfig = (options) => {
-    console.log("options",options)
     return new Promise((resolve, reject) => {
       this.api.patchProperties(options, (error, data) => {
         handleResponse(error, reject, resolve, data)
