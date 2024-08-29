@@ -85,13 +85,14 @@ function ConfigPage() {
     if (patches.length >= 0) {
       const postBody = {}
       postBody['requestBody'] = patches
+     
       buildPayload(userAction, message, postBody)
       if (!!put) {
         const opts = {}
         opts['authenticationMethod'] = { 'defaultAcr': put.value || acrs.defaultAcr }
         dispatch(editAcrs({ data: opts }))
       }
-      dispatch(patchJsonConfig({ action: userAction }))
+     dispatch(patchJsonConfig({ action: userAction }))
     }
   }
   function toggle() {
