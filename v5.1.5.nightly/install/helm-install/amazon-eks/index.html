@@ -1637,11 +1637,136 @@
 
 <h1 id="install-gluu-flex-on-eks">Install Gluu Flex on EKS<a class="headerlink" href="#install-gluu-flex-on-eks" title="Permanent link">#</a></h1>
 <h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
-<p>{% include "includes/cn-system-requirements.md" %}</p>
+<p>The resources may be set minimally to the below:</p>
+<ul>
+<li>8-14 GB RAM based on the services deployed</li>
+<li>8-12 CPU cores based on the services deployed</li>
+<li>50GB hard-disk</li>
+</ul>
+<p>Use the listing below for detailed estimation of minimum required resources. Table contains the default resources recommendations per service. Depending on the use of each service the resources needs may be increase or decrease.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>CPU Unit</th>
+<th>RAM</th>
+<th>Disk Space</th>
+<th>Processor Type</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Auth server</td>
+<td>2.5</td>
+<td>2.5GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>LDAP (OpenDJ)</td>
+<td>1.5</td>
+<td>2GB</td>
+<td>10GB</td>
+<td>64 Bit</td>
+<td>Only if Couchbase/SQL not installed</td>
+</tr>
+<tr>
+<td>fido2</td>
+<td>0.5</td>
+<td>0.5GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>scim</td>
+<td>1</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>config - job</td>
+<td>0.3</td>
+<td>0.3GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>Yes on fresh installs</td>
+</tr>
+<tr>
+<td>persistence - job</td>
+<td>0.3</td>
+<td>0.3GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>Yes on fresh installs</td>
+</tr>
+<tr>
+<td>nginx</td>
+<td>1</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>Yes ALB/Istio not used</td>
+</tr>
+<tr>
+<td>auth-key-rotation</td>
+<td>0.3</td>
+<td>0.3GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No [Strongly recommended]</td>
+</tr>
+<tr>
+<td>config-api</td>
+<td>1</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>casa</td>
+<td>0.5</td>
+<td>0.5GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>admin-ui</td>
+<td>2</td>
+<td>2GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>link</td>
+<td>0.5</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>saml</td>
+<td>0.5</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>Releases of images are in style 1.0.0-beta.0, 1.0.0-0</p>
 <h2 id="initial-setup">Initial Setup<a class="headerlink" href="#initial-setup" title="Permanent link">#</a></h2>
 <ol>
 <li>
-<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/v5.1.5.nightly/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
+<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
 </li>
 <li>
 <p>Install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">aws cli</a></p>
