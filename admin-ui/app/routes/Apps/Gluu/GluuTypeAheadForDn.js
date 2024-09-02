@@ -45,7 +45,9 @@ function GluuTypeAheadForDn({
   const [open, setOpen] = useState(false)
 
   const getItemName = useCallback((theOptions, item) => {
-    const data = theOptions?.filter((e) => e.dn === item)
+    console.log(item)
+    const data = theOptions?.filter((e) => e.dn === item || item.includes(e.key))
+    console.log(data)
     return data[0].name
   }, [])
 
@@ -57,7 +59,7 @@ function GluuTypeAheadForDn({
           isLoading={isLoading}
           labelKey={
             haveLabelKey
-              ? (opt) => `${opt.name || getItemName(options, opt)}`
+              ? (opt) => `${opt.name || opt.key}`
               : null
           }
           maxResults={maxResults}

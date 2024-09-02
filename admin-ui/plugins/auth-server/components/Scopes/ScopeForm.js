@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Formik, ErrorMessage } from 'formik'
@@ -42,7 +42,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const selectedTheme = theme.state.theme
   const navigate =useNavigate()
   const dispatch = useDispatch()
-  const client = scope.clients || []
+  const client = scope.clients || [];
+  const [options, setOptions] = useState([]);
 
   const authReducer = useSelector((state) => state.authReducer)
   let claims = []
@@ -59,7 +60,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
 
   associatedClients = client.map((item) => ({ dn: item.dn, name: item.inum }))
   associatedClientsSelectedValues = client.map((item) => item.dn)
-  claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
+  claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName,key:item.claimName }))
 
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -80,6 +81,18 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     obj[PATTERN] = client_id
     return obj
   }
+
+
+  const handleSearch = (query) => {
+    console.log(query.toLowerCase().replace(/_/g," "))
+    // Simulate an async data fetch
+    setTimeout(() => {
+      const fetch = claims.filter(item => {
+        return item.name.toLowerCase().includes(query.toLowerCase().replace(/-/g," ")) || item.name.toLowerCase().includes(query.toLowerCase())
+      });
+      setOptions(fetch);
+    }, 1000);
+  };
 
   const handleScopeTypeChanged = (type) => {
     if (type && type === 'openid') {
@@ -138,6 +151,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     dispatch(setCurrentItem({ item: clientData }))
     return navigate(`/auth-server/client/edit:` + clientId)
   }
+
+  useEffect(() => {
+    setOptions(claims)
+  },[attributes])
 
   return (
     <Container>
@@ -326,7 +343,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     label="fields.claims"
                     formik={formik}
                     value={getMapping(scope.claims, claims)}
-                    options={claims}
+                    options={options}
+                    onSearch={handleSearch}
                     doc_category={SCOPE}
                   />
                 </Accordion.Body>
