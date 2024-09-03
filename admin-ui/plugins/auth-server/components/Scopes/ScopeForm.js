@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 import {
   Container,
   Col,
@@ -65,16 +65,16 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const [init, setInit] = useState(false);
   const [modal, setModal] = useState(false);
   const [showClaimsPanel, handleClaimsPanel] = useState(
-    scope.scopeType === "openid" ? true : false
+    scope.scopeType === "openid"
   );
   const [showDynamicPanel, handleDynamicPanel] = useState(
-    scope.scopeType === "dynamic" ? true : false
+    scope.scopeType === "dynamic"
   );
   const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
-    scope.scopeType === "spontaneous" ? true : false
+    scope.scopeType === "spontaneous"
   );
   const [showUmaPanel, handleShowUmaPanel] = useState(
-    scope.scopeType === "uma" ? true : false
+    scope.scopeType === "uma"
   );
 
   const handleScopeTypeChanged = (type) => {
@@ -539,7 +539,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     </Container>
   );
 }
-
 
 export default ScopeForm;
 ScopeForm.propTypes = {
