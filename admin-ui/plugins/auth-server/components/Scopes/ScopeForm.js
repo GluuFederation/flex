@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import PropTypes from 'prop-types'
 import {
   Container,
   Col,
@@ -173,7 +174,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               ...values.attributes,
             },
           };
-          result["id"] = result.id;
           result["creatorType"] = "user";
           result["creatorId"] = authReducer.userinfo.inum;
           result["attributes"].spontaneousClientId =
@@ -353,10 +353,14 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     label="fields.claims"
                     formik={formik}
                     value={getMapping(scope.claims, claims)}
-                    defaultSelected={formik.values["claims"]?.length ? getMapping(
-                      [ ...formik.values["claims"].flat()],
-                      claims
-                    ):[]}
+                    defaultSelected={
+                      formik.values["claims"]?.length
+                        ? getMapping(
+                            [...formik.values["claims"].flat()],
+                            claims
+                          )
+                        : []
+                    }
                     options={claims}
                     doc_category={SCOPE}
                     placeholder="Search by display name or claim name"
@@ -494,7 +498,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       <Col sm={8}>
                         {scope?.attributes?.spontaneousClientScopes?.map(
                           (item, key) => (
-                            <div style={{ maxWidth: 140, overflow: "auto" }}>
+                            <div
+                              style={{ maxWidth: 140, overflow: "auto" }}
+                              key={key}
+                            >
                               <Badge
                                 key={key}
                                 color={`primary-${selectedTheme}`}
@@ -544,4 +551,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   );
 }
 
+
 export default ScopeForm;
+ScopeForm.propTypes = {
+  scrope: PropTypes.any,
+  scripts: PropTypes.any,
+  attributes: PropTypes.any,
+  handleSubmit: PropTypes.any,
+};

@@ -33,22 +33,25 @@ function GluuTypeAheadForDn({
   paginate = false,
   onSearch = () => {},
   onPaginate = () => {},
-  filterByFields = () => {},
   maxResults = undefined,
   isLoading = false,
   placeholder = undefined,
   onChange,
   hideHelperMessage,
-  defaultSelected,
+  defaultSelected = [],
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
-  const getItemName = useCallback((theOptions, item) => {
+  const getItemName = useCallback((open) => {
     const data = theOptions?.filter(
       (e) => e.dn === item || item.includes(e.key)
     );
     return data[0]?.name;
+  }, []);
+
+  const getKey = useCallback((option) => {
+    return `(Claim name: ${option.key})`;
   }, []);
 
   return (
@@ -65,7 +68,10 @@ function GluuTypeAheadForDn({
           isLoading={isLoading}
           labelKey={
             haveLabelKey
-              ? (opt) => `${opt.name || getItemName(options, opt)} ${opt.key ? `(Claim name: ${opt.key})` : ""}`
+              ? (opt) =>
+                  `${opt.name || getItemName(options, opt)} ${
+                    opt.key ? getKey(opt) : ""
+                  }`
               : null
           }
           maxResults={maxResults}
@@ -102,7 +108,7 @@ function GluuTypeAheadForDn({
           useCache={false}
           allowNew={allowNew}
           multiple={true}
-          selected={defaultSelected ? defaultSelected : []}
+          selected={defaultSelected}
           onSearch={onSearch}
         />
         {!hideHelperMessage && (
