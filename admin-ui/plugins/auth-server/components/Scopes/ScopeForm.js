@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, ErrorMessage } from "formik";
@@ -36,9 +36,7 @@ import { adminUiFeatures } from "Plugins/admin/helper/utils";
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation();
   let dynamicScopeScripts = [];
-  let associatedClients = [];
   let umaAuthorizationPolicies = [];
-  let associatedClientsSelectedValues = [];
   const theme = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
   const navigate = useNavigate();
@@ -58,7 +56,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .filter((item) => item.scriptType == "uma_rpt_policy")
     .map((item) => ({ dn: item.dn, name: item.name }));
 
-  associatedClients = client.map((item) => ({ dn: item.dn, name: item.inum }));
   associatedClientsSelectedValues = client.map((item) => item.dn);
   claims = attributes.map((item) => ({
     dn: item.dn,
@@ -500,7 +497,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                           (item, key) => (
                             <div
                               style={{ maxWidth: 140, overflow: "auto" }}
-                              key={key}
+                              key={item}
                             >
                               <Badge
                                 key={key}
@@ -554,7 +551,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
 
 export default ScopeForm;
 ScopeForm.propTypes = {
-  scrope: PropTypes.any,
+  scope: PropTypes.any,
   scripts: PropTypes.any,
   attributes: PropTypes.any,
   handleSubmit: PropTypes.any,
