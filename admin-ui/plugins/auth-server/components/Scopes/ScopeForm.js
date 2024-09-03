@@ -329,6 +329,14 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   scope.dynamicScopeScripts,
                   dynamicScopeScripts
                 )}
+                defaultSelected={
+                  formik.values["dynamicScopeScripts"]?.length
+                    ? getMapping(
+                        [...formik.values["dynamicScopeScripts"].flat()],
+                        dynamicScopeScripts
+                      )
+                    : []
+                }
                 options={dynamicScopeScripts}
                 doc_category={SCOPE}
               />
@@ -389,6 +397,14 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       disabled={scope.inum ? true : false}
                       options={umaAuthorizationPolicies}
                       doc_category={SCOPE}
+                      defaultSelected={
+                        formik.values["umaAuthorizationPolicies"]?.length
+                          ? getMapping(
+                              [...formik.values["umaAuthorizationPolicies"].flat()],
+                              umaAuthorizationPolicies
+                            )
+                          : []
+                      }
                     />
                   </Accordion.Body>
                 </Accordion>
