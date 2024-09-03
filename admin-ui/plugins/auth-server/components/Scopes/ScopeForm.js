@@ -1,8 +1,9 @@
-import React, { useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { Formik, ErrorMessage } from 'formik'
-import * as Yup from 'yup'
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Formik, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import PropTypes from "prop-types";
 import {
   Container,
   Col,
@@ -13,131 +14,126 @@ import {
   Input,
   Accordion,
   Badge,
-} from 'Components'
+} from "Components";
 import {
   viewOnly,
   setCurrentItem,
-} from 'Plugins/auth-server/redux/features/oidcSlice'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import { SCOPE } from 'Utils/ApiResources'
-import { useTranslation } from 'react-i18next'
-import { ThemeContext } from 'Context/theme/themeContext'
-import { LIMIT, PATTERN } from 'Plugins/auth-server/common/Constants'
-import moment from 'moment'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+} from "Plugins/auth-server/redux/features/oidcSlice";
+import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
+import GluuInumInput from "Routes/Apps/Gluu/GluuInumInput";
+import GluuToogleRow from "Routes/Apps/Gluu/GluuToogleRow";
+import GluuTypeAheadForDn from "Routes/Apps/Gluu/GluuTypeAheadForDn";
+import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
+import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog";
+import GluuTooltip from "Routes/Apps/Gluu/GluuTooltip";
+import { SCOPE } from "Utils/ApiResources";
+import { useTranslation } from "react-i18next";
+import { ThemeContext } from "Context/theme/themeContext";
+import { LIMIT, PATTERN } from "Plugins/auth-server/common/Constants";
+import moment from "moment";
+import { adminUiFeatures } from "Plugins/admin/helper/utils";
 
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
-  const { t } = useTranslation()
-  let dynamicScopeScripts = []
-  let associatedClients = []
-  let umaAuthorizationPolicies = []
-  let associatedClientsSelectedValues = []
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const navigate =useNavigate()
-  const dispatch = useDispatch()
-  const client = scope.clients || []
+  const { t } = useTranslation();
+  let dynamicScopeScripts = [];
+  let umaAuthorizationPolicies = [];
+  const theme = useContext(ThemeContext);
+  const selectedTheme = theme.state.theme;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const client = scope.clients || [];
 
-  const authReducer = useSelector((state) => state.authReducer)
-  let claims = []
-  scripts = scripts || []
-  attributes = attributes || []
+  const authReducer = useSelector((state) => state.authReducer);
+  let claims = [];
+  scripts = scripts || [];
+  attributes = attributes || [];
   dynamicScopeScripts = scripts
-    .filter((item) => item.scriptType == 'dynamic_scope')
+    .filter((item) => item.scriptType == "dynamic_scope")
     .filter((item) => item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
+    .map((item) => ({ dn: item.dn, name: item.name }));
 
   umaAuthorizationPolicies = scripts
-    .filter((item) => item.scriptType == 'uma_rpt_policy')
-    .map((item) => ({ dn: item.dn, name: item.name }))
+    .filter((item) => item.scriptType == "uma_rpt_policy")
+    .map((item) => ({ dn: item.dn, name: item.name }));
 
-  associatedClients = client.map((item) => ({ dn: item.dn, name: item.inum }))
-  associatedClientsSelectedValues = client.map((item) => item.dn)
-  claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
+  claims = attributes.map((item) => ({
+    dn: item.dn,
+    name: item.displayName,
+    key: item.claimName,
+  }));
 
-  const [init, setInit] = useState(false)
-  const [modal, setModal] = useState(false)
+  const [init, setInit] = useState(false);
+  const [modal, setModal] = useState(false);
   const [showClaimsPanel, handleClaimsPanel] = useState(
-    scope.scopeType === 'openid',
-  )
+    scope.scopeType === "openid"
+  );
   const [showDynamicPanel, handleDynamicPanel] = useState(
-    scope.scopeType === 'dynamic',
-  )
+    scope.scopeType === "dynamic"
+  );
   const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
-    scope.scopeType === 'spontaneous',
-  )
-  const [showUmaPanel, handleShowUmaPanel] = useState(scope.scopeType === 'uma')
-
-  const makeOptions = (limit, client_id) => {
-    let obj = {}
-    obj[LIMIT] = limit
-    obj[PATTERN] = client_id
-    return obj
-  }
+    scope.scopeType === "spontaneous"
+  );
+  const [showUmaPanel, handleShowUmaPanel] = useState(
+    scope.scopeType === "uma"
+  );
 
   const handleScopeTypeChanged = (type) => {
-    if (type && type === 'openid') {
-      handleClaimsPanel(true)
+    if (type && type === "openid") {
+      handleClaimsPanel(true);
     } else {
-      handleClaimsPanel(false)
+      handleClaimsPanel(false);
     }
-    if (type && type === 'dynamic') {
-      handleDynamicPanel(true)
+    if (type && type === "dynamic") {
+      handleDynamicPanel(true);
     } else {
-      handleDynamicPanel(false)
+      handleDynamicPanel(false);
     }
-    if (type && type === 'spontaneous') {
-      handleShowSpontaneousPanel(true)
+    if (type && type === "spontaneous") {
+      handleShowSpontaneousPanel(true);
     } else {
-      handleShowSpontaneousPanel(false)
+      handleShowSpontaneousPanel(false);
     }
-    if (type && type === 'uma') {
-      handleShowUmaPanel(true)
+    if (type && type === "uma") {
+      handleShowUmaPanel(true);
     } else {
-      handleShowUmaPanel(false)
+      handleShowUmaPanel(false);
     }
-    scope.dynamicScopeScripts = ''
-    scope.claims = ''
-    scope.attributes.spontaneousClientId = ''
-    scope.attributes.spontaneousClientScopes = []
-  }
+    scope.dynamicScopeScripts = "";
+    scope.claims = "";
+    scope.attributes.spontaneousClientId = "";
+    scope.attributes.spontaneousClientScopes = [];
+  };
 
   const getMapping = (partial, total) => {
-    let mappings = []
+    let mappings = [];
     if (!partial) {
-      partial = []
+      partial = [];
     }
     if (partial && total) {
-      mappings = total.filter((item) => partial.includes(item.dn))
+      mappings = total.filter((item) => partial.includes(item.dn));
     }
-    return mappings
-  }
+    return mappings;
+  };
 
   const activate = () => {
     if (!init) {
-      setInit(true)
+      setInit(true);
     }
-  }
+  };
   const toggle = () => {
-    setModal(!modal)
-  }
+    setModal(!modal);
+  };
 
   const submitForm = () => {
-    toggle()
-    document.getElementsByClassName('UserActionSubmitButton')[0].click()
-  }
+    toggle();
+    document.getElementsByClassName("UserActionSubmitButton")[0].click();
+  };
 
   const goToClientViewPage = (clientId, clientData = {}) => {
-    dispatch(viewOnly({ view: true }))
-    dispatch(setCurrentItem({ item: clientData }))
-    return navigate(`/auth-server/client/edit:` + clientId)
-  }
+    dispatch(viewOnly({ view: true }));
+    dispatch(setCurrentItem({ item: clientData }));
+    return navigate(`/auth-server/client/edit:` + clientId);
+  };
 
   return (
     <Container>
@@ -154,9 +150,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
         }}
         validationSchema={Yup.object({
           displayName: Yup.string()
-            .min(2, 'displayName 2 characters')
-            .required('Required!'),
-          id: Yup.string().min(2, 'id 2 characters').required('Required!'),
+            .min(2, "displayName 2 characters")
+            .required("Required!"),
+          id: Yup.string().min(2, "id 2 characters").required("Required!"),
         })}
         onSubmit={(values) => {
           const result = {
@@ -164,40 +160,44 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             ...values,
             attributes: {
               ...scope.attributes,
-              ...values.attributes
-            }
+              ...values.attributes,
+            },
           };
-          result['id'] = result.id
-          result['creatorType'] = 'user'
-          result['creatorId'] = authReducer.userinfo.inum
-          result['attributes'].spontaneousClientId =
-            scope.attributes.spontaneousClientId
-          result['attributes'].spontaneousClientScopes =
+          result["creatorType"] = "user";
+          result["creatorId"] = authReducer.userinfo.inum;
+          result["attributes"].spontaneousClientId =
+            scope.attributes.spontaneousClientId;
+          result["attributes"].spontaneousClientScopes =
             scope.spontaneousClientScopes ||
-            scope.attributes.spontaneousClientScopes
-          handleSubmit(JSON.stringify(result))
+            scope.attributes.spontaneousClientScopes;
+          handleSubmit(JSON.stringify(result));
         }}
       >
         {(formik) => (
           <Form onSubmit={formik.handleSubmit}>
-            
-              <FormGroup row>
-                <GluuLabel label="fields.id" size={4} required doc_category={SCOPE} doc_entry="id" />
-                <Col sm={8}>
-                  <Input
-                    placeholder={t('placeholders.id')}
-                    id="id"
-                    valid={!formik.errors.id && !formik.touched.id && init}
-                    name="id"
-                    defaultValue={scope.id}
-                    onKeyUp={activate}
-                    onChange={formik.handleChange}
-                  />
-                </Col>
-                <ErrorMessage name="id">
-                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-                </ErrorMessage>
-              </FormGroup>
+            <FormGroup row>
+              <GluuLabel
+                label="fields.id"
+                size={4}
+                required
+                doc_category={SCOPE}
+                doc_entry="id"
+              />
+              <Col sm={8}>
+                <Input
+                  placeholder={t("placeholders.id")}
+                  id="id"
+                  valid={!formik.errors.id && !formik.touched.id && init}
+                  name="id"
+                  defaultValue={scope.id}
+                  onKeyUp={activate}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+              <ErrorMessage name="id">
+                {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+              </ErrorMessage>
+            </FormGroup>
             {scope.inum && (
               <GluuInumInput
                 label="fields.inum"
@@ -206,44 +206,55 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 doc_category={SCOPE}
               />
             )}
-            
-              <FormGroup row>
-                <GluuLabel label="fields.displayname" size={4} required doc_category={SCOPE} doc_entry="displayName"/>
-                <Col sm={8}>
-                  <Input
-                    placeholder={t('placeholders.display_name')}
-                    id="displayName"
-                    valid={
-                      !formik.errors.displayName &&
-                      !formik.touched.displayName &&
-                      init
-                    }
-                    name="displayName"
-                    defaultValue={scope.displayName}
-                    onKeyUp={activate}
-                    onChange={formik.handleChange}
-                  />
-                </Col>
-                <ErrorMessage name="displayName">
-                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-                </ErrorMessage>
-              </FormGroup>
-            
-              <FormGroup row>
-                <GluuLabel label="fields.description" size={4} doc_category={SCOPE} doc_entry="description"/>
-                <Col sm={8}>
-                  <Input
-                    type="textarea"
-                    placeholder={t('placeholders.description')}
-                    maxLength="4000"
-                    id="description"
-                    name="description"
-                    defaultValue={scope.description}
-                    onKeyUp={activate}
-                    onChange={formik.handleChange}
-                  />
-                </Col>
-              </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.displayname"
+                size={4}
+                required
+                doc_category={SCOPE}
+                doc_entry="displayName"
+              />
+              <Col sm={8}>
+                <Input
+                  placeholder={t("placeholders.display_name")}
+                  id="displayName"
+                  valid={
+                    !formik.errors.displayName &&
+                    !formik.touched.displayName &&
+                    init
+                  }
+                  name="displayName"
+                  defaultValue={scope.displayName}
+                  onKeyUp={activate}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+              <ErrorMessage name="displayName">
+                {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+              </ErrorMessage>
+            </FormGroup>
+
+            <FormGroup row>
+              <GluuLabel
+                label="fields.description"
+                size={4}
+                doc_category={SCOPE}
+                doc_entry="description"
+              />
+              <Col sm={8}>
+                <Input
+                  type="textarea"
+                  placeholder={t("placeholders.description")}
+                  maxLength="4000"
+                  id="description"
+                  name="description"
+                  defaultValue={scope.description}
+                  onKeyUp={activate}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+            </FormGroup>
             {!showSpontaneousPanel && (
               <div>
                 <GluuToogleRow
@@ -263,43 +274,51 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </div>
             )}
             {showSpontaneousPanel ? (
-              
-                <FormGroup row>
-                  <GluuLabel label="fields.scope_type" size={4} doc_category={SCOPE} doc_entry="scopeType"/>
-                  <Col sm={8}>
-                    <Badge key={scope.inum} color={`primary-${selectedTheme}`}>
-                      {scope.scopeType}
-                    </Badge>
-                  </Col>
-                </FormGroup>
+              <FormGroup row>
+                <GluuLabel
+                  label="fields.scope_type"
+                  size={4}
+                  doc_category={SCOPE}
+                  doc_entry="scopeType"
+                />
+                <Col sm={8}>
+                  <Badge key={scope.inum} color={`primary-${selectedTheme}`}>
+                    {scope.scopeType}
+                  </Badge>
+                </Col>
+              </FormGroup>
             ) : (
-              
-                <FormGroup row>
-                  <GluuLabel label="fields.scope_type" size={4} doc_category={SCOPE} doc_entry="scopeType" />
-                  <Col sm={8}>
-                    <InputGroup>
-                      <CustomInput
-                        type="select"
-                        id="scopeType"
-                        name="scopeType"
-                        defaultValue={scope.scopeType}
-                        onChange={(e) => {
-                          handleScopeTypeChanged(e.target.value)
-                          formik.setFieldValue('scopeType', e.target.value)
-                        }}
-                      >
-                        <option value="">{t('actions.choose')}...</option>
-                        <option value="oauth">OAuth</option>
-                        <option value="openid">OpenID</option>
-                        <option value="dynamic">Dynamic</option>
-                        <option value="uma">UMA</option>
-                      </CustomInput>
-                    </InputGroup>
-                  </Col>
-                  <ErrorMessage name="scopeType">
-                    {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-                  </ErrorMessage>
-                </FormGroup>
+              <FormGroup row>
+                <GluuLabel
+                  label="fields.scope_type"
+                  size={4}
+                  doc_category={SCOPE}
+                  doc_entry="scopeType"
+                />
+                <Col sm={8}>
+                  <InputGroup>
+                    <CustomInput
+                      type="select"
+                      id="scopeType"
+                      name="scopeType"
+                      defaultValue={scope.scopeType}
+                      onChange={(e) => {
+                        handleScopeTypeChanged(e.target.value);
+                        formik.setFieldValue("scopeType", e.target.value);
+                      }}
+                    >
+                      <option value="">{t("actions.choose")}...</option>
+                      <option value="oauth">OAuth</option>
+                      <option value="openid">OpenID</option>
+                      <option value="dynamic">Dynamic</option>
+                      <option value="uma">UMA</option>
+                    </CustomInput>
+                  </InputGroup>
+                </Col>
+                <ErrorMessage name="scopeType">
+                  {(msg) => <div style={{ color: "red" }}>{msg}</div>}
+                </ErrorMessage>
+              </FormGroup>
             )}
             {showDynamicPanel && (
               <GluuTypeAheadForDn
@@ -308,17 +327,22 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 formik={formik}
                 value={getMapping(
                   scope.dynamicScopeScripts,
-                  dynamicScopeScripts,
+                  dynamicScopeScripts
                 )}
+                defaultSelected={
+                  formik.values["dynamicScopeScripts"]?.length
+                    ? getMapping(
+                        [...formik.values["dynamicScopeScripts"].flat()],
+                        dynamicScopeScripts
+                      )
+                    : []
+                }
                 options={dynamicScopeScripts}
                 doc_category={SCOPE}
               />
             )}
             {(showClaimsPanel || showDynamicPanel) && (
               <Accordion className="mb-2 b-primary" initialOpen>
-                <Accordion.Header className="text-primary">
-                  {t('fields.claims').toUpperCase()}
-                </Accordion.Header>
                 <Accordion.Body>
                   <FormGroup row> </FormGroup>
                   <GluuTypeAheadForDn
@@ -326,8 +350,17 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     label="fields.claims"
                     formik={formik}
                     value={getMapping(scope.claims, claims)}
+                    defaultSelected={
+                      formik.values["claims"]?.length
+                        ? getMapping(
+                            [...formik.values["claims"].flat()],
+                            claims
+                          )
+                        : []
+                    }
                     options={claims}
                     doc_category={SCOPE}
+                    placeholder="Search by display name or claim name"
                   />
                 </Accordion.Body>
               </Accordion>
@@ -338,7 +371,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   <GluuLabel label="fields.iconUrl" size={4} />
                   <Col sm={8}>
                     <Input
-                      placeholder={t('placeholders.iconUrl')}
+                      placeholder={t("placeholders.iconUrl")}
                       id="iconUrl"
                       name="iconUrl"
                       defaultValue={scope.iconUrl}
@@ -349,7 +382,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 </FormGroup>
                 <Accordion className="mb-2 b-primary" initialOpen>
                   <Accordion.Header className="text-primary">
-                    {t('fields.umaAuthorizationPolicies').toUpperCase()}
+                    {t("fields.umaAuthorizationPolicies").toUpperCase()}
                   </Accordion.Header>
                   <Accordion.Body>
                     <FormGroup row> </FormGroup>
@@ -359,11 +392,19 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       formik={formik}
                       value={getMapping(
                         scope.umaAuthorizationPolicies,
-                        umaAuthorizationPolicies,
+                        umaAuthorizationPolicies
                       )}
                       disabled={scope.inum ? true : false}
                       options={umaAuthorizationPolicies}
                       doc_category={SCOPE}
+                      defaultSelected={
+                        formik.values["umaAuthorizationPolicies"]?.length
+                          ? getMapping(
+                              [...formik.values["umaAuthorizationPolicies"].flat()],
+                              umaAuthorizationPolicies
+                            )
+                          : []
+                      }
                     />
                   </Accordion.Body>
                 </Accordion>
@@ -373,7 +414,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       <GluuLabel label="fields.associatedClients" size={4} />
                       <Col sm={8}>
                         {client.map((item, key) => (
-                          <div key={'uma-client' + key}>
+                          <div key={"uma-client" + key}>
                             <a
                               onClick={() =>
                                 goToClientViewPage(item.inum, item)
@@ -391,7 +432,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       <Col sm={8}>
                         <Input
                           defaultValue={moment(scope.creationDate).format(
-                            'YYYY-MM-DD HH:mm:ss',
+                            "YYYY-MM-DD HH:mm:ss"
                           )}
                           disabled={true}
                         />
@@ -402,11 +443,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       <Col sm={8}>
                         <Input
                           defaultValue={
-                            ['CLIENT', 'USER'].includes(scope.creatorType)
+                            ["CLIENT", "USER"].includes(scope.creatorType)
                               ? scope.creatorType +
-                                  ' (' +
+                                  " (" +
                                   scope.creatorId +
-                                  ')' || ''
+                                  ")" || ""
                               : scope.creatorType
                           }
                           disabled={true}
@@ -420,7 +461,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             {showSpontaneousPanel && (
               <Accordion className="mb-2 b-primary" initialOpen>
                 <Accordion.Header className="text-primary">
-                  {t('fields.spontaneous_scopes').toUpperCase()}
+                  {t("fields.spontaneous_scopes").toUpperCase()}
                 </Accordion.Header>
                 <Accordion.Body>
                   <FormGroup row> </FormGroup>
@@ -435,7 +476,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       />
                       <Col sm={8}>
                         {client.map((item, key) => (
-                          <div key={'spontaneous-client' + key}>
+                          <div key={"spontaneous-client" + key}>
                             <a
                               onClick={() =>
                                 goToClientViewPage(item.inum, item)
@@ -462,7 +503,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       <Col sm={8}>
                         {scope?.attributes?.spontaneousClientScopes?.map(
                           (item, key) => (
-                            <div style={{ maxWidth: 140, overflow: 'auto' }}>
+                            <div
+                              style={{ maxWidth: 140, overflow: "auto" }}
+                              key={item}
+                            >
                               <Badge
                                 key={key}
                                 color={`primary-${selectedTheme}`}
@@ -470,7 +514,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                                 {item}
                               </Badge>
                             </div>
-                          ),
+                          )
                         )}
                       </Col>
                     </FormGroup>
@@ -481,7 +525,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     <Col sm={8}>
                       <Input
                         defaultValue={moment(scope.creationDate).format(
-                          'YYYY-MM-DD HH:mm:ss',
+                          "YYYY-MM-DD HH:mm:ss"
                         )}
                         disabled={true}
                       />
@@ -509,7 +553,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
         )}
       </Formik>
     </Container>
-  )
+  );
 }
 
-export default ScopeForm
+export default ScopeForm;
+ScopeForm.propTypes = {
+  scope: PropTypes.any,
+  scripts: PropTypes.any,
+  attributes: PropTypes.any,
+  handleSubmit: PropTypes.any,
+};
