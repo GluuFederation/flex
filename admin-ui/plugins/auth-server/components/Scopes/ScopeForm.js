@@ -56,7 +56,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .filter((item) => item.scriptType == "uma_rpt_policy")
     .map((item) => ({ dn: item.dn, name: item.name }));
 
-  associatedClientsSelectedValues = client.map((item) => item.dn);
   claims = attributes.map((item) => ({
     dn: item.dn,
     name: item.displayName,
@@ -66,24 +65,17 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const [init, setInit] = useState(false);
   const [modal, setModal] = useState(false);
   const [showClaimsPanel, handleClaimsPanel] = useState(
-    scope.scopeType === "openid"
+    scope.scopeType === "openid" ? true : false
   );
   const [showDynamicPanel, handleDynamicPanel] = useState(
-    scope.scopeType === "dynamic"
+    scope.scopeType === "dynamic" ? true : false
   );
   const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
-    scope.scopeType === "spontaneous"
+    scope.scopeType === "spontaneous" ? true : false
   );
   const [showUmaPanel, handleShowUmaPanel] = useState(
-    scope.scopeType === "uma"
+    scope.scopeType === "uma" ? true : false
   );
-
-  const makeOptions = (limit, client_id) => {
-    let obj = {};
-    obj[LIMIT] = limit;
-    obj[PATTERN] = client_id;
-    return obj;
-  };
 
   const handleScopeTypeChanged = (type) => {
     if (type && type === "openid") {
