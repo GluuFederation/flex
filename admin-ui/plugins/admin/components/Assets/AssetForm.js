@@ -58,7 +58,7 @@ const AssetForm = () => {
         if (file) {
             setAssetFile(file)
             formik.setFieldValue('document', assetFile)
-            formik.setFieldValue('displayName', file?.name || '')
+            formik.setFieldValue('fileName', file?.name || '')
         }
     }
 
@@ -71,7 +71,7 @@ const AssetForm = () => {
         initialValues: {
             creationDate: selectedAsset?.creationDate || '',
             document: selectedAsset?.document || null,
-            displayName: selectedAsset?.displayName || '',
+            fileName: selectedAsset?.fileName,
             jansEnabled: selectedAsset?.jansEnabled || false,
             description: selectedAsset?.description || '',
             jansService: selectedAsset?.jansService || []
@@ -84,7 +84,7 @@ const AssetForm = () => {
             toggle()
         },
         validationSchema: Yup.object().shape({
-            displayName: Yup.string()
+            fileName: Yup.string()
                 .required(t('messages.display_name_error'))
                 .matches(
                     /^\S*$/,
@@ -162,15 +162,15 @@ const AssetForm = () => {
                     <GluuInputRow
                         label='fields.asset_name'
                         formik={formik}
-                        value={formik.values?.displayName}
+                        value={formik.values?.fileName}
                         lsize={4}
                         doc_entry='asset_name'
                         rsize={8}
                         required
-                        name='displayName'
+                        name='fileName'
                         doc_category={ASSET}
-                        errorMessage={formik.errors.displayName}
-                        showError={formik.errors.displayName && formik.touched.displayName}
+                        errorMessage={formik.errors.fileName}
+                        showError={formik.errors.fileName && formik.touched.fileName}
                     />
                     <GluuInputRow
                         label='fields.description'
