@@ -72,9 +72,9 @@ const AssetForm = () => {
             creationDate: selectedAsset?.creationDate || '',
             document: selectedAsset?.document || null,
             fileName: selectedAsset?.fileName,
-            jansEnabled: selectedAsset?.jansEnabled || false,
+            enabled: selectedAsset?.enabled || false,
             description: selectedAsset?.description || '',
-            jansService: selectedAsset?.jansService || []
+            service: selectedAsset?.service || []
         },
         onSubmit: (values) => {
             const faulty = validatePayload(values)
@@ -184,14 +184,14 @@ const AssetForm = () => {
                     />
                 </Col>
                 <GluuTypeAhead
-                    name='jansService'
+                    name='service'
                     label={t('fields.jansService')}
                     formik={formik}
                     options={services}
                     lsize={4}
                     rsize={8}
                     required
-                    value={selectedAsset.jansService || []}
+                    value={selectedAsset.service || []}
                     doc_category={ASSET}
                 />
                 <FormGroup row>
@@ -203,10 +203,10 @@ const AssetForm = () => {
                     />
                     <Col sm={1}>
                         <Toggle
-                            id='jansEnabled'
-                            name='jansEnabled'
+                            id='enabled'
+                            name='enabled'
                             onChange={formik.handleChange}
-                            defaultChecked={formik.values.jansEnabled}
+                            defaultChecked={formik.values.enabled}
                         />
                     </Col>
                 </FormGroup>
