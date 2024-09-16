@@ -45,9 +45,9 @@ export default class AssetApi {
 
     updateJansAsset = (body, token) => {
         const document = {
-            "fileName": body.displayName, "description": body.description, "inum": body.inum,
+            "fileName": body.fileName, "description": body.description, "inum": body.inum,
             "dn": body.dn, "baseDn": body.baseDn,
-            "document": body.displayName, "service": body?.service || [], "enabled": body.enabled
+            "document": body.fileName, "service": body?.service || [], "enabled": body.enabled
         }
         const formData = this.buildFormData(body, document)
         return new Promise((resolve, reject) => {
