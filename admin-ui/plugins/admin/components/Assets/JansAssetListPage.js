@@ -206,7 +206,7 @@ const JansAssetListPage = () => {
                             columns={[
                                 {
                                     title: `${t('fields.name')}`,
-                                    field: 'displayName',
+                                    field: 'fileName',
                                 },
                                 {
                                     title: `${t('fields.description')}`,
@@ -226,9 +226,9 @@ const JansAssetListPage = () => {
                                         </div>
                                     )
                                 },
-                                { title: `${t('fields.enabled')}`, field: 'jansEnabled' }
+                                { title: `${t('fields.enabled')}`, field: 'enabled' }
                             ]}
-                            data={assets}
+                            data={assets || []}
                             isLoading={loading}
                             title=''
                             actions={myActions}
