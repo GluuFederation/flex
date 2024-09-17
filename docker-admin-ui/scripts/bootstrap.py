@@ -12,6 +12,7 @@ from jans.pycloudlib.persistence.couchbase import sync_couchbase_password
 from jans.pycloudlib.persistence.ldap import LdapClient
 from jans.pycloudlib.persistence.ldap import sync_ldap_password
 from jans.pycloudlib.persistence.spanner import SpannerClient
+from jans.pycloudlib.persistence.spanner import sync_google_credentials
 from jans.pycloudlib.persistence.sql import doc_id_from_dn
 from jans.pycloudlib.persistence.sql import SqlClient
 from jans.pycloudlib.persistence.sql import sync_sql_password
@@ -39,6 +40,9 @@ def main():
 
     if "sql" in persistence_groups:
         sync_sql_password(manager)
+
+    if "spanner" in persistence_groups:
+        sync_google_credentials(manager)
 
     wait_for_persistence(manager)
 
