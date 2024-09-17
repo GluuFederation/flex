@@ -58,7 +58,7 @@ const AssetForm = () => {
         if (file) {
             setAssetFile(file)
             formik.setFieldValue('document', assetFile)
-            formik.setFieldValue('displayName', file?.name || '')
+            formik.setFieldValue('fileName', file?.name || '')
         }
     }
 
@@ -71,10 +71,10 @@ const AssetForm = () => {
         initialValues: {
             creationDate: selectedAsset?.creationDate || '',
             document: selectedAsset?.document || null,
-            displayName: selectedAsset?.displayName || '',
-            jansEnabled: selectedAsset?.jansEnabled || false,
+            fileName: selectedAsset?.fileName,
+            enabled: selectedAsset?.enabled || false,
             description: selectedAsset?.description || '',
-            jansService: selectedAsset?.jansService || []
+            service: selectedAsset?.service || []
         },
         onSubmit: (values) => {
             const faulty = validatePayload(values)
@@ -84,7 +84,7 @@ const AssetForm = () => {
             toggle()
         },
         validationSchema: Yup.object().shape({
-            displayName: Yup.string()
+            fileName: Yup.string()
                 .required(t('messages.display_name_error'))
                 .matches(
                     /^\S*$/,
@@ -162,15 +162,15 @@ const AssetForm = () => {
                     <GluuInputRow
                         label='fields.asset_name'
                         formik={formik}
-                        value={formik.values?.displayName}
+                        value={formik.values?.fileName}
                         lsize={4}
                         doc_entry='asset_name'
                         rsize={8}
                         required
-                        name='displayName'
+                        name='fileName'
                         doc_category={ASSET}
-                        errorMessage={formik.errors.displayName}
-                        showError={formik.errors.displayName && formik.touched.displayName}
+                        errorMessage={formik.errors.fileName}
+                        showError={formik.errors.fileName && formik.touched.fileName}
                     />
                     <GluuInputRow
                         label='fields.description'
@@ -184,14 +184,14 @@ const AssetForm = () => {
                     />
                 </Col>
                 <GluuTypeAhead
-                    name='jansService'
+                    name='service'
                     label={t('fields.jansService')}
                     formik={formik}
                     options={services}
                     lsize={4}
                     rsize={8}
                     required
-                    value={selectedAsset.jansService || []}
+                    value={selectedAsset.service || []}
                     doc_category={ASSET}
                 />
                 <FormGroup row>
@@ -203,10 +203,10 @@ const AssetForm = () => {
                     />
                     <Col sm={1}>
                         <Toggle
-                            id='jansEnabled'
-                            name='jansEnabled'
+                            id='enabled'
+                            name='enabled'
                             onChange={formik.handleChange}
-                            defaultChecked={formik.values.jansEnabled}
+                            defaultChecked={formik.values.enabled}
                         />
                     </Col>
                 </FormGroup>
