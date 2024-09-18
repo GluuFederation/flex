@@ -334,6 +334,7 @@ const ClientBasicPanel = ({
           onPaginate={handlePagination}
           maxResults={scopeOptions?.length ? scopeOptions.length - 1 : undefined}
           isLoading={scopeLoading}
+          defaultSelected={scopeFieldValue}
           placeholder="Search for a scope..."
         ></GluuTypeAheadForDn>
       }
