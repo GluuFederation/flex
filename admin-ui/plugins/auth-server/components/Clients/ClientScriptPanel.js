@@ -50,6 +50,7 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
         options={spontaneousScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
+        defaultSelected={getMapping((formik.values?.attributes?.spontaneousScopeScriptDns || []),spontaneousScripts) || []}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="attributes.updateTokenScriptDns"
@@ -59,6 +60,7 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
         options={updateTokenScriptDns}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
+        defaultSelected={getMapping((formik.values?.attributes?.updateTokenScriptDns || []),updateTokenScriptDns) || []}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="attributes.postAuthnScripts"
@@ -68,6 +70,7 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
         options={postScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
+        defaultSelected={getMapping((formik.values?.attributes?.postAuthnScripts || []),postScripts) || []}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="attributes.introspectionScripts"
@@ -77,6 +80,7 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
         options={instrospectionScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
+        defaultSelected={getMapping((formik.values?.attributes?.introspectionScripts || []),instrospectionScripts) || []}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="attributes.ropcScripts"
@@ -86,6 +90,7 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
         options={ropcScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
+        defaultSelected={getMapping((formik.values?.attributes?.ropcScripts || []),ropcScripts) || []}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="attributes.consentGatheringScripts"
@@ -95,6 +100,7 @@ function ClientScriptPanel({ scripts, formik, viewOnly }) {
         options={consentScripts}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
+        defaultSelected={getMapping((formik.values?.attributes?.consentGatheringScripts || []),consentScripts) || []}
       ></GluuTypeAheadForDn>
     </Container>
   )
