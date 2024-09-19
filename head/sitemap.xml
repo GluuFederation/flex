@@ -221,6 +221,41 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://docs.gluu.org/head/openbanking/</loc>
+         <lastmod>2024-09-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/openbanking/configuration-instructions/</loc>
+         <lastmod>2024-09-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/openbanking/curl/</loc>
+         <lastmod>2024-09-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/openbanking/install-cn/</loc>
+         <lastmod>2024-09-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/openbanking/install-vm/</loc>
+         <lastmod>2024-09-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/openbanking/jans-cli/</loc>
+         <lastmod>2024-09-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/openbanking/par-jarm/</loc>
+         <lastmod>2024-09-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://docs.gluu.org/head/reference/</loc>
          <lastmod>2024-09-19</lastmod>
          <changefreq>daily</changefreq>
