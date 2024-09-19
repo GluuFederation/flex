@@ -288,6 +288,22 @@
   
 
       
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../openbanking/" class="md-tabs__link">
+        Open Banking
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -1531,6 +1547,224 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../../openbanking/">Open Banking</a>
+          
+            <label for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Open Banking" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Open Banking
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_2">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Installation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          Installation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/install-cn/" class="md-nav__link">
+        Cloud-Native
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/install-vm/" class="md-nav__link">
+        VM (only recommended for development/testing)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_3">
+          Operation Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Operation Guide" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          Operation Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/configuration-instructions/" class="md-nav__link">
+        Configuration Instructions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/curl/" class="md-nav__link">
+        Managing scripts with CURL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/jans-cli/" class="md-nav__link">
+        Managing Scripts with the jans-cli
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/par-jarm/" class="md-nav__link">
+        PAR and JARM
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1622,7 +1856,7 @@
 <li>Ubuntu (versions: 20.04 and 22.04)</li>
 <li>SUSE Distributions<ul>
 <li>SUSE Linux Enterprise Server (SLES) 15</li>
-<li>openSUSE Leap 15.4</li>
+<li>openSUSE Leap 15.5</li>
 <li>openSUSE Tumbleweed</li>
 </ul>
 </li>
@@ -1630,13 +1864,13 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This document is intended exclusively for dev and staging environments. For production deployment on a VM, refer to this <a href="https://docs.gluu.org/v5.1.5.nightly/install/helm-install/rancher">documentation</a> which utilizes Rancher and Helm deployments.</p>
+<p>This document is intended exclusively for dev and staging environments. For production deployment on a VM, refer to this <a href="https://docs.gluu.org/vreplace-flex-version/install/helm-install/rancher">documentation</a> which utilizes Rancher and Helm deployments.</p>
 </div>
 <h2 id="hardware-requirements">Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Permanent link">#</a></h2>
 <p>A single-VM deployment is where all services are running on one server. Although, the requirements can vary based on the size of the data and the required concurrency, the following guidelines can help you plan:</p>
 <ul>
-<li>4 GB RAM</li>
-<li>2 CPU</li>
+<li>8 GB RAM</li>
+<li>4 CPU</li>
 <li>20 GB Disk</li>
 </ul>
 <h2 id="port-configuration">Port Configuration<a class="headerlink" href="#port-configuration" title="Permanent link">#</a></h2>
@@ -1687,7 +1921,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-01-16T11:48:00+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-01-16</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-09-18T04:58:21+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-09-18</span>
       
         <br>
         Created:

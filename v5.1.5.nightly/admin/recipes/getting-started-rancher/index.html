@@ -288,6 +288,22 @@
   
 
       
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../openbanking/" class="md-tabs__link">
+        Open Banking
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -1678,6 +1694,224 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../../openbanking/">Open Banking</a>
+          
+            <label for="__nav_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Open Banking" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Open Banking
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      
+      
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_2">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Installation" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          Installation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/install-cn/" class="md-nav__link">
+        Cloud-Native
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/install-vm/" class="md-nav__link">
+        VM (only recommended for development/testing)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6_3">
+          Operation Guide
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Operation Guide" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          Operation Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/configuration-instructions/" class="md-nav__link">
+        Configuration Instructions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/curl/" class="md-nav__link">
+        Managing scripts with CURL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/jans-cli/" class="md-nav__link">
+        Managing Scripts with the jans-cli
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../openbanking/par-jarm/" class="md-nav__link">
+        PAR and JARM
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -2310,7 +2544,7 @@ helm install nginx ingress-nginx/ingress-nginx
 <li>Click on <code>Install</code> on the right side of the window. </li>
 <li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.</li>
 <li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
-<li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/v5.1.5.nightly/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
+<li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
 <li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.postgres.svc.cluster.local</code> in the case of <code>PostgreSQL</code> or <code>my-release-mysql.gluu.svc.cluster.local</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
 <li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. You can also enable different services like <code>Client API</code> and <code>Jackrabbit</code>.</li>
 <li>Click on the  section named <code>Ingress</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>. </li>
