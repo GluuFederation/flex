@@ -223,6 +223,7 @@ function ClientCibaParUmaPanel({
         doc_entry='rptClaimsScripts'
         lsize={3}
         disabled={viewOnly}
+        defaultSelected={formik.values?.attributes?.rptClaimsScripts || []}
       ></GluuTypeAheadForDn>
       {!isEmpty(umaResources) && (
         <FormGroup row>
