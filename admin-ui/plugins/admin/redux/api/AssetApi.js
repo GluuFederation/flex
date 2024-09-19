@@ -32,8 +32,8 @@ export default class AssetApi {
 
     createJansAsset = (body, token) => {
         const document = {
-            "displayName": body.displayName, "description": body.description,
-            "document": body.displayName, "jansService": body?.jansService || [], "jansEnabled": body.jansEnabled
+            "fileName": body.fileName, "description": body.description,
+            "document": body.fileName, "service": body?.service || [], "enabled": body.enabled
         }
         const formData = this.buildFormData(body, document)
         return new Promise((resolve, reject) => {
@@ -45,9 +45,9 @@ export default class AssetApi {
 
     updateJansAsset = (body, token) => {
         const document = {
-            "displayName": body.displayName, "description": body.description, "inum": body.inum,
+            "fileName": body.fileName, "description": body.description, "inum": body.inum,
             "dn": body.dn, "baseDn": body.baseDn,
-            "document": body.displayName, "jansService": body?.jansService || [], "jansEnabled": body.jansEnabled
+            "document": body.fileName, "service": body?.service || [], "enabled": body.enabled
         }
         const formData = this.buildFormData(body, document)
         return new Promise((resolve, reject) => {

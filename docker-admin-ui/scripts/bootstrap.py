@@ -5,15 +5,20 @@ from uuid import uuid4
 from functools import cached_property
 
 from jans.pycloudlib import get_manager
-from jans.pycloudlib.utils import get_random_chars
-from jans.pycloudlib.utils import encode_text
-from jans.pycloudlib.persistence import CouchbaseClient
-from jans.pycloudlib.persistence import LdapClient
-from jans.pycloudlib.persistence import SpannerClient
-from jans.pycloudlib.persistence import SqlClient
-from jans.pycloudlib.persistence import doc_id_from_dn
-from jans.pycloudlib.persistence import id_from_dn
+from jans.pycloudlib import wait_for_persistence
+from jans.pycloudlib.persistence.couchbase import CouchbaseClient
+from jans.pycloudlib.persistence.couchbase import id_from_dn
+from jans.pycloudlib.persistence.couchbase import sync_couchbase_password
+from jans.pycloudlib.persistence.ldap import LdapClient
+from jans.pycloudlib.persistence.ldap import sync_ldap_password
+from jans.pycloudlib.persistence.spanner import SpannerClient
+from jans.pycloudlib.persistence.spanner import sync_google_credentials
+from jans.pycloudlib.persistence.sql import doc_id_from_dn
+from jans.pycloudlib.persistence.sql import SqlClient
+from jans.pycloudlib.persistence.sql import sync_sql_password
 from jans.pycloudlib.persistence.utils import PersistenceMapper
+from jans.pycloudlib.utils import encode_text
+from jans.pycloudlib.utils import get_random_chars
 
 from settings import LOGGING_CONFIG
 
@@ -23,6 +28,23 @@ logger = logging.getLogger("admin-ui")
 
 def main():
     manager = get_manager()
+
+    mapper = PersistenceMapper()
+    persistence_groups = mapper.groups().keys()
+
+    if "ldap" in persistence_groups:
+        sync_ldap_password(manager)
+
+    if "couchbase" in persistence_groups:
+        sync_couchbase_password(manager)
+
+    if "sql" in persistence_groups:
+        sync_sql_password(manager)
+
+    if "spanner" in persistence_groups:
+        sync_google_credentials(manager)
+
+    wait_for_persistence(manager)
 
     render_env_config(manager)
 

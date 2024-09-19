@@ -3,8 +3,8 @@
 # ==============
 
 # original Janssen base version (without suffix)
-ARG BASE_VERSION=1.1.4
-ARG FLEX_BASE_VERSION=5.1.4
+ARG BASE_VERSION=1.1.5
+ARG FLEX_BASE_VERSION=5.1.5
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
@@ -23,7 +23,7 @@ FROM ${FLEX_ADMIN_UI_IMAGE} AS flex-admin-ui-src
 # app
 # ===
 
-FROM bellsoft/liberica-openjdk-alpine:17.0.11@sha256:b544e908068565e9f2932f8ac850d0471ec153e711e0fd416d9131d090f1f10d
+FROM bellsoft/liberica-openjdk-alpine:17.0.12@sha256:877a6ffc273212bd3f695db2a7973a05aa1bfb88ad550ba9ffe7deb7d1e50eee
 
 # hadolint ignore=DL3018
 RUN apk update \
@@ -54,6 +54,7 @@ COPY --from=jans-aio-src /var/jans/cr-snapshots /var/jans/cr-snapshots
 COPY --from=jans-aio-src /opt/keycloak /opt/keycloak
 COPY --from=jans-aio-src /opt/idp /opt/idp
 COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
+COPY --from=jans-aio-src /usr/share/java /usr/share/java
 
 COPY --from=flex-admin-ui-src /opt/flex/admin-ui /opt/flex/admin-ui
 COPY --from=flex-admin-ui-src /app/templates/admin-ui /app/templates/admin-ui
@@ -65,7 +66,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=0538d19e269bb26ddbd81c7971251d6375d389c3
+ENV JANS_SOURCE_VERSION=4b07e84a14df81899900724515f3eead1d579443
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
@@ -80,7 +81,7 @@ RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/ja
 # ------
 
 COPY app/requirements.flex.txt /app/
-RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled \
+RUN mv /usr/lib/python3.12/EXTERNALLY-MANAGED /usr/lib/python3.12/EXTERNALLY-MANAGED.disabled \
     && python3 -m ensurepip \
     && pip3 install --no-cache-dir -U pip wheel setuptools \
     && pip3 install --no-cache-dir -r /app/requirements.flex.txt \
@@ -104,7 +105,7 @@ RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
 COPY app /app
 
 # CN version as env var (with suffix if any, i.e. SNAPSHOT)
-ENV CN_VERSION=1.1.4-SNAPSHOT
+ENV CN_VERSION=1.1.5-SNAPSHOT
 
 # set directory contains installer code that will be added to Python sys.path
 ENV PYTHONPATH=/app
@@ -167,7 +168,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/flex-all-in-one" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.4" \
+    org.opencontainers.image.version="5.1.5" \
     org.opencontainers.image.title="Gluu Flex All-in-One" \
     org.opencontainers.image.description=""
 

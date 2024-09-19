@@ -64,6 +64,7 @@ import SsaListPage from './components/Ssa/SsaListPage'
 import SsaAddPage from './components/Ssa/SsaAddPage'
 import React, { Suspense, lazy } from 'react'
 import LockPage from './components/Message/LockPage'
+import AuthNPage from './components/AuthN'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
 function AgamaListPageWrapper() {
@@ -129,11 +130,6 @@ const pluginMetadata = {
           permission: SCOPE_READ,
         },
         {
-          title: 'menus.agama',
-          path: PLUGIN_BASE_APTH + '/agama',
-          permission: AGAMA_READ,
-        },
-        {
           title: 'menus.lock',
           path: PLUGIN_BASE_APTH + '/lock',
           permission: MESSAGE_READ,
@@ -173,7 +169,7 @@ const pluginMetadata = {
       permission: SCOPE_READ,
     },
     {
-      component: AuthNListPage,
+      component: AuthNPage,
       path: PLUGIN_BASE_APTH + '/authn',
       permission: SCOPE_READ,
     },

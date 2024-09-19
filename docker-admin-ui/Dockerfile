@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3.20@sha256:0a4eaa0eecf5f8c050e5bba433f58c052be7587ee8af3e8b3910ef9ab5fbe9f5
 
 # ======
 # alpine
@@ -20,7 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=0538d19e269bb26ddbd81c7971251d6375d389c3
+ENV JANS_SOURCE_VERSION=4b07e84a14df81899900724515f3eead1d579443
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -44,7 +44,7 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=3e17a7e152a5e527c4da4331b580c99e7c3a6692
+ENV FLEX_SOURCE_VERSION=60153402b4fd9def3ea13c26572f33b42f112464
 
 RUN mkdir -p /app/templates/admin-ui
 
@@ -73,7 +73,7 @@ RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admi
 # ======
 
 COPY requirements.txt /app/requirements.txt
-RUN mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled \
+RUN mv /usr/lib/python3.12/EXTERNALLY-MANAGED /usr/lib/python3.12/EXTERNALLY-MANAGED.disabled \
     && python3 -m ensurepip \
     && pip3 install --no-cache-dir -U pip wheel setuptools \
     && pip3 install --no-cache-dir -r /app/requirements.txt \
@@ -174,7 +174,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.4" \
+    org.opencontainers.image.version="5.1.5" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 

@@ -19,7 +19,7 @@ const jsonConfigSlice = createSlice({
         state.configuration = action.payload.data
       }
     },
-    patchJsonConfig: (state) => {
+    patchJsonConfig: (state,action) => {
       state.loading = true
     },
     patchJsonConfigResponse: (state, action) => {

@@ -15,6 +15,7 @@ edit_uri: edit/main/docs/
 
 # Plugins
 plugins:
+   - include-markdown
    - tags
    - search
    - git-revision-date-localized:
@@ -163,3 +164,13 @@ nav:
     - Administration Guide: 'supergluu/admin-guide/index.md'
     - Developer Guide: 'supergluu/developer-guide/index.md'
 
+- 'Open Banking':
+  - Overview: openbanking/index.md
+  - Installation:
+      - Cloud-Native: openbanking/install-cn.md
+      - VM (only recommended for development/testing): openbanking/install-vm.md
+  - Operation Guide:
+      - Configuration Instructions: openbanking/configuration-instructions.md
+      - Managing scripts with CURL: openbanking/curl.md
+      - Managing Scripts with the jans-cli: openbanking/jans-cli.md
+  - PAR and JARM: openbanking/par-jarm.md
