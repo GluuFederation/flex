@@ -142,6 +142,7 @@ export function* deleteUserSaga({ payload }) {
   }
 }
 
+
 export function* getUser2FADetailsSaga({ payload }) {
   try {
     const userApi = yield* newFunction()
@@ -184,6 +185,7 @@ export function* watchUpdateUser() {
 export function* deleteUser() {
   yield takeLatest('user/deleteUser', deleteUserSaga)
 }
+
 export function* changeUserPassword() {
   yield takeLatest('user/changeUserPassword', changeUserPasswordSaga)
 }

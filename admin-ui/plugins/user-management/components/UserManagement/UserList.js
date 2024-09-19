@@ -41,6 +41,7 @@ import { adminUiFeatures } from "Plugins/admin/helper/utils";
 import GluuViewDetailModal from "../../../../app/routes/Apps/Gluu/GluuViewDetailsModal";
 
 import moment from "moment";
+import { deleteFido2DeviceData } from "../../../fido/redux/features/fidoSlice";
 
 function UserList(props) {
   const dispatch = useDispatch();
@@ -52,9 +53,6 @@ function UserList(props) {
     dispatch(getRoles({}));
   }, []);
   const { totalItems, fidoDetails } = useSelector((state) => state.userReducer);
-  const personAttributes = useSelector(
-    (state) => state.attributesReducerRoot.items
-  )
   const [pageNumber, setPageNumber] = useState(0);
   const usersList = useSelector((state) => state.userReducer.items);
   const loading = useSelector((state) => state.userReducer.loading);
@@ -79,7 +77,6 @@ function UserList(props) {
   SetTitle(t("titles.user_management"));
 
   const myActions = [];
-  const faActions = [];
   const options = {};
   const navigate = useNavigate();
 
@@ -108,11 +105,13 @@ function UserList(props) {
         dateAdded: moment(new Date(item.addedOn).toString()).format(
           "YYYY-MM-DD HH:mm:ss"
         ),
+        type: "OTP",
       };
     });
     setOTPDevicesList(otpDevices);
 
-    dispatch(getUser2FADetails({ username: row.givenName, token: token }));
+  
+    dispatch(getUser2FADetails({ username: row.givenName.toLowerCase(), token: token }));
     setIsDetailModalOpen(!isViewDetailModalOpen);
   }
 
@@ -222,22 +221,6 @@ function UserList(props) {
     }));
   }
 
-  if (hasPermission(permissions, USER_DELETE)) {
-    faActions.push((rowData) => ({
-      icon: DeleteOutlinedIcon,
-      iconProps: {
-        color: "secondary",
-        id: "deleteClient" + rowData.inum,
-      },
-      onClick: (event, rowData) => {
-        handleRemove2Fa(rowData);
-
-        // toggle();
-      },
-      disabled: false,
-    }));
-  }
-
   const onPageChangeClick = (page) => {
     let startCount = page * limit;
     options["startIndex"] = parseInt(startCount);
@@ -261,23 +244,28 @@ function UserList(props) {
       dn: userDetails.dn,
       jansOTPDevices: values,
     };
-    console.log(submitableValues)
-    // dispatch(updateUser(submitableValues))
+    dispatch(updateUser(submitableValues));
   };
 
   const handleRemove2Fa = (row) => {
-    const getOTPDevices = userDetails?.customAttributes.filter(
-      (item) => item.name === "jansOTPDevices"
-    );
-    const getOTPDevicesValue = getOTPDevices.map((item) =>
-      JSON.parse(item.value)
-    );
+    if (row.type === "FIDO2") {
+      dispatch(deleteFido2DeviceData(row.id));
+    } else if (row.type === "OTP") {
+      const getOTPDevices = userDetails?.customAttributes.filter(
+        (item) => item.name === "jansOTPDevices"
+      );
+      const getOTPDevicesValue = getOTPDevices.map((item) =>
+        JSON.parse(item.value)
+      );
 
-    const removedDevice = getOTPDevicesValue[0].devices.filter(
-      (item) => item.id !== row.id
-    );
-    const jansOTPDevices = {devices:removedDevice}
-    updateUserData(JSON.stringify(jansOTPDevices));
+      const removedDevice = getOTPDevicesValue[0].devices.filter(
+        (item) => item.id !== row.id
+      );
+      const jansOTPDevices = { devices: removedDevice };
+      updateUserData(JSON.stringify(jansOTPDevices));
+    } else return false;
+
+    handleView2FADetails(userDetails);
   };
 
   useEffect(() => {
@@ -313,6 +301,7 @@ function UserList(props) {
           nickName: attenstationRequest.displayName ?? "-",
           modality: item?.deviceData?.platform ?? "-",
           dateAdded: moment(item.creationDate).format("YYYY-MM-DD HH:mm:ss"),
+          type: "FIDO2",
         };
       }
     });
@@ -365,7 +354,6 @@ function UserList(props) {
           data={faDetails}
           isLoading={loading}
           title=""
-          actions={faActions}
           options={{
             search: false,
             paging: false,
@@ -379,7 +367,17 @@ function UserList(props) {
               ...applicationStyle.tableHeaderStyle,
               ...bgThemeColor,
             },
+
             actionsColumnIndex: -1,
+          }}
+          editable={{
+            isDeleteHidden: () => false,
+            onRowDelete: (oldData) => {
+              return new Promise((resolve, reject) => {
+                handleRemove2Fa(oldData);
+                resolve();
+              });
+            },
           }}
         />
       </GluuViewDetailModal>
