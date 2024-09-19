@@ -151,3 +151,29 @@ Create aio enabled list
 {{- end}}
 {{ toJson $newList }}
 {{- end }}
+
+
+{{/*
+Create AWS shared credentials.
+*/}}
+{{- define "flex-all-in-one.aws-shared-credentials" }}
+{{- $profile := .Values.configmap.cnAwsProfile }}
+{{- if not $profile }}
+{{- $profile = "default" }}
+{{- end }}
+{{- printf "[%s]\naws_access_key_id = %s\naws_secret_access_key = %s\n" $profile .Values.configmap.cnAwsAccessKeyId .Values.configmap.cnAwsSecretAccessKey }}
+{{- end }}
+
+{{/*
+Create AWS config.
+*/}}
+{{- define "flex-all-in-one.aws-config" }}
+{{- $profile := .Values.configmap.cnAwsProfile }}
+{{- if not $profile }}
+{{- $profile = "default" }}
+{{- end }}
+{{- if ne $profile "default" }}
+{{- $profile = printf "profile %s" .Values.configmap.cnAwsProfile }}
+{{- end }}
+{{- printf "[%s]\nregion = %s\n" $profile .Values.configmap.cnAwsDefaultRegion }}
+{{- end }}
