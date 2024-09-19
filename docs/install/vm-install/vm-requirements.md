@@ -7,7 +7,7 @@ Gluu Flex currently provides packages for these Linux distros:
 - Ubuntu (versions: 20.04 and 22.04)
 - SUSE Distributions
     - SUSE Linux Enterprise Server (SLES) 15
-    - openSUSE Leap 15.4
+    - openSUSE Leap 15.5
     - openSUSE Tumbleweed
 - RedHat Enterprise Linux (version: 8)
 
@@ -18,8 +18,8 @@ Gluu Flex currently provides packages for these Linux distros:
 
 A single-VM deployment is where all services are running on one server. Although, the requirements can vary based on the size of the data and the required concurrency, the following guidelines can help you plan:
 
-- 4 GB RAM
-- 2 CPU
+- 8 GB RAM
+- 4 CPU
 - 20 GB Disk
 
 ## Port Configuration
