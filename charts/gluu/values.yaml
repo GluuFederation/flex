@@ -1000,7 +1000,7 @@ global:
       # -- Lock ingress resource labels. key app is taken
       lockLabels: { }
       # -- Lock ingress resource additional annotations.
-      lockAdditionalAnnotations: { }            
+      lockAdditionalAnnotations: { }
       # -- openid-configuration ingress resource labels. key app is taken
       openidConfigLabels: { }
       # -- openid-configuration ingress resource additional annotations.
@@ -1211,7 +1211,7 @@ global:
       # -- configAPI ingress resource labels. key app is taken
       configApiLabels: { }
       # -- ConfigAPI ingress resource additional annotations.
-      configApiAdditionalAnnotations: { }    
+      configApiAdditionalAnnotations: { }
     # -- Comma-separated values of enabled plugins (supported plugins are "admin-ui","fido2","scim","user-mgt","jans-link","kc-saml")
     plugins: "admin-ui,fido2,scim,user-mgt"
   # -- Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services.
@@ -1265,7 +1265,7 @@ global:
       # -- fido2 ingress resource labels. key app is taken
       fido2Labels: { }
       # -- fido2 ingress resource additional annotations.
-      fido2AdditionalAnnotations: { }      
+      fido2AdditionalAnnotations: { }
   # -- GCE storage kind if using Google disks
   gcePdStorageType: pd-standard
   # -- Boolean flag to enable mapping global.lbIp  to global.fqdn inside pods on clouds that provide static ip for load balancers. On cloud that provide only addresses to the LB this flag will enable a script to actively scan config.configmap.lbAddr and update the hosts file inside the pods automatically.
@@ -1281,7 +1281,7 @@ global:
     additionalLabels: { }
     # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
     additionalAnnotations: { }
-    
+
     # -- Override the gateway that can be created by default. This is used when istio ingress has already been setup and the gateway exists.
     gateways: [ ]
   # -- The Loadbalancer IP created by nginx or istio on clouds that provide static IPs. This is not needed if `global.fqdn` is globally resolvable.
@@ -1315,7 +1315,7 @@ global:
     # -- Boolean flag to enable/disable the persistence chart.
     enabled: true
   # -- service account used by Kubernetes resources
-  serviceAccountName: default  
+  serviceAccountName: default
   scim:
     # — Add custom annotations for kubernetes resources for the service
     customAnnotations:
@@ -1450,7 +1450,7 @@ global:
       # -- SAML config ingress resource labels. key app is taken
       samlLabels: { }
       # -- SAML ingress resource additional annotations.
-      samlAdditionalAnnotations: { }      
+      samlAdditionalAnnotations: { }
     # -- passing custom java options to saml. DO NOT PASS JAVA_OPTIONS in envs.
     cnCustomJavaOptions: ""
 
@@ -1479,6 +1479,10 @@ global:
   kc-scheduler:
     # -- Boolean flag to enable/disable the kc-scheduler cronjob chart.
     enabled: false
+  # -- Path to configuration schema file
+  cnConfiguratorConfigurationFile: /etc/jans/conf/configuration.json
+  # -- Path to dumped configuration schema file
+  cnConfiguratorDumpFile: /etc/jans/conf/configuration.out.json
 
 # -- Nginx ingress definitions chart
 nginx-ingress:
