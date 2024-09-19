@@ -42,7 +42,7 @@ EXPOSE 443 8080 1636
 # =====================
 
 
-ENV FLEX_SOURCE_VERSION=32db8d660788cb8f7062b48f76e737dda0f116f2
+ENV FLEX_SOURCE_VERSION=03c62b524af9b5d326c73e0b829a243fee0efb1c
 # cleanup
 RUN rm -rf /tmp/jans
 
