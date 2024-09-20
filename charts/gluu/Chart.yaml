@@ -3,35 +3,35 @@ annotations:
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/images: |
     - name: auth-server
-      image: ghcr.io/janssenproject/jans/auth-server:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/auth-server:1.1.5-1
     - name: auth-server-key-rotation
-      image: ghcr.io/janssenproject/jans/certmanager:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/certmanager:1.1.5-1
     - name: configuration-manager
-      image: ghcr.io/janssenproject/jans/configurator:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/configurator:1.1.5-1
     - name:  config-api
-      image: ghcr.io/janssenproject/jans/config-api:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/config-api:1.1.5-1
     - name: fido2
-      image: ghcr.io/janssenproject/jans/fido2:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/fido2:1.1.5-1
     - name: persistence
-      image: ghcr.io/janssenproject/jans/persistence-loader:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/persistence-loader:1.1.5-1
     - name: scim
-      image: ghcr.io/janssenproject/jans/scim:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/scim:1.1.5-1
     - name: casa
-      image: ghcr.io/janssenproject/jans/casa:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/casa:1.1.5-1
     - name: admin-ui
-      image: ghcr.io/gluufederation/flex/admin-ui:5.1.5_dev
+      image: ghcr.io/gluufederation/flex/admin-ui:5.1.5-1
     - name: link
-      image: ghcr.io/janssenproject/jans/link:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/link:1.1.5-1
     - name: saml
-      image: ghcr.io/janssenproject/jans/saml:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/saml:1.1.5-1
     - name: kc-scheduler
-      image: ghcr.io/janssenproject/jans/kc-scheduler:1.1.5_dev
+      image: ghcr.io/janssenproject/jans/kc-scheduler:1.1.5-1
   artifacthub.io/license: Apache-2.0
   catalog.cattle.io/certified: partner
   catalog.cattle.io/release-name: gluu
   catalog.cattle.io/display-name: Gluu Cloud Identity and Access Management
 apiVersion: v2
-appVersion: "5.1.5-dev"
+appVersion: "5.1.5"
 icon: https://gluu.org/docs/gluu-server/favicon.ico
 home: https://www.gluu.org
 sources:
@@ -41,64 +41,64 @@ maintainers:
   email: team@gluu.org
 description: Gluu Access and Identity Management
 name: gluu
-version: 5.1.5-dev
+version: 5.1.5
 dependencies:
     - name: config
       condition: global.config.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: config-api
       condition: global.config-api.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: opendj
       condition: global.opendj.enabled
-      version: 5.1.5-dev
+      version: 5.1.5
 
     - name: auth-server
       condition: global.auth-server.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: admin-ui
       condition: global.admin-ui.enabled
-      version: 5.1.5-dev
+      version: 5.1.5
 
     - name: fido2
       condition: global.fido2.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: scim
       condition: global.scim.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: nginx-ingress
       condition: global.nginx-ingress.enabled
-      version: 5.1.5-dev
+      version: 5.1.5
 
     - name: casa
-      version: 1.1.5-dev
+      version: 1.1.5
       condition: global.casa.enabled
 
     - name: auth-server-key-rotation
       condition: global.auth-server-key-rotation.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: persistence
       condition: global.persistence.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: cn-istio-ingress
       condition: global.istio.ingress
-      version: 5.1.5-dev
+      version: 5.1.5
 
     - name: link
       condition: global.link.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: saml
       condition: global.saml.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
 
     - name: kc-scheduler
       condition: global.kc-scheduler.enabled
-      version: 1.1.5-dev
+      version: 1.1.5
