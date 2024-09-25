@@ -67,11 +67,11 @@ if [[ "$FLEX_BUILD_COMMIT" ]]; then
 fi
 # --
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
-  docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
+  bash /tmp/flex/docker-flex-monolith/up.sh mysql
 elif [[ $GLUU_PERSISTENCE == "PGSQL" ]]; then
-  docker compose -f /tmp/flex/docker-flex-monolith/flex-postgres-compose.yml up -d
+  bash /tmp/flex/docker-flex-monolith/up.sh postgres
 elif [[ $GLUU_PERSISTENCE == "LDAP" ]]; then
-  docker compose -f /tmp/flex/docker-flex-monolith/flex-ldap-compose.yml up -d
+  bash /tmp/flex/docker-flex-monolith/up.sh ldap
 fi
 echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
 flex_status="unhealthy"
@@ -106,6 +106,12 @@ EOF
 sudo bash testendpoints.sh
 echo -e "You may re-execute bash testendpoints.sh to do a quick test to check the configuration endpoints."
 echo -e "Add the following record to your local computers' hosts file to engage with the services $EXT_IP $GLUU_FQDN"
+echo -e "To stop run:"
+echo -e "/tmp/flex/docker-flex-monolith/down.sh mysql"
+echo -e "or /tmp/flex/docker-flex-monolith/down.sh postgres"
+echo -e "To restart run:"
+echo -e "/tmp/flex/docker-flex-monolith/up.sh mysql"
+echo -e "or /tmp/flex/docker-flex-monolith/up.sh postgres"
 echo -e "To clean up run:"
-echo -e "docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml down && rm -rf /tmp/flex"
-echo -e "or docker compose -f /tmp/flex/docker-flex-monolith/flex-postgres-compose.yml down && rm -rf /tmp/flex"
+echo -e "/tmp/flex/docker-flex-monolith/clean.sh mysql && rm -rf /tmp/flex"
+echo -e "or /tmp/flex/docker-flex-monolith/clean.sh postgres && rm -rf /tmp/flex"
