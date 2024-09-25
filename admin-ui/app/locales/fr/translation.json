@@ -42,7 +42,7 @@
     "acrs": "ACRs",
     "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
-    "builtIn" : "Intégré",
+    "builtIn": "Intégré",
     "api": {
       "roles": "Rôles d'accès",
       "permissions": "Autorisations",
@@ -567,7 +567,13 @@
     "updates_at_last_run": "Mises à jour lors de la dernière exécution",
     "problems_at_last_run": "Problèmes lors de la dernière course",
     "mapping": "Mapeamento",
-    "source": "Fonte"
+    "source": "Fonte",
+    "createdBy": "Créé par",
+    "deviceName": "Nom de l'appareil",
+    "OSName": "Nom du système d'exploitation",
+    "OSVersion": "Version du système d'exploitation",
+    "platform": "Plateforme",
+    "authType": "Type d'authentification"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
@@ -1468,6 +1474,13 @@
     "INUM": "INUM",
     "middleName": "Deuxième nom",
     "sn": "Nom de famille",
-    "userConfirmPassword": "Confirmez le mot de passe"
+    "userConfirmPassword": "Confirmez le mot de passe",
+    "deviceName": "Nom de l'appareil",
+    "OSName": "Nom du système d'exploitation",
+    "OSVersion": "Version du système d'exploitation",
+    "platform": "Plateforme",
+    "createdBy": "Créé par",
+    "type": "Type",
+    "domain": "Domaine"
   }
 }

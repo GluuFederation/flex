@@ -562,7 +562,13 @@
     "updates_at_last_run": "Atualizações na última execução",
     "problems_at_last_run": "Problemas na última corrida",
     "mapping": "Mapeamento",
-    "source": "Fonte"
+    "source": "Fonte",
+    "createdBy": "Criado por",
+    "deviceName": "Nome do dispositivo",
+    "OSName": "Nome do sistema operacional",
+    "OSVersion": "Versão do sistema operacional",
+    "platform": "Plataforma",
+    "authType": "Tipo de autenticação"
   },
   "messages": {
     "add_permission": "Adicionar permissão",
@@ -1465,6 +1471,13 @@
     "INUM": "INUM",
     "middleName": "Nome do meio",
     "sn": "Sobrenome",
-    "userConfirmPassword": "Confirme a Senha"
+    "userConfirmPassword": "Confirme a Senha",
+    "deviceName": "Nome do dispositivo",
+    "OSName": "Nome do sistema operacional",
+    "OSVersion": "Versão do sistema operacional",
+    "platform": "Plataforma",
+    "createdBy": "Criado por",
+    "type": "Tipo",
+    "domain": "Domínio"
   }
 }

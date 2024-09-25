@@ -42,6 +42,7 @@ import GluuViewDetailModal from "../../../../app/routes/Apps/Gluu/GluuViewDetail
 
 import moment from "moment";
 import { deleteFido2DeviceData } from "../../../fido/redux/features/fidoSlice";
+import UserDeviceDetailViewPage from "./UserDeviceDetailViewPage";
 
 function UserList(props) {
   const dispatch = useDispatch();
@@ -110,8 +111,9 @@ function UserList(props) {
     });
     setOTPDevicesList(otpDevices);
 
-  
-    dispatch(getUser2FADetails({ username: row.givenName.toLowerCase(), token: token }));
+    dispatch(
+      getUser2FADetails({ username: row.givenName.toLowerCase(), token: token })
+    );
     setIsDetailModalOpen(!isViewDetailModalOpen);
   }
 
@@ -295,15 +297,16 @@ function UserList(props) {
       const attenstationRequest = JSON.parse(
         item.registrationData.attenstationRequest
       );
-      if (item?.deviceData?.platform) {
-        return {
-          id: item?.deviceData?.uuid ?? "-",
-          nickName: attenstationRequest.displayName ?? "-",
-          modality: item?.deviceData?.platform ?? "-",
-          dateAdded: moment(item.creationDate).format("YYYY-MM-DD HH:mm:ss"),
-          type: "FIDO2",
-        };
-      }
+
+      return {
+        id: item?.deviceData?.uuid ? item?.deviceData?.uuid : item.id,
+        nickName: attenstationRequest.displayName ?? "-",
+        modality: item?.deviceData?.platform ?? "-",
+        dateAdded: moment(item.creationDate).format("YYYY-MM-DD HH:mm:ss"),
+        type: item?.deviceData?.platform ? "SUPER GLUU" : "FIDO2",
+        registrationData: item.registrationData,
+        deviceData: item.deviceData,
+      };
     });
     const removeNullValue = updatedDetails.filter((item) => item);
 
@@ -317,6 +320,11 @@ function UserList(props) {
 
   const DetailPanel = useCallback((rowData) => {
     return <UserDetailViewPage row={rowData} />;
+  }, []);
+
+  const DetailPanelForDevices = useCallback((rowData) => {
+    console.log("rowData", rowData);
+    return <UserDeviceDetailViewPage row={rowData} />;
   }, []);
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, []);
@@ -350,6 +358,7 @@ function UserList(props) {
             { title: `${t("fields.nickName")}`, field: "nickName" },
             { title: `${t("fields.modality")}`, field: "modality" },
             { title: `${t("fields.dateAdded")}`, field: "dateAdded" },
+            { title: `${t("fields.authType")}`, field: "type" },
           ]}
           data={faDetails}
           isLoading={loading}
@@ -379,6 +388,7 @@ function UserList(props) {
               });
             },
           }}
+          detailPanel={DetailPanelForDevices}
         />
       </GluuViewDetailModal>
 
