@@ -5,14 +5,7 @@ import jansLockReducer from './redux/features/JansLockSlice'
 import jansLockSaga from './redux/sagas/JansLockSaga'
 
 const pluginMetadata = {
-  menus: [
-    {
-      title: 'menus.jans_lock',
-      icon: 'jans_lock',
-      path: PLUGIN_BASE_PATH,
-      permission: JANS_LOCK_READ,
-    },
-  ],
+  menus: [],
   routes: [
     {
       component: JansLock,
