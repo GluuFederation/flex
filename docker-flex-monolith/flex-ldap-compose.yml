@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   flex:
-    image: ghcr.io/gluufederation/flex/monolith:5.1.5_dev
+    image: ${FLEX_IMAGE:-ghcr.io/gluufederation/flex/monolith:5.1.6_dev}
     restart: always
     ports:
       - "443:443"
