@@ -575,6 +575,7 @@
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
+    "credentials":"Credenciais",
     "view_configuration": "Ver Configuração",
     "add_idp": "Adicionar IDP SAML",
     "view_trust_relationshi_details": "Visualizar Detalhes da Relação de Confiança",

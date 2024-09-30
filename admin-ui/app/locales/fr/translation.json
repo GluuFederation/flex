@@ -580,6 +580,7 @@
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
+    "credentials": "Credentials",
     "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",
     "view_trust_relationshi_details": "Voir les détails de la relation de confiance",

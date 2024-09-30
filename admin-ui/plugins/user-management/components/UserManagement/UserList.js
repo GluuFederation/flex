@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import MaterialTable from "@material-table/core";
 import { DeleteOutlined } from "@mui/icons-material";
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Paper, TablePagination } from "@mui/material";
 import UserDetailViewPage from "./UserDetailViewPage";
 import {
@@ -198,11 +199,11 @@ function UserList(props) {
 
   if (hasPermission(permissions, USER_READ)) {
     myActions.push((rowData) => ({
-      icon: "visibility",
+      icon: LockedOpenIcon,
       iconProps: {
         id: "viewDetail" + rowData.inum,
       },
-      tooltip: `${t("messages.view_2FA_details")}`,
+      tooltip: `${t("messages.credentials")}`,
       onClick: (event, rowData) => handleView2FADetails(rowData),
       disabled: !hasPermission(permissions, USER_WRITE),
     }));
@@ -267,7 +268,7 @@ function UserList(props) {
       updateUserData(JSON.stringify(jansOTPDevices));
     } else return false;
 
-    handleView2FADetails(userDetails);
+   // handleView2FADetails(userDetails);
   };
 
   useEffect(() => {
@@ -327,6 +328,7 @@ function UserList(props) {
   }, []);
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, []);
+  const LockedOpenIcon = useCallback(() => <LockOpenIcon />, []);
 
   const PaginationWrapper = useCallback(
     (props) => (
