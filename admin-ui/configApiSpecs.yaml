@@ -40,7 +40,9 @@ tags:
   - name: Configuration – Config API
   - name: Client Authorization
   - name: Jans Assets
+  - name: Token
   - name: Fido2 - Configuration
+  - name: Fido2 - Registration
   - name: Configuration – User Management
   - name: Admin UI - Role
   - name: Admin UI - Permission
@@ -822,6 +824,13 @@ paths:
       summary: Load assets on server for a service
       description: Load assets on server for a service
       operationId: load-service-asset
+      parameters:
+        - name: service-name
+          in: path
+          description: Service Name
+          required: true
+          schema:
+            type: string
       requestBody:
         description: String multipart form.
         content:
@@ -7445,32 +7454,69 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/config/scopes.readonly'
-  /api/v1/jans-auth-server/session:
+  '/api/v1/jans-auth-server/session/id/{jansId}':
     get:
       tags:
         - Auth - Session Management
-      summary: Returns current session
-      description: Returns current session
-      operationId: get-sessions
+      summary: Get session by id.
+      description: Get session by id.
+      operationId: get-session-by-id
+      parameters:
+        - name: jansId
+          in: path
+          description: Session Unique identifier.
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Ok
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SessionId'
+                $ref: '#/components/schemas/SessionId'
+              examples:
+                Response example:
+                  description: Response example
+                  value: ''
         '401':
           description: Unauthorized
+        '404':
+          description: Not Found
         '500':
           description: InternalServerError
       security:
         - oauth2:
             - 'https://jans.io/oauth/jans-auth-server/session.readonly'
             - revoke_session
-  '/api/v1/jans-auth-server/session/{userDn}':
-    post:
+    delete:
+      tags:
+        - Auth - Session Management
+      summary: Delete a session.
+      description: Delete a session.
+      operationId: delete-session
+      parameters:
+        - name: jansId
+          in: path
+          description: Session Unique identifier.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/jans-auth-server/session.delete'
+            - revoke_session
+  '/api/v1/jans-auth-server/session/user/{userDn}':
+    delete:
       tags:
         - Auth - Session Management
       summary: Revoke all sessions by userDn
@@ -7495,6 +7541,270 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/jans-auth-server/session.delete'
+            - revoke_session
+  /api/v1/jans-auth-server/session:
+    get:
+      tags:
+        - Auth - Session Management
+      summary: Return all session
+      description: Return all session
+      operationId: get-sessions
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SessionId'
+              examples:
+                Response json example:
+                  description: Response json example
+                  value: |
+                    [
+                        {
+                            "dn": "jansId=c0baae4d-3282-4d20-99d9-90c30a1b6e53,ou=sessions,o=jans",
+                            "id": "c0baae4d-3282-4d20-99d9-90c30a1b6e53",
+                            "outsideSid": "652dc5e2-d95b-416e-b1ca-34b7dfb441d9",
+                            "lastUsedAt": "2024-09-24T14:53:13",
+                            "userDn": "inum=122ff2df-911d-424b-bbfe-891a43a70e95,ou=people,o=jans",
+                            "authenticationTime": "2024-09-24T14:53:13",
+                            "state": "authenticated",
+                            "sessionState": "34d35953e0008389587369ab1be6d6c93aa6d9e103dc2da93c157fc1b8d12385.696be3a5-d30c-4401-831f-4cd9017e8772",
+                            "permissionGrantedMap": {
+                                "permissionGranted": {
+                                    "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9": true
+                                }
+                            },
+                            "sessionAttributes": {
+                                "acr": "simple_password_auth",
+                                "remote_ip": "123.201.169.114",
+                                "opbs": "355386a7-8e51-488b-ab1d-b65fa9f5a6d5",
+                                "acr_values": "simple_password_auth",
+                                "scope": "openid profile email user_name",
+                                "response_type": "code",
+                                "redirect_uri": "https://pujavs-hopeful-colt.gluu.info/admin",
+                                "state": "abc",
+                                "nonce": "puja",
+                                "client_id": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "auth_user": "admin",
+                                "old_session_id": "db06a1ad-fe41-4af1-b6a8-96eac8747b39",
+                                "session_id": "c0baae4d-3282-4d20-99d9-90c30a1b6e53",
+                                "sid": "652dc5e2-d95b-416e-b1ca-34b7dfb441d9",
+                                "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9_authz_scopes": "openid user_name profile email",
+                                "successful_rp_redirect_count": "1"
+                            },
+                            "expirationDate": "2024-11-25T14:53:06",
+                            "deletable": true,
+                            "creationDate": "2024-09-24T14:53:06",
+                            "persisted": false,
+                            "ttl": 0,
+                            "opbrowserState": "355386a7-8e51-488b-ab1d-b65fa9f5a6d5"
+                        },
+                        {
+                            "dn": "jansId=7cbad817-0b96-40ca-8667-1073bfa726c3,ou=sessions,o=jans",
+                            "id": "7cbad817-0b96-40ca-8667-1073bfa726c3",
+                            "outsideSid": "5c306424-462c-4b2d-8827-61c93dee54ce",
+                            "lastUsedAt": "2024-09-24T14:52:15",
+                            "userDn": "inum=122ff2df-911d-424b-bbfe-891a43a70e95,ou=people,o=jans",
+                            "authenticationTime": "2024-09-24T14:52:15",
+                            "state": "authenticated",
+                            "sessionState": "30288a431305c3fe91f716969837e809ae2c86982c8f0481c78c58f2db7dfd93.d3646d5e-62bf-421c-b1cf-51d6c4d6f64e",
+                            "permissionGrantedMap": {
+                                "permissionGranted": {
+                                    "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9": true
+                                }
+                            },
+                            "sessionAttributes": {
+                                "acr": "simple_password_auth",
+                                "remote_ip": "123.201.169.114",
+                                "opbs": "661fbf90-1ffc-4560-9f95-cb113791af38",
+                                "acr_values": "simple_password_auth",
+                                "scope": "openid profile email user_name jansAdminUIRole",
+                                "response_type": "code",
+                                "redirect_uri": "https://pujavs-hopeful-colt.gluu.info/admin",
+                                "state": "abc",
+                                "nonce": "xyz",
+                                "client_id": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "auth_user": "admin",
+                                "old_session_id": "84d59a22-e98b-41ab-a195-fe52efbc6cba",
+                                "session_id": "7cbad817-0b96-40ca-8667-1073bfa726c3",
+                                "sid": "5c306424-462c-4b2d-8827-61c93dee54ce",
+                                "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9_authz_scopes": "openid user_name profile email jansAdminUIRole",
+                                "successful_rp_redirect_count": "1"
+                            },
+                            "expirationDate": "2024-10-25T14:52:06",
+                            "deletable": true,
+                            "creationDate": "2024-09-24T14:52:06",
+                            "persisted": false,
+                            "ttl": 0,
+                            "opbrowserState": "661fbf90-1ffc-4560-9f95-cb113791af38"
+                        }
+                    ]
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/jans-auth-server/session.readonly'
+            - revoke_session
+  /api/v1/jans-auth-server/session/search:
+    get:
+      tags:
+        - Auth - Session Management
+      summary: Search session
+      description: Search session
+      operationId: search-session
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: pattern
+          in: query
+          description: Search pattern
+          schema:
+            type: string
+            default: ''
+        - name: startIndex
+          in: query
+          description: The 1-based index of the first query result
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: sortBy
+          in: query
+          description: Attribute whose value will be used to order the returned response
+          schema:
+            type: string
+            default: jansId
+        - name: sortOrder
+          in: query
+          description: >-
+            Order in which the sortBy param is applied. Allowed values are
+            "ascending" and "descending"
+          schema:
+            type: string
+            default: ascending
+        - name: fieldValuePair
+          in: query
+          description: Field and value pair for seraching
+          schema:
+            type: string
+            default: ''
+          examples:
+            Field value example:
+              description: Field value example
+              value: 'applicationType=web,persistClientAuthorizations=true'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionPagedResult'
+              examples:
+                Response json example:
+                  description: Response json example
+                  value: |
+                    {
+                        "start": 0,
+                        "totalEntriesCount": 2,
+                        "entriesCount": 2,
+                        "entries": [
+                            {
+                                "dn": "jansId=7cbad817-0b96-40ca-8667-1073bfa726c3,ou=sessions,o=jans",
+                                "id": "7cbad817-0b96-40ca-8667-1073bfa726c3",
+                                "outsideSid": "5c306424-462c-4b2d-8827-61c93dee54ce",
+                                "lastUsedAt": "2024-09-24T14:52:15",
+                                "userDn": "inum=122ff2df-911d-424b-bbfe-891a43a70e95,ou=people,o=jans",
+                                "authenticationTime": "2024-09-24T14:52:15",
+                                "state": "authenticated",
+                                "sessionState": "30288a431305c3fe91f716969837e809ae2c86982c8f0481c78c58f2db7dfd93.d3646d5e-62bf-421c-b1cf-51d6c4d6f64e",
+                                "permissionGrantedMap": {
+                                    "permissionGranted": {
+                                        "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9": true
+                                    }
+                                },
+                                "sessionAttributes": {
+                                    "acr": "simple_password_auth",
+                                    "remote_ip": "123.201.169.114",
+                                    "opbs": "661fbf90-1ffc-4560-9f95-cb113791af38",
+                                    "acr_values": "simple_password_auth",
+                                    "scope": "openid profile email user_name jansAdminUIRole",
+                                    "response_type": "code",
+                                    "redirect_uri": "https://pujavs-hopeful-colt.gluu.info/admin",
+                                    "state": "abc",
+                                    "nonce": "xyz",
+                                    "client_id": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                    "auth_user": "admin",
+                                    "old_session_id": "84d59a22-e98b-41ab-a195-fe52efbc6cba",
+                                    "session_id": "7cbad817-0b96-40ca-8667-1073bfa726c3",
+                                    "sid": "5c306424-462c-4b2d-8827-61c93dee54ce",
+                                    "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9_authz_scopes": "openid user_name profile email jansAdminUIRole",
+                                    "successful_rp_redirect_count": "1"
+                                },
+                                "expirationDate": "2024-10-25T14:52:06",
+                                "deletable": true,
+                                "creationDate": "2024-09-24T14:52:06",
+                                "persisted": false,
+                                "ttl": 0,
+                                "opbrowserState": "661fbf90-1ffc-4560-9f95-cb113791af38"
+                            },
+                            {
+                                "dn": "jansId=c0baae4d-3282-4d20-99d9-90c30a1b6e53,ou=sessions,o=jans",
+                                "id": "c0baae4d-3282-4d20-99d9-90c30a1b6e53",
+                                "outsideSid": "652dc5e2-d95b-416e-b1ca-34b7dfb441d9",
+                                "lastUsedAt": "2024-09-24T14:53:13",
+                                "userDn": "inum=122ff2df-911d-424b-bbfe-891a43a70e95,ou=people,o=jans",
+                                "authenticationTime": "2024-09-24T14:53:13",
+                                "state": "authenticated",
+                                "sessionState": "34d35953e0008389587369ab1be6d6c93aa6d9e103dc2da93c157fc1b8d12385.696be3a5-d30c-4401-831f-4cd9017e8772",
+                                "permissionGrantedMap": {
+                                    "permissionGranted": {
+                                        "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9": true
+                                    }
+                                },
+                                "sessionAttributes": {
+                                    "acr": "simple_password_auth",
+                                    "remote_ip": "123.201.169.114",
+                                    "opbs": "355386a7-8e51-488b-ab1d-b65fa9f5a6d5",
+                                    "acr_values": "simple_password_auth",
+                                    "scope": "openid profile email user_name",
+                                    "response_type": "code",
+                                    "redirect_uri": "https://pujavs-hopeful-colt.gluu.info/admin",
+                                    "state": "abc",
+                                    "nonce": "puja",
+                                    "client_id": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                    "auth_user": "admin",
+                                    "old_session_id": "db06a1ad-fe41-4af1-b6a8-96eac8747b39",
+                                    "session_id": "c0baae4d-3282-4d20-99d9-90c30a1b6e53",
+                                    "sid": "652dc5e2-d95b-416e-b1ca-34b7dfb441d9",
+                                    "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9_authz_scopes": "openid user_name profile email",
+                                    "successful_rp_redirect_count": "1"
+                                },
+                                "expirationDate": "2024-11-25T14:53:06",
+                                "deletable": true,
+                                "creationDate": "2024-09-24T14:53:06",
+                                "persisted": false,
+                                "ttl": 0,
+                                "opbrowserState": "355386a7-8e51-488b-ab1d-b65fa9f5a6d5"
+                            }
+                        ]
+                    }
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/jans-auth-server/session.readonly'
             - revoke_session
   /api/v1/stat:
     get:
@@ -7549,6 +7859,498 @@ paths:
         - oauth2:
             - 'https://jans.io/oauth/config/stats.readonly'
             - jans_stat
+  '/api/v1/token/client/{clientId}':
+    get:
+      tags:
+        - Token
+      summary: Get token details by client.
+      description: Get token details by client.
+      operationId: get-token-by-client
+      parameters:
+        - name: clientId
+          in: path
+          description: Client identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenEntityPagedResult'
+              examples:
+                Response example:
+                  description: Response example
+                  value: |
+                    {
+                        "start": 0,
+                        "totalEntriesCount": 8,
+                        "entriesCount": 8,
+                        "entries": [
+                            {
+                                "dn": "tknCde=280c8e7055fb51cee1fdd6442fe7fdba98dfd319f0e931ac0756a19936722286,ou=tokens,o=jans",
+                                "grantId": "5e3d27ba-00a2-400e-be6d-b1424d1c1f33",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-23T15:03:50",
+                                "expirationDate": "2024-10-23T15:03:50",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "280c8e7055fb51cee1fdd6442fe7fdba98dfd319f0e931ac0756a19936722286",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "4zdnUjyjRoWqqLCMtguvDA",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 301
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=3d4e9ea9ff6fe85f25dc4fa98cf672c885d30b58fd2f64f8e7c630113d7e568f,ou=tokens,o=jans",
+                                "grantId": "f8bfb7d5-0dbc-4976-a0ec-ef82e90e4ab8",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-23T08:23:50",
+                                "expirationDate": "2024-10-23T08:23:50",
+                                "deletable": true,
+                                "scope": "https://jans.io/oauth/config/jwks.delete https://jans.io/oauth/jans-auth-server/session.readonly https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly https://jans.io/oauth/config/scopes.readonly https://jans.io/oauth/config/saml.write https://jans.io/oauth/lock/health.readonly https://jans.io/oauth/jans-auth-server/config/adminui/webhook.delete https://jans.io/auth/ssa.developer https://jans.io/oauth/config/saml-config.readonly https://jans.io/oauth/config/smtp.delete https://jans.io/oauth/config/cache.readonly https://jans.io/oauth/config/saml-scope.write readonly https://jans.io/oauth/config/user.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly https://jans.io/oauth/lock/audit.readonly https://jans.io/oauth/config/acrs.write https://jans.io/scim/fido2.read https://jans.io/oauth/config/token.readonly https://jans.io/oauth/config/message.readonly https://jans.io/oauth/lock-config.write https://jans.io/oauth/config/uma/resources.readonly https://jans.io/oauth/jans-auth-server/config/properties.write https://jans.io/oauth/config/fido2.write https://jans.io/idp/config.readonly https://jans.io/scim/groups.read https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete https://jans.io/oauth/lock/log.readonly https://jans.io/oauth/config/jwks.write jans_stat https://jans.io/idp/saml.readonly https://jans.io/oauth/jans-auth-server/config/properties.readonly https://jans.io/oauth/config/jans_asset-delete https://jans.io/scim/groups.write https://jans.io/oauth/config/database/couchbase.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/properties.write https://jans.io/oauth/config/fido2.delete https://jans.io/idp/saml.write https://jans.io/oauth/config/saml-scope.readonly https://jans.io/scim/fido2.write https://jans.io/oauth/config/scripts.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/config/session.write https://jans.io/oauth/config/acrs.delete https://jans.io/oauth/client/authorizations.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly https://jans.io/oauth/config/jans_asset-read https://jans.io/oauth/config/logging.readonly https://jans.io/oauth/config/jans_asset-write https://jans.io/oauth/lock/telemetry.write https://jans.io/oauth/config/plugin.readonly https://jans.io/oauth/lock/telemetry.readonly https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/config/user.write https://jans.io/oauth/config/agama.readonly https://jans.io/oauth/config/openid/clients.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write https://jans.io/oauth/jans-auth-server/config/adminui/webhook.write https://jans.io/oauth/config/agama.write https://jans.io/oauth/lock/health.write https://jans.io/oauth/config/logging.write https://jans.io/oauth/config/database/sql.write https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write https://jans.io/oauth/config/scopes.write https://jans.io/oauth/config/openid/clients.write https://jans.io/scim/fido.read https://jans.io/scim/fido.write https://jans.io/oauth/lock-config.readonly https://jans.io/oauth/config/organization.write https://jans.io/oauth/config/database/ldap.delete https://jans.io/oauth/config/jans-link.readonly https://jans.io/oauth/config/database/sql.readonly https://jans.io/oauth/config/session.readonly https://jans.io/oauth/config/openid/clients.delete https://jans.io/idp/saml.delete https://jans.io/idp/realm.write https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete https://jans.io/auth/ssa.admin https://jans.io/scim/config.readonly https://jans.io/oauth/config/database/couchbase.write https://jans.io/oauth/config/token.write https://jans.io/oauth/config/jans-link.write https://jans.io/oauth/config/session.delete https://jans.io/oauth/config/app-version.readonly https://jans.io/oauth/config/scripts.delete https://jans.io/oauth/config/uma/resources.delete https://jans.io/scim/users.read https://jans.io/oauth/config/message.write https://jans.io/oauth/config/fido2.readonly https://jans.io/auth/ssa.portal https://jans.io/oauth/jans-auth-server/config/adminui/logging.write https://jans.io/oauth/config/user.delete https://jans.io/oauth/kc-link-config.write https://jans.io/oauth/config/token.delete https://jans.io/oauth/lock/audit.write https://jans.io/oauth/config/database/ldap.readonly https://jans.io/oauth/jans-auth-server/config/adminui/properties.write https://jans.io/oauth/config/cache.write https://jans.io/scim/all-resources.search https://jans.io/oauth/config/attributes.readonly https://jans.io/oauth/config/smtp.readonly https://jans.io/scim/users.write https://jans.io/oauth/config/agama.delete https://jans.io/idp/config.write https://jans.io/oauth/config/uma/resources.write https://jans.io/oauth/config/saml.readonly https://jans.io/oauth/config/organization.readonly https://jans.io/oauth/lock/log.write https://jans.io/oauth/config/attributes.delete https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write https://jans.io/oauth/config/properties.readonly https://jans.io/oauth/config/jwks.readonly https://jans.io/oauth/config/scopes.delete https://jans.io/oauth/config/scripts.write https://jans.io/oauth/config/database/ldap.write https://jans.io/scim/config.write https://jans.io/oauth/jans-auth-server/session.delete https://jans.io/oauth/client/authorizations.delete https://jans.io/oauth/config/acrs.readonly https://jans.io/scim/bulk https://jans.io/idp/realm.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete https://jans.io/oauth/config/saml-config.write https://jans.io/oauth/config/smtp.write https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly https://jans.io/oauth/kc-link-config.readonly https://jans.io/oauth/config/attributes.write",
+                                "tokenCode": "3d4e9ea9ff6fe85f25dc4fa98cf672c885d30b58fd2f64f8e7c630113d7e568f",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "JNDJyQfEQTGP6xRllmScXA",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 303
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=4960533184fab18d8932045b70de17f827c916010ab5d5c86f7202ca6cf7c176,ou=tokens,o=jans",
+                                "grantId": "82736426-1a72-46bb-8e76-52f3bca2c614",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-20T12:55:30",
+                                "expirationDate": "2024-10-30T12:55:30",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "4960533184fab18d8932045b70de17f827c916010ab5d5c86f7202ca6cf7c176",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "uIw3N7qeRiKR1pvzE1OmxQ",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 1101
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=5495ac7fedd47f57a10f314896fe88d415dbec067c7cea5d57138e2723b73e84,ou=tokens,o=jans",
+                                "grantId": "2c4123dd-886f-447e-a65d-207bf60c3307",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-20T12:55:37",
+                                "expirationDate": "2024-10-30T12:55:37",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "5495ac7fedd47f57a10f314896fe88d415dbec067c7cea5d57138e2723b73e84",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "bgPvtouST66zHFaH4vrWhA",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 1102
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=82f8a251b94e7191c0708e2651c06c5242f61972cbd37120ab83403ac32ab77d,ou=tokens,o=jans",
+                                "grantId": "6915d12c-b5d3-4f56-a41c-64b3bff0e857",
+                                "userId": "admin",
+                                "userDn": "inum=122ff2df-911d-424b-bbfe-891a43a70e95,ou=people,o=jans",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-23T08:23:50",
+                                "expirationDate": "2024-10-23T08:23:50",
+                                "deletable": true,
+                                "scope": "openid profile offline_access email",
+                                "tokenCode": "82f8a251b94e7191c0708e2651c06c5242f61972cbd37120ab83403ac32ab77d",
+                                "tokenType": "access_token",
+                                "grantType": "urn:ietf:params:oauth:grant-type:device_code",
+                                "referenceId": "uPnrBRVOTv6MKbHZ29oKMw",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 301
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=bef882e1f07bbc718dfa38f19410f5d3452d7effc040052bd7f7751dd3de1599,ou=tokens,o=jans",
+                                "grantId": "c664eb67-9911-40a7-a154-bb4b9b2c90b7",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-23T08:22:07",
+                                "expirationDate": "2024-10-23T08:22:07",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "bef882e1f07bbc718dfa38f19410f5d3452d7effc040052bd7f7751dd3de1599",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "a9yYFUlxRzSh3MvoYGJJRQ",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 300
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=c3b62d651c9424bed9167a7cd05ea4e6fedc62f20d5fe98b0672fee0a43603ad,ou=tokens,o=jans",
+                                "grantId": "b0b4315b-7cf1-4d63-ab6c-128bfacab9e3",
+                                "clientId": "1800.3d73038f-2298-446a-a5e8-a43a579da9cc",
+                                "creationDate": "2024-09-19T14:32:09",
+                                "expirationDate": "2028-09-19T14:37:09",
+                                "deletable": true,
+                                "scope": "https://jans.io/oauth/config/jwks.delete https://jans.io/oauth/jans-auth-server/session.readonly https://jans.io/oauth/config/scopes.readonly https://jans.io/oauth/config/saml.write https://jans.io/oauth/lock/health.readonly https://jans.io/oauth/config/saml-config.readonly https://jans.io/oauth/config/cache.readonly https://jans.io/oauth/config/smtp.delete https://jans.io/oauth/config/user.readonly https://jans.io/oauth/lock/read-all https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly https://jans.io/oauth/lock/audit.readonly https://jans.io/oauth/config/acrs.write https://jans.io/oauth/lock-config.write https://jans.io/oauth/config/uma/resources.readonly https://jans.io/oauth/jans-auth-server/config/properties.write https://jans.io/oauth/config/fido2.write https://jans.io/idp/config.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete https://jans.io/oauth/lock/log.readonly https://jans.io/oauth/config/jwks.write jans_stat https://jans.io/idp/saml.readonly https://jans.io/oauth/jans-auth-server/config/properties.readonly https://jans.io/oauth/config/jans_asset-delete https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/fido2.delete https://jans.io/idp/saml.write https://jans.io/oauth/config/scripts.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly https://jans.io/oauth/config/openid-read https://jans.io/oauth/config/uma-write https://jans.io/oauth/client/authorizations.readonly https://jans.io/oauth/config/uma-read https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly https://jans.io/oauth/config/logging.readonly https://jans.io/oauth/config/jans_asset-write https://jans.io/oauth/lock/telemetry.write https://jans.io/oauth/config/plugin.readonly https://jans.io/oauth/lock/telemetry.readonly https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/config/uma-delete https://jans.io/oauth/config/user.write https://jans.io/oauth/config/agama.readonly https://jans.io/oauth/config/openid/clients.readonly https://jans.io/oauth/config/openid-write https://jans.io/oauth/config/agama.write https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write https://jans.io/oauth/lock/health.write https://jans.io/oauth/config/logging.write https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write https://jans.io/oauth/config/scopes.write https://jans.io/oauth/config/read-all https://jans.io/oauth/lock/write-all https://jans.io/oauth/config/write-all https://jans.io/oauth/config/openid/clients.write https://jans.io/oauth/jans-auth-server/config/adminui/write-all https://jans.io/oauth/lock-config.readonly https://jans.io/oauth/config/organization.write https://jans.io/oauth/config/database/ldap.delete https://jans.io/oauth/config/delete-all https://jans.io/oauth/config/openid/clients.delete https://jans.io/oauth/jans-auth-server/config/adminui/delete-all https://jans.io/idp/realm.write https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete https://jans.io/scim/config.readonly https://jans.io/oauth/config/app-version.readonly https://jans.io/oauth/config/scripts.delete https://jans.io/oauth/config/uma/resources.delete https://jans.io/scim/users.read https://jans.io/oauth/config/fido2.readonly https://jans.io/oauth/config/user.delete https://jans.io/oauth/kc-link-config.write https://jans.io/oauth/lock/audit.write https://jans.io/oauth/config/database/ldap.readonly https://jans.io/oauth/config/cache.write https://jans.io/oauth/config/attributes.readonly https://jans.io/oauth/config/smtp.readonly https://jans.io/scim/users.write https://jans.io/oauth/config/agama.delete https://jans.io/oauth/jans-auth-server/config/adminui/read-all https://jans.io/idp/config.write https://jans.io/oauth/config/uma/resources.write https://jans.io/oauth/config/saml.readonly https://jans.io/oauth/config/organization.readonly https://jans.io/oauth/lock/log.write https://jans.io/oauth/config/openid-delete https://jans.io/oauth/config/attributes.delete https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write https://jans.io/oauth/config/jwks.readonly https://jans.io/oauth/config/scopes.delete https://jans.io/oauth/config/scripts.write https://jans.io/oauth/config/database/ldap.write https://jans.io/scim/config.write https://jans.io/oauth/jans-auth-server/session.delete https://jans.io/oauth/client/authorizations.delete https://jans.io/oauth/config/acrs.readonly https://jans.io/idp/realm.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete https://jans.io/oauth/config/saml-config.write https://jans.io/oauth/config/smtp.write https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly https://jans.io/oauth/kc-link-config.readonly https://jans.io/oauth/config/attributes.write",
+                                "tokenCode": "c3b62d651c9424bed9167a7cd05ea4e6fedc62f20d5fe98b0672fee0a43603ad",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "NXBmV1WjSU28EH8KNTghJw",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 201
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=f0977b8c359446ff7a5aa157a930c89506485b266d988507478e367f53fd5445,ou=tokens,o=jans",
+                                "grantId": "d0c427ec-0c6e-4fdf-83eb-43a19e633eec",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-20T12:55:37",
+                                "expirationDate": "2024-10-20T12:55:37",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "f0977b8c359446ff7a5aa157a930c89506485b266d988507478e367f53fd5445",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "1DnmKY6pS1S6XeKSHAj2Ag",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 1103
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            }
+                        ]
+                    }
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/token.readonly'
+  '/api/v1/token/tknCde/{tknCde}':
+    get:
+      tags:
+        - Token
+      summary: Get token details by Id.
+      description: Get token details by Id.
+      operationId: get-token-by-id
+      parameters:
+        - name: tknCde
+          in: path
+          description: Token identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenEntity'
+              examples:
+                Response example:
+                  description: Response example
+                  value: |
+                    {
+                        "dn": "tknCde=280c8e7055fb51cee1fdd6442fe7fdba98dfd319f0e931ac0756a19936722286,ou=tokens,o=jans",
+                        "grantId": "5e3d27ba-00a2-400e-be6d-b1424d1c1f33",
+                        "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                        "creationDate": "2024-09-23T15:03:50",
+                        "expirationDate": "2024-10-23T15:03:50",
+                        "deletable": true,
+                        "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                        "tokenCode": "280c8e7055fb51cee1fdd6442fe7fdba98dfd319f0e931ac0756a19936722286",
+                        "tokenType": "access_token",
+                        "grantType": "client_credentials",
+                        "referenceId": "4zdnUjyjRoWqqLCMtguvDA",
+                        "attributes": {
+                            "online_access": false,
+                            "statusListIndex": 301
+                        },
+                        "tokenTypeEnum": "ACCESS_TOKEN"
+                    }
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/token.readonly'
+  '/api/v1/token/revoke/{tknCde}':
+    delete:
+      tags:
+        - Token
+      summary: Revoke client token.
+      description: Revoke client token.
+      operationId: revoke-token
+      parameters:
+        - name: tknCde
+          in: path
+          description: Token Code
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/token.delete'
+  /api/v1/token/search:
+    get:
+      tags:
+        - Token
+      summary: Search tokens
+      description: Search tokens
+      operationId: search-token
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: pattern
+          in: query
+          description: Search pattern
+          schema:
+            type: string
+            default: ''
+        - name: startIndex
+          in: query
+          description: The 1-based index of the first query result
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: sortBy
+          in: query
+          description: Attribute whose value will be used to order the returned response
+          schema:
+            type: string
+            default: tknCde
+        - name: sortOrder
+          in: query
+          description: >-
+            Order in which the sortBy param is applied. Allowed values are
+            "ascending" and "descending"
+          schema:
+            type: string
+            default: ascending
+        - name: fieldValuePair
+          in: query
+          description: Field and value pair for seraching
+          schema:
+            type: string
+            default: ''
+          examples:
+            Field value example:
+              description: Field value example
+              value: 'grtTyp=client_credentials,tknTyp=access_token'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenEntityPagedResult'
+              examples:
+                Response example:
+                  description: Response example
+                  value: |
+                    {
+                        "start": 0,
+                        "totalEntriesCount": 8,
+                        "entriesCount": 8,
+                        "entries": [
+                            {
+                                "dn": "tknCde=280c8e7055fb51cee1fdd6442fe7fdba98dfd319f0e931ac0756a19936722286,ou=tokens,o=jans",
+                                "grantId": "5e3d27ba-00a2-400e-be6d-b1424d1c1f33",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-23T15:03:50",
+                                "expirationDate": "2024-10-23T15:03:50",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "280c8e7055fb51cee1fdd6442fe7fdba98dfd319f0e931ac0756a19936722286",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "4zdnUjyjRoWqqLCMtguvDA",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 301
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=3d4e9ea9ff6fe85f25dc4fa98cf672c885d30b58fd2f64f8e7c630113d7e568f,ou=tokens,o=jans",
+                                "grantId": "f8bfb7d5-0dbc-4976-a0ec-ef82e90e4ab8",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-23T08:23:50",
+                                "expirationDate": "2024-10-23T08:23:50",
+                                "deletable": true,
+                                "scope": "https://jans.io/oauth/config/jwks.delete https://jans.io/oauth/jans-auth-server/session.readonly https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly https://jans.io/oauth/config/scopes.readonly https://jans.io/oauth/config/saml.write https://jans.io/oauth/lock/health.readonly https://jans.io/oauth/jans-auth-server/config/adminui/webhook.delete https://jans.io/auth/ssa.developer https://jans.io/oauth/config/saml-config.readonly https://jans.io/oauth/config/smtp.delete https://jans.io/oauth/config/cache.readonly https://jans.io/oauth/config/saml-scope.write readonly https://jans.io/oauth/config/user.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly https://jans.io/oauth/lock/audit.readonly https://jans.io/oauth/config/acrs.write https://jans.io/scim/fido2.read https://jans.io/oauth/config/token.readonly https://jans.io/oauth/config/message.readonly https://jans.io/oauth/lock-config.write https://jans.io/oauth/config/uma/resources.readonly https://jans.io/oauth/jans-auth-server/config/properties.write https://jans.io/oauth/config/fido2.write https://jans.io/idp/config.readonly https://jans.io/scim/groups.read https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete https://jans.io/oauth/lock/log.readonly https://jans.io/oauth/config/jwks.write jans_stat https://jans.io/idp/saml.readonly https://jans.io/oauth/jans-auth-server/config/properties.readonly https://jans.io/oauth/config/jans_asset-delete https://jans.io/scim/groups.write https://jans.io/oauth/config/database/couchbase.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/properties.write https://jans.io/oauth/config/fido2.delete https://jans.io/idp/saml.write https://jans.io/oauth/config/saml-scope.readonly https://jans.io/scim/fido2.write https://jans.io/oauth/config/scripts.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/config/session.write https://jans.io/oauth/config/acrs.delete https://jans.io/oauth/client/authorizations.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly https://jans.io/oauth/config/jans_asset-read https://jans.io/oauth/config/logging.readonly https://jans.io/oauth/config/jans_asset-write https://jans.io/oauth/lock/telemetry.write https://jans.io/oauth/config/plugin.readonly https://jans.io/oauth/lock/telemetry.readonly https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/config/user.write https://jans.io/oauth/config/agama.readonly https://jans.io/oauth/config/openid/clients.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write https://jans.io/oauth/jans-auth-server/config/adminui/webhook.write https://jans.io/oauth/config/agama.write https://jans.io/oauth/lock/health.write https://jans.io/oauth/config/logging.write https://jans.io/oauth/config/database/sql.write https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write https://jans.io/oauth/config/scopes.write https://jans.io/oauth/config/openid/clients.write https://jans.io/scim/fido.read https://jans.io/scim/fido.write https://jans.io/oauth/lock-config.readonly https://jans.io/oauth/config/organization.write https://jans.io/oauth/config/database/ldap.delete https://jans.io/oauth/config/jans-link.readonly https://jans.io/oauth/config/database/sql.readonly https://jans.io/oauth/config/session.readonly https://jans.io/oauth/config/openid/clients.delete https://jans.io/idp/saml.delete https://jans.io/idp/realm.write https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete https://jans.io/auth/ssa.admin https://jans.io/scim/config.readonly https://jans.io/oauth/config/database/couchbase.write https://jans.io/oauth/config/token.write https://jans.io/oauth/config/jans-link.write https://jans.io/oauth/config/session.delete https://jans.io/oauth/config/app-version.readonly https://jans.io/oauth/config/scripts.delete https://jans.io/oauth/config/uma/resources.delete https://jans.io/scim/users.read https://jans.io/oauth/config/message.write https://jans.io/oauth/config/fido2.readonly https://jans.io/auth/ssa.portal https://jans.io/oauth/jans-auth-server/config/adminui/logging.write https://jans.io/oauth/config/user.delete https://jans.io/oauth/kc-link-config.write https://jans.io/oauth/config/token.delete https://jans.io/oauth/lock/audit.write https://jans.io/oauth/config/database/ldap.readonly https://jans.io/oauth/jans-auth-server/config/adminui/properties.write https://jans.io/oauth/config/cache.write https://jans.io/scim/all-resources.search https://jans.io/oauth/config/attributes.readonly https://jans.io/oauth/config/smtp.readonly https://jans.io/scim/users.write https://jans.io/oauth/config/agama.delete https://jans.io/idp/config.write https://jans.io/oauth/config/uma/resources.write https://jans.io/oauth/config/saml.readonly https://jans.io/oauth/config/organization.readonly https://jans.io/oauth/lock/log.write https://jans.io/oauth/config/attributes.delete https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write https://jans.io/oauth/config/properties.readonly https://jans.io/oauth/config/jwks.readonly https://jans.io/oauth/config/scopes.delete https://jans.io/oauth/config/scripts.write https://jans.io/oauth/config/database/ldap.write https://jans.io/scim/config.write https://jans.io/oauth/jans-auth-server/session.delete https://jans.io/oauth/client/authorizations.delete https://jans.io/oauth/config/acrs.readonly https://jans.io/scim/bulk https://jans.io/idp/realm.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete https://jans.io/oauth/config/saml-config.write https://jans.io/oauth/config/smtp.write https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly https://jans.io/oauth/kc-link-config.readonly https://jans.io/oauth/config/attributes.write",
+                                "tokenCode": "3d4e9ea9ff6fe85f25dc4fa98cf672c885d30b58fd2f64f8e7c630113d7e568f",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "JNDJyQfEQTGP6xRllmScXA",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 303
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=4960533184fab18d8932045b70de17f827c916010ab5d5c86f7202ca6cf7c176,ou=tokens,o=jans",
+                                "grantId": "82736426-1a72-46bb-8e76-52f3bca2c614",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-20T12:55:30",
+                                "expirationDate": "2024-10-30T12:55:30",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "4960533184fab18d8932045b70de17f827c916010ab5d5c86f7202ca6cf7c176",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "uIw3N7qeRiKR1pvzE1OmxQ",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 1101
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=5495ac7fedd47f57a10f314896fe88d415dbec067c7cea5d57138e2723b73e84,ou=tokens,o=jans",
+                                "grantId": "2c4123dd-886f-447e-a65d-207bf60c3307",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-20T12:55:37",
+                                "expirationDate": "2024-10-30T12:55:37",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "5495ac7fedd47f57a10f314896fe88d415dbec067c7cea5d57138e2723b73e84",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "bgPvtouST66zHFaH4vrWhA",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 1102
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=82f8a251b94e7191c0708e2651c06c5242f61972cbd37120ab83403ac32ab77d,ou=tokens,o=jans",
+                                "grantId": "6915d12c-b5d3-4f56-a41c-64b3bff0e857",
+                                "userId": "admin",
+                                "userDn": "inum=122ff2df-911d-424b-bbfe-891a43a70e95,ou=people,o=jans",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-23T08:23:50",
+                                "expirationDate": "2024-10-23T08:23:50",
+                                "deletable": true,
+                                "scope": "openid profile offline_access email",
+                                "tokenCode": "82f8a251b94e7191c0708e2651c06c5242f61972cbd37120ab83403ac32ab77d",
+                                "tokenType": "access_token",
+                                "grantType": "urn:ietf:params:oauth:grant-type:device_code",
+                                "referenceId": "uPnrBRVOTv6MKbHZ29oKMw",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 301
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=bef882e1f07bbc718dfa38f19410f5d3452d7effc040052bd7f7751dd3de1599,ou=tokens,o=jans",
+                                "grantId": "c664eb67-9911-40a7-a154-bb4b9b2c90b7",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-23T08:22:07",
+                                "expirationDate": "2024-10-23T08:22:07",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "bef882e1f07bbc718dfa38f19410f5d3452d7effc040052bd7f7751dd3de1599",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "a9yYFUlxRzSh3MvoYGJJRQ",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 300
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=c3b62d651c9424bed9167a7cd05ea4e6fedc62f20d5fe98b0672fee0a43603ad,ou=tokens,o=jans",
+                                "grantId": "b0b4315b-7cf1-4d63-ab6c-128bfacab9e3",
+                                "clientId": "1800.3d73038f-2298-446a-a5e8-a43a579da9cc",
+                                "creationDate": "2024-09-19T14:32:09",
+                                "expirationDate": "2028-09-19T14:37:09",
+                                "deletable": true,
+                                "scope": "https://jans.io/oauth/config/jwks.delete https://jans.io/oauth/jans-auth-server/session.readonly https://jans.io/oauth/config/scopes.readonly https://jans.io/oauth/config/saml.write https://jans.io/oauth/lock/health.readonly https://jans.io/oauth/config/saml-config.readonly https://jans.io/oauth/config/cache.readonly https://jans.io/oauth/config/smtp.delete https://jans.io/oauth/config/user.readonly https://jans.io/oauth/lock/read-all https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly https://jans.io/oauth/lock/audit.readonly https://jans.io/oauth/config/acrs.write https://jans.io/oauth/lock-config.write https://jans.io/oauth/config/uma/resources.readonly https://jans.io/oauth/jans-auth-server/config/properties.write https://jans.io/oauth/config/fido2.write https://jans.io/idp/config.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete https://jans.io/oauth/lock/log.readonly https://jans.io/oauth/config/jwks.write jans_stat https://jans.io/idp/saml.readonly https://jans.io/oauth/jans-auth-server/config/properties.readonly https://jans.io/oauth/config/jans_asset-delete https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/fido2.delete https://jans.io/idp/saml.write https://jans.io/oauth/config/scripts.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly https://jans.io/oauth/config/openid-read https://jans.io/oauth/config/uma-write https://jans.io/oauth/client/authorizations.readonly https://jans.io/oauth/config/uma-read https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly https://jans.io/oauth/config/logging.readonly https://jans.io/oauth/config/jans_asset-write https://jans.io/oauth/lock/telemetry.write https://jans.io/oauth/config/plugin.readonly https://jans.io/oauth/lock/telemetry.readonly https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/config/uma-delete https://jans.io/oauth/config/user.write https://jans.io/oauth/config/agama.readonly https://jans.io/oauth/config/openid/clients.readonly https://jans.io/oauth/config/openid-write https://jans.io/oauth/config/agama.write https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write https://jans.io/oauth/lock/health.write https://jans.io/oauth/config/logging.write https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write https://jans.io/oauth/config/scopes.write https://jans.io/oauth/config/read-all https://jans.io/oauth/lock/write-all https://jans.io/oauth/config/write-all https://jans.io/oauth/config/openid/clients.write https://jans.io/oauth/jans-auth-server/config/adminui/write-all https://jans.io/oauth/lock-config.readonly https://jans.io/oauth/config/organization.write https://jans.io/oauth/config/database/ldap.delete https://jans.io/oauth/config/delete-all https://jans.io/oauth/config/openid/clients.delete https://jans.io/oauth/jans-auth-server/config/adminui/delete-all https://jans.io/idp/realm.write https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete https://jans.io/scim/config.readonly https://jans.io/oauth/config/app-version.readonly https://jans.io/oauth/config/scripts.delete https://jans.io/oauth/config/uma/resources.delete https://jans.io/scim/users.read https://jans.io/oauth/config/fido2.readonly https://jans.io/oauth/config/user.delete https://jans.io/oauth/kc-link-config.write https://jans.io/oauth/lock/audit.write https://jans.io/oauth/config/database/ldap.readonly https://jans.io/oauth/config/cache.write https://jans.io/oauth/config/attributes.readonly https://jans.io/oauth/config/smtp.readonly https://jans.io/scim/users.write https://jans.io/oauth/config/agama.delete https://jans.io/oauth/jans-auth-server/config/adminui/read-all https://jans.io/idp/config.write https://jans.io/oauth/config/uma/resources.write https://jans.io/oauth/config/saml.readonly https://jans.io/oauth/config/organization.readonly https://jans.io/oauth/lock/log.write https://jans.io/oauth/config/openid-delete https://jans.io/oauth/config/attributes.delete https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write https://jans.io/oauth/config/jwks.readonly https://jans.io/oauth/config/scopes.delete https://jans.io/oauth/config/scripts.write https://jans.io/oauth/config/database/ldap.write https://jans.io/scim/config.write https://jans.io/oauth/jans-auth-server/session.delete https://jans.io/oauth/client/authorizations.delete https://jans.io/oauth/config/acrs.readonly https://jans.io/idp/realm.readonly https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete https://jans.io/oauth/config/saml-config.write https://jans.io/oauth/config/smtp.write https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly https://jans.io/oauth/kc-link-config.readonly https://jans.io/oauth/config/attributes.write",
+                                "tokenCode": "c3b62d651c9424bed9167a7cd05ea4e6fedc62f20d5fe98b0672fee0a43603ad",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "NXBmV1WjSU28EH8KNTghJw",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 201
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            },
+                            {
+                                "dn": "tknCde=f0977b8c359446ff7a5aa157a930c89506485b266d988507478e367f53fd5445,ou=tokens,o=jans",
+                                "grantId": "d0c427ec-0c6e-4fdf-83eb-43a19e633eec",
+                                "clientId": "2000.cc8b29ae-cb4a-49ea-b176-8695e53919d9",
+                                "creationDate": "2024-09-20T12:55:37",
+                                "expirationDate": "2024-10-20T12:55:37",
+                                "deletable": true,
+                                "scope": "jans_stat openid https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.write https://jans.io/oauth/config/stats.readonly https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly",
+                                "tokenCode": "f0977b8c359446ff7a5aa157a930c89506485b266d988507478e367f53fd5445",
+                                "tokenType": "access_token",
+                                "grantType": "client_credentials",
+                                "referenceId": "1DnmKY6pS1S6XeKSHAj2Ag",
+                                "attributes": {
+                                    "online_access": false,
+                                    "statusListIndex": 1103
+                                },
+                                "tokenTypeEnum": "ACCESS_TOKEN"
+                            }
+                        ]
+                    }
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/token.readonly'
   /api/v1/uma/resources:
     get:
       tags:
@@ -8039,6 +8841,123 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/config/fido2.write'
+  '/fido2/registration/id/{jansId}':
+    get:
+      tags:
+        - Fido2 - Registration
+      summary: Fetch Fido2RegistrationEntry by Id.
+      description: Fetch Fido2RegistrationEntry by Id.
+      operationId: get-fido2-by-id
+      parameters:
+        - name: jansId
+          in: path
+          description: Fido2Registration identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fido2RegistrationEntry'
+              examples:
+                Response example:
+                  description: Response example
+                  value: |
+                    {
+                        "dn": "jansId=1c88c1cb-8e32-4b79-b244-c9f677ca5654,ou=fido2_register,o=jans",
+                        "id": "1c88c1cb-8e32-4b79-b244-c9f677ca5654",
+                        "challange": "2vCSaPMIt4tZpkO8_rDG-v3QoXBYMB1aqCAXFgA4q0Y",
+                        "challengeHash": 72585,
+                        "creationDate": "2024-09-25T16:48:28",
+                        "userInum": "1e73f801-22c2-4c19-a757-f96a87a5c713",
+                        "rpId": "https://admin-ui-test.gluu.org",
+                        "deletable": false,
+                        "publicKeyId": "KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A",
+                        "publicKeyIdHash": 306117,
+                        "registrationData": {
+                            "createdDate": "2024-09-25T16:48:28",
+                            "updatedDate": "2024-09-25T16:49:14",
+                            "createdBy": "admin",
+                            "updatedBy": "admin",
+                            "username": "admin",
+                            "domain": "admin-ui-test.gluu.org",
+                            "userId": "dIGgDiZj-uD0qYE52rbKAqdI7wlBOeIWqc8Qrgmp-GA",
+                            "challenge": "2vCSaPMIt4tZpkO8_rDG-v3QoXBYMB1aqCAXFgA4q0Y",
+                            "attenstationRequest": "{\"super_gluu_request\":true,\"super_gluu_request_mode\":\"two_step\",\"super_gluu_app_id\":\"https://admin-ui-test.gluu.org\",\"username\":\"admin\",\"displayName\":\"admin\",\"session_id\":\"aa7659a7-ea95-4ccf-802b-e2ce1f77592d\",\"attestation\":\"direct\"}",
+                            "attenstationResponse": "{\"super_gluu_request\":true,\"super_gluu_request_mode\":\"two_step\",\"type\":\"public-key\",\"response\":{\"deviceData\":\"eyJwdXNoX3Rva2VuIjoiNWI1OWU5YzY2YjZkYWFjNDg4ODQ0MGY2YTQ0ZDY5MDU1NGE3NTlmOTA4MjM5N2QwMzdhYTg3ZjViZGVmZTA4OSIsInBsYXRmb3JtIjoiaW9zIiwib3NfdmVyc2lvbiI6IjE4LjAiLCJ1dWlkIjoiMzNENkZEMkQtODVEQy00NjQ1LUI1MjctNEEzOUJBMzBCOUY3Iiwib3NfbmFtZSI6ImlPUyIsInR5cGUiOiJpUGhvbmUiLCJuYW1lIjoiaVBob25lIn0=\",\"clientDataJSON\":\"eyJjaGFsbGVuZ2UiOiIydkNTYVBNSXQ0dFpwa084X3JERy12M1FvWEJZTUIxYXFDQVhGZ0E0cTBZIiwib3JpZ2luIjoiaHR0cHM6Ly9hZG1pbi11aS10ZXN0LmdsdXUub3JnIiwidHlwZSI6Im5hdmlnYXRvci5pZC5maW5pc2hFbnJvbGxtZW50In0\",\"attestationObject\":\"v2NmbXRzZmlkby11MmYtc3VwZXItZ2x1dWdhdHRTdG10v2N4NWOBeQP_TUlJQyt6Q0NBcUdnQXdJQkFnSUNFQU13Q2dZSUtvWkl6ajBFQXdJd2dhQXhDekFKQmdOVkJBWVRBbFZUTVFzd0NRWURWUVFJREFKVVdERVJNQThHQTFVRUNnd0lSMngxZFNCSmJtTXhLakFvQmdOVkJBc01JVWRzZFhVZ1NXNWpJRk5ISUVObGNuUnBabWxqWVhSbElFRjFkR2h2Y21sMGVURWtNQ0lHQTFVRUF3d2JSMngxZFNCSmJtTWdVMGNnU1c1MFpYSnRaV1JwWVhSbElFTkJNUjh3SFFZSktvWklodmNOQVFrQkZoQnpkWEJ3YjNKMFFHZHNkWFV1YjNKbk1CNFhEVEl6TURNd056RTBNekl6TkZvWERUSTJNRFF3TlRFME16SXpORm93Z2EweEN6QUpCZ05WQkFZVEFsVlRNUXN3Q1FZRFZRUUlEQUpVV0RFUE1BMEdBMVVFQnd3R1FYVnpkR2x1TVJFd0R3WURWUVFLREFoSGJIVjFJRWx1WXpFcU1DZ0dBMVVFQ3d3aFIyeDFkU0JKYm1NZ1UwY2dRMlZ5ZEdsbWFXTmhkR1VnUVhWMGFHOXlhWFI1TVNBd0hnWURWUVFEREJkVFJ5QkhiSFYxSUVsdVl5QlRSeUJKVDFNZ1VISnZaREVmTUIwR0NTcUdTSWIzRFFFSkFSWVFjM1Z3Y0c5eWRFQm5iSFYxTG05eVp6QlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJJdUxkY1dRVGRXY2pIZ2pUM05FRnR0S2grUTByRXl3MVdzeUZJZUFsNUpCZUZPanZWTUNoMThyK1ZwbGNoWHVFc1BDQUJ2dXhId3dieDhBT1dvZVBjaWpnYnN3Z2Jnd0NRWURWUjBUQkFJd0FEQVJCZ2xnaGtnQmh2aENBUUVFQkFNQ0I0QXdNd1lKWUlaSUFZYjRRZ0VOQkNZV0pFOXdaVzVUVTB3Z1IyVnVaWEpoZEdWa0lFTnNhV1Z1ZENCRFpYSjBhV1pwWTJGMFpUQWRCZ05WSFE0RUZnUVVFM3pUVTRDU3NTL0JhTVZPZ2U0dHpwTGh2WVF3SHdZRFZSMGpCQmd3Rm9BVXQySEJpdFBxTVFKWXZiZ3hlaFlWYW9pdGJ6QXdEZ1lEVlIwUEFRSC9CQVFEQWdXZ01CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRkJ3TUNNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJQVBrNlRDaTc5dUtVa2JJLzVmMzFYT29SU1JYV1RDV1VlditwZ3F2ZUxhUUFpRUFwRVZsMEpSZkpsZUticXB3SkxBNVBzRWg3bDl4SkU2SHlOMWtac2ZrbkJRY3NpZ1hHMEUCIBzkX5fZ8u_p5WSXYf9snYVJr0ToaWKudDan31Sq_oDUAiEAmJfQD0TIVklEHqhaa9nvpdF0ZNQxTkVeABILEkZPsa__aGF1dGhEYXRhWM2SPi_U7b70sMUreG0v60G8suJ_QwlpkBIn-AYLG5BcVkEAAAAAAAAAAAAAAAAAAAAAAAAAAABAKdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7L9hMQJhMyZiLTEBYi0yWCDnjQGBQ5FbprdTRgVOa154aIp7JSc7I2LQijIavd9Wa2ItM1ggX0CyMtueg9vtuehvTU9rXDmOA19vqychmvATEkXUG5r__w\"},\"super_gluu_request_cancel\":false,\"id\":\"KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A\"}",
+                            "uncompressedECPoint": "v2ExAmEzJmItMQFiLTJYIOeNAYFDkVumt1NGBU5rXnhoinslJzsjYtCKMhq931ZrYi0zWCBfQLIy256D2-256G9NT2tcOY4DX2-rJyGa8BMSRdQbmv8",
+                            "publicKeyId": "KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A",
+                            "type": "public-key",
+                            "status": "registered",
+                            "counter": 1,
+                            "attestationType": "fido-u2f-super-gluu",
+                            "signatureAlgorithm": -7,
+                            "applicationId": "https://admin-ui-test.gluu.org"
+                        },
+                        "counter": 1,
+                        "registrationStatus": "registered",
+                        "deviceData": {
+                            "uuid": "33D6FD2D-85DC-4645-B527-4A39BA30B9F7",
+                            "type": "iPhone",
+                            "platform": "ios",
+                            "name": "iPhone",
+                            "os_name": "iOS",
+                            "os_version": "18.0",
+                            "push_token": "5b59e9c66b6daac4888440f6a44d690554a759f9082397d037aa87f5bdefe089"
+                        },
+                        "baseDn": "jansId=1c88c1cb-8e32-4b79-b244-c9f677ca5654,ou=fido2_register,o=jans"
+                    }
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/fido2.readonly'
+    delete:
+      tags:
+        - Fido2 - Registration
+      summary: Delete Fido2 Device Data based on device UID
+      description: Delete Fido2 Device Data based on device UID
+      operationId: delete-fido2-data
+      parameters:
+        - name: jansId
+          in: path
+          description: Fido2Registration Unique identifier.
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/fido2.delete'
   '/fido2/registration/entries/{username}':
     get:
       tags:
@@ -8062,6 +8981,315 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Fido2RegistrationEntry'
+              examples:
+                Response example:
+                  description: Response example
+                  value: |
+                    {
+                                "dn": "jansId=1c88c1cb-8e32-4b79-b244-c9f677ca5654,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans",
+                                "id": "1c88c1cb-8e32-4b79-b244-c9f677ca5654",
+                                "challange": "2vCSaPMIt4tZpkO8_rDG-v3QoXBYMB1aqCAXFgA4q0Y",
+                                "challengeHash": 72585,
+                                "creationDate": "2024-09-25T16:48:28",
+                                "userInum": "1e73f801-22c2-4c19-a757-f96a87a5c713",
+                                "rpId": "https://admin-ui-test.gluu.org",
+                                "deletable": false,
+                                "publicKeyId": "KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A",
+                                "publicKeyIdHash": 306117,
+                                "registrationData": {
+                                    "createdDate": "2024-09-25T16:48:28",
+                                    "updatedDate": "2024-09-25T16:49:14",
+                                    "createdBy": "admin",
+                                    "updatedBy": "admin",
+                                    "username": "admin",
+                                    "domain": "admin-ui-test.gluu.org",
+                                    "userId": "dIGgDiZj-uD0qYE52rbKAqdI7wlBOeIWqc8Qrgmp-GA",
+                                    "challenge": "2vCSaPMIt4tZpkO8_rDG-v3QoXBYMB1aqCAXFgA4q0Y",
+                                    "attenstationRequest": "{\"super_gluu_request\":true,\"super_gluu_request_mode\":\"two_step\",\"super_gluu_app_id\":\"https://admin-ui-test.gluu.org\",\"username\":\"admin\",\"displayName\":\"admin\",\"session_id\":\"aa7659a7-ea95-4ccf-802b-e2ce1f77592d\",\"attestation\":\"direct\"}",
+                                    "attenstationResponse": "{\"super_gluu_request\":true,\"super_gluu_request_mode\":\"two_step\",\"type\":\"public-key\",\"response\":{\"deviceData\":\"eyJwdXNoX3Rva2VuIjoiNWI1OWU5YzY2YjZkYWFjNDg4ODQ0MGY2YTQ0ZDY5MDU1NGE3NTlmOTA4MjM5N2QwMzdhYTg3ZjViZGVmZTA4OSIsInBsYXRmb3JtIjoiaW9zIiwib3NfdmVyc2lvbiI6IjE4LjAiLCJ1dWlkIjoiMzNENkZEMkQtODVEQy00NjQ1LUI1MjctNEEzOUJBMzBCOUY3Iiwib3NfbmFtZSI6ImlPUyIsInR5cGUiOiJpUGhvbmUiLCJuYW1lIjoiaVBob25lIn0=\",\"clientDataJSON\":\"eyJjaGFsbGVuZ2UiOiIydkNTYVBNSXQ0dFpwa084X3JERy12M1FvWEJZTUIxYXFDQVhGZ0E0cTBZIiwib3JpZ2luIjoiaHR0cHM6Ly9hZG1pbi11aS10ZXN0LmdsdXUub3JnIiwidHlwZSI6Im5hdmlnYXRvci5pZC5maW5pc2hFbnJvbGxtZW50In0\",\"attestationObject\":\"v2NmbXRzZmlkby11MmYtc3VwZXItZ2x1dWdhdHRTdG10v2N4NWOBeQP_TUlJQyt6Q0NBcUdnQXdJQkFnSUNFQU13Q2dZSUtvWkl6ajBFQXdJd2dhQXhDekFKQmdOVkJBWVRBbFZUTVFzd0NRWURWUVFJREFKVVdERVJNQThHQTFVRUNnd0lSMngxZFNCSmJtTXhLakFvQmdOVkJBc01JVWRzZFhVZ1NXNWpJRk5ISUVObGNuUnBabWxqWVhSbElFRjFkR2h2Y21sMGVURWtNQ0lHQTFVRUF3d2JSMngxZFNCSmJtTWdVMGNnU1c1MFpYSnRaV1JwWVhSbElFTkJNUjh3SFFZSktvWklodmNOQVFrQkZoQnpkWEJ3YjNKMFFHZHNkWFV1YjNKbk1CNFhEVEl6TURNd056RTBNekl6TkZvWERUSTJNRFF3TlRFME16SXpORm93Z2EweEN6QUpCZ05WQkFZVEFsVlRNUXN3Q1FZRFZRUUlEQUpVV0RFUE1BMEdBMVVFQnd3R1FYVnpkR2x1TVJFd0R3WURWUVFLREFoSGJIVjFJRWx1WXpFcU1DZ0dBMVVFQ3d3aFIyeDFkU0JKYm1NZ1UwY2dRMlZ5ZEdsbWFXTmhkR1VnUVhWMGFHOXlhWFI1TVNBd0hnWURWUVFEREJkVFJ5QkhiSFYxSUVsdVl5QlRSeUJKVDFNZ1VISnZaREVmTUIwR0NTcUdTSWIzRFFFSkFSWVFjM1Z3Y0c5eWRFQm5iSFYxTG05eVp6QlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJJdUxkY1dRVGRXY2pIZ2pUM05FRnR0S2grUTByRXl3MVdzeUZJZUFsNUpCZUZPanZWTUNoMThyK1ZwbGNoWHVFc1BDQUJ2dXhId3dieDhBT1dvZVBjaWpnYnN3Z2Jnd0NRWURWUjBUQkFJd0FEQVJCZ2xnaGtnQmh2aENBUUVFQkFNQ0I0QXdNd1lKWUlaSUFZYjRRZ0VOQkNZV0pFOXdaVzVUVTB3Z1IyVnVaWEpoZEdWa0lFTnNhV1Z1ZENCRFpYSjBhV1pwWTJGMFpUQWRCZ05WSFE0RUZnUVVFM3pUVTRDU3NTL0JhTVZPZ2U0dHpwTGh2WVF3SHdZRFZSMGpCQmd3Rm9BVXQySEJpdFBxTVFKWXZiZ3hlaFlWYW9pdGJ6QXdEZ1lEVlIwUEFRSC9CQVFEQWdXZ01CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRkJ3TUNNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJQVBrNlRDaTc5dUtVa2JJLzVmMzFYT29SU1JYV1RDV1VlditwZ3F2ZUxhUUFpRUFwRVZsMEpSZkpsZUticXB3SkxBNVBzRWg3bDl4SkU2SHlOMWtac2ZrbkJRY3NpZ1hHMEUCIBzkX5fZ8u_p5WSXYf9snYVJr0ToaWKudDan31Sq_oDUAiEAmJfQD0TIVklEHqhaa9nvpdF0ZNQxTkVeABILEkZPsa__aGF1dGhEYXRhWM2SPi_U7b70sMUreG0v60G8suJ_QwlpkBIn-AYLG5BcVkEAAAAAAAAAAAAAAAAAAAAAAAAAAABAKdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7L9hMQJhMyZiLTEBYi0yWCDnjQGBQ5FbprdTRgVOa154aIp7JSc7I2LQijIavd9Wa2ItM1ggX0CyMtueg9vtuehvTU9rXDmOA19vqychmvATEkXUG5r__w\"},\"super_gluu_request_cancel\":false,\"id\":\"KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A\"}",
+                                    "uncompressedECPoint": "v2ExAmEzJmItMQFiLTJYIOeNAYFDkVumt1NGBU5rXnhoinslJzsjYtCKMhq931ZrYi0zWCBfQLIy256D2-256G9NT2tcOY4DX2-rJyGa8BMSRdQbmv8",
+                                    "publicKeyId": "KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A",
+                                    "type": "public-key",
+                                    "status": "registered",
+                                    "counter": 1,
+                                    "attestationType": "fido-u2f-super-gluu",
+                                    "signatureAlgorithm": -7,
+                                    "applicationId": "https://admin-ui-test.gluu.org"
+                                },
+                                "counter": 1,
+                                "registrationStatus": "registered",
+                                "deviceData": {
+                                    "uuid": "33D6FD2D-85DC-4645-B527-4A39BA30B9F7",
+                                    "type": "iPhone",
+                                    "platform": "ios",
+                                    "name": "iPhone",
+                                    "os_name": "iOS",
+                                    "os_version": "18.0",
+                                    "push_token": "5b59e9c66b6daac4888440f6a44d690554a759f9082397d037aa87f5bdefe089"
+                                },
+                                "baseDn": "jansId=1c88c1cb-8e32-4b79-b244-c9f677ca5654,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans"
+                            },
+                            {
+                                "dn": "jansId=50b1c565-cb63-4d1c-9e60-b25c7ed15807,ou=fido2_register,inum=4e138215-42c6-43b2-a138-e98d282421a3,ou=people,o=jans",
+                                "id": "50b1c565-cb63-4d1c-9e60-b25c7ed15807",
+                                "challange": "uKQWXt4bowi2DM8EWtuFWOhMZLh9Fqw7r-4LWFcFY2I",
+                                "challengeHash": 73147,
+                                "creationDate": "2024-09-25T17:32:00",
+                                "userInum": "4e138215-42c6-43b2-a138-e98d282421a3",
+                                "rpId": "admin-ui-test.gluu.org",
+                                "deletable": false,
+                                "publicKeyId": "TTtrcadQOUwPKVRBccLNJw3PnNw",
+                                "publicKeyIdHash": 31071,
+                                "registrationData": {
+                                    "createdDate": "2024-09-25T17:32:00",
+                                    "updatedDate": "2024-09-25T17:34:53",
+                                    "createdBy": "arnab",
+                                    "updatedBy": "arnab",
+                                    "username": "arnab",
+                                    "domain": "admin-ui-test.gluu.org",
+                                    "userId": "EZ-odnHs9EDWdY52OikD--lqjvFAHqJdZctqnxu0Kao",
+                                    "challenge": "uKQWXt4bowi2DM8EWtuFWOhMZLh9Fqw7r-4LWFcFY2I",
+                                    "attenstationRequest": "{\"attestation\":\"direct\",\"displayName\":\"arnab\",\"authenticatorSelection\":{\"authenticatorAttachment\":\"platform\",\"userVerification\":\"discouraged\",\"requireResidentKey\":\"false\"},\"username\":\"arnab\"}",
+                                    "attenstationResponse": "{\"type\":\"public-key\",\"id\":\"TTtrcadQOUwPKVRBccLNJw3PnNw\",\"response\":{\"attestationObject\":\"o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViYjZHVp5tBCFVmGadN9klm_j50zRn-V4OMG9wljvmxv3ddAAAAAPv8MAcVTk7MjAtuAgVX170AFE07a3GnUDlMDylUQXHCzScNz5zcpQECAyYgASFYIEAey21gffFOf4PAHS2YtXE2mShi8LDXhHg5zouLceaXIlggvCyrOjHhY_KvPDCKmssmF1g8YbEn_fXRAfHf-cfVros\",\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoidUtRV1h0NGJvd2kyRE04RVd0dUZXT2hNWkxoOUZxdzdyLTRMV0ZjRlkySSIsIm9yaWdpbiI6Imh0dHBzOi8vYWRtaW4tdWktdGVzdC5nbHV1Lm9yZyIsImNyb3NzT3JpZ2luIjpmYWxzZX0\"},\"clientExtensionResults\":{}}",
+                                    "uncompressedECPoint": "pQECAyYgASFYIEAey21gffFOf4PAHS2YtXE2mShi8LDXhHg5zouLceaXIlggvCyrOjHhY_KvPDCKmssmF1g8YbEn_fXRAfHf-cfVros",
+                                    "publicKeyId": "TTtrcadQOUwPKVRBccLNJw3PnNw",
+                                    "type": "public-key",
+                                    "status": "registered",
+                                    "counter": 0,
+                                    "attestationType": "none",
+                                    "signatureAlgorithm": 0,
+                                    "applicationId": "admin-ui-test.gluu.org"
+                                },
+                                "counter": 0,
+                                "registrationStatus": "registered",
+                                "baseDn": "jansId=50b1c565-cb63-4d1c-9e60-b25c7ed15807,ou=fido2_register,inum=4e138215-42c6-43b2-a138-e98d282421a3,ou=people,o=jans"
+                            },
+                            {
+                                "dn": "jansId=6e196a5d-122b-4f06-8ff8-6f41b32bc2a6,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans",
+                                "id": "6e196a5d-122b-4f06-8ff8-6f41b32bc2a6",
+                                "challange": "CCkCZgre81B-6SYCzzfLqSReF4b7enbibnp487AEPkU",
+                                "challengeHash": 76195,
+                                "creationDate": "2024-09-25T17:13:51",
+                                "userInum": "1e73f801-22c2-4c19-a757-f96a87a5c713",
+                                "rpId": "admin-ui-test.gluu.org",
+                                "deletable": false,
+                                "publicKeyId": "RaA1BFgMwgKXFSVYJ4qPab0Dz_Y4zntWH0Wq21Uz6c8",
+                                "publicKeyIdHash": 75217,
+                                "registrationData": {
+                                    "createdDate": "2024-09-25T17:13:51",
+                                    "updatedDate": "2024-09-25T17:15:43",
+                                    "createdBy": "admin",
+                                    "updatedBy": "admin",
+                                    "username": "admin",
+                                    "domain": "admin-ui-test.gluu.org",
+                                    "userId": "fEJVrzv_s5p5_SCUjiVofbS01eKJwybVIFoRcE-Vl6Y",
+                                    "challenge": "CCkCZgre81B-6SYCzzfLqSReF4b7enbibnp487AEPkU",
+                                    "attenstationRequest": "{\"attestation\":\"direct\",\"displayName\":\"admin\",\"authenticatorSelection\":{\"authenticatorAttachment\":\"platform\",\"userVerification\":\"discouraged\",\"requireResidentKey\":\"false\"},\"username\":\"admin\"}",
+                                    "attenstationResponse": "{\"type\":\"public-key\",\"id\":\"RaA1BFgMwgKXFSVYJ4qPab0Dz_Y4zntWH0Wq21Uz6c8\",\"response\":{\"attestationObject\":\"o2NmbXRmcGFja2VkZ2F0dFN0bXSiY2FsZyZjc2lnWEcwRQIhANoBaaelHNJkCSnrmxSeixWKyCsA-IYW19LAv7IQoRcnAiAaQw6Rjc1By7RdA00k6qzDtOwLCoPvBTFACAL9nr6tPWhhdXRoRGF0YVikjZHVp5tBCFVmGadN9klm_j50zRn-V4OMG9wljvmxv3dFAAAAAK3OAAI1vMYKZIsLJfHwVQMAIEWgNQRYDMIClxUlWCeKj2m9A8_2OM57Vh9FqttVM-nPpQECAyYgASFYIMyALzgwTY7Oe3rzssnlBfrwk5TuZ1a-cKkEuRIYE0-tIlgghEQR51yw4l1fQLjvYi4ydFdOvC5rHkVrk-xxcuwcotE\",\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiQ0NrQ1pncmU4MUItNlNZQ3p6ZkxxU1JlRjRiN2VuYmlibnA0ODdBRVBrVSIsIm9yaWdpbiI6Imh0dHBzOi8vYWRtaW4tdWktdGVzdC5nbHV1Lm9yZyIsImNyb3NzT3JpZ2luIjpmYWxzZX0\"},\"clientExtensionResults\":{}}",
+                                    "uncompressedECPoint": "pQECAyYgASFYIMyALzgwTY7Oe3rzssnlBfrwk5TuZ1a-cKkEuRIYE0-tIlgghEQR51yw4l1fQLjvYi4ydFdOvC5rHkVrk-xxcuwcotE",
+                                    "publicKeyId": "RaA1BFgMwgKXFSVYJ4qPab0Dz_Y4zntWH0Wq21Uz6c8",
+                                    "type": "public-key",
+                                    "status": "registered",
+                                    "counter": 0,
+                                    "attestationType": "packed",
+                                    "signatureAlgorithm": 0,
+                                    "applicationId": "admin-ui-test.gluu.org"
+                                },
+                                "counter": 0,
+                                "registrationStatus": "registered",
+                                "baseDn": "jansId=6e196a5d-122b-4f06-8ff8-6f41b32bc2a6,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans"
+                            }
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/fido2.readonly'
+  /fido2/registration:
+    get:
+      tags:
+        - Fido2 - Registration
+      summary: Get a list of Fido2RegistrationEntry.
+      description: Get a list of Fido2RegistrationEntry.
+      operationId: search-fido2-registration-data
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: pattern
+          in: query
+          description: Search pattern
+          schema:
+            type: string
+            default: ''
+        - name: startIndex
+          in: query
+          description: The 1-based index of the first query result
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: sortBy
+          in: query
+          description: Data whose value will be used to order the returned response
+          schema:
+            type: string
+            default: jansId
+        - name: sortOrder
+          in: query
+          description: >-
+            Order in which the sortBy param is applied. Allowed values are
+            "ascending" and "descending"
+          schema:
+            type: string
+            default: ascending
+        - name: fieldValuePair
+          in: query
+          description: Field and value pair for seraching
+          schema:
+            type: string
+            default: ''
+          examples:
+            Field value example:
+              description: Field value example
+              value: 'mail=abc@mail.com,jansStatus=true'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fido2RegistrationEntryPagedResult'
+              examples:
+                Response example:
+                  description: Response example
+                  value: |
+                    {
+                        "start": 0,
+                        "totalEntriesCount": 3,
+                        "entriesCount": 3,
+                        "entries": [
+                            {
+                                "dn": "jansId=1c88c1cb-8e32-4b79-b244-c9f677ca5654,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans",
+                                "id": "1c88c1cb-8e32-4b79-b244-c9f677ca5654",
+                                "challange": "2vCSaPMIt4tZpkO8_rDG-v3QoXBYMB1aqCAXFgA4q0Y",
+                                "challengeHash": 72585,
+                                "creationDate": "2024-09-25T16:48:28",
+                                "userInum": "1e73f801-22c2-4c19-a757-f96a87a5c713",
+                                "rpId": "https://admin-ui-test.gluu.org",
+                                "deletable": false,
+                                "publicKeyId": "KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A",
+                                "publicKeyIdHash": 306117,
+                                "registrationData": {
+                                    "createdDate": "2024-09-25T16:48:28",
+                                    "updatedDate": "2024-09-25T16:49:14",
+                                    "createdBy": "admin",
+                                    "updatedBy": "admin",
+                                    "username": "admin",
+                                    "domain": "admin-ui-test.gluu.org",
+                                    "userId": "dIGgDiZj-uD0qYE52rbKAqdI7wlBOeIWqc8Qrgmp-GA",
+                                    "challenge": "2vCSaPMIt4tZpkO8_rDG-v3QoXBYMB1aqCAXFgA4q0Y",
+                                    "attenstationRequest": "{\"super_gluu_request\":true,\"super_gluu_request_mode\":\"two_step\",\"super_gluu_app_id\":\"https://admin-ui-test.gluu.org\",\"username\":\"admin\",\"displayName\":\"admin\",\"session_id\":\"aa7659a7-ea95-4ccf-802b-e2ce1f77592d\",\"attestation\":\"direct\"}",
+                                    "attenstationResponse": "{\"super_gluu_request\":true,\"super_gluu_request_mode\":\"two_step\",\"type\":\"public-key\",\"response\":{\"deviceData\":\"eyJwdXNoX3Rva2VuIjoiNWI1OWU5YzY2YjZkYWFjNDg4ODQ0MGY2YTQ0ZDY5MDU1NGE3NTlmOTA4MjM5N2QwMzdhYTg3ZjViZGVmZTA4OSIsInBsYXRmb3JtIjoiaW9zIiwib3NfdmVyc2lvbiI6IjE4LjAiLCJ1dWlkIjoiMzNENkZEMkQtODVEQy00NjQ1LUI1MjctNEEzOUJBMzBCOUY3Iiwib3NfbmFtZSI6ImlPUyIsInR5cGUiOiJpUGhvbmUiLCJuYW1lIjoiaVBob25lIn0=\",\"clientDataJSON\":\"eyJjaGFsbGVuZ2UiOiIydkNTYVBNSXQ0dFpwa084X3JERy12M1FvWEJZTUIxYXFDQVhGZ0E0cTBZIiwib3JpZ2luIjoiaHR0cHM6Ly9hZG1pbi11aS10ZXN0LmdsdXUub3JnIiwidHlwZSI6Im5hdmlnYXRvci5pZC5maW5pc2hFbnJvbGxtZW50In0\",\"attestationObject\":\"v2NmbXRzZmlkby11MmYtc3VwZXItZ2x1dWdhdHRTdG10v2N4NWOBeQP_TUlJQyt6Q0NBcUdnQXdJQkFnSUNFQU13Q2dZSUtvWkl6ajBFQXdJd2dhQXhDekFKQmdOVkJBWVRBbFZUTVFzd0NRWURWUVFJREFKVVdERVJNQThHQTFVRUNnd0lSMngxZFNCSmJtTXhLakFvQmdOVkJBc01JVWRzZFhVZ1NXNWpJRk5ISUVObGNuUnBabWxqWVhSbElFRjFkR2h2Y21sMGVURWtNQ0lHQTFVRUF3d2JSMngxZFNCSmJtTWdVMGNnU1c1MFpYSnRaV1JwWVhSbElFTkJNUjh3SFFZSktvWklodmNOQVFrQkZoQnpkWEJ3YjNKMFFHZHNkWFV1YjNKbk1CNFhEVEl6TURNd056RTBNekl6TkZvWERUSTJNRFF3TlRFME16SXpORm93Z2EweEN6QUpCZ05WQkFZVEFsVlRNUXN3Q1FZRFZRUUlEQUpVV0RFUE1BMEdBMVVFQnd3R1FYVnpkR2x1TVJFd0R3WURWUVFLREFoSGJIVjFJRWx1WXpFcU1DZ0dBMVVFQ3d3aFIyeDFkU0JKYm1NZ1UwY2dRMlZ5ZEdsbWFXTmhkR1VnUVhWMGFHOXlhWFI1TVNBd0hnWURWUVFEREJkVFJ5QkhiSFYxSUVsdVl5QlRSeUJKVDFNZ1VISnZaREVmTUIwR0NTcUdTSWIzRFFFSkFSWVFjM1Z3Y0c5eWRFQm5iSFYxTG05eVp6QlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJJdUxkY1dRVGRXY2pIZ2pUM05FRnR0S2grUTByRXl3MVdzeUZJZUFsNUpCZUZPanZWTUNoMThyK1ZwbGNoWHVFc1BDQUJ2dXhId3dieDhBT1dvZVBjaWpnYnN3Z2Jnd0NRWURWUjBUQkFJd0FEQVJCZ2xnaGtnQmh2aENBUUVFQkFNQ0I0QXdNd1lKWUlaSUFZYjRRZ0VOQkNZV0pFOXdaVzVUVTB3Z1IyVnVaWEpoZEdWa0lFTnNhV1Z1ZENCRFpYSjBhV1pwWTJGMFpUQWRCZ05WSFE0RUZnUVVFM3pUVTRDU3NTL0JhTVZPZ2U0dHpwTGh2WVF3SHdZRFZSMGpCQmd3Rm9BVXQySEJpdFBxTVFKWXZiZ3hlaFlWYW9pdGJ6QXdEZ1lEVlIwUEFRSC9CQVFEQWdXZ01CTUdBMVVkSlFRTU1Bb0dDQ3NHQVFVRkJ3TUNNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJQVBrNlRDaTc5dUtVa2JJLzVmMzFYT29SU1JYV1RDV1VlditwZ3F2ZUxhUUFpRUFwRVZsMEpSZkpsZUticXB3SkxBNVBzRWg3bDl4SkU2SHlOMWtac2ZrbkJRY3NpZ1hHMEUCIBzkX5fZ8u_p5WSXYf9snYVJr0ToaWKudDan31Sq_oDUAiEAmJfQD0TIVklEHqhaa9nvpdF0ZNQxTkVeABILEkZPsa__aGF1dGhEYXRhWM2SPi_U7b70sMUreG0v60G8suJ_QwlpkBIn-AYLG5BcVkEAAAAAAAAAAAAAAAAAAAAAAAAAAABAKdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7L9hMQJhMyZiLTEBYi0yWCDnjQGBQ5FbprdTRgVOa154aIp7JSc7I2LQijIavd9Wa2ItM1ggX0CyMtueg9vtuehvTU9rXDmOA19vqychmvATEkXUG5r__w\"},\"super_gluu_request_cancel\":false,\"id\":\"KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A\"}",
+                                    "uncompressedECPoint": "v2ExAmEzJmItMQFiLTJYIOeNAYFDkVumt1NGBU5rXnhoinslJzsjYtCKMhq931ZrYi0zWCBfQLIy256D2-256G9NT2tcOY4DX2-rJyGa8BMSRdQbmv8",
+                                    "publicKeyId": "KdwKkzDJDf0o2fLUWk0NDLpSX0QXFXG3H3a46RBTfGzyx69wQ6YJMMzSiIJXXEAKtjtAvNyQ1bOCkeWXZJ3u7A",
+                                    "type": "public-key",
+                                    "status": "registered",
+                                    "counter": 1,
+                                    "attestationType": "fido-u2f-super-gluu",
+                                    "signatureAlgorithm": -7,
+                                    "applicationId": "https://admin-ui-test.gluu.org"
+                                },
+                                "counter": 1,
+                                "registrationStatus": "registered",
+                                "deviceData": {
+                                    "uuid": "33D6FD2D-85DC-4645-B527-4A39BA30B9F7",
+                                    "type": "iPhone",
+                                    "platform": "ios",
+                                    "name": "iPhone",
+                                    "os_name": "iOS",
+                                    "os_version": "18.0",
+                                    "push_token": "5b59e9c66b6daac4888440f6a44d690554a759f9082397d037aa87f5bdefe089"
+                                },
+                                "baseDn": "jansId=1c88c1cb-8e32-4b79-b244-c9f677ca5654,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans"
+                            },
+                            {
+                                "dn": "jansId=50b1c565-cb63-4d1c-9e60-b25c7ed15807,ou=fido2_register,inum=4e138215-42c6-43b2-a138-e98d282421a3,ou=people,o=jans",
+                                "id": "50b1c565-cb63-4d1c-9e60-b25c7ed15807",
+                                "challange": "uKQWXt4bowi2DM8EWtuFWOhMZLh9Fqw7r-4LWFcFY2I",
+                                "challengeHash": 73147,
+                                "creationDate": "2024-09-25T17:32:00",
+                                "userInum": "4e138215-42c6-43b2-a138-e98d282421a3",
+                                "rpId": "admin-ui-test.gluu.org",
+                                "deletable": false,
+                                "publicKeyId": "TTtrcadQOUwPKVRBccLNJw3PnNw",
+                                "publicKeyIdHash": 31071,
+                                "registrationData": {
+                                    "createdDate": "2024-09-25T17:32:00",
+                                    "updatedDate": "2024-09-25T17:34:53",
+                                    "createdBy": "arnab",
+                                    "updatedBy": "arnab",
+                                    "username": "arnab",
+                                    "domain": "admin-ui-test.gluu.org",
+                                    "userId": "EZ-odnHs9EDWdY52OikD--lqjvFAHqJdZctqnxu0Kao",
+                                    "challenge": "uKQWXt4bowi2DM8EWtuFWOhMZLh9Fqw7r-4LWFcFY2I",
+                                    "attenstationRequest": "{\"attestation\":\"direct\",\"displayName\":\"arnab\",\"authenticatorSelection\":{\"authenticatorAttachment\":\"platform\",\"userVerification\":\"discouraged\",\"requireResidentKey\":\"false\"},\"username\":\"arnab\"}",
+                                    "attenstationResponse": "{\"type\":\"public-key\",\"id\":\"TTtrcadQOUwPKVRBccLNJw3PnNw\",\"response\":{\"attestationObject\":\"o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViYjZHVp5tBCFVmGadN9klm_j50zRn-V4OMG9wljvmxv3ddAAAAAPv8MAcVTk7MjAtuAgVX170AFE07a3GnUDlMDylUQXHCzScNz5zcpQECAyYgASFYIEAey21gffFOf4PAHS2YtXE2mShi8LDXhHg5zouLceaXIlggvCyrOjHhY_KvPDCKmssmF1g8YbEn_fXRAfHf-cfVros\",\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoidUtRV1h0NGJvd2kyRE04RVd0dUZXT2hNWkxoOUZxdzdyLTRMV0ZjRlkySSIsIm9yaWdpbiI6Imh0dHBzOi8vYWRtaW4tdWktdGVzdC5nbHV1Lm9yZyIsImNyb3NzT3JpZ2luIjpmYWxzZX0\"},\"clientExtensionResults\":{}}",
+                                    "uncompressedECPoint": "pQECAyYgASFYIEAey21gffFOf4PAHS2YtXE2mShi8LDXhHg5zouLceaXIlggvCyrOjHhY_KvPDCKmssmF1g8YbEn_fXRAfHf-cfVros",
+                                    "publicKeyId": "TTtrcadQOUwPKVRBccLNJw3PnNw",
+                                    "type": "public-key",
+                                    "status": "registered",
+                                    "counter": 0,
+                                    "attestationType": "none",
+                                    "signatureAlgorithm": 0,
+                                    "applicationId": "admin-ui-test.gluu.org"
+                                },
+                                "counter": 0,
+                                "registrationStatus": "registered",
+                                "baseDn": "jansId=50b1c565-cb63-4d1c-9e60-b25c7ed15807,ou=fido2_register,inum=4e138215-42c6-43b2-a138-e98d282421a3,ou=people,o=jans"
+                            },
+                            {
+                                "dn": "jansId=6e196a5d-122b-4f06-8ff8-6f41b32bc2a6,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans",
+                                "id": "6e196a5d-122b-4f06-8ff8-6f41b32bc2a6",
+                                "challange": "CCkCZgre81B-6SYCzzfLqSReF4b7enbibnp487AEPkU",
+                                "challengeHash": 76195,
+                                "creationDate": "2024-09-25T17:13:51",
+                                "userInum": "1e73f801-22c2-4c19-a757-f96a87a5c713",
+                                "rpId": "admin-ui-test.gluu.org",
+                                "deletable": false,
+                                "publicKeyId": "RaA1BFgMwgKXFSVYJ4qPab0Dz_Y4zntWH0Wq21Uz6c8",
+                                "publicKeyIdHash": 75217,
+                                "registrationData": {
+                                    "createdDate": "2024-09-25T17:13:51",
+                                    "updatedDate": "2024-09-25T17:15:43",
+                                    "createdBy": "admin",
+                                    "updatedBy": "admin",
+                                    "username": "admin",
+                                    "domain": "admin-ui-test.gluu.org",
+                                    "userId": "fEJVrzv_s5p5_SCUjiVofbS01eKJwybVIFoRcE-Vl6Y",
+                                    "challenge": "CCkCZgre81B-6SYCzzfLqSReF4b7enbibnp487AEPkU",
+                                    "attenstationRequest": "{\"attestation\":\"direct\",\"displayName\":\"admin\",\"authenticatorSelection\":{\"authenticatorAttachment\":\"platform\",\"userVerification\":\"discouraged\",\"requireResidentKey\":\"false\"},\"username\":\"admin\"}",
+                                    "attenstationResponse": "{\"type\":\"public-key\",\"id\":\"RaA1BFgMwgKXFSVYJ4qPab0Dz_Y4zntWH0Wq21Uz6c8\",\"response\":{\"attestationObject\":\"o2NmbXRmcGFja2VkZ2F0dFN0bXSiY2FsZyZjc2lnWEcwRQIhANoBaaelHNJkCSnrmxSeixWKyCsA-IYW19LAv7IQoRcnAiAaQw6Rjc1By7RdA00k6qzDtOwLCoPvBTFACAL9nr6tPWhhdXRoRGF0YVikjZHVp5tBCFVmGadN9klm_j50zRn-V4OMG9wljvmxv3dFAAAAAK3OAAI1vMYKZIsLJfHwVQMAIEWgNQRYDMIClxUlWCeKj2m9A8_2OM57Vh9FqttVM-nPpQECAyYgASFYIMyALzgwTY7Oe3rzssnlBfrwk5TuZ1a-cKkEuRIYE0-tIlgghEQR51yw4l1fQLjvYi4ydFdOvC5rHkVrk-xxcuwcotE\",\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiQ0NrQ1pncmU4MUItNlNZQ3p6ZkxxU1JlRjRiN2VuYmlibnA0ODdBRVBrVSIsIm9yaWdpbiI6Imh0dHBzOi8vYWRtaW4tdWktdGVzdC5nbHV1Lm9yZyIsImNyb3NzT3JpZ2luIjpmYWxzZX0\"},\"clientExtensionResults\":{}}",
+                                    "uncompressedECPoint": "pQECAyYgASFYIMyALzgwTY7Oe3rzssnlBfrwk5TuZ1a-cKkEuRIYE0-tIlgghEQR51yw4l1fQLjvYi4ydFdOvC5rHkVrk-xxcuwcotE",
+                                    "publicKeyId": "RaA1BFgMwgKXFSVYJ4qPab0Dz_Y4zntWH0Wq21Uz6c8",
+                                    "type": "public-key",
+                                    "status": "registered",
+                                    "counter": 0,
+                                    "attestationType": "packed",
+                                    "signatureAlgorithm": 0,
+                                    "applicationId": "admin-ui-test.gluu.org"
+                                },
+                                "counter": 0,
+                                "registrationStatus": "registered",
+                                "baseDn": "jansId=6e196a5d-122b-4f06-8ff8-6f41b32bc2a6,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans"
+                            }
+                        ]
+                    }
         '401':
           description: Unauthorized
         '500':
@@ -11411,6 +12639,261 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/kc-link-config.write'
+  /lock/audit/health/search:
+    get:
+      tags:
+        - Lock - Audit
+      summary: Rerquest health records for specific event range
+      description: Rerquest health records for specific event range
+      operationId: request-lock-health-records-event-range
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: eventStartDate
+          in: query
+          description: Event start date in ISO8601 format
+          required: true
+          schema:
+            type: string
+        - name: eventEndDate
+          in: query
+          description: Event end date in ISO8601 format
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HealthEntry'
+        '400':
+          description: Wrong date range specified
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/health.readonly'
+  /lock/audit/log/search:
+    get:
+      tags:
+        - Lock - Log
+      summary: Rerquest log records for specific event range
+      description: Rerquest log records for specific event range
+      operationId: request-lock-log-records-event-range
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: eventStartDate
+          in: query
+          description: Event start date in ISO8601 format
+          required: true
+          schema:
+            type: string
+        - name: eventEndDate
+          in: query
+          description: Event end date in ISO8601 format
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LogEntry'
+        '400':
+          description: Wrong date range specified
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/log.readonly'
+  /lock/audit/telemetry/search:
+    get:
+      tags:
+        - Lock - Audit
+      summary: Request telemetry records for specific event range
+      description: Rerquest telemetry records for specific event range
+      operationId: request-lock-telemetry-records-event-range
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: eventStartDate
+          in: query
+          description: Event start date in ISO8601 format
+          required: true
+          schema:
+            type: string
+        - name: eventEndDate
+          in: query
+          description: Event end date in ISO8601 format
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryEntry'
+        '400':
+          description: Wrong date range specified
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/telemetry.readonly'
+  /lock/audit/health/bulk:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Bulk save health data
+      description: Bulk save health data
+      operationId: bulk-save-health-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/HealthEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/health.write'
+  /lock/audit/log/bulk:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Bulk save log data
+      description: Bulk save log data
+      operationId: bulk-save-log-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/LogEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/log.write'
+  /lock/audit/telemetry/bulk:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Bulk save telemetry data
+      description: Bulk save telemetry data
+      operationId: bulk-save-telemetry-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/TelemetryEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/telemetry.write'
   /lock/audit/health:
     post:
       tags:
@@ -11424,16 +12907,8 @@ paths:
             schema:
               $ref: '#/components/schemas/HealthEntry'
       responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HealthEntry'
-              examples:
-                Response example:
-                  description: Response example
-                  value: ''
+        '200':
+          description: Ok
         '400':
           description: Bad Request
           content:
@@ -11470,16 +12945,8 @@ paths:
             schema:
               $ref: '#/components/schemas/LogEntry'
       responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LogEntry'
-              examples:
-                Response example:
-                  description: Response example
-                  value: ''
+        '200':
+          description: Ok
         '400':
           description: Bad Request
           content:
@@ -11516,16 +12983,8 @@ paths:
             schema:
               $ref: '#/components/schemas/TelemetryEntry'
       responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TelemetryEntry'
-              examples:
-                Response example:
-                  description: Response example
-                  value: ''
+        '200':
+          description: Ok
         '400':
           description: Bad Request
           content:
@@ -11783,7 +13242,9 @@ components:
           type: string
         inum:
           type: string
-        displayName:
+        fileName:
+          type: string
+        filePath:
           type: string
         description:
           type: string
@@ -11792,19 +13253,19 @@ components:
         creationDate:
           type: string
           format: date-time
-        jansService:
+        service:
           type: array
           items:
             type: string
-        jansLevel:
+        level:
           type: integer
           format: int32
-        jansRevision:
+        revision:
           type: integer
           format: int32
-        jansEnabled:
+        enabled:
           type: boolean
-        jansAlias:
+        alias:
           type: string
         baseDn:
           type: string
@@ -11944,21 +13405,21 @@ components:
           $ref: '#/components/schemas/AttributeValidation'
         tooltip:
           type: string
-        adminCanEdit:
+        selected:
+          type: boolean
+        adminCanView:
           type: boolean
         userCanView:
           type: boolean
-        userCanEdit:
+        adminCanEdit:
           type: boolean
-        adminCanView:
+        userCanEdit:
           type: boolean
         adminCanAccess:
           type: boolean
         userCanAccess:
           type: boolean
         whitePagesCanView:
-          type: boolean
-        selected:
           type: boolean
         baseDn:
           type: string
@@ -12109,6 +13570,15 @@ components:
           type: array
           items:
             type: string
+        applyXFrameOptionsHeaderIfUriContainsAny:
+          type: array
+          items:
+            type: string
+        xframeOptionsHeaderValue:
+          type: string
+          enum:
+            - SAMEORIGIN
+            - DENY
         responseTypesSupported:
           uniqueItems: true
           type: array
@@ -12575,6 +14045,9 @@ components:
           type: boolean
         disableU2fEndpoint:
           type: boolean
+        deviceSessionLifetimeInSeconds:
+          type: integer
+          format: int32
         rotateDeviceSecret:
           type: boolean
         returnDeviceSecretFromAuthzEndpoint:
@@ -12607,7 +14080,7 @@ components:
           type: boolean
         fapiCompatibility:
           type: boolean
-        forceIdTokenHintPrecense:
+        forceIdTokenHintPresence:
           type: boolean
         rejectEndSessionIfIdTokenExpired:
           type: boolean
@@ -12795,6 +14268,8 @@ components:
           type: boolean
         lockMessageConfig:
           $ref: '#/components/schemas/LockMessageConfig'
+        fapi:
+          type: boolean
         allResponseTypesSupported:
           uniqueItems: true
           type: array
@@ -12804,8 +14279,6 @@ components:
               - code
               - token
               - id_token
-        fapi:
-          type: boolean
     AuthenticationFilter:
       required:
         - baseDn
@@ -13695,6 +15168,16 @@ components:
           type: integer
           description: Maximum number of results per page in search endpoints.
           format: int32
+        acrExclusionList:
+          type: array
+          description: >-
+            List of ACR values that should be excluded from active validation
+            check.
+          items:
+            type: string
+            description: >-
+              List of ACR values that should be excluded from active validation
+              check.
         userExclusionAttributes:
           type: array
           description: User attribute that should not be returned in response.
@@ -14375,10 +15858,10 @@ components:
         ttl:
           type: integer
           format: int32
-        persisted:
-          type: boolean
         opbrowserState:
           type: string
+        persisted:
+          type: boolean
     SessionIdAccessMap:
       type: object
       properties:
@@ -14446,6 +15929,124 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserAuthenticator'
+    SessionPagedResult:
+      type: object
+      properties:
+        start:
+          type: integer
+          format: int32
+        totalEntriesCount:
+          type: integer
+          format: int32
+        entriesCount:
+          type: integer
+          format: int32
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionId'
+    TokenAttributes:
+      type: object
+      properties:
+        x5cs256:
+          type: string
+        online_access:
+          type: boolean
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+        dpopJkt:
+          type: string
+        authorizationDetails:
+          type: string
+        statusListIndex:
+          type: integer
+          format: int32
+    TokenEntity:
+      type: object
+      properties:
+        dn:
+          type: string
+        grantId:
+          type: string
+        userId:
+          type: string
+        userDn:
+          type: string
+        clientId:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        expirationDate:
+          type: string
+          format: date-time
+        deletable:
+          type: boolean
+        authenticationTime:
+          type: string
+          format: date-time
+        scope:
+          type: string
+        tokenCode:
+          type: string
+        tokenType:
+          type: string
+        grantType:
+          type: string
+        jwtRequest:
+          type: string
+        authorizationCode:
+          type: string
+        nonce:
+          type: string
+        codeChallenge:
+          type: string
+        codeChallengeMethod:
+          type: string
+        claims:
+          type: string
+        tokenBindingHash:
+          type: string
+        referenceId:
+          type: string
+        authMode:
+          type: string
+        sessionDn:
+          type: string
+        ttl:
+          type: integer
+          format: int32
+        attributes:
+          $ref: '#/components/schemas/TokenAttributes'
+        dpop:
+          type: string
+        tokenTypeEnum:
+          type: string
+          enum:
+            - ID_TOKEN
+            - ACCESS_TOKEN
+            - LONG_LIVED_ACCESS_TOKEN
+            - REFRESH_TOKEN
+            - AUTHORIZATION_CODE
+            - TX_TOKEN
+    TokenEntityPagedResult:
+      type: object
+      properties:
+        start:
+          type: integer
+          format: int32
+        totalEntriesCount:
+          type: integer
+          format: int32
+        entriesCount:
+          type: integer
+          format: int32
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenEntity'
     UmaResource:
       required:
         - name
@@ -14726,6 +16327,22 @@ components:
           writeOnly: true
         baseDn:
           type: string
+    Fido2RegistrationEntryPagedResult:
+      type: object
+      properties:
+        start:
+          type: integer
+          format: int32
+        totalEntriesCount:
+          type: integer
+          format: int32
+        entriesCount:
+          type: integer
+          format: int32
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fido2RegistrationEntry'
     CustomUser:
       type: object
       properties:
@@ -15185,66 +16802,105 @@ components:
           type: string
         inum:
           type: string
+          description: Unique identifier.
         creatorId:
           type: string
+          description: Creator of IDP.
         name:
           type: string
+          description: Name uniquely identifies an identity provider.
         displayName:
           maxLength: 60
           minLength: 0
           type: string
+          description: Identity provider display name.
         description:
           maxLength: 500
           minLength: 0
           type: string
+          description: Description of Identity provider.
         realm:
           type: string
+          description: Realm in which Identity provider is created.
         enabled:
           type: boolean
+          description: Indicates if Identity provider is enabled.
         signingCertificate:
           type: string
+          description: Digital certificate used to verify the authenticity of the request.
         validateSignature:
           type: string
         singleLogoutServiceUrl:
           type: string
+          description: Url used to send logout requests.
         nameIDPolicyFormat:
           type: string
+          description: ' URI reference corresponding to a name identifier format.'
         principalAttribute:
           type: string
+          description: ' Name or Friendly Name of the attribute used to identify external users.'
         principalType:
           type: string
+          description: Way to identify and track external users from the assertion.
         idpEntityId:
           type: string
+          description: >-
+            Entity ID that will be used to uniquely identify this SAML Service
+            Provider.
         singleSignOnServiceUrl:
           type: string
+          description: Url used to send SAML authentication requests.
         encryptionPublicKey:
           type: string
+          description: Public key to use to encrypt the message.
         providerId:
           type: string
+          description: 'IDP provider, should be SAML.'
         trustEmail:
           type: boolean
+          description: >-
+            If enabled, email provided by this provider is not verified even if
+            verification is enabled for the realm.
         storeToken:
           type: boolean
+          description: Enable/disable if tokens must be stored after authenticating users.
         addReadTokenRoleOnCreate:
           type: boolean
+          description: Enable/disable if new users can read any stored tokens.
         authenticateByDefault:
           type: boolean
         linkOnly:
           type: boolean
+          description: >-
+            If true, users cannot log in through this provider. They can only
+            link to this provider.
         firstBrokerLoginFlowAlias:
           type: string
+          description: >-
+            Alias of authentication flow, which is triggered after first login
+            with this identity provider. Term 'First Login' means that no
+            Keycloak account is currently linked to the authenticated identity
+            provider account.
         postBrokerLoginFlowAlias:
           type: string
+          description: >-
+            Alias of authentication flow, which is triggered after each login
+            with this identity provider.
         spMetaDataURL:
           type: string
+          description: SAML SP metadata file URL.
         spMetaDataLocation:
           type: string
+          description: SP metadata file location.
         idpMetaDataURL:
           type: string
+          description: SAML IDP metadata file URL.
         idpMetaDataLocation:
           type: string
+          description: SAML IDP metadata file location.
         status:
           type: string
+          description: IDP setup status.
           enum:
             - active
             - inactive
@@ -15252,6 +16908,7 @@ components:
             - register
         validationStatus:
           type: string
+          description: IDP validation status.
           enum:
             - In Progress
             - Success
@@ -15259,8 +16916,10 @@ components:
             - Failed
         validationLog:
           type: array
+          description: IDP validation log.
           items:
             type: string
+            description: IDP validation log.
         baseDn:
           type: string
     IdentityProviderPagedResult:
@@ -15284,72 +16943,112 @@ components:
       properties:
         applicationName:
           type: string
+          description: Name of application.
         samlTrustRelationshipDn:
           type: string
+          description: Trust relationship organizational unit.
         trustedIdpDn:
           type: string
+          description: Identity provider organizational unit.
         enabled:
           type: boolean
+          description: SAML functionality enabled.
         selectedIdp:
           type: string
+          description: Selected SAML server.
         serverUrl:
           type: string
+          description: SAML server URL.
         realm:
           type: string
+          description: 'SAML server realm, default is `jans`.'
         clientId:
           type: string
+          description: Jans auth SAML client ID.
         clientSecret:
           type: string
+          description: Jans auth SAML client password.
         grantType:
           type: string
+          description: Grant type to get access token.
         scope:
           type: string
+          description: Oauth2 scope to get access token.
         username:
           type: string
+          description: SAML server username.
         password:
           type: string
+          description: SAML server user credentails.
         spMetadataUrl:
           type: string
+          description: Relative SAML server SP Metadata Url.
         tokenUrl:
           type: string
+          description: Relative SAML server Token Url.
         idpUrl:
           type: string
+          description: Relative SAML server IDP Url.
         extIDPTokenUrl:
           type: string
+          description: Relative SAML server IDP Token Url.
         extIDPRedirectUrl:
           type: string
+          description: Relative IDP redirect Url.
         idpMetadataImportUrl:
           type: string
+          description: Relative SAML server Metadata import Url.
         idpRootDir:
           type: string
+          description: Jans Auth server root SAML directory.
         idpMetadataDir:
           type: string
+          description: >-
+            Jans Auth server relative SAML directory to store IDP Metadata
+            files.
         idpMetadataTempDir:
           type: string
+          description: >-
+            Jans Auth server relative SAML temp directory to store IDP Metadata
+            files.
         idpMetadataFile:
           type: string
+          description: IDP Metadata file name format.
         spMetadataDir:
           type: string
+          description: Jans Auth server relative SAML directory to store SP Metadata files.
         spMetadataTempDir:
           type: string
+          description: >-
+            Jans Auth server relative SAML temp directory to store SP Metadata
+            files.
         spMetadataFile:
           type: string
+          description: SP Metadata file name format.
         ignoreValidation:
           type: boolean
+          description: Boolean value to enable/disable SAML validation.
         setConfigDefaultValue:
           type: boolean
+          description: Boolean value `true` to set the default values for an IDP.
         idpMetadataMandatoryAttributes:
           type: array
+          description: List of mandatory IDP Metadata attributes.
           items:
             type: string
+            description: List of mandatory IDP Metadata attributes.
         kcAttributes:
           type: array
+          description: Keycloak SAML attribute names.
           items:
             type: string
+            description: Keycloak SAML attribute names.
         kcSamlConfig:
           type: array
+          description: Keycloak SAML config attribute names.
           items:
             type: string
+            description: Keycloak SAML config attribute names.
     ProfileConfiguration:
       type: object
       properties:
@@ -15363,14 +17062,25 @@ components:
       properties:
         nameIDPolicyFormat:
           type: string
+          description: ' URI reference corresponding to a name identifier format.'
         entityId:
           type: string
+          description: >-
+            Entity ID that will be used to uniquely identify this SAML Service
+            Provider.
         singleLogoutServiceUrl:
           type: string
+          description: Url used to send logout requests.
         jansAssertionConsumerServiceGetURL:
           type: string
+          description: >-
+            GET URL the Identity provider (IdP) will send the SAML Response
+            containing the assertions.
         jansAssertionConsumerServicePostURL:
           type: string
+          description: >-
+            POST URL the Identity provider (IdP) will send the SAML Response
+            containing the assertions.
       description: SAML entity metadata.
     TrustRelationship:
       required:
@@ -15620,16 +17330,21 @@ components:
       properties:
         dn:
           type: string
-        lastPolicyLoadTime:
+        creationDate:
           type: string
           format: date-time
+        eventTime:
+          type: string
+          format: date-time
+        service:
+          type: string
+        nodeName:
+          type: string
         status:
           type: string
-        cedarEngineStatus:
+        engineStatus:
           type: string
-        cedarPolicyStatus:
-          type: string
-        tokenDataStatus:
+        baseDn:
           type: string
         inum:
           type: string
@@ -15638,23 +17353,35 @@ components:
       properties:
         dn:
           type: string
-        lastUpdate:
+        creationDate:
           type: string
           format: date-time
         eventTime:
           type: string
           format: date-time
+        service:
+          type: string
+        nodeName:
+          type: string
         eventType:
           type: string
         severetyLevel:
           type: string
-        policyResult:
+        action:
           type: string
-        userAccountId:
+        decisionResult:
+          type: string
+        requestedResource:
+          type: string
+        princiaplId:
           type: string
         clientId:
           type: string
-        sourceInformation:
+        contextInformation:
+          type: object
+          additionalProperties:
+            type: string
+        baseDn:
           type: string
         inum:
           type: string
@@ -15663,14 +17390,21 @@ components:
       properties:
         dn:
           type: string
-        lastPolicyLoadTime:
+        creationDate:
           type: string
           format: date-time
+        eventTime:
+          type: string
+          format: date-time
+        service:
+          type: string
+        nodeName:
+          type: string
+        status:
+          type: string
         lastPolicyLoadSize:
           type: integer
           format: int32
-        status:
-          type: string
         policySuccessLoadCounter:
           type: integer
           format: int64
@@ -15678,11 +17412,11 @@ components:
           type: integer
           format: int64
         lastPolicyEvaluationTimeNs:
-          type: string
-          format: date-time
+          type: integer
+          format: int32
         avgPolicyEvaluationTimeNs:
-          type: string
-          format: date-time
+          type: integer
+          format: int32
         evaluationRequestsCount:
           type: integer
           format: int64
@@ -15690,6 +17424,8 @@ components:
           type: object
           additionalProperties:
             type: string
+        baseDn:
+          type: string
         inum:
           type: string
         memoryUsage:
@@ -15723,6 +17459,18 @@ components:
         tokenUrl:
           type: string
           description: Jans URL of the OpenID Connect Provider's OAuth 2.0 Token Endpoint
+        groupScopeEnabled:
+          type: boolean
+          description: Group scope enabled
+        endpointGroups:
+          type: object
+          additionalProperties:
+            type: array
+            description: Endpoint groups
+            items:
+              type: string
+              description: Endpoint groups
+          description: Endpoint groups
         endpointDetails:
           type: object
           additionalProperties:
@@ -15865,3 +17613,6 @@ components:
             'https://jans.io/oauth/config/jans_asset-read': View Jans Assets
             'https://jans.io/oauth/config/jans_asset-write': Manage Jans Assets
             'https://jans.io/oauth/config/jans_asset-delete': Delete Jans Assets
+            'https://jans.io/oauth/config/token.readonly': View Token details
+            'https://jans.io/oauth/config/token.write': Manage Token details
+            'https://jans.io/oauth/config/token.delete': Delete Token details

@@ -299,7 +299,7 @@ function UserList(props) {
       );
 
       return {
-        id: item?.deviceData?.uuid ? item?.deviceData?.uuid : item.id,
+        id: item.id,
         nickName: attenstationRequest.displayName ?? "-",
         modality: item?.deviceData?.platform ?? "-",
         dateAdded: moment(item.creationDate).format("YYYY-MM-DD HH:mm:ss"),
@@ -323,7 +323,6 @@ function UserList(props) {
   }, []);
 
   const DetailPanelForDevices = useCallback((rowData) => {
-    console.log("rowData", rowData);
     return <UserDeviceDetailViewPage row={rowData} />;
   }, []);
 

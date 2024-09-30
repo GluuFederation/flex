@@ -26,7 +26,7 @@ export default class FigoApi {
   // delete FIDO Config
   deleteFido2DeviceData = (input) => {
     return new Promise((resolve, reject) => {
-      this.api.deleteFido2DeviceData(input, (error, data) => {
+      this.api.deleteFido2Data(input, (error, data) => {
         handleResponse(error, reject, resolve, data);
       });
     });
