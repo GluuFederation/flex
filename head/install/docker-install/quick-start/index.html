@@ -1895,7 +1895,7 @@
 <p>Installation depends on a <a href="https://github.com/GluuFederation/flex/tree/main/docker-flex-monolith#environment-variables">set of environment variables</a>.
 These environment variables can be set to customize installation as per the need. If not set, the installer uses default values.</p>
 <p>Run this command to start the installation:</p>
-<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> sudo bash startflexmonolithdemo.sh demoexample.gluu.io MYSQL
+<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> sudo bash startflexmonolithdemo.sh demoexample.gluu.org MYSQL
 </code></pre></div>
 <p>Console messages like below confirms the successful installation:</p>
 <div class="highlight"><pre><span></span><code>[+] Running 3/3
@@ -1910,10 +1910,10 @@ Testing openid-configuration endpoint..
 <h2 id="verify-installation-by-accessing-standard-endpoints">Verify Installation By Accessing Standard Endpoints<a class="headerlink" href="#verify-installation-by-accessing-standard-endpoints" title="Permanent link">#</a></h2>
 <p>To access Gluu flex standard endpoints from outside of the Docker container, systems <code>/etc/hosts</code> file needs to be updated. Open the file and add the IP domain record which should be the IP of the instance docker is installed. And the domain used in the env above <code>CN_HOSTNAME</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># For-example</span>
-<span class="m">172</span>.22.0.3      demoexample.gluu.io
+<span class="m">172</span>.22.0.3      demoexample.gluu.org
 </code></pre></div>
 <p>After adding the record, hit the standard endpoints such as </p>
-<div class="highlight"><pre><span></span><code>https://demoexample.gluu.io/.well-known/openid-configuration
+<div class="highlight"><pre><span></span><code>https://demoexample.gluu.org/.well-known/openid-configuration
 </code></pre></div>
 <h2 id="configure-gluu-flex">Configure Gluu flex<a class="headerlink" href="#configure-gluu-flex" title="Permanent link">#</a></h2>
 <ol>
@@ -1947,7 +1947,7 @@ Testing openid-configuration endpoint..
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-05-14T09:39:59+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-05-14</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-09-30T06:55:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-09-30</span>
       
         <br>
         Created:
