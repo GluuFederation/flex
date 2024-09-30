@@ -60,16 +60,37 @@ Download the compose file:
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-mysql-compose.yml 
 ```
 
-This docker compose file runs two containers, the flex monolith container and mysql container.
+Download the the script files 
 
 ```bash
-docker compose -f flex-mysql-compose.yml up -d
+
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/up.sh
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/down.sh
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/clean.sh
 ```
 
-To view the containers running:
+Give execute permission
+`chmod u+x up.sh down.sh clean.sh`
+
+This docker compose file runs two containers, the flex monolith container and mysql container.
+
+To start the containers.
 
 ```bash
+./up.sh
+```
+
+To view the containers running
+
+```bash
+
 docker compose -f flex-mysql-compose.yml ps
+```
+
+To stop the containers.
+
+```bash
+./down.sh
 ```
 
 ## Configure Gluu flex
@@ -77,7 +98,7 @@ docker compose -f flex-mysql-compose.yml ps
 1. Access the Docker container shell using:
 
     ```bash
-    docker compose -f flex-mysql-compose.yml exec flex sh
+    docker compose -f flex-mysql-compose.yml exec flex sh #This opens a bash terminal in the running container
     ```
 
 2. Grab a pair of client_id and client_pw(secret) from `setup.properties` or `/opt/jans/jans-setup/setup.properties.last`
@@ -93,17 +114,17 @@ Add to your `/etc/hosts` file the ip domain record which should be the ip of the
 
 ```bash
 # For-example
-172.22.0.3      demoexample.gluu.io
+172.22.0.3      demoexample.gluu.org
 ```
 
-After adding the record you can hit endpoints such as https://demoexample.gluu.io/.well-known/openid-configuration
+After adding the record you can hit endpoints such as https://demoexample.gluu.org/.well-known/openid-configuration
 
 
 ## Clean up
 
 Remove setup and volumes
 
-```
-docker compose -f flex-mysql-compose.yml down
+```bash
+./clean.sh
 ```
 
