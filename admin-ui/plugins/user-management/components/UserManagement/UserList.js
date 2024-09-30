@@ -250,7 +250,7 @@ function UserList(props) {
   };
 
   const handleRemove2Fa = (row) => {
-    if (row.type === "FIDO2") {
+    if (row.type === "FIDO2" || row.type === "SUPER GLUU") {
       dispatch(deleteFido2DeviceData(row.id));
     } else if (row.type === "OTP") {
       const getOTPDevices = userDetails?.customAttributes.filter(
