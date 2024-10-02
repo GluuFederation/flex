@@ -4,13 +4,21 @@ tags:
 - reference
 - kubernetes
 - docker image
+- docker compose
 ---
+
+
+!!! Warning 
+    **This image is for testing and development purposes only. Use Flex [helm charts](https://github.com/GluuFederation/flex/tree/main/charts/gluu) for production setups.**
 
 # Overview
 
-**This image is for testing and development purposes only! Use Flex [helm charts](../../../charts/gluu) for production setups**
+Docker monolith image packaging for Gluu Flex. This image packs janssen services including the auth-server, config-api, fido2, casa, scim and the Gluu admin ui.
 
-Docker monolith image packaging for Gluu Flex.This image packs janssen services including, the auth-server, config-api, fido2, and scim and the Gluu admin ui and Casa.
+## Pre-requisites
+
+- [Docker](https://docs.docker.com/install)
+- [Docker compose](https://docs.docker.com/compose/install/)
 
 ## Versions
 
@@ -43,36 +51,64 @@ The following environment variables are supported by the container:
 | `MYSQL_HOST`            | MySQL host.                                       | `mysql` which is the docker compose service name |
 
 
-## Pre-requisites
-- Clone this repository and `cd` into the `docker-flex-monolith` folder
-- [Docker](https://docs.docker.com/install). Docker compose should be installed by default with Docker.
 
 ## How to run
 
-```bash
-docker compose -f flex-mysql-compose.yml up -d
-```
-
-## Clean up
-
-Remove setup and volumes
-
-```
-docker compose -f mysql-docker-compose.yml down && rm -rf jans-*
-```
-
-## Test
+Download the compose file of your chosen persistence from mysql, postgres or ldap 
 
 ```bash
-docker exec -ti docker-flex-monolith-flex-1 bash
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-mysql-compose.yml 
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-postgres-compose.yml 
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-ldap-compose.yml 
 ```
 
-Run 
+Download the script files 
+
 ```bash
-/opt/jans/jans-cli/config-cli.py
-#or
-/opt/jans/jans-cli/scim-cli.py
+
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/up.sh
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/down.sh
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/clean.sh
 ```
+
+Give execute permission to the scripts
+`chmod u+x up.sh down.sh clean.sh`
+
+This docker compose file runs two containers, the flex monolith container and mysql container.
+
+To start the containers.
+
+```bash
+./up.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
+```
+
+To view the containers running
+
+```bash
+
+docker compose -f flex-mysql-compose.yml ps
+```
+
+To stop the containers.
+
+```bash
+./down.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
+```
+
+## Configure Gluu flex
+
+1. Access the Docker container shell using:
+
+    ```bash
+    docker compose -f flex-mysql-compose.yml exec flex /bin/bash #This opens a bash terminal in the running container
+    ```
+
+2. You can grab `client_id` and `client_pw`(secret), and other values from `setup.properties` or `/opt/jans/jans-setup/setup.properties.last`
+
+3. Use the CLI tools located under `/opt/jans/jans-cli/` to configure Gluu flex as needed. For example you can run the [TUI](https://docs.jans.io/head/admin/config-guide/config-tools/jans-tui/):
+    ```bash
+    python3 /opt/jans/jans-cli/config-cli-tui.py
+    ```
 
 ## Access endpoints externally
 
@@ -85,10 +121,12 @@ Add to your `/etc/hosts` file the ip domain record which should be the ip of the
 
 After adding the record you can hit endpoints such as https://demoexample.gluu.org/.well-known/openid-configuration
 
-## Quick start 
 
-Grab a fresh ubuntu 22.04 lts VM and run:
+## Clean up
+
+Remove setup and volumes
 
 ```bash
-wget https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startflexmonolithdemo.sh && chmod u+x startflexmonolithdemo.sh && sudo bash startflexmonolithdemo.sh demoexample.gluu.org MYSQL
+./clean.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
 ```
+

@@ -54,13 +54,15 @@ The following environment variables are supported by the container:
 
 ## How to run
 
-Download the compose file:
+Download the compose file of your chosen persistence from mysql, postgres or ldap 
 
 ```bash
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-mysql-compose.yml 
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-postgres-compose.yml 
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-ldap-compose.yml 
 ```
 
-Download the the script files 
+Download the script files 
 
 ```bash
 
@@ -69,7 +71,7 @@ wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-mono
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/clean.sh
 ```
 
-Give execute permission
+Give execute permission to the scripts
 `chmod u+x up.sh down.sh clean.sh`
 
 This docker compose file runs two containers, the flex monolith container and mysql container.
@@ -77,7 +79,7 @@ This docker compose file runs two containers, the flex monolith container and my
 To start the containers.
 
 ```bash
-./up.sh
+./up.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
 ```
 
 To view the containers running
@@ -90,7 +92,7 @@ docker compose -f flex-mysql-compose.yml ps
 To stop the containers.
 
 ```bash
-./down.sh
+./down.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
 ```
 
 ## Configure Gluu flex
@@ -98,10 +100,10 @@ To stop the containers.
 1. Access the Docker container shell using:
 
     ```bash
-    docker compose -f flex-mysql-compose.yml exec flex sh #This opens a bash terminal in the running container
+    docker compose -f flex-mysql-compose.yml exec flex /bin/bash #This opens a bash terminal in the running container
     ```
 
-2. Grab a pair of client_id and client_pw(secret) from `setup.properties` or `/opt/jans/jans-setup/setup.properties.last`
+2. You can grab `client_id` and `client_pw`(secret), and other values from `setup.properties` or `/opt/jans/jans-setup/setup.properties.last`
 
 3. Use the CLI tools located under `/opt/jans/jans-cli/` to configure Gluu flex as needed. For example you can run the [TUI](https://docs.jans.io/head/admin/config-guide/config-tools/jans-tui/):
     ```bash
@@ -125,6 +127,6 @@ After adding the record you can hit endpoints such as https://demoexample.gluu.o
 Remove setup and volumes
 
 ```bash
-./clean.sh
+./clean.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
 ```
 
