@@ -28,9 +28,14 @@ spec:
     metadata:
       labels:
         app: {{ include "opendj.name" $ }}
-      {{- if $.Values.global.istio.ingress }}
+      {{- if or (.Values.global.istio.ingress) (.Values.global.scim.customAnnotations.pod) }}
       annotations:
+      {{- if .Values.global.istio.ingress }}
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
+      {{- if .Values.global.scim.customAnnotations.pod }}
+      {{ toYaml .Values.global.scim.customAnnotations.pod | indent 4 }}
+      {{- end }}
       {{- end }}
     spec:
       securityContext:
@@ -43,6 +48,9 @@ spec:
       - name: {{ include "opendj.name" $ }}
         {{- if .Values.customScripts }}
         command:
+          {{- if .Values.customCommand }}
+          {{- toYaml .Values.customCommand | nindent 12 }}
+          {{- else }}
           - /bin/sh
           - -c
           - |
@@ -50,6 +58,7 @@ spec:
               {{- toYaml . | replace "- " "" | nindent 14}}
               {{- end }}
               /app/scripts/entrypoint.sh
+          {{- end}}
         {{- end}}
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"

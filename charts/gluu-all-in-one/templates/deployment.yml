@@ -60,6 +60,9 @@ spec:
           runAsNonRoot: true
         {{- if or (not .Values.isFqdnRegistered) ( .Values.customScripts) }}
         command:
+          {{- if .Values.customCommand }}
+          {{- toYaml .Values.customCommand | nindent 12 }}
+          {{- else }}
           - /bin/sh
           - -c
           - |
@@ -71,6 +74,7 @@ spec:
               {{- end}}
               python3 /scripts/tls_generator.py &
               /app/bin/entrypoint.sh
+          {{- end}}
         {{- end}}
         ports:
         - name: {{ .Values.service.name }}
