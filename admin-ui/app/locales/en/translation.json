@@ -101,7 +101,7 @@
     "principal_type": "Principal Type",
     "webhook_name": "Webhook Name",
     "sessionTimeoutInMins": "Admin UI Session Timeout (In Minutes)",
-    "gluuFlexVersion":"Gluu Flex Version",
+    "gluuFlexVersion": "Gluu Flex Version",
     "adminui_default_acr": "Admin UI authentication method (ACR)",
     "download_summary": "Download Summary",
     "metadata_location": "Metadata Location",
@@ -539,7 +539,9 @@
     "updates_at_last_run": "Updates at the last run",
     "problems_at_last_run": "Problems at the last run",
     "mapping": "Mapping",
-    "source": "Source"
+    "source": "Source",
+    "expiration_date": "Expiration Date",
+    "token_type": "Token Type"
   },
   "languages": {
     "french": "French",
@@ -565,7 +567,7 @@
     "default_acr": "Default ACR",
     "acrs": "ACRs",
     "aliases": "Aliases",
-    "builtIn":"Built-In",
+    "builtIn": "Built-In",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
@@ -785,6 +787,7 @@
     "level": "Level"
   },
   "titles": {
+    "activeTokens": "Active Tokens",
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",
     "assets": "Jans Assets",
@@ -1432,7 +1435,7 @@
     },
     "settings": {
       "pageSize": "The default size for all list page.",
-      "gluuCurrentVersion":"Gluu Server current version",
+      "gluuCurrentVersion": "Gluu Server current version",
       "darkMode": "Whether to enable or disable adrk mode.",
       "configApiUrl": "The URL of the config api currently in used.",
       "sessionTimeoutInMins": "Determines the duration of inactivity allowed before the current session expires.",
