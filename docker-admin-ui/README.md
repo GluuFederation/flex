@@ -89,7 +89,7 @@ The following environment variables are supported by the container:
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
 - `CN_GOOGLE_SPANNER_INSTANCE_ID`: Google Spanner instance ID.
 - `CN_GOOGLE_SPANNER_DATABASE_ID`: Google Spanner database ID.
-- `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (one of `basic` or `casa`; default to `basic`). Note, changing the value require restart to jans-config-api.
+- `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (default to `basic`). Note, changing the value require restart to jans-config-api.
 
 ### Hybrid mapping
 
