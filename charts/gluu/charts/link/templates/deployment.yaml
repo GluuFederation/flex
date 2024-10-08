@@ -28,13 +28,13 @@ spec:
       labels:
         app: {{ .Release.Name }}-{{ include "link.name" . }}
         release: {{ .Release.Name }}
-      {{- if or (.Values.global.istio.ingress) (.Values.global.scim.customAnnotations.pod) }}
+      {{- if or (.Values.global.istio.ingress) (.Values.global.link.customAnnotations.pod) }}
       annotations:
       {{- if .Values.global.istio.ingress }}
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
       {{- end }}
-      {{- if .Values.global.scim.customAnnotations.pod }}
-      {{ toYaml .Values.global.scim.customAnnotations.pod | indent 4 }}
+      {{- if .Values.global.link.customAnnotations.pod }}
+      {{ toYaml .Values.global.link.customAnnotations.pod | indent 4 }}
       {{- end }}
       {{- end }}
     spec:
