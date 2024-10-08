@@ -7,7 +7,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./db-data:/var/lib/mysql
+      - db-data:/var/lib/mysql
     networks:
       - cloud_bridge
     environment:
