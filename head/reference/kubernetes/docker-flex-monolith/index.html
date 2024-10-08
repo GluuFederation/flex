@@ -1380,6 +1380,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    Pre-requisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#versions" class="md-nav__link">
     Versions
   </a>
@@ -1394,13 +1401,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#how-to-run" class="md-nav__link">
     How to run
   </a>
@@ -1408,15 +1408,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#clean-up" class="md-nav__link">
-    Clean up
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#test" class="md-nav__link">
-    Test
+  <a href="#configure-gluu-flex" class="md-nav__link">
+    Configure Gluu flex
   </a>
   
 </li>
@@ -1429,8 +1422,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    Quick start
+  <a href="#clean-up" class="md-nav__link">
+    Clean up
   </a>
   
 </li>
@@ -1811,6 +1804,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#pre-requisites" class="md-nav__link">
+    Pre-requisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#versions" class="md-nav__link">
     Versions
   </a>
@@ -1825,13 +1825,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pre-requisites" class="md-nav__link">
-    Pre-requisites
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#how-to-run" class="md-nav__link">
     How to run
   </a>
@@ -1839,15 +1832,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#clean-up" class="md-nav__link">
-    Clean up
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#test" class="md-nav__link">
-    Test
+  <a href="#configure-gluu-flex" class="md-nav__link">
+    Configure Gluu flex
   </a>
   
 </li>
@@ -1860,8 +1846,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    Quick start
+  <a href="#clean-up" class="md-nav__link">
+    Clean up
   </a>
   
 </li>
@@ -1903,6 +1889,11 @@
         <span class="md-tag">docker image</span>
       
     
+      
+      
+        <span class="md-tag">docker compose</span>
+      
+    
   </nav>
 
 
@@ -1913,14 +1904,22 @@
   </a>
 
 
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>This image is for testing and development purposes only. Use Flex <a href="https://github.com/GluuFederation/flex/tree/main/charts/gluu">helm charts</a> for production setups.</strong></p>
+</div>
 <h1 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h1>
-<p><strong>This image is for testing and development purposes only! Use Flex <a href="../../../charts/gluu">helm charts</a> for production setups</strong></p>
-<p>Docker monolith image packaging for Gluu Flex.This image packs janssen services including, the auth-server, config-api, fido2, and scim and the Gluu admin ui and Casa.</p>
+<p>Docker monolith image packaging for Gluu Flex. This image packs janssen services including the auth-server, config-api, fido2, casa, scim and the Gluu admin ui.</p>
+<h2 id="pre-requisites">Pre-requisites<a class="headerlink" href="#pre-requisites" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="https://docs.docker.com/install">Docker</a></li>
+<li><a href="https://docs.docker.com/compose/install/">Docker compose</a></li>
+</ul>
 <h2 id="versions">Versions<a class="headerlink" href="#versions" title="Permanent link">#</a></h2>
 <p>See <a href="https://github.com/GluuFederation/docker-flex-monolith/releases">Releases</a> for stable versions. This image should never be used in production.
 For bleeding-edge/unstable version, use <code>gluufederation/monolith:5.0.0_dev</code>.</p>
 <h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">#</a></h2>
-<p>The following environment variables are supported by the container:</p>
+<p>Installation depends on the set of environment variables shown below. These environment variables can be set to customize installation as per the need. If not set, the installer uses default values.</p>
 <table>
 <thead>
 <tr>
@@ -1966,14 +1965,19 @@ For bleeding-edge/unstable version, use <code>gluufederation/monolith:5.0.0_dev<
 <td><code>US</code></td>
 </tr>
 <tr>
-<td><code>IS_FQDN_REGISTERED</code></td>
-<td>If a DNS record has been added for the docker vm.</td>
+<td><code>CN_INSTALL_MYSQL</code></td>
+<td>Install gluu with mysql as the backend</td>
 <td><code>false</code></td>
 </tr>
 <tr>
-<td><code>CN_INSTALL_LDAP</code></td>
-<td><strong>NOT SUPPORTED YET</strong></td>
+<td><code>CN_INSTALL_PGSQL</code></td>
+<td>Install gluu with Postgres as the backend</td>
 <td><code>false</code></td>
+</tr>
+<tr>
+<td><code>CN_INSTALL_ADMIN_UI</code></td>
+<td>Installs the Admin-UI</td>
+<td><code>true</code></td>
 </tr>
 <tr>
 <td><code>CN_INSTALL_CONFIG_API</code></td>
@@ -1991,66 +1995,95 @@ For bleeding-edge/unstable version, use <code>gluufederation/monolith:5.0.0_dev<
 <td><code>true</code></td>
 </tr>
 <tr>
-<td><code>CN_INSTALL_CASA</code></td>
-<td>Installs the Casa service.</td>
-<td><code>true</code></td>
-</tr>
-<tr>
-<td><code>CN_INSTALL_ADMIN_UI</code></td>
-<td>Installs the Admin UI service.</td>
-<td><code>true</code></td>
-</tr>
-<tr>
-<td><code>MYSQL_DATABASE</code></td>
-<td>MySQL gluu flex database.</td>
+<td><code>RDBMS_DATABASE</code></td>
+<td>RDBMS gluu database for MySQL or Postgres.</td>
 <td><code>gluu</code></td>
 </tr>
 <tr>
-<td><code>MYSQL_USER</code></td>
-<td>MySQL database user.</td>
+<td><code>RDBMS_USER</code></td>
+<td>RDBMS database user for MySQL or Postgres.</td>
 <td><code>gluu</code></td>
 </tr>
 <tr>
-<td><code>MYSQL_PASSWORD</code></td>
-<td>MySQL database user password.</td>
+<td><code>RDBMS_PASSWORD</code></td>
+<td>RDBMS database user password for MySQL or Postgres.</td>
 <td><code>1t5Fin3#security</code></td>
 </tr>
 <tr>
-<td><code>MYSQL_HOST</code></td>
-<td>MySQL host.</td>
+<td><code>RDBMS_HOST</code></td>
+<td>RDBMS host for MySQL or Postgres.</td>
 <td><code>mysql</code> which is the docker compose service name</td>
+</tr>
+<tr>
+<td><code>TEST_CLIENT_ID</code></td>
+<td>ID of test client in UUID which has all available scopes to access any gluu API</td>
+<td><code>9876baac-de39-4c23-8a78-674b59df8c09</code></td>
+</tr>
+<tr>
+<td><code>TEST_CLIENT_SECRET</code></td>
+<td>Secret for test client</td>
+<td><code>1t5Fin3#security</code></td>
+</tr>
+<tr>
+<td><code>TEST_CLIENT_TRUSTED</code></td>
+<td>Trust test client</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>TEST_CLIENT_REDIRECT_URI</code></td>
+<td><strong>Not Implemented yet</strong> Redirect URI for test client. Multiple uri's with comma may be provided, if not provided redirect uris will be same as the config-api-client</td>
+<td>``</td>
 </tr>
 </tbody>
 </table>
-<h2 id="pre-requisites">Pre-requisites<a class="headerlink" href="#pre-requisites" title="Permanent link">#</a></h2>
-<ul>
-<li>Clone this repository and <code>cd</code> into the <code>docker-flex-monolith</code> folder</li>
-<li><a href="https://docs.docker.com/install">Docker</a>. Docker compose should be installed by default with Docker.</li>
-</ul>
 <h2 id="how-to-run">How to run<a class="headerlink" href="#how-to-run" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code>docker compose -f flex-mysql-compose.yml up -d
+<p>Download the compose file of your chosen persistence from mysql, postgres or ldap </p>
+<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-mysql-compose.yml 
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-postgres-compose.yml 
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-ldap-compose.yml 
 </code></pre></div>
-<h2 id="clean-up">Clean up<a class="headerlink" href="#clean-up" title="Permanent link">#</a></h2>
-<p>Remove setup and volumes</p>
-<div class="highlight"><pre><span></span><code>docker compose -f mysql-docker-compose.yml down &amp;&amp; rm -rf jans-*
+<p>Download the script files </p>
+<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/up.sh
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/down.sh
+wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/clean.sh
 </code></pre></div>
-<h2 id="test">Test<a class="headerlink" href="#test" title="Permanent link">#</a></h2>
-<div class="highlight"><pre><span></span><code>docker <span class="nb">exec</span> -ti docker-flex-monolith-flex-1 bash
+<p>Give execute permission to the scripts
+<code>chmod u+x up.sh down.sh clean.sh</code></p>
+<p>This docker compose file runs two containers, the flex monolith container and mysql container.</p>
+<p>To start the containers.</p>
+<div class="highlight"><pre><span></span><code>./up.sh <span class="c1">#You can pass mysql|postgres|ldap as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
 </code></pre></div>
-<p>Run 
-<div class="highlight"><pre><span></span><code>/opt/jans/jans-cli/config-cli.py
-<span class="c1">#or</span>
-/opt/jans/jans-cli/scim-cli.py
+<p>To view the containers running</p>
+<div class="highlight"><pre><span></span><code>docker compose -f flex-mysql-compose.yml ps
+</code></pre></div>
+<p>To stop the containers.</p>
+<div class="highlight"><pre><span></span><code>./down.sh <span class="c1">#You can pass mysql|postgres|ldap as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
+</code></pre></div>
+<h2 id="configure-gluu-flex">Configure Gluu flex<a class="headerlink" href="#configure-gluu-flex" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Access the Docker container shell using:</p>
+<div class="highlight"><pre><span></span><code>docker compose -f flex-mysql-compose.yml <span class="nb">exec</span> flex /bin/bash <span class="c1">#This opens a bash terminal in the running container</span>
+</code></pre></div>
+</li>
+<li>
+<p>You can grab <code>client_id</code> and <code>client_pw</code>(secret), and other values from <code>setup.properties</code> or <code>/opt/jans/jans-setup/setup.properties.last</code></p>
+</li>
+<li>
+<p>Use the CLI tools located under <code>/opt/jans/jans-cli/</code> to configure Gluu flex as needed. For example you can run the <a href="https://docs.jans.io/head/admin/config-guide/config-tools/jans-tui/">TUI</a>:
+    <div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-cli/config-cli-tui.py
 </code></pre></div></p>
+</li>
+</ol>
 <h2 id="access-endpoints-externally">Access endpoints externally<a class="headerlink" href="#access-endpoints-externally" title="Permanent link">#</a></h2>
 <p>Add to your <code>/etc/hosts</code> file the ip domain record which should be the ip of the instance docker is installed at and the domain used in the env above <code>CN_HOSTNAME</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># For-example</span>
 <span class="m">172</span>.22.0.3      demoexample.gluu.org
 </code></pre></div>
 <p>After adding the record you can hit endpoints such as https://demoexample.gluu.org/.well-known/openid-configuration</p>
-<h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">#</a></h2>
-<p>Grab a fresh ubuntu 22.04 lts VM and run:</p>
-<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> sudo bash startflexmonolithdemo.sh demoexample.gluu.org MYSQL
+<h2 id="clean-up">Clean up<a class="headerlink" href="#clean-up" title="Permanent link">#</a></h2>
+<p>Remove setup and volumes</p>
+<div class="highlight"><pre><span></span><code>./clean.sh <span class="c1">#You can pass mysql|postgres|ldap as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
 </code></pre></div>
 
   <hr>
@@ -2058,7 +2091,7 @@ For bleeding-edge/unstable version, use <code>gluufederation/monolith:5.0.0_dev<
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-12-20T12:52:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-12-20</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-08T11:39:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-08</span>
       
         <br>
         Created:
