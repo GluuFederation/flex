@@ -29,9 +29,13 @@ spec:
       labels:
         APP_NAME: auth-server
         app: {{ .Release.Name }}-{{ include "flex-all-in-one.name" . }}-aio
-      {{- if .Values.istio.ingress }}
+      {{- if or (.Values.istio.ingress) (.Values.customAnnotations.pod) }}
       annotations:
+      {{- if .Values.istio.ingress }}
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- if .Values.customAnnotations.pod }}
+      {{ toYaml .Values.customAnnotations.pod | indent 4 }}              
+      {{- end }}
       {{- end }}
     spec:
     {{- with .Values.image.pullSecrets }}

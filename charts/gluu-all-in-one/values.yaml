@@ -27,6 +27,7 @@ customAnnotations:
   configMap: {}
   cronjob: {}
   deployment: {}
+  pod: {}
   destinationRule: {}
   horizontalPodAutoscaler: {}
   podDisruptionBudget: {}
