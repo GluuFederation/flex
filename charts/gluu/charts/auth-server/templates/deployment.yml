@@ -28,7 +28,7 @@ spec:
       labels:
         APP_NAME: auth-server
         app: {{ .Release.Name }}-{{ include "auth-server.name" . }}
-      {{- if or (.Values.global.istio.ingress) (index .Values.global "auth-sever" "customAnnotations" "pod") }}
+      {{- if or (.Values.global.istio.ingress) (index .Values.global "auth-server" "customAnnotations" "pod") }}
       annotations:
       {{- if .Values.global.istio.ingress }}
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
