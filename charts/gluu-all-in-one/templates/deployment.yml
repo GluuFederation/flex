@@ -33,6 +33,7 @@ spec:
       annotations:
       {{- if .Values.istio.ingress }}
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
+      {{- end }}
       {{- if .Values.customAnnotations.pod }}
       {{ toYaml .Values.customAnnotations.pod | indent 4 }}              
       {{- end }}
