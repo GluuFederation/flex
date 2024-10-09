@@ -158,7 +158,7 @@ admin-ui:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: []
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -277,7 +277,7 @@ auth-server:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: []
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -353,7 +353,7 @@ auth-server-key-rotation:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: []
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -603,7 +603,7 @@ config:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -719,7 +719,7 @@ config-api:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -840,7 +840,7 @@ fido2:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -957,7 +957,7 @@ casa:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: []
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -1761,7 +1761,7 @@ opendj:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -1829,7 +1829,7 @@ persistence:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -1950,7 +1950,7 @@ scim:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -2070,7 +2070,7 @@ link:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -2190,7 +2190,7 @@ saml:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
@@ -2260,7 +2260,7 @@ kc-scheduler:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: []
-  # -- Add custom pod's command. Id passed, it will override the default pod's command i.e.:
+  # -- Add custom pod's command. If passed, it will override the default pod's command i.e.:
   # command:
   #   - /bin/sh
   #   - -c
