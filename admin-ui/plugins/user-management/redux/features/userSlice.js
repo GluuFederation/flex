@@ -7,7 +7,8 @@ const initialState = {
   loading: false,
   redirectToUserListPage: false,
   totalItems: 0,
-  entriesCount: 0
+  entriesCount: 0,
+  fidoDetails:[]
 }
 
 const userSlice = createSlice({
@@ -17,6 +18,13 @@ const userSlice = createSlice({
     getUsers: (state, action) => {
       state.loading = true
       state.redirectToUserListPage = false
+    },
+    getUser2FADetails: (state, action) => {
+      state.loading = true
+    },
+    setUser2FADetails: (state, action) => {
+      state.loading = false
+      state.fidoDetails = action?.payload?.data ?? []
     },
     setSelectedUserData: (state, action) => {
       state.selectedUserData = action.payload
@@ -58,6 +66,8 @@ const userSlice = createSlice({
 
 export const {
   getUsers,
+  getUser2FADetails,
+  setUser2FADetails,
   setSelectedUserData,
   getUserResponse,
   createUser,
