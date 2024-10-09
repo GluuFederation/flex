@@ -1898,7 +1898,9 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
 <li><code>CN_GOOGLE_SECRET_VERSION_ID</code>: Janssen secret version ID in Google Secret Manager. Defaults to <code>latest</code>, which is recommended.</li>
 <li><code>CN_GOOGLE_SECRET_NAME_PREFIX</code>: Prefix for Janssen secret in Google Secret Manager. Defaults to <code>jans</code>. If left <code>jans-secret</code> secret will be created.</li>
 <li><code>CN_GOOGLE_SECRET_MANAGER_PASSPHRASE</code>: Passphrase for Janssen secret in Google Secret Manager. This is recommended to be changed and defaults to <code>secret</code>.</li>
-<li><code>CN_TOKEN_SERVER_BASE_HOSTNAME</code>: Hostname of token server (default to <code>localhost</code>).</li>
+<li><code>CN_AUTH_BASE_URL</code>: Base URL of auth server (default to empty).</li>
+<li><code>CN_CONFIG_API_BASE_URL</code>: Base URL of config-api server (default to empty).</li>
+<li><code>CN_TOKEN_SERVER_BASE_URL</code>: Base URL of token server (default to empty).</li>
 <li><code>CN_TOKEN_SERVER_AUTHZ_ENDPOINT</code>: Authorization endpoint at token server (default to <code>/jans-auth/authorize.htm</code>).</li>
 <li><code>CN_TOKEN_SERVER_TOKEN_ENDPOINT</code>: Token endpoint at token server (default to <code>/jans-auth/restv1/token</code>).</li>
 <li><code>CN_TOKEN_SERVER_INTROSPECTION_ENDPOINT</code>: Introspection endpoint at token server (default to <code>/jans-auth/restv1/introspection</code>).</li>
@@ -1931,7 +1933,7 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
 <li><code>GOOGLE_PROJECT_ID</code>: Google Project ID (default to empty string). Used when <code>CN_CONFIG_ADAPTER</code> or <code>CN_SECRET_ADAPTER</code> set to <code>google</code>.</li>
 <li><code>CN_GOOGLE_SPANNER_INSTANCE_ID</code>: Google Spanner instance ID.</li>
 <li><code>CN_GOOGLE_SPANNER_DATABASE_ID</code>: Google Spanner database ID.</li>
-<li><code>GLUU_ADMIN_UI_AUTH_METHOD</code>: Authentication method for admin-ui (one of <code>basic</code> or <code>casa</code>; default to <code>basic</code>). Note, changing the value require restart to jans-config-api.</li>
+<li><code>GLUU_ADMIN_UI_AUTH_METHOD</code>: Authentication method for admin-ui (default to <code>basic</code>). Note, changing the value require restart to jans-config-api.</li>
 </ul>
 <h3 id="hybrid-mapping">Hybrid mapping<a class="headerlink" href="#hybrid-mapping" title="Permanent link">#</a></h3>
 <p>Hybrid persistence supports all available persistence types. To configure hybrid persistence and its data mapping, follow steps below:</p>
@@ -1968,7 +1970,7 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-05-31T09:13:20+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-05-31</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-09T06:27:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-09</span>
       
         <br>
         Created:

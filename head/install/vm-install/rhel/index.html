@@ -2029,7 +2029,7 @@
 <div class="highlight"><pre><span></span><code>sudo firewall-cmd --reload<span class="p">;</span>
 </code></pre></div></li>
 <li>Install EPEL and mod-auth-openidc as dependencies
-<div class="highlight"><pre><span></span><code>sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+<div class="highlight"><pre><span></span><code>sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-<span class="k">$(</span>rpm -E %rhel<span class="k">)</span>.noarch.rpm
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>sudo yum -y module <span class="nb">enable</span> mod_auth_openidc<span class="p">;</span>
 </code></pre></div></li>
@@ -2238,7 +2238,7 @@ Remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-19T15:45:11+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-19</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-09T06:31:09+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-09</span>
       
         <br>
         Created:
