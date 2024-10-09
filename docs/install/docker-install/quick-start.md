@@ -25,7 +25,7 @@ These environment variables can be set to customize installation as per the need
 Run this command to start the installation:
 
 ```bash
-wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexmonolithdemo.sh && chmod u+x startflexmonolithdemo.sh && sudo bash startflexmonolithdemo.sh demoexample.gluu.io MYSQL
+wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexmonolithdemo.sh && chmod u+x startflexmonolithdemo.sh && sudo bash startflexmonolithdemo.sh demoexample.gluu.org MYSQL
 ```
 
 Console messages like below confirms the successful installation:
@@ -49,13 +49,13 @@ To access Gluu flex standard endpoints from outside of the Docker container, sys
 
 ```bash
 # For-example
-172.22.0.3      demoexample.gluu.io
+172.22.0.3      demoexample.gluu.org
 ```
 
 After adding the record, hit the standard endpoints such as 
 
 ```
-https://demoexample.gluu.io/.well-known/openid-configuration
+https://demoexample.gluu.org/.well-known/openid-configuration
 ```
 
 ## Configure Gluu flex

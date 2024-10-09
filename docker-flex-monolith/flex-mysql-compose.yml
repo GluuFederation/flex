@@ -7,7 +7,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./db-data:/var/lib/mysql
+      - db-data:/var/lib/mysql
     networks:
       - cloud_bridge
     environment:
@@ -16,7 +16,7 @@ services:
       - MYSQL_PASSWORD=1t5Fin3#security
       - MYSQL_ROOT_PASSWORD=1t5Fin3#security
   flex:
-    image: ghcr.io/gluufederation/flex/monolith:5.1.5-1
+    image: ${FLEX_IMAGE:-ghcr.io/gluufederation/flex/monolith:5.1.6_dev}
     restart: always
     ports:
       - "443:443"

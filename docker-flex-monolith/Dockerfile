@@ -41,8 +41,7 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-
-ENV FLEX_SOURCE_VERSION=03c62b524af9b5d326c73e0b829a243fee0efb1c
+ENV FLEX_SOURCE_VERSION=969158f9b757291e826cd230db5372cb73918af7
 # cleanup
 RUN rm -rf /tmp/jans
 
@@ -93,11 +92,11 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/monolith" \
     org.opencontainers.image.authors="GluuFederation <team@gluu.org>" \
     org.opencontainers.image.vendor="GluuFederation" \
-    org.opencontainers.image.version="5.1.5" \
+    org.opencontainers.image.version="5.1.6" \
     org.opencontainers.image.title="GluuFederation Flex Monolith Image" \
     org.opencontainers.image.description="Janssen Authorization server + Casa + AdminUI"
 
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh
 
-CMD ["/bin/bash", "-c", "exec /app/scripts/entrypoint.sh --log-target=journal 3>&1"]
+CMD ["/bin/bash", "-c", "rm -rf /opt/jetty-11.0/temp/*; exec /app/scripts/entrypoint.sh --log-target=journal 3>&1"]

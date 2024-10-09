@@ -23,7 +23,7 @@ if [ -z "$INSTALLED_FLEX_NAME" ]; then
 fi
 
 if [ -z "$FLEX_VERSION" ]; then
-    FLEX_VERSION="5.1.5-1"
+    FLEX_VERSION="5.1.6_dev"
 fi
 
 if [ -z "$DATABASE_VOLUME_NAME" ]; then
@@ -53,10 +53,6 @@ fi
 
 if docker volume inspect ${DOCKER_PROJECT}_${DATABASE_VOLUME_NAME} &> /dev/null; then
 	docker volume rm ${DOCKER_PROJECT}_${DATABASE_VOLUME_NAME} &> /dev/null
-fi
-
-if docker volume inspect ${DOCKER_PROJECT}_${DATABASE_VOLUME_NAME} &> /dev/null; then
-	docker volume rm ${DOCKER_PROJECT}_${DATABASE_VOLUME_NAME}
 fi
 
 if docker image inspect ${FLEX_IMAGE} &> /dev/null; then
