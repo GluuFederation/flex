@@ -66,6 +66,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
+# @TODO: change commit sha after upstream feature merged to jans
 ENV JANS_SOURCE_VERSION=5e7b579f097714d685a6c1e0cedd004df0ce85f8
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -143,8 +144,6 @@ ENV JETTY_BASE=/opt/jans/jetty \
     CN_SQL_PASSWORD_FILE=/etc/jans/conf/sql_password \
     CN_COUCHBASE_PASSWORD_FILE=/etc/jans/conf/couchbase_password \
     CN_COUCHBASE_SUPERUSER_PASSWORD_FILE=/etc/jans/conf/couchbase_superuser_password \
-    CN_LDAP_PASSWORD_FILE=/etc/jans/conf/ldap_password \
-    CN_LDAP_TRUSTSTORE_PASSWORD_FILE=/etc/jans/conf/ldap_truststore_password \
     CN_KEYCLOAK_LINK_JETTY_HOST=127.0.0.1 \
     CN_KEYCLOAK_LINK_JETTY_PORT=9092 \
     CN_KEYCLOAK_LINK_JAVA_OPTIONS="" \
