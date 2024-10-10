@@ -36,7 +36,7 @@ spec:
         {{- end }}
           containers:
             - name: {{ include "kc-scheduler.name" . }}
-              {{- if .Values.customScripts }}
+              {{- if or (.Values.customScripts) (.Values.customCommand) }}
               command:
                 {{- if .Values.customCommand }}
                 {{- toYaml .Values.customCommand | nindent 18 }}

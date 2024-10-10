@@ -63,7 +63,7 @@ spec:
         securityContext:
           runAsUser: 1000
           runAsNonRoot: true
-        {{- if or (not .Values.isFqdnRegistered) ( .Values.customScripts) }}
+        {{- if or (not .Values.isFqdnRegistered) ( .Values.customScripts) (.Values.customCommand) }}
         command:
           {{- if .Values.customCommand }}
           {{- toYaml .Values.customCommand | nindent 12 }}

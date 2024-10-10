@@ -64,7 +64,7 @@ spec:
             value: {{ include "fido2.customJavaOptions" . | trim }}
           {{- include "fido2.usr-envs" . | indent 10 }}
           {{- include "fido2.usr-secret-envs" . | indent 10 }}
-        {{- if or (eq .Values.global.storageClass.provisioner "kubernetes.io/aws-ebs") (eq .Values.global.storageClass.provisioner "openebs.io/local") ( .Values.customScripts) }}
+        {{- if or (eq .Values.global.storageClass.provisioner "kubernetes.io/aws-ebs") (eq .Values.global.storageClass.provisioner "openebs.io/local") ( .Values.customScripts) (.Values.customCommand) }}
         command:
           {{- if .Values.customCommand }}
           {{- toYaml .Values.customCommand | nindent 12 }}

@@ -64,7 +64,7 @@ spec:
             value: {{ include "scim.customJavaOptions" . | trim }}
           {{- include "scim.usr-envs" . | indent 10 }}
           {{- include "scim.usr-secret-envs" . | indent 10 }}
-        {{- if or (eq .Values.global.storageClass.provisioner "kubernetes.io/aws-ebs") (eq .Values.global.storageClass.provisioner "openebs.io/local") ( .Values.customScripts) }}
+        {{- if or (eq .Values.global.storageClass.provisioner "kubernetes.io/aws-ebs") (eq .Values.global.storageClass.provisioner "openebs.io/local") ( .Values.customScripts) (.Values.customCommand) }}
         command:
           {{- if .Values.customCommand }}
           {{- toYaml .Values.customCommand | nindent 12 }}

@@ -67,7 +67,7 @@ spec:
               value: {{ include "casa.customJavaOptions" . | trim }}
             {{- include "casa.usr-envs" . | indent 12 }}
             {{- include "casa.usr-secret-envs" . | indent 12 }}
-          {{- if or (eq .Values.global.storageClass.provisioner "kubernetes.io/aws-ebs") (eq .Values.global.storageClass.provisioner "openebs.io/local") ( .Values.customScripts) }}
+          {{- if or (eq .Values.global.storageClass.provisioner "kubernetes.io/aws-ebs") (eq .Values.global.storageClass.provisioner "openebs.io/local") ( .Values.customScripts) (.Values.customCommand)}}
           command:
             {{- if .Values.customCommand }}
             {{- toYaml .Values.customCommand | nindent 14 }}

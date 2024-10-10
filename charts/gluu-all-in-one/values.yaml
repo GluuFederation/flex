@@ -389,7 +389,7 @@ auth-server-key-rotation:
   #       /usr/bin/python3 /scripts/updatelbip.py &
   #       {{- end}}
   #       /app/scripts/entrypoint.sh
-customCommand: []
+  customCommand: []
 # --  Admin GUI for configuration of the auth-server
 admin-ui:
   # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.

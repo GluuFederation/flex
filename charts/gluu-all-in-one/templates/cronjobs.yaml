@@ -41,7 +41,7 @@ spec:
           serviceAccountName: {{ .Values.serviceAccountName }}
           containers:
             - name: {{ include "flex-all-in-one.name" . }}-as-key-rotation
-              {{- if (index .Values "auth-server-key-rotation" "customScripts") }}
+              {{- if or (index .Values "auth-server-key-rotation" "customScripts") (index .Values "auth-server-key-rotation" "customCommand") }}
               command:
                 {{- if .Values.customCommand }}
                 {{- toYaml .Values.customCommand | nindent 12 }}

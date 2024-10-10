@@ -41,7 +41,7 @@ spec:
           serviceAccountName: {{ .Values.global.serviceAccountName }}
           containers:
             - name: {{ include "auth-server-key-rotation.name" . }}
-              {{- if .Values.customScripts }}
+              {{- if or (.Values.customScripts) (.Values.customCommand) }}
               command:
                 {{- if .Values.customCommand }}
                 {{- toYaml .Values.customCommand | nindent 18 }}
