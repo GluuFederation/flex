@@ -9,8 +9,6 @@ from jans.pycloudlib import wait_for_persistence
 from jans.pycloudlib.persistence.couchbase import CouchbaseClient
 from jans.pycloudlib.persistence.couchbase import id_from_dn
 from jans.pycloudlib.persistence.couchbase import sync_couchbase_password
-from jans.pycloudlib.persistence.ldap import LdapClient
-from jans.pycloudlib.persistence.ldap import sync_ldap_password
 from jans.pycloudlib.persistence.spanner import SpannerClient
 from jans.pycloudlib.persistence.spanner import sync_google_credentials
 from jans.pycloudlib.persistence.sql import doc_id_from_dn
@@ -31,9 +29,6 @@ def main():
 
     mapper = PersistenceMapper()
     persistence_groups = mapper.groups().keys()
-
-    if "ldap" in persistence_groups:
-        sync_ldap_password(manager)
 
     if "couchbase" in persistence_groups:
         sync_couchbase_password(manager)
@@ -69,7 +64,6 @@ class PersistenceSetup:
         self.manager = manager
 
         client_classes = {
-            "ldap": LdapClient,
             "couchbase": CouchbaseClient,
             "spanner": SpannerClient,
             "sql": SqlClient,
