@@ -20,8 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-# @TODO: change the commit sha after upstream feature merged to jans
-ENV JANS_SOURCE_VERSION=5e7b579f097714d685a6c1e0cedd004df0ce85f8
+ENV JANS_SOURCE_VERSION=595fff63b350f8da248bb0fcf3bd3966fa6f1953
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
