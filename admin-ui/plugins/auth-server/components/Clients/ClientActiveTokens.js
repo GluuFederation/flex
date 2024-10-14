@@ -236,6 +236,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={downloadCSV}
+                  disabled={data?.length ? false : true}
                 >
                   {t("actions.export_csv")}
                 </Button>
