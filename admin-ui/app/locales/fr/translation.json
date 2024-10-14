@@ -167,6 +167,12 @@
     "ssl_trust_store_password": "Mot de passe du magasin de confiance SSL",
     "jans_assertion_consumer_service_get_url": "URL GET du service consommateur d'assertions Jans",
     "jans_assertion_consumer_service_post_url": "URL POST du service consommateur d'assertions Jans",
+    "jans_id": "ID Jans",
+    "jans_state": "État Jans",
+    "jans_sess_state":"État de la session Jans",
+    "jans_user_dn": "DN de l'utilisateur Jans",
+    "permission_granted_map": "Carte des autorisations accordées",
+    "jans_sess_attr": "Attributs de la session Jans",
     "ssl_key_store_password": "Mot de passe du magasin de clés SSL",
     "customAttributes": "attributs personnalisés",
     "enable_kc": "Activer le lien Jannssen Keycloak",
@@ -1465,5 +1471,14 @@
     "middleName": "Deuxième nom",
     "sn": "Nom de famille",
     "userConfirmPassword": "Confirmez le mot de passe"
+  },
+  "sessions":{
+    "expirationDate" : "Date d'expiration",
+    "jansId": "ID Jans",
+    "jansState": "État Jans",
+    "jansSessState": "État de la session Jans",
+    "jansUsrDN": "DN de l'utilisateur Jans",
+    "permissionGrantedMap": "Carte des autorisations accordées",
+    "jansSessAttr": "Attribut de la session Jans"
   }
 }

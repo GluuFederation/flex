@@ -119,6 +119,12 @@
     "released_attributes": "Released Attributes",
     "jans_assertion_consumer_service_get_url": "Jans Assertion Consumer Service GET URL",
     "jans_assertion_consumer_service_post_url": "Jans Assertion Consumer Service POST URL",
+    "jans_id": "Jans ID",
+    "jans_state": "Jans State",
+    "jans_sess_state":"Jans Session State",
+    "jans_user_dn": "Jans User DN",
+    "permission_granted_map": "Permission Granted Map",
+    "jans_sess_attr": "Jans Session Attributes",
     "metadata_file": "Metadata File",
     "metadata_url": "Metadata URL",
     "webhook_url": "URL",
@@ -1526,6 +1532,15 @@
       "middleName": "Middle Name",
       "sn": "Last Name",
       "userConfirmPassword": "Confirm Password"
+    },
+    "sessions":{
+      "expirationDate" : "Expiration Date",
+      "jansId": "Jans Id",
+      "jansState": "Jans State",
+      "jansSessState": "Jans Session State",
+      "jansUsrDN": "Jans User DN",
+      "permissionGrantedMap": "Permission Granted Map",
+      "jansSessAttr": "Jans Session Attribute"
     },
     "saml": {
       "name": "The alphanumeric ID string that is used to identify the Trust Relationship",

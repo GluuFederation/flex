@@ -19,6 +19,14 @@ export default class SessionApi {
     })
   }
 
+  searchSession = (payload) => {
+    return new Promise((resolve, reject) => {
+      this.api.searchSession(payload.action, (error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+
   handleResponse(error, reject, resolve, data) {
     if (error) {
       reject(error)

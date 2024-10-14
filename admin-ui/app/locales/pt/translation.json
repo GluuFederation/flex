@@ -164,6 +164,12 @@
     "policies_zip_uris": "URIs de políticas ZIP",
     "jans_assertion_consumer_service_get_url": "URL GET do Serviço de Consumo de Asserção Jans",
     "jans_assertion_consumer_service_post_url": "URL POST do Serviço de Consumo de Asserção Jans",
+    "jans_id": "ID Jans",
+    "jans_state": "Estado Jans",
+    "jans_sess_state":"Estado da sessão Jans",
+    "jans_user_dn": "DN do usuário Jans",
+    "permission_granted_map": "Mapa de permissões concedidas",
+    "jans_sess_attr": "Atributos da sessão Jans", 
     "download_summary": "Baixar Resumo",
     "customAttributes": "atributos personalizados",
     "sessionTimeoutInMins": "Tempo limite da sessão da interface de administração (em minutos)",
@@ -1462,5 +1468,14 @@
     "middleName": "Nome do meio",
     "sn": "Sobrenome",
     "userConfirmPassword": "Confirme a Senha"
+  },
+  "sessions":{
+    "expirationDate" : "Data de expiração",
+    "jansId": "ID Jans",
+    "jansState": "Estado Jans",
+    "jansSessState": "Estado da sessão Jans",
+    "jansUsrDN": "DN do usuário Jans",
+    "permissionGrantedMap": "Mapa de permissões concedida",
+    "jansSessAttr": "Atributo da sessão Jans"
   }
 }
