@@ -6,12 +6,12 @@ const initialState = {
   item: {},
   view: false,
   loading: false,
-  isTokenLoading:false,
+  isTokenLoading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
   totalItems: 0,
   entriesCount: 0,
-  tokens: [],
+  tokens: {},
 };
 
 const oidcSlice = createSlice({
@@ -98,7 +98,18 @@ const oidcSlice = createSlice({
     },
     getTokenByClientResponse: (state, action) => {
       state.isTokenLoading = false;
-      state.tokens = action.payload?.data;
+      if (action.payload?.data) {
+        console.log(action.payload.data.entries);
+        state.tokens.items = action.payload?.data?.entries || [];
+        state.tokens.totalItems = action.payload?.data?.totalEntriesCount || 0;
+        state.tokens.entriesCount = action.payload?.data?.entriesCount || 0;
+      }
+    },
+    deleteClientToken: (state) => {
+      state.isTokenLoading = true;
+    },
+    deleteClientTokenResponse: (state, action) => {
+      state.isTokenLoading = false;
     },
   },
 });
@@ -117,6 +128,8 @@ export const {
   viewOnly,
   getTokenByClient,
   getTokenByClientResponse,
+  deleteClientToken,
+  deleteClientTokenResponse,
 } = oidcSlice.actions;
 export const { actions, reducer, state } = oidcSlice;
 reducerRegistry.register("oidcReducer", reducer);

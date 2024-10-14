@@ -31,8 +31,9 @@ const sequence = [
   "Encryption/Signing",
   "AdvancedClientProperties",
   "ClientScripts",
-  "ClientActiveTokens"
+  "ClientActiveTokens",
 ];
+
 const ATTRIBUTE = "attributes";
 let commitMessage = "";
 function ClientWizardForm({
@@ -44,6 +45,7 @@ function ClientWizardForm({
   customOnSubmit,
   oidcConfiguration,
   umaResources,
+  isEdit = false,
 }) {
   const formRef = useRef();
   const { t } = useTranslation();
@@ -175,6 +177,11 @@ function ClientWizardForm({
     }
   }
   function isComplete(stepId) {
+    console.log(
+      "stepId",
+      stepId,
+      sequence.indexOf(stepId) < sequence.indexOf(currentStep)
+    );
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep);
   }
   function submitForm(message) {
@@ -190,6 +197,7 @@ function ClientWizardForm({
   }, []);
 
   const activeClientStep = (formik) => {
+    console.log("currentStep", currentStep);
     switch (currentStep) {
       case sequence[0]:
         return (
@@ -424,14 +432,18 @@ function ClientWizardForm({
                       {t("titles.client_scripts")}
                     </Wizard.Step>
 
-                    <Wizard.Step
-                      data-testid={sequence[8]}
-                      id={setId(8)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[8])}
-                    >
-                      {t("titles.activeTokens")}
-                    </Wizard.Step>
+                    {isEdit ? (
+                      <Wizard.Step
+                        data-testid={sequence[8]}
+                        id={setId(8)}
+                        icon={<i className="fa fa-credit-card fa-fw"></i>}
+                        complete={isComplete(sequence[8])}
+                      >
+                        {t("titles.activeTokens")}
+                      </Wizard.Step>
+                    ) : (
+                      <></>
+                    )}
                   </Wizard>
                 </CardBody>
                 <CardBody className="p-2">{activeClientStep(formik)}</CardBody>

@@ -7,6 +7,8 @@ import {
   editClientResponse,
   deleteClientResponse,
   getOpenidClients,
+  getTokenByClientResponse,
+  deleteClientTokenResponse,
 } from "../features/oidcSlice";
 import { getAPIAccessToken } from "Redux/features/authSlice";
 import { OIDC } from "../audit/Resources";
@@ -146,12 +148,22 @@ export function* deleteAClient({ payload }) {
 
 export function* getOpenidClientTokens({ payload }) {
   try {
-    console.log("payload", payload);
     const api = yield* newTokenFunction();
-    const data = yield call(api.getOpenidClientTokens, payload.inum);
-    yield put(deleteClientResponse({ data }));
+    const data = yield call(api.getOpenidClientTokens, payload);
+    yield put(getTokenByClientResponse({ data }));
   } catch (error) {
-    yield put(deleteClientResponse(null));
+    yield put(getTokenByClientResponse(null));
+  }
+}
+
+export function* deleteClientToken({ payload }) {
+  try {
+    const api = yield* newTokenFunction();
+    const data = yield call(api.deleteClientToken, payload.tknCode);
+    yield put(updateToast(true, "success"));
+    yield put(deleteClientTokenResponse());
+  } catch (error) {
+    yield put(deleteClientTokenResponse());
   }
 }
 
@@ -178,6 +190,10 @@ export function* getOpenidClientTokensWatcher() {
   yield takeLatest("oidc/getTokenByClient", getOpenidClientTokens);
 }
 
+export function* deleteClientTokensWatcher() {
+  yield takeLatest("oidc/deleteClientToken", deleteClientToken);
+}
+
 export default function* rootSaga() {
   yield all([
     fork(getOpenidClientsWatcher),
@@ -186,5 +202,6 @@ export default function* rootSaga() {
     fork(editClientWatcher),
     fork(deleteClientWatcher),
     fork(getOpenidClientTokensWatcher),
+    fork(deleteClientTokensWatcher),
   ]);
 }

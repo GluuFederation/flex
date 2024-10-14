@@ -1,86 +1,57 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import MaterialTable from "@material-table/core";
-import { Card, CardBody } from "../../../../app/components";
+import { Card, CardBody, Col, Row } from "../../../../app/components";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
 import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
 import { ThemeContext } from "Context/theme/themeContext";
 import { Paper, TablePagination } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { DeleteOutlined } from "@mui/icons-material";
 import getThemeColor from "Context/theme/config";
-import GluuAdvancedSearch from "Routes/Apps/Gluu/GluuAdvancedSearch";
-import { LIMIT_ID, PATTERN_ID } from "../../common/Constants";
-import { getTokenByClient } from "../../redux/features/oidcSlice";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import moment from "moment";
+import {
+  deleteClientToken,
+  getTokenByClient,
+} from "../../redux/features/oidcSlice";
+import ClientActiveTokenDetailPage from "./ClientActiveTokenDetailPage";
+import { Button } from "Components";
 
 function ClientActiveTokens({ client }) {
-  console.log("client", client);
   const myActions = [];
   const options = {};
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const theme = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
   const themeColors = getThemeColor(selectedTheme);
   const bgThemeColor = { background: themeColors.background };
-
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, []);
+  const [data, setData] = useState([]);
 
   const [pageNumber, setPageNumber] = useState(0);
   const [limit, setLimit] = useState(10);
-  const [pattern, setPattern] = useState(null);
+  const [pattern, setPattern] = useState({
+    creationDate: null,
+  });
 
-  const loading = false; //useSelector((state) => state.oidcReducer.isTokenLoading);
-  const tokens = [
-    { id: 1, token_type: "access token", expiration_date: "1234" },
-    { id: 1, token_type: "access token", expiration_date: "1234" },
-    { id: 1, token_type: "access token", expiration_date: "1234" },
-  ]; //useSelector((state) => state.oidcReducer.tokens);
+  const loading = useSelector((state) => state.oidcReducer.isTokenLoading);
+  const updatedToken = useSelector((state) => state.oidcReducer.tokens);
 
-  const { totalItems } = useSelector((state) => state.userReducer);
+  const { totalItems } = useSelector((state) => state.oidcReducer.tokens);
 
   const onPageChangeClick = (page) => {
     let startCount = page * limit;
-    options["startIndex"] = parseInt(startCount);
-    options["limit"] = limit;
-    options["pattern"] = pattern;
     setPageNumber(page);
-    //dispatch(getUsers({ action: options }))
+    getTokens(parseInt(startCount), limit, `clnId=${client.inum}`);
   };
 
   const onRowCountChangeClick = (count) => {
-    options["limit"] = count;
-    options["pattern"] = pattern;
     setPageNumber(0);
     setLimit(count);
-    // dispatch(getUsers({ action: options }))
+    getTokens(0, limit, `clnId=${client.inum}`);
   };
-
-  let memoLimit = limit;
-  let memoPattern = pattern;
-  function handleOptionsChange(event) {
-    if (event.target.name == "limit") {
-      memoLimit = event.target.value;
-    } else if (event.target.name == "pattern") {
-      memoPattern = event.target.value;
-    }
-  }
-
-  const GluuSearch = useCallback(() => {
-    return (
-      <GluuAdvancedSearch
-        limitId={LIMIT_ID}
-        patternId={PATTERN_ID}
-        limit={limit}
-        pattern={pattern}
-        handler={handleOptionsChange}
-        showLimit={false}
-      />
-    );
-  }, [limit, pattern, handleOptionsChange]);
 
   const PaperContainer = useCallback(
     (props) => <Paper {...props} elevation={0} />,
@@ -105,48 +76,172 @@ function ClientActiveTokens({ client }) {
   );
 
   const DetailPanel = useCallback((rowData) => {
-    return <></>;
+    return <ClientActiveTokenDetailPage row={rowData} />;
   }, []);
 
-  myActions.push((rowData) => ({
-    icon: DeleteOutlinedIcon,
-    iconProps: {
-      color: "secondary",
-      id: "deleteClient" + rowData.inum,
-    },
-    onClick: (event, rowData) => {},
-    disabled: false,
-  }));
+  const handleSearch = () => {
+    let startCount = pageNumber * limit;
+    let conditionquery = `clnId=${client.inum}`;
+    if (pattern.creationDate) {
+      conditionquery += `,iat=${moment(pattern.creationDate).format(
+        "YYYY/DD/MM HH:mm:ss"
+      )}`;
+    }
+    getTokens(startCount, limit, conditionquery);
+  };
 
-  myActions.push({
-    icon: GluuSearch,
-    tooltip: `${t("messages.advanced_search")}`,
-    iconProps: { color: "primary" },
-    isFreeAction: true,
-    onClick: () => {},
-  });
+  const handleClear = () => {
+    setPattern({ referenceId: "", scope: "", tokenCode: "" });
+    let startCount = pageNumber * limit;
+    let conditionquery = `clnId=${client.inum}`;
+    getTokens(startCount, limit, conditionquery);
+  };
 
-  myActions.push({
-    icon: "refresh",
-    tooltip: `${t("messages.refresh")}`,
-    iconProps: { color: "primary" },
-    isFreeAction: true,
-    onClick: () => {
-      setLimit(memoLimit);
-      setPattern(memoPattern);
-      //dispatch(getUsers({ action: { limit: memoLimit, pattern: memoPattern } }))
-    },
-  });
+  const handleRevokeToken = async (oldData) => {
+    await dispatch(deleteClientToken({ tknCode: oldData.tokenCode }));
+    let startCount = pageNumber * limit;
+    getTokens(startCount, limit, `clnId=${client.inum}`);
+  };
+
+  const getTokens = async (page, limit, fieldValuePair) => {
+    options["startIndex"] = parseInt(page);
+    options["limit"] = limit;
+    options["fieldValuePair"] = fieldValuePair;
+    await dispatch(getTokenByClient({ action: options }));
+  };
+
+  // Convert data array into CSV string
+  const convertToCSV = (data) => {
+    const keys = Object.keys(data[0]).filter((item) => item !== "attributes"); // Get the headers from the first object
+    const header = keys
+      .filter((item) => item !== "attributes")
+      .map((item) => item.replace(/-/g, " ").toUpperCase())
+      .join(","); // Create a comma-separated string of headers
+
+    const updateData = data.map((row) => {
+      return {
+        scope: row.scope,
+        deletable: row.deletable,
+        grantType: row.grantType,
+        expirationDate: row.expirationDate,
+        creationDate: row.creationDate,
+        tokenType: row.tokenType,
+      };
+    });
+
+    const rows = updateData.map((row) => {
+      return keys.map((key) => row[key]).join(","); // Create a comma-separated string for each row
+    });
+
+    return [header, ...rows].join("\n"); // Combine header and rows, separated by newlines
+  };
+
+  // Function to handle file download
+  const downloadCSV = () => {
+    const csv = convertToCSV(data);
+    const blob = new Blob([csv], { type: "text/csv" }); // Create a blob with the CSV data
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary link element to trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `client-tokens.csv`); // Set the file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link); // Clean up
+  };
 
   useEffect(() => {
-    dispatch(getTokenByClient({ inum: client.inum }));
+    getTokens(0, limit, `clnId=${client.inum}`);
   }, []);
+
+  useEffect(() => {
+    if (updatedToken && Object.keys(updatedToken).length > 0) {
+      const result = updatedToken?.items?.length
+        ? updatedToken?.items.map((item) => {
+            return {
+              tokenType: item.tokenType,
+              scope: item.scope,
+              deletable: item.deletable,
+              attributes: item.attributes,
+              grantType: item.grantType,
+              expirationDate: moment(item.expirationDate).format(
+                "YYYY/DD/MM HH:mm:ss"
+              ),
+              creationDate: moment(item.creationDate).format(
+                "YYYY/DD/MM HH:mm:ss"
+              ),
+              tokenType: item.tokenType,
+            };
+          })
+        : [];
+      setData(result);
+    }
+  }, [updatedToken]);
 
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={true}>
+            <div style={applicationStyle.globalSearch}>
+              <div>
+                <div>
+                  <p>{t("placeholders.search_date")}</p>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateTimePicker
+                      id="expirationDate"
+                      name="expirationDate"
+                      value={pattern.creationDate}
+                      onChange={(date) => {
+                        setPattern({ ...pattern, creationDate: date });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{
+                            "& .MuiInputBase-input": {
+                              height: "36px", // Adjust the height of the input
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+
+              <div style={applicationStyle.globalSearchPattern}>
+                <Button
+                  color={`primary-${selectedTheme}`}
+                  style={applicationStyle.buttonStyle}
+                  onClick={handleSearch}
+                  disabled={pattern.creationDate ? false : true}
+                >
+                  {t("actions.search")}
+                </Button>
+              </div>
+              <div style={applicationStyle.globalSearchPattern}>
+                <Button
+                  color={`primary-${selectedTheme}`}
+                  style={applicationStyle.buttonStyle}
+                  onClick={handleClear}
+                  disabled={pattern.creationDate ? false : true}
+                >
+                  {t("actions.clear")}
+                </Button>
+              </div>
+              <div style={applicationStyle.globalSearchPattern}>
+                <Button
+                  color={`primary-${selectedTheme}`}
+                  style={applicationStyle.buttonStyle}
+                  onClick={downloadCSV}
+                >
+                  {t("actions.export_csv")}
+                </Button>
+              </div>
+            </div>
+
             <MaterialTable
               key={limit}
               components={{
@@ -154,13 +249,18 @@ function ClientActiveTokens({ client }) {
                 Pagination: PaginationWrapper,
               }}
               columns={[
+                { title: `${t("fields.token_type")}`, field: "tokenType" },
+                { title: `${t("fields.grant_type")}`, field: "grantType" },
+                {
+                  title: `${t("fields.creationDate")}`,
+                  field: "creationDate",
+                },
                 {
                   title: `${t("fields.expiration_date")}`,
-                  field: "expiration_date",
+                  field: "expirationDate",
                 },
-                { title: `${t("fields.token_type")}`, field: "token_type" },
               ]}
-              data={tokens}
+              data={data}
               isLoading={loading}
               title=""
               actions={myActions}
@@ -178,6 +278,15 @@ function ClientActiveTokens({ client }) {
                   ...bgThemeColor,
                 },
                 actionsColumnIndex: -1,
+              }}
+              editable={{
+                isDeleteHidden: () => false,
+                onRowDelete: (oldData) => {
+                  return new Promise((resolve, reject) => {
+                    handleRevokeToken(oldData);
+                    resolve();
+                  });
+                },
               }}
               detailPanel={DetailPanel}
             />
