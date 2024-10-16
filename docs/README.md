@@ -4,7 +4,7 @@
 
 Designed from the ground up to support cloud-native deployments, Gluu Flex is a self-hosted software stack to enable your organization to build a world-class digital identity platform to authenticate both people and software.
 
-With Helm charts available out of the box, Gluu Flex can handle the most demanding requirements for concurrency. Thanks to cloud-native auto-scaling and zero downtime updates, you can build a robust, multi-datacenter topology. You can take advantage of new cloud databases like Amazon Aurora and Google Spanner–say goodbye to those old LDAP servers that waste the precious time of your DevOps team.
+With Helm charts available out of the box, Gluu Flex can handle the most demanding requirements for concurrency. Thanks to cloud-native auto-scaling and zero downtime updates, you can build a robust, multi-datacenter topology. You can take advantage of new cloud databases like Amazon Aurora and Google Spanner.
 
 Common use cases include:
 
