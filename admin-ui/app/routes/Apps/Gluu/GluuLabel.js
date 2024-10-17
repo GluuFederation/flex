@@ -36,16 +36,6 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
         }
         :
       </h5>
-      {/* {doc_category && (
-        <ReactTooltip
-          html={true}
-          type="success"
-          id={doc_entry}
-          data-testid={doc_entry}
-        >
-          {t('documentation.' + doc_category + '.' + doc_entry)}
-        </ReactTooltip>
-      )} */}
     </Label>
   )
 }

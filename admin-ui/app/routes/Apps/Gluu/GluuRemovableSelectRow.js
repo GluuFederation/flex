@@ -10,9 +10,9 @@ function GluuRemovableSelectRow({
   name,
   value,
   formik,
-  values,
-  lsize,
-  rsize,
+  values = [],
+  lsize = 3,
+  rsize = 9,
   handler,
   doc_category,
   isDirect,
@@ -52,11 +52,4 @@ function GluuRemovableSelectRow({
     </GluuTooltip>
   )
 }
-
-GluuRemovableSelectRow.defaultProps = {
-  values: [],
-  lsize: 3,
-  rsize: 9,
-}
-
 export default GluuRemovableSelectRow
