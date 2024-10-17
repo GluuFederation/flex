@@ -23,6 +23,7 @@
     "currentMonth": "Current Month",
     "currentYear": "Current Year",
     "choose": "Choose",
+    "deploy":"Deploy",
     "edit": "Edit",
     "next": "Next",
     "no": "No",
@@ -623,7 +624,9 @@
     "source_backend_ldap_servers": "Source Backend LDAP Servers",
     "inum_db_server": "Inum DB Server",
     "static_configuration": "Static Configuration",
-    "dynamic_configuration": "Dynamic Configuration"
+    "dynamic_configuration": "Dynamic Configuration",   
+    "upload_agama_project":"Upload Agama project",
+    "add_community_project":"Add a Community Project"
   },
   "messages": {
     "add_permission": "Add Permission",
@@ -713,7 +716,8 @@
     "drag_sha_file": "Drag .sha256sum file here, or click to select file",
     "see_project_details": "See project details",
     "add_ssa": "Add SSA",
-    "copied": "Copied"
+    "copied": "Copied",
+    "no_data_found": "No data found"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
@@ -840,6 +844,8 @@
     "scopes": "Scopes",
     "scripts": "Custom Scripts",
     "schemaName": "Schema Name",
+    "select_project_deploy":"Select a project to deploy",
+    "add_new_agama_project":"Add a new Agama Project",
     "user_management": "User Management",
     "fido_management": "FIDO Configuration",
     "saml_management": "SAML",
