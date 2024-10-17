@@ -33,7 +33,6 @@ Kubernetes: `>=v1.21.0-0`
 |  | kc-scheduler | 1.1.4 |
 |  | link | 1.1.4 |
 |  | nginx-ingress | 5.1.4 |
-|  | opendj | 5.1.4 |
 |  | persistence | 1.1.4 |
 |  | saml | 1.1.4 |
 |  | scim | 1.1.4 |
