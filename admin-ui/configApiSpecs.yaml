@@ -41,6 +41,7 @@ tags:
   - name: Client Authorization
   - name: Jans Assets
   - name: Fido2 - Configuration
+  - name: Fido2 - Registration
   - name: Configuration – User Management
   - name: Admin UI - Role
   - name: Admin UI - Permission
@@ -53,6 +54,8 @@ tags:
   - name: SAML - Trust Relationship
   - name: SAML - Identity Broker
   - name: Keycloak Link - Configuration
+  - name: Lock - Configuration
+  - name: Lock - Audit
 paths:
   /api/v1/health/app-version:
     get:
@@ -813,6 +816,60 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/config/jans_asset-read'
+  '/api/v1/jans-assets/service/{service-name}':
+    post:
+      tags:
+        - Jans Assets
+      summary: Load assets on server for a service
+      description: Load assets on server for a service
+      operationId: load-service-asset
+      parameters:
+        - name: service-name
+          in: path
+          description: Service Name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: String multipart form.
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Asset file loaded
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Response json example:
+                  description: Response json example
+                  value: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/jans_asset-write'
   /api/v1/jans-assets/upload:
     put:
       tags:
@@ -4487,6 +4544,7 @@ paths:
                     - spontaneous_scope
                     - end_session
                     - post_authn
+                    - client_authn
                     - select_account
                     - create_user
                     - scim
@@ -7989,6 +8047,46 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/config/fido2.write'
+  '/fido2/registration/device/{uuid}':
+    delete:
+      tags:
+        - Fido2 - Registration
+      summary: Delete Fido2 Device Data based on device UID
+      description: Delete Fido2 Device Data based on device UID
+      operationId: delete-fido2-device-data
+      parameters:
+        - name: uuid
+          in: path
+          description: Unique identifier string (UUID) assigned to device.
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/fido2.delete'
   '/fido2/registration/entries/{username}':
     get:
       tags:
@@ -8012,6 +8110,76 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Fido2RegistrationEntry'
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/fido2.readonly'
+  /fido2/registration:
+    get:
+      tags:
+        - Fido2 - Registration
+      summary: Get a list of Fido2RegistrationEntry.
+      description: Get a list of Fido2RegistrationEntry.
+      operationId: get-fido2-registration-data
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: pattern
+          in: query
+          description: Search pattern
+          schema:
+            type: string
+            default: ''
+        - name: startIndex
+          in: query
+          description: The 1-based index of the first query result
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: sortBy
+          in: query
+          description: Data whose value will be used to order the returned response
+          schema:
+            type: string
+            default: jansId
+        - name: sortOrder
+          in: query
+          description: >-
+            Order in which the sortBy param is applied. Allowed values are
+            "ascending" and "descending"
+          schema:
+            type: string
+            default: ascending
+        - name: fieldValuePair
+          in: query
+          description: Field and value pair for seraching
+          schema:
+            type: string
+            default: ''
+          examples:
+            Field value example:
+              description: Field value example
+              value: 'mail=abc@mail.com,jansStatus=true'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fido2RegistrationEntryPagedResult'
+              examples:
+                Response example:
+                  description: Response example
+                  value: ''
         '401':
           description: Unauthorized
         '500':
@@ -10943,23 +11111,6 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/idp/saml.readonly'
-  /kc/saml/idp/process-idp-meta-file:
-    post:
-      tags:
-        - SAML - Identity Broker
-      summary: Process unprocessed IDP metadata files
-      description: Process unprocessed IDP metadata files
-      operationId: post-idp-metadata-files
-      responses:
-        '200':
-          description: OK
-        '401':
-          description: Unauthorized
-        '500':
-          description: InternalServerError
-      security:
-        - oauth2:
-            - 'https://jans.io/idp/saml.write'
   /kc/samlConfig:
     get:
       tags:
@@ -11295,23 +11446,6 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/config/saml.readonly'
-  /kc/saml/trust-relationship/process-sp-meta-file:
-    post:
-      tags:
-        - SAML - Trust Relationship
-      summary: Process unprocessed metadata files
-      description: Process unprocessed metadata files
-      operationId: post-metadata-files
-      responses:
-        '200':
-          description: OK
-        '401':
-          description: Unauthorized
-        '500':
-          description: InternalServerError
-      security:
-        - oauth2:
-            - 'https://jans.io/oauth/config/saml.write'
   /kc-link/kcLinkConfig:
     get:
       tags:
@@ -11395,6 +11529,458 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/kc-link-config.write'
+  /lock/audit/health/search:
+    get:
+      tags:
+        - Lock - Audit
+      summary: Rerquest health records for specific event range
+      description: Rerquest health records for specific event range
+      operationId: request-lock-health-records-event-range
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: eventStartDate
+          in: query
+          description: Event start date in ISO8601 format
+          required: true
+          schema:
+            type: string
+        - name: eventEndDate
+          in: query
+          description: Event end date in ISO8601 format
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HealthEntry'
+        '400':
+          description: Wrong date range specified
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/health.readonly'
+  /lock/audit/log/search:
+    get:
+      tags:
+        - Lock - Log
+      summary: Rerquest log records for specific event range
+      description: Rerquest log records for specific event range
+      operationId: request-lock-log-records-event-range
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: eventStartDate
+          in: query
+          description: Event start date in ISO8601 format
+          required: true
+          schema:
+            type: string
+        - name: eventEndDate
+          in: query
+          description: Event end date in ISO8601 format
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LogEntry'
+        '400':
+          description: Wrong date range specified
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/log.readonly'
+  /lock/audit/telemetry/search:
+    get:
+      tags:
+        - Lock - Audit
+      summary: Request telemetry records for specific event range
+      description: Rerquest telemetry records for specific event range
+      operationId: request-lock-telemetry-records-event-range
+      parameters:
+        - name: limit
+          in: query
+          description: Search size - max size of the results to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+        - name: eventStartDate
+          in: query
+          description: Event start date in ISO8601 format
+          required: true
+          schema:
+            type: string
+        - name: eventEndDate
+          in: query
+          description: Event end date in ISO8601 format
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryEntry'
+        '400':
+          description: Wrong date range specified
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/telemetry.readonly'
+  /lock/audit/health/bulk:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Bulk save health data
+      description: Bulk save health data
+      operationId: bulk-save-health-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/HealthEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/health.write'
+  /lock/audit/log/bulk:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Bulk save log data
+      description: Bulk save log data
+      operationId: bulk-save-log-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/LogEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/log.write'
+  /lock/audit/telemetry/bulk:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Bulk save telemetry data
+      description: Bulk save telemetry data
+      operationId: bulk-save-telemetry-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/TelemetryEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/telemetry.write'
+  /lock/audit/health:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Save health data
+      description: Save health data
+      operationId: save-health-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HealthEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/health.write'
+  /lock/audit/log:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Save log data
+      description: Save log data
+      operationId: save-log-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/log.write'
+  /lock/audit/telemetry:
+    post:
+      tags:
+        - Lock - Audit
+      summary: Save telemetry data
+      description: Save telemetry data
+      operationId: save-telemetry-data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemetryEntry'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock/telemetry.write'
+  /lock/lockConfig:
+    get:
+      tags:
+        - Lock - Configuration
+      summary: Gets Lock configuration properties
+      description: Gets Lock configuration properties
+      operationId: get-lock-properties
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppConfiguration5'
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock-config.readonly'
+    put:
+      tags:
+        - Lock - Configuration
+      summary: Update Lock configuration properties
+      description: Update Lock configuration properties
+      operationId: put-lock-properties
+      requestBody:
+        description: GluuAttribute object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppConfiguration5'
+            examples:
+              Request example:
+                description: Request example
+                value: ''
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppConfiguration5'
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock-config.write'
+    patch:
+      tags:
+        - Lock - Configuration
+      summary: Partially modifies Lock configuration properties.
+      description: Partially modifies Lock configuration properties.
+      operationId: patch-lock-properties
+      requestBody:
+        description: String representing patch-document.
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/JsonPatch'
+            examples:
+              Request json example:
+                description: Request json example
+                value: ''
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppConfiguration5'
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/lock-config.write'
 components:
   schemas:
     JsonNode:
@@ -11546,7 +12132,9 @@ components:
           type: string
         inum:
           type: string
-        displayName:
+        fileName:
+          type: string
+        filePath:
           type: string
         description:
           type: string
@@ -11555,19 +12143,19 @@ components:
         creationDate:
           type: string
           format: date-time
-        jansService:
+        service:
           type: array
           items:
             type: string
-        jansLevel:
+        level:
           type: integer
           format: int32
-        jansRevision:
+        revision:
           type: integer
           format: int32
-        jansEnabled:
+        enabled:
           type: boolean
-        jansAlias:
+        alias:
           type: string
         baseDn:
           type: string
@@ -11709,19 +12297,19 @@ components:
           type: string
         selected:
           type: boolean
-        adminCanAccess:
-          type: boolean
         adminCanView:
           type: boolean
         adminCanEdit:
           type: boolean
-        userCanAccess:
-          type: boolean
         userCanView:
           type: boolean
-        whitePagesCanView:
-          type: boolean
         userCanEdit:
+          type: boolean
+        userCanAccess:
+          type: boolean
+        adminCanAccess:
+          type: boolean
+        whitePagesCanView:
           type: boolean
         baseDn:
           type: string
@@ -11872,6 +12460,15 @@ components:
           type: array
           items:
             type: string
+        applyXFrameOptionsHeaderIfUriContainsAny:
+          type: array
+          items:
+            type: string
+        xframeOptionsHeaderValue:
+          type: string
+          enum:
+            - SAMEORIGIN
+            - DENY
         responseTypesSupported:
           uniqueItems: true
           type: array
@@ -12558,8 +13155,6 @@ components:
           type: boolean
         lockMessageConfig:
           $ref: '#/components/schemas/LockMessageConfig'
-        fapi:
-          type: boolean
         allResponseTypesSupported:
           uniqueItems: true
           type: array
@@ -12569,6 +13164,8 @@ components:
               - code
               - token
               - id_token
+        fapi:
+          type: boolean
     AuthenticationFilter:
       required:
         - baseDn
@@ -13365,6 +13962,9 @@ components:
     ApiAppConfiguration:
       type: object
       properties:
+        serviceName:
+          type: string
+          description: Config API service name.
         configOauthEnabled:
           type: boolean
           description: OAuth authentication enable/disable flag. Default value `true`.
@@ -13455,6 +14055,16 @@ components:
           type: integer
           description: Maximum number of results per page in search endpoints.
           format: int32
+        acrExclusionList:
+          type: array
+          description: >-
+            List of ACR values that should be excluded from active validation
+            check.
+          items:
+            type: string
+            description: >-
+              List of ACR values that should be excluded from active validation
+              check.
         userExclusionAttributes:
           type: array
           description: User attribute that should not be returned in response.
@@ -13656,6 +14266,7 @@ components:
             - spontaneous_scope
             - end_session
             - post_authn
+            - client_authn
             - select_account
             - create_user
             - scim
@@ -13698,14 +14309,14 @@ components:
           type: boolean
         internal:
           type: boolean
+        locationPath:
+          type: string
         locationType:
           type: string
           enum:
             - ldap
             - db
             - file
-        locationPath:
-          type: string
         baseDn:
           type: string
     ScriptError:
@@ -14134,10 +14745,10 @@ components:
         ttl:
           type: integer
           format: int32
-        opbrowserState:
-          type: string
         persisted:
           type: boolean
+        opbrowserState:
+          type: string
     SessionIdAccessMap:
       type: object
       properties:
@@ -14485,6 +15096,22 @@ components:
           writeOnly: true
         baseDn:
           type: string
+    Fido2RegistrationEntryPagedResult:
+      type: object
+      properties:
+        start:
+          type: integer
+          format: int32
+        totalEntriesCount:
+          type: integer
+          format: int32
+        entriesCount:
+          type: integer
+          format: int32
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fido2RegistrationEntry'
     CustomUser:
       type: object
       properties:
@@ -14944,66 +15571,105 @@ components:
           type: string
         inum:
           type: string
+          description: Unique identifier.
         creatorId:
           type: string
+          description: Creator of IDP.
         name:
           type: string
+          description: Name uniquely identifies an identity provider.
         displayName:
           maxLength: 60
           minLength: 0
           type: string
+          description: Identity provider display name.
         description:
           maxLength: 500
           minLength: 0
           type: string
+          description: Description of Identity provider.
         realm:
           type: string
+          description: Realm in which Identity provider is created.
         enabled:
           type: boolean
+          description: Indicates if Identity provider is enabled.
         signingCertificate:
           type: string
+          description: Digital certificate used to verify the authenticity of the request.
         validateSignature:
           type: string
         singleLogoutServiceUrl:
           type: string
+          description: Url used to send logout requests.
         nameIDPolicyFormat:
           type: string
+          description: ' URI reference corresponding to a name identifier format.'
         principalAttribute:
           type: string
+          description: ' Name or Friendly Name of the attribute used to identify external users.'
         principalType:
           type: string
+          description: Way to identify and track external users from the assertion.
         idpEntityId:
           type: string
+          description: >-
+            Entity ID that will be used to uniquely identify this SAML Service
+            Provider.
         singleSignOnServiceUrl:
           type: string
+          description: Url used to send SAML authentication requests.
         encryptionPublicKey:
           type: string
+          description: Public key to use to encrypt the message.
         providerId:
           type: string
+          description: 'IDP provider, should be SAML.'
         trustEmail:
           type: boolean
+          description: >-
+            If enabled, email provided by this provider is not verified even if
+            verification is enabled for the realm.
         storeToken:
           type: boolean
+          description: Enable/disable if tokens must be stored after authenticating users.
         addReadTokenRoleOnCreate:
           type: boolean
+          description: Enable/disable if new users can read any stored tokens.
         authenticateByDefault:
           type: boolean
         linkOnly:
           type: boolean
+          description: >-
+            If true, users cannot log in through this provider. They can only
+            link to this provider.
         firstBrokerLoginFlowAlias:
           type: string
+          description: >-
+            Alias of authentication flow, which is triggered after first login
+            with this identity provider. Term 'First Login' means that no
+            Keycloak account is currently linked to the authenticated identity
+            provider account.
         postBrokerLoginFlowAlias:
           type: string
+          description: >-
+            Alias of authentication flow, which is triggered after each login
+            with this identity provider.
         spMetaDataURL:
           type: string
+          description: SAML SP metadata file URL.
         spMetaDataLocation:
           type: string
+          description: SP metadata file location.
         idpMetaDataURL:
           type: string
+          description: SAML IDP metadata file URL.
         idpMetaDataLocation:
           type: string
+          description: SAML IDP metadata file location.
         status:
           type: string
+          description: IDP setup status.
           enum:
             - active
             - inactive
@@ -15011,6 +15677,7 @@ components:
             - register
         validationStatus:
           type: string
+          description: IDP validation status.
           enum:
             - In Progress
             - Success
@@ -15018,8 +15685,10 @@ components:
             - Failed
         validationLog:
           type: array
+          description: IDP validation log.
           items:
             type: string
+            description: IDP validation log.
         baseDn:
           type: string
     IdentityProviderPagedResult:
@@ -15043,72 +15712,112 @@ components:
       properties:
         applicationName:
           type: string
+          description: Name of application.
         samlTrustRelationshipDn:
           type: string
+          description: Trust relationship organizational unit.
         trustedIdpDn:
           type: string
+          description: Identity provider organizational unit.
         enabled:
           type: boolean
+          description: SAML functionality enabled.
         selectedIdp:
           type: string
+          description: Selected SAML server.
         serverUrl:
           type: string
+          description: SAML server URL.
         realm:
           type: string
+          description: 'SAML server realm, default is `jans`.'
         clientId:
           type: string
+          description: Jans auth SAML client ID.
         clientSecret:
           type: string
+          description: Jans auth SAML client password.
         grantType:
           type: string
+          description: Grant type to get access token.
         scope:
           type: string
+          description: Oauth2 scope to get access token.
         username:
           type: string
+          description: SAML server username.
         password:
           type: string
+          description: SAML server user credentails.
         spMetadataUrl:
           type: string
+          description: Relative SAML server SP Metadata Url.
         tokenUrl:
           type: string
+          description: Relative SAML server Token Url.
         idpUrl:
           type: string
+          description: Relative SAML server IDP Url.
         extIDPTokenUrl:
           type: string
+          description: Relative SAML server IDP Token Url.
         extIDPRedirectUrl:
           type: string
+          description: Relative IDP redirect Url.
         idpMetadataImportUrl:
           type: string
+          description: Relative SAML server Metadata import Url.
         idpRootDir:
           type: string
+          description: Jans Auth server root SAML directory.
         idpMetadataDir:
           type: string
+          description: >-
+            Jans Auth server relative SAML directory to store IDP Metadata
+            files.
         idpMetadataTempDir:
           type: string
+          description: >-
+            Jans Auth server relative SAML temp directory to store IDP Metadata
+            files.
         idpMetadataFile:
           type: string
+          description: IDP Metadata file name format.
         spMetadataDir:
           type: string
+          description: Jans Auth server relative SAML directory to store SP Metadata files.
         spMetadataTempDir:
           type: string
+          description: >-
+            Jans Auth server relative SAML temp directory to store SP Metadata
+            files.
         spMetadataFile:
           type: string
+          description: SP Metadata file name format.
         ignoreValidation:
           type: boolean
+          description: Boolean value to enable/disable SAML validation.
         setConfigDefaultValue:
           type: boolean
+          description: Boolean value `true` to set the default values for an IDP.
         idpMetadataMandatoryAttributes:
           type: array
+          description: List of mandatory IDP Metadata attributes.
           items:
             type: string
+            description: List of mandatory IDP Metadata attributes.
         kcAttributes:
           type: array
+          description: Keycloak SAML attribute names.
           items:
             type: string
+            description: Keycloak SAML attribute names.
         kcSamlConfig:
           type: array
+          description: Keycloak SAML config attribute names.
           items:
             type: string
+            description: Keycloak SAML config attribute names.
     ProfileConfiguration:
       type: object
       properties:
@@ -15116,19 +15825,32 @@ components:
           type: string
         signResponses:
           type: string
+      description: List of profile configuration.
     SAMLMetadata:
       type: object
       properties:
         nameIDPolicyFormat:
           type: string
+          description: ' URI reference corresponding to a name identifier format.'
         entityId:
           type: string
+          description: >-
+            Entity ID that will be used to uniquely identify this SAML Service
+            Provider.
         singleLogoutServiceUrl:
           type: string
+          description: Url used to send logout requests.
         jansAssertionConsumerServiceGetURL:
           type: string
+          description: >-
+            GET URL the Identity provider (IdP) will send the SAML Response
+            containing the assertions.
         jansAssertionConsumerServicePostURL:
           type: string
+          description: >-
+            POST URL the Identity provider (IdP) will send the SAML Response
+            containing the assertions.
+      description: SAML entity metadata.
     TrustRelationship:
       required:
         - description
@@ -15141,36 +15863,51 @@ components:
           type: string
         inum:
           type: string
+          description: Unique identifier
         owner:
           type: string
+          description: Creator of Trust Relationship.
         name:
           maxLength: 60
           minLength: 0
           type: string
+          description: >-
+            The alphanumeric ID string that is used to identify the Trust
+            Relationship.
         displayName:
           maxLength: 60
           minLength: 0
           type: string
+          description: Trust Relationship display name.
         description:
           maxLength: 4000
           minLength: 0
           type: string
+          description: Description of the Trust Relationship.
         baseUrl:
           type: string
+          description: URL to use when the auth server needs to redirect.
         enabled:
           type: boolean
+          description: Indicates if Trust Relationship is enabled.
         alwaysDisplayInConsole:
           type: boolean
+          description: Indicates if Trust Relationship should always be listed in the UI.
         clientAuthenticatorType:
           type: string
+          description: Preferred Authenticator Type.
         secret:
           type: string
+          description: Client secret.
         registrationAccessToken:
           type: string
+          description: Registration access token.
         consentRequired:
           type: boolean
+          description: Boolean value if consent is required.
         spMetaDataSourceType:
           type: string
+          description: 'Trust Relationship SP metadata type - file, URI.'
           enum:
             - file
             - manual
@@ -15178,22 +15915,32 @@ components:
           $ref: '#/components/schemas/SAMLMetadata'
         redirectUris:
           type: array
+          description: List of valid Redirect URI.
           items:
             type: string
+            description: List of valid Redirect URI.
         spMetaDataURL:
           type: string
+          description: SAML entity metadata file URL.
         metaLocation:
           type: string
+          description: Trust Relationship metadata file location.
         releasedAttributes:
           type: array
+          description: Trust Relationship attributes that will be released to SAML server.
           items:
             type: string
+            description: >-
+              Trust Relationship attributes that will be released to SAML
+              server.
         spLogoutURL:
           pattern: >-
             ^$|(^(https?|http)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])
           type: string
+          description: Logout request URL.
         status:
           type: string
+          description: Trust Relationship setup status.
           enum:
             - active
             - inactive
@@ -15201,6 +15948,7 @@ components:
             - register
         validationStatus:
           type: string
+          description: Trust Relationship validation status.
           enum:
             - In Progress
             - Success
@@ -15208,12 +15956,15 @@ components:
             - Failed
         validationLog:
           type: array
+          description: Validation log.
           items:
             type: string
+            description: Validation log.
         profileConfigurations:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/ProfileConfiguration'
+          description: List of profile configuration.
         baseDn:
           type: string
     TrustRelationshipForm:
@@ -15343,6 +16094,230 @@ components:
           type: string
         password:
           type: string
+    HealthEntry:
+      type: object
+      properties:
+        dn:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        eventTime:
+          type: string
+          format: date-time
+        service:
+          type: string
+        getnodeName:
+          type: string
+        status:
+          type: string
+        engineStatus:
+          type: string
+        baseDn:
+          type: string
+        inum:
+          type: string
+    LogEntry:
+      type: object
+      properties:
+        dn:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        eventTime:
+          type: string
+          format: date-time
+        service:
+          type: string
+        getnodeName:
+          type: string
+        eventType:
+          type: string
+        severetyLevel:
+          type: string
+        action:
+          type: string
+        decisionResult:
+          type: string
+        requestedResource:
+          type: string
+        princiaplId:
+          type: string
+        clientId:
+          type: string
+        contextInformation:
+          type: object
+          additionalProperties:
+            type: string
+        baseDn:
+          type: string
+        inum:
+          type: string
+    TelemetryEntry:
+      type: object
+      properties:
+        dn:
+          type: string
+        creationDate:
+          type: string
+          format: date-time
+        eventTime:
+          type: string
+          format: date-time
+        service:
+          type: string
+        getnodeName:
+          type: string
+        status:
+          type: string
+        lastPolicyLoadSize:
+          type: integer
+          format: int32
+        policySuccessLoadCounter:
+          type: integer
+          format: int64
+        policyFailedLoadCounter:
+          type: integer
+          format: int64
+        lastPolicyEvaluationTimeNs:
+          type: string
+          format: date-time
+        avgPolicyEvaluationTimeNs:
+          type: string
+          format: date-time
+        evaluationRequestsCount:
+          type: integer
+          format: int64
+        policyStats:
+          type: object
+          additionalProperties:
+            type: string
+        baseDn:
+          type: string
+        inum:
+          type: string
+        memoryUsage:
+          type: string
+    AppConfiguration5:
+      type: object
+      properties:
+        baseDN:
+          type: string
+          description: >-
+            Entry Base distinguished name (DN) that identifies the starting
+            point of a search
+        baseEndpoint:
+          type: string
+          description: Lock base endpoint URL
+        openIdIssuer:
+          type: string
+          description: OpenID issuer URL
+        tokenChannels:
+          type: array
+          description: List of token channel names
+          items:
+            type: string
+            description: List of token channel names
+        clientId:
+          type: string
+          description: Lock Client ID
+        clientPassword:
+          type: string
+          description: Lock client password
+        tokenUrl:
+          type: string
+          description: Jans URL of the OpenID Connect Provider's OAuth 2.0 Token Endpoint
+        groupScopeEnabled:
+          type: boolean
+          description: Group scope enabled
+        endpointGroups:
+          type: object
+          additionalProperties:
+            type: array
+            description: Endpoint groups
+            items:
+              type: string
+              description: Endpoint groups
+          description: Endpoint groups
+        endpointDetails:
+          type: object
+          additionalProperties:
+            type: array
+            description: >-
+              Jans URL of config-api audit endpoints and corresponding scope
+              details
+            items:
+              type: string
+              description: >-
+                Jans URL of config-api audit endpoints and corresponding scope
+                details
+          description: >-
+            Jans URL of config-api audit endpoints and corresponding scope
+            details
+        disableJdkLogger:
+          type: boolean
+          description: Choose whether to disable JDK loggers
+        loggingLevel:
+          type: string
+          description: Specify the logging level of loggers
+        loggingLayout:
+          type: string
+          description: Logging layout used for Jans Authorization Server loggers
+        externalLoggerConfiguration:
+          type: string
+          description: The path to the external log4j2 logging configuration
+        metricChannel:
+          type: string
+          description: Channel for metric reports
+        metricReporterInterval:
+          type: integer
+          description: The interval for metric reporter in seconds
+          format: int32
+        metricReporterKeepDataDays:
+          type: integer
+          description: The days to keep metric reported data
+          format: int32
+        metricReporterEnabled:
+          type: boolean
+          description: Enable metric reporter
+        cleanServiceInterval:
+          type: integer
+          description: Time interval for the Clean Service in seconds
+          format: int32
+        opaConfiguration:
+          $ref: '#/components/schemas/OpaConfiguration'
+        pdpType:
+          type: string
+          description: PDP type
+        policiesJsonUrisAuthorizationToken:
+          type: string
+          description: Authorization token to access Json Uris
+        policiesJsonUris:
+          type: array
+          description: List of Json Uris with link to Rego policies
+          items:
+            type: string
+            description: List of Json Uris with link to Rego policies
+        policiesZipUrisAuthorizationToken:
+          type: string
+          description: Authorization token to access Zip Uris
+        policiesZipUris:
+          type: array
+          description: List of Zip Uris with policies
+          items:
+            type: string
+            description: List of Zip Uris with policies
+    OpaConfiguration:
+      type: object
+      properties:
+        baseUrl:
+          type: string
+          description: Base OPA URL
+        accessToken:
+          type: string
+          description: OPA access token
+      description: Opa Configuration
   securitySchemes:
     oauth2:
       type: oauth2
