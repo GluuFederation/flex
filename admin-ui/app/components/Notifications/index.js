@@ -40,15 +40,14 @@ export default function Lang() {
   return (
     <div className={classes.root}>
       <div>
-        <Button
+        <div
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
-          aria-haspopup="true"
-          className={classes.btnContainer}
+          className={classes.notificationBtn}
           onClick={handleToggle}
         >
-          <NotificationsIcon style={{color: "white"}}/>
-        </Button>
+          <NotificationsIcon style={{color: "white", width: "35px", height: "100%"}}/>
+        </div>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal className={classes.topElm}>
           {({ TransitionProps, placement }) => (
             <Grow
