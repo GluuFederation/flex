@@ -11,7 +11,7 @@
   height: 36px;
   padding: 5px 10px 10px 10px;
   position: relative;
-  top: 10px;
+  //top: 10px;
 }
 
 .avatar-image {
@@ -21,6 +21,7 @@
   .avatar__content {
     width: 40px;
     height: 40px;
+    margin-top: -7px;
   }
 }
 

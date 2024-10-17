@@ -16,6 +16,16 @@ const styles = makeStyles()((theme) => ({
     textTransform: 'none',
     color: '#FFFFFF',
   },
+  notificationBtn: {
+    position: 'relative',
+    textTransform: 'none',
+    padding:"2px",
+    cursor: 'pointer',
+    '&:active': {
+      backgroundColor: "rgba(217, 217, 217, 0.43)", 
+      transform: 'scale(0.95)',
+    },
+  },
   topElm: {
     zIndex: 9999
   }
