@@ -33,7 +33,7 @@ export default class AssetApi {
     createJansAsset = (body, token) => {
         const document = {
             "fileName": body.fileName, "description": body.description,
-            "document": body.fileName, "service": body?.service || [], "enabled": body.enabled
+            "document": body.fileName, "service": body?.service, "enabled": body.enabled
         }
         const formData = this.buildFormData(body, document)
         return new Promise((resolve, reject) => {
@@ -47,7 +47,7 @@ export default class AssetApi {
         const document = {
             "fileName": body.fileName, "description": body.description, "inum": body.inum,
             "dn": body.dn, "baseDn": body.baseDn,
-            "document": body.fileName, "service": body?.service || [], "enabled": body.enabled
+            "document": body.fileName, "service": body?.service, "enabled": body.enabled
         }
         const formData = this.buildFormData(body, document)
         return new Promise((resolve, reject) => {

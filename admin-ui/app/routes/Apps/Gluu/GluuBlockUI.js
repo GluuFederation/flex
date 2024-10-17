@@ -1,5 +1,5 @@
 import React from 'react'
-function GluuBlockUI(blocking) {
+function GluuBlockUI(blocking=false) {
   if (blocking) {
     return (
       <div className="block-ui-container" style={{ minHeight: '100px' }}>
@@ -19,9 +19,4 @@ function GluuBlockUI(blocking) {
     return ''
   }
 }
-
-GluuBlockUI.defaultProps = {
-  blocking: false,
-}
-
 export default GluuBlockUI

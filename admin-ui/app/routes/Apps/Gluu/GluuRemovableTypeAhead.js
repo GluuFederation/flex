@@ -11,11 +11,11 @@ function GluuRemovableTypeAhead({
   name,
   value,
   formik,
-  lsize,
-  rsize,
+  lsize = 3,
+  rsize = 9,
   handler,
   doc_category,
-  options,
+  options = [],
   isDirect,
   allowNew = true,
 }) {
@@ -58,11 +58,4 @@ function GluuRemovableTypeAhead({
     </GluuTooltip>
   )
 }
-
-GluuRemovableTypeAhead.defaultProps = {
-  values: [],
-  lsize: 3,
-  rsize: 9,
-}
-
 export default GluuRemovableTypeAhead

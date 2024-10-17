@@ -9,12 +9,12 @@ import PropTypes from 'prop-types'
 function GluuRemovableInputRow({
   label,
   name,
-  type,
+  type = 'text',
   value,
   formik,
-  required,
-  lsize,
-  rsize,
+  required = false,
+  lsize = 3,
+  rsize = 9,
   handler,
   doc_category,
   isDirect,
@@ -62,12 +62,6 @@ function GluuRemovableInputRow({
   )
 }
 
-GluuRemovableInputRow.defaultProps = {
-  type: 'text',
-  lsize: 3,
-  rsize: 9,
-  required: false,
-}
 GluuRemovableInputRow.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
