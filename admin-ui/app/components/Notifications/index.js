@@ -1,5 +1,4 @@
 import React from 'react'
-import Button from '@mui/material/Button'
 import { ClickAwayListener } from '@mui/base/ClickAwayListener'
 import Grow from '@mui/material/Grow'
 import Paper from '@mui/material/Paper'
@@ -41,8 +40,9 @@ export default function Lang() {
     <div className={classes.root}>
       <div>
         <div
+          role='button'
+          tabindex="0"
           ref={anchorRef}
-          aria-controls={open ? 'menu-list-grow' : undefined}
           className={classes.notificationBtn}
           onClick={handleToggle}
         >

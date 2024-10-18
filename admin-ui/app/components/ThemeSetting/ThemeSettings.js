@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import clsx from 'clsx'
 import Drawer from '@mui/material/Drawer'
-import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { ThemeContext } from "Context/theme/themeContext"
@@ -77,7 +76,7 @@ export function ThemeSettings({ userInfo }) {
 
   return (
     <React.Fragment>
-      <div onClick={toggleDrawer(true)} className={classes.settingsToggeleBtn}>
+      <div role='button' tabindex="0"  onClick={toggleDrawer(true)} className={classes.settingsToggeleBtn}>
         <SettingsIcon  style={{color: "white",width: "35px", height:"100%"}}/>
       </div>
       <Drawer className={classes.drawerContainer} anchor={'right'} open={open} onClose={toggleDrawer(false)}>
