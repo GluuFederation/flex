@@ -39,15 +39,13 @@ export default function Lang() {
   return (
     <div className={classes.root}>
       <div>
-        <div
-          role='button'
-          tabindex="0"
+        <button
           ref={anchorRef}
           className={classes.notificationBtn}
           onClick={handleToggle}
         >
           <NotificationsIcon style={{color: "white", width: "35px", height: "100%"}}/>
-        </div>
+        </button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal className={classes.topElm}>
           {({ TransitionProps, placement }) => (
             <Grow

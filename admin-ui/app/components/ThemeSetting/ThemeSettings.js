@@ -76,9 +76,9 @@ export function ThemeSettings({ userInfo }) {
 
   return (
     <React.Fragment>
-      <div role='button' tabindex="0"  onClick={toggleDrawer(true)} className={classes.settingsToggeleBtn}>
+      <buttton onClick={toggleDrawer(true)} className={classes.settingsToggeleBtn}>
         <SettingsIcon  style={{color: "white",width: "35px", height:"100%"}}/>
-      </div>
+      </buttton>
       <Drawer className={classes.drawerContainer} anchor={'right'} open={open} onClose={toggleDrawer(false)}>
         {list('right')}
       </Drawer>

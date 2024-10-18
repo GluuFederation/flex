@@ -16,6 +16,8 @@ const styles = makeStyles()({
     textTransform: 'none',
     padding:"2px",
     cursor: 'pointer',
+    border:'none',
+    background: 'none',
     '&:active': {
       backgroundColor: "rgba(217, 217, 217, 0.43)", 
       transform: 'scale(0.95)',
