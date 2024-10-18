@@ -148,7 +148,7 @@ function GluuAppSidebar() {
                         to={getMenuPath(sub)}
                         isEmptyNode={!hasPermission(scopes, sub.permission)}
                         icon={getMenuIcon(sub.icon)}
-                        textStyle={{ fontSize: '15px', fontWeight: '400' }}
+                        textStyle={{ fontSize: '15px'}}
                         exact
                       ></SidebarMenu.Item>
                     ))}

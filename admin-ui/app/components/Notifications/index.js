@@ -1,5 +1,4 @@
 import React from 'react'
-import Button from '@mui/material/Button'
 import { ClickAwayListener } from '@mui/base/ClickAwayListener'
 import Grow from '@mui/material/Grow'
 import Paper from '@mui/material/Paper'
@@ -40,15 +39,13 @@ export default function Lang() {
   return (
     <div className={classes.root}>
       <div>
-        <Button
+        <button
           ref={anchorRef}
-          aria-controls={open ? 'menu-list-grow' : undefined}
-          aria-haspopup="true"
-          className={classes.btnContainer}
+          className={classes.notificationBtn}
           onClick={handleToggle}
         >
-          <NotificationsIcon style={{color: "white"}}/>
-        </Button>
+          <NotificationsIcon style={{color: "white", width: "35px", height: "100%"}}/>
+        </button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal className={classes.topElm}>
           {({ TransitionProps, placement }) => (
             <Grow
