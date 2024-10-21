@@ -22,24 +22,24 @@ function GluuTypeAhead({
   value,
   options,
   formik = null,
-  required,
+  required = false,
   doc_category,
   doc_entry,
   forwardRef = null,
   onChange = null,
   lsize = 4,
   rsize = 8,
-  disabled,
+  disabled = false,
   showError = false,
   errorMessage,
   allowNew = true,
-  isLoading,
+  isLoading = false,
   multiple = true,
   hideHelperMessage = false
 }) {
   const { t } = useTranslation()
   return (
-    
+
     <FormGroup row>
       {required ? (
         <GluuLabel label={label} size={lsize} required doc_category={doc_category} doc_entry={doc_entry || name} />
@@ -79,13 +79,6 @@ function GluuTypeAhead({
   )
 }
 
-GluuTypeAhead.defaultProps = {
-  lsize: 4,
-  rsize: 8,
-  required: false,
-  disabled: false,
-  isLoading: false
-}
 GluuTypeAhead.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,

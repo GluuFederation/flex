@@ -3,7 +3,7 @@ import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 
-function GluuInumInput({ label, name, value, lsize, rsize, doc_category }) {
+function GluuInumInput({ label, name, value, lsize = 4, rsize = 8, doc_category }) {
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
@@ -22,9 +22,4 @@ function GluuInumInput({ label, name, value, lsize, rsize, doc_category }) {
     </GluuTooltip>
   )
 }
-GluuInumInput.defaultProps = {
-  lsize: 4,
-  rsize: 8,
-}
-
 export default GluuInumInput
