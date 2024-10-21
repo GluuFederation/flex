@@ -97,7 +97,9 @@
     "source_backend_ldap_servers": "Servidores LDAP de back-end de origem",
     "inum_db_server": "Servidor DB Inum",
     "static_configuration": "Configuração estática",
-    "dynamic_configuration": "Configuração Dinâmica"
+    "dynamic_configuration": "Configuração Dinâmica",
+    "upload_agama_project": "Fazer upload do projeto Agama",
+    "add_community_project": "Adicionar um projeto comunitário"
   },
   "actions": {
     "accept": "Aceitar",
@@ -118,6 +120,7 @@
     "set_password": "Configurar senha",
     "cancel": "Cancelar",
     "choose": "Escolher",
+    "deploy": "Implantar",
     "edit": "Editar",
     "next": "Próxima",
     "no": "Não",
@@ -645,7 +648,8 @@
     "see_project_details": "Ver detalhes do projeto",
     "add_ssa": "Adicionar SSA",
     "copied": "Copiado",
-    "edit_acr": "Editar ACR"
+    "edit_acr": "Editar ACR",
+    "no_data_found": "Nenhum dado encontrado"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -755,6 +759,8 @@
     "scopes": "Scopes",
     "scripts": "Scripts",
     "schemaName": "Nome do esquema",
+    "select_project_deploy": "Selecione um projeto para implantar",
+    "add_new_agama_project": "Adicionar um novo projeto Agama",
     "user_management": "Gerenciamento de usuários",
     "project_configuration": "Configuração do projeto",
     "ssa_management": "SSA Gerenciamento",

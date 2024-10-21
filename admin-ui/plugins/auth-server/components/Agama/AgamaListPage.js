@@ -32,6 +32,7 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 const dateTimeFormatOptions = {
@@ -63,7 +64,10 @@ function AgamaListPage() {
   const [listData, setListData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
   const [repoName, setRepoName] = useState(null);
-  const [repositoriesData, setRespositoriesData] = useState([]);
+  const [repositoriesData, setRespositoriesData] = useState({
+    loading: true,
+    repositories: [],
+  });
   const configuration = useSelector(
     (state) => state.jsonConfigReducer.configuration
   );
@@ -91,21 +95,40 @@ function AgamaListPage() {
     });
   }
 
-  function fetchRespositoryData() {
-    axios
-      .get("https://github.com/orgs/GluuFederation/repositories?q=agama-", {
-        headers: {
-          Accept: "application/json",
-        },
-      })
-      .then((response) => {
-        setRespositoriesData(response.data.payload.repositories);
-      })
-      .catch((error) => console.log(error));
+  async function fetchRespositoryData() {
+    try {
+      const response = await axios.get(
+        "https://github.com/orgs/GluuFederation/repositories?q=agama-",
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+      if (
+        response.data &&
+        response.data.payload &&
+        response.data.payload.repositories
+      ) {
+        const filteredRepositoriesData =
+          response.data.payload.repositories.filter(
+            (repo) =>
+              !listData.find(
+                (project) =>
+                  project.details.projectMetadata.projectName === repo.name
+              )
+          );
+        setRespositoriesData({
+          loading: false,
+          repositories: filteredRepositoriesData,
+        });
+      }
+    } catch (error) {
+      setRespositoriesData({ loading: false, repositories: [] });
+    }
   }
 
   useEffect(() => {
-    fetchRespositoryData();
     if (isEmpty(configuration)) {
       dispatch(getJsonConfig({ action: {} }));
     }
@@ -117,8 +140,7 @@ function AgamaListPage() {
       name: projectName,
       file: file,
     };
-
-    //dispatch(addAgama(object));
+    dispatch(addAgama(object));
 
     setProjectName("");
     setShowAddModal(false);
@@ -247,6 +269,7 @@ function AgamaListPage() {
         setSelectedFileName(null);
         setGetProjectName(false);
         setSHAfile(null);
+        fetchRespositoryData();
         if (isAgamaEnabled) {
           setShowAddModal(true);
         } else {
@@ -351,72 +374,56 @@ function AgamaListPage() {
     { name: t("menus.add_community_project"), path: "" },
   ];
 
-  function convertUrlToByteArray(repoUrl) {
-    console.log("Converting URL to byte array:", repoUrl);
-    
+  async function convertUrlToByteArray(repoUrl) {
     return new Promise(async (resolve, reject) => {
-      await axios({
-        url: repoUrl,
-        method: 'GET',
-        headers: {
-          'Accept': 'application/gama' // Add the appropriate header for accepting a gama file
-        },
-        responseType: 'blob' // Ensures the response is treated as a Blob
-      })
-        .then((response) => {
-          const blob = response.data; // Get the blob from response data
-          const reader = new FileReader();
-          reader.readAsArrayBuffer(blob);
-          reader.onload = () => {
-            const byteArray = new Uint8Array(reader.result);
-            resolve(byteArray);
-          };
-          reader.onerror = (error) => {
-            reject(error);
-          };
-        })
-        .catch((error) => {
-          console.error("Error converting URL to byte array:", error);
-          reject(error);
+      try {
+        const response = await axios.get(repoUrl, {
+          responseType: "arraybuffer",
         });
+        if (response && response.data) {
+          const byteArray = new Uint8Array(response.data);
+          resolve(byteArray);
+        }
+      } catch (error) {
+        console.error("Error converting URL to byte array:", error);
+        reject(error);
+      }
     });
   }
 
   const handleDeploy = async () => {
     console.log("Deploying project", repoName);
+
     let repoUrl = null;
     let file = null;
-
-    await axios(`https://api.github.com/repos/GluuFederation/${repoName}/releases/latest`)
-    .then((response) => {
+    try {
+      const response = await axios(
+        `https://api.github.com/repos/GluuFederation/${repoName}/releases/latest`
+      );
       for (const asset of response.data.assets) {
-        if (asset.name === `${repoName}.gama`) {
+        if (asset.name.endsWith(".gama")) {
           repoUrl = asset.browser_download_url;
-          return;
+          break;
         }
       }
-    })
-    .catch((error) => console.log(error));
-
-    try {
-      console.log("RepoUrl", repoUrl);
+      if (!repoUrl) {
+        toast.error("File not found");
+        return;
+      }
       file = await convertUrlToByteArray(repoUrl);
-      //console.log("File", file);
-
       if (repoName && file) {
         const object = {
           name: repoName,
           file: file,
         };
-
-        //dispatch(addAgama(object));
+        dispatch(addAgama(object));
       }
     } catch (error) {
-      console.log(error);
+      toast.error("File not found");
+    } finally {
+      setShowAddModal(false);
+      setRepoName(null);
     }
-
-    setShowAddModal(false);
-    setRepoName(null);
   };
 
   const tabToShow = (tabName) => {
@@ -524,10 +531,13 @@ function AgamaListPage() {
                     maxHeight: "500px",
                     overflowY: "auto",
                     overflowX: "hidden",
+                    alignItems: `${repositoriesData.loading && "center"}`,
                   }}
                 >
-                  {repositoriesData?.length ? (
-                    repositoriesData.map((item, index) => (
+                  {repositoriesData.loading ? (
+                    <CircularProgress />
+                  ) : repositoriesData.repositories?.length ? (
+                    repositoriesData.repositories.map((item, index) => (
                       <FormControlLabel
                         key={index}
                         control={
@@ -578,6 +588,11 @@ function AgamaListPage() {
                 disabled={repoName === null}
                 onClick={() => handleDeploy()}
               >
+                {loading || isConfigLoading ? (
+                  <>
+                    <CircularProgress size={12} /> &nbsp;
+                  </>
+                ) : null}
                 {t("actions.deploy")}
               </Button>
               &nbsp;
