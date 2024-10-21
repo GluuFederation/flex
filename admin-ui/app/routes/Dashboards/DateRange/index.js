@@ -36,18 +36,48 @@ export default function MaterialUIPickers() {
   return (
     <Grid container gap={2}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker
-          format="MM/DD/YYYY"
-          label={t("dashboard.start_date")}
-          value={startDate}
-          onChange={(val) => setDate(val, "start")}
-        />
-        <DatePicker
-          format="MM/DD/YYYY"
-          label={t("dashboard.end_date")}
-          value={endDate}
-          onChange={(val) => setDate(val, "end")}
-        />
+        <div className="d-flex flex-column gap-4 my-3 align-items-center ">
+          <DatePicker
+            format="MM/DD/YYYY"
+            label={t("dashboard.start_date")}
+            value={startDate}
+            onChange={(val) => setDate(val, "start")}
+            slotProps={{
+              textField: {
+                size: "small",
+                InputLabelProps: { shrink: true }, // Add this line
+              },
+            }}
+            sx={{
+              "& .MuiInputLabel-sizeSmall": {
+                padding: "0 2px",
+                background: "white",
+                fontSize: "19px",
+                marginTop: "-2px",
+              },
+            }}
+          />
+          <DatePicker
+            format="MM/DD/YYYY"
+            label={t("dashboard.end_date")}
+            value={endDate}
+            onChange={(val) => setDate(val, "end")}
+            slotProps={{
+              textField: {
+                size: "small",
+                InputLabelProps: { shrink: true }, // Add this line
+              },
+            }}
+            sx={{
+              "& .MuiInputLabel-sizeSmall": {
+                padding: "0 2px",
+                background: "white",
+                fontSize: "19px",
+                marginTop: "-2px",
+              },
+            }}
+          />
+        </div>
       </LocalizationProvider>
     </Grid>
   );
