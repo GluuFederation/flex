@@ -98,7 +98,7 @@ function AgamaListPage() {
   async function fetchRespositoryData() {
     try {
       const response = await axios.get(
-        "https://github.com/orgs/GluuFederation/repositories?q=agama-",
+        "https://api.github.com/search/repositories?q=agama-+org:GluuFederation",
         {
           headers: {
             Accept: "application/json",
