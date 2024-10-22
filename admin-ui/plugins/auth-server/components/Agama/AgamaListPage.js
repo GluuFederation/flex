@@ -102,6 +102,10 @@ function AgamaListPage() {
         {
           headers: {
             Accept: "application/json",
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers':
+              'Origin, X-Requested-With, Content-Type, Accept',
+            'Access-Control-Allow-Credentials': true,
           },
         }
       );
@@ -220,13 +224,13 @@ function AgamaListPage() {
           project?.finishedAt && project?.details?.error
             ? "Yes"
             : project?.finishedAt
-            ? "No"
-            : "";
+              ? "No"
+              : "";
         const status = project?.finishedAt ? "Processed" : "Pending";
         const deployed_on = project?.finishedAt
           ? new Intl.DateTimeFormat("en-US", dateTimeFormatOptions).format(
-              new Date(project.createdAt)
-            )
+            new Date(project.createdAt)
+          )
           : "-";
         data.push({
           ...project,
@@ -341,28 +345,28 @@ function AgamaListPage() {
         updatedData?.finishedAt && updatedData?.details?.error
           ? "Yes"
           : updatedData?.finishedAt
-          ? "No"
-          : "";
+            ? "No"
+            : "";
       const status = updatedData?.finishedAt ? "Processed" : "Pending";
       const deployed_on = updatedData?.finishedAt
         ? new Intl.DateTimeFormat("en-US", dateTimeFormatOptions).format(
-            new Date(updatedData.createdAt)
-          )
+          new Date(updatedData.createdAt)
+        )
         : "-";
 
       const updatedList =
         foundIndex >= 0
           ? listData.map((project, index) => {
-              return index === foundIndex
-                ? {
-                    ...project,
-                    error: error,
-                    status: status,
-                    deployed_on: deployed_on,
-                    details: { ...project.details, ...updatedData },
-                  }
-                : project;
-            })
+            return index === foundIndex
+              ? {
+                ...project,
+                error: error,
+                status: status,
+                deployed_on: deployed_on,
+                details: { ...project.details, ...updatedData },
+              }
+              : project;
+          })
           : [...listData];
       setListData(updatedList);
     }
