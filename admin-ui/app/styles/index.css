@@ -36,3 +36,7 @@
 .css-i4bv87-MuiSvgIcon-root{
     margin-top: 15px !important;
 }
+
+buttton:hover {
+    background-color: "transparent !important",
+  }

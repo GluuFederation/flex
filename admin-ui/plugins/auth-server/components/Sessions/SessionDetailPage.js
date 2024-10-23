@@ -13,7 +13,7 @@ function SessionDetailPage({ row}) {
           <Col sm={4}>
             <GluuFormDetailRow
               label="fields.expiration"
-              value={row.expirationDate.toDateString()}
+              value={row.expirationDate?.toDateString() ?? '-'}
               doc_category= {DOC_CATEGORY}
               doc_entry="expirationDate"
             />
@@ -21,7 +21,7 @@ function SessionDetailPage({ row}) {
           <Col sm={4}>
             <GluuFormDetailRow
               label="fields.jans_id"
-              value={row.dn.split(",")[0].split("=")[1]}
+              value={row.userDn ? row.userDn.split(",")[0].split("=")[1] : '-'}
               doc_category= {DOC_CATEGORY}
               doc_entry="jansId"
             />
@@ -29,7 +29,7 @@ function SessionDetailPage({ row}) {
           <Col sm={4}>
             <GluuFormDetailRow
               label="fields.jans_state"
-              value={row.state}
+              value={row.state ?? '-'}
               doc_category= {DOC_CATEGORY}
               doc_entry="jansState"
             />
@@ -40,7 +40,7 @@ function SessionDetailPage({ row}) {
           <Col sm={4}>
             <GluuFormDetailRow
               label="fields.jans_sess_state"
-              value={row.sessionState}
+              value={row.sessionState ?? '-'}
               doc_category= {DOC_CATEGORY}
               doc_entry="jansSessState"
             />
@@ -48,7 +48,7 @@ function SessionDetailPage({ row}) {
           <Col sm={4}>
             <GluuFormDetailRow
               label="fields.jans_user_dn"
-              value={row.userDn}
+              value={row.userDn ?? '-'}
               doc_category= {DOC_CATEGORY}
               doc_entry="jansUsrDN"
             />
@@ -56,7 +56,7 @@ function SessionDetailPage({ row}) {
           <Col sm={4}>
             <GluuFormDetailRow
               label="fields.permission_granted_map"
-              value={JSON.stringify(row.permissionGrantedMap)}
+              value={row.permissionGrantedMap ? JSON.stringify(row.permissionGrantedMap) : '-'}
               doc_category= {DOC_CATEGORY}
               doc_entry="permissionGrantedMap"
             />
@@ -67,7 +67,7 @@ function SessionDetailPage({ row}) {
           <Col sm={4}>
             <GluuFormDetailRow
               label="fields.jans_sess_attr"
-              value={JSON.stringify(row.sessionAttributes)}
+              value={row.sessionAttributes ? JSON.stringify(row.sessionAttributes) : '-'}
               doc_category= {DOC_CATEGORY}
               doc_entry="jansSessAttr"
             />

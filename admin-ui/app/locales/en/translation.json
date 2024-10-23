@@ -871,7 +871,8 @@
     "change_backend_bind_password": "Change Backend Bind Password",
     "add_agama_project": "Add Agama project",
     "add_alias": "Add New Mapping",
-    "edit_alias": "Edit Mapping"
+    "edit_alias": "Edit Mapping",
+    "export_csv": "Export CSV"
   },
   "links": {
     "support": "https://support.gluu.org/"

@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import moment from "moment";
 import isEmpty from "lodash/isEmpty";
 import MaterialTable from "@material-table/core";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Paper, TextField, Box } from "@mui/material";
+import { Paper, TextField, Box, MenuItem } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "reactstrap";
 import GluuAdvancedSearch from "Routes/Apps/Gluu/GluuAdvancedSearch";
@@ -23,6 +26,7 @@ import SessionDetailPage from "../Sessions/SessionDetailPage";
 import { hasPermission, SESSION_DELETE } from "Utils/PermChecker";
 import { LIMIT_ID, PATTERN_ID } from "../../common/Constants";
 import { searchSessions } from "../../redux/features/sessionSlice";
+import dayjs from "dayjs";
 
 function SessionListPage() {
   const sessions = useSelector((state) => state.sessionReducer.items);
@@ -48,6 +52,8 @@ function SessionListPage() {
   const [revokeUsername, setRevokeUsername] = useState();
   const [limit, setLimit] = useState(10);
   const [pattern, setPattern] = useState(null);
+  const [searchFilter, setSearchFilter] = useState(null);
+  const [date, setDate] = useState(null);
 
   SetTitle(t("menus.sessions"));
 
@@ -73,11 +79,12 @@ function SessionListPage() {
       ),
     },
     {
-      title: `${t("fields.auth_time")}`,
+      title: `${t("fields.acr")}`,
       field: "sessionAttributes.acr_values",
     },
     { title: `${t("fields.state")}`, field: "state" },
   ];
+
 
   useEffect(() => {
     dispatch(getSessions());
@@ -109,43 +116,40 @@ function SessionListPage() {
 
     const header = keys
       .map((item) => item.replace(/-/g, " ").toUpperCase())
-      .join(","); // Create a comma-separated string of headers
+      .join(",");
 
     const updateData = data.map((row) => {
       return {
-        ["Username"]: row.sessionAttributes.auth_user,
-        ["IP Address"]: row.sessionAttributes.remote_ip,
-        ["Client Id Used"]: moment(
-          row.sessionAttributes.authenticationTime
-        ).format("YYYY-MM-DD h:mm:ss A"),
-        ["Auth Time"]: moment(row.authenticationTime).format(
+        [t("fields.username")]: row.sessionAttributes.auth_user,
+        [t("fields.ip_address")]: row.sessionAttributes.remote_ip,
+        [t("fields.client_id_used")]: row.sessionAttributes.client_id,
+        [t("fields.auth_time")]: moment(row.authenticationTime).format(
           "YYYY-MM-DD h:mm:ss A"
         ),
-        ["ACR"]: row.sessionAttributes.acr_values,
-        ["State"]: row.state,
+        [t("fields.acr")]: row.sessionAttributes.acr_values,
+        [t("fields.state")]: row.state,
       };
     });
 
     const rows = updateData.map((row) => {
-      return keys.map((key) => row[key]).join(","); // Create a comma-separated string for each row
+      return keys.map((key) => row[key]).join(",");
     });
 
-    return [header, ...rows].join("\n"); // Combine header and rows, separated by newlines
+    return [header, ...rows].join("\n");
   };
 
   // Function to handle file download
   const downloadCSV = () => {
     const csv = convertToCSV(sessions);
-    const blob = new Blob([csv], { type: "text/csv" }); // Create a blob with the CSV data
+    const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
 
-    // Create a temporary link element to trigger the download
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `client-tokens.csv`); // Set the file name
+    link.setAttribute("download", `client-tokens.csv`);
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link); // Clean up
+    document.body.removeChild(link);
   };
 
   let memoLimit = limit;
@@ -159,21 +163,61 @@ function SessionListPage() {
     }
   }
 
-  const GluuSearch = useCallback(() => {
-    return (
-      <GluuAdvancedSearch
-        limitId={LIMIT_ID}
-        patternId={PATTERN_ID}
-        limit={limit}
-        pattern={pattern}
-        handler={handleOptionsChange}
-        showLimit={false}
-      />
-    );
-  }, [limit, pattern, handleOptionsChange]);
-
   myActions.push({
-    icon: GluuSearch,
+    icon: () => (
+      <Box display="flex" gap="10px" alignItems="center">
+        <TextField
+          select
+          label="Search Filter"
+          value={searchFilter}
+          onChange={(e) => {
+            setPattern(null);
+            setDate(null);
+            setSearchFilter(e.target.value);
+            dispatch(getSessions());
+          }}
+          variant="outlined"
+          style={{ width: 150, marginTop: -3 }}
+        >
+          <MenuItem value={null}>None</MenuItem>
+          <MenuItem value="client_id">Client Id</MenuItem>
+          <MenuItem value="auth_user">User Name</MenuItem>
+          <MenuItem value="expirationDate">Expiration Date</MenuItem>
+          <MenuItem value="authenticationTime">Authentication Date</MenuItem>
+        </TextField>
+
+        {searchFilter === "expirationDate" ||
+        searchFilter === "authenticationTime" ? (
+          <div style={{ width: "180px", height: "54px" }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                format="MM/DD/YYYY"
+                label={t("dashboard.start_date")}
+                value={date}
+                onChange={(val) => {
+                  console.log("val", val);
+                  setDate(val);
+                }}
+                sx={{
+                  "& .MuiSvgIcon-root": {
+                    marginBottom: "15px",
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </div>
+        ) : (
+          <GluuAdvancedSearch
+            limitId={LIMIT_ID}
+            patternId={PATTERN_ID}
+            limit={limit}
+            pattern={pattern}
+            handler={handleOptionsChange}
+            showLimit={false}
+          />
+        )}
+      </Box>
+    ),
     tooltip: `${t("messages.advanced_search")}`,
     iconProps: { color: "primary" },
     isFreeAction: true,
@@ -188,8 +232,20 @@ function SessionListPage() {
     onClick: () => {
       setLimit(memoLimit);
       setPattern(memoPattern);
-      if (memoPattern)
-        dispatch(searchSessions({ action: { fieldValuePair: `client_id=${pattern}` } }));
+      console.log("memoPattern",memoPattern)
+      if (memoPattern || date)
+        dispatch(
+          searchSessions({
+            action: {
+              fieldValuePair: `${searchFilter}=${
+                searchFilter !== "expirationDate" &&
+                searchFilter !== "authenticationTime"
+                  ? memoPattern
+                  : dayjs(date).format("YYYY-MM-DD")
+              }`,
+            },
+          })
+        );
       else dispatch(getSessions());
     },
   });
@@ -226,6 +282,11 @@ function SessionListPage() {
                         variant="outlined"
                       />
                     )}
+                    sx={{
+                      "& .MuiSvgIcon-root": {
+                        marginBottom: "15px",
+                      },
+                    }}
                   />
                   {revokeUsername && (
                     <Button
@@ -240,11 +301,13 @@ function SessionListPage() {
 
                 <Button
                   color={`primary-${selectedTheme}`}
-                  style={applicationStyle.buttonStyle}
+                  style={{
+                    ...applicationStyle.buttonStyle,
+                    marginRight: "35px",
+                  }}
                   onClick={downloadCSV}
-                  className="mr-4"
                 >
-                  {t("Export CSV")}
+                  {t("titles.export_csv")}
                 </Button>
               </div>
             )}
@@ -273,7 +336,7 @@ function SessionListPage() {
               detailPanel={(rowData) => {
                 return <SessionDetailPage row={rowData.rowData} />;
               }}
-              style={{ marginTop: "20px" }}
+              style={{ marginTop: "10px" }}
             />
           </GluuViewWrapper>
           {!isEmpty(item) && (

@@ -767,7 +767,8 @@
     "jans_ink": "Jans Link",
     "change_backend_bind_password": "Alterar senha de ligação de back-end",
     "add_agama_project": "Adicionar projeto Agama",
-    "jans_kc_link": "Link KC Jans"
+    "jans_kc_link": "Link KC Jans",
+    "export_csv":"Exportar CSV"
   },
   "links": {
     "support": "https://support.gluu.org/"

@@ -35,8 +35,8 @@ export function* getSessions({ payload }) {
     payload = payload ? payload : { action: {} };
     addAdditionalData(audit, FETCH, SESSION, payload);
     const sessionApi = yield* newFunction();
-    const data = yield call(sessionApi.getAllSessions);
-    yield put(handleUpdateSessionsResponse({ data: data }));
+    const data = yield call(sessionApi.getAllSessions,payload);
+    yield put(handleUpdateSessionsResponse({ data: data.entries }));
     yield call(postUserAction, audit);
     return data;
   } catch (e) {
@@ -50,14 +50,13 @@ export function* getSessions({ payload }) {
 }
 
 export function* searchSessions({ payload }) {
-  console.log("payload",payload)
   const audit = yield* initAudit();
   try {
     payload = payload ? payload : { action: {} };
     addAdditionalData(audit, FETCH, SESSION, payload);
     const sessionApi = yield* newFunction();
     const data = yield call(sessionApi.searchSession, payload);
-    yield put(handleUpdateSessionsResponse({ data: data }));
+    yield put(handleUpdateSessionsResponse({ data: data?.entries }));
     yield call(postUserAction, audit);
     return data;
   } catch (e) {
