@@ -17,11 +17,11 @@ import PropTypes from 'prop-types'
 function GluuInlineInput({
   label,
   name,
-  type,
+  type = 'text',
   value,
-  required,
-  lsize,
-  rsize,
+  required = false,
+  lsize = 3,
+  rsize = 9,
   isBoolean,
   isArray,
   handler,
@@ -38,9 +38,9 @@ function GluuInlineInput({
   const [correctValue, setCorrectValue] = useState([])
   const [data, setData] = useState(value)
   const onValueChanged = (e) => {
-    if(isBoolean){
+    if (isBoolean) {
       setData(e.target.checked)
-    }else{
+    } else {
       setData(e.target.value)
     }
     setShow(true)
@@ -48,13 +48,13 @@ function GluuInlineInput({
   const handleTypeAheadChange = (selectedOptions) => {
     const object = selectedOptions.filter((data) => typeof data == 'object')
     const arrayItems = selectedOptions.filter((data) => typeof data != 'object')
-      for (const i in object) {
-        if (!object[i]['tokenEndpointAuthMethodsSupported']) {
-          arrayItems.push(object[i][name])
-        } else {
-          arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
-        }
+    for (const i in object) {
+      if (!object[i]['tokenEndpointAuthMethodsSupported']) {
+        arrayItems.push(object[i][name])
+      } else {
+        arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
       }
+    }
     setCorrectValue(arrayItems)
     setShow(true)
   }
@@ -87,37 +87,37 @@ function GluuInlineInput({
           />
           <Col sm={rsize}>
             {!isBoolean && !isArray && (
-            <Input
-              id={name}
-              data-testid={name}
-              name={name}
-              type={type}
-              defaultValue={data}
-              onChange={onValueChanged}
-            />
+              <Input
+                id={name}
+                data-testid={name}
+                name={name}
+                type={type}
+                defaultValue={data}
+                onChange={onValueChanged}
+              />
             )}
             {isBoolean && (
-            <GluuToogle
-              id={name}
-              data-testid={name}
-              name={name}
-              handler={onValueChanged}
-              value={value}
-            />
+              <GluuToogle
+                id={name}
+                data-testid={name}
+                name={name}
+                handler={onValueChanged}
+                value={value}
+              />
             )}
             {isArray && (
-            <Typeahead
-              id={name}
-              data-testid={name}
-              name={name}
-              allowNew
-              emptyLabel=""
-              labelKey={name}
-              onChange={handleTypeAheadChange}
-              multiple={true}
-              defaultSelected={value}
-              options={options || []}
-            />
+              <Typeahead
+                id={name}
+                data-testid={name}
+                name={name}
+                allowNew
+                emptyLabel=""
+                labelKey={name}
+                onChange={handleTypeAheadChange}
+                multiple={true}
+                defaultSelected={value}
+                options={options || []}
+              />
             )}
           </Col>
         </FormGroup>
@@ -143,12 +143,6 @@ function GluuInlineInput({
   )
 }
 
-GluuInlineInput.defaultProps = {
-  type: 'text',
-  lsize: 3,
-  rsize: 9,
-  required: false,
-}
 GluuInlineInput.propTypes = {
   doc_category: PropTypes.string,
   label: PropTypes.string,

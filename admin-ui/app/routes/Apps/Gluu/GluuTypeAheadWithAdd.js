@@ -18,7 +18,7 @@ function GluuTypeAheadWithAdd({
   doc_category,
   lsize = 4,
   rsize = 8,
-  disabled,
+  disabled = false,
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
@@ -31,7 +31,7 @@ function GluuTypeAheadWithAdd({
     document.getElementById(inputId).value = ''
     if (validator(newItem)) {
       const updatedItems = [...items]
-      updatedItems.push(newItem) 
+      updatedItems.push(newItem)
       opts.push(newItem)
       setItems(updatedItems)
       formik.setFieldValue(name, updatedItems)
@@ -45,9 +45,9 @@ function GluuTypeAheadWithAdd({
   }
 
   return (
-    
+
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name} />
       <Col
         sm={rsize}
         style={{
@@ -56,7 +56,7 @@ function GluuTypeAheadWithAdd({
           borderColor: '#03a96d',
         }}
       >
-          &nbsp;
+        &nbsp;
         <Row>
           <Col sm={10}>
             <Input
@@ -81,7 +81,7 @@ function GluuTypeAheadWithAdd({
             </Button>
           </Col>
         </Row>
-          &nbsp;
+        &nbsp;
         <Typeahead
           emptyLabel=""
           labelKey={name}
@@ -96,17 +96,9 @@ function GluuTypeAheadWithAdd({
           selected={items}
           options={opts}
         />
-          &nbsp;
+        &nbsp;
       </Col>
     </FormGroup>
   )
 }
-
-GluuTypeAheadWithAdd.defaultProps = {
-  lsize: 4,
-  rsize: 8,
-  required: false,
-  disabled: false,
-}
-
 export default GluuTypeAheadWithAdd

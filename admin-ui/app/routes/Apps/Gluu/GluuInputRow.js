@@ -7,14 +7,14 @@ import PropTypes from 'prop-types';
 function GluuInputRow({
   label,
   name,
-  type,
+  type = 'text',
   value,
   formik,
-  required,
-  lsize,
-  rsize,
+  required = false,
+  lsize = 3,
+  rsize = 9,
   doc_category,
-  disabled,
+  disabled = false,
   showError = false,
   errorMessage = '',
   handleChange = null,
@@ -50,7 +50,7 @@ function GluuInputRow({
           onFocus={onFocus}
           onKeyDown={(evt) => evt.key === 'e' && type === "number" && evt.preventDefault()}
           disabled={disabled}
-          rows={rows} 
+          rows={rows}
           cols={cols}
         />
         {shortcode}
@@ -68,16 +68,6 @@ function GluuInputRow({
     </FormGroup>
   )
 }
-
-GluuInputRow.defaultProps = {
-  type: 'text',
-  lsize: 3,
-  rsize: 9,
-  required: false,
-  disabled: false,
-  doc_entry: undefined
-}
-
 export default GluuInputRow
 
 GluuInputRow.propTypes = {

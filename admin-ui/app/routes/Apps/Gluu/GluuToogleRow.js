@@ -8,17 +8,17 @@ function GluuToogleRow({
   name,
   value,
   formik,
-  lsize,
+  lsize = 3,
   handler,
-  rsize,
-  doc_category ="no_category",
-  disabled,
+  rsize = 9,
+  doc_category = "no_category",
+  disabled = false,
   required = false
 }) {
   return (
-    
+
     <FormGroup row>
-      <GluuLabel required={required} label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <GluuLabel required={required} label={label} size={lsize} doc_category={doc_category} doc_entry={name} />
       <Col sm={rsize}>
         <GluuToogle
           id={name}
@@ -31,13 +31,7 @@ function GluuToogleRow({
         />
       </Col>
     </FormGroup>
-    
+
   )
 }
-GluuToogleRow.defaultProps = {
-  lsize: 3,
-  rsize: 9,
-  disabled: false,
-}
-
 export default GluuToogleRow

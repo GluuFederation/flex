@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Card } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import AssetForm from './AssetForm'
@@ -11,9 +11,6 @@ const JansAssetEditPage = () => {
     const { t } = useTranslation()
     SetTitle(t('titles.asset_edit'))
     const { loading } = useSelector((state) => state.assetReducer)
-    useEffect(() => {
-
-    }, [])
 
     return (
         <GluuLoader blocking={loading}>
