@@ -48,7 +48,7 @@ In addition to the core services listed in the Introduction above, the SUSE Ranc
 - `Cert Manager`: Used for managing X.509 certificates and crypto keys lifecycle in Janssen Server.
 - `Key Rotation`: A cronjob that implements `Cert Manager` to rotate the auth keys
 - `Configuration job`: loads (generate/restore) and dumps (backup) the configuration and secrets.
-- `Persistence job`: This job loads initial data for the backend used (SQL, LDAP, or Couchbase).
+- `Persistence job`: This job loads initial data for the backend used (SQL or Couchbase).
 - `ConfigMaps`: Stores configuration needed for Flex environment setup.
 - `Secrets`: Contains sensitive or confidential data such as a password, a token, or a key.
 
