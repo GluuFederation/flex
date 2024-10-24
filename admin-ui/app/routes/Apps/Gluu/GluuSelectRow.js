@@ -9,13 +9,13 @@ function GluuSelectRow({
   name,
   value,
   formik,
-  values,
-  lsize,
-  rsize,
+  values = [],
+  lsize = 3,
+  rsize = 9,
   doc_category,
   disabled,
   handleChange,
-  required,
+  required = false,
   showError = false,
   errorMessage,
   doc_entry
@@ -24,7 +24,7 @@ function GluuSelectRow({
 
   function removeDuplicates(values) {
     return Array.from(new Set(values));
-}
+  }
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} required={required} />
@@ -58,13 +58,6 @@ function GluuSelectRow({
   )
 }
 
-GluuSelectRow.defaultProps = {
-  values: [],
-  lsize: 3,
-  rsize: 9,
-  disabled: false,
-  doc_entry: undefined
-}
 GluuSelectRow.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,

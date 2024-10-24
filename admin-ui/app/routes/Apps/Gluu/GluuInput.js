@@ -5,11 +5,11 @@ import GluuTooltip from './GluuTooltip'
 function GluuInput({
   label,
   name,
-  type,
+  type = 'text',
   value,
-  required,
-  lsize,
-  rsize,
+  required = false,
+  lsize = 3,
+  rsize = 9,
   doc_category,
 }) {
   return (
@@ -23,12 +23,4 @@ function GluuInput({
     </GluuTooltip>
   )
 }
-
-GluuInput.defaultProps = {
-  type: 'text',
-  lsize: 3,
-  rsize: 9,
-  required: false,
-}
-
 export default GluuInput
