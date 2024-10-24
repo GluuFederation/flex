@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import MaterialTable from "@material-table/core";
 import { DeleteOutlined } from "@mui/icons-material";
-import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { Paper, TablePagination } from "@mui/material";
 import UserDetailViewPage from "./UserDetailViewPage";
 import {
@@ -268,7 +268,7 @@ function UserList(props) {
       updateUserData(JSON.stringify(jansOTPDevices));
     } else return false;
 
-   // handleView2FADetails(userDetails);
+    handleView2FADetails(userDetails);
   };
 
   useEffect(() => {
@@ -294,22 +294,31 @@ function UserList(props) {
   }, [usersList]);
 
   useEffect(() => {
-    const updatedDetails = fidoDetails.map((item) => {
-      const attenstationRequest = JSON.parse(
-        item.registrationData.attenstationRequest
-      );
+    let removeNullValue = [];
+    if (Object.keys(fidoDetails).length > 0 && fidoDetails?.entries?.length > 0) {
+      const updatedDetails = fidoDetails
+        ? fidoDetails?.entries?.map((item) => {
+            const attenstationRequest = JSON.parse(
+              item.registrationData.attenstationRequest
+            );
 
-      return {
-        id: item.id,
-        nickName: attenstationRequest.displayName ?? "-",
-        modality: item?.deviceData?.platform ?? "-",
-        dateAdded: moment(item.creationDate).format("YYYY-MM-DD HH:mm:ss"),
-        type: item?.deviceData?.platform ? "SUPER GLUU" : "FIDO2",
-        registrationData: item.registrationData,
-        deviceData: item.deviceData,
-      };
-    });
-    const removeNullValue = updatedDetails.filter((item) => item);
+            return {
+              id: item.id,
+              nickName: attenstationRequest.displayName ?? "-",
+              modality: item?.deviceData?.platform ?? "-",
+              dateAdded: moment(item.creationDate).format(
+                "YYYY-MM-DD HH:mm:ss"
+              ),
+              type: item?.deviceData?.platform ? "SUPER GLUU" : "FIDO2",
+              registrationData: item.registrationData,
+              deviceData: item.deviceData,
+            };
+          })
+        : [];
+      removeNullValue = updatedDetails
+        ? updatedDetails?.filter((item) => item)
+        : [];
+    }
 
     setFADetails([...removeNullValue, ...otpDevicesList]);
   }, [fidoDetails]);
@@ -346,6 +355,7 @@ function UserList(props) {
     ),
     [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
   );
+  
 
   return (
     <GluuLoader blocking={loading}>

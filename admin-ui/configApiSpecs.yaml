@@ -632,6 +632,39 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/config/jans_asset-read'
+  /api/v1/jans-assets/asset-dir-mapping:
+    get:
+      tags:
+        - Jans Assets
+      summary: Get valid asset types
+      description: Get valid asset types
+      operationId: get-asset-dir-mapping
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetDirMapping'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/jans_asset-read'
   /api/v1/jans-assets:
     get:
       tags:
@@ -7454,7 +7487,7 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/config/scopes.readonly'
-  '/api/v1/jans-auth-server/session/id/{jansId}':
+  '/api/v1/jans-auth-server/session/sid/{sid}':
     get:
       tags:
         - Auth - Session Management
@@ -7462,9 +7495,9 @@ paths:
       description: Get session by id.
       operationId: get-session-by-id
       parameters:
-        - name: jansId
+        - name: sid
           in: path
-          description: Session Unique identifier.
+          description: Session identifier.
           required: true
           schema:
             type: string
@@ -7496,15 +7529,15 @@ paths:
       description: Delete a session.
       operationId: delete-session
       parameters:
-        - name: jansId
+        - name: sid
           in: path
-          description: Session Unique identifier.
+          description: Session identifier.
           required: true
           schema:
             type: string
       responses:
-        '200':
-          description: Ok
+        '204':
+          description: No Content
         '401':
           description: Unauthorized
         '404':
@@ -7530,8 +7563,8 @@ paths:
           schema:
             type: string
       responses:
-        '200':
-          description: Ok
+        '204':
+          description: No Content
         '401':
           description: Unauthorized
         '404':
@@ -7555,9 +7588,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SessionId'
+                $ref: '#/components/schemas/SessionPagedResult'
               examples:
                 Response json example:
                   description: Response json example
@@ -8978,14 +9009,17 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Fido2RegistrationEntry'
+                $ref: '#/components/schemas/Fido2RegistrationEntryPagedResult'
               examples:
                 Response example:
                   description: Response example
                   value: |
                     {
+                        "start": 0,
+                        "totalEntriesCount": 3,
+                        "entriesCount": 3,
+                        "entries": [
+                            {
                                 "dn": "jansId=1c88c1cb-8e32-4b79-b244-c9f677ca5654,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans",
                                 "id": "1c88c1cb-8e32-4b79-b244-c9f677ca5654",
                                 "challange": "2vCSaPMIt4tZpkO8_rDG-v3QoXBYMB1aqCAXFgA4q0Y",
@@ -9099,6 +9133,8 @@ paths:
                                 "registrationStatus": "registered",
                                 "baseDn": "jansId=6e196a5d-122b-4f06-8ff8-6f41b32bc2a6,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans"
                             }
+                        ]
+                    }
         '401':
           description: Unauthorized
         '500':
@@ -13254,9 +13290,7 @@ components:
           type: string
           format: date-time
         service:
-          type: array
-          items:
-            type: string
+          type: string
         level:
           type: integer
           format: int32
@@ -13285,6 +13319,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Document'
+    AssetDirMapping:
+      type: object
+      properties:
+        directory:
+          type: string
+          description: Relative path to asset base directory.
+        type:
+          type: array
+          description: List of file extention that are stored in directory.
+          items:
+            type: string
+            description: List of file extention that are stored in directory.
+        description:
+          type: string
+          description: Description of assets stored in directory.
+        jansServiceModule:
+          type: array
+          description: List of supported service module where asset can be uploaded.
+          items:
+            type: string
+            description: List of supported service module where asset can be uploaded.
+      description: Asset type mapped to server directory.
     AssetForm:
       required:
         - assetFile
@@ -13407,9 +13463,9 @@ components:
           type: string
         selected:
           type: boolean
-        adminCanView:
-          type: boolean
         userCanView:
+          type: boolean
+        adminCanView:
           type: boolean
         adminCanEdit:
           type: boolean
@@ -15203,22 +15259,6 @@ components:
             $ref: '#/components/schemas/PluginConf'
         assetMgtConfiguration:
           $ref: '#/components/schemas/AssetMgtConfiguration'
-    AssetDirMapping:
-      type: object
-      properties:
-        directory:
-          type: string
-          description: Relative path to asset base directory.
-        type:
-          type: array
-          description: List of file extention that are stored in directory.
-          items:
-            type: string
-            description: List of file extention that are stored in directory.
-        description:
-          type: string
-          description: Description of assets stored in directory.
-      description: Asset type mapped to server directory.
     AssetMgtConfiguration:
       type: object
       properties:
@@ -15236,15 +15276,6 @@ components:
           description: >-
             Flag indicating if service module name extension validation is
             enabled.
-        assetBaseDirectory:
-          type: string
-          description: Base directory on server to upload the asset.
-        jansServiceModule:
-          type: array
-          description: List of supported service module where asset can be uploaded.
-          items:
-            type: string
-            description: List of supported service module where asset can be uploaded.
         assetDirMapping:
           type: array
           description: Asset type mapped to server directory.
@@ -15858,10 +15889,10 @@ components:
         ttl:
           type: integer
           format: int32
-        opbrowserState:
-          type: string
         persisted:
           type: boolean
+        opbrowserState:
+          type: string
     SessionIdAccessMap:
       type: object
       properties:
@@ -15871,6 +15902,22 @@ components:
             type: boolean
           xml:
             name: map
+    SessionPagedResult:
+      type: object
+      properties:
+        start:
+          type: integer
+          format: int32
+        totalEntriesCount:
+          type: integer
+          format: int32
+        entriesCount:
+          type: integer
+          format: int32
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionId'
     User:
       type: object
       properties:
@@ -15929,22 +15976,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserAuthenticator'
-    SessionPagedResult:
-      type: object
-      properties:
-        start:
-          type: integer
-          format: int32
-        totalEntriesCount:
-          type: integer
-          format: int32
-        entriesCount:
-          type: integer
-          format: int32
-        entries:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionId'
     TokenAttributes:
       type: object
       properties:
