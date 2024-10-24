@@ -351,7 +351,7 @@
     "client_credentials_access_token": "Jeton d'accès aux informations d'identification du client",
     "client_expiration_date": "Date d'expiration du client",
     "client_id": "Identité du client",
-    "client_id_used": "Identifiant client utilisé",
+    "client_id_used": "Identifiant client",
     "client_name": "Nom du client",
     "client_secret": "Secret du client",
     "computation_pool_size": "Taille du pool de calcul",

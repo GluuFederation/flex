@@ -32,10 +32,10 @@ function* newFunction() {
 export function* getSessions({ payload }) {
   const audit = yield* initAudit();
   try {
-    payload = payload ? payload : { action: {} };
+    payload = payload ? payload : {};
     addAdditionalData(audit, FETCH, SESSION, payload);
     const sessionApi = yield* newFunction();
-    const data = yield call(sessionApi.getAllSessions,payload);
+    const data = yield call(sessionApi.getAllSessions, payload);
     yield put(handleUpdateSessionsResponse({ data: data.entries }));
     yield call(postUserAction, audit);
     return data;
@@ -52,7 +52,7 @@ export function* getSessions({ payload }) {
 export function* searchSessions({ payload }) {
   const audit = yield* initAudit();
   try {
-    payload = payload ? payload : { action: {} };
+    payload = payload;
     addAdditionalData(audit, FETCH, SESSION, payload);
     const sessionApi = yield* newFunction();
     const data = yield call(sessionApi.searchSession, payload);

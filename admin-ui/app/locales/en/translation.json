@@ -224,7 +224,7 @@
     "client_credentials_access_token": "Client Credentials Access Token",
     "client_expiration_date": "Client Expiration Date",
     "client_id": "Client Id",
-    "client_id_used": "Client Id Used",
+    "client_id_used": "Client Id",
     "client_name": "Client name",
     "client_secret": "Client secret",
     "computation_pool_size": "Computation Pool Size",
@@ -873,7 +873,10 @@
     "add_agama_project": "Add Agama project",
     "add_alias": "Add New Mapping",
     "edit_alias": "Edit Mapping",
-    "export_csv": "Export CSV"
+    "export_csv": "Export CSV",
+    "filters": "Filters",
+    "expiration_date" : "Expiration Date",
+    "authentication_date": "Authentication Date"
   },
   "links": {
     "support": "https://support.gluu.org/"

@@ -335,7 +335,7 @@
     "client_credentials_access_token": "Token de acesso de credenciais de cliente",
     "client_expiration_date": "Data de Vencimento do Cliente",
     "client_id": "ID do Cliente",
-    "client_id_used": "ID do cliente usado",
+    "client_id_used": "ID do cliente",
     "client_name": "Nome do cliente",
     "client_secret": "Segredo do cliente",
     "computation_pool_size": "Tamanho do pool de computação",
