@@ -120,6 +120,12 @@
     "released_attributes": "Released Attributes",
     "jans_assertion_consumer_service_get_url": "Jans Assertion Consumer Service GET URL",
     "jans_assertion_consumer_service_post_url": "Jans Assertion Consumer Service POST URL",
+    "jans_id": "Jans ID",
+    "jans_state": "Jans State",
+    "jans_sess_state":"Jans Session State",
+    "jans_user_dn": "Jans User DN",
+    "permission_granted_map": "Permission Granted Map",
+    "jans_sess_attr": "Jans Session Attributes",
     "metadata_file": "Metadata File",
     "metadata_url": "Metadata URL",
     "webhook_url": "URL",
@@ -218,7 +224,7 @@
     "client_credentials_access_token": "Client Credentials Access Token",
     "client_expiration_date": "Client Expiration Date",
     "client_id": "Client Id",
-    "client_id_used": "Client Id Used",
+    "client_id_used": "Client Id",
     "client_name": "Client name",
     "client_secret": "Client secret",
     "computation_pool_size": "Computation Pool Size",
@@ -866,7 +872,11 @@
     "change_backend_bind_password": "Change Backend Bind Password",
     "add_agama_project": "Add Agama project",
     "add_alias": "Add New Mapping",
-    "edit_alias": "Edit Mapping"
+    "edit_alias": "Edit Mapping",
+    "export_csv": "Export CSV",
+    "filters": "Filters",
+    "expiration_date" : "Expiration Date",
+    "authentication_date": "Authentication Date"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1527,6 +1537,15 @@
       "middleName": "Middle Name",
       "sn": "Last Name",
       "userConfirmPassword": "Confirm Password"
+    },
+    "sessions":{
+      "expirationDate" : "Expiration Date",
+      "jansId": "Jans Id",
+      "jansState": "Jans State",
+      "jansSessState": "Jans Session State",
+      "jansUsrDN": "Jans User DN",
+      "permissionGrantedMap": "Permission Granted Map",
+      "jansSessAttr": "Jans Session Attribute"
     },
     "saml": {
       "name": "The alphanumeric ID string that is used to identify the Trust Relationship",

@@ -27,7 +27,7 @@ function GluuAdvancedSearch({
       )}
       &nbsp;
       <Input
-        style={{ width: '180px' }}
+        style={{ width: '180px', height: '54px' }}
         id={patternId}
         data-testid={patternId}
         type="text"
