@@ -80,41 +80,6 @@ const pluginMetadata = {
       icon: 'oauthserver',
       children: [
         {
-          title: 'menus.sessions',
-          path: PLUGIN_BASE_APTH + '/sessions',
-          permission: SESSION_READ,
-        },
-        {
-          title: 'menus.configuration',
-          children: [
-            {
-              title: 'menus.keys',
-              path: PLUGIN_BASE_APTH + '/config/keys',
-              permission: JWKS_READ,
-            },
-            {
-              title: 'menus.properties',
-              path: PLUGIN_BASE_APTH + '/config/properties',
-              permission: PROPERTIES_READ,
-            },
-            {
-              title: 'menus.logging',
-              path: PLUGIN_BASE_APTH + '/config/logging',
-              permission: LOGGING_READ,
-            }, 
-            {
-              title: 'menus.ssa',
-              path: PLUGIN_BASE_APTH + '/config/ssa',
-              permission: SSA_PORTAL,
-            },
-            {
-              title: 'menus.api.api_config',
-              path: PLUGIN_BASE_APTH + '/config-api-configuration',
-              permission: API_CONFIG_READ,
-            },
-          ],
-        },
-        {
           title: 'menus.clients',
           path: PLUGIN_BASE_APTH + '/clients',
           permission: CLIENT_READ,
@@ -125,15 +90,49 @@ const pluginMetadata = {
           permission: SCOPE_READ,
         },
         {
+          title: 'menus.keys',
+          path: PLUGIN_BASE_APTH + '/config/keys',
+          permission: JWKS_READ,
+        },
+        {
+          title: 'menus.properties',
+          path: PLUGIN_BASE_APTH + '/config/properties',
+          permission: PROPERTIES_READ,
+        },
+        {
+          title: 'menus.logging',
+          path: PLUGIN_BASE_APTH + '/config/logging',
+          permission: LOGGING_READ,
+        },
+        {
+          title: 'menus.ssa',
+          path: PLUGIN_BASE_APTH + '/config/ssa',
+          permission: SSA_PORTAL,
+        },
+        {
           title: 'menus.authn',
           path: PLUGIN_BASE_APTH + '/authn',
           permission: SCOPE_READ,
         },
         {
-          title: 'menus.lock',
-          path: PLUGIN_BASE_APTH + '/lock',
-          permission: MESSAGE_READ,
+          title: 'menus.api.api_config',
+          path: PLUGIN_BASE_APTH + '/config-api-configuration',
+          permission: API_CONFIG_READ,
         },
+        // {
+        //   title: 'menus.configuration',
+        //   children: [],
+        // },
+        {
+          title: 'menus.sessions',
+          path: PLUGIN_BASE_APTH + '/sessions',
+          permission: SESSION_READ,
+        },
+        // {
+        //   title: 'menus.lock ',
+        //   path: PLUGIN_BASE_APTH + '/lock',
+        //   permission: MESSAGE_READ,
+        // },
       ],
     },
   ],
