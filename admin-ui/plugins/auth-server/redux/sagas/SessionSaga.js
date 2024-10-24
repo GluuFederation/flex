@@ -52,7 +52,6 @@ export function* getSessions({ payload }) {
 export function* searchSessions({ payload }) {
   const audit = yield* initAudit();
   try {
-    payload = payload;
     addAdditionalData(audit, FETCH, SESSION, payload);
     const sessionApi = yield* newFunction();
     const data = yield call(sessionApi.searchSession, payload);
