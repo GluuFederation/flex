@@ -1907,10 +1907,8 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
 <li><code>CN_TOKEN_SERVER_USERINFO_ENDPOINT</code>: User info endpoint at token server (default to <code>/jans-auth/restv1/userinfo</code>).</li>
 <li><code>CN_TOKEN_SERVER_CLIENT_ID</code>: Client ID registered at token server.</li>
 <li><code>CN_TOKEN_SERVER_CERT_FILE</code>: Path to token server certificate (default to <code>/etc/certs/token_server.crt</code>).</li>
-<li><code>CN_PERSISTENCE_TYPE</code>: Persistence backend being used (one of <code>ldap</code>, <code>couchbase</code>, or <code>hybrid</code>; default to <code>ldap</code>).</li>
+<li><code>CN_PERSISTENCE_TYPE</code>: Persistence backend being used (one of <code>sql</code>, <code>spanner</code>, <code>couchbase</code>, or <code>hybrid</code>; default to <code>sql</code>).</li>
 <li><code>CN_HYBRID_MAPPING</code>: Specify data mapping for each persistence (default to <code>"{}"</code>). Note this environment only takes effect when <code>CN_PERSISTENCE_TYPE</code> is set to <code>hybrid</code>. See <a href="#hybrid-mapping">hybrid mapping</a> section for details.</li>
-<li><code>CN_LDAP_URL</code>: Address and port of LDAP server (default to <code>localhost:1636</code>).</li>
-<li><code>CN_LDAP_USE_SSL</code>: Whether to use SSL connection to LDAP server (default to <code>true</code>).</li>
 <li><code>CN_COUCHBASE_URL</code>: Address of Couchbase server (default to <code>localhost</code>).</li>
 <li><code>CN_COUCHBASE_USER</code>: Username of Couchbase server (default to <code>admin</code>).</li>
 <li><code>CN_COUCHBASE_CERT_FILE</code>: Couchbase root certificate location (default to <code>/etc/certs/couchbase.crt</code>).</li>
@@ -1944,19 +1942,19 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
 <li>
 <p>Set <code>CN_HYBRID_MAPPING</code> with the following format:</p>
 <div class="highlight"><pre><span></span><code>{
-    &quot;default&quot;: &quot;&lt;couchbase|ldap|spanner|sql&gt;&quot;,
-    &quot;user&quot;: &quot;&lt;couchbase|ldap|spanner|sql&gt;&quot;,
-    &quot;site&quot;: &quot;&lt;couchbase|ldap|spanner|sql&gt;&quot;,
-    &quot;cache&quot;: &quot;&lt;couchbase|ldap|spanner|sql&gt;&quot;,
-    &quot;token&quot;: &quot;&lt;couchbase|ldap|spanner|sql&gt;&quot;,
-    &quot;session&quot;: &quot;&lt;couchbase|ldap|spanner|sql&gt;&quot;,
+    &quot;default&quot;: &quot;&lt;couchbase|spanner|sql&gt;&quot;,
+    &quot;user&quot;: &quot;&lt;couchbase|spanner|sql&gt;&quot;,
+    &quot;site&quot;: &quot;&lt;couchbase|spanner|sql&gt;&quot;,
+    &quot;cache&quot;: &quot;&lt;couchbase|spanner|sql&gt;&quot;,
+    &quot;token&quot;: &quot;&lt;couchbase|spanner|sql&gt;&quot;,
+    &quot;session&quot;: &quot;&lt;couchbase|spanner|sql&gt;&quot;,
 }
 </code></pre></div>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code>{
     &quot;default&quot;: &quot;sql&quot;,
     &quot;user&quot;: &quot;spanner&quot;,
-    &quot;site&quot;: &quot;ldap&quot;,
+    &quot;site&quot;: &quot;sql&quot;,
     &quot;cache&quot;: &quot;sql&quot;,
     &quot;token&quot;: &quot;couchbase&quot;,
     &quot;session&quot;: &quot;spanner&quot;,
@@ -1970,7 +1968,7 @@ For bleeding-edge/unstable version, use <code>gluufederation/admin-ui:1.0.0_dev<
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-09T06:27:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-09</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-24T16:16:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-24</span>
       
         <br>
         Created:

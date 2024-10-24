@@ -2039,10 +2039,9 @@ For bleeding-edge/unstable version, use <code>gluufederation/monolith:5.0.0_dev<
 </tbody>
 </table>
 <h2 id="how-to-run">How to run<a class="headerlink" href="#how-to-run" title="Permanent link">#</a></h2>
-<p>Download the compose file of your chosen persistence from mysql, postgres or ldap </p>
+<p>Download the compose file of your chosen persistence from mysql or postgres</p>
 <div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-mysql-compose.yml 
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-postgres-compose.yml 
-wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-ldap-compose.yml 
 </code></pre></div>
 <p>Download the script files </p>
 <div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/up.sh
@@ -2053,13 +2052,13 @@ wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-mono
 <code>chmod u+x up.sh down.sh clean.sh</code></p>
 <p>This docker compose file runs two containers, the flex monolith container and mysql container.</p>
 <p>To start the containers.</p>
-<div class="highlight"><pre><span></span><code>./up.sh <span class="c1">#You can pass mysql|postgres|ldap as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
+<div class="highlight"><pre><span></span><code>./up.sh <span class="c1">#You can pass mysql|postgres as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
 </code></pre></div>
 <p>To view the containers running</p>
 <div class="highlight"><pre><span></span><code>docker compose -f flex-mysql-compose.yml ps
 </code></pre></div>
 <p>To stop the containers.</p>
-<div class="highlight"><pre><span></span><code>./down.sh <span class="c1">#You can pass mysql|postgres|ldap as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
+<div class="highlight"><pre><span></span><code>./down.sh <span class="c1">#You can pass mysql|postgres as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
 </code></pre></div>
 <h2 id="configure-gluu-flex">Configure Gluu flex<a class="headerlink" href="#configure-gluu-flex" title="Permanent link">#</a></h2>
 <ol>
@@ -2085,7 +2084,7 @@ wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-mono
 <p>After adding the record you can hit endpoints such as https://demoexample.gluu.org/.well-known/openid-configuration</p>
 <h2 id="clean-up">Clean up<a class="headerlink" href="#clean-up" title="Permanent link">#</a></h2>
 <p>Remove setup and volumes</p>
-<div class="highlight"><pre><span></span><code>./clean.sh <span class="c1">#You can pass mysql|postgres|ldap as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
+<div class="highlight"><pre><span></span><code>./clean.sh <span class="c1">#You can pass mysql|postgres as an argument to the script. If you don&#39;t pass any, it will default to mysql.</span>
 </code></pre></div>
 
   <hr>
@@ -2093,7 +2092,7 @@ wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-mono
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-08T11:39:50+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-08</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-24T16:16:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-24</span>
       
         <br>
         Created:
