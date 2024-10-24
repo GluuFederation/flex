@@ -1873,11 +1873,11 @@
 <h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
 <p>The resources may be set minimally to the below:</p>
 <ul>
-<li>8-14 GB RAM based on the services deployed</li>
-<li>8-12 CPU cores based on the services deployed</li>
+<li>8-13 GB RAM based on the services deployed</li>
+<li>8-11 CPU cores based on the services deployed</li>
 <li>50GB hard-disk</li>
 </ul>
-<p>Use the listing below for detailed estimation of minimum required resources. Table contains the default resources recommendations per service. Depending on the use of each service the resources needs may be increase or decrease.</p>
+<p>Use the listing below for a detailed estimation of the minimum required resources. The table contains the default resources recommendation per service. Depending on the use of each service the resources need may be increase or decrease.</p>
 <table>
 <thead>
 <tr>
@@ -1897,14 +1897,6 @@
 <td>N/A</td>
 <td>64 Bit</td>
 <td>Yes</td>
-</tr>
-<tr>
-<td>LDAP (OpenDJ)</td>
-<td>1.5</td>
-<td>2GB</td>
-<td>10GB</td>
-<td>64 Bit</td>
-<td>Only if Couchbase/SQL not installed</td>
 </tr>
 <tr>
 <td>fido2</td>
@@ -1944,7 +1936,7 @@
 <td>1GB</td>
 <td>N/A</td>
 <td>64 Bit</td>
-<td>Yes ALB/Istio not used</td>
+<td>Yes if ALB/Istio not used</td>
 </tr>
 <tr>
 <td>auth-key-rotation</td>
@@ -2000,7 +1992,7 @@
 <h2 id="initial-setup">Initial Setup<a class="headerlink" href="#initial-setup" title="Permanent link">#</a></h2>
 <ol>
 <li>
-<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/v5.1.6.nightly/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
+<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
 </li>
 <li>
 <p>Install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">aws cli</a></p>
@@ -2078,55 +2070,6 @@ helm install nginx ingress-nginx/ingress-nginx
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
 <span class="w">        </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
-</code></pre></div>
-</li>
-<li>
-<p>LDAP/Opendj for persistence storage</p>
-<p>Prepare cert and key for OpenDJ, for example:</p>
-<div class="highlight"><pre><span></span><code>openssl req -x509 -newkey rsa:2048 -sha256 -days 365 -nodes -keyout opendj.key -out opendj.crt -subj &#39;/CN=demoexample.gluu.org&#39; -addext &#39;subjectAltName=DNS:ldap,DNS:opendj&#39;
-</code></pre></div>
-<p>Extract the contents of OpenDJ cert and key files as base64 string:</p>
-<div class="highlight"><pre><span></span><code>OPENDJ_CERT_B64=$(base64 opendj.crt -w0)
-OPENDJ_KEY_B64=$(base64 opendj.key -w0)
-</code></pre></div>
-<p>Add the following yaml snippet to your <code>override.yaml</code> file:
-  <div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ldap</span><span class="w"></span>
-<span class="w">  </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">provisioner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes.io/aws-ebs</span><span class="w"></span>
-<span class="w">  </span><span class="nt">opendj</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- contents of OpenDJ cert file in base64-string</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnLdapCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;OPENDJ_CERT_B64&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- contents of OpenDJ key file in base64-string</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnLdapKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;OPENDJ_KEY_B64&gt;</span><span class="w"></span>
-</code></pre></div></p>
-<p>So if your desired configuration has no-FQDN and LDAP, the final <code>override.yaml</code> file will look something like that:</p>
-<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ldap</span><span class="w"></span>
-<span class="w">   </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="w">   </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="nt">provisioner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes.io/aws-ebs</span><span class="w"></span>
-<span class="w">   </span><span class="nt">opendj</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w"> </span><span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
-<span class="w">     </span><span class="c1"># -- contents of OpenDJ cert file in base64-string</span><span class="w"></span>
-<span class="w">     </span><span class="nt">cnLdapCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;OPENDJ_CERT_B64&gt;</span><span class="w"></span>
-<span class="w">     </span><span class="c1"># -- contents of OpenDJ key file in base64-string</span><span class="w"></span>
-<span class="w">     </span><span class="nt">cnLdapKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;OPENDJ_KEY_B64&gt;</span><span class="w"></span>
-<span class="w"> </span><span class="nt">nginx-ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">   </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
-<span class="w">     </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Flex</span><span class="w"></span>
-<span class="w">     </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
-<span class="w">     </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
-<span class="w">       </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">       </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Flex         </span><span class="w"></span>
 </code></pre></div>
 </li>
 <li>
@@ -2239,7 +2182,7 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-07-04T09:32:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-07-04</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-24T16:16:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-24</span>
       
         <br>
         Created:

@@ -1870,14 +1870,6 @@
 <td>Yes</td>
 </tr>
 <tr>
-<td>LDAP (OpenDJ)</td>
-<td>1.5</td>
-<td>2GB</td>
-<td>10GB</td>
-<td>64 Bit</td>
-<td>Only if Couchbase/SQL not installed</td>
-</tr>
-<tr>
 <td>fido2</td>
 <td>0.5</td>
 <td>0.5GB</td>
@@ -1969,11 +1961,11 @@
 </table>
 <p>Releases of images are in style 1.0.0-beta.0, 1.0.0-0</p>
 <h2 id="installation-steps">Installation Steps<a class="headerlink" href="#installation-steps" title="Permanent link">#</a></h2>
-<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/v5.1.6.nightly/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
+<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
 <p>Start a fresh Ubuntu <code>18.04</code>/<code>20.04</code>/<code>22.04</code> VM with ports <code>443</code> and <code>80</code> open. Then execute the following:</p>
 <p><div class="highlight"><pre><span></span><code>sudo su -
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/v5.1.6.nightly/automation/startflexdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexdemo.sh <span class="o">&amp;&amp;</span> ./startflexdemo.sh
+<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexdemo.sh <span class="o">&amp;&amp;</span> ./startflexdemo.sh
 </code></pre></div></p>
 <p>This will install Docker, Microk8s, Helm and Gluu with the default settings that can be found inside <a href="https://github.com/GluuFederation/flex/blob/main/charts/gluu/values.yaml">values.yaml</a>.  </p>
 <p>The installer will automatically add a record to your hosts record in the VM but if you want to access the endpoints outside the VM you must map the <code>ip</code> of the instance running Ubuntu to the FQDN you provided and then access the endpoints at your browser such in the example in the table below.</p>
@@ -2015,7 +2007,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-07-04T09:32:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-07-04</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-24T16:16:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-24</span>
       
         <br>
         Created:

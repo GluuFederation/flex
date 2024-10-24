@@ -2193,7 +2193,7 @@
 <li><code>Cert Manager</code>: Used for managing X.509 certificates and crypto keys lifecycle in Janssen Server.</li>
 <li><code>Key Rotation</code>: A cronjob that implements <code>Cert Manager</code> to rotate the auth keys</li>
 <li><code>Configuration job</code>: loads (generate/restore) and dumps (backup) the configuration and secrets.</li>
-<li><code>Persistence job</code>: This job loads initial data for the backend used (SQL, LDAP, or Couchbase).</li>
+<li><code>Persistence job</code>: This job loads initial data for the backend used (SQL or Couchbase).</li>
 <li><code>ConfigMaps</code>: Stores configuration needed for Flex environment setup.</li>
 <li><code>Secrets</code>: Contains sensitive or confidential data such as a password, a token, or a key.</li>
 </ul>
@@ -2544,7 +2544,7 @@ helm install nginx ingress-nginx/ingress-nginx
 <li>Click on <code>Install</code> on the right side of the window. </li>
 <li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.</li>
 <li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
-<li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/v5.1.6.nightly/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
+<li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
 <li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.postgres.svc.cluster.local</code> in the case of <code>PostgreSQL</code> or <code>my-release-mysql.gluu.svc.cluster.local</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
 <li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. You can also enable different services like <code>Client API</code> and <code>Jackrabbit</code>.</li>
 <li>Click on the  section named <code>Ingress</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>. </li>
@@ -3084,7 +3084,7 @@ docker run -dit -p 8111:80 \
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-07-04T09:32:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-07-04</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-10-24T16:16:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-10-24</span>
       
         <br>
         Created:
