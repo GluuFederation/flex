@@ -43,8 +43,8 @@ spec:
             - name: {{ include "flex-all-in-one.name" . }}-as-key-rotation
               {{- if or (index .Values "auth-server-key-rotation" "customScripts") (index .Values "auth-server-key-rotation" "customCommand") }}
               command:
-                {{- if index "auth-server-key-rotation" "customCommand" }}
-                {{- toYaml (index "auth-server-key-rotation" "customCommand") | nindent 18 }}
+                {{- if index .Values "auth-server-key-rotation" "customCommand" }}
+                {{- toYaml (index .Values "auth-server-key-rotation" "customCommand") | nindent 18 }}
                 {{- else }}
                 - /bin/sh
                 - -c
