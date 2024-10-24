@@ -1,13 +1,12 @@
 import React from "react";
 import { Container, Row, Col } from "Components";
 import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
-
+import PropTypes from "prop-types";
 
 function SessionDetailPage({ row}) {
   const DOC_CATEGORY = 'sessions'
   
   return (
-    <React.Fragment>
       <Container style={{ backgroundColor: "#F5F5F5", minWidth: "100%" }}>
         <Row>
           <Col sm={4}>
@@ -74,8 +73,10 @@ function SessionDetailPage({ row}) {
           </Col>
         </Row>
       </Container>
-    </React.Fragment>
   );
 }
 
+SessionDetailPage.propTypes = {
+  row: PropTypes.any,
+};
 export default SessionDetailPage;
