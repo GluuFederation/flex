@@ -25,7 +25,8 @@
     "authorization_code_access_token": "Token de acesso ao código de autorização",
     "authorization_code_id_token": "Token de ID do código de autorização",
     "start_date": "Data de início",
-    "end_date": "Data final"
+    "end_date": "Data final",
+    "system_status": "Status do sistema"
   },
   "menus": {
     "adminui": "Admin",
