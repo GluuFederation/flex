@@ -165,6 +165,12 @@
     "policies_zip_uris": "URIs de políticas ZIP",
     "jans_assertion_consumer_service_get_url": "URL GET do Serviço de Consumo de Asserção Jans",
     "jans_assertion_consumer_service_post_url": "URL POST do Serviço de Consumo de Asserção Jans",
+    "jans_id": "ID Jans",
+    "jans_state": "Estado Jans",
+    "jans_sess_state":"Estado da sessão Jans",
+    "jans_user_dn": "DN do usuário Jans",
+    "permission_granted_map": "Mapa de permissões concedidas",
+    "jans_sess_attr": "Atributos da sessão Jans", 
     "download_summary": "Baixar Resumo",
     "customAttributes": "atributos personalizados",
     "sessionTimeoutInMins": "Tempo limite da sessão da interface de administração (em minutos)",
@@ -329,7 +335,7 @@
     "client_credentials_access_token": "Token de acesso de credenciais de cliente",
     "client_expiration_date": "Data de Vencimento do Cliente",
     "client_id": "ID do Cliente",
-    "client_id_used": "ID do cliente usado",
+    "client_id_used": "ID do cliente",
     "client_name": "Nome do cliente",
     "client_secret": "Segredo do cliente",
     "computation_pool_size": "Tamanho do pool de computação",
@@ -762,7 +768,8 @@
     "jans_ink": "Jans Link",
     "change_backend_bind_password": "Alterar senha de ligação de back-end",
     "add_agama_project": "Adicionar projeto Agama",
-    "jans_kc_link": "Link KC Jans"
+    "jans_kc_link": "Link KC Jans",
+    "export_csv":"Exportar CSV"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1463,5 +1470,14 @@
     "middleName": "Nome do meio",
     "sn": "Sobrenome",
     "userConfirmPassword": "Confirme a Senha"
+  },
+  "sessions":{
+    "expirationDate" : "Data de expiração",
+    "jansId": "ID Jans",
+    "jansState": "Estado Jans",
+    "jansSessState": "Estado da sessão Jans",
+    "jansUsrDN": "DN do usuário Jans",
+    "permissionGrantedMap": "Mapa de permissões concedida",
+    "jansSessAttr": "Atributo da sessão Jans"
   }
 }
