@@ -40,14 +40,14 @@ const userSlice = createSlice({
     },
     createUserResponse: (state, action) => {
       state.loading = false;
-      state.redirectToUserListPage = action.payload ? true : false;
+      state.redirectToUserListPage = action?.payload ? true : false;
     },
     updateUser: (state, action) => {
       state.loading = true;
     },
     updateUserResponse: (state, action) => {
       state.loading = false;
-      state.redirectToUserListPage = action.payload ? true : false;
+      state.redirectToUserListPage = action?.payload ? true : false;
     },
     changeUserPassword: (state, action) => {
       state.loading = true;
