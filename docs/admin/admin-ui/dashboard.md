@@ -17,7 +17,7 @@ After successful authentication, the administrator is taken to the dashboard. Th
 - **Active Users Count:** The count of `active` users on auth server.
 - **Token Issued Count:** This figure is the sum of the access-tokens with grant-type `client credentials` and `authorization code` and id-token.
 - **OAuth server status:** The health status of the auth server. For e.g. `Running` or `Down`.
-- **Database status:** The health status of the persistence (e.g. LDAP, MySQL, Google Spanner etc).
+- **Database status:** The health status of the persistence (e.g. PostgreSQL, MySQL, Google Spanner etc).
 
 #### License Details
 
