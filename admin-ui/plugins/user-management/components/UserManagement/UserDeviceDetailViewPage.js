@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "Components";
 import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
+import PropTypes from 'prop-types'
 
 const UserDeviceDetailViewPage = ({ row }) => {
   const { rowData } = row;
@@ -85,4 +86,9 @@ const UserDeviceDetailViewPage = ({ row }) => {
     </Container>
   );
 };
+
+UserDeviceDetailViewPage.propTypes = {
+  row: PropTypes.any,
+};
+
 export default UserDeviceDetailViewPage;

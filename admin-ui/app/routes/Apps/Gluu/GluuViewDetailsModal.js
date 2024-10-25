@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import PropTypes from 'prop-types'
 
 const GluuViewDetailModal = ({ children, isOpen, handleClose }) => {
     const { t } = useTranslation()
@@ -23,5 +24,11 @@ const GluuViewDetailModal = ({ children, isOpen, handleClose }) => {
         </Modal>
     )
 }
+
+GluuViewDetailModal.propTypes = {
+    children: PropTypes.any,
+    isOpen: PropTypes.bool,
+    handleClose: PropTypes.func,
+  };
 
 export default GluuViewDetailModal
