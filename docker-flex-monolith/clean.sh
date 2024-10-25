@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
     yaml="flex-mysql-compose.yml"
 else
 	case "$1" in
-		mysql|ldap|postgres)
+		mysql|postgres)
 			yaml="flex-${1}-compose.yml"
 			;;
 		*)

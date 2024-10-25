@@ -25,7 +25,8 @@
     "authorization_code_access_token": "Jeton d'accès au code d'autorisation",
     "authorization_code_id_token": "Jeton d'identification du code d'autorisation",
     "start_date": "Date de début",
-    "end_date": "Date de fin"
+    "end_date": "Date de fin",
+    "system_status": "État du système"
   },
   "menus": {
     "adminui": "Administratrice",

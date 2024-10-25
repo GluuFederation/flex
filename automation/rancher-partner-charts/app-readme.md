@@ -26,7 +26,6 @@ The Gluu Server can be deployed to support the following open standards for auth
 - System for Cross-domain Identity Management (SCIM)    
 - FIDO Universal 2nd Factor (U2F)
 - FIDO 2.0 / WebAuthn
-- Lightweight Directory Access Protocol (LDAP)   
 - Remote Authentication Dial-In User Service (RADIUS)
 
 ### Important notes for installation:
@@ -35,4 +34,4 @@ The Gluu Server can be deployed to support the following open standards for auth
 ### Quick install on Rancher UI with Docker single node
 - Install the nginx-ingress-controller chart.
 - Install the OpenEBS chart.
-- Install Gluu chart and specify your persistence as ldap.
+- Install Gluu chart and specify your persistence.
