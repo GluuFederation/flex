@@ -168,6 +168,12 @@
     "ssl_trust_store_password": "Mot de passe du magasin de confiance SSL",
     "jans_assertion_consumer_service_get_url": "URL GET du service consommateur d'assertions Jans",
     "jans_assertion_consumer_service_post_url": "URL POST du service consommateur d'assertions Jans",
+    "jans_id": "ID Jans",
+    "jans_state": "État Jans",
+    "jans_sess_state":"État de la session Jans",
+    "jans_user_dn": "DN de l'utilisateur Jans",
+    "permission_granted_map": "Carte des autorisations accordées",
+    "jans_sess_attr": "Attributs de la session Jans",
     "ssl_key_store_password": "Mot de passe du magasin de clés SSL",
     "customAttributes": "attributs personnalisés",
     "enable_kc": "Activer le lien Jannssen Keycloak",
@@ -345,7 +351,7 @@
     "client_credentials_access_token": "Jeton d'accès aux informations d'identification du client",
     "client_expiration_date": "Date d'expiration du client",
     "client_id": "Identité du client",
-    "client_id_used": "Identifiant client utilisé",
+    "client_id_used": "Identifiant client",
     "client_name": "Nom du client",
     "client_secret": "Secret du client",
     "computation_pool_size": "Taille du pool de calcul",
@@ -776,7 +782,8 @@
     "ssa_management": "SSA Gestion",
     "jans_ink": "Jans Link",
     "change_backend_bind_password": "Modifier le mot de passe de liaison du backend",
-    "add_agama_project": "Ajouter un projet Agama"
+    "add_agama_project": "Ajouter un projet Agama",
+    "export_csv":"Exporter CSV"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1484,5 +1491,14 @@
     "createdBy": "Créé par",
     "type": "Type",
     "domain": "Domaine"
+  },
+  "sessions":{
+    "expirationDate" : "Date d'expiration",
+    "jansId": "ID Jans",
+    "jansState": "État Jans",
+    "jansSessState": "État de la session Jans",
+    "jansUsrDN": "DN de l'utilisateur Jans",
+    "permissionGrantedMap": "Carte des autorisations accordées",
+    "jansSessAttr": "Attribut de la session Jans"
   }
 }
