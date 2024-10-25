@@ -27,6 +27,7 @@ customAnnotations:
   configMap: {}
   cronjob: {}
   deployment: {}
+  pod: {}
   destinationRule: {}
   horizontalPodAutoscaler: {}
   podDisruptionBudget: {}
@@ -368,6 +369,8 @@ auth-server-key-rotation:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
+  # -- Add custom job's command. If passed, it will override the default conditional command.
+  customCommand: []
 # --  Admin GUI for configuration of the auth-server
 admin-ui:
   # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.
@@ -773,7 +776,8 @@ additionalAnnotations: { }
 # - /tmp/custom.sh
 # - /tmp/custom2.sh
 customScripts: [ ]
-
+# -- Add custom pod's command. If passed, it will override the default conditional command.
+customCommand: []
 # -- Responsible for synchronizing Keycloak SAML clients
 kc-scheduler:
   # -- Add custom normal and secret envs to the service
