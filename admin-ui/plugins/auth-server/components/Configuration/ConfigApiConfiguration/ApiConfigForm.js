@@ -11,6 +11,7 @@ import {
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { patchApiConfigConfiguration } from 'Plugins/auth-server/redux/features/configApiSlice'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
+import { toast } from 'react-toastify'
 
 const schema = spec.components.schemas.ApiAppConfiguration.properties
 
@@ -27,7 +28,11 @@ const ApiConfigForm = () => {
   const userAction = {}
 
   const toggle = useCallback(() => {
-    setModal(!modal)
+    if(patches?.length > 0){
+      setModal(!modal)
+    }
+    else toast.error('No changes to update');
+ 
   }, [modal])
 
   const submitForm = useCallback((userMessage) => {
