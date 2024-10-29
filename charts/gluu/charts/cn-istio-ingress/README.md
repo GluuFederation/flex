@@ -20,4 +20,3 @@ Istio Gateway
 ## Requirements
 
 Kubernetes: `>=v1.21.0-0`
-
