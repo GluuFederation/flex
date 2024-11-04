@@ -36,10 +36,7 @@ function GluuCustomScriptSearch({
         data-testid={patternId}
         name="pattern"
         onChange={handler}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-          }
-        }}
+        onKeyDown={handler}
         defaultValue={pattern}
         placeholder={t('placeholders.search_pattern')}
       />
