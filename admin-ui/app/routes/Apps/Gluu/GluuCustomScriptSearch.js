@@ -36,6 +36,7 @@ function GluuCustomScriptSearch({
         data-testid={patternId}
         name="pattern"
         onChange={handler}
+        onKeyDown={handler}
         defaultValue={pattern}
         placeholder={t('placeholders.search_pattern')}
       />

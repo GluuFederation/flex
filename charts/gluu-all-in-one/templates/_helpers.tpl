@@ -177,3 +177,19 @@ Create AWS config.
 {{- end }}
 {{- printf "[%s]\nregion = %s\n" $profile .Values.configmap.cnAwsDefaultRegion }}
 {{- end }}
+
+{{/*
+Create configuration schema-related objects.
+*/}}
+{{- define "flex-all-in-one.config.schema" -}}
+{{- $commonName := (printf "%s-configuration-file" .Release.Name) -}}
+{{- $secretName := .Values.cnConfiguratorCustomSchema.secretName | default $commonName -}}
+volumes:
+  - name: {{ $commonName }}
+    secret:
+      secretName: {{ $secretName }}
+volumeMounts:
+  - name: {{ $commonName }}
+    mountPath: {{ .Values.cnConfiguratorConfigurationFile }}
+    subPath: {{ .Values.cnConfiguratorConfigurationFile | base }}
+{{- end -}}

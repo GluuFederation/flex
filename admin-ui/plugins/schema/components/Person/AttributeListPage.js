@@ -77,6 +77,10 @@ function AttributeListPage() {
       memoLimit = event.target.value
     } else if (event.target.name == 'pattern') {
       memoPattern = event.target.value
+      if (event.keyCode === 13) {
+        makeOptions()
+        dispatch(searchAttributes({ options }))
+      }
     }
   }
 

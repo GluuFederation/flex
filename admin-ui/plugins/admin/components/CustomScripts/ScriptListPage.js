@@ -185,6 +185,10 @@ function ScriptListTable() {
     const name = event.target.name
     if (name == 'pattern') {
       memoPattern = event.target.value
+      if (event.keyCode === 13) {
+        makeOptions()
+        dispatch(getCustomScriptByType({ action: options }))
+      }
     } else if (name == 'type') {
       memoType = event.target.value
       makeOptions()
