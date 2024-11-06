@@ -102,7 +102,7 @@
     "principal_type": "Principal Type",
     "webhook_name": "Webhook Name",
     "sessionTimeoutInMins": "Admin UI Session Timeout (In Minutes)",
-    "gluuFlexVersion":"Gluu Flex Version",
+    "gluuFlexVersion": "Gluu Flex Version",
     "adminui_default_acr": "Admin UI authentication method (ACR)",
     "download_summary": "Download Summary",
     "metadata_location": "Metadata Location",
@@ -480,6 +480,8 @@
     "email": "Email",
     "userName": "User Name",
     "nickName": "Nick Name",
+    "modality": "Modality",
+    "dateAdded": "Date Added",
     "givenName": "Given Name",
     "resources": "Resources",
     "resourceId": "Resource id",
@@ -546,7 +548,13 @@
     "updates_at_last_run": "Updates at the last run",
     "problems_at_last_run": "Problems at the last run",
     "mapping": "Mapping",
-    "source": "Source"
+    "source": "Source",
+    "createdBy": "Created By",
+    "deviceName": "Device Name",
+    "OSName": "OS Name",
+    "OSVersion": "OS Version",
+    "platform": "Platform",
+    "authType": "Auth Type"
   },
   "languages": {
     "french": "French",
@@ -572,7 +580,7 @@
     "default_acr": "Default ACR",
     "acrs": "ACRs",
     "aliases": "Aliases",
-    "builtIn":"Built-In",
+    "builtIn": "Built-In",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
@@ -637,6 +645,7 @@
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Add Configuration",
+    "credentials": "Credentials",
     "view_configuration": "View Configuration",
     "view_trust_relationshi_details": "View Trust Relationship Details",
     "add_trust_relationship": "Add Trust Relationship",
@@ -702,6 +711,8 @@
     "resource_not_found_message": "The requested resource doesn't exist on this server. Please contact the site administrator or the support team.",
     "resource_not_found_title": "Resource not found",
     "view_client_details": "View client details",
+    "view_2FA_details": "View 2FA details",
+    "2FA_details": "2FA details",
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
@@ -1443,7 +1454,7 @@
     },
     "settings": {
       "pageSize": "The default size for all list page.",
-      "gluuCurrentVersion":"Gluu Server current version",
+      "gluuCurrentVersion": "Gluu Server current version",
       "darkMode": "Whether to enable or disable adrk mode.",
       "configApiUrl": "The URL of the config api currently in used.",
       "sessionTimeoutInMins": "Determines the duration of inactivity allowed before the current session expires.",
@@ -1536,7 +1547,14 @@
       "INUM": "INUM",
       "middleName": "Middle Name",
       "sn": "Last Name",
-      "userConfirmPassword": "Confirm Password"
+      "userConfirmPassword": "Confirm Password",
+      "deviceName": "Device Name",
+      "OSName": "OS Name",
+      "OSVersion": "OS Version",
+      "platform": "Platform",
+      "createdBy": "Created By",
+      "type": "Type",
+      "domain": "Domain"
     },
     "sessions":{
       "expirationDate" : "Expiration Date",
