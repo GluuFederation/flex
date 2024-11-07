@@ -155,7 +155,7 @@ class Upgrade:
             entry.attrs["jansAccessTknAsJwt"] = False
             should_update = True
 
-        if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
+        if not self.backend.client.use_simple_json:
             scopes = entry.attrs["jansScope"]["v"]
             grant_types = entry.attrs["jansGrantTyp"]["v"]
         else:
@@ -188,7 +188,7 @@ class Upgrade:
             grant_types.append("urn:ietf:params:oauth:grant-type:device_code")
             should_update = True
 
-        if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
+        if not self.backend.client.use_simple_json:
             entry.attrs["jansScope"]["v"] = scopes
             entry.attrs["jansGrantTyp"]["v"] = grant_types
         else:
@@ -234,7 +234,7 @@ class Upgrade:
                 entry.attrs[attr] = False
                 should_update = True
 
-        if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
+        if not self.backend.client.use_simple_json:
             scopes = entry.attrs["jansScope"]["v"]
             grant_types = entry.attrs["jansGrantTyp"]["v"]
             resp_types = entry.attrs["jansRespTyp"]["v"]
@@ -284,7 +284,7 @@ class Upgrade:
             scopes.append("inum=B9D2-D6E5,ou=scopes,o=jans")
             should_update = True
 
-        if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
+        if not self.backend.client.use_simple_json:
             entry.attrs["jansScope"]["v"] = scopes
             entry.attrs["jansGrantTyp"]["v"] = grant_types
             entry.attrs["jansRespTyp"]["v"] = resp_types
