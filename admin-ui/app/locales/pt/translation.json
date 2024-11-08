@@ -487,6 +487,7 @@
     "show_in_configuration_endpoint": "Mostrar ponto final na configuração",
     "s_id": "ID da sessão",
     "session_expired": "Sessão expirada",
+    "allow_keystore_edit": "Editar armazenamento de chaves",
     "smtp_server_port": "Porta do servidor SMTP",
     "smtp_test_status": "Status do teste Smtp",
     "smtp_user_name": "Nome de usuário SMTP",
