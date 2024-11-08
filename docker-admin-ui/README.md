@@ -63,7 +63,7 @@ The following environment variables are supported by the container:
 - `CN_TOKEN_SERVER_USERINFO_ENDPOINT`: User info endpoint at token server (default to `/jans-auth/restv1/userinfo`).
 - `CN_TOKEN_SERVER_CLIENT_ID`: Client ID registered at token server.
 - `CN_TOKEN_SERVER_CERT_FILE`: Path to token server certificate (default to `/etc/certs/token_server.crt`).
-- `CN_PERSISTENCE_TYPE`: Persistence backend being used (one of `sql`, `spanner`, `couchbase`, or `hybrid`; default to `sql`).
+- `CN_PERSISTENCE_TYPE`: Persistence backend being used (one of `sql`, `couchbase`, or `hybrid`; default to `sql`).
 - `CN_HYBRID_MAPPING`: Specify data mapping for each persistence (default to `"{}"`). Note this environment only takes effect when `CN_PERSISTENCE_TYPE` is set to `hybrid`. See [hybrid mapping](#hybrid-mapping) section for details.
 - `CN_COUCHBASE_URL`: Address of Couchbase server (default to `localhost`).
 - `CN_COUCHBASE_USER`: Username of Couchbase server (default to `admin`).
@@ -81,12 +81,8 @@ The following environment variables are supported by the container:
 - `CN_SQL_DB_PORT`: Port of SQL backend (default to `3306`).
 - `CN_SQL_DB_NAME`: Database name (default to `jans`)
 - `CN_SQL_DB_USER`: Username to interact with SQL backend (default to `jans`).
-- `CN_GOOGLE_SPANNER_INSTANCE_ID`: Instance ID of Google Spanner (default to empty string).
-- `CN_GOOGLE_SPANNER_DATABASE_ID`: Database ID of Google Spanner (default to empty string).
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string).
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
-- `CN_GOOGLE_SPANNER_INSTANCE_ID`: Google Spanner instance ID.
-- `CN_GOOGLE_SPANNER_DATABASE_ID`: Google Spanner database ID.
 - `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (default to `basic`). Note, changing the value require restart to jans-config-api.
 
 ### Hybrid mapping
@@ -99,12 +95,12 @@ Hybrid persistence supports all available persistence types. To configure hybrid
 
     ```
     {
-        "default": "<couchbase|spanner|sql>",
-        "user": "<couchbase|spanner|sql>",
-        "site": "<couchbase|spanner|sql>",
-        "cache": "<couchbase|spanner|sql>",
-        "token": "<couchbase|spanner|sql>",
-        "session": "<couchbase|spanner|sql>",
+        "default": "<couchbase|sql>",
+        "user": "<couchbase|sql>",
+        "site": "<couchbase|sql>",
+        "cache": "<couchbase|sql>",
+        "token": "<couchbase|sql>",
+        "session": "<couchbase|sql>",
     }
     ```
 
@@ -113,10 +109,10 @@ Hybrid persistence supports all available persistence types. To configure hybrid
     ```
     {
         "default": "sql",
-        "user": "spanner",
+        "user": "sql",
         "site": "sql",
         "cache": "sql",
         "token": "couchbase",
-        "session": "spanner",
+        "session": "sql",
     }
     ```
