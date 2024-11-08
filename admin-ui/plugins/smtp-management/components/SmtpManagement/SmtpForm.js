@@ -1,4 +1,4 @@
-import React, { useState, useContext, useSelector } from 'react'
+import React, { useState, useContext } from 'react'
 import {  Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -22,7 +22,6 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }) {
   const [modal, setModal] = useState(false)
   const [hideTestButton, setHideTestButton] = useState(false);
   const [tempItems, setTempItems] = useState(item);
-  //const allowSmtpKeystoreEdit = useSelector((state) => state.authReducer?.config?.allowSmtpKeystoreEdit);
   const toggle = () => {
     setModal(!modal)
   }
@@ -55,10 +54,8 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }) {
         connect_protection: Yup.string().min(2, 'Connection Protection is required.').required('Connection Protection is required.'),
         from_name: Yup.string().required('From name is required.'),
         from_email_address: Yup.string().email('Please add a valid email address.').required('From email address is required.'),
-        //requires_authentication: Yup.string().min(2, 'Connection Protection is required.').required('Authentication is required.'),
         smtp_authentication_account_username: Yup.string().required('SMTP user name is required.'),
         smtp_authentication_account_password: Yup.string().required('SMTP user password is required.'),
-        //trust_host: Yup.string().min(2, 'Connection Protection is required.').required('Trust host is required.'),
       }
     ),
     setFieldValue: (field) => {
