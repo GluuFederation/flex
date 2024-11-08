@@ -292,6 +292,7 @@
     "json_web_keys": "JSON Web Keys",
     "jwks": "Client JWKS",
     "jwks_uri": "Client JWKS URI",
+    "allow_keystore_edit": "Edit Keystore",
     "key_store": "Keystore",
     "key_store_password": "Keystore Password",
     "key_store_alias": "Keystore Alias",

@@ -21,7 +21,7 @@ function StmpEditPage() {
     opts['smtpConfiguration'] = JSON.parse(smtpData)
     dispatch(updateSmpt(opts));
   }
-
+  const allowSmtpKeystoreEdit = useSelector((state) => state.authReducer?.config?.allowSmtpKeystoreEdit);
   SetTitle(t('menus.stmp_management'))
   useEffect(() => {
     dispatch(getSmpts())
@@ -35,7 +35,7 @@ function StmpEditPage() {
       }} />
       <Card className='mb-3' style={applicationStyle.mainCard}>
         <CardBody>
-          {!loading && <SmtpForm item={{ ...item.smtp }} handleSubmit={handleSubmit} />}
+          {!loading && <SmtpForm item={{ ...item.smtp }} allowSmtpKeystoreEdit={allowSmtpKeystoreEdit} handleSubmit={handleSubmit} />}
         </CardBody>
       </Card>
     </GluuLoader>
