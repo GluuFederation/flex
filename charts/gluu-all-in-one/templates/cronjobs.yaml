@@ -161,7 +161,7 @@ spec:
               {{- with (index .Values "kc-scheduler" "volumeMounts") }}
 {{- toYaml . | nindent 16 }}
               {{- end }}
-              {{- with (include "janssen-all-in-one.config.schema" . | fromYaml).volumeMounts }}
+              {{- with (include "flex-all-in-one.config.schema" . | fromYaml).volumeMounts }}
 {{- toYaml . | nindent 16 }}
               {{- end }}
               envFrom:
@@ -185,7 +185,7 @@ spec:
           {{- with (index .Values "kc-scheduler" "volumes") }}
 {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with (include "janssen-all-in-one.config.schema" . | fromYaml).volumes }}
+          {{- with (include "flex-all-in-one.config.schema" . | fromYaml).volumes }}
 {{- toYaml . | nindent 12 }}
           {{- end }}
           restartPolicy: Never
