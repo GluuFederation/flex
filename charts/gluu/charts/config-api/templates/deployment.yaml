@@ -108,9 +108,6 @@ spec:
           {{- with (include "cn.config.schema" . | fromYaml).volumeMounts }}
 {{- toYaml . | nindent 12 }}
           {{- end }}
-            - mountPath: {{ .Values.global.cnConfiguratorConfigurationFile }}
-              name: {{ .Release.Name }}-configuration-file
-              subPath: {{ .Values.global.cnConfiguratorConfigurationFile | base }}
           {{- if .Values.global.cloud.testEnviroment }}
           resources: {}
           {{- else }}

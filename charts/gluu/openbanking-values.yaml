@@ -112,12 +112,6 @@ config:
     cnGoogleSecretManagerServiceAccount: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
     # -- Project id of the Google project the secret manager belongs to. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
     cnGoogleProjectId: google-project-to-save-config-and-secrets-to
-    # [google_spanner_envs] Envs related to using Google Secret Manager to store config and secret layer
-    # -- Google Spanner ID. Used only when global.cnPersistenceType is spanner.
-    cnGoogleSpannerInstanceId: ""
-    # -- Google Spanner Database ID. Used only when global.cnPersistenceType is spanner.
-    cnGoogleSpannerDatabaseId: ""
-    # [google_spanner_envs] END
     # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
     # -- Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
     cnSecretGoogleSecretVersionId: "latest"
@@ -137,12 +131,12 @@ config:
     cnScimProtectionMode: "OAUTH"
     # -- Specify data that should be saved in persistence (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`.
     #{
-    #  "default": "<couchbase|spanner|sql>",
-    #  "user": "<couchbase|spanner|sql>",
-    #  "site": "<couchbase|spanner|sql>",
-    #  "cache": "<couchbase|spanner|sql>",
-    #  "token": "<couchbase|spanner|sql>",
-    #  "session": "<couchbase|spanner|sql>",
+    #  "default": "<couchbase|sql>",
+    #  "user": "<couchbase|sql>",
+    #  "site": "<couchbase|sql>",
+    #  "cache": "<couchbase|sql>",
+    #  "token": "<couchbase|sql>",
+    #  "session": "<couchbase|sql>",
     #}
     cnPersistenceHybridMapping: "{}"
     # -- Redis Sentinel Group. Often set when `config.configmap.cnRedisType` is set to `SENTINEL`. Can be used when  `config.configmap.cnCacheType` is set to `REDIS`.
@@ -380,7 +374,7 @@ global:
   cnPrometheusPort: ""
   # -- Document store type to use for shibboleth files DB.
   cnDocumentStoreType: DB
-  # -- Persistence backend to run Gluu with couchbase|hybrid|sql|spanner.
+  # -- Persistence backend to run Gluu with couchbase|hybrid|sql.
   cnPersistenceType: sql
   # -- Open banking external signing jwks uri. Used in SSA Validation.
   cnObExtSigningJwksUri: ""
@@ -413,7 +407,7 @@ global:
   configAdapterName: kubernetes
   # -- The config backend adapter that will hold Gluu secret layer. google|kubernetes
   configSecretAdapter: kubernetes
-  # -- Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets and roles/spanner.databaseUser to use Spanner.
+  # -- Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets.
   cnGoogleApplicationCredentials: /etc/jans/conf/google-credentials.json
   config-api:
     # -- Name of the config-api service. Please keep it as default.
