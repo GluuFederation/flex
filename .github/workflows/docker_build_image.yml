@@ -124,16 +124,17 @@ jobs:
           fi
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "build=${BUILD}" >> $GITHUB_OUTPUT
-          # wait for all images in DEFAULT_ALL to be built before building the all-in-one image as it depends on all other images
           if [[ "flex-all-in-one" =~ "${{ matrix.docker-images }}" ]]; then
             echo "Waiting for all images to be built before building the all-in-one image"
             while true; do
-              echo "Checking if admin-ui:$VERSION has been built"
-              if [[ $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $GITHUB_TOKEN" https://ghcr.io/v2/$REPOSITORY/admin-ui/manifests/$VERSION) == 200 ]]; then
-                echo "All images have been built"
+              echo "Attempting to pull the Docker image"
+              if docker pull ghcr.io/$REPOSITORY/admin-ui:$VERSION; then
+                echo "Docker image pulled successfully"
                 break
+              else
+                echo "Failed to pull Docker image, retrying in 20 seconds"
+                sleep 20
               fi
-              sleep 20
             done
           fi
 
