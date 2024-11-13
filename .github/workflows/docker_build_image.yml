@@ -134,6 +134,7 @@ jobs:
                 break
               fi
               sleep 20
+            done
           fi
 
       # UPDATE BUILD DATES INSIDE THE DOCKERFILE BEFORE BUILDING THE DEV IMAGES TRIGGERED BY JENKINS
