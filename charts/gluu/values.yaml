@@ -19,24 +19,6 @@ installer-settings:
       enabled: ""
       arnAcmCert: ""
     vpcCidr: "0.0.0.0/0"
-  couchbase:
-    clusterName: ""
-    namespace: ""
-    lowResourceInstall: ""
-    install: ""
-    customFileOverride: ""
-    backup:
-      incrementalSchedule: ""
-      fullSchedule: ""
-      retentionTime: ""
-      storageSize: ""
-    # Couchbase cert related keys
-    subjectAlternativeName: ""
-    commonName: ""
-    # Couchbase cluster yaml generator keys
-    totalNumberOfExpectedUsers: ""
-    totalNumberOfExpectedTransactionsPerSec: ""
-    volumeType: ""
   volumeProvisionStrategy: ""
   postgres:
     install: ""
@@ -369,22 +351,6 @@ config:
     cnCacheType: NATIVE_PERSISTENCE
     # -- The name of the Kubernetes ConfigMap that will hold the configuration layer
     cnConfigKubernetesConfigMap: cn
-    # -- The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Gluu.
-    cnCouchbaseBucketPrefix: jans
-    # -- Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security > Root Certificate. In mTLS setups this is not required.
-    cnCouchbaseCrt: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
-    # -- The number of replicas per index created. Please note that the number of index nodes must be one greater than the number of index replicas. That means if your couchbase cluster only has 2 index nodes you cannot place the number of replicas to be higher than 1.
-    cnCouchbaseIndexNumReplica: 0
-    # -- Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol .
-    cnCouchbasePassword: P@ssw0rd
-    # -- The Couchbase super user (admin) username. This user is used during initialization only.
-    cnCouchbaseSuperUser: admin
-    # -- Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol
-    cnCouchbaseSuperUserPassword: Test1234#
-    # -- Couchbase URL. Used only when global.cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster
-    cnCouchbaseUrl: cbgluu.default.svc.cluster.local
-    # -- Couchbase restricted user. Used only when global.cnPersistenceType is hybrid or couchbase.
-    cnCouchbaseUser: gluu
     # [google_envs] Envs related to using Google
     # -- Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
     cnGoogleSecretManagerServiceAccount: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
@@ -443,12 +409,12 @@ config:
     cnScimProtectionMode: "OAUTH"
     # -- Specify data that should be saved in persistence (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`.
     #{
-    #  "default": "<couchbase|sql>",
-    #  "user": "<couchbase|sql>",
-    #  "site": "<couchbase|sql>",
-    #  "cache": "<couchbase|sql>",
-    #  "token": "<couchbase|sql>",
-    #  "session": "<couchbase|sql>",
+    #  "default": "<sql>",
+    #  "user": "<sql>",
+    #  "site": "<sql>",
+    #  "cache": "<sql>",
+    #  "token": "<sql>",
+    #  "session": "<sql>",
     #}
     cnPersistenceHybridMapping: "{}"
     # -- Redis Sentinel Group. Often set when `config.configmap.cnRedisType` is set to `SENTINEL`. Can be used when  `config.configmap.cnCacheType` is set to `REDIS`.
@@ -540,7 +506,7 @@ config:
    # -- Directory holding all migration files
    migrationDir: /ce-migration
    # -- migration data-format depending on persistence backend.
-   # Supported data formats are ldif, couchbase+json, postgresql+json, and mysql+json.
+   # Supported data formats are ldif, postgresql+json, and mysql+json.
    migrationDataFormat: ldif
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
@@ -1097,7 +1063,7 @@ global:
   cnPrometheusPort: ""
   # -- Document store type to use for shibboleth files DB.
   cnDocumentStoreType: DB
-  # -- Persistence backend to run Gluu with couchbase|hybrid|sql.
+  # -- Persistence backend to run Gluu with hybrid|sql.
   cnPersistenceType: sql
   # -- Open banking external signing jwks uri. Used in SSA Validation.
   cnObExtSigningJwksUri: ""
@@ -1428,10 +1394,6 @@ global:
 
   # -- Path to SQL password file
   cnSqlPasswordFile: /etc/jans/conf/sql_password
-  # -- Path to Couchbase password file
-  cnCouchbasePasswordFile: /etc/jans/conf/couchbase_password
-  # -- Path to Couchbase superuser password file
-  cnCouchbaseSuperuserPasswordFile: /etc/jans/conf/couchbase_superuser_password
   # -- Path to file contains password for database access
   kcDbPasswordFile: /etc/jans/conf/kc_db_password
   # -- Path to file contains Keycloak admin credentials (username and password)
