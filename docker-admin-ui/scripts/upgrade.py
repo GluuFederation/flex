@@ -5,7 +5,6 @@ from collections import namedtuple
 
 from jans.pycloudlib import get_manager
 from jans.pycloudlib.persistence import CouchbaseClient
-from jans.pycloudlib.persistence import SpannerClient
 from jans.pycloudlib.persistence import SqlClient
 from jans.pycloudlib.persistence import PersistenceMapper
 from jans.pycloudlib.persistence import doc_id_from_dn
@@ -90,30 +89,9 @@ class CouchbaseBackend:
         return status, message
 
 
-class SpannerBackend:
-    def __init__(self, manager):
-        self.manager = manager
-        self.client = SpannerClient(manager)
-        self.type = "spanner"
-
-    def get_entry(self, key, filter_="", attrs=None, **kwargs):
-        table_name = kwargs.get("table_name")
-        entry = self.client.get(table_name, key, attrs)
-
-        if not entry:
-            return None
-        return Entry(key, entry)
-
-    def modify_entry(self, key, attrs=None, **kwargs):
-        attrs = attrs or {}
-        table_name = kwargs.get("table_name")
-        return self.client.update(table_name, key, attrs), ""
-
-
 BACKEND_CLASSES = {
     "sql": SQLBackend,
     "couchbase": CouchbaseBackend,
-    "spanner": SpannerBackend,
 }
 
 
@@ -136,7 +114,7 @@ class Upgrade:
         client_id = self.manager.config.get("admin_ui_client_id")
         id_ = f"inum={client_id},ou=clients,o=jans"
 
-        if self.backend.type in ("sql", "spanner"):
+        if self.backend.type == "sql":
             kwargs = {"table_name": "jansClnt"}
             id_ = doc_id_from_dn(id_)
         elif self.backend.type == "couchbase":
@@ -214,7 +192,7 @@ class Upgrade:
         client_id = self.manager.config.get("token_server_admin_ui_client_id")
         id_ = f"inum={client_id},ou=clients,o=jans"
 
-        if self.backend.type in ("sql", "spanner"):
+        if self.backend.type == "sql":
             kwargs = {"table_name": "jansClnt"}
             id_ = doc_id_from_dn(id_)
         elif self.backend.type == "couchbase":

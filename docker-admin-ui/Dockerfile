@@ -20,7 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=d84d8935eaeb252da8f442f4679bedb45c514aa7
+ENV JANS_SOURCE_VERSION=6e00e723a99d700a4f82713b0c25b2d6e3ef5775
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -39,12 +39,11 @@ RUN cd /tmp/jans \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/sql_data_types.json /app/static/rdbm/ \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/ldap_sql_data_type_mapping.json /app/static/rdbm/ \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/opendj_attributes_syntax.json /app/static/rdbm/ \
-    && cp -R ${JANS_SETUP_DIR}/static/rdbm/sub_tables.json /app/static/rdbm/ \
     && cp ${JANS_SETUP_DIR}/schema/jans_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=b9628dc3e63e093e0ac0a5dd7e9295251587ac3d
+ENV FLEX_SOURCE_VERSION=55e028960e7548c751387e149eab7774f16c09aa
 
 RUN mkdir -p /app/templates/admin-ui
 
@@ -148,9 +147,7 @@ ENV CN_PERSISTENCE_TYPE=sql \
     CN_COUCHBASE_BUCKET_PREFIX=jans \
     CN_COUCHBASE_TRUSTSTORE_ENABLE=true \
     CN_COUCHBASE_KEEPALIVE_INTERVAL=30000 \
-    CN_COUCHBASE_KEEPALIVE_TIMEOUT=2500 \
-    CN_GOOGLE_SPANNER_INSTANCE_ID="" \
-    CN_GOOGLE_SPANNER_DATABASE_ID=""
+    CN_COUCHBASE_KEEPALIVE_TIMEOUT=2500
 
 # ===========
 # Generic ENV
