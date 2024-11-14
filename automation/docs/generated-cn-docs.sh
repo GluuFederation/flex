@@ -28,7 +28,4 @@ docker_images="docker-casa docker-admin-ui docker-jans-monolith"
 for image in $docker_images;do
   cp "$MAIN_DIRECTORY_LOCATION"/"$image"/README.md "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/"$image".md
 done
-echo "cp docker-opendj main README.md"
-wget https://raw.githubusercontent.com/GluuFederation/docker-opendj/5.0/README.md -O "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/docker-opendj.md
-sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n - docker image\n---\n/' "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/docker-opendj.md
 echo "generated-cn-docs.sh executed successfully!"

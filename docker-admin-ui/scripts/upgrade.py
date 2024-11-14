@@ -5,8 +5,6 @@ from collections import namedtuple
 
 from jans.pycloudlib import get_manager
 from jans.pycloudlib.persistence import CouchbaseClient
-from jans.pycloudlib.persistence import LdapClient
-from jans.pycloudlib.persistence import SpannerClient
 from jans.pycloudlib.persistence import SqlClient
 from jans.pycloudlib.persistence import PersistenceMapper
 from jans.pycloudlib.persistence import doc_id_from_dn
@@ -19,44 +17,6 @@ logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("admin-ui")
 
 Entry = namedtuple("Entry", ["id", "attrs"])
-
-
-class LDAPBackend:
-    def __init__(self, manager):
-        self.manager = manager
-        self.client = LdapClient(manager)
-        self.type = "ldap"
-
-    def format_attrs(self, attrs):
-        _attrs = {}
-        for k, v in attrs.items():
-            if len(v) < 2:
-                v = v[0]
-            _attrs[k] = v
-        return _attrs
-
-    def get_entry(self, key, filter_="", attrs=None, **kwargs):
-        filter_ = filter_ or "(objectClass=*)"
-
-        entry = self.client.get(key, filter_=filter_, attributes=attrs)
-        if not entry:
-            return None
-        return Entry(entry.entry_dn, self.format_attrs(entry.entry_attributes_as_dict))
-
-    def modify_entry(self, key, attrs=None, **kwargs):
-        attrs = attrs or {}
-        del_flag = kwargs.get("delete_attr", False)
-
-        if del_flag:
-            mod = self.client.MODIFY_DELETE
-        else:
-            mod = self.client.MODIFY_REPLACE
-
-        for k, v in attrs.items():
-            if not isinstance(v, list):
-                v = [v]
-            attrs[k] = [(mod, v)]
-        return self.client.modify(key, attrs)
 
 
 class SQLBackend:
@@ -129,31 +89,9 @@ class CouchbaseBackend:
         return status, message
 
 
-class SpannerBackend:
-    def __init__(self, manager):
-        self.manager = manager
-        self.client = SpannerClient(manager)
-        self.type = "spanner"
-
-    def get_entry(self, key, filter_="", attrs=None, **kwargs):
-        table_name = kwargs.get("table_name")
-        entry = self.client.get(table_name, key, attrs)
-
-        if not entry:
-            return None
-        return Entry(key, entry)
-
-    def modify_entry(self, key, attrs=None, **kwargs):
-        attrs = attrs or {}
-        table_name = kwargs.get("table_name")
-        return self.client.update(table_name, key, attrs), ""
-
-
 BACKEND_CLASSES = {
     "sql": SQLBackend,
     "couchbase": CouchbaseBackend,
-    "spanner": SpannerBackend,
-    "ldap": LDAPBackend,
 }
 
 
@@ -176,7 +114,7 @@ class Upgrade:
         client_id = self.manager.config.get("admin_ui_client_id")
         id_ = f"inum={client_id},ou=clients,o=jans"
 
-        if self.backend.type in ("sql", "spanner"):
+        if self.backend.type == "sql":
             kwargs = {"table_name": "jansClnt"}
             id_ = doc_id_from_dn(id_)
         elif self.backend.type == "couchbase":
@@ -195,7 +133,7 @@ class Upgrade:
             entry.attrs["jansAccessTknAsJwt"] = False
             should_update = True
 
-        if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
+        if not self.backend.client.use_simple_json:
             scopes = entry.attrs["jansScope"]["v"]
             grant_types = entry.attrs["jansGrantTyp"]["v"]
         else:
@@ -228,7 +166,7 @@ class Upgrade:
             grant_types.append("urn:ietf:params:oauth:grant-type:device_code")
             should_update = True
 
-        if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
+        if not self.backend.client.use_simple_json:
             entry.attrs["jansScope"]["v"] = scopes
             entry.attrs["jansGrantTyp"]["v"] = grant_types
         else:
@@ -254,7 +192,7 @@ class Upgrade:
         client_id = self.manager.config.get("token_server_admin_ui_client_id")
         id_ = f"inum={client_id},ou=clients,o=jans"
 
-        if self.backend.type in ("sql", "spanner"):
+        if self.backend.type == "sql":
             kwargs = {"table_name": "jansClnt"}
             id_ = doc_id_from_dn(id_)
         elif self.backend.type == "couchbase":
@@ -274,7 +212,7 @@ class Upgrade:
                 entry.attrs[attr] = False
                 should_update = True
 
-        if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
+        if not self.backend.client.use_simple_json:
             scopes = entry.attrs["jansScope"]["v"]
             grant_types = entry.attrs["jansGrantTyp"]["v"]
             resp_types = entry.attrs["jansRespTyp"]["v"]
@@ -324,7 +262,7 @@ class Upgrade:
             scopes.append("inum=B9D2-D6E5,ou=scopes,o=jans")
             should_update = True
 
-        if self.backend.type == "sql" and self.backend.client.dialect == "mysql":
+        if not self.backend.client.use_simple_json:
             entry.attrs["jansScope"]["v"] = scopes
             entry.attrs["jansGrantTyp"]["v"] = grant_types
             entry.attrs["jansRespTyp"]["v"] = resp_types

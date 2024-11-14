@@ -71,10 +71,10 @@ const AssetForm = () => {
         initialValues: {
             creationDate: selectedAsset?.creationDate || '',
             document: selectedAsset?.document || null,
-            fileName: selectedAsset?.fileName,
+            fileName: selectedAsset?.fileName || '',
             enabled: selectedAsset?.enabled || false,
             description: selectedAsset?.description || '',
-            service: selectedAsset?.service || []
+            service: selectedAsset?.service ? [selectedAsset?.service] : []
         },
         onSubmit: (values) => {
             const faulty = validatePayload(values)
@@ -90,7 +90,6 @@ const AssetForm = () => {
                     /^\S*$/,
                     `${t('fields.asset_name')} ${t('messages.no_spaces')}`
                 ),
-            description: Yup.string().required(t('messages.description_error')),
         }),
     })
 
@@ -103,6 +102,7 @@ const AssetForm = () => {
             toggle()
             const payload = {
                 ...formik.values,
+                service: formik.values.service[0]
             }
             if (id) {
                 payload['inum'] = selectedAsset.inum
@@ -162,7 +162,7 @@ const AssetForm = () => {
                     <GluuInputRow
                         label='fields.asset_name'
                         formik={formik}
-                        value={formik.values?.fileName}
+                        value={formik.values?.fileName || ''}
                         lsize={4}
                         doc_entry='asset_name'
                         rsize={8}
@@ -175,7 +175,7 @@ const AssetForm = () => {
                     <GluuInputRow
                         label='fields.description'
                         formik={formik}
-                        value={formik.values?.description}
+                        value={formik.values?.description || ''}
                         doc_category={ASSET}
                         doc_entry='description'
                         lsize={4}
@@ -185,13 +185,15 @@ const AssetForm = () => {
                 </Col>
                 <GluuTypeAhead
                     name='service'
+                    multiple={false}
+                    allowNew={false}
                     label={t('fields.jansService')}
                     formik={formik}
                     options={services}
                     lsize={4}
                     rsize={8}
                     required
-                    value={selectedAsset.service || []}
+                    value={formik.values.service}
                     doc_category={ASSET}
                 />
                 <FormGroup row>

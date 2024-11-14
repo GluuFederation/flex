@@ -26,7 +26,7 @@ sudo firewall-cmd --reload;
 ```
 - Install EPEL and mod-auth-openidc as dependencies
 ```shell
-sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm
 ```
 ```shell
 sudo yum -y module enable mod_auth_openidc;

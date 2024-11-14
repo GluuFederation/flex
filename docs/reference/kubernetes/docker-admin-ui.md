@@ -54,17 +54,17 @@ The following environment variables are supported by the container:
 - `CN_GOOGLE_SECRET_VERSION_ID`: Janssen secret version ID in Google Secret Manager. Defaults to `latest`, which is recommended.
 - `CN_GOOGLE_SECRET_NAME_PREFIX`: Prefix for Janssen secret in Google Secret Manager. Defaults to `jans`. If left `jans-secret` secret will be created.
 - `CN_GOOGLE_SECRET_MANAGER_PASSPHRASE`: Passphrase for Janssen secret in Google Secret Manager. This is recommended to be changed and defaults to `secret`.
-- `CN_TOKEN_SERVER_BASE_HOSTNAME`: Hostname of token server (default to `localhost`).
+- `CN_AUTH_BASE_URL`: Base URL of auth server (default to empty).
+- `CN_CONFIG_API_BASE_URL`: Base URL of config-api server (default to empty).
+- `CN_TOKEN_SERVER_BASE_URL`: Base URL of token server (default to empty).
 - `CN_TOKEN_SERVER_AUTHZ_ENDPOINT`: Authorization endpoint at token server (default to `/jans-auth/authorize.htm`).
 - `CN_TOKEN_SERVER_TOKEN_ENDPOINT`: Token endpoint at token server (default to `/jans-auth/restv1/token`).
 - `CN_TOKEN_SERVER_INTROSPECTION_ENDPOINT`: Introspection endpoint at token server (default to `/jans-auth/restv1/introspection`).
 - `CN_TOKEN_SERVER_USERINFO_ENDPOINT`: User info endpoint at token server (default to `/jans-auth/restv1/userinfo`).
 - `CN_TOKEN_SERVER_CLIENT_ID`: Client ID registered at token server.
 - `CN_TOKEN_SERVER_CERT_FILE`: Path to token server certificate (default to `/etc/certs/token_server.crt`).
-- `CN_PERSISTENCE_TYPE`: Persistence backend being used (one of `ldap`, `couchbase`, or `hybrid`; default to `ldap`).
+- `CN_PERSISTENCE_TYPE`: Persistence backend being used (one of `sql`, `spanner`, `couchbase`, or `hybrid`; default to `sql`).
 - `CN_HYBRID_MAPPING`: Specify data mapping for each persistence (default to `"{}"`). Note this environment only takes effect when `CN_PERSISTENCE_TYPE` is set to `hybrid`. See [hybrid mapping](#hybrid-mapping) section for details.
-- `CN_LDAP_URL`: Address and port of LDAP server (default to `localhost:1636`).
-- `CN_LDAP_USE_SSL`: Whether to use SSL connection to LDAP server (default to `true`).
 - `CN_COUCHBASE_URL`: Address of Couchbase server (default to `localhost`).
 - `CN_COUCHBASE_USER`: Username of Couchbase server (default to `admin`).
 - `CN_COUCHBASE_CERT_FILE`: Couchbase root certificate location (default to `/etc/certs/couchbase.crt`).
@@ -87,7 +87,7 @@ The following environment variables are supported by the container:
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
 - `CN_GOOGLE_SPANNER_INSTANCE_ID`: Google Spanner instance ID.
 - `CN_GOOGLE_SPANNER_DATABASE_ID`: Google Spanner database ID.
-- `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (one of `basic` or `casa`; default to `basic`). Note, changing the value require restart to jans-config-api.
+- `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (default to `basic`). Note, changing the value require restart to jans-config-api.
 
 ### Hybrid mapping
 
@@ -99,12 +99,12 @@ Hybrid persistence supports all available persistence types. To configure hybrid
 
     ```
     {
-        "default": "<couchbase|ldap|spanner|sql>",
-        "user": "<couchbase|ldap|spanner|sql>",
-        "site": "<couchbase|ldap|spanner|sql>",
-        "cache": "<couchbase|ldap|spanner|sql>",
-        "token": "<couchbase|ldap|spanner|sql>",
-        "session": "<couchbase|ldap|spanner|sql>",
+        "default": "<couchbase|spanner|sql>",
+        "user": "<couchbase|spanner|sql>",
+        "site": "<couchbase|spanner|sql>",
+        "cache": "<couchbase|spanner|sql>",
+        "token": "<couchbase|spanner|sql>",
+        "session": "<couchbase|spanner|sql>",
     }
     ```
 
@@ -114,7 +114,7 @@ Hybrid persistence supports all available persistence types. To configure hybrid
     {
         "default": "sql",
         "user": "spanner",
-        "site": "ldap",
+        "site": "sql",
         "cache": "sql",
         "token": "couchbase",
         "session": "spanner",

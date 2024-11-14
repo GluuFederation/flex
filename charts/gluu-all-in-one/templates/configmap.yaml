@@ -23,18 +23,10 @@ data:
   CN_JETTY_REQUEST_HEADER_SIZE: {{ .Values.configmap.cnJettyRequestHeaderSize | quote }}
   # Port used by Prometheus JMX agent
   CN_PROMETHEUS_PORT: {{ .Values.cnPrometheusPort | quote }}
-  {{ if or (eq .Values.configAdapterName "google") (eq .Values.configSecretAdapter "google") (eq .Values.cnPersistenceType "spanner") }}
+  {{ if or (eq .Values.configAdapterName "google") (eq .Values.configSecretAdapter "google") }}
   # [google_envs] Envs related to using Google
   GOOGLE_APPLICATION_CREDENTIALS: {{ .Values.cnGoogleApplicationCredentials | quote }}
   GOOGLE_PROJECT_ID: {{ .Values.configmap.cnGoogleProjectId | quote }}
-  {{- end }}
-  {{ if eq .Values.cnPersistenceType "spanner" }}
-  # [google_spanner_envs] Envs related to using Google Cloud Spanner
-  CN_GOOGLE_SPANNER_INSTANCE_ID: {{ .Values.configmap.cnGoogleSpannerInstanceId | quote }}
-  CN_GOOGLE_SPANNER_DATABASE_ID: {{ .Values.configmap.cnGoogleSpannerDatabaseId | quote }}
-  # [google_spanner_envs] END
-  {{- end }}
-  {{ if or (eq .Values.configSecretAdapter "google") (eq .Values.configAdapterName "google") }}
   # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
   CN_GOOGLE_SECRET_VERSION_ID: {{ .Values.configmap.cnGoogleSecretVersionId | quote }}
   CN_GOOGLE_SECRET_NAME_PREFIX: {{ .Values.configmap.cnGoogleSecretNamePrefix | quote }}
@@ -96,8 +88,6 @@ data:
   | replace "persistenceLogLevel" "persistence_log_level"
   | replace "persistenceDurationLogTarget" "persistence_duration_log_target"
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
-  | replace "ldapStatsLogTarget" "ldap_stats_log_target"
-  | replace "ldapStatsLogLevel" "ldap_stats_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
   | replace "auditStatsLogTarget" "audit_log_target"
@@ -114,8 +104,6 @@ data:
   | replace "persistenceLogLevel" "persistence_log_level"
   | replace "persistenceDurationLogTarget" "persistence_duration_log_target"
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
-  | replace "ldapStatsLogTarget" "ldap_stats_log_target"
-  | replace "ldapStatsLogLevel" "ldap_stats_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
@@ -155,7 +143,6 @@ data:
   {{- end }}
   {{- if .Values.istio.enabled }}
   CN_COUCHBASE_TRUSTSTORE_ENABLE: "false"
-  CN_LDAP_USE_SSL: "false"
   {{- end }}
   {{- if .Values.scim.enabled }}
   CN_SCIM_ENABLED: {{ .Values.scim.enabled | quote }}
@@ -168,8 +155,6 @@ data:
   | replace "persistenceLogLevel" "persistence_log_level"
   | replace "persistenceDurationLogTarget" "persistence_duration_log_target"
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
-  | replace "ldapStatsLogTarget" "ldap_stats_log_target"
-  | replace "ldapStatsLogLevel" "ldap_stats_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
@@ -205,12 +190,6 @@ data:
   CN_SQL_PASSWORD_FILE: {{ .Values.cnSqlPasswordFile }}
   CN_COUCHBASE_PASSWORD_FILE: {{ .Values.cnCouchbasePasswordFile }}
   CN_COUCHBASE_SUPERUSER_PASSWORD_FILE: {{ .Values.cnCouchbaseSuperuserPasswordFile }}
-  CN_LDAP_PASSWORD_FILE: {{ .Values.cnLdapPasswordFile }}
-  CN_LDAP_TRUSTSTORE_PASSWORD_FILE: {{ .Values.cnLdapTruststorePasswordFile }}
-  CN_LDAP_CERT_FILE: {{ .Values.cnLdapCertFile }}
-  CN_LDAP_KEY_FILE: {{ .Values.cnLdapKeyFile }}
-  CN_LDAP_CACERT_FILE: {{ .Values.cnLdapCacertFile }}
-  CN_LDAP_TRUSTSTORE_FILE: {{ .Values.cnLdapTruststoreFile }}
   CN_CONFIG_API_PLUGINS: "admin-ui,fido2,scim,user-mgt"
   CN_AIO_COMPONENTS: {{ include "flex-all-in-one.aioComponents" . | fromJsonArray | join "," | quote}}
   {{- if .Values.saml.enabled }}

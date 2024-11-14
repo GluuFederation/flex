@@ -40,8 +40,14 @@
   top: -5px;
 }
 
-.sidebar-menu__entry.active:not(.open) > .sidebar-menu__entry__link {
-  color: #323b47;
+.sidebar-menu__entry {
+  .sidebar-menu__entry__link:hover {
+    background: lightgrey;
+  }
+
+  .sidebar-submenu .sidebar-submenu__entry .sidebar-submenu__entry__link:hover {
+    background: lightgrey;
+  }
 }
 
 .cursor-pointer {

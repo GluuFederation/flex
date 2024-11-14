@@ -77,7 +77,8 @@
     "authorization_code_access_token": "Authorization code access token",
     "authorization_code_id_token": "Authorization code ID token",
     "start_date": "Start Date",
-    "end_date": "End Date"
+    "end_date": "End Date",
+    "system_status": "System Status"
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
@@ -121,6 +122,12 @@
     "released_attributes": "Released Attributes",
     "jans_assertion_consumer_service_get_url": "Jans Assertion Consumer Service GET URL",
     "jans_assertion_consumer_service_post_url": "Jans Assertion Consumer Service POST URL",
+    "jans_id": "Jans ID",
+    "jans_state": "Jans State",
+    "jans_sess_state":"Jans Session State",
+    "jans_user_dn": "Jans User DN",
+    "permission_granted_map": "Permission Granted Map",
+    "jans_sess_attr": "Jans Session Attributes",
     "metadata_file": "Metadata File",
     "metadata_url": "Metadata URL",
     "webhook_url": "URL",
@@ -219,7 +226,7 @@
     "client_credentials_access_token": "Client Credentials Access Token",
     "client_expiration_date": "Client Expiration Date",
     "client_id": "Client Id",
-    "client_id_used": "Client Id Used",
+    "client_id_used": "Client Id",
     "client_name": "Client name",
     "client_secret": "Client secret",
     "computation_pool_size": "Computation Pool Size",
@@ -287,6 +294,7 @@
     "json_web_keys": "JSON Web Keys",
     "jwks": "Client JWKS",
     "jwks_uri": "Client JWKS URI",
+    "allow_keystore_edit": "Edit Keystore",
     "key_store": "Keystore",
     "key_store_password": "Keystore Password",
     "key_store_alias": "Keystore Alias",
@@ -475,6 +483,8 @@
     "email": "Email",
     "userName": "User Name",
     "nickName": "Nick Name",
+    "modality": "Modality",
+    "dateAdded": "Date Added",
     "givenName": "Given Name",
     "resources": "Resources",
     "resourceId": "Resource id",
@@ -548,7 +558,13 @@
     "token_code": "Token Code",
     "deleteable": "Deleteable",
     "grant_Id": "Grant ID",
-    "reference_id": "Reference ID"
+    "reference_id": "Reference ID",
+    "createdBy": "Created By",
+    "deviceName": "Device Name",
+    "OSName": "OS Name",
+    "OSVersion": "OS Version",
+    "platform": "Platform",
+    "authType": "Auth Type"
   },
   "languages": {
     "french": "French",
@@ -639,6 +655,7 @@
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Add Configuration",
+    "credentials": "Credentials",
     "view_configuration": "View Configuration",
     "view_trust_relationshi_details": "View Trust Relationship Details",
     "add_trust_relationship": "Add Trust Relationship",
@@ -704,6 +721,8 @@
     "resource_not_found_message": "The requested resource doesn't exist on this server. Please contact the site administrator or the support team.",
     "resource_not_found_title": "Resource not found",
     "view_client_details": "View client details",
+    "view_2FA_details": "View 2FA details",
+    "2FA_details": "2FA details",
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
@@ -879,7 +898,11 @@
     "change_backend_bind_password": "Change Backend Bind Password",
     "add_agama_project": "Add Agama project",
     "add_alias": "Add New Mapping",
-    "edit_alias": "Edit Mapping"
+    "edit_alias": "Edit Mapping",
+    "export_csv": "Export CSV",
+    "filters": "Filters",
+    "expiration_date" : "Expiration Date",
+    "authentication_date": "Authentication Date"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1539,7 +1562,23 @@
       "INUM": "INUM",
       "middleName": "Middle Name",
       "sn": "Last Name",
-      "userConfirmPassword": "Confirm Password"
+      "userConfirmPassword": "Confirm Password",
+      "deviceName": "Device Name",
+      "OSName": "OS Name",
+      "OSVersion": "OS Version",
+      "platform": "Platform",
+      "createdBy": "Created By",
+      "type": "Type",
+      "domain": "Domain"
+    },
+    "sessions":{
+      "expirationDate" : "Expiration Date",
+      "jansId": "Jans Id",
+      "jansState": "Jans State",
+      "jansSessState": "Jans Session State",
+      "jansUsrDN": "Jans User DN",
+      "permissionGrantedMap": "Permission Granted Map",
+      "jansSessAttr": "Jans Session Attribute"
     },
     "saml": {
       "name": "The alphanumeric ID string that is used to identify the Trust Relationship",

@@ -9,10 +9,6 @@ from jans.pycloudlib import wait_for_persistence
 from jans.pycloudlib.persistence.couchbase import CouchbaseClient
 from jans.pycloudlib.persistence.couchbase import id_from_dn
 from jans.pycloudlib.persistence.couchbase import sync_couchbase_password
-from jans.pycloudlib.persistence.ldap import LdapClient
-from jans.pycloudlib.persistence.ldap import sync_ldap_password
-from jans.pycloudlib.persistence.spanner import SpannerClient
-from jans.pycloudlib.persistence.spanner import sync_google_credentials
 from jans.pycloudlib.persistence.sql import doc_id_from_dn
 from jans.pycloudlib.persistence.sql import SqlClient
 from jans.pycloudlib.persistence.sql import sync_sql_password
@@ -32,17 +28,11 @@ def main():
     mapper = PersistenceMapper()
     persistence_groups = mapper.groups().keys()
 
-    if "ldap" in persistence_groups:
-        sync_ldap_password(manager)
-
     if "couchbase" in persistence_groups:
         sync_couchbase_password(manager)
 
     if "sql" in persistence_groups:
         sync_sql_password(manager)
-
-    if "spanner" in persistence_groups:
-        sync_google_credentials(manager)
 
     wait_for_persistence(manager)
 
@@ -69,9 +59,7 @@ class PersistenceSetup:
         self.manager = manager
 
         client_classes = {
-            "ldap": LdapClient,
             "couchbase": CouchbaseClient,
-            "spanner": SpannerClient,
             "sql": SqlClient,
         }
 
@@ -181,7 +169,7 @@ class PersistenceSetup:
 
         dn = "ou=admin-ui,ou=configuration,o=jans"
 
-        if self.persistence_type in ("sql", "spanner"):
+        if self.persistence_type == "sql":
             dn = doc_id_from_dn(dn)
             table_name = "jansAppConf"
 
@@ -217,30 +205,6 @@ class PersistenceSetup:
                 logger.info("Updating admin-ui config app")
                 rev = entry["jansRevision"] + 1
                 self.client.exec_query(f"UPDATE {bucket} USE KEYS '{dn}' SET jansConfApp={json.dumps(merged_conf)}, jansRevision={rev}")  # nosec: B608
-
-        else:
-            entry = self.client.get(dn)
-            attrs = entry.entry_attributes_as_dict
-
-            try:
-                conf = attrs.get("jansConfApp", [])[0]
-            except IndexError:
-                conf = "{}"
-
-            should_update, merged_conf = resolve_conf_app(
-                json.loads(conf),
-                json.loads(conf_from_file),
-            )
-
-            if should_update:
-                logger.info("Updating admin-ui config app")
-                self.client.modify(
-                    dn,
-                    {
-                        "jansRevision": [(self.client.MODIFY_REPLACE, attrs["jansRevision"][0] + 1)],
-                        "jansConfApp": [(self.client.MODIFY_REPLACE, json.dumps(merged_conf))],
-                    }
-                )
 
 
 def resolve_conf_app(old_conf, new_conf):
@@ -320,6 +284,11 @@ def resolve_conf_app(old_conf, new_conf):
             if old_conf["oidcConfig"]["auiBackendApiClient"][endpoint] != new_conf["oidcConfig"]["auiBackendApiClient"][endpoint]:
                 old_conf["oidcConfig"]["auiBackendApiClient"][endpoint] = new_conf["oidcConfig"]["auiBackendApiClient"][endpoint]
                 should_update = True
+
+        # add missing config under uiConfig
+        if "allowSmtpKeystoreEdit" not in old_conf["uiConfig"]:
+            old_conf["uiConfig"]["allowSmtpKeystoreEdit"] = True
+            should_update = True
 
     # finalized status and conf
     return should_update, old_conf
