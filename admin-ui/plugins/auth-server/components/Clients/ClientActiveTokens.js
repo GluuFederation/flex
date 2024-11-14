@@ -18,6 +18,7 @@ import {
 } from "../../redux/features/oidcSlice";
 import ClientActiveTokenDetailPage from "./ClientActiveTokenDetailPage";
 import { Button } from "Components";
+import dayjs from "dayjs";
 
 function ClientActiveTokens({ client }) {
   const myActions = [];
@@ -83,9 +84,7 @@ function ClientActiveTokens({ client }) {
     let startCount = pageNumber * limit;
     let conditionquery = `clnId=${client.inum}`;
     if (pattern.creationDate) {
-      conditionquery += `,iat=${moment(pattern.creationDate).format(
-        "YYYY/DD/MM HH:mm:ss"
-      )}`;
+      conditionquery += `,creationDate=${dayjs(pattern.creationDate).format('YYYY-MM-DD')}`;
     }
     getTokens(startCount, limit, conditionquery);
   };
@@ -193,7 +192,7 @@ function ClientActiveTokens({ client }) {
                       id="expirationDate"
                       name="expirationDate"
                       value={pattern.creationDate}
-                      onChange={(date) => {
+                      onChange={(date) => {                        
                         setPattern({ ...pattern, creationDate: date });
                       }}
                       renderInput={(params) => (
