@@ -26,6 +26,7 @@ import { formatDate } from "Utils/Util";
 import UsersIcon from "Components/SVG/menu/Users";
 import Administrator from "Components/SVG/menu/Administrator";
 import OAuthIcon from "Components/SVG/menu/OAuth";
+import { getHealthServerStatus } from "../../redux/features/healthSlice";
 
 function DashboardPage() {
   const { t } = useTranslation();
@@ -114,6 +115,8 @@ function DashboardPage() {
   function getServerStatus() {
     buildPayload(userAction, "GET Health Status", options);
     dispatch(getHealthStatus({ action: userAction }));
+    buildPayload(userAction, "GET Health Status", { service: "all" });
+    dispatch(getHealthServerStatus({ action: userAction }));
   }
 
   const summaryData = [
@@ -171,87 +174,74 @@ function DashboardPage() {
     },
   ];
 
+  const statusDetails = [
+    { label: "dashboard.oauth_server_status", status: serverStatus },
+    { label: "dashboard.database_status", status: dbStatus },
+    { label: "dashboard.server_status", status: serverStatus },
+    { label: "Config Api", status: serverStatus },
+    { label: "FIDO", status: serverStatus },
+    { label: "Casa", status: serverStatus },
+    { label: "Keycloak", status: serverStatus },
+    { label: "SCIM", status: false },
+  ];
+
   const StatusCard = useMemo(() => {
     return (
-      <Grid xs={12} item>
-        <Paper className={`${classes.statusContainer}`} elevation={3}>
-          <div className={classes.userInfoTitle}>
+      <Grid item xs={12}>
+        <div className={`${classes.statusContainer}`}>
+          <div
+            className={classes.userInfoTitle}
+            style={{
+              color: "white",
+              fontSize: 24,
+              fontWeight: 400,
+              marginBottom: "10px",
+            }}
+          >
             {t("dashboard.system_status")}
           </div>
-          <div className={classes.userInfoText}>
-            <div className={classes.statusText}>
-              <Box display="flex" justifyContent="flex-start">
-                <span>{t("dashboard.oauth_server_status")}</span>
-                <span>
-                  <img
-                    src={isUp(serverStatus) ? CheckIcon : CrossIcon}
-                    className={
-                      isUp(serverStatus) ? classes.iconCheck : classes.iconCross
-                    }
-                    alt="oauth server"
-                  />
-                </span>
-              </Box>
-              <Box display="flex" justifyContent="flex-end">
-                <span className={classes.checkText}>
-                  <span
-                    className={
-                      isUp(serverStatus) ? classes.checkText : classes.crossText
-                    }
-                  >
-                    {isUp(serverStatus) ? "Running" : "Down"}
+
+          <div
+            className={classes.userInfoText}
+            style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
+          >
+            {statusDetails.map(({ label, status }, index) => (
+              <div className={classes.statusText} key={index}>
+                <div
+                  className="d-flex justify-content-between"
+                  style={{
+                    width: "100%",
+                    borderLeft: "4px solid #FFA500",
+                    paddingLeft: "10px",
+                  }}
+                >
+                  <div>
+                    <span style={{ display: "block", marginBottom: "-4px" }}>
+                      {t(label)}
+                    </span>
+                    <span
+                      className={
+                        isUp(status) ? classes.checkText : classes.crossText
+                      }
+                      style={{ fontSize: "16px" }}
+                    >
+                      {isUp(status) ? "Running" : "Down"}
+                    </span>
+                  </div>
+                  <span>
+                    <img
+                      src={isUp(status) ? CheckIcon : CrossIcon}
+                      className={
+                        isUp(status) ? classes.iconCheck : classes.iconCross
+                      }
+                      alt={label}
+                    />
                   </span>
-                </span>
-              </Box>
-            </div>
-            <div className={classes.statusText}>
-              <Box display="flex" justifyContent="flex-start">
-                <span>{t("dashboard.database_status")}</span>
-                <span>
-                  <img
-                    src={isUp(dbStatus) ? CheckIcon : CrossIcon}
-                    className={
-                      isUp(dbStatus) ? classes.iconCheck : classes.iconCross
-                    }
-                    alt="database"
-                  />
-                </span>
-              </Box>
-              <Box display="flex" justifyContent="flex-end">
-                <span
-                  className={
-                    isUp(dbStatus) ? classes.checkText : classes.crossText
-                  }
-                >
-                  {isUp(dbStatus) ? "Online" : "Offline"}
-                </span>
-              </Box>
-            </div>
-            <div className={classes.statusText}>
-              <Box display="flex" justifyContent="flex-start">
-                <span>{t("dashboard.server_status")}</span>
-                <span>
-                  <img
-                    src={isUp(serverStatus) ? CheckIcon : CrossIcon}
-                    className={
-                      isUp(serverStatus) ? classes.iconCheck : classes.iconCross
-                    }
-                    alt="server"
-                  />
-                </span>
-              </Box>
-              <Box display="flex" justifyContent="flex-end">
-                <span
-                  className={
-                    isUp(serverStatus) ? classes.checkText : classes.crossText
-                  }
-                >
-                  {isUp(serverStatus) ? "Online" : "Offline"}
-                </span>
-              </Box>
-            </div>
+                </div>
+              </div>
+            ))}
           </div>
-        </Paper>
+        </div>
       </Grid>
     );
   }, [serverStatus, dbStatus, t]);
@@ -266,10 +256,24 @@ function DashboardPage() {
             spacing={{ sm: "20px", md: "40px" }}
             container
             className="px-40"
+            style={{ overflow: "auto" }}
           >
-            <Grid item lg={breakDashboardCard ? 12 : 4} md={12}>
-              <h3 className="txt-white">{t("dashboard.summary_title")}</h3>
-              <div className="mt-20 d-flex flex-column gap-3">
+            <Grid item lg={breakDashboardCard ? 12 : 4} md={12} height="auto">
+              <div
+                className={classes.userInfoTitle}
+                style={{
+                  color: "white",
+                  fontSize: 24,
+                  fontWeight: 400,
+                  marginBottom: "10px",
+                }}
+              >
+                {t("dashboard.summary_title")}
+              </div>
+              <div
+                className="d-flex flex-column"
+                style={{ gap: "10px", marginTop: "11px" }}
+              >
                 {summaryData.map((data, key) => (
                   <Paper key={key} className={classes.summary}>
                     <div className={classes.summaryDetails}>
@@ -294,28 +298,50 @@ function DashboardPage() {
               lg={breakDashboardCard ? 6 : 4}
               md={6}
               xs={12}
-              style={{ width: "100%" }}
+              style={{ width: "100%", padding: "40px 0 0 0" }}
+            >
+              {StatusCard}
+            </Grid>
+
+            <Grid
+              item
+              lg={breakDashboardCard ? 6 : 4}
+              md={6}
+              xs={12}
+              style={{ width: "100%", padding: "40px 0 0 0" }}
             >
               <Paper
-                className={`${classes.dashboardCard} top-minus-40`}
+                className={`${classes.dashboardCard} top-minus-40 d-flex justify-content-center`}
                 elevation={0}
                 spacing={2}
               >
-                <Grid className={classes.flex} container>
+                <Grid
+                  className={classes.flex}
+                  container
+                  style={{ maxWidth: "450px" }}
+                >
                   <Grid item xs={12} className={isMobile ? "mt-20" : ""}>
-                    <Paper
-                      className={classes.userInfo}
-                      style={
-                        isTabletOrMobile || breakDashboardCard
-                          ? { marginLeft: 0 }
-                          : {}
-                      }
-                      elevation={3}
-                    >
-                      <div className={classes.userInfoTitle}>
+                    <div className={classes.userInfo}>
+                      <div
+                        className={classes.userInfoTitle}
+                        style={{
+                          color: "white",
+                          fontSize: 24,
+                          fontWeight: 400,
+                          marginBottom: "10px",
+                        }}
+                      >
                         {t("dashboard.user_info")}
                       </div>
-                      <div>
+                      <div
+                        className="d-flex flex-column justify-content-between"
+                        style={{
+                          backgroundColor: "white",
+                          padding: "20px",
+                          height: "320px",
+                          borderRadius: "5px",
+                        }}
+                      >
                         {userInfo.map((info, key) => (
                           <div className={classes.userInfoText} key={key}>
                             <span style={{ fontWeight: 600 }}>
@@ -337,20 +363,10 @@ function DashboardPage() {
                           </div>
                         ))}
                       </div>
-                    </Paper>
+                    </div>
                   </Grid>
                 </Grid>
               </Paper>
-            </Grid>
-
-            <Grid
-              item
-              lg={breakDashboardCard ? 6 : 4}
-              md={6}
-              xs={12}
-              style={{ width: "100%" }}
-            >
-              {StatusCard}
             </Grid>
           </Grid>
 

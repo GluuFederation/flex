@@ -148,6 +148,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatsData'
+              examples:
+                Response json example:
+                  description: Response json example
+                  value: |
+                    {
+                        "dbType": "sql",
+                        "lastUpdate": "2024-11-01T12:11:01",
+                        "facterData": {
+                            "memoryfree": "39.7%",
+                            "swapfree": "0.0%",
+                            "hostname": "pujavs-amazed-rat.gluu.info",
+                            "ipaddress": "167.99.13.66",
+                            "uptime": "1 day, 3:54",
+                            "free_disk_space": "95.4%",
+                            "load_average": "0.13623046875"
+                        }
+                    }
+        '500':
+          description: InternalServerError
+  /api/v1/health/service-status:
+    get:
+      tags:
+        - Health - Check
+      summary: Fetch service status
+      description: Fetch service status
+      operationId: get-service-status
+      parameters:
+        - name: service
+          in: query
+          description: Service name to check status
+          schema:
+            type: string
+            default: all
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Response json example:
+                  description: Response json example
+                  value: |
+                    {
+                      "jans-auth": "Running",
+                      "jans-config-api": "Down",
+                      "jans-casa": "Not present",
+                      "jans-fido2": "Running",
+                      "jans-scim": "Running",
+                      "jans-link": "Running",
+                      "jans-lock": "Running",
+                      "keycloak": "Running"
+                    }
         '500':
           description: InternalServerError
   /api/v1/acrs:
@@ -7588,9 +7642,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SessionId'
+                $ref: '#/components/schemas/SessionPagedResult'
               examples:
                 Response json example:
                   description: Response json example
@@ -9011,14 +9063,17 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Fido2RegistrationEntry'
+                $ref: '#/components/schemas/Fido2RegistrationEntryPagedResult'
               examples:
                 Response example:
                   description: Response example
                   value: |
                     {
+                        "start": 0,
+                        "totalEntriesCount": 3,
+                        "entriesCount": 3,
+                        "entries": [
+                            {
                                 "dn": "jansId=1c88c1cb-8e32-4b79-b244-c9f677ca5654,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans",
                                 "id": "1c88c1cb-8e32-4b79-b244-c9f677ca5654",
                                 "challange": "2vCSaPMIt4tZpkO8_rDG-v3QoXBYMB1aqCAXFgA4q0Y",
@@ -9132,6 +9187,8 @@ paths:
                                 "registrationStatus": "registered",
                                 "baseDn": "jansId=6e196a5d-122b-4f06-8ff8-6f41b32bc2a6,ou=fido2_register,inum=1e73f801-22c2-4c19-a757-f96a87a5c713,ou=people,o=jans"
                             }
+                        ]
+                    }
         '401':
           description: Unauthorized
         '500':
@@ -13460,19 +13517,19 @@ components:
           type: string
         selected:
           type: boolean
-        adminCanView:
-          type: boolean
-        userCanView:
+        whitePagesCanView:
           type: boolean
         adminCanEdit:
           type: boolean
-        userCanEdit:
+        userCanView:
           type: boolean
-        adminCanAccess:
+        adminCanView:
+          type: boolean
+        userCanEdit:
           type: boolean
         userCanAccess:
           type: boolean
-        whitePagesCanView:
+        adminCanAccess:
           type: boolean
         baseDn:
           type: string
@@ -14098,7 +14155,7 @@ components:
           type: boolean
         disableU2fEndpoint:
           type: boolean
-        deviceSessionLifetimeInSeconds:
+        authorizationChallengeSessionLifetimeInSeconds:
           type: integer
           format: int32
         rotateDeviceSecret:
@@ -15450,14 +15507,14 @@ components:
           type: boolean
         internal:
           type: boolean
-        locationPath:
-          type: string
         locationType:
           type: string
           enum:
             - ldap
             - db
             - file
+        locationPath:
+          type: string
         baseDn:
           type: string
     ScriptError:
@@ -15886,10 +15943,10 @@ components:
         ttl:
           type: integer
           format: int32
-        persisted:
-          type: boolean
         opbrowserState:
           type: string
+        persisted:
+          type: boolean
     SessionIdAccessMap:
       type: object
       properties:
@@ -15899,6 +15956,22 @@ components:
             type: boolean
           xml:
             name: map
+    SessionPagedResult:
+      type: object
+      properties:
+        start:
+          type: integer
+          format: int32
+        totalEntriesCount:
+          type: integer
+          format: int32
+        entriesCount:
+          type: integer
+          format: int32
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionId'
     User:
       type: object
       properties:
@@ -15957,22 +16030,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserAuthenticator'
-    SessionPagedResult:
-      type: object
-      properties:
-        start:
-          type: integer
-          format: int32
-        totalEntriesCount:
-          type: integer
-          format: int32
-        entriesCount:
-          type: integer
-          format: int32
-        entries:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionId'
     TokenAttributes:
       type: object
       properties:
@@ -16533,6 +16590,9 @@ components:
           type: integer
           description: Admin UI Session Timeout
           format: int32
+        allowSmtpKeystoreEdit:
+          type: boolean
+          description: Admin UI allow SMTP Keystore Edit
         additionalParameters:
           type: array
           description: Additional Authentication Parameters
