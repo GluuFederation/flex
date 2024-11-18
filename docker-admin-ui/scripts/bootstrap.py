@@ -6,9 +6,6 @@ from functools import cached_property
 
 from jans.pycloudlib import get_manager
 from jans.pycloudlib import wait_for_persistence
-from jans.pycloudlib.persistence.couchbase import CouchbaseClient
-from jans.pycloudlib.persistence.couchbase import id_from_dn
-from jans.pycloudlib.persistence.couchbase import sync_couchbase_password
 from jans.pycloudlib.persistence.sql import doc_id_from_dn
 from jans.pycloudlib.persistence.sql import SqlClient
 from jans.pycloudlib.persistence.sql import sync_sql_password
@@ -27,9 +24,6 @@ def main():
 
     mapper = PersistenceMapper()
     persistence_groups = mapper.groups().keys()
-
-    if "couchbase" in persistence_groups:
-        sync_couchbase_password(manager)
 
     if "sql" in persistence_groups:
         sync_sql_password(manager)
@@ -59,7 +53,6 @@ class PersistenceSetup:
         self.manager = manager
 
         client_classes = {
-            "couchbase": CouchbaseClient,
             "sql": SqlClient,
         }
 
@@ -167,44 +160,22 @@ class PersistenceSetup:
         with open("/app/templates/admin-ui/auiConfiguration.json") as f:
             conf_from_file = f.read() % self.ctx
 
-        dn = "ou=admin-ui,ou=configuration,o=jans"
+        dn = doc_id_from_dn("ou=admin-ui,ou=configuration,o=jans")
+        table_name = "jansAppConf"
 
-        if self.persistence_type == "sql":
-            dn = doc_id_from_dn(dn)
-            table_name = "jansAppConf"
+        entry = self.client.get(table_name, dn)
+        conf = entry.get("jansConfApp") or "{}"
 
-            entry = self.client.get(table_name, dn)
-            conf = entry.get("jansConfApp") or "{}"
+        should_update, merged_conf = resolve_conf_app(
+            json.loads(conf),
+            json.loads(conf_from_file),
+        )
 
-            should_update, merged_conf = resolve_conf_app(
-                json.loads(conf),
-                json.loads(conf_from_file),
-            )
-
-            if should_update:
-                logger.info("Updating admin-ui config app")
-                entry["jansConfApp"] = json.dumps(merged_conf)
-                entry["jansRevision"] = entry.get("jansRevision", 0) + 1
-                self.client.update(table_name, dn, entry)
-
-        elif self.persistence_type == "couchbase":
-            bucket = os.environ.get("CN_COUCHBASE_BUCKET_PREFIX", "jans")
-            dn = id_from_dn(dn)
-
-            req = self.client.exec_query(f"SELECT META().id, {bucket}.* FROM {bucket} USE KEYS '{dn}'")  # nosec: B608
-            entry = req.json()["results"][0]
-
-            conf = entry.get("jansConfApp") or {}
-
-            should_update, merged_conf = resolve_conf_app(
-                conf,
-                json.loads(conf_from_file),
-            )
-
-            if should_update:
-                logger.info("Updating admin-ui config app")
-                rev = entry["jansRevision"] + 1
-                self.client.exec_query(f"UPDATE {bucket} USE KEYS '{dn}' SET jansConfApp={json.dumps(merged_conf)}, jansRevision={rev}")  # nosec: B608
+        if should_update:
+            logger.info("Updating admin-ui config app")
+            entry["jansConfApp"] = json.dumps(merged_conf)
+            entry["jansRevision"] = entry.get("jansRevision", 0) + 1
+            self.client.update(table_name, dn, entry)
 
 
 def resolve_conf_app(old_conf, new_conf):
