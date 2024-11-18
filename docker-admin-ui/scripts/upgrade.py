@@ -4,7 +4,6 @@ import os
 from collections import namedtuple
 
 from jans.pycloudlib import get_manager
-from jans.pycloudlib.persistence import CouchbaseClient
 from jans.pycloudlib.persistence import SqlClient
 from jans.pycloudlib.persistence import PersistenceMapper
 from jans.pycloudlib.persistence import doc_id_from_dn
@@ -39,59 +38,8 @@ class SQLBackend:
         return self.client.update(table_name, key, attrs), ""
 
 
-class CouchbaseBackend:
-    def __init__(self, manager):
-        self.manager = manager
-        self.client = CouchbaseClient(manager)
-        self.type = "couchbase"
-
-    def get_entry(self, key, filter_="", attrs=None, **kwargs):
-        bucket = kwargs.get("bucket")
-        req = self.client.exec_query(
-            f"SELECT META().id, {bucket}.* FROM {bucket} USE KEYS '{key}'"  # nosec: B608
-        )
-        if not req.ok:
-            return None
-
-        try:
-            _attrs = req.json()["results"][0]
-            id_ = _attrs.pop("id")
-            entry = Entry(id_, _attrs)
-        except IndexError:
-            entry = None
-        return entry
-
-    def modify_entry(self, key, attrs=None, **kwargs):
-        bucket = kwargs.get("bucket")
-        del_flag = kwargs.get("delete_attr", False)
-        attrs = attrs or {}
-
-        if del_flag:
-            kv = ",".join(attrs.keys())
-            mod_kv = f"UNSET {kv}"
-        else:
-            kv = ",".join([
-                "{}={}".format(k, json.dumps(v))
-                for k, v in attrs.items()
-            ])
-            mod_kv = f"SET {kv}"
-
-        query = f"UPDATE {bucket} USE KEYS '{key}' {mod_kv}"
-        req = self.client.exec_query(query)
-
-        if req.ok:
-            resp = req.json()
-            status = bool(resp["status"] == "success")
-            message = resp["status"]
-        else:
-            status = False
-            message = req.text or req.reason
-        return status, message
-
-
 BACKEND_CLASSES = {
     "sql": SQLBackend,
-    "couchbase": CouchbaseBackend,
 }
 
 
@@ -110,16 +58,9 @@ class Upgrade:
         self.update_backend_client()
 
     def update_web_client(self):
-        kwargs = {}
+        kwargs = {"table_name": "jansClnt"}
         client_id = self.manager.config.get("admin_ui_client_id")
-        id_ = f"inum={client_id},ou=clients,o=jans"
-
-        if self.backend.type == "sql":
-            kwargs = {"table_name": "jansClnt"}
-            id_ = doc_id_from_dn(id_)
-        elif self.backend.type == "couchbase":
-            kwargs = {"bucket": os.environ.get("CN_COUCHBASE_BUCKET_PREFIX", "jans")}
-            id_ = id_from_dn(id_)
+        id_ = doc_id_from_dn(f"inum={client_id},ou=clients,o=jans")
 
         entry = self.backend.get_entry(id_, **kwargs)
 
@@ -188,16 +129,9 @@ class Upgrade:
             self.backend.modify_entry(entry.id, entry.attrs, **kwargs)
 
     def update_backend_client(self):
-        kwargs = {}
+        kwargs = {"table_name": "jansClnt"}
         client_id = self.manager.config.get("token_server_admin_ui_client_id")
-        id_ = f"inum={client_id},ou=clients,o=jans"
-
-        if self.backend.type == "sql":
-            kwargs = {"table_name": "jansClnt"}
-            id_ = doc_id_from_dn(id_)
-        elif self.backend.type == "couchbase":
-            kwargs = {"bucket": os.environ.get("CN_COUCHBASE_BUCKET_PREFIX", "jans")}
-            id_ = id_from_dn(id_)
+        id_ = doc_id_from_dn(f"inum={client_id},ou=clients,o=jans")
 
         entry = self.backend.get_entry(id_, **kwargs)
 
