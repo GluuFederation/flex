@@ -527,6 +527,7 @@
     "licenseKey": "Clé de licence",
     "isLicenseActive": "La licence est-elle active",
     "validityPeriod": "Licence valide jusqu'à",
+    "isLicenseExpired": "La licence est-elle expirée",
     "companyName": "Nom de la compagnie",
     "customerEmail": "Email client",
     "customerName": "Nom du client",
