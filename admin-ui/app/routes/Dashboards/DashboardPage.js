@@ -48,12 +48,12 @@ function DashboardPage() {
   );
   const license = useSelector((state) => state.licenseDetailsReducer.item);
   const serverStatus = useSelector((state) => state.healthReducer.serverStatus);
+  const serverHealth = useSelector((state) => state.healthReducer.health);
   const dbStatus = useSelector((state) => state.healthReducer.dbStatus);
   const access_token = useSelector(
     (state) => state.authReducer.token?.access_token
   );
   const permissions = useSelector((state) => state.authReducer.permissions);
-
   const dispatch = useDispatch();
 
   SetTitle(t("menus.dashboard"));
@@ -94,7 +94,11 @@ function DashboardPage() {
   }, [access_token, clients]);
 
   useEffect(() => {
-    if (access_token) getServerStatus();
+    if (access_token) {
+      getServerStatus();
+      buildPayload(userAction, "GET Health Status", { service: "all" });
+      dispatch(getHealthServerStatus({ action: userAction }));
+    }
   }, [access_token]);
 
   function getLicense() {
@@ -115,8 +119,6 @@ function DashboardPage() {
   function getServerStatus() {
     buildPayload(userAction, "GET Health Status", options);
     dispatch(getHealthStatus({ action: userAction }));
-    buildPayload(userAction, "GET Health Status", { service: "all" });
-    dispatch(getHealthServerStatus({ action: userAction }));
   }
 
   const summaryData = [
@@ -175,14 +177,22 @@ function DashboardPage() {
   ];
 
   const statusDetails = [
-    { label: "dashboard.oauth_server_status", status: serverStatus },
-    { label: "dashboard.database_status", status: dbStatus },
-    { label: "dashboard.server_status", status: serverStatus },
-    { label: "Config Api", status: serverStatus },
-    { label: "FIDO", status: serverStatus },
-    { label: "Casa", status: serverStatus },
-    { label: "Keycloak", status: serverStatus },
-    { label: "SCIM", status: false },
+    {
+      label: "dashboard.oauth_server_status",
+      status: serverStatus,
+      key: "jans-auth",
+    },
+    { label: "dashboard.database_status", status: dbStatus, key: "db_status" },
+    {
+      label: "dashboard.server_status",
+      status: serverStatus,
+      key: "status",
+    },
+    { label: "Config Api", status: serverStatus, key: "jans-config-api" },
+    { label: "FIDO", status: serverStatus, key: "jans-fido2" },
+    { label: "Casa", status: serverStatus, key: "jans-casa" },
+    { label: "Keycloak", status: serverStatus, key: "keycloak" },
+    { label: "SCIM", status: false, key: "jans-scim" },
   ];
 
   const StatusCard = useMemo(() => {
@@ -205,7 +215,7 @@ function DashboardPage() {
             className={classes.userInfoText}
             style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
           >
-            {statusDetails.map(({ label, status }, index) => (
+            {statusDetails.map(({ label, status, key }, index) => (
               <div className={classes.statusText} key={index}>
                 <div
                   className="d-flex justify-content-between"
@@ -221,18 +231,52 @@ function DashboardPage() {
                     </span>
                     <span
                       className={
-                        isUp(status) ? classes.checkText : classes.crossText
+                        isUp(
+                          key !== "db_status" && key !== "status"
+                            ? serverHealth[key]
+                            : key === "db_status"
+                            ? dbStatus
+                            : serverStatus
+                        )
+                          ? classes.checkText
+                          : classes.crossText
                       }
                       style={{ fontSize: "16px" }}
                     >
-                      {isUp(status) ? "Running" : "Down"}
+                      {isUp(
+                        key !== "db_status" && key !== "status"
+                          ? serverHealth[key]
+                          : key === "db_status"
+                          ? dbStatus
+                          : serverStatus
+                      )
+                        ? "Running"
+                        : "Down"}
                     </span>
                   </div>
                   <span>
                     <img
-                      src={isUp(status) ? CheckIcon : CrossIcon}
+                      src={
+                        isUp(
+                          key !== "db_status" && key !== "status"
+                            ? serverHealth[key]
+                            : key === "db_status"
+                            ? dbStatus
+                            : serverStatus
+                        )
+                          ? CheckIcon
+                          : CrossIcon
+                      }
                       className={
-                        isUp(status) ? classes.iconCheck : classes.iconCross
+                        isUp(
+                          key !== "db_status" && key !== "status"
+                            ? serverHealth[key]
+                            : key === "db_status"
+                            ? dbStatus
+                            : serverStatus
+                        )
+                          ? classes.iconCheck
+                          : classes.iconCross
                       }
                       alt={label}
                     />
@@ -244,7 +288,7 @@ function DashboardPage() {
         </div>
       </Grid>
     );
-  }, [serverStatus, dbStatus, t]);
+  }, [serverStatus, serverHealth, dbStatus, t]);
 
   return (
     <GluuLoader blocking={loading}>

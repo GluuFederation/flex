@@ -204,6 +204,9 @@ paths:
                     }
         '500':
           description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/data.readonly'
   /api/v1/acrs:
     get:
       tags:
@@ -7786,7 +7789,8 @@ paths:
           examples:
             Field value example:
               description: Field value example
-              value: 'applicationType=web,persistClientAuthorizations=true'
+              value: >-
+                userDn=d5552516-4436-4908-ab36-3e9725246304,expirationDate>2025-09-25,expirationDate<2026-10-15
       responses:
         '200':
           description: Ok
@@ -12128,7 +12132,7 @@ paths:
           examples:
             Field value example:
               description: Field value example
-              value: 'applicationType=web,persistClientAuthorizations=true'
+              value: 'displayName=saml-idp,realm=jans'
       responses:
         '200':
           description: Ok
@@ -13517,19 +13521,19 @@ components:
           type: string
         selected:
           type: boolean
-        whitePagesCanView:
-          type: boolean
-        adminCanEdit:
-          type: boolean
         userCanView:
-          type: boolean
-        adminCanView:
           type: boolean
         userCanEdit:
           type: boolean
-        userCanAccess:
+        adminCanEdit:
+          type: boolean
+        adminCanView:
           type: boolean
         adminCanAccess:
+          type: boolean
+        userCanAccess:
+          type: boolean
+        whitePagesCanView:
           type: boolean
         baseDn:
           type: string
@@ -14378,6 +14382,8 @@ components:
           type: boolean
         lockMessageConfig:
           $ref: '#/components/schemas/LockMessageConfig'
+        fapi:
+          type: boolean
         allResponseTypesSupported:
           uniqueItems: true
           type: array
@@ -14387,8 +14393,6 @@ components:
               - code
               - token
               - id_token
-        fapi:
-          type: boolean
     AuthenticationFilter:
       required:
         - baseDn
@@ -15507,14 +15511,14 @@ components:
           type: boolean
         internal:
           type: boolean
+        locationPath:
+          type: string
         locationType:
           type: string
           enum:
             - ldap
             - db
             - file
-        locationPath:
-          type: string
         baseDn:
           type: string
     ScriptError:
@@ -15943,10 +15947,10 @@ components:
         ttl:
           type: integer
           format: int32
-        opbrowserState:
-          type: string
         persisted:
           type: boolean
+        opbrowserState:
+          type: string
     SessionIdAccessMap:
       type: object
       properties:
@@ -16638,6 +16642,8 @@ components:
           type: string
         customerLastName:
           type: string
+        licenseExpired:
+          type: boolean
     SSARequest:
       type: object
       properties:
@@ -17704,3 +17710,4 @@ components:
             'https://jans.io/oauth/config/token.readonly': View Token details
             'https://jans.io/oauth/config/token.write': Manage Token details
             'https://jans.io/oauth/config/token.delete': Delete Token details
+            'https://jans.io/oauth/config/data.readonly': View Config-API related data

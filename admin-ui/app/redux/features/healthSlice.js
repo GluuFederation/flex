@@ -16,7 +16,6 @@ const healthSlice = createSlice({
       state.loading = true;
     },
     getHealthServerStatus: (state) => {
-      console.log("heloo")
       state.loading = true;
     },
     getHealthStatusResponse: (state, action) => {
@@ -29,8 +28,7 @@ const healthSlice = createSlice({
     getHealthServerStatusResponse: (state, action) => {
       state.loading = false;
       if (action.payload?.data) {
-        state.serverStatus = action.payload.data.status;
-        state.dbStatus = action.payload.data.db_status;
+        state.health = action.payload.data
       }
     },
   },

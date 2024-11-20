@@ -52,8 +52,6 @@ export function* getHealthStatus({ payload }) {
 }
 
 export function* getHealthServerStatus({ payload }) {
-  console.log("heloo",payload);
-
   const audit = yield* initAudit();
   try {
     payload = payload ? payload : { action: {} };
@@ -67,10 +65,6 @@ export function* getHealthServerStatus({ payload }) {
     yield call(postUserAction, audit);
   } catch (e) {
     yield put(getHealthServerStatusResponse(null));
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt);
-      yield put(getAPIAccessToken(jwt));
-    }
   }
 }
 
