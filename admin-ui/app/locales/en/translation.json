@@ -465,6 +465,7 @@
     "licenseKey": "License Key",
     "isLicenseActive": "Is License Active",
     "validityPeriod": "License Valid Upto",
+    "isLicenseExpired": "Is License Expired",
     "companyName": "Company Name",
     "customerEmail": "Customer Email",
     "customerName": "Customer Name",
@@ -1471,6 +1472,7 @@
       "customerName": "The customer name of the registered license.",
       "companyName": "The company name of the registered license.",
       "validityPeriod": "The license will expire on following date.",
+      "isLicenseExpired": "Is license expired?",
       "maxActivations": "The maximum allowed activations of this license on different machines.",
       "isLicenseActive": "Is license active?"
     },

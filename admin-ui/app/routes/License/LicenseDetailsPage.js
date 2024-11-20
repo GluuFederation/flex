@@ -142,6 +142,17 @@ function LicenseDetailsPage() {
                     doc_category={LICENSE}
                   />
                 </Col>
+                <Col sm={6}>
+                  <GluuFormDetailRow
+                    label="fields.isLicenseExpired"
+                    value={item.licenseExpired ? 'Yes' : 'No'}
+                    isBadge={true}
+                    lsize={3}
+                    rsize={9}
+                    doc_entry="isLicenseExpired"
+                    doc_category={LICENSE}
+                  />
+                </Col>
               </Row>
             </Container>
           ) : (

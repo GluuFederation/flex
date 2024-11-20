@@ -524,6 +524,7 @@
     "maxActivations": "Ativações máximas",
     "licenseKey": "Chave de Licença",
     "isLicenseActive": "Licença Ativa",
+    "isLicenseExpired": "A licença expirou",
     "validityPeriod": "Licença válida até",
     "companyName": "Nome da empresa",
     "customerEmail": "Email do cliente",
