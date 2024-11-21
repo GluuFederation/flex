@@ -165,6 +165,12 @@
     "policies_zip_uris": "URIs de políticas ZIP",
     "jans_assertion_consumer_service_get_url": "URL GET do Serviço de Consumo de Asserção Jans",
     "jans_assertion_consumer_service_post_url": "URL POST do Serviço de Consumo de Asserção Jans",
+    "jans_id": "ID Jans",
+    "jans_state": "Estado Jans",
+    "jans_sess_state":"Estado da sessão Jans",
+    "jans_user_dn": "DN do usuário Jans",
+    "permission_granted_map": "Mapa de permissões concedidas",
+    "jans_sess_attr": "Atributos da sessão Jans", 
     "download_summary": "Baixar Resumo",
     "customAttributes": "atributos personalizados",
     "sessionTimeoutInMins": "Tempo limite da sessão da interface de administração (em minutos)",
@@ -329,7 +335,7 @@
     "client_credentials_access_token": "Token de acesso de credenciais de cliente",
     "client_expiration_date": "Data de Vencimento do Cliente",
     "client_id": "ID do Cliente",
-    "client_id_used": "ID do cliente usado",
+    "client_id_used": "ID do cliente",
     "client_name": "Nome do cliente",
     "client_secret": "Segredo do cliente",
     "computation_pool_size": "Tamanho do pool de computação",
@@ -481,6 +487,7 @@
     "show_in_configuration_endpoint": "Mostrar ponto final na configuração",
     "s_id": "ID da sessão",
     "session_expired": "Sessão expirada",
+    "allow_keystore_edit": "Editar armazenamento de chaves",
     "smtp_server_port": "Porta do servidor SMTP",
     "smtp_test_status": "Status do teste Smtp",
     "smtp_user_name": "Nome de usuário SMTP",
@@ -517,6 +524,7 @@
     "maxActivations": "Ativações máximas",
     "licenseKey": "Chave de Licença",
     "isLicenseActive": "Licença Ativa",
+    "isLicenseExpired": "A licença expirou",
     "validityPeriod": "Licença válida até",
     "companyName": "Nome da empresa",
     "customerEmail": "Email do cliente",
@@ -527,6 +535,8 @@
     "email": "E-mail",
     "userName": "Nome do usuário",
     "nickName": "Apelido",
+    "modality": "modalidade",
+    "dateAdded": "data adicionada",
     "resources": "Recursos",
     "resourceId": "ID do recurso",
     "iconUrl": "URL do ícone",
@@ -561,13 +571,20 @@
     "updates_at_last_run": "Atualizações na última execução",
     "problems_at_last_run": "Problemas na última corrida",
     "mapping": "Mapeamento",
-    "source": "Fonte"
+    "source": "Fonte",
+    "createdBy": "Criado por",
+    "deviceName": "Nome do dispositivo",
+    "OSName": "Nome do sistema operacional",
+    "OSVersion": "Versão do sistema operacional",
+    "platform": "Plataforma",
+    "authType": "Tipo de autenticação"
   },
   "messages": {
     "add_permission": "Adicionar permissão",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
+    "credentials":"Credenciais",
     "view_configuration": "Ver Configuração",
     "add_idp": "Adicionar IDP SAML",
     "view_trust_relationshi_details": "Visualizar Detalhes da Relação de Confiança",
@@ -630,6 +647,8 @@
     "resource_not_found_message": "O recurso solicitado não existe neste servidor. Entre em contato com o administrador do site ou com a equipe de suporte.",
     "resource_not_found_title": "Recurso não encontrado",
     "view_client_details": "Ver detalhes do cliente",
+    "view_2FA_details": "Ver detalhes 2FA",
+    "2FA_details": "detalhes 2FA",
     "view_script_details": "Ver detalhes do guião personalizado",
     "add_new_user": "Adicionar usuário",
     "no_scope_in_client": "Sem dados de Escopo para este Cliente",
@@ -762,7 +781,8 @@
     "jans_ink": "Jans Link",
     "change_backend_bind_password": "Alterar senha de ligação de back-end",
     "add_agama_project": "Adicionar projeto Agama",
-    "jans_kc_link": "Link KC Jans"
+    "jans_kc_link": "Link KC Jans",
+    "export_csv":"Exportar CSV"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1462,6 +1482,22 @@
     "INUM": "INUM",
     "middleName": "Nome do meio",
     "sn": "Sobrenome",
-    "userConfirmPassword": "Confirme a Senha"
+    "userConfirmPassword": "Confirme a Senha",
+    "deviceName": "Nome do dispositivo",
+    "OSName": "Nome do sistema operacional",
+    "OSVersion": "Versão do sistema operacional",
+    "platform": "Plataforma",
+    "createdBy": "Criado por",
+    "type": "Tipo",
+    "domain": "Domínio"
+  },
+  "sessions":{
+    "expirationDate" : "Data de expiração",
+    "jansId": "ID Jans",
+    "jansState": "Estado Jans",
+    "jansSessState": "Estado da sessão Jans",
+    "jansUsrDN": "DN do usuário Jans",
+    "permissionGrantedMap": "Mapa de permissões concedida",
+    "jansSessAttr": "Atributo da sessão Jans"
   }
 }

@@ -31,18 +31,10 @@ data:
   # force the AS to use a specific signing key
   CN_OB_STATIC_KID: {{ .Values.global.cnObStaticSigningKeyKid | quote }}
   {{- end }}
-  {{ if or (eq .Values.global.configAdapterName "google") (eq .Values.global.configSecretAdapter "google") (eq .Values.global.cnPersistenceType "spanner") }}
+  {{ if or (eq .Values.global.configAdapterName "google") (eq .Values.global.configSecretAdapter "google") }}
   # [google_envs] Envs related to using Google
   GOOGLE_APPLICATION_CREDENTIALS: {{ .Values.global.cnGoogleApplicationCredentials | quote }}
   GOOGLE_PROJECT_ID: {{ .Values.configmap.cnGoogleProjectId | quote }}
-  {{- end }}
-  {{ if eq .Values.global.cnPersistenceType "spanner" }}
-  # [google_spanner_envs] Envs related to using Google Cloud Spanner
-  CN_GOOGLE_SPANNER_INSTANCE_ID: {{ .Values.configmap.cnGoogleSpannerInstanceId | quote }}
-  CN_GOOGLE_SPANNER_DATABASE_ID: {{ .Values.configmap.cnGoogleSpannerDatabaseId | quote }}
-  # [google_spanner_envs] END
-  {{- end }}
-  {{ if or (eq .Values.global.configSecretAdapter "google") (eq .Values.global.configAdapterName "google") }}
   # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
   CN_GOOGLE_SECRET_VERSION_ID: {{ .Values.configmap.cnGoogleSecretVersionId | quote }}
   CN_GOOGLE_SECRET_NAME_PREFIX: {{ .Values.configmap.cnGoogleSecretNamePrefix | quote }}
@@ -104,8 +96,6 @@ data:
   | replace "persistenceLogLevel" "persistence_log_level"
   | replace "persistenceDurationLogTarget" "persistence_duration_log_target"
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
-  | replace "ldapStatsLogTarget" "ldap_stats_log_target"
-  | replace "ldapStatsLogLevel" "ldap_stats_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
   | replace "auditStatsLogTarget" "audit_log_target"
@@ -122,8 +112,6 @@ data:
   | replace "persistenceLogLevel" "persistence_log_level"
   | replace "persistenceDurationLogTarget" "persistence_duration_log_target"
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
-  | replace "ldapStatsLogTarget" "ldap_stats_log_target"
-  | replace "ldapStatsLogLevel" "ldap_stats_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
@@ -134,21 +122,6 @@ data:
   LB_ADDR: {{ .Values.configmap.lbAddr }}
   {{- end }}
   CN_PERSISTENCE_TYPE: {{ .Values.global.cnPersistenceType }}
-  {{- if or (eq .Values.global.cnPersistenceType "ldap") (eq .Values.global.cnPersistenceType "hybrid")  }}
-  # used only if CN_PERSISTENCE_TYPE is ldap or hybrid
-  {{- if .Values.configmap.cnLdapUrl }}
-  CN_LDAP_URL: {{ .Values.configmap.cnLdapUrl | quote }}
-  {{- else }}
-  CN_LDAP_URL: {{ cat ( .Values.global.opendj.ldapServiceName ) ":1636" | quote | nospace }}
-  {{- end }}
-  {{- else if or (eq .Values.global.cnPersistenceType "couchbase") (eq .Values.global.cnPersistenceType "hybrid") }}
-  #  used only if CN_PERSISTENCE_TYPE is couchbase or hybrid
-  CN_COUCHBASE_URL: {{ .Values.configmap.cnCouchbaseUrl }}
-  CN_COUCHBASE_BUCKET_PREFIX: {{ .Values.configmap.cnCouchbaseBucketPrefix }}
-  CN_COUCHBASE_INDEX_NUM_REPLICA: {{ .Values.configmap.cnCouchbaseIndexNumReplica | quote }}
-  CN_COUCHBASE_USER: {{ .Values.configmap.cnCouchbaseUser }}
-  CN_COUCHBASE_SUPERUSER: {{ .Values.configmap.cnCouchbaseSuperUser }}
-  {{- end }}
   CN_KEY_ROTATION_FORCE: "false"
   CN_KEY_ROTATION_CHECK: "3600"
   CN_KEY_ROTATION_INTERVAL: "48"
@@ -159,9 +132,7 @@ data:
   {{- end }}
   CN_CONTAINER_MAIN_NAME: {{ .Release.Name }}-auth-server
   # options: default/user/site/cache/statistic used only if CN_PERSISTENCE_TYPE is hybrid or hybrid
-  {{- if or (eq .Values.global.cnPersistenceType "hybrid") (eq .Values.global.cnPersistenceType "ldap") }}
-   # must the same as the opendj service name
-  CN_CERT_ALT_NAME: {{ .Values.global.opendj.ldapServiceName }} #{{ template "cn.fullname" . }}-service
+  {{- if (eq .Values.global.cnPersistenceType "hybrid") }}
   CN_HYBRID_MAPPING: {{ .Values.configmap.cnPersistenceHybridMapping | quote }}
   {{- end }}
   # Auto enable installation of some services
@@ -174,10 +145,6 @@ data:
   CN_REDIS_SSL_TRUSTSTORE: {{ .Values.configmap.cnRedisSslTruststore | quote }}
   CN_REDIS_SENTINEL_GROUP: {{ .Values.configmap.cnRedisSentinelGroup | quote }}
   {{- end }}
-  {{- if .Values.global.istio.enabled }}
-  CN_COUCHBASE_TRUSTSTORE_ENABLE: "false"
-  CN_LDAP_USE_SSL: "false"
-  {{- end }}
   {{- if .Values.global.scim.enabled }}
   CN_SCIM_ENABLED: {{ .Values.global.scim.enabled | quote }}
   CN_SCIM_PROTECTION_MODE: {{ .Values.configmap.cnScimProtectionMode | quote }}
@@ -189,8 +156,6 @@ data:
   | replace "persistenceLogLevel" "persistence_log_level"
   | replace "persistenceDurationLogTarget" "persistence_duration_log_target"
   | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
-  | replace "ldapStatsLogTarget" "ldap_stats_log_target"
-  | replace "ldapStatsLogLevel" "ldap_stats_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
   | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
@@ -239,14 +204,6 @@ data:
   # delete Duo script (https://github.com/GluuFederation/flex/issues/1120) by disabling the feature
   CN_DUO_ENABLED: "false"
   CN_SQL_PASSWORD_FILE: {{ .Values.global.cnSqlPasswordFile }}
-  CN_COUCHBASE_PASSWORD_FILE: {{ .Values.global.cnCouchbasePasswordFile }}
-  CN_COUCHBASE_SUPERUSER_PASSWORD_FILE: {{ .Values.global.cnCouchbaseSuperuserPasswordFile }}
-  CN_LDAP_PASSWORD_FILE: {{ .Values.global.cnLdapPasswordFile }}
-  CN_LDAP_TRUSTSTORE_PASSWORD_FILE: {{ .Values.global.cnLdapTruststorePasswordFile }}
-  CN_LDAP_CERT_FILE: {{ .Values.global.cnLdapCertFile }}
-  CN_LDAP_KEY_FILE: {{ .Values.global.cnLdapKeyFile }}
-  CN_LDAP_CACERT_FILE: {{ .Values.global.cnLdapCacertFile }}
-  CN_LDAP_TRUSTSTORE_FILE: {{ .Values.global.cnLdapTruststoreFile }}
   CN_CONFIG_API_PLUGINS: {{ index .Values "global" "config-api" "plugins" | quote  }}
   {{- if .Values.global.saml.enabled }}
   QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY: {{ .Values.configmap.quarkusTransactionEnableRecovery | quote }}
@@ -258,8 +215,6 @@ data:
   KC_DB_URL_PORT: {{ .Values.configmap.kcDbUrlPort | quote }}
   KC_DB_URL_DATABASE: {{ .Values.configmap.kcDbUrlDatabase | quote }}
   KC_DB_URL_PROPERTIES: {{ .Values.configmap.kcDbUrlProperties | quote }}
-  CN_SAML_KC_DB_PASSWORD_FILE: {{ .Values.global.kcDbPasswordFile | quote }}
-  CN_SAML_KC_ADMIN_CREDENTIALS_FILE: {{ .Values.global.kcAdminCredentialsFile | quote }}
   {{- end }}
   CN_LOCK_ENABLED: {{ index .Values "global" "auth-server" "lockEnabled" | quote }}
   CN_OPA_URL: {{ .Values.configmap.cnOpaUrl | quote }}

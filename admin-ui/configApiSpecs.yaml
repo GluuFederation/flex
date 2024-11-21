@@ -13522,9 +13522,11 @@ components:
           type: string
         whitePagesCanView:
           type: boolean
-        selected:
-          type: boolean
         userCanView:
+          type: boolean
+        adminCanView:
+          type: boolean
+        adminCanEdit:
           type: boolean
         userCanEdit:
           type: boolean

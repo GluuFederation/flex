@@ -22,6 +22,7 @@ import {
   changeUserPasswordResponse,
   createUserResponse,
   getUsers,
+  setUser2FADetails,
 } from '../features/userSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -141,6 +142,22 @@ export function* deleteUserSaga({ payload }) {
   }
 }
 
+
+export function* getUser2FADetailsSaga({ payload }) {
+  try {
+    const userApi = yield* newFunction()
+    const data = yield call(userApi.getUser2FADetails, payload);
+    yield put(setUser2FADetails(data))
+    return data
+  } catch (e) {
+    const errMsg = e?.response?.body?.description || e?.response?.body?.message || e?.response?.text
+    yield put(setUser2FADetails())
+    yield* errorToast(errMsg)
+  
+    return e
+  }
+}
+
 function* errorToast(errMsg) {
   yield put(
     updateToast(
@@ -155,6 +172,10 @@ export function* watchGetUsers() {
   yield takeEvery('user/getUsers', getUsersSaga)
 }
 
+export function* watchGetUser2FADetails() {
+  yield takeEvery('user/getUser2FADetails', getUser2FADetailsSaga)
+}
+
 export function* watchCreateUser() {
   yield takeLatest('user/createUser', createUserSaga)
 }
@@ -164,6 +185,7 @@ export function* watchUpdateUser() {
 export function* deleteUser() {
   yield takeLatest('user/deleteUser', deleteUserSaga)
 }
+
 export function* changeUserPassword() {
   yield takeLatest('user/changeUserPassword', changeUserPasswordSaga)
 }
@@ -171,6 +193,7 @@ export function* changeUserPassword() {
 export default function* rootSaga() {
   yield all([
     fork(watchGetUsers),
+    fork(watchGetUser2FADetails),
     fork(watchCreateUser),
     fork(watchUpdateUser),
     fork(deleteUser),

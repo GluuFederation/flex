@@ -124,18 +124,18 @@ jobs:
           fi
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "build=${BUILD}" >> $GITHUB_OUTPUT
-          # wait for all images in DEFAULT_ALL to be built before building the all-in-one image as it depends on all other images
           if [[ "flex-all-in-one" =~ "${{ matrix.docker-images }}" ]]; then
-            if [[ ${{ github.event_name != 'pull_request' }} ]]; then
-              TEMP_IMG="admin-ui"
-              for i in $TEMP_IMG; do
-                TEMP_TOKEN=$(curl https://ghcr.io/token\?scope\="repository:gluufederation/flex/$i:pull" | jq -r '.token')
-                while [[ $(curl -s -H "Authorization: Bearer ${TEMP_TOKEN}" https://ghcr.io/v2/gluufederation/flex/$i/tags/list | jq -r '.tags' | grep "$VERSION" | tr -d '[:space:]"') != "$VERSION" ]]; do
-                  echo "Waiting for $i to be built"
-                  sleep 30
-                done
-              done
-            fi
+            echo "Waiting for all images to be built before building the all-in-one image"
+            while true; do
+              echo "Attempting to pull the Docker image"
+              if docker pull ghcr.io/$REPOSITORY/admin-ui:$VERSION; then
+                echo "Docker image pulled successfully"
+                break
+              else
+                echo "Failed to pull Docker image, retrying in 20 seconds"
+                sleep 20
+              fi
+            done
           fi
 
       # UPDATE BUILD DATES INSIDE THE DOCKERFILE BEFORE BUILDING THE DEV IMAGES TRIGGERED BY JENKINS

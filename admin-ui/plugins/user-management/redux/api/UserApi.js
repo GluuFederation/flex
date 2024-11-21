@@ -1,5 +1,5 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
+import axios from 'Redux/api/axios'
 export default class UserApi {
   constructor(api) {
     this.api = api
@@ -46,6 +46,19 @@ export default class UserApi {
       this.api.deleteUser(inum, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
+    })
+  }
+
+  /**
+   * Get 2FA Details
+   * @param {*} name 
+   * @returns 
+   */
+  getUser2FADetails = (payload) => {
+    return new Promise((resolve, reject) => {
+      axios.get(`/fido2/registration/entries/${payload.username}`, { headers: { Authorization: `Bearer ${payload.token}` } })
+      .then(result => handleResponse(undefined, reject, resolve, result))
+      .catch(error => handleResponse(error, reject, resolve, undefined));
     })
   }
 }
