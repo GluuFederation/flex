@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import { useMediaQuery } from "react-responsive";
 import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
 import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
@@ -310,7 +309,7 @@ function DashboardPage() {
             className="px-40"
             style={{height:"500px" }}
           >
-            <Grid item lg={breakDashboardCard ? 4 : 4} md={4} height="auto">
+            <Grid item lg={breakDashboardCard ? 6 : 4} md={4} height="auto">
               <div
                 className={classes.userInfoTitle}
                 style={{
@@ -347,7 +346,7 @@ function DashboardPage() {
 
             <Grid
               item
-              lg={breakDashboardCard ? 4 : 4}
+              lg={breakDashboardCard ? 6 : 4}
               md={4}
               xs={4}
               style={{ width: "100%", padding: "40px 0 0 0" }}
@@ -357,7 +356,7 @@ function DashboardPage() {
 
             <Grid
               item
-              lg={breakDashboardCard ? 4 : 4}
+              lg={breakDashboardCard ? 6 : 4}
               md={4}
               xs={4}
               style={{ width: "100%", padding: "40px 0 0 0" }}
