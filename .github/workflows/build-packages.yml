@@ -57,7 +57,7 @@ jobs:
          sudo add-apt-repository ppa:deadsnakes/ppa
          sudo apt-get update
          sudo apt-get install -y python${{ matrix.python_version }}
-         sudo apt install -y build-essential devscripts debhelper rpm dpkg-sig python3-dev python3-ldap3 python3-requests python3-ruamel.yaml python3-pymysql python3-crypto python3-distutils python3-prompt-toolkit python${{ matrix.python_version }}-distutils libpq-dev python${{ matrix.python_version }}-dev
+         sudo apt install -y build-essential devscripts debhelper rpm dpkg-sig python3-dev python3-requests python3-ruamel.yaml python3-pymysql python3-crypto python3-distutils python3-prompt-toolkit python${{ matrix.python_version }}-distutils libpq-dev python${{ matrix.python_version }}-dev
          sudo cp -r /usr/lib/python3/dist-packages /usr/lib/python${{ matrix.python_version }}/
          sudo python${{ matrix.python_version }} -m pip install psycopg2-binary psycopg2
     - name: Import GPG key
@@ -87,7 +87,7 @@ jobs:
       id: run_build
       run: |
          cd flex/
-         sudo python${{ matrix.python_version }} flex_setup.py -download-exit
+         sudo python${{ matrix.python_version }} flex_setup.py --jans-branch="v1.1.6" -download-exit
          cp -r /opt/dist flex-src/opt/
          cp -r /opt/jans flex-src/opt/
          touch flex-src/opt/jans/jans-setup/package

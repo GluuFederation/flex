@@ -7,7 +7,6 @@ from jans.pycloudlib import get_manager
 from jans.pycloudlib.persistence import SqlClient
 from jans.pycloudlib.persistence import PersistenceMapper
 from jans.pycloudlib.persistence import doc_id_from_dn
-from jans.pycloudlib.persistence import id_from_dn
 from jans.pycloudlib.utils import as_boolean
 
 from settings import LOGGING_CONFIG
