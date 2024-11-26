@@ -33,7 +33,7 @@ function* newStatusFunction() {
 export function* getHealthStatus({ payload }) {
   const audit = yield* initAudit();
   try {
-    payload = payload ? payload : { action: {} };
+    payload = payload || { action: {} };;
     addAdditionalData(audit, "FETCH", "Health", payload);
     const healthApi = yield* newFunction();
     const data = yield call(
@@ -54,7 +54,7 @@ export function* getHealthStatus({ payload }) {
 export function* getHealthServerStatus({ payload }) {
   const audit = yield* initAudit();
   try {
-    payload = payload ? payload : { action: {} };
+    payload = payload || { action: {} };;
     addAdditionalData(audit, "FETCH", "Health", payload);
     const healthApi = yield* newStatusFunction();
     const data = yield call(
