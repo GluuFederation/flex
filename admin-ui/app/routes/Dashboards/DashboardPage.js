@@ -177,22 +177,30 @@ function DashboardPage() {
   ];
 
   const statusDetails = [
-    {
-      label: "dashboard.oauth_server_status",
-      status: serverStatus,
-      key: "jans-auth",
-    },
     { label: "dashboard.database_status", status: dbStatus, key: "db_status" },
     {
       label: "dashboard.server_status",
       status: serverStatus,
       key: "status",
     },
-    { label: "Config Api", status: serverStatus, key: "jans-config-api" },
+
+    {
+      label: "dashboard.oauth_server_status",
+      status: serverStatus,
+      key: "jans-auth",
+    },
+
+    {
+      label: "dashboard.config_api",
+      status: serverStatus,
+      key: "jans-config-api",
+    },
     { label: "FIDO", status: serverStatus, key: "jans-fido2" },
-    { label: "Casa", status: serverStatus, key: "jans-casa" },
-    { label: "Keycloak", status: serverStatus, key: "keycloak" },
+    { label: "CASA", status: serverStatus, key: "jans-casa" },
+    { label: "dashboard.key_cloak", status: serverStatus, key: "keycloak" },
     { label: "SCIM", status: false, key: "jans-scim" },
+    { label: "dashboard.jans_lock", status: serverStatus, key: "jans-lock" },
+    { label: "dashboard.jans_link", status: false, key: "jans-link" },
   ];
 
   const StatusCard = useMemo(() => {
@@ -295,14 +303,14 @@ function DashboardPage() {
       <GluuViewWrapper
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
-        <div className={classes.root}>
+        <div className={classes.root} >
           <Grid
             spacing={{ sm: "20px", md: "40px" }}
             container
             className="px-40"
-            style={{ overflow: "auto" }}
+            style={{height:"500px" }}
           >
-            <Grid item lg={breakDashboardCard ? 12 : 4} md={12} height="auto">
+            <Grid item lg={breakDashboardCard ? 4 : 4} md={4} height="auto">
               <div
                 className={classes.userInfoTitle}
                 style={{
@@ -339,9 +347,9 @@ function DashboardPage() {
 
             <Grid
               item
-              lg={breakDashboardCard ? 6 : 4}
-              md={6}
-              xs={12}
+              lg={breakDashboardCard ? 4 : 4}
+              md={4}
+              xs={4}
               style={{ width: "100%", padding: "40px 0 0 0" }}
             >
               {StatusCard}
@@ -349,9 +357,9 @@ function DashboardPage() {
 
             <Grid
               item
-              lg={breakDashboardCard ? 6 : 4}
-              md={6}
-              xs={12}
+              lg={breakDashboardCard ? 4 : 4}
+              md={4}
+              xs={4}
               style={{ width: "100%", padding: "40px 0 0 0" }}
             >
               <Paper

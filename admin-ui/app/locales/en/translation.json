@@ -76,7 +76,12 @@
     "authorization_code_id_token": "Authorization code ID token",
     "start_date": "Start Date",
     "end_date": "End Date",
-    "system_status": "System Status"
+    "system_status": "System Status",
+    "config_api":"Config API",
+    "config_api_status":"Config API Status",
+    "key_cloak":"Keycloak",
+    "jans_lock":"Jans Lock",
+    "jans_link":"Jans Link"
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
