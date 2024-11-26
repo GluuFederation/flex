@@ -121,6 +121,7 @@ if not jans_installer_downloaded:
     with tempfile.TemporaryDirectory() as tmp_dir:
         jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archive_url))
         try:
+            print("Trying /refs/heads url")
             print("Downloading {} as {}".format(jans_archive_url, jans_zip_file))
             request.urlretrieve(jans_archive_url, jans_zip_file)
         except Exception as e:
