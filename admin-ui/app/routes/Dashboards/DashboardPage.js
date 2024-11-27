@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import { useMediaQuery } from "react-responsive";
 import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
 import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
@@ -203,6 +202,36 @@ function DashboardPage() {
     { label: "dashboard.jans_link", status: false, key: "jans-link" },
   ];
 
+  // Helper function to get the status value
+  const getStatusValue = (key) => {
+    if (key !== "db_status" && key !== "status") {
+      return serverHealth[key];
+    } else if (key === "db_status") {
+      return dbStatus;
+    } else {
+      return serverStatus;
+    }
+  };
+
+  // Helper function to determine the class name
+  const getClassName = (key) => {
+    const value = getStatusValue(key);
+    return isUp(value) ? classes.checkText : classes.crossText;
+  };
+
+  // Helper function to get the status text
+  const getStatusText = (key) => {
+    const value = getStatusValue(key);
+    return isUp(value) ? "Running" : "Down";
+  };
+
+  // Helper function to get the icon
+  const getStatusIcon = (key) => {
+    const value = getStatusValue(key);
+    return isUp(value) ? CheckIcon : CrossIcon;
+  };
+
+  // Refactored StatusCard component
   const StatusCard = useMemo(() => {
     return (
       <Grid item xs={12}>
@@ -223,8 +252,8 @@ function DashboardPage() {
             className={classes.userInfoText}
             style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
           >
-            {statusDetails.map(({ label, status, key }, index) => (
-              <div className={classes.statusText} key={index}>
+            {statusDetails.map(({ label, key }) => (
+              <div className={classes.statusText} key={label}>
                 <div
                   className="d-flex justify-content-between"
                   style={{
@@ -238,54 +267,16 @@ function DashboardPage() {
                       {t(label)}
                     </span>
                     <span
-                      className={
-                        isUp(
-                          key !== "db_status" && key !== "status"
-                            ? serverHealth[key]
-                            : key === "db_status"
-                            ? dbStatus
-                            : serverStatus
-                        )
-                          ? classes.checkText
-                          : classes.crossText
-                      }
+                      className={getClassName(key)}
                       style={{ fontSize: "16px" }}
                     >
-                      {isUp(
-                        key !== "db_status" && key !== "status"
-                          ? serverHealth[key]
-                          : key === "db_status"
-                          ? dbStatus
-                          : serverStatus
-                      )
-                        ? "Running"
-                        : "Down"}
+                      {getStatusText(key)}
                     </span>
                   </div>
-                  <span>
+                  <span style={{ width: "18%", marginTop: "10px" }}>
                     <img
-                      src={
-                        isUp(
-                          key !== "db_status" && key !== "status"
-                            ? serverHealth[key]
-                            : key === "db_status"
-                            ? dbStatus
-                            : serverStatus
-                        )
-                          ? CheckIcon
-                          : CrossIcon
-                      }
-                      className={
-                        isUp(
-                          key !== "db_status" && key !== "status"
-                            ? serverHealth[key]
-                            : key === "db_status"
-                            ? dbStatus
-                            : serverStatus
-                        )
-                          ? classes.iconCheck
-                          : classes.iconCross
-                      }
+                      src={getStatusIcon(key)}
+                      className={getClassName(key)}
                       alt={label}
                     />
                   </span>
@@ -296,19 +287,19 @@ function DashboardPage() {
         </div>
       </Grid>
     );
-  }, [serverStatus, serverHealth, dbStatus, t]);
+  }, [serverStatus, serverHealth, dbStatus, t, statusDetails, classes]);
 
   return (
     <GluuLoader blocking={loading}>
       <GluuViewWrapper
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
-        <div className={classes.root} >
+        <div className={classes.root}>
           <Grid
             spacing={{ sm: "20px", md: "40px" }}
             container
             className="px-40"
-            style={{height:"500px" }}
+            style={{ height: "500px" }}
           >
             <Grid item lg={breakDashboardCard ? 6 : 4} md={4} height="auto">
               <div
