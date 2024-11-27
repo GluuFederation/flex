@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import { useMediaQuery } from "react-responsive";
 import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
 import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
@@ -26,6 +25,7 @@ import { formatDate } from "Utils/Util";
 import UsersIcon from "Components/SVG/menu/Users";
 import Administrator from "Components/SVG/menu/Administrator";
 import OAuthIcon from "Components/SVG/menu/OAuth";
+import { getHealthServerStatus } from "../../redux/features/healthSlice";
 
 function DashboardPage() {
   const { t } = useTranslation();
@@ -47,12 +47,12 @@ function DashboardPage() {
   );
   const license = useSelector((state) => state.licenseDetailsReducer.item);
   const serverStatus = useSelector((state) => state.healthReducer.serverStatus);
+  const serverHealth = useSelector((state) => state.healthReducer.health);
   const dbStatus = useSelector((state) => state.healthReducer.dbStatus);
   const access_token = useSelector(
     (state) => state.authReducer.token?.access_token
   );
   const permissions = useSelector((state) => state.authReducer.permissions);
-
   const dispatch = useDispatch();
 
   SetTitle(t("menus.dashboard"));
@@ -93,7 +93,11 @@ function DashboardPage() {
   }, [access_token, clients]);
 
   useEffect(() => {
-    if (access_token) getServerStatus();
+    if (access_token) {
+      getServerStatus();
+      buildPayload(userAction, "GET Health Status", { service: "all" });
+      dispatch(getHealthServerStatus({ action: userAction }));
+    }
   }, [access_token]);
 
   function getLicense() {
@@ -171,90 +175,119 @@ function DashboardPage() {
     },
   ];
 
+  const statusDetails = [
+    { label: "dashboard.database_status", status: dbStatus, key: "db_status" },
+    {
+      label: "dashboard.server_status",
+      status: serverStatus,
+      key: "status",
+    },
+
+    {
+      label: "dashboard.oauth_server_status",
+      status: serverStatus,
+      key: "jans-auth",
+    },
+
+    {
+      label: "dashboard.config_api",
+      status: serverStatus,
+      key: "jans-config-api",
+    },
+    { label: "FIDO", status: serverStatus, key: "jans-fido2" },
+    { label: "CASA", status: serverStatus, key: "jans-casa" },
+    { label: "dashboard.key_cloak", status: serverStatus, key: "keycloak" },
+    { label: "SCIM", status: false, key: "jans-scim" },
+    { label: "dashboard.jans_lock", status: serverStatus, key: "jans-lock" },
+    { label: "dashboard.jans_link", status: false, key: "jans-link" },
+  ];
+
+  // Helper function to get the status value
+  const getStatusValue = (key) => {
+    if (key !== "db_status" && key !== "status") {
+      return serverHealth[key];
+    } else if (key === "db_status") {
+      return dbStatus;
+    } else {
+      return serverStatus;
+    }
+  };
+
+  // Helper function to determine the class name
+  const getClassName = (key) => {
+    const value = getStatusValue(key);
+    return isUp(value) ? classes.checkText : classes.crossText;
+  };
+
+  // Helper function to get the status text
+  const getStatusText = (key) => {
+    const value = getStatusValue(key);
+    return isUp(value) ? "Running" : "Down";
+  };
+
+  // Helper function to get the icon
+  const getStatusIcon = (key) => {
+    const value = getStatusValue(key);
+    return isUp(value) ? CheckIcon : CrossIcon;
+  };
+
+  // Refactored StatusCard component
   const StatusCard = useMemo(() => {
     return (
-      <Grid xs={12} item>
-        <Paper className={`${classes.statusContainer}`} elevation={3}>
-          <div className={classes.userInfoTitle}>
+      <Grid item xs={12}>
+        <div className={`${classes.statusContainer}`}>
+          <div
+            className={classes.userInfoTitle}
+            style={{
+              color: "white",
+              fontSize: 24,
+              fontWeight: 400,
+              marginBottom: "10px",
+            }}
+          >
             {t("dashboard.system_status")}
           </div>
-          <div className={classes.userInfoText}>
-            <div className={classes.statusText}>
-              <Box display="flex" justifyContent="flex-start">
-                <span>{t("dashboard.oauth_server_status")}</span>
-                <span>
-                  <img
-                    src={isUp(serverStatus) ? CheckIcon : CrossIcon}
-                    className={
-                      isUp(serverStatus) ? classes.iconCheck : classes.iconCross
-                    }
-                    alt="oauth server"
-                  />
-                </span>
-              </Box>
-              <Box display="flex" justifyContent="flex-end">
-                <span className={classes.checkText}>
-                  <span
-                    className={
-                      isUp(serverStatus) ? classes.checkText : classes.crossText
-                    }
-                  >
-                    {isUp(serverStatus) ? "Running" : "Down"}
+
+          <div
+            className={classes.userInfoText}
+            style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
+          >
+            {statusDetails.map(({ label, key }) => (
+              <div className={classes.statusText} key={label}>
+                <div
+                  className="d-flex justify-content-between"
+                  style={{
+                    width: "100%",
+                    borderLeft: "4px solid #FFA500",
+                    paddingLeft: "10px",
+                  }}
+                >
+                  <div>
+                    <span style={{ display: "block", marginBottom: "-4px" }}>
+                      {t(label)}
+                    </span>
+                    <span
+                      className={getClassName(key)}
+                      style={{ fontSize: "16px" }}
+                    >
+                      {getStatusText(key)}
+                    </span>
+                  </div>
+                  <span style={{ width: "18%", marginTop: "10px" }}>
+                    <img
+                      src={getStatusIcon(key)}
+                      className={getClassName(key)}
+                      alt={label}
+                    />
                   </span>
-                </span>
-              </Box>
-            </div>
-            <div className={classes.statusText}>
-              <Box display="flex" justifyContent="flex-start">
-                <span>{t("dashboard.database_status")}</span>
-                <span>
-                  <img
-                    src={isUp(dbStatus) ? CheckIcon : CrossIcon}
-                    className={
-                      isUp(dbStatus) ? classes.iconCheck : classes.iconCross
-                    }
-                    alt="database"
-                  />
-                </span>
-              </Box>
-              <Box display="flex" justifyContent="flex-end">
-                <span
-                  className={
-                    isUp(dbStatus) ? classes.checkText : classes.crossText
-                  }
-                >
-                  {isUp(dbStatus) ? "Online" : "Offline"}
-                </span>
-              </Box>
-            </div>
-            <div className={classes.statusText}>
-              <Box display="flex" justifyContent="flex-start">
-                <span>{t("dashboard.server_status")}</span>
-                <span>
-                  <img
-                    src={isUp(serverStatus) ? CheckIcon : CrossIcon}
-                    className={
-                      isUp(serverStatus) ? classes.iconCheck : classes.iconCross
-                    }
-                    alt="server"
-                  />
-                </span>
-              </Box>
-              <Box display="flex" justifyContent="flex-end">
-                <span
-                  className={
-                    isUp(serverStatus) ? classes.checkText : classes.crossText
-                  }
-                >
-                  {isUp(serverStatus) ? "Online" : "Offline"}
-                </span>
-              </Box>
-            </div>
+                </div>
+              </div>
+            ))}
           </div>
-        </Paper>
+        </div>
       </Grid>
     );
-  }, [serverStatus, dbStatus, t]);
+  }, [serverStatus, serverHealth, dbStatus, t, statusDetails, classes]);
 
   return (
     <GluuLoader blocking={loading}>
@@ -266,10 +299,24 @@ function DashboardPage() {
             spacing={{ sm: "20px", md: "40px" }}
             container
             className="px-40"
+            style={{ height: "500px" }}
           >
-            <Grid item lg={breakDashboardCard ? 12 : 4} md={12}>
-              <h3 className="txt-white">{t("dashboard.summary_title")}</h3>
-              <div className="mt-20 d-flex flex-column gap-3">
+            <Grid item lg={breakDashboardCard ? 6 : 4} md={4} height="auto">
+              <div
+                className={classes.userInfoTitle}
+                style={{
+                  color: "white",
+                  fontSize: 24,
+                  fontWeight: 400,
+                  marginBottom: "10px",
+                }}
+              >
+                {t("dashboard.summary_title")}
+              </div>
+              <div
+                className="d-flex flex-column"
+                style={{ gap: "10px", marginTop: "11px" }}
+              >
                 {summaryData.map((data, key) => (
                   <Paper key={key} className={classes.summary}>
                     <div className={classes.summaryDetails}>
@@ -292,30 +339,52 @@ function DashboardPage() {
             <Grid
               item
               lg={breakDashboardCard ? 6 : 4}
-              md={6}
-              xs={12}
-              style={{ width: "100%" }}
+              md={4}
+              xs={4}
+              style={{ width: "100%", padding: "40px 0 0 0" }}
+            >
+              {StatusCard}
+            </Grid>
+
+            <Grid
+              item
+              lg={breakDashboardCard ? 6 : 4}
+              md={4}
+              xs={4}
+              style={{ width: "100%", padding: "40px 0 0 0" }}
             >
               <Paper
-                className={`${classes.dashboardCard} top-minus-40`}
+                className={`${classes.dashboardCard} top-minus-40 d-flex justify-content-center`}
                 elevation={0}
                 spacing={2}
               >
-                <Grid className={classes.flex} container>
+                <Grid
+                  className={classes.flex}
+                  container
+                  style={{ maxWidth: "450px" }}
+                >
                   <Grid item xs={12} className={isMobile ? "mt-20" : ""}>
-                    <Paper
-                      className={classes.userInfo}
-                      style={
-                        isTabletOrMobile || breakDashboardCard
-                          ? { marginLeft: 0 }
-                          : {}
-                      }
-                      elevation={3}
-                    >
-                      <div className={classes.userInfoTitle}>
+                    <div className={classes.userInfo}>
+                      <div
+                        className={classes.userInfoTitle}
+                        style={{
+                          color: "white",
+                          fontSize: 24,
+                          fontWeight: 400,
+                          marginBottom: "10px",
+                        }}
+                      >
                         {t("dashboard.user_info")}
                       </div>
-                      <div>
+                      <div
+                        className="d-flex flex-column justify-content-between"
+                        style={{
+                          backgroundColor: "white",
+                          padding: "20px",
+                          height: "320px",
+                          borderRadius: "5px",
+                        }}
+                      >
                         {userInfo.map((info, key) => (
                           <div className={classes.userInfoText} key={key}>
                             <span style={{ fontWeight: 600 }}>
@@ -337,20 +406,10 @@ function DashboardPage() {
                           </div>
                         ))}
                       </div>
-                    </Paper>
+                    </div>
                   </Grid>
                 </Grid>
               </Paper>
-            </Grid>
-
-            <Grid
-              item
-              lg={breakDashboardCard ? 6 : 4}
-              md={6}
-              xs={12}
-              style={{ width: "100%" }}
-            >
-              {StatusCard}
             </Grid>
           </Grid>
 

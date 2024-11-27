@@ -26,7 +26,12 @@
     "authorization_code_id_token": "Token de ID do código de autorização",
     "start_date": "Data de início",
     "end_date": "Data final",
-    "system_status": "Status do sistema"
+    "system_status": "Status do sistema",
+    "config_api": "Configurar API",
+    "config_api_status": "Status da API de configuração",
+    "key_cloak": "Keycloak",
+    "jans_lock": "Jans Lock",
+    "jans_link": "Link Jans"
   },
   "menus": {
     "adminui": "Admin",
