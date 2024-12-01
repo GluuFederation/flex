@@ -2,322 +2,322 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/CHANGELOG/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/config/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/admin-menu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/auth-server-interaction/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/auth-server-menu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/configuration/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/dashboard/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/faq/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/fido-menu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/introduction/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/left-nav-menu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/logs/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/properties/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/schema-menu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/services-menu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/smtp-menu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/userMgmt-menu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/admin-ui/webhooks/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/kubernetes-ops/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/kubernetes-ops/admin-ui-private/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/kubernetes-ops/upgrade/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/recipes/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/recipes/getting-started-rancher/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/saml/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/saml/idp/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/admin/saml/proxy/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/includes/cn-system-requirements/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/agama/prerequisites/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/docker-install/compose/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/docker-install/quick-start/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/helm-install/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/helm-install/amazon-eks/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/helm-install/google-gke/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/helm-install/local/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/helm-install/microsoft-azure/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/helm-install/rancher/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/vm-install/rhel/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/vm-install/suse/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/vm-install/ubuntu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/install/vm-install/vm-requirements/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/openbanking/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/openbanking/configuration-instructions/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/openbanking/curl/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/openbanking/install-cn/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/openbanking/install-vm/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/openbanking/jans-cli/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/openbanking/par-jarm/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/json-config/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/json-config/properties/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/json-config/properties/casa-properties/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/json-config/properties/casaconfig-properties/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/kubernetes/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/kubernetes/docker-admin-ui/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/kubernetes/docker-flex-monolith/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/reference/kubernetes/helm-chart/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/supergluu/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/supergluu/admin-guide/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/supergluu/developer-guide/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/v5.1.6.nightly/supergluu/user-guide/</loc>
-         <lastmod>2024-11-30</lastmod>
+         <lastmod>2024-12-01</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
