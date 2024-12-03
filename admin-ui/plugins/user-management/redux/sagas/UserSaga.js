@@ -194,6 +194,19 @@ export function* getUser2FADetailsSaga({ payload }) {
   }
 }
 
+export function* auditLogoutLogsSaga({payload}) {
+  const audit = yield* initAudit();
+
+  try {
+    addAdditionalData(audit, CREATE, API_USERS, {});
+    audit.message = payload.message;
+    yield call(postUserAction, audit);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 function* errorToast(errMsg) {
   yield put(updateToast(true, "error", errMsg));
 }
@@ -220,6 +233,10 @@ export function* changeUserPassword() {
   yield takeLatest("user/changeUserPassword", changeUserPasswordSaga);
 }
 
+export function* auditLogoutLogs() {
+  yield takeLatest("user/auditLogoutLogs", auditLogoutLogsSaga);
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watchGetUsers),
@@ -228,5 +245,6 @@ export default function* rootSaga() {
     fork(watchUpdateUser),
     fork(deleteUser),
     fork(changeUserPassword),
+    fork(auditLogoutLogs)
   ]);
 }

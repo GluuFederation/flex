@@ -61,6 +61,9 @@ const userSlice = createSlice({
     deleteUserResponse: (state, action) => {
       state.loading = false;
     },
+    auditLogoutLogs: (state, action) => {
+      state.loading = true;
+    },
   },
 });
 
@@ -78,6 +81,7 @@ export const {
   changeUserPasswordResponse,
   deleteUser,
   deleteUserResponse,
+  auditLogoutLogs
 } = userSlice.actions;
 export { initialState };
 export default userSlice.reducer;

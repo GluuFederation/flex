@@ -1,38 +1,54 @@
-import React from 'react'
-
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-
-import { DropdownMenu, DropdownItem } from 'Components'
-import { useTranslation } from 'react-i18next'
+import React from "react";
+import { useDispatch } from "react-redux";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { DropdownMenu, DropdownItem } from "Components";
+import { useTranslation } from "react-i18next";
+import { auditLogoutLogs } from "../../../../plugins/user-management/redux/features/userSlice";
 
 const DropdownProfile = (props) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(auditLogoutLogs({ message: "User logged out mannually" }));
+    navigate("/logout", { replace: true });
+  };
   return (
     <React.Fragment>
       <DropdownMenu end={props.end}>
         <DropdownItem header>
-          {props.userinfo.user_name || props.userinfo.name || props.userinfo.given_name}
+          {props.userinfo.user_name ||
+            props.userinfo.name ||
+            props.userinfo.given_name}
         </DropdownItem>
         <DropdownItem divider />
         <DropdownItem tag={Link} to="/profile">
           {t("menus.my_profile")}
         </DropdownItem>
         <DropdownItem divider />
-        <DropdownItem tag={Link} to="/logout">
+        <DropdownItem
+          tag={Link}
+          to="/logout"
+          onClick={() => {
+            handleLogout();
+          }}
+        >
           <i className="fa fa-fw fa-sign-out me-2"></i>
           {t("menus.signout")}
         </DropdownItem>
       </DropdownMenu>
     </React.Fragment>
-  )
-}
+  );
+};
 DropdownProfile.propTypes = {
   position: PropTypes.string,
   end: PropTypes.bool,
-}
+};
 DropdownProfile.defaultProps = {
-  position: '',
-}
+  position: "",
+};
 
-export { DropdownProfile }
+export { DropdownProfile };
