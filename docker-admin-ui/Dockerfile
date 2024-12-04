@@ -43,7 +43,7 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=12a5729c0fc9d79178fdc29e2566baa600905301
+ENV FLEX_SOURCE_VERSION=6e9133309eb63dd499e1963d4f1d4eaa9d8bae7f
 
 RUN mkdir -p /app/templates/admin-ui
 
@@ -159,7 +159,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.6" \
+    org.opencontainers.image.version="0.0.0-nightly" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 
