@@ -295,13 +295,8 @@ function DashboardPage() {
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
         <div className={classes.root}>
-          <Grid
-            spacing={{ sm: "20px", md: "40px" }}
-            container
-            className="px-40"
-            style={{ height: "500px" }}
-          >
-            <Grid item lg={breakDashboardCard ? 6 : 4} md={4} height="auto">
+          <Grid container className="px-40" spacing={2}>
+            <Grid item lg={3} md={12} xs={12} height="auto">
               <div
                 className={classes.userInfoTitle}
                 style={{
@@ -336,33 +331,23 @@ function DashboardPage() {
               </div>
             </Grid>
 
-            <Grid
-              item
-              lg={breakDashboardCard ? 6 : 4}
-              md={4}
-              xs={4}
-              style={{ width: "100%", padding: "40px 0 0 0" }}
-            >
+            <Grid item lg={5} md={12} xs={12} height={{ lg: "55vh", xs: "65vh", ms:"65vh", sm:"65vh" }}>
               {StatusCard}
             </Grid>
 
             <Grid
               item
-              lg={breakDashboardCard ? 6 : 4}
-              md={4}
-              xs={4}
-              style={{ width: "100%", padding: "40px 0 0 0" }}
+              lg={4}
+              md={12}
+              xs={12}
+            
             >
               <Paper
                 className={`${classes.dashboardCard} top-minus-40 d-flex justify-content-center`}
                 elevation={0}
                 spacing={2}
               >
-                <Grid
-                  className={classes.flex}
-                  container
-                  style={{ maxWidth: "450px" }}
-                >
+                <Grid className={classes.flex} container>
                   <Grid item xs={12} className={isMobile ? "mt-20" : ""}>
                     <div className={classes.userInfo}>
                       <div
@@ -381,7 +366,6 @@ function DashboardPage() {
                         style={{
                           backgroundColor: "white",
                           padding: "20px",
-                          height: "320px",
                           borderRadius: "5px",
                         }}
                       >
