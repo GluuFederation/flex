@@ -85,7 +85,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
         onActive={onActive}
         onIdle={onIdle}
         debounce={250}
-        timeout={sessionTimeout * 1 * 1000}
+        timeout={sessionTimeout * 60 * 1000}
       />
       <SessionTimeoutDialog
         countdown={timeoutCountdown}
