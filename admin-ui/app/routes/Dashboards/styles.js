@@ -4,6 +4,8 @@ const styles = makeStyles()({
   root: {
     color: "#FFFFFF",
     maxWidth: "100vw",
+    height: "100vh",
+    overflow:"auto"
   },
   flex: {
     flexGrow: 1,
@@ -13,8 +15,8 @@ const styles = makeStyles()({
     display: "block",
   },
   summary: {
-    height: "74px",
-    width: "70%",
+    height: "auto",
+    width: "100%",
     display: "flex",
     justifyContent: "space-between",
     border: "3px solid #FFF",
@@ -106,7 +108,6 @@ const styles = makeStyles()({
     borderRadius: 24,
     height: "auto",
     color: "#303641",
-    minWidth: 350,
   },
   userInfoTitle: {
     fontWeight: "bold",
