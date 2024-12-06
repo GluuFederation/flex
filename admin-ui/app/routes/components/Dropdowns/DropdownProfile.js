@@ -1,5 +1,5 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -10,12 +10,19 @@ import { auditLogoutLogs } from "../../../../plugins/user-management/redux/featu
 const DropdownProfile = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { isUserLogout } = useSelector((state) => state.userReducer);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(auditLogoutLogs({ message: "User logged out mannually" }));
-    navigate("/logout", { replace: true });
   };
+
+  useEffect(() => {
+    if (isUserLogout) {
+      navigate("/logout");
+    }
+  }, [isUserLogout]);
+
   return (
     <React.Fragment>
       <DropdownMenu end={props.end}>
@@ -31,8 +38,8 @@ const DropdownProfile = (props) => {
         <DropdownItem divider />
         <DropdownItem
           tag={Link}
-          to="/logout"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             handleLogout();
           }}
         >

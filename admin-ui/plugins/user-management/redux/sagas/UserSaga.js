@@ -8,7 +8,12 @@ import {
   takeEvery,
 } from "redux-saga/effects";
 import { API_USERS } from "../audit/Resources";
-import { FETCH,DELETION, UPDATE, CREATE } from "../../../../app/audit/UserActionType";
+import {
+  FETCH,
+  DELETION,
+  UPDATE,
+  CREATE,
+} from "../../../../app/audit/UserActionType";
 import { getAPIAccessToken } from "Redux/features/authSlice";
 import { isFourZeroOneError, addAdditionalData } from "Utils/TokenController";
 import UserApi from "../api/UserApi";
@@ -23,6 +28,7 @@ import {
   createUserResponse,
   getUsers,
   setUser2FADetails,
+  auditLogoutLogsResponse,
 } from "../features/userSlice";
 import { updateToast } from "Redux/features/toastSlice";
 import { postUserAction } from "Redux/api/backend-api";
@@ -98,9 +104,9 @@ export function* changeUserPasswordSaga({ payload }) {
   const audit = yield* initAudit();
   try {
     const userApi = yield* newFunction();
-   const data = yield call(userApi.changeUserPassword, payload);
-   yield put(updateToast(true, "success"));
-   yield put(changeUserPasswordResponse(data));
+    const data = yield call(userApi.changeUserPassword, payload);
+    yield put(updateToast(true, "success"));
+    yield put(changeUserPasswordResponse(data));
 
     addAdditionalData(audit, UPDATE, API_USERS, payload);
     delete payload.customAttributes[0].values;
@@ -149,7 +155,6 @@ export function* getUsersSaga({ payload }) {
 export function* deleteUserSaga({ payload }) {
   const audit = yield* initAudit();
   try {
-   
     const userApi = yield* newFunction();
     const data = yield call(userApi.deleteUser, payload.inum);
     yield put(updateToast(true, "success"));
@@ -194,15 +199,18 @@ export function* getUser2FADetailsSaga({ payload }) {
   }
 }
 
-export function* auditLogoutLogsSaga({payload}) {
+export function* auditLogoutLogsSaga({ payload }) {
   const audit = yield* initAudit();
 
   try {
     addAdditionalData(audit, CREATE, API_USERS, {});
     audit.message = payload.message;
-    yield call(postUserAction, audit);
-    return true;
+    const data = yield call(postUserAction, audit);
+    if (data.status === 200) {
+      yield put(auditLogoutLogsResponse(true));
+    }
   } catch (e) {
+    yield put(auditLogoutLogsResponse(false));
     return false;
   }
 }
@@ -245,6 +253,6 @@ export default function* rootSaga() {
     fork(watchUpdateUser),
     fork(deleteUser),
     fork(changeUserPassword),
-    fork(auditLogoutLogs)
+    fork(auditLogoutLogs),
   ]);
 }

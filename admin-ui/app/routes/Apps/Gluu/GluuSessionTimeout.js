@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
 import { useNavigate } from 'react-router-dom'
 import { withIdleTimer } from 'react-idle-timer'
 import { useDispatch, useSelector } from 'react-redux'
 import { auditLogoutLogs } from '../../../../plugins/user-management/redux/features/userSlice'
+import { use } from 'i18next'
 
 let countdownInterval
 let timeout
@@ -16,6 +17,8 @@ const SessionTimeout = ({ isAuthenticated }) => {
   const [timeoutCountdown, setTimeoutCountdown] = useState(0)
   const idleTimer = useRef(null)
   const sessionTimeout = useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) || 5
+  const { isUserLogout } = useSelector((state) => state.userReducer);
+
   const navigate =useNavigate();
   const dispatch = useDispatch()
 
@@ -33,7 +36,6 @@ const SessionTimeout = ({ isAuthenticated }) => {
       clearSessionInterval()
       clearSessionTimeout()
       dispatch(auditLogoutLogs({ message: isTimedOut ? 'User session timed out' : 'User logged out mannually' }))
-      navigate('/logout')
     } catch (err) {
       console.error(err)
     }
@@ -70,6 +72,12 @@ const SessionTimeout = ({ isAuthenticated }) => {
     }
   }
 
+  useEffect(() => {
+    if (isUserLogout) {
+      navigate("/logout");
+    }
+  }, [isUserLogout]);
+
   return (
     <>
       <IdleTimer
@@ -77,7 +85,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
         onActive={onActive}
         onIdle={onIdle}
         debounce={250}
-        timeout={sessionTimeout * 60 * 1000}
+        timeout={sessionTimeout * 1 * 1000}
       />
       <SessionTimeoutDialog
         countdown={timeoutCountdown}
