@@ -24,8 +24,8 @@ Use the listing below for a detailed estimation of the minimum required resource
     |OB Issuing CA                     | Used in nginx as a certificate authority                                                |
     |OB Root CA                        | Used in nginx as a certificate authority                                                |
     |OB Signing CA                     | Used in nginx as a certificate authority                                                |
-    |OB AS Transport key               | Used for mTLS. This will also be added to the JVM                                      |
-    |OB AS Transport crt               | Used for mTLS. This will also be added to the JVM                                      |
+    |OB AS Transport key               | Used for mTLS. This will also be added to the JVM                                       |
+    |OB AS Transport crt               | Used for mTLS. This will also be added to the JVM                                       |
     |OB AS signing crt                 | Added to the JVM. Used in SSA Validation                                                | 
     |OB AS signing key                 | Added to the JVM. Used in SSA Validation                                                |
     |OB transport truststore           | Used in SSA Validation. Generated from OB Root CA nd Issuing CA                         |
@@ -159,18 +159,21 @@ Use the listing below for a detailed estimation of the minimum required resource
     ```
 
 ### Install on microK8s(development/testing)
+
+On your Ubuntu VM, run the following commands:
+
 ```bash
 sudo su -
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startopenabankingdemo.sh && chmod u+x startopenabankingdemo.sh && ./startopenabankingdemo.sh
 ```
 
-Running this script will install the Gluu Open Banking Platform along with th mysql persistence.
+Running this script will install the Gluu Open Banking Platform with mTLS enabled along with the mysql backend as a persistence.
 
 After running the script, you can go ahead and [test the setup](#testing-the-setup).
 
 ## Testing the setup
 
-After successful installation, you can access and test the Gluu Open Banking Platform using either [curl](https://docs.gluu.org/vreplace-flex-version/openbanking/curl/) or [Jans-CLI](https://docs.gluu.org/vreplace-flex-version/openbanking/jans-cli/).
+After successful installation, you can access and test the Gluu Open Banking Platform using either [curl](https://docs.gluu.org/head/openbanking/curl/) or [Jans-CLI](https://docs.gluu.org/head/openbanking/jans-cli/).
 
     
 ## Changing the  signing key kid for the AS dynamically
