@@ -28,6 +28,8 @@ install_py_path = os.path.join(cur_dir, 'jans_install.py')
 installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
+os.environ["FLEX_PRE_JANS"] = "True"
+
 if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
 
     print('\033[31m')
