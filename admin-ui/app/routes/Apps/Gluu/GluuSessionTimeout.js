@@ -7,7 +7,7 @@ import { auditLogoutLogs } from '../../../../plugins/user-management/redux/featu
 import { use } from 'i18next'
 
 let countdownInterval
-let timeout
+let timeout 
 
 const IdleTimerComponent = ({ children }) => children
 const IdleTimer = withIdleTimer(IdleTimerComponent)
