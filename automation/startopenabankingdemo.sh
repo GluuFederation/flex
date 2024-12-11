@@ -79,13 +79,13 @@ EOF
 sudo helm repo add gluu-flex https://docs.gluu.org/charts
 sudo helm repo update
 sudo helm install gluu gluu-flex/gluu -n gluu -f override.yaml --kubeconfig="$KUBECONFIG"
-echo "Waiting for gluu-flex to come up. Please do not cancel out. This will take 3 minutes."
-sleep 180
+echo "Waiting for the configuration job to complete. Please do not cancel out. This can take up to 3 minutes."
+sudo microk8s.kubectl -n gluu wait --for=condition=complete --timeout=180s deploy/gluu-config --kubeconfig="$KUBECONFIG"
 sudo microk8s.kubectl get secret cn -n gluu --kubeconfig="$KUBECONFIG" --template={{.data.ssl_ca_cert}} | base64 -d > ca.crt
 sudo microk8s.kubectl get secret cn -n gluu --kubeconfig="$KUBECONFIG" --template={{.data.ssl_cert}} | base64 -d > server.crt
 sudo microk8s.kubectl get secret cn -n gluu --kubeconfig="$KUBECONFIG" --template={{.data.ssl_key}} | base64 -d > server.key
-
 sudo microk8s.kubectl create secret generic tls-ob-ca-certificates -n gluu --kubeconfig="$KUBECONFIG" --from-file=tls.crt=server.crt --from-file=tls.key=server.key --from-file=ca.crt=ca.crt
 sudo microk8s.kubectl rollout restart deployment gluu-auth-server -n gluu --kubeconfig="$KUBECONFIG"
 sudo microk8s.kubectl rollout restart deployment gluu-config-api -n gluu --kubeconfig="$KUBECONFIG"
-
+echo "Waiting for gluu-flex to come up. Please do not cancel out. This can take up to 5 minutes."
+sudo microk8s.kubectl -n gluu wait --for=condition=available --timeout=300s deploy/gluu-auth-server --kubeconfig="$KUBECONFIG"
