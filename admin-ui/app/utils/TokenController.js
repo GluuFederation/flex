@@ -32,13 +32,18 @@ export const isValidState = (newState) => {
 export const addAdditionalData = (audit, action, resource, payload) => {
   audit['action'] = action
   audit['resource'] = resource
-  audit['message'] = payload.action ? payload.action.action_message : ''
-  audit['payload'] = payload.action ? payload.action.action_data : {}
+  audit['message'] = payload?.action ? payload?.action?.action_message : payload.message || ''
+  audit['modifiedFields'] = payload.action ? payload.action?.action_data?.modifiedFields : payload?.modifiedFields || {}
+ 
+  delete payload.action?.action_data?.modifiedFields
+  delete payload?.modifiedFields
+  
+  audit['payload'] = payload.action ? payload.action.action_data : payload || {}
   audit['date'] = new Date()
 }
 
 export class NoHashQueryStringUtils extends BasicQueryStringUtils {
   parse(input, useHash) {
-      return super.parse(input, false);
+    return super.parse(input, false);
   }
 }

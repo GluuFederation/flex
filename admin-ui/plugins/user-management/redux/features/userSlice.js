@@ -9,6 +9,7 @@ const initialState = {
   totalItems: 0,
   entriesCount: 0,
   fidoDetails: {},
+  isUserLogout: false,
 };
 
 const userSlice = createSlice({
@@ -61,6 +62,12 @@ const userSlice = createSlice({
     deleteUserResponse: (state, action) => {
       state.loading = false;
     },
+    auditLogoutLogs: (state, action) => {
+      state.loading = true;
+    },
+    auditLogoutLogsResponse: (state, action) => {
+      state.isUserLogout = action.payload;
+    },
   },
 });
 
@@ -78,6 +85,8 @@ export const {
   changeUserPasswordResponse,
   deleteUser,
   deleteUserResponse,
+  auditLogoutLogs,
+  auditLogoutLogsResponse
 } = userSlice.actions;
 export { initialState };
 export default userSlice.reducer;

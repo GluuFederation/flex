@@ -16,6 +16,7 @@ function GluuRemovableSelectRow({
   handler,
   doc_category,
   isDirect,
+  modifiedFields, setModifiedFields
 }) {
   const { t } = useTranslation()
   return (
@@ -34,7 +35,11 @@ function GluuRemovableSelectRow({
               data-testid={name}
               name={name}
               defaultValue={value}
-              onChange={formik.handleChange}
+              onChange={() => {
+                setModifiedFields({ ...modifiedFields, [name]: formik.values[name] })
+                formik.handleChange
+              }
+            }
             >
               <option value="">{t('actions.choose')}...</option>
               {values.map((item, key) => (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { SidebarMenu } from 'Components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { hasPermission } from 'Utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
@@ -23,6 +23,7 @@ import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached';
 import LockIcon from '@mui/icons-material/Lock';
 import styles from './styles/GluuAppSidebar.style'
+import { auditLogoutLogs } from '../../../../plugins/user-management/redux/sagas/UserSaga'
 
 function GluuAppSidebar() {
   const scopes = useSelector(({ authReducer }) => authReducer.token? authReducer.token.scopes : authReducer.permissions)
@@ -33,6 +34,7 @@ function GluuAppSidebar() {
   const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`
   const { classes } = styles()
   const themeColors = getThemeColor(selectedTheme)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setPluginMenus(processMenus())
@@ -162,6 +164,8 @@ function GluuAppSidebar() {
           icon={<i className="fa fa-fw fa-sign-out mr-2" style={{ fontSize: 28 }}></i>}
           title={t('menus.signout')}
           to="/logout"
+          onClick={() => {dispatch(auditLogoutLogs({ message: "User logged out mannually" }));}}
+
           textStyle={{ fontSize: '18px' }}
         />
         <div className={classes.waveContainer}>

@@ -13,7 +13,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { debounce } from 'lodash'
+import { debounce, set } from 'lodash'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import moment from 'moment/moment'
 
@@ -26,7 +26,11 @@ function UserForm({ onSubmitData }) {
   const [passwordError, setPasswordError] = useState('')
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
+  const [passwordmodal, setPasswordModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
+  const [modifiedFields, setModifiedFields] = useState({});
+  const [operations, setOperations] = useState([])
+
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
   const personAttributes = useSelector(
     (state) => state.attributesReducerRoot.items
@@ -102,12 +106,13 @@ function UserForm({ onSubmitData }) {
       ],
     }
     dispatch(changeUserPassword(submitableValue))
+    setPasswordModal(!passwordmodal)
     toggleChangePasswordModal()
   }
 
   const submitForm = () => {
     toggle()
-    onSubmitData(formik.values)
+    onSubmitData(formik.values, modifiedFields)
   }
   const loading = useSelector((state) => state.userReducer.loading)
   const setSelectedClaimsToState = (data) => {
@@ -182,7 +187,11 @@ function UserForm({ onSubmitData }) {
     const tempList = [...selectedClaims]
     if (userDetails) {
       formik.setFieldValue(id, '')
+      delete modifiedFields[id]
+      setModifiedFields(modifiedFields)
     } else {
+      delete modifiedFields[id]
+      setModifiedFields(modifiedFields)
       formik.setFieldValue(id)
     }
     const newList = tempList.filter((data, index) => data.name !== id)
@@ -202,6 +211,13 @@ function UserForm({ onSubmitData }) {
 
   return (
     <GluuLoader blocking={loading}>
+
+      <GluuCommitDialog
+        handler={() => setPasswordModal(!passwordmodal)}
+        modal={passwordmodal}
+        onAccept={submitChangePassword}
+      />
+
       <Modal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
@@ -241,11 +257,11 @@ function UserForm({ onSubmitData }) {
         <ModalFooter>
           {formik.values?.userPassword?.length > 3 &&
             formik.values?.userPassword ==
-              formik.values.userConfirmPassword && (
+            formik.values.userConfirmPassword && (
               <Button
                 color={`primary-${selectedTheme}`}
                 type='button'
-                onClick={() => submitChangePassword()}
+                onClick={() => setPasswordModal(!passwordmodal)}
               >
                 {t('actions.change_password')}
               </Button>
@@ -262,6 +278,14 @@ function UserForm({ onSubmitData }) {
       <Form
         onSubmit={(e) => {
           e.preventDefault()
+          let values = Object.keys(modifiedFields).map((key) => {
+            return {
+              path: key,
+              value: modifiedFields[key],
+              op: 'replace',
+            }
+          });
+          setOperations(values);
           formik.handleSubmit()
         }}
       >
@@ -290,6 +314,9 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.givenName && formik.touched.givenName}
               errorMessage={formik.errors.givenName}
+              handleChange={(e) => {
+                setModifiedFields({ ...modifiedFields, givenName: e.target.value })
+              }}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -301,6 +328,7 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.middleName && formik.touched.middleName}
               errorMessage={formik.errors.middleName}
+              handleChange={(e) => { setModifiedFields({ ...modifiedFields, middleName: e.target.value }) }}
             />
 
             <GluuInputRow
@@ -314,6 +342,7 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.sn && formik.touched.sn}
               errorMessage={formik.errors.sn}
+              handleChange={(e) => { setModifiedFields({ ...modifiedFields, lastName: e.target.value }) }}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -326,6 +355,7 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.userId && formik.touched.userId}
               errorMessage={formik.errors.userId}
+              handleChange={(e) => { setModifiedFields({ ...modifiedFields, userName: e.target.value }) }}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -340,6 +370,8 @@ function UserForm({ onSubmitData }) {
                 formik.errors.displayName && formik.touched.displayName
               }
               errorMessage={formik.errors.displayName}
+              handleChange={(e) => { setModifiedFields({ ...modifiedFields, displayName: e.target.value }) }}
+
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -353,6 +385,8 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.mail && formik.touched.mail}
               errorMessage={formik.errors.mail}
+              handleChange={(e) => { setModifiedFields({ ...modifiedFields, mail: e.target.value }) }}
+
             />
 
             <GluuSelectRow
@@ -364,6 +398,8 @@ function UserForm({ onSubmitData }) {
               formik={formik}
               lsize={3}
               rsize={9}
+              handleChange={(e) => { setModifiedFields({ ...modifiedFields, status: e.target.value }) }}
+
             />
 
             {!userDetails && (
@@ -402,6 +438,8 @@ function UserForm({ onSubmitData }) {
                 data={data}
                 formik={formik}
                 handler={removeSelectedClaimsFromState}
+                setModifiedFields={setModifiedFields}
+                modifiedFields={modifiedFields}
               />
             ))}
             {showButtons && (
@@ -448,7 +486,7 @@ function UserForm({ onSubmitData }) {
                   setSearchClaims(e.target.value)
                   const delayDebounceFn = debounce(function () {
                     options['pattern'] = e.target.value;
-                    dispatch(getAttributesRoot({ options })) 
+                    dispatch(getAttributesRoot({ options }))
                   }, 500);
                   delayDebounceFn()
                 }}
@@ -496,6 +534,7 @@ function UserForm({ onSubmitData }) {
           onAccept={submitForm}
           feature={adminUiFeatures.users_edit}
           formik={formik}
+          operations={operations}
         />
       </Form>
     </GluuLoader>

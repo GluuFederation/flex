@@ -1,8 +1,11 @@
 import React from 'react'
 import { SidebarMenu } from 'Components'
+import { auditLogoutLogs } from '../../../plugins/user-management/redux/features/userSlice'
+import { useDispatch } from 'react-redux'
 
-export const SidebarMiddleNav = () => (
-  <SidebarMenu>
+export const SidebarMiddleNav = () => {
+  const dispatch = useDispatch()
+  return <SidebarMenu>
     {/* -------- Home ---------*/}
     <SidebarMenu.Item icon={<i className="fa fa-fw fa-home"></i>} title="Home">
       <SidebarMenu.Item title="Reports" to="/home/reports" exact />
@@ -67,7 +70,8 @@ export const SidebarMiddleNav = () => (
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-sign-out me-2"></i>}
       title="Sign out"
+      onClick={() => {dispatch(auditLogoutLogs({ message: "User logged out mannually" }));}}
       to="/logout"
     />
   </SidebarMenu>
-)
+}
