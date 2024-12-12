@@ -83,7 +83,7 @@ export function* updateUserSaga({ payload }) {
     delete payload.customAttributes[0].values;
     addAdditionalData(audit, UPDATE, API_USERS, payload);
     delete payload.customAttributes[0].values;
-    audit.message = payload.action?.action_data?.action_message || ``;
+    audit.message = payload.action_message || ``;
     yield call(postUserAction, audit);
     return data;
   } catch (e) {
@@ -111,7 +111,7 @@ export function* changeUserPasswordSaga({ payload }) {
 
     addAdditionalData(audit, UPDATE, API_USERS, payload);
     delete payload.customAttributes[0].values;
-    audit.message = payload.action?.action_data?.action_message || ``;
+    audit.message = payload?.action_message || ``;
     yield call(postUserAction, audit);
   } catch (e) {
     const errMsg =
@@ -136,7 +136,6 @@ export function* getUsersSaga({ payload }) {
 
     addAdditionalData(audit, FETCH, API_USERS, payload);
     audit.message = `Fetched users`;
-    console.log("Get Users Saga", audit);
     yield call(postUserAction, audit);
     return data;
   } catch (e) {
