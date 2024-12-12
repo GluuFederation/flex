@@ -121,6 +121,7 @@ function UserEditPage() {
       }
     });
     submitableValues['modifiedFields'] = postValue
+    submitableValues['performedOn'] = {user_inum: userDetails.inum, user_name: userDetails.displayName}
 
     dispatch(updateUser(submitableValues))
   }

@@ -108,6 +108,7 @@ function UserForm({ onSubmitData }) {
         },
       ],
     };
+    submitableValue['performedOn'] = {user_inum: userDetails.inum, user_name: userDetails.displayName}
     dispatch(changeUserPassword(submitableValue));
     setPasswordModal(!passwordmodal);
     toggleChangePasswordModal();
