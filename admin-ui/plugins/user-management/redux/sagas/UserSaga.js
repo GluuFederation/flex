@@ -80,6 +80,7 @@ export function* updateUserSaga({ payload }) {
     yield put(updateUserResponse(data));
     yield* triggerWebhook({ payload: { createdFeatureValue: data } });
 
+    delete payload.customAttributes[0].values;
     addAdditionalData(audit, UPDATE, API_USERS, payload);
     delete payload.customAttributes[0].values;
     audit.message = `updated user ${payload.inum}`;

@@ -19,6 +19,7 @@ function GluuRemovableInputRow({
   doc_category,
   isDirect,
   isBoolean,
+  modifiedFields, setModifiedFields
 }) {
   return (
     <GluuTooltip
@@ -31,6 +32,7 @@ function GluuRemovableInputRow({
           <GluuToogleRow
             name={name}
             handler={(e) => {
+              setModifiedFields({ ...modifiedFields, [name]: e.target.checked })
               formik.setFieldValue(name, e.target.checked)
             }}
             label={label}
@@ -49,7 +51,10 @@ function GluuRemovableInputRow({
                 type={type}
                 name={name}
                 defaultValue={value}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  setModifiedFields({ ...modifiedFields, [name]: e.target.value })
+                  formik.handleChange
+                }}
               />
             </Col>
           </>

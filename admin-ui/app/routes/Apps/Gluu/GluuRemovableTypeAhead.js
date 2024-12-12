@@ -18,6 +18,7 @@ function GluuRemovableTypeAhead({
   options = [],
   isDirect,
   allowNew = true,
+  modifiedFields, setModifiedFields
 }) {
   const { t } = useTranslation()
   return (
@@ -36,6 +37,7 @@ function GluuRemovableTypeAhead({
               labelKey={name}
               onChange={(selected) => {
                 if (formik) {
+                  setModifiedFields({ ...modifiedFields, [name]: selected })
                   formik.setFieldValue(name, selected)
                 }
               }}

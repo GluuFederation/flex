@@ -12,9 +12,8 @@ export function* initAudit() {
   const token = yield select((state) => state.authReducer.token.access_token)
   auditlog['client_id'] = client_id
   auditlog['ip_address'] = ip_address
-  auditlog['author'] = author
-  auditlog['user_inum'] = inum
-  auditlog['status'] = 'succeed'
+  auditlog['status'] = 'failed'
+  auditlog['performedBy'] = {user_inum: inum, user_name: author}
   auditlog['headers']['Authorization'] = `Bearer ${token}`
   return auditlog
 }

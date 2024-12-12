@@ -6,7 +6,7 @@ import { countries } from 'Plugins/user-management/common/countries'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types';
 
-function UserClaimEntry({ data, entry, formik, handler }) {
+function UserClaimEntry({ data, entry, formik, handler, modifiedFields, setModifiedFields }) {
   const doHandle = () => {
     handler(data.name)
   }
@@ -29,6 +29,8 @@ function UserClaimEntry({ data, entry, formik, handler }) {
               : formik.values[data.name] || []
           }
           handler={doHandle}
+          modifiedFields={modifiedFields}
+          setModifiedFields={setModifiedFields}
           doc_category={data.description}
           lsize={3}
           rsize={9}
@@ -42,6 +44,8 @@ function UserClaimEntry({ data, entry, formik, handler }) {
           value={formik.values[data.name] || ''}
           formik={formik}
           handler={doHandle}
+          modifiedFields={modifiedFields}
+          setModifiedFields={setModifiedFields}
           doc_category={data.description}
           lsize={3}
           rsize={9}
@@ -57,6 +61,8 @@ function UserClaimEntry({ data, entry, formik, handler }) {
           value={formik.values[data.name] || ''}
           values={countries}
           formik={formik}
+          modifiedFields={modifiedFields}
+          setModifiedFields={setModifiedFields}
           required
           handler={doHandle}
           lsize={3}
