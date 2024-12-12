@@ -1,11 +1,11 @@
-import React from 'react'
-import GluuLabel from './GluuLabel'
-import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
-import { useTranslation } from 'react-i18next'
-import GluuTooltip from './GluuTooltip'
-import { Typeahead } from 'react-bootstrap-typeahead'
-import applicationstyle from './styles/applicationstyle'
-
+import React from "react";
+import GluuLabel from "./GluuLabel";
+import { Col, FormGroup, InputGroup } from "Components";
+import { useTranslation } from "react-i18next";
+import GluuTooltip from "./GluuTooltip";
+import { Typeahead } from "react-bootstrap-typeahead";
+import applicationstyle from "./styles/applicationstyle";
+import PropTypes from 'prop-types';
 function GluuRemovableTypeAhead({
   label,
   name,
@@ -18,9 +18,10 @@ function GluuRemovableTypeAhead({
   options = [],
   isDirect,
   allowNew = true,
-  modifiedFields, setModifiedFields
+  modifiedFields,
+  setModifiedFields,
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <GluuTooltip
       doc_category={doc_category}
@@ -37,8 +38,8 @@ function GluuRemovableTypeAhead({
               labelKey={name}
               onChange={(selected) => {
                 if (formik) {
-                  setModifiedFields({ ...modifiedFields, [name]: selected })
-                  formik.setFieldValue(name, selected)
+                  setModifiedFields({ ...modifiedFields, [name]: selected });
+                  formik.setFieldValue(name, selected);
                 }
               }}
               id={name}
@@ -50,14 +51,27 @@ function GluuRemovableTypeAhead({
             />
           </InputGroup>
         </Col>
-        <div
-          style={applicationstyle.removableInputRow}
-          onClick={handler}
-        >
-          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
+        <div style={applicationstyle.removableInputRow} onClick={handler}>
+          <i className={"fa fa-fw fa-close"} style={{ color: "red" }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
-export default GluuRemovableTypeAhead
+
+GluuRemovableTypeAhead.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.any,
+  formik: PropTypes.any,
+  lsize: PropTypes.number,
+  rsize: PropTypes.number,
+  handler: PropTypes.func,
+  doc_category: PropTypes.string,
+  options: PropTypes.array,
+  isDirect: PropTypes.bool,
+  allowNew: PropTypes,
+  modifiedFields: PropTypes.any,
+  setModifiedFields: PropTypes.func,
+};
+export default GluuRemovableTypeAhead;

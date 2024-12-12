@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { withIdleTimer } from 'react-idle-timer'
 import { useDispatch, useSelector } from 'react-redux'
 import { auditLogoutLogs } from '../../../../plugins/user-management/redux/features/userSlice'
-import { use } from 'i18next'
+
 
 let countdownInterval
 let timeout

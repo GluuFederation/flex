@@ -77,5 +77,7 @@ UserClaimEntry.propTypes = {
   entry: PropTypes.any,
   formik: PropTypes.object,
   handler: PropTypes.func,
+  modifiedFields: PropTypes.any,
+  setModifiedFields: PropTypes.func,
 };
 export default UserClaimEntry

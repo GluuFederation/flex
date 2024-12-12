@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownItem } from "Components";
 import { useTranslation } from "react-i18next";
 import { auditLogoutLogs } from "../../../../plugins/user-management/redux/features/userSlice";
@@ -53,6 +52,7 @@ const DropdownProfile = (props) => {
 DropdownProfile.propTypes = {
   position: PropTypes.string,
   end: PropTypes.bool,
+  userinfo: PropTypes.any,
 };
 DropdownProfile.defaultProps = {
   position: "",

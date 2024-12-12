@@ -1,15 +1,15 @@
-import React from 'react'
-import { Col, FormGroup, Input } from 'Components'
-import GluuLabel from './GluuLabel'
-import GluuTooltip from './GluuTooltip'
-import applicationStyle from './styles/applicationstyle'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import PropTypes from 'prop-types'
+import React from "react";
+import { Col, FormGroup, Input } from "Components";
+import GluuLabel from "./GluuLabel";
+import GluuTooltip from "./GluuTooltip";
+import applicationStyle from "./styles/applicationstyle";
+import GluuToogleRow from "Routes/Apps/Gluu/GluuToogleRow";
+import PropTypes from "prop-types";
 
 function GluuRemovableInputRow({
   label,
   name,
-  type = 'text',
+  type = "text",
   value,
   formik,
   required = false,
@@ -19,7 +19,8 @@ function GluuRemovableInputRow({
   doc_category,
   isDirect,
   isBoolean,
-  modifiedFields, setModifiedFields
+  modifiedFields,
+  setModifiedFields,
 }) {
   return (
     <GluuTooltip
@@ -32,8 +33,11 @@ function GluuRemovableInputRow({
           <GluuToogleRow
             name={name}
             handler={(e) => {
-              setModifiedFields({ ...modifiedFields, [name]: e.target.checked })
-              formik.setFieldValue(name, e.target.checked)
+              setModifiedFields({
+                ...modifiedFields,
+                [name]: e.target.checked,
+              });
+              formik.setFieldValue(name, e.target.checked);
             }}
             label={label}
             value={formik.values[name] || false}
@@ -52,19 +56,27 @@ function GluuRemovableInputRow({
                 name={name}
                 defaultValue={value}
                 onChange={(e) => {
-                  setModifiedFields({ ...modifiedFields, [name]: e.target.value })
-                  formik.handleChange
+                  setModifiedFields({
+                    ...modifiedFields,
+                    [name]: e.target.value,
+                  });
+                  formik.handleChange;
                 }}
               />
             </Col>
           </>
         )}
-        <div role='button' style={applicationStyle.removableInputRow} onKeyDown={handler} onClick={handler}>
-          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
+        <div
+          role="button"
+          style={applicationStyle.removableInputRow}
+          onKeyDown={handler}
+          onClick={handler}
+        >
+          <i className={"fa fa-fw fa-close"} style={{ color: "red" }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
 
 GluuRemovableInputRow.propTypes = {
@@ -79,6 +91,7 @@ GluuRemovableInputRow.propTypes = {
   handler: PropTypes.func,
   doc_category: PropTypes.string,
   isDirect: PropTypes.bool,
-  isBoolean: PropTypes.bool,
+  modifiedFields: PropTypes.any,
+  setModifiedFields: PropTypes.func,
 };
-export default GluuRemovableInputRow
+export default GluuRemovableInputRow;

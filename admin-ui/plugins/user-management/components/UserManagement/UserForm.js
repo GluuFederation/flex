@@ -13,9 +13,10 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { debounce, set } from 'lodash'
+import { debounce } from 'lodash'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import moment from 'moment/moment'
+import { use } from 'i18next'
 
 function UserForm({ onSubmitData }) {
   const dispatch = useDispatch()
