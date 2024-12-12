@@ -9,7 +9,7 @@ const LayoutContent = (props) => {
   const themeColors = getThemeColor(selectedTheme)
 
   return (
-    <div className="layout__content" style={{ background: themeColors.background }}>
+    <div className="layout__content" style={{ background: themeColors.background, height:"100%" }}>
       { props.children }
     </div>
   )
