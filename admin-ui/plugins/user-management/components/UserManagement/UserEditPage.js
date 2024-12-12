@@ -93,7 +93,7 @@ function UserEditPage() {
     }
   }
 
-  const submitData = (values, modifiedFields) => {
+  const submitData = (values, modifiedFields,usermessage) => {
     let customAttributes = createCustomAttributes(values)
     let inum = userDetails.inum
 
@@ -121,7 +121,8 @@ function UserEditPage() {
       }
     });
     submitableValues['modifiedFields'] = postValue
-    submitableValues['performedOn'] = {user_inum: userDetails.inum, user_name: userDetails.displayName}
+    submitableValues['performedOn'] = {user_inum: userDetails.inum, useId: userDetails.displayName}
+    submitableValues['action_message'] = usermessage
 
     dispatch(updateUser(submitableValues))
   }

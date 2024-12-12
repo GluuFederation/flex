@@ -53,7 +53,7 @@ export function* createUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: data } });
 
     addAdditionalData(audit, CREATE, API_USERS, payload);
-    audit.message = `created user ${payload.inum}`;
+    audit.message = payload.action?.action_message || ``;
     yield call(postUserAction, audit);
     return data;
   } catch (e) {
@@ -83,7 +83,7 @@ export function* updateUserSaga({ payload }) {
     delete payload.customAttributes[0].values;
     addAdditionalData(audit, UPDATE, API_USERS, payload);
     delete payload.customAttributes[0].values;
-    audit.message = `updated user ${payload.inum}`;
+    audit.message = payload.action?.action_data?.action_message || ``;
     yield call(postUserAction, audit);
     return data;
   } catch (e) {
@@ -111,7 +111,7 @@ export function* changeUserPasswordSaga({ payload }) {
 
     addAdditionalData(audit, UPDATE, API_USERS, payload);
     delete payload.customAttributes[0].values;
-    audit.message = `Password changed for user ${payload.inum}`;
+    audit.message = payload.action?.action_data?.action_message || ``;
     yield call(postUserAction, audit);
   } catch (e) {
     const errMsg =

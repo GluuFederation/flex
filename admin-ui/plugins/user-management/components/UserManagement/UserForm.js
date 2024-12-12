@@ -96,7 +96,7 @@ function UserForm({ onSubmitData }) {
     setModal(!modal);
   };
 
-  const submitChangePassword = () => {
+  const submitChangePassword = (usermessage) => {
     const submitableValue = {
       inum: userDetails.inum,
       jsonPatchString: "[]",
@@ -108,15 +108,16 @@ function UserForm({ onSubmitData }) {
         },
       ],
     };
-    submitableValue['performedOn'] = {user_inum: userDetails.inum, user_name: userDetails.displayName}
+    submitableValue['performedOn'] = {user_inum: userDetails.inum, userId: userDetails.displayName}
+    submitableValue['action_message'] = usermessage
     dispatch(changeUserPassword(submitableValue));
     setPasswordModal(!passwordmodal);
     toggleChangePasswordModal();
   };
 
-  const submitForm = () => {
+  const submitForm = (usermessage) => {
     toggle();
-    onSubmitData(formik.values, modifiedFields);
+    onSubmitData(formik.values, modifiedFields,usermessage);
   };
   const loading = useSelector((state) => state.userReducer.loading);
   const setSelectedClaimsToState = (data) => {
