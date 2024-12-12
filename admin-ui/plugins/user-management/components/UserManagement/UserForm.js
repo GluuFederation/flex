@@ -26,6 +26,7 @@ function UserForm({ onSubmitData }) {
   const [passwordError, setPasswordError] = useState('')
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
+  const [passwordmodal, setPasswordModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
   const personAttributes = useSelector(
@@ -102,6 +103,7 @@ function UserForm({ onSubmitData }) {
       ],
     }
     dispatch(changeUserPassword(submitableValue))
+    setPasswordModal(!passwordmodal)
     toggleChangePasswordModal()
   }
 
@@ -202,6 +204,13 @@ function UserForm({ onSubmitData }) {
 
   return (
     <GluuLoader blocking={loading}>
+
+      <GluuCommitDialog
+          handler={() => setPasswordModal(!passwordmodal)}
+          modal={passwordmodal}
+          onAccept={submitChangePassword}
+        />
+
       <Modal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
@@ -245,7 +254,7 @@ function UserForm({ onSubmitData }) {
               <Button
                 color={`primary-${selectedTheme}`}
                 type='button'
-                onClick={() => submitChangePassword()}
+                onClick={() => setPasswordModal(!passwordmodal)}
               >
                 {t('actions.change_password')}
               </Button>
