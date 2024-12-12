@@ -1,10 +1,10 @@
-import React from 'react'
-import GluuLabel from './GluuLabel'
-import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
-import { useTranslation } from 'react-i18next'
-import GluuTooltip from './GluuTooltip'
-import applicationstyle from './styles/applicationstyle'
-
+import React from "react";
+import GluuLabel from "./GluuLabel";
+import { Col, FormGroup, CustomInput, InputGroup } from "Components";
+import { useTranslation } from "react-i18next";
+import GluuTooltip from "./GluuTooltip";
+import applicationstyle from "./styles/applicationstyle";
+import PropTypes from "prop-types";
 function GluuRemovableSelectRow({
   label,
   name,
@@ -16,8 +16,10 @@ function GluuRemovableSelectRow({
   handler,
   doc_category,
   isDirect,
+  modifiedFields,
+  setModifiedFields,
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <GluuTooltip
       doc_category={doc_category}
@@ -34,9 +36,15 @@ function GluuRemovableSelectRow({
               data-testid={name}
               name={name}
               defaultValue={value}
-              onChange={formik.handleChange}
+              onChange={() => {
+                setModifiedFields({
+                  ...modifiedFields,
+                  [name]: formik.values[name],
+                });
+                formik.handleChange(e);
+              }}
             >
-              <option value="">{t('actions.choose')}...</option>
+              <option value="">{t("actions.choose")}...</option>
               {values.map((item, key) => (
                 <option value={item.cca2} key={key}>
                   {item.name}
@@ -46,10 +54,25 @@ function GluuRemovableSelectRow({
           </InputGroup>
         </Col>
         <div style={applicationstyle.removableInputRow} onClick={handler}>
-          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
+          <i className={"fa fa-fw fa-close"} style={{ color: "red" }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
-export default GluuRemovableSelectRow
+
+GluuRemovableSelectRow.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.any,
+  formik: PropTypes.any,
+  values: PropTypes.array,
+  lsize: PropTypes.number,
+  rsize: PropTypes.number,
+  handler: PropTypes.func,
+  doc_category: PropTypes.string,
+  isDirect: PropTypes.bool,
+  modifiedFields: PropTypes.any,
+  setModifiedFields: PropTypes.func,
+};
+export default GluuRemovableSelectRow;
