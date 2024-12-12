@@ -41,7 +41,7 @@ function GluuRemovableSelectRow({
                   ...modifiedFields,
                   [name]: formik.values[name],
                 });
-                formik.handleChange;
+                formik.handleChange(e);
               }}
             >
               <option value="">{t("actions.choose")}...</option>

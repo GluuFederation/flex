@@ -1,72 +1,74 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { Button, Col, Form, FormGroup } from 'Components'
-import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { useTranslation } from 'react-i18next'
-import UserClaimEntry from './UserClaimEntry'
-import { useSelector, useDispatch } from 'react-redux'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { changeUserPassword } from '../../redux/features/userSlice'
-import { ThemeContext } from 'Context/theme/themeContext'
-import { getAttributesRoot } from 'Redux/features/attributesSlice'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import { debounce } from 'lodash'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import moment from 'moment/moment'
-import { use } from 'i18next'
+import React, { useEffect, useState, useContext } from "react";
+import { Button, Col, Form, FormGroup } from "Components";
+import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
+import GluuSelectRow from "Routes/Apps/Gluu/GluuSelectRow";
+import { useTranslation } from "react-i18next";
+import UserClaimEntry from "./UserClaimEntry";
+import { useSelector, useDispatch } from "react-redux";
+import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
+import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { changeUserPassword } from "../../redux/features/userSlice";
+import { ThemeContext } from "Context/theme/themeContext";
+import { getAttributesRoot } from "Redux/features/attributesSlice";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { debounce } from "lodash";
+import { adminUiFeatures } from "Plugins/admin/helper/utils";
+import moment from "moment/moment";
+import { use } from "i18next";
 
 function UserForm({ onSubmitData }) {
-  const dispatch = useDispatch()
-  const { t } = useTranslation()
-  const DOC_SECTION = 'user'
-  const [searchClaims, setSearchClaims] = useState('')
-  const [selectedClaims, setSelectedClaims] = useState([])
-  const [passwordError, setPasswordError] = useState('')
-  const [showButtons, setShowButtons] = useState(false)
-  const [modal, setModal] = useState(false)
-  const [passwordmodal, setPasswordModal] = useState(false)
-  const [changePasswordModal, setChangePasswordModal] = useState(false)
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
+  const DOC_SECTION = "user";
+  const [searchClaims, setSearchClaims] = useState("");
+  const [selectedClaims, setSelectedClaims] = useState([]);
+  const [passwordError, setPasswordError] = useState("");
+  const [showButtons, setShowButtons] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [passwordmodal, setPasswordModal] = useState(false);
+  const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [modifiedFields, setModifiedFields] = useState({});
-  const [operations, setOperations] = useState([])
+  const [operations, setOperations] = useState([]);
 
-  const userDetails = useSelector((state) => state.userReducer.selectedUserData)
+  const userDetails = useSelector(
+    (state) => state.userReducer.selectedUserData
+  );
   const personAttributes = useSelector(
     (state) => state.attributesReducerRoot.items
-  )
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  let options = {}
+  );
+  const theme = useContext(ThemeContext);
+  const selectedTheme = theme.state.theme;
+  let options = {};
 
   const initialValues = {
-    displayName: userDetails?.displayName || '',
-    givenName: userDetails?.givenName || '',
-    mail: userDetails?.mail || '',
-    userId: userDetails?.userId || '',
-    sn: '',
-    middleName: '',
-    status: userDetails?.status || '',
-  }
+    displayName: userDetails?.displayName || "",
+    givenName: userDetails?.givenName || "",
+    mail: userDetails?.mail || "",
+    userId: userDetails?.userId || "",
+    sn: "",
+    middleName: "",
+    status: userDetails?.status || "",
+  };
 
   if (userDetails) {
     for (let i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         let customAttribute = personAttributes.filter(
           (e) => e.name == userDetails.customAttributes[i].name
-        )
-        if (userDetails.customAttributes[i].name == 'birthdate') {
+        );
+        if (userDetails.customAttributes[i].name == "birthdate") {
           initialValues[userDetails.customAttributes[i].name] = moment(
             userDetails.customAttributes[i].values[0]
-          ).format('YYYY-MM-DD')
+          ).format("YYYY-MM-DD");
         } else {
           if (customAttribute[0]?.oxMultiValuedAttribute) {
             initialValues[userDetails.customAttributes[i].name] =
-              userDetails.customAttributes[i].values
+              userDetails.customAttributes[i].values;
           } else {
             initialValues[userDetails.customAttributes[i].name] =
-              userDetails.customAttributes[i].values[0]
+              userDetails.customAttributes[i].values[0];
           }
         }
       }
@@ -76,143 +78,145 @@ function UserForm({ onSubmitData }) {
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values) => {
-      toggle()
+      toggle();
     },
     validationSchema: Yup.object({
-      displayName: Yup.string().required('Display name is required.'),
-      givenName: Yup.string().required('First name is required.'),
-      sn: Yup.string().required('Last name is required.'),
-      userId: Yup.string().required('User name is required.'),
-      mail: Yup.string().required('Email is required.'),
+      displayName: Yup.string().required("Display name is required."),
+      givenName: Yup.string().required("First name is required."),
+      sn: Yup.string().required("Last name is required."),
+      userId: Yup.string().required("User name is required."),
+      mail: Yup.string().required("Email is required."),
     }),
     setFieldValue: (field) => {
-      delete values[field]
+      delete values[field];
     },
-  })
+  });
 
   const toggle = () => {
-    setModal(!modal)
-  }
+    setModal(!modal);
+  };
 
   const submitChangePassword = () => {
     const submitableValue = {
       inum: userDetails.inum,
-      jsonPatchString: '[]',
+      jsonPatchString: "[]",
       customAttributes: [
         {
-          name: 'userPassword',
+          name: "userPassword",
           multiValued: false,
           values: [formik.values.userPassword],
         },
       ],
-    }
-    dispatch(changeUserPassword(submitableValue))
-    setPasswordModal(!passwordmodal)
-    toggleChangePasswordModal()
-  }
+    };
+    dispatch(changeUserPassword(submitableValue));
+    setPasswordModal(!passwordmodal);
+    toggleChangePasswordModal();
+  };
 
   const submitForm = () => {
-    toggle()
-    onSubmitData(formik.values, modifiedFields)
-  }
-  const loading = useSelector((state) => state.userReducer.loading)
+    toggle();
+    onSubmitData(formik.values, modifiedFields);
+  };
+  const loading = useSelector((state) => state.userReducer.loading);
   const setSelectedClaimsToState = (data) => {
-    const tempList = [...selectedClaims]
-    tempList.push(data)
-    setSelectedClaims(tempList)
-  }
+    const tempList = [...selectedClaims];
+    tempList.push(data);
+    setSelectedClaims(tempList);
+  };
 
   useEffect(() => {
     if (formik.values.userConfirmPassword && formik.values.userPassword) {
       if (formik.values.userConfirmPassword != formik.values.userPassword) {
-        setPasswordError('Confirm password should be same as password entered.')
-        setShowButtons(false)
+        setPasswordError(
+          "Confirm password should be same as password entered."
+        );
+        setShowButtons(false);
       } else {
-        setPasswordError('')
-        setShowButtons(true)
+        setPasswordError("");
+        setShowButtons(true);
       }
     } else {
-      setPasswordError('')
+      setPasswordError("");
     }
-  }, [formik.values.userConfirmPassword, formik.values.userPassword])
+  }, [formik.values.userConfirmPassword, formik.values.userPassword]);
 
   const usedClaimes = [
-    'userId',
-    'displayName',
-    'mail',
-    'status',
-    'userPassword',
-    'givenName',
-    'middleName',
-    'sn',
-  ]
+    "userId",
+    "displayName",
+    "mail",
+    "status",
+    "userPassword",
+    "givenName",
+    "middleName",
+    "sn",
+  ];
   const getCustomAttributeById = (id) => {
-    let claimData = null
+    let claimData = null;
     for (const i in personAttributes) {
       if (personAttributes[i].name == id) {
-        claimData = personAttributes[i]
+        claimData = personAttributes[i];
       }
     }
-    return claimData
-  }
+    return claimData;
+  };
 
   const setAttributes = () => {
-    const tempList = [...selectedClaims]
+    const tempList = [...selectedClaims];
     for (const i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         const data = getCustomAttributeById(
           userDetails.customAttributes[i].name
-        ) && { ...getCustomAttributeById(userDetails.customAttributes[i].name) }
+        ) && {
+          ...getCustomAttributeById(userDetails.customAttributes[i].name),
+        };
         if (
           data &&
           !usedClaimes.includes(userDetails.customAttributes[i].name)
         ) {
-          data.options = userDetails.customAttributes[i].values
-          tempList.push(data)
+          data.options = userDetails.customAttributes[i].values;
+          tempList.push(data);
         }
       }
     }
-    setSelectedClaims(tempList)
-  }
+    setSelectedClaims(tempList);
+  };
 
   useEffect(() => {
     if (userDetails) {
-      setAttributes()
-      setShowButtons(true)
+      setAttributes();
+      setShowButtons(true);
     } else {
-      setSelectedClaims([])
+      setSelectedClaims([]);
     }
-  }, [userDetails])
+  }, [userDetails]);
 
   const removeSelectedClaimsFromState = (id) => {
-    const tempList = [...selectedClaims]
+    const tempList = [...selectedClaims];
     if (userDetails) {
-      formik.setFieldValue(id, '')
-      delete modifiedFields[id]
-      setModifiedFields(modifiedFields)
+      formik.setFieldValue(id, "");
     } else {
-      delete modifiedFields[id]
-      setModifiedFields(modifiedFields)
-      formik.setFieldValue(id)
+      formik.setFieldValue(id);
     }
-    const newList = tempList.filter((data, index) => data.name !== id)
-    setSelectedClaims(newList)
-  }
+    delete modifiedFields[id];
+    setModifiedFields(modifiedFields);
+
+    const newList = tempList.filter((data, index) => data.name !== id);
+    setSelectedClaims(newList);
+  };
 
   function goBack() {
-    window.history.back()
+    window.history.back();
   }
 
   const toggleChangePasswordModal = () => {
-    setChangePasswordModal(!changePasswordModal)
-    formik.setFieldValue('userPassword')
-    formik.setFieldValue('userConfirmPassword')
-    setShowButtons(true)
-  }
+    setChangePasswordModal(!changePasswordModal);
+    formik.setFieldValue("userPassword");
+    formik.setFieldValue("userConfirmPassword");
+    setShowButtons(true);
+  };
 
   return (
     <GluuLoader blocking={loading}>
-
       <GluuCommitDialog
         handler={() => setPasswordModal(!passwordmodal)}
         modal={passwordmodal}
@@ -222,7 +226,7 @@ function UserForm({ onSubmitData }) {
       <Modal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
-        className='modal-outline-primary'
+        className="modal-outline-primary"
       >
         <ModalHeader>Change Password</ModalHeader>
         <ModalBody>
@@ -230,27 +234,27 @@ function UserForm({ onSubmitData }) {
             <Col>
               <GluuInputRow
                 doc_category={DOC_SECTION}
-                label='Password'
-                name='userPassword'
-                type='password'
-                value={formik.values.userPassword || ''}
+                label="Password"
+                name="userPassword"
+                type="password"
+                value={formik.values.userPassword || ""}
                 formik={formik}
                 lsize={3}
                 rsize={9}
               />
               <GluuInputRow
                 doc_category={DOC_SECTION}
-                label='Confirm Password'
-                name='userConfirmPassword'
-                type='password'
-                value={formik.values.userConfirmPassword || ''}
+                label="Confirm Password"
+                name="userConfirmPassword"
+                type="password"
+                value={formik.values.userConfirmPassword || ""}
                 formik={formik}
                 lsize={3}
                 rsize={9}
               />
 
-              {passwordError != '' && (
-                <span className='text-danger'>{passwordError}</span>
+              {passwordError != "" && (
+                <span className="text-danger">{passwordError}</span>
               )}
             </Col>
           </FormGroup>
@@ -258,13 +262,13 @@ function UserForm({ onSubmitData }) {
         <ModalFooter>
           {formik.values?.userPassword?.length > 3 &&
             formik.values?.userPassword ==
-            formik.values.userConfirmPassword && (
+              formik.values.userConfirmPassword && (
               <Button
                 color={`primary-${selectedTheme}`}
-                type='button'
+                type="button"
                 onClick={() => setPasswordModal(!passwordmodal)}
               >
-                {t('actions.change_password')}
+                {t("actions.change_password")}
               </Button>
             )}
           &nbsp;
@@ -272,32 +276,32 @@ function UserForm({ onSubmitData }) {
             color={`primary-${selectedTheme}`}
             onClick={toggleChangePasswordModal}
           >
-            {t('actions.cancel')}
+            {t("actions.cancel")}
           </Button>
         </ModalFooter>
       </Modal>
       <Form
         onSubmit={(e) => {
-          e.preventDefault()
+          e.preventDefault();
           let values = Object.keys(modifiedFields).map((key) => {
             return {
               path: key,
               value: modifiedFields[key],
-              op: 'replace',
-            }
+              op: "replace",
+            };
           });
           setOperations(values);
-          formik.handleSubmit()
+          formik.handleSubmit();
         }}
       >
         <FormGroup row>
           <Col sm={8}>
             {userDetails && (
               <GluuInputRow
-                label='INUM'
-                name='INUM'
+                label="INUM"
+                name="INUM"
                 doc_category={DOC_SECTION}
-                value={userDetails.inum || ''}
+                value={userDetails.inum || ""}
                 lsize={3}
                 rsize={9}
                 formik={formik}
@@ -306,64 +310,82 @@ function UserForm({ onSubmitData }) {
             )}
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label='First Name'
-              name='givenName'
+              label="First Name"
+              name="givenName"
               required
-              value={formik.values.givenName || ''}
+              value={formik.values.givenName || ""}
               formik={formik}
               lsize={3}
               rsize={9}
               showError={formik.errors.givenName && formik.touched.givenName}
               errorMessage={formik.errors.givenName}
               handleChange={(e) => {
-                setModifiedFields({ ...modifiedFields, givenName: e.target.value })
+                setModifiedFields({
+                  ...modifiedFields,
+                  givenName: e.target.value,
+                });
               }}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label='Middle Name'
-              name='middleName'
-              value={formik.values.middleName || ''}
+              label="Middle Name"
+              name="middleName"
+              value={formik.values.middleName || ""}
               formik={formik}
               lsize={3}
               rsize={9}
               showError={formik.errors.middleName && formik.touched.middleName}
               errorMessage={formik.errors.middleName}
-              handleChange={(e) => { setModifiedFields({ ...modifiedFields, middleName: e.target.value }) }}
+              handleChange={(e) => {
+                setModifiedFields({
+                  ...modifiedFields,
+                  middleName: e.target.value,
+                });
+              }}
             />
 
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label='Last Name'
-              name='sn'
+              label="Last Name"
+              name="sn"
               required
-              value={formik.values.sn || ''}
+              value={formik.values.sn || ""}
               formik={formik}
               lsize={3}
               rsize={9}
               showError={formik.errors.sn && formik.touched.sn}
               errorMessage={formik.errors.sn}
-              handleChange={(e) => { setModifiedFields({ ...modifiedFields, lastName: e.target.value }) }}
+              handleChange={(e) => {
+                setModifiedFields({
+                  ...modifiedFields,
+                  lastName: e.target.value,
+                });
+              }}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label='User Name'
-              name='userId'
+              label="User Name"
+              name="userId"
               required
-              value={formik.values.userId || ''}
+              value={formik.values.userId || ""}
               formik={formik}
               lsize={3}
               rsize={9}
               showError={formik.errors.userId && formik.touched.userId}
               errorMessage={formik.errors.userId}
-              handleChange={(e) => { setModifiedFields({ ...modifiedFields, userName: e.target.value }) }}
+              handleChange={(e) => {
+                setModifiedFields({
+                  ...modifiedFields,
+                  userName: e.target.value,
+                });
+              }}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label='Display Name'
-              name='displayName'
+              label="Display Name"
+              name="displayName"
               required
-              value={formik.values.displayName || ''}
+              value={formik.values.displayName || ""}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -371,46 +393,55 @@ function UserForm({ onSubmitData }) {
                 formik.errors.displayName && formik.touched.displayName
               }
               errorMessage={formik.errors.displayName}
-              handleChange={(e) => { setModifiedFields({ ...modifiedFields, displayName: e.target.value }) }}
-
+              handleChange={(e) => {
+                setModifiedFields({
+                  ...modifiedFields,
+                  displayName: e.target.value,
+                });
+              }}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label='Email'
-              name='mail'
+              label="Email"
+              name="mail"
               required
-              type='email'
-              value={formik.values.mail || ''}
+              type="email"
+              value={formik.values.mail || ""}
               formik={formik}
               lsize={3}
               rsize={9}
               showError={formik.errors.mail && formik.touched.mail}
               errorMessage={formik.errors.mail}
-              handleChange={(e) => { setModifiedFields({ ...modifiedFields, mail: e.target.value }) }}
-
+              handleChange={(e) => {
+                setModifiedFields({ ...modifiedFields, mail: e.target.value });
+              }}
             />
 
             <GluuSelectRow
               doc_category={DOC_SECTION}
-              label='Status'
-              name='status'
-              value={formik.values.status || ''}
-              values={['active', 'inactive']}
+              label="Status"
+              name="status"
+              value={formik.values.status || ""}
+              values={["active", "inactive"]}
               formik={formik}
               lsize={3}
               rsize={9}
-              handleChange={(e) => { setModifiedFields({ ...modifiedFields, status: e.target.value }) }}
-
+              handleChange={(e) => {
+                setModifiedFields({
+                  ...modifiedFields,
+                  status: e.target.value,
+                });
+              }}
             />
 
             {!userDetails && (
               <GluuInputRow
                 doc_category={DOC_SECTION}
-                label='Password'
+                label="Password"
                 required
-                name='userPassword'
-                type='password'
-                value={formik.values.userPassword || ''}
+                name="userPassword"
+                type="password"
+                value={formik.values.userPassword || ""}
                 formik={formik}
                 lsize={3}
                 rsize={9}
@@ -419,18 +450,18 @@ function UserForm({ onSubmitData }) {
             {!userDetails && (
               <GluuInputRow
                 doc_category={DOC_SECTION}
-                label='Confirm Password'
+                label="Confirm Password"
                 required
-                name='userConfirmPassword'
-                type='password'
-                value={formik.values.userConfirmPassword || ''}
+                name="userConfirmPassword"
+                type="password"
+                value={formik.values.userConfirmPassword || ""}
                 formik={formik}
                 lsize={3}
                 rsize={9}
               />
             )}
-            {passwordError != '' && !changePasswordModal && (
-              <span className='text-danger'>{passwordError}</span>
+            {passwordError != "" && !changePasswordModal && (
+              <span className="text-danger">{passwordError}</span>
             )}
             {selectedClaims.map((data, key) => (
               <UserClaimEntry
@@ -451,77 +482,77 @@ function UserForm({ onSubmitData }) {
                       color={`primary-${selectedTheme}`}
                       onClick={() => setChangePasswordModal(true)}
                     >
-                      <i className='fa fa-key me-2'></i>
-                      {t('actions.change_password')}
+                      <i className="fa fa-key me-2"></i>
+                      {t("actions.change_password")}
                     </Button>
                   )}
                 </Col>
-                <Col md={8} className='text-end'>
+                <Col md={8} className="text-end">
                   <Button
                     color={`primary-${selectedTheme}`}
-                    type='button'
+                    type="button"
                     onClick={goBack}
                   >
-                    <i className='fa fa-arrow-circle-left me-2'></i>
-                    {t('actions.cancel')}
+                    <i className="fa fa-arrow-circle-left me-2"></i>
+                    {t("actions.cancel")}
                   </Button>
                   {/* For Space in buttons */}
                   &nbsp; &nbsp; &nbsp;
                   {/* For Space in buttons */}
-                  <Button color={`primary-${selectedTheme}`} type='submit'>
-                    <i className='fa fa-check-circle me-2'></i>
-                    {t('actions.save')}
+                  <Button color={`primary-${selectedTheme}`} type="submit">
+                    <i className="fa fa-check-circle me-2"></i>
+                    {t("actions.save")}
                   </Button>
                 </Col>
               </FormGroup>
             )}
           </Col>
           <Col sm={4}>
-            <div className='border border-light '>
-              <div className='bg-light text-bold p-2'>Available Claims</div>
+            <div className="border border-light ">
+              <div className="bg-light text-bold p-2">Available Claims</div>
               <input
-                type='search'
-                className='form-control mb-2'
-                placeholder='Search Claims Here '
+                type="search"
+                className="form-control mb-2"
+                placeholder="Search Claims Here "
                 onChange={(e) => {
-                  setSearchClaims(e.target.value)
+                  setSearchClaims(e.target.value);
                   const delayDebounceFn = debounce(function () {
-                    options['pattern'] = e.target.value;
-                    dispatch(getAttributesRoot({ options }))
+                    options["pattern"] = e.target.value;
+                    dispatch(getAttributesRoot({ options }));
                   }, 500);
-                  delayDebounceFn()
+                  delayDebounceFn();
                 }}
                 value={searchClaims}
               />
-              <ul className='list-group'>
+              <ul className="list-group">
                 {personAttributes.map((data, key) => {
-                  const name = data.displayName.toLowerCase()
+                  const name = data.displayName.toLowerCase();
                   const alreadyAddedClaim = selectedClaims.some(
                     (el) => el.name === data.name
-                  )
+                  );
                   if (
-                    data.status.toLowerCase() == 'active' &&
+                    data.status.toLowerCase() == "active" &&
                     !usedClaimes.includes(data.name)
                   ) {
                     if (
                       (name.includes(searchClaims.toLowerCase()) ||
-                        searchClaims == '') &&
+                        searchClaims == "") &&
                       !alreadyAddedClaim
                     ) {
                       return (
                         <li
-                          className='list-group-item'
-                          key={'list' + key}
-                          title='Click to add to the form'
+                          className="list-group-item"
+                          key={"list" + key}
+                          title="Click to add to the form"
                         >
                           <a
                             onClick={() => setSelectedClaimsToState(data)}
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: "pointer" }}
                           >
                             {data.displayName}
                           </a>
                         </li>
-                      )
+                      );
                     }
                   }
                 })}
@@ -539,7 +570,7 @@ function UserForm({ onSubmitData }) {
         />
       </Form>
     </GluuLoader>
-  )
+  );
 }
 
-export default UserForm
+export default UserForm;

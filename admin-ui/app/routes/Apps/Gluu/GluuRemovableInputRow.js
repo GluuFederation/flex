@@ -60,7 +60,7 @@ function GluuRemovableInputRow({
                     ...modifiedFields,
                     [name]: e.target.value,
                   });
-                  formik.handleChange;
+                  formik.handleChange(e);
                 }}
               />
             </Col>
