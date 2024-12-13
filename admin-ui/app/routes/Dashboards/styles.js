@@ -3,9 +3,7 @@ import { makeStyles } from "tss-react/mui";
 const styles = makeStyles()({
   root: {
     color: "#FFFFFF",
-    maxWidth: "100vw",
-    height: "100vh",
-    overflow:"auto"
+    maxWidth: "100vw"
   },
   flex: {
     flexGrow: 1,
