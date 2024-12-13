@@ -1,20 +1,31 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-import classNames from 'classnames'
-import { v4 as uuid } from 'uuid'
-import { MenuContext } from './MenuContext'
+import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import classNames from "classnames";
+import { v4 as uuid } from "uuid";
+import { MenuContext } from "./MenuContext";
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
  */
-const SidebarMenuItemLink = (props) =>
-  props.to || props.href ? (
-    props.to ? (
+const SidebarMenuItemLink = (props) => {
+  return props.to || props.href ? (
+    props.to !== "logout" ? (
       <Link
         to={props.to}
         style={props.textStyle}
         className={`${props.classBase}__entry__link`}
+      >
+        {props.children}
+      </Link>
+    ) : props.to === "logout" ? (
+      <Link
+        style={props.textStyle}
+        className={`${props.classBase}__entry__link`}
+        onClick={(e) => {
+          e.preventDefault();
+          props.handleClick();
+        }}
       >
         {props.children}
       </Link>
@@ -37,22 +48,27 @@ const SidebarMenuItemLink = (props) =>
     >
       {props.children}
     </a>
-  )
+  );
+};
+
 SidebarMenuItemLink.propTypes = {
   to: PropTypes.string,
+  handleClick: PropTypes.func,
   href: PropTypes.string,
   active: PropTypes.bool,
   onToggle: PropTypes.func,
   children: PropTypes.node,
   classBase: PropTypes.string,
   textStyle: PropTypes.object,
-  sidebarMenuActive: PropTypes.string
-}
+  sidebarMenuActive: PropTypes.string,
+};
 
 /**
  * The main menu entry component
  */
 export class SidebarMenuItem extends React.Component {
+
+
   static propTypes = {
     // MenuContext props
     addEntry: PropTypes.func,
@@ -73,18 +89,18 @@ export class SidebarMenuItem extends React.Component {
     exact: PropTypes.bool,
     noCaret: PropTypes.bool,
     textStyle: PropTypes.object,
-    sidebarMenuActiveClass: PropTypes.string
-  }
+    handleClick: PropTypes.func,
+    sidebarMenuActiveClass: PropTypes.string,
+  };
 
   static defaultProps = {
     exact: true,
     isEmptyNode: false,
-  }
+  };
 
   constructor(props) {
-    super(props)
-
-    this.id = uuid()
+    super(props);
+    this.id = uuid();
   }
 
   componentDidMount() {
@@ -92,69 +108,72 @@ export class SidebarMenuItem extends React.Component {
       id: this.id,
       parentId: this.props.parentId,
       exact: !!this.props.exact,
-    }
+    };
 
     if (this.props.to) {
-      entry.url = this.props.to
+      entry.url = this.props.to;
     }
 
-    this.props.addEntry(entry)
+    this.props.addEntry(entry);
   }
 
   componentWillUnmount() {
-    this.props.removeEntry(this.id)
+    this.props.removeEntry(this.id);
   }
 
   getEntry() {
-    return this.props.entries[this.id]
+    return this.props.entries[this.id];
   }
 
   toggleNode() {
-    const entry = this.getEntry()
-
-    this.props.updateEntry(this.id, { open: !entry.open })
+    const entry = this.getEntry();
+    this.props.updateEntry(this.id, { open: !entry.open });
   }
 
   render() {
-    const entry = this.getEntry()
-    const sidebarMenuActive = entry && entry.active && this.props.sidebarMenuActiveClass ? this.props.sidebarMenuActiveClass : ''
-    const classBase = this.props.isSubNode ? 'sidebar-submenu' : `sidebar-menu`
+    
+    const entry = this.getEntry();
+    const sidebarMenuActive =
+      entry && entry.active && this.props.sidebarMenuActiveClass
+        ? this.props.sidebarMenuActiveClass
+        : "";
+    const classBase = this.props.isSubNode ? "sidebar-submenu" : `sidebar-menu`;
     const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
       [`${classBase}__entry--nested`]: !!this.props.children,
       open: entry && entry.open,
       active: entry && entry.active,
-    })
+    });
     const activeMenu = {
-      color: '#323b47',
-    }
-    const nonaActiveMenu = {}
+      color: "#323b47",
+    };
+    const nonaActiveMenu = {};
 
     function getStyle(itemClass) {
       if (
-        itemClass.includes('active', 0) &&
-        itemClass.includes('submenu__entry', 0) &&
-        !itemClass.includes('open', 0)
+        itemClass.includes("active", 0) &&
+        itemClass.includes("submenu__entry", 0) &&
+        !itemClass.includes("open", 0)
       ) {
-        return activeMenu
+        return activeMenu;
       }
-      return nonaActiveMenu
+      return nonaActiveMenu;
     }
 
     function getTextStyle(itemClass) {
       if (
-        itemClass.includes('active', 0) &&
-        itemClass.includes('submenu__entry', 0)
+        itemClass.includes("active", 0) &&
+        itemClass.includes("submenu__entry", 0)
       ) {
-        return { fontWeight: 'bold' }
+        return { fontWeight: "bold" };
       }
-      return null
+      return null;
     }
     return (
       <li
         style={getStyle(itemClass)}
         className={classNames(itemClass, {
-          'sidebar-menu__entry--no-caret': this.props.noCaret,
-          'mb-20': !!this.props.icon,
+          "sidebar-menu__entry--no-caret": this.props.noCaret,
+          "mb-20": !!this.props.icon,
         })}
       >
         {!this.props.isEmptyNode && (
@@ -165,6 +184,7 @@ export class SidebarMenuItem extends React.Component {
             classBase={classBase}
             textStyle={getTextStyle(itemClass) || this.props.textStyle}
             sidebarMenuActive={sidebarMenuActive}
+            handleClick={this.props.handleClick}
           >
             {this.props.icon &&
               React.cloneElement(this.props.icon, {
@@ -172,9 +192,9 @@ export class SidebarMenuItem extends React.Component {
                   this.props.icon.props.className,
                   `${classBase}__entry__icon`
                 ),
-                fill: sidebarMenuActive ? '#FFF' : '#323b47'
+                fill: sidebarMenuActive ? "#FFF" : "#323b47",
               })}
-            {typeof this.props.title === 'string' ? (
+            {typeof this.props.title === "string" ? (
               <span style={this.props.textStyle}>{this.props.title}</span>
             ) : (
               this.props.title
@@ -199,6 +219,6 @@ export class SidebarMenuItem extends React.Component {
           </ul>
         )}
       </li>
-    )
+    );
   }
 }

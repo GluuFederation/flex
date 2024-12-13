@@ -38,7 +38,16 @@ function GluuRemovableTypeAhead({
               labelKey={name}
               onChange={(selected) => {
                 if (formik) {
-                  setModifiedFields({ ...modifiedFields, [name]: selected });
+                  const names = selected.map(item => {
+                    if (typeof item === 'string') {
+                      return item; // String element (from stringArray)
+                    } else if (typeof item === 'object' && item.role) {
+                      return item.role; // Role property from objectArray
+                    }
+                    return null; // Ignore if not matching criteria
+                  }).filter(Boolean);
+
+                  setModifiedFields({ ...modifiedFields, [name]: names });
                   formik.setFieldValue(name, selected);
                 }
               }}
