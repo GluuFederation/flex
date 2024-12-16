@@ -1035,7 +1035,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/rewrite-target: /jans-auth/restv1/authzen-configuration
 {{- if index .Values.global "auth-server" "ingress" "authzenAdditionalAnnotations" }}
-{{ toYaml (index .Values.global "auth-server" "ingress" "authzendAdditionalAnnotations") | indent 4 }}
+{{ toYaml (index .Values.global "auth-server" "ingress" "authzenAdditionalAnnotations") | indent 4 }}
 {{- end }}
 {{- if .Values.ingress.additionalAnnotations }}
 {{ toYaml .Values.ingress.additionalAnnotations | indent 4 }}
