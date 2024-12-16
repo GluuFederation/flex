@@ -228,7 +228,7 @@ class Upgrade:
 def main():
     manager = get_manager()
 
-    with manager.lock.create_lock("admin-ui-upgrade"):
+    with manager.create_lock("admin-ui-upgrade"):
         upgrade = Upgrade(manager)
         upgrade.invoke()
 
