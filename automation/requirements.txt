@@ -4,4 +4,5 @@ dockerfile-parse
 requests-html
 GitPython
 lxml-html-clean
+urllib3==2.0.7
 websockets>=10.0 # not directly required, pinned by Snyk to avoid a vulnerability
