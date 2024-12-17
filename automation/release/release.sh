@@ -32,7 +32,7 @@ modify_helm_chart() {
   egrep -lRZ --include=values.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/:1.*_dev/: $JANS_VERSION-1/g"
   # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
   egrep -lRZ --include=Chart.yaml --exclude-dir=gluu . | xargs -0 -l sed -i -e "s/version: .*/version: $JANS_VERSION/g"
-  helm-docs ./charts
+  helm-docs ./charts --skip-version-footer
 }
 
 modify_version_files() {
@@ -60,7 +60,7 @@ modify_snapshot_helm_chart() {
   egrep -lRZ --include=values.yaml --exclude-dir=gluu-all-in-one . | xargs -0 -l sed -i -e "s/:1.*_dev/: $NEXT_JANS_VERSION_dev/g"
   # Update chart `appVersion` `version` and image tags to the official prospected versions and tags.
   egrep -lRZ --include=Chart.yaml --exclude-dir=gluu . | xargs -0 -l sed -i -e "s/version: .*/version: $NEXT_JANS_VERSION/g"
-  helm-docs ./charts
+  helm-docs ./charts --skip-version-footer
   egrep -lRZ --exclude=CONTRIBUTING.md --exclude-dir=workflows . | xargs -0 -l sed -i -e "s/$SETUP_VERSION/$NEXT_SETUP_VERSION-SNAPSHOT/g"
 }
 
