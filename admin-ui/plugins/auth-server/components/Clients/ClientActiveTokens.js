@@ -243,7 +243,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={handleSearch}
-                  disabled={pattern.expirationDateAfter && pattern.expirationDateBefore ? false : true}
+                  disabled={pattern.expirationDateAfter && pattern.expirationDateBefore}
                 >
                   {t("actions.search")}
                 </Button>
@@ -253,7 +253,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={handleClear}
-                  disabled={pattern.expirationDateAfter && pattern.expirationDateBefore ? false : true}
+                  disabled={pattern.expirationDateAfter && pattern.expirationDateBefore}
                 >
                   {t("actions.clear")}
                 </Button>
@@ -263,7 +263,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={downloadCSV}
-                  disabled={data?.length ? false : true}
+                  disabled={data?.length}
                 >
                   {t("actions.export_csv")}
                 </Button>

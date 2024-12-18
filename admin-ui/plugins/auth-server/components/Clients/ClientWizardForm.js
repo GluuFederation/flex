@@ -538,6 +538,7 @@ ClientWizardForm.propTypes = {
   customOnSubmit: PropTypes.func,
   oidcConfiguration: PropTypes.object,
   umaResources: PropTypes.array,
+  isEdit: PropTypes.bool,
 };
 
 export default ClientWizardForm;
