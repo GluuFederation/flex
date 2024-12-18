@@ -820,7 +820,9 @@
     "activate_sql_configuration": "Activate SQL configuration.",
     "script_path": "Enter script file path",
     "iconUrl": "Icon URL",
-    "level": "Level"
+    "level": "Level",
+    "expires_after": "Expiration After Date",
+    "expires_before": "Expiration Before Date"
   },
   "titles": {
     "activeTokens": "Active Tokens",

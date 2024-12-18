@@ -34,7 +34,8 @@ function ClientActiveTokens({ client }) {
   const [pageNumber, setPageNumber] = useState(0);
   const [limit, setLimit] = useState(10);
   const [pattern, setPattern] = useState({
-    creationDate: null,
+    expirationDateAfter: null,
+    expirationDateBefore: null,
   });
 
   const loading = useSelector((state) => state.oidcReducer.isTokenLoading);
@@ -83,8 +84,9 @@ function ClientActiveTokens({ client }) {
   const handleSearch = () => {
     let startCount = pageNumber * limit;
     let conditionquery = `clnId=${client.inum}`;
-    if (pattern.creationDate) {
-      conditionquery += `,creationDate=${dayjs(pattern.creationDate).format('YYYY-MM-DD')}`;
+    if (pattern.expirationDateAfter && pattern.expirationDateBefore) {
+      conditionquery += `,expirationDate>${dayjs(pattern.expirationDateAfter).format('YYYY-MM-DD')}`;
+      conditionquery += `,expirationDate<${dayjs(pattern.expirationDateBefore).format('YYYY-MM-DD')}`;
     }
     getTokens(startCount, limit, conditionquery);
   };
@@ -186,14 +188,40 @@ function ClientActiveTokens({ client }) {
             <div style={applicationStyle.globalSearch}>
               <div>
                 <div>
-                  <p>{t("placeholders.search_date")}</p>
+                  <p>{t("placeholders.expires_after")}</p>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateTimePicker
                       id="expirationDate"
                       name="expirationDate"
-                      value={pattern.creationDate}
+                      value={pattern.expirationDateAfter}
                       onChange={(date) => {                        
-                        setPattern({ ...pattern, creationDate: date });
+                        setPattern({ ...pattern, expirationDateAfter: date });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{
+                            "& .MuiInputBase-input": {
+                              height: "36px", // Adjust the height of the input
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+
+              <div style={{ marginLeft: "20px" }}>
+                <div>
+                  <p>{t("placeholders.expires_before")}</p>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateTimePicker
+                      id="expirationDate"
+                      name="expirationDate"
+                      value={pattern.expirationDateBefore}
+                      onChange={(date) => {                        
+                        setPattern({ ...pattern, expirationDateBefore: date });
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -215,7 +243,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={handleSearch}
-                  disabled={pattern.creationDate ? false : true}
+                  disabled={pattern.expirationDateAfter && pattern.expirationDateBefore ? false : true}
                 >
                   {t("actions.search")}
                 </Button>
@@ -225,7 +253,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={handleClear}
-                  disabled={pattern.creationDate ? false : true}
+                  disabled={pattern.expirationDateAfter && pattern.expirationDateBefore ? false : true}
                 >
                   {t("actions.clear")}
                 </Button>
