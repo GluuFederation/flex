@@ -243,7 +243,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={handleSearch}
-                  disabled={pattern.expirationDateAfter && pattern.expirationDateBefore}
+                  disabled={!pattern.expirationDateAfter && !pattern.expirationDateBefore}
                 >
                   {t("actions.search")}
                 </Button>
@@ -253,7 +253,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={handleClear}
-                  disabled={pattern.expirationDateAfter && pattern.expirationDateBefore}
+                  disabled={!pattern.expirationDateAfter && !pattern.expirationDateBefore}
                 >
                   {t("actions.clear")}
                 </Button>
