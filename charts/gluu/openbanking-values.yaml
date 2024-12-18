@@ -28,7 +28,7 @@ auth-server:
     # -- Image  to use for deploying.
     repository: janssenproject/auth-server
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -131,12 +131,12 @@ config:
     cnScimProtectionMode: "OAUTH"
     # -- Specify data that should be saved in persistence (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`.
     #{
-    #  "default": "<couchbase|sql>",
-    #  "user": "<couchbase|sql>",
-    #  "site": "<couchbase|sql>",
-    #  "cache": "<couchbase|sql>",
-    #  "token": "<couchbase|sql>",
-    #  "session": "<couchbase|sql>",
+    #  "default": "<sql>",
+    #  "user": "<sql>",
+    #  "site": "<sql>",
+    #  "cache": "<sql>",
+    #  "token": "<sql>",
+    #  "session": "<sql>",
     #}
     cnPersistenceHybridMapping: "{}"
     # -- Redis Sentinel Group. Often set when `config.configmap.cnRedisType` is set to `SENTINEL`. Can be used when  `config.configmap.cnCacheType` is set to `REDIS`.
@@ -161,7 +161,7 @@ config:
     # -- Image  to use for deploying.
     repository: janssenproject/configurator
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Organization name. Used for certificate creation.
@@ -225,7 +225,7 @@ config-api:
     # -- Image  to use for deploying.
     repository: janssenproject/config-api
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -374,7 +374,7 @@ global:
   cnPrometheusPort: ""
   # -- Document store type to use for shibboleth files DB.
   cnDocumentStoreType: DB
-  # -- Persistence backend to run Gluu with couchbase|hybrid|sql.
+  # -- Persistence backend to run Gluu with hybrid|sql.
   cnPersistenceType: sql
   # -- Open banking external signing jwks uri. Used in SSA Validation.
   cnObExtSigningJwksUri: ""
@@ -625,7 +625,7 @@ persistence:
     # -- Image  to use for deploying.
     repository: janssenproject/persistence-loader
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.

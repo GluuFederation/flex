@@ -26,7 +26,12 @@
     "authorization_code_id_token": "Jeton d'identification du code d'autorisation",
     "start_date": "Date de début",
     "end_date": "Date de fin",
-    "system_status": "État du système"
+    "system_status": "État du système",
+    "config_api": "Configurer l'API",
+    "config_api_status": "État de l'API de configuration",
+    "key_cloak": "Keycloak",
+    "jans_lock": "Jans Lock",
+    "jans_link": "Lien Jans"
   },
   "menus": {
     "adminui": "Administratrice",
@@ -528,6 +533,7 @@
     "licenseKey": "Clé de licence",
     "isLicenseActive": "La licence est-elle active",
     "validityPeriod": "Licence valide jusqu'à",
+    "isLicenseExpired": "La licence est-elle expirée",
     "companyName": "Nom de la compagnie",
     "customerEmail": "Email client",
     "customerName": "Nom du client",

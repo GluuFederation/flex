@@ -28,6 +28,8 @@ install_py_path = os.path.join(cur_dir, 'jans_install.py')
 installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
+os.environ["FLEX_PRE_JANS"] = "True"
+
 if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
 
     print('\033[31m')
@@ -120,8 +122,16 @@ if not jans_installer_downloaded:
     jans_archive_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
     with tempfile.TemporaryDirectory() as tmp_dir:
         jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archive_url))
-        print("Downloading {} as {}".format(jans_archive_url, jans_zip_file))
-        request.urlretrieve(jans_archive_url, jans_zip_file)
+        try:
+            print("Trying /refs/heads url")
+            print("Downloading {} as {}".format(jans_archive_url, jans_zip_file))
+            request.urlretrieve(jans_archive_url, jans_zip_file)
+        except Exception as e:
+            print(f"Failed to download from {jans_archive_url}, trying tags URL. Error: {e}")
+            jans_archive_url = 'https://github.com/JanssenProject/jans/archive/refs/tags/{}.zip'.format(
+                argsp.jans_branch)
+            jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archive_url))
+            request.urlretrieve(jans_archive_url, jans_zip_file)
         if argsp.download_exit:
             dist_dir = '/opt/dist/jans/'
             if not os.path.exists(dist_dir):
@@ -257,8 +267,8 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.1.6",
-  "JANS_BUILD": "-SNAPSHOT",
+  "JANS_APP_VERSION": "0.0.0",
+  "JANS_BUILD": "-nightly",
   "NODE_VERSION": "v18.16.0",
   "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
 }

@@ -148,8 +148,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatsData'
+              examples:
+                Response json example:
+                  description: Response json example
+                  value: |
+                    {
+                        "dbType": "sql",
+                        "lastUpdate": "2024-11-01T12:11:01",
+                        "facterData": {
+                            "memoryfree": "39.7%",
+                            "swapfree": "0.0%",
+                            "hostname": "pujavs-amazed-rat.gluu.info",
+                            "ipaddress": "167.99.13.66",
+                            "uptime": "1 day, 3:54",
+                            "free_disk_space": "95.4%",
+                            "load_average": "0.13623046875"
+                        }
+                    }
         '500':
           description: InternalServerError
+  /api/v1/health/service-status:
+    get:
+      tags:
+        - Health - Check
+      summary: Fetch service status
+      description: Fetch service status
+      operationId: get-service-status
+      parameters:
+        - name: service
+          in: query
+          description: Service name to check status
+          schema:
+            type: string
+            default: all
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+              examples:
+                Response json example:
+                  description: Response json example
+                  value: |
+                    {
+                      "jans-auth": "Running",
+                      "jans-config-api": "Down",
+                      "jans-casa": "Not present",
+                      "jans-fido2": "Running",
+                      "jans-scim": "Running",
+                      "jans-link": "Running",
+                      "jans-lock": "Running",
+                      "keycloak": "Running"
+                    }
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/data.readonly'
   /api/v1/acrs:
     get:
       tags:
@@ -4573,6 +4630,7 @@ paths:
                     - uma_rpt_policy
                     - uma_rpt_claims
                     - uma_claims_gathering
+                    - access_evaluation
                     - consent_gathering
                     - dynamic_scope
                     - spontaneous_scope
@@ -7732,7 +7790,8 @@ paths:
           examples:
             Field value example:
               description: Field value example
-              value: 'applicationType=web,persistClientAuthorizations=true'
+              value: >-
+                userDn=d5552516-4436-4908-ab36-3e9725246304,expirationDate>2025-09-25,expirationDate<2026-10-15
       responses:
         '200':
           description: Ok
@@ -12074,7 +12133,7 @@ paths:
           examples:
             Field value example:
               description: Field value example
-              value: 'applicationType=web,persistClientAuthorizations=true'
+              value: 'displayName=saml-idp,realm=jans'
       responses:
         '200':
           description: Ok
@@ -13461,21 +13520,19 @@ components:
           $ref: '#/components/schemas/AttributeValidation'
         tooltip:
           type: string
-        selected:
+        whitePagesCanView:
           type: boolean
         userCanView:
-          type: boolean
-        adminCanView:
           type: boolean
         adminCanEdit:
           type: boolean
         userCanEdit:
           type: boolean
-        adminCanAccess:
+        adminCanView:
           type: boolean
         userCanAccess:
           type: boolean
-        whitePagesCanView:
+        adminCanAccess:
           type: boolean
         baseDn:
           type: string
@@ -13558,6 +13615,10 @@ components:
         mtlsParEndpoint:
           type: string
         mtlsDeviceAuthzEndpoint:
+          type: string
+        accessEvaluationAllowBasicClientAuthorization:
+          type: boolean
+        accessEvaluationScriptName:
           type: string
         requireRequestObjectEncryption:
           type: boolean
@@ -14101,7 +14162,7 @@ components:
           type: boolean
         disableU2fEndpoint:
           type: boolean
-        deviceSessionLifetimeInSeconds:
+        authorizationChallengeSessionLifetimeInSeconds:
           type: integer
           format: int32
         rotateDeviceSecret:
@@ -14290,6 +14351,7 @@ components:
               - METRIC
               - STAT
               - PAR
+              - ACCESS_EVALUATION
               - SSA
         httpLoggingEnabled:
           type: boolean
@@ -15101,10 +15163,10 @@ components:
           type: array
           items:
             type: object
-        value:
-          type: object
         displayValue:
           type: string
+        value:
+          type: object
     LocalizedString:
       type: object
       properties:
@@ -15405,6 +15467,7 @@ components:
             - uma_rpt_policy
             - uma_rpt_claims
             - uma_claims_gathering
+            - access_evaluation
             - consent_gathering
             - dynamic_scope
             - spontaneous_scope
@@ -16536,6 +16599,9 @@ components:
           type: integer
           description: Admin UI Session Timeout
           format: int32
+        allowSmtpKeystoreEdit:
+          type: boolean
+          description: Admin UI allow SMTP Keystore Edit
         additionalParameters:
           type: array
           description: Additional Authentication Parameters
@@ -16581,6 +16647,8 @@ components:
           type: string
         customerLastName:
           type: string
+        licenseExpired:
+          type: boolean
     SSARequest:
       type: object
       properties:
@@ -17647,3 +17715,4 @@ components:
             'https://jans.io/oauth/config/token.readonly': View Token details
             'https://jans.io/oauth/config/token.write': Manage Token details
             'https://jans.io/oauth/config/token.delete': Delete Token details
+            'https://jans.io/oauth/config/data.readonly': View Config-API related data

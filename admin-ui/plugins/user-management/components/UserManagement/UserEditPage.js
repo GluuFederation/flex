@@ -40,6 +40,8 @@ function UserEditPage() {
       navigate('/user/usersmanagement')
     }
   }, [redirectToUserListPage])
+
+
   const createCustomAttributes = (values) => {
     let customAttributes = []
     if (values) {
@@ -55,8 +57,8 @@ function UserEditPage() {
             } else {
               values[key]
                 ? val.push(
-                    moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
-                  )
+                  moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
+                )
                 : null
               value = values[key]
                 ? moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
@@ -91,7 +93,7 @@ function UserEditPage() {
     }
   }
 
-  const submitData = (values) => {
+  const submitData = (values, modifiedFields,usermessage) => {
     let customAttributes = createCustomAttributes(values)
     let inum = userDetails.inum
 
@@ -112,6 +114,15 @@ function UserEditPage() {
         'jansCustomPerson',
       ]
     }
+
+    const postValue = Object.keys(modifiedFields).map((key) => {
+      return {
+        [key]: modifiedFields[key],
+      }
+    });
+    submitableValues['modifiedFields'] = postValue
+    submitableValues['performedOn'] = {user_inum: userDetails.inum, useId: userDetails.displayName}
+    submitableValues['action_message'] = usermessage
 
     dispatch(updateUser(submitableValues))
   }

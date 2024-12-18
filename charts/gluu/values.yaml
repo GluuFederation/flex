@@ -19,24 +19,6 @@ installer-settings:
       enabled: ""
       arnAcmCert: ""
     vpcCidr: "0.0.0.0/0"
-  couchbase:
-    clusterName: ""
-    namespace: ""
-    lowResourceInstall: ""
-    install: ""
-    customFileOverride: ""
-    backup:
-      incrementalSchedule: ""
-      fullSchedule: ""
-      retentionTime: ""
-      storageSize: ""
-    # Couchbase cert related keys
-    subjectAlternativeName: ""
-    commonName: ""
-    # Couchbase cluster yaml generator keys
-    totalNumberOfExpectedUsers: ""
-    totalNumberOfExpectedTransactionsPerSec: ""
-    volumeType: ""
   volumeProvisionStrategy: ""
   postgres:
     install: ""
@@ -103,7 +85,7 @@ admin-ui:
     # -- Image  to use for deploying.
     repository: ghcr.io/gluufederation/flex/admin-ui
     # -- Image  tag to use for deploying.
-    tag: 5.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -206,7 +188,7 @@ auth-server:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/auth-server
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -285,7 +267,7 @@ auth-server-key-rotation:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/certmanager
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Auth server key rotation keys life in hours
@@ -369,22 +351,6 @@ config:
     cnCacheType: NATIVE_PERSISTENCE
     # -- The name of the Kubernetes ConfigMap that will hold the configuration layer
     cnConfigKubernetesConfigMap: cn
-    # -- The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Gluu.
-    cnCouchbaseBucketPrefix: jans
-    # -- Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security > Root Certificate. In mTLS setups this is not required.
-    cnCouchbaseCrt: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
-    # -- The number of replicas per index created. Please note that the number of index nodes must be one greater than the number of index replicas. That means if your couchbase cluster only has 2 index nodes you cannot place the number of replicas to be higher than 1.
-    cnCouchbaseIndexNumReplica: 0
-    # -- Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol .
-    cnCouchbasePassword: P@ssw0rd
-    # -- The Couchbase super user (admin) username. This user is used during initialization only.
-    cnCouchbaseSuperUser: admin
-    # -- Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol
-    cnCouchbaseSuperUserPassword: Test1234#
-    # -- Couchbase URL. Used only when global.cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster
-    cnCouchbaseUrl: cbgluu.default.svc.cluster.local
-    # -- Couchbase restricted user. Used only when global.cnPersistenceType is hybrid or couchbase.
-    cnCouchbaseUser: gluu
     # [google_envs] Envs related to using Google
     # -- Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
     cnGoogleSecretManagerServiceAccount: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
@@ -443,12 +409,12 @@ config:
     cnScimProtectionMode: "OAUTH"
     # -- Specify data that should be saved in persistence (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`.
     #{
-    #  "default": "<couchbase|sql>",
-    #  "user": "<couchbase|sql>",
-    #  "site": "<couchbase|sql>",
-    #  "cache": "<couchbase|sql>",
-    #  "token": "<couchbase|sql>",
-    #  "session": "<couchbase|sql>",
+    #  "default": "<sql>",
+    #  "user": "<sql>",
+    #  "site": "<sql>",
+    #  "cache": "<sql>",
+    #  "token": "<sql>",
+    #  "session": "<sql>",
     #}
     cnPersistenceHybridMapping: "{}"
     # -- Redis Sentinel Group. Often set when `config.configmap.cnRedisType` is set to `SENTINEL`. Can be used when  `config.configmap.cnCacheType` is set to `REDIS`.
@@ -467,6 +433,10 @@ config:
     lbAddr: ""
     # -- Quarkus transaction recovery. When using MySQL, there could be issue regarding XA_RECOVER_ADMIN; refer to https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_xa-recover-admin for details.
     quarkusTransactionEnableRecovery: true
+    # -- Keycloak  admin UI password
+    kcAdminPassword: Test1234#
+    # -- Keycloak admin UI username
+    kcAdminUsername: admin
     # -- Keycloak logging level
     kcLogLevel: INFO
     # -- Keycloak database vendor name (default to MySQL server). To use PostgreSQL server, change the value to postgres.
@@ -497,7 +467,7 @@ config:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/configurator
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Organization name. Used for certificate creation.
@@ -540,7 +510,7 @@ config:
    # -- Directory holding all migration files
    migrationDir: /ce-migration
    # -- migration data-format depending on persistence backend.
-   # Supported data formats are ldif, couchbase+json, postgresql+json, and mysql+json.
+   # Supported data formats are ldif, postgresql+json, and mysql+json.
    migrationDataFormat: ldif
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
@@ -602,7 +572,7 @@ config-api:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/config-api
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -707,7 +677,7 @@ fido2:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/fido2
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -817,7 +787,7 @@ casa:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/casa
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1022,6 +992,12 @@ global:
       u2fConfigLabels: { }
       # -- u2f config ingress resource additional annotations.
       u2fAdditionalAnnotations: { }
+      # -- Enable endpoint /.well-known/authzen-configuration
+      authzenConfigEnabled: true
+      # -- authzen config ingress resource labels. key app is taken
+      authzenConfigLabels: { }
+      # -- authzen config ingress resource additional annotations.
+      authzenAdditionalAnnotations: { }
       # -- Auth server ingress resource labels. key app is taken
       authServerLabels: { }
       # -- Auth server ingress resource additional annotations.
@@ -1097,7 +1073,7 @@ global:
   cnPrometheusPort: ""
   # -- Document store type to use for shibboleth files DB.
   cnDocumentStoreType: DB
-  # -- Persistence backend to run Gluu with couchbase|hybrid|sql.
+  # -- Persistence backend to run Gluu with hybrid|sql.
   cnPersistenceType: sql
   # -- Open banking external signing jwks uri. Used in SSA Validation.
   cnObExtSigningJwksUri: ""
@@ -1250,6 +1226,8 @@ global:
       fido2ConfigEnabled: false
       # -- Enable endpoint /jans-fido2
       fido2Enabled: false
+      # -- Enable endpoint /.well-known/webauthn
+      fido2WebauthnEnabled: false
       # -- fido2 config ingress resource labels. key app is taken
       fido2ConfigLabels: { }
       # -- fido2 config ingress resource additional annotations.
@@ -1258,6 +1236,10 @@ global:
       fido2Labels: { }
       # -- fido2 ingress resource additional annotations.
       fido2AdditionalAnnotations: { }
+      # -- fido2 webauthn ingress resource labels. key app is taken
+      fido2WebauthnLabels: { }
+      # -- fido2 webauthn ingress resource additional annotations.
+      fido2WebauthnAdditionalAnnotations: { }
   # -- GCE storage kind if using Google disks
   gcePdStorageType: pd-standard
   # -- Boolean flag to enable mapping global.lbIp  to global.fqdn inside pods on clouds that provide static ip for load balancers. On cloud that provide only addresses to the LB this flag will enable a script to actively scan config.configmap.lbAddr and update the hosts file inside the pods automatically.
@@ -1428,14 +1410,6 @@ global:
 
   # -- Path to SQL password file
   cnSqlPasswordFile: /etc/jans/conf/sql_password
-  # -- Path to Couchbase password file
-  cnCouchbasePasswordFile: /etc/jans/conf/couchbase_password
-  # -- Path to Couchbase superuser password file
-  cnCouchbaseSuperuserPasswordFile: /etc/jans/conf/couchbase_superuser_password
-  # -- Path to file contains password for database access
-  kcDbPasswordFile: /etc/jans/conf/kc_db_password
-  # -- Path to file contains Keycloak admin credentials (username and password)
-  kcAdminCredentialsFile: /etc/jans/conf/kc_admin_creds
   kc-scheduler:
     # -- Boolean flag to enable/disable the kc-scheduler cronjob chart.
     enabled: false
@@ -1502,7 +1476,7 @@ persistence:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/persistence-loader
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.
@@ -1588,7 +1562,7 @@ scim:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/scim
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1698,7 +1672,7 @@ link:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/link
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1807,7 +1781,7 @@ saml:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/saml
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1888,7 +1862,7 @@ kc-scheduler:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/kc-scheduler
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.

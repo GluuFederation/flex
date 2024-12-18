@@ -78,7 +78,12 @@
     "authorization_code_id_token": "Authorization code ID token",
     "start_date": "Start Date",
     "end_date": "End Date",
-    "system_status": "System Status"
+    "system_status": "System Status",
+    "config_api":"Config API",
+    "config_api_status":"Config API Status",
+    "key_cloak":"Keycloak",
+    "jans_lock":"Jans Lock",
+    "jans_link":"Jans Link"
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
@@ -467,6 +472,7 @@
     "licenseKey": "License Key",
     "isLicenseActive": "Is License Active",
     "validityPeriod": "License Valid Upto",
+    "isLicenseExpired": "Is License Expired",
     "companyName": "Company Name",
     "customerEmail": "Customer Email",
     "customerName": "Customer Name",
@@ -1485,6 +1491,7 @@
       "customerName": "The customer name of the registered license.",
       "companyName": "The company name of the registered license.",
       "validityPeriod": "The license will expire on following date.",
+      "isLicenseExpired": "Is license expired?",
       "maxActivations": "The maximum allowed activations of this license on different machines.",
       "isLicenseActive": "Is license active?"
     },

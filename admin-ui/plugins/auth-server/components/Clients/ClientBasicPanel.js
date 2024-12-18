@@ -95,7 +95,7 @@ const ClientBasicPanel = ({
 
   const handlePagination = (event, shownResults) => {
     userScopeAction['limit'] = PER_PAGE_SCOPES
-    userScopeAction['startIndex'] = (userScopeAction['startIndex'] ?? 0) + 10
+    userScopeAction['startIndex'] = 0
     if(!userScopeAction.pattern) {
       delete userScopeAction.pattern
     }
