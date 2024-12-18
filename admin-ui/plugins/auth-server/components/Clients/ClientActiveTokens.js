@@ -172,8 +172,7 @@ function ClientActiveTokens({ client }) {
               ),
               creationDate: moment(item.creationDate).format(
                 "YYYY/DD/MM HH:mm:ss"
-              ),
-              tokenType: item.tokenType,
+              )
             };
           })
         : [];
