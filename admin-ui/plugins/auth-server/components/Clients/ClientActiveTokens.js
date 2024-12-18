@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import MaterialTable from "@material-table/core";
-import { Card, CardBody, Col, Row } from "../../../../app/components";
+import { Card, CardBody } from "../../../../app/components";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
 import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
@@ -19,6 +19,7 @@ import {
 import ClientActiveTokenDetailPage from "./ClientActiveTokenDetailPage";
 import { Button } from "Components";
 import dayjs from "dayjs";
+import PropTypes from "prop-types";
 
 function ClientActiveTokens({ client }) {
   const myActions = [];
@@ -325,4 +326,7 @@ function ClientActiveTokens({ client }) {
   );
 }
 
+ClientActiveTokens.propTypes = {
+  client: PropTypes.any,
+};
 export default ClientActiveTokens;

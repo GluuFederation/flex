@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from "Components";
 import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
+import PropTypes from 'prop-types'
 
 const ClientActiveTokenDetailPage = ({ row }) => {
   const { rowData } = row;
@@ -68,4 +69,8 @@ const ClientActiveTokenDetailPage = ({ row }) => {
     </Container>
   );
 };
+
+ClientActiveTokenDetailPage.propTypes = {
+  row: PropTypes.any
+}
 export default ClientActiveTokenDetailPage;

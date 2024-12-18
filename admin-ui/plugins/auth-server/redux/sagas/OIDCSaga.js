@@ -31,8 +31,6 @@ function* newFunction() {
   let token = null;
   if (wholeToken) {
     token = yield select((state) => state.authReducer.token.access_token);
-  } else {
-    token = null;
   }
   const issuer = yield select((state) => state.authReducer.issuer);
   const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(
@@ -46,8 +44,6 @@ function* newTokenFunction() {
   let token = null;
   if (wholeToken) {
     token = yield select((state) => state.authReducer.token.access_token);
-  } else {
-    token = null;
   }
   const issuer = yield select((state) => state.authReducer.issuer);
   const api = new JansConfigApi.TokenApi(
@@ -59,7 +55,7 @@ function* newTokenFunction() {
 export function* getOauthOpenidClients({ payload }) {
   const audit = yield* initAudit();
   try {
-    payload = payload ? payload : { action: {} };
+    payload = payload = payload || { action: {} };
     addAdditionalData(audit, FETCH, OIDC, payload);
     const openIdApi = yield* newFunction();
     const data = yield call(openIdApi.getAllOpenidClients, payload.action);
@@ -159,7 +155,7 @@ export function* getOpenidClientTokens({ payload }) {
 export function* deleteClientToken({ payload }) {
   try {
     const api = yield* newTokenFunction();
-    const data = yield call(api.deleteClientToken, payload.tknCode);
+    yield call(api.deleteClientToken, payload.tknCode);
     yield put(updateToast(true, "success"));
     yield put(deleteClientTokenResponse());
   } catch (error) {
