@@ -93,7 +93,7 @@ function ClientActiveTokens({ client }) {
   };
 
   const handleClear = () => {
-    setPattern({ referenceId: "", scope: "", tokenCode: "" });
+    setPattern({ expirationDateAfter: null, expirationDateBefore: null });
     let startCount = pageNumber * limit;
     let conditionquery = `clnId=${client.inum}`;
     getTokens(startCount, limit, conditionquery);
@@ -243,7 +243,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={handleSearch}
-                  disabled={!pattern.expirationDateAfter && !pattern.expirationDateBefore}
+                  disabled={(pattern.expirationDateAfter !== null && pattern.expirationDateBefore !== null) ? false : true}
                 >
                   {t("actions.search")}
                 </Button>
@@ -253,7 +253,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={handleClear}
-                  disabled={!pattern.expirationDateAfter && !pattern.expirationDateBefore}
+                  disabled={(pattern.expirationDateAfter !== null && pattern.expirationDateBefore !== null) ? false : true}
                 >
                   {t("actions.clear")}
                 </Button>
@@ -263,7 +263,7 @@ function ClientActiveTokens({ client }) {
                   color={`primary-${selectedTheme}`}
                   style={applicationStyle.buttonStyle}
                   onClick={downloadCSV}
-                  disabled={data?.length}
+                  disabled={data?.length > 0 ? false : true}
                 >
                   {t("actions.export_csv")}
                 </Button>
