@@ -8,7 +8,6 @@ from jans.pycloudlib import get_manager
 from jans.pycloudlib import wait_for_persistence
 from jans.pycloudlib.persistence.sql import doc_id_from_dn
 from jans.pycloudlib.persistence.sql import SqlClient
-from jans.pycloudlib.persistence.sql import sync_sql_password
 from jans.pycloudlib.persistence.utils import PersistenceMapper
 from jans.pycloudlib.utils import encode_text
 from jans.pycloudlib.utils import get_random_chars
@@ -25,14 +24,11 @@ def main():
     mapper = PersistenceMapper()
     persistence_groups = mapper.groups().keys()
 
-    if "sql" in persistence_groups:
-        sync_sql_password(manager)
-
     wait_for_persistence(manager)
 
     render_env_config(manager)
 
-    with manager.lock.create_lock("admin-ui-setup"):
+    with manager.create_lock("admin-ui-setup"):
         persistence_setup = PersistenceSetup(manager)
         persistence_setup.import_ldif_files()
         persistence_setup.save_config()
