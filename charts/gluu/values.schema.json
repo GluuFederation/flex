@@ -26,7 +26,7 @@
             "description": "Configuration parameters for setup and initial configuration secret annd config layers used by Gluu services.",
             "type": "object",
             "properties": {
-                "adminPass": {
+                "adminPassword": {
                     "description": "Admin password to login to the UI",
                     "$ref": "#/definitions/password"
                 },
@@ -259,6 +259,35 @@
                 "auth-server": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "destinationRule": {
+                                    "type": "object"
+                                },
+                                "podDisruptionBudget": {
+                                    "type": "object"
+                                },
+                                "virtualService": {
+                                    "type": "object"
+                                },
+                                "pod": {
+                                    "type": "object"
+                                },
+                                "deployment": {
+                                    "type": "object"
+                                },
+                                "horizontalPodAutoscaler": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "enabled": {
                             "description": "Boolean flag to enable/disable auth-server chart. You should never set this to false.",
                             "type": "boolean"
@@ -337,6 +366,110 @@
                             "description": "Endpoint control",
                             "type": "object",
                             "properties": {
+                                "lockConfigLabels": {
+                                    "description": "Lock config ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "lockConfigAdditionalAnnotations": {
+                                    "description": "Lock config ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "lockLabels": {
+                                    "description": "Lock ingress resource labels. key app is taken.",
+                                    "type": "object"
+                                },
+                                "lockAdditionalAnnotations": {
+                                    "description": "Lock ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "openidConfigLabels": {
+                                    "description": "openid-configuration ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "openidAdditionalAnnotations": {
+                                    "description": "openid-configuration ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "deviceCodeLabels": {
+                                    "description": "device-code ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "deviceCodeAdditionalAnnotations": {
+                                    "description": "device-code ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "firebaseMessagingLabels": {
+                                    "description": "Firebase Messaging ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "firebaseMessagingAdditionalAnnotations": {
+                                    "description": "Firebase Messaging ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "uma2ConfigLabels": {
+                                    "description": "uma2 config ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "uma2AdditionalAnnotations": {
+                                    "description": "uma2 config ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "webfingerLabels": {
+                                    "description": "webfinger ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "webfingerAdditionalAnnotations": {
+                                    "description": "webfinger ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "webdiscoveryLabels": {
+                                    "description": "webdiscovery ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "webdiscoveryAdditionalAnnotations": {
+                                    "description": "webfinger ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "u2fConfigLabels": {
+                                    "description": "u2f ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "u2fAdditionalAnnotations": {
+                                    "description": "u2f config ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "authzenConfigLabels": {
+                                    "description": "authzen config ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "authzenAdditionalAnnotations": {
+                                    "description": "authzen config ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "authServerLabels": {
+                                    "description": "Auth server config ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "authServerAdditionalAnnotations": {
+                                    "description": "Auth server ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "authServerProtectedTokenLabels": {
+                                    "description": "Auth server protected token ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "authServerProtectedTokenAdditionalAnnotations": {
+                                    "description": "Auth server protected token ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "authServerProtectedRegisterLabels": {
+                                    "description": "Auth server protected token ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "authServerProtectedRegisterAdditionalAnnotations": {
+                                    "description": "Auth server protected register ingress resource additional annotations.",
+                                    "type": "object"
+                                },
                                 "authServerEnabled": {
                                     "description": "Enable Auth server endpoints /jans-auth",
                                     "type": "boolean"
@@ -369,21 +502,66 @@
                                     "description": "Enable endpoint /.well-known/fido-configuration",
                                     "type": "boolean"
                                 },
+                                "lockConfigEnabled": {
+                                    "description": "Enable endpoint /.well-known/lock-server-configuration",
+                                    "type": "boolean"
+                                },
+                                "lockEnabled": {
+                                    "description": "Enable endpoint /jans-lock",
+                                    "type": "boolean"
+                                },
                                 "authServerProtectedToken": {
-                                    "description": "Enable mTLS on Auth server endpoint /jans-auth/restv1/token",
+                                    "description": "Enable mTLS on Auth server endpoint /jans-auth/restv1/token. Currently not working in Istio.",
                                     "type": "boolean"
                                 },
                                 "authServerProtectedRegister": {
-                                    "description": "Enable mTLS onn Auth server endpoint /jans-auth/restv1/register",
+                                    "description": "Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio.",
+                                    "type": "boolean"
+                                },
+                                "authzenConfigEnabled": {
+                                    "description": "Enable endpoint /.well-known/authzen-configuration",
                                     "type": "boolean"
                                 }
                             }
+                        },
+                        "lockEnabled": {
+                            "description": "Enable jans-lock as service running inside auth-server",
+                            "type": "boolean"
                         }
                     }
                 },
                 "admin-ui": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "destinationRule": {
+                                    "type": "object"
+                                },
+                                "podDisruptionBudget": {
+                                    "type": "object"
+                                },
+                                "virtualService": {
+                                    "type": "object"
+                                },
+                                "pod": {
+                                    "type": "object"
+                                },
+                                "deployment": {
+                                    "type": "object"
+                                },
+                                "horizontalPodAutoscaler": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "enabled": {
                             "description": "Boolean flag to enable/disable admin-ui chart. You should never set this to false.",
                             "type": "boolean"
@@ -400,6 +578,14 @@
                                 "adminUiEnabled": {
                                     "description": "Enable Admin UI endpoints.",
                                     "type": "boolean"
+                                },
+                                "adminUiLabels": {
+                                    "description": "configAPI ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "adminUiAdditionalAnnotations": {
+                                    "description": "ConfigAPI ingress resource additional annotations.",
+                                    "type": "object"
                                 }
                             }
                         }
@@ -408,6 +594,20 @@
                 "auth-server-key-rotation": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "cronjob": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "enabled": {
                             "description": "Boolean flag to enable/disable the auth-server-key rotation cronjob chart.",
                             "type": "boolean"
@@ -502,6 +702,35 @@
                 "config": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "clusterRoleBinding": {
+                                    "type": "object"
+                                },
+                                "configMap": {
+                                    "type": "object"
+                                },
+                                "job": {
+                                    "type": "object"
+                                },
+                                "roleBinding": {
+                                    "type": "object"
+                                },
+                                "role": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "serviceAccount": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "enabled": {
                             "description": "Boolean flag to enable/disable the configuration chart. This normally should always be true",
                             "type": "boolean"
@@ -526,6 +755,35 @@
                 "casa": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "destinationRule": {
+                                    "type": "object"
+                                },
+                                "podDisruptionBudget": {
+                                    "type": "object"
+                                },
+                                "virtualService": {
+                                    "type": "object"
+                                },
+                                "pod": {
+                                    "type": "object"
+                                },
+                                "deployment": {
+                                    "type": "object"
+                                },
+                                "horizontalPodAutoscaler": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "casaServiceName": {
                             "description": "Name of the casa service. Please keep it as default.",
                             "type": "string",
@@ -542,6 +800,14 @@
                                 "casaEnabled": {
                                     "description": " Enable casa endpoints /casa",
                                     "type": "boolean"
+                                },
+                                "casaLabels": {
+                                    "description": "Casa ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "casaAdditionalAnnotations": {
+                                    "description": "Casa ingress resource additional annotations.",
+                                    "type": "object"
                                 }
                             }
                         }
@@ -550,6 +816,32 @@
                 "config-api": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "destinationRule": {
+                                    "type": "object"
+                                },
+                                "podDisruptionBudget": {
+                                    "type": "object"
+                                },
+                                "virtualService": {
+                                    "type": "object"
+                                },
+                                "pod": {
+                                    "type": "object"
+                                },
+                                "deployment": {
+                                    "type": "object"
+                                },
+                                "horizontalPodAutoscaler": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "configApiServerServiceName": {
                             "description": "Name of the config-api service. Please keep it as default.",
                             "type": "string",
@@ -606,6 +898,14 @@
                                 "configApiEnabled": {
                                     "description": "Enable config API endpoints /jans-config-api",
                                     "type": "boolean"
+                                },
+                                "configApiLabels": {
+                                    "description": "configAPI ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "configApiAdditionalAnnotations": {
+                                    "description": "ConfigAPI ingress resource additional annotations.",
+                                    "type": "object"
                                 }
                             }
                         }
@@ -618,6 +918,35 @@
                 "fido2": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "destinationRule": {
+                                    "type": "object"
+                                },
+                                "podDisruptionBudget": {
+                                    "type": "object"
+                                },
+                                "virtualService": {
+                                    "type": "object"
+                                },
+                                "pod": {
+                                    "type": "object"
+                                },
+                                "deployment": {
+                                    "type": "object"
+                                },
+                                "horizontalPodAutoscaler": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "fido2ServiceName": {
                             "description": "Name of the fido2 service. Please keep it as default.",
                             "type": "string",
@@ -659,6 +988,38 @@
                                 "fido2ConfigEnabled": {
                                     "description": "Enable endpoint /.well-known/fido2-configuration",
                                     "type": "boolean"
+                                },
+                                "fido2Enabled": {
+                                    "description": "Enable endpoint /jans-fido2",
+                                    "type": "boolean"
+                                },
+                                "fido2WebauthnEnabled": {
+                                    "description": "Enable endpoint /.well-known/webauthn",
+                                    "type": "boolean"
+                                },
+                                "fido2ConfigLabels": {
+                                    "description": "fido2 config ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "fido2ConfigAdditionalAnnotations": {
+                                    "description": "fido2 config ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "fido2Labels": {
+                                    "description": "fido2 ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "fido2AdditionalAnnotations": {
+                                    "description": "fido2 ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "fido2WebauthnLabels": {
+                                    "description": "fido2 webauthn ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "fido2WebauthnAdditionalAnnotations": {
+                                    "description": "fido2 webauthn ingress resource additional annotations.",
+                                    "type": "object"
                                 }
                             }
                         }
@@ -712,6 +1073,20 @@
                 "persistence": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "job": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "enabled": {
                             "description": "Boolean flag to enable/disable the persistence chart.",
                             "type": "boolean"
@@ -721,6 +1096,35 @@
                 "scim": {
                     "type": "object",
                     "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "destinationRule": {
+                                    "type": "object"
+                                },
+                                "podDisruptionBudget": {
+                                    "type": "object"
+                                },
+                                "virtualService": {
+                                    "type": "object"
+                                },
+                                "pod": {
+                                    "type": "object"
+                                },
+                                "deployment": {
+                                    "type": "object"
+                                },
+                                "horizontalPodAutoscaler": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                }
+                            }
+                        },
                         "enabled": {
                             "description": "Boolean flag to enable/disable the SCIM chart.",
                             "type": "boolean"
@@ -786,6 +1190,22 @@
                                 "scimConfigEnabled": {
                                     "description": "Enable endpoint /.well-known/scim-configuration",
                                     "type": "boolean"
+                                },
+                                "scimConfigLabels": {
+                                    "description": "SCIM config ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "scimConfigAdditionalAnnotations": {
+                                    "description": "SCIM config ingress resource additional annotations.",
+                                    "type": "object"
+                                },
+                                "scimLabels": {
+                                    "description": "SCIM ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "scimAdditionalAnnotations": {
+                                    "description": "SCIM ingress resource additional annotations.",
+                                    "type": "object"
                                 }
                             }
                         }
@@ -838,6 +1258,147 @@
                         },
                         "volumeBindingMode": {
                             "type": "string"
+                        }
+                    }
+                },
+                "link": {
+                    "type": "object",
+                    "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "destinationRule": {
+                                    "type": "object"
+                                },
+                                "podDisruptionBudget": {
+                                    "type": "object"
+                                },
+                                "virtualService": {
+                                    "type": "object"
+                                },
+                                "pod": {
+                                    "type": "object"
+                                },
+                                "deployment": {
+                                    "type": "object"
+                                },
+                                "horizontalPodAutoscaler": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "linkServiceName": {
+                            "description": "Name of the link service. Please keep it as default.",
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        },
+                        "enabled": {
+                            "description": "Boolean flag to enable/disable the link chart.",
+                            "type": "boolean"
+                        },
+                        "appLoggers": {
+                            "type": "object",
+                            "properties": {
+                                "linkLogTarget": {
+                                    "description": "cacherefresh.log target",
+                                    "type": "string",
+                                    "pattern": "^(STDOUT|FILE)$"
+                                },
+                                "linkLogLevel": {
+                                    "description": "cacherefresh.log level",
+                                    "type": "string",
+                                    "pattern": "^(FATAL|ERROR|WARN|INFO|DEBUG|TRACE)$"
+                                },
+                                "persistenceLogLevel": {
+                                    "description": "cacherefresh_persistence.log level",
+                                    "type": "string",
+                                    "pattern": "^(FATAL|ERROR|WARN|INFO|DEBUG|TRACE)$"
+                                },
+                                "persistenceDurationLogTarget": {
+                                    "description": "cacherefresh_persistence_duration.log target",
+                                    "type": "string",
+                                    "pattern": "^(STDOUT|FILE)$"
+                                },
+                                "persistenceDurationLogLevel": {
+                                    "description": "cacherefresh_persistence_duration.log level",
+                                    "type": "string",
+                                    "pattern": "^(FATAL|ERROR|WARN|INFO|DEBUG|TRACE)$"
+                                },
+                                "scriptLogTarget": {
+                                    "description": "cacherefresh_script.log target",
+                                    "type": "string",
+                                    "pattern": "^(STDOUT|FILE)$"
+                                },
+                                "scriptLogLevel": {
+                                    "description": "cacherefresh_script.log level",
+                                    "type": "string",
+                                    "pattern": "^(FATAL|ERROR|WARN|INFO|DEBUG|TRACE)$"
+                                }
+                            }
+                        }
+                    }
+                },
+                "saml": {
+                    "type": "object",
+                    "properties": {
+                        "customAnnotations": {
+                            "type": "object",
+                            "properties": {
+                                "destinationRule": {
+                                    "type": "object"
+                                },
+                                "podDisruptionBudget": {
+                                    "type": "object"
+                                },
+                                "virtualService": {
+                                    "type": "object"
+                                },
+                                "pod": {
+                                    "type": "object"
+                                },
+                                "deployment": {
+                                    "type": "object"
+                                },
+                                "horizontalPodAutoscaler": {
+                                    "type": "object"
+                                },
+                                "service": {
+                                    "type": "object"
+                                },
+                                "secret": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "samlServiceName": {
+                            "description": "Name of the saml service. Please keep it as default.",
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        },
+                        "enabled": {
+                            "description": "Boolean flag to enable/disable the saml chart.",
+                            "type": "boolean"
+                        },
+                        "ingress": {
+                            "description": "Endpoint control",
+                            "type": "object",
+                            "properties": {
+                                "samlEnabled": {
+                                    "description": " Enable SAML endpoints /kc",
+                                    "type": "boolean"
+                                },
+                                "samlLabels": {
+                                    "description": "SAML config ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "samlAdditionalAnnotations": {
+                                    "description": "SAML ingress resource additional annotations.",
+                                    "type": "object"
+                                }
+                            }
                         }
                     }
                 },
@@ -1788,60 +2349,8 @@
                                     "tls"
                                 ],
                                 "properties": {
-                                    "adminUiLabels": {
-                                        "description": "Admin UI ingress resource labels. key app is taken.",
-                                        "type": "object"
-                                    },
-                                    "openidConfigLabels": {
-                                        "description": "openid-configuration ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "uma2ConfigLabels": {
-                                        "description": "uma2 config ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "webfingerLabels": {
-                                        "description": "webfinger ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "webdiscoveryLabels": {
-                                        "description": "webdiscovery ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "scimConfigEnabled": {
-                                        "description": "Enable endpoint /.well-known/scim-configuration",
-                                        "type": "boolean"
-                                    },
-                                    "scimConfigLabels": {
-                                        "description": "SCIM config ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "scimLabels": {
-                                        "description": "SCIM ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "configApiLabels": {
-                                        "description": "configAPI ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "u2fConfigLabels": {
-                                        "description": "u2f ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "fido2ConfigLabels": {
-                                        "description": "fido2 ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "authServerLabels": {
-                                        "description": "Auth server config ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "authServerProtectedTokenLabels": {
-                                        "description": "Auth server protected token ingress resource labels. key app is taken",
-                                        "type": "object"
-                                    },
-                                    "authServerProtectedRedisterLabels": {
-                                        "description": "Auth server protected token ingress resource labels. key app is taken",
+                                    "additionalLabels": {
+                                        "description": "Additional labels that will be added across all ingress definitions in the format of {mylabel: \"myapp\"}",
                                         "type": "object"
                                     },
                                     "additionalAnnotations": {
