@@ -910,7 +910,8 @@
     "export_csv": "Export CSV",
     "filters": "Filters",
     "expiration_date" : "Expiration Date",
-    "authentication_date": "Authentication Date"
+    "authentication_date": "Authentication Date",
+    "creation_date": "Creation Date"
   },
   "links": {
     "support": "https://support.gluu.org/"
