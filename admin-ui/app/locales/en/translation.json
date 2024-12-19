@@ -38,6 +38,7 @@
     "yes": "Yes",
     "change_password": "Change Password",
     "close": "Close",
+    "clear": "Clear",
     "try_again": "Try Again",
     "delete": "Delete",
     "revoke": "Revoke",
@@ -52,7 +53,8 @@
     "add_source_attribute": "Add source attribute",
     "add_source_ldap_server": "Add source LDAP server",
     "remove_source_server": "Remove source server",
-    "copy_to_clipboard": "Copy To Clipboard"
+    "copy_to_clipboard": "Copy To Clipboard",
+    "export_csv":"Export CSV"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -373,7 +375,7 @@
     "script_properties": "Script Properties",
     "umaAuthorizationPolicies": "Authorization Policies",
     "associatedClients": "Associated Clients",
-    "creationDate": "Creation Time",
+    "creationDate": "Creation Date",
     "creatorType": "Creator",
     "iconUrl": "Icon URL",
     "scopes:": "Scopes",
@@ -556,6 +558,13 @@
     "problems_at_last_run": "Problems at the last run",
     "mapping": "Mapping",
     "source": "Source",
+    "expiration_date": "Expiration Date",
+    "created_date": "Created Date",
+    "token_type": "Token Type",
+    "token_code": "Token Code",
+    "deleteable": "Deleteable",
+    "grant_Id": "Grant ID",
+    "reference_id": "Reference ID",
     "createdBy": "Created By",
     "deviceName": "Device Name",
     "OSName": "OS Name",
@@ -789,6 +798,10 @@
     "redirect_uri": "Enter a redirect URI",
     "redirect_uris": "Enter a redirect URI in format (e.g. https:// or schema://",
     "search_pattern": "Search pattern",
+    "search_reference": "Search by reference",
+    "search_scope": "Search by scope",
+    "search_token": "Search by token code",
+    "search_date":"Search by creation date",
     "sector_uri": "Enter the sector URI",
     "sender_email": "Enter the sender email",
     "sender_name": "Enter the sender name",
@@ -807,9 +820,12 @@
     "activate_sql_configuration": "Activate SQL configuration.",
     "script_path": "Enter script file path",
     "iconUrl": "Icon URL",
-    "level": "Level"
+    "level": "Level",
+    "expires_after": "Expiration After Date",
+    "expires_before": "Expiration Before Date"
   },
   "titles": {
+    "activeTokens": "Active Tokens",
     "acrs": "ACRs",
     "active_users": "Actives Users && Access Token Stats",
     "assets": "Jans Assets",
@@ -894,7 +910,8 @@
     "export_csv": "Export CSV",
     "filters": "Filters",
     "expiration_date" : "Expiration Date",
-    "authentication_date": "Authentication Date"
+    "authentication_date": "Authentication Date",
+    "creation_date": "Creation Date"
   },
   "links": {
     "support": "https://support.gluu.org/"
