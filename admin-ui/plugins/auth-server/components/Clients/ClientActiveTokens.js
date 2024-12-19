@@ -178,21 +178,28 @@ function ClientActiveTokens({ client }) {
   useEffect(() => {
     if (updatedToken && Object.keys(updatedToken).length > 0) {
       const result = updatedToken?.items?.length
-        ? updatedToken?.items.map((item) => {
-            return {
-              tokenType: item.tokenType,
-              scope: item.scope,
-              deletable: item.deletable,
-              attributes: item.attributes,
-              grantType: item.grantType,
-              expirationDate: moment(item.expirationDate).format(
-                "YYYY/DD/MM HH:mm:ss"
-              ),
-              creationDate: moment(item.creationDate).format(
-                "YYYY/DD/MM HH:mm:ss"
-              ),
-            };
-          })
+        ? updatedToken?.items
+            .map((item) => {
+              return {
+                tokenType: item.tokenType,
+                scope: item.scope,
+                deletable: item.deletable,
+                attributes: item.attributes,
+                grantType: item.grantType,
+                expirationDate: moment(item.expirationDate).format(
+                  "YYYY/DD/MM HH:mm:ss"
+                ),
+                creationDate: moment(item.creationDate).format(
+                  "YYYY/DD/MM HH:mm:ss"
+                ),
+              };
+            })
+            .sort((a, b) => {
+              // Compare based on creationDate
+              return moment(b.creationDate, "YYYY/DD/MM HH:mm:ss").diff(
+                moment(a.creationDate, "YYYY/DD/MM HH:mm:ss")
+              );
+            })
         : [];
       setData(result);
     }
@@ -305,6 +312,7 @@ function ClientActiveTokens({ client }) {
                       <Button
                         variant="contained"
                         color="primary"
+                        disabled={pattern.dateAfter === null || pattern.dateBefore === null ? true : false} 
                         onClick={() => {
                           handleSearch();
                         }}
@@ -343,13 +351,13 @@ function ClientActiveTokens({ client }) {
                 },
                 { title: `${t("fields.token_type")}`, field: "tokenType" },
                 { title: `${t("fields.grant_type")}`, field: "grantType" },
-             
+
                 {
                   title: `${t("fields.expiration_date")}`,
                   field: "expirationDate",
                 },
               ]}
-              data={data?.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate))}
+              data={data}
               isLoading={loading}
               title=""
               actions={myActions}
