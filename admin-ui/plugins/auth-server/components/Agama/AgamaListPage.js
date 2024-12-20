@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Card, CardBody, Input } from "Components";
+import { Card, Input } from "Components";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useTranslation } from "react-i18next";
 import SetTitle from "Utils/SetTitle";
@@ -34,6 +34,10 @@ import FormLabel from "@mui/material/FormLabel";
 import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
 import { toast } from "react-toastify";
 import axios from "axios";
+import {
+  getAgamaRepository,
+  getAgamaRepositoryFile,
+} from "../../redux/features/agamaSlice";
 
 const dateTimeFormatOptions = {
   year: "2-digit",
@@ -97,32 +101,7 @@ function AgamaListPage() {
 
   async function fetchRespositoryData() {
     try {
-      const response = await axios.get(
-        "https://github.com/orgs/GluuFederation/repositories?q=agama-",
-        {
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
-      if (
-        response.data &&
-        response.data.payload &&
-        response.data.payload.repositories
-      ) {
-        const filteredRepositoriesData =
-          response.data.payload.repositories.filter(
-            (repo) =>
-              !listData.find(
-                (project) =>
-                  project.details.projectMetadata.projectName === repo.name
-              )
-          );
-        setRespositoriesData({
-          loading: false,
-          repositories: filteredRepositoriesData,
-        });
-      }
+      dispatch(getAgamaRepository());
     } catch (error) {
       setRespositoriesData({ loading: false, repositories: [] });
     }
@@ -199,7 +178,10 @@ function AgamaListPage() {
     },
   });
 
-  const { totalItems, loading } = useSelector((state) => state.agamaReducer);
+  const { totalItems, loading, agamaRepostoriesList } = useSelector(
+    (state) => state.agamaReducer
+  );
+
   const agamaList = useSelector((state) => state.agamaReducer.agamaList);
   const permissions = useSelector((state) => state.authReducer.permissions);
   SetTitle(t("titles.agama"));
@@ -392,32 +374,13 @@ function AgamaListPage() {
   }
 
   const handleDeploy = async () => {
-    console.log("Deploying project", repoName);
-
-    let repoUrl = null;
     let file = null;
     try {
-      const response = await axios(
-        `https://api.github.com/repos/GluuFederation/${repoName}/releases/latest`
+      const repo = agamaRepostoriesList.projects.find(
+        (item) => item["repository-name"] === repoName
       );
-      for (const asset of response.data.assets) {
-        if (asset.name.endsWith(".gama")) {
-          repoUrl = asset.browser_download_url;
-          break;
-        }
-      }
-      if (!repoUrl) {
-        toast.error("File not found");
-        return;
-      }
-      file = await convertUrlToByteArray(repoUrl);
-      if (repoName && file) {
-        const object = {
-          name: repoName,
-          file: file,
-        };
-        dispatch(addAgama(object));
-      }
+      dispatch(getAgamaRepositoryFile());
+      // dispatch(addAgama(object));
     } catch (error) {
       toast.error("File not found");
     } finally {
@@ -531,21 +494,22 @@ function AgamaListPage() {
                     maxHeight: "500px",
                     overflowY: "auto",
                     overflowX: "hidden",
-                    alignItems: `${repositoriesData.loading && "center"}`,
                   }}
                 >
-                  {repositoriesData.loading ? (
+                  {loading ? (
                     <CircularProgress />
-                  ) : repositoriesData.repositories?.length ? (
-                    repositoriesData.repositories.map((item, index) => (
+                  ) : agamaRepostoriesList?.projects.length ? (
+                    agamaRepostoriesList.projects.map((item, index) => (
                       <FormControlLabel
                         key={index}
                         control={
                           <Checkbox
-                            checked={repoName === item.name}
+                            checked={repoName === item["repository-name"]}
                             onChange={() =>
                               setRepoName(
-                                repoName === item.name ? null : item.name
+                                repoName === item["repository-name"]
+                                  ? null
+                                  : item["repository-name"]
                               )
                             }
                             sx={{

@@ -5,7 +5,9 @@ const initialState = {
   agamaList: [],
   loading: false,
   totalItems: 0,
-  entriesCount: 0
+  entriesCount: 0,
+  agamaRepostoriesList:[],
+  agamaFileResponse:null
 }
 
 const agamaSlice = createSlice({
@@ -31,7 +33,28 @@ const agamaSlice = createSlice({
     },
     getAddAgamaResponse: (state) => {
       state.loading = false
+    },
+    getAgamaRepository: (state) => {
+     state.loading = true
+    },
+    getAgamaRepositoryFile: (state) => {
+      console.log('action.payload', action)
+      state.loading = true
+     },
+    getAgamaRepositoriesResponse: (state, action) => {
+   
+      state.loading = false
+      if (action.payload) {
+        state.agamaRepostoriesList = action.payload || []
+      }
+    },
+    getAgamaRepositoryFileResponse: (state, action) => {
+      state.loading = false
+      if (action.payload) {
+        state.agamaFileResponse = action.payload || []
+      }
     }
+
   }
 })
 
@@ -40,7 +63,11 @@ export const {
   getAgamaResponse,
   deleteAgama,
   addAgama,
-  getAddAgamaResponse
+  getAddAgamaResponse,
+  getAgamaRepository,
+  getAgamaRepositoriesResponse,
+  getAgamaRepositoryFile,
+  getAgamaRepositoryFileResponse
 } = agamaSlice.actions
 export { initialState }
 export const { actions, reducer, state } = agamaSlice
