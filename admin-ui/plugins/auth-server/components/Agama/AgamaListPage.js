@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Card, CardBody, Input } from "Components";
+import { Card, Input } from "Components";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useTranslation } from "react-i18next";
 import SetTitle from "Utils/SetTitle";
@@ -24,9 +24,20 @@ import CircularProgress from "@mui/material/CircularProgress";
 import InfoIcon from "@mui/icons-material/Info";
 import AgamaProjectConfigModal from "./AgamaProjectConfigModal";
 import { updateToast } from "Redux/features/toastSlice";
-import { isEmpty } from "lodash";
+import { isEmpty, set } from "lodash";
 import { getJsonConfig } from "Plugins/auth-server/redux/features/jsonConfigSlice";
 import SettingsIcon from "@mui/icons-material/Settings";
+import Checkbox from "@mui/material/Checkbox";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
+import { toast } from "react-toastify";
+import axios from "axios";
+import {
+  getAgamaRepository,
+  getAgamaRepositoryFile,
+} from "../../redux/features/agamaSlice";
 
 const dateTimeFormatOptions = {
   year: "2-digit",
@@ -56,6 +67,11 @@ function AgamaListPage() {
   const [shaFileName, setShaFileName] = useState("");
   const [listData, setListData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
+  const [repoName, setRepoName] = useState(null);
+  const [repositoriesData, setRespositoriesData] = useState({
+    loading: true,
+    repositories: [],
+  });
   const configuration = useSelector(
     (state) => state.jsonConfigReducer.configuration
   );
@@ -68,6 +84,7 @@ function AgamaListPage() {
   const selectedTheme = theme.state.theme;
   const themeColors = getThemeColor(selectedTheme);
   const bgThemeColor = { background: themeColors.background };
+
   function convertFileToByteArray(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -82,6 +99,14 @@ function AgamaListPage() {
     });
   }
 
+  async function fetchRespositoryData() {
+    try {
+      dispatch(getAgamaRepository());
+    } catch (error) {
+      setRespositoriesData({ loading: false, repositories: [] });
+    }
+  }
+
   useEffect(() => {
     if (isEmpty(configuration)) {
       dispatch(getJsonConfig({ action: {} }));
@@ -94,7 +119,6 @@ function AgamaListPage() {
       name: projectName,
       file: file,
     };
-
     dispatch(addAgama(object));
 
     setProjectName("");
@@ -154,7 +178,10 @@ function AgamaListPage() {
     },
   });
 
-  const { totalItems, loading } = useSelector((state) => state.agamaReducer);
+  const { totalItems, loading, agamaRepostoriesList } = useSelector(
+    (state) => state.agamaReducer
+  );
+
   const agamaList = useSelector((state) => state.agamaReducer.agamaList);
   const permissions = useSelector((state) => state.authReducer.permissions);
   SetTitle(t("titles.agama"));
@@ -224,6 +251,7 @@ function AgamaListPage() {
         setSelectedFileName(null);
         setGetProjectName(false);
         setSHAfile(null);
+        fetchRespositoryData();
         if (isAgamaEnabled) {
           setShowAddModal(true);
         } else {
@@ -319,6 +347,232 @@ function AgamaListPage() {
             })
           : [...listData];
       setListData(updatedList);
+    }
+  };
+
+  //Modal Tabs
+  const tabNames = [
+    { name: t("menus.upload_agama_project"), path: "" },
+    { name: t("menus.add_community_project"), path: "" },
+  ];
+
+  async function convertUrlToByteArray(repoUrl) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await axios.get(repoUrl, {
+          responseType: "arraybuffer",
+        });
+        if (response && response.data) {
+          const byteArray = new Uint8Array(response.data);
+          resolve(byteArray);
+        }
+      } catch (error) {
+        console.error("Error converting URL to byte array:", error);
+        reject(error);
+      }
+    });
+  }
+
+  const handleDeploy = async () => {
+    let file = null;
+    try {
+      const repo = agamaRepostoriesList.projects.find(
+        (item) => item["repository-name"] === repoName
+      );
+      dispatch(getAgamaRepositoryFile());
+      // dispatch(addAgama(object));
+    } catch (error) {
+      toast.error("File not found");
+    } finally {
+      setShowAddModal(false);
+      setRepoName(null);
+    }
+  };
+
+  const tabToShow = (tabName) => {
+    switch (tabName) {
+      case t("menus.upload_agama_project"):
+        return (
+          <>
+            <ModalBody>
+              <div
+                {...getRootProps1()}
+                className={isDragActive1 ? "active" : "dropzone"}
+              >
+                <input {...getInputProps1()} />
+                {selectedFileName ? (
+                  <strong>Selected File : {selectedFileName}</strong>
+                ) : (
+                  <p>{t("messages.drag_agama_file")}</p>
+                )}
+              </div>
+              <div className="mt-2"></div>
+              <div
+                {...getRootProps2()}
+                className={isDragActive2 ? "active" : "dropzone"}
+              >
+                <input {...getInputProps2()} />
+                {shaFile ? (
+                  <strong>Selected File : {shaFileName}</strong>
+                ) : (
+                  <p>{t("messages.drag_sha_file")}</p>
+                )}
+              </div>
+              <div className="mt-2"></div>
+              <div className="text-danger">
+                {shaFile &&
+                  selectedFileName &&
+                  !shaStatus &&
+                  "SHA256 not verified"}
+              </div>
+              <div className="text-success">
+                {shaFile && selectedFileName && shaStatus && "SHA256 verified"}
+              </div>
+              {getProjectName && (
+                <Input
+                  type="text"
+                  placeholder="Project name"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                />
+              )}
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color={`primary-${selectedTheme}`}
+                style={applicationStyle.buttonStyle}
+                onClick={() => submitData()}
+                disabled={
+                  shaFile && selectedFileName && shaStatus && projectName != ""
+                    ? loading || isConfigLoading
+                      ? true
+                      : false
+                    : true
+                }
+              >
+                {loading || isConfigLoading ? (
+                  <>
+                    <CircularProgress size={12} /> &nbsp;
+                  </>
+                ) : null}
+                {t("actions.add")}
+              </Button>
+              &nbsp;
+              <Button
+                color={`primary-${selectedTheme}`}
+                style={applicationStyle.buttonStyle}
+                onClick={() => {
+                  setShowAddModal(false);
+                  setRepoName(null);
+                }}
+              >
+                {t("actions.cancel")}
+              </Button>
+            </ModalFooter>
+          </>
+        );
+      case t("menus.add_community_project"):
+        return (
+          <>
+            <ModalBody style={{ maxHeight: "" }}>
+              <FormGroup>
+                <FormLabel
+                  style={{
+                    marginBottom: "16px",
+                    fontSize: "12px",
+                    fontWeight: "400",
+                  }}
+                >
+                  {t("titles.select_project_deploy")}
+                </FormLabel>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "0 10px",
+                    maxHeight: "500px",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                  }}
+                >
+                  {loading ? (
+                    <CircularProgress />
+                  ) : agamaRepostoriesList?.projects.length ? (
+                    agamaRepostoriesList.projects.map((item, index) => (
+                      <FormControlLabel
+                        key={index}
+                        control={
+                          <Checkbox
+                            checked={repoName === item["repository-name"]}
+                            onChange={() =>
+                              setRepoName(
+                                repoName === item["repository-name"]
+                                  ? null
+                                  : item["repository-name"]
+                              )
+                            }
+                            sx={{
+                              transform: "scale(1.5)",
+                              paddingTop: "6px",
+                            }}
+                          />
+                        }
+                        label={
+                          <div>
+                            <div>{item.name}</div>
+                            <div style={{ fontSize: "12px", color: "gray" }}>
+                              {item.description}
+                            </div>
+                          </div>
+                        }
+                        sx={{
+                          alignItems: "flex-start",
+                          marginBottom: "16px",
+                        }}
+                      />
+                    ))
+                  ) : (
+                    <div
+                      style={{
+                        fontSize: "15px",
+                        padding: "14px 0 ",
+                      }}
+                    >
+                      {t("messages.no_data_found")}
+                    </div>
+                  )}
+                </div>
+              </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color={`primary-${selectedTheme}`}
+                style={applicationStyle.buttonStyle}
+                disabled={repoName === null}
+                onClick={() => handleDeploy()}
+              >
+                {loading || isConfigLoading ? (
+                  <>
+                    <CircularProgress size={12} /> &nbsp;
+                  </>
+                ) : null}
+                {t("actions.deploy")}
+              </Button>
+              &nbsp;
+              <Button
+                color={`primary-${selectedTheme}`}
+                style={applicationStyle.buttonStyle}
+                onClick={() => {
+                  setShowAddModal(false);
+                  setRepoName(null);
+                }}
+              >
+                {t("actions.cancel")}
+              </Button>
+            </ModalFooter>
+          </>
+        );
     }
   };
 
@@ -419,80 +673,19 @@ function AgamaListPage() {
             }}
           />
         </GluuViewWrapper>
-        <Modal isOpen={showAddModal}>
-          <ModalHeader>{t("titles.add_agama_project")}</ModalHeader>
-          <ModalBody>
-            <div
-              {...getRootProps1()}
-              className={isDragActive1 ? "active" : "dropzone"}
-            >
-              <input {...getInputProps1()} />
-              {selectedFileName ? (
-                <strong>Selected File : {selectedFileName}</strong>
-              ) : (
-                <p>{t("messages.drag_agama_file")}</p>
-              )}
-            </div>
-            <div className="mt-2"></div>
-            <div
-              {...getRootProps2()}
-              className={isDragActive2 ? "active" : "dropzone"}
-            >
-              <input {...getInputProps2()} />
-              {shaFile ? (
-                <strong>Selected File : {shaFileName}</strong>
-              ) : (
-                <p>{t("messages.drag_sha_file")}</p>
-              )}
-            </div>
-            <div className="mt-2"></div>
-            <div className="text-danger">
-              {shaFile &&
-                selectedFileName &&
-                !shaStatus &&
-                "SHA256 not verified"}
-            </div>
-            <div className="text-success">
-              {shaFile && selectedFileName && shaStatus && "SHA256 verified"}
-            </div>
-            {getProjectName && (
-              <Input
-                type="text"
-                placeholder="Project name"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-              />
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color={`primary-${selectedTheme}`}
-              style={applicationStyle.buttonStyle}
-              onClick={() => submitData()}
-              disabled={
-                shaFile && selectedFileName && shaStatus && projectName != ""
-                  ? loading || isConfigLoading
-                    ? true
-                    : false
-                  : true
-              }
-            >
-              {loading || isConfigLoading ? (
-                <>
-                  <CircularProgress size={12} /> &nbsp;
-                </>
-              ) : null}
-              {t("actions.add")}
-            </Button>
-            &nbsp;
-            <Button
-              color={`primary-${selectedTheme}`}
-              style={applicationStyle.buttonStyle}
-              onClick={() => setShowAddModal(false)}
-            >
-              {t("actions.cancel")}
-            </Button>
-          </ModalFooter>
+        <Modal
+          isOpen={showAddModal}
+          size="lg"
+          style={{ maxWidth: "700px", width: "100%" }}
+        >
+          <ModalHeader>{t("titles.add_new_agama_project")}</ModalHeader>
+          <Card>
+            <GluuTabs
+              tabNames={tabNames}
+              tabToShow={tabToShow}
+              withNavigation={true}
+            />
+          </Card>
         </Modal>
       </>
     </>
