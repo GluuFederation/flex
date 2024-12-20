@@ -23,7 +23,7 @@ Docker monolith image packaging for Gluu Flex. This image packs janssen services
 ## Versions
 
 See [Releases](https://github.com/GluuFederation/docker-flex-monolith/releases) for stable versions. This image should never be used in production.
-For bleeding-edge/unstable version, use `gluufederation/monolith:5.0.0_dev`.
+For bleeding-edge/unstable version, use `gluufederation/monolith:0.0.0-nightly`.
 
 ## Environment Variables
 
@@ -60,12 +60,11 @@ Installation depends on the set of environment variables shown below. These envi
 
 ## How to run
 
-Download the compose file of your chosen persistence from mysql, postgres or ldap 
+Download the compose file of your chosen persistence from mysql or postgres
 
 ```bash
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-mysql-compose.yml 
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-postgres-compose.yml 
-wget https://raw.githubusercontent.com/GluuFederation/flex/main/docker-flex-monolith/flex-ldap-compose.yml 
 ```
 
 Download the script files 
@@ -85,7 +84,7 @@ This docker compose file runs two containers, the flex monolith container and my
 To start the containers.
 
 ```bash
-./up.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
+./up.sh #You can pass mysql|postgres as an argument to the script. If you don't pass any, it will default to mysql.
 ```
 
 To view the containers running
@@ -98,7 +97,7 @@ docker compose -f flex-mysql-compose.yml ps
 To stop the containers.
 
 ```bash
-./down.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
+./down.sh #You can pass mysql|postgres as an argument to the script. If you don't pass any, it will default to mysql.
 ```
 
 ## Configure Gluu flex
@@ -133,6 +132,6 @@ After adding the record you can hit endpoints such as https://demoexample.gluu.o
 Remove setup and volumes
 
 ```bash
-./clean.sh #You can pass mysql|postgres|ldap as an argument to the script. If you don't pass any, it will default to mysql.
+./clean.sh #You can pass mysql|postgres as an argument to the script. If you don't pass any, it will default to mysql.
 ```
 

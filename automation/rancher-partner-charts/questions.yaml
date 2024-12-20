@@ -177,37 +177,18 @@ questions:
   type: enum
   group: "Persistence"
   label: Gluu Persistence backend
-  description: "Persistence backend to run Gluu with ldap|couchbase|hybrid|sql|spanner"
+  description: "Persistence backend to run Gluu with hybrid|sql"
   options:
-    - "ldap"
-    - "couchbase"
     - "hybrid"
-    - "spanner"
     - "sql"
-# LDAP
-- variable: global.opendj.enabled
-  default: false
-  type: boolean
-  group: "Persistence"
-  required: true
-  label: Enable installation of OpenDJ
-  description: "Boolean flag to enable/disable the OpenDJ  chart."
-  show_if: "global.cnPersistenceType=ldap||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnLdapUrl
-  default: "opendj:1636"
-  type: hostname
-  group: "Persistence"
-  required: true
-  label: OpenDJ remote URL
-  description: "OpenDJ remote URL. This must be resolvable by the pods"
-  show_if: "global.opendj.enabled=false&&global.cnPersistenceType=ldap||global.cnPersistenceType=hybrid"
+# Hybrid
 - variable: config.configmap.cnPersistenceHybridMapping
   default: "{}"
   required: false
   type: enum
   group: "Persistence"
-  label: Gluu Persistence LDAP mapping
-  description: "Specify data that should be saved in LDAP (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`."
+  label: Gluu Persistence hybrid mapping
+  description: "Specify data that should be saved in persistence (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`."
   options:
     - "default"
     - "user"
@@ -267,135 +248,6 @@ questions:
   type: string
   label: SQL database name
   show_if: "global.cnPersistenceType=sql"
-# Spanner
-- variable: config.configmap.cnGoogleSpannerInstanceId
-  default: ""
-  group: "Persistence"
-  description: "The google spanner instance ID"
-  type: string
-  label: Google Spanner Instance ID
-  show_if: "global.cnPersistenceType=spanner"
-- variable: config.configmap.cnGoogleSpannerDatabaseId
-  default: ""
-  group: "Persistence"
-  description: "The google spanner database ID"
-  type: string
-  label: Google Spanner Database ID
-  show_if: "global.cnPersistenceType=spanner"
-- variable: config.configmap.cnGoogleSecretManagerServiceAccount
-  default: ""
-  group: "Persistence"
-  description: "The service account with access roles/secretmanager.admin to use Google secret manager and/or roles/spanner.databaseUser to use Spanner."
-  type: multiline
-  label: Google Spanner Service Account json
-  show_if: "global.cnPersistenceType=spanner"
-- variable: config.configmap.cnGoogleProjectId
-  default: ""
-  group: "Persistence"
-  description: "The Google Project ID"
-  type: string
-  label: Google Project ID
-  show_if: "global.cnPersistenceType=spanner"
-#Couchbase
-- variable: config.configmap.cnCouchbaseCrt
-  default: ""
-  group: "Persistence"
-  description: "Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security > Root Certificate. In mTLS setups this is not required."
-  type: multiline
-  label: Couchbase certificate authority string
-  show_if: "global.cnPersistenceType=couchbase||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnCouchbaseUrl
-  default: "gluu.cbns.svc.cluster.local"
-  required: false
-  type: hostname
-  group: "Persistence"
-  label: Couchbase host uri
-  description: "Couchbase URL. Used only when global.cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster"
-  show_if: "global.cnPersistenceType=couchbase||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnCouchbaseBucketPrefix
-  default: "gluu"
-  type: string
-  description: "The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Gluu."
-  group: "Persistence"
-  required: true
-  label: The prefix of Couchbase buckets
-  show_if: "global.cnPersistenceType=couchbase||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnCouchbaseIndexNumReplica
-  default: 0
-  type: int
-  description: "The number of replicas per index created. Please note that the number of index nodes must be one greater than the number of index replicas. That means if your couchbase cluster only has 2 index nodes you cannot place the number of replicas to be higher than 1."
-  group: "Persistence"
-  required: true
-  label: The number of replicas per index created
-  show_if: "global.cnPersistenceType=couchbase||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnCouchbaseSuperUser
-  default: "admin"
-  group: "Persistence"
-  description: "he Couchbase super user (admin) user name. This user is used during initialization only."
-  type: string
-  label: The Couchbase super user (admin) user name.
-  valid_chars: "^[a-z]+$"
-  show_if: "global.cnPersistenceType=couchbase||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnCouchbaseSuperUserPassword
-  default: "Test1234#"
-  group: "Persistence"
-  description: "Couchbase password for the super user config.configmap.cnCouchbaseSuperUser  that is used during the initialization and upgrade process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol"
-  type: password
-  label: Couchbase password for the super users
-
-  show_if: "global.cnPersistenceType=couchbase||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnCouchbaseUser
-  default: "gluu"
-  group: "Persistence"
-  description: "Couchbase restricted user, used in Gluu operations with Couchbase. Used only when global.cnPersistenceType is hybrid or couchbase."
-  type: string
-  label: Couchbase restricted username
-  valid_chars: "^[a-z]+$"
-  show_if: "global.cnPersistenceType=couchbase||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnCouchbasePassword
-  default: "Test1234#"
-  group: "Persistence"
-  description: "Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol ."
-  type: password
-  label: Couchbase password for the restricted user
-  show_if: "global.cnPersistenceType=couchbase||global.cnPersistenceType=hybrid"
-
-# ==============================
-#  StorageClass and volume group
-# ==============================
-- variable: global.storageClass.provisioner
-  default: "microk8s.io/hostpath"
-  type: string
-  group: "Volumes"
-  required: true
-  label: StorageClass provisioner
-  show_if: "global.cnPersistenceType=ldap"
-  subquestions:
-  - variable: global.storageClass.allowVolumeExpansion
-    default: true
-    type: boolean
-    group: "Volumes"
-    required: true
-    label: StorageClass Volume expansion
-  - variable: global.storageClass.reclaimPolicy
-    default: "Retain"
-    type: enum
-    group: "Volumes"
-    required: true
-    label: StorageClass reclaimPolicy
-    options:
-      - "Delete"
-      - "Retain"
-  - variable: global.storageClass.volumeBindingMode
-    default: "WaitForFirstConsumer"
-    type: enum
-    group: "Volumes"
-    required: true
-    options:
-      - "WaitForFirstConsumer"
-      - "Immediate"
-    label: StorageClass volumeBindingMode
-
 # ===========
 # Cache group
 # ===========
@@ -491,15 +343,6 @@ questions:
   label: Admin UI password
   description: "Admin password to log in to the UI."
 
-- variable: config.ldapPassword
-  default: "Test1234#"
-  type: password
-  group: "Configuration"
-  required: true
-  label: LDAP password
-  description: "LDAP admin password if OpenDJ is used for persistence"
-  show_if: "global.cnPersistenceType=ldap||global.cnPersistenceType=hybrid"
-
 - variable: global.isFqdnRegistered
   default: true
   required: true
@@ -525,8 +368,6 @@ questions:
     description: "Migration data-format depending on persistence backend."
     options:
       - "ldif"
-      - "couchbase+json"
-      - "spanner+avro"
       - "postgresql+json"
       - "mysql+json"
   - variable: config.migration.migrationDir
@@ -579,7 +420,7 @@ questions:
   type: string
   group: "Configuration"
   required: true
-  label: Project ID 
+  label: Project ID
   description: "Project id of the Google project the secret manager belongs to"
   show_if: "global.configAdapterName=google||global.configSecretAdapter=google"
 
@@ -862,7 +703,7 @@ questions:
 - variable: auth-server.image.tag
   required: true
   type: string
-  default: "1.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The Auth Server Image tag"
   label: Auth Server image tag
   group: "Images"
@@ -891,7 +732,7 @@ questions:
 - variable: admin-ui.image.tag
   required: true
   type: string
-  default: "5.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The AdminUI Image tag"
   label: AdminUI image tag
   group: "Images"
@@ -920,7 +761,7 @@ questions:
 - variable: auth-server-key-rotation.image.tag
   required: true
   type: string
-  default: "1.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The Auth Server Image tag"
   label: Auth Server KeyRotation image tag
   group: "Images"
@@ -949,7 +790,7 @@ questions:
 - variable: casa.image.tag
   required: true
   type: string
-  default: "1.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The Casa Image tag"
   label: Casa image tag
   group: "Images"
@@ -978,7 +819,7 @@ questions:
 - variable: config.image.tag
   required: true
   type: string
-  default: "1.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The Configurator Image tag"
   label: Configurator image tag
   group: "Images"
@@ -1007,7 +848,7 @@ questions:
 - variable: config-api.image.tag
   required: true
   type: string
-  default: "1.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The ConfigAPI Image tag"
   label: ConfigAPI image tag
   group: "Images"
@@ -1036,40 +877,11 @@ questions:
 - variable: fido2.image.tag
   required: true
   type: string
-  default: "1.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The Fido2 Image tag"
   label: Fido2 image tag
   group: "Images"
   show_if: "global.fido2.enabled=true"
-# OpenDJ
-- variable: opendj.image.repository
-  required: true
-  type: string
-  default: "gluufederation/opendj"
-  description: "The OpenDJ Image repository"
-  label: OpenDJ image repo
-  group: "Images"
-  show_if: "global.opendj.enabled=true"
-- variable: opendj.image.pullPolicy
-  required: true
-  type: enum
-  group: "Images"
-  default: IfNotPresent
-  description: "The OpenDJ Image pull policy"
-  label: OpenDJ imagePullPolicy
-  options:
-  - "Always"
-  - "IfNotPresent"
-  - "Never"
-  show_if: "global.opendj.enabled=true"
-- variable: opendj.image.tag
-  required: true
-  type: string
-  default: "5.0.0_dev"
-  description: "The OpenDJ Image tag"
-  label: OpenDJ image tag
-  group: "Images"
-  show_if: "global.opendj.enabled=true"
 # Persistence
 - variable: persistence.image.repository
   required: true
@@ -1094,7 +906,7 @@ questions:
 - variable: persistence.image.tag
   required: true
   type: string
-  default: "1.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The Persistence Image tag"
   label: Persistence image tag
   group: "Images"
@@ -1123,7 +935,7 @@ questions:
 - variable: scim.image.tag
   required: true
   type: string
-  default: "1.1.6_dev"
+  default: "0.0.0-nightly"
   description: "The SCIM Image tag"
   label: SCIM image tag
   group: "Images"
@@ -1177,15 +989,6 @@ questions:
   label: Fido2 Replicas
   description: "Service replica number."
   show_if: "global.fido2.enabled=true"
-# OpenDJ
-- variable: opendj.replicas
-  default: 1
-  required: false
-  type: int
-  group: "Replicas"
-  label: OpenDJ Replicas
-  description: "Service replica number."
-  show_if: "global.opendj.enabled=true"
 # SCIM
 - variable: scim.replicas
   default: 1
@@ -1195,4 +998,3 @@ questions:
   label: SCIM Replicas
   description: "Service replica number."
   show_if: "global.scim.enabled=true"
-

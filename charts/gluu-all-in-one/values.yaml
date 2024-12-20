@@ -14,7 +14,7 @@ orgName: Gluu
 # -- Resource specs.
 # -- State code. Used for certificate creation.
 state: TX
-# -- Persistence backend to run Gluu with couchbase|hybrid|sql|spanner.
+# -- Persistence backend to run Gluu with hybrid|sql.
 cnPersistenceType: sql
 # -- Salt. Used for encoding/decoding sensitive data. If omitted or set to empty string, the value will be self-generated. Otherwise, a 24 alphanumeric characters are allowed as its value.
 salt: ""
@@ -27,6 +27,7 @@ customAnnotations:
   configMap: {}
   cronjob: {}
   deployment: {}
+  pod: {}
   destinationRule: {}
   horizontalPodAutoscaler: {}
   podDisruptionBudget: {}
@@ -57,33 +58,11 @@ configmap:
   containerMetadataName: kubernetes
   # -- The name of the Kubernetes ConfigMap that will hold the configuration layer
   cnConfigKubernetesConfigMap: cn
-  # -- The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Gluu.
-  cnCouchbaseBucketPrefix: jans
-  # -- Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security > Root Certificate. In mTLS setups this is not required.
-  cnCouchbaseCrt: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
-  # -- The number of replicas per index created. Please note that the number of index nodes must be one greater than the number of index replicas. That means if your couchbase cluster only has 2 index nodes you cannot place the number of replicas to be higher than 1.
-  cnCouchbaseIndexNumReplica: 0
-  # -- Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol .
-  cnCouchbasePassword: P@ssw0rd
-  # -- The Couchbase super user (admin) username. This user is used during initialization only.
-  cnCouchbaseSuperUser: admin
-  # -- Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol
-  cnCouchbaseSuperUserPassword: Test1234#
-  # -- Couchbase URL. Used only when cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster
-  cnCouchbaseUrl: cbgluu.default.svc.cluster.local
-  # -- Couchbase restricted user. Used only when cnPersistenceType is hybrid or couchbase.
-  cnCouchbaseUser: gluu
   # [google_envs] Envs related to using Google
   # -- Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when configAdapterName and configSecretAdapter is set to google.
   cnGoogleSecretManagerServiceAccount: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
   # -- Project id of the Google project the secret manager belongs to. Used only when configAdapterName and configSecretAdapter is set to google.
   cnGoogleProjectId: google-project-to-save-config-and-secrets-to
-  # [google_spanner_envs] Envs related to using Google Secret Manager to store config and secret layer
-  # -- Google Spanner ID. Used only when cnPersistenceType is spanner.
-  cnGoogleSpannerInstanceId: ""
-  # -- Google Spanner Database ID. Used only when cnPersistenceType is spanner.
-  cnGoogleSpannerDatabaseId: ""
-  # [google_spanner_envs] END
   # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
   # -- Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when configAdapterName and configSecretAdapter is set to google.
   cnGoogleSecretVersionId: "latest"
@@ -149,12 +128,12 @@ configmap:
   cnSecretKubernetesSecret: cn
   # -- Load balancer address for AWS if the FQDN is not registered.
   lbAddr: ""
-  # -- OpenDJ certificate string. This must be encoded using base64.
-  cnLdapCrt: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
-  # -- OpenDJ key string. This must be encoded using base64.
-  cnLdapKey: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
   # -- Quarkus transaction recovery. When using MySQL, there could be issue regarding XA_RECOVER_ADMIN; refer to https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_xa-recover-admin for details.
   quarkusTransactionEnableRecovery: true
+  # -- Keycloak  admin UI password
+  kcAdminPassword: Test1234#
+  # -- Keycloak admin UI username
+  kcAdminUsername: admin
   # -- Keycloak logging level
   kcLogLevel: INFO
   # -- Keycloak database vendor name (default to MySQL server). To use PostgreSQL server, change the value to postgres.
@@ -218,10 +197,6 @@ auth-server:
     persistenceDurationLogTarget: "FILE"
     # -- jans-auth_persistence_duration.log level
     persistenceDurationLogLevel: "INFO"
-    # -- jans-auth_persistence_ldap_statistics.log target
-    ldapStatsLogTarget: "FILE"
-    # -- jans-auth_persistence_ldap_statistics.log level
-    ldapStatsLogLevel: "INFO"
     # -- jans-auth_script.log target
     scriptLogTarget: "FILE"
     # -- jans-auth_script.log level
@@ -296,6 +271,12 @@ auth-server:
     u2fConfigLabels: { }
     # -- u2f config ingress resource additional annotations.
     u2fAdditionalAnnotations: { }
+    # -- Enable endpoint /.well-known/authzen-configuration
+    authzenConfigEnabled: true
+    # -- authzen config ingress resource labels. key app is taken
+    authzenConfigLabels: { }
+    # -- authzen config ingress resource additional annotations.
+    authzenAdditionalAnnotations: { }
     # -- Auth server ingress resource labels. key app is taken
     authServerLabels: { }
     # -- Auth server ingress resource additional annotations.
@@ -330,7 +311,7 @@ auth-server-key-rotation:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/certmanager
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Auth server key rotation keys life in hours
@@ -376,6 +357,8 @@ auth-server-key-rotation:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: [ ]
+  # -- Add custom job's command. If passed, it will override the default conditional command.
+  customCommand: []
 # --  Admin GUI for configuration of the auth-server
 admin-ui:
   # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.
@@ -433,10 +416,6 @@ config-api:
     persistenceDurationLogTarget: "FILE"
     # -- config-api_persistence_duration.log level
     persistenceDurationLogLevel: "INFO"
-    # -- config-api_persistence_ldap_statistics.log target
-    ldapStatsLogTarget: "FILE"
-    # -- config-api_persistence_ldap_statistics.log level
-    ldapStatsLogLevel: "INFO"
     # -- config-api_script.log target
     scriptLogTarget: "FILE"
     # -- config-api_script.log level
@@ -493,6 +472,8 @@ fido2:
     fido2ConfigEnabled: false
     # -- Enable endpoint /jans-fido2
     fido2Enabled: false
+    # -- Enable endpoint /.well-known/webauthn
+    fido2WebauthnEnabled: false
     # -- fido2 config ingress resource labels. key app is taken
     fido2ConfigLabels: { }
     # -- fido2 config ingress resource additional annotations.
@@ -501,6 +482,10 @@ fido2:
     fido2Labels: { }
     # -- fido2 ingress resource additional annotations.
     fido2AdditionalAnnotations: { }
+    # -- fido2 webauthn ingress resource labels. key app is taken
+    fido2WebauthnLabels: { }
+    # -- fido2 webauthn ingress resource additional annotations.
+    fido2WebauthnAdditionalAnnotations: { }
 scim:
   # -- Name of the scim service. Please keep it as default.
   scimServiceName: scim
@@ -522,10 +507,6 @@ scim:
     persistenceDurationLogTarget: "FILE"
     # -- jans-scim_persistence_duration.log level
     persistenceDurationLogLevel: "INFO"
-    # -- jans-scim_persistence_ldap_statistics.log target
-    ldapStatsLogTarget: "FILE"
-    # -- jans-scim_persistence_ldap_statistics.log level
-    ldapStatsLogLevel: "INFO"
     # -- jans-scim_script.log target
     scriptLogTarget: "FILE"
     # -- jans-scim_script.log level
@@ -565,10 +546,6 @@ link:
     persistenceDurationLogTarget: "FILE"
     # -- cacherefresh_persistence_duration.log level
     persistenceDurationLogLevel: "INFO"
-    # -- cacherefresh_persistence_ldap_statistics.log target
-    ldapStatsLogTarget: "FILE"
-    # -- cacherefresh_persistence_ldap_statistics.log level
-    ldapStatsLogLevel: "INFO"
     # -- cacherefresh_script.log target
     scriptLogTarget: "FILE"
     # -- cacherefresh_script.log level
@@ -602,7 +579,7 @@ testEnviroment: false
 configAdapterName: kubernetes
 # -- The config backend adapter that will hold Gluu secret layer. vault|aws|google|kubernetes
 configSecretAdapter: kubernetes
-# -- Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets and roles/spanner.databaseUser to use Spanner. Leave as this is a sensible default.
+# -- Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets. Leave as this is a sensible default.
 cnGoogleApplicationCredentials: /etc/jans/conf/google-credentials.json
 # The location of the shared credentials file used by the client (see https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html).Leave as this is a sensible default.
 cnAwsSharedCredentialsFile: /etc/jans/conf/aws_shared_credential_file
@@ -616,18 +593,14 @@ cnPrometheusPort: ""
 cnDocumentStoreType: DB
 # -- Path to SQL password file
 cnSqlPasswordFile: /etc/jans/conf/sql_password
-# -- Path to Couchbase password file
-cnCouchbasePasswordFile: /etc/jans/conf/couchbase_password
-# -- Path to Couchbase superuser password file
-cnCouchbaseSuperuserPasswordFile: /etc/jans/conf/couchbase_superuser_password
-# -- Path to file contains password for database access
-kcDbPasswordFile: /etc/jans/conf/kc_db_password
-# -- Path to file contains Keycloak admin credentials (username and password)
-kcAdminCredentialsFile: /etc/jans/conf/kc_admin_creds
 # -- Path to configuration schema file
 cnConfiguratorConfigurationFile: /etc/jans/conf/configuration.json
 # -- Path to dumped configuration schema file
 cnConfiguratorDumpFile: /etc/jans/conf/configuration.out.json
+# -- Use custom configuration schema in existing secrets. Note, the secrets has to contain the key configuration.json or any basename as specified in cnConfiguratorConfigurationFile.
+cnConfiguratorCustomSchema:
+  # -- The name of the secrets used for storing custom configuration schema.
+  secretName: ""
 
 # ingress properties
 istio:
@@ -736,7 +709,7 @@ image:
   # -- Image  to use for deploying.
   repository: ghcr.io/gluufederation/flex/flex-all-in-one
   # -- Image  tag to use for deploying.
-  tag: 5.1.6_dev
+  tag: 0.0.0-nightly
   # -- Image Pull Secrets
   pullSecrets: [ ]
 # -- Service replica number.
@@ -793,7 +766,8 @@ additionalAnnotations: { }
 # - /tmp/custom.sh
 # - /tmp/custom2.sh
 customScripts: [ ]
-
+# -- Add custom pod's command. If passed, it will override the default conditional command.
+customCommand: []
 # -- Responsible for synchronizing Keycloak SAML clients
 kc-scheduler:
   # -- Add custom normal and secret envs to the service
@@ -814,7 +788,7 @@ kc-scheduler:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/kc-scheduler
     # -- Image  tag to use for deploying.
-    tag: 1.1.6_dev
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.
@@ -850,5 +824,7 @@ kc-scheduler:
   # - /tmp/custom.sh
   # - /tmp/custom2.sh
   customScripts: []
+  # -- Add custom job's command. If passed, it will override the default conditional command.
+  customCommand: []
   # -- Boolean flag to enable/disable the kc-scheduler cronjob chart.
   enabled: false

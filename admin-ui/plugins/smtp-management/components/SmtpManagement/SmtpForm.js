@@ -12,8 +12,9 @@ import { testSmtp } from 'Plugins/smtp-management/redux/features/smtpSlice'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-
-function SmtpForm({ item, handleSubmit }) {
+import { putConfigWorker } from "Redux/features/authSlice";
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
@@ -21,8 +22,6 @@ function SmtpForm({ item, handleSubmit }) {
   const [modal, setModal] = useState(false)
   const [hideTestButton, setHideTestButton] = useState(false);
   const [tempItems, setTempItems] = useState(item);
-
-
   const toggle = () => {
     setModal(!modal)
   }
@@ -33,10 +32,10 @@ function SmtpForm({ item, handleSubmit }) {
     connect_protection: item?.connect_protection || "None",
     from_name: item?.from_name || "",
     from_email_address: item?.from_email_address || "",
-    requires_authentication: item?.requires_authentication || "false",
+    requires_authentication: item?.requires_authentication || false,
     smtp_authentication_account_username: item?.smtp_authentication_account_username || "",
     smtp_authentication_account_password: item?.smtp_authentication_account_password || "",
-    trust_host: item?.trust_host || "false",
+    trust_host: item?.trust_host || false,
     key_store: item?.key_store || "",
     key_store_password: item?.key_store_password || "",
     key_store_alias: item?.key_store_alias || "",
@@ -55,10 +54,8 @@ function SmtpForm({ item, handleSubmit }) {
         connect_protection: Yup.string().min(2, 'Connection Protection is required.').required('Connection Protection is required.'),
         from_name: Yup.string().required('From name is required.'),
         from_email_address: Yup.string().email('Please add a valid email address.').required('From email address is required.'),
-        requires_authentication: Yup.string().min(2, 'Connection Protection is required.').required('Authentication is required.'),
         smtp_authentication_account_username: Yup.string().required('SMTP user name is required.'),
         smtp_authentication_account_password: Yup.string().required('SMTP user password is required.'),
-        trust_host: Yup.string().min(2, 'Connection Protection is required.').required('Trust host is required.'),
       }
     ),
     setFieldValue: (field) => {
@@ -193,22 +190,22 @@ function SmtpForm({ item, handleSubmit }) {
             required
           />
         </Col>
-
         <Col sm={8}>
-          <GluuSelectRow
-            label="fields.requires_authentication"
-            name="requires_authentication"
-            value={formik.values.requires_authentication || ''}
-            defaultValue={formik.values.requires_authentication || ''}
-            values={["false", "true"]}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.errors.requires_authentication && formik.touched.requires_authentication}
-            errorMessage={formik.errors.requires_authentication}
-            handleChange={handleChange}
-            required
-          />
+          <GluuToogleRow
+              label="fields.requires_authentication"
+              name="requires_authentication"
+              handler={(e) => {
+                formik.setFieldValue(
+                  'requires_authentication',
+                  e.target.checked,
+                )
+                handleChange(e)
+              }}
+              lsize={5}
+              rsize={7}
+              
+              value={formik.values.requires_authentication || false}
+            />
         </Col>
 
         <Col sm={8}>
@@ -240,25 +237,40 @@ function SmtpForm({ item, handleSubmit }) {
             required
           />
         </Col>
-
         <Col sm={8}>
-          <GluuSelectRow
-            label="fields.trust_host"
-            name="trust_host"
-            value={formik.values.trust_host || ''}
-            defaultValue={formik.values.trust_host || ''}
-            values={["false", "true"]}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={formik.errors.trust_host && formik.touched.trust_host}
-            errorMessage={formik.errors.trust_host}
-            handleChange={handleChange}
-            required
-          />
-
+          <GluuToogleRow
+              label="fields.trust_host"
+              name="trust_host"
+              handler={(e) => {
+                formik.setFieldValue(
+                  'trust_host',
+                  e.target.checked,
+                )
+                handleChange(e)
+              }}
+              lsize={5}
+              rsize={7}
+              
+              value={formik.values.trust_host || false}
+            />
         </Col>
-
+        <Col sm={8}>
+          <GluuToogleRow
+              label="fields.allow_keystore_edit"
+              name="allowKeystoreEdit"
+              handler={(e) => {
+                formik.setFieldValue(
+                  'allowKeystoreEdit',
+                  e.target.checked,
+                )
+                dispatch(putConfigWorker({allowSmtpKeystoreEdit: e.target.checked}));
+              }}
+              lsize={5}
+              rsize={7}
+              
+              value={allowSmtpKeystoreEdit}
+            />
+        </Col>
         <Col sm={8}>
           <GluuInputRow
             label="fields.key_store"
@@ -270,6 +282,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.key_store && formik.touched.key_store}
             errorMessage={formik.errors.key_store}
             handleChange={handleChange}
+            disabled={!allowSmtpKeystoreEdit}
           />
         </Col>
 
@@ -284,6 +297,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.key_store_password && formik.touched.key_store_password}
             errorMessage={formik.errors.key_store_password}
             handleChange={handleChange}
+            disabled={!allowSmtpKeystoreEdit}
           />
         </Col>
 
@@ -298,6 +312,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.key_store_alias && formik.touched.key_store_alias}
             errorMessage={formik.errors.key_store_alias}
             handleChange={handleChange}
+            disabled={!allowSmtpKeystoreEdit}
           />
         </Col>
 
@@ -312,6 +327,7 @@ function SmtpForm({ item, handleSubmit }) {
             showError={formik.errors.signing_algorithm && formik.touched.signing_algorithm}
             errorMessage={formik.errors.signing_algorithm}
             handleChange={handleChange}
+            disabled={!allowSmtpKeystoreEdit}
           />
         </Col>
       </FormGroup>

@@ -74,7 +74,7 @@ jobs:
         if: steps.build_docker_image.outputs.build || github.event_name == 'tags'
         run: |
           sudo apt-get update
-          sudo python3 -m pip install --upgrade pip
+          #sudo python3 -m pip install --upgrade pip
           sudo pip3 install setuptools --upgrade
           sudo pip3 install -r ./automation/requirements.txt
           sudo apt-get update
@@ -87,9 +87,9 @@ jobs:
           REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
           MAIN_VERSION=$(python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-${{ matrix.docker-images }}') ; print(dfparser.labels['org.opencontainers.image.version'])")
           DOCKER_IMAGE=ghcr.io/$REPOSITORY/${{ matrix.docker-images }}
-          VERSION=${MAIN_VERSION}_dev
+          VERSION=${MAIN_VERSION}
           if [[ ${{ matrix.docker-images }} == "flex-monolith" ]]; then
-            VERSION=5.1.6_dev
+            VERSION=0.0.0-nightly
             DOCKER_IMAGE=ghcr.io/$REPOSITORY/monolith
           fi
           BUILD=true
@@ -101,7 +101,7 @@ jobs:
           fi
           TAGS="${DOCKER_IMAGE}:${VERSION}"
           if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\_[a-b]{1}[0-9]{1,3}$ ]]; then
-            TAGS="$TAGS,${DOCKER_IMAGE}:${MAIN_VERSION}_dev"
+            TAGS="$TAGS,${DOCKER_IMAGE}:${MAIN_VERSION}"
           fi
           # If the user passed a manual image tag to build a custom manual image
           MANUAL_IMAGE_TAG=${{ github.event.inputs.image_tag }}
@@ -124,32 +124,32 @@ jobs:
           fi
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "build=${BUILD}" >> $GITHUB_OUTPUT
-          # wait for all images in DEFAULT_ALL to be built before building the all-in-one image as it depends on all other images
           if [[ "flex-all-in-one" =~ "${{ matrix.docker-images }}" ]]; then
-            if [[ ${{ github.event_name != 'pull_request' }} ]]; then
-              TEMP_IMG="admin-ui"
-              for i in $TEMP_IMG; do
-                TEMP_TOKEN=$(curl https://ghcr.io/token\?scope\="repository:gluufederation/flex/$i:pull" | jq -r '.token')
-                while [[ $(curl -s -H "Authorization: Bearer ${TEMP_TOKEN}" https://ghcr.io/v2/gluufederation/flex/$i/tags/list | jq -r '.tags' | grep "$VERSION" | tr -d '[:space:]"') != "$VERSION" ]]; do
-                  echo "Waiting for $i to be built"
-                  sleep 30
-                done
-              done
-            fi
+            echo "Waiting for all images to be built before building the all-in-one image"
+            while true; do
+              echo "Attempting to pull the Docker image"
+              if docker pull ghcr.io/$REPOSITORY/admin-ui:$VERSION; then
+                echo "Docker image pulled successfully"
+                break
+              else
+                echo "Failed to pull Docker image, retrying in 20 seconds"
+                sleep 20
+              fi
+            done
           fi
 
       # UPDATE BUILD DATES INSIDE THE DOCKERFILE BEFORE BUILDING THE DEV IMAGES TRIGGERED BY JENKINS
-      - name: Setup Python 3.7
+      - name: Setup Python 3.10
         if: github.event_name == 'workflow_dispatch'
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: "3.10"
 
       - name: Install Python dependencies
         if: github.event_name == 'workflow_dispatch'
         run: |
           sudo apt-get update
-          sudo python3 -m pip install --upgrade pip
+          #sudo python3 -m pip install --upgrade pip
           sudo pip3 install setuptools --upgrade
           sudo pip3 install -r ./automation/requirements.txt
           sudo apt-get update

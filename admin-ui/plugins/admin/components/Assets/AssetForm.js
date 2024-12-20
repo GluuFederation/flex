@@ -90,7 +90,6 @@ const AssetForm = () => {
                     /^\S*$/,
                     `${t('fields.asset_name')} ${t('messages.no_spaces')}`
                 ),
-            description: Yup.string().required(t('messages.description_error')),
         }),
     })
 

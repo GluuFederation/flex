@@ -27,6 +27,10 @@ const sessionSlice = createSlice({
     getSessions: (state) => {
       state.loading = true
     },
+
+    searchSessions: (state) => {
+      state.loading = true
+    },
     revokeSession: (state) => {
       state.loading = true
     },
@@ -39,6 +43,7 @@ export const {
   handleRevokeSession,
   getSessions,
   revokeSession,
+  searchSessions
 } = sessionSlice.actions
 
 export const { actions, reducer, state } = sessionSlice

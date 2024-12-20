@@ -33,7 +33,8 @@
     }
   },
   "uiConfig": {
-    "sessionTimeoutInMins": 30
+    "sessionTimeoutInMins": 30,
+    "allowSmtpKeystoreEdit": true
   },
   "licenseConfig": {
     "ssa": "%(ssa)s",

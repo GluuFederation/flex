@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { SidebarMenu } from 'Components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { hasPermission } from 'Utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
@@ -17,15 +17,18 @@ import FidoIcon from "Components/SVG/menu/Fido"
 import ScimIcon from "Components/SVG/menu/Scim"
 import SamlIcon from 'Components/SVG/menu/Saml'
 import JansKcLinkIcon from 'Components/SVG/menu/JansKcLinkIcon'
+import {useNavigate } from "react-router-dom";
 import { ThemeContext } from 'Context/theme/themeContext'
 import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached';
 import LockIcon from '@mui/icons-material/Lock';
 import styles from './styles/GluuAppSidebar.style'
+import { auditLogoutLogs } from '../../../../plugins/user-management/redux/features/userSlice'
 
 function GluuAppSidebar() {
   const scopes = useSelector(({ authReducer }) => authReducer.token? authReducer.token.scopes : authReducer.permissions)
+  const { isUserLogout } = useSelector((state) => state.userReducer);
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -33,10 +36,18 @@ function GluuAppSidebar() {
   const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`
   const { classes } = styles()
   const themeColors = getThemeColor(selectedTheme)
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
 
   useEffect(() => {
     setPluginMenus(processMenus())
   }, [])
+
+  useEffect(() => {
+    if (isUserLogout) {
+      navigate("/logout");
+    }
+  }, [isUserLogout])
 
   function getMenuIcon(name) {
     switch (name) {
@@ -85,6 +96,10 @@ function GluuAppSidebar() {
   function hasChildren(plugin) {
     return typeof plugin.children !== 'undefined' && plugin.children.length
   }
+
+  const handleLogout = () => {
+    dispatch(auditLogoutLogs({ message: "User logged out mannually" }));
+  };
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -159,9 +174,10 @@ function GluuAppSidebar() {
 
         {/* -------- Plugins ---------*/}
         <SidebarMenu.Item
+          to="logout"
           icon={<i className="fa fa-fw fa-sign-out mr-2" style={{ fontSize: 28 }}></i>}
           title={t('menus.signout')}
-          to="/logout"
+          handleClick={() => {handleLogout()}}
           textStyle={{ fontSize: '18px' }}
         />
         <div className={classes.waveContainer}>

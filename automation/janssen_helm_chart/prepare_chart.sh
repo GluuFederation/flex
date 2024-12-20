@@ -55,7 +55,7 @@ remove_all <  $temp_chart_folder/charts/config/templates/_helpers.tpl > tmpfile 
 $temp_chart_folder/charts/config/templates/_helpers.tpl
 
 python3 ./automation/janssen_helm_chart/analyze_chart.py
-helm-docs ${temp_chart_folder}
+helm-docs ${temp_chart_folder} --skip-version-footer
 helm package ${temp_chart_folder} -d charts
 helm repo index charts
 echo "Chart preparation is finished!"

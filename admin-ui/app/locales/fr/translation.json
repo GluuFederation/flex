@@ -26,7 +26,12 @@
     "authorization_code_id_token": "Jeton d'identification du code d'autorisation",
     "start_date": "Date de début",
     "end_date": "Date de fin",
-    "system_status": "État du système"
+    "system_status": "État du système",
+    "config_api": "Configurer l'API",
+    "config_api_status": "État de l'API de configuration",
+    "key_cloak": "Keycloak",
+    "jans_lock": "Jans Lock",
+    "jans_link": "Lien Jans"
   },
   "menus": {
     "adminui": "Administratrice",
@@ -43,7 +48,7 @@
     "acrs": "ACRs",
     "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
-    "builtIn" : "Intégré",
+    "builtIn": "Intégré",
     "api": {
       "roles": "Rôles d'accès",
       "permissions": "Autorisations",
@@ -171,6 +176,12 @@
     "ssl_trust_store_password": "Mot de passe du magasin de confiance SSL",
     "jans_assertion_consumer_service_get_url": "URL GET du service consommateur d'assertions Jans",
     "jans_assertion_consumer_service_post_url": "URL POST du service consommateur d'assertions Jans",
+    "jans_id": "ID Jans",
+    "jans_state": "État Jans",
+    "jans_sess_state":"État de la session Jans",
+    "jans_user_dn": "DN de l'utilisateur Jans",
+    "permission_granted_map": "Carte des autorisations accordées",
+    "jans_sess_attr": "Attributs de la session Jans",
     "ssl_key_store_password": "Mot de passe du magasin de clés SSL",
     "customAttributes": "attributs personnalisés",
     "enable_kc": "Activer le lien Jannssen Keycloak",
@@ -348,7 +359,7 @@
     "client_credentials_access_token": "Jeton d'accès aux informations d'identification du client",
     "client_expiration_date": "Date d'expiration du client",
     "client_id": "Identité du client",
-    "client_id_used": "Identifiant client utilisé",
+    "client_id_used": "Identifiant client",
     "client_name": "Nom du client",
     "client_secret": "Secret du client",
     "computation_pool_size": "Taille du pool de calcul",
@@ -484,6 +495,7 @@
     "show_in_configuration_endpoint": "Afficher dans le point de terminaison de configuration",
     "s_id": "ID de session",
     "session_expired": "Session expirée",
+    "allow_keystore_edit": "Modifier le magasin de clés",
     "smtp_server_port": "Port du serveur SMTP",
     "smtp_test_status": "État du test SMTP",
     "smtp_user_name": "Nom d'utilisateur SMTP",
@@ -523,6 +535,7 @@
     "licenseKey": "Clé de licence",
     "isLicenseActive": "La licence est-elle active",
     "validityPeriod": "Licence valide jusqu'à",
+    "isLicenseExpired": "La licence est-elle expirée",
     "companyName": "Nom de la compagnie",
     "customerEmail": "Email client",
     "customerName": "Nom du client",
@@ -532,6 +545,8 @@
     "email": "E-mail",
     "userName": "Nom d'utilisateur",
     "nickName": "Surnom",
+    "modality": "Modalité",
+    "dateAdded": "date ajoutée",
     "resources": "Ressources",
     "resourceId": "Identifiant de la ressource",
     "iconUrl": "URL de l'icône",
@@ -569,13 +584,20 @@
     "updates_at_last_run": "Mises à jour lors de la dernière exécution",
     "problems_at_last_run": "Problèmes lors de la dernière course",
     "mapping": "Mapeamento",
-    "source": "Fonte"
+    "source": "Fonte",
+    "createdBy": "Créé par",
+    "deviceName": "Nom de l'appareil",
+    "OSName": "Nom du système d'exploitation",
+    "OSVersion": "Version du système d'exploitation",
+    "platform": "Plateforme",
+    "authType": "Type d'authentification"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Ajouter une configuration",
+    "credentials": "Credentials",
     "view_configuration": "Afficher la configuration",
     "new_role": "Nouveau rôle",
     "view_trust_relationshi_details": "Voir les détails de la relation de confiance",
@@ -638,6 +660,8 @@
     "resource_not_found_message": "La ressource demandée n'existe pas sur ce serveur. Veuillez contacter l'administrateur du site ou l'équipe d'assistance.",
     "resource_not_found_title": "Ressource introuvable",
     "view_client_details": "Afficher les détails du client",
+    "view_2FA_details": "Afficher les détails de la 2FA",
+    "2FA_details": "les détails de la 2FA",
     "view_script_details": "Afficher les détails du script personnalisé",
     "add_new_user": "Ajouter un utilisateur",
     "no_scope_in_client": "Aucune donnée d'étendue pour ce client",
@@ -771,7 +795,8 @@
     "ssa_management": "SSA Gestion",
     "jans_ink": "Jans Link",
     "change_backend_bind_password": "Modifier le mot de passe de liaison du backend",
-    "add_agama_project": "Ajouter un projet Agama"
+    "add_agama_project": "Ajouter un projet Agama",
+    "export_csv":"Exporter CSV"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1471,6 +1496,22 @@
     "INUM": "INUM",
     "middleName": "Deuxième nom",
     "sn": "Nom de famille",
-    "userConfirmPassword": "Confirmez le mot de passe"
+    "userConfirmPassword": "Confirmez le mot de passe",
+    "deviceName": "Nom de l'appareil",
+    "OSName": "Nom du système d'exploitation",
+    "OSVersion": "Version du système d'exploitation",
+    "platform": "Plateforme",
+    "createdBy": "Créé par",
+    "type": "Type",
+    "domain": "Domaine"
+  },
+  "sessions":{
+    "expirationDate" : "Date d'expiration",
+    "jansId": "ID Jans",
+    "jansState": "État Jans",
+    "jansSessState": "État de la session Jans",
+    "jansUsrDN": "DN de l'utilisateur Jans",
+    "permissionGrantedMap": "Carte des autorisations accordées",
+    "jansSessAttr": "Attribut de la session Jans"
   }
 }

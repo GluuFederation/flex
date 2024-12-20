@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
     yaml="flex-mysql-compose.yml"
 else
 	case "$1" in
-		mysql|ldap|postgres)
+		mysql|postgres)
 			yaml="flex-${1}-compose.yml"
 			;;
 		*)
@@ -23,7 +23,7 @@ if [ -z "$INSTALLED_FLEX_NAME" ]; then
 fi
 
 if [ -z "$FLEX_VERSION" ]; then
-    FLEX_VERSION="5.1.6_dev"
+    FLEX_VERSION="0.0.0-nightly"
 fi
 
 if [ -z "$FLEX_SERVICE_NAME" ]; then
@@ -46,10 +46,3 @@ if ! docker image inspect ${FLEX_IMAGE} &> /dev/null; then
 fi
 export FLEX_IMAGE
 docker compose -f ${yaml} down
-
-
-
-
-
-
-

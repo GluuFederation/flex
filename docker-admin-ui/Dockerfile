@@ -20,7 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=5e7b579f097714d685a6c1e0cedd004df0ce85f8
+ENV JANS_SOURCE_VERSION=c9abc7f8ee7e45c170b7b2c832cf35b3c6d28bd6
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -39,12 +39,11 @@ RUN cd /tmp/jans \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/sql_data_types.json /app/static/rdbm/ \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/ldap_sql_data_type_mapping.json /app/static/rdbm/ \
     && cp -R ${JANS_SETUP_DIR}/static/rdbm/opendj_attributes_syntax.json /app/static/rdbm/ \
-    && cp -R ${JANS_SETUP_DIR}/static/rdbm/sub_tables.json /app/static/rdbm/ \
     && cp ${JANS_SETUP_DIR}/schema/jans_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=969158f9b757291e826cd230db5372cb73918af7
+ENV FLEX_SOURCE_VERSION=b0ab338dd2c0000910a3caa91f12329797561664
 
 RUN mkdir -p /app/templates/admin-ui
 
@@ -137,22 +136,8 @@ ENV CN_SECRET_ADAPTER=vault \
 # Persistence ENV
 # ===============
 
-ENV CN_PERSISTENCE_TYPE=ldap \
-    CN_HYBRID_MAPPING="{}" \
-    CN_LDAP_URL=localhost:1636 \
-    CN_LDAP_USE_SSL=true \
-    CN_COUCHBASE_URL=localhost \
-    CN_COUCHBASE_USER=admin \
-    CN_COUCHBASE_CERT_FILE=/etc/certs/couchbase.crt \
-    CN_COUCHBASE_CONN_TIMEOUT=10000 \
-    CN_COUCHBASE_CONN_MAX_WAIT=20000 \
-    CN_COUCHBASE_SCAN_CONSISTENCY=not_bounded \
-    CN_COUCHBASE_BUCKET_PREFIX=jans \
-    CN_COUCHBASE_TRUSTSTORE_ENABLE=true \
-    CN_COUCHBASE_KEEPALIVE_INTERVAL=30000 \
-    CN_COUCHBASE_KEEPALIVE_TIMEOUT=2500 \
-    CN_GOOGLE_SPANNER_INSTANCE_ID="" \
-    CN_GOOGLE_SPANNER_DATABASE_ID=""
+ENV CN_PERSISTENCE_TYPE=sql \
+    CN_HYBRID_MAPPING="{}"
 
 # ===========
 # Generic ENV
@@ -174,7 +159,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.6" \
+    org.opencontainers.image.version="0.0.0-nightly" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 

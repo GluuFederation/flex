@@ -3,13 +3,13 @@
 # ==============
 
 # original Janssen base version (without suffix)
-ARG BASE_VERSION=1.1.6
-ARG FLEX_BASE_VERSION=5.1.6
+ARG BASE_VERSION=0.0.0-nightly
+ARG FLEX_BASE_VERSION=0.0.0-nightly
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
-ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:${BASE_VERSION}_dev
-ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:${FLEX_BASE_VERSION}_dev
+ARG JANS_AIO_IMAGE=ghcr.io/janssenproject/jans/all-in-one:${BASE_VERSION}
+ARG FLEX_ADMIN_UI_IMAGE=ghcr.io/gluufederation/flex/admin-ui:${FLEX_BASE_VERSION}
 
 # -----------
 # base images
@@ -66,7 +66,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=5e7b579f097714d685a6c1e0cedd004df0ce85f8
+ENV JANS_SOURCE_VERSION=c9abc7f8ee7e45c170b7b2c832cf35b3c6d28bd6
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
@@ -105,7 +105,7 @@ RUN mkdir -p /usr/share/java /var/lib/nginx/html/admin
 COPY app /app
 
 # CN version as env var (with suffix if any, i.e. SNAPSHOT)
-ENV CN_VERSION=1.1.6-SNAPSHOT
+ENV CN_VERSION=
 
 # set directory contains installer code that will be added to Python sys.path
 ENV PYTHONPATH=/app
@@ -141,10 +141,6 @@ ENV JETTY_BASE=/opt/jans/jetty \
     CN_LINK_JAVA_OPTIONS="" \
     CN_SHARE_AUTH_CONF=false \
     CN_SQL_PASSWORD_FILE=/etc/jans/conf/sql_password \
-    CN_COUCHBASE_PASSWORD_FILE=/etc/jans/conf/couchbase_password \
-    CN_COUCHBASE_SUPERUSER_PASSWORD_FILE=/etc/jans/conf/couchbase_superuser_password \
-    CN_LDAP_PASSWORD_FILE=/etc/jans/conf/ldap_password \
-    CN_LDAP_TRUSTSTORE_PASSWORD_FILE=/etc/jans/conf/ldap_truststore_password \
     CN_KEYCLOAK_LINK_JETTY_HOST=127.0.0.1 \
     CN_KEYCLOAK_LINK_JETTY_PORT=9092 \
     CN_KEYCLOAK_LINK_JAVA_OPTIONS="" \
@@ -168,7 +164,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/flex-all-in-one" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.1.6" \
+    org.opencontainers.image.version="0.0.0-nightly" \
     org.opencontainers.image.title="Gluu Flex All-in-One" \
     org.opencontainers.image.description=""
 

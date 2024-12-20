@@ -41,8 +41,11 @@ spec:
           serviceAccountName: {{ .Values.serviceAccountName }}
           containers:
             - name: {{ include "flex-all-in-one.name" . }}-as-key-rotation
-              {{- if (index .Values "auth-server-key-rotation" "customScripts") }}
+              {{- if or (index .Values "auth-server-key-rotation" "customScripts") (index .Values "auth-server-key-rotation" "customCommand") }}
               command:
+                {{- if index .Values "auth-server-key-rotation" "customCommand" }}
+                {{- toYaml (index .Values "auth-server-key-rotation" "customCommand") | nindent 18 }}
+                {{- else }}
                 - /bin/sh
                 - -c
                 - |
@@ -50,6 +53,7 @@ spec:
                     {{- toYaml . | replace "- " "" | nindent 20}}
                     {{- end }}
                     /app/bin/entrypoint.sh
+                {{- end}}
               {{- end}}
               image: "{{ index .Values "auth-server-key-rotation" "image" "repository"  }}:{{ index .Values "auth-server-key-rotation" "image" "tag"  }}"
               env:
@@ -62,9 +66,9 @@ spec:
               {{- with (index .Values "auth-server-key-rotation" "volumeMounts") }}
 {{- toYaml . | nindent 16 }}
               {{- end }}
-                - mountPath: {{ .Values.cnConfiguratorConfigurationFile }}
-                  name: {{ .Release.Name }}-configuration-file
-                  subPath: {{ .Values.cnConfiguratorConfigurationFile | base }}
+              {{- with (include "flex-all-in-one.config.schema" . | fromYaml).volumeMounts }}
+{{- toYaml . | nindent 16 }}
+              {{- end }}
               envFrom:
                 - configMapRef:
                     name: {{ .Release.Name }}-config-cm
@@ -87,9 +91,9 @@ spec:
           {{- with (index .Values "auth-server-key-rotation" "volumes") }}
 {{- toYaml . | nindent 12 }}
           {{- end }}
-            - name: {{ .Release.Name }}-configuration-file
-              secret:
-                secretName: {{ .Release.Name }}-configuration-file
+          {{- with (include "flex-all-in-one.config.schema" . | fromYaml).volumes }}
+{{- toYaml . | nindent 12 }}
+          {{- end }}
           restartPolicy: Never
 {{- end }}
 
@@ -132,8 +136,11 @@ spec:
         {{- end }}
           containers:
             - name: {{ include "flex-all-in-one.name" . }}-kc-scheduler
-              {{- if (index .Values "kc-scheduler" "customScripts") }}
+              {{- if or (index .Values "kc-scheduler" "customScripts") (index .Values "kc-scheduler" "customCommand") }}
               command:
+                {{- if index .Values "kc-scheduler" "customCommand" }}
+                {{- toYaml (index .Values "kc-scheduler" "customCommand") | nindent 18 }}
+                {{- else }}
                 - /bin/sh
                 - -c
                 - |
@@ -141,6 +148,7 @@ spec:
                     {{- toYaml . | replace "- " "" | nindent 20}}
                     {{- end }}
                     /app/bin/entrypoint.sh
+                {{- end}}    
               {{- end}}
               image: "{{ index .Values "kc-scheduler" "image" "repository" }}:{{ index .Values "kc-scheduler" "image" "tag" }}"
               env:
@@ -153,9 +161,9 @@ spec:
               {{- with (index .Values "kc-scheduler" "volumeMounts") }}
 {{- toYaml . | nindent 16 }}
               {{- end }}
-                - mountPath: {{ .Values.cnConfiguratorConfigurationFile }}
-                  name: {{ .Release.Name }}-configuration-file
-                  subPath: {{ .Values.cnConfiguratorConfigurationFile | base }}
+              {{- with (include "flex-all-in-one.config.schema" . | fromYaml).volumeMounts }}
+{{- toYaml . | nindent 16 }}
+              {{- end }}
               envFrom:
                 - configMapRef:
                     name: {{ .Release.Name }}-config-cm
@@ -177,9 +185,9 @@ spec:
           {{- with (index .Values "kc-scheduler" "volumes") }}
 {{- toYaml . | nindent 12 }}
           {{- end }}
-            - name: {{ .Release.Name }}-configuration-file
-              secret:
-                secretName: {{ .Release.Name  }}-configuration-file
+          {{- with (include "flex-all-in-one.config.schema" . | fromYaml).volumes }}
+{{- toYaml . | nindent 12 }}
+          {{- end }}
           restartPolicy: Never
           {{- if not .Values.isFqdnRegistered  }}
           hostAliases:

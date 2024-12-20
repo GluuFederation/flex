@@ -1,6 +1,6 @@
 # gluu-all-in-one
 
-![Version: 5.1.6-dev](https://img.shields.io/badge/Version-5.1.6--dev-informational?style=flat-square) ![AppVersion: 5.1.6-dev](https://img.shields.io/badge/AppVersion-5.1.6--dev-informational?style=flat-square)
+![Version: 0.0.0-nightly](https://img.shields.io/badge/Version-0.0.0--nightly-informational?style=flat-square) ![AppVersion: 0.0.0-nightly](https://img.shields.io/badge/AppVersion-0.0.0--nightly-informational?style=flat-square)
 
 Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
 
@@ -34,10 +34,11 @@ Kubernetes: `>=v1.22.0-0`
 | admin-ui.ingress.adminUiLabels | object | `{}` | Admin UI ingress resource labels. key app is taken. |
 | adminPassword | string | `"Test1234#"` | Admin password to log in to the UI. |
 | alb.ingress | bool | `false` | switches the service to Nodeport for ALB ingress |
-| auth-server | object | `{"appLoggers":{"auditStatsLogLevel":"INFO","auditStatsLogTarget":"FILE","authLogLevel":"INFO","authLogTarget":"STDOUT","enableStdoutLogPrefix":"true","httpLogLevel":"INFO","httpLogTarget":"FILE","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"authEncKeys":"RSA1_5 RSA-OAEP","authSigKeys":"RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512","enabled":true,"ingress":{"authServerAdditionalAnnotations":{},"authServerEnabled":true,"authServerLabels":{},"authServerProtectedRegister":false,"authServerProtectedRegisterAdditionalAnnotations":{},"authServerProtectedRegisterLabels":{},"authServerProtectedToken":false,"authServerProtectedTokenAdditionalAnnotations":{},"authServerProtectedTokenLabels":{},"deviceCodeAdditionalAnnotations":{},"deviceCodeEnabled":true,"deviceCodeLabels":{},"firebaseMessagingAdditionalAnnotations":{},"firebaseMessagingEnabled":true,"firebaseMessagingLabels":{},"lockAdditionalAnnotations":{},"lockConfigAdditionalAnnotations":{},"lockConfigEnabled":false,"lockConfigLabels":{},"lockEnabled":false,"lockLabels":{},"openidAdditionalAnnotations":{},"openidConfigEnabled":true,"openidConfigLabels":{},"u2fAdditionalAnnotations":{},"u2fConfigEnabled":true,"u2fConfigLabels":{},"uma2AdditionalAnnotations":{},"uma2ConfigEnabled":true,"uma2ConfigLabels":{},"webdiscoveryAdditionalAnnotations":{},"webdiscoveryEnabled":true,"webdiscoveryLabels":{},"webfingerAdditionalAnnotations":{},"webfingerEnabled":true,"webfingerLabels":{}},"lockEnabled":false}` | Parameters used globally across all services helm charts. |
-| auth-server-key-rotation | object | `{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","enabled":true,"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/certmanager","tag":"1.1.6_dev"},"initKeysLife":48,"keysLife":48,"keysPushDelay":0,"keysPushStrategy":"NEWER","keysStrategy":"NEWER","lifecycle":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Responsible for regenerating auth-keys per x hours |
+| auth-server | object | `{"appLoggers":{"auditStatsLogLevel":"INFO","auditStatsLogTarget":"FILE","authLogLevel":"INFO","authLogTarget":"STDOUT","enableStdoutLogPrefix":"true","httpLogLevel":"INFO","httpLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"authEncKeys":"RSA1_5 RSA-OAEP","authSigKeys":"RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512","enabled":true,"ingress":{"authServerAdditionalAnnotations":{},"authServerEnabled":true,"authServerLabels":{},"authServerProtectedRegister":false,"authServerProtectedRegisterAdditionalAnnotations":{},"authServerProtectedRegisterLabels":{},"authServerProtectedToken":false,"authServerProtectedTokenAdditionalAnnotations":{},"authServerProtectedTokenLabels":{},"authzenAdditionalAnnotations":{},"authzenConfigEnabled":true,"authzenConfigLabels":{},"deviceCodeAdditionalAnnotations":{},"deviceCodeEnabled":true,"deviceCodeLabels":{},"firebaseMessagingAdditionalAnnotations":{},"firebaseMessagingEnabled":true,"firebaseMessagingLabels":{},"lockAdditionalAnnotations":{},"lockConfigAdditionalAnnotations":{},"lockConfigEnabled":false,"lockConfigLabels":{},"lockEnabled":false,"lockLabels":{},"openidAdditionalAnnotations":{},"openidConfigEnabled":true,"openidConfigLabels":{},"u2fAdditionalAnnotations":{},"u2fConfigEnabled":true,"u2fConfigLabels":{},"uma2AdditionalAnnotations":{},"uma2ConfigEnabled":true,"uma2ConfigLabels":{},"webdiscoveryAdditionalAnnotations":{},"webdiscoveryEnabled":true,"webdiscoveryLabels":{},"webfingerAdditionalAnnotations":{},"webfingerEnabled":true,"webfingerLabels":{}},"lockEnabled":false}` | Parameters used globally across all services helm charts. |
+| auth-server-key-rotation | object | `{"additionalAnnotations":{},"additionalLabels":{},"customCommand":[],"customScripts":[],"dnsConfig":{},"dnsPolicy":"","enabled":true,"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/certmanager","tag":"0.0.0-nightly"},"initKeysLife":48,"keysLife":48,"keysPushDelay":0,"keysPushStrategy":"NEWER","keysStrategy":"NEWER","lifecycle":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Responsible for regenerating auth-keys per x hours |
 | auth-server-key-rotation.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
 | auth-server-key-rotation.additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
+| auth-server-key-rotation.customCommand | list | `[]` | Add custom job's command. If passed, it will override the default conditional command. |
 | auth-server-key-rotation.customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
 | auth-server-key-rotation.dnsConfig | object | `{}` | Add custom dns config |
 | auth-server-key-rotation.dnsPolicy | string | `""` | Add custom dns policy |
@@ -45,7 +46,7 @@ Kubernetes: `>=v1.22.0-0`
 | auth-server-key-rotation.image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | auth-server-key-rotation.image.pullSecrets | list | `[]` | Image Pull Secrets |
 | auth-server-key-rotation.image.repository | string | `"ghcr.io/janssenproject/jans/certmanager"` | Image  to use for deploying. |
-| auth-server-key-rotation.image.tag | string | `"1.1.6_dev"` | Image  tag to use for deploying. |
+| auth-server-key-rotation.image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
 | auth-server-key-rotation.initKeysLife | int | `48` | The initial auth server key rotation keys life in hours |
 | auth-server-key-rotation.keysLife | int | `48` | Auth server key rotation keys life in hours |
 | auth-server-key-rotation.keysPushDelay | int | `0` | Delay (in seconds) before pushing private keys to Auth server |
@@ -61,7 +62,7 @@ Kubernetes: `>=v1.22.0-0`
 | auth-server-key-rotation.usrEnvs.secret | object | `{}` | Add custom secret envs to the service variable1: value1 |
 | auth-server-key-rotation.volumeMounts | list | `[]` | Configure any additional volumesMounts that need to be attached to the containers |
 | auth-server-key-rotation.volumes | list | `[]` | Configure any additional volumes that need to be attached to the pod |
-| auth-server.appLoggers | object | `{"auditStatsLogLevel":"INFO","auditStatsLogTarget":"FILE","authLogLevel":"INFO","authLogTarget":"STDOUT","enableStdoutLogPrefix":"true","httpLogLevel":"INFO","httpLogTarget":"FILE","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
+| auth-server.appLoggers | object | `{"auditStatsLogLevel":"INFO","auditStatsLogTarget":"FILE","authLogLevel":"INFO","authLogTarget":"STDOUT","enableStdoutLogPrefix":"true","httpLogLevel":"INFO","httpLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
 | auth-server.appLoggers.auditStatsLogLevel | string | `"INFO"` | jans-auth_audit.log level |
 | auth-server.appLoggers.auditStatsLogTarget | string | `"FILE"` | jans-auth_script.log target |
 | auth-server.appLoggers.authLogLevel | string | `"INFO"` | jans-auth.log level |
@@ -69,8 +70,6 @@ Kubernetes: `>=v1.22.0-0`
 | auth-server.appLoggers.enableStdoutLogPrefix | string | `"true"` | Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e auth-server-script ===> 2022-12-20 17:49:55,744 INFO |
 | auth-server.appLoggers.httpLogLevel | string | `"INFO"` | http_request_response.log level |
 | auth-server.appLoggers.httpLogTarget | string | `"FILE"` | http_request_response.log target |
-| auth-server.appLoggers.ldapStatsLogLevel | string | `"INFO"` | jans-auth_persistence_ldap_statistics.log level |
-| auth-server.appLoggers.ldapStatsLogTarget | string | `"FILE"` | jans-auth_persistence_ldap_statistics.log target |
 | auth-server.appLoggers.persistenceDurationLogLevel | string | `"INFO"` | jans-auth_persistence_duration.log level |
 | auth-server.appLoggers.persistenceDurationLogTarget | string | `"FILE"` | jans-auth_persistence_duration.log target |
 | auth-server.appLoggers.persistenceLogLevel | string | `"INFO"` | jans-auth_persistence.log level |
@@ -80,7 +79,7 @@ Kubernetes: `>=v1.22.0-0`
 | auth-server.authEncKeys | string | `"RSA1_5 RSA-OAEP"` | space-separated key algorithm for encryption (default to `RSA1_5 RSA-OAEP`) |
 | auth-server.authSigKeys | string | `"RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512"` | space-separated key algorithm for signing (default to `RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512`) |
 | auth-server.enabled | bool | `true` | Boolean flag to enable/disable auth-server chart. You should never set this to false. |
-| auth-server.ingress | object | `{"authServerAdditionalAnnotations":{},"authServerEnabled":true,"authServerLabels":{},"authServerProtectedRegister":false,"authServerProtectedRegisterAdditionalAnnotations":{},"authServerProtectedRegisterLabels":{},"authServerProtectedToken":false,"authServerProtectedTokenAdditionalAnnotations":{},"authServerProtectedTokenLabels":{},"deviceCodeAdditionalAnnotations":{},"deviceCodeEnabled":true,"deviceCodeLabels":{},"firebaseMessagingAdditionalAnnotations":{},"firebaseMessagingEnabled":true,"firebaseMessagingLabels":{},"lockAdditionalAnnotations":{},"lockConfigAdditionalAnnotations":{},"lockConfigEnabled":false,"lockConfigLabels":{},"lockEnabled":false,"lockLabels":{},"openidAdditionalAnnotations":{},"openidConfigEnabled":true,"openidConfigLabels":{},"u2fAdditionalAnnotations":{},"u2fConfigEnabled":true,"u2fConfigLabels":{},"uma2AdditionalAnnotations":{},"uma2ConfigEnabled":true,"uma2ConfigLabels":{},"webdiscoveryAdditionalAnnotations":{},"webdiscoveryEnabled":true,"webdiscoveryLabels":{},"webfingerAdditionalAnnotations":{},"webfingerEnabled":true,"webfingerLabels":{}}` | Enable endpoints in either istio or nginx ingress depending on users choice |
+| auth-server.ingress | object | `{"authServerAdditionalAnnotations":{},"authServerEnabled":true,"authServerLabels":{},"authServerProtectedRegister":false,"authServerProtectedRegisterAdditionalAnnotations":{},"authServerProtectedRegisterLabels":{},"authServerProtectedToken":false,"authServerProtectedTokenAdditionalAnnotations":{},"authServerProtectedTokenLabels":{},"authzenAdditionalAnnotations":{},"authzenConfigEnabled":true,"authzenConfigLabels":{},"deviceCodeAdditionalAnnotations":{},"deviceCodeEnabled":true,"deviceCodeLabels":{},"firebaseMessagingAdditionalAnnotations":{},"firebaseMessagingEnabled":true,"firebaseMessagingLabels":{},"lockAdditionalAnnotations":{},"lockConfigAdditionalAnnotations":{},"lockConfigEnabled":false,"lockConfigLabels":{},"lockEnabled":false,"lockLabels":{},"openidAdditionalAnnotations":{},"openidConfigEnabled":true,"openidConfigLabels":{},"u2fAdditionalAnnotations":{},"u2fConfigEnabled":true,"u2fConfigLabels":{},"uma2AdditionalAnnotations":{},"uma2ConfigEnabled":true,"uma2ConfigLabels":{},"webdiscoveryAdditionalAnnotations":{},"webdiscoveryEnabled":true,"webdiscoveryLabels":{},"webfingerAdditionalAnnotations":{},"webfingerEnabled":true,"webfingerLabels":{}}` | Enable endpoints in either istio or nginx ingress depending on users choice |
 | auth-server.ingress.authServerAdditionalAnnotations | object | `{}` | Auth server ingress resource additional annotations. |
 | auth-server.ingress.authServerEnabled | bool | `true` | Enable Auth server endpoints /jans-auth |
 | auth-server.ingress.authServerLabels | object | `{}` | Auth server ingress resource labels. key app is taken |
@@ -90,6 +89,9 @@ Kubernetes: `>=v1.22.0-0`
 | auth-server.ingress.authServerProtectedToken | bool | `false` | Enable mTLS on Auth server endpoint /jans-auth/restv1/token. Currently not working in Istio. |
 | auth-server.ingress.authServerProtectedTokenAdditionalAnnotations | object | `{}` | Auth server protected token ingress resource additional annotations. |
 | auth-server.ingress.authServerProtectedTokenLabels | object | `{}` | Auth server protected token ingress resource labels. key app is taken |
+| auth-server.ingress.authzenAdditionalAnnotations | object | `{}` | authzen config ingress resource additional annotations. |
+| auth-server.ingress.authzenConfigEnabled | bool | `true` | Enable endpoint /.well-known/authzen-configuration |
+| auth-server.ingress.authzenConfigLabels | object | `{}` | authzen config ingress resource labels. key app is taken |
 | auth-server.ingress.deviceCodeAdditionalAnnotations | object | `{}` | device-code ingress resource additional annotations. |
 | auth-server.ingress.deviceCodeEnabled | bool | `true` | Enable endpoint /device-code |
 | auth-server.ingress.deviceCodeLabels | object | `{}` | device-code ingress resource labels. key app is taken |
@@ -140,15 +142,15 @@ Kubernetes: `>=v1.22.0-0`
 | cnAwsSecretsReplicaRegionsFile | string | `"/etc/jans/conf/aws_secrets_replica_regions"` |  |
 | cnAwsSharedCredentialsFile | string | `"/etc/jans/conf/aws_shared_credential_file"` |  |
 | cnConfiguratorConfigurationFile | string | `"/etc/jans/conf/configuration.json"` | Path to configuration schema file |
+| cnConfiguratorCustomSchema | object | `{"secretName":""}` | Use custom configuration schema in existing secrets. Note, the secrets has to contain the key configuration.json or any basename as specified in cnConfiguratorConfigurationFile. |
+| cnConfiguratorCustomSchema.secretName | string | `""` | The name of the secrets used for storing custom configuration schema. |
 | cnConfiguratorDumpFile | string | `"/etc/jans/conf/configuration.out.json"` | Path to dumped configuration schema file |
-| cnCouchbasePasswordFile | string | `"/etc/jans/conf/couchbase_password"` | Path to Couchbase password file |
-| cnCouchbaseSuperuserPasswordFile | string | `"/etc/jans/conf/couchbase_superuser_password"` | Path to Couchbase superuser password file |
 | cnDocumentStoreType | string | `"DB"` | Document store type to use for shibboleth files DB. |
-| cnGoogleApplicationCredentials | string | `"/etc/jans/conf/google-credentials.json"` | Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets and roles/spanner.databaseUser to use Spanner. Leave as this is a sensible default. |
-| cnPersistenceType | string | `"sql"` | Persistence backend to run Gluu with couchbase|hybrid|sql|spanner. |
+| cnGoogleApplicationCredentials | string | `"/etc/jans/conf/google-credentials.json"` | Base64 encoded service account. The sa must have roles/secretmanager.admin to use Google secrets. Leave as this is a sensible default. |
+| cnPersistenceType | string | `"sql"` | Persistence backend to run Gluu with hybrid|sql. |
 | cnPrometheusPort | string | `""` | Port used by Prometheus JMX agent (default to empty string). To enable Prometheus JMX agent, set the value to a number. |
 | cnSqlPasswordFile | string | `"/etc/jans/conf/sql_password"` | Path to SQL password file |
-| config-api.appLoggers | object | `{"adminUiAppLoggers":{"adminUiAuditLogLevel":"INFO","adminUiAuditLogTarget":"FILE","adminUiLogLevel":"INFO","adminUiLogTarget":"FILE","enableStdoutLogPrefix":"true"},"configApiLogLevel":"INFO","configApiLogTarget":"STDOUT","enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
+| config-api.appLoggers | object | `{"adminUiAppLoggers":{"adminUiAuditLogLevel":"INFO","adminUiAuditLogTarget":"FILE","adminUiLogLevel":"INFO","adminUiLogTarget":"FILE","enableStdoutLogPrefix":"true"},"configApiLogLevel":"INFO","configApiLogTarget":"STDOUT","enableStdoutLogPrefix":"true","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
 | config-api.appLoggers.adminUiAppLoggers.adminUiAuditLogLevel | string | `"INFO"` | config-api admin-ui plugin audit log level |
 | config-api.appLoggers.adminUiAppLoggers.adminUiAuditLogTarget | string | `"FILE"` | config-api admin-ui plugin audit log target |
 | config-api.appLoggers.adminUiAppLoggers.adminUiLogLevel | string | `"INFO"` | config-api admin-ui plugin log target |
@@ -157,8 +159,6 @@ Kubernetes: `>=v1.22.0-0`
 | config-api.appLoggers.configApiLogLevel | string | `"INFO"` | configapi.log level |
 | config-api.appLoggers.configApiLogTarget | string | `"STDOUT"` | configapi.log target |
 | config-api.appLoggers.enableStdoutLogPrefix | string | `"true"` | Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e config-api_persistence ===> 2022-12-20 17:49:55,744 INFO |
-| config-api.appLoggers.ldapStatsLogLevel | string | `"INFO"` | config-api_persistence_ldap_statistics.log level |
-| config-api.appLoggers.ldapStatsLogTarget | string | `"FILE"` | config-api_persistence_ldap_statistics.log target |
 | config-api.appLoggers.persistenceDurationLogLevel | string | `"INFO"` | config-api_persistence_duration.log level |
 | config-api.appLoggers.persistenceDurationLogTarget | string | `"FILE"` | config-api_persistence_duration.log target |
 | config-api.appLoggers.persistenceLogLevel | string | `"INFO"` | config-api_persistence.log level |
@@ -183,23 +183,11 @@ Kubernetes: `>=v1.22.0-0`
 | configmap.cnAwsSecretsReplicaRegions | list | `[]` |  |
 | configmap.cnCacheType | string | `"NATIVE_PERSISTENCE"` | Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` . |
 | configmap.cnConfigKubernetesConfigMap | string | `"cn"` | The name of the Kubernetes ConfigMap that will hold the configuration layer |
-| configmap.cnCouchbaseBucketPrefix | string | `"jans"` | The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Gluu. |
-| configmap.cnCouchbaseCrt | string | `"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="` | Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security > Root Certificate. In mTLS setups this is not required. |
-| configmap.cnCouchbaseIndexNumReplica | int | `0` | The number of replicas per index created. Please note that the number of index nodes must be one greater than the number of index replicas. That means if your couchbase cluster only has 2 index nodes you cannot place the number of replicas to be higher than 1. |
-| configmap.cnCouchbasePassword | string | `"P@ssw0rd"` | Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol . |
-| configmap.cnCouchbaseSuperUser | string | `"admin"` | The Couchbase super user (admin) username. This user is used during initialization only. |
-| configmap.cnCouchbaseSuperUserPassword | string | `"Test1234#"` | Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol |
-| configmap.cnCouchbaseUrl | string | `"cbgluu.default.svc.cluster.local"` | Couchbase URL. Used only when cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster |
-| configmap.cnCouchbaseUser | string | `"gluu"` | Couchbase restricted user. Used only when cnPersistenceType is hybrid or couchbase. |
 | configmap.cnGoogleProjectId | string | `"google-project-to-save-config-and-secrets-to"` | Project id of the Google project the secret manager belongs to. Used only when configAdapterName and configSecretAdapter is set to google. |
 | configmap.cnGoogleSecretManagerServiceAccount | string | `"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="` | Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when configAdapterName and configSecretAdapter is set to google. |
 | configmap.cnGoogleSecretNamePrefix | string | `"gluu"` | Prefix for Gluu secret in Google Secret Manager. Defaults to gluu. If left janssen-secret secret will be created. Used only when configAdapterName and configSecretAdapter is set to google. |
 | configmap.cnGoogleSecretVersionId | string | `"latest"` | Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when configAdapterName and configSecretAdapter is set to google. |
-| configmap.cnGoogleSpannerDatabaseId | string | `""` | Google Spanner Database ID. Used only when cnPersistenceType is spanner. |
-| configmap.cnGoogleSpannerInstanceId | string | `""` | Google Spanner ID. Used only when cnPersistenceType is spanner. |
 | configmap.cnJettyRequestHeaderSize | int | `8192` | Jetty header size in bytes in the auth server |
-| configmap.cnLdapCrt | string | `"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="` | OpenDJ certificate string. This must be encoded using base64. |
-| configmap.cnLdapKey | string | `"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="` | OpenDJ key string. This must be encoded using base64. |
 | configmap.cnMaxRamPercent | string | `"75.0"` | Value passed to Java option -XX:MaxRAMPercentage |
 | configmap.cnMessageType | string | `"DISABLED"` | Message type (one of POSTGRES, REDIS, or DISABLED) |
 | configmap.cnOpaUrl | string | `"http://opa.opa.svc.cluster.cluster.local:8181/v1"` | URL of OPA server |
@@ -229,6 +217,8 @@ Kubernetes: `>=v1.22.0-0`
 | configmap.cnVaultSecretIdFile | string | `"/etc/certs/vault_secret_id"` | Path to file contains Vault AppRole secret ID. |
 | configmap.cnVaultVerify | bool | `false` | Verify connection to Vault. |
 | configmap.containerMetadataName | string | `"kubernetes"` |  |
+| configmap.kcAdminPassword | string | `"Test1234#"` | Keycloak  admin UI password |
+| configmap.kcAdminUsername | string | `"admin"` | Keycloak admin UI username |
 | configmap.kcDbPassword | string | `"Test1234#"` | Password for Keycloak database access |
 | configmap.kcDbSchema | string | `"keycloak"` | Keycloak database schema name (note that PostgreSQL may using "public" schema). |
 | configmap.kcDbUrlDatabase | string | `"keycloak"` | Keycloak database name |
@@ -248,10 +238,12 @@ Kubernetes: `>=v1.22.0-0`
 | customAnnotations.deployment | object | `{}` |  |
 | customAnnotations.destinationRule | object | `{}` |  |
 | customAnnotations.horizontalPodAutoscaler | object | `{}` |  |
+| customAnnotations.pod | object | `{}` |  |
 | customAnnotations.podDisruptionBudget | object | `{}` |  |
 | customAnnotations.role | object | `{}` |  |
 | customAnnotations.roleBinding | object | `{}` |  |
 | customAnnotations.secret | object | `{}` |  |
+| customCommand | list | `[]` | Add custom pod's command. If passed, it will override the default conditional command. |
 | customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
 | dnsConfig | object | `{}` | Add custom dns config |
 | dnsPolicy | string | `""` | Add custom dns policy |
@@ -268,13 +260,16 @@ Kubernetes: `>=v1.22.0-0`
 | fido2.appLoggers.scriptLogTarget | string | `"FILE"` | fido2_script.log target |
 | fido2.enabled | bool | `true` | Boolean flag to enable/disable the fido2 chart. |
 | fido2.fido2ServiceName | string | `"fido2"` | Name of the fido2 service. Please keep it as default. |
-| fido2.ingress | object | `{"fido2AdditionalAnnotations":{},"fido2ConfigAdditionalAnnotations":{},"fido2ConfigEnabled":false,"fido2ConfigLabels":{},"fido2Enabled":false,"fido2Labels":{}}` | Enable endpoints in either istio or nginx ingress depending on users choice |
+| fido2.ingress | object | `{"fido2AdditionalAnnotations":{},"fido2ConfigAdditionalAnnotations":{},"fido2ConfigEnabled":false,"fido2ConfigLabels":{},"fido2Enabled":false,"fido2Labels":{},"fido2WebauthnAdditionalAnnotations":{},"fido2WebauthnEnabled":false,"fido2WebauthnLabels":{}}` | Enable endpoints in either istio or nginx ingress depending on users choice |
 | fido2.ingress.fido2AdditionalAnnotations | object | `{}` | fido2 ingress resource additional annotations. |
 | fido2.ingress.fido2ConfigAdditionalAnnotations | object | `{}` | fido2 config ingress resource additional annotations. |
 | fido2.ingress.fido2ConfigEnabled | bool | `false` | Enable endpoint /.well-known/fido2-configuration |
 | fido2.ingress.fido2ConfigLabels | object | `{}` | fido2 config ingress resource labels. key app is taken |
 | fido2.ingress.fido2Enabled | bool | `false` | Enable endpoint /jans-fido2 |
 | fido2.ingress.fido2Labels | object | `{}` | fido2 ingress resource labels. key app is taken |
+| fido2.ingress.fido2WebauthnAdditionalAnnotations | object | `{}` | fido2 webauthn ingress resource additional annotations. |
+| fido2.ingress.fido2WebauthnEnabled | bool | `false` | Enable endpoint /.well-known/webauthn |
+| fido2.ingress.fido2WebauthnLabels | object | `{}` | fido2 webauthn ingress resource labels. key app is taken |
 | fqdn | string | `"demoexample.gluu.org"` | Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services. |
 | fullNameOverride | string | `""` |  |
 | hpa | object | `{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50}` | Configure the HorizontalPodAutoscaler |
@@ -283,7 +278,7 @@ Kubernetes: `>=v1.22.0-0`
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
 | image.repository | string | `"ghcr.io/gluufederation/flex/flex-all-in-one"` | Image  to use for deploying. |
-| image.tag | string | `"5.1.6_dev"` | Image  tag to use for deploying. |
+| image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
 | isFqdnRegistered | bool | `false` | Boolean flag to enable mapping lbIp  to fqdn inside pods on clouds that provide static ip for load balancers. On cloud that provide only addresses to the LB this flag will enable a script to actively scan config.configmap.lbAddr and update the hosts file inside the pods automatically. |
 | istio.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
 | istio.additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
@@ -292,9 +287,10 @@ Kubernetes: `>=v1.22.0-0`
 | istio.ingress | bool | `false` | Boolean flag that enables using istio gateway for Gluu. This assumes istio ingress is installed and hence the LB is available. |
 | istio.namespace | string | `"istio-system"` | The namespace istio is deployed in. The is normally istio-system. |
 | istio.tlsSecretName | string | `"istio-tls-certificate"` |  |
-| kc-scheduler | object | `{"additionalAnnotations":{},"additionalLabels":{},"customScripts":[],"dnsConfig":{},"dnsPolicy":"","enabled":false,"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/kc-scheduler","tag":"1.1.6_dev"},"interval":10,"lifecycle":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Responsible for synchronizing Keycloak SAML clients |
+| kc-scheduler | object | `{"additionalAnnotations":{},"additionalLabels":{},"customCommand":[],"customScripts":[],"dnsConfig":{},"dnsPolicy":"","enabled":false,"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/kc-scheduler","tag":"0.0.0-nightly"},"interval":10,"lifecycle":{},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Responsible for synchronizing Keycloak SAML clients |
 | kc-scheduler.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
 | kc-scheduler.additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
+| kc-scheduler.customCommand | list | `[]` | Add custom job's command. If passed, it will override the default conditional command. |
 | kc-scheduler.customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
 | kc-scheduler.dnsConfig | object | `{}` | Add custom dns config |
 | kc-scheduler.dnsPolicy | string | `""` | Add custom dns policy |
@@ -302,7 +298,7 @@ Kubernetes: `>=v1.22.0-0`
 | kc-scheduler.image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | kc-scheduler.image.pullSecrets | list | `[]` | Image Pull Secrets |
 | kc-scheduler.image.repository | string | `"ghcr.io/janssenproject/jans/kc-scheduler"` | Image  to use for deploying. |
-| kc-scheduler.image.tag | string | `"1.1.6_dev"` | Image  tag to use for deploying. |
+| kc-scheduler.image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
 | kc-scheduler.interval | int | `10` | Interval of running the scheduler (in minutes) |
 | kc-scheduler.resources | object | `{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}}` | Resource specs. |
 | kc-scheduler.resources.limits.cpu | string | `"300m"` | CPU limit. |
@@ -314,14 +310,10 @@ Kubernetes: `>=v1.22.0-0`
 | kc-scheduler.usrEnvs.secret | object | `{}` | Add custom secret envs to the service variable1: value1 |
 | kc-scheduler.volumeMounts | list | `[]` | Configure any additional volumesMounts that need to be attached to the containers |
 | kc-scheduler.volumes | list | `[]` | Configure any additional volumes that need to be attached to the pod |
-| kcAdminCredentialsFile | string | `"/etc/jans/conf/kc_admin_creds"` | Path to file contains Keycloak admin credentials (username and password) |
-| kcDbPasswordFile | string | `"/etc/jans/conf/kc_db_password"` | Path to file contains password for database access |
 | lbIp | string | `"22.22.22.22"` | The Loadbalancer IP created by nginx or istio on clouds that provide static IPs. This is not needed if `fqdn` is globally resolvable. |
 | lifecycle | object | `{}` |  |
-| link.appLoggers | object | `{"enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","linkLogLevel":"INFO","linkLogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
+| link.appLoggers | object | `{"enableStdoutLogPrefix":"true","linkLogLevel":"INFO","linkLogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
 | link.appLoggers.enableStdoutLogPrefix | string | `"true"` | Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e link-persistence ===> 2022-12-20 17:49:55,744 INFO |
-| link.appLoggers.ldapStatsLogLevel | string | `"INFO"` | cacherefresh_persistence_ldap_statistics.log level |
-| link.appLoggers.ldapStatsLogTarget | string | `"FILE"` | cacherefresh_persistence_ldap_statistics.log target |
 | link.appLoggers.linkLogLevel | string | `"INFO"` | cacherefresh.log level |
 | link.appLoggers.linkLogTarget | string | `"STDOUT"` | cacherefresh.log target |
 | link.appLoggers.persistenceDurationLogLevel | string | `"INFO"` | cacherefresh_persistence_duration.log level |
@@ -359,10 +351,8 @@ Kubernetes: `>=v1.22.0-0`
 | saml.ingress.samlAdditionalAnnotations | object | `{}` | SAML ingress resource additional annotations. |
 | saml.ingress.samlLabels | object | `{}` | SAML config ingress resource labels. key app is taken |
 | saml.samlServiceName | string | `"saml"` | Name of the saml service. Please keep it as default. |
-| scim.appLoggers | object | `{"enableStdoutLogPrefix":"true","ldapStatsLogLevel":"INFO","ldapStatsLogTarget":"FILE","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scimLogLevel":"INFO","scimLogTarget":"STDOUT","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
+| scim.appLoggers | object | `{"enableStdoutLogPrefix":"true","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scimLogLevel":"INFO","scimLogTarget":"STDOUT","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
 | scim.appLoggers.enableStdoutLogPrefix | string | `"true"` | Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e jans-scim ===> 2022-12-20 17:49:55,744 INFO |
-| scim.appLoggers.ldapStatsLogLevel | string | `"INFO"` | jans-scim_persistence_ldap_statistics.log level |
-| scim.appLoggers.ldapStatsLogTarget | string | `"FILE"` | jans-scim_persistence_ldap_statistics.log target |
 | scim.appLoggers.persistenceDurationLogLevel | string | `"INFO"` | jans-scim_persistence_duration.log level |
 | scim.appLoggers.persistenceDurationLogTarget | string | `"FILE"` | jans-scim_persistence_duration.log target |
 | scim.appLoggers.persistenceLogLevel | string | `"INFO"` | jans-scim_persistence.log level |
@@ -393,6 +383,3 @@ Kubernetes: `>=v1.22.0-0`
 | usrEnvs.secret | object | `{}` | Add custom secret envs to the service variable1: value1 |
 | volumeMounts | list | `[]` | Configure any additional volumesMounts that need to be attached to the containers |
 | volumes | list | `[]` | Configure any additional volumes that need to be attached to the pod |
-
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)
