@@ -74,6 +74,7 @@ function ClientEditPage() {
             oidcConfiguration={oidcConfiguration}
             customOnSubmit={handleSubmit}
             umaResources={umaResources}
+            isEdit={true}
           />
         </>
       } 
