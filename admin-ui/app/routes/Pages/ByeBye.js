@@ -13,6 +13,7 @@ function ByeBye() {
     if (config) {
       const state = uuidv4()
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
+      dispatch(logoutUser())
       window.location.href = sessionEndpoint
     }
 
