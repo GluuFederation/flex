@@ -14,6 +14,7 @@ function ByeBye() {
       "beforeend",
       `<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />`
     );
+    console.log("config: "+ JSON.stringify(config))
     if (config) {
       const state = uuidv4()
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
