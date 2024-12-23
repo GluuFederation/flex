@@ -74,7 +74,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
 
   useEffect(() => {
     if (isUserLogout) {
-      navigate("/logout");
+      navigate("/logout", { noCache: true });
     }
   }, [isUserLogout]);
 

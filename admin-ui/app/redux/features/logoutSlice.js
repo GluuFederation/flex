@@ -9,7 +9,6 @@ const logoutSlice = createSlice({
       console.log('Inside logoutUser ...');
       const userConfig = localStorage.getItem('userConfig')
       localStorage.clear()
-      sessionStorage.clear();
       localStorage.setItem('initTheme', 'darkBlack')
       localStorage.setItem('initLang', 'en')
 

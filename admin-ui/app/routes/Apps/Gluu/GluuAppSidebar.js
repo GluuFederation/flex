@@ -45,7 +45,7 @@ function GluuAppSidebar() {
 
   useEffect(() => {
     if (isUserLogout) {
-      navigate("/logout");
+      navigate("/logout", { noCache: true });
     }
   }, [isUserLogout])
 

@@ -18,7 +18,7 @@ const DropdownProfile = (props) => {
 
   useEffect(() => {
     if (isUserLogout) {
-      navigate("/logout");
+      navigate("/logout", { noCache: true });
     }
   }, [isUserLogout]);
 
