@@ -10,6 +10,10 @@ function ByeBye() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   useEffect(() => {
+    document.head.insertAdjacentHTML(
+      "beforeend",
+      `<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />`
+    );
     if (config) {
       const state = uuidv4()
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
