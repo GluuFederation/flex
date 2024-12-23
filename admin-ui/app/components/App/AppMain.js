@@ -7,17 +7,7 @@ import AuthenticatedRouteSelector from './AuthenticatedRouteSelector'
 const basePath = process.env.BASE_PATH || '/admin'
 
 const AppMain = () => {
-  useEffect(() => {
-    const handlePageHide = (event) => {
-        if (event.persisted) {
-            window.location.reload();
-        }
-    };
-    window.addEventListener("pagehide", handlePageHide);
-    return () => {
-        window.removeEventListener("pagehide", handlePageHide);
-    };
-}, []);
+
   const { store, persistor } = configStore()
   return (
     <Provider store={store}>
