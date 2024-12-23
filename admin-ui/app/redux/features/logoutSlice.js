@@ -6,6 +6,7 @@ const logoutSlice = createSlice({
   name: 'logout',
   reducers: {
     logoutUser: (state, action) => {
+      console.log('Inside logoutUser ...');
       const userConfig = localStorage.getItem('userConfig')
       localStorage.clear()
       localStorage.setItem('initTheme', 'darkBlack')
