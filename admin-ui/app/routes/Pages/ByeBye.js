@@ -9,20 +9,20 @@ function ByeBye() {
   const config = useSelector((state) => state.authReducer.config)
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  useEffect(() => {
-    const handlePageHide = (event) => {
-        if (event.persisted) {
-            // Force reload if the page is restored from bfcache
-            window.location.reload();
-        }
-    };
+//   useEffect(() => {
+//     const handlePageHide = (event) => {
+//         if (event.persisted) {
+//             // Force reload if the page is restored from bfcache
+//             window.location.reload();
+//         }
+//     };
 
-    window.addEventListener("pagehide", handlePageHide);
+//     window.addEventListener("pagehide", handlePageHide);
 
-    return () => {
-        window.removeEventListener("pagehide", handlePageHide);
-    };
-}, []);
+//     return () => {
+//         window.removeEventListener("pagehide", handlePageHide);
+//     };
+// }, []);
   useEffect(() => {
   
     console.log("config: "+ JSON.stringify(config))
