@@ -1,38 +1,41 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
-import { Wizard, Card, CardFooter, CardBody, Form, Button } from 'Components'
-import ClientBasic from './ClientBasicPanel'
-import ClientAdvanced from './ClientAdvancedPanel'
-import ClientScript from './ClientScriptPanel'
-import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { Formik } from 'formik'
-import { useTranslation } from 'react-i18next'
-import { hasPermission, CLIENT_WRITE } from 'Utils/PermChecker'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { ThemeContext } from 'Context/theme/themeContext'
-import ClientTokensPanel from './ClientTokensPanel'
-import ClientLogoutPanel from './ClientLogoutPanel'
-import ClientSoftwarePanel from './ClientSoftwarePanel'
-import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
-import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
-import { toast } from 'react-toastify'
-import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
-import { cloneDeep } from 'lodash'
-import { useDispatch } from 'react-redux'
-import PropTypes from 'prop-types'
-import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import React, { useState, useContext, useRef, useEffect } from "react";
+import { Wizard, Card, CardFooter, CardBody, Form, Button } from "Components";
+import ClientBasic from "./ClientBasicPanel";
+import ClientAdvanced from "./ClientAdvancedPanel";
+import ClientScript from "./ClientScriptPanel";
+import ClientActiveTokens from "./ClientActiveTokens";
+import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog";
+import { Formik } from "formik";
+import { useTranslation } from "react-i18next";
+import { hasPermission, CLIENT_WRITE } from "Utils/PermChecker";
+import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
+import { ThemeContext } from "Context/theme/themeContext";
+import ClientTokensPanel from "./ClientTokensPanel";
+import ClientLogoutPanel from "./ClientLogoutPanel";
+import ClientSoftwarePanel from "./ClientSoftwarePanel";
+import ClientCibaParUmaPanel from "./ClientCibaParUmaPanel";
+import ClientEncryptionSigningPanel from "./ClientEncryptionSigningPanel";
+import { toast } from "react-toastify";
+import { setClientSelectedScopes } from "Plugins/auth-server/redux/features/scopeSlice";
+import { cloneDeep } from "lodash";
+import { useDispatch } from "react-redux";
+import PropTypes from "prop-types";
+import { adminUiFeatures } from "Plugins/admin/helper/utils";
 
 const sequence = [
-  'Basic',
-  'Tokens',
-  'Logout',
-  'SoftwareInfo',
-  'CIBA/PAR/UMA',
-  'Encryption/Signing',
-  'AdvancedClientProperties',
-  'ClientScripts',
-]
-const ATTRIBUTE = 'attributes'
-let commitMessage = ''
+  "Basic",
+  "Tokens",
+  "Logout",
+  "SoftwareInfo",
+  "CIBA/PAR/UMA",
+  "Encryption/Signing",
+  "AdvancedClientProperties",
+  "ClientScripts",
+  "ClientActiveTokens",
+];
+
+const ATTRIBUTE = "attributes";
+let commitMessage = "";
 function ClientWizardForm({
   client_data,
   viewOnly,
@@ -42,14 +45,15 @@ function ClientWizardForm({
   customOnSubmit,
   oidcConfiguration,
   umaResources,
+  isEdit = false,
 }) {
-  const formRef = useRef()
-  const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const [modal, setModal] = useState(false)
-  const [currentStep, setCurrentStep] = useState(sequence[0])
-  const dispatch = useDispatch()
+  const formRef = useRef();
+  const { t } = useTranslation();
+  const theme = useContext(ThemeContext);
+  const selectedTheme = theme.state.theme;
+  const [modal, setModal] = useState(false);
+  const [currentStep, setCurrentStep] = useState(sequence[0]);
+  const dispatch = useDispatch();
 
   const initialValues = {
     inum: client_data.inum,
@@ -108,7 +112,8 @@ function ClientWizardForm({
     scopes: client_data.scopes,
     oxAuthClaims: client_data.oxAuthClaims,
     attributes: client_data.attributes,
-    frontChannelLogoutSessionRequired: client_data.frontChannelLogoutSessionRequired,
+    frontChannelLogoutSessionRequired:
+      client_data.frontChannelLogoutSessionRequired,
     customObjectClasses: client_data.customObjectClasses || [],
     trustedClient: client_data.trustedClient,
     persistClientAuthorizations: client_data.persistClientAuthorizations,
@@ -118,20 +123,20 @@ function ClientWizardForm({
     disabled: client_data.disabled,
     deletable: client_data.deletable,
     tokenBindingSupported: client_data.tokenBindingSupported,
-  }
+  };
 
-  const [client] = useState(initialValues)
+  const [client] = useState(initialValues);
 
   function changeStep(stepId) {
-    setCurrentStep(stepId)
+    setCurrentStep(stepId);
   }
   function toggle() {
-    setModal(!modal)
+    setModal(!modal);
   }
   function validateFinish() {
     if (
-      formRef.current.values.grantTypes.includes('authorization_code') ||
-      formRef.current.values.grantTypes.includes('implicit') ||
+      formRef.current.values.grantTypes.includes("authorization_code") ||
+      formRef.current.values.grantTypes.includes("implicit") ||
       formRef.current.values.grantTypes.length == 0
     ) {
       if (
@@ -139,54 +144,60 @@ function ClientWizardForm({
         formRef.current &&
         formRef.current.values.redirectUris.length > 0
       ) {
-        toggle()
+        toggle();
       } else {
-        toast.info('Please add atleast 1 redirect URL')
+        toast.info("Please add atleast 1 redirect URL");
       }
     } else {
-      toggle()
+      toggle();
     }
   }
   function setId(index) {
-    return sequence[index]
+    return sequence[index];
   }
   function prevStep() {
-    setCurrentStep(sequence[sequence.indexOf(currentStep) - 1])
+    setCurrentStep(sequence[sequence.indexOf(currentStep) - 1]);
   }
   function nextStep() {
     if (
-      formRef.current.values.grantTypes.includes('authorization_code') ||
-      formRef.current.values.grantTypes.includes('implicit')
+      formRef.current.values.grantTypes.includes("authorization_code") ||
+      formRef.current.values.grantTypes.includes("implicit")
     ) {
       if (
         formRef &&
         formRef.current &&
         formRef.current.values.redirectUris.length > 0
       ) {
-        setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+        setCurrentStep(sequence[sequence.indexOf(currentStep) + 1]);
       } else {
-        toast.info('Please add atleast 1 redirect URL')
+        toast.info("Please add atleast 1 redirect URL");
       }
     } else {
-      setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+      setCurrentStep(sequence[sequence.indexOf(currentStep) + 1]);
     }
   }
   function isComplete(stepId) {
-    return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
+    console.log(
+      "stepId",
+      stepId,
+      sequence.indexOf(stepId) < sequence.indexOf(currentStep)
+    );
+    return sequence.indexOf(stepId) < sequence.indexOf(currentStep);
   }
   function submitForm(message) {
-    commitMessage = message
-    toggle()
-    document.getElementsByClassName('UserActionSubmitButton')[0].click()
+    commitMessage = message;
+    toggle();
+    document.getElementsByClassName("UserActionSubmitButton")[0].click();
   }
 
   useEffect(() => {
     return function cleanup() {
-      dispatch(setClientSelectedScopes([]))
-    }
-  }, [])
+      dispatch(setClientSelectedScopes([]));
+    };
+  }, []);
 
   const activeClientStep = (formik) => {
+    console.log("currentStep", currentStep);
     switch (currentStep) {
       case sequence[0]:
         return (
@@ -199,16 +210,13 @@ function ClientWizardForm({
               oidcConfiguration={oidcConfiguration}
             />
           </div>
-        )
+        );
       case sequence[1]:
         return (
           <div>
-            <ClientTokensPanel
-              formik={formik}
-              viewOnly={viewOnly}
-            />
+            <ClientTokensPanel formik={formik} viewOnly={viewOnly} />
           </div>
-        )
+        );
       case sequence[2]:
         return (
           <div>
@@ -219,7 +227,7 @@ function ClientWizardForm({
               viewOnly={viewOnly}
             />
           </div>
-        )
+        );
       case sequence[3]:
         return (
           <div>
@@ -230,7 +238,7 @@ function ClientWizardForm({
               viewOnly={viewOnly}
             />
           </div>
-        )
+        );
       case sequence[4]:
         return (
           <div>
@@ -245,7 +253,7 @@ function ClientWizardForm({
               viewOnly={viewOnly}
             />
           </div>
-        )
+        );
       case sequence[5]:
         return (
           <div>
@@ -255,7 +263,7 @@ function ClientWizardForm({
               viewOnly={viewOnly}
             />
           </div>
-        )
+        );
       case sequence[6]:
         return (
           <div>
@@ -267,7 +275,7 @@ function ClientWizardForm({
               viewOnly={viewOnly}
             />
           </div>
-        )
+        );
       case sequence[7]:
         return (
           <div>
@@ -277,34 +285,46 @@ function ClientWizardForm({
               viewOnly={viewOnly}
             />
           </div>
-        )
+        );
+
+      case sequence[8]:
+        return (
+          <div>
+            <ClientActiveTokens
+              formik={formik}
+              scripts={scripts}
+              viewOnly={viewOnly}
+              client={cloneDeep(client)}
+            />
+          </div>
+        );
     }
-  }
+  };
 
   function onKeyDown(keyEvent) {
     if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
-      keyEvent.preventDefault()
+      keyEvent.preventDefault();
     }
   }
 
   const downloadClientData = (values) => {
-    const jsonData = JSON.stringify(values, null, 2)
+    const jsonData = JSON.stringify(values, null, 2);
 
-    const blob = new Blob([jsonData], { type: 'application/json' })
+    const blob = new Blob([jsonData], { type: "application/json" });
 
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
     link.download = values.displayName
       ? `${values.displayName}.json`
-      : 'client-summary.json'
+      : "client-summary.json";
 
-    document.body.appendChild(link)
+    document.body.appendChild(link);
 
-    link.click()
+    link.click();
 
-    document.body.removeChild(link)
-    URL.revokeObjectURL(link.href)
-  }
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
 
   return (
     <React.Fragment>
@@ -315,19 +335,21 @@ function ClientWizardForm({
           onSubmit={(...args) => {
             let values = {
               ...args[0],
-              accessTokenAsJwt: args[0]?.accessTokenAsJwt && JSON.parse(args[0]?.accessTokenAsJwt),
+              accessTokenAsJwt:
+                args[0]?.accessTokenAsJwt &&
+                JSON.parse(args[0]?.accessTokenAsJwt),
               rptAsJwt: args[0]?.rptAsJwt && JSON.parse(args[0]?.rptAsJwt),
               [ATTRIBUTE]: args[0][ATTRIBUTE] && { ...args[0][ATTRIBUTE] },
-            }
-            delete values.expirable
-            values['action_message'] = commitMessage
-            customOnSubmit(JSON.parse(JSON.stringify(values)))
+            };
+            delete values.expirable;
+            values["action_message"] = commitMessage;
+            customOnSubmit(JSON.parse(JSON.stringify(values)));
           }}
         >
           {(formik) => (
             <Form onSubmit={formik.handleSubmit} onKeyDown={onKeyDown}>
               <Card>
-                <div className='d-flex justify-content-end pt-3 pe-3'>
+                <div className="d-flex justify-content-end pt-3 pe-3">
                   <Button
                     color={`primary-${selectedTheme}`}
                     style={{
@@ -335,160 +357,176 @@ function ClientWizardForm({
                       ...applicationStyle.buttonFlexIconStyles,
                       margin: 0,
                     }}
-                    type='button'
+                    type="button"
                     onClick={() => downloadClientData(formik.values)}
-                    className='d-flex m-1'
+                    className="d-flex m-1"
                   >
-                    <i className='fa fa-download'></i>
-                    {t('fields.download_summary')}
+                    <i className="fa fa-download"></i>
+                    {t("fields.download_summary")}
                   </Button>
                 </div>
-                <CardBody className='d-flex justify-content-center pt-3 wizard-wrapper'>
+                <CardBody className="d-flex justify-content-center pt-3 wizard-wrapper">
                   <Wizard activeStep={currentStep} onStepChanged={changeStep}>
                     <Wizard.Step
                       data-testid={sequence[0]}
                       id={setId(0)}
-                      icon={<i className='fa fa-shopping-basket fa-fw'></i>}
+                      icon={<i className="fa fa-shopping-basket fa-fw"></i>}
                       complete={isComplete(sequence[0])}
                     >
-                      {t('titles.client_basic')}
+                      {t("titles.client_basic")}
                     </Wizard.Step>
                     <Wizard.Step
                       data-testid={sequence[1]}
                       id={setId(1)}
-                      icon={<i className='fa fa-credit-card fa-fw'></i>}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
                       complete={isComplete(sequence[1])}
                     >
-                      {t('titles.token')}
+                      {t("titles.token")}
                     </Wizard.Step>
                     <Wizard.Step
                       data-testid={sequence[2]}
                       id={setId(2)}
-                      icon={<i className='fa fa-credit-card fa-fw'></i>}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
                       complete={isComplete(sequence[2])}
                     >
-                      {t('titles.log_out')}
+                      {t("titles.log_out")}
                     </Wizard.Step>
                     <Wizard.Step
                       data-testid={sequence[3]}
                       id={setId(3)}
-                      icon={<i className='fa fa-credit-card fa-fw'></i>}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
                       complete={isComplete(sequence[3])}
                     >
-                      {t('titles.software_info')}
+                      {t("titles.software_info")}
                     </Wizard.Step>
                     <Wizard.Step
                       data-testid={sequence[4]}
                       id={setId(4)}
-                      icon={<i className='fa fa-credit-card fa-fw'></i>}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
                       complete={isComplete(sequence[4])}
                     >
-                      {t('titles.CIBA_PAR_UMA')}
+                      {t("titles.CIBA_PAR_UMA")}
                     </Wizard.Step>
                     <Wizard.Step
                       data-testid={sequence[5]}
                       id={setId(5)}
-                      icon={<i className='fa fa-credit-card fa-fw'></i>}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
                       complete={isComplete(sequence[5])}
                     >
-                      {t('titles.encryption_signing')}
+                      {t("titles.encryption_signing")}
                     </Wizard.Step>
                     <Wizard.Step
                       data-testid={sequence[6]}
                       id={setId(6)}
-                      icon={<i className='fa fa-cube fa-fw'></i>}
+                      icon={<i className="fa fa-cube fa-fw"></i>}
                       complete={isComplete(sequence[6])}
                     >
-                      {t('titles.client_advanced')}
+                      {t("titles.client_advanced")}
                     </Wizard.Step>
                     <Wizard.Step
                       data-testid={sequence[7]}
                       id={setId(7)}
-                      icon={<i className='fa fa-credit-card fa-fw'></i>}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
                       complete={isComplete(sequence[7])}
                     >
-                      {t('titles.client_scripts')}
+                      {t("titles.client_scripts")}
                     </Wizard.Step>
+
+                    {isEdit ? (
+                      <Wizard.Step
+                        data-testid={sequence[8]}
+                        id={setId(8)}
+                        icon={<i className="fa fa-credit-card fa-fw"></i>}
+                        complete={isComplete(sequence[8])}
+                      >
+                        {t("titles.activeTokens")}
+                      </Wizard.Step>
+                    ) : (
+                      <></>
+                    )}
                   </Wizard>
                 </CardBody>
-                <CardBody className='p-2'>
-                  {activeClientStep(formik)}
-                </CardBody>
-                <CardFooter className='p-4 bt-0'>
-                  <div className='d-flex'>
+                <CardBody className="p-2">{activeClientStep(formik)}</CardBody>
+                <CardFooter className="p-4 bt-0">
+                  <div className="d-flex">
                     <div style={{ flex: 1 }}>
                       {currentStep !== sequence[0] && (
                         <Button
-                          type='button'
+                          type="button"
                           onClick={prevStep}
                           style={{
                             ...applicationStyle.buttonStyle,
                             ...applicationStyle.buttonFlexIconStyles,
                           }}
-                          className='me-3'
+                          className="me-3"
                         >
-                          <i className='fa fa-angle-left me-2'></i>
-                          {t('actions.previous')}
+                          <i className="fa fa-angle-left me-2"></i>
+                          {t("actions.previous")}
                         </Button>
                       )}
                     </div>
                     <div
                       style={{
                         flex: 1,
-                        justifyContent: 'flex-end',
-                        display: 'flex',
-                        gap: '8px',
+                        justifyContent: "flex-end",
+                        display: "flex",
+                        gap: "8px",
                       }}
                     >
                       {currentStep !== sequence[sequence.length - 1] && (
                         <Button
-                          type='button'
+                          type="button"
                           color={`primary-${selectedTheme}`}
                           onClick={nextStep}
                           style={{
                             ...applicationStyle.buttonStyle,
                             ...applicationStyle.buttonFlexIconStyles,
                           }}
-                          className='px-4'
+                          className="px-4"
                         >
-                          {t('actions.next')}
-                          <i className='fa fa-angle-right ms-2'></i>
+                          {t("actions.next")}
+                          <i className="fa fa-angle-right ms-2"></i>
                         </Button>
                       )}
                       {!viewOnly &&
                         hasPermission(permissions, CLIENT_WRITE) && (
                           <Button
-                            type='button'
+                            type="button"
                             color={`primary-${selectedTheme}`}
-                            className='px-4 ms-2'
+                            className="px-4 ms-2"
                             onClick={validateFinish}
                             style={{
                               ...applicationStyle.buttonStyle,
                               ...applicationStyle.buttonFlexIconStyles,
                             }}
                           >
-                            {t('actions.finish')}
+                            {t("actions.finish")}
                           </Button>
                         )}
                     </div>
                   </div>
                 </CardFooter>
                 <Button
-                  type='submit'
+                  type="submit"
                   color={`primary-${selectedTheme}`}
-                  className='UserActionSubmitButton'
-                  style={{ visibility: 'hidden' }}
+                  className="UserActionSubmitButton"
+                  style={{ visibility: "hidden" }}
                 >
-                  {t('actions.submit')}
+                  {t("actions.submit")}
                 </Button>
               </Card>
             </Form>
           )}
         </Formik>
       </Card>
-      <GluuCommitDialog feature={adminUiFeatures.oidc_clients_write} handler={toggle} modal={modal} onAccept={submitForm} />
+      <GluuCommitDialog
+        feature={adminUiFeatures.oidc_clients_write}
+        handler={toggle}
+        modal={modal}
+        onAccept={submitForm}
+      />
     </React.Fragment>
-  )
+  );
 }
 
 ClientWizardForm.propTypes = {
@@ -500,6 +538,7 @@ ClientWizardForm.propTypes = {
   customOnSubmit: PropTypes.func,
   oidcConfiguration: PropTypes.object,
   umaResources: PropTypes.array,
-}
+  isEdit: PropTypes.bool,
+};
 
-export default ClientWizardForm
+export default ClientWizardForm;
