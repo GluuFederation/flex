@@ -15,7 +15,6 @@ const logoutSlice = createSlice({
       if (userConfig && userConfig !== 'null') {
         localStorage.setItem('userConfig', userConfig)
       }
-       window.location.href = "/admin"
     }
   }
 })
