@@ -4,41 +4,40 @@ import { uuidv4 } from "Utils/Util";
 import { EmptyLayout, Label } from "Components";
 import { logoutUser } from "Redux/features/logoutSlice";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 
 function ByeBye() {
   const config = useSelector((state) => state.authReducer.config);
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const navigate = useNavigate(); // Use react-router-dom for navigation
-
   useEffect(() => {
-    const handlePopState = () => {
-      console.log("User navigated back to the React app");
-      navigate("/", { replace: true });
+    const handlePageHide = (event) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
     };
-
-      // Clear session data
-      dispatch(logoutUser());
-      localStorage.clear(); // Clear tokens or user-related data
-      sessionStorage.clear(); // Clear session-related data
-
+    window.addEventListener("pagehide", handlePageHide);
+    return () => {
+      window.removeEventListener("pagehide", handlePageHide);
+    };
+  }, []);
+  useEffect(() => {
+    console.log("config: " + JSON.stringify(config));
     if (config && Object.keys(config).length > 0) {
+      console.log("Config has value" + JSON.stringify(config));
       const state = uuidv4();
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
-      window.addEventListener("popstate", handlePopState);
-
-      // Redirect to the logout endpoint
+      dispatch(logoutUser());
       window.location.href = sessionEndpoint;
-    } else {
-      // Redirect to a public page
-      navigate("/", { replace: true });
+    }
+    else{
+      console.log("User navigated back to the React app");
+      window.location.href = "/";
+
     }
 
-    return () => {
-      window.removeEventListener("popstate", handlePopState); // Cleanup event listener
-    };
-  }, [config, dispatch, navigate]);
+   
+  }, []);
+
 
   return (
     <div className="fullscreen">
