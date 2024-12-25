@@ -23,21 +23,29 @@ function ByeBye() {
   useEffect(() => {
     console.log("config: " + JSON.stringify(config));
     if (config && Object.keys(config).length > 0) {
-      console.log("Config has value" + JSON.stringify(config));
+      localStorage.setItem("localConfig", JSON.stringify(config));
       const state = uuidv4();
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
       dispatch(logoutUser());
       window.location.href = sessionEndpoint;
     }
-    else{
-      console.log("User navigated back to the React app");
-      window.location.href = "/admin";
-
-    }
-
-   
   }, []);
 
+  // Refactored session check logic
+  const checkSession = () => {
+    console.log("userinfo: ", userinfo);
+    if (!userinfo?.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
+      const state = uuidv4();
+      const localConfig = localStorage.getItem("localConfig");
+      const sessionEndpoint = `${localConfig.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${localConfig.postLogoutRedirectUri}`;
+      window.location.href = sessionEndpoint;
+    }
+  };
+
+  useEffect(() => {
+    // Call the session check on initial render
+    checkSession();
+  }, [location]);
 
   return (
     <div className="fullscreen">
