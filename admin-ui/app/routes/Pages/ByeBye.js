@@ -33,7 +33,7 @@ function ByeBye() {
       window.location.href = sessionEndpoint
     }
 
-    //dispatch(logoutUser())
+    dispatch(logoutUser())
   }, [])
 
     // Refactored session check logic
