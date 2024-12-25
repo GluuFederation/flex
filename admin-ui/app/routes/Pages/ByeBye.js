@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 
 function ByeBye() {
   const config = useSelector((state) => state.authReducer.config);
+    const { userinfo } = useSelector((state) => state.authReducer);
+    
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {
