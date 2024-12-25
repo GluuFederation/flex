@@ -15,6 +15,9 @@ const SidebarMenuItemLink = (props) => {
         to={props.to}
         style={props.textStyle}
         className={`${props.classBase}__entry__link`}
+        onClick={(e) => {
+          props.checkSession();
+        }}
       >
         {props.children}
       </Link>
@@ -54,6 +57,7 @@ const SidebarMenuItemLink = (props) => {
 SidebarMenuItemLink.propTypes = {
   to: PropTypes.string,
   handleClick: PropTypes.func,
+  checkSession:PropTypes.func,
   href: PropTypes.string,
   active: PropTypes.bool,
   onToggle: PropTypes.func,
@@ -90,6 +94,7 @@ export class SidebarMenuItem extends React.Component {
     noCaret: PropTypes.bool,
     textStyle: PropTypes.object,
     handleClick: PropTypes.func,
+    checkSession:PropTypes.func,
     sidebarMenuActiveClass: PropTypes.string,
   };
 
@@ -185,6 +190,7 @@ export class SidebarMenuItem extends React.Component {
             textStyle={getTextStyle(itemClass) || this.props.textStyle}
             sidebarMenuActive={sidebarMenuActive}
             handleClick={this.props.handleClick}
+            checkSession={this.props.checkSession}
           >
             {this.props.icon &&
               React.cloneElement(this.props.icon, {

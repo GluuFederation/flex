@@ -3,22 +3,10 @@ import { Link } from "react-router-dom";
 import { Sidebar, SidebarTrigger } from "Components";
 import { LogoThemed } from "Routes/components/LogoThemed/LogoThemed";
 import GluuSuspenseLoader from "Routes/Apps/Gluu/GluuSuspenseLoader";
-import { useSelector } from "react-redux";
 
 const GluuAppSidebar = lazy(() => import("Routes/Apps/Gluu/GluuAppSidebar"));
 
 const DefaultSidebar = () => {
-  const { userinfo } = useSelector((state) => state.authReducer);
-  const config = useSelector((state) => state.authReducer.config);
-
-  useEffect(() => {
-    if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
-      const state = uuidv4();
-      const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
-      window.location.href = sessionEndpoint;
-    }
-  }, []);
-
   return (
     <Sidebar>
       {/* START SIDEBAR-OVERLAY: Close (x) */}
