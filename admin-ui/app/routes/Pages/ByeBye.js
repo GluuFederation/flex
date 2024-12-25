@@ -14,27 +14,25 @@ function ByeBye() {
 
   useEffect(() => {
     const handlePopState = () => {
-      window.history.pushState(null, "", window.location.href); // Block back navigation
+      console.log("User navigated back to the React app");
+      navigate("/", { replace: true });
     };
 
-    // Clear Redux store and session data
-    dispatch(logoutUser());
-    localStorage.clear(); // Clear any stored tokens or user data
+      // Clear session data
+      dispatch(logoutUser());
+      localStorage.clear(); // Clear tokens or user-related data
+      sessionStorage.clear(); // Clear session-related data
 
     if (config && Object.keys(config).length > 0) {
       const state = uuidv4();
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
-
-      // Prevent back navigation
-      window.history.pushState(null, "", window.location.href);
-
       window.addEventListener("popstate", handlePopState);
 
       // Redirect to the logout endpoint
       window.location.href = sessionEndpoint;
     } else {
       // Redirect to a public page
-      navigate("/admin", { replace: true });
+      navigate("/", { replace: true });
     }
 
     return () => {
