@@ -49,14 +49,26 @@ function GluuAppSidebar() {
     setPluginMenus(processMenus());
   }, []);
 
-
+  useEffect(() => {
+    if (isUserLogout) {
+      navigate("/logout", { noCache: true });
+    }
+  }, [isUserLogout]);
 
   // Refactored session check logic
   const checkSession = () => {
-
+    console.log("userinfo: ", userinfo);
+    if (!userinfo?.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
+      const state = uuidv4();
+      const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
+      window.location.href = sessionEndpoint;
+    }
   };
 
-
+  useEffect(() => {
+    // Call the session check on initial render
+    checkSession();
+  }, [location]);
 
   function getMenuIcon(name) {
     switch (name) {

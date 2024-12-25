@@ -28,13 +28,29 @@ function ByeBye() {
       console.log("Config has value"+ JSON.stringify(config));
       const state = uuidv4()
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
-      dispatch(logoutUser())
+    //  dispatch(logoutUser())
       window.location.href = sessionEndpoint
     }
 
-    dispatch(logoutUser())
+  //  dispatch(logoutUser())
   }, [])
 
+    // Refactored session check logic
+    const checkSession = () => {
+      console.log("userinfo: ", userinfo);
+      if (!userinfo?.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
+        const state = uuidv4();
+        if (config && Object.keys(config).length > 0) {
+        const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
+        window.location.href = sessionEndpoint;
+        }
+      }
+    };
+
+    useEffect(() => {
+      // Call the session check on initial render
+      checkSession();
+    }, [location]);
 
   return (
     <div className="fullscreen">
