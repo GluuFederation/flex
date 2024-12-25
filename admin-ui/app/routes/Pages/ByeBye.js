@@ -7,8 +7,8 @@ import { useTranslation } from "react-i18next";
 
 function ByeBye() {
   const config = useSelector((state) => state.authReducer.config);
-    const { userinfo } = useSelector((state) => state.authReducer);
-    
+  const { userinfo } = useSelector((state) => state.authReducer);
+
   const dispatch = useDispatch();
   const { t } = useTranslation();
   useEffect(() => {
@@ -25,29 +25,20 @@ function ByeBye() {
   useEffect(() => {
     console.log("config: " + JSON.stringify(config));
     if (config && Object.keys(config).length > 0) {
+      console.log("localConfig: ", config);
       localStorage.setItem("localConfig", JSON.stringify(config));
       const state = uuidv4();
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
       dispatch(logoutUser());
       window.location.href = sessionEndpoint;
+    } else {
+      const state = uuidv4();
+      const localConfig =  JSON.parse(localStorage.getItem('localConfig'))
+      console.log("localConfig: ", localConfig);
+     const sessionEndpoint = `${localConfig.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${localConfig.postLogoutRedirectUri}`;
+     window.location.href = "https://admin-ui-test.gluu.org/admin";
     }
   }, []);
-
-  // Refactored session check logic
-  const checkSession = () => {
-    console.log("userinfo: ", userinfo);
-    if (!userinfo?.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
-      const state = uuidv4();
-      const localConfig = localStorage.getItem("localConfig");
-      const sessionEndpoint = `${localConfig.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${localConfig.postLogoutRedirectUri}`;
-      window.location.href = sessionEndpoint;
-    }
-  };
-
-  useEffect(() => {
-    // Call the session check on initial render
-    checkSession();
-  }, [location]);
 
   return (
     <div className="fullscreen">
