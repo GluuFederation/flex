@@ -15,7 +15,7 @@ function ByeBye() {
   useEffect(() => {
     console.log("config: " + JSON.stringify(config));
     if (config && Object.keys(config).length > 0) {
-      console.log("localConfig: ", config);
+      console.log("localConfig: 1 ", config);
       localStorage.setItem("localConfig", JSON.stringify(config));
       const state = uuidv4();
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
