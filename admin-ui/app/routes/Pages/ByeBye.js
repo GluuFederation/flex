@@ -31,7 +31,7 @@ function ByeBye() {
     }
     else{
       console.log("User navigated back to the React app");
-      window.location.href = "/";
+      window.location.href = "/admin";
 
     }
 
