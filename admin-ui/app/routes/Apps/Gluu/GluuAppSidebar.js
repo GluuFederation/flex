@@ -17,7 +17,7 @@ import FidoIcon from "Components/SVG/menu/Fido";
 import ScimIcon from "Components/SVG/menu/Scim";
 import SamlIcon from "Components/SVG/menu/Saml";
 import JansKcLinkIcon from "Components/SVG/menu/JansKcLinkIcon";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ThemeContext } from "Context/theme/themeContext";
 import Wave from "Components/SVG/SidebarWave";
 import getThemeColor from "Context/theme/config";
