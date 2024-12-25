@@ -8,7 +8,8 @@ import { useTranslation } from "react-i18next";
 function ByeBye() {
   const config = useSelector((state) => state.authReducer.config);
   const { userinfo } = useSelector((state) => state.authReducer);
-
+  const navigate = useNavigate();
+  
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
@@ -25,8 +26,7 @@ function ByeBye() {
       const state = uuidv4();
       const localConfig =  JSON.parse(localStorage.getItem('localConfig'))
       console.log("localConfig: ", localConfig);
-     const sessionEndpoint = `${localConfig.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${localConfig.postLogoutRedirectUri}`;
-     window.location.reload()
+       navigate("/")
     }
   }, []);
 
