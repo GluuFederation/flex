@@ -26,7 +26,7 @@ function ByeBye() {
       const localConfig =  JSON.parse(localStorage.getItem('localConfig'))
       console.log("localConfig: ", localConfig);
      const sessionEndpoint = `${localConfig.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${localConfig.postLogoutRedirectUri}`;
-     window.location.href = "https://admin-ui-test.gluu.org/admin";
+     window.location.reload()
     }
   }, []);
 
