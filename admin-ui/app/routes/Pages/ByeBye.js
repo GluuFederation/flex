@@ -11,17 +11,7 @@ function ByeBye() {
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  useEffect(() => {
-    const handlePageHide = (event) => {
-      if (event.persisted) {
-        window.location.reload();
-      }
-    };
-    window.addEventListener("pagehide", handlePageHide);
-    return () => {
-      window.removeEventListener("pagehide", handlePageHide);
-    };
-  }, []);
+
   useEffect(() => {
     console.log("config: " + JSON.stringify(config));
     if (config && Object.keys(config).length > 0) {
