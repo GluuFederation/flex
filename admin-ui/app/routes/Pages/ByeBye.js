@@ -9,15 +9,32 @@ function ByeBye() {
   const config = useSelector((state) => state.authReducer.config)
   const dispatch = useDispatch()
   const { t } = useTranslation()
+
   useEffect(() => {
     if (config) {
       const state = uuidv4()
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
+      
+      // Redirect to logout endpoint
       window.location.href = sessionEndpoint
     }
 
+    // Clear user session
     dispatch(logoutUser())
+
+    // Prevent back navigation
+    window.history.pushState(null, document.title, window.location.href)
+    window.addEventListener('popstate', handlePopState)
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+    }
   }, [])
+
+  const handlePopState = () => {
+    // Prevent navigation
+    window.history.pushState(null, document.title, window.location.href)
+  }
 
   return (
     <div className="fullscreen">
