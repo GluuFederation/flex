@@ -4,12 +4,13 @@ import { uuidv4 } from "Utils/Util";
 import { EmptyLayout, Label } from "Components";
 import { logoutUser } from "Redux/features/logoutSlice";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 
 function ByeBye() {
   const config = useSelector((state) => state.authReducer.config);
   const { userinfo } = useSelector((state) => state.authReducer);
   const navigate = useNavigate();
-  
+
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
