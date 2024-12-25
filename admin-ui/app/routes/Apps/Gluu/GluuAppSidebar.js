@@ -49,11 +49,7 @@ function GluuAppSidebar() {
     setPluginMenus(processMenus());
   }, []);
 
-  useEffect(() => {
-    if (isUserLogout) {
-      navigate("/logout", { noCache: true });
-    }
-  }, [isUserLogout]);
+
 
   // Refactored session check logic
   const checkSession = () => {
