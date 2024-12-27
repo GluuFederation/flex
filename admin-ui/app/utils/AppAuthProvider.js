@@ -44,6 +44,7 @@ export default function AppAuthProvider(props) {
     token,
     issuer,
   } = useSelector((state) => state.authReducer)
+
   const {
     islicenseCheckResultLoaded,
     isLicenseActivationResultLoaded,
@@ -65,6 +66,7 @@ export default function AppAuthProvider(props) {
       dispatch(checkLicensePresent())
     }
   }, [isConfigValid])
+
   const [error, setError] = useState(null)
   const [code, setCode] = useState(null)
 
@@ -115,6 +117,7 @@ export default function AppAuthProvider(props) {
   }, [isLicenseValid])
 
   useEffect(() => {
+    console.log("Heloooo")
     const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor())
     const authorizationHandler = new RedirectRequestHandler(
       new LocalStorageBackend(),
