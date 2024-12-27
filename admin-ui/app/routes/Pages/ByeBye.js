@@ -5,6 +5,7 @@ import { EmptyLayout, Label } from "Components";
 import { logoutUser } from "Redux/features/logoutSlice";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
+import { Navigate } from 'react-router-dom';
 
 function ByeBye() {
   const config = useSelector((state) => state.authReducer.config);
@@ -17,17 +18,14 @@ function ByeBye() {
   useEffect(() => {
     console.log("config: " + JSON.stringify(config));
     if (config && Object.keys(config).length > 0) {
-      console.log("localConfig: 1 ", config);
-      localStorage.setItem("localConfig", JSON.stringify(config));
       const state = uuidv4();
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
       dispatch(logoutUser());
       window.location.href = sessionEndpoint;
-    } else {
-      const state = uuidv4();
-      const localConfig =  JSON.parse(localStorage.getItem('localConfig'))
-      console.log("localConfig: ", localConfig);
-       navigate("/")
+    }
+    else {
+      navigate("/");
+      window.location.reload()
     }
   }, []);
 
