@@ -17,7 +17,6 @@ function ByeBye() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    console.log("config: " + JSON.stringify(config));
     dispatch(setAuthState(false));
     if (config && Object.keys(config).length > 0) {
       const state = uuidv4();

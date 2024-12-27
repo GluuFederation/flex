@@ -6,9 +6,7 @@ const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useSelector(
     (state) => state.authReducer.isAuthenticated
   );
-  const config = useSelector((state) => state.authReducer.config);
-  console.log("isAuthenticated", isAuthenticated);
-
+ 
   if (!isAuthenticated) {
     // Redirect to login if the user is not authenticated
     return <Navigate to="/" replace />;
