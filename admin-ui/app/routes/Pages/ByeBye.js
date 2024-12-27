@@ -23,10 +23,6 @@ function ByeBye() {
       dispatch(logoutUser());
       window.location.href = sessionEndpoint;
     }
-    else {
-      navigate("/");
-      window.location.reload()
-    }
   }, []);
 
   return (

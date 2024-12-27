@@ -53,9 +53,11 @@ export const RoutedContent = () => {
       <Route
         path="/home/dashboard"
         element={
+          <ProtectedRoute>
           <Suspense fallback={<GluuSuspenseLoader />}>
             <DashboardPage />
           </Suspense>
+          </ProtectedRoute>
         }
       />
       <Route path="/" element={<Navigate to="/home/dashboard" />} />
