@@ -553,7 +553,7 @@ nginx-ingress:
     scimConfigLabels: { }
     # -- SCIM config ingress resource additional annotations.
     scimConfigAdditionalAnnotations: { }
-    # -- SCIM config ingress resource labels. key app is taken
+    # -- SCIM ingress resource labels. key app is taken
     scimLabels: { }
     # -- SCIM ingress resource additional annotations.
     scimAdditionalAnnotations: { }

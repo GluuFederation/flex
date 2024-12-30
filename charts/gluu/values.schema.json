@@ -1338,6 +1338,24 @@
                                     "pattern": "^(FATAL|ERROR|WARN|INFO|DEBUG|TRACE)$"
                                 }
                             }
+                        },
+                        "ingress": {
+                            "description": "Endpoint control",
+                            "type": "object",
+                            "properties": {
+                                "linkEnabled": {
+                                    "description": "Enable link endpoints /jans-link",
+                                    "type": "boolean"
+                                },
+                                "linkLabels": {
+                                    "description": "link ingress resource labels. key app is taken",
+                                    "type": "object"
+                                },
+                                "linkAdditionalAnnotations": {
+                                    "description": "",
+                                    "type": "object"
+                                }
+                            }
                         }
                     }
                 },
