@@ -34,6 +34,7 @@ function GluuAdvancedSearch({
         name="pattern"
         defaultValue={pattern}
         placeholder={t('placeholders.search_pattern')}
+        onChange={handler}
         onKeyDown={handler}
       />
     </FormGroup>
