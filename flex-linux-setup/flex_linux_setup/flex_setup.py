@@ -59,7 +59,7 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs Gluu Flex Admin UI", action='store_true')
     parser.add_argument('--update-admin-ui', help="Updates Gluu Flex Admin UI", action='store_true')
-    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='io.jans.casa.authn.main', choices=['basic', 'io.jans.casa.authn.main'])
+    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='agama_io.jans.casa.authn.main', choices=['basic', 'agama_io.jans.casa.authn.main'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
     parser.add_argument('--no-restart-services', help="Do not restart services, useful when you are both uninstalling flex and Jans", action='store_true')
