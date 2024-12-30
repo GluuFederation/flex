@@ -166,8 +166,8 @@ const styles = makeStyles()({
     textOrientation: "upright",
   },
   statusContainer: {
-    height: 330,
     minWidth: 320,
+    height: "100%",
     color: "#303641",
     display: "block",
   },

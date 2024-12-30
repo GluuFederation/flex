@@ -295,7 +295,8 @@ function DashboardPage() {
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
         <div className={classes.root}>
-          <Grid container className="px-40" spacing={2}>
+          <Grid container className="px-40 h-100" spacing={2}>
+
             <Grid item lg={3} md={12} xs={12} height="auto">
               <div
                 className={classes.userInfoTitle}
@@ -331,7 +332,7 @@ function DashboardPage() {
               </div>
             </Grid>
 
-            <Grid item lg={5} md={12} xs={12} height={{ lg: "55vh", xs: "65vh", ms:"65vh", sm:"65vh" }}>
+            <Grid item lg={5} md={12} xs={12}>
               {StatusCard}
             </Grid>
 
@@ -395,6 +396,7 @@ function DashboardPage() {
                 </Grid>
               </Paper>
             </Grid>
+
           </Grid>
 
           <Grid container className={`px-40`}>
@@ -443,6 +445,7 @@ function DashboardPage() {
               )}
             </Grid>
           </Grid>
+
           <Grid container className={`${classes.flex} px-40`}>
             <Grid xs={12} item>
               <Grid
