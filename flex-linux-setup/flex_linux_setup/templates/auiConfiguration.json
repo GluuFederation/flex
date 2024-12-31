@@ -8,7 +8,8 @@
         "openid",
         "profile",
         "user_name",
-        "email"
+        "email",
+        "clientinfo"
       ],
       "acrValues": [
         "%(adminui_authentication_mode)s"

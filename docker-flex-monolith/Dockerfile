@@ -33,7 +33,7 @@ RUN systemctl set-default multi-user.target \
 RUN rm -f /lib/systemd/system/systemd*udev* \
     && rm -f /lib/systemd/system/getty.target
 
-HEALTHCHECK --interval=35s --timeout=4s CMD /opt/dist/scripts/jans-auth check | grep "Jetty running pid" || exit 1
+HEALTHCHECK --interval=35s --timeout=4s CMD /opt/jans/scripts/jans-auth check | grep "Jetty running pid" || exit 1
 
 # Ports required by jetty
 EXPOSE 443 8080 1636
@@ -42,7 +42,7 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-ENV FLEX_SOURCE_VERSION=6e9133309eb63dd499e1963d4f1d4eaa9d8bae7f
+ENV FLEX_SOURCE_VERSION=9982e118d69b3ed8f5fad81870bd30273e634f6f
 # cleanup
 RUN rm -rf /tmp/jans
 
