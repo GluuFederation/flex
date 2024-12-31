@@ -61,7 +61,17 @@ function ClientActiveTokens({ client }) {
   const onPageChangeClick = (page) => {
     let startCount = page * limit;
     setPageNumber(page);
-    getTokens(parseInt(startCount), limit, `clnId=${client.inum}`);
+    let conditionquery = `clnId=${client.inum}`;
+    if (pattern.dateAfter && pattern.dateBefore) {
+      conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format(
+        "YYYY-MM-DD"
+      )}`;
+      conditionquery += `,${searchFilter}<${dayjs(pattern.dateBefore).format(
+        "YYYY-MM-DD"
+      )}`;
+    }
+
+    getTokens(parseInt(startCount), limit, `${conditionquery}`);
   };
 
   const onRowCountChangeClick = (count) => {
