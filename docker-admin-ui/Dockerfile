@@ -25,7 +25,8 @@ ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
-RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+ARG GIT_CLONE_DEPTH=100
+RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
     && cd /tmp/jans \
     && git sparse-checkout init --cone \
     && git checkout ${JANS_SOURCE_VERSION} \
@@ -43,11 +44,11 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=9982e118d69b3ed8f5fad81870bd30273e634f6f
+ENV FLEX_SOURCE_VERSION=0b19c692ac141effd89d52649319b27bf74e7798
 
 RUN mkdir -p /app/templates/admin-ui
 
- RUN git clone --depth 500 --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
+ RUN git clone --depth ${GIT_CLONE_DEPTH} --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
      && cd /tmp/flex \
      && git sparse-checkout init --cone \
      && git checkout ${FLEX_SOURCE_VERSION} \
@@ -60,7 +61,7 @@ RUN mkdir -p /app/templates/admin-ui
 # ========
 
 ENV ADMIN_UI_VERSION=main
-ENV GLUU_BUILD_DATE='2024-07-10 06:40'
+ENV GLUU_BUILD_DATE='2024-12-30 17:20'
 
 RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admin-ui-${ADMIN_UI_VERSION}-built.tar.gz -O /tmp/admin-ui.tar.gz \
     && mkdir -p /opt/flex/admin-ui \
@@ -71,11 +72,12 @@ RUN wget -q https://jenkins.gluu.org/npm/admin_ui/${ADMIN_UI_VERSION}/built/admi
 # Python
 # ======
 
+ARG PIP_TIMEOUT=15
 COPY requirements.txt /app/requirements.txt
 RUN mv /usr/lib/python3.12/EXTERNALLY-MANAGED /usr/lib/python3.12/EXTERNALLY-MANAGED.disabled \
     && python3 -m ensurepip \
-    && pip3 install --no-cache-dir -U pip wheel setuptools \
-    && pip3 install --no-cache-dir -r /app/requirements.txt \
+    && pip3 install --no-cache-dir -U pip wheel setuptools --timeout ${PIP_TIMEOUT} \
+    && pip3 install --no-cache-dir -r /app/requirements.txt --timeout ${PIP_TIMEOUT} \
     && pip3 uninstall -y pip wheel
 
 # =======
