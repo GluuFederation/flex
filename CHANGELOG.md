@@ -1,5 +1,32 @@
 # Changelog
 
+## [5.2.0](https://github.com/GluuFederation/flex/compare/v5.1.6...v5.2.0) (2025-01-02)
+
+
+### Features
+
+* **jans-link:** add ingress resource for jans-link ([#1933](https://github.com/GluuFederation/flex/issues/1933)) ([b857542](https://github.com/GluuFederation/flex/commit/b857542f2b6a599e0a001aef7142c63e9e3a63d1))
+* using agama_io.jans.casa.authn.main as default acr in admin-ui ([23d3b65](https://github.com/GluuFederation/flex/commit/23d3b65d5ed91f8adcbb3abe4cb9cabb4835e4f7))
+* using agama_io.jans.casa.authn.main as default acr in admin-ui ([386c16e](https://github.com/GluuFederation/flex/commit/386c16e01baf0197de4b8a7ab603590436f5922e))
+* using basic as default acr ([e8739c9](https://github.com/GluuFederation/flex/commit/e8739c99009b488aa830ccc8802a5c153c9e88fb))
+
+
+### Bug Fixes
+
+* **admin-ui:** Dashboard layout system status section overlapping access token graph. ([90289b7](https://github.com/GluuFederation/flex/commit/90289b77464aeb5c28f1fbc1569cadc0da4facf0))
+* **admin-ui:** search is not working properly ([aec9168](https://github.com/GluuFederation/flex/commit/aec91680c010c3ff5badb462495c3098796ed60e))
+* **docker-jans-monolith:** update script location ([#1931](https://github.com/GluuFederation/flex/issues/1931)) ([420c4b3](https://github.com/GluuFederation/flex/commit/420c4b39acea4894bd90ab2f86ad7d046aaae2c6))
+* Filter is not working on client active token list ([70efc05](https://github.com/GluuFederation/flex/commit/70efc0500ea453756c7dcf8bf58c87c9d0cf2d26))
+* **flex-linux-setup:** removal of jans setup files ([1dada5b](https://github.com/GluuFederation/flex/commit/1dada5bd91e3aff976f345bf866e9ebe67cc5243))
+* **openbanking:** update the script to use the latest values.yaml  ([#1916](https://github.com/GluuFederation/flex/issues/1916)) ([363dbfd](https://github.com/GluuFederation/flex/commit/363dbfd0e083f5589ea07be33969dfe6eb10b9c2))
+* **startflexdemo:** remove unneeded packages installed ([#1951](https://github.com/GluuFederation/flex/issues/1951)) ([8763dc2](https://github.com/GluuFederation/flex/commit/8763dc2a2ca135c6784eeb5c1b58936e71d1b14e))
+* Update some other sonarQube issue. ([230528f](https://github.com/GluuFederation/flex/commit/230528fdbec106e4a5dd65a1151f0da57bf10fae))
+
+
+### Miscellaneous Chores
+
+* **release:** prepare for 5.2.0 ([#1953](https://github.com/GluuFederation/flex/issues/1953)) ([39ba123](https://github.com/GluuFederation/flex/commit/39ba123486ad2b62112875277f7f9c0a164b07e7))
+
 ## [5.0.0-21](https://github.com/GluuFederation/flex/compare/v5.0.0-20...v5.0.0-21) (2023-12-18)
 
 
