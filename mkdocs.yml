@@ -175,4 +175,7 @@ nav:
       - Managing Scripts with the jans-cli: openbanking/jans-cli.md
   - PAR and JARM: openbanking/par-jarm.md
 
--  Solo
+- 'Solo'
+  - Overview: Solo/solo.md
+      - Domain: Solo/domain.md
+      
