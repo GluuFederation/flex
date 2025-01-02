@@ -1,6 +1,6 @@
 {
   "name": "gluu-admin-ui",
-  "version": "0.0.0-nightly",
+  "version": "1.2.0",
   "description": "UI to administer the jans-sever features",
   "keywords": [
     "jans-server",
