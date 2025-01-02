@@ -40,7 +40,7 @@ sudo yum -y module enable mod_auth_openidc;
 - Download the release package from the Github Flex
   [Releases](https://github.com/gluufederation/flex/releases)
 ```shell
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable-el8.x86_64.rpm -P /tmp
 ```
 - GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
   not found, the [installation step](#install-the-release-package) would fail. Use the commands below to download and
@@ -56,7 +56,7 @@ sudo rpm -import automation-flex-public-gpg.asc
 ```
 - Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
 ```shell
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm.sha256sum  -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable-el8.x86_64.rpm.sha256sum  -P /tmp
 ```
 Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
 ```shell
