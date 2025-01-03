@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 import AuthNListPage from "./AuthNListPage";
 import { useTranslation } from "react-i18next";
 import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
-import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
-import { Card, CardBody } from "Components";
+import { Card } from "Components";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 
 import { useSelector } from "react-redux";
