@@ -67,16 +67,16 @@ Choose the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
 cd /tmp
-sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
+sha256sum -c flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum
 ```
 ```shell
 #Ubuntu 20.04
 cd /tmp
-sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
+sha256sum -c flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum
 ```
 Output similar to below should confirm the integrity of the downloaded package.
 ```shell
-flex_replace-flex-version.ubuntu<version>_amd64.deb: ok
+flex_replace-flex-version-stable.ubuntu<version>_amd64.deb: ok
 ```
 
 ### Install the Release Package
@@ -85,11 +85,11 @@ Choose the correct command from below based on the OS version.
 
 ```shell
 #Ubuntu 22.04
-apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
 ```
 ```shell
 #Ubuntu 20.04
-apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb
 ```
 
 ### Run the setup script
