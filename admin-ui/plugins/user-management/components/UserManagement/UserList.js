@@ -68,8 +68,9 @@ function UserList(props) {
   const [userDetails, setUserDetails] = useState(false);
   const [deleteData, setDeleteData] = useState(null);
   const toggle = () => setModal(!modal);
-  const submitForm = () => {
+  const submitForm = (message) => {
     toggle();
+    deleteData.action_message = message;
     handleUserDelete(deleteData);
   };
   const theme = useContext(ThemeContext);
