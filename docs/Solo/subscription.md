@@ -16,30 +16,36 @@ Gluu Solo offers flexible subscription plans designed to cater to a variety of b
 
 Gluu Solo provides four subscription tiers to accommodate varying scales of identity management requirements:
 1. Comet Plan 
+ * This plan have maximum 1 locations
 2. Planet Plan
+ * This plan have maximum 3 locations
 3. Star Plan
+ * This plan have maximum 10 locations
 4. Galaxy Plan
+ * This plan have maximum 15 locations
 
 Every plan have different location. As per location every plan charges are different.
 
+**todo** 
+**image**
 
 
 ## Enroll in a Subscription Plan
 
 1. Select a Plan:
 
-  * Navigate to the Solo section within the Agama Lab platform.
-  * Review the details of each subscription plan and select the one that best fits your needs.
+ * Navigate to the Solo section within the Agama Lab platform.
+ * Review the details of each subscription plan and select the one that best fits your needs.
 
 2. Confirm Selection:
 
-* A dialog box will confirm your selected plan and the associated cost per request.
-* Example: Comet Plan costs $0.002 per request per location.
+ * A dialog box will confirm your selected plan and the associated cost per request.
+ * Example: Comet Plan costs $0.002 per request per location.
 
 
 3. Activate
 
-* Click "Continue" to proceed with the subscription.
+ * Click "Continue" to proceed with the subscription.
 
 
 **TODO**
@@ -76,4 +82,13 @@ Enter the country, state, and city for your setup.
 Click "Submit" to finalize the environment setup.
 
 **Note:** Environment provisioning takes approximately 20-30 minutes.
+
+
+## Monitoring and Scaling
+
+Enhance your subscription with optional monitoring tools:
+ * Free Options: Google Cloud monitoring.
+ * Paid Tools: Datadog or Splunk for advanced insights (additional costs apply).
+
+Automatic scaling ensures that your resources adjust dynamically based on demand, providing seamless performance regardless of traffic fluctuations.
 
