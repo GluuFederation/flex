@@ -177,5 +177,6 @@ nav:
 
 - 'Solo'
   - Overview: Solo/solo.md
+      - Subscription: Solo/subscription.md
       - Domain: Solo/domain.md
       

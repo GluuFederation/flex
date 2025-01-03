@@ -15,16 +15,55 @@ Gluu Solo offers flexible subscription plans designed to cater to a variety of b
 ## Available Subscription Plans
 
 Gluu Solo provides four subscription tiers to accommodate varying scales of identity management requirements:
-1. Comet Plan 
- * This plan have maximum 1 locations
-2. Planet Plan
- * This plan have maximum 3 locations
-3. Star Plan
- * This plan have maximum 10 locations
-4. Galaxy Plan
- * This plan have maximum 15 locations
+### Comet Plan 
+ 
+This plan have maximum 1 locations.
 
-Every plan have different location. As per location every plan charges are different.
+The Comet Plan is best suited for small businesses, startups, or organizations that are in the initial stages of adopting identity management solutions.
+
+
+### Planet Plan
+This plan have maximum 3 locations.
+
+The Planet Plan is a robust choice for mid-sized businesses or organizations looking for improved performance and reliability. Key benefits include:
+
+**Increased Capacity:** With support for up to 25K requests per month and up to three locations, this plan accommodates growing identity management needs.
+
+**Enhanced Reliability:** The 99.9% SLA guarantees minimal downtime, ensuring uninterrupted access to your identity management system.
+
+**Flexible Deployment:** Ideal for businesses operating in multiple locations or with a distributed workforce that requires secure, scalable access.
+
+
+
+
+### Star Plan
+ This plan have maximum 10 locations
+
+The Star Plan is ideal for businesses with large-scale operations or those operating across multiple regions. It provides the capacity and flexibility to handle extensive identity management needs with reliability and efficiency.
+
+#### Advantage
+
+**High Capacity:** Supports up to 250K requests monthly, making it perfect for businesses with high transaction volumes.
+
+**Multi-Location Support:** Up to 10 locations ensure smooth identity management for distributed teams or customer bases.
+
+**Enhanced Performance:** The 99.9% SLA guarantees minimal downtime and consistent performance.
+
+
+### Galaxy Plan
+ This plan have maximum 15 locations.
+
+ The Galaxy Plan is specifically designed for enterprise-level operations and large-scale identity management needs. Its unparalleled capacity, extensive geographic coverage, and reliability make it a premium choice for businesses requiring top-tier solutions.
+
+#### Advantage
+
+**Massive Scale:** Accommodates up to 2.5M requests per month, catering to enterprises with heavy transaction volumes and complex workflows.
+
+**Broad Geographic Coverage:** Supports up to 15 locations, ideal for global operations or multinational businesses.
+
+**Enterprise-Grade Reliability:** The 99.9% SLA ensures optimal uptime and seamless performance across all regions.
+
+**Future-Ready Infrastructure:** Offers the flexibility to handle increasing demands and evolving business needs.
 
 **todo** 
 **image**
