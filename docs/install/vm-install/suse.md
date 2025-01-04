@@ -63,7 +63,7 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 
 - Verify package integrity
 ```
-sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
+sha256sum -c flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum
 ```
 You should see:
 ```
