@@ -61,7 +61,7 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
 ```shell
 cd /tmp;
-sha256sum -c flex-replace-flex-version-el8.x86_64.rpm.sha256sum;
+sha256sum -c flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum;
 ```
 Output similar to below should confirm the integrity of the downloaded package.
 ```text
