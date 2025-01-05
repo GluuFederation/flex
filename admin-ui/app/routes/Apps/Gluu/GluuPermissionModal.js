@@ -1,8 +1,9 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import PropTypes from 'prop-types'
 
-const GluuPermissionModal = ({ description = "", handler, isOpen }) => {
+const GluuPermissionModal = ({ handler, isOpen }) => {
   const { t } = useTranslation();
 
   return (
@@ -45,5 +46,11 @@ const GluuPermissionModal = ({ description = "", handler, isOpen }) => {
     </div>
   );
 };
+
+
+GluuPermissionModal.propTypes = {
+  handler: PropTypes.func,
+  isOpen: PropTypes.bool,
+}
 
 export default GluuPermissionModal;
