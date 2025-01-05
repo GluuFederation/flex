@@ -62,7 +62,7 @@ function UserAddPage() {
     }
   }
 
-  const submitData = (values) => {
+  const submitData = (values, modifiedFields, message) => {
     let customAttributes = createCustomAttributes(values)
     let submitableValues = {
       userId: values.userId || '',
@@ -72,6 +72,7 @@ function UserAddPage() {
       userPassword: values.userPassword || '',
       givenName: values.givenName || '',
       customAttributes: customAttributes,
+      action_message: message,
     }
     dispatch(createUser(submitableValues))
   }
