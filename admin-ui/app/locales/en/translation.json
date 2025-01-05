@@ -84,7 +84,10 @@
     "config_api_status":"Config API Status",
     "key_cloak":"Keycloak",
     "jans_lock":"Jans Lock",
-    "jans_link":"Jans Link"
+    "jans_link":"Jans Link",
+    "access_denied":"Access Denied",
+    "access_denied_message":"You do not have permission to access this page",
+    "access_contact_admin":"Please contact your administrator for more information"
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",

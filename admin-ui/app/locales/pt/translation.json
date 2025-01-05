@@ -31,7 +31,10 @@
     "config_api_status": "Status da API de configuração",
     "key_cloak": "Keycloak",
     "jans_lock": "Jans Lock",
-    "jans_link": "Link Jans"
+    "jans_link": "Link Jans",
+    "access_denied":"Acesso negado",
+    "access_denied_message":"Entre em contato com o administrador para obter ajuda",
+    "access_contact_admin":"Se você acha que isso é um erro, entre em contato com o administrador"
   },
   "menus": {
     "adminui": "Admin",
