@@ -175,8 +175,8 @@ nav:
       - Managing Scripts with the jans-cli: openbanking/jans-cli.md
   - PAR and JARM: openbanking/par-jarm.md
 
-- 'Solo'
-  - Overview: Solo/solo.md
-      - Subscription: Solo/subscription.md
-      - Domain: Solo/domain.md
+- 'Solo':
+  - 'solo/solo-overview.md'
+  - Subscription: solo/solo-subscription.md
+  - Cloud Setup: solo/solo-cloud-environment-setup.md
       
