@@ -53,7 +53,9 @@ export function* createUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: data } });
 
     addAdditionalData(audit, CREATE, API_USERS, payload);
-    audit.message = payload.action?.action_message || ``;
+    audit.message = payload?.action_message || ``;
+  
+    delete payload.userPassword
     yield call(postUserAction, audit);
     return data;
   } catch (e) {
@@ -163,7 +165,7 @@ export function* deleteUserSaga({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: payload } });
 
     addAdditionalData(audit, DELETION, API_USERS, payload);
-    audit.message = `Deleted user ${payload.inum}`;
+    audit.message = payload.action_message || ``;
     yield call(postUserAction, audit);
     return data;
   } catch (e) {

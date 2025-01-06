@@ -21,4 +21,4 @@ maintainers:
     email: team@gluu.org
 description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
 name: gluu-all-in-one
-version: 1.2.0
+version: 5.2.0
