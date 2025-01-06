@@ -18,11 +18,11 @@ plugins:
    - include-markdown
    - tags
    - search
-   - git-revision-date-localized:
-       type: timeago
-       enable_creation_date: true
-   - git-committers:
-       repository: GluuFederation/flex
+  #  - git-revision-date-localized:
+  #      type: timeago
+  #      enable_creation_date: true
+  #  - git-committers:
+  #      repository: GluuFederation/flex
 # Configuration
 theme:
     name: material
@@ -176,7 +176,7 @@ nav:
   - PAR and JARM: openbanking/par-jarm.md
 
 - 'Solo':
-  - 'solo/solo-overview.md'
+  - 'solo/solo-getting-started.md'
   - Subscription: solo/solo-subscription.md
   - Cloud Setup: solo/solo-cloud-environment-setup.md
       

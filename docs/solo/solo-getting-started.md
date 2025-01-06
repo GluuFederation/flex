@@ -3,7 +3,8 @@ tags:
   - solo
   - Gluu
 ---
-# Overview 
+
+# Getting Started with Gluu Solo
 
 Gluu Solo is a cloud-based identity management service designed to provide secure, scalable, 
 and dedicated authentication solutions for businesses. It eliminates the need for complex 
@@ -12,10 +13,7 @@ business requirements.
 
 Curious about features! Check out [Gluu Solo] website for more. 
 
-# Getting Started with Gluu Solo
-
 To start using Gluu Solo, sign into Agama Lab. In a few steps, you'll be able to go-live with Gluu Solo:
-
 
 ```mermaid
 flowchart TD
