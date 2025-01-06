@@ -3,6 +3,12 @@ tags:
   - solo
   - Gluu
 ---
+# Overview 
+
+Gluu Solo is a cloud-based identity management service designed to provide secure, scalable, 
+and dedicated authentication solutions for businesses. It eliminates the need for complex 
+infrastructure management by offering a Software-as-a-Service (SaaS) model tailored to various 
+business requirements.
 
 # Getting Started with Gluu Solo
 
@@ -34,7 +40,6 @@ Solo does not use any shared resources; instead, it allocates dedicated resource
 namespace that is exclusively owned by you.
 
 
-
 # Setting Up Gluu Solo
 
 Log into Agama Lab: Begin by logging into your Agama Lab account.
@@ -50,39 +55,45 @@ and the SLA that fits your business requirements.
 Gluu Solo gives you the flexibility to select multiple cloud locations based on your plan.
 
 **Configure Redundancy and Resources:** You can determine how much redundancy you want in your setup. 
-Solo provides dedicated resources, ensuring that your identity provider environment is isolated and optimized for your needs.
+Solo provides dedicated resources, ensuring that your identity provider environment is isolated and 
+optimized for your needs.
 
-**Activate and Manage:** Once your subscription plan is set up, you're ready to start using Gluu Solo. 
-Manage your identity solutions through the Agama Lab platform with minimal operational overhead.
+**Activate and Manage:** Once your subscription plan is set up, you're ready 
+to start using Gluu Solo. Manage your identity solutions through the Agama Lab 
+platform with minimal operational overhead.
 
 
 # Payment Process
 
-Users complete their subscription by making payments. This section provides a step-by-step guide for completing 
-transactions securely, including available payment methods and troubleshooting tips for payment issues.
+Users complete their subscription by making payments. This section provides a 
+step-by-step guide for completing transactions securely, including available 
+payment methods and troubleshooting tips for payment issues.
 
 # Environment Provisioning (20-30 mins)
 
-After payment, the system starts provisioning the user's environment. This process takes approximately 20-30 minutes. 
-Details on what happens during provisioning and how users will be notified upon completion are included here.
+After payment, the system starts provisioning the user's environment. This process 
+takes approximately 20-30 minutes. Details on what happens during provisioning and 
+how users will be notified upon completion are included here.
 
 # Domain Options
 
 User have two option for domain `Gluu.org.Domain` and `Custom domain`
  
-Gluu.org Domain: Users can choose to utilize a predefined domain provided by the platform. This section describes 
-the benefits and how to configure it.
+Gluu.org Domain: Users can choose to utilize a predefined domain provided by 
+the platform. This section describes the benefits and how to configure it.
 
-Custom Domain: Users may also opt for a custom domain. Instructions for setting up a custom domain, 
-including adding DNS records manually, are covered here.
+Custom Domain: Users may also opt for a custom domain. Instructions for 
+setting up a custom domain, including adding DNS records manually, are covered here.
 
 **todo**
-For more infomation refer [here]()
+For more information refer [here]()
+
 
 # Confirm Access
 
-After provisioning, users are guided to confirm access to their environment. This section includes 
-instructions on accessing the domain and troubleshooting access issues.
+After provisioning, users are guided to confirm access to their environment. 
+This section includes instructions on accessing the domain and troubleshooting access issues.
+
 
 # Hook up Optional Monitoring Tools
 
@@ -103,11 +114,13 @@ Splunk (Additional Expenses Required): Guide for setting up Splunk for monitorin
 
 # Upgrade/Downgrade
 
-Users can modify their subscription to suit their changing needs. This section details the process of upgrading or downgrading plans, including the implications for provisioning and billing.
+Users can modify their subscription to suit their changing needs. This section details the 
+process of upgrading or downgrading plans, including the implications for provisioning and billing.
 
 # Customizations
 
-After confirming access, users can customize their environment to meet specific requirements. This section covers available customization options and how to apply them.
+After confirming access, users can customize their environment to meet specific requirements. 
+This section covers available customization options and how to apply them.
 
 # Interfaces
 
