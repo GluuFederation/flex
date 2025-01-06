@@ -28,9 +28,11 @@ import OAuthIcon from "Components/SVG/menu/OAuth";
 import { getHealthServerStatus } from "../../redux/features/healthSlice";
 import GluuPermissionModal from "Routes/Apps/Gluu/GluuPermissionModal";
 import { auditLogoutLogs } from "../../../plugins/user-management/redux/features/userSlice";
+import { useNavigate } from "react-router";
 
 function DashboardPage() {
   const { t } = useTranslation();
+   const navigate = useNavigate();
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const breakDashboardCard = useMediaQuery({ query: "(max-width: 1424px)" });
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -294,7 +296,11 @@ function DashboardPage() {
   }, [serverStatus, serverHealth, dbStatus, t, statusDetails, classes]);
 
   const handleLogout = () => {
-    dispatch(auditLogoutLogs({ message: "Logging out due to insufficient permissions for Admin UI access." }));
+    if(access_token){
+      dispatch(auditLogoutLogs({ message: "Logging out due to insufficient permissions for Admin UI access." }));
+    }
+    else navigate("/logout")
+   
   };
 
   return (
@@ -303,7 +309,7 @@ function DashboardPage() {
         handler={() => {
           handleLogout();
         }}
-        isOpen={!hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
+        isOpen={!access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       />
       <GluuViewWrapper
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
