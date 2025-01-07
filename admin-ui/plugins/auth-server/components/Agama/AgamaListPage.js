@@ -80,6 +80,10 @@ function AgamaListPage() {
     (state) => state.jsonConfigReducer.loading
   );
 
+  const agamaFileResponse = useSelector(
+    (state) => state.agamaReducer.agamaFileResponse
+  );
+
   const theme = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
   const themeColors = getThemeColor(selectedTheme);
@@ -113,6 +117,18 @@ function AgamaListPage() {
     }
   }, []);
 
+  useEffect(() => {
+    if (agamaFileResponse) {
+      const byteArray = new Uint8Array(agamaFileResponse);
+      let object = {
+        name: projectName,
+        file: byteArray,
+      };
+      // dispatch(addAgama(object));
+      console.log("agamaFileResponse", byteArray);
+    }
+  }, [agamaFileResponse]);
+
   const submitData = async () => {
     let file = await convertFileToByteArray(selectedFile);
     let object = {
@@ -124,6 +140,7 @@ function AgamaListPage() {
     setProjectName("");
     setShowAddModal(false);
   };
+
   const onDrop = useCallback((acceptedFiles) => {
     setProjectName("");
     // Do something with the files
@@ -149,12 +166,14 @@ function AgamaListPage() {
         setGetProjectName(true);
       });
   }, []);
+
   const onDrop2 = useCallback((acceptedFiles) => {
     // Do something with the files
     const file = acceptedFiles[0];
     setShaFileName(file.name);
     setSHAfile(file);
   }, []);
+
   const {
     getRootProps: getRootProps1,
     getInputProps: getInputProps1,
@@ -178,9 +197,8 @@ function AgamaListPage() {
     },
   });
 
-  const { totalItems, loading, agamaRepostoriesList } = useSelector(
-    (state) => state.agamaReducer
-  );
+  const { totalItems, loading, fileLoading, agamaRepostoriesList } =
+    useSelector((state) => state.agamaReducer);
 
   const agamaList = useSelector((state) => state.agamaReducer.agamaList);
   const permissions = useSelector((state) => state.authReducer.permissions);
@@ -379,13 +397,14 @@ function AgamaListPage() {
       const repo = agamaRepostoriesList.projects.find(
         (item) => item["repository-name"] === repoName
       );
-      dispatch(getAgamaRepositoryFile());
-      // dispatch(addAgama(object));
+      setProjectName(repo["repository-name"]);
+      dispatch(getAgamaRepositoryFile({ downloadurl: repo["download-link"] }));
     } catch (error) {
+      console.log("error", error);
       toast.error("File not found");
     } finally {
-      setShowAddModal(false);
-      setRepoName(null);
+      //setShowAddModal(false);
+      //setRepoName(null);
     }
   };
 
@@ -474,7 +493,7 @@ function AgamaListPage() {
       case t("menus.add_community_project"):
         return (
           <>
-            <ModalBody style={{ maxHeight: "" }}>
+            <ModalBody style={{ maxHeight: "500px", height: "500px" }}>
               <FormGroup>
                 <FormLabel
                   style={{
@@ -496,9 +515,9 @@ function AgamaListPage() {
                     overflowX: "hidden",
                   }}
                 >
-                  {loading ? (
+                  {fileLoading ? (
                     <CircularProgress />
-                  ) : agamaRepostoriesList?.projects.length ? (
+                  ) : agamaRepostoriesList?.projects?.length ? (
                     agamaRepostoriesList.projects.map((item, index) => (
                       <FormControlLabel
                         key={index}
@@ -520,8 +539,14 @@ function AgamaListPage() {
                         }
                         label={
                           <div>
-                            <div>{item.name}</div>
-                            <div style={{ fontSize: "12px", color: "gray" }}>
+                            <div style={{ marginTop: 6 }}>{item.name}</div>
+                            <div
+                              style={{
+                                fontSize: "12px",
+                                color: "gray",
+                                marginTop: 6,
+                              }}
+                            >
                               {item.description}
                             </div>
                           </div>
@@ -552,7 +577,7 @@ function AgamaListPage() {
                 disabled={repoName === null}
                 onClick={() => handleDeploy()}
               >
-                {loading || isConfigLoading ? (
+                {fileLoading || isConfigLoading ? (
                   <>
                     <CircularProgress size={12} /> &nbsp;
                   </>

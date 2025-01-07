@@ -8,6 +8,7 @@ import {
   getAddAgamaResponse,
   getAgama,
   getAgamaRepositoriesResponse,
+  getAgamaRepositoryFileResponse,
 } from "../features/agamaSlice";
 const JansConfigApi = require("jans_config_api");
 
@@ -84,16 +85,16 @@ export function* getAgamaRepository() {
   }
 }
 
-export function* getAgamaRepositoryFile(payload) {
+export function* getAgamaRepositoryFile(body) {
   try {
-
+    const { payload } = body;
     const token = yield select((state) => state.authReducer.token.access_token);
-    console.log(payload)
-    const payload = { token };
+  
+    payload.token = token;
     const api = yield* newFunction();
     const data = yield call(api.getAgamaRepositoryFile, payload);
 
-    yield put(getAgamaRepositoriesResponse(data.data));
+    yield put(getAgamaRepositoryFileResponse(data.data));
     return data;
   } catch (e) {
     if (isFourZeroOneError(e)) {

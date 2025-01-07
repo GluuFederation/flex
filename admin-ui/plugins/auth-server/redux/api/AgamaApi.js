@@ -58,7 +58,7 @@ export default class AgamaApi {
 
 
   getAgamaRepositoryFile = (payload) => {
-    const { downloadurl } = payload
+    const { downloadurl, token } = payload
     return new Promise((resolve, reject) => {
       axios.get(`/api/v1/agama-repo/download/?downloadLink=${decodeURIComponent(downloadurl)}`, {
         headers: {

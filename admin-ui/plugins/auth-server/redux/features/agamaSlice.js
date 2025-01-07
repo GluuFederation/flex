@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   agamaList: [],
   loading: false,
+  fileLoading:false,
   totalItems: 0,
   entriesCount: 0,
   agamaRepostoriesList:[],
@@ -35,21 +36,19 @@ const agamaSlice = createSlice({
       state.loading = false
     },
     getAgamaRepository: (state) => {
-     state.loading = true
+     state.fileLoading = true
     },
-    getAgamaRepositoryFile: (state) => {
-      console.log('action.payload', action)
-      state.loading = true
+    getAgamaRepositoryFile: (state,action) => {
+      state.fileLoading = true
      },
     getAgamaRepositoriesResponse: (state, action) => {
-   
-      state.loading = false
+      state.fileLoading = false
       if (action.payload) {
         state.agamaRepostoriesList = action.payload || []
       }
     },
     getAgamaRepositoryFileResponse: (state, action) => {
-      state.loading = false
+      state.fileLoading = false
       if (action.payload) {
         state.agamaFileResponse = action.payload || []
       }
