@@ -31,7 +31,10 @@
     "config_api_status": "Status da API de configuração",
     "key_cloak": "Keycloak",
     "jans_lock": "Jans Lock",
-    "jans_link": "Link Jans"
+    "jans_link": "Link Jans",
+    "access_denied":"Acesso negado",
+    "access_denied_message":"Entre em contato com o administrador para obter ajuda",
+    "access_contact_admin":"Se você acha que isso é um erro, entre em contato com o administrador"
   },
   "menus": {
     "adminui": "Admin",
@@ -102,8 +105,7 @@
     "customer_backend_key_attributes": "Chave/atributos de back-end do cliente",
     "source_backend_ldap_servers": "Servidores LDAP de back-end de origem",
     "inum_db_server": "Servidor DB Inum",
-    "static_configuration": "Configuração estática",
-    "dynamic_configuration": "Configuração Dinâmica"
+    "static_configuration": "Configuração estática"
   },
   "actions": {
     "accept": "Aceitar",
