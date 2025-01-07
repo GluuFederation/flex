@@ -124,8 +124,10 @@ function AgamaListPage() {
         name: projectName,
         file: byteArray,
       };
-      // dispatch(addAgama(object));
-      console.log("agamaFileResponse", byteArray);
+      dispatch(addAgama(object));
+      setShowConfigModal(false);
+      setShowAddModal(false);
+      setRepoName(null);
     }
   }, [agamaFileResponse]);
 
@@ -374,22 +376,6 @@ function AgamaListPage() {
     { name: t("menus.add_community_project"), path: "" },
   ];
 
-  async function convertUrlToByteArray(repoUrl) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const response = await axios.get(repoUrl, {
-          responseType: "arraybuffer",
-        });
-        if (response && response.data) {
-          const byteArray = new Uint8Array(response.data);
-          resolve(byteArray);
-        }
-      } catch (error) {
-        console.error("Error converting URL to byte array:", error);
-        reject(error);
-      }
-    });
-  }
 
   const handleDeploy = async () => {
     let file = null;
@@ -400,11 +386,7 @@ function AgamaListPage() {
       setProjectName(repo["repository-name"]);
       dispatch(getAgamaRepositoryFile({ downloadurl: repo["download-link"] }));
     } catch (error) {
-      console.log("error", error);
       toast.error("File not found");
-    } finally {
-      //setShowAddModal(false);
-      //setRepoName(null);
     }
   };
 
@@ -493,7 +475,7 @@ function AgamaListPage() {
       case t("menus.add_community_project"):
         return (
           <>
-            <ModalBody style={{ maxHeight: "500px", height: "500px" }}>
+            <ModalBody style={{ maxHeight: "500px", height: "auto" }}>
               <FormGroup>
                 <FormLabel
                   style={{
@@ -510,7 +492,7 @@ function AgamaListPage() {
                     display: "flex",
                     flexDirection: "column",
                     padding: "0 10px",
-                    maxHeight: "500px",
+                    maxHeight: "400px",
                     overflowY: "auto",
                     overflowX: "hidden",
                   }}
