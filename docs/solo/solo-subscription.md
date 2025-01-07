@@ -6,11 +6,38 @@ tags:
 ---
 
 
-# Gluu Solo Subscription Plans
+# Gluu Solo Subscription
 
-## Overview
+Customers require active Gluu Solo subscription in order to avail Gluu Solo 
+services. Customers can opt one of the Gluu Solo subscription plans according
+to the business need. 
 
-Gluu Solo offers flexible subscription plans designed to cater to a variety of business needs. These plans are hosted on Google's cloud, providing scalability, reliability, and cost-effective identity management solutions. Each plan allows you to manage requests efficiently while benefiting from dedicated resources in a closed namespace exclusively owned by your organization.
+New customers can subscribe to Gluu Solo using the 
+[Agama Lab](https://gluu.org/agama-lab/).
+
+## Subscription process
+
+1. Sign-in to the [Agama Lab](https://gluu.org/agama-lab/). Navigate to `Solo`.
+
+![](../assets/agama-lab/solo-agama-lab-main-page.png)
+![](../assets/agama-lab/solo-subscription-plans.png)
+![](../assets/agama-lab/solo-price-confirmation.png)
+![](../assets/agama-lab/solo-subscription-form-default-domain.png)
+![](../assets/agama-lab/solo-custom-domain.png)
+![](../assets/agama-lab/solo-checkout-bill-plan.png)
+![](../assets/agama-lab/solo-instance-preview.png)
+![](../assets/agama-lab/solo-checkout-confirmation.png)
+![](../assets/agama-lab/solo-account-details.png)
+![](../assets/agama-lab/solo-billing-details.png)
+![](../assets/agama-lab/solo-payment-details.png)
+![](../assets/agama-lab/solo-order-completion.png)
+![](../assets/agama-lab/solo-payment-success-confirmation.png)
+![](../assets/agama-lab/solo-creating-new-instance.png)
+
+
+
+Gluu Solo offers flexible subscription plans designed to cater to a variety of 
+business needs. 
 
 ## Available Subscription Plans
 
