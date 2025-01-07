@@ -4,6 +4,8 @@ on:
     workflows: ['Test Linux installer']
     types:
       - completed
+permissions:
+  contents: read
 jobs:
   report:
     runs-on: ubuntu-latest

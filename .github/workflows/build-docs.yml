@@ -28,6 +28,8 @@ on:
 concurrency:
   group: run-once
   cancel-in-progress: false
+permissions:
+  contents: read
 jobs:
   build:
     if: github.repository_owner == 'GluuFederation'

@@ -74,9 +74,9 @@ jobs:
         if: steps.build_docker_image.outputs.build || github.event_name == 'tags'
         run: |
           sudo apt-get update
-          #sudo python3 -m pip install --upgrade pip
-          sudo pip3 install setuptools --upgrade
-          sudo pip3 install -r ./automation/requirements.txt
+          sudo python3 -m pip install --upgrade pip || echo "Failed to upgrade pip"
+          sudo pip3 install --ignore-installed setuptools --upgrade
+          sudo pip3 install --ignore-installed -r ./automation/requirements.txt 
           sudo apt-get update
 
 
@@ -149,11 +149,11 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         run: |
           sudo apt-get update
-          #sudo python3 -m pip install --upgrade pip
-          sudo pip3 install setuptools --upgrade
-          sudo pip3 install -r ./automation/requirements.txt
+          sudo python3 -m pip install --upgrade pip || echo "Failed to upgrade pip"
+          sudo pip3 install --ignore-installed setuptools --upgrade
+          sudo pip3 install --ignore-installed -r ./automation/requirements.txt 
           sudo apt-get update
-          sudo apt-get install jq
+          sudo apt-get install --ignore-installed jq
 
       - name: Update Build date in Dockerfile
         if: github.event_name == 'workflow_dispatch'

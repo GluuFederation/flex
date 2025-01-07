@@ -5,6 +5,8 @@ on:
   pull_request:
     types:
       - closed
+permissions:
+  contents: read
 jobs:
   create_release:
     if: ${{ (github.event.pull_request.merged == true) && (contains(github.event.pull_request.labels.*.name, 'autorelease:pending')) }}

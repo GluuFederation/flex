@@ -11,6 +11,8 @@ on:
       - main
     paths:
       - "flex-linux-setup/**"
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-20.04
