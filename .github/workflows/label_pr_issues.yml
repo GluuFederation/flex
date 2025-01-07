@@ -13,7 +13,8 @@ on:
       - opened
       - edited
   workflow_dispatch:
-
+permissions:
+  contents: read
 jobs:
   label:
     # This cannot run on forks as the user mo-auto does not have access to forks
@@ -32,11 +33,11 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo python3 -m pip install --upgrade pip
-          sudo pip3 install setuptools --upgrade
-          sudo pip3 install -r ./automation/requirements.txt
+          sudo python3 -m pip install --upgrade pip || echo "Failed to upgrade pip"
+          sudo pip3 install --ignore-installed setuptools --upgrade
+          sudo pip3 install --ignore-installed -r ./automation/requirements.txt 
           sudo apt-get update
-          sudo apt-get install jq
+          sudo apt-get install --ignore-installed jq
           curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
           sudo apt update

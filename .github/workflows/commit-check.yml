@@ -15,7 +15,8 @@ on:
       - reopened
       - synchronize
   push:
-
+permissions:
+  contents: read
 jobs:
   check-commit-message:
     name: Check Commit Message
@@ -24,7 +25,7 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@v3
         with:
-          # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
+          # We need to fetch with a depth of 2 for pull_request, so we can do HEAD^2
           fetch-depth: 2
 
       - uses: actions/setup-node@v3
