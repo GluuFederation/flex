@@ -33,7 +33,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
 import { toast } from "react-toastify";
-import axios from "axios";
 import {
   getAgamaRepository,
   getAgamaRepositoryFile,
@@ -68,10 +67,6 @@ function AgamaListPage() {
   const [listData, setListData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
   const [repoName, setRepoName] = useState(null);
-  const [repositoriesData, setRespositoriesData] = useState({
-    loading: true,
-    repositories: [],
-  });
   const configuration = useSelector(
     (state) => state.jsonConfigReducer.configuration
   );
@@ -378,7 +373,6 @@ function AgamaListPage() {
 
 
   const handleDeploy = async () => {
-    let file = null;
     try {
       const repo = agamaRepostoriesList.projects.find(
         (item) => item["repository-name"] === repoName
