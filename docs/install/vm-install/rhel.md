@@ -96,7 +96,7 @@ Verify that installation has been successful and all installed components are ac
 ```shell
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
-Full TUI documentation can be found [here](https://docs.jans.io/stable/admin/config-guide/jans-tui)
+Full TUI documentation can be found [here](https://docs.jans.io/head/janssen-server/config-guide/config-tools/jans-tui/)
 
 - Log into Admin-UI using URI below
 ```text

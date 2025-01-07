@@ -30,7 +30,7 @@ Use the listing below for a detailed estimation of the minimum required resource
     |OB AS signing key                 | Added to the JVM. Used in SSA Validation                                                |
     |OB transport truststore           | Used in SSA Validation. Generated from OB Root CA nd Issuing CA                         |
 
-  - Based on the provider/platform you're using, you can follow the [docs](https://docs.gluu.org/vreplace-flex-version/install/helm-install/) to install your platform prerequistes, nginx-ingress, and the yaml changes needed in `override.yaml` based on the Gluu persistence choosed.
+  - Based on the provider/platform you're using, you can follow the [docs](../install/helm-install) to install your platform prerequistes, nginx-ingress, and the yaml changes needed in `override.yaml` based on the Gluu persistence choosed.
 
   - To enable mTLS in ingress-nginx, add the following to your `override.yaml`:
       ```yaml
