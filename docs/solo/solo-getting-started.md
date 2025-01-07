@@ -17,9 +17,14 @@ To start using Gluu Solo, sign into Agama Lab. In a few steps, you'll be able to
 
 ```mermaid
 flowchart TD
-    A(Agama Lab Login) --> B(Subscribe to Solo)
+    A(Agama Lab Login) --> B(Subscribe to Solo)  
     B --> C(Setup the cloud instance)
-    C --> D(Go Live!)
+    C --> D(Go Live!)   
+
+    click A href "#agama-lab-sign-in"
+    click B href "#subscription"
+    click C href "#setting-up-gluu-solo-environment"
+    click D href "#go-live"
 ```
 
 ## Agama Lab Sign in
