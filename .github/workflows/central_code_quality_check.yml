@@ -21,7 +21,8 @@ on:
       - 'docker-**/version.txt'
       - '**.md'
   workflow_dispatch:
-
+permissions:
+  contents: read
 jobs:
   sonar-scan:
     name: sonar scan

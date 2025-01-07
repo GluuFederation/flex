@@ -12,6 +12,8 @@ on:
         required: false
   schedule:
     - cron: "0 0 * * *"
+permissions:
+  contents: read
 jobs:
   publish:
     name: Publish for ${{ matrix.asset_name }}
