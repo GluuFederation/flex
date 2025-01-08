@@ -100,7 +100,7 @@ New customers can subscribe to Gluu Solo using the
 
     ![](../assets/agama-lab/solo-payment-success-confirmation.png)
 
-13. Access your domain
+13. Access Solo space
 
     * Solo space shows your current instance and runtime status.
 
