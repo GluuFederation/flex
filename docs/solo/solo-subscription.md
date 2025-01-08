@@ -18,21 +18,66 @@ New customers can subscribe to Gluu Solo using the
 ## Subscription process
 
 1. Sign-in to the [Agama Lab](https://gluu.org/agama-lab/). Navigate to `Solo`.
-
+2. On the Solo page, read the description provided about the Solo.
+   To begin the subscription process, click the 'Subscription' button.
 ![](../assets/agama-lab/solo-agama-lab-main-page.png)
-![](../assets/agama-lab/solo-subscription-plans.png)
-![](../assets/agama-lab/solo-price-confirmation.png)
-![](../assets/agama-lab/solo-subscription-form-default-domain.png)
-![](../assets/agama-lab/solo-custom-domain.png)
-![](../assets/agama-lab/solo-checkout-bill-plan.png)
-![](../assets/agama-lab/solo-instance-preview.png)
-![](../assets/agama-lab/solo-checkout-confirmation.png)
-![](../assets/agama-lab/solo-account-details.png)
-![](../assets/agama-lab/solo-billing-details.png)
-![](../assets/agama-lab/solo-payment-details.png)
-![](../assets/agama-lab/solo-order-completion.png)
-![](../assets/agama-lab/solo-payment-success-confirmation.png)
-![](../assets/agama-lab/solo-creating-new-instance.png)
+
+3. Choose a Subscription Plan:
+     * After clicking the `Subscription` button, you will see a list of available plans. 
+     * Select the plan that best suits your business needs and click `Continue`.
+     ![](../assets/agama-lab/solo-subscription-plans.png)
+4. Review Cost:
+     * After clicking 'Continue', a pop-up will appear showing the `cost per request per locations` of the selected plan.
+     * Proceed with the next steps to confirm your subscription.
+     ![](../assets/agama-lab/solo-price-confirmation.png)
+
+5. Add Required Information:
+     * You will be prompted to add the necessary details, as shown in the image below.
+     * You will have two options for selecting the type of domain: `Gluu.org Domain` and `Custom Domain`.
+     ![](../assets/agama-lab/solo-subscription-form-default-domain.png)
+     If you choose a Custom Domain, a note related to custom domains will appear (as shown in the image below).
+     ![](../assets/agama-lab/solo-custom-domain.png)
+
+6. Checkout Page:
+
+     * After entering the required information, you will be directed to the checkout page.
+     * This page will display details about the selected plan, Gluu components, and an instant preview.
+     * You will also need to choose your billing plan: `Per Month` or `Per Year`.
+     ![](../assets/agama-lab/solo-checkout-bill-plan.png)
+     ![](../assets/agama-lab/solo-instance-preview.png)
+
+7. Payment Process:
+    * Once you proceed to payment, a pop-up will display the total amount of your order.
+    * Click `Proceed to Checkout` to continue.
+    ![](../assets/agama-lab/solo-checkout-confirmation.png)
+
+8. Add Account Details:
+    * You will be prompted to enter your account details.
+    * After entering your details, click `Next` to continue.
+    ![](../assets/agama-lab/solo-account-details.png)
+
+9. Add Billing Address:
+    * You will then need to add your billing address.
+    * After filling in your address, click `Next` to continue.
+    ![](../assets/agama-lab/solo-billing-details.png)
+
+10. Add Payment Details:
+    * Next, you will need to add your payment details.
+    * Once the details are entered, click `Next` to proceed.
+    ![](../assets/agama-lab/solo-payment-details.png)
+
+11. Verify and Confirm Payment:
+    * A pop-up will appear showing all the details you've entered.
+    * Verify the information and, if everything is correct, proceed to Pay to subscribe to the plan.
+  
+     ![](../assets/agama-lab/solo-order-completion.png)
+
+12. Subscription Confirmation:
+    * After successfully subscribing to the plan, you will be directed to a Thank You page.
+    ![](../assets/agama-lab/solo-payment-success-confirmation.png)
+13. Access Your Domain:
+    * After subscribing, you will be able to see the domain in your Solo space
+    ![](../assets/agama-lab/solo-creating-new-instance.png)
 
 
 
