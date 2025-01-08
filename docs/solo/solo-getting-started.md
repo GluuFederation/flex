@@ -36,7 +36,7 @@ flowchart TD
 Gluu Solo offers various subscription plans tailored to different business needs. 
 Each plan allows you to choose from multiple cloud locations and offers an SLA that 
 aligns with your identity management requirements.
-Check out [subscription process](./subscription.md) to know more. 
+Check out [subscription process](./solo-subscription.md) to know more. 
 
 
 ## Setting up Gluu Solo environment
