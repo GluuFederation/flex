@@ -39,9 +39,9 @@ aligns with your identity management requirements.
 Check out [subscription process](./solo-subscription.md) to know more. 
 
 
-## Setting up Gluu Solo environment
+## Setting up Gluu Solo cloud environment and IDP
 
-Once your subscription is active, cloud instance provisioning starts. Administrator can set up the [domain](./cloud-setup.md#domaing-setup), [customise](./cloud-setup.md#customise) Gluu Solo, [integrate monitoring tools](./cloud-setup.md#integrate-monitoring-tools).
+Once your subscription is active, cloud instance provisioning starts. Administrator can set up the [domain](./solo-administration-guide.md#using-a-custom-domain), [configure](./solo-administration-guide.md#terraform-configuration) Gluu Solo, [integrate monitoring tools](./solo-administration-guide.md#monitoring-and-logging).
 
 ## Go Live
 

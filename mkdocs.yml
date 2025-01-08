@@ -178,5 +178,5 @@ nav:
 - 'Gluu Solo':
   - 'solo/solo-getting-started.md'
   - How To Subscribe: solo/solo-subscription.md
-  - Administration: solo/solo-cloud-environment-setup.md
+  - Administration Guide: solo/solo-cloud-environment-setup.md
       
