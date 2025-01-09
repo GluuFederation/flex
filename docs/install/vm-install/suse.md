@@ -40,7 +40,7 @@ sudo SUSEConnect -p PackageHub/15.4/x86_64
 
 - Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
 ```shell
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm -P ~/
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm -P ~/
 ```
 
 - GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
@@ -58,12 +58,12 @@ sudo rpm -import automation-flex-public-gpg.asc
 
 - Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
 ```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-suse15.x86_64.rpm.sha256sum  -P ~/
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum  -P ~/
 ```
 
 - Verify package integrity
 ```
-sha256sum -c flex-replace-flex-version-suse15.x86_64.rpm.sha256sum
+sha256sum -c flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum
 ```
 You should see:
 ```
@@ -74,7 +74,7 @@ flex-replace-flex-version-suse15.x86_64.rpm: ok
 
 Use SUSE `zypper` to install
 ```shell
-sudo zypper install ~/flex-replace-flex-version-suse15.x86_64.rpm
+sudo zypper install ~/flex-replace-flex-version-stable.suse15.x86_64.rpm
 ```
 
 ### Run the setup script

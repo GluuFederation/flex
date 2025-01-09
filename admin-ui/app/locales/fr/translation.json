@@ -31,7 +31,10 @@
     "config_api_status": "État de l'API de configuration",
     "key_cloak": "Keycloak",
     "jans_lock": "Jans Lock",
-    "jans_link": "Lien Jans"
+    "jans_link": "Lien Jans",
+    "access_denied":"Accès refusé",
+    "access_denied_message":"Vous n'êtes pas autorisé à accéder à cette page",
+    "access_contact_admin":"Veuillez contacter l'administrateur pour obtenir de l'aide"
   },
   "menus": {
     "adminui": "Administratrice",
@@ -104,8 +107,7 @@
     "customer_backend_key_attributes": "Clé/attributs du backend client",
     "source_backend_ldap_servers": "Serveurs LDAP dorsaux sources",
     "inum_db_server": "Serveur de base de données Inum",
-    "static_configuration": "Configuration statique",
-    "dynamic_configuration": "Configuration dynamique"
+    "static_configuration": "Configuration statique"
   },
   "actions": {
     "accept": "J'accepte",

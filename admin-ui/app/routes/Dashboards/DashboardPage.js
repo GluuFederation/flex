@@ -26,9 +26,13 @@ import UsersIcon from "Components/SVG/menu/Users";
 import Administrator from "Components/SVG/menu/Administrator";
 import OAuthIcon from "Components/SVG/menu/OAuth";
 import { getHealthServerStatus } from "../../redux/features/healthSlice";
+import GluuPermissionModal from "Routes/Apps/Gluu/GluuPermissionModal";
+import { auditLogoutLogs } from "../../../plugins/user-management/redux/features/userSlice";
+import { useNavigate } from "react-router";
 
 function DashboardPage() {
   const { t } = useTranslation();
+   const navigate = useNavigate();
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const breakDashboardCard = useMediaQuery({ query: "(max-width: 1424px)" });
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -80,20 +84,22 @@ function DashboardPage() {
   }, [statData]);
 
   useEffect(() => {
-    if (Object.keys(license).length === 0 && access_token) {
+    if (Object.keys(license).length === 0 && access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
       getLicense();
     }
   }, [access_token, license]);
 
   useEffect(() => {
-    if (clients.length === 0 && access_token) {
+    if (clients.length === 0 && access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
       buildPayload(userAction, "Fetch openid connect clients", {});
       dispatch(getClients({ action: userAction }));
     }
   }, [access_token, clients]);
 
   useEffect(() => {
-    if (access_token) {
+
+    if (access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
+      console.log("access_token", access_token,hasBoth(permissions, STAT_READ, STAT_JANS_READ));
       getServerStatus();
       buildPayload(userAction, "GET Health Status", { service: "all" });
       dispatch(getHealthServerStatus({ action: userAction }));
@@ -289,14 +295,27 @@ function DashboardPage() {
     );
   }, [serverStatus, serverHealth, dbStatus, t, statusDetails, classes]);
 
+  const handleLogout = () => {
+    if(access_token){
+      dispatch(auditLogoutLogs({ message: "Logging out due to insufficient permissions for Admin UI access." }));
+    }
+    else navigate("/logout")
+   
+  };
+
   return (
     <GluuLoader blocking={loading}>
+      <GluuPermissionModal
+        handler={() => {
+          handleLogout();
+        }}
+        isOpen={!access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
+      />
       <GluuViewWrapper
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
         <div className={classes.root}>
           <Grid container className="px-40 h-100" spacing={2}>
-
             <Grid item lg={3} md={12} xs={12} height="auto">
               <div
                 className={classes.userInfoTitle}
@@ -336,13 +355,7 @@ function DashboardPage() {
               {StatusCard}
             </Grid>
 
-            <Grid
-              item
-              lg={4}
-              md={12}
-              xs={12}
-            
-            >
+            <Grid item lg={4} md={12} xs={12}>
               <Paper
                 className={`${classes.dashboardCard} top-minus-40 d-flex justify-content-center`}
                 elevation={0}
@@ -396,7 +409,6 @@ function DashboardPage() {
                 </Grid>
               </Paper>
             </Grid>
-
           </Grid>
 
           <Grid container className={`px-40`}>

@@ -31,11 +31,11 @@ sudo ufw allow https
 the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb -P /tmp
 ```
 ```shell
 #Ubuntu 20.04
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb -P /tmp
 ```
 
 - GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
@@ -55,11 +55,11 @@ sudo gpg --import automation-flex-public-gpg.asc;
 package.  Choose the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
 ```
 ```shell
 #Ubuntu 20.04
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
 ```
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
@@ -67,16 +67,16 @@ Choose the correct command from below based on the OS version.
 ```shell
 #Ubuntu 22.04
 cd /tmp
-sha256sum -c flex_replace-flex-version.ubuntu22.04_amd64.deb.sha256sum
+sha256sum -c flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum
 ```
 ```shell
 #Ubuntu 20.04
 cd /tmp
-sha256sum -c flex_replace-flex-version.ubuntu20.04_amd64.deb.sha256sum
+sha256sum -c flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum
 ```
 Output similar to below should confirm the integrity of the downloaded package.
 ```shell
-flex_replace-flex-version.ubuntu<version>_amd64.deb: ok
+flex_replace-flex-version-stable.ubuntu<version>_amd64.deb: ok
 ```
 
 ### Install the Release Package
@@ -85,11 +85,11 @@ Choose the correct command from below based on the OS version.
 
 ```shell
 #Ubuntu 22.04
-apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
 ```
 ```shell
 #Ubuntu 20.04
-apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb
 ```
 
 ### Run the setup script
