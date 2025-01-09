@@ -68,13 +68,9 @@ export function* deleteAgamas(payload) {
 
 export function* getAgamaRepository() {
   try {
-    const token = yield select((state) => state.authReducer.token.access_token);
-
-    const payload = { token };
     const api = yield* newFunction();
-    const data = yield call(api.getAgamaRepositories, payload);
-
-    yield put(getAgamaRepositoriesResponse(data.data));
+    const data = yield call(api.getAgamaRepositories);
+    yield put(getAgamaRepositoriesResponse(data));
     return data;
   } catch (e) {
     if (isFourZeroOneError(e)) {

@@ -39,20 +39,11 @@ export default class AgamaApi {
     })
   }
 
-  getAgamaRepositories = (payload) => {
-    const { token } = payload
+  getAgamaRepositories = () => {
     return new Promise((resolve, reject) => {
-      axios.get('/api/v1/agama-repo/', {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
+      this.api.getAgamaRepositories((error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
-        .then((response) => {
-          resolve(response)
-        })
-        .catch((error) => {
-          reject(error)
-        })
     })
   }
 

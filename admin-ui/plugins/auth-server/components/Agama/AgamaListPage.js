@@ -12,6 +12,8 @@ import {
   getAgama,
   deleteAgama,
   addAgama,
+  getAgamaRepository,
+  getAgamaRepositoryFile
 } from "Plugins/auth-server/redux/features/agamaSlice";
 import { hasPermission, AGAMA_READ, AGAMA_WRITE } from "Utils/PermChecker";
 import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
@@ -24,7 +26,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import InfoIcon from "@mui/icons-material/Info";
 import AgamaProjectConfigModal from "./AgamaProjectConfigModal";
 import { updateToast } from "Redux/features/toastSlice";
-import { isEmpty, set } from "lodash";
+import { isEmpty } from "lodash";
 import { getJsonConfig } from "Plugins/auth-server/redux/features/jsonConfigSlice";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Checkbox from "@mui/material/Checkbox";
@@ -33,10 +35,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
 import { toast } from "react-toastify";
-import {
-  getAgamaRepository,
-  getAgamaRepositoryFile,
-} from "../../redux/features/agamaSlice";
+
 
 const dateTimeFormatOptions = {
   year: "2-digit",
@@ -258,7 +257,7 @@ function AgamaListPage() {
   if (hasPermission(permissions, AGAMA_WRITE)) {
     myActions.push({
       icon: "add",
-      tooltip: `${t("messages.add_role")}`,
+      tooltip: `${t("titles.add_new_agama_project")}`,
       iconProps: { color: "primary" },
       isFreeAction: true,
       onClick: () => {
@@ -380,6 +379,7 @@ function AgamaListPage() {
       setProjectName(repo["repository-name"]);
       dispatch(getAgamaRepositoryFile({ downloadurl: repo["download-link"] }));
     } catch (error) {
+      console.log(error);
       toast.error("File not found");
     }
   };
@@ -494,9 +494,9 @@ function AgamaListPage() {
                   {fileLoading ? (
                     <CircularProgress />
                   ) : agamaRepostoriesList?.projects?.length ? (
-                    agamaRepostoriesList.projects.map((item, index) => (
+                    agamaRepostoriesList?.projects?.map((item, index) => (
                       <FormControlLabel
-                        key={index}
+                        key={item["repository-name"]}
                         control={
                           <Checkbox
                             checked={repoName === item["repository-name"]}
@@ -515,7 +515,7 @@ function AgamaListPage() {
                         }
                         label={
                           <div>
-                            <div style={{ marginTop: 6 }}>{item.name}</div>
+                            <div>{item['repository-name']}</div>
                             <div
                               style={{
                                 fontSize: "12px",

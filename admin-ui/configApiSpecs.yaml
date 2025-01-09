@@ -514,6 +514,71 @@ paths:
       security:
         - oauth2:
             - 'https://jans.io/oauth/config/agama.readonly'
+  /api/v1/agama-repo/download:
+    get:
+      tags:
+        - Agama
+      summary: Download agama project.
+      description: Download agama project.
+      operationId: get-agama-project
+      parameters:
+        - name: downloadLink
+          in: query
+          description: Agama project download Link
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Agama project
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/agama-repo.readonly'
+            - 'https://jans.io/oauth/config/agama-repo.write'
+            - 'https://jans.io/oauth/config/read-all'
+  /api/v1/agama-repo:
+    get:
+      tags:
+        - Agama
+      summary: Gets all agama repositories.
+      description: Gets all agama repositories.
+      operationId: get-agama-repositories
+      responses:
+        '200':
+          description: Agama repositories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonNode'
+              examples:
+                Response json example:
+                  description: Response json example
+                  value: ''
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: InternalServerError
+      security:
+        - oauth2:
+            - 'https://jans.io/oauth/config/agama-repo.readonly'
+            - 'https://jans.io/oauth/config/agama-repo.write'
+            - 'https://jans.io/oauth/config/read-all'
   '/api/v1/agama/syntax-check/{qname}':
     post:
       tags:
@@ -4631,6 +4696,7 @@ paths:
                     - uma_rpt_claims
                     - uma_claims_gathering
                     - access_evaluation
+                    - access_evaluation_discovery
                     - consent_gathering
                     - dynamic_scope
                     - spontaneous_scope
@@ -13520,19 +13586,21 @@ components:
           $ref: '#/components/schemas/AttributeValidation'
         tooltip:
           type: string
+        selected:
+          type: boolean
         whitePagesCanView:
           type: boolean
         userCanView:
           type: boolean
-        adminCanEdit:
-          type: boolean
         userCanEdit:
-          type: boolean
-        adminCanView:
           type: boolean
         userCanAccess:
           type: boolean
         adminCanAccess:
+          type: boolean
+        adminCanEdit:
+          type: boolean
+        adminCanView:
           type: boolean
         baseDn:
           type: string
@@ -13620,6 +13688,9 @@ components:
           type: boolean
         accessEvaluationScriptName:
           type: string
+        accessEvaluationDiscoveryCacheLifetimeInMinutes:
+          type: integer
+          format: int32
         requireRequestObjectEncryption:
           type: boolean
         requirePkce:
@@ -13906,6 +13977,9 @@ components:
         accessTokenLifetime:
           type: integer
           format: int32
+        userInfoLifetime:
+          type: integer
+          format: int32
         cleanServiceInterval:
           type: integer
           format: int32
@@ -14068,6 +14142,8 @@ components:
         pairwiseCalculationSalt:
           type: string
         shareSubjectIdBetweenClientsWithSameSectorId:
+          type: boolean
+        useOpenidSubAttributeValueForPairwiseLocalAccountId:
           type: boolean
         webKeysStorage:
           type: string
@@ -14386,8 +14462,6 @@ components:
           type: boolean
         lockMessageConfig:
           $ref: '#/components/schemas/LockMessageConfig'
-        fapi:
-          type: boolean
         allResponseTypesSupported:
           uniqueItems: true
           type: array
@@ -14397,6 +14471,8 @@ components:
               - code
               - token
               - id_token
+        fapi:
+          type: boolean
     AuthenticationFilter:
       required:
         - baseDn
@@ -15163,10 +15239,10 @@ components:
           type: array
           items:
             type: object
-        displayValue:
-          type: string
         value:
           type: object
+        displayValue:
+          type: string
     LocalizedString:
       type: object
       properties:
@@ -15468,6 +15544,7 @@ components:
             - uma_rpt_claims
             - uma_claims_gathering
             - access_evaluation
+            - access_evaluation_discovery
             - consent_gathering
             - dynamic_scope
             - spontaneous_scope
@@ -16046,6 +16123,8 @@ components:
           type: string
         online_access:
           type: boolean
+        authorization_challenge:
+          type: boolean
         attributes:
           type: object
           additionalProperties:
@@ -16330,15 +16409,15 @@ components:
           type: string
         username:
           type: string
-        domain:
+        origin:
           type: string
         userId:
           type: string
         challenge:
           type: string
-        attenstationRequest:
+        attestationRequest:
           type: string
-        attenstationResponse:
+        attestationResponse:
           type: string
         uncompressedECPoint:
           type: string
@@ -16361,8 +16440,28 @@ components:
         signatureAlgorithm:
           type: integer
           format: int32
-        applicationId:
+        rpId:
           type: string
+        backupStateFlag:
+          type: boolean
+        backupEligibilityFlag:
+          type: boolean
+        attestedCredentialDataFlag:
+          type: boolean
+        extensionDataFlag:
+          type: boolean
+        userVerifiedFlag:
+          type: boolean
+        userPresentFlag:
+          type: boolean
+        authentictatorAttachment:
+          type: string
+        credId:
+          type: string
+        transports:
+          type: array
+          items:
+            type: string
     Fido2RegistrationEntry:
       type: object
       properties:
