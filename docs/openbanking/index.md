@@ -11,7 +11,7 @@ The Gluu Open Banking Identity Platform is a specific profile of the Gluu Server
 
 Other services needed by enterprises--but not by banks--have been disabled. The goal is to reduce the security surface area to make the platform easy to deploy, easy to keep up to date, and easy to rollout new features with zero downtime.
 
-This is a cloud-native distribution. Cloud-native is essential for auto-scaling, high availability, and operational automation. For development and testing we also support its VM distribution, where the [Installation](https://docs.gluu.org/vreplace-flex-version/openbanking/install-vm/) Section has more details about it.
+This is a cloud-native distribution. Cloud-native is essential for auto-scaling, high availability, and operational automation. For development and testing we also support its VM distribution, where the [Installation](../openbanking/install-vm.md) Section has more details about it.
 
 This distribution of Gluu is based on the [Linux Foundation Janssen Project](https://jans.io) at the Linux Foundation, the [most certified](https://openid.net/certification) OpenID Platform available.
 
