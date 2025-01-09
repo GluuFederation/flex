@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Card, CardBody, Input } from "Components";
+import { Card, Input } from "Components";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useTranslation } from "react-i18next";
 import SetTitle from "Utils/SetTitle";
@@ -12,6 +12,8 @@ import {
   getAgama,
   deleteAgama,
   addAgama,
+  getAgamaRepository,
+  getAgamaRepositoryFile
 } from "Plugins/auth-server/redux/features/agamaSlice";
 import { hasPermission, AGAMA_READ, AGAMA_WRITE } from "Utils/PermChecker";
 import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
@@ -27,6 +29,13 @@ import { updateToast } from "Redux/features/toastSlice";
 import { isEmpty } from "lodash";
 import { getJsonConfig } from "Plugins/auth-server/redux/features/jsonConfigSlice";
 import SettingsIcon from "@mui/icons-material/Settings";
+import Checkbox from "@mui/material/Checkbox";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import GluuTabs from "Routes/Apps/Gluu/GluuTabs";
+import { toast } from "react-toastify";
+
 
 const dateTimeFormatOptions = {
   year: "2-digit",
@@ -56,6 +65,7 @@ function AgamaListPage() {
   const [shaFileName, setShaFileName] = useState("");
   const [listData, setListData] = useState([]);
   const [selectedRow, setSelectedRow] = useState({});
+  const [repoName, setRepoName] = useState(null);
   const configuration = useSelector(
     (state) => state.jsonConfigReducer.configuration
   );
@@ -64,10 +74,15 @@ function AgamaListPage() {
     (state) => state.jsonConfigReducer.loading
   );
 
+  const agamaFileResponse = useSelector(
+    (state) => state.agamaReducer.agamaFileResponse
+  );
+
   const theme = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
   const themeColors = getThemeColor(selectedTheme);
   const bgThemeColor = { background: themeColors.background };
+
   function convertFileToByteArray(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -82,11 +97,33 @@ function AgamaListPage() {
     });
   }
 
+  async function fetchRespositoryData() {
+    try {
+      dispatch(getAgamaRepository());
+    } catch (error) {
+      setRespositoriesData({ loading: false, repositories: [] });
+    }
+  }
+
   useEffect(() => {
     if (isEmpty(configuration)) {
       dispatch(getJsonConfig({ action: {} }));
     }
   }, []);
+
+  useEffect(() => {
+    if (agamaFileResponse) {
+      const byteArray = new Uint8Array(agamaFileResponse);
+      let object = {
+        name: projectName,
+        file: byteArray,
+      };
+      dispatch(addAgama(object));
+      setShowConfigModal(false);
+      setShowAddModal(false);
+      setRepoName(null);
+    }
+  }, [agamaFileResponse]);
 
   const submitData = async () => {
     let file = await convertFileToByteArray(selectedFile);
@@ -94,12 +131,12 @@ function AgamaListPage() {
       name: projectName,
       file: file,
     };
-
     dispatch(addAgama(object));
 
     setProjectName("");
     setShowAddModal(false);
   };
+
   const onDrop = useCallback((acceptedFiles) => {
     setProjectName("");
     // Do something with the files
@@ -125,12 +162,14 @@ function AgamaListPage() {
         setGetProjectName(true);
       });
   }, []);
+
   const onDrop2 = useCallback((acceptedFiles) => {
     // Do something with the files
     const file = acceptedFiles[0];
     setShaFileName(file.name);
     setSHAfile(file);
   }, []);
+
   const {
     getRootProps: getRootProps1,
     getInputProps: getInputProps1,
@@ -154,7 +193,9 @@ function AgamaListPage() {
     },
   });
 
-  const { totalItems, loading } = useSelector((state) => state.agamaReducer);
+  const { totalItems, loading, fileLoading, agamaRepostoriesList } =
+    useSelector((state) => state.agamaReducer);
+
   const agamaList = useSelector((state) => state.agamaReducer.agamaList);
   const permissions = useSelector((state) => state.authReducer.permissions);
   SetTitle(t("titles.agama"));
@@ -216,7 +257,7 @@ function AgamaListPage() {
   if (hasPermission(permissions, AGAMA_WRITE)) {
     myActions.push({
       icon: "add",
-      tooltip: `${t("messages.add_role")}`,
+      tooltip: `${t("titles.add_new_agama_project")}`,
       iconProps: { color: "primary" },
       isFreeAction: true,
       onClick: () => {
@@ -224,6 +265,7 @@ function AgamaListPage() {
         setSelectedFileName(null);
         setGetProjectName(false);
         setSHAfile(null);
+        fetchRespositoryData();
         if (isAgamaEnabled) {
           setShowAddModal(true);
         } else {
@@ -319,6 +361,219 @@ function AgamaListPage() {
             })
           : [...listData];
       setListData(updatedList);
+    }
+  };
+
+  //Modal Tabs
+  const tabNames = [
+    { name: t("menus.upload_agama_project"), path: "" },
+    { name: t("menus.add_community_project"), path: "" },
+  ];
+
+
+  const handleDeploy = async () => {
+    try {
+      const repo = agamaRepostoriesList.projects.find(
+        (item) => item["repository-name"] === repoName
+      );
+      setProjectName(repo["repository-name"]);
+      dispatch(getAgamaRepositoryFile({ downloadurl: repo["download-link"] }));
+    } catch (error) {
+      console.log(error);
+      toast.error("File not found");
+    }
+  };
+
+  const tabToShow = (tabName) => {
+    switch (tabName) {
+      case t("menus.upload_agama_project"):
+        return (
+          <>
+            <ModalBody>
+              <div
+                {...getRootProps1()}
+                className={isDragActive1 ? "active" : "dropzone"}
+              >
+                <input {...getInputProps1()} />
+                {selectedFileName ? (
+                  <strong>Selected File : {selectedFileName}</strong>
+                ) : (
+                  <p>{t("messages.drag_agama_file")}</p>
+                )}
+              </div>
+              <div className="mt-2"></div>
+              <div
+                {...getRootProps2()}
+                className={isDragActive2 ? "active" : "dropzone"}
+              >
+                <input {...getInputProps2()} />
+                {shaFile ? (
+                  <strong>Selected File : {shaFileName}</strong>
+                ) : (
+                  <p>{t("messages.drag_sha_file")}</p>
+                )}
+              </div>
+              <div className="mt-2"></div>
+              <div className="text-danger">
+                {shaFile &&
+                  selectedFileName &&
+                  !shaStatus &&
+                  "SHA256 not verified"}
+              </div>
+              <div className="text-success">
+                {shaFile && selectedFileName && shaStatus && "SHA256 verified"}
+              </div>
+              {getProjectName && (
+                <Input
+                  type="text"
+                  placeholder="Project name"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                />
+              )}
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color={`primary-${selectedTheme}`}
+                style={applicationStyle.buttonStyle}
+                onClick={() => submitData()}
+                disabled={
+                  shaFile && selectedFileName && shaStatus && projectName != ""
+                    ? loading || isConfigLoading
+                      ? true
+                      : false
+                    : true
+                }
+              >
+                {loading || isConfigLoading ? (
+                  <>
+                    <CircularProgress size={12} /> &nbsp;
+                  </>
+                ) : null}
+                {t("actions.add")}
+              </Button>
+              &nbsp;
+              <Button
+                color={`primary-${selectedTheme}`}
+                style={applicationStyle.buttonStyle}
+                onClick={() => {
+                  setShowAddModal(false);
+                  setRepoName(null);
+                }}
+              >
+                {t("actions.cancel")}
+              </Button>
+            </ModalFooter>
+          </>
+        );
+      case t("menus.add_community_project"):
+        return (
+          <>
+            <ModalBody style={{ maxHeight: "500px", height: "auto" }}>
+              <FormGroup>
+                <FormLabel
+                  style={{
+                    marginBottom: "16px",
+                    fontSize: "12px",
+                    fontWeight: "400",
+                  }}
+                >
+                  {t("titles.select_project_deploy")}
+                </FormLabel>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "0 10px",
+                    maxHeight: "400px",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                  }}
+                >
+                  {fileLoading ? (
+                    <CircularProgress />
+                  ) : agamaRepostoriesList?.projects?.length ? (
+                    agamaRepostoriesList?.projects?.map((item, index) => (
+                      <FormControlLabel
+                        key={item["repository-name"]}
+                        control={
+                          <Checkbox
+                            checked={repoName === item["repository-name"]}
+                            onChange={() =>
+                              setRepoName(
+                                repoName === item["repository-name"]
+                                  ? null
+                                  : item["repository-name"]
+                              )
+                            }
+                            sx={{
+                              transform: "scale(1.5)",
+                              paddingTop: "6px",
+                            }}
+                          />
+                        }
+                        label={
+                          <div>
+                            <div>{item['repository-name']}</div>
+                            <div
+                              style={{
+                                fontSize: "12px",
+                                color: "gray",
+                                marginTop: 6,
+                              }}
+                            >
+                              {item.description}
+                            </div>
+                          </div>
+                        }
+                        sx={{
+                          alignItems: "flex-start",
+                          marginBottom: "16px",
+                        }}
+                      />
+                    ))
+                  ) : (
+                    <div
+                      style={{
+                        fontSize: "15px",
+                        padding: "14px 0 ",
+                      }}
+                    >
+                      {t("messages.no_data_found")}
+                    </div>
+                  )}
+                </div>
+              </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color={`primary-${selectedTheme}`}
+                style={applicationStyle.buttonStyle}
+                disabled={repoName === null}
+                onClick={() => handleDeploy()}
+              >
+                {fileLoading || isConfigLoading ? (
+                  <>
+                    <CircularProgress size={12} /> &nbsp;
+                  </>
+                ) : null}
+                {t("actions.deploy")}
+              </Button>
+              &nbsp;
+              <Button
+                color={`primary-${selectedTheme}`}
+                style={applicationStyle.buttonStyle}
+                onClick={() => {
+                  setShowAddModal(false);
+                  setRepoName(null);
+                }}
+              >
+                {t("actions.cancel")}
+              </Button>
+            </ModalFooter>
+          </>
+        );
     }
   };
 
@@ -419,80 +674,19 @@ function AgamaListPage() {
             }}
           />
         </GluuViewWrapper>
-        <Modal isOpen={showAddModal}>
-          <ModalHeader>{t("titles.add_agama_project")}</ModalHeader>
-          <ModalBody>
-            <div
-              {...getRootProps1()}
-              className={isDragActive1 ? "active" : "dropzone"}
-            >
-              <input {...getInputProps1()} />
-              {selectedFileName ? (
-                <strong>Selected File : {selectedFileName}</strong>
-              ) : (
-                <p>{t("messages.drag_agama_file")}</p>
-              )}
-            </div>
-            <div className="mt-2"></div>
-            <div
-              {...getRootProps2()}
-              className={isDragActive2 ? "active" : "dropzone"}
-            >
-              <input {...getInputProps2()} />
-              {shaFile ? (
-                <strong>Selected File : {shaFileName}</strong>
-              ) : (
-                <p>{t("messages.drag_sha_file")}</p>
-              )}
-            </div>
-            <div className="mt-2"></div>
-            <div className="text-danger">
-              {shaFile &&
-                selectedFileName &&
-                !shaStatus &&
-                "SHA256 not verified"}
-            </div>
-            <div className="text-success">
-              {shaFile && selectedFileName && shaStatus && "SHA256 verified"}
-            </div>
-            {getProjectName && (
-              <Input
-                type="text"
-                placeholder="Project name"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-              />
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color={`primary-${selectedTheme}`}
-              style={applicationStyle.buttonStyle}
-              onClick={() => submitData()}
-              disabled={
-                shaFile && selectedFileName && shaStatus && projectName != ""
-                  ? loading || isConfigLoading
-                    ? true
-                    : false
-                  : true
-              }
-            >
-              {loading || isConfigLoading ? (
-                <>
-                  <CircularProgress size={12} /> &nbsp;
-                </>
-              ) : null}
-              {t("actions.add")}
-            </Button>
-            &nbsp;
-            <Button
-              color={`primary-${selectedTheme}`}
-              style={applicationStyle.buttonStyle}
-              onClick={() => setShowAddModal(false)}
-            >
-              {t("actions.cancel")}
-            </Button>
-          </ModalFooter>
+        <Modal
+          isOpen={showAddModal}
+          size="lg"
+          style={{ maxWidth: "700px", width: "100%" }}
+        >
+          <ModalHeader>{t("titles.add_new_agama_project")}</ModalHeader>
+          <Card>
+            <GluuTabs
+              tabNames={tabNames}
+              tabToShow={tabToShow}
+              withNavigation={true}
+            />
+          </Card>
         </Modal>
       </>
     </>
