@@ -684,7 +684,8 @@
     "add_ssa": "Adicionar SSA",
     "copied": "Copiado",
     "edit_acr": "Editar ACR",
-    "no_data_found": "Nenhum dado encontrado"
+    "no_data_found": "Nenhum dado encontrado",
+    "role_already_exists": "Função já existe"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",

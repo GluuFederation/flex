@@ -689,7 +689,8 @@
     "add_ssa": "Ajouter SSA",
     "copied": "Copié",
     "edit_acr": "Modifier ACR",
-    "no_data_found": "Aucune donnée trouvée"
+    "no_data_found": "Aucune donnée trouvée",
+    "role_already_exists": "Le rôle existe déjà"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
