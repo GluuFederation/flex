@@ -754,7 +754,8 @@
     "see_project_details": "See project details",
     "add_ssa": "Add SSA",
     "copied": "Copied",
-    "no_data_found": "No data found"
+    "no_data_found": "No data found",
+    "role_already_exists": "Role already exists"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
