@@ -33,7 +33,7 @@ import { LIMIT, PATTERN } from "Plugins/auth-server/common/Constants";
 import moment from "moment";
 import { adminUiFeatures } from "Plugins/admin/helper/utils";
 
-function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
+function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
   const { t } = useTranslation();
   let dynamicScopeScripts = [];
   let umaAuthorizationPolicies = [];
@@ -361,6 +361,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     options={claims}
                     doc_category={SCOPE}
                     placeholder="Search by display name or claim name"
+                    onSearch={onSearch}
                   />
                 </Accordion.Body>
               </Accordion>
