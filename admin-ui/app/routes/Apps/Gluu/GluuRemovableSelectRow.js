@@ -36,10 +36,10 @@ function GluuRemovableSelectRow({
               data-testid={name}
               name={name}
               defaultValue={value}
-              onChange={() => {
+              onChange={(e) => {
                 setModifiedFields({
                   ...modifiedFields,
-                  [name]: formik.values[name],
+                  [name]: e.target.value,
                 });
                 formik.handleChange(e);
               }}
