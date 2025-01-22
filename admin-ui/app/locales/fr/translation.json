@@ -31,7 +31,10 @@
     "config_api_status": "État de l'API de configuration",
     "key_cloak": "Keycloak",
     "jans_lock": "Jans Lock",
-    "jans_link": "Lien Jans"
+    "jans_link": "Lien Jans",
+    "access_denied":"Accès refusé",
+    "access_denied_message":"Vous n'êtes pas autorisé à accéder à cette page",
+    "access_contact_admin":"Veuillez contacter l'administrateur pour obtenir de l'aide"
   },
   "menus": {
     "adminui": "Administratrice",
@@ -105,7 +108,9 @@
     "source_backend_ldap_servers": "Serveurs LDAP dorsaux sources",
     "inum_db_server": "Serveur de base de données Inum",
     "static_configuration": "Configuration statique",
-    "dynamic_configuration": "Configuration dynamique"
+    "dynamic_configuration": "Configuration dynamique",
+    "upload_agama_project": "Télécharger le projet Agama",
+    "add_community_project": "Ajouter un projet communautaire"
   },
   "actions": {
     "accept": "J'accepte",
@@ -127,6 +132,7 @@
     "change_bind_password": "Modifier le mot de passe de liaison",
     "set_password": "Définir le mot de passe",
     "choose": "Choisir",
+    "deploy": "Déployer",
     "edit": "Éditer",
     "next": "Prochain",
     "no": "Non",
@@ -682,7 +688,9 @@
     "see_project_details": "Voir les détails du projet",
     "add_ssa": "Ajouter SSA",
     "copied": "Copié",
-    "edit_acr": "Modifier ACR"
+    "edit_acr": "Modifier ACR",
+    "no_data_found": "Aucune donnée trouvée",
+    "role_already_exists": "Le rôle existe déjà"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
@@ -797,6 +805,8 @@
     "scopes": "Portées",
     "scripts": "Scénarios",
     "schemaName": "Nom du schéma",
+    "select_project_deploy": "Sélectionnez un projet à déployer",
+    "add_new_agama_project": "Ajouter un nouveau projet Agama",
     "user_management": "Gestion des utilisateurs",
     "ssa_management": "SSA Gestion",
     "jans_ink": "Jans Link",

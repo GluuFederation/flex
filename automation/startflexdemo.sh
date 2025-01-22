@@ -21,7 +21,9 @@ if [[ $GLUU_PERSISTENCE != "MYSQL" ]] && [[ $GLUU_PERSISTENCE != "PGSQL" ]]; the
   echo "[E] Incorrect entry. Please enter either MYSQL or PGSQL"
   exit 1
 fi
-
+if [[ -z $GLUU_VERSION ]]; then
+  GLUU_VERSION="0.0.0-nightly"
+fi
 LOG_TARGET="FILE"
 LOG_LEVEL="TRACE"
 if [[ -z $GLUU_CI_CD_RUN ]]; then
@@ -34,18 +36,12 @@ if [[ -z $EXT_IP ]]; then
 fi
 
 sudo apt-get update
-sudo apt-get install openssl -y
 sudo apt-get install python3-pip -y
-sudo pip3 install pip --upgrade
-sudo pip3 install setuptools --upgrade
-sudo pip3 install pyOpenSSL --upgrade
-sudo apt-get update
-sudo apt-get install build-essential unzip -y
 sudo pip3 install requests --upgrade
 sudo pip3 install shiv
 sudo snap install microk8s --classic
 sudo microk8s.status --wait-ready
-sudo microk8s.enable dns registry ingress hostpath-storage
+sudo microk8s.enable dns registry ingress hostpath-storage helm3
 sudo microk8s kubectl get daemonset.apps/nginx-ingress-microk8s-controller -n ingress -o yaml | sed -s "s@ingress-class=public@ingress-class=nginx@g" | microk8s kubectl apply -f -
 sudo apt-get update
 sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y
@@ -53,12 +49,10 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get update
 sudo apt-get install net-tools
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
 sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 sudo microk8s config | sudo tee ~/.kube/config > /dev/null
 sudo snap alias microk8s.kubectl kubectl
+sudo snap alias microk8s.helm3 helm
 KUBECONFIG=~/.kube/config
 sudo microk8s.kubectl create namespace gluu --kubeconfig="$KUBECONFIG" || echo "namespace exists"
 
@@ -189,21 +183,13 @@ nginx-ingress:
     - secretName: tls-certificate
       hosts:
       - $GLUU_FQDN
-auth-server:
-  livenessProbe:
-    initialDelaySeconds: 300
-  readinessProbe:
-    initialDelaySeconds: 300
 EOF
 sudo helm repo add gluu-flex https://docs.gluu.org/charts
 sudo helm repo update
 sudo helm install gluu gluu-flex/gluu -n gluu -f override.yaml --kubeconfig="$KUBECONFIG" --version="$GLUU_VERSION"
-echo "Waiting for auth-server to come up. This may take 5-10 mins....Please do not cancel out...This will wait for the auth-server to be ready.."
-sleep 300
 cat << EOF > testendpoints.sh
 sudo microk8s config > config
 KUBECONFIG="$PWD"/config
-sleep 10
 echo -e "Testing openid-configuration endpoint.. \n"
 curl -k https://$GLUU_FQDN/.well-known/openid-configuration
 echo -e "Testing scim-configuration endpoint.. \n"
@@ -212,6 +198,7 @@ echo -e "Testing fido2-configuration endpoint.. \n"
 curl -k https://$GLUU_FQDN/.well-known/fido2-configuration
 cd ..
 EOF
-sudo microk8s.kubectl -n gluu wait --for=condition=available --timeout=300s deploy/gluu-auth-server --kubeconfig="$KUBECONFIG" || echo "Couldn't find deployment running tests anyways..."
+echo "Waiting for Gluu-Flex to come up. Please do not cancel out. This can take up to 5 minutes."
+sudo microk8s.kubectl -n gluu wait --for=condition=available --timeout=300s deploy/gluu-auth-server --kubeconfig="$KUBECONFIG" || echo "auth-server deployment is not ready. Running tests anyways..."
 sudo bash testendpoints.sh
-echo -e "You may re-execute bash testendpoints.sh to do a quick test to check the openid-configuration endpoint."
+echo -e "You may re-execute 'bash testendpoints.sh' to do a quick test to check the openid-configuration endpoint."

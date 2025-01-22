@@ -1,5 +1,5 @@
 flex (%VER%~ubuntu20.04) unstable; urgency=low
 
-  * Initial release. 
+  * Release Notes.
 
- -- The Packaging team <packaging@gluu.org>  Wed, 05 Oct 2022 00:00:24 +0000
+ -- https://github.com/GluuFederation/flex/releases

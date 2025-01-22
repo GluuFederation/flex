@@ -117,7 +117,7 @@ function UserForm({ onSubmitData }) {
 
   const submitForm = (usermessage) => {
     toggle();
-    onSubmitData(formik.values, modifiedFields,usermessage);
+    onSubmitData(formik.values, modifiedFields, usermessage);
   };
   const loading = useSelector((state) => state.userReducer.loading);
   const setSelectedClaimsToState = (data) => {

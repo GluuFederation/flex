@@ -25,6 +25,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { ROLE_DELETE } from '../../../../app/utils/PermChecker'
+import { toast } from 'react-toastify'
 
 function UiRoleListPage() {
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
@@ -69,8 +70,15 @@ function UiRoleListPage() {
   }
   function onAddConfirmed(roleData) {
     buildPayload(userAction, 'message', roleData)
-    dispatch(addRole({ action: userAction }))
-    toggle()
+
+    const fetchRoles = apiRoles.filter((role) => role.role === roleData.role)
+    if (fetchRoles.length > 0) {
+      toast.error(`${t('messages.role_already_exists')}`)
+    }
+    else{
+      dispatch(addRole({ action: userAction }))
+      toggle()
+    }
   }
   return (
     <Card style={applicationStyle.mainCard}>
