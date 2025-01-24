@@ -70,10 +70,7 @@ const ClientBasicPanel = ({
   const scopeOptions = client?.scopes?.length ? clientScopeOptions : scopes;
   const { t } = useTranslation();
 
-  const tokenEndpointAuthMethod =
-    !!oidcConfiguration?.tokenEndpointAuthMethodsSupported
-      ? oidcConfiguration.tokenEndpointAuthMethodsSupported
-      : [];
+  const tokenEndpointAuthMethod = oidcConfiguration?.tokenEndpointAuthMethodsSupported || [];
 
   const [showClientSecret, setShowClientSecret] = useState(false);
   const [userScopeAction] = useState({

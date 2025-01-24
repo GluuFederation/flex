@@ -475,4 +475,7 @@ ClientCibaParUmaPanel.propTypes = {
   setCurrentStep: PropTypes.any,
   sequence: PropTypes.any,
   umaResources: PropTypes.any,
+  dispatch: PropTypes.func,
+  modifiedFields: PropTypes.any,
+  setModifiedFields: PropTypes.func,
 };

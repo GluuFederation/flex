@@ -124,4 +124,7 @@ export default ClientLogoutPanel;
 ClientLogoutPanel.propTypes = {
   formik: PropTypes.any,
   viewOnly: PropTypes.bool,
+  modifiedFields: PropTypes.object,
+  setModifiedFields: PropTypes.func,
+
 };

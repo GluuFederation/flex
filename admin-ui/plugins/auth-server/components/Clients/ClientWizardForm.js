@@ -17,8 +17,8 @@ import ClientCibaParUmaPanel from "./ClientCibaParUmaPanel";
 import ClientEncryptionSigningPanel from "./ClientEncryptionSigningPanel";
 import { toast } from "react-toastify";
 import { setClientSelectedScopes } from "Plugins/auth-server/redux/features/scopeSlice";
-import { cloneDeep, set } from "lodash";
-import { useDispatch, useSelector } from "react-redux";
+import { cloneDeep } from "lodash";
+import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { adminUiFeatures } from "Plugins/admin/helper/utils";
 
@@ -56,7 +56,6 @@ function ClientWizardForm({
   const [modal, setModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(sequence[0]);
   const dispatch = useDispatch();
-  const userDetails = useSelector((state) => state.authReducer.userinfo);
 
 
   const initialValues = {

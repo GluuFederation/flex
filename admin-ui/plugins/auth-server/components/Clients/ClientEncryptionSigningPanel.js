@@ -15,52 +15,52 @@ function ClientEncryptionSigningPanel({
 }) {
   const { t } = useTranslation();
   const accessTokenSigningAlg =
-    !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
+    oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
       ? oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
       : [];
   //id_token
   const idTokenSignedResponseAlg =
-    !!oidcConfiguration.idTokenSigningAlgValuesSupported
+    oidcConfiguration.idTokenSigningAlgValuesSupported
       ? oidcConfiguration.idTokenSigningAlgValuesSupported
       : [];
 
   const idTokenEncryptedResponseAlg =
-    !!oidcConfiguration.idTokenEncryptionAlgValuesSupported
+    oidcConfiguration.idTokenEncryptionAlgValuesSupported
       ? oidcConfiguration.idTokenEncryptionAlgValuesSupported
       : [];
 
   const idTokenEncryptedResponseEnc =
-    !!oidcConfiguration.idTokenEncryptionEncValuesSupported
+    oidcConfiguration.idTokenEncryptionEncValuesSupported
       ? oidcConfiguration.idTokenEncryptionEncValuesSupported
       : [];
   //request-object
   const requestObjectSignedResponseAlg =
-    !!oidcConfiguration.requestObjectSigningAlgValuesSupported
+    oidcConfiguration.requestObjectSigningAlgValuesSupported
       ? oidcConfiguration.requestObjectSigningAlgValuesSupported
       : [];
 
   const requestObjectEncryptedResponseAlg =
-    !!oidcConfiguration.requestObjectEncryptionAlgValuesSupported
+    oidcConfiguration.requestObjectEncryptionAlgValuesSupported
       ? oidcConfiguration.requestObjectEncryptionAlgValuesSupported
       : [];
 
   const requestObjectEncryptedResponseEnc =
-    !!oidcConfiguration.requestObjectEncryptionEncValuesSupported
+    oidcConfiguration.requestObjectEncryptionEncValuesSupported
       ? oidcConfiguration.requestObjectEncryptionEncValuesSupported
       : [];
   //user-info
   const userInfoSignedResponseAlg =
-    !!oidcConfiguration.userInfoSigningAlgValuesSupported
+    oidcConfiguration.userInfoSigningAlgValuesSupported
       ? oidcConfiguration.userInfoSigningAlgValuesSupported
       : [];
 
   const userInfoEncryptedResponseAlg =
-    !!oidcConfiguration.userInfoEncryptionAlgValuesSupported
+    oidcConfiguration.userInfoEncryptionAlgValuesSupported
       ? oidcConfiguration.userInfoEncryptionAlgValuesSupported
       : [];
 
   const userInfoEncryptedResponseEnc =
-    !!oidcConfiguration.userInfoEncryptionEncValuesSupported
+    oidcConfiguration.userInfoEncryptionEncValuesSupported
       ? oidcConfiguration.userInfoEncryptionEncValuesSupported
       : [];
 
@@ -409,9 +409,11 @@ function ClientEncryptionSigningPanel({
 }
 
 ClientEncryptionSigningPanel.propTypes = {
-  formik: PropTypes.shape({
-    values: PropTypes.any,
-  }),
+  formik: PropTypes.object,
+  oidcConfiguration: PropTypes.object,
+  viewOnly: PropTypes.bool,
+  modifiedFields: PropTypes.object,
+  setModifiedFields: PropTypes.func,
 };
 
 export default ClientEncryptionSigningPanel;

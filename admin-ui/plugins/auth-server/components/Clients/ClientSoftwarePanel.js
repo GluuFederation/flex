@@ -4,6 +4,7 @@ import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
 import GluuTypeAheadWithAdd from "Routes/Apps/Gluu/GluuTypeAheadWithAdd";
 import { useTranslation } from "react-i18next";
 import isEmpty from "lodash/isEmpty";
+import PropTypes from "prop-types";
 const DOC_CATEGORY = "openid_client";
 
 const EMPTY = "";
@@ -181,4 +182,10 @@ function ClientSoftwarePanel({
   );
 }
 
+ClientSoftwarePanel.propTypes = {
+  formik: PropTypes.object,
+  viewOnly: PropTypes.bool,
+  modifiedFields: PropTypes.object,
+  setModifiedFields: PropTypes.func,
+}
 export default ClientSoftwarePanel;

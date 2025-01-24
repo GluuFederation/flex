@@ -51,7 +51,6 @@ function ScopeForm({
   const client = scope.clients || [];
 
   const authReducer = useSelector((state) => state.authReducer);
-  const userDetails = useSelector((state) => state.authReducer.userinfo);
   let claims = [];
   scripts = scripts || [];
   attributes = attributes || [];

@@ -14,7 +14,6 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
-import { set } from "lodash";
 const DOC_CATEGORY = "openid_client";
 
 function ClientAdvancedPanel({

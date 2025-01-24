@@ -5,6 +5,7 @@ import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import PropTypes from "prop-types";
 
 function GluuAutoCompleteWithAdd({
   label,
@@ -89,4 +90,16 @@ function GluuAutoCompleteWithAdd({
   )
 }
 
+GluuAutoCompleteWithAdd.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.array,
+  options: PropTypes.array,
+  validator: PropTypes.func,
+  inputId: PropTypes.string,
+  formik: PropTypes.object,
+  placeholder: PropTypes.string,
+  doc_category: PropTypes.string,
+  handler: PropTypes.func
+}
 export default GluuAutoCompleteWithAdd

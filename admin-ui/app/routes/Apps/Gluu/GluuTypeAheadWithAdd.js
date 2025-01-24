@@ -5,6 +5,7 @@ import GluuLabel from "../Gluu/GluuLabel";
 import applicationStyle from "./styles/applicationstyle";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "Context/theme/themeContext";
+import PropTypes from "prop-types";
 
 function GluuTypeAheadWithAdd({
   label,
@@ -113,5 +114,21 @@ function GluuTypeAheadWithAdd({
       </Col>
     </FormGroup>
   );
+}
+
+GluuTypeAheadWithAdd.protoTypes ={
+  label: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.array,
+  placeholder: PropTypes.string,
+  options: PropTypes.array,
+  formik: PropTypes.object,
+  validator: PropTypes.func,
+  inputId: PropTypes.string,
+  doc_category: PropTypes.string,
+  lsize: PropTypes.number,
+  rsize: PropTypes.number,
+  disabled: PropTypes.bool,
+  handler: PropTypes.func,
 }
 export default GluuTypeAheadWithAdd;

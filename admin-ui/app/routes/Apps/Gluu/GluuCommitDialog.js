@@ -159,7 +159,7 @@ const GluuCommitDialog = ({
                 <Col sm={12}>
                   <Input
                     id={USER_MESSAGE}
-                    type={inputType ? inputType : "textarea"}
+                    type={inputType || "textarea"}
                     name={USER_MESSAGE}
                     onChange={(e) => setUserMessage(e.target.value)}
                     placeholder={
