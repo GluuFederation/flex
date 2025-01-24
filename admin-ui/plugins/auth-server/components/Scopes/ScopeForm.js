@@ -420,7 +420,6 @@ function ScopeForm({
                     placeholder="Search by display name or claim name"
                     onSearch={onSearch}
                     onChange={(values) => {
-                      console.log(values);
                       setModifiedFields({
                         ...modifiedFields,
                         Claims: values?.map((item) => item.name),
