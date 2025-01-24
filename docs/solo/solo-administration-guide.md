@@ -13,7 +13,7 @@ tags:
      **Gluu Solo will be released soon. Stay tuned.**
 
 
-# Gluu Solo Adminstration
+# Gluu Solo Administration
 
 
 Gluu Solo administration allows you to configure and control various
