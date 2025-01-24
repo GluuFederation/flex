@@ -216,7 +216,7 @@ const ClientBasicPanel = ({
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
         handleChange={(e) => {
-          formik.handleChange;
+          formik.handleChange(e);
           setModifiedFields({
             ...modifiedFields,
             Description: e.target.value,
@@ -256,7 +256,7 @@ const ClientBasicPanel = ({
               disabled={viewOnly}
               defaultValue={formik.values.subjectType}
               onChange={(e) => {
-                formik.handleChange;
+                formik.handleChange(e);
                 setModifiedFields({
                   ...modifiedFields,
                   "Subject Type": e.target.value,
@@ -364,7 +364,7 @@ const ClientBasicPanel = ({
               name="applicationType"
               defaultValue={formik.values.applicationType}
               onChange={(e) => {
-                formik.handleChange;
+                formik.handleChange(e);
                 setModifiedFields({
                   ...modifiedFields,
                   "Application Type": e.target.value,

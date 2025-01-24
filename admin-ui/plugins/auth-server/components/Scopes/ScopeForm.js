@@ -280,7 +280,7 @@ function ScopeForm({
                   defaultValue={scope.description}
                   onKeyUp={activate}
                   onChange={(e) => {
-                    formik.handleChange;
+                    formik.handleChange(e);
                     setModifiedFields({
                       ...modifiedFields,
                       Description: e.target.value,
@@ -439,7 +439,7 @@ function ScopeForm({
                       name="iconUrl"
                       defaultValue={scope.iconUrl}
                       onChange={(e) => {
-                        formik.handleChange;
+                        formik.handleChange(e);
                         setModifiedFields({
                           ...modifiedFields,
                           "Icon Url": e.target.value,
