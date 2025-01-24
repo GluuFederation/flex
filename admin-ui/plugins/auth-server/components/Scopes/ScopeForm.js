@@ -29,11 +29,18 @@ import GluuTooltip from "Routes/Apps/Gluu/GluuTooltip";
 import { SCOPE } from "Utils/ApiResources";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "Context/theme/themeContext";
-import { LIMIT, PATTERN } from "Plugins/auth-server/common/Constants";
 import moment from "moment";
 import { adminUiFeatures } from "Plugins/admin/helper/utils";
 
-function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
+function ScopeForm({
+  scope,
+  scripts,
+  attributes,
+  handleSubmit,
+  onSearch,
+  modifiedFields,
+  setModifiedFields,
+}) {
   const { t } = useTranslation();
   let dynamicScopeScripts = [];
   let umaAuthorizationPolicies = [];
@@ -44,6 +51,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
   const client = scope.clients || [];
 
   const authReducer = useSelector((state) => state.authReducer);
+  const userDetails = useSelector((state) => state.authReducer.userinfo);
   let claims = [];
   scripts = scripts || [];
   attributes = attributes || [];
@@ -64,6 +72,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
 
   const [init, setInit] = useState(false);
   const [modal, setModal] = useState(false);
+
   const [showClaimsPanel, handleClaimsPanel] = useState(
     scope.scopeType === "openid"
   );
@@ -169,8 +178,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
             scope.attributes.spontaneousClientId;
           result["attributes"].spontaneousClientScopes =
             scope.spontaneousClientScopes ||
-            scope.attributes.spontaneousClientScopes;
-          handleSubmit(JSON.stringify(result));
+            scope.attributes.spontaneousClientScopes
+              
+         handleSubmit(JSON.stringify(result));
         }}
       >
         {(formik) => (
@@ -191,7 +201,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                   name="id"
                   defaultValue={scope.id}
                   onKeyUp={activate}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    setModifiedFields({
+                      ...modifiedFields,
+                      Id: e.target.value,
+                    });
+                  }}
                 />
               </Col>
               <ErrorMessage name="id">
@@ -204,6 +220,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                 name="inum"
                 value={scope.inum}
                 doc_category={SCOPE}
+                handleChange={(e) => {
+                  formik.handleChange(e);
+                  setModifiedFields({
+                    ...modifiedFields,
+                    Inum: e.target.value,
+                  });
+                }}
               />
             )}
 
@@ -227,7 +250,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                   name="displayName"
                   defaultValue={scope.displayName}
                   onKeyUp={activate}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    setModifiedFields({
+                      ...modifiedFields,
+                      "Display Name": e.target.value,
+                    });
+                  }}
                 />
               </Col>
               <ErrorMessage name="displayName">
@@ -251,7 +280,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                   name="description"
                   defaultValue={scope.description}
                   onKeyUp={activate}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    formik.handleChange;
+                    setModifiedFields({
+                      ...modifiedFields,
+                      Description: e.target.value,
+                    });
+                  }}
                 />
               </Col>
             </FormGroup>
@@ -263,6 +298,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                   formik={formik}
                   value={scope.defaultScope}
                   doc_category={SCOPE}
+                  handler={(e) => {
+                    setModifiedFields({
+                      ...modifiedFields,
+                      "Default Scope": e.target.checked,
+                    });
+                  }}
                 />
                 <GluuToogleRow
                   label="fields.show_in_configuration_endpoint"
@@ -270,6 +311,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                   formik={formik}
                   value={scope.attributes.showInConfigurationEndpoint}
                   doc_category={SCOPE}
+                  handler={(e) => {
+                    setModifiedFields({
+                      ...modifiedFields,
+                      "Show in Configuration Endpoint": e.target.checked,
+                    });
+                  }}
                 />
               </div>
             )}
@@ -305,6 +352,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                       onChange={(e) => {
                         handleScopeTypeChanged(e.target.value);
                         formik.setFieldValue("scopeType", e.target.value);
+                        setModifiedFields({
+                          ...modifiedFields,
+                          "Scope Type": e.target.value,
+                        });
                       }}
                     >
                       <option value="">{t("actions.choose")}...</option>
@@ -339,6 +390,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                 }
                 options={dynamicScopeScripts}
                 doc_category={SCOPE}
+                onChange={(values) => {
+                  setModifiedFields({
+                    ...modifiedFields,
+                    "Dynamic Scope Scripts": values?.map((item) => item.name),
+                  });
+                }}
               />
             )}
             {(showClaimsPanel || showDynamicPanel) && (
@@ -362,6 +419,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                     doc_category={SCOPE}
                     placeholder="Search by display name or claim name"
                     onSearch={onSearch}
+                    onChange={(values) => {
+                      console.log(values);
+                      setModifiedFields({
+                        ...modifiedFields,
+                        Claims: values?.map((item) => item.name),
+                      });
+                    }}
                   />
                 </Accordion.Body>
               </Accordion>
@@ -376,7 +440,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                       id="iconUrl"
                       name="iconUrl"
                       defaultValue={scope.iconUrl}
-                      onChange={formik.handleChange}
+                      onChange={(e) => {
+                        formik.handleChange;
+                        setModifiedFields({
+                          ...modifiedFields,
+                          "Icon Url": e.target.value,
+                        });
+                      }}
                       disabled={scope.inum ? true : false}
                     />
                   </Col>
@@ -401,11 +471,23 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
                       defaultSelected={
                         formik.values["umaAuthorizationPolicies"]?.length
                           ? getMapping(
-                              [...formik.values["umaAuthorizationPolicies"].flat()],
+                              [
+                                ...formik.values[
+                                  "umaAuthorizationPolicies"
+                                ].flat(),
+                              ],
                               umaAuthorizationPolicies
                             )
                           : []
                       }
+                      onChange={(value) => {
+                        setModifiedFields({
+                          ...modifiedFields,
+                          "UMA Authorization Policies": value?.map(
+                            (item) => item.name
+                          ),
+                        });
+                      }}
                     />
                   </Accordion.Body>
                 </Accordion>
@@ -549,6 +631,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit,onSearch }) {
               feature={adminUiFeatures.scopes_write}
               onAccept={submitForm}
               formik={formik}
+              operations={
+                Object.keys(modifiedFields)?.length
+                  ? Object.keys(modifiedFields).map((item) => {
+                      return { path: item, value: modifiedFields[item] };
+                    })
+                  : []
+              }
             />
           </Form>
         )}
@@ -563,4 +652,7 @@ ScopeForm.propTypes = {
   scripts: PropTypes.any,
   attributes: PropTypes.any,
   handleSubmit: PropTypes.any,
+  onSearch: PropTypes.any,
+  modifiedFields: PropTypes.any,
+  setModifiedFields: PropTypes.any,
 };

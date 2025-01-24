@@ -1,52 +1,68 @@
-import React from 'react'
-import { Col, Container, FormGroup } from 'Components'
-import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { useTranslation } from 'react-i18next'
-import PropTypes from 'prop-types'
-const DOC_CATEGORY = 'openid_client'
+import React from "react";
+import { Col, Container, FormGroup } from "Components";
+import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
+import GluuSelectRow from "Routes/Apps/Gluu/GluuSelectRow";
+import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
+const DOC_CATEGORY = "openid_client";
 
-function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
-  const { t } = useTranslation()
-  const accessTokenSigningAlg = !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
-    ? oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
-    : []
+function ClientEncryptionSigningPanel({
+  formik,
+  oidcConfiguration,
+  viewOnly,
+  modifiedFields,
+  setModifiedFields,
+}) {
+  const { t } = useTranslation();
+  const accessTokenSigningAlg =
+    !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
+      ? oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
+      : [];
   //id_token
-  const idTokenSignedResponseAlg = !!oidcConfiguration.idTokenSigningAlgValuesSupported
-    ? oidcConfiguration.idTokenSigningAlgValuesSupported
-    : []
+  const idTokenSignedResponseAlg =
+    !!oidcConfiguration.idTokenSigningAlgValuesSupported
+      ? oidcConfiguration.idTokenSigningAlgValuesSupported
+      : [];
 
-  const idTokenEncryptedResponseAlg = !!oidcConfiguration.idTokenEncryptionAlgValuesSupported
-    ? oidcConfiguration.idTokenEncryptionAlgValuesSupported
-    : []
+  const idTokenEncryptedResponseAlg =
+    !!oidcConfiguration.idTokenEncryptionAlgValuesSupported
+      ? oidcConfiguration.idTokenEncryptionAlgValuesSupported
+      : [];
 
-  const idTokenEncryptedResponseEnc = !!oidcConfiguration.idTokenEncryptionEncValuesSupported
-    ? oidcConfiguration.idTokenEncryptionEncValuesSupported
-    : []
+  const idTokenEncryptedResponseEnc =
+    !!oidcConfiguration.idTokenEncryptionEncValuesSupported
+      ? oidcConfiguration.idTokenEncryptionEncValuesSupported
+      : [];
   //request-object
-  const requestObjectSignedResponseAlg = !!oidcConfiguration.requestObjectSigningAlgValuesSupported
-    ? oidcConfiguration.requestObjectSigningAlgValuesSupported
-    : []
+  const requestObjectSignedResponseAlg =
+    !!oidcConfiguration.requestObjectSigningAlgValuesSupported
+      ? oidcConfiguration.requestObjectSigningAlgValuesSupported
+      : [];
 
-  const requestObjectEncryptedResponseAlg = !!oidcConfiguration.requestObjectEncryptionAlgValuesSupported
-    ? oidcConfiguration.requestObjectEncryptionAlgValuesSupported
-    : []
+  const requestObjectEncryptedResponseAlg =
+    !!oidcConfiguration.requestObjectEncryptionAlgValuesSupported
+      ? oidcConfiguration.requestObjectEncryptionAlgValuesSupported
+      : [];
 
-  const requestObjectEncryptedResponseEnc = !!oidcConfiguration.requestObjectEncryptionEncValuesSupported
-    ? oidcConfiguration.requestObjectEncryptionEncValuesSupported
-    : []
+  const requestObjectEncryptedResponseEnc =
+    !!oidcConfiguration.requestObjectEncryptionEncValuesSupported
+      ? oidcConfiguration.requestObjectEncryptionEncValuesSupported
+      : [];
   //user-info
-  const userInfoSignedResponseAlg = !!oidcConfiguration.userInfoSigningAlgValuesSupported
-    ? oidcConfiguration.userInfoSigningAlgValuesSupported
-    : []
+  const userInfoSignedResponseAlg =
+    !!oidcConfiguration.userInfoSigningAlgValuesSupported
+      ? oidcConfiguration.userInfoSigningAlgValuesSupported
+      : [];
 
-  const userInfoEncryptedResponseAlg = !!oidcConfiguration.userInfoEncryptionAlgValuesSupported
-    ? oidcConfiguration.userInfoEncryptionAlgValuesSupported
-    : []
+  const userInfoEncryptedResponseAlg =
+    !!oidcConfiguration.userInfoEncryptionAlgValuesSupported
+      ? oidcConfiguration.userInfoEncryptionAlgValuesSupported
+      : [];
 
-  const userInfoEncryptedResponseEnc = !!oidcConfiguration.userInfoEncryptionEncValuesSupported
-    ? oidcConfiguration.userInfoEncryptionEncValuesSupported
-    : []
+  const userInfoEncryptedResponseEnc =
+    !!oidcConfiguration.userInfoEncryptionEncValuesSupported
+      ? oidcConfiguration.userInfoEncryptionEncValuesSupported
+      : [];
 
   return (
     <Container>
@@ -57,6 +73,9 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
         value={formik.values.jwksUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
+        handleChange={(e) => {
+          setModifiedFields({ ...modifiedFields, "JWTs URI": e.target.value });
+        }}
       />
       <GluuInputRow
         label="fields.jwks"
@@ -65,6 +84,9 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
         value={formik.values.jwks}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
+        handleChange={(e) => {
+          setModifiedFields({ ...modifiedFields, "JWTs": e.target.value });
+        }}
       />
       <h2>{t(`titles.id_token`)}</h2>
       <FormGroup row>
@@ -79,6 +101,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="idTokenSignedResponseAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Id Token Signed Response": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -92,6 +120,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="idTokenEncryptedResponseAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Id Token Encrypted Response Alg": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -105,6 +139,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="idTokenEncryptedResponseEnc"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Id Token Encrypted Response Enc": e.target.value,
+              });
+            }}
           />
         </Col>
       </FormGroup>
@@ -121,6 +161,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="accessTokenSigningAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Access Token Signing Alg": e.target.value,
+              });
+            }}
           />
         </Col>
       </FormGroup>
@@ -137,6 +183,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="userInfoSignedResponseAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "User Info Signed Response Alg": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -150,6 +202,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="userInfoEncryptedResponseAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "User Info Encrypted Response Alg": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -163,6 +221,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="userInfoEncryptedResponseEnc"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "User Info Encrypted Response Enc": e.target.value,
+              });
+            }}
           />
         </Col>
       </FormGroup>
@@ -179,6 +243,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="attributes.jansAuthSignedRespAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Authorization Signed Response Alg": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -192,6 +262,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="attributes.jansAuthEncRespAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Authorization Encrypted Response Alg": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -205,6 +281,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="attributes.jansAuthEncRespEnc"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Authorization Encrypted Response Enc": e.target.value,
+              });
+            }}
           />
         </Col>
       </FormGroup>
@@ -221,6 +303,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="requestObjectSigningAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Request Object Signing Alg": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -234,6 +322,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="requestObjectEncryptionAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Request Object Encryption Alg": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -247,6 +341,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="requestObjectEncryptionEnc"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Request Object Encryption Enc": e.target.value,
+              });
+            }}
           />
         </Col>
       </FormGroup>
@@ -276,6 +376,12 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="attributes.introspectionEncryptedResponseAlg"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Introspection Encrypted Response Alg": e.target.value,
+              });
+            }}
           />
         </Col>
         <Col sm={6}>
@@ -289,11 +395,17 @@ function ClientEncryptionSigningPanel({ formik, oidcConfiguration, viewOnly }) {
             name="attributes.introspectionEncryptedResponseEnc"
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
+            handleChange={(e) => {
+              setModifiedFields({
+                ...modifiedFields,
+                "Introspection Encrypted Response Enc": e.target.value,
+              });
+            }}
           />
         </Col>
       </FormGroup>
     </Container>
-  )
+  );
 }
 
 ClientEncryptionSigningPanel.propTypes = {
@@ -302,5 +414,4 @@ ClientEncryptionSigningPanel.propTypes = {
   }),
 };
 
-
-export default ClientEncryptionSigningPanel
+export default ClientEncryptionSigningPanel;

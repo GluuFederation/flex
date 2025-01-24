@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CardBody, Card } from "Components";
@@ -15,6 +15,7 @@ function ScopeAddPage() {
   const loading = useSelector((state) => state.scopeReducer.loading);
   const scripts = useSelector((state) => state.initReducer.scripts);
   const attributes = useSelector((state) => state.initReducer.attributes);
+  const [modifiedFields, setModifiedFields] = useState({})
   const saveOperationFlag = useSelector(
     (state) => state.scopeReducer.saveOperationFlag
   );
@@ -30,7 +31,6 @@ function ScopeAddPage() {
   useEffect(() => {
     if (attributes.length === 0) {
       buildPayload(userAction, "Fetch attributes", { limit: 100 });
-      console.log("userAction", userAction);
       dispatch(getAttributes({ options: userAction }));
     }
     if (scripts.length === 0) {
@@ -51,6 +51,7 @@ function ScopeAddPage() {
       const message = data.action_message;
       delete data.action_message;
       postBody["scope"] = data;
+      postBody["modifiedFields"] = modifiedFields;
       buildPayload(userAction, message, postBody);
       dispatch(addScope({ action: userAction }));
     }
@@ -89,6 +90,8 @@ function ScopeAddPage() {
             attributes={attributes}
             handleSubmit={handleSubmit}
             onSearch={handleSearch}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
           />
         </CardBody>
       </Card>

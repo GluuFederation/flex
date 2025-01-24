@@ -57,6 +57,9 @@ function GluuTypeAhead({
           onChange={(selected) => {
             if (formik) {
               formik.setFieldValue(name, selected)
+              if(onChange) {
+                onChange(selected)
+              }
             } else if (onChange) {
               onChange(selected)
             }

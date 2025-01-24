@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
@@ -20,6 +20,7 @@ function ScopeEditPage() {
   const navigate =useNavigate()
   const { t } = useTranslation()
 
+  const [modifiedFields, setModifiedFields] = useState({})
   const scope = useSelector((state) => state.scopeReducer.item)
   const extensbileScope = cloneDeep(scope)
   const loading = useSelector((state) => state.scopeReducer.loading)
@@ -59,6 +60,7 @@ function ScopeEditPage() {
       const message = data.action_message
       delete data.action_message
       postBody['scope'] = data
+      postBody["modifiedFields"] = modifiedFields;
       buildPayload(userAction, message, postBody)
       dispatch(editScope({ action: userAction }))
     }
@@ -77,6 +79,8 @@ function ScopeEditPage() {
             attributes={attributes}
             scripts={scripts}
             handleSubmit={handleSubmit}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
           />
         </CardBody>
       </Card>

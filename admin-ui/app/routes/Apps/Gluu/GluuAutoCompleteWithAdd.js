@@ -16,6 +16,7 @@ function GluuAutoCompleteWithAdd({
   formik = undefined,
   placeholder,
   doc_category,
+  handler=null
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
@@ -29,7 +30,10 @@ function GluuAutoCompleteWithAdd({
     if (validator(newItem)) {
       setItems((currItems) => [...currItems, newItem])
       setOpts((currOpts) => [...currOpts, newItem])
-      formik.setFieldValue(name, items)
+      formik.setFieldValue(name, items);
+      if (handler) {
+        handler(name, items)
+      }
     }
   }
 

@@ -17,8 +17,8 @@ import ClientCibaParUmaPanel from "./ClientCibaParUmaPanel";
 import ClientEncryptionSigningPanel from "./ClientEncryptionSigningPanel";
 import { toast } from "react-toastify";
 import { setClientSelectedScopes } from "Plugins/auth-server/redux/features/scopeSlice";
-import { cloneDeep } from "lodash";
-import { useDispatch } from "react-redux";
+import { cloneDeep, set } from "lodash";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { adminUiFeatures } from "Plugins/admin/helper/utils";
 
@@ -46,6 +46,8 @@ function ClientWizardForm({
   oidcConfiguration,
   umaResources,
   isEdit = false,
+  modifiedFields,
+  setModifiedFields,
 }) {
   const formRef = useRef();
   const { t } = useTranslation();
@@ -54,6 +56,8 @@ function ClientWizardForm({
   const [modal, setModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(sequence[0]);
   const dispatch = useDispatch();
+  const userDetails = useSelector((state) => state.authReducer.userinfo);
+
 
   const initialValues = {
     inum: client_data.inum,
@@ -133,6 +137,7 @@ function ClientWizardForm({
   function toggle() {
     setModal(!modal);
   }
+
   function validateFinish() {
     if (
       formRef.current.values.grantTypes.includes("authorization_code") ||
@@ -177,11 +182,6 @@ function ClientWizardForm({
     }
   }
   function isComplete(stepId) {
-    console.log(
-      "stepId",
-      stepId,
-      sequence.indexOf(stepId) < sequence.indexOf(currentStep)
-    );
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep);
   }
   function submitForm(message) {
@@ -197,7 +197,6 @@ function ClientWizardForm({
   }, []);
 
   const activeClientStep = (formik) => {
-    console.log("currentStep", currentStep);
     switch (currentStep) {
       case sequence[0]:
         return (
@@ -208,13 +207,20 @@ function ClientWizardForm({
               formik={formik}
               viewOnly={viewOnly}
               oidcConfiguration={oidcConfiguration}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
             />
           </div>
         );
       case sequence[1]:
         return (
           <div>
-            <ClientTokensPanel formik={formik} viewOnly={viewOnly} />
+            <ClientTokensPanel
+              formik={formik}
+              viewOnly={viewOnly}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
+            />
           </div>
         );
       case sequence[2]:
@@ -225,6 +231,8 @@ function ClientWizardForm({
               scripts={scripts}
               formik={formik}
               viewOnly={viewOnly}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
             />
           </div>
         );
@@ -236,6 +244,8 @@ function ClientWizardForm({
               scripts={scripts}
               formik={formik}
               viewOnly={viewOnly}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
             />
           </div>
         );
@@ -251,6 +261,8 @@ function ClientWizardForm({
               sequence={sequence}
               formik={formik}
               viewOnly={viewOnly}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
             />
           </div>
         );
@@ -261,6 +273,8 @@ function ClientWizardForm({
               formik={formik}
               oidcConfiguration={oidcConfiguration}
               viewOnly={viewOnly}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
             />
           </div>
         );
@@ -273,6 +287,8 @@ function ClientWizardForm({
               formik={formik}
               scopes={scopes}
               viewOnly={viewOnly}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
             />
           </div>
         );
@@ -283,6 +299,8 @@ function ClientWizardForm({
               formik={formik}
               scripts={scripts}
               viewOnly={viewOnly}
+              modifiedFields={modifiedFields}
+              setModifiedFields={setModifiedFields}
             />
           </div>
         );
@@ -343,6 +361,7 @@ function ClientWizardForm({
             };
             delete values.expirable;
             values["action_message"] = commitMessage;
+            values['modifiedFields'] = modifiedFields;
             customOnSubmit(JSON.parse(JSON.stringify(values)));
           }}
         >
@@ -524,6 +543,13 @@ function ClientWizardForm({
         handler={toggle}
         modal={modal}
         onAccept={submitForm}
+        operations={
+          Object.keys(modifiedFields)?.length
+            ? Object.keys(modifiedFields).map((item) => {
+                return { path: item, value: modifiedFields[item] };
+              })
+            : []
+        }
       />
     </React.Fragment>
   );
@@ -539,6 +565,8 @@ ClientWizardForm.propTypes = {
   oidcConfiguration: PropTypes.object,
   umaResources: PropTypes.array,
   isEdit: PropTypes.bool,
+  modifiedFields: PropTypes.any,
+  setModifiedFields: PropTypes.func,
 };
 
 export default ClientWizardForm;
