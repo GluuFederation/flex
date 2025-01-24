@@ -7,7 +7,14 @@ tags:
 ---
 
 
-# Gluu Solo Administration
+
+
+!!! info
+     **Gluu Solo will be released soon. Stay tuned.**
+
+
+# Gluu Solo Adminstration
+
 
 Gluu Solo administration allows you to configure and control various
 aspects of the cloud infrastructure and the IDP. 

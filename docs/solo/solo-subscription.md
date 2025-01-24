@@ -6,6 +6,10 @@ tags:
 ---
 
 
+!!! info
+     **Gluu Solo will be released soon. Stay tuned.**
+
+
 # Gluu Solo Subscription
 
 Customers require active Gluu Solo subscription in order to avail Gluu Solo 
