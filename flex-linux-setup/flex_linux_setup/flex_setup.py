@@ -72,7 +72,7 @@ def get_flex_setup_parser():
     parser.add_argument('--gluu-passwurd-cert', help="Creates Gluu Passwurd API keystore", action='store_true')
     parser.add_argument('-download-exit', help="Downloads files and exits", action='store_true')
     parser.add_argument('--jans-app-verison', help="Jannsen applications version", default=app_versions['JANS_APP_VERSION'])
-    parser.add_argument('--jans-build', help="Jannsen build", default=app_versions['JANS_BUILD'])
+    parser.add_argument('--jans-app-build', help="Jannsen build", default=app_versions['JANS_BUILD'])
     parser.add_argument('--node-version', help="Node version", default=app_versions['NODE_VERSION'])
 
     return parser
@@ -130,7 +130,7 @@ def set_app_versions_from_arguments(brgsp):
     argparse.jans_versions_done = True
 
     app_versions['JANS_APP_VERSION'] = brgsp.jans_app_verison
-    app_versions['JANS_BUILD'] = brgsp.jans_build
+    app_versions['JANS_BUILD'] = brgsp.jans_app_build
     app_versions['NODE_VERSION'] = brgsp.node_version
     app_versions['SETUP_BRANCH'] = brgsp.jans_setup_branch
     app_versions['FLEX_BRANCH'] = brgsp.flex_branch
