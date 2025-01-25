@@ -28,6 +28,12 @@ install_py_path = os.path.join(cur_dir, 'jans_install.py')
 installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
+app_versions = {
+  "JANS_APP_VERSION": "1.3.0",
+  "JANS_BUILD": "",
+  "NODE_VERSION": "v18.16.0"
+}
+
 os.environ["FLEX_PRE_JANS"] = "True"
 
 if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
@@ -65,6 +71,9 @@ def get_flex_setup_parser():
     parser.add_argument('--no-restart-services', help="Do not restart services, useful when you are both uninstalling flex and Jans", action='store_true')
     parser.add_argument('--gluu-passwurd-cert', help="Creates Gluu Passwurd API keystore", action='store_true')
     parser.add_argument('-download-exit', help="Downloads files and exits", action='store_true')
+    parser.add_argument('--jans-app-verison', help="Jannsen applications version", default=app_versions['JANS_APP_VERSION'])
+    parser.add_argument('--jans-build', help="Jannsen build", default=app_versions['JANS_BUILD'])
+    parser.add_argument('--node-version', help="Node version", default=app_versions['NODE_VERSION'])
 
     return parser
 
@@ -115,8 +124,24 @@ if not (jans_installer_downloaded or os.path.exists(jans_config_properties)):
     os.system(install_cmd)
     jans_installer_downloaded = True
 
+def set_app_versions_from_arguments(brgsp):
+    if hasattr(argparse, 'jans_versions_done'):
+        return
+    argparse.jans_versions_done = True
+
+    app_versions['JANS_APP_VERSION'] = brgsp.jans_app_verison
+    app_versions['JANS_BUILD'] = brgsp.jans_build
+    app_versions['NODE_VERSION'] = brgsp.node_version
+    app_versions['SETUP_BRANCH'] = brgsp.jans_setup_branch
+    app_versions['FLEX_BRANCH'] = brgsp.flex_branch
+    app_versions['JANS_BRANCH'] = brgsp.jans_branch
+    app_versions['NODE_MODULES_BRANCH'] = brgsp.node_modules_branch or brgsp.flex_branch
+    app_versions['jans_version'] = app_versions['JANS_APP_VERSION'] + app_versions['JANS_BUILD']
+
+
 if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
+    set_app_versions_from_arguments(argsp)
 
 if not jans_installer_downloaded:
     jans_archive_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
@@ -155,6 +180,8 @@ if not jans_installer_downloaded:
     from setup_app.utils import base
     from setup_app.utils import arg_parser
     base.argsp = arg_parser.get_parser()
+    set_app_versions_from_arguments(base.argsp)
+
     downloads.base.current_app.app_info = base.readJsonFile(os.path.join(__STATIC_SETUP_DIR__, 'app_info.json'))
     downloads.download_sqlalchemy()
     downloads.download_cryptography()
@@ -200,6 +227,8 @@ if not (os.path.exists(jans_config_properties) or argsp.download_exit):
         jans_setup.main()
 
 argsp = arg_parser.get_parser()
+set_app_versions_from_arguments(argsp)
+
 del_msg = "  - Deleting"
 
 from setup_app import static
@@ -214,15 +243,10 @@ else:
 
 os.environ['JANS_PROFILE'] = profile
 base.current_app.profile = profile
+base.current_app.app_info.update(app_versions)
 base.argsp = argsp
 
-if 'SETUP_BRANCH' not in base.current_app.app_info:
-    base.current_app.app_info['SETUP_BRANCH'] = argsp.jans_setup_branch
-
-base.current_app.app_info['jans_version'] = base.current_app.app_info['JANS_APP_VERSION'] + base.current_app.app_info['JANS_BUILD']
-
 sys.path.insert(0, base.pylib_dir)
-sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
 
 from setup_app.pylib.jproperties import Properties
 from setup_app.pylib import jwt
@@ -261,17 +285,9 @@ if not installed:
 
     if not hasattr(base, 'argsp'):
         base.argsp = arg_parser.get_parser()
+        set_app_versions_from_arguments(base.argsp)
 
 maven_base_url = 'https://jenkins.jans.io/maven/io/jans/'
-app_versions = {
-  "SETUP_BRANCH": argsp.jans_setup_branch,
-  "FLEX_BRANCH": argsp.flex_branch,
-  "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.3.0",
-  "JANS_BUILD": "",
-  "NODE_VERSION": "v18.16.0",
-  "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
-}
 
 node_installer = NodeInstaller()
 httpd_installer = HttpdInstaller()
@@ -318,6 +334,9 @@ class flex_installer(JettyInstaller):
 
     def download_files(self, force=False):
         print("Downloading Gluu Flex components")
+        
+        
+        
         download_url, target = ('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path)
 
         if not flex_installer_downloaded:
