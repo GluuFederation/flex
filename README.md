@@ -85,3 +85,4 @@ The Flex release schedule is closely tied to the upstream [Janssen Project](http
 - Flex releases typically occur 1-2 days after the corresponding Janssen Project release. 
 
 To stay informed about upcoming Flex releases, it's recommended to monitor the Janssen project [milestones](https://github.com/JanssenProject/jans/milestones) regularly. Please note that the QA team may update these milestones as testing progresses, so checking frequently is advised.
+
