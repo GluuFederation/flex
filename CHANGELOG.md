@@ -1,5 +1,35 @@
 # Changelog
 
+## [5.3.0](https://github.com/GluuFederation/flex/compare/v5.2.0...v5.3.0) (2025-01-26)
+
+
+### Features
+
+* **admin-ui:** allow users to install Agama Lab community projects from Admin UI  ([#1862](https://github.com/GluuFederation/flex/issues/1862)) ([981ac1b](https://github.com/GluuFederation/flex/commit/981ac1bb0ca3c4324db1382a2c9b4e5404b69dbb))
+* **flex-linux-setup:** application versions via arguments ([#1971](https://github.com/GluuFederation/flex/issues/1971)) ([ca4d73c](https://github.com/GluuFederation/flex/commit/ca4d73c97f4d8b32438550641ef89ad8200f8e68))
+
+
+### Bug Fixes
+
+* **admin-ui:** message not correct while creating duplicate role ([#1964](https://github.com/GluuFederation/flex/issues/1964)) ([35fe996](https://github.com/GluuFederation/flex/commit/35fe996f8a82e4dad58aaf5d8b4b11ee7837a801))
+* **admin-ui:** unable to add country claim in Users form. ([#1966](https://github.com/GluuFederation/flex/issues/1966)) ([4fe93f0](https://github.com/GluuFederation/flex/commit/4fe93f0dc4a87e83824cee43d3f979eb11b65321))
+* **admin-ui:** update token script should reject the tampered user-info-jwt ([#1960](https://github.com/GluuFederation/flex/issues/1960)) ([49c7cca](https://github.com/GluuFederation/flex/commit/49c7cca40cb2448e0ad8b235d3046203b6c44f36))
+* **docs:** fix broken links ([#1963](https://github.com/GluuFederation/flex/issues/1963)) ([b6d844a](https://github.com/GluuFederation/flex/commit/b6d844a1bbcf257fdb128796d243db9e84a76f71))
+* **docs:** fix link issue ([b6d844a](https://github.com/GluuFederation/flex/commit/b6d844a1bbcf257fdb128796d243db9e84a76f71))
+* **flex-linux-setup:** jans-app-build ([#1973](https://github.com/GluuFederation/flex/issues/1973)) ([6ba339f](https://github.com/GluuFederation/flex/commit/6ba339fb42d5419fe30233fa9f8c1aa53829d073))
+* message not correct while creating duplicate role ([35fe996](https://github.com/GluuFederation/flex/commit/35fe996f8a82e4dad58aaf5d8b4b11ee7837a801))
+* password should be hidden in audit logs. ([341184d](https://github.com/GluuFederation/flex/commit/341184dd28a90898af3261774c783fe4b7c1c6a0))
+
+
+### Miscellaneous Chores
+
+* release 5.3.0 ([3976500](https://github.com/GluuFederation/flex/commit/3976500b82e68ba323e67de60b0bec7cb3d77f0f))
+
+
+### Continuous Integration
+
+* fix versioning ([f9e4152](https://github.com/GluuFederation/flex/commit/f9e4152f9507a36674d81b7b3edeb9bdf76cc01c))
+
 ## [5.2.0](https://github.com/GluuFederation/flex/compare/v5.2.0...v5.2.0) (2025-01-02)
 
 
