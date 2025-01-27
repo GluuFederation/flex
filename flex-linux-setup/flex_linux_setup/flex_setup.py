@@ -538,6 +538,12 @@ class flex_installer(JettyInstaller):
 
         self.rewrite_cli_ini()
 
+        print(f"Copying admin-ui command line utility to {Config.jansOptBinFolder}")
+        config_api_installer.copyFile(
+            os.path.join(self.flex_setup_dir, 'admin-ui'),
+            Config.jansOptBinFolder
+            )
+        config_api_installer.run([base.paths.cmd_chmod, '+x', os.path.join(Config.jansOptBinFolder, 'admin-ui')])
 
     def install_config_api_plugin(self):
 
