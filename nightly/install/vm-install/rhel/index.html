@@ -304,6 +304,22 @@
   
 
       
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../solo/solo-getting-started/" class="md-tabs__link">
+        Gluu Solo
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -1833,6 +1849,90 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Gluu Solo
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Gluu Solo" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Gluu Solo
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-getting-started/" class="md-nav__link">
+        Solo getting started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-subscription/" class="md-nav__link">
+        How To Subscribe
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-administration-guide/" class="md-nav__link">
+        Administration Guide
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -2041,7 +2141,7 @@
 <ul>
 <li>Download the release package from the Github Flex
   <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.el8.x86_64.rpm -P /tmp
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm -P /tmp
 </code></pre></div></li>
 <li>GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
   not found, the <a href="#install-the-release-package">installation step</a> would fail. Use the commands below to download and
@@ -2053,18 +2153,18 @@
 <div class="highlight"><pre><span></span><code>sudo rpm -import automation-flex-public-gpg.asc
 </code></pre></div></li>
 <li>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the package
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.el8.x86_64.rpm.sha256sum  -P /tmp
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum  -P /tmp
 </code></pre></div>
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span> /tmp<span class="p">;</span>
-sha256sum -c flex-0.0.0-nightly.el8.x86_64.rpm.sha256sum<span class="p">;</span>
+sha256sum -c flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum<span class="p">;</span>
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex-0.0.0-nightly-el8.x86_64.rpm : ok
+<div class="highlight"><pre><span></span><code>flex-replace-flex-version-el8.x86_64.rpm : ok
 </code></pre></div></li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
-<div class="highlight"><pre><span></span><code>sudo yum install ./flex-0.0.0-nightly.el8.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo yum install ./flex-replace-flex-version-stable.el8.x86_64.rpm
 </code></pre></div>
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
 <p>Execute the setup script with command below:

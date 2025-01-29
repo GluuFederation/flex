@@ -304,6 +304,22 @@
   
 
       
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../solo/solo-getting-started/" class="md-tabs__link">
+        Gluu Solo
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -1778,6 +1794,90 @@
   
 
     
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Gluu Solo
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Gluu Solo" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Gluu Solo
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-getting-started/" class="md-nav__link">
+        Solo getting started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-subscription/" class="md-nav__link">
+        How To Subscribe
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../solo/solo-administration-guide/" class="md-nav__link">
+        Administration Guide
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1886,7 +1986,7 @@ The requested page was not found on this server.
 <div class="highlight"><pre><span></span><code>Error Code: 503
 Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).
 </code></pre></div>
-<p>Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, <a href="https://docs.jans.io/nightly/contribute/implementation-design/jans-config-api/">Jans Config API</a>. This error prompts administrators to perform a series of troubleshooting steps.</p>
+<p>Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, <a href="https://docs.jans.io/vreplace-janssen-version/contribute/implementation-design/jans-config-api/">Jans Config API</a>. This error prompts administrators to perform a series of troubleshooting steps.</p>
 <ol>
 <li>Verify the status of the Jans Config API service by using the command <code>systemctl status jans-config-api.service</code>. In the majority of cases, this error is displayed when the Jans Config API is not running. </li>
 <li>It is essential to verify the server's network connectivity, including firewall rules, ports, and routing, to ensure that there are no network-related impediments preventing communication with the Jans Config API. Jans Config API runs at port <code>8074</code> for Janssen vm installation.</li>
