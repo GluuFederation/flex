@@ -9,10 +9,15 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Collapse,
+  Card,
+  CardBody,
 } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "Context/theme/themeContext";
 import PropTypes from "prop-types";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useSelector } from "react-redux";
 import useWebhookDialogAction from "Utils/hooks/useWebhookDialogAction";
 import { hasPermission, WEBHOOK_READ } from "Utils/PermChecker";
@@ -35,11 +40,11 @@ const GluuCommitDialog = ({
   const theme = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
   const [active, setActive] = useState(false);
+  const [isOpen, setIsOpen] = useState(null);
   const [userMessage, setUserMessage] = useState("");
   const { loadingWebhooks, webhookModal } = useSelector(
     (state) => state.webhookReducer
   );
-
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
     feature,
     modal,
@@ -69,7 +74,21 @@ const GluuCommitDialog = ({
   if (!modal) {
     return <></>;
   }
-
+  const renderBadges = (values) => {
+    return (
+      <div className="d-flex flex-column gap-1 align-items-start">
+        {values.map((data, index) => (
+          <Badge
+            color={`primary-${selectedTheme}  `}
+            style={{ width: "fit-content" }}
+            key={String(data)}
+          >
+            {JSON.stringify(data)}
+          </Badge>
+        ))}
+      </div>
+    );
+  };
   return (
     <>
       {(webhookModal || loadingWebhooks) &&
@@ -118,14 +137,21 @@ const GluuCommitDialog = ({
                     List of changes
                   </h1>
                 </FormGroup>
-              ):null}
+              ) : null}
               {operations &&
                 operations.map((item, key) => (
                   <FormGroup row key={key}>
                     <Col sm={1} style={{ fontWeight: "bold" }}>
                       Set
                     </Col>
-                    <Col sm={5} style={{ overflow: "auto", width: 300, paddingBottom: 10 }}>
+                    <Col
+                      sm={5}
+                      style={{
+                        overflow: "auto",
+                        width: 300,
+                        paddingBottom: 10,
+                      }}
+                    >
                       <Badge color={`primary-${selectedTheme}`}>
                         {item.path}
                       </Badge>
@@ -135,16 +161,31 @@ const GluuCommitDialog = ({
                     </Col>
                     <Col sm={5} style={{ overflow: "auto" }}>
                       {Array.isArray(item.value) ? (
-                        <>
-                          {item.value.map((data, index) => (
-                            <Badge
-                              color={`primary-${selectedTheme}`}
-                              key={String(data)}
+                        <div className="d-flex flex-column gap-1 align-items-start">
+                          {isOpen === key ? (
+                            <Collapse isOpen={isOpen === key}>
+                              {renderBadges(item.value)}
+                            </Collapse>
+                          ) : (
+                            renderBadges(item.value.slice(0, 2))
+                          )}
+                          {item.value.length > 2 && (
+                            <Button
+                              color="link"
+                              onClick={() =>
+                                setIsOpen(isOpen !== key ? key : null)
+                              }
+                              size="sm"
                             >
-                              {JSON.stringify(data)}
-                            </Badge>
-                          ))}
-                        </>
+                              {isOpen === key ? "Show Less" : "Show More"}
+                              {isOpen === key ? (
+                                <KeyboardArrowUpIcon />
+                              ) : (
+                                <KeyboardArrowDownIcon />
+                              )}
+                            </Button>
+                          )}
+                        </div>
                       ) : (
                         <Badge color={`primary-${selectedTheme}`}>
                           {String(item.value)}
