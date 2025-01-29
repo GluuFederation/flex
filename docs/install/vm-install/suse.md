@@ -104,8 +104,8 @@ Verify that installation has been successful and all installed components are ac
 ```text
 https://FQDN/admin
 ```
-After successful installation of Admin-UI component, then we need to upload require SSA input, as a file path.
-This should be the SSA or file which was acquired as part of [prerequisite step](#prerequisites).
+After successful installation of the Admin-UI component, we need to upload the required SSA input as a file path.
+This should be the SSA or file that was acquired as part of [the prerequisite step](#prerequisites).
 
 When troubleshooting issues with Admin UI access, it's advisable to check the [logs](../../admin/admin-ui/logs.md), refer to the [FAQ](../../admin/admin-ui/faq.md), and review [service dependencies](../../admin/admin-ui/introduction.md/#flex-services-dependencies) for potential solutions.
 
