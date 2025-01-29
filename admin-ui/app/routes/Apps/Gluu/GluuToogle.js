@@ -17,6 +17,9 @@ function GluuToogle({ name, formik, value, handler, disabled }) {
         setChecked(event.target.checked)
         if (formik !== undefined) {
           formik.handleChange(event)
+          if(handler) {
+            handler(event)
+          }
         } else {
           handler(event)
         }

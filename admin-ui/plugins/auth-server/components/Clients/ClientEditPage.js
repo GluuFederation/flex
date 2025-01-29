@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useNavigate } from 'react-router-dom'
@@ -22,6 +22,7 @@ function ClientEditPage() {
   const saveOperationFlag = useSelector((state) => state.oidcReducer.saveOperationFlag)
   const umaResources = useSelector((state) => state.umaResourceReducer.items)
   const loadingOidcDiscovevry = useSelector((state) => state.oidcDiscoveryReducer.loading)
+  const [modifiedFields, setModifiedFields] = useState([])
 
   const dispatch = useDispatch()
   const userAction = {}
@@ -75,6 +76,8 @@ function ClientEditPage() {
             customOnSubmit={handleSubmit}
             umaResources={umaResources}
             isEdit={true}
+            modifiedFields={modifiedFields}
+            setModifiedFields={setModifiedFields}
           />
         </>
       } 

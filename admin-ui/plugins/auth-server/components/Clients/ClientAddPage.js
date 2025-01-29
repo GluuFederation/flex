@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -17,6 +17,7 @@ function ClientAddPage() {
   const oidcConfiguration = useSelector((state) => state.oidcDiscoveryReducer.configuration)
   const saveOperationFlag = useSelector((state) => state.oidcReducer.saveOperationFlag)
   const errorInSaveOperationFlag = useSelector((state) => state.oidcReducer.errorInSaveOperationFlag)
+  const [modifiedFields, setModifiedFields] = useState({})
 
   const dispatch = useDispatch()
 
@@ -89,6 +90,8 @@ function ClientAddPage() {
         permissions={permissions}
         oidcConfiguration={oidcConfiguration}
         customOnSubmit={handleSubmit}
+        modifiedFields={modifiedFields}
+        setModifiedFields={setModifiedFields}
       />
     </GluuLoader>
   )
