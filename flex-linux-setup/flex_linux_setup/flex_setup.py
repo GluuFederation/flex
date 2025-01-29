@@ -19,7 +19,6 @@ from urllib import request
 from urllib.parse import urljoin
 from xml.etree import ElementTree
 
-
 argsp = None
 cur_dir = os.path.dirname(__file__)
 jans_installer_downloaded = bool(os.environ.get('JANS_INSTALLER'))
@@ -27,6 +26,12 @@ flex_installer_downloaded = False
 install_py_path = os.path.join(cur_dir, 'jans_install.py')
 installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
+
+app_versions = {
+    "JANS_APP_VERSION": "0.0.0",
+    "JANS_BUILD": "-nightly",
+    "NODE_VERSION": "v18.16.0"
+}
 
 os.environ["FLEX_PRE_JANS"] = "True"
 
@@ -59,14 +64,22 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs Gluu Flex Admin UI", action='store_true')
     parser.add_argument('--update-admin-ui', help="Updates Gluu Flex Admin UI", action='store_true')
-    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'agama_io.jans.casa.authn.main'])
+    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic',
+                        choices=['basic', 'agama_io.jans.casa.authn.main'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
-    parser.add_argument('--no-restart-services', help="Do not restart services, useful when you are both uninstalling flex and Jans", action='store_true')
+    parser.add_argument('--no-restart-services',
+                        help="Do not restart services, useful when you are both uninstalling flex and Jans",
+                        action='store_true')
     parser.add_argument('--gluu-passwurd-cert', help="Creates Gluu Passwurd API keystore", action='store_true')
     parser.add_argument('-download-exit', help="Downloads files and exits", action='store_true')
+    parser.add_argument('--jans-app-verison', help="Jannsen applications version",
+                        default=app_versions['JANS_APP_VERSION'])
+    parser.add_argument('--jans-app-build', help="Jannsen build", default=app_versions['JANS_BUILD'])
+    parser.add_argument('--node-version', help="Node version", default=app_versions['NODE_VERSION'])
 
     return parser
+
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
@@ -83,13 +96,16 @@ if os.path.join(__STATIC_SETUP_DIR__, 'flex/flex-linux-setup') == cur_dir:
 
 if not jans_installer_downloaded and os.path.exists(__STATIC_SETUP_DIR__):
     print("Backing up old Janssen setup directory")
-    os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
+    os.system(
+        'mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
 else:
     sys.path.append(__STATIC_SETUP_DIR__)
 
+
 def download_jans_install_py(setup_branch):
     print("Downloading", os.path.basename(install_py_path))
-    install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
+    install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(
+        setup_branch)
     request.urlretrieve(install_url, install_py_path)
 
 
@@ -115,8 +131,25 @@ if not (jans_installer_downloaded or os.path.exists(jans_config_properties)):
     os.system(install_cmd)
     jans_installer_downloaded = True
 
+
+def set_app_versions_from_arguments(brgsp):
+    if hasattr(argparse, 'jans_versions_done'):
+        return
+    argparse.jans_versions_done = True
+
+    app_versions['JANS_APP_VERSION'] = brgsp.jans_app_verison
+    app_versions['JANS_BUILD'] = brgsp.jans_app_build
+    app_versions['NODE_VERSION'] = brgsp.node_version
+    app_versions['SETUP_BRANCH'] = brgsp.jans_setup_branch
+    app_versions['FLEX_BRANCH'] = brgsp.flex_branch
+    app_versions['JANS_BRANCH'] = brgsp.jans_branch
+    app_versions['NODE_MODULES_BRANCH'] = brgsp.node_modules_branch or brgsp.flex_branch
+    app_versions['jans_version'] = app_versions['JANS_APP_VERSION'] + app_versions['JANS_BUILD']
+
+
 if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
+    set_app_versions_from_arguments(argsp)
 
 if not jans_installer_downloaded:
     jans_archive_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
@@ -154,17 +187,19 @@ if not jans_installer_downloaded:
     from setup_app import downloads
     from setup_app.utils import base
     from setup_app.utils import arg_parser
+
     base.argsp = arg_parser.get_parser()
+    set_app_versions_from_arguments(base.argsp)
+
     downloads.base.current_app.app_info = base.readJsonFile(os.path.join(__STATIC_SETUP_DIR__, 'app_info.json'))
     downloads.download_sqlalchemy()
     downloads.download_cryptography()
     downloads.download_pyjwt()
 
-
 install_components = {
-        'admin_ui': argsp.install_admin_ui,
-        'casa': argsp.install_casa
-    }
+    'admin_ui': argsp.install_admin_ui,
+    'casa': argsp.install_casa
+}
 
 logs_dir = os.path.join(__STATIC_SETUP_DIR__, 'logs')
 
@@ -175,6 +210,7 @@ if __STATIC_SETUP_DIR__ not in sys.path:
     sys.path.append(__STATIC_SETUP_DIR__)
 
 from setup_app import paths
+
 paths.LOG_FILE = os.path.join(logs_dir, 'flex-setup.log')
 paths.LOG_ERROR_FILE = os.path.join(logs_dir, 'flex-setup-error.log')
 print()
@@ -184,12 +220,11 @@ print(paths.LOG_FILE)
 print(paths.LOG_ERROR_FILE)
 print('\033[0m')
 
-
 parser = get_flex_setup_parser()
 from setup_app.utils import arg_parser
+
 arg_parser.add_to_me(parser)
 installed = False
-
 
 if not (os.path.exists(jans_config_properties) or argsp.download_exit):
     installed = True
@@ -197,9 +232,12 @@ if not (os.path.exists(jans_config_properties) or argsp.download_exit):
         from jans_setup import jans_setup
     except ImportError:
         import jans_setup
+
         jans_setup.main()
 
 argsp = arg_parser.get_parser()
+set_app_versions_from_arguments(argsp)
+
 del_msg = "  - Deleting"
 
 from setup_app import static
@@ -214,15 +252,10 @@ else:
 
 os.environ['JANS_PROFILE'] = profile
 base.current_app.profile = profile
+base.current_app.app_info.update(app_versions)
 base.argsp = argsp
 
-if 'SETUP_BRANCH' not in base.current_app.app_info:
-    base.current_app.app_info['SETUP_BRANCH'] = argsp.jans_setup_branch
-
-base.current_app.app_info['jans_version'] = base.current_app.app_info['JANS_APP_VERSION'] + base.current_app.app_info['JANS_BUILD']
-
 sys.path.insert(0, base.pylib_dir)
-sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
 
 from setup_app.pylib.jproperties import Properties
 from setup_app.pylib import jwt
@@ -241,11 +274,9 @@ from setup_app.installers.jans_casa import CasaInstaller
 from setup_app.utils.properties_utils import propertiesUtils
 from setup_app.utils.ldif_utils import myLdifParser
 
-
 Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
 if not os.path.exists(Config.outputFolder):
     os.makedirs(Config.outputFolder)
-
 
 if not installed:
 
@@ -261,17 +292,9 @@ if not installed:
 
     if not hasattr(base, 'argsp'):
         base.argsp = arg_parser.get_parser()
+        set_app_versions_from_arguments(base.argsp)
 
 maven_base_url = 'https://jenkins.jans.io/maven/io/jans/'
-app_versions = {
-  "SETUP_BRANCH": argsp.jans_setup_branch,
-  "FLEX_BRANCH": argsp.flex_branch,
-  "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.3.0",
-  "JANS_BUILD": "",
-  "NODE_VERSION": "v18.16.0",
-  "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
-}
 
 node_installer = NodeInstaller()
 httpd_installer = HttpdInstaller()
@@ -308,7 +331,8 @@ class flex_installer(JettyInstaller):
         self.admin_ui_dn = 'ou=admin-ui,ou=configuration,o=jans'
         Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
         self.simple_auth_scr_inum = 'A51E-76DA'
-        self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
+        self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir,
+                                                 os.path.basename(self.admin_ui_plugin_source_path))
         self.admin_ui_web_hook_ldif_fn = os.path.join(self.templates_dir, 'aui_webhook.ldif')
 
         if not flex_installer_downloaded and os.path.exists(self.source_dir):
@@ -318,7 +342,10 @@ class flex_installer(JettyInstaller):
 
     def download_files(self, force=False):
         print("Downloading Gluu Flex components")
-        download_url, target = ('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path)
+
+        download_url, target = (
+        'https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']),
+        self.flex_path)
 
         if not flex_installer_downloaded:
             base.download(download_url, target, verbose=True)
@@ -326,18 +353,25 @@ class flex_installer(JettyInstaller):
         print("Extracting", self.flex_path)
         base.extract_from_zip(self.flex_path, 'flex-linux-setup/flex_linux_setup', self.flex_setup_dir)
 
-
         if install_components['admin_ui'] or argsp.download_exit or argsp.update_admin_ui:
             self.source_files += [
-                    ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
-                    (urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path),
-                    ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path),
-                    ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
-                    (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
-                    ]
+                ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']),
+                 os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
+                (urljoin(maven_base_url,
+                         'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(
+                             app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])),
+                 self.admin_ui_plugin_source_path),
+                (
+                'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(
+                    app_versions['JANS_BRANCH']), self.log4j2_path),
+                (
+                'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(
+                    app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
+                (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
+            ]
 
             if argsp.update_admin_ui:
-                self.source_files.pop(0) 
+                self.source_files.pop(0)
 
         for download_url, target in self.source_files:
             if force or not os.path.exists(target):
@@ -362,7 +396,7 @@ class flex_installer(JettyInstaller):
                 if l.strip() == '</LocationMatch>':
                     n = i
 
-            https_jans_list.insert(n+1, '\n' + apache_directive_text + '\n')
+            https_jans_list.insert(n + 1, '\n' + apache_directive_text + '\n')
             self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
 
         self.enable_apache_mod_dir()
@@ -395,7 +429,6 @@ class flex_installer(JettyInstaller):
             if modified:
                 base_mod_path.write_text('\n'.join(mod_load_content))
 
-
     def rewrite_cli_ini(self):
         print("  - Rewriting Jans CLI init file for plugins")
         cli_config = Path(jans_cli_installer.config_ini_fn)
@@ -408,7 +441,6 @@ class flex_installer(JettyInstaller):
             config.write(cli_config.open('w'))
             cli_config.chmod(0o600)
 
-
     def install_gluu_admin_ui(self):
 
         print("Installing Gluu Admin UI Frontend")
@@ -419,23 +451,24 @@ class flex_installer(JettyInstaller):
         shutil.unpack_archive(
             os.path.join(Config.dist_jans_dir, admin_ui_bin_archive),
             httpd_installer.server_root
-            )
+        )
 
         os.rename(
-                os.path.join(httpd_installer.server_root, 'dist'),
-                Config.templateRenderingDict['admin_ui_apache_root']
-                
-            )
+            os.path.join(httpd_installer.server_root, 'dist'),
+            Config.templateRenderingDict['admin_ui_apache_root']
+
+        )
 
         config_api_installer.renderTemplateInOut(
-                os.path.join(self.templates_dir, 'env-config.js'),
-                self.templates_dir,
-                Config.templateRenderingDict['admin_ui_apache_root']
-            )
+            os.path.join(self.templates_dir, 'env-config.js'),
+            self.templates_dir,
+            Config.templateRenderingDict['admin_ui_apache_root']
+        )
 
         def get_client_parser():
 
-            cli_ldif_client_fn = os.path.join(jans_cli_installer.templates_folder, os.path.basename(jans_cli_installer.ldif_client))
+            cli_ldif_client_fn = os.path.join(jans_cli_installer.templates_folder,
+                                              os.path.basename(jans_cli_installer.ldif_client))
             ldif_parser = myLdifParser(cli_ldif_client_fn)
             ldif_parser.parse()
 
@@ -445,14 +478,14 @@ class flex_installer(JettyInstaller):
 
         client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
         if client_check_result['2001.'] == -1:
-
             ldif_parser = get_client_parser()
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
             ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client']
             ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['none']
-            ldif_parser.entries[0][1]['jansAttrs'] = ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']
+            ldif_parser.entries[0][1]['jansAttrs'] = [
+                '{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']
 
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
 
@@ -465,10 +498,9 @@ class flex_installer(JettyInstaller):
 
             config_api_installer.renderTemplateInOut(client_tmp_fn, self.templates_dir, self.source_dir)
             self.dbUtils.import_ldif([
-                        os.path.join(self.source_dir, os.path.basename(client_tmp_fn)),
-                        self.admin_ui_web_hook_ldif_fn
-                        ])
-
+                os.path.join(self.source_dir, os.path.basename(client_tmp_fn)),
+                self.admin_ui_web_hook_ldif_fn
+            ])
 
         client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == -1:
@@ -505,11 +537,14 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['oidc_client_id'] = ''
         Config.templateRenderingDict['oidc_client_secret'] = ''
         Config.templateRenderingDict['license_hardware_key'] = ''
-        Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
+        Config.templateRenderingDict['scan_license_api_hostname'] = Config.templateRenderingDict['op_host'].replace(
+            'account', 'cloud')
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
-        config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir, self.source_dir)
-        admin_ui_jans_conf_app =  config_api_installer.readFile(os.path.join(self.source_dir, os.path.basename(self.admin_ui_config_properties_path)))
+        config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir,
+                                                 self.source_dir)
+        admin_ui_jans_conf_app = config_api_installer.readFile(
+            os.path.join(self.source_dir, os.path.basename(self.admin_ui_config_properties_path)))
         config_api_installer.dbUtils.set_configuration('jansConfApp', admin_ui_jans_conf_app, self.admin_ui_dn)
 
         self.install_config_api_plugin()
@@ -519,6 +554,12 @@ class flex_installer(JettyInstaller):
 
         self.rewrite_cli_ini()
 
+        print(f"Copying admin-ui command line utility to {Config.jansOptBinFolder}")
+        config_api_installer.copyFile(
+            os.path.join(self.flex_setup_dir, 'admin-ui'),
+            Config.jansOptBinFolder
+        )
+        config_api_installer.run([base.paths.cmd_chmod, '+x', os.path.join(Config.jansOptBinFolder, 'admin-ui')])
 
     def install_config_api_plugin(self):
 
@@ -533,9 +574,9 @@ class flex_installer(JettyInstaller):
         config_api_installer.copyFile(self.log4j2_path, config_api_installer.custom_config_dir)
 
         log4j2_adminui_path_target_path = os.path.join(
-                                config_api_installer.custom_config_dir,
-                                os.path.basename(self.log4j2_adminui_path)
-                                )
+            config_api_installer.custom_config_dir,
+            os.path.basename(self.log4j2_adminui_path)
+        )
 
         print("Reading XML", self.log4j2_adminui_path)
         tree = ElementTree.parse(self.log4j2_adminui_path)
@@ -543,7 +584,7 @@ class flex_installer(JettyInstaller):
 
         for appenders in root.findall('Appenders'):
             for child in appenders:
-                if child.tag=='RollingFile' and child.get('name') in ('ADMINUI-AUDIT', 'ADMINUI-LOG'):
+                if child.tag == 'RollingFile' and child.get('name') in ('ADMINUI-AUDIT', 'ADMINUI-LOG'):
                     for prop in ('fileName', 'filePattern'):
                         file_name = child.get(prop)
                         if file_name:
@@ -583,12 +624,11 @@ class flex_installer(JettyInstaller):
         else:
             propertiesUtils.save_properties()
 
-
     def remove_apache_directive(self, directive):
         https_jans_current = self.readFile(httpd_installer.https_jans_fn)
         tmp_ = directive.lstrip('<').rstrip('>').strip()
         dir_name, dir_arg = tmp_.split()
-        dir_fname = '/'+dir_name
+        dir_fname = '/' + dir_name
 
         https_jans_list = []
         append_c = 2
@@ -607,7 +647,6 @@ class flex_installer(JettyInstaller):
 
         self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
 
-
     def uninstall_admin_ui(self):
         print("Uninstalling Gluu Admin-UI")
 
@@ -620,7 +659,6 @@ class flex_installer(JettyInstaller):
         if client_check_result['2002.'] == 1:
             print("  - Deleting Gluu Flex Admin UI Backend API Client ", Config.admin_ui_web_client_id)
             self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_web_client_id))
-
 
         self.dbUtils.set_configuration("jansConfApp", None, self.admin_ui_dn)
 
@@ -644,9 +682,9 @@ class flex_installer(JettyInstaller):
 
         for s_path in (self.log4j2_adminui_path, self.log4j2_path):
             f_path = os.path.join(
-                        config_api_installer.custom_config_dir,
-                        os.path.basename(s_path)
-                        )
+                config_api_installer.custom_config_dir,
+                os.path.basename(s_path)
+            )
             if os.path.exists(f_path):
                 print(del_msg, f_path)
                 self.run(['rm', '-f', f_path])
@@ -665,13 +703,13 @@ class flex_installer(JettyInstaller):
         key_fn, csr_fn, crt_fn = jansAuthInstaller.gen_cert(suffix, 'changeit', user='jetty')
         passwurd_api_keystore_fn = os.path.join(Config.certFolder, 'passwurdAKeystore.pcks12')
         self.import_key_cert_into_keystore(
-                        suffix=suffix,
-                        keystore_fn=passwurd_api_keystore_fn,
-                        keystore_pw=keystore_pw,
-                        in_key=key_fn,
-                        in_cert=crt_fn,
-                        store_type='PKCS12'
-                        )
+            suffix=suffix,
+            keystore_fn=passwurd_api_keystore_fn,
+            keystore_pw=keystore_pw,
+            in_key=key_fn,
+            in_cert=crt_fn,
+            store_type='PKCS12'
+        )
         keystore_pw_data = {'keyStoreSecret': keystore_pw}
         jansAuthInstaller.writeFile(keystore_pw_fn, json.dumps(keystore_pw_data))
         jansAuthInstaller.chown(keystore_pw_fn, Config.jetty_user, Config.root_user)
@@ -679,7 +717,6 @@ class flex_installer(JettyInstaller):
 
 
 def prompt_for_installation():
-
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
         if not prompt_admin_ui_install.strip().lower().startswith('n'):
@@ -715,9 +752,11 @@ def install_post_setup():
     if install_components['casa']:
         print("Browse https://{}/jans-casa".format(Config.hostname))
 
+
 def prepare_for_installation():
     if not (argsp.flex_non_interactive or argsp.download_exit):
         prompt_for_installation()
+
 
 def get_components_from_setup_properties():
     if argsp.f:
@@ -744,8 +783,8 @@ def restart_services():
     print("Restarting Janssen Config Api")
     config_api_installer.restart()
 
-def main(uninstall):
 
+def main(uninstall):
     get_components_from_setup_properties()
 
     installer_obj = flex_installer()
@@ -789,14 +828,13 @@ def main(uninstall):
     if not argsp.no_restart_services:
         restart_services()
 
-
     if not uninstall:
         install_post_setup()
+
 
 if __name__ == "__main__":
     if argsp.shell:
         code.interact(local=locals())
         sys.exit()
     else:
-       main(uninstall=argsp.remove_flex)
-
+        main(uninstall=argsp.remove_flex)

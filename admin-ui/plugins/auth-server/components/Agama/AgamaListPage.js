@@ -97,6 +97,18 @@ function AgamaListPage() {
     });
   }
 
+  const convertFileFrombase64 = (base64String) => {
+    // Decode Base64 string to a Uint8Array
+    const byteCharacters = atob(base64String);
+    const byteArray = new Uint8Array(byteCharacters.length);
+
+    // Fill the Uint8Array with the byte values
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteArray[i] = byteCharacters.charCodeAt(i);
+    }
+    return byteArray;
+  };
+
   async function fetchRespositoryData() {
     try {
       dispatch(getAgamaRepository());
@@ -110,10 +122,9 @@ function AgamaListPage() {
       dispatch(getJsonConfig({ action: {} }));
     }
   }, []);
-
   useEffect(() => {
     if (agamaFileResponse) {
-      const byteArray = new Uint8Array(agamaFileResponse);
+      const byteArray = convertFileFrombase64(agamaFileResponse);
       let object = {
         name: projectName,
         file: byteArray,
@@ -370,7 +381,6 @@ function AgamaListPage() {
     { name: t("menus.add_community_project"), path: "" },
   ];
 
-
   const handleDeploy = async () => {
     try {
       const repo = agamaRepostoriesList.projects.find(
@@ -379,7 +389,6 @@ function AgamaListPage() {
       setProjectName(repo["repository-name"]);
       dispatch(getAgamaRepositoryFile({ downloadurl: repo["download-link"] }));
     } catch (error) {
-      console.log(error);
       toast.error("File not found");
     }
   };
