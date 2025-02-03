@@ -61,7 +61,7 @@ function ClientListPage() {
   const [scopeClients, setScopeClients] = useState()
   const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
   const [isPageLoading, setIsPageLoading] = useState(loading)
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState(0);
   SetTitle(t('titles.oidc_clients'))
 
   const [scopesModal, setScopesModal] = useState({

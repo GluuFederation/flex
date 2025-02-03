@@ -174,3 +174,9 @@ nav:
       - Managing scripts with CURL: openbanking/curl.md
       - Managing Scripts with the jans-cli: openbanking/jans-cli.md
   - PAR and JARM: openbanking/par-jarm.md
+
+- 'Gluu Solo':
+  - 'solo/solo-getting-started.md'
+  - How To Subscribe: solo/solo-subscription.md
+  - Administration Guide: solo/solo-administration-guide.md
+      
