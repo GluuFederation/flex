@@ -142,7 +142,7 @@ function DashboardPage() {
   function getJansLockDetails() {
     const months = [];
     for (let i = 0; i < 12; i++) {
-      months.push(moment().subtract(i, 'months').format("YYYYMM"));
+      months.push(moment().subtract(i, "months").format("YYYYMM"));
     }
     const startMonth = months[months.length - 1];
     const endMonth = months[0];
@@ -155,7 +155,7 @@ function DashboardPage() {
     );
   }
 
-  const summaryData = [
+  let summaryData = [
     {
       text: t("dashboard.oidc_clients_count"),
       value: totalClientsEntries,
@@ -165,36 +165,44 @@ function DashboardPage() {
     },
     {
       text: t("dashboard.active_users_count"),
-      value: mauCount,
+      value: mauCount ?? 0,
       icon: (
         <UsersIcon className={classes.summaryIcon} style={{ top: "4px" }} />
       ),
     },
     {
       text: t("dashboard.token_issued_count"),
-      value: tokenCount,
+      value: tokenCount ?? 0,
       icon: (
         <OAuthIcon className={classes.summaryIcon} style={{ top: "8px" }} />
       ),
     },
-    {
-      text: "Maximum MAU for LTM (Lock)",
-      value: tokenCount,
-      icon: (
-        <JansLockUsers className={classes.summaryIcon} style={{ top: "8px" }} />
-      ),
-    },
-    {
-      text: "Maximum MAC for LTM (Lock)",
-      value: tokenCount,
-      icon: (
-        <JansLockClients
-          className={classes.summaryIcon}
-          style={{ top: "8px" }}
-        />
-      ),
-    },
   ];
+
+  if (lock && lock.length > 0) {
+    summaryData.push(
+      {
+        text: t("dashboard.mau_users"),
+        value: lock[0]?.monthly_active_users ?? 0,
+        icon: (
+          <JansLockUsers
+            className={classes.summaryIcon}
+            style={{ top: "8px" }}
+          />
+        ),
+      },
+      {
+        text: t("dashboard.mau_clients"),
+        value: lock[0]?.monthly_active_clients ?? 0,
+        icon: (
+          <JansLockClients
+            className={classes.summaryIcon}
+            style={{ top: "8px" }}
+          />
+        ),
+      }
+    );
+  }
 
   const userInfo = [
     {
@@ -462,7 +470,7 @@ function DashboardPage() {
             </Grid>
           </Grid>
 
-          <Grid container className={`px-40`}>
+          <Grid container className={`px-40`} sx={{ marginTop: "20px" }}>
             <Grid lg={12} xs={12} item>
               <h3 className="text-white">
                 {t("dashboard.access_tokens_graph")}

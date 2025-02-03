@@ -23,7 +23,7 @@
     "currentMonth": "Current Month",
     "currentYear": "Current Year",
     "choose": "Choose",
-    "deploy":"Deploy",
+    "deploy": "Deploy",
     "edit": "Edit",
     "next": "Next",
     "no": "No",
@@ -55,7 +55,7 @@
     "add_source_ldap_server": "Add source LDAP server",
     "remove_source_server": "Remove source server",
     "copy_to_clipboard": "Copy To Clipboard",
-    "export_csv":"Export CSV"
+    "export_csv": "Export CSV"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -80,14 +80,16 @@
     "start_date": "Start Date",
     "end_date": "End Date",
     "system_status": "System Status",
-    "config_api":"Config API",
-    "config_api_status":"Config API Status",
-    "key_cloak":"Keycloak",
-    "jans_lock":"Jans Lock",
-    "jans_link":"Jans Link",
-    "access_denied":"Access Denied",
-    "access_denied_message":"You do not have permission to access this page",
-    "access_contact_admin":"Please contact your administrator for more information"
+    "config_api": "Config API",
+    "config_api_status": "Config API Status",
+    "key_cloak": "Keycloak",
+    "jans_lock": "Jans Lock",
+    "jans_link": "Jans Link",
+    "access_denied": "Access Denied",
+    "access_denied_message": "You do not have permission to access this page",
+    "access_contact_admin": "Please contact your administrator for more information",
+    "mau_users": "Max. MAU for LTM (Lock)",
+    "mau_clients": "Max. MAC for LTM (Lock)"
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
@@ -133,7 +135,7 @@
     "jans_assertion_consumer_service_post_url": "Jans Assertion Consumer Service POST URL",
     "jans_id": "Jans ID",
     "jans_state": "Jans State",
-    "jans_sess_state":"Jans Session State",
+    "jans_sess_state": "Jans Session State",
     "jans_user_dn": "Jans User DN",
     "permission_granted_map": "Permission Granted Map",
     "jans_sess_attr": "Jans Session Attributes",
@@ -658,9 +660,9 @@
     "source_backend_ldap_servers": "Source Backend LDAP Servers",
     "inum_db_server": "Inum DB Server",
     "static_configuration": "Static Configuration",
-    "dynamic_configuration": "Dynamic Configuration",   
-    "upload_agama_project":"Upload Agama project",
-    "add_community_project":"Add a Community Project"
+    "dynamic_configuration": "Dynamic Configuration",
+    "upload_agama_project": "Upload Agama project",
+    "add_community_project": "Add a Community Project"
   },
   "messages": {
     "add_permission": "Add Permission",
@@ -809,7 +811,7 @@
     "search_reference": "Search by reference",
     "search_scope": "Search by scope",
     "search_token": "Search by token code",
-    "search_date":"Search by creation date",
+    "search_date": "Search by creation date",
     "sector_uri": "Enter the sector URI",
     "sender_email": "Enter the sender email",
     "sender_name": "Enter the sender name",
@@ -889,8 +891,8 @@
     "scopes": "Scopes",
     "scripts": "Custom Scripts",
     "schemaName": "Schema Name",
-    "select_project_deploy":"Select a project to deploy",
-    "add_new_agama_project":"Add a new Agama Project",
+    "select_project_deploy": "Select a project to deploy",
+    "add_new_agama_project": "Add a new Agama Project",
     "user_management": "User Management",
     "fido_management": "FIDO Configuration",
     "saml_management": "SAML",
@@ -919,7 +921,7 @@
     "edit_alias": "Edit Mapping",
     "export_csv": "Export CSV",
     "filters": "Filters",
-    "expiration_date" : "Expiration Date",
+    "expiration_date": "Expiration Date",
     "authentication_date": "Authentication Date",
     "creation_date": "Creation Date"
   },
@@ -1591,8 +1593,8 @@
       "type": "Type",
       "domain": "Domain"
     },
-    "sessions":{
-      "expirationDate" : "Expiration Date",
+    "sessions": {
+      "expirationDate": "Expiration Date",
       "jansId": "Jans Id",
       "jansState": "Jans State",
       "jansSessState": "Jans Session State",
