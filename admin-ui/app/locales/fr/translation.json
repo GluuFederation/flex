@@ -36,7 +36,7 @@
     "access_denied_message": "Vous n'êtes pas autorisé à accéder à cette page",
     "access_contact_admin": "Veuillez contacter l'administrateur pour obtenir de l'aide",
     "mau_users": "Max. MAU pour LTM (Verrouillage)",
-    "mau_clients": "Max. MAC pour LTM (Verrouillage)"
+    "mau_clients": "Janvier verrouiller les clients"
   },
   "menus": {
     "adminui": "Administratrice",
