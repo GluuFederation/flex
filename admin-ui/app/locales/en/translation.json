@@ -89,7 +89,7 @@
     "access_denied_message": "You do not have permission to access this page",
     "access_contact_admin": "Please contact your administrator for more information",
     "mau_users": "Max. MAU for LTM (Lock)",
-    "mau_clients": "Max. MAC for LTM (Lock)"
+    "mau_clients": "Jan lock clients"
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
