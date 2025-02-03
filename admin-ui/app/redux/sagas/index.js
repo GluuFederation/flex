@@ -14,6 +14,7 @@ import oidcDiscoverySaga from './OidcDiscoverySaga'
 import process from 'Plugins/PluginSagasResolver'
 import attributes from './AttributesSaga'
 import profileDetails from './ProfileDetailsSaga'
+import lockSaga from './LockSaga'
 export default function* rootSaga() {
   const pluginSagaArr = process()
   yield all(
@@ -27,7 +28,8 @@ export default function* rootSaga() {
         healthSaga(),
         licenseDetailsSaga(),
         attributes(),
-        profileDetails()
+        profileDetails(),
+        lockSaga()
       ],
       pluginSagaArr,
     ),

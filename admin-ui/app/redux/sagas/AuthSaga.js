@@ -57,7 +57,6 @@ function* putConfigWorker({ payload }) {
       return
     }
   } catch (error) {
-    console.log('Problems udpating configuration.', error)
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(error)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

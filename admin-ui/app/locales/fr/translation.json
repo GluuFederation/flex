@@ -32,9 +32,11 @@
     "key_cloak": "Keycloak",
     "jans_lock": "Jans Lock",
     "jans_link": "Lien Jans",
-    "access_denied":"Accès refusé",
-    "access_denied_message":"Vous n'êtes pas autorisé à accéder à cette page",
-    "access_contact_admin":"Veuillez contacter l'administrateur pour obtenir de l'aide"
+    "access_denied": "Accès refusé",
+    "access_denied_message": "Vous n'êtes pas autorisé à accéder à cette page",
+    "access_contact_admin": "Veuillez contacter l'administrateur pour obtenir de l'aide",
+    "mau_users": "Max. MAU pour LTM (Verrouillage)",
+    "mau_clients": "Max. MAC pour LTM (Verrouillage)"
   },
   "menus": {
     "adminui": "Administratrice",
@@ -182,7 +184,7 @@
     "jans_assertion_consumer_service_post_url": "URL POST du service consommateur d'assertions Jans",
     "jans_id": "ID Jans",
     "jans_state": "État Jans",
-    "jans_sess_state":"État de la session Jans",
+    "jans_sess_state": "État de la session Jans",
     "jans_user_dn": "DN de l'utilisateur Jans",
     "permission_granted_map": "Carte des autorisations accordées",
     "jans_sess_attr": "Attributs de la session Jans",
@@ -812,7 +814,7 @@
     "jans_ink": "Jans Link",
     "change_backend_bind_password": "Modifier le mot de passe de liaison du backend",
     "add_agama_project": "Ajouter un projet Agama",
-    "export_csv":"Exporter CSV"
+    "export_csv": "Exporter CSV"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1521,8 +1523,8 @@
     "type": "Type",
     "domain": "Domaine"
   },
-  "sessions":{
-    "expirationDate" : "Date d'expiration",
+  "sessions": {
+    "expirationDate": "Date d'expiration",
     "jansId": "ID Jans",
     "jansState": "État Jans",
     "jansSessState": "État de la session Jans",
