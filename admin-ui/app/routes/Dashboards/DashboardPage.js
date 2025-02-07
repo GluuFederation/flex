@@ -25,14 +25,18 @@ import { formatDate } from "Utils/Util";
 import UsersIcon from "Components/SVG/menu/Users";
 import Administrator from "Components/SVG/menu/Administrator";
 import OAuthIcon from "Components/SVG/menu/OAuth";
+import JansLockUsers from "Components/SVG/menu/JansLockUsers";
+import JansLockClients from "Components/SVG/menu/JansLockClients";
 import { getHealthServerStatus } from "../../redux/features/healthSlice";
 import GluuPermissionModal from "Routes/Apps/Gluu/GluuPermissionModal";
 import { auditLogoutLogs } from "../../../plugins/user-management/redux/features/userSlice";
 import { useNavigate } from "react-router";
+import { getLockStatus } from "Redux/features/lockSlice";
+import moment from "moment";
 
 function DashboardPage() {
   const { t } = useTranslation();
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const breakDashboardCard = useMediaQuery({ query: "(max-width: 1424px)" });
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -46,6 +50,8 @@ function DashboardPage() {
   const statData = useSelector((state) => state.mauReducer.stat);
   const loading = useSelector((state) => state.mauReducer.loading);
   const clients = useSelector((state) => state.initReducer.clients);
+  const lock = useSelector((state) => state.lockReducer.lockDetail);
+
   const totalClientsEntries = useSelector(
     (state) => state.initReducer.totalClientsEntries
   );
@@ -84,23 +90,30 @@ function DashboardPage() {
   }, [statData]);
 
   useEffect(() => {
-    if (Object.keys(license).length === 0 && access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
+    if (
+      Object.keys(license).length === 0 &&
+      access_token &&
+      hasBoth(permissions, STAT_READ, STAT_JANS_READ)
+    ) {
       getLicense();
     }
   }, [access_token, license]);
 
   useEffect(() => {
-    if (clients.length === 0 && access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
+    if (
+      clients.length === 0 &&
+      access_token &&
+      hasBoth(permissions, STAT_READ, STAT_JANS_READ)
+    ) {
       buildPayload(userAction, "Fetch openid connect clients", {});
       dispatch(getClients({ action: userAction }));
     }
   }, [access_token, clients]);
 
   useEffect(() => {
-
     if (access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
-      console.log("access_token", access_token,hasBoth(permissions, STAT_READ, STAT_JANS_READ));
       getServerStatus();
+      getJansLockDetails();
       buildPayload(userAction, "GET Health Status", { service: "all" });
       dispatch(getHealthServerStatus({ action: userAction }));
     }
@@ -126,7 +139,23 @@ function DashboardPage() {
     dispatch(getHealthStatus({ action: userAction }));
   }
 
-  const summaryData = [
+  function getJansLockDetails() {
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      months.push(moment().subtract(i, "months").format("YYYYMM"));
+    }
+    const startMonth = months[months.length - 1];
+    const endMonth = months[0];
+
+    dispatch(
+      getLockStatus({
+        startMonth,
+        endMonth,
+      })
+    );
+  }
+
+  let summaryData = [
     {
       text: t("dashboard.oidc_clients_count"),
       value: totalClientsEntries,
@@ -136,19 +165,44 @@ function DashboardPage() {
     },
     {
       text: t("dashboard.active_users_count"),
-      value: mauCount,
+      value: mauCount ?? 0,
       icon: (
         <UsersIcon className={classes.summaryIcon} style={{ top: "4px" }} />
       ),
     },
     {
       text: t("dashboard.token_issued_count"),
-      value: tokenCount,
+      value: tokenCount ?? 0,
       icon: (
         <OAuthIcon className={classes.summaryIcon} style={{ top: "8px" }} />
       ),
     },
   ];
+
+  if (lock && lock.length > 0) {
+    summaryData.push(
+      {
+        text: t("dashboard.mau_users"),
+        value: lock[0]?.monthly_active_users ?? 0,
+        icon: (
+          <JansLockUsers
+            className={classes.summaryIcon}
+            style={{ top: "8px" }}
+          />
+        ),
+      },
+      {
+        text: t("dashboard.mau_clients"),
+        value: lock[0]?.monthly_active_clients ?? 0,
+        icon: (
+          <JansLockClients
+            className={classes.summaryIcon}
+            style={{ top: "8px" }}
+          />
+        ),
+      }
+    );
+  }
 
   const userInfo = [
     {
@@ -296,11 +350,14 @@ function DashboardPage() {
   }, [serverStatus, serverHealth, dbStatus, t, statusDetails, classes]);
 
   const handleLogout = () => {
-    if(access_token){
-      dispatch(auditLogoutLogs({ message: "Logging out due to insufficient permissions for Admin UI access." }));
-    }
-    else navigate("/logout")
-   
+    if (access_token) {
+      dispatch(
+        auditLogoutLogs({
+          message:
+            "Logging out due to insufficient permissions for Admin UI access.",
+        })
+      );
+    } else navigate("/logout");
   };
 
   return (
@@ -309,7 +366,9 @@ function DashboardPage() {
         handler={() => {
           handleLogout();
         }}
-        isOpen={!access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
+        isOpen={
+          !access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)
+        }
       />
       <GluuViewWrapper
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
@@ -411,7 +470,7 @@ function DashboardPage() {
             </Grid>
           </Grid>
 
-          <Grid container className={`px-40`}>
+          <Grid container className={`px-40`} sx={{ marginTop: "20px" }}>
             <Grid lg={12} xs={12} item>
               <h3 className="text-white">
                 {t("dashboard.access_tokens_graph")}
