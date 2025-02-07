@@ -81,11 +81,9 @@ function AttributeForm(props) {
 
   const attributeValidationSchema = Yup.object({
     name: Yup.string()
-      .min(2, 'Minimum 2 characters')
       .matches(/^[^\s]+$/, 'Name must not contain spaces')
       .required('Required!'),
     displayName: Yup.string()
-      .min(2, 'Mininum 2 characters')
       .required('Required!'),
     description: Yup.string().required('Required!'),
     status: Yup.string().required('Required!'),
@@ -367,6 +365,12 @@ function AttributeForm(props) {
                 rsize={6}
                 label='fields.multivalued'
                 value={formik.values?.oxMultiValuedAttribute}
+                handler={(e) => {
+                  formik.setFieldValue(
+                    "oxMultiValuedAttribute",
+                    e.target.checked
+                  );
+                }}
                 doc_category={ATTRIBUTE}
               />
             </Col>
@@ -379,6 +383,12 @@ function AttributeForm(props) {
                 label='fields.hide_on_discovery'
                 value={formik.values?.jansHideOnDiscovery}
                 doc_category={ATTRIBUTE}
+                handler={(e) => {
+                  formik.setFieldValue(
+                    "jansHideOnDiscovery",
+                    e.target.checked
+                  );
+                }}
               />
             </Col>
             <Col sm={4}>
@@ -390,6 +400,12 @@ function AttributeForm(props) {
                 label='fields.include_in_scim_extension'
                 value={formik.values?.scimCustomAttr}
                 doc_category={ATTRIBUTE}
+                handler={(e) => {
+                  formik.setFieldValue(
+                    "scimCustomAttr",
+                    e.target.checked
+                  );
+                }}
               />
             </Col>
           </FormGroup>
