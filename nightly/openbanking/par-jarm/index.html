@@ -775,6 +775,8 @@
         
           
         
+          
+        
       
       
         
@@ -1281,6 +1283,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin/gluu-migration/" class="md-nav__link">
+        Migrating from Gluu4
+      </a>
     </li>
   
 
@@ -1917,15 +1933,15 @@ in return the clients gets a reference (named as request URI value) that will be
 PAR enables the OAuth clients to push the payload of an authorization request directly to the authorization server in exchange for a 
 request URI value. This request URI value is used as a reference to the authorization request payload data in a subsequent call to the 
 authorization endpoint.</p>
-<div class="codehilite"><pre><span></span><code><span class="nv">We</span><span class="w"> </span><span class="nv">can</span><span class="w"> </span><span class="nv">set</span><span class="w"> </span><span class="nv">different</span><span class="w"> </span><span class="nv">PAR</span><span class="w"> </span><span class="nv">lifetimes</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">different</span><span class="w"> </span><span class="nv">clients</span>.<span class="w"> </span><span class="nv">PAR</span><span class="w"> </span><span class="nv">lifetime</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="mi">600</span><span class="w"> </span><span class="nv">seconds</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">it</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">unspecified</span>.<span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="nv">We</span><span class="w"> </span><span class="nv">can</span><span class="w"> </span><span class="nv">set</span><span class="w"> </span><span class="nv">different</span><span class="w"> </span><span class="nv">PAR</span><span class="w"> </span><span class="nv">lifetimes</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">different</span><span class="w"> </span><span class="nv">clients</span>.<span class="w"> </span><span class="nv">PAR</span><span class="w"> </span><span class="nv">lifetime</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="mi">600</span><span class="w"> </span><span class="nv">seconds</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">it</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">unspecified</span>.
 </code></pre></div>
 
 <p>We have two new configuration properties for PAR:</p>
 <div class="codehilite"><pre><span></span><code><span class="o">*</span><span class="w">     </span><span class="nv">parEndpoint</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">String</span>,<span class="w"> </span><span class="nv">corresponds</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">pushed_authorization_request_endpoint</span><span class="w"> </span>
-<span class="w">      </span><span class="nv">as</span><span class="w"> </span><span class="nv">defined</span><span class="w"> </span><span class="nv">by</span><span class="w"> </span><span class="nv">specification</span>.<span class="w"></span>
+<span class="w">      </span><span class="nv">as</span><span class="w"> </span><span class="nv">defined</span><span class="w"> </span><span class="nv">by</span><span class="w"> </span><span class="nv">specification</span>.
 <span class="o">*</span><span class="w">     </span><span class="nv">requirePar</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">Boolean</span><span class="w"> </span><span class="nv">parameter</span><span class="w"> </span><span class="nv">indicating</span><span class="w"> </span><span class="nv">whether</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">only</span><span class="w"> </span><span class="nv">means</span><span class="w"> </span><span class="nv">of</span><span class="w"> </span>
 <span class="w">      </span><span class="nv">initiating</span><span class="w"> </span><span class="nv">an</span><span class="w"> </span><span class="nv">authorization</span><span class="w"> </span><span class="nv">request</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">client</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">allowed</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">use</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span>
-<span class="w">      </span><span class="nv">pushed</span><span class="w"> </span><span class="nv">authorization</span><span class="w"> </span><span class="nv">request</span>.<span class="w"> </span><span class="k">If</span><span class="w"> </span><span class="nv">omitted</span>,<span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">default</span><span class="w"> </span><span class="nv">value</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="s2">&quot;false&quot;</span>.<span class="w"></span>
+<span class="w">      </span><span class="nv">pushed</span><span class="w"> </span><span class="nv">authorization</span><span class="w"> </span><span class="nv">request</span>.<span class="w"> </span><span class="k">If</span><span class="w"> </span><span class="nv">omitted</span>,<span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">default</span><span class="w"> </span><span class="nv">value</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="s2">&quot;false&quot;</span>.
 </code></pre></div>
 
 <p>Moreover, there is a new client configuration:</p>

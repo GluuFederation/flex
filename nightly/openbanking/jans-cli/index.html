@@ -775,6 +775,8 @@
         
           
         
+          
+        
       
       
         
@@ -1281,6 +1283,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin/gluu-migration/" class="md-nav__link">
+        Migrating from Gluu4
+      </a>
     </li>
   
 
@@ -1993,122 +2009,122 @@
 </li>
 <li>
 <p>Get a client id  and its associated password. Here, we will use the client id and secret created for config-api. 
-    <div class="highlight"><pre><span></span><code><span class="nv">TESTCLIENT</span><span class="o">=</span><span class="k">$(</span>kubectl get cm cn -n &lt;namespace&gt; --template<span class="o">={{</span>.data.jca_client_id<span class="o">}}</span><span class="k">)</span>
-<span class="nv">TESTCLIENTSECRET</span><span class="o">=</span><span class="k">$(</span>kubectl get secret cn -n &lt;namespace&gt; --template<span class="o">={{</span>.data.jca_client_pw<span class="o">}}</span> <span class="p">|</span> base64 -d<span class="k">)</span>
+    <div class="highlight"><pre><span></span><code><span class="nv">TESTCLIENT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>cm<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;<span class="w"> </span>--template<span class="o">={{</span>.data.jca_client_id<span class="o">}}</span><span class="k">)</span>
+<span class="nv">TESTCLIENTSECRET</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;<span class="w"> </span>--template<span class="o">={{</span>.data.jca_client_pw<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="k">)</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><code>client.crt</code> and <code>client.key</code> are the certificate and key files respectively for MTLS. We need to pass this certificate, key as the token endpoint is under MTLS and jans-cli obtains an appropriate token before performing the operation. </p>
 <p>Use your <code>ca.crt</code> and <code>ca.key</code> that was provided during setup to generate as many client certificates and keys for operating jans-cli as needed.</p>
 <p>If you have an existing helm deployment, you can retrieve <code>ca.crt</code> and <code>ca.key</code> using the following commands:
-<div class="highlight"><pre><span></span><code>kubectl get secret cn -n &lt;namespace&gt; --template<span class="o">={{</span>.data.ssl_ca_cert<span class="o">}}</span> <span class="p">|</span> base64 -d &gt; ca.crt
-kubectl get secret cn -n &lt;namespace&gt; --template<span class="o">={{</span>.data.ssl_ca_key<span class="o">}}</span> <span class="p">|</span> base64 -d &gt; ca.key
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;<span class="w"> </span>--template<span class="o">={{</span>.data.ssl_ca_cert<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>ca.crt
+kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;<span class="w"> </span>--template<span class="o">={{</span>.data.ssl_ca_key<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>ca.key
 </code></pre></div></p>
 </li>
 <li>
 <p>Generate client.crt and client.key files:
-    <div class="highlight"><pre><span></span><code>openssl req -new -newkey rsa:4096 -keyout client.key -out client.csr -nodes -subj <span class="s1">&#39;/CN=Openbanking&#39;</span>
-openssl x509 -req -sha256 -days <span class="m">365</span> -in client.csr -CA ca.crt -CAkey ca.key -set_serial <span class="m">02</span> -out client.crt
+    <div class="highlight"><pre><span></span><code>openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-newkey<span class="w"> </span>rsa:4096<span class="w"> </span>-keyout<span class="w"> </span>client.key<span class="w"> </span>-out<span class="w"> </span>client.csr<span class="w"> </span>-nodes<span class="w"> </span>-subj<span class="w"> </span><span class="s1">&#39;/CN=Openbanking&#39;</span>
+openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> </span>-sha256<span class="w"> </span>-days<span class="w"> </span><span class="m">365</span><span class="w"> </span>-in<span class="w"> </span>client.csr<span class="w"> </span>-CA<span class="w"> </span>ca.crt<span class="w"> </span>-CAkey<span class="w"> </span>ca.key<span class="w"> </span>-set_serial<span class="w"> </span><span class="m">02</span><span class="w"> </span>-out<span class="w"> </span>client.crt
 </code></pre></div></p>
 </li>
 <li>
 <p>Run the jans-cli in interactive mode and try it out: </p>
-<div class="highlight"><pre><span></span><code>python3 jans-cli-linux-amd64.pyz --host &lt;FQDN&gt; --client-id <span class="nv">$TESTCLIENT</span> --client_secret <span class="nv">$TESTCLIENTSECRET</span> --CC client.crt --CK client.key
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
 </li>
 </ol>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
 <p>The <code>post-config-scripts</code> and <code>put-config-scripts</code> require various details about the scripts. The following command gives the basic schema of the custom scripts to pass to these operations. </p>
-<div class="highlight"><pre><span></span><code>python3 jans-cli-linux-amd64.pyz --host &lt;FQDN&gt; --client-id <span class="nv">$TESTCLIENT</span> --client_secret <span class="nv">$TESTCLIENTSECRET</span> --schema /components/schemas/CustomScript 
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--schema<span class="w"> </span>/components/schemas/CustomScript<span class="w"> </span>
 </code></pre></div>
 <p>The output of the above command will be similar as: </p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;dn&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;inum&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;aliases&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;script&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;scriptType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IDP&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;programmingLanguage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;moduleProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value1&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value2&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;configurationProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value1&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;value2&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;hide&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;revision&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;scriptError&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;raisedAt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;stackTrace&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"></span>
-<span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;internal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;dn&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inum&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;aliases&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;script&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scriptType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IDP&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;programmingLanguage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;moduleProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;value1&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value2&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;configurationProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;value1&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;value2&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hide&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;revision&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scriptError&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;raisedAt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stackTrace&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;modified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;internal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>To add or modify a script first, we need to create the script's python file (e.g. /tmp/sample.py) and then create a JSON file by following the above schema and update the fields as :</p>
 <p>/tmp/sample.json
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mySampleScript&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;aliases&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This is a sample script&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;script&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;_file /tmp/sample.py&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;scriptType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PERSON_AUTHENTICATION&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;programmingLanguage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;moduleProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">    </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;value1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mayvalue1&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;value2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myvalues2&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;description for property&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">],</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;configurationProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;revision&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;scriptError&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;modified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;internal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mySampleScript&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;aliases&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This is a sample script&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;script&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;_file /tmp/sample.py&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scriptType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PERSON_AUTHENTICATION&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;programmingLanguage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PYTHON&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;moduleProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;value1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mayvalue1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;value2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myvalues2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;description for property&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;configurationProperties&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;revision&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scriptError&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;modified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;internal&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
 </code></pre></div></p>
 <h3 id="add-a-new-custom-script-update-and-delete-existing-custom-script">Add a new custom script, update and delete existing custom script<a class="headerlink" href="#add-a-new-custom-script-update-and-delete-existing-custom-script" title="Permanent link">#</a></h3>
 <p>The following command will add a new script with details given in /tmp/sampleadd.json file. <strong>The jans-cli will generate a unique inum of this new script if we skip inum in the json file.</strong></p>
-<div class="highlight"><pre><span></span><code>python3 jans-cli-linux-amd64.pyz --host &lt;FQDN&gt; --client-id <span class="nv">$TESTCLIENT</span> --client_secret <span class="nv">$TESTCLIENTSECRET</span> --operation-id post-config-scripts --data /tmp/sampleadd.json <span class="se">\</span>
---CC client.crt --CK client.key
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>post-config-scripts<span class="w"> </span>--data<span class="w"> </span>/tmp/sampleadd.json<span class="w"> </span><span class="se">\</span>
+--CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
 <p>The following command will modify/update the existing script with details given in /tmp/samplemodify.json file. <strong>Remember to set inum field in samplemodify.json to the inum of the script to update.</strong> </p>
-<div class="highlight"><pre><span></span><code>python3 jans-cli-linux-amd64.pyz --host &lt;FQDN&gt; --client-id <span class="nv">$TESTCLIENT</span> --client_secret <span class="nv">$TESTCLIENTSECRET</span> --operation-id put-config-scripts --data /tmp/samplemodify.json <span class="se">\</span>
---CC client.crt --CK client.key
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>put-config-scripts<span class="w"> </span>--data<span class="w"> </span>/tmp/samplemodify.json<span class="w"> </span><span class="se">\</span>
+--CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
 <p>To delete a custom script by its inum, use the following command: </p>
-<div class="highlight"><pre><span></span><code>python3 jans-cli-linux-amd64.pyz --host &lt;FQDN&gt; --client-id <span class="nv">$TESTCLIENT</span> --client_secret <span class="nv">$TESTCLIENTSECRET</span> --operation-id delete-config-scripts-by-inum --url-suffix inum:HKM-TEST <span class="se">\</span>
---CC client.crt --CK client.key
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>delete-config-scripts-by-inum<span class="w"> </span>--url-suffix<span class="w"> </span>inum:HKM-TEST<span class="w"> </span><span class="se">\</span>
+--CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
 <h3 id="print-details-of-existing-custom-scripts">Print details of existing custom scripts<a class="headerlink" href="#print-details-of-existing-custom-scripts" title="Permanent link">#</a></h3>
 <p>These commands to print the details are important, as using them we can get the inum of these scripts which is required to perform update or delete operations.</p>
 <ol>
 <li>
 <p>The following command will display the details of all the existing custom scripts. This will be helpful to get the inum of scripts to perform the update and delete operation.</p>
-<div class="highlight"><pre><span></span><code>python3 jans-cli-linux-amd64.pyz --host &lt;FQDN&gt; --client-id <span class="nv">$TESTCLIENT</span> --client_secret <span class="nv">$TESTCLIENTSECRET</span> --operation-id get-config-scripts --CC client.crt --CK client.key
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>get-config-scripts<span class="w"> </span>--CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
 </li>
 <li>
 <p>The following command displays the details of selected custom script (by inum). </p>
-<div class="highlight"><pre><span></span><code>python3 jans-cli-linux-amd64.pyz --host &lt;FQDN&gt; --client-id <span class="nv">$TESTCLIENT</span> --client_secret <span class="nv">$TESTCLIENTSECRET</span> --operation-id get-config-scripts-by-inum --url-suffix inum:_____  <span class="se">\</span>
---CC client.crt --CK client.key
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>get-config-scripts-by-inum<span class="w"> </span>--url-suffix<span class="w"> </span>inum:_____<span class="w">  </span><span class="se">\</span>
+--CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
 </li>
 <li>
 <p>Use the following command to display the details of existing custom scripts of a given type (for example: INTROSPECTION).</p>
-<div class="highlight"><pre><span></span><code>python3 jans-cli-linux-amd64.pyz --host &lt;FQDN&gt; --client-id <span class="nv">$TESTCLIENT</span> --client_secret <span class="nv">$TESTCLIENTSECRET</span> --operation-id get-config-scripts-by-type --url-suffix type:INTROSPECTION <span class="se">\</span>
---CC client.crt --CK client.key
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>jans-cli-linux-amd64.pyz<span class="w"> </span>--host<span class="w"> </span>&lt;FQDN&gt;<span class="w"> </span>--client-id<span class="w"> </span><span class="nv">$TESTCLIENT</span><span class="w"> </span>--client_secret<span class="w"> </span><span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>--operation-id<span class="w"> </span>get-config-scripts-by-type<span class="w"> </span>--url-suffix<span class="w"> </span>type:INTROSPECTION<span class="w"> </span><span class="se">\</span>
+--CC<span class="w"> </span>client.crt<span class="w"> </span>--CK<span class="w"> </span>client.key
 </code></pre></div>
 </li>
 </ol>

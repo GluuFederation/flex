@@ -773,6 +773,8 @@
         
           
         
+          
+        
       
       
         
@@ -1279,6 +1281,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gluu-migration/" class="md-nav__link">
+        Migrating from Gluu4
+      </a>
     </li>
   
 
@@ -1955,9 +1971,9 @@ https://example.com/webhook?action<span class="o">=</span><span class="si">${</s
 <li><strong>Using shortcodes in webhook request-body:</strong> Webhook request bodies can utilize placeholders to dynamically populate data sent to the recipient system.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="o">{</span>
-  <span class="s2">&quot;username&quot;</span>: <span class="s2">&quot;</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span><span class="s2">&quot;</span>,
-  <span class="s2">&quot;email&quot;</span>: <span class="s2">&quot;</span><span class="si">${</span><span class="nv">email</span><span class="si">}</span><span class="s2">&quot;</span>,
-  <span class="s2">&quot;password&quot;</span>: <span class="s2">&quot;</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="s2">&quot;username&quot;</span>:<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">username</span><span class="si">}</span><span class="s2">&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;email&quot;</span>:<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">email</span><span class="si">}</span><span class="s2">&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;password&quot;</span>:<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">password</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 </code></pre></div>
 <p><img alt="image" src="../../../assets/admin-ui/shortcodes.png" /></p>

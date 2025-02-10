@@ -775,6 +775,8 @@
         
           
         
+          
+        
       
       
         
@@ -1281,6 +1283,20 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../admin/gluu-migration/" class="md-nav__link">
+        Migrating from Gluu4
+      </a>
     </li>
   
 
@@ -2094,23 +2110,23 @@
 </li>
 <li>
 <p>To enable mTLS in ingress-nginx, add the following to your <code>override.yaml</code>:
-      <div class="highlight"><pre><span></span><code><span class="nt">nginx-ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">additionalAnnotations</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-verify-client</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;optional&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-secret</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gluu/tls-ob-ca-certificates&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-verify-depth</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span><span class="w"></span>
-<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="w"></span>
+      <div class="highlight"><pre><span></span><code><span class="nt">nginx-ingress</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">additionalAnnotations</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-verify-client</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;optional&quot;</span>
+<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-secret</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gluu/tls-ob-ca-certificates&quot;</span>
+<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-verify-depth</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
+<span class="w">      </span><span class="nt">nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 </code></pre></div></p>
 <p>Adding these annotations will enable <a href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#client-certificate-authentication">client certificate authentication</a>.</p>
 </li>
 <li>
 <p>Enable <code>authServerProtectedToken</code> and <code>authServerProtectedRegister</code>:
-      <div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">global</span><span class="w"></span>
-<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">auth-server</span><span class="p p-Indicator">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">authServerProtectedToken</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">      </span><span class="nt">authServerProtectedRegister</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+      <div class="highlight"><pre><span></span><code><span class="l l-Scalar l-Scalar-Plain">global</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">auth-server</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="nt">ingress</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">authServerProtectedToken</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">authServerProtectedRegister</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2149,15 +2165,15 @@
 </li>
 <li>
 <p>Create a secret containing the OB CA certificates (issuing, root, and signing CAs) and the OB AS transport crt. For more information read <a href="https://kubernetes.github.io/ingress-nginx/examples/auth/client-certs/">here</a>.</p>
-<div class="highlight"><pre><span></span><code>cat web_https_ca.crt issuingca.crt rootca.crt signingca.crt &gt;&gt; ca.crt
-kubectl create secret generic tls-ob-ca-certificates -n gluu --from-file<span class="o">=</span>tls.crt<span class="o">=</span>web_https.crt --from-file<span class="o">=</span>tls.key<span class="o">=</span>web_https.key --from-file<span class="o">=</span>ca.crt<span class="o">=</span>ca.crt
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>web_https_ca.crt<span class="w"> </span>issuingca.crt<span class="w"> </span>rootca.crt<span class="w"> </span>signingca.crt<span class="w"> </span>&gt;&gt;<span class="w"> </span>ca.crt
+kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>tls-ob-ca-certificates<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--from-file<span class="o">=</span>tls.crt<span class="o">=</span>web_https.crt<span class="w"> </span>--from-file<span class="o">=</span>tls.key<span class="o">=</span>web_https.key<span class="w"> </span>--from-file<span class="o">=</span>ca.crt<span class="o">=</span>ca.crt
 </code></pre></div>
 <p>If you have an existing helm deployment, those secrets can be retrieved and then create using the following commands:</p>
-<div class="highlight"><pre><span></span><code>kubectl get secret cn -n gluu --template<span class="o">={{</span>.data.ssl_ca_cert<span class="o">}}</span> <span class="p">|</span> base64 -d &gt; ca.crt
-kubectl get secret cn -n gluu --template<span class="o">={{</span>.data.ssl_cert<span class="o">}}</span> <span class="p">|</span> base64 -d &gt; server.crt
-kubectl get secret cn -n gluu --template<span class="o">={{</span>.data.ssl_key<span class="o">}}</span> <span class="p">|</span> base64 -d &gt; server.key
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.ssl_ca_cert<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>ca.crt
+kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.ssl_cert<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>server.crt
+kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.ssl_key<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>server.key
 
-kubectl create secret generic ca-secret -n gluu --from-file<span class="o">=</span>tls.crt<span class="o">=</span>server.crt --from-file<span class="o">=</span>tls.key<span class="o">=</span>server.key --from-file<span class="o">=</span>ca.crt<span class="o">=</span>ca.crt
+kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>ca-secret<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--from-file<span class="o">=</span>tls.crt<span class="o">=</span>server.crt<span class="w"> </span>--from-file<span class="o">=</span>tls.key<span class="o">=</span>server.key<span class="w"> </span>--from-file<span class="o">=</span>ca.crt<span class="o">=</span>ca.crt
 </code></pre></div>
 </li>
 <li>
@@ -2168,21 +2184,21 @@ kubectl create secret generic ca-secret -n gluu --from-file<span class="o">=</sp
 </li>
 <li>
 <p>base64 encrypt all <code>.pem</code> and <code>.key</code> files.</p>
-<div class="highlight"><pre><span></span><code>cat obsigning.pem <span class="p">|</span> base64 <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span> &gt; obsigningbase64.pem
-cat obsigning-oajsdij8927123.key <span class="p">|</span> base64 <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span> &gt; obsigningbase64.key
-cat obtransport.pem <span class="p">|</span> base64 <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span> &gt; obtransportbase64.pem
-cat obtransport-sdfe4234234.key <span class="p">|</span> base64 <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span> &gt; obtransportbase64.key
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>obsigning.pem<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obsigningbase64.pem
+cat<span class="w"> </span>obsigning-oajsdij8927123.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obsigningbase64.key
+cat<span class="w"> </span>obtransport.pem<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obtransportbase64.pem
+cat<span class="w"> </span>obtransport-sdfe4234234.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obtransportbase64.key
 </code></pre></div>
 </li>
 <li>
 <p>Generate your transport truststore or convert it to <code>.p12</code> format. Please name it as <code>ob-transport-truststore.p12</code> </p>
-<div class="highlight"><pre><span></span><code>cat obissuingca.pem obrootca.pem obsigningca.pem &gt; transport-truststore.crt
-keytool -importcert -file transport-truststore.crt -keystore ob-transport-truststore.p12 -alias obkeystore
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>obissuingca.pem<span class="w"> </span>obrootca.pem<span class="w"> </span>obsigningca.pem<span class="w"> </span>&gt;<span class="w"> </span>transport-truststore.crt
+keytool<span class="w"> </span>-importcert<span class="w"> </span>-file<span class="w"> </span>transport-truststore.crt<span class="w"> </span>-keystore<span class="w"> </span>ob-transport-truststore.p12<span class="w"> </span>-alias<span class="w"> </span>obkeystore
 </code></pre></div>
 </li>
 <li>
 <p>base64 encrypt the <code>ob-transport-truststore.p12</code></p>
-<div class="highlight"><pre><span></span><code>cat ob-transport-truststore.p12 <span class="p">|</span> base64 <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span> &gt; obtransporttruststorebase64.pem
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>ob-transport-truststore.p12<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;\n&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>obtransporttruststorebase64.pem
 </code></pre></div>
 </li>
 <li>
@@ -2190,29 +2206,29 @@ keytool -importcert -file transport-truststore.crt -keystore ob-transport-trusts
 </li>
 <li>
 <p>Add those values to <code>override.yaml</code>:
-<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking external signing jwks uri. Used in SSA Validation.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObExtSigningJwksUri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;JWKS</span><span class="nv"> </span><span class="s">URI&gt;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64.. Used when `.global.cnObExtSigningJwksUri` is set.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObExtSigningJwksCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obsigningbase64.pem&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS key string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObExtSigningJwksKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obsigningbase64.key&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS key passphrase to unlock provided key. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObExtSigningJwksKeyPassPhrase</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string passphrase of obsigningbase64.key&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking external signing AS Alias. This is a kid value. Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e. XkwIzWy44xWSlcWnMiEc8iq9s2G</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObExtSigningAlias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Alias of the entry inside the keystore ob-ext-signing.jks&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking signing AS kid to force the AS to use a specific signing key. i.e. Wy44xWSlcWnMiEc8iq9s2G</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObStaticSigningKeyKid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Alias of the entry inside the keystore ob-ext-signing.jks&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking AS transport crt. Used in SSA Validation. This must be encoded using base64.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObTransportCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obtransportbase64.pem&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking AS transport key. Used in SSA Validation. This must be encoded using base64.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObTransportKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obtransportbase64.key&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking AS transport key passphrase to unlock AS transport key. This must be encoded using base64.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObTransportKeyPassPhrase</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string passphrase in obtransportbase64.key&gt;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking transport Alias used inside the JVM.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObTransportAlias</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="c1"># -- Open banking AS transport truststore crt. This is normally generated from the OB issuing CA, OB Root CA and Signing CA. Used when .global.cnObExtSigningJwksUri is set. Used in SSA Validation. This must be encoded using base64.</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnObTransportTrustStore</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obtransporttruststorebase64.pem&gt;</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">global</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># -- Open banking external signing jwks uri. Used in SSA Validation.</span>
+<span class="w">    </span><span class="nt">cnObExtSigningJwksUri</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;JWKS</span><span class="nv"> </span><span class="s">URI&gt;&quot;</span>
+<span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS certificate authority string. Used in SSA Validation. This must be encoded using base64.. Used when `.global.cnObExtSigningJwksUri` is set.</span>
+<span class="w">    </span><span class="nt">cnObExtSigningJwksCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obsigningbase64.pem&gt;</span>
+<span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS key string. Used in SSA Validation. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.</span>
+<span class="w">    </span><span class="nt">cnObExtSigningJwksKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obsigningbase64.key&gt;</span>
+<span class="w">    </span><span class="c1"># -- Open banking external signing jwks AS key passphrase to unlock provided key. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.</span>
+<span class="w">    </span><span class="nt">cnObExtSigningJwksKeyPassPhrase</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string passphrase of obsigningbase64.key&gt;</span>
+<span class="w">    </span><span class="c1"># -- Open banking external signing AS Alias. This is a kid value. Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e. XkwIzWy44xWSlcWnMiEc8iq9s2G</span>
+<span class="w">    </span><span class="nt">cnObExtSigningAlias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Alias of the entry inside the keystore ob-ext-signing.jks&gt;</span>
+<span class="w">    </span><span class="c1"># -- Open banking signing AS kid to force the AS to use a specific signing key. i.e. Wy44xWSlcWnMiEc8iq9s2G</span>
+<span class="w">    </span><span class="nt">cnObStaticSigningKeyKid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Alias of the entry inside the keystore ob-ext-signing.jks&gt;</span>
+<span class="w">    </span><span class="c1"># -- Open banking AS transport crt. Used in SSA Validation. This must be encoded using base64.</span>
+<span class="w">    </span><span class="nt">cnObTransportCrt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obtransportbase64.pem&gt;</span>
+<span class="w">    </span><span class="c1"># -- Open banking AS transport key. Used in SSA Validation. This must be encoded using base64.</span>
+<span class="w">    </span><span class="nt">cnObTransportKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obtransportbase64.key&gt;</span>
+<span class="w">    </span><span class="c1"># -- Open banking AS transport key passphrase to unlock AS transport key. This must be encoded using base64.</span>
+<span class="w">    </span><span class="nt">cnObTransportKeyPassPhrase</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string passphrase in obtransportbase64.key&gt;</span>
+<span class="w">    </span><span class="c1"># -- Open banking transport Alias used inside the JVM.</span>
+<span class="w">    </span><span class="nt">cnObTransportAlias</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="c1"># -- Open banking AS transport truststore crt. This is normally generated from the OB issuing CA, OB Root CA and Signing CA. Used when .global.cnObExtSigningJwksUri is set. Used in SSA Validation. This must be encoded using base64.</span>
+<span class="w">    </span><span class="nt">cnObTransportTrustStore</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64 string in obtransporttruststorebase64.pem&gt;</span>
 </code></pre></div></p>
 </li>
 </ol>
@@ -2224,16 +2240,16 @@ keytool -importcert -file transport-truststore.crt -keystore ob-transport-trusts
 </li>
 <li>
 <p>After finishing all the tweaks to the <code>override.yaml</code> file, run <code>helm install</code> or <code>helm upgrade</code> if <code>Gluu</code> is already installed</p>
-<div class="highlight"><pre><span></span><code>helm repo add gluu-flex https://docs.gluu.org/charts
-helm repo update
-helm install gluu gluu-flex/gluu -n gluu -f override.yaml
+<div class="highlight"><pre><span></span><code>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>gluu-flex<span class="w"> </span>https://docs.gluu.org/charts
+helm<span class="w"> </span>repo<span class="w"> </span>update
+helm<span class="w"> </span>install<span class="w"> </span>gluu<span class="w"> </span>gluu-flex/gluu<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>-f<span class="w"> </span>override.yaml
 </code></pre></div>
 </li>
 </ul>
 <h3 id="install-on-microk8sdevelopmenttesting">Install on microK8s(development/testing)<a class="headerlink" href="#install-on-microk8sdevelopmenttesting" title="Permanent link">#</a></h3>
 <p>On your Ubuntu VM, run the following commands:</p>
-<div class="highlight"><pre><span></span><code>sudo su -
-wget https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startopenabankingdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startopenabankingdemo.sh <span class="o">&amp;&amp;</span> ./startopenabankingdemo.sh
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>su<span class="w"> </span>-
+wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startopenabankingdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>u+x<span class="w"> </span>startopenabankingdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./startopenabankingdemo.sh
 </code></pre></div>
 <p>Running this script will install the Gluu Open Banking Platform with mTLS enabled along with the mysql backend as a persistence.</p>
 <p>After running the script, you can go ahead and <a href="#testing-the-setup">test the setup</a>.</p>
@@ -2243,24 +2259,24 @@ wget https://raw.githubusercontent.com/GluuFederation/flex/main/automation/start
 <ol>
 <li>
 <p>Get a client id and its associated password. We will use the jans-config-api client id and secret</p>
-<div class="highlight"><pre><span></span><code><span class="nv">TESTCLIENT</span><span class="o">=</span><span class="k">$(</span>kubectl get cm cn -n gluu --template<span class="o">={{</span>.data.jca_client_id<span class="o">}}</span><span class="k">)</span>
-<span class="nv">TESTCLIENTSECRET</span><span class="o">=</span><span class="k">$(</span>kubectl get secret cn -n gluu --template<span class="o">={{</span>.data.jca_client_pw<span class="o">}}</span> <span class="p">|</span> base64 -d<span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="nv">TESTCLIENT</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>cm<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.jca_client_id<span class="o">}}</span><span class="k">)</span>
+<span class="nv">TESTCLIENTSECRET</span><span class="o">=</span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-n<span class="w"> </span>gluu<span class="w"> </span>--template<span class="o">={{</span>.data.jca_client_pw<span class="o">}}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="k">)</span>
 </code></pre></div>
 </li>
 <li>
 <p>Get a token. To pass mTLS, we will use client.crt and client.key:</p>
-<div class="highlight"><pre><span></span><code>curl -k -u <span class="nv">$TESTCLIENT</span>:<span class="nv">$TESTCLIENTSECRET</span> https://&lt;FQDN&gt;/jans-auth/restv1/token -d <span class="s2">&quot;grant_type=client_credentials&amp;scope=https://jans.io/oauth/jans-auth-server/config/properties.write&quot;</span> --cert client.crt --key client.key
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>-u<span class="w"> </span><span class="nv">$TESTCLIENT</span>:<span class="nv">$TESTCLIENTSECRET</span><span class="w"> </span>https://&lt;FQDN&gt;/jans-auth/restv1/token<span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=client_credentials&amp;scope=https://jans.io/oauth/jans-auth-server/config/properties.write&quot;</span><span class="w"> </span>--cert<span class="w"> </span>client.crt<span class="w"> </span>--key<span class="w"> </span>client.key
 </code></pre></div>
 </li>
 <li>
 <p>Add the entry <code>staticKid</code> to force the AS to use a specific signing key. Please modify <code>XhCYDfFM7UFXHfykNaLk1aLCnZM</code> to the kid to be used:          </p>
-<div class="highlight"><pre><span></span><code>curl -k -X PATCH <span class="s2">&quot;https://&lt;FQDN&gt;/jans-config-api/api/v1/jans-auth-server/config&quot;</span> -H  <span class="s2">&quot;accept: application/json&quot;</span> -H  <span class="s2">&quot;Content-Type: application/json-patch+json&quot;</span> -H <span class="s2">&quot;Authorization:Bearer 170e8412-1d55-4b19-ssss-8fcdeaafb954&quot;</span> -d <span class="s2">&quot;[{\&quot;op\&quot;:\&quot;add\&quot;,\&quot;path\&quot;:\&quot;/staticKid\&quot;,\&quot;value\&quot;:\&quot;XhCYDfFM7UFXHfykNaLk1aLCnZM\&quot;}]&quot;</span>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-k<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;https://&lt;FQDN&gt;/jans-config-api/api/v1/jans-auth-server/config&quot;</span><span class="w"> </span>-H<span class="w">  </span><span class="s2">&quot;accept: application/json&quot;</span><span class="w"> </span>-H<span class="w">  </span><span class="s2">&quot;Content-Type: application/json-patch+json&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization:Bearer 170e8412-1d55-4b19-ssss-8fcdeaafb954&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">&quot;[{\&quot;op\&quot;:\&quot;add\&quot;,\&quot;path\&quot;:\&quot;/staticKid\&quot;,\&quot;value\&quot;:\&quot;XhCYDfFM7UFXHfykNaLk1aLCnZM\&quot;}]&quot;</span>
 </code></pre></div>
 </li>
 <li>
 <p>Perform a rolling restart for the auth-server and config-api deployments.</p>
-<div class="highlight"><pre><span></span><code>kubectl rollout restart deployment &lt;gluu-release-name&gt;-auth-server -n gluu
-kubectl rollout restart deployment &lt;gluu-release-name&gt;-config-api -n gluu
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class="w"> </span>deployment<span class="w"> </span>&lt;gluu-release-name&gt;-auth-server<span class="w"> </span>-n<span class="w"> </span>gluu
+kubectl<span class="w"> </span>rollout<span class="w"> </span>restart<span class="w"> </span>deployment<span class="w"> </span>&lt;gluu-release-name&gt;-config-api<span class="w"> </span>-n<span class="w"> </span>gluu
 </code></pre></div>
 </li>
 </ol>
@@ -2281,15 +2297,15 @@ kubectl rollout restart deployment &lt;gluu-release-name&gt;-config-api -n gluu
 </li>
 <li>
 <p>Mount the configmap in your override.yaml under <code>persistence.volumes</code> and <code>persistence.volumeMounts</code></p>
-<div class="highlight"><pre><span></span><code><span class="nt">persistence</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span><span class="w"></span>
-<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">configMap</span><span class="p p-Indicator">:</span><span class="w"></span>
-<span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span><span class="w"></span>
-<span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span><span class="w"></span>
-<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">mountPath</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;/app/templates/scopes.ob.ldif&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="nt">subPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scopes.ob.ldif</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">persistence</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">configMap</span><span class="p p-Indicator">:</span>
+<span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span>
+<span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-scopes</span>
+<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">mountPath</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;/app/templates/scopes.ob.ldif&quot;</span>
+<span class="w">            </span><span class="nt">subPath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scopes.ob.ldif</span>
 </code></pre></div>
 </li>
 <li>
