@@ -12,21 +12,21 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/head/admin/admin-ui/configuration/">
+        <link rel="canonical" href="https://docs.gluu.org/head/admin/gluu-migration/">
       
-      <link rel="icon" href="../../../assets/logo/favicon.ico">
+      <link rel="icon" href="../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
-        <title>Configuration - Gluu Flex Documentation</title>
+        <title>Migrating from Gluu4 - Gluu Flex Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.20d9efc8.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.cbb835fc.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
         
       
       
@@ -43,13 +43,13 @@
       
     
     
-      <link rel="stylesheet" href="../../../css/timeago.css">
+      <link rel="stylesheet" href="../../css/timeago.css">
     
-      <link rel="stylesheet" href="../../../css/tabs.css">
+      <link rel="stylesheet" href="../../css/tabs.css">
     
-      <link rel="stylesheet" href="../../../stylesheets/mermaid-extra.css">
+      <link rel="stylesheet" href="../../stylesheets/mermaid-extra.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configuration" class="md-skip">
+        <a href="#migration-steps" class="md-skip">
           Skip to content
         </a>
       
@@ -98,9 +98,9 @@
 
 <header class="md-header md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="Gluu Flex Documentation" class="md-header__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
+    <a href="../.." title="Gluu Flex Documentation" class="md-header__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../../assets/logo/gluu.png" alt="logo">
+  <img src="../../assets/logo/gluu.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Configuration
+              Migrating from Gluu4
             
           </span>
         </div>
@@ -216,7 +216,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="../../.." class="md-tabs__link">
+    <a href="../.." class="md-tabs__link">
       Overview
     </a>
   </li>
@@ -231,7 +231,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../install/" class="md-tabs__link">
+      <a href="../../install/" class="md-tabs__link">
         Installation
       </a>
     </li>
@@ -249,7 +249,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../" class="md-tabs__link md-tabs__link--active">
+      <a href="../" class="md-tabs__link md-tabs__link--active">
         Administration
       </a>
     </li>
@@ -265,7 +265,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../reference/kubernetes/" class="md-tabs__link">
+      <a href="../../reference/kubernetes/" class="md-tabs__link">
         Reference
       </a>
     </li>
@@ -281,7 +281,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../supergluu/" class="md-tabs__link">
+      <a href="../../supergluu/" class="md-tabs__link">
         Super Gluu
       </a>
     </li>
@@ -297,7 +297,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../openbanking/" class="md-tabs__link">
+      <a href="../../openbanking/" class="md-tabs__link">
         Open Banking
       </a>
     </li>
@@ -313,7 +313,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../solo/solo-getting-started/" class="md-tabs__link">
+      <a href="../../solo/solo-getting-started/" class="md-tabs__link">
         Gluu Solo
       </a>
     </li>
@@ -347,9 +347,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="Gluu Flex Documentation" class="md-nav__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
+    <a href="../.." title="Gluu Flex Documentation" class="md-nav__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../../assets/logo/gluu.png" alt="logo">
+  <img src="../../assets/logo/gluu.png" alt="logo">
 
     </a>
     Gluu Flex Documentation
@@ -377,7 +377,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         Overview
       </a>
     </li>
@@ -417,7 +417,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../install/">Installation</a>
+          <a href="../../install/">Installation</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -440,7 +440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/agama/prerequisites/" class="md-nav__link">
+      <a href="../../install/agama/prerequisites/" class="md-nav__link">
         Prerequisites
       </a>
     </li>
@@ -481,7 +481,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../install/helm-install/">Helm Deployments</a>
+          <a href="../../install/helm-install/">Helm Deployments</a>
           
             <label for="__nav_2_3">
               <span class="md-nav__icon md-icon"></span>
@@ -504,7 +504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/helm-install/local/" class="md-nav__link">
+      <a href="../../install/helm-install/local/" class="md-nav__link">
         Local Kubernetes Cluster
       </a>
     </li>
@@ -518,7 +518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/helm-install/amazon-eks/" class="md-nav__link">
+      <a href="../../install/helm-install/amazon-eks/" class="md-nav__link">
         Amazon EKS
       </a>
     </li>
@@ -532,7 +532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/helm-install/google-gke/" class="md-nav__link">
+      <a href="../../install/helm-install/google-gke/" class="md-nav__link">
         Google GKE
       </a>
     </li>
@@ -546,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/helm-install/microsoft-azure/" class="md-nav__link">
+      <a href="../../install/helm-install/microsoft-azure/" class="md-nav__link">
         Microsoft Azure AKS
       </a>
     </li>
@@ -560,7 +560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/helm-install/rancher/" class="md-nav__link">
+      <a href="../../install/helm-install/rancher/" class="md-nav__link">
         Rancher Marketplace
       </a>
     </li>
@@ -613,7 +613,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/docker-install/quick-start/" class="md-nav__link">
+      <a href="../../install/docker-install/quick-start/" class="md-nav__link">
         Quick Start
       </a>
     </li>
@@ -627,7 +627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/docker-install/compose/" class="md-nav__link">
+      <a href="../../install/docker-install/compose/" class="md-nav__link">
         Docker compose
       </a>
     </li>
@@ -684,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/vm-install/vm-requirements/" class="md-nav__link">
+      <a href="../../install/vm-install/vm-requirements/" class="md-nav__link">
         VM System Requirements
       </a>
     </li>
@@ -698,7 +698,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/vm-install/ubuntu/" class="md-nav__link">
+      <a href="../../install/vm-install/ubuntu/" class="md-nav__link">
         Ubuntu
       </a>
     </li>
@@ -712,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/vm-install/rhel/" class="md-nav__link">
+      <a href="../../install/vm-install/rhel/" class="md-nav__link">
         RHEL
       </a>
     </li>
@@ -726,7 +726,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/vm-install/suse/" class="md-nav__link">
+      <a href="../../install/vm-install/suse/" class="md-nav__link">
         SUSE
       </a>
     </li>
@@ -784,7 +784,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../">Administration</a>
+          <a href="../">Administration</a>
           
             <label for="__nav_3">
               <span class="md-nav__icon md-icon"></span>
@@ -807,7 +807,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../config/" class="md-nav__link">
+      <a href="../config/" class="md-nav__link">
         Configuration
       </a>
     </li>
@@ -842,7 +842,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../kubernetes-ops/">K8s Operations Guide</a>
+          <a href="../kubernetes-ops/">K8s Operations Guide</a>
           
             <label for="__nav_3_3">
               <span class="md-nav__icon md-icon"></span>
@@ -865,7 +865,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../kubernetes-ops/upgrade/" class="md-nav__link">
+      <a href="../kubernetes-ops/upgrade/" class="md-nav__link">
         Upgrade
       </a>
     </li>
@@ -879,7 +879,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../kubernetes-ops/admin-ui-private/" class="md-nav__link">
+      <a href="../kubernetes-ops/admin-ui-private/" class="md-nav__link">
         Admin-UI Private
       </a>
     </li>
@@ -898,14 +898,12 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
       
       
       
@@ -942,7 +940,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../introduction/" class="md-nav__link">
+      <a href="../admin-ui/introduction/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -986,7 +984,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../auth-server-interaction/" class="md-nav__link">
+      <a href="../admin-ui/auth-server-interaction/" class="md-nav__link">
         Auth Server Interaction
       </a>
     </li>
@@ -1005,100 +1003,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Configuration
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../admin-ui/configuration/" class="md-nav__link">
         Configuration
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-components" class="md-nav__link">
-    Configuration Components
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration Components">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#role-permission-mapping" class="md-nav__link">
-    Role-Permission Mapping
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#oidc-client-details-for-auth-server" class="md-nav__link">
-    OIDC Client Details for Auth Server
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#oidc-client-details-for-backend-api-server" class="md-nav__link">
-    OIDC Client Details for Backend API Server
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuration-properties-for-user-interface" class="md-nav__link">
-    Configuration Properties for User-Interface
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#oidc-client-details-for-license-server" class="md-nav__link">
-    OIDC Client Details for License Server
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#license-metadata" class="md-nav__link">
-    License Metadata
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1110,7 +1019,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../logs/" class="md-nav__link">
+      <a href="../admin-ui/logs/" class="md-nav__link">
         Logs
       </a>
     </li>
@@ -1170,7 +1079,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../left-nav-menu/" class="md-nav__link">
+      <a href="../admin-ui/left-nav-menu/" class="md-nav__link">
         Left Navigation Menu
       </a>
     </li>
@@ -1184,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../dashboard/" class="md-nav__link">
+      <a href="../admin-ui/dashboard/" class="md-nav__link">
         Home
       </a>
     </li>
@@ -1198,7 +1107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../admin-menu/" class="md-nav__link">
+      <a href="../admin-ui/admin-menu/" class="md-nav__link">
         Admin
       </a>
     </li>
@@ -1212,7 +1121,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../auth-server-menu/" class="md-nav__link">
+      <a href="../admin-ui/auth-server-menu/" class="md-nav__link">
         Auth server
       </a>
     </li>
@@ -1226,7 +1135,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../schema-menu/" class="md-nav__link">
+      <a href="../admin-ui/schema-menu/" class="md-nav__link">
         Schema
       </a>
     </li>
@@ -1240,7 +1149,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../services-menu/" class="md-nav__link">
+      <a href="../admin-ui/services-menu/" class="md-nav__link">
         Services
       </a>
     </li>
@@ -1254,7 +1163,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../fido-menu/" class="md-nav__link">
+      <a href="../admin-ui/fido-menu/" class="md-nav__link">
         FIDO
       </a>
     </li>
@@ -1268,7 +1177,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../smtp-menu/" class="md-nav__link">
+      <a href="../admin-ui/smtp-menu/" class="md-nav__link">
         SMTP
       </a>
     </li>
@@ -1282,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../userMgmt-menu/" class="md-nav__link">
+      <a href="../admin-ui/userMgmt-menu/" class="md-nav__link">
         Users
       </a>
     </li>
@@ -1303,7 +1212,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../faq/" class="md-nav__link">
+      <a href="../admin-ui/faq/" class="md-nav__link">
         FAQ & Troubleshooting
       </a>
     </li>
@@ -1343,7 +1252,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../recipes/">Flex Recipes</a>
+          <a href="../recipes/">Flex Recipes</a>
           
             <label for="__nav_3_5">
               <span class="md-nav__icon md-icon"></span>
@@ -1366,7 +1275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../recipes/getting-started-rancher/" class="md-nav__link">
+      <a href="../recipes/getting-started-rancher/" class="md-nav__link">
         Getting Started with Rancher
       </a>
     </li>
@@ -1385,11 +1294,21 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../gluu-migration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Migrating from Gluu4
       </a>
+      
     </li>
   
 
@@ -1432,7 +1351,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../reference/kubernetes/">Reference</a>
+          <a href="../../reference/kubernetes/">Reference</a>
           
             <label for="__nav_4">
               <span class="md-nav__icon md-icon"></span>
@@ -1455,7 +1374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/kubernetes/helm-chart/" class="md-nav__link">
+      <a href="../../reference/kubernetes/helm-chart/" class="md-nav__link">
         Flex Helm Chart
       </a>
     </li>
@@ -1469,7 +1388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/kubernetes/docker-flex-monolith/" class="md-nav__link">
+      <a href="../../reference/kubernetes/docker-flex-monolith/" class="md-nav__link">
         Flex Monolith Docker Image
       </a>
     </li>
@@ -1483,7 +1402,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/kubernetes/docker-admin-ui/" class="md-nav__link">
+      <a href="../../reference/kubernetes/docker-admin-ui/" class="md-nav__link">
         Admin UI Docker Image
       </a>
     </li>
@@ -1534,7 +1453,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../supergluu/">Super Gluu</a>
+          <a href="../../supergluu/">Super Gluu</a>
           
             <label for="__nav_5">
               <span class="md-nav__icon md-icon"></span>
@@ -1557,7 +1476,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../supergluu/user-guide/" class="md-nav__link">
+      <a href="../../supergluu/user-guide/" class="md-nav__link">
         User Guide
       </a>
     </li>
@@ -1571,7 +1490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../supergluu/admin-guide/" class="md-nav__link">
+      <a href="../../supergluu/admin-guide/" class="md-nav__link">
         Administration Guide
       </a>
     </li>
@@ -1585,7 +1504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../supergluu/developer-guide/" class="md-nav__link">
+      <a href="../../supergluu/developer-guide/" class="md-nav__link">
         Developer Guide
       </a>
     </li>
@@ -1630,7 +1549,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../openbanking/">Open Banking</a>
+          <a href="../../openbanking/">Open Banking</a>
           
             <label for="__nav_6">
               <span class="md-nav__icon md-icon"></span>
@@ -1685,7 +1604,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../openbanking/install-cn/" class="md-nav__link">
+      <a href="../../openbanking/install-cn/" class="md-nav__link">
         Cloud-Native
       </a>
     </li>
@@ -1699,7 +1618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../openbanking/install-vm/" class="md-nav__link">
+      <a href="../../openbanking/install-vm/" class="md-nav__link">
         VM (only recommended for development/testing)
       </a>
     </li>
@@ -1754,7 +1673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../openbanking/configuration-instructions/" class="md-nav__link">
+      <a href="../../openbanking/configuration-instructions/" class="md-nav__link">
         Configuration Instructions
       </a>
     </li>
@@ -1768,7 +1687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../openbanking/curl/" class="md-nav__link">
+      <a href="../../openbanking/curl/" class="md-nav__link">
         Managing scripts with CURL
       </a>
     </li>
@@ -1782,7 +1701,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../openbanking/jans-cli/" class="md-nav__link">
+      <a href="../../openbanking/jans-cli/" class="md-nav__link">
         Managing Scripts with the jans-cli
       </a>
     </li>
@@ -1803,7 +1722,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../openbanking/par-jarm/" class="md-nav__link">
+      <a href="../../openbanking/par-jarm/" class="md-nav__link">
         PAR and JARM
       </a>
     </li>
@@ -1859,7 +1778,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../solo/solo-getting-started/" class="md-nav__link">
+      <a href="../../solo/solo-getting-started/" class="md-nav__link">
         Solo getting started
       </a>
     </li>
@@ -1873,7 +1792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../solo/solo-subscription/" class="md-nav__link">
+      <a href="../../solo/solo-subscription/" class="md-nav__link">
         How To Subscribe
       </a>
     </li>
@@ -1887,7 +1806,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../solo/solo-administration-guide/" class="md-nav__link">
+      <a href="../../solo/solo-administration-guide/" class="md-nav__link">
         Administration Guide
       </a>
     </li>
@@ -1921,69 +1840,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-components" class="md-nav__link">
-    Configuration Components
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration Components">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#role-permission-mapping" class="md-nav__link">
-    Role-Permission Mapping
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#oidc-client-details-for-auth-server" class="md-nav__link">
-    OIDC Client Details for Auth Server
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#oidc-client-details-for-backend-api-server" class="md-nav__link">
-    OIDC Client Details for Backend API Server
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuration-properties-for-user-interface" class="md-nav__link">
-    Configuration Properties for User-Interface
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#oidc-client-details-for-license-server" class="md-nav__link">
-    OIDC Client Details for License Server
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#license-metadata" class="md-nav__link">
-    License Metadata
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -2006,359 +1862,115 @@
     
       
       
-        <span class="md-tag">admin-ui</span>
+        <span class="md-tag">kubernetes</span>
       
     
       
       
-        <span class="md-tag">configuration</span>
+        <span class="md-tag">operations</span>
+      
+    
+      
+      
+        <span class="md-tag">gluu4</span>
+      
+    
+      
+      
+        <span class="md-tag">migration</span>
       
     
   </nav>
 
 
 
-  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/admin-ui/configuration.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/gluu-migration.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h1>
-<p>This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include role-permission mapping, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata.</p>
-<h2 id="configuration-components">Configuration Components<a class="headerlink" href="#configuration-components" title="Permanent link">#</a></h2>
-<h3 id="role-permission-mapping">Role-Permission Mapping<a class="headerlink" href="#role-permission-mapping" title="Permanent link">#</a></h3>
-<p><a href="./admin-menu.md/">Role-permission</a> mapping defines which administrative roles are granted specific permissions within the Gluu Flex Admin UI. This mapping ensures that administrators can only access and modify functionalities relevant to their roles.</p>
-<p>The mapping is stored in json format with following attributes.</p>
-<p><strong>Roles</strong></p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>roles</td>
-<td>Array of all roles</td>
-</tr>
-<tr>
-<td>role</td>
-<td>Role name</td>
-</tr>
-<tr>
-<td>description</td>
-<td>Role description</td>
-</tr>
-<tr>
-<td>deletable</td>
-<td>If set to <code>true</code> then entire role-permission mapping with respect to the role can be deleted. Default value: <code>false</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Permissions</strong></p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>permissions</td>
-<td>Array of all available permissions</td>
-</tr>
-<tr>
-<td>permission</td>
-<td>Permission name</td>
-</tr>
-<tr>
-<td>description</td>
-<td>Permission description</td>
-</tr>
-<tr>
-<td>defaultPermissionInToken</td>
-<td>If set to <code>true</code>, it indicates that permission will need authentication and valid role during <code>/token</code> request to include in token</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Mapping</strong></p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>rolePermissionMapping</td>
-<td>List of all role-permission mapping</td>
-</tr>
-<tr>
-<td>role</td>
-<td>Role name</td>
-</tr>
-<tr>
-<td>permission</td>
-<td>Array of all permission mapped to the role</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Sample role-permission mapping stored in persistence</strong></p>
-<div class="highlight"><pre><span></span><code>{
-  &quot;roles&quot;: [
-    {
-      &quot;role&quot;: &quot;sample-role&quot;,
-      &quot;description&quot;: &quot;role description&quot;,
-      &quot;deletable&quot;: false
-    }
-  ],
-  &quot;permissions&quot;: [
-    {
-      &quot;permission&quot;: &quot;sample-permission1&quot;,
-      &quot;description&quot;: &quot;permission1 description&quot;,
-      &quot;defaultPermissionInToken&quot;: false
-    },
-    {
-      &quot;permission&quot;: &quot;sample-permission2&quot;,
-      &quot;description&quot;: &quot;permission2 description&quot;,
-      &quot;defaultPermissionInToken&quot;: true
-    }
-  ],
-  &quot;rolePermissionMapping&quot;: [
-    {
-      &quot;role&quot;: &quot;sample-role&quot;,
-      &quot;permissions&quot;: [
-        &quot;sample-permission1&quot;,
-        &quot;sample-permission2&quot;
-      ]
-    }
-  ]
+<p>This guide shows how to migrate from <code>Gluu 4.x</code> to  <code>Gluu Flex</code>.</p>
+<h1 id="migration-steps">Migration steps<a class="headerlink" href="#migration-steps" title="Permanent link">#</a></h1>
+<ol>
+<li>
+<p>Create a fresh flex K8s <a href="https://docs.gluu.org/head/install/helm-install/">setup</a> based on your preferred environment.</p>
+</li>
+<li>
+<p>Write all your existing configurations as code using the Janssen terraform <a href="https://registry.terraform.io/providers/JanssenProject/jans/latest/docs">provider</a>.
+   You can check this <a href="https://docs.jans.io/head/janssen-server/terraform/">doc</a> to know the benefits of this approach and how to implement it. </p>
+</li>
+<li>
+<p>Test applying the configuration through Terraform. Ensure no delta between the old Gluu 4.x and Gluu flex, and verify the changes using the admin-ui/TUI.</p>
+</li>
+<li>
+<p>Move the sensitive data from the old setup to the new one, honoring any changes such as custom attributes and users.</p>
+</li>
+</ol>
+<h1 id="terraform-configuration-example">Terraform configuration example<a class="headerlink" href="#terraform-configuration-example" title="Permanent link">#</a></h1>
+<p>Firstly, you have to initialize and configure the Janssen terraform provider. You can follow this <a href="https://docs.jans.io/head/janssen-server/terraform/">doc</a> to complete this.</p>
+<p>Once completed, let's showcase how to move existing gluu4 <a href="#clients-migration">clients</a> and <a href="#interception-scripts-migration">interception scripts</a> using Terraform.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The examples are meant for demonstration purposes. You should adjust them as needed.</p>
+</div>
+<h2 id="clients-migration">Clients Migration<a class="headerlink" href="#clients-migration" title="Permanent link">#</a></h2>
+<p>We will use the <a href="https://registry.terraform.io/providers/JanssenProject/jans/latest/docs/resources/oidc_client">jans_oidc_client</a> resource.</p>
+<p>Add the following to <code>clients.tf</code>:</p>
+<div class="highlight"><pre><span></span><code>resource &quot;jans_oidc_client&quot; &quot;gluu4_migrated_client&quot; {
+  display_name                  = &quot;Gluu4 migrated client&quot;
+  description                   = &quot;Client migrated from Gluu4 to Flex&quot;
+  redirect_uris                 = [&quot;https://demoexample.gluu.org/admin&quot;]
+  token_endpoint_auth_method    = &quot;none&quot;
+  subject_type                  = &quot;pairwise&quot;
+  grant_types                   = [&quot;authorization_code&quot;]
+  response_types                = [&quot;code&quot;]
+  disabled                      = false
+  trusted_client                = true
+  application_type              = &quot;web&quot;
+  scopes                        = [&quot;inum=F0C4,ou=scopes,o=jans&quot;]
+  persist_client_authorizations = true
+  access_token_as_jwt           = false
 }
 </code></pre></div>
-<h3 id="oidc-client-details-for-auth-server">OIDC Client Details for Auth Server<a class="headerlink" href="#oidc-client-details-for-auth-server" title="Permanent link">#</a></h3>
-<p>To establish secure communication with the Auth Server, Gluu Flex Admin UI requires the OIDC client details, including client ID and client secret. These details are used for authentication and authorization purposes.</p>
-<p>The information is stored in json format with following attributes.</p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>auiWebClient</td>
-<td>Object with Web OIDC client details</td>
-</tr>
-<tr>
-<td>opHost</td>
-<td>Auth Server hostname</td>
-</tr>
-<tr>
-<td>clientId</td>
-<td>Client Id of OIDC client used to access Auth server</td>
-</tr>
-<tr>
-<td>clientSecret</td>
-<td>Client Secret of OIDC client used to access Auth server</td>
-</tr>
-<tr>
-<td>scopes</td>
-<td>Scopes required for Admin UI authentication</td>
-</tr>
-<tr>
-<td>acrValues</td>
-<td>ACR required for Admin UI authentication</td>
-</tr>
-<tr>
-<td>redirectUri</td>
-<td>Redirect UI which is Admin UI home page</td>
-</tr>
-<tr>
-<td>postLogoutUri</td>
-<td>Url to be redirected after Admin UI logout</td>
-</tr>
-<tr>
-<td>frontchannelLogoutUri</td>
-<td>Front channel Logout Uri</td>
-</tr>
-<tr>
-<td>additionalParameters</td>
-<td>The custom parameters allow you to pass additional information to the authorization server during Admin UI authentication. Format: [{"key": "custom-param-key", "value": "custom-param-value"}, ...]</td>
-</tr>
-</tbody>
-</table>
-<h3 id="oidc-client-details-for-backend-api-server">OIDC Client Details for Backend API Server<a class="headerlink" href="#oidc-client-details-for-backend-api-server" title="Permanent link">#</a></h3>
-<p>Similarly, Gluu Flex Admin UI needs OIDC client details to interact with the Janssen Server via. <code>Jans Config API</code> protected APIs. The Backend API client enables the UI to request and manage access tokens required to access <code>Jans Config API</code> protected resources.</p>
-<p>The information is stored in json format with following attributes.</p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>auiBackendApiClient</td>
-<td>Object with Backend API client details</td>
-</tr>
-<tr>
-<td>opHost</td>
-<td>Token Server hostname</td>
-</tr>
-<tr>
-<td>clientId</td>
-<td>Client Id of OIDC client used to access Token server</td>
-</tr>
-<tr>
-<td>clientSecret</td>
-<td>Client Secret of OIDC client used to access Token server</td>
-</tr>
-<tr>
-<td>tokenEndpoint</td>
-<td>Token endpoint of token server</td>
-</tr>
-</tbody>
-</table>
-<h3 id="configuration-properties-for-user-interface">Configuration Properties for User-Interface<a class="headerlink" href="#configuration-properties-for-user-interface" title="Permanent link">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>uiConfig</td>
-<td>Object with UI configuration attributes</td>
-</tr>
-<tr>
-<td>sessionTimeoutInMins</td>
-<td>The admin UI will auto-logout after a period of inactivity defined in this field.</td>
-</tr>
-</tbody>
-</table>
-<h3 id="oidc-client-details-for-license-server">OIDC Client Details for License Server<a class="headerlink" href="#oidc-client-details-for-license-server" title="Permanent link">#</a></h3>
-<p>Access to the License APIs is managed through OIDC client details. These details allows the Gluu Flex Admin UI Backend to generated access token to allow the retrieval of license-related information using license APIs.</p>
-<p>The information is stored in json format with following attributes.</p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>opHost</td>
-<td>Auth Server hostname used to generate token to access License APIs</td>
-</tr>
-<tr>
-<td>clientId</td>
-<td>Client Id of OIDC client used to generate token to access License APIs</td>
-</tr>
-<tr>
-<td>clientSecret</td>
-<td>Client Secret of OIDC client used to generate token to access License APIs</td>
-</tr>
-</tbody>
-</table>
-<h3 id="license-metadata">License Metadata<a class="headerlink" href="#license-metadata" title="Permanent link">#</a></h3>
-<p>License metadata includes relevant information about the Gluu Flex Admin UI's licensing, such as License Key, Hardware id, License server url, License Auth server url, SSA used to register license auth server client.</p>
-<p>The information is stored in json format with following attributes.</p>
-<table>
-<thead>
-<tr>
-<th>Attribute Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>licenseConfig</td>
-<td>Object with License configuration details</td>
-</tr>
-<tr>
-<td>ssa</td>
-<td>SSA used to register OIDC client to access license APIs</td>
-</tr>
-<tr>
-<td>scanLicenseApiHostname</td>
-<td>SCAN License server hostname</td>
-</tr>
-<tr>
-<td>licenseHardwareKey</td>
-<td>Hardware key (org_id) to access license APIs</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Sample configuration stored in persistence</strong></p>
-<div class="highlight"><pre><span></span><code>{
-  &quot;oidcConfig&quot;: {
-    &quot;auiWebClient&quot;: {
-      &quot;redirectUri&quot;: &quot;https://your.host.com/admin&quot;,
-      &quot;postLogoutUri&quot;: &quot;https://your.gost.com/admin&quot;,
-      &quot;frontchannelLogoutUri&quot;: &quot;https://your.host.com/admin/logout&quot;,
-      &quot;scopes&quot;: [
-        &quot;openid&quot;,
-        &quot;profile&quot;,
-        &quot;user_name&quot;,
-        &quot;email&quot;
-      ],
-      &quot;acrValues&quot;: [
-        &quot;basic&quot;
-      ],
-      &quot;opHost&quot;: &quot;https://your.host.com&quot;,
-      &quot;clientId&quot;: &quot;2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568&quot;,
-      &quot;clientSecret&quot;: &quot;GGO4t1uixrTpl4Rizt3zag==&quot;.
-      &quot;additionalParameters&quot;: []
-    },
-    &quot;auiBackendApiClient&quot;: {
-      &quot;tokenEndpoint&quot;: &quot;https://your.host.com/jans-auth/restv1/token&quot;,
-      &quot;scopes&quot;: [
-        &quot;openid&quot;,
-        &quot;profile&quot;,
-        &quot;user_name&quot;,
-        &quot;email&quot;
-      ],
-      &quot;opHost&quot;: &quot;https://your.host.com&quot;,
-      &quot;clientId&quot;: &quot;2001.aaf0b8eb-a82e-4798-b1a0-e007803a6568&quot;,
-      &quot;clientSecret&quot;: &quot;GGO4t1uixrTpl4Rizt3zag==&quot;
-    }
-  },
-  &quot;uiConfig&quot;: {
-    &quot;sessionTimeoutInMins&quot;: 30
-  },
-  &quot;licenseConfig&quot;: {
-    &quot;ssa&quot;: &quot;...ssa in jwt format...&quot;,
-    &quot;scanLicenseApiHostname&quot;: &quot;https://cloud-dev.gluu.cloud&quot;,
-    &quot;licenseKey&quot;: &quot;XXXX-XXXX-XXXX-XXXX&quot;,
-    &quot;licenseHardwareKey&quot;: &quot;github:ghUsername&quot;,
-    &quot;oidcClient&quot;: {
-      &quot;opHost&quot;: &quot;https://account-dev.gluu.cloud&quot;,
-      &quot;clientId&quot;: &quot;36a43e2b-a77b-4e9c-a966-a9d98af1665c&quot;,
-      &quot;clientSecret&quot;: &quot;211188d8-a2d8-4562-ab53-80907c1bb5ba&quot;
-    }
+<h2 id="interception-scripts-migration">Interception scripts Migration<a class="headerlink" href="#interception-scripts-migration" title="Permanent link">#</a></h2>
+<p>We will use the <a href="https://registry.terraform.io/providers/JanssenProject/jans/latest/docs/resources/oidc_client">jans_script</a> resource.</p>
+<p>Add the following to <code>scripts.tf</code>:</p>
+<div class="highlight"><pre><span></span><code>resource &quot;jans_script&quot; &quot;gluu_migrated_script&quot; {
+  dn                   = &quot;inum=CACD-5901,ou=scripts,o=jans&quot;
+  inum                 = &quot;CACD-5901&quot;
+  name                 = &quot;scan_client_registration&quot;
+  description          = &quot;Scan Client Registration Script&quot;
+  script               = file(&quot;script.py&quot;)
+  script_type          = &quot;client_registration&quot;
+  programming_language = &quot;python&quot;
+  level                = 100
+  revision             = 1
+  enabled              = true
+  modified             = false
+  internal             = false
+  location_type        = &quot;db&quot;
+  base_dn              = &quot;inum=CACD-5901,ou=scripts,o=jans&quot;
+
+  module_properties {
+    value1      = &quot;v1&quot;
+    value2      = &quot;v2&quot;
+    description = null
   }
 }
 </code></pre></div>
+<p>You can run <code>terraform apply</code> and review the created resources in the Admin-UI/TUI.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-29T19:01:08+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-29</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-02-10T17:50:21+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-02-10</span>
       
         <br>
         Created:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-08-28T14:55:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-08-28</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-02-10T17:50:21+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-02-10</span>
       
     
   </small>
@@ -2383,7 +1995,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../auth-server-interaction/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Auth Server Interaction" rel="prev">
+        <a href="../recipes/getting-started-rancher/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting Started with Rancher" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -2392,20 +2004,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Auth Server Interaction
+              Getting Started with Rancher
             </div>
           </div>
         </a>
       
       
         
-        <a href="../logs/" class="md-footer__link md-footer__link--next" aria-label="Next: Logs" rel="next">
+        <a href="../../reference/kubernetes/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Logs
+              Overview
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -2451,14 +2063,14 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["toc.autohide - search.suggest - search.highlight", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["toc.autohide - search.suggest - search.highlight", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.8492ddcf.min.js"></script>
+      <script src="../../assets/javascripts/bundle.8492ddcf.min.js"></script>
       
-        <script src="../../../js/timeago.min.js"></script>
+        <script src="../../js/timeago.min.js"></script>
       
-        <script src="../../../js/timeago_mkdocs_material.js"></script>
+        <script src="../../js/timeago_mkdocs_material.js"></script>
       
     
   </body>

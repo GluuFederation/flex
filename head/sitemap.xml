@@ -21,6 +21,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://docs.gluu.org/head/admin/gluu-migration/</loc>
+         <lastmod>2025-02-10</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/</loc>
          <lastmod>2025-02-10</lastmod>
          <changefreq>daily</changefreq>
