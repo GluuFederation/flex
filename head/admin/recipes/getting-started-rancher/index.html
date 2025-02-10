@@ -2300,10 +2300,10 @@
 <h2 id="config-and-secret-keys">Config and Secret keys<a class="headerlink" href="#config-and-secret-keys" title="Permanent link">#</a></h2>
 <p>The <code>Configuration job</code> creates a set of configurations and secrets used by all services in the Flex setup.</p>
 <p>To check the values of the configuration keys(configmaps) in the installation:</p>
-<div class="highlight"><pre><span></span><code>kubectl get cm cn -o json -n &lt;namespace&gt;
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>cm<span class="w"> </span>cn<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;
 </code></pre></div>
 <p>To check the values of the secret keys in installation:</p>
-<div class="highlight"><pre><span></span><code>kubectl get secret cn -o json -n &lt;namespace&gt;
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>cn<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;
 </code></pre></div>
 <h3 id="gluu-config-keys">Gluu Config Keys<a class="headerlink" href="#gluu-config-keys" title="Permanent link">#</a></h3>
 <table>

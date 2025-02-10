@@ -2124,14 +2124,14 @@
 <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/using_selinux/index#selinux-states-and-modes_getting-started-with-selinux">put into permissive mode</a></li>
 <li>If the server firewall is running, make sure you allow <code>https</code>, which is
   needed for OpenID and FIDO.
-<div class="highlight"><pre><span></span><code>sudo firewall-cmd --permanent --zone<span class="o">=</span>public --add-service<span class="o">=</span>https
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--permanent<span class="w"> </span>--zone<span class="o">=</span>public<span class="w"> </span>--add-service<span class="o">=</span>https
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>sudo firewall-cmd --reload<span class="p">;</span>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--reload<span class="p">;</span>
 </code></pre></div></li>
 <li>Install EPEL and mod-auth-openidc as dependencies
-<div class="highlight"><pre><span></span><code>sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-<span class="k">$(</span>rpm -E %rhel<span class="k">)</span>.noarch.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>-y<span class="w"> </span>install<span class="w"> </span>https://dl.fedoraproject.org/pub/epel/epel-release-latest-<span class="k">$(</span>rpm<span class="w"> </span>-E<span class="w"> </span>%rhel<span class="k">)</span>.noarch.rpm
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>sudo yum -y module <span class="nb">enable</span> mod_auth_openidc<span class="p">;</span>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>-y<span class="w"> </span>module<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>mod_auth_openidc<span class="p">;</span>
 </code></pre></div></li>
 <li>Please obtain an <a href="../../install/software-statements/ssa.md">SSA</a> to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.</li>
@@ -2141,30 +2141,30 @@
 <ul>
 <li>Download the release package from the Github Flex
   <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm -P /tmp
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div></li>
 <li>GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
   not found, the <a href="#install-the-release-package">installation step</a> would fail. Use the commands below to download and
   import the GPG key.
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>unzip automation-flex-public-gpg.zip
+<div class="highlight"><pre><span></span><code>unzip<span class="w"> </span>automation-flex-public-gpg.zip
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>sudo rpm -import automation-flex-public-gpg.asc
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>rpm<span class="w"> </span>-import<span class="w"> </span>automation-flex-public-gpg.asc
 </code></pre></div></li>
 <li>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the package
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum  -P /tmp
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span> /tmp<span class="p">;</span>
-sha256sum -c flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum<span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/tmp<span class="p">;</span>
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum<span class="p">;</span>
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
 <div class="highlight"><pre><span></span><code>flex-replace-flex-version-el8.x86_64.rpm : ok
 </code></pre></div></li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
-<div class="highlight"><pre><span></span><code>sudo yum install ./flex-replace-flex-version-stable.el8.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>./flex-replace-flex-version-stable.el8.x86_64.rpm
 </code></pre></div>
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
 <p>Execute the setup script with command below:
@@ -2176,7 +2176,7 @@ This should be the SSA or file which was acquired as part of <a href="#prerequis
 Please enter path of file containing SSA or paste SSA (q to exit):
 </code></pre></div>
 Alternatively, for SSA file can be passed as a parameter to the setup script as below.
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa <span class="o">[</span>filename<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>-admin-ui-ssa<span class="w"> </span><span class="o">[</span>filename<span class="o">]</span>
 </code></pre></div></p>
 <h2 id="verify-and-access-the-installation">Verify and Access the Installation<a class="headerlink" href="#verify-and-access-the-installation" title="Permanent link">#</a></h2>
 <p>Verify that installation has been successful and all installed components are accessible using the steps below</p>
@@ -2209,14 +2209,14 @@ HTTPS cofiguration file <code>https_jans.conf</code> as shown below:</p>
 </div>
 <ul>
 <li>Open <code>https_jans.conf</code> 
-  <div class="highlight"><pre><span></span><code>sudo vi /etc/httpd/conf.d/https_jans.conf
+  <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/httpd/conf.d/https_jans.conf
 </code></pre></div></li>
 <li>Update <code>SSLCertificateFile</code> and <code>SSLCertificateKeyFile</code> parameters values
-  <div class="highlight"><pre><span></span><code>SSLCertificateFile location_of_fullchain.pem
-SSLCertificateKeyFile location_of_privkey.pem
+  <div class="highlight"><pre><span></span><code>SSLCertificateFile<span class="w"> </span>location_of_fullchain.pem
+SSLCertificateKeyFile<span class="w"> </span>location_of_privkey.pem
 </code></pre></div></li>
 <li>Restart <code>httpd</code> service for changes to take effect
-  <div class="highlight"><pre><span></span><code>sudo service httpd restart
+  <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>service<span class="w"> </span>httpd<span class="w"> </span>restart
 </code></pre></div></li>
 </ul>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
@@ -2229,7 +2229,7 @@ SSLCertificateKeyFile location_of_privkey.pem
 the package.</p>
 <h3 id="uninstall-gluu-flex">Uninstall Gluu Flex<a class="headerlink" href="#uninstall-gluu-flex" title="Permanent link">#</a></h3>
 <p>Use the command below to uninstall the Gluu Flex server
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--remove-flex
 </code></pre></div>
 Output:
 <div class="highlight"><pre><span></span><code>[ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
@@ -2283,7 +2283,7 @@ Restarting Janssen Config Api
 </code></pre></div></p>
 <h3 id="uninstall-janssen-packages">Uninstall Janssen Packages<a class="headerlink" href="#uninstall-janssen-packages" title="Permanent link">#</a></h3>
 <p>The command below removes and uninstall the <code>jans</code> package
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/install.py<span class="w"> </span>-uninstall
 </code></pre></div>
 Output:
 <div class="highlight"><pre><span></span><code>[ec2-user@manojs1978-lenient-drum ~]$ sudo python3 /opt/jans/jans-setup/install.py -uninstall
@@ -2319,18 +2319,18 @@ Removing /etc/httpd/conf.d/https_jans.conf
 </code></pre></div></p>
 <h3 id="remove-gluu-flex-packages">Remove Gluu Flex Packages:<a class="headerlink" href="#remove-gluu-flex-packages" title="Permanent link">#</a></h3>
 <p>List existing Gluu packages with:
-<div class="highlight"><pre><span></span><code>sudo yum list installed <span class="p">|</span> grep flex
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>list<span class="w"> </span>installed<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>flex
 </code></pre></div>
 Remove packages:
-<div class="highlight"><pre><span></span><code>sudo yum remove &lt;package-name&gt;
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>remove<span class="w"> </span>&lt;package-name&gt;
 </code></pre></div></p>
 <h3 id="uninstalling-admin-ui">Uninstalling Admin UI<a class="headerlink" href="#uninstalling-admin-ui" title="Permanent link">#</a></h3>
 <p>To uninstall the Admin UI from your Flex installation, execute this command:</p>
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--remove-flex
 </code></pre></div>
 <h3 id="updating-admin-ui">Updating Admin UI<a class="headerlink" href="#updating-admin-ui" title="Permanent link">#</a></h3>
 <p>To update the Admin UI in an existing Flex installation, execute this command:</p>
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--update-admin-ui
 </code></pre></div>
 
   <hr>

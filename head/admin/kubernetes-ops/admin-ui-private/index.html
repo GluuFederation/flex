@@ -1949,24 +1949,24 @@ This way the calls are made privately without hitting the FQDN through the inter
 </li>
 <li>
 <p>Modify <code>values.yaml</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">admin-ui</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">usrEnvs</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">normal</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">CN_CONFIG_API_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress.local:8443</span><span class="w"></span>
-<span class="w">      </span><span class="nt">CN_AUTH_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress.local:8443</span><span class="w"></span>
-<span class="w">      </span><span class="nt">CN_TOKEN_SERVER_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress-nginx-controller.ingress-nginx.svc.cluster.local</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="nt">admin-ui</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">usrEnvs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">normal</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">CN_CONFIG_API_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress.local:8443</span>
+<span class="w">      </span><span class="nt">CN_AUTH_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress.local:8443</span>
+<span class="w">      </span><span class="nt">CN_TOKEN_SERVER_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress-nginx-controller.ingress-nginx.svc.cluster.local</span>
 
-<span class="nt">config-api</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">usrEnvs</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">normal</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">CN_TOKEN_SERVER_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress-nginx-controller.ingress-nginx.svc.cluster.local</span><span class="w"></span>
+<span class="nt">config-api</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">usrEnvs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">normal</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">CN_TOKEN_SERVER_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://ingress-nginx-controller.ingress-nginx.svc.cluster.local</span>
 
-<span class="nt">nginx-ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1"># adjust Gluu FQDN used as needed</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx-controller.ingress-nginx.svc.cluster.local</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress.local</span><span class="w"></span>
+<span class="nt">nginx-ingress</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">hosts</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1"># adjust Gluu FQDN used as needed</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx-controller.ingress-nginx.svc.cluster.local</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress.local</span>
 </code></pre></div>
 </li>
 <li>
@@ -1989,24 +1989,24 @@ This way the calls are made privately without hitting the FQDN through the inter
 </li>
 <li>
 <p>Create secrets to store the certificate and key, for example:</p>
-<div class="highlight"><pre><span></span><code>kubectl -n &lt;namespace&gt; create secret tls internal-tls-certificate --cert /path/to/cert --key /path/to/key
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>-n<span class="w"> </span>&lt;namespace&gt;<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>tls<span class="w"> </span>internal-tls-certificate<span class="w"> </span>--cert<span class="w"> </span>/path/to/cert<span class="w"> </span>--key<span class="w"> </span>/path/to/key
 </code></pre></div>
 </li>
 <li>
 <p>Modify the <code>ingress-nginx-controller</code> deployment:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span><span class="w">                                       </span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span><span class="w">                         </span>
-<span class="nt">metadata</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx-controller</span><span class="w"></span>
-<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx</span><span class="w"></span>
-<span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">args</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="c1"># some arguments are omitted</span><span class="w"></span>
-<span class="w">          </span><span class="c1"># add a new argument to load self-signed cert</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--default-ssl-certificate=&lt;namespace&gt;/internal-tls-certificate</span><span class="w"></span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx-controller</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">containers</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">          </span><span class="c1"># some arguments are omitted</span>
+<span class="w">          </span><span class="c1"># add a new argument to load self-signed cert</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--default-ssl-certificate=&lt;namespace&gt;/internal-tls-certificate</span>
 </code></pre></div>
 </li>
 <li>

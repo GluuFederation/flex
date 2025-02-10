@@ -2088,9 +2088,9 @@ of Gluu Flex on SUSE Linux distributions</p>
   <a href="https://documentation.suse.com/sles/15-SP1/html/SLES-all/cha-selinux.html#sec-selinux-mode-permissive">it is put into permissive mode</a></li>
 <li>If the server firewall is running, make sure you allow <code>https</code>, which is
   needed for OpenID and FIDO.
-<div class="highlight"><pre><span></span><code>sudo firewall-cmd --permanent --zone<span class="o">=</span>public --add-service<span class="o">=</span>https
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--permanent<span class="w"> </span>--zone<span class="o">=</span>public<span class="w"> </span>--add-service<span class="o">=</span>https
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>sudo firewall-cmd --reload
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--reload
 </code></pre></div></li>
 <li>for SUSE Linux Enterprise(SLES) we need to enable PackageHub as per OS version and architecture
 <div class="highlight"><pre><span></span><code>sudo SUSEConnect -p PackageHub/15.4/x86_64
@@ -2103,18 +2103,18 @@ of Gluu Flex on SUSE Linux distributions</p>
 <ul>
 <li>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm -P ~/
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>~/
 </code></pre></div></p>
 </li>
 <li>
 <p>GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
   not found, the <a href="#install-the-release-package">installation step</a> would fail. Use the commands below to download and
   import the GPG key.
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>unzip automation-flex-public-gpg.zip
+<div class="highlight"><pre><span></span><code>unzip<span class="w"> </span>automation-flex-public-gpg.zip
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>sudo rpm -import automation-flex-public-gpg.asc
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>rpm<span class="w"> </span>-import<span class="w"> </span>automation-flex-public-gpg.asc
 </code></pre></div></p>
 </li>
 <li>
@@ -2133,14 +2133,14 @@ You should see:
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Use SUSE <code>zypper</code> to install
-<div class="highlight"><pre><span></span><code>sudo zypper install ~/flex-replace-flex-version-stable.suse15.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-replace-flex-version-stable.suse15.x86_64.rpm
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <ul>
 <li>Run the setup script:</li>
 </ul>
 <p>Execute the setup script with command below:
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 </code></pre></div>
 If Admin-UI component is being installed, then the script will require SSA input, either as text or as a file path.
 This should be the SSA or file which was acquired as part of <a href="#prerequisites">prerequisite step</a>.
@@ -2148,7 +2148,7 @@ This should be the SSA or file which was acquired as part of <a href="#prerequis
 Please enter path of file containing SSA or paste SSA (q to exit):
 </code></pre></div>
 Alternatively, for SSA file can be passed as a parameter to the setup script as below.
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa <span class="o">[</span>filename<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>-admin-ui-ssa<span class="w"> </span><span class="o">[</span>filename<span class="o">]</span>
 </code></pre></div></p>
 <h2 id="verify-and-access-the-installation">Verify and Access the Installation<a class="headerlink" href="#verify-and-access-the-installation" title="Permanent link">#</a></h2>
 <p>Verify that installation has been successful and all installed components are accessible using the steps below:</p>
@@ -2181,15 +2181,15 @@ HTTPS cofiguration file <code>https_jans.conf</code> as shown below:</p>
 </div>
 <ul>
 <li>Open <code>_https_jans.conf</code> 
-<div class="highlight"><pre><span></span><code> sudo vi /etc/apache2/vhosts.d/_https_jans.conf
- <span class="sb">```</span>
- - Update <span class="sb">`</span>SSLCertificateFile<span class="sb">`</span> and <span class="sb">`</span>SSLCertificateKeyFile<span class="sb">`</span> parameters values
- <span class="sb">```</span>bash
-SSLCertificateFile location_of_fullchain.pem
-SSLCertificateKeyFile location_of_privkey.pem
+<div class="highlight"><pre><span></span><code><span class="w"> </span>sudo<span class="w"> </span>vi<span class="w"> </span>/etc/apache2/vhosts.d/_https_jans.conf
+<span class="w"> </span><span class="sb">```</span>
+<span class="w"> </span>-<span class="w"> </span>Update<span class="w"> </span><span class="sb">`</span>SSLCertificateFile<span class="sb">`</span><span class="w"> </span>and<span class="w"> </span><span class="sb">`</span>SSLCertificateKeyFile<span class="sb">`</span><span class="w"> </span>parameters<span class="w"> </span>values
+<span class="w"> </span><span class="sb">```</span>bash
+SSLCertificateFile<span class="w"> </span>location_of_fullchain.pem
+SSLCertificateKeyFile<span class="w"> </span>location_of_privkey.pem
 </code></pre></div></li>
 <li>Restart <code>apache</code> service for changes to take effect
-<div class="highlight"><pre><span></span><code>sudo /usr/sbin/rcapache2 restart
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>/usr/sbin/rcapache2<span class="w"> </span>restart
 </code></pre></div></li>
 </ul>
 <h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
@@ -2201,7 +2201,7 @@ SSLCertificateKeyFile location_of_privkey.pem
 <p>If you have not run the setup script, you can skip step 1 and just remove
 the package.</p>
 <p>First use the command below to uninstall the Gluu Flex server</p>
-<p><div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<p><div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--remove-flex
 </code></pre></div>
 the output will be like this:
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
@@ -2255,39 +2255,39 @@ Restarting Janssen Config Api
 </code></pre></div></p>
 <h3 id="uninstall-janssen-packages">Uninstall Janssen Packages<a class="headerlink" href="#uninstall-janssen-packages" title="Permanent link">#</a></h3>
 <p>The command below removes and uninstall the <code>jans</code> package
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/install.py<span class="w"> </span>-uninstall
 </code></pre></div>
 output will be like this:
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall -yes --keep-downloads --keep-setup
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/install.py<span class="w"> </span>-uninstall<span class="w"> </span>-yes<span class="w"> </span>--keep-downloads<span class="w"> </span>--keep-setup
 
-This process is irreversible.
-You will lose all data related to Janssen Server.
+This<span class="w"> </span>process<span class="w"> </span>is<span class="w"> </span>irreversible.
+You<span class="w"> </span>will<span class="w"> </span>lose<span class="w"> </span>all<span class="w"> </span>data<span class="w"> </span>related<span class="w"> </span>to<span class="w"> </span>Janssen<span class="w"> </span>Server.
 
 
 
-Are you sure to uninstall Janssen Server? <span class="o">[</span>yes/N<span class="o">]</span> yes
+Are<span class="w"> </span>you<span class="w"> </span>sure<span class="w"> </span>to<span class="w"> </span>uninstall<span class="w"> </span>Janssen<span class="w"> </span>Server?<span class="w"> </span><span class="o">[</span>yes/N<span class="o">]</span><span class="w"> </span>yes
 
-Uninstalling Jannsen Server...
-Removing /etc/default/jans-config-api
-Stopping jans-config-api
-Removing /etc/default/jans-auth
-Stopping jans-auth
-Removing /etc/default/jans-fido2
-Stopping jans-fido2
-Removing /etc/default/jans-scim
-Stopping jans-scim
-Removing /etc/default/jans-cache-refresh
-Stopping jans-cache-refresh
-Executing rm -r -f /etc/certs
-Executing rm -r -f /etc/jans
-Executing rm -r -f /opt/jans
-Executing rm -r -f /opt/amazon-corretto*
-Executing rm -r -f /opt/jre
-Executing rm -r -f /opt/node*
-Executing rm -r -f /opt/jetty*
-Executing rm -r -f /opt/jython*
-Executing rm -r -f /opt/dist
-Removing /etc/apache2/vhosts.d/_https_jans.conf
+Uninstalling<span class="w"> </span>Jannsen<span class="w"> </span>Server...
+Removing<span class="w"> </span>/etc/default/jans-config-api
+Stopping<span class="w"> </span>jans-config-api
+Removing<span class="w"> </span>/etc/default/jans-auth
+Stopping<span class="w"> </span>jans-auth
+Removing<span class="w"> </span>/etc/default/jans-fido2
+Stopping<span class="w"> </span>jans-fido2
+Removing<span class="w"> </span>/etc/default/jans-scim
+Stopping<span class="w"> </span>jans-scim
+Removing<span class="w"> </span>/etc/default/jans-cache-refresh
+Stopping<span class="w"> </span>jans-cache-refresh
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/etc/certs
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/etc/jans
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/opt/jans
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/opt/amazon-corretto*
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/opt/jre
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/opt/node*
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/opt/jetty*
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/opt/jython*
+Executing<span class="w"> </span>rm<span class="w"> </span>-r<span class="w"> </span>-f<span class="w"> </span>/opt/dist
+Removing<span class="w"> </span>/etc/apache2/vhosts.d/_https_jans.conf
 </code></pre></div></p>
 <p>Second uninstall the package:</p>
 <p>You should see the package with:
@@ -2298,7 +2298,7 @@ Removing /etc/apache2/vhosts.d/_https_jans.conf
 </code></pre></div></p>
 <h3 id="updating-admin-ui">Updating Admin UI<a class="headerlink" href="#updating-admin-ui" title="Permanent link">#</a></h3>
 <p>To update the Admin UI in an existing Flex installation, execute this command:</p>
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--update-admin-ui
 </code></pre></div>
 
   <hr>

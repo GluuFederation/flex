@@ -2118,7 +2118,7 @@
 <li>Make sure that if <code>SELinux</code> is installed then it is put into permissive mode</li>
 <li>If the server firewall is running, make sure you allow <code>https</code>, which is
   needed for OpenID and FIDO.
-<div class="highlight"><pre><span></span><code>sudo ufw allow https
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span>https
 </code></pre></div></li>
 <li>Please obtain an <a href="../../install/software-statements/ssa.md">SSA</a> to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.</li>
@@ -2130,59 +2130,59 @@
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>. Choose
 the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb -P /tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb -P /tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div></p>
 </li>
 <li>
 <p>GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
   not found, the <a href="#install-the-release-package">installation step</a> would fail. Use the commands below to download and
   import the GPG key.
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/files/11814579/automation-flex-public-gpg.zip
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>unzip automation-flex-public-gpg.zip<span class="p">;</span>
+<div class="highlight"><pre><span></span><code>unzip<span class="w"> </span>automation-flex-public-gpg.zip<span class="p">;</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>sudo gpg --import automation-flex-public-gpg.asc<span class="p">;</span>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>gpg<span class="w"> </span>--import<span class="w"> </span>automation-flex-public-gpg.asc<span class="p">;</span>
 </code></pre></div></p>
 </li>
 <li>
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the 
 package.  Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum  -P /tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-<span class="nb">cd</span> /tmp
-sha256sum -c flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum
+<span class="nb">cd</span><span class="w"> </span>/tmp
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-<span class="nb">cd</span> /tmp
-sha256sum -c flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum
+<span class="nb">cd</span><span class="w"> </span>/tmp
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex_replace-flex-version-stable.ubuntu&lt;version&gt;_amd64.deb: ok
+<div class="highlight"><pre><span></span><code>flex_replace-flex-version-stable.ubuntu&lt;version&gt;_amd64.deb:<span class="w"> </span>ok
 </code></pre></div></p>
 </li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Choose the correct command from below based on the OS version.</p>
 <p><div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-apt install -y /tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-apt install -y /tmp/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <p>Execute the setup script with command below:
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 </code></pre></div>
 If Admin-UI component is being installed, then the script will require SSA input, either as text or as a file path.
 This should be the SSA or file which was acquired as part of <a href="#prerequisites">prerequisite step</a>.
@@ -2190,7 +2190,7 @@ This should be the SSA or file which was acquired as part of <a href="#prerequis
 Please enter path of file containing SSA or paste SSA (q to exit):
 </code></pre></div>
 Alternatively, for SSA file can be passed as a parameter to the setup script as below.
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa <span class="o">[</span>filename<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>-admin-ui-ssa<span class="w"> </span><span class="o">[</span>filename<span class="o">]</span>
 </code></pre></div></p>
 <h2 id="verify-and-access-the-installation">Verify and Access the Installation<a class="headerlink" href="#verify-and-access-the-installation" title="Permanent link">#</a></h2>
 <p>Verify that installation has been successful and all installed components are accessible using the steps below:</p>
@@ -2230,7 +2230,7 @@ environment, Janssen Server needs details about CA certificate.</p>
 the package.</p>
 <h3 id="uninstall-gluu-flex">Uninstall Gluu Flex<a class="headerlink" href="#uninstall-gluu-flex" title="Permanent link">#</a></h3>
 <p>Use the command below to uninstall the Gluu Flex server
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--remove-flex
 </code></pre></div>
 Output:
 <div class="highlight"><pre><span></span><code>root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
@@ -2282,7 +2282,7 @@ Restarting Janssen Config Api
 </code></pre></div></p>
 <h3 id="uninstall-janssen-packages">Uninstall Janssen Packages<a class="headerlink" href="#uninstall-janssen-packages" title="Permanent link">#</a></h3>
 <p>The command below removes and uninstall the <code>jans</code> package
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/install.py -uninstall
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>/opt/jans/jans-setup/install.py<span class="w"> </span>-uninstall
 </code></pre></div>
 Output :
 <div class="highlight"><pre><span></span><code>root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/install.py -uninstall
@@ -2326,18 +2326,18 @@ Removing /etc/apache2/sites-available/https_jans.conf
 </code></pre></div></p>
 <h3 id="remove-gluu-flex-packages">Remove Gluu Flex Packages:<a class="headerlink" href="#remove-gluu-flex-packages" title="Permanent link">#</a></h3>
 <p>List existing Gluu Flex packages with:
-<div class="highlight"><pre><span></span><code>sudo apt list --installed <span class="p">|</span> grep flex
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>list<span class="w"> </span>--installed<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>flex
 </code></pre></div>
 Remove packages:
-<div class="highlight"><pre><span></span><code>sudo apt remove &lt;package name&gt;
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>remove<span class="w"> </span>&lt;package<span class="w"> </span>name&gt;
 </code></pre></div></p>
 <h3 id="uninstalling-admin-ui">Uninstalling Admin UI<a class="headerlink" href="#uninstalling-admin-ui" title="Permanent link">#</a></h3>
 <p>To uninstall the Admin UI from your Flex installation, execute this command:</p>
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--remove-flex
 </code></pre></div>
 <h3 id="updating-admin-ui">Updating Admin UI<a class="headerlink" href="#updating-admin-ui" title="Permanent link">#</a></h3>
 <p>To update the Admin UI in an existing Flex installation, execute this command:</p>
-<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --update-admin-ui
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--update-admin-ui
 </code></pre></div>
 
   <hr>
