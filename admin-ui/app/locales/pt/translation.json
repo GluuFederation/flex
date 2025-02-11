@@ -36,7 +36,7 @@
     "access_denied_message":"Entre em contato com o administrador para obter ajuda",
     "access_contact_admin":"Se você acha que isso é um erro, entre em contato com o administrador",
     "mau_users": "Máx. MAU para LTM (Bloqueio)",
-    "mau_clients": "Máx. MAC para LTM (Bloqueio)"
+    "mau_clients": "Janeiro bloquear clientes"
   },
   "menus": {
     "adminui": "Admin",
