@@ -26,7 +26,15 @@ git clone https://github.com/GluuFederation/flex
 cd flex/admin-ui
 ```
 
-2. Create a file name `.env.development.local` with following contents.
+2. Environment configuration
+
+Set the env `NODE_ENV` to `development.
+
+```
+export NODE_ENV=development
+```
+
+Create a file name `.env.development` with following contents.
 
 ```
 BASE_PATH=/admin/
