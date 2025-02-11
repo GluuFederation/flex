@@ -9,7 +9,7 @@ yarn.lock
 plugins_repo
 
 
-# other
+# Editor directories and files
 .DS_Store
 .project
 .jshintrc
@@ -17,4 +17,9 @@ plugins_repo
 .settings/
 .vs
 .idea/
-.env.production
+.env
+.env.*
+*.local
+.vscode/*
+!.vscode/extensions.json
+configApiSpects.yaml
