@@ -28,7 +28,7 @@ cd flex/admin-ui
 
 2. Environment configuration
 
-Set the env `NODE_ENV` to `development.
+Set the env `NODE_ENV` to `development`.
 
 ```
 export NODE_ENV=development
