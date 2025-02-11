@@ -22,4 +22,4 @@ plugins_repo
 *.local
 .vscode/*
 !.vscode/extensions.json
-configApiSpects.yaml
+configApiSpecs.yaml
