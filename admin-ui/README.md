@@ -1,27 +1,65 @@
 # Gluu Admin UI
 
-This project has been built on [Airframe React](https://github.com/0wczar/airframe-react). 
+The Gluu Flex Admin UI is a reactive web interface to simplify the management and configuration of your Auth Server. The Admin UI enables you to easily view and edit configuration properties, interception scripts, clients, and metrics in one place.
 
-## Installation 
+## Introduction
+
+This document outlines the steps to setup the project for development, including installation, configuration, and running the application.
 
 ### Prerequisites
 
-Node, NPM (latest, stable version)
+Before setting up the project, ensure you have the following installed :
 
-### Development
+- NodeJS : v18.xx.x or above
+- NPM : 8.xx or above
+- Java : openjdk 17.x.x or above
 
-To run the project locally execute following commands.
+### Installation
+
+Follow these steps to setup the project :
+
+1. Clone the project
 
 ```
-git clone https://github.com/GluuFederation/gluu-admin-ui
-cd gluu-admin-ui
-rm -rf jans_config_api
+git clone https://github.com/GluuFederation/flex
+cd flex/admin-ui
+```
+
+2. Create a file name `.env.development.local` with following contents.
+
+```
+BASE_PATH=/admin/
+CONFIG_API_BASE_URL=https://admin-ui-test.gluu.org/jans-config-api
+API_BASE_URL=https://admin-ui-test.gluu.org/jans-config-api/admin-ui
+NPM_TOKEN=
+```
+
+**Note:** the `NPM_TOKEN` is not being used anymore, we can leave this empty.
+
+3. Install openapi-generator-cli globally in your system.
+
+```
 npm install @openapitools/openapi-generator-cli -g
-npm run api
+```
+
+4. Install project packages.
+
+```
 npm install
-npm run start
+```
+
+5. Run api specs generator.
+
+```
+npm run api
+```
+
+6. Run the project.
+
+```
+npm run install
 ```
 
 Once the project is compiled and started, UI can be accessed at URL: http://localhost:4100
 
-**Note:** Please check this [link](https://raw.githubusercontent.com/0wczar/airframe-react/master/.npmrc) for NPM access token to be added to `NPM_TOKEN` field in `.env` file.
+This project has been built on [Airframe React](https://github.com/0wczar/airframe-react).
