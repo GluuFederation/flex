@@ -13,6 +13,7 @@ Before setting up the project, ensure you have the following installed :
 - NodeJS : v18.xx.x or above
 - NPM : 8.xx or above
 - Java : openjdk 17.x.x or above
+- Gluu Flex : follow the instruction [here](https://github.com/GluuFederation/flex/tree/main/docker-flex-monolith)
 
 ### Installation
 
@@ -29,12 +30,15 @@ cd flex/admin-ui
 
 ```
 BASE_PATH=/admin/
-CONFIG_API_BASE_URL=https://admin-ui-test.gluu.org/jans-config-api
-API_BASE_URL=https://admin-ui-test.gluu.org/jans-config-api/admin-ui
+CONFIG_API_BASE_URL=https://[jans-server-host]/jans-config-api
+API_BASE_URL=https://[jans-server-host]/jans-config-api/admin-ui
 NPM_TOKEN=
 ```
 
-**Note:** the `NPM_TOKEN` is not being used anymore, we can leave this empty.
+**Note:**
+
+- replace `[jans-server-host]` with your actual jans server.
+- the `NPM_TOKEN` is not being used anymore, we can leave this empty.
 
 3. Install openapi-generator-cli globally in your system.
 
