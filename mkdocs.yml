@@ -153,6 +153,8 @@ nav:
     - 'Flex Recipes':
         - 'admin/recipes/README.md'
         - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
+    -  'Migrating from Gluu4': 'admin/gluu-migration.md'
+
 - 'Reference':
     - 'reference/kubernetes/README.md'
     - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
