@@ -98,15 +98,9 @@ Execute the setup script with command below:
 ```shell
 sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 ```
-If Admin-UI component is being installed, then the script will require SSA input, either as text or as a file path.
-This should be the SSA or file which was acquired as part of [prerequisite step](#prerequisites).
+
 ```text
 Install Admin UI [Y/n]: y
-Please enter path of file containing SSA or paste SSA (q to exit):
-```
-Alternatively, for SSA file can be passed as a parameter to the setup script as below.
-```shell
-sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 ```
 
 ## Verify and Access the Installation
@@ -123,6 +117,8 @@ Verify that installation has been successful and all installed components are ac
 ```text
 https://FQDN/admin
 ```
+After successful installation of the Admin-UI component, we need to upload the required SSA input as a file path.
+This should be the SSA or file that was acquired as part of [the prerequisite step](#prerequisites).
 
 When troubleshooting issues with Admin UI access, it's advisable to check the [logs](../../admin/admin-ui/logs.md), refer to the [FAQ](../../admin/admin-ui/faq.md), and review [service dependencies](../../admin/admin-ui/introduction.md/#flex-services-dependencies) for potential solutions.
 
