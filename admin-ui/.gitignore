@@ -17,7 +17,6 @@ plugins_repo
 .settings/
 .vs
 .idea/
-.env
 .env.*
 *.local
 .vscode/*
