@@ -7,12 +7,6 @@ tags:
 ---
 
 
-
-
-!!! info
-     **Gluu Solo will be released soon. Stay tuned.**
-
-
 # Gluu Solo Administration
 
 
