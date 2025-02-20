@@ -33,7 +33,7 @@ const JansAssetListPage = () => {
     const [pageNumber, setPageNumber] = useState(0)
     const { totalItems, assets } = useSelector((state) => state.assetReducer)
     const permissions = useSelector((state) => state.authReducer.permissions)
-    const loading = useSelector((state) => state.assetReducer.loading)
+    const loadingAssets = useSelector((state) => state.assetReducer.loadingAssets)
     const myActions = []
     const options = {}
     const [limit, setLimit] = useState(10)
@@ -194,7 +194,7 @@ const JansAssetListPage = () => {
     }
 
     return (
-        <GluuLoader blocking={loading}>
+        <GluuLoader blocking={loadingAssets}>
             <Card style={applicationStyle.mainCard}>
                 <CardBody>
                     <GluuViewWrapper canShow={hasPermission(permissions, ASSETS_READ)}>
@@ -229,7 +229,7 @@ const JansAssetListPage = () => {
                                 { title: `${t('fields.enabled')}`, field: 'enabled' }
                             ]}
                             data={assets || []}
-                            isLoading={loading}
+                            isLoading={loadingAssets}
                             title=''
                             actions={myActions}
                             options={{
