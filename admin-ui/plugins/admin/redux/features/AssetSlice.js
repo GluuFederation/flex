@@ -21,13 +21,13 @@ const assetSlice = createSlice({
     initialState,
     reducers: {
         fetchJansAssets: (state, action) => {
-            state.loading = true
+            state.loadingAssets = true
         },
         getJansAssets: (state, action) => {
             state.loading = true
         },
         getJansAssetResponse: (state, action) => {
-            state.loading = false
+            state.loadingAssets = false
             if (action.payload?.data) {
                 state.assets = action.payload.data.entries
                 state.totalItems = action.payload.data.totalEntriesCount
