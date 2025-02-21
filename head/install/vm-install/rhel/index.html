@@ -2185,15 +2185,9 @@ Output similar to below should confirm the integrity of the downloaded package.
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
 <p>Execute the setup script with command below:
 <div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
-</code></pre></div>
-If Admin-UI component is being installed, then the script will require SSA input, either as text or as a file path.
-This should be the SSA or file which was acquired as part of <a href="#prerequisites">prerequisite step</a>.
-<div class="highlight"><pre><span></span><code>Install Admin UI [Y/n]: y
-Please enter path of file containing SSA or paste SSA (q to exit):
-</code></pre></div>
-Alternatively, for SSA file can be passed as a parameter to the setup script as below.
-<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>-admin-ui-ssa<span class="w"> </span><span class="o">[</span>filename<span class="o">]</span>
 </code></pre></div></p>
+<div class="highlight"><pre><span></span><code>Install Admin UI [Y/n]: y
+</code></pre></div>
 <h2 id="verify-and-access-the-installation">Verify and Access the Installation<a class="headerlink" href="#verify-and-access-the-installation" title="Permanent link">#</a></h2>
 <p>Verify that installation has been successful and all installed components are accessible using the steps below</p>
 <ul>
@@ -2206,7 +2200,9 @@ Full TUI documentation can be found <a href="https://docs.jans.io/head/janssen-s
 <li>
 <p>Log into Admin-UI using URI below
 <div class="highlight"><pre><span></span><code>https://FQDN/admin
-</code></pre></div></p>
+</code></pre></div>
+After successful installation of the Admin-UI component, we need to upload the required SSA input as a file path.
+This should be the SSA or file that was acquired as part of <a href="#prerequisites">prerequisite step</a>.</p>
 </li>
 </ul>
 <p>When troubleshooting issues with Admin UI access, it's advisable to check the <a href="../../../admin/admin-ui/logs/">logs</a>, refer to the <a href="../../../admin/admin-ui/faq/">FAQ</a>, and review <a href="../../admin/admin-ui/introduction.md/#flex-services-dependencies">service dependencies</a> for potential solutions.</p>
@@ -2354,7 +2350,7 @@ Remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-01-09T10:45:51+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-01-09</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-02-21T12:18:41+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-02-21</span>
       
         <br>
         Created:
