@@ -2146,10 +2146,10 @@
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>. Choose
 the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div></p>
 </li>
 <li>
@@ -2167,34 +2167,34 @@ wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/down
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the 
 package.  Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu22.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu20.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
 <span class="nb">cd</span><span class="w"> </span>/tmp
-sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu22.04_amd64.deb.sha256sum
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
 <span class="nb">cd</span><span class="w"> </span>/tmp
-sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu20.04_amd64.deb.sha256sum
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex_0.0.0-nightly.ubuntu&lt;version&gt;_amd64.deb:<span class="w"> </span>ok
+<div class="highlight"><pre><span></span><code>flex_replace-flex-version-stable.ubuntu&lt;version&gt;_amd64.deb:<span class="w"> </span>ok
 </code></pre></div></p>
 </li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Choose the correct command from below based on the OS version.</p>
 <p><div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu22.04_amd64.deb
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu20.04_amd64.deb
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <p>Execute the setup script with command below:
@@ -2242,10 +2242,10 @@ environment, Janssen Server needs details about CA certificate.</p>
 the package.</p>
 <h3 id="uninstall-gluu-flex">Uninstall Gluu Flex<a class="headerlink" href="#uninstall-gluu-flex" title="Permanent link">#</a></h3>
 <p>Use the command below to uninstall the Gluu Flex server
-<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--remove-flex
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>python3<span class="w"> </span>/opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py<span class="w"> </span>--remove-flex
 </code></pre></div>
 Output:
-<div class="highlight"><pre><span></span><code>root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
 Gluu Flex Components will be removed
@@ -2297,7 +2297,7 @@ Restarting Janssen Config Api
 <div class="highlight"><pre><span></span><code>python3<span class="w"> </span>/opt/jans/jans-setup/install.py<span class="w"> </span>-uninstall
 </code></pre></div>
 Output :
-<div class="highlight"><pre><span></span><code>root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/install.py -uninstall
+<div class="highlight"><pre><span></span><code>sudo python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
 You will lose all data related to Janssen Server.
@@ -2357,7 +2357,7 @@ Remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-02-21T12:18:41+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-02-21</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-02-23T15:17:15+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-02-23</span>
       
         <br>
         Created:
