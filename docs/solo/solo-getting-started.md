@@ -5,10 +5,6 @@ tags:
 ---
 
 
-!!! info
-     **Gluu Solo will be released soon. Stay tuned.**
-
-
 # Getting Started with Gluu Solo
 
 Gluu Solo is a cloud-based identity management service designed to provide secure, scalable, 
