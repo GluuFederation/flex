@@ -28,7 +28,7 @@ jobs:
           sudo python3 -m pip install --upgrade pip || echo "Failed to upgrade pip"
           sudo pip3 install --ignore-installed -r ./automation/requirements.txt 
           sudo apt-get update
-          sudo apt-get install --ignore-installed jq
+          sudo apt-get install jq
 
       - name: install helm-docs
         run: |
