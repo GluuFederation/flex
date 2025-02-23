@@ -1,5 +1,30 @@
 # Changelog
 
+## [5.4.0](https://github.com/GluuFederation/flex/compare/v5.3.0...v5.4.0) (2025-02-23)
+
+
+### Features
+
+* **admin-ui:** Dashboard with monthly active users/clients. ([#1983](https://github.com/GluuFederation/flex/issues/1983)) ([b0908ea](https://github.com/GluuFederation/flex/commit/b0908ea36f017eb5b8c3bf8a343f90a788913f94))
+* **admin-ui:** Display the modified fields in the audit log modal for sub-items within the auth server. ([#1969](https://github.com/GluuFederation/flex/issues/1969)) ([f0d0c32](https://github.com/GluuFederation/flex/commit/f0d0c327644a9e282ecd1dea30688b03022d2a4c))
+* **cloud-native:** secure mounted configuration schema ([#1981](https://github.com/GluuFederation/flex/issues/1981)) ([436e3fa](https://github.com/GluuFederation/flex/commit/436e3fad508a13f2039d099734f54efada1792e1))
+* **flex-linux-setup:** admin-ui command line utility ([#1976](https://github.com/GluuFederation/flex/issues/1976)) ([6df74ea](https://github.com/GluuFederation/flex/commit/6df74ea942bc6b30bde45e53758f6b2287249e9b))
+
+
+### Bug Fixes
+
+* **admin-ui:** agama projects are not deploying properly ([#1977](https://github.com/GluuFederation/flex/issues/1977)) ([c3b2cda](https://github.com/GluuFederation/flex/commit/c3b2cdac73ddcf32b0408b8898268b1e9e339917))
+* **admin-ui:** asset list taking time to load ([#2004](https://github.com/GluuFederation/flex/issues/2004)) ([d760d9d](https://github.com/GluuFederation/flex/commit/d760d9dbad11144b7f69674877b57d5f176f1c28))
+* **admin-ui:** Dashboard with monthly active users/clients ([#1985](https://github.com/GluuFederation/flex/issues/1985)) ([4ad565e](https://github.com/GluuFederation/flex/commit/4ad565e7a378e2aad4b964a1c472682aa3213d3d))
+* **admin-ui:** Organziation attributes are not updating. ([#1987](https://github.com/GluuFederation/flex/issues/1987)) ([519c652](https://github.com/GluuFederation/flex/commit/519c6527c3c4b8b91c9a7fd33597421041f0cba6))
+* **admin-ui:** unable to open Admin UI ([#1994](https://github.com/GluuFederation/flex/issues/1994)) ([9926e09](https://github.com/GluuFederation/flex/commit/9926e09a0038e2f4feec93eb25715d96c65301cc))
+* agama projects are not deploying properly ([c3b2cda](https://github.com/GluuFederation/flex/commit/c3b2cdac73ddcf32b0408b8898268b1e9e339917))
+* asset list taking time to load ([d760d9d](https://github.com/GluuFederation/flex/commit/d760d9dbad11144b7f69674877b57d5f176f1c28))
+* **docs:** add documentation for Gluu Solo ([#1962](https://github.com/GluuFederation/flex/issues/1962)) ([1ba639f](https://github.com/GluuFederation/flex/commit/1ba639fff90fac8d598e27e96f2d1b49c72a5a77))
+* **docs:** remove `coming soon` note from the Solo docs ([#2001](https://github.com/GluuFederation/flex/issues/2001)) ([54e815b](https://github.com/GluuFederation/flex/commit/54e815bb82df3d6ef68f2687dda34e57449789e6))
+* **docs:** update solo docs ([54e815b](https://github.com/GluuFederation/flex/commit/54e815bb82df3d6ef68f2687dda34e57449789e6))
+* update SCIM in attributes ([519c652](https://github.com/GluuFederation/flex/commit/519c6527c3c4b8b91c9a7fd33597421041f0cba6))
+
 ## [5.3.0](https://github.com/GluuFederation/flex/compare/v5.2.0...v5.3.0) (2025-01-26)
 
 
