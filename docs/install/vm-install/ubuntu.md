@@ -146,11 +146,11 @@ the package.
 ### Uninstall Gluu Flex
 Use the command below to uninstall the Gluu Flex server
 ```shell
-python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
 Output:
 ```text
-root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+sudo python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 
 This process is irreversible.
 Gluu Flex Components will be removed
@@ -205,7 +205,7 @@ python3 /opt/jans/jans-setup/install.py -uninstall
 ```
 Output :
 ```text
-root@manojs1978-cute-ram:~# python3 /opt/jans/jans-setup/install.py -uninstall
+sudo python3 /opt/jans/jans-setup/install.py -uninstall
 
 This process is irreversible.
 You will lose all data related to Janssen Server.
