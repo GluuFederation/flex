@@ -1,0 +1,22 @@
+services:
+  admin-ui:
+    image: admin-ui
+    build:
+      context: ./
+      target: "builder"
+    restart: always
+    ports:
+      - 4100:4100
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      # mount app folder into container
+      - ./:/app
+      # ignore local node_modules, use container
+      - /app/node_modules
+    command: "npm run start"
+    networks:
+      - cloud_bridge
+networks:
+  cloud_bridge:
+    driver: bridge
