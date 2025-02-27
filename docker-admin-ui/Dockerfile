@@ -20,7 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=602532dad32376d52a7b51392b715c77eddb18ec
+ENV JANS_SOURCE_VERSION=aa67fbf40aa09e2d9a135450f7e1f2818019f8bc
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
