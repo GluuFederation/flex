@@ -9,7 +9,7 @@ annotations:
   catalog.cattle.io/release-name: gluu-all-in-one
   catalog.cattle.io/display-name: Gluu Flex Cloud Identity and Access Management All-in-One
 apiVersion: v2
-appVersion: "5.4.0"
+appVersion: "0.0.0-nightly"
 icon: >-
   https://gluu.org/docs/gluu-server/favicon.ico
 home: https://docs.gluu.org
@@ -21,4 +21,4 @@ maintainers:
     email: team@gluu.org
 description: Gluu Access and Identity Management All-in-One Chart. This chart deploys the selected janssen microservice all in one deployment.
 name: gluu-all-in-one
-version: 5.4.0
+version: 0.0.0-nightly
