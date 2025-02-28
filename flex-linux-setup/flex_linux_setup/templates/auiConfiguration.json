@@ -41,6 +41,7 @@
     "ssa": "%(ssa)s",
     "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
     "licenseHardwareKey": "%(license_hardware_key)s",
+    "intervalForSyncLicenseDetailsInDays": 30,
     "oidcClient": {
       "opHost": "%(op_host)s",
       "clientId": "%(oidc_client_id)s",
