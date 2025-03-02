@@ -41,5 +41,8 @@ export function formatDate(date) {
   if (date.length > 10) {
     return date.substring(0, 10)
   }
+  if(date.length == 10) {
+    return date
+  }
   return '-'
 }

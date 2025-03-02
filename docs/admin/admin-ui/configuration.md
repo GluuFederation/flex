@@ -136,12 +136,13 @@ License metadata includes relevant information about the Gluu Flex Admin UI's li
 
 The information is stored in json format with following attributes.
 
-|Attribute Name|Description|
-|--------------|-----------|
-|licenseConfig|Object with License configuration details|
-|ssa|SSA used to register OIDC client to access license APIs|
-|scanLicenseApiHostname| SCAN License server hostname|
-|licenseHardwareKey|Hardware key (org_id) to access license APIs|
+|Attribute Name| Description|
+|--------------|------------|
+|licenseConfig| Object with License configuration details |
+|ssa| SSA used to register OIDC client to access license APIs |
+|scanLicenseApiHostname| SCAN License server hostname |
+|licenseHardwareKey| Hardware key (org_id) to access license APIs |
+|intervalForSyncLicenseDetailsInDays| The Admin UI backend syncs license details into the configuration (persistence) after the set interval (default: 30 days). |
 
 **Sample configuration stored in persistence**
 
