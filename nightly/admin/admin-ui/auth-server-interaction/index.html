@@ -1993,8 +1993,8 @@
 <ol>
 <li>The user accesses the Gluu Flex Admin UI frontend through a web browser.</li>
 <li>The frontend requests the Admin UI backend to retrieve Admin UI configuration from Janssen persistence. The <a href="../configuration/">Admin UI configuration</a> includes OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata. It's important to note that <strong>the Admin UI backend is implemented as a Jans Config API plugin</strong>.</li>
-<li>The frontend calls the Admin UI backend API (<code>/isConfigValid</code>) to validate the license configuration in persistence, essentially verifying the validity of the OIDC client used to access the License APIs. If it is not valid, the same API tries to register a new OIDC client using the SSA uploaded during installation. In case the SSA is invalid, the Admin UI shows a page to upload a new valid SSA.</li>
-<li>After ensuring the validity of the OIDC client, the Admin UI calls the Admin UI backend API (/isActive) to check if a valid license is present in the license configuration. The Admin UI backend then calls the SCAN API (/scan/license/isActive) to verify the validity of the license.</li>
+<li>The frontend calls the Admin UI backend API (<code>/isConfigValid</code>) to validate the license configuration in persistence, essentially verifying the validity of the OIDC client used to access the License APIs. If it is not valid, the same API tries to register a new OIDC client using the SSA uploaded during installation. In case the SSA is invalid, the Admin UI shows a page to upload a new valid SSA. To minimize network calls to account.gluu.org, <code>/isConfigValid</code> verifies the OIDC client validity only at a set interval (default: 30 days). Otherwise, <code>/isConfigValid</code> checks if the required OIDC client for License APIs exists in the Admin UI configuration (persistence).</li>
+<li>After validating the OIDC client, the Admin UI calls the backend API (/isActive) to check if a valid license is present in the license configuration. It verifies whether the license key and its details are valid and not expired. At regular intervals (default is 30 days), the Admin UI backend calls the SCAN API (/scan/license/isActive) to verify license validity and sync its details into the license configuration (persistence).</li>
 <li>If a valid license is not present, the frontend calls the backend API (/retrieve) to retrieve the license for the user via the SCAN API (/scan/license/retrieve). The license can only be retrieved from SCAN if the user has subscribed to the Admin UI license in Agama Lab.</li>
 <li>If the user has not already subscribed to a valid license in Agama Lab, the Admin UI displays a page to generate a 30-day trial license. The user cannot generate another trial license after expiry of a generated trial license and will need to subscribe to the Admin UI license in Agama Lab to access the user interface.</li>
 <li>After verification of valid license the frontend initiates the Authorization Code Flow by redirecting the user to the login page.</li>
@@ -2124,7 +2124,7 @@ Jans Config API-&gt;&gt;Gluu Flex Admin UI:response</code></pre>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-18T15:17:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-18</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-03-02T08:38:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-03-02</span>
       
         <br>
         Created:
