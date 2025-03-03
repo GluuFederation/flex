@@ -21,11 +21,7 @@ logger = logging.getLogger("admin-ui")
 def main():
     manager = get_manager()
 
-    mapper = PersistenceMapper()
-    persistence_groups = mapper.groups().keys()
-
     wait_for_persistence(manager)
-
     render_env_config(manager)
 
     with manager.create_lock("admin-ui-setup"):
@@ -255,6 +251,11 @@ def resolve_conf_app(old_conf, new_conf):
         # add missing config under uiConfig
         if "allowSmtpKeystoreEdit" not in old_conf["uiConfig"]:
             old_conf["uiConfig"]["allowSmtpKeystoreEdit"] = True
+            should_update = True
+
+        # add missing intervalForSyncLicenseDetailsInDays under licenseConfig
+        if "intervalForSyncLicenseDetailsInDays" not in old_conf["licenseConfig"]:
+            old_conf["licenseConfig"]["intervalForSyncLicenseDetailsInDays"] = 30
             should_update = True
 
     # finalized status and conf
