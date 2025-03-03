@@ -69,7 +69,7 @@ npm run api
 6. Run the project.
 
 ```
-npm run install
+npm run start
 ```
 
 Once the project is compiled and started, UI can be accessed at URL: http://localhost:4100
