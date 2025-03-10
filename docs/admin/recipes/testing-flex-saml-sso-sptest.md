@@ -1,23 +1,29 @@
 ---
 tags:
   - administration
+  - test
   - SAML
   - SSO
 ---
 
-## Installing SAML IDP in Flex Server
+
+# Test SAML SSO with Flex
+
+This guide shows how to test Flex for SAML SSO. We will be using 
+[sptest](https://sptest.iamshowcase.com/) test service provider 
+to complete our test.
+
+## Installing SAML IDP in the Flex Server
 
 During installation the [Flex Server](../../../../), make sure you have 
-selected [Jans KC](https://docs.jans.io/head/janssen-server/keycloak/) 
-to be installed.
+selected the [Jans KC](https://docs.jans.io/head/janssen-server/keycloak/) 
+module to be installed.
 
 ![image](../../assets/flex-install-janskc.png)
 
 ## Configure IDP in Flex Server
 
-
-In this tutorial, we will use [Iamshowcase](https://sptest.iamshowcase.com/) 
-as the service provider. Follow the steps below to create a 
+Follow the steps below to create a 
 TR and apply them in [Flex Server](../../../../):
 
 * Download the SP metadata using the following command:
@@ -25,7 +31,7 @@ TR and apply them in [Flex Server](../../../../):
 wget https://sptest.iamshowcase.com/testsp_metadata.xml
 ```
 * Open the Flex Admin UI and navigate to `SAML > Configuration`.
-* Select IDP to `Keycloak`.
+* Select `Keycloak` as the IDP.
 ![image](../../assets/flex-select-idp.png)
 
 * Then navigate to `Website SSO` > `Add Service Provider`
@@ -62,11 +68,7 @@ incognito mode to avoid session issue.
 your user credentials, you will be redirected back to the SP’s protected page, 
 which will display the user session details.
 
-For Reference 
-```
-https://docs.jans.io/head/janssen-server/keycloak/keycloak-saml-sso/
-```
-
+Refer to the Janssen Server [SAML SSO](https://docs.jans.io/head/janssen-server/keycloak/keycloak-saml-sso/) documentation for further details.
 
 ## FAQ
 
