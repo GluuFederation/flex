@@ -12,14 +12,14 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/nightly/install/helm-install/local/">
+        <link rel="canonical" href="https://docs.gluu.org/nightly/admin/recipes/testing-flex-saml-sso-sptest/">
       
       <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
-        <title>Local Kubernetes Cluster - Gluu Flex Documentation</title>
+        <title>Testing Flex SAML SSO with sptest - Gluu Flex Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#install-gluu-server-locally-with-minikube-and-microk8s" class="md-skip">
+        <a href="#test-saml-sso-with-flex" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Local Kubernetes Cluster
+              Testing Flex SAML SSO with sptest
             
           </span>
         </div>
@@ -225,15 +225,13 @@
         
   
   
-    
-  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../" class="md-tabs__link md-tabs__link--active">
+      <a href="../../../install/" class="md-tabs__link">
         Installation
       </a>
     </li>
@@ -243,13 +241,15 @@
         
   
   
+    
+  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../../../admin/" class="md-tabs__link">
+      <a href="../../" class="md-tabs__link md-tabs__link--active">
         Administration
       </a>
     </li>
@@ -390,14 +390,12 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
       
       
@@ -419,7 +417,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../">Installation</a>
+          <a href="../../../install/">Installation</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -442,7 +440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../agama/prerequisites/" class="md-nav__link">
+      <a href="../../../install/agama/prerequisites/" class="md-nav__link">
         Prerequisites
       </a>
     </li>
@@ -454,14 +452,12 @@
               
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" >
       
       
       
@@ -485,7 +481,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../">Helm Deployments</a>
+          <a href="../../../install/helm-install/">Helm Deployments</a>
           
             <label for="__nav_2_3">
               <span class="md-nav__icon md-icon"></span>
@@ -506,66 +502,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Local Kubernetes Cluster
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../install/helm-install/local/" class="md-nav__link">
         Local Kubernetes Cluster
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
-    System Requirements
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation-steps" class="md-nav__link">
-    Installation Steps
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-gluu-flex" class="md-nav__link">
-    Configure Gluu Flex
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -577,7 +518,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../amazon-eks/" class="md-nav__link">
+      <a href="../../../install/helm-install/amazon-eks/" class="md-nav__link">
         Amazon EKS
       </a>
     </li>
@@ -591,7 +532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../google-gke/" class="md-nav__link">
+      <a href="../../../install/helm-install/google-gke/" class="md-nav__link">
         Google GKE
       </a>
     </li>
@@ -605,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../microsoft-azure/" class="md-nav__link">
+      <a href="../../../install/helm-install/microsoft-azure/" class="md-nav__link">
         Microsoft Azure AKS
       </a>
     </li>
@@ -619,7 +560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../rancher/" class="md-nav__link">
+      <a href="../../../install/helm-install/rancher/" class="md-nav__link">
         Rancher Marketplace
       </a>
     </li>
@@ -672,7 +613,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../docker-install/quick-start/" class="md-nav__link">
+      <a href="../../../install/docker-install/quick-start/" class="md-nav__link">
         Quick Start
       </a>
     </li>
@@ -686,7 +627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../docker-install/compose/" class="md-nav__link">
+      <a href="../../../install/docker-install/compose/" class="md-nav__link">
         Docker compose
       </a>
     </li>
@@ -743,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-install/vm-requirements/" class="md-nav__link">
+      <a href="../../../install/vm-install/vm-requirements/" class="md-nav__link">
         VM System Requirements
       </a>
     </li>
@@ -757,7 +698,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-install/ubuntu/" class="md-nav__link">
+      <a href="../../../install/vm-install/ubuntu/" class="md-nav__link">
         Ubuntu
       </a>
     </li>
@@ -771,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-install/rhel/" class="md-nav__link">
+      <a href="../../../install/vm-install/rhel/" class="md-nav__link">
         RHEL
       </a>
     </li>
@@ -785,7 +726,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../vm-install/suse/" class="md-nav__link">
+      <a href="../../../install/vm-install/suse/" class="md-nav__link">
         SUSE
       </a>
     </li>
@@ -812,12 +753,14 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
       
       
@@ -841,7 +784,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../admin/">Administration</a>
+          <a href="../../">Administration</a>
           
             <label for="__nav_3">
               <span class="md-nav__icon md-icon"></span>
@@ -864,7 +807,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/config/" class="md-nav__link">
+      <a href="../../config/" class="md-nav__link">
         Configuration
       </a>
     </li>
@@ -899,7 +842,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../admin/kubernetes-ops/">K8s Operations Guide</a>
+          <a href="../../kubernetes-ops/">K8s Operations Guide</a>
           
             <label for="__nav_3_3">
               <span class="md-nav__icon md-icon"></span>
@@ -922,7 +865,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/kubernetes-ops/upgrade/" class="md-nav__link">
+      <a href="../../kubernetes-ops/upgrade/" class="md-nav__link">
         Upgrade
       </a>
     </li>
@@ -936,7 +879,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/kubernetes-ops/admin-ui-private/" class="md-nav__link">
+      <a href="../../kubernetes-ops/admin-ui-private/" class="md-nav__link">
         Admin-UI Private
       </a>
     </li>
@@ -997,7 +940,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/introduction/" class="md-nav__link">
+      <a href="../../admin-ui/introduction/" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -1041,7 +984,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/auth-server-interaction/" class="md-nav__link">
+      <a href="../../admin-ui/auth-server-interaction/" class="md-nav__link">
         Auth Server Interaction
       </a>
     </li>
@@ -1062,7 +1005,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/configuration/" class="md-nav__link">
+      <a href="../../admin-ui/configuration/" class="md-nav__link">
         Configuration
       </a>
     </li>
@@ -1076,7 +1019,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/logs/" class="md-nav__link">
+      <a href="../../admin-ui/logs/" class="md-nav__link">
         Logs
       </a>
     </li>
@@ -1136,7 +1079,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/left-nav-menu/" class="md-nav__link">
+      <a href="../../admin-ui/left-nav-menu/" class="md-nav__link">
         Left Navigation Menu
       </a>
     </li>
@@ -1150,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/dashboard/" class="md-nav__link">
+      <a href="../../admin-ui/dashboard/" class="md-nav__link">
         Home
       </a>
     </li>
@@ -1164,7 +1107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/admin-menu/" class="md-nav__link">
+      <a href="../../admin-ui/admin-menu/" class="md-nav__link">
         Admin
       </a>
     </li>
@@ -1178,7 +1121,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/auth-server-menu/" class="md-nav__link">
+      <a href="../../admin-ui/auth-server-menu/" class="md-nav__link">
         Auth server
       </a>
     </li>
@@ -1192,7 +1135,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/schema-menu/" class="md-nav__link">
+      <a href="../../admin-ui/schema-menu/" class="md-nav__link">
         Schema
       </a>
     </li>
@@ -1206,7 +1149,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/services-menu/" class="md-nav__link">
+      <a href="../../admin-ui/services-menu/" class="md-nav__link">
         Services
       </a>
     </li>
@@ -1220,7 +1163,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/fido-menu/" class="md-nav__link">
+      <a href="../../admin-ui/fido-menu/" class="md-nav__link">
         FIDO
       </a>
     </li>
@@ -1234,7 +1177,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/smtp-menu/" class="md-nav__link">
+      <a href="../../admin-ui/smtp-menu/" class="md-nav__link">
         SMTP
       </a>
     </li>
@@ -1248,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/userMgmt-menu/" class="md-nav__link">
+      <a href="../../admin-ui/userMgmt-menu/" class="md-nav__link">
         Users
       </a>
     </li>
@@ -1269,7 +1212,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/faq/" class="md-nav__link">
+      <a href="../../admin-ui/faq/" class="md-nav__link">
         FAQ & Troubleshooting
       </a>
     </li>
@@ -1288,12 +1231,14 @@
               
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" checked>
       
       
       
@@ -1311,7 +1256,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../admin/recipes/">Flex Recipes</a>
+          <a href="../">Flex Recipes</a>
           
             <label for="__nav_3_5">
               <span class="md-nav__icon md-icon"></span>
@@ -1334,7 +1279,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/recipes/getting-started-rancher/" class="md-nav__link">
+      <a href="../getting-started-rancher/" class="md-nav__link">
         Getting Started with Rancher
       </a>
     </li>
@@ -1346,11 +1291,80 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../../admin/recipes/testing-flex-saml-sso-sptest/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Testing Flex SAML SSO with sptest
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Testing Flex SAML SSO with sptest
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing-saml-idp-in-the-flex-server" class="md-nav__link">
+    Installing SAML IDP in the Flex Server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-idp-in-flex-server" class="md-nav__link">
+    Configure IDP in Flex Server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-sp-in-iamshowcase" class="md-nav__link">
+    Configure SP in Iamshowcase
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-sso" class="md-nav__link">
+    Test SSO
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    FAQ
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1369,7 +1383,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/gluu-migration/" class="md-nav__link">
+      <a href="../../gluu-migration/" class="md-nav__link">
         Migrating from Gluu4
       </a>
     </li>
@@ -1910,22 +1924,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
-    System Requirements
+  <a href="#installing-saml-idp-in-the-flex-server" class="md-nav__link">
+    Installing SAML IDP in the Flex Server
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#installation-steps" class="md-nav__link">
-    Installation Steps
+  <a href="#configure-idp-in-flex-server" class="md-nav__link">
+    Configure IDP in Flex Server
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-gluu-flex" class="md-nav__link">
-    Configure Gluu Flex
+  <a href="#configure-sp-in-iamshowcase" class="md-nav__link">
+    Configure SP in Iamshowcase
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-sso" class="md-nav__link">
+    Test SSO
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    FAQ
   </a>
   
 </li>
@@ -1954,196 +1982,106 @@
     
       
       
-        <span class="md-tag">installation</span>
+        <span class="md-tag">test</span>
       
     
       
       
-        <span class="md-tag">helm</span>
+        <span class="md-tag">SAML</span>
+      
+    
+      
+      
+        <span class="md-tag">SSO</span>
       
     
   </nav>
 
 
 
-  <a href="https://github.com/GluuFederation/flex/edit/main/docs/install/helm-install/local.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/recipes/testing-flex-saml-sso-sptest.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="install-gluu-server-locally-with-minikube-and-microk8s">Install Gluu Server Locally with minikube and MicroK8s<a class="headerlink" href="#install-gluu-server-locally-with-minikube-and-microk8s" title="Permanent link">#</a></h1>
-<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
-<p>For local deployments like <code>minikube</code> and <code>MicroK8s</code> or cloud installations in demo mode, resources may be set to the minimum as below:</p>
+<h1 id="test-saml-sso-with-flex">Test SAML SSO with Flex<a class="headerlink" href="#test-saml-sso-with-flex" title="Permanent link">#</a></h1>
+<p>This guide shows how to test Flex for SAML SSO. We will be using 
+<a href="https://sptest.iamshowcase.com/">sptest</a> test service provider 
+to complete our test.</p>
+<h2 id="installing-saml-idp-in-the-flex-server">Installing SAML IDP in the Flex Server<a class="headerlink" href="#installing-saml-idp-in-the-flex-server" title="Permanent link">#</a></h2>
+<p>During installation the <a href="../../../../">Flex Server</a>, make sure you have 
+selected the <a href="https://docs.jans.io/head/janssen-server/keycloak/">Jans KC</a> 
+module to be installed.</p>
+<p><img alt="image" src="../../../assets/flex-install-janskc.png" /></p>
+<h2 id="configure-idp-in-flex-server">Configure IDP in Flex Server<a class="headerlink" href="#configure-idp-in-flex-server" title="Permanent link">#</a></h2>
+<p>Follow the steps below to create a 
+TR and apply them in <a href="../../../../">Flex Server</a>:</p>
 <ul>
-<li>8 GB RAM</li>
-<li>4 CPU cores</li>
-<li>50 GB hard-disk</li>
+<li>Download the SP metadata using the following command:
+<div class="highlight"><span class="filename">Command</span><pre><span></span><code>wget<span class="w"> </span>https://sptest.iamshowcase.com/testsp_metadata.xml
+</code></pre></div></li>
+<li>Open the Flex Admin UI and navigate to <code>SAML &gt; Configuration</code>.</li>
+<li>
+<p>Select <code>Keycloak</code> as the IDP.
+<img alt="image" src="../../../assets/flex-select-idp.png" /></p>
+</li>
+<li>
+<p>Then navigate to <code>Website SSO</code> &gt; <code>Add Service Provider</code>
+<img alt="image" src="../../../assets/flex-website-sso.png" /></p>
+</li>
+<li>
+<p>Release the required attributes (e.g., <code>username</code>, <code>inum</code>).
+<img alt="image" src="../../../assets/flex-release-attribute.png" /></p>
+</li>
+<li>
+<p>Finally, click Apply.</p>
+</li>
 </ul>
-<p>Use the listing below for a detailed estimation of minimum required resources. The table contains the default resources recommendation per service. Depending on the use of each service the resources need may increase or decrease.</p>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>CPU Unit</th>
-<th>RAM</th>
-<th>Disk Space</th>
-<th>Processor Type</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Auth server</td>
-<td>2.5</td>
-<td>2.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>fido2</td>
-<td>0.5</td>
-<td>0.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>scim</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>config - job</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes on fresh installs</td>
-</tr>
-<tr>
-<td>persistence - job</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes on fresh installs</td>
-</tr>
-<tr>
-<td>nginx</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>Yes if ALB/Istio not used</td>
-</tr>
-<tr>
-<td>auth-key-rotation</td>
-<td>0.3</td>
-<td>0.3GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No [Strongly recommended]</td>
-</tr>
-<tr>
-<td>config-api</td>
-<td>1</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>casa</td>
-<td>0.5</td>
-<td>0.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>admin-ui</td>
-<td>2</td>
-<td>2GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>link</td>
-<td>0.5</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>saml</td>
-<td>0.5</td>
-<td>1GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<p>Releases of images are in style 1.0.0-beta.0, 1.0.0-0</p>
-<h2 id="installation-steps">Installation Steps<a class="headerlink" href="#installation-steps" title="Permanent link">#</a></h2>
-<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
-<p>Start a fresh Ubuntu <code>18.04</code>/<code>20.04</code>/<code>22.04</code> VM with ports <code>443</code> and <code>80</code> open. Then execute the following:</p>
-<p><div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>su<span class="w"> </span>-
+<h2 id="configure-sp-in-iamshowcase">Configure SP in Iamshowcase<a class="headerlink" href="#configure-sp-in-iamshowcase" title="Permanent link">#</a></h2>
+<p>After configuring the IDP in Flex Server, it's time to connect the service 
+provider (SP) with the IDP:</p>
+<ul>
+<li>Download the IDP metadata from the following URL:
+<div class="highlight"><pre><span></span><code>https://&lt;your-janssen-server&gt;/kc/realms/jans/protocol/saml/descriptor
+</code></pre></div></li>
+<li>Go to: <code>https://sptest.iamshowcase.com/instructions#spinit</code> 
+and upload the IDP metadata.</li>
+<li>After the metadata is uploaded, it will provide you with an 
+SP link to test the SAML SSO flow.
+<img alt="image" src="../../../assets/flex-sp-link.png" /></li>
+</ul>
+<h2 id="test-sso">Test SSO<a class="headerlink" href="#test-sso" title="Permanent link">#</a></h2>
+<ul>
+<li>
+<p>Copy that link and open it in a browser. You can open it in 
+incognito mode to avoid session issue.</p>
+</li>
+<li>
+<p>This will redirect you to the Janssen login page. Once you log in with 
+your user credentials, you will be redirected back to the SP’s protected page, 
+which will display the user session details.</p>
+</li>
+</ul>
+<p>Refer to the Janssen Server <a href="https://docs.jans.io/head/janssen-server/keycloak/keycloak-saml-sso/">SAML SSO</a> documentation for further details.</p>
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">#</a></h2>
+<p>Check KC scheduler log for any TR issue 
+<div class="highlight"><pre><span></span><code>/opt/kc-scheduler/logs/scheduler.log
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>u+x<span class="w"> </span>startflexdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./startflexdemo.sh
+Also check file directory inside 
+<div class="highlight"><pre><span></span><code>/opt/idp/configs/keycloak/sp/metadata
 </code></pre></div></p>
-<p>This will install Docker, Microk8s, Helm and Gluu with the default settings that can be found inside <a href="https://github.com/GluuFederation/flex/blob/main/charts/gluu/values.yaml">values.yaml</a>.  </p>
-<p>The installer will automatically add a record to your hosts record in the VM but if you want to access the endpoints outside the VM you must map the <code>ip</code> of the instance running Ubuntu to the FQDN you provided and then access the endpoints at your browser such in the example in the table below.</p>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>Example endpoint</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Auth server</td>
-<td><code>https://FQDN/.well-known/openid-configuration</code></td>
-</tr>
-<tr>
-<td>fido2</td>
-<td><code>https://FQDN/.well-known/fido2-configuration</code></td>
-</tr>
-<tr>
-<td>scim</td>
-<td><code>https://FQDN/.well-known/scim-configuration</code></td>
-</tr>
-<tr>
-<td>Casa</td>
-<td><code>https://FQDN/jans-casa</code></td>
-</tr>
-<tr>
-<td>Admin-UI</td>
-<td><code>https://FQDN/admin</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="configure-gluu-flex">Configure Gluu Flex<a class="headerlink" href="#configure-gluu-flex" title="Permanent link">#</a></h2>
-<p>You can use the Janssen <a href="https://docs.jans.io/head/admin/kubernetes-ops/tui-k8s/">TUI</a> to configure Flex components. The TUI calls the Config API to perform ad hoc configuration.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-12-19T13:23:12+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-12-19</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-03-10T11:53:11+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-03-10</span>
       
         <br>
         Created:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-09-22T19:37:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-09-22</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-03-10T11:53:11+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-03-10</span>
       
     
   </small>
@@ -2168,7 +2106,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview" rel="prev">
+        <a href="../getting-started-rancher/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting Started with Rancher" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -2177,20 +2115,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Overview
+              Getting Started with Rancher
             </div>
           </div>
         </a>
       
       
         
-        <a href="../amazon-eks/" class="md-footer__link md-footer__link--next" aria-label="Next: Amazon EKS" rel="next">
+        <a href="../../gluu-migration/" class="md-footer__link md-footer__link--next" aria-label="Next: Migrating from Gluu4" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Amazon EKS
+              Migrating from Gluu4
             </div>
           </div>
           <div class="md-footer__button md-icon">
