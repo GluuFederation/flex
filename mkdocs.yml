@@ -153,6 +153,7 @@ nav:
     - 'Flex Recipes':
         - 'admin/recipes/README.md'
         - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
+        - 'Testing Flex SAML SSO with sptest': 'admin/recipes/testing-flex-saml-sso-sptest.md'
     -  'Migrating from Gluu4': 'admin/gluu-migration.md'
 
 - 'Reference':
