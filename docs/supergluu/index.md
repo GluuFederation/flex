@@ -51,7 +51,7 @@ authentications after the initial device registration process.
 ### Testing locally
 
 Super Gluu security is based on SSL and therefore expects a public server with valid certificates.
-To test locally on a **non-public** server, [follow these steps](./developer-guide/index.md#testing-locally-)
+To test locally on a **non-public** server, [follow these steps](../supergluu/developer-guide/index.md#testing-locally)
 
 ## Download Super Gluu
 Super Gluu is available for free on the iOS and Android app marketplaces!
