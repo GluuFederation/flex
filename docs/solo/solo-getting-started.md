@@ -24,7 +24,7 @@ flowchart TD
 
     click A href "#agama-lab-sign-in"
     click B href "#subscription"
-    click C href "#setting-up-gluu-solo-environment"
+    click C href "#setting-up-gluu-solo-cloud-environment-and-idp"
     click D href "#go-live"
 ```
 
