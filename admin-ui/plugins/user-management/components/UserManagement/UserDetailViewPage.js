@@ -1,72 +1,74 @@
-import React, { Fragment } from 'react'
-import { Container, Row, Col } from 'Components'
-import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import { useSelector } from 'react-redux'
-import moment from 'moment'
+import React, { Fragment } from "react";
+import { Container, Row, Col } from "Components";
+import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
+import { useSelector } from "react-redux";
+import moment from "moment";
 
 const UserDetailViewPage = ({ row }) => {
-  const { rowData } = row
-  const DOC_SECTION = 'user'
+  const { rowData } = row;
+  const DOC_SECTION = "user";
   const personAttributes = useSelector(
     (state) => state.attributesReducerRoot.items
-  )
+  );
 
   const getCustomAttributeById = (id) => {
-    let claimData = null
+    let claimData = null;
     for (let i in personAttributes) {
       if (personAttributes[i].name == id) {
-        claimData = personAttributes[i]
+        claimData = personAttributes[i];
       }
     }
-    return claimData
-  }
+    return claimData;
+  };
   return (
-    <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
+    <Container style={{ backgroundColor: "#F5F5F5", minWidth: "100%" }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
-            label='fields.name'
+            label="fields.name"
             value={rowData.displayName}
             doc_category={DOC_SECTION}
-            doc_entry='displayName'
+            doc_entry="displayName"
           />
         </Col>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
-            label='fields.givenName'
+            label="fields.givenName"
             value={rowData.givenName}
             doc_category={DOC_SECTION}
-            doc_entry='givenName'
+            doc_entry="givenName"
           />
         </Col>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
-            label='fields.userName'
+            label="fields.userName"
             value={rowData.userId}
             doc_category={DOC_SECTION}
-            doc_entry='userId'
+            doc_entry="userId"
           />
         </Col>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
-            label='fields.email'
-            doc_entry='mail'
+            label="fields.email"
+            doc_entry="mail"
             value={rowData?.mail}
             doc_category={DOC_SECTION}
           />
         </Col>
         {rowData.customAttributes?.map((data, key) => {
-          let valueToShow = ''
-          if (data.name == 'birthdate') {
-            valueToShow = moment(data?.values[0]).format('YYYY-MM-DD') || ''
+          let valueToShow = "";
+          if (data.name == "birthdate") {
+            valueToShow = moment(data?.values[0]).format("YYYY-MM-DD") || "";
           } else {
-            valueToShow = data?.values?.[0] || ''
+            valueToShow = data.multiValued
+              ? data?.values?.join(", ")
+              : data.value;
           }
 
           return (
-            <Fragment key={'customAttributes' + key}>
-              {valueToShow !== '' ? (
-                <Col sm={6} xl={4} key={'customAttributes' + key}>
+            <Fragment key={"customAttributes" + key}>
+              {valueToShow !== "" ? (
+                <Col sm={6} xl={4} key={"customAttributes" + key}>
                   <GluuFormDetailRow
                     label={
                       getCustomAttributeById(data?.name)?.displayName ||
@@ -78,7 +80,7 @@ const UserDetailViewPage = ({ row }) => {
                     }
                     isDirect={true}
                     value={
-                      typeof valueToShow === 'boolean'
+                      typeof valueToShow === "boolean"
                         ? JSON.stringify(valueToShow)
                         : valueToShow
                     }
@@ -86,10 +88,10 @@ const UserDetailViewPage = ({ row }) => {
                 </Col>
               ) : null}
             </Fragment>
-          )
+          );
         })}
       </Row>
     </Container>
-  )
-}
-export default UserDetailViewPage
+  );
+};
+export default UserDetailViewPage;
