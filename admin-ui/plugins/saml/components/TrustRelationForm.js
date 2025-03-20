@@ -246,7 +246,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   }, [savedForm]);
 
   useEffect(() => {
-    const options = {};
+    const options = { limit: 70 };
     dispatch(getAttributes({ options }));
   }, []);
 
