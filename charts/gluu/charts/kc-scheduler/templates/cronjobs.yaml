@@ -27,7 +27,11 @@ spec:
         spec:
         {{- with .Values.image.pullSecrets }}
           imagePullSecrets:
-            {{- toYaml . | nindent 8 }}
+            {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 10 }}
         {{- end }}
           dnsPolicy: {{ .Values.dnsPolicy | quote }}
         {{- with .Values.dnsConfig }}
