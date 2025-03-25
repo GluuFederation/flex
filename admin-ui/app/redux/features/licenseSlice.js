@@ -69,6 +69,7 @@ const licenseSlice = createSlice({
       state.isLoading = true
     },
     retrieveLicenseKeyResponse: (state, action) => {
+      state.isLoading = false
       state.isNoValidLicenseKeyFound = action.payload.isNoValidLicenseKeyFound
     },
     checkThresholdLimit: (state, action) => {
