@@ -7,6 +7,7 @@ tags:
 - docker compose
 ---
 
+# Flex Monolith Container Configuration
 
 !!! Warning 
     **This image is for testing and development purposes only. Use Flex [helm charts](https://github.com/GluuFederation/flex/tree/main/charts/gluu) for production setups.**

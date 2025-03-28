@@ -5,7 +5,7 @@ tags:
 - configuration
 ---
 
-# Configuration
+# Gluu Flex Admin UI Configuration
 
 This document outlines the configuration process for Gluu Flex Admin UI, with a focus on essential components stored in the Auth Server's persistence layer. These components include role-permission mapping, OIDC client details for accessing the Auth Server, OIDC client details for accessing the Token Server, OIDC client details for accessing the License APIs, and license metadata.
 

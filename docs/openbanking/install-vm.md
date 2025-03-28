@@ -1,3 +1,5 @@
+# Installing and Configuring Gluu Open Banking Identity Platform on a VM
+
 ## VM Based Distribution
 
 This section covers details on installing Gluu Openbanking Indentity Platform 1.0 in a VM. We recommend the Cloud Native Distribution for production environment. However, for development and testing VM distribution will be easier.
