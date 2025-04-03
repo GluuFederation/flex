@@ -13,7 +13,7 @@ A containerized application for Gluu Admin UI frontend.
 ## Versions
 
 See [Releases](https://github.com/GluuFederation/docker-admin-ui/releases) for stable versions.
-For bleeding-edge/unstable version, use `gluufederation/admin-ui:0.0.0-nightly`.
+For bleeding-edge/unstable version, use `gluufederation/admin-ui:6.0.0-1`.
 
 ## Environment Variables
 
