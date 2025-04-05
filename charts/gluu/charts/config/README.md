@@ -1,6 +1,6 @@
 # config
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 6.0.0](https://img.shields.io/badge/AppVersion-6.0.0-informational?style=flat-square)
+![Version: 1.5.0](https://img.shields.io/badge/Version-1.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 5.5.0](https://img.shields.io/badge/AppVersion-5.5.0-informational?style=flat-square)
 
 Configuration parameters for setup and initial configuration secret and config layers used by Gluu services.
 
@@ -91,7 +91,7 @@ Kubernetes: `>=v1.21.0-0`
 | fullNameOverride | string | `""` |  |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
 | image.repository | string | `"janssenproject/configurator"` | Image  to use for deploying. |
-| image.tag | string | `"2.0.0-1"` | Image  tag to use for deploying. |
+| image.tag | string | `"1.5.0-1"` | Image  tag to use for deploying. |
 | lifecycle | object | `{}` |  |
 | migration | object | `{"enabled":false,"migrationDataFormat":"ldif","migrationDir":"/ce-migration"}` | CE to CN Migration section |
 | migration.enabled | bool | `false` | Boolean flag to enable migration from CE |
