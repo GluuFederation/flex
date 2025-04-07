@@ -1,30 +1,30 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
-import { useTranslation } from "react-i18next";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import debounce from "lodash/debounce";
-import { CardBody, Card, Form, Col, Row, FormGroup } from "Components";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import React, { useEffect, useState, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router"
+import { useTranslation } from "react-i18next"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import debounce from "lodash/debounce"
+import { CardBody, Card, Form, Col, Row, FormGroup } from "Components"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 
-import SetTitle from "Utils/SetTitle";
-import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuTypeAhead from "Routes/Apps/Gluu/GluuTypeAhead";
-import GluuToogleRow from "Routes/Apps/Gluu/GluuToogleRow";
-import GluuRemovableInputRow from "Routes/Apps/Gluu/GluuRemovableInputRow";
-import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
-import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog";
-import { SSA } from "Utils/ApiResources";
-import { buildPayload } from "Utils/PermChecker";
-import { createSsa, toggleSaveConfig } from "../../redux/features/SsaSlice";
-import { getJsonConfig } from "../../redux/features/jsonConfigSlice";
-import { FETCHING_JSON_PROPERTIES } from "../../common/Constants";
-import CustomAttributesList from "./CustomAttributesList";
-import { GRANT_TYPES, DEBOUNCE_DELAY } from "./constants";
+import SetTitle from "Utils/SetTitle"
+import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle"
+import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow"
+import GluuTypeAhead from "Routes/Apps/Gluu/GluuTypeAhead"
+import GluuToogleRow from "Routes/Apps/Gluu/GluuToogleRow"
+import GluuRemovableInputRow from "Routes/Apps/Gluu/GluuRemovableInputRow"
+import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter"
+import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog"
+import { SSA } from "Utils/ApiResources"
+import { buildPayload } from "Utils/PermChecker"
+import { createSsa, toggleSaveConfig } from "../../redux/features/SsaSlice"
+import { getJsonConfig } from "../../redux/features/jsonConfigSlice"
+import { FETCHING_JSON_PROPERTIES } from "../../common/Constants"
+import CustomAttributesList from "./CustomAttributesList"
+import { GRANT_TYPES, DEBOUNCE_DELAY } from "./constants"
 
 const validationSchema = Yup.object({
   software_id: Yup.string(),
@@ -32,29 +32,29 @@ const validationSchema = Yup.object({
   description: Yup.string(),
   org_id: Yup.string(),
   grant_types: Yup.array(),
-});
+})
 
 const SsaAddPage = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const [modal, setModal] = useState(false);
-  const [isExpirable, setIsExpirable] = useState(false);
-  const [expirationDate, setExpirationDate] = useState(null);
-  const [selectedAttributes, setSelectedAttributes] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [modifiedFields, setModifiedFields] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modal, setModal] = useState(false)
+  const [isExpirable, setIsExpirable] = useState(false)
+  const [expirationDate, setExpirationDate] = useState(null)
+  const [selectedAttributes, setSelectedAttributes] = useState([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [modifiedFields, setModifiedFields] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const { savedConfig } = useSelector((state) => state.ssaReducer);
+  const { savedConfig } = useSelector((state) => state.ssaReducer)
   const customAttributes = useSelector(
     (state) =>
       state.jsonConfigReducer.configuration?.ssaConfiguration
         ?.ssaCustomAttributes || []
-  );
+  )
 
-  SetTitle(t("titles.ssa_management"));
+  SetTitle(t("titles.ssa_management"))
 
   const formik = useFormik({
     initialValues: {
@@ -69,75 +69,75 @@ const SsaAddPage = () => {
     validationSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
-      setModal(true);
+      setModal(true)
     },
-  });
+  })
 
   useEffect(() => {
-    const userAction = {};
-    buildPayload(userAction, FETCHING_JSON_PROPERTIES, {});
-    dispatch(getJsonConfig({ action: userAction }));
-  }, [dispatch]);
+    const userAction = {}
+    buildPayload(userAction, FETCHING_JSON_PROPERTIES, {})
+    dispatch(getJsonConfig({ action: userAction }))
+  }, [dispatch])
 
   useEffect(() => {
     if (savedConfig) {
-      navigate("/auth-server/config/ssa");
+      navigate("/auth-server/config/ssa")
     }
-    return () => dispatch(toggleSaveConfig(false));
-  }, [savedConfig, navigate, dispatch]);
+    return () => dispatch(toggleSaveConfig(false))
+  }, [savedConfig, navigate, dispatch])
 
   const handleSearchChange = useCallback(
     debounce((value) => {
-      setSearchQuery(value);
+      setSearchQuery(value)
     }, DEBOUNCE_DELAY),
     []
-  );
+  )
 
   const handleAttributeSelect = useCallback(
     (attribute) => {
-      setSelectedAttributes((prev) => [...prev, attribute]);
+      setSelectedAttributes((prev) => [...prev, attribute])
       // Initialize the custom attribute in formik values
-      formik.setFieldValue(attribute, "");
+      formik.setFieldValue(attribute, "")
     },
     [formik]
-  );
+  )
 
   const handleAttributeRemove = useCallback(
     (attribute) => {
       setSelectedAttributes((prev) =>
         prev.filter((attr) => attr !== attribute)
-      );
+      )
       // Remove the custom attribute from formik values
-      formik.setFieldValue(attribute, undefined);
-      const newModifiedFields = { ...modifiedFields };
-      delete newModifiedFields[attribute];
-      setModifiedFields(newModifiedFields);
+      formik.setFieldValue(attribute, undefined)
+      const newModifiedFields = { ...modifiedFields }
+      delete newModifiedFields[attribute]
+      setModifiedFields(newModifiedFields)
     },
     [modifiedFields, formik]
-  );
+  )
 
   const submitForm = async (userMessage) => {
     try {
-      setIsSubmitting(true);
+      setIsSubmitting(true)
 
       // Get all form values including custom attributes
-      const formValues = { ...formik.values };
+      const formValues = { ...formik.values }
 
       // Add expiration if applicable
-      const timestamp = expirationDate?.getTime();
+      const timestamp = expirationDate?.getTime()
       formValues.expiration =
-        isExpirable && timestamp ? Math.floor(timestamp / 1000) : null;
+        isExpirable && timestamp ? Math.floor(timestamp / 1000) : null
 
-      const userAction = {};
-      buildPayload(userAction, userMessage, formValues);
-      await dispatch(createSsa({ action: userAction }));
-      setModal(false);
+      const userAction = {}
+      buildPayload(userAction, userMessage, formValues)
+      await dispatch(createSsa({ action: userAction }))
+      setModal(false)
     } catch (error) {
-      console.error("Failed to submit SSA form:", error);
+      console.error("Failed to submit SSA form:", error)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <>
@@ -147,8 +147,8 @@ const SsaAddPage = () => {
             <Col sm={8}>
               <Form
                 onSubmit={(e) => {
-                  e.preventDefault();
-                  formik.handleSubmit();
+                  e.preventDefault()
+                  formik.handleSubmit()
                 }}
               >
                 <GluuInputRow
@@ -328,7 +328,7 @@ const SsaAddPage = () => {
         isLoading={isSubmitting}
       />
     </>
-  );
-};
+  )
+}
 
-export default SsaAddPage;
+export default SsaAddPage
