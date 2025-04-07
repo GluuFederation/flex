@@ -204,11 +204,11 @@ spec:
 kind: CronJob
 apiVersion: batch/v1
 metadata:
-  name: {{ include "janssen-all-in-one.fullname" . }}-cleanup
+  name: {{ include "flex-all-in-one.fullname" . }}-cleanup
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Release.Name }}-{{ include "janssen-all-in-one.name" . }}-cleanup
-{{ include "janssen-all-in-one.labels" . | indent 4 }}
+    app: {{ .Release.Name }}-{{ include "flex-all-in-one.name" . }}-cleanup
+{{ include "flex-all-in-one.labels" . | indent 4 }}
 {{- if (index .Values "cleanup" "additionalLabels") }}
 {{ toYaml (index .Values "cleanup" "additionalLabels") | indent 4 }}
 {{- end }}
@@ -236,7 +236,7 @@ spec:
 {{ toYaml . | indent 12 }}
         {{- end }}
           containers:
-            - name: {{ include "janssen-all-in-one.name" . }}-cleanup
+            - name: {{ include "flex-all-in-one.name" . }}-cleanup
               {{- if or (index .Values "cleanup" "customScripts") (index .Values "cleanup" "customCommand") }}
               command:
                 {{- if index .Values "cleanup" "customCommand" }}
@@ -253,8 +253,8 @@ spec:
               {{- end}}
               image: "{{ index .Values "cleanup" "image" "repository" }}:{{ index .Values "cleanup" "image" "tag" }}"
               env:
-                {{- include "janssen-all-in-one.usr-envs" . | indent 16 }}
-                {{- include "janssen-all-in-one.usr-secret-envs" . | indent 16 }}
+                {{- include "flex-all-in-one.usr-envs" . | indent 16 }}
+                {{- include "flex-all-in-one.usr-secret-envs" . | indent 16 }}
               imagePullPolicy: {{ index .Values "cleanup" "image" "pullPolicy" }}
               lifecycle:
 {{- toYaml (index .Values "cleanup" "lifecycle") | nindent 16 }}
@@ -262,7 +262,7 @@ spec:
               {{- with (index .Values "cleanup" "volumeMounts") }}
 {{- toYaml . | nindent 16 }}
               {{- end }}
-              {{- with (include "janssen-all-in-one.config.schema" . | fromYaml).volumeMounts }}
+              {{- with (include "flex-all-in-one.config.schema" . | fromYaml).volumeMounts }}
 {{- toYaml . | nindent 16 }}
               {{- end }}
               envFrom:
@@ -287,7 +287,7 @@ spec:
           {{- with (index .Values "cleanup" "volumes") }}
 {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with (include "janssen-all-in-one.config.schema" . | fromYaml).volumes }}
+          {{- with (include "flex-all-in-one.config.schema" . | fromYaml).volumes }}
 {{- toYaml . | nindent 12 }}
           {{- end }}
           restartPolicy: Never
