@@ -55,7 +55,8 @@
     "add_source_ldap_server": "Add source LDAP server",
     "remove_source_server": "Remove source server",
     "copy_to_clipboard": "Copy To Clipboard",
-    "export_csv": "Export CSV"
+    "export_csv": "Export CSV",
+    "add_custom_attributes": "Add custom attributes"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
