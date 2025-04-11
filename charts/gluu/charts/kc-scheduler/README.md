@@ -32,10 +32,8 @@ Kubernetes: `>=v1.22.0-0`
 | dnsPolicy | string | `""` | Add custom dns policy |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
-| image.repository | string | `"ghcr.io/janssenproject/jans/kc-scheduler"` | Image  to use for deploying. |
-| image.tag | string | `"1.5.0-1"` | Image  tag to use for deploying. |
 | image.repository | string | `"ghcr.io/janssenproject/jans/cloudtools"` | Image  to use for deploying. |
-| image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
+| image.tag | string | `"1.5.0-1"` | Image  tag to use for deploying. |
 | interval | int | `10` | Interval of running the scheduler (in minutes) |
 | lifecycle | object | `{}` |  |
 | resources | object | `{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}}` | Resource specs. |
