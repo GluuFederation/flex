@@ -1,5 +1,33 @@
 # Changelog
 
+## [5.5.0](https://github.com/GluuFederation/flex/compare/v5.4.0...v5.5.0) (2025-04-11)
+
+
+### Features
+
+* add custom java options for AIO and tolerations ([#2030](https://github.com/GluuFederation/flex/issues/2030)) ([b1d99ab](https://github.com/GluuFederation/flex/commit/b1d99ab84d8ca8a57a21cc226b2ada1943e51d60))
+* add field in Admin UI configuration to set interval to sync license details into configuration ([#2016](https://github.com/GluuFederation/flex/issues/2016)) ([5510b97](https://github.com/GluuFederation/flex/commit/5510b97041b0a01ec96f732412deeea9e9927077))
+* **charts:** cloudtools integration with Helm charts ([#2037](https://github.com/GluuFederation/flex/issues/2037)) ([b82564d](https://github.com/GluuFederation/flex/commit/b82564d4ec1c5c755cc18164ad0123ca9eb57dac))
+* **docker-admin-ui:** add configuration to set interval to sync license details ([#2018](https://github.com/GluuFederation/flex/issues/2018)) ([bcc5cb2](https://github.com/GluuFederation/flex/commit/bcc5cb2d18f7cd25ec78c9ebf7748e3bb606adfc))
+
+
+### Bug Fixes
+
+* **admin-ui:** adding ssa custom attributes ([#2007](https://github.com/GluuFederation/flex/issues/2007)) ([b48e7af](https://github.com/GluuFederation/flex/commit/b48e7af6c4ce4bef436aaa79e98d184d75217b6a))
+* **admin-ui:** change max size of attribute results ([#2025](https://github.com/GluuFederation/flex/issues/2025)) ([95622ac](https://github.com/GluuFederation/flex/commit/95622ace855127ff6d2a15c2d24411eac577805e))
+* **admin-ui:** fix closing loader ([#2031](https://github.com/GluuFederation/flex/issues/2031)) ([d5e58c8](https://github.com/GluuFederation/flex/commit/d5e58c86a872a218454ff43fd612c865fecbf72d))
+* **admin-ui:** fix get time for expired date ([#2041](https://github.com/GluuFederation/flex/issues/2041)) ([d220989](https://github.com/GluuFederation/flex/commit/d220989885038994a86ae1c322ed6c129a2bcd33))
+* **admin-ui:** fix showing customer attributes on user preview for string or array ([442c648](https://github.com/GluuFederation/flex/commit/442c648b146402851e962aea23201fbaf4ce5671))
+* **admin-ui:** fix showing user custom attributes ([#2026](https://github.com/GluuFederation/flex/issues/2026)) ([442c648](https://github.com/GluuFederation/flex/commit/442c648b146402851e962aea23201fbaf4ce5671))
+* **charts:** broken istio integration ([#2023](https://github.com/GluuFederation/flex/issues/2023)) ([d7de4ca](https://github.com/GluuFederation/flex/commit/d7de4ca759872e678e611f378b01cbeeadda657e))
+* **docs:** add SAML SSO test instructions ([#2020](https://github.com/GluuFederation/flex/issues/2020)) ([c52ad6c](https://github.com/GluuFederation/flex/commit/c52ad6c26e1a63784dd31fdc1fdbcaabaf860f98))
+
+
+### Miscellaneous Chores
+
+* remove commit check ([190fbd1](https://github.com/GluuFederation/flex/commit/190fbd1c0844fd36a5827769b664754850cea328))
+* update srouce version ([4849729](https://github.com/GluuFederation/flex/commit/4849729684949746616051e095c6c0c664656960))
+
 ## [5.4.0](https://github.com/GluuFederation/flex/compare/v5.3.0...v5.4.0) (2025-02-23)
 
 
