@@ -63,6 +63,13 @@ function JsonPropertyBuilder({
     )
   }
 
+  function isEmptyArray(item) {
+    return (
+      (Array.isArray(item) && item.length === 0) ||
+      (schema?.type === "array" && schema?.items?.type === "string")
+    )
+  }
+
   if (isBoolean(propValue)) {
     return (
       <GluuInlineInput
@@ -110,7 +117,7 @@ function JsonPropertyBuilder({
       />
     )
   }
-  if (isStringArray(propValue)) {
+  if (isStringArray(propValue) || isEmptyArray(propValue)) {
     return (
       <GluuInlineInput
         id={propKey}

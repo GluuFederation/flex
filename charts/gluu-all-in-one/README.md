@@ -140,6 +140,30 @@ Kubernetes: `>=v1.22.0-0`
 | certManager.certificate.issuerName | string | `""` |  |
 | certManager.certificate.tlsSecretName | string | `"tls-certificate"` |  |
 | city | string | `"Austin"` | City. Used for certificate creation. |
+| cleanup | object | `{"additionalAnnotations":{},"additionalLabels":{},"customCommand":[],"customScripts":[],"dnsConfig":{},"dnsPolicy":"","enabled":true,"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/cloudtools","tag":"0.0.0-nightly"},"interval":60,"lifecycle":{},"limit":1000,"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Cleanup expired entries in persistence |
+| cleanup.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
+| cleanup.additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
+| cleanup.customCommand | list | `[]` | Add custom job's command. If passed, it will override the default conditional command. |
+| cleanup.customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
+| cleanup.dnsConfig | object | `{}` | Add custom dns config |
+| cleanup.dnsPolicy | string | `""` | Add custom dns policy |
+| cleanup.enabled | bool | `true` | Boolean flag to enable/disable the cleanup cronjob chart. |
+| cleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
+| cleanup.image.pullSecrets | list | `[]` | Image Pull Secrets |
+| cleanup.image.repository | string | `"ghcr.io/janssenproject/jans/cloudtools"` | Image  to use for deploying. |
+| cleanup.image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
+| cleanup.interval | int | `60` | Interval of running the cleanup process (in minutes) |
+| cleanup.limit | int | `1000` | Max. numbers of entries to cleanup |
+| cleanup.resources | object | `{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}}` | Resource specs. |
+| cleanup.resources.limits.cpu | string | `"300m"` | CPU limit. |
+| cleanup.resources.limits.memory | string | `"300Mi"` | Memory limit. |
+| cleanup.resources.requests.cpu | string | `"300m"` | CPU request. |
+| cleanup.resources.requests.memory | string | `"300Mi"` | Memory request. |
+| cleanup.usrEnvs | object | `{"normal":{},"secret":{}}` | Add custom normal and secret envs to the service |
+| cleanup.usrEnvs.normal | object | `{}` | Add custom normal envs to the service variable1: value1 |
+| cleanup.usrEnvs.secret | object | `{}` | Add custom secret envs to the service variable1: value1 |
+| cleanup.volumeMounts | list | `[]` | Configure any additional volumesMounts that need to be attached to the containers |
+| cleanup.volumes | list | `[]` | Configure any additional volumes that need to be attached to the pod |
 | cnAwsConfigFile | string | `"/etc/jans/conf/aws_config_file"` |  |
 | cnAwsSecretsReplicaRegionsFile | string | `"/etc/jans/conf/aws_secrets_replica_regions"` |  |
 | cnAwsSharedCredentialsFile | string | `"/etc/jans/conf/aws_shared_credential_file"` |  |

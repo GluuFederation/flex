@@ -9,7 +9,7 @@ keywords:
   - Auth keys Rotation
 home: https://docs.gluu.org
 sources:
-  - https://github.com/JanssenProject/docker-jans-certmanager
+  - https://github.com/JanssenProject/docker-jans-cloudtools
   - https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/auth-server-key-rotation
 maintainers:
   - name: Mohammad Abudayyeh
