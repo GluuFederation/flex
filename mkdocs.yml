@@ -161,11 +161,6 @@ nav:
     - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
     - 'Flex Monolith Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
     - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
-- 'Super Gluu':
-    - 'supergluu/index.md'
-    - User Guide: 'supergluu/user-guide/index.md'
-    - Administration Guide: 'supergluu/admin-guide/index.md'
-    - Developer Guide: 'supergluu/developer-guide/index.md'
 
 - 'Open Banking':
   - Overview: openbanking/index.md
