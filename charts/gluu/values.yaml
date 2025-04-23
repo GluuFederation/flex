@@ -1412,7 +1412,7 @@ global:
     # -- Name of the saml service. Please keep it as default.
     samlServiceName: saml
     # -- Boolean flag to enable/disable the saml chart.
-    enabled: true
+    enabled: false
     # -- Enable endpoints in either istio or nginx ingress depending on users choice
     ingress:
       # Enable saml endpoints /kc
@@ -1428,7 +1428,7 @@ global:
   cnSqlPasswordFile: /etc/jans/conf/sql_password
   kc-scheduler:
     # -- Boolean flag to enable/disable the kc-scheduler cronjob chart.
-    enabled: true
+    enabled: false
   # -- Path to configuration schema file
   cnConfiguratorConfigurationFile: /etc/jans/conf/configuration.json
   # -- Path to dumped configuration schema file
