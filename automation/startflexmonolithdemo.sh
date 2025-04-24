@@ -47,9 +47,7 @@ git clone --filter blob:none --no-checkout https://github.com/gluufederation/fle
 
 # -- Parse compose and docker file
 sudo apt-get update
-sudo python3 -m pip install --upgrade pip
-pip3 install setuptools --upgrade
-pip3 install dockerfile-parse ruamel.yaml
+PIP_BREAK_SYSTEM_PACKAGES=1 pip3 install dockerfile-parse ruamel.yaml
 
 # switching to version defined by FLEX_BUILD_COMMIT
 if [[ "$FLEX_BUILD_COMMIT" ]]; then
