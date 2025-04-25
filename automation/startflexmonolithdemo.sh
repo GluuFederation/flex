@@ -17,6 +17,11 @@ if [[ -z $EXT_IP ]]; then
   EXT_IP=$(curl ipinfo.io/ip)
 fi
 
+if [[ -z $FLEX_BUILD_COMMIT ]]; then
+  FLEX_BUILD_COMMIT="main"
+fi
+
+
 sudo apt-get update
 # Install Docker and Docker compose plugin
 sudo apt-get remove docker docker-engine docker.io containerd runc -y || echo "Docker doesn't exist..installing.."
@@ -41,7 +46,7 @@ rm -rf /tmp/flex || echo "/tmp/flex doesn't exist"
 git clone --filter blob:none --no-checkout https://github.com/gluufederation/flex /tmp/flex \
     && cd /tmp/flex \
     && git sparse-checkout init --cone \
-    && git checkout main \
+    && git checkout "$FLEX_BUILD_COMMIT" \
     && git sparse-checkout set docker-flex-monolith \
     && cd "$WORKING_DIRECTORY"
 
