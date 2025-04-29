@@ -21,7 +21,7 @@ jobs:
       matrix:
         # add '"pgsql" when supported
         persistence-backends: ["MYSQL", "PGSQL"]
-        python-version: ["3.7"]
+        python-version: ["3.8"]
       fail-fast: false
     steps:
     - uses: actions/checkout@v3

@@ -31,7 +31,7 @@ sudo firewall-cmd --reload
 ```
 sudo SUSEConnect -p PackageHub/15.4/x86_64
 ```
-- Please obtain an [SSA](../../install/software-statements/ssa.md) to trial Flex, after which you are issued a JWT
+- Please obtain an [SSA](../agama/prerequisites.md) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
 
 ## Install the Package

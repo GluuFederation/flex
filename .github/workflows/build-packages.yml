@@ -19,7 +19,7 @@ jobs:
         name: [ubuntu24, ubuntu22, ubuntu20, el8, suse15]
         include:
           - name: ubuntu24
-            os: ubuntu-latest
+            os: ubuntu-22.04
             asset_suffix: ~ubuntu24.04_amd64.deb
             build_files: deb/noble
             asset_prefix: '_'
@@ -27,37 +27,37 @@ jobs:
             sign_cmd: cosign sign-blob --yes --output-certificate cert.pem --output-signature sig
             python_version: 3.11
           - name: ubuntu22
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             asset_suffix: ~ubuntu22.04_amd64.deb
             build_files: deb/jammy
             asset_prefix: '_'
             asset_path: flex
-            sign_cmd: dpkg-sig -s builder -k DE92BEF14A1A4E542F678B64DC3C790386C73900
-            python_version: "3.8"                
+            sign_cmd: cosign sign-blob --yes --output-certificate cert.pem --output-signature sig
+            python_version: 3.8
           - name: ubuntu20
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             asset_suffix: ~ubuntu20.04_amd64.deb
             build_files: deb/focal
             asset_prefix: '_'
             asset_path: flex
-            sign_cmd: dpkg-sig -s builder -k DE92BEF14A1A4E542F678B64DC3C790386C73900
-            python_version: "3.8"
+            sign_cmd: cosign sign-blob --yes --output-certificate cert.pem --output-signature sig
+            python_version: 3.8
           - name: el8
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             asset_suffix: .el8.x86_64.rpm
             build_files: rpm/el8
             asset_prefix: '-'
             asset_path: flex/rpmbuild/RPMS/x86_64
             sign_cmd: rpm --addsign
-            python_version: "3.6"
+            python_version: 3.8
           - name: suse15
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             asset_suffix: .suse15.x86_64.rpm
             build_files: rpm/suse15
             asset_prefix: '-'
             asset_path: flex/rpmbuild/RPMS/x86_64
             sign_cmd: rpm --addsign
-            python_version: "3.6"
+            python_version: 3.8
 
     steps:
     - name: Harden Runner
