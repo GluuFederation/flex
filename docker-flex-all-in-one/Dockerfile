@@ -3,8 +3,8 @@
 # ==============
 
 # original Janssen base version (without suffix)
-ARG BASE_VERSION=0.0.0-nightly
-ARG FLEX_BASE_VERSION=0.0.0-nightly
+ARG BASE_VERSION=1.6.0-1
+ARG FLEX_BASE_VERSION=5.6.0-1
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
@@ -66,7 +66,7 @@ RUN ln -sf /app/flex_aio/admin_ui/entrypoint.sh /app/bin/admin-ui-entrypoint.sh
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=15a44bcb369e1d5ef045e2a2664c2c995fb89a61
+ENV JANS_SOURCE_VERSION=137153d287ced23f04cd26037cdd3e783babdd95
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the assets
@@ -166,7 +166,7 @@ ENV JETTY_BASE=/opt/jans/jetty \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/flex-all-in-one" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="0.0.0-nightly" \
+    org.opencontainers.image.version="5.6.0-1" \
     org.opencontainers.image.title="Gluu Flex All-in-One" \
     org.opencontainers.image.description=""
 
