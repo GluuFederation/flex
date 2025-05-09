@@ -500,6 +500,23 @@ Kubernetes: `>=v1.21.0-0`
 | global.istio.namespace | string | `"istio-system"` | The namespace istio is deployed in. The is normally istio-system. |
 | global.jobTtlSecondsAfterFinished | int | `300` | https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/ |
 | global.kc-scheduler.enabled | bool | `false` | Boolean flag to enable/disable the kc-scheduler cronjob chart. |
+| global.keycloak-link | object | `{"appLoggers":{"enableStdoutLogPrefix":"true","keycloakLinkLogLevel":"INFO","keycloakLinkLogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"},"cnCustomJavaOptions":"","customAnnotations":{"deployment":{},"destinationRule":{},"horizontalPodAutoscaler":{},"pod":{},"podDisruptionBudget":{},"service":{},"virtualService":{}},"enabled":false,"ingress":{"keycloakLinkAdditionalAnnotations":{},"keycloakLinkEnabled":true,"keycloakLinkLabels":{}},"keycloakLinkServiceName":"keycloak-link"}` | Enable keycloak-link |
+| global.keycloak-link.appLoggers | object | `{"enableStdoutLogPrefix":"true","keycloakLinkLogLevel":"INFO","keycloakLinkLogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
+| global.keycloak-link.appLoggers.enableStdoutLogPrefix | string | `"true"` | Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e keycloak-link-persistence ===> 2022-12-20 17:49:55,744 INFO |
+| global.keycloak-link.appLoggers.keycloakLinkLogLevel | string | `"INFO"` | jans-keycloak-link.log level |
+| global.keycloak-link.appLoggers.keycloakLinkLogTarget | string | `"STDOUT"` | jans-keycloak-link.log target |
+| global.keycloak-link.appLoggers.persistenceDurationLogLevel | string | `"INFO"` | jans-keycloak-link_persistence_duration.log level |
+| global.keycloak-link.appLoggers.persistenceDurationLogTarget | string | `"FILE"` | jans-keycloak-link_persistence_duration.log target |
+| global.keycloak-link.appLoggers.persistenceLogLevel | string | `"INFO"` | jans-keycloak-link_persistence.log level |
+| global.keycloak-link.appLoggers.persistenceLogTarget | string | `"FILE"` | jans-keycloak-link_persistence.log target |
+| global.keycloak-link.appLoggers.scriptLogLevel | string | `"INFO"` | jans-keycloak-link_script.log level |
+| global.keycloak-link.appLoggers.scriptLogTarget | string | `"FILE"` | jans-keycloak-link_script.log target |
+| global.keycloak-link.cnCustomJavaOptions | string | `""` | passing custom java options to link. Notice you do not need to pass in any loggers options as they are introduced below in appLoggers. DO NOT PASS JAVA_OPTIONS in envs. |
+| global.keycloak-link.enabled | bool | `false` | Boolean flag to enable/disable the keycloak-link chart. |
+| global.keycloak-link.ingress | object | `{"keycloakLinkAdditionalAnnotations":{},"keycloakLinkEnabled":true,"keycloakLinkLabels":{}}` | Enable endpoints in either istio or nginx ingress depending on users choice |
+| global.keycloak-link.ingress.keycloakLinkAdditionalAnnotations | object | `{}` | keycloak-link ingress resource additional annotations. |
+| global.keycloak-link.ingress.keycloakLinkLabels | object | `{}` | keycloak-link ingress resource labels. key app is taken |
+| global.keycloak-link.keycloakLinkServiceName | string | `"keycloak-link"` | Name of the keycloak-link service. Please keep it as default. |
 | global.lbIp | string | `"22.22.22.22"` | The Loadbalancer IP created by nginx or istio on clouds that provide static IPs. This is not needed if `global.fqdn` is globally resolvable. |
 | global.link.appLoggers | object | `{"enableStdoutLogPrefix":"true","linkLogLevel":"INFO","linkLogTarget":"STDOUT","persistenceDurationLogLevel":"INFO","persistenceDurationLogTarget":"FILE","persistenceLogLevel":"INFO","persistenceLogTarget":"FILE","scriptLogLevel":"INFO","scriptLogTarget":"FILE"}` | App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed. |
 | global.link.appLoggers.enableStdoutLogPrefix | string | `"true"` | Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e link-persistence ===> 2022-12-20 17:49:55,744 INFO |
@@ -577,6 +594,38 @@ Kubernetes: `>=v1.21.0-0`
 | kc-scheduler.volumeMounts | list | `[]` | Configure any additional volumesMounts that need to be attached to the containers |
 | kc-scheduler.volumes | list | `[]` | Configure any additional volumes that need to be attached to the pod |
 | link | object | `{"additionalAnnotations":{},"additionalLabels":{},"customCommand":[],"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/link","tag":"1.6.0-1"},"lifecycle":{},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"1200Mi"},"requests":{"cpu":"500m","memory":"1200Mi"}},"tolerations":[],"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Link. |
+| keycloak-link | object | `{"additionalAnnotations":{},"additionalLabels":{},"customCommand":[],"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/keycloak-link","tag":"0.0.0-nightly"},"lifecycle":{},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"1200Mi"},"requests":{"cpu":"500m","memory":"1200Mi"}},"tolerations":[],"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Keycloak Link. |
+| keycloak-link.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
+| keycloak-link.additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
+| keycloak-link.customCommand | list | `[]` | Add custom pod's command. If passed, it will override the default conditional command. |
+| keycloak-link.customScripts | list | `[]` | Add custom scripts that have been mounted to run before the entrypoint. - /tmp/custom.sh - /tmp/custom2.sh |
+| keycloak-link.dnsConfig | object | `{}` | Add custom dns config |
+| keycloak-link.dnsPolicy | string | `""` | Add custom dns policy |
+| keycloak-link.hpa | object | `{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50}` | Configure the HorizontalPodAutoscaler |
+| keycloak-link.hpa.behavior | object | `{}` | Scaling Policies |
+| keycloak-link.hpa.metrics | list | `[]` | metrics if targetCPUUtilizationPercentage is not set |
+| keycloak-link.image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
+| keycloak-link.image.pullSecrets | list | `[]` | Image Pull Secrets |
+| keycloak-link.image.repository | string | `"ghcr.io/janssenproject/jans/keycloak-link"` | Image  to use for deploying. |
+| keycloak-link.image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
+| keycloak-link.livenessProbe | object | `{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}` | Configure the liveness healthcheck for the auth server if needed. |
+| keycloak-link.livenessProbe.exec | object | `{"command":["python3","/app/scripts/healthcheck.py"]}` | http liveness probe endpoint |
+| keycloak-link.pdb | object | `{"enabled":true,"maxUnavailable":"90%"}` | Configure the PodDisruptionBudget |
+| keycloak-link.readinessProbe.exec | object | `{"command":["python3","/app/scripts/healthcheck.py"]}` | http readiness probe endpoint |
+| keycloak-link.replicas | int | `1` | Service replica number. |
+| keycloak-link.resources | object | `{"limits":{"cpu":"500m","memory":"1200Mi"},"requests":{"cpu":"500m","memory":"1200Mi"}}` | Resource specs. |
+| keycloak-link.resources.limits.cpu | string | `"500m"` | CPU limit. |
+| keycloak-link.resources.limits.memory | string | `"1200Mi"` | Memory limit. This value is used to calculate memory allocation for Java. Currently it only supports `Mi`. Please refrain from using other units. |
+| keycloak-link.resources.requests.cpu | string | `"500m"` | CPU request. |
+| keycloak-link.resources.requests.memory | string | `"1200Mi"` | Memory request. |
+| keycloak-link.tolerations | list | `[]` | Add tolerations for the pods |
+| keycloak-link.topologySpreadConstraints | object | `{}` | Configure the topology spread constraints. Notice this is a map NOT a list as in the upstream API https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ |
+| keycloak-link.usrEnvs | object | `{"normal":{},"secret":{}}` | Add custom normal and secret envs to the service |
+| keycloak-link.usrEnvs.normal | object | `{}` | Add custom normal envs to the service variable1: value1 |
+| keycloak-link.usrEnvs.secret | object | `{}` | Add custom secret envs to the service variable1: value1 |
+| keycloak-link.volumeMounts | list | `[]` | Configure any additional volumesMounts that need to be attached to the containers |
+| keycloak-link.volumes | list | `[]` | Configure any additional volumes that need to be attached to the pod |
+| link | object | `{"additionalAnnotations":{},"additionalLabels":{},"customCommand":[],"customScripts":[],"dnsConfig":{},"dnsPolicy":"","hpa":{"behavior":{},"enabled":true,"maxReplicas":10,"metrics":[],"minReplicas":1,"targetCPUUtilizationPercentage":50},"image":{"pullPolicy":"IfNotPresent","pullSecrets":[],"repository":"ghcr.io/janssenproject/jans/link","tag":"0.0.0-nightly"},"lifecycle":{},"livenessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5},"pdb":{"enabled":true,"maxUnavailable":"90%"},"readinessProbe":{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"initialDelaySeconds":25,"periodSeconds":25,"timeoutSeconds":5},"replicas":1,"resources":{"limits":{"cpu":"500m","memory":"1200Mi"},"requests":{"cpu":"500m","memory":"1200Mi"}},"tolerations":[],"topologySpreadConstraints":{},"usrEnvs":{"normal":{},"secret":{}},"volumeMounts":[],"volumes":[]}` | Link. |
 | link.additionalAnnotations | object | `{}` | Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"} |
 | link.additionalLabels | object | `{}` | Additional labels that will be added across the gateway in the format of {mylabel: "myapp"} |
 | link.customCommand | list | `[]` | Add custom pod's command. If passed, it will override the default conditional command. |

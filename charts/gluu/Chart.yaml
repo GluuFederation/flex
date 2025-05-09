@@ -102,3 +102,7 @@ dependencies:
     - name: cleanup
       condition: global.cleanup.enabled
       version: 1.6.0
+
+    - name: keycloak-link
+      condition: global.keycloak-link.enabled
+      version: 1.6.0

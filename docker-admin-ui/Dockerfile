@@ -21,6 +21,7 @@ EXPOSE 8080
 # ===========
 
 ENV JANS_SOURCE_VERSION=137153d287ced23f04cd26037cdd3e783babdd95
+
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
