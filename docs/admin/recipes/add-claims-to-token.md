@@ -1,12 +1,11 @@
 ---
 tags:
   - administration
-  - test
   - token
   - claims
 ---
 
-## Steps to include user claims in id_token
+# How to include user claims in id_token
 
 1. Login to the Admin UI of the auth server (https://{auth-server-hostname}/admin).
 2. Using the left menu, go to `Auth Server ---> Auth server properties`.
