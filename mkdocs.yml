@@ -154,6 +154,7 @@ nav:
         - 'admin/recipes/README.md'
         - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
         - 'Testing Flex SAML SSO with sptest': 'admin/recipes/testing-flex-saml-sso-sptest.md'
+        - 'Add required claims to id-token': 'admin/recipes/add-claims-to-token.md'
     -  'Migrating from Gluu4': 'admin/gluu-migration.md'
 
 - 'Reference':
