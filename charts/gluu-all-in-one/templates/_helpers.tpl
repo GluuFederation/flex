@@ -146,6 +146,9 @@ Create aio enabled list
 {{- if index .Values "admin-ui" "enabled"}}
 {{ $newList = append $newList ("admin-ui") }}
 {{- end}}
+{{- if index .Values "keycloak-link" "enabled" }}
+{{ $newList = append $newList ("jans-keycloak-link") }}
+{{- end }}
 {{ toJson $newList }}
 {{- end }}
 
