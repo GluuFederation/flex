@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.6.0](https://github.com/GluuFederation/flex/compare/v5.5.0...v5.6.0) (2025-05-13)
+
+
+### Bug Fixes
+
+* **charts:** missing feature of jans-keycloak-link ([#2056](https://github.com/GluuFederation/flex/issues/2056)) ([0c0fafd](https://github.com/GluuFederation/flex/commit/0c0fafd7456b10eebbcc74183dd743ba76b11569))
+* **charts:** revert saml service to be disabled by default ([#2051](https://github.com/GluuFederation/flex/issues/2051)) ([32816f0](https://github.com/GluuFederation/flex/commit/32816f02019fc9e4be4f9768a7ebac8927227221))
+* **cloud-native:** demo scripts fail to deploy cluster due to python externally-managed-environment error ([#2053](https://github.com/GluuFederation/flex/issues/2053)) ([62418de](https://github.com/GluuFederation/flex/commit/62418de0bbdc6a33d86257b3b7984cac7625e163))
+* **docs:** add how to document for adding claims to token ([#2060](https://github.com/GluuFederation/flex/issues/2060)) ([65fb131](https://github.com/GluuFederation/flex/commit/65fb1312349a0cb4adbfa7c470a3a02da5c8227c))
+* override release ([340801c](https://github.com/GluuFederation/flex/commit/340801cd44522badc4171451981e79239d4e1bc8))
+
 ## [5.5.0](https://github.com/GluuFederation/flex/compare/v5.4.0...v5.5.0) (2025-04-11)
 
 
