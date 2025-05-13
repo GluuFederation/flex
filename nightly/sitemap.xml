@@ -131,6 +131,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://docs.gluu.org/nightly/admin/recipes/add-claims-to-token/</loc>
+         <lastmod>2025-05-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://docs.gluu.org/nightly/admin/recipes/getting-started-rancher/</loc>
          <lastmod>2025-05-13</lastmod>
          <changefreq>daily</changefreq>
