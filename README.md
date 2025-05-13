@@ -81,7 +81,7 @@ more SSAs issued for a particular license using [Agama Lab](https://cloud.gluu.o
 
 The Flex release schedule is closely tied to the upstream [Janssen Project](https://jans.io) release schedule. The structure of Flex releases mirrors that of the upstream project, following these guidelines:
 
-- Flex Release = Janssen Project Release + 4 in the major version. For example, Flex 5.1.0 corresponds to Janssen Project release 1.1.0.
+- Flex Release = Janssen Project Release + 4 in the major version. For example, Flex 5.6.0 corresponds to Janssen Project release 1.6.0.
 - Flex releases typically occur 1-2 days after the corresponding Janssen Project release. 
 
 To stay informed about upcoming Flex releases, it's recommended to monitor the Janssen project [milestones](https://github.com/JanssenProject/jans/milestones) regularly. Please note that the QA team may update these milestones as testing progresses, so checking frequently is advised.
