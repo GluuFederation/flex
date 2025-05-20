@@ -6,29 +6,31 @@ import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
-import HomeIcon from "Components/SVG/menu/Home"
-import AdministratorIcon from "Components/SVG/menu/Administrator"
-import OAuthIcon from "Components/SVG/menu/OAuth"
-import SchemaIcon from "Components/SVG/menu/Schema"
-import ServicesIcon from "Components/SVG/menu/Services"
-import UsersIcon from "Components/SVG/menu/Users"
-import StmpIcon from "Components/SVG/menu/Smtp"
-import FidoIcon from "Components/SVG/menu/Fido"
-import ScimIcon from "Components/SVG/menu/Scim"
+import HomeIcon from 'Components/SVG/menu/Home'
+import AdministratorIcon from 'Components/SVG/menu/Administrator'
+import OAuthIcon from 'Components/SVG/menu/OAuth'
+import UserClaimsIcon from 'Components/SVG/menu/UserClaims'
+import ServicesIcon from 'Components/SVG/menu/Services'
+import UsersIcon from 'Components/SVG/menu/Users'
+import StmpIcon from 'Components/SVG/menu/Smtp'
+import FidoIcon from 'Components/SVG/menu/Fido'
+import ScimIcon from 'Components/SVG/menu/Scim'
 import SamlIcon from 'Components/SVG/menu/Saml'
 import JansKcLinkIcon from 'Components/SVG/menu/JansKcLinkIcon'
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 import { ThemeContext } from 'Context/theme/themeContext'
 import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
-import CachedIcon from '@mui/icons-material/Cached';
-import LockIcon from '@mui/icons-material/Lock';
+import CachedIcon from '@mui/icons-material/Cached'
+import LockIcon from '@mui/icons-material/Lock'
 import styles from './styles/GluuAppSidebar.style'
 import { auditLogoutLogs } from '../../../../plugins/user-management/redux/features/userSlice'
 
 function GluuAppSidebar() {
-  const scopes = useSelector(({ authReducer }) => authReducer.token? authReducer.token.scopes : authReducer.permissions)
-  const { isUserLogout } = useSelector((state) => state.userReducer);
+  const scopes = useSelector(({ authReducer }) =>
+    authReducer.token ? authReducer.token.scopes : authReducer.permissions
+  )
+  const { isUserLogout } = useSelector(state => state.userReducer)
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -37,7 +39,7 @@ function GluuAppSidebar() {
   const { classes } = styles()
   const themeColors = getThemeColor(selectedTheme)
   const dispatch = useDispatch()
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   useEffect(() => {
     setPluginMenus(processMenus())
@@ -45,7 +47,7 @@ function GluuAppSidebar() {
 
   useEffect(() => {
     if (isUserLogout) {
-      navigate("/logout");
+      navigate('/logout')
     }
   }, [isUserLogout])
 
@@ -60,8 +62,8 @@ function GluuAppSidebar() {
       case 'services':
         return <ServicesIcon className="menu-icon" />
 
-      case 'schema':
-        return <SchemaIcon className="menu-icon" />
+      case 'user_claims':
+        return <UserClaimsIcon className="menu-icon" />
 
       case 'usersmanagement':
         return <UsersIcon className="menu-icon" style={{ top: '-2px' }} />
@@ -74,17 +76,36 @@ function GluuAppSidebar() {
       case 'scim':
         return <ScimIcon className="menu-icon" style={{ top: '-2px' }} />
       case 'jans_link':
-        return <CachedIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+        return (
+          <CachedIcon
+            className="menu-icon"
+            style={{ top: '-2px', height: '28px', width: '28px' }}
+          />
+        )
       case 'jans_lock':
-        return <LockIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+        return (
+          <LockIcon
+            className="menu-icon"
+            style={{ top: '-2px', height: '28px', width: '28px' }}
+          />
+        )
       case 'jans_kc_link':
-          return <JansKcLinkIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+        return (
+          <JansKcLinkIcon
+            className="menu-icon"
+            style={{ top: '-2px', height: '28px', width: '28px' }}
+          />
+        )
       case 'saml':
-        return <SamlIcon className="menu-icon" style={{ top: 0, height: '28px', width: '28px' }} />
+        return (
+          <SamlIcon
+            className="menu-icon"
+            style={{ top: 0, height: '28px', width: '28px' }}
+          />
+        )
       default:
         return null
     }
-
   }
 
   function getMenuPath(menu) {
@@ -98,8 +119,8 @@ function GluuAppSidebar() {
   }
 
   const handleLogout = () => {
-    dispatch(auditLogoutLogs({ message: "User logged out mannually" }));
-  };
+    dispatch(auditLogoutLogs({ message: 'User logged out mannually' }))
+  }
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -163,7 +184,7 @@ function GluuAppSidebar() {
                         to={getMenuPath(sub)}
                         isEmptyNode={!hasPermission(scopes, sub.permission)}
                         icon={getMenuIcon(sub.icon)}
-                        textStyle={{ fontSize: '15px'}}
+                        textStyle={{ fontSize: '15px' }}
                         exact
                       ></SidebarMenu.Item>
                     ))}
@@ -175,16 +196,21 @@ function GluuAppSidebar() {
         {/* -------- Plugins ---------*/}
         <SidebarMenu.Item
           to="logout"
-          icon={<i className="fa fa-fw fa-sign-out mr-2" style={{ fontSize: 28 }}></i>}
+          icon={
+            <i
+              className="fa fa-fw fa-sign-out mr-2"
+              style={{ fontSize: 28 }}
+            ></i>
+          }
           title={t('menus.signout')}
-          handleClick={() => {handleLogout()}}
+          handleClick={() => {
+            handleLogout()
+          }}
           textStyle={{ fontSize: '18px' }}
         />
         <div className={classes.waveContainer}>
           <Wave className={classes.wave} fill={themeColors.menu.background} />
-          <div className={classes.powered}>
-            Powered by Gluu
-          </div>
+          <div className={classes.powered}>Powered by Gluu</div>
         </div>
       </SidebarMenu>
     </ErrorBoundary>
