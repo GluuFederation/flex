@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSsaConfig, removeSsa } from '../../redux/features/SsaSlice'
-import { Card, CardBody, Badge } from 'Components'
+import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@mui/material'
@@ -18,9 +18,9 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import SetTitle from 'Utils/SetTitle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined, DownloadOutlined, VisibilityOutlined } from '@mui/icons-material'
 import SsaDetailPage from './SsaDetailPage'
-
+import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
 const SSAListPage = () => {
   const { t } = useTranslation()
   const userAction = {}
@@ -31,7 +31,6 @@ const SSAListPage = () => {
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
-  const [pageNumber, setPageNumber] = useState(0)
   const { items, loading } = useSelector((state) => state.ssaReducer)
   const permissions = useSelector((state) => state.authReducer.permissions)
   const theme = useContext(ThemeContext)
@@ -39,7 +38,8 @@ const SSAListPage = () => {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ssa_management'))
-
+  const [ssaDialogOpen, setSsaDialogOpen] = useState(false);
+  const [ssaData, setSsaData] = useState();
   useEffect(() => {
     dispatch(getSsaConfig())
   }, [])
@@ -54,19 +54,6 @@ const SSAListPage = () => {
     {
       title: t('fields.organization'),
       field: 'ssa.org_id',
-    },
-    {
-      title: t('fields.software_roles'),
-      field: 'ssa.software_roles',
-      render: (rowData) => {
-        return rowData?.ssa?.software_roles?.map((data) => {
-          return (
-            <div style={{ maxWidth: 140, overflow: 'auto' }} key={data}>
-              <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
-            </div>
-          )
-        })
-      },
     },
     {
       title: t('fields.status'),
@@ -96,14 +83,37 @@ const SSAListPage = () => {
       disabled: !hasPermission(permissions, SSA_ADMIN),
     })
   }
+  const DeleteIcon = useCallback(() => <DeleteOutlined style={{ color: 'red' }}/>, [])
+  const DownloadIcon = useCallback(() => <DownloadOutlined style={{ color: 'primary' }}/>, [])
+  const ViewIcon = useCallback(() => <VisibilityOutlined style={{ color: 'primary' }}/>, [])
 
-  const DeleteIcon = useCallback(() => <DeleteOutlined />, [])
-
+  if (hasPermission(permissions, SSA_PORTAL) || hasPermission(permissions, SSA_ADMIN)) {
+    myActions.push((rowData) => ({
+      icon: ViewIcon,
+      iconProps: {
+        color: 'primary',
+        id: rowData.org_id,
+      },
+      onClick: (event, rowData) => handleViewSsa(rowData),
+      disabled: false,
+    }))
+  }
+  if (hasPermission(permissions, SSA_PORTAL) || hasPermission(permissions, SSA_ADMIN)) {
+    myActions.push((rowData) => ({
+      icon: DownloadIcon,
+      iconProps: {
+        color: 'primary',
+        id: rowData.org_id,
+      },
+      onClick: (event, rowData) => handleDownloadSsa(rowData),
+      disabled: false,
+    }))
+  }
   if (hasPermission(permissions, SSA_ADMIN)) {
     myActions.push((rowData) => ({
       icon: DeleteIcon,
       iconProps: {
-        color: 'secondary',
+        sx: { color: 'red' },
         id: rowData.org_id,
       },
       onClick: (event, rowData) => handleSsaDelete(rowData),
@@ -111,10 +121,12 @@ const SSAListPage = () => {
     }))
   }
 
+
   const handleSsaDelete = (row) => {
     setItem(row)
     toggle()
   }
+  const toggleSsaDialog = () => setSsaDialogOpen(!ssaDialogOpen);
 
   const handleGoToSsaAddPage = () => {
     navigate('/auth-server/config/ssa/new')
@@ -125,51 +137,82 @@ const SSAListPage = () => {
     dispatch(removeSsa({ action: userAction }))
     toggle()
   }
+  const handleViewSsa = (row) => {
+    setSsaData(row)
+    toggleSsaDialog()
+  }
+
+  const handleDownloadSsa = (row) => {
+    const jsonData = JSON.stringify(row.ssa, null, 2)
+    const blob = new Blob([jsonData], { type: 'application/json' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    const dateStr = new Date().toLocaleString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).replace(/[\/:,]/g, '-').replace(/\s/g, '_')
+    link.download = `ssa-${row.ssa.software_id}-${dateStr}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+  }
 
   return (
-    <>
-      <Card style={applicationStyle.mainCard}>
-        <CardBody>
-          <GluuViewWrapper canShow={hasPermission(permissions, SSA_PORTAL)}>
-            <MaterialTable
-              key={limit ? limit : 0}
-              components={{
-                Container: PaperContainer
-              }}
-              columns={tableColumns}
-              data={items || []}
-              isLoading={loading}
-              title=''
-              actions={myActions}
-              options={{
-                search: true,
-                searchFieldAlignment: 'left',
-                selection: false,
-                pageSize: limit,
-                headerStyle: {
-                  ...applicationStyle.tableHeaderStyle,
-                  ...bgThemeColor,
-                },
-                actionsColumnIndex: -1,
-              }}
-              detailPanel={({ rowData }) => {
-                return <SsaDetailPage row={rowData} />
-              }}
-            />
-          </GluuViewWrapper>
-          {hasPermission(permissions, SSA_ADMIN) && (
-            <GluuDialog
-              row={item}
-              name={item?.ssa?.org_id || ''}
-              handler={toggle}
-              modal={modal}
-              subject='ssa configuration'
-              onAccept={onDeletionConfirmed}
-            />
-          )}
-        </CardBody>
-      </Card>
-    </>
+    <Card style={applicationStyle.mainCard}>
+      <CardBody>
+        <GluuViewWrapper canShow={hasPermission(permissions, SSA_PORTAL)}>
+          <MaterialTable
+            key={limit || 0}
+            components={{
+              Container: PaperContainer,
+            }}
+            columns={tableColumns}
+            data={items || []}
+            isLoading={loading}
+            title=''
+            actions={myActions}
+            options={{
+              search: true,
+              searchFieldAlignment: 'left',
+              selection: false,
+              pageSize: limit,
+              headerStyle: {
+                ...applicationStyle.tableHeaderStyle,
+                ...bgThemeColor,
+              },
+              actionsColumnIndex: -1,
+            }}
+            detailPanel={({ rowData }) => {
+              return <SsaDetailPage row={rowData} />
+            }}
+          />
+        </GluuViewWrapper>
+        {hasPermission(permissions, SSA_ADMIN) && (
+          <GluuDialog
+            row={item}
+            name={item?.ssa?.org_id || ''}
+            handler={toggle}
+            modal={modal}
+            subject='ssa configuration'
+            onAccept={onDeletionConfirmed}
+          />
+        )}
+        {ssaData && <JsonViewerDialog
+          isOpen={ssaDialogOpen}
+          toggle={() => setSsaDialogOpen(!ssaDialogOpen)}
+          data={ssaData}
+          title={`JSON View of ${ssaData?.ssa?.software_id}`}
+          theme="light"
+          expanded={true}
+        />}
+      </CardBody>
+    </Card>
   )
 }
 
