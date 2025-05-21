@@ -2,7 +2,7 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import SsaApi from '../api/SsaApi'
-import { getSsaConfig, getSsaConfigResponse, removeSsaResponse, toggleSaveConfig } from '../features/SsaSlice'
+import { getSsaConfig, getSsaConfigResponse, removeSsaResponse, toggleSaveConfig, getSsaJwtResponse } from '../features/SsaSlice'
 import { CREATE, DELETION } from '../../../../app/audit/UserActionType'
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -26,6 +26,20 @@ export function* getSsa() {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    return e
+  }
+}
+
+export function* getSsaJwt({ payload }) {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const { authServerHost } = yield select((state) => state.authReducer.config)
+  try {
+    const data = yield call(new SsaApi().getSsaJwt, { jti: payload.action.action_data, token, authServerHost })
+    yield put(getSsaJwtResponse(data))
+    return data
+  } catch (e) {
+    yield put(updateToast(true, 'error'))
+    yield put(getSsaJwtResponse([]))
     return e
   }
 }
@@ -115,10 +129,15 @@ export function* watchRemoveSsaConfig() {
   yield takeLatest('ssa/removeSsa', removeSsaConfig)
 }
 
+export function* watchGetSsaJwt() {
+  yield takeLatest('ssa/getSsaJwt', getSsaJwt)
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watchGetSsaConfig),
     fork(watchAddSsaConfig),
     fork(watchRemoveSsaConfig),
+    fork(watchGetSsaJwt),
   ])
 }

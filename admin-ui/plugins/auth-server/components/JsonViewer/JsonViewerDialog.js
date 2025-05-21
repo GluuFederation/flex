@@ -13,7 +13,6 @@ const JsonViewerDialog = ({
     expanded = true
 }) => {
     const { t } = useTranslation();
-
     return (
         <Modal
             isOpen={isOpen}
