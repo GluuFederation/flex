@@ -112,7 +112,7 @@ environment, Janssen Server needs details about CA certificate. Update the
 HTTPS cofiguration file `https_jans.conf` as shown below:
 
 !!! Note
-    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](https://docs.jans.io/head/contribute/developer-faq/#rhel).
 - Open `https_jans.conf` 
   ```bash
   sudo vi /etc/httpd/conf.d/https_jans.conf
