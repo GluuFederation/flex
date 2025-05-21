@@ -20,8 +20,6 @@ annotations:
       image: ghcr.io/janssenproject/jans/casa:0.0.0-nightly
     - name: admin-ui
       image: ghcr.io/gluufederation/flex/admin-ui:0.0.0-nightly
-    - name: link
-      image: ghcr.io/janssenproject/jans/link:0.0.0-nightly
     - name: saml
       image: ghcr.io/janssenproject/jans/saml:0.0.0-nightly
     - name: kc-scheduler
@@ -87,10 +85,6 @@ dependencies:
       condition: global.istio.ingress
       version: 0.0.0-nightly
 
-    - name: link
-      condition: global.link.enabled
-      version: 0.0.0-nightly
-
     - name: saml
       condition: global.saml.enabled
       version: 0.0.0-nightly
@@ -101,8 +95,4 @@ dependencies:
 
     - name: cleanup
       condition: global.cleanup.enabled
-      version: 0.0.0-nightly
-
-    - name: keycloak-link
-      condition: global.keycloak-link.enabled
       version: 0.0.0-nightly

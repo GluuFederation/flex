@@ -128,9 +128,6 @@ Create aio enabled list
 {{- if index .Values "config-api" "enabled" }}
 {{ $newList = append $newList ("jans-config-api") }}
 {{- end}}
-{{- if .Values.link.enabled}}
-{{ $newList = append $newList ("jans-link") }}
-{{- end}}
 {{- if .Values.fido2.enabled}}
 {{ $newList = append $newList ("jans-fido2") }}
 {{- end}}
@@ -146,9 +143,6 @@ Create aio enabled list
 {{- if index .Values "admin-ui" "enabled"}}
 {{ $newList = append $newList ("admin-ui") }}
 {{- end}}
-{{- if index .Values "keycloak-link" "enabled" }}
-{{ $newList = append $newList ("jans-keycloak-link") }}
-{{- end }}
 {{ toJson $newList }}
 {{- end }}
 
@@ -268,19 +262,6 @@ Create JAVA_OPTIONS ENV for passing custom work and detailed logs
 {{ $custom = printf "%s" .Values.scim.cnCustomJavaOptions }}
 {{ $memory := .Values.resources.limits.memory | replace "Mi" "" | int -}}
 {{- $maxDirectMemory := printf "-XX:MaxDirectMemorySize=%dm" ( mul (mulf $memory 0.15) 1 ) -}}
-{{- $xmx := printf "-Xmx%dm" (sub $memory (mulf $memory 0.7)) -}}
-{{- $customJavaOptions := printf "%s %s %s" $custom $maxDirectMemory $xmx -}}
-{{ $customJavaOptions | trim | quote }}
-{{- end }}
-
-{{/*
-Create JAVA_OPTIONS ENV for passing custom work and detailed logs
-*/}}
-{{- define "link.customJavaOptions"}}
-{{ $custom := "" }}
-{{ $custom = printf "%s" .Values.link.cnCustomJavaOptions }}
-{{ $memory := .Values.resources.limits.memory | replace "Mi" "" | int -}}
-{{- $maxDirectMemory := printf "-XX:MaxDirectMemorySize=%dm" ( mul (mulf $memory 0.08) 1 ) -}}
 {{- $xmx := printf "-Xmx%dm" (sub $memory (mulf $memory 0.7)) -}}
 {{- $customJavaOptions := printf "%s %s %s" $custom $maxDirectMemory $xmx -}}
 {{ $customJavaOptions | trim | quote }}

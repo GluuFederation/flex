@@ -50,7 +50,6 @@ COPY --from=jans-aio-src /opt/jans /opt/jans
 COPY --from=jans-aio-src /opt/prometheus /opt/prometheus
 COPY --from=jans-aio-src /usr/local/bin/facter /usr/local/bin/facter
 COPY --from=jans-aio-src /etc/nginx/jans-aio /etc/nginx/jans-aio
-COPY --from=jans-aio-src /var/jans/cr-snapshots /var/jans/cr-snapshots
 COPY --from=jans-aio-src /opt/keycloak /opt/keycloak
 COPY --from=jans-aio-src /opt/idp /opt/idp
 COPY --from=jans-aio-src /var/log/adminui /var/log/adminui
@@ -138,14 +137,8 @@ ENV JETTY_BASE=/opt/jans/jetty \
     CN_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/jans-casa/resources/.administrable \
     CN_CASA_JWKS_SIZE_LIMIT=100000 \
     CN_CASA_JAVA_OPTIONS="" \
-    CN_LINK_JETTY_HOST=127.0.0.1 \
-    CN_LINK_JETTY_PORT=9091 \
-    CN_LINK_JAVA_OPTIONS="" \
     CN_SHARE_AUTH_CONF=false \
     CN_SQL_PASSWORD_FILE=/etc/jans/conf/sql_password \
-    CN_KEYCLOAK_LINK_JETTY_HOST=127.0.0.1 \
-    CN_KEYCLOAK_LINK_JETTY_PORT=9092 \
-    CN_KEYCLOAK_LINK_JAVA_OPTIONS="" \
     CN_SAML_HTTP_HOST=127.0.0.1 \
     CN_SAML_HTTP_PORT=8083 \
     CN_SAML_JAVA_OPTIONS="" \
@@ -207,10 +200,6 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     ${JETTY_BASE}/jans-casa/plugins \
     ${JETTY_BASE}/jans-casa/resources \
     ${JETTY_BASE}/jans-casa/logs \
-    ${JETTY_BASE}/jans-link/resources \
-    ${JETTY_BASE}/jans-link/logs \
-    ${JETTY_BASE}/jans-keycloak-link/resources \
-    ${JETTY_BASE}/jans-keycloak-link/logs \
     /etc/certs \
     /etc/jans \
     /opt/jans/python/libs \
@@ -222,7 +211,6 @@ RUN chown -R 1000:1000 ${JETTY_HOME}/temp \
     /var/log/adminui \
     /etc/nginx/jans-aio \
     /usr/share/java \
-    /var/jans/cr-snapshots \
     /opt/idp \
     /opt/keycloak/logs \
     /opt/keycloak/conf
@@ -247,10 +235,6 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     ${JETTY_BASE}/jans-casa/plugins \
     ${JETTY_BASE}/jans-casa/resources \
     ${JETTY_BASE}/jans-casa/logs \
-    ${JETTY_BASE}/jans-link/resources \
-    ${JETTY_BASE}/jans-link/logs \
-    ${JETTY_BASE}/jans-keycloak-link/resources \
-    ${JETTY_BASE}/jans-keycloak-link/logs \
     /etc/certs \
     /etc/jans \
     /opt/jans/python/libs \
@@ -262,7 +246,6 @@ RUN chmod -R g=u ${JETTY_HOME}/temp \
     /var/log/adminui \
     /etc/nginx/jans-aio \
     /usr/share/java \
-    /var/jans/cr-snapshots \
     /opt/idp \
     /opt/keycloak/logs \
     /opt/keycloak/conf

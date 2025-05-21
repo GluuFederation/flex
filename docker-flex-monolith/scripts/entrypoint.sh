@@ -41,8 +41,6 @@ install_flex() {
   echo "installFido2=""$([[ ${CN_INSTALL_FIDO2} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install-admin-ui=""$([[ ${CN_INSTALL_ADMIN_UI} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install_casa=""$([[ ${CN_INSTALL_CASA} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
-  echo "install_jans_keycloak_link=""$([[ ${CN_INSTALL_KC_LINK} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
-  echo "install_jans_link=""$([[ ${CN_INSTALL_LINK} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install_jans_lock=""$([[ ${CN_INSTALL_LOCK} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install_jans_saml=""$([[ ${CN_INSTALL_SAML} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "adminui-authentication-mode=simple_password_auth" | tee -a setup.properties > /dev/null
@@ -103,8 +101,6 @@ start_services() {
   /opt/jans/scripts/jans-scim start
   /opt/jans/scripts/jans-fido2 start
   /opt/jans/scripts/jans-casa start ||:  # no-op if script is missing
-  /opt/jans/scripts/jans-keycloak-link start ||:  # no-op if script is missing
-  /opt/jans/scripts/jans-link start ||:  # no-op if script is missing
 }
 
 check_installed_flex
