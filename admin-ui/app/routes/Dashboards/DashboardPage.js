@@ -255,7 +255,6 @@ function DashboardPage() {
     { label: 'dashboard.key_cloak', status: serverStatus, key: 'keycloak' },
     { label: 'SCIM', status: false, key: 'jans-scim' },
     { label: 'dashboard.jans_lock', status: serverStatus, key: 'jans-lock' }
-    // { label: 'dashboard.jans_link', status: false, key: 'jans-link' }
   ]
 
   // Helper function to get the status value
