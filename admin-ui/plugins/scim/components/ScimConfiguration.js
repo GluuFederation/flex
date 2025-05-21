@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const ScimConfiguration = ({ handleSubmit }) => {
-  const scimConfigs = useSelector((state) => state.scimReducer.scim)
+  const scimConfigs = useSelector(state => state.scimReducer.scim)
   const [modal, setModal] = useState(false)
   const toggle = () => {
     setModal(!modal)
@@ -21,10 +21,10 @@ const ScimConfiguration = ({ handleSubmit }) => {
     initialValues: scimConfigs,
     onSubmit: () => {
       toggle()
-    },
+    }
   })
 
-  const submitForm = (userMessage) => {
+  const submitForm = userMessage => {
     const differences = []
     delete formik.values?.action_message
 
@@ -34,14 +34,14 @@ const ScimConfiguration = ({ handleSubmit }) => {
           differences.push({
             op: 'replace',
             path: `/${key}`,
-            value: formik.values[key],
+            value: formik.values[key]
           })
         }
       } else if (formik.values[key]) {
         differences.push({
           op: 'add',
           path: `/${key}`,
-          value: formik.values[key],
+          value: formik.values[key]
         })
       }
     }
@@ -53,17 +53,17 @@ const ScimConfiguration = ({ handleSubmit }) => {
 
   return (
     <Form
-      onSubmit={(e) => {
+      onSubmit={e => {
         e.preventDefault()
         formik.handleSubmit()
       }}
-      className='mt-4'
+      className="mt-4"
     >
       <FormGroup row>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.base_dn'
-            name='baseDN'
+            label="fields.base_dn"
+            name="baseDN"
             value={formik.values.baseDN || ''}
             formik={formik}
             lsize={3}
@@ -74,8 +74,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.application_url'
-            name='applicationUrl'
+            label="fields.application_url"
+            name="applicationUrl"
             value={formik.values.applicationUrl || ''}
             formik={formik}
             lsize={3}
@@ -88,8 +88,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.base_endpoint'
-            name='baseEndpoint'
+            label="fields.base_endpoint"
+            name="baseEndpoint"
             value={formik.values.baseEndpoint || ''}
             formik={formik}
             lsize={3}
@@ -102,8 +102,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.person_custom_object_class'
-            name='personCustomObjectClass'
+            label="fields.person_custom_object_class"
+            name="personCustomObjectClass"
             value={formik.values.personCustomObjectClass || ''}
             formik={formik}
             lsize={3}
@@ -117,8 +117,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.ox_auth_issuer'
-            name='oxAuthIssuer'
+            label="fields.ox_auth_issuer"
+            name="oxAuthIssuer"
             value={formik.values.oxAuthIssuer || ''}
             formik={formik}
             lsize={3}
@@ -130,29 +130,10 @@ const ScimConfiguration = ({ handleSubmit }) => {
           />
         </Col>
         <Col sm={12}>
-          <GluuSelectRow
-            label='fields.protection_mode'
-            name='protectionMode'
-            value={formik.values.protectionMode}
-            defaultValue={formik.values.protectionMode}
-            values={[
-              { value: 'OAUTH', label: 'OAUTH' },
-              { value: 'BYPASS', label: 'BYPASS' },
-            ]}
-            formik={formik}
-            lsize={3}
-            rsize={9}
-            showError={
-              formik.errors.protectionMode && formik.touched.protectionMode
-            }
-            errorMessage={formik.errors.protectionMode}
-          />
-        </Col>
-        <Col sm={12}>
           <GluuInputRow
-            label='fields.max_count'
-            name='maxCount'
-            type='number'
+            label="fields.max_count"
+            name="maxCount"
+            type="number"
             value={formik.values.maxCount || ''}
             formik={formik}
             lsize={3}
@@ -163,9 +144,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.bulk_max_operations'
-            name='bulkMaxOperations'
-            type='number'
+            label="fields.bulk_max_operations"
+            name="bulkMaxOperations"
+            type="number"
             value={formik.values.bulkMaxOperations || ''}
             formik={formik}
             lsize={3}
@@ -179,9 +160,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.bulk_max_payload_size'
-            name='bulkMaxPayloadSize'
-            type='number'
+            label="fields.bulk_max_payload_size"
+            name="bulkMaxPayloadSize"
+            type="number"
             value={formik.values.bulkMaxPayloadSize || ''}
             formik={formik}
             lsize={3}
@@ -195,8 +176,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.user_extension_schema_uri'
-            name='userExtensionSchemaURI'
+            label="fields.user_extension_schema_uri"
+            name="userExtensionSchemaURI"
             value={formik.values.userExtensionSchemaURI || ''}
             formik={formik}
             lsize={3}
@@ -210,8 +191,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuSelectRow
-            label='fields.logging_level'
-            name='loggingLevel'
+            label="fields.logging_level"
+            name="loggingLevel"
             value={formik.values.loggingLevel}
             defaultValue={formik.values.loggingLevel}
             values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
@@ -222,8 +203,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.logging_layout'
-            name='loggingLayout'
+            label="fields.logging_layout"
+            name="loggingLayout"
             value={formik.values.loggingLayout || ''}
             formik={formik}
             lsize={3}
@@ -236,8 +217,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.external_logger_configuration'
-            name='externalLoggerConfiguration'
+            label="fields.external_logger_configuration"
+            name="externalLoggerConfiguration"
             value={formik.values.externalLoggerConfiguration || ''}
             formik={formik}
             lsize={3}
@@ -251,9 +232,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.metric_reporter_interval'
-            name='metricReporterInterval'
-            type='number'
+            label="fields.metric_reporter_interval"
+            name="metricReporterInterval"
+            type="number"
             value={formik.values.metricReporterInterval || ''}
             formik={formik}
             lsize={3}
@@ -267,9 +248,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.metric_reporter_keep_data_days'
-            name='metricReporterKeepDataDays'
-            type='number'
+            label="fields.metric_reporter_keep_data_days"
+            name="metricReporterKeepDataDays"
+            type="number"
             value={formik.values.metricReporterKeepDataDays || ''}
             formik={formik}
             lsize={3}
@@ -283,9 +264,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuToogleRow
-            label='fields.metric_reporter_enabled'
-            name='metricReporterEnabled'
-            handler={(e) => {
+            label="fields.metric_reporter_enabled"
+            name="metricReporterEnabled"
+            handler={e => {
               formik.setFieldValue('metricReporterEnabled', e.target.checked)
             }}
             lsize={3}
@@ -295,9 +276,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuToogleRow
-            label='fields.disable_jdk_logger'
-            name='disableJdkLogger'
-            handler={(e) => {
+            label="fields.disable_jdk_logger"
+            name="disableJdkLogger"
+            handler={e => {
               formik.setFieldValue('disableJdkLogger', e.target.checked)
             }}
             lsize={3}
@@ -307,9 +288,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
         </Col>
         <Col sm={12}>
           <GluuToogleRow
-            label='fields.use_local_cache'
-            name='useLocalCache'
-            handler={(e) => {
+            label="fields.use_local_cache"
+            name="useLocalCache"
+            handler={e => {
               formik.setFieldValue('useLocalCache', e.target.checked)
             }}
             lsize={3}
@@ -324,7 +305,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuCommitFooter
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}
-            type='submit'
+            type="submit"
           />
         </Col>
       </Row>
