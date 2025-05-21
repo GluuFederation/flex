@@ -31,14 +31,7 @@
     "key": "jans-lock",
     "metadataFile": "./jans-lock/plugin-metadata"
   },
-  {
-    "key": "jans-link",
-    "metadataFile": "./jans-link/plugin-metadata"
-  },
-  {
-    "key": "jans-kc-link",
-    "metadataFile": "./jans-kc-link/plugin-metadata"
-  },
+
   {
     "key": "scim",
     "metadataFile": "./scim/plugin-metadata"

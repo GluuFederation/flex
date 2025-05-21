@@ -81,14 +81,8 @@ export const FIDO_READ = BASE_URL + '/config/fido2.readonly'
 export const FIDO_WRITE = BASE_URL + '/config/fido2.write'
 export const FIDO_DELETE = BASE_URL + '/config/fido2.delete'
 
-export const JANS_LINK_READ = BASE_URL + '/config/jans-link.readonly'
-export const JANS_LINK_WRITE = BASE_URL + '/config/jans-link.write'
-
 export const JANS_LOCK_READ = BASE_URL + '/lock-config.readonly'
 export const JANS_LOCK_WRITE = BASE_URL + '/lock-config.write'
-
-export const JANS_KC_LINK_READ = BASE_URL + '/kc-link-config.readonly'
-export const JANS_KC_LINK_WRITE = BASE_URL + '/kc-link-config.write'
 
 export const CACHE_READ = BASE_URL + '/config/cache.readonly'
 export const CACHE_WRITE = BASE_URL + '/config/cache.write'
@@ -128,9 +122,12 @@ export const SCIM_CONFIG_WRITE = 'https://jans.io/scim/config.write'
 
 export const MESSAGE_READ = BASE_URL + '/config/message.readonly'
 export const MESSAGE_WRITE = BASE_URL + '/config/message.write'
-export const WEBHOOK_READ = BASE_URL + '/jans-auth-server/config/adminui/webhook.readonly'
-export const WEBHOOK_WRITE = BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
-export const WEBHOOK_DELETE = BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'
+export const WEBHOOK_READ =
+  BASE_URL + '/jans-auth-server/config/adminui/webhook.readonly'
+export const WEBHOOK_WRITE =
+  BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
+export const WEBHOOK_DELETE =
+  BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'
 export const ASSETS_READ = BASE_URL + '/config/jans_asset-read'
 export const ASSETS_WRITE = BASE_URL + '/config/jans_asset-write'
 export const ASSETS_DELETE = BASE_URL + '/config/jans_asset-delete'
@@ -141,8 +138,8 @@ export const API_CONFIG_WRITE = BASE_URL + '/config/properties.write'
 export const hasPermission = (scopes, scope) => {
   let available = false
   if (scopes) {
-    for(const i in scopes){
-      if(scopes[i] === scope){
+    for (const i in scopes) {
+      if (scopes[i] === scope) {
         available = true
       }
     }
