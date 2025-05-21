@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSsaConfig, removeSsa } from '../../redux/features/SsaSlice'
+import { getSsaConfig, removeSsa, getSsaJwt } from '../../redux/features/SsaSlice'
 import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
@@ -33,16 +33,53 @@ const SSAListPage = () => {
   const toggle = () => setModal(!modal)
   const { items, loading } = useSelector((state) => state.ssaReducer)
   const permissions = useSelector((state) => state.authReducer.permissions)
+  const jwtData = useSelector((state) => state.ssaReducer.jwt)
+  const [downloadRequested, setDownloadRequested] = useState(false)
+  const [viewRequested, setViewRequested] = useState(false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ssa_management'))
   const [ssaDialogOpen, setSsaDialogOpen] = useState(false);
-  const [ssaData, setSsaData] = useState();
+  const ssaDataRef = useRef();
   useEffect(() => {
     dispatch(getSsaConfig())
   }, [])
+
+  useEffect(() => {
+    if (downloadRequested && jwtData) {
+      setDownloadRequested(false)
+      const blob = new Blob([jwtData?.ssa], { type: 'text/plain' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      const dateStr = new Date().toLocaleString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).replace(/[\/:,]/g, '-').replace(/\s/g, '_')
+      link.download = `ssa-${ssaDataRef.current?.ssa.software_id}-${dateStr}.jwt`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      setTimeout(() => {
+        URL.revokeObjectURL(link.href)
+      }, 5000)
+      ssaDataRef.current = null
+    }
+  }, [jwtData, downloadRequested])
+
+
+  useEffect(() => {
+    if (viewRequested && jwtData) {
+      ssaDataRef.current = jwtData
+      toggleSsaDialog()
+    }
+  }, [jwtData, viewRequested])
 
   const PaperContainer = useCallback(
     (props) => <Paper {...props} elevation={0} />,
@@ -83,9 +120,9 @@ const SSAListPage = () => {
       disabled: !hasPermission(permissions, SSA_ADMIN),
     })
   }
-  const DeleteIcon = useCallback(() => <DeleteOutlined style={{ color: 'red' }}/>, [])
-  const DownloadIcon = useCallback(() => <DownloadOutlined style={{ color: 'primary' }}/>, [])
-  const ViewIcon = useCallback(() => <VisibilityOutlined style={{ color: 'primary' }}/>, [])
+  const DeleteIcon = useCallback(() => <DeleteOutlined style={{ color: 'red' }} />, [])
+  const DownloadIcon = useCallback(() => <DownloadOutlined style={{ color: 'primary' }} />, [])
+  const ViewIcon = useCallback(() => <VisibilityOutlined style={{ color: 'primary' }} />, [])
 
   if (hasPermission(permissions, SSA_PORTAL) || hasPermission(permissions, SSA_ADMIN)) {
     myActions.push((rowData) => ({
@@ -137,30 +174,21 @@ const SSAListPage = () => {
     dispatch(removeSsa({ action: userAction }))
     toggle()
   }
-  const handleViewSsa = (row) => {
-    setSsaData(row)
-    toggleSsaDialog()
+  const handleViewSsa = async (row) => {
+    const userAction = {};
+    buildPayload(userAction, 'getSsaJwt', row.ssa.jti);
+    dispatch(getSsaJwt({ action: userAction }))
+    setViewRequested(true)
+    setDownloadRequested(false)
   }
 
   const handleDownloadSsa = (row) => {
-    const jsonData = JSON.stringify(row.ssa, null, 2)
-    const blob = new Blob([jsonData], { type: 'application/json' })
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    const dateStr = new Date().toLocaleString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }).replace(/[\/:,]/g, '-').replace(/\s/g, '_')
-    link.download = `ssa-${row.ssa.software_id}-${dateStr}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(link.href)
+    ssaDataRef.current = row;
+    const userAction = {};
+    buildPayload(userAction, 'getSsaJwt', row.ssa.jti);
+    dispatch(getSsaJwt({ action: userAction }))
+    setDownloadRequested(true)
+    setViewRequested(false)
   }
 
   return (
@@ -203,11 +231,11 @@ const SSAListPage = () => {
             onAccept={onDeletionConfirmed}
           />
         )}
-        {ssaData && <JsonViewerDialog
+        {ssaDataRef.current && ssaDialogOpen && <JsonViewerDialog
           isOpen={ssaDialogOpen}
           toggle={() => setSsaDialogOpen(!ssaDialogOpen)}
-          data={ssaData}
-          title={`JSON View of ${ssaData?.ssa?.software_id}`}
+          data={ssaDataRef.current}
+          title={`JSON View`}
           theme="light"
           expanded={true}
         />}

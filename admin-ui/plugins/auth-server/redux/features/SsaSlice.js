@@ -29,6 +29,14 @@ const ssaSlice = createSlice({
     },
     removeSsaResponse: (state) => {
       state.loading = false
+    },
+    getSsaJwt: (state) => {
+      state.loading = true
+      state.jwt = null
+    },
+    getSsaJwtResponse: (state, action) => {
+      state.jwt = action.payload
+      state.loading = false
     }
   },
 })
@@ -39,7 +47,9 @@ export const {
   createSsa,
   toggleSaveConfig,
   removeSsa,
-  removeSsaResponse
+  removeSsaResponse,
+  getSsaJwt,
+  getSsaJwtResponse
 } = ssaSlice.actions
 
 export default ssaSlice.reducer

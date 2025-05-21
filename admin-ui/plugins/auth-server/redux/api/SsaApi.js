@@ -42,6 +42,25 @@ export default class SsaApi {
       }) 
     })
   }
+
+  getSsaJwt = ({ jti, token, authServerHost }) => {
+    return new Promise((resolve, reject) => {
+      fetch(`${authServerHost}/jans-auth/restv1/ssa/jwt?jti=${encodeURIComponent(jti)}`, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json', 
+        },
+        method: 'GET'
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        resolve(data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+    })
+  }
   
   deleteSsa = ({ jti, token, authServerHost }) => {
     return new Promise((resolve, reject) => {
