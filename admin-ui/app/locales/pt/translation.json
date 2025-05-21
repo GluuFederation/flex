@@ -32,9 +32,9 @@
     "key_cloak": "Keycloak",
     "jans_lock": "Jans Lock",
     "jans_link": "Link Jans",
-    "access_denied":"Acesso negado",
-    "access_denied_message":"Entre em contato com o administrador para obter ajuda",
-    "access_contact_admin":"Se você acha que isso é um erro, entre em contato com o administrador",
+    "access_denied": "Acesso negado",
+    "access_denied_message": "Entre em contato com o administrador para obter ajuda",
+    "access_contact_admin": "Se você acha que isso é um erro, entre em contato com o administrador",
     "mau_users": "Máx. MAU para LTM (Bloqueio)",
     "mau_clients": "Janeiro bloquear clientes"
   },
@@ -54,7 +54,7 @@
     "default_acr": "ACR padrão",
     "acrs": "ACRs",
     "aliases": "Aliases",
-    "builtIn" : "Integrado",
+    "builtIn": "Integrado",
     "api": {
       "roles": "Papéis de acesso",
       "permissions": "Permissões",
@@ -91,6 +91,7 @@
     "reports": "Relatórios",
     "roles": "Funções",
     "schema": "Esquema",
+    "user_claims": "Reivindicações do usuário",
     "scopes": "Escopos",
     "scripts": "Roteiros",
     "services": "Serviços",
@@ -181,10 +182,10 @@
     "jans_assertion_consumer_service_post_url": "URL POST do Serviço de Consumo de Asserção Jans",
     "jans_id": "ID Jans",
     "jans_state": "Estado Jans",
-    "jans_sess_state":"Estado da sessão Jans",
+    "jans_sess_state": "Estado da sessão Jans",
     "jans_user_dn": "DN do usuário Jans",
     "permission_granted_map": "Mapa de permissões concedidas",
-    "jans_sess_attr": "Atributos da sessão Jans", 
+    "jans_sess_attr": "Atributos da sessão Jans",
     "download_summary": "Baixar Resumo",
     "customAttributes": "atributos personalizados",
     "sessionTimeoutInMins": "Tempo limite da sessão da interface de administração (em minutos)",
@@ -604,7 +605,7 @@
     "add_asset": "Add Jans Asset",
     "asset_document_error": "Document is mandatory.",
     "add_configuration": "Adicionar configuração",
-    "credentials":"Credenciais",
+    "credentials": "Credenciais",
     "view_configuration": "Ver Configuração",
     "add_idp": "Adicionar IDP SAML",
     "view_trust_relationshi_details": "Visualizar Detalhes da Relação de Confiança",
@@ -811,7 +812,7 @@
     "change_backend_bind_password": "Alterar senha de ligação de back-end",
     "add_agama_project": "Adicionar projeto Agama",
     "jans_kc_link": "Link KC Jans",
-    "export_csv":"Exportar CSV"
+    "export_csv": "Exportar CSV"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -1520,8 +1521,8 @@
     "type": "Tipo",
     "domain": "Domínio"
   },
-  "sessions":{
-    "expirationDate" : "Data de expiração",
+  "sessions": {
+    "expirationDate": "Data de expiração",
     "jansId": "ID Jans",
     "jansState": "Estado Jans",
     "jansSessState": "Estado da sessão Jans",
