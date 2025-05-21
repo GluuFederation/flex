@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.7.0](https://github.com/GluuFederation/flex/compare/v5.6.0...v5.7.0) (2025-05-21)
+
+
+### Features
+
+* **admin-ui:** add download/view feature in SSA page of Admin UI ([#2068](https://github.com/GluuFederation/flex/issues/2068)) ([ea231b0](https://github.com/GluuFederation/flex/commit/ea231b0a1b7b5c00676c2b2898c8bdbca0464d1b))
+* **admin-ui:** add download/view feature in SSA page of Admin UI [#2063](https://github.com/GluuFederation/flex/issues/2063) ([ea231b0](https://github.com/GluuFederation/flex/commit/ea231b0a1b7b5c00676c2b2898c8bdbca0464d1b))
+
+
+### Bug Fixes
+
+* **charts:** invalid template function calls when using AWS secrets manager ([#2072](https://github.com/GluuFederation/flex/issues/2072)) ([652fa2e](https://github.com/GluuFederation/flex/commit/652fa2e12c1c97de375a494960e52a342fd02518))
+
 ## [5.6.0](https://github.com/GluuFederation/flex/compare/v5.5.0...v5.6.0) (2025-05-13)
 
 
