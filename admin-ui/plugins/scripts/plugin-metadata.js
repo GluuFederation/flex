@@ -5,31 +5,31 @@ import CustomScriptAddPage from '../admin/components/CustomScripts/CustomScriptA
 import CustomScriptEditPage from '../admin/components/CustomScripts/CustomScriptEditPage'
 import scriptSaga from '../admin/redux/sagas/CustomScriptSaga'
 
-const PLUGIN_PATH = '/adm/scripts'
+const BASE_PLUGIN_PATH = '/adm'
 
 const pluginMetadata = {
   menus: [
     {
       title: 'menus.scripts',
       icon: 'scripts',
-      path: PLUGIN_PATH,
+      path: `${BASE_PLUGIN_PATH}/scripts`,
       permission: SCRIPT_READ
     }
   ],
   routes: [
     {
       component: ScriptListPage,
-      path: PLUGIN_PATH,
+      path: BASE_PLUGIN_PATH + '/scripts',
       permission: SCRIPT_READ
     },
     {
       component: CustomScriptAddPage,
-      path: `${PLUGIN_PATH}/new`,
+      path: BASE_PLUGIN_PATH + '/script/new',
       permission: SCRIPT_WRITE
     },
     {
       component: CustomScriptEditPage,
-      path: `${PLUGIN_PATH}/edit/:id`,
+      path: BASE_PLUGIN_PATH + '/script/edit/:id',
       permission: SCRIPT_READ
     }
   ],
