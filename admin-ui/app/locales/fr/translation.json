@@ -42,6 +42,7 @@
     "adminui": "Administratrice",
     "assets": "Assets",
     "config-api": "Config-API",
+    "security": "Sécurité",
     "webhooks": "Webhooks",
     "add_source": "Ajouter une source",
     "edit_source": "Modifier la source",
@@ -53,12 +54,12 @@
     "acrs": "ACRs",
     "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
+    "api_config": "Configurer les propriétés de l'API",
     "builtIn": "Intégré",
-    "api": {
-      "roles": "Rôles d'accès",
-      "permissions": "Autorisations",
-      "mapping": "Mapping",
-      "api_config": "Configurer les propriétés de l'API"
+    "securityDropdown": {
+      "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
+      "capabilities": "Capacités",
+      "mapping": "Mapping"
     },
     "lock": "Verrouillage",
     "cache": "Cacher",

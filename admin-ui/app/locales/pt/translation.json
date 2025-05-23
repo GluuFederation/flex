@@ -42,6 +42,7 @@
     "adminui": "Admin",
     "assets": "Assets",
     "config-api": "Config-API",
+    "security": "Segurança",
     "saml": "SAML",
     "add_source": "Adicionar Fonte",
     "edit_source": "Editar Fonte",
@@ -55,11 +56,11 @@
     "acrs": "ACRs",
     "aliases": "Aliases",
     "builtIn": "Integrado",
-    "api": {
-      "roles": "Papéis de acesso",
-      "permissions": "Permissões",
-      "mapping": "Mapeamento",
-      "api_config": "Configurar propriedades da API"
+    "api_config": "Configurar propriedades da API",
+    "securityDropdown": {
+      "adminUiRoles": "Funções da interface do administrador",
+      "capabilities": "Capacidades",
+      "mapping": "Mapeamento"
     },
     "lock": "Trancar",
     "cache": "Cache",
