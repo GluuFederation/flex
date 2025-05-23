@@ -1,3 +1,4 @@
+import React, { Suspense, lazy } from 'react'
 import ScopeListPage from './components/Scopes/ScopeListPage'
 import ScopeAddPage from './components/Scopes/ScopeAddPage'
 import ScopeEditPage from './components/Scopes/ScopeEditPage'
@@ -36,8 +37,8 @@ import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
 import agamaSaga from './redux/sagas/AgamaSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
-import ssaSaga from './redux/sagas/SsaSaga' 
-import messageSaga from './redux/sagas/MessageSaga' 
+import ssaSaga from './redux/sagas/SsaSaga'
+import messageSaga from './redux/sagas/MessageSaga'
 import configApiSaga from './redux/sagas/configApiSaga'
 
 import {
@@ -60,16 +61,19 @@ import configApiReducer from 'Plugins/auth-server/redux/features/configApiSlice'
 import AuthNListPage from './components/AuthN/AuthNListPage'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
-import SsaListPage from './components/Ssa/SsaListPage' 
+import SsaListPage from './components/Ssa/SsaListPage'
 import SsaAddPage from './components/Ssa/SsaAddPage'
-import React, { Suspense, lazy } from 'react'
 import LockPage from './components/Message/LockPage'
 import AuthNPage from './components/AuthN'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
 function AgamaListPageWrapper() {
-  return <Suspense fallback={<div>Loading...</div>}><AgamaListPage /></Suspense>
-} 
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AgamaListPage />
+    </Suspense>
+  )
+}
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -82,42 +86,42 @@ const pluginMetadata = {
         {
           title: 'menus.clients',
           path: PLUGIN_BASE_APTH + '/clients',
-          permission: CLIENT_READ,
+          permission: CLIENT_READ
         },
         {
           title: 'menus.scopes',
           path: PLUGIN_BASE_APTH + '/scopes',
-          permission: SCOPE_READ,
+          permission: SCOPE_READ
         },
         {
           title: 'menus.keys',
           path: PLUGIN_BASE_APTH + '/config/keys',
-          permission: JWKS_READ,
+          permission: JWKS_READ
         },
         {
           title: 'menus.properties',
           path: PLUGIN_BASE_APTH + '/config/properties',
-          permission: PROPERTIES_READ,
+          permission: PROPERTIES_READ
         },
         {
           title: 'menus.logging',
           path: PLUGIN_BASE_APTH + '/config/logging',
-          permission: LOGGING_READ,
+          permission: LOGGING_READ
         },
         {
           title: 'menus.ssa',
           path: PLUGIN_BASE_APTH + '/config/ssa',
-          permission: SSA_PORTAL,
+          permission: SSA_PORTAL
         },
         {
           title: 'menus.authn',
           path: PLUGIN_BASE_APTH + '/authn',
-          permission: SCOPE_READ,
+          permission: SCOPE_READ
         },
         {
-          title: 'menus.api.api_config',
+          title: 'menus.api_config',
           path: PLUGIN_BASE_APTH + '/config-api-configuration',
-          permission: API_CONFIG_READ,
+          permission: API_CONFIG_READ
         },
         // {
         //   title: 'menus.configuration',
@@ -126,107 +130,107 @@ const pluginMetadata = {
         {
           title: 'menus.sessions',
           path: PLUGIN_BASE_APTH + '/sessions',
-          permission: SESSION_READ,
-        },
+          permission: SESSION_READ
+        }
         // {
         //   title: 'menus.lock ',
         //   path: PLUGIN_BASE_APTH + '/lock',
         //   permission: MESSAGE_READ,
         // },
-      ],
-    },
+      ]
+    }
   ],
   routes: [
     {
       component: SessionListPage,
       path: PLUGIN_BASE_APTH + '/sessions',
-      permission: SESSION_READ,
+      permission: SESSION_READ
     },
     {
       component: ClientListPage,
       path: PLUGIN_BASE_APTH + '/clients',
-      permission: CLIENT_READ,
+      permission: CLIENT_READ
     },
     {
       component: ClientAddPage,
       path: PLUGIN_BASE_APTH + '/client/new',
-      permission: CLIENT_WRITE,
+      permission: CLIENT_WRITE
     },
     {
       component: ClientEditPage,
       path: PLUGIN_BASE_APTH + '/client/edit/:id',
-      permission: CLIENT_WRITE,
+      permission: CLIENT_WRITE
     },
     {
       component: ScopeListPage,
       path: PLUGIN_BASE_APTH + '/scopes',
-      permission: SCOPE_READ,
+      permission: SCOPE_READ
     },
     {
       component: AuthNEditPage,
       path: PLUGIN_BASE_APTH + '/authn/edit/:id',
-      permission: SCOPE_READ,
+      permission: SCOPE_READ
     },
     {
       component: AuthNPage,
       path: PLUGIN_BASE_APTH + '/authn',
-      permission: SCOPE_READ,
+      permission: SCOPE_READ
     },
     {
       component: ScopeAddPage,
       path: PLUGIN_BASE_APTH + '/scope/new',
-      permission: SCOPE_WRITE,
+      permission: SCOPE_WRITE
     },
     {
       component: ScopeEditPage,
       path: PLUGIN_BASE_APTH + '/scope/edit/:id',
-      permission: SCOPE_WRITE,
+      permission: SCOPE_WRITE
     },
     {
       component: PropertiesPage,
       path: PLUGIN_BASE_APTH + '/config/properties',
-      permission: ACR_READ,
+      permission: ACR_READ
     },
     {
       component: KeysPage,
       path: PLUGIN_BASE_APTH + '/config/keys',
-      permission: JWKS_READ,
+      permission: JWKS_READ
     },
     {
       component: LoggingPage,
       path: PLUGIN_BASE_APTH + '/config/logging',
-      permission: ACR_READ,
+      permission: ACR_READ
     },
     {
       component: ReportPage,
       path: PLUGIN_BASE_APTH + '/reports',
-      permission: ACR_READ,
+      permission: ACR_READ
     },
     {
       component: AgamaListPageWrapper,
       path: PLUGIN_BASE_APTH + '/agama',
-      permission: AGAMA_READ,
+      permission: AGAMA_READ
     },
     {
       component: SsaListPage,
       path: PLUGIN_BASE_APTH + '/config/ssa',
-      permission: SSA_PORTAL,
+      permission: SSA_PORTAL
     },
     {
       component: SsaAddPage,
       path: PLUGIN_BASE_APTH + '/config/ssa/new',
-      permission: SSA_PORTAL,
+      permission: SSA_PORTAL
     },
     {
       component: LockPage,
       path: PLUGIN_BASE_APTH + '/lock',
-      permission: MESSAGE_READ,
+      permission: MESSAGE_READ
     },
     {
       component: ConfigApiPage,
       path: PLUGIN_BASE_APTH + '/config-api-configuration',
-      permission: API_CONFIG_READ,
-    },
+      permission: API_CONFIG_READ
+    }
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
@@ -241,7 +245,7 @@ const pluginMetadata = {
     { name: 'authNReducer', reducer: authNReducer },
     { name: 'SsaReducer', reducer: ssaReducer },
     { name: 'messageReducer', reducer: messageReducer },
-    { name: 'configApiReducer', reducer: configApiReducer },
+    { name: 'configApiReducer', reducer: configApiReducer }
   ],
   sagas: [
     scopesSaga(),
@@ -257,7 +261,7 @@ const pluginMetadata = {
     ssaSaga(),
     messageSaga(),
     configApiSaga()
-  ],
+  ]
 }
 
 export default pluginMetadata
