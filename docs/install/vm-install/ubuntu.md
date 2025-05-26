@@ -24,9 +24,9 @@ sudo ufw allow https
   that you can use during installation. SSA should be stored in a text file on an accessible path.
   
 ## Supported Versions
-- Ubuntu 20.04
-- Ubuntu 22.04
 - Ubuntu 24.04
+- Ubuntu 22.04
+- Ubuntu 20.04
 ## Install the Package
 
 ### Download and Verify the Release Package
