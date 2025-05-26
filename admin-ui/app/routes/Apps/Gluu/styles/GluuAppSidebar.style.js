@@ -8,7 +8,7 @@ const styles = makeStyles()({
     top: 140,
     height: 70,
     borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomRightRadius: 20
   },
   wave: {
     position: 'relative',
@@ -19,7 +19,15 @@ const styles = makeStyles()({
     textAlign: 'center',
     position: 'relative',
     top: -130,
-    fontWeight: 500,
+    fontWeight: 500
+  },
+  waveContainerFixed: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    background: 'inherit'
   }
 })
 
