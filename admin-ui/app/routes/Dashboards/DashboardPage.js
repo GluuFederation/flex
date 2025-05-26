@@ -232,24 +232,17 @@ function DashboardPage() {
   ]
 
   const statusDetails = [
-    { label: 'dashboard.database_status', status: dbStatus, key: 'db_status' },
     {
-      label: 'dashboard.server_status',
+      label: 'menus.oauthserver',
       status: serverStatus,
       key: 'status'
     },
-
-    {
-      label: 'dashboard.oauth_server_status',
-      status: serverStatus,
-      key: 'jans-auth'
-    },
-
     {
       label: 'dashboard.config_api',
       status: serverStatus,
       key: 'jans-config-api'
     },
+    { label: 'dashboard.database_status', status: dbStatus, key: 'db_status' },
     { label: 'FIDO', status: serverStatus, key: 'jans-fido2' },
     { label: 'CASA', status: serverStatus, key: 'jans-casa' },
     { label: 'dashboard.key_cloak', status: serverStatus, key: 'keycloak' },
