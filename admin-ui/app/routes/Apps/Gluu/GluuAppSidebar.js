@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useMemo } from 'react'
 import { SidebarMenu } from 'Components'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { hasPermission } from 'Utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
@@ -22,6 +22,7 @@ import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
 import CachedIcon from '@mui/icons-material/Cached'
 import LockIcon from '@mui/icons-material/Lock'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
 
 function GluuAppSidebar() {
@@ -38,12 +39,34 @@ function GluuAppSidebar() {
   const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`
   const { classes } = styles()
   const themeColors = getThemeColor(selectedTheme)
-  const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const fetchedServersLength = useMemo(
+    () => Object.keys(health).length > 0,
+    [health]
+  )
+
   useEffect(() => {
-    setPluginMenus(processMenus())
-  }, [])
+    const menus = processMenus()
+
+    if (fetchedServersLength) {
+      const visibilityConditions = {
+        '/jans-lock': 'jans-lock',
+        '/fido/fidomanagement': 'jans-fido2',
+        '/scim': 'jans-scim'
+      }
+
+      const filtered = menus.filter(menu => {
+        const healthKey = visibilityConditions[menu.path]
+        if (healthKey) {
+          return health?.[healthKey] === 'Running'
+        }
+        return true
+      })
+
+      setPluginMenus(filtered)
+    }
+  }, [health])
 
   useEffect(() => {
     if (isUserLogout) {
@@ -128,54 +151,62 @@ function GluuAppSidebar() {
     return typeof plugin.children !== 'undefined' && plugin.children.length
   }
 
-  const filteringJansLock = pluginMenus.filter(
-    menu => menu.path !== '/jans-lock' || health?.['jans-lock'] === 'Running'
-  )
-
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
-        {filteringJansLock.map((plugin, key) => (
-          <SidebarMenu.Item
-            key={key}
-            icon={getMenuIcon(plugin.icon)}
-            to={getMenuPath(plugin)}
-            title={t(`${plugin.title}`)}
-            textStyle={{ fontSize: '18px' }}
-            sidebarMenuActiveClass={sidebarMenuActiveClass}
-          >
-            {hasChildren(plugin) &&
-              plugin.children.map((item, idx) => (
-                <SidebarMenu.Item
-                  key={idx}
-                  title={t(`${item.title}`)}
-                  isEmptyNode={
-                    !hasPermission(scopes, item.permission) &&
-                    !hasChildren(item)
-                  }
-                  to={getMenuPath(item)}
-                  icon={getMenuIcon(item.icon)}
-                  textStyle={{ fontSize: '15px' }}
-                  exact
-                >
-                  {hasChildren(item) &&
-                    item.children.map((sub, id) => (
-                      <SidebarMenu.Item
-                        key={id}
-                        title={t(`${sub.title}`)}
-                        to={getMenuPath(sub)}
-                        isEmptyNode={!hasPermission(scopes, sub.permission)}
-                        icon={getMenuIcon(sub.icon)}
-                        textStyle={{ fontSize: '15px' }}
-                        exact
-                      ></SidebarMenu.Item>
-                    ))}
-                </SidebarMenu.Item>
-              ))}
-          </SidebarMenu.Item>
-        ))}
+        {fetchedServersLength ? (
+          pluginMenus.map((plugin, key) => (
+            <SidebarMenu.Item
+              key={key}
+              icon={getMenuIcon(plugin.icon)}
+              to={getMenuPath(plugin)}
+              title={t(`${plugin.title}`)}
+              textStyle={{ fontSize: '18px' }}
+              sidebarMenuActiveClass={sidebarMenuActiveClass}
+            >
+              {hasChildren(plugin) &&
+                plugin.children.map((item, idx) => (
+                  <SidebarMenu.Item
+                    key={idx}
+                    title={t(`${item.title}`)}
+                    isEmptyNode={
+                      !hasPermission(scopes, item.permission) &&
+                      !hasChildren(item)
+                    }
+                    to={getMenuPath(item)}
+                    icon={getMenuIcon(item.icon)}
+                    textStyle={{ fontSize: '15px' }}
+                    exact
+                  >
+                    {hasChildren(item) &&
+                      item.children.map((sub, id) => (
+                        <SidebarMenu.Item
+                          key={id}
+                          title={t(`${sub.title}`)}
+                          to={getMenuPath(sub)}
+                          isEmptyNode={!hasPermission(scopes, sub.permission)}
+                          icon={getMenuIcon(sub.icon)}
+                          textStyle={{ fontSize: '15px' }}
+                          exact
+                        ></SidebarMenu.Item>
+                      ))}
+                  </SidebarMenu.Item>
+                ))}
+            </SidebarMenu.Item>
+          ))
+        ) : (
+          <div style={{ marginTop: '20vh' }}>
+            <GluuLoader blocking={!fetchedServersLength} />
+          </div>
+        )}
 
-        <div className={classes.waveContainer}>
+        <div
+          className={
+            fetchedServersLength
+              ? classes.waveContainer
+              : classes.waveContainerFixed
+          }
+        >
           <Wave className={classes.wave} fill={themeColors.menu.background} />
           <div className={classes.powered}>Powered by Gluu</div>
         </div>
