@@ -2,8 +2,8 @@ import plugins from '../plugins.config.json'
 export function processMenus() {
   let pluginMenus = []
   plugins
-    .map((item) => item.metadataFile)
-    .forEach((path) => {
+    .map(item => item.metadataFile)
+    .forEach(path => {
       pluginMenus = pluginMenus.concat(require(`${path}`).default.menus)
     })
 
@@ -14,30 +14,20 @@ export function processMenus() {
 export function processRoutes() {
   let pluginRoutes = []
   plugins
-    .map((item) => item.metadataFile)
-    .forEach((path) => {
+    .map(item => item.metadataFile)
+    .forEach(path => {
       pluginRoutes = pluginRoutes.concat(require(`${path}`).default.routes)
     })
   return pluginRoutes
 }
 
-const sortMenu = (menu) => {
+const sortMenu = menu => {
   menu = sortParentMenu(menu)
   return menu
 }
 
-const sortParentMenu = (menu) => {
-  menu.sort((a, b) => {
-    var titleA = a.title.toUpperCase()
-    var titleB = b.title.toUpperCase()
-    if (titleA < titleB) {
-      return -1
-    }
-    if (titleA > titleB) {
-      return 1
-    }
-    return 0
-  })
+const sortParentMenu = menu => {
+  menu.sort((a, b) => a?.order - b?.order)
 
   return menu
 }

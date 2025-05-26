@@ -597,18 +597,19 @@
     "view_source": "View Source",
     "adminui": "Admin",
     "config-api": "Config-API",
+    "security": "Security",
     "authn": "Authn",
     "webhooks": "Webhooks",
     "agama_flows": "Agama Flows",
     "default_acr": "Default ACR",
     "acrs": "ACRs",
     "aliases": "Aliases",
+    "api_config": "Config API properties",
     "builtIn": "Built-In",
-    "api": {
-      "roles": "Access roles",
-      "permissions": "Permissions",
-      "mapping": "Mapping",
-      "api_config": "Config API properties"
+    "securityDropdown": {
+      "adminUiRoles": "Admin UI Roles",
+      "capabilities": "Capabilities",
+      "mapping": "Mapping"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -633,7 +634,7 @@
     "logging": "Logging",
     "ssa": "SSA",
     "mau": "Active Users",
-    "oauthserver": "Auth server",
+    "oauthserver": "Auth Server",
     "persistence": "Persistence",
     "person": "Person",
     "properties": "Auth server properties",

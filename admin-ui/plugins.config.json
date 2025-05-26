@@ -1,43 +1,58 @@
 [
   {
-    "key": "services",
-    "metadataFile": "./services/plugin-metadata"
+    "order": 1,
+    "key": "home",
+    "metadataFile": "./admin/plugin-metadata"
   },
+
   {
-    "key": "schema",
-    "metadataFile": "./schema/plugin-metadata"
-  },
-  {
+    "order": 2,
     "key": "auth-server",
     "metadataFile": "./auth-server/plugin-metadata"
   },
   {
-    "key": "admin",
-    "metadataFile": "./admin/plugin-metadata"
-  },
-  {
+    "order": 3,
     "key": "users",
     "metadataFile": "./user-management/plugin-metadata"
   },
   {
+    "order": 4,
+    "key": "scripts",
+    "metadataFile": "./scripts/plugin-metadata"
+  },
+  {
+    "order": 5,
+    "key": "user-claims",
+    "metadataFile": "./schema/plugin-metadata"
+  },
+  {
+    "order": 6,
+    "key": "services",
+    "metadataFile": "./services/plugin-metadata"
+  },
+  {
+    "order": 7,
     "key": "smtp",
     "metadataFile": "./smtp-management/plugin-metadata"
   },
   {
-    "key": "fido",
-    "metadataFile": "./fido/plugin-metadata"
-  },
-  {
-    "key": "jans-lock",
-    "metadataFile": "./jans-lock/plugin-metadata"
-  },
-
-  {
+    "order": 8,
     "key": "scim",
     "metadataFile": "./scim/plugin-metadata"
   },
   {
+    "order": 9,
+    "key": "fido",
+    "metadataFile": "./fido/plugin-metadata"
+  },
+  {
+    "order": 10,
     "key": "saml",
     "metadataFile": "./saml/plugin-metadata"
+  },
+  {
+    "order": 11,
+    "key": "jans-lock",
+    "metadataFile": "./jans-lock/plugin-metadata"
   }
 ]
