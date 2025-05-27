@@ -727,6 +727,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#supported-versions" class="md-nav__link">
+    Supported Versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install-the-package" class="md-nav__link">
     Install the Package
   </a>
@@ -1897,6 +1904,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#supported-versions" class="md-nav__link">
+    Supported Versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install-the-package" class="md-nav__link">
     Install the Package
   </a>
@@ -2053,17 +2067,26 @@
 <li>Please obtain an <a href="../../agama/prerequisites/">SSA</a> to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.</li>
 </ul>
+<h2 id="supported-versions">Supported Versions<a class="headerlink" href="#supported-versions" title="Permanent link">#</a></h2>
+<ul>
+<li>Ubuntu 24.04</li>
+<li>Ubuntu 22.04</li>
+<li>Ubuntu 20.04</li>
+</ul>
 <h2 id="install-the-package">Install the Package<a class="headerlink" href="#install-the-package" title="Permanent link">#</a></h2>
 <h3 id="download-and-verify-the-release-package">Download and Verify the Release Package<a class="headerlink" href="#download-and-verify-the-release-package" title="Permanent link">#</a></h3>
 <ul>
 <li>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>. Choose
 the correct command from below based on the OS version.
+<div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 24.04</span>
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+</code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div></p>
 </li>
 <li>
@@ -2080,35 +2103,45 @@ wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/down
 <li>
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the 
 package.  Choose the correct command from below based on the OS version.
+<div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 24.04</span>
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+</code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu22.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu20.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 Choose the correct command from below based on the OS version.
+<div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 24.04</span>
+<span class="nb">cd</span><span class="w"> </span>/tmp
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu24.04_amd64.deb.sha256sum
+</code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
 <span class="nb">cd</span><span class="w"> </span>/tmp
-sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu22.04_amd64.deb.sha256sum
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
 <span class="nb">cd</span><span class="w"> </span>/tmp
-sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu20.04_amd64.deb.sha256sum
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex_0.0.0-nightly.ubuntu&lt;version&gt;_amd64.deb:<span class="w"> </span>ok
+<div class="highlight"><pre><span></span><code>flex_replace-flex-version-stable.ubuntu&lt;version&gt;_amd64.deb:<span class="w"> </span>ok
 </code></pre></div></p>
 </li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Choose the correct command from below based on the OS version.</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu22.04_amd64.deb
+<p><div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 24.04</span>
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu20.04_amd64.deb
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <p>Execute the setup script with command below:
@@ -2271,7 +2304,7 @@ Remove packages:
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-04-29T13:48:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-04-29</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-05-27T06:42:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-05-27</span>
       
         <br>
         Created:
