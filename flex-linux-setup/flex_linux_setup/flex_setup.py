@@ -441,11 +441,18 @@ class flex_installer(JettyInstaller):
             config.write(cli_config.open('w'))
             cli_config.chmod(0o600)
 
-    def install_gluu_admin_ui(self):
 
-        print("Installing Gluu Admin UI Frontend")
+    def unpack_gluu_admin_ui_archive(self):
 
         admin_ui_bin_archive = os.path.basename(self.adimin_ui_bin_url)
+
+        if os.path.exists(Config.templateRenderingDict['admin_ui_apache_root']):
+            print("Backing up previous installation")
+            os.rename(
+                Config.templateRenderingDict['admin_ui_apache_root'],
+                Config.templateRenderingDict['admin_ui_apache_root'] + '.back-' + time.ctime().replace(' ', '_')
+            )
+
         print("Extracting", admin_ui_bin_archive)
 
         shutil.unpack_archive(
@@ -453,10 +460,10 @@ class flex_installer(JettyInstaller):
             httpd_installer.server_root
         )
 
+
         os.rename(
             os.path.join(httpd_installer.server_root, 'dist'),
             Config.templateRenderingDict['admin_ui_apache_root']
-
         )
 
         config_api_installer.renderTemplateInOut(
@@ -464,6 +471,13 @@ class flex_installer(JettyInstaller):
             self.templates_dir,
             Config.templateRenderingDict['admin_ui_apache_root']
         )
+
+
+    def install_gluu_admin_ui(self):
+
+        print("Installing Gluu Admin UI Frontend")
+
+        self.unpack_gluu_admin_ui_archive()
 
         def get_client_parser():
 
@@ -793,6 +807,7 @@ def main(uninstall):
         if os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
             installer_obj.download_files(force=True)
             installer_obj.install_config_api_plugin()
+            installer_obj.unpack_gluu_admin_ui_archive()
             restart_services()
         else:
             print("Gluu Flex Admin UI was not installed on this system. Update not possible.")
