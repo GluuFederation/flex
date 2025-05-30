@@ -9,7 +9,14 @@ import {
 
 import colors from './../../../colors'
 
-const data = times(20, () => ({ pv: Math.random() * 100 }))
+// Generate deterministic mock data using a sine wave pattern
+const generateMockData = () => {
+  return times(20, (index) => ({
+    pv: Math.sin(index * 0.5) * 50 + 50 // Creates a wave pattern between 0-100
+  }))
+}
+
+const data = generateMockData()
 
 const TinyAreaChartSpend = () => (
   <ResponsiveContainer width='100%' height={ 125 }>

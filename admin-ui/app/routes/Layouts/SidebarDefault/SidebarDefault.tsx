@@ -61,22 +61,25 @@ export const SidebarDefault = () => {
         </h6>
         <ul className="ps-3">
           <li>
-            <a href="http://dashboards.webkom.co/jquery/airframe" className="text-primary">jQuery</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
+            <a href="https://dashboards.webkom.co/jquery/airframe" className="text-primary">jQuery</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/react/airframe" className="text-primary">React</a> - {t("based on the newest")} <i>Reactstrap</i>
+            <a href="https://dashboards.webkom.co/react/airframe" className="text-primary">React</a> - {t("based on the newest")} <i>Reactstrap</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/react-next/airframe" className="text-primary">Next.js (React)</a> - {t("based on the newest")} <i>Reactstrap</i> and <i>Next.js</i>
+            <a href="https://dashboards.webkom.co/react-next/airframe" className="text-primary">Next.js (React)</a> - {t("based on the newest")} <i>Reactstrap</i> and <i>Next.js</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/angular/airframe" className="text-primary">Angular</a> - {t("based on the newest")} <i>ng-bootstrap</i>
+            <a href="https://dashboards.webkom.co/angular/airframe" className="text-primary">Angular</a> - {t("based on the newest")} <i>ng-bootstrap</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/net-mvc/airframe" className="text-primary">.NET MVC</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
+            <a href="https://dashboards.webkom.co/net-mvc/airframe" className="text-primary">.NET MVC</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/vue/airframe" className="text-primary">Vue.js</a> - {t("based on the newest")} <i>BootstrapVue</i>
+            <a href="https://dashboards.webkom.co/vue/airframe" className="text-primary">Vue.js</a> - {t("based on the newest")} <i>BootstrapVue</i>
+          </li>
+          <li>
+            <a href="https://gluu.org/flex" className="text-primary">Gluu Flex</a> - {t("based on the newest")} <i>Reactstrap</i>
           </li>
           <li>
             <b>{t("Other Versions")}</b>, {t("such as")} <i>Ruby on Rails, Ember, Laravel etc.</i>, {t("please ask for the beta version via email")}: info@webkom.co
@@ -90,7 +93,7 @@ export const SidebarDefault = () => {
         </h6>
         <p>
           {t("Regarding configuration, changes under client")}&apos;s {t("requirements")}.<br />
-          {t("Pleace contact us through the")} <a href="http://wbkom.co/contact" className="text-primary" target="_blank" rel="noopener noreferrer">webkom.co/contact</a> {t("website")}.
+          {t("Pleace contact us through the")} <a href="https://wbkom.co/contact" className="text-primary" target="_blank" rel="noopener noreferrer">webkom.co/contact</a> {t("website")}.
         </p>
       </section>
     </Container>

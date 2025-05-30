@@ -12,7 +12,7 @@ import {
   DropdownToggle
 } from 'Components'
 
-const SERVICE_URL = "http://dashboards.webkom.co:8000"
+const SERVICE_URL = "https://dashboards.webkom.co:8000"
 
 export class VersionSelector extends React.Component {
   static propTypes = {
@@ -67,8 +67,8 @@ export class VersionSelector extends React.Component {
       <UncontrolledButtonDropdown direction={ down ? "down" : "up" } className={ className }>
         <DropdownToggle
           disabled={ isEmpty(versions) }
-          tag="a"
-          href="javascript:;"
+          tag="button"
+          type="button"
           className={classNames(
             'btn-switch-version',
             {

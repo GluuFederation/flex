@@ -58,22 +58,25 @@ export const SidebarA = () => {
         </h6>
         <ul className="ps-3">
           <li>
-            <a href="http://dashboards.webkom.co/jquery/airframe">jQuery</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
+            <a href="https://dashboards.webkom.co/jquery/airframe">jQuery</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/react/airframe">React</a> - {t("based on the newest")} <i>Reactstrap</i>
+            <a href="https://dashboards.webkom.co/react/airframe">React</a> - {t("based on the newest")} <i>Reactstrap</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/react-next/airframe">Next.js (React)</a> - {t("based on the newest")} <i>Reactstrap</i> and <i>Next.js</i>
+            <a href="https://dashboards.webkom.co/react-next/airframe">Next.js (React)</a> - {t("based on the newest")} <i>Reactstrap</i> and <i>Next.js</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/angular/airframe">Angular</a> - {t("based on the newest")} <i>ng-bootstrap</i>
+            <a href="https://dashboards.webkom.co/angular/airframe">Angular</a> - {t("based on the newest")} <i>ng-bootstrap</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/net-mvc/airframe">.NET MVC</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
+            <a href="https://dashboards.webkom.co/net-mvc/airframe">.NET MVC</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
           </li>
           <li>
-            <a href="http://dashboards.webkom.co/vue/airframe">Vue.js</a> - {t("based on the newest")} <i>BootstrapVue</i>
+            <a href="https://dashboards.webkom.co/vue/airframe">Vue.js</a> - {t("based on the newest")} <i>BootstrapVue</i>
+          </li>
+          <li>
+            <a href="https://gluu.org/flex">Gluu Flex</a> - {t("based on the newest")} <i>Reactstrap</i>
           </li>
           <li>
             <b>{t("Other Versions")}</b>, {t("such as")} <i>Ruby on Rails, Ember, Laravel etc.</i>, {("please ask for the beta version via email")}: info@webkom.co
@@ -87,7 +90,7 @@ export const SidebarA = () => {
         </h6>
         <p>
           {t("Regarding configuration, changes under client")}&apos;s {t("requirements")}.<br />
-          {("Pleace contact us through the")} <a href="http://wbkom.co/contact" target="_blank" rel="noopener noreferrer">webkom.co/contact</a> {t("website")}.
+          {("Pleace contact us through the")} <a href="https://wbkom.co/contact" target="_blank" rel="noopener noreferrer">webkom.co/contact</a> {t("website")}.
         </p>
       </section>
     </Container>
