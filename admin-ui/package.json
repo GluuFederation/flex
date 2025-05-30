@@ -97,7 +97,16 @@
     "webpack-dev-server": "^5.1.0",
     "whatwg-fetch": "^3.6.20",
     "xhr2": "^0.2.1",
-    "yaml-loader": "^0.8.0"
+    "yaml-loader": "^0.8.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
