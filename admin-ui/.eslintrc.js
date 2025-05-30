@@ -1,14 +1,12 @@
 module.exports = {
   root: true,
-  parser: '@babel/eslint-parser',
-  plugins: ['react', 'jest'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['react', 'jest', '@typescript-eslint'],
   parserOptions: {
-    parser: '@babel/eslint-parser',
-    ecmaVersion: 6,
+    ecmaVersion: 2020,
     sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
-      experimentalObjectRestSpread: true,
     },
   },
   env: {
@@ -23,6 +21,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:jest/recommended',
     'plugin:jest/style',
+    'plugin:@typescript-eslint/recommended',
   ],
   rules: {
     'no-var': 'error',
@@ -31,6 +30,7 @@ module.exports = {
     'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
     'prefer-const': 'error',
     'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error'],
     "default-param-last": "off",
     //"no-use-before-define": "error",
     'react/jsx-uses-react': 'error',
@@ -49,10 +49,19 @@ module.exports = {
     'jest/no-identical-title': 'error',
     'jest/prefer-to-have-length': 'warn',
     'jest/valid-expect': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
   },
   overrides: [
     {
       files: ['*.js', '*.jsx'],
+      rules: {
+        'react/prop-types': 'off',
+      },
+    },
+    {
+      files: ['*.ts', '*.tsx'],
       rules: {
         'react/prop-types': 'off',
       },
