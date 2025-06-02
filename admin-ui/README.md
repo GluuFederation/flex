@@ -74,4 +74,41 @@ npm run install
 
 Once the project is compiled and started, UI can be accessed at URL: http://localhost:4100
 
+## Code Formatting
+
+This project uses Prettier and ESLint to maintain consistent code formatting. A pre-commit hook automatically checks code formatting before commits.
+
+### Available Commands
+
+Format all files in the project:
+
+```
+npm run format
+```
+
+Check if files need formatting:
+
+```
+npm run format:check
+```
+
+### Pre-commit Hook
+
+The project is configured with Husky to run formatting checks before commits. If your staged files are not properly formatted, the commit will fail with an error message. To fix this:
+
+1. Run the format command to fix formatting issues:
+
+```
+npm run format
+```
+
+2. Add the formatted files and commit again:
+
+```
+git add .
+git commit -m "your commit message"
+```
+
+**Note:** The pre-commit hook only checks staged files, ensuring fast commits while maintaining code quality.
+
 This project has been built on [Airframe React](https://github.com/0wczar/airframe-react).
