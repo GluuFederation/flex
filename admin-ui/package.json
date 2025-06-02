@@ -41,7 +41,7 @@
     "plugin:add": "node ./build/plugin-cli.js --addPlugin",
     "plugin:remove": "node ./build/plugin-cli.js --removePlugin",
     "plugin:clean": "node ./build/plugin-cli.js --cleanExceptDefault admin,auth-server --resetPluginConfig",
-    "prepare": "husky && husky install"
+    "prepare": "cd .. && npx husky install && git config core.hooksPath admin-ui/.husky"
   },
   "author": "gluu inc.",
   "license": "Apache",
