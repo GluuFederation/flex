@@ -1,22 +1,31 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import Common from './../../common'
 
-export class SidebarContent extends React.Component {
-  static propTypes = {
-    children: PropTypes.node,
-    slim: PropTypes.bool,
-    collapsed: PropTypes.bool,
-    animationsDisabled: PropTypes.bool,
-    pageConfig: PropTypes.object
-  }
+interface SidebarContentProps {
+  children?: React.ReactNode;
+  slim?: boolean;
+  collapsed?: boolean;
+  animationsDisabled?: boolean;
+  pageConfig: {
+    sidebarSlim?: boolean;
+    sidebarCollapsed?: boolean;
+    animationsDisabled?: boolean;
+  };
+}
 
-  sidebarRef = React.createRef()
+interface SidebarContentState {
+  entryAnimationFinished: boolean;
+}
 
-  constructor(props) {
+export class SidebarContent extends React.Component<SidebarContentProps, SidebarContentState> {
+  sidebarRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
+  sidebarEntryAnimate: any
+  slimSidebarAnimate: any
+  slimMenuAnimate: any
+
+  constructor(props: SidebarContentProps) {
     super(props)
 
     this.state = {
@@ -47,10 +56,10 @@ export class SidebarContent extends React.Component {
 
   render() {
     const {
-      animationsDisabled,
-      collapsed,
+      animationsDisabled = false,
+      collapsed = false,
       pageConfig,
-      slim,
+      slim = false,
       children,
     } = this.props
 

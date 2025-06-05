@@ -1,15 +1,14 @@
-// @ts-nocheck
-import React, { useState } from 'react'
-import { FormGroup, Label, Col } from 'Components'
-import Toggle from 'react-toggle'
-import GluuTooltip from './GluuTooltip'
-import { useTranslation } from 'react-i18next'
+import { useState } from "react";
+import { FormGroup, Label, Col } from "Components";
+import Toggle from "react-toggle";
+import GluuTooltip from "./GluuTooltip";
+import { useTranslation } from "react-i18next";
 
-function GluuSecretDetail({ label, value, doc_category, doc_entry }) {
-  const { t } = useTranslation()
-  const [up, setUp] = useState(false)
+function GluuSecretDetail({ label, value, doc_category, doc_entry }: any) {
+  const { t } = useTranslation();
+  const [up, setUp] = useState(false);
   function handleSecret() {
-    setUp(!up)
+    setUp(!up);
   }
 
   return (
@@ -18,21 +17,21 @@ function GluuSecretDetail({ label, value, doc_category, doc_entry }) {
         <Label for="input" sm={2}>
           {t(label)}:
         </Label>
-        {value !== '-' && (
+        {value !== "-" && (
           <Label for="input" sm={1}>
             <Toggle defaultChecked={false} onChange={handleSecret} />
           </Label>
         )}
         {up && (
           <Col sm={9}>
-            <Label for="input" style={{ fontWeight: 'bold' }}>
+            <Label for="input" style={{ fontWeight: "bold" }}>
               {value}
             </Label>
           </Col>
         )}
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
 
-export default GluuSecretDetail
+export default GluuSecretDetail;

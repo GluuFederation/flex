@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import { ClickAwayListener } from '@mui/base/ClickAwayListener'
 import Grow from '@mui/material/Grow'
@@ -13,14 +12,14 @@ import styles from './styles'
 export default function Lang() {
   const { classes } = styles()
   const [open, setOpen] = React.useState(false)
-  const anchorRef = React.useRef(null)
+  const anchorRef = React.useRef<HTMLButtonElement | null>(null)
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen)
   }
 
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+  const handleClose = (event: MouseEvent | TouchEvent) => {
+    if (anchorRef.current && event.target instanceof Node && anchorRef.current.contains(event.target)) {
       return
     }
 
@@ -31,7 +30,7 @@ export default function Lang() {
   const prevOpen = React.useRef(open)
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus()
+      anchorRef.current?.focus()
     }
 
     prevOpen.current = open

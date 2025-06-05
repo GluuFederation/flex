@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useContext } from 'react'
 import { Button, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
@@ -12,9 +11,9 @@ function GluuCommitFooter({
   extraLabel,
   hideButtons,
   type = "button"
-}) {
+}: any) {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
   function goBack() {

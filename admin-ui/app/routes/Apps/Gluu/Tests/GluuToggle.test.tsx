@@ -1,4 +1,4 @@
-// @ts-nocheck
+import React from 'react'
 import { fireEvent, screen } from '@testing-library/dom'
 import GluuToogle from '../GluuToogle'
 import { render } from '@testing-library/react'
@@ -16,7 +16,7 @@ describe('Toggle switch', () => {
     )
 
     // Find the Toggle component in the DOM
-    const toggleElement = screen.getByTestId(name)
+    const toggleElement: any = screen.getByTestId(name)
 
     // Assert that the Toggle is initially checked
     expect(toggleElement.checked).toBe(initialChecked)

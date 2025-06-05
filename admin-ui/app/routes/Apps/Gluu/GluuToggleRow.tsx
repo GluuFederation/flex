@@ -1,9 +1,6 @@
-// @ts-nocheck
-import React from 'react'
 import { FormGroup, Col } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
-import PropTypes from 'prop-types'
 
 const GluuToggleRow = ({
   formik,
@@ -13,13 +10,13 @@ const GluuToggleRow = ({
   rsize = 8,
   name,
   doc_category
-}) => {
+}: any) => {
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
       <Col sm={rsize}>
         <Toggle
-          onChange={(event) => {
+          onChange={(event: any) => {
             formik.setFieldValue(name, event.target.checked)
           }}
           checked={formik.values[name]}
@@ -31,11 +28,3 @@ const GluuToggleRow = ({
 }
 
 export default GluuToggleRow
-GluuToggleRow.propTypes = {
-  formik: PropTypes.object,
-  label: PropTypes.string,
-  viewOnly: PropTypes.bool,
-  lsize: PropTypes.number,
-  rsize: PropTypes.number,
-  name: PropTypes.string
-}

@@ -1,8 +1,49 @@
-// @ts-nocheck
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-const initialState = {
+interface BackendStatus {
+  active: boolean
+  errorMessage: string | null
+  statusCode: number | null
+}
+
+interface Token {
+  access_token: string
+  scopes: string[]
+}
+
+interface UserInfo {
+  // Define userinfo properties as needed, using 'any' for now
+  [key: string]: any
+}
+
+interface Config {
+  [key: string]: any
+}
+
+interface Location {
+  [key: string]: any
+}
+
+interface AuthState {
+  isAuthenticated: boolean
+  userinfo: UserInfo | null
+  userinfo_jwt: string | null
+  token: Token | null
+  issuer: string | null
+  permissions: string[]
+  location: Location
+  config: Config
+  defaultToken: any
+  codeChallenge: string | null
+  codeChallengeMethod: string
+  codeVerifier: string | null
+  backendStatus: BackendStatus
+  loadingConfig: boolean
+  authState?: any
+}
+
+const initialState: AuthState = {
   isAuthenticated: false,
   userinfo: null,
   userinfo_jwt: null,
@@ -27,52 +68,52 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    getOAuth2Config: (state, action) => {
+    getOAuth2Config: (state, action: PayloadAction<any>) => {
       state.defaultToken = action.payload
     },
-    setBackendStatus: (state, action) => {
+    setBackendStatus: (state, action: PayloadAction<BackendStatus>) => {
       state.backendStatus.active = action.payload.active
       state.backendStatus.errorMessage = action.payload.errorMessage
       state.backendStatus.statusCode = action.payload.statusCode
     },
-    getOAuth2ConfigResponse: (state, action) => {
-      if (action.payload?.config && action.payload?.config !== -1) {
+    getOAuth2ConfigResponse: (state, action: PayloadAction<{ config?: Config }>) => {
+      if (action.payload?.config) {
         const newDataConfigObject = { ...state.config, ...action.payload.config }
         state.config = newDataConfigObject
       }
     },
-    setOAuthState: (state, action) => {
+    setOAuthState: (state, action: PayloadAction<{ authState: any }>) => {
       state.authState = action.payload?.authState
     },
-    setAuthState: (state, action) => {
+    setAuthState: (state, action: PayloadAction<{ state: boolean }>) => {
       state.isAuthenticated = action.payload?.state
     },
-    getUserInfo: (state, action) => {},
-    getUserInfoResponse: (state, action) => {
+    getUserInfo: (state, _action: PayloadAction<any>) => {},
+    getUserInfoResponse: (state, action: PayloadAction<{ ujwt?: string; userinfo?: UserInfo }>) => {
       if (action.payload?.ujwt) {
-        state.userinfo = action.payload.userinfo
+        state.userinfo = action.payload.userinfo ?? null
         state.userinfo_jwt = action.payload.ujwt
         state.isAuthenticated = true
       } else {
         state.isAuthenticated = true
       }
     },
-    getAPIAccessToken: (state, action) => {},
-    getAPIAccessTokenResponse: (state, action) => {
+    getAPIAccessToken: (state, _action: PayloadAction<any>) => {},
+    getAPIAccessTokenResponse: (state, action: PayloadAction<{ access_token?: string; scopes?: string[]; issuer?: string }>) => {
       if (action.payload?.access_token) {
-        state.token = { access_token: action.payload.access_token, scopes: action.payload.scopes }
-        state.issuer = action.payload.issuer
-        state.permissions = action.payload.scopes
+        state.token = { access_token: action.payload.access_token, scopes: action.payload.scopes || [] }
+        state.issuer = action.payload.issuer || null
+        state.permissions = action.payload.scopes || []
         state.isAuthenticated = true
       }
     },
-    getUserLocation: (state, action) => {},
-    getUserLocationResponse: (state, action) => {
+    getUserLocation: (state, _action: PayloadAction<any>) => {},
+    getUserLocationResponse: (state, action: PayloadAction<{ location?: Location }>) => {
       if (action.payload?.location) {
         state.location = action.payload.location
       }
     },
-    setApiDefaultToken: (state, action) => {
+    setApiDefaultToken: (state, action: PayloadAction<any>) => {
       state.defaultToken = action.payload
       state.issuer = action.payload.issuer
     },

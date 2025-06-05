@@ -3,7 +3,13 @@ import { Container, Row, Col } from "Components";
 import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
 import PropTypes from 'prop-types'
 
-const UserDeviceDetailViewPage = ({ row }) => {
+interface UserDeviceDetailViewPageProps {
+  row: {
+    rowData: any;
+  };
+}
+
+const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const { rowData } = row;
   const DOC_SECTION = "user";
 

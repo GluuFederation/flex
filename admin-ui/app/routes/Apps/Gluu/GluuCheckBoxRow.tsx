@@ -1,5 +1,3 @@
-// @ts-nocheck
-import React from 'react'
 import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from './GluuLabel'
 
@@ -12,7 +10,7 @@ function GluuCheckBoxRow({
   rsize = 9,
   handleOnChange,
   doc_category,
-}) {
+}: any) {
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} required={required} doc_category={doc_category} doc_entry={name} />

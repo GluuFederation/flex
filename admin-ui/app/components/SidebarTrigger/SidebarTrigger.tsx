@@ -1,17 +1,30 @@
-// @ts-nocheck
-import React from 'react'
+import React, { ElementType, ReactNode, MouseEvent } from 'react'
 import { NavLink } from 'reactstrap'
-import PropTypes from 'prop-types'
 import { withPageConfig } from './../Layout'
 
-const SidebarTrigger = (props) => {
-  const { tag: Tag, pageConfig, ...otherProps } = props
+interface PageConfig {
+  sidebarCollapsed: boolean
+  toggleSidebar: () => void
+  // Add any other properties used from pageConfig if needed
+}
+
+export interface SidebarTriggerProps {
+  tag?: ElementType
+  children?: ReactNode
+  pageConfig: PageConfig
+  color?: string
+  showCollapseonly?: boolean
+  [key: string]: any // for otherProps
+}
+
+const SidebarTrigger: React.FC<SidebarTriggerProps> = (props) => {
+  const { tag: Tag = NavLink, pageConfig, ...otherProps } = props
 
   return (
     <Tag
-      onClick={(event) => {
+      onClick={(event: MouseEvent) => {
         event.stopPropagation()
-        props.pageConfig.toggleSidebar()
+        pageConfig.toggleSidebar()
         return false
       }}
       active={Tag !== 'a' ? !pageConfig.sidebarCollapsed : undefined}
@@ -37,14 +50,6 @@ const SidebarTrigger = (props) => {
       )}
     </Tag>
   )
-}
-SidebarTrigger.propTypes = {
-  tag: PropTypes.any,
-  children: PropTypes.node,
-  pageConfig: PropTypes.object,
-}
-SidebarTrigger.defaultProps = {
-  tag: NavLink,
 }
 
 const cfgSidebarTrigger = withPageConfig(SidebarTrigger)

@@ -1,8 +1,6 @@
-// @ts-nocheck
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import {
-  Avatar,
   AvatarAddOn,
   DropdownToggle,
   Navbar,
@@ -12,6 +10,7 @@ import {
   SidebarTrigger,
   ThemeSetting,
   UncontrolledDropdown,
+  AvatarImage,
 } from "Components";
 import { LanguageMenu } from "./LanguageMenu";
 import { useSelector } from "react-redux";
@@ -21,7 +20,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import GluuErrorFallBack from "./GluuErrorFallBack";
 
 function GluuNavBar() {
-  const userInfo = useSelector((state) => state.authReducer.userinfo);
+  const userInfo = useSelector((state:any) => state.authReducer.userinfo);
   const [showCollapse, setShowCollapse] = useState(
     window.matchMedia("(max-width: 768px)").matches
   );
@@ -65,7 +64,7 @@ function GluuNavBar() {
                sx={{ display: { xs: "none", md: "flex" } }}
               >
                 <DropdownToggle nav>
-                  <Avatar.Image
+                  <AvatarImage
                     size="md"
                     src={randomAvatar()}
                     addOns={[

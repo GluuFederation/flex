@@ -1,14 +1,9 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { ReactNode, FC } from 'react'
 
-const SidebarClose = (props) => (
+const SidebarClose: FC<{ children?: ReactNode }> = (props) => (
   <div className="sidebar__close">
     { props.children }
   </div>
 )
-SidebarClose.propTypes = {
-  children: PropTypes.node
-}
 
 export { SidebarClose }

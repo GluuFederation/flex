@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import {
-  Avatar,
   AvatarAddOn,
   Button,
   DropdownToggle,
@@ -63,7 +62,7 @@ const NavbarExample = ({ themeColor, themeStyle, navStyle }) => {
           { /* START Navbar: Dropdown */ }
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav>
-              <Avatar.Image
+              <AvatarImage
                 size="sm"
                 src={ randomAvatar() }
                 addOns={[

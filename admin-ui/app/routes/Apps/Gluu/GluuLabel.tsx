@@ -1,5 +1,3 @@
-// @ts-nocheck
-import React from 'react'
 import { Label } from 'Components'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
@@ -7,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
 import { HelpOutline } from '@mui/icons-material'
 
-function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
+function GluuLabel({ label, required, size, doc_category, doc_entry, style }: any) {
   const { t, i18n } = useTranslation()
   function getSize() {
     if (size != null) {
@@ -24,7 +22,6 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
         {(doc_category && i18n.exists('documentation.' + doc_category + '.' + doc_entry)) &&  
           <>
             <ReactTooltip
-              tabIndex="-1"
               id={doc_entry}
               place="right"
               role="tooltip"
@@ -32,7 +29,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
             >
               {t('documentation.' + doc_category + '.' + doc_entry)}
             </ReactTooltip>
-            <HelpOutline tabIndex="-1" style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tooltip-id={doc_entry} data-for={doc_entry} />
+            <HelpOutline tabIndex={-1} style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tooltip-id={doc_entry} data-for={doc_entry} />
           </>
         }
         :

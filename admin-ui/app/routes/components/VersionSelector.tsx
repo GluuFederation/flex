@@ -1,10 +1,8 @@
-// @ts-nocheck
 import React from 'react'
 import fetch from 'node-fetch'
 import classNames from 'classnames'
 import { filter, find, isEmpty, map } from 'lodash'
 import moment from 'moment'
-import PropTypes from 'prop-types'
 import {
   UncontrolledButtonDropdown,
   DropdownMenu,
@@ -14,37 +12,52 @@ import {
 
 const SERVICE_URL = "https://dashboards.webkom.co:8000"
 
-export class VersionSelector extends React.Component {
-  static propTypes = {
-    dashboard: PropTypes.string,
-    down: PropTypes.bool,
-    compact: PropTypes.bool,
-    render: PropTypes.func,
-    className: PropTypes.string,
-    sidebar: PropTypes.bool
-  }
+// Define the type for a version object
+interface Version {
+  dashboardName: string
+  version: string
+  label: string
+  date: string
+  demoUrl: string
+}
 
-  constructor(props) {
+// Define the props for the component
+interface VersionSelectorProps {
+  dashboard?: string
+  down?: boolean
+  compact?: boolean
+  render?: (currentVersion: Version) => React.ReactNode
+  className?: string
+  sidebar?: boolean
+}
+
+// Define the state for the component
+interface VersionSelectorState {
+  versions: Version[]
+  isError: boolean
+}
+
+export class VersionSelector extends React.Component<VersionSelectorProps, VersionSelectorState> {
+  constructor(props: VersionSelectorProps) {
     super(props)
-
     this.state = {
       versions: [],
-      isError: false,
-      render: null
+      isError: false
     }
   }
 
   async fetchVersions() {
     const { dashboard } = this.props
-    let versions
+    let versions: Version[] = []
     try {
-      versions = await fetch(`${SERVICE_URL}/dashboards/versions`)
-        .then(response => response.json())
-    } catch(exc) {
+      const response = await fetch(`${SERVICE_URL}/dashboards/versions`)
+      const data = await response.json()
+      versions = data as Version[]
+    } catch (exc) {
+      console.error("Error fetching versions", exc)
       this.setState({ isError: true })
     }
     const targetVersions = filter(versions, { dashboardName: dashboard })
-        
     this.setState({ versions: targetVersions })
   }
 
@@ -52,7 +65,7 @@ export class VersionSelector extends React.Component {
     this.fetchVersions()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: VersionSelectorProps) {
     if (prevProps.dashboard !== this.props.dashboard) {
       this.fetchVersions()
     }

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { CartesianGrid } from './Recharts/CartesianGrid'
 import { PolarGrid } from './Recharts/PolarGrid'
 import { XAxis } from './Recharts/XAxis'

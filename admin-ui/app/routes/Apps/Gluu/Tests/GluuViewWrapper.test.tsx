@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import GluuViewWrapper from '../GluuViewWrapper'
 import { render, screen } from '@testing-library/react'

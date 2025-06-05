@@ -7,7 +7,7 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Avatar,
+  AvatarImage,
   AvatarAddOn,
   Navbar,
   NavbarToggler,
@@ -55,7 +55,7 @@ export const LayoutNavbar = () => {
           { /* START Navbar: Dropdown */ }
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav>
-              <Avatar.Image
+              <AvatarImage
                 size="sm"
                 src={ randomAvatar() }
                 addOns={[

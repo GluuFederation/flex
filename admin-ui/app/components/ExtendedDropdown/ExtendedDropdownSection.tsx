@@ -1,31 +1,30 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import classNames from "classnames";
+import { ReactNode, ElementType } from "react";
 
-const ExtendedDropdownSection = (props) => {
-  const { children, list, className, tag, ...otherProps } = props
-  const sectionClass = classNames(
-    "extended-dropdown__section", className, {
-      "extended-dropdown__section--list": list
-    }
-  )
-  const Tag = tag
+interface ExtendedDropdownSectionProps {
+  children?: ReactNode;
+  list?: boolean;
+  className?: string;
+  tag?: ElementType;
+  [key: string]: any; // for other props
+}
+
+const ExtendedDropdownSection = (props: ExtendedDropdownSectionProps) => {
+  const { children, list, className, tag, ...otherProps } = props;
+  const sectionClass = classNames("extended-dropdown__section", className, {
+    "extended-dropdown__section--list": list,
+  });
+  const Tag = tag || "div";
 
   return (
-    <Tag className={ sectionClass } { ...otherProps }>
-      { children }
+    <Tag className={sectionClass} {...otherProps}>
+      {children}
     </Tag>
-  )
-}
-ExtendedDropdownSection.propTypes = {
-  children: PropTypes.node,
-  list: PropTypes.bool,
-  className: PropTypes.string,
-  tag: PropTypes.oneOfType([PropTypes.string, PropTypes.any, PropTypes.func])
-}
-ExtendedDropdownSection.defaultProps = {
-  tag: "div"
-}
+  );
+};
 
-export { ExtendedDropdownSection }
+ExtendedDropdownSection.defaultProps = {
+  tag: "div",
+};
+
+export { ExtendedDropdownSection };

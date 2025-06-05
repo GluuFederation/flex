@@ -1,7 +1,11 @@
-// @ts-nocheck
 import React from "react"
 
-const Services = ({ fill, className }) => {
+interface ServicesProps {
+  fill?: string
+  className: string
+}
+
+const ServicesIcon: React.FC<ServicesProps> = ({ fill, className }) => {
   return (
     <div className={className}>
       <svg xmlns="http://www.w3.org/2000/svg" fill={fill} viewBox="0 0 23 23.11">
@@ -17,4 +21,4 @@ const Services = ({ fill, className }) => {
   )
 }
 
-export default Services
+export default ServicesIcon

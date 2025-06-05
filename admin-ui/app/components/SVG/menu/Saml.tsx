@@ -1,8 +1,11 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 
-const Saml = ({ className, style }) => {
+interface SamlProps {
+  className: string
+  style: React.CSSProperties
+}
+
+const SamlIcon: React.FC<SamlProps> = ({ className, style }) => {
   return (
     <div className={className} style={style}>
       <svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' fill='none'>
@@ -17,9 +20,4 @@ const Saml = ({ className, style }) => {
     </div>
   )
 }
-
-export default Saml
-Saml.propTypes = {
-  style: PropTypes.node,
-  className: PropTypes.string,
-}
+export default SamlIcon 

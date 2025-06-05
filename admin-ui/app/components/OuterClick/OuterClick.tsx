@@ -1,6 +1,4 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { ReactNode, ReactElement } from 'react'
 import ReactDOM from 'react-dom'
 import some from 'lodash/some'
 
@@ -12,63 +10,72 @@ const getDocument = () =>
       querySelector() { return null }
     } : document
 
-/*
-    Calls an EventHandler when User clicks outside of the child element
-*/
-class OuterClick extends React.Component {
-  static propTypes = {
-    onClickOutside: PropTypes.func,
-    children: PropTypes.node,
-    excludedElements: PropTypes.array,
-    active: PropTypes.bool
-  }
+interface OuterClickProps {
+  onClickOutside?: (evt: MouseEvent | TouchEvent) => void
+  children: ReactNode
+  excludedElements?: Array<React.Component | React.RefObject<any> | null>
+  active?: boolean
+}
 
+class OuterClick extends React.Component<OuterClickProps> {
   static defaultProps = {
     onClickOutside: () => { },
     excludedElements: [],
     active: true
   }
 
+  private rootElement: HTMLElement | null = null
+  private elementRef: React.Component | Element | null = null
+
   componentDidMount() {
     this.rootElement = getDocument().querySelector('body')
 
     if (this.rootElement) {
-      this.rootElement.addEventListener('click', this.handleDocumentClick)
-      this.rootElement.addEventListener('touchstart', this.handleDocumentClick)
+      this.rootElement.addEventListener('click', this.handleDocumentClick as EventListener)
+      this.rootElement.addEventListener('touchstart', this.handleDocumentClick as EventListener)
     }
   }
 
   componentWillUnmount() {
     if (this.rootElement) {
-      this.rootElement.removeEventListener('click', this.handleDocumentClick)
-      this.rootElement.removeEventListener('touchstart', this.handleDocumentClick)
+      this.rootElement.removeEventListener('click', this.handleDocumentClick as EventListener)
+      this.rootElement.removeEventListener('touchstart', this.handleDocumentClick as EventListener)
     }
   }
 
-  assignRef(elementRef) {
+  assignRef = (elementRef: React.Component | Element | null) => {
     this.elementRef = elementRef
   }
 
-  handleDocumentClick = (evt) => {
-    if(this.openSidebar(evt.path)){
-      if(this.props.active) {
+  handleDocumentClick = (evt: MouseEvent | TouchEvent & { path?: any[]; target: any }) => {
+    if (this.openSidebar((evt as any).path)) {
+      if (this.props.active) {
         // eslint-disable-next-line react/no-find-dom-node
-        const domElement = ReactDOM.findDOMNode(this.elementRef)
-  
+        const domElement = ReactDOM.findDOMNode(this.elementRef) as HTMLElement | null
+
         const isExcluded = some(this.props.excludedElements,
-          // eslint-disable-next-line react/no-find-dom-node
-          (element) => element && ReactDOM.findDOMNode(element).contains(evt.target))
-  
-        if (!isExcluded && !domElement.contains(evt.target)) {
-          this.props.onClickOutside(evt)
+          (element) => {
+            if (!element) return false
+            let node: Element | null = null
+            // If it's a ref object, use its current
+            if (typeof (element as React.RefObject<any>).current !== 'undefined') {
+              node = ReactDOM.findDOMNode((element as React.RefObject<any>).current) as HTMLElement | null
+            } else {
+              node = ReactDOM.findDOMNode(element as React.Component) as HTMLElement | null
+            }
+            return node && node.contains(evt.target)
+          })
+
+        if (!isExcluded && domElement && !domElement.contains(evt.target)) {
+          this.props.onClickOutside && this.props.onClickOutside(evt)
         }
       }
     }
   }
 
-  openSidebar(path){
-    const exists= path?.some(item => item.id === "navToggleBtn")
-    if(exists)
+  openSidebar(path: any[] | undefined) {
+    const exists = path?.some((item: any) => item.id === "navToggleBtn")
+    if (exists)
       return false
 
     return true
@@ -78,7 +85,7 @@ class OuterClick extends React.Component {
     const onlyChild = React.Children.only(this.props.children)
 
     const updatedChild = React.isValidElement(onlyChild) ?
-      React.cloneElement(onlyChild, { ref: this.assignRef.bind(this) }) : onlyChild
+      React.cloneElement(onlyChild as ReactElement, { ref: this.assignRef }) : onlyChild
 
     return updatedChild
   }

@@ -1,21 +1,20 @@
-// @ts-nocheck
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Dropdown } from 'reactstrap'
+import React, { useState, ReactNode } from 'react'
+import { LinkProps } from 'react-router-dom'
+import { Dropdown, DropdownProps } from 'reactstrap'
 
-const ExtendedDropdownLink = (props) => {
+interface ExtendedDropdownLinkProps extends LinkProps, Omit<DropdownProps, 'toggle'> {
+  children: ReactNode
+}
+
+const ExtendedDropdownLink: React.FC<ExtendedDropdownLinkProps> = (props) => {
   const { children, ...otherProps } = props
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const toggle = () => setDropdownOpen((prevState) => !prevState)
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={toggle} {...otherProps}>
-      { children }
+      {children}
     </Dropdown>   
   )
 }
-
-ExtendedDropdownLink.propTypes = { ...Link.propTypes }
-ExtendedDropdownLink.defaultProps = { ...Link.defaultProps }
-
 export { ExtendedDropdownLink }

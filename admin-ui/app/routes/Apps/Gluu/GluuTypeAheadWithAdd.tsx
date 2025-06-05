@@ -1,12 +1,10 @@
-// @ts-nocheck
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { FormGroup, Col, Row, Button, Input } from "Components";
 import { Typeahead } from "react-bootstrap-typeahead";
 import GluuLabel from "../Gluu/GluuLabel";
 import applicationStyle from "./styles/applicationstyle";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "Context/theme/themeContext";
-import PropTypes from "prop-types";
 
 function GluuTypeAheadWithAdd({
   label,
@@ -22,16 +20,16 @@ function GluuTypeAheadWithAdd({
   rsize = 8,
   disabled = false,
   handler = null,
-}) {
+}: any) {
   const [items, setItems] = useState(value);
   const [opts, setOpts] = useState(options);
   const { t } = useTranslation();
-  const theme = useContext(ThemeContext);
+  const theme: any = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
 
   const addItem = () => {
-    const newItem = document.getElementById(inputId).value;
-    document.getElementById(inputId).value = "";
+    const newItem = (document.getElementById(inputId) as any).value;
+    (document.getElementById(inputId) as any).value = "";
     if (validator(newItem)) {
       const updatedItems = items ? [...items] : [];
       updatedItems.push(newItem);
@@ -49,7 +47,7 @@ function GluuTypeAheadWithAdd({
     }
   };
 
-  const handleChange = (aName, selected) => {
+  const handleChange = (aName: any, selected: any) => {
     setOpts(selected);
     setItems(selected);
     formik.setFieldValue(aName, selected);
@@ -105,7 +103,6 @@ function GluuTypeAheadWithAdd({
             handleChange(name, selected);
           }}
           id={name}
-          name={name}
           data-testid={name}
           multiple={true}
           selected={items}
@@ -115,21 +112,5 @@ function GluuTypeAheadWithAdd({
       </Col>
     </FormGroup>
   );
-}
-
-GluuTypeAheadWithAdd.protoTypes ={
-  label: PropTypes.string,
-  name: PropTypes.string,
-  value: PropTypes.array,
-  placeholder: PropTypes.string,
-  options: PropTypes.array,
-  formik: PropTypes.object,
-  validator: PropTypes.func,
-  inputId: PropTypes.string,
-  doc_category: PropTypes.string,
-  lsize: PropTypes.number,
-  rsize: PropTypes.number,
-  disabled: PropTypes.bool,
-  handler: PropTypes.func,
 }
 export default GluuTypeAheadWithAdd;

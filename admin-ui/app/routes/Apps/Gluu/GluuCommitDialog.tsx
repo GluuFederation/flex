@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useContext } from "react";
 import {
   FormGroup,
@@ -35,16 +34,16 @@ const GluuCommitDialog = ({
   placeholderLabel,
   inputType,
   feature,
-}) => {
-  const permissions = useSelector((state) => state.authReducer.permissions);
+}:any) => {
+  const permissions = useSelector((state: any) => state.authReducer.permissions);
   const { t } = useTranslation();
-  const theme = useContext(ThemeContext);
+  const theme: any = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
   const [active, setActive] = useState(false);
   const [isOpen, setIsOpen] = useState(null);
   const [userMessage, setUserMessage] = useState("");
   const { loadingWebhooks, webhookModal } = useSelector(
-    (state) => state.webhookReducer
+    (state: any) => state.webhookReducer
   );
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
     feature,
@@ -75,10 +74,10 @@ const GluuCommitDialog = ({
   if (!modal) {
     return <></>;
   }
-  const renderBadges = (values) => {
+  const renderBadges = (values: any) => {
     return (
       <div className="d-flex flex-column gap-1 align-items-start">
-        {values.map((data, index) => (
+        {values.map((data: any, index: any) => (
           <Badge
             color={`primary-${selectedTheme}  `}
             style={{ width: "fit-content" }}
@@ -140,7 +139,7 @@ const GluuCommitDialog = ({
                 </FormGroup>
               ) : null}
               {operations &&
-                operations.map((item, key) => (
+                operations.map((item: any, key: any) => (
                   <FormGroup row key={key}>
                     <Col sm={1} style={{ fontWeight: "bold" }}>
                       Set

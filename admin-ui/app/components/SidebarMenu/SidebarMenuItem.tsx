@@ -1,19 +1,28 @@
-// @ts-nocheck
-import React from "react";
-import PropTypes from "prop-types";
+import React, { ReactNode, CSSProperties, MouseEvent, useEffect, useId, useContext } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
-import { v4 as uuid } from "uuid";
 import { MenuContext } from "./MenuContext";
+
+interface SidebarMenuItemLinkProps {
+  to?: string | null;
+  handleClick?: () => void;
+  href?: string | null;
+  active?: boolean;
+  onToggle?: () => void;
+  children?: ReactNode;
+  classBase: string;
+  textStyle?: CSSProperties;
+  sidebarMenuActive?: string;
+}
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
  */
-const SidebarMenuItemLink = (props) => {
+const SidebarMenuItemLink: React.FC<SidebarMenuItemLinkProps> = (props) => {
   return props.to || props.href ? (
     props.to !== "logout" ? (
       <Link
-        to={props.to}
+        to={props.to as string}
         style={props.textStyle}
         className={`${props.classBase}__entry__link`}
       >
@@ -21,18 +30,19 @@ const SidebarMenuItemLink = (props) => {
       </Link>
     ) : props.to === "logout" ? (
       <Link
+        to={"#"}
         style={props.textStyle}
         className={`${props.classBase}__entry__link`}
-        onClick={(e) => {
+        onClick={(e: MouseEvent<HTMLAnchorElement>) => {
           e.preventDefault();
-          props.handleClick();
+          props.handleClick && props.handleClick();
         }}
       >
         {props.children}
       </Link>
     ) : (
       <a
-        href={props.href}
+        href={props.href || undefined}
         target="_blank"
         rel="noopener noreferrer"
         className={`${props.classBase}__entry__link`}
@@ -44,7 +54,7 @@ const SidebarMenuItemLink = (props) => {
   ) : (
     <a
       className={`${props.classBase}__entry__link ${props.sidebarMenuActive}`}
-      onClick={() => props.onToggle()}
+      onClick={() => props.onToggle && props.onToggle()}
       style={props.textStyle}
     >
       {props.children}
@@ -52,174 +62,178 @@ const SidebarMenuItemLink = (props) => {
   );
 };
 
-SidebarMenuItemLink.propTypes = {
-  to: PropTypes.string,
-  handleClick: PropTypes.func,
-  href: PropTypes.string,
-  active: PropTypes.bool,
-  onToggle: PropTypes.func,
-  children: PropTypes.node,
-  classBase: PropTypes.string,
-  textStyle: PropTypes.object,
-  sidebarMenuActive: PropTypes.string,
-};
+interface SidebarMenuEntry {
+  id: string;
+  parentId?: string;
+  exact: boolean;
+  url?: string;
+  open?: boolean;
+  active?: boolean;
+}
+
+interface SidebarMenuItemProps {
+  // Provided props
+  parentId?: string;
+  children?: ReactNode;
+  isSubNode?: boolean;
+  currentUrl?: string;
+  slim?: boolean;
+  // User props
+  icon?: any;
+  title?: string | ReactNode;
+  to?: string;
+  href?: string;
+  exact?: boolean;
+  noCaret?: boolean;
+  textStyle?: CSSProperties;
+  handleClick?: () => void;
+  sidebarMenuActiveClass?: string;
+  isEmptyNode?: boolean;
+}
 
 /**
  * The main menu entry component
  */
-export class SidebarMenuItem extends React.Component {
+export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
+  parentId,
+  children,
+  isSubNode,
+  currentUrl,
+  slim,
+  icon,
+  title,
+  to,
+  href,
+  exact = true,
+  noCaret,
+  textStyle,
+  handleClick,
+  sidebarMenuActiveClass,
+  isEmptyNode = false,
+}) => {
+  const { entries, addEntry, updateEntry, removeEntry } = useContext(MenuContext);
+  const id = useId();
 
-
-  static propTypes = {
-    // MenuContext props
-    addEntry: PropTypes.func,
-    updateEntry: PropTypes.func,
-    removeEntry: PropTypes.func,
-    entries: PropTypes.object,
-    // Provided props
-    parentId: PropTypes.string,
-    children: PropTypes.node,
-    isSubNode: PropTypes.bool,
-    currentUrl: PropTypes.string,
-    slim: PropTypes.bool,
-    // User props
-    icon: PropTypes.node,
-    title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-    to: PropTypes.string,
-    href: PropTypes.string,
-    exact: PropTypes.bool,
-    noCaret: PropTypes.bool,
-    textStyle: PropTypes.object,
-    handleClick: PropTypes.func,
-    sidebarMenuActiveClass: PropTypes.string,
-  };
-
-  static defaultProps = {
-    exact: true,
-    isEmptyNode: false,
-  };
-
-  constructor(props) {
-    super(props);
-    this.id = uuid();
-  }
-
-  componentDidMount() {
-    const entry = {
-      id: this.id,
-      parentId: this.props.parentId,
-      exact: !!this.props.exact,
+  useEffect(() => {
+    const entry: SidebarMenuEntry = {
+      id,
+      parentId,
+      exact: !!exact,
     };
 
-    if (this.props.to) {
-      entry.url = this.props.to;
+    if (to) {
+      entry.url = to;
     }
 
-    this.props.addEntry(entry);
-  }
+    addEntry(entry);
 
-  componentWillUnmount() {
-    this.props.removeEntry(this.id);
-  }
-
-  getEntry() {
-    return this.props.entries[this.id];
-  }
-
-  toggleNode() {
-    const entry = this.getEntry();
-    this.props.updateEntry(this.id, { open: !entry.open });
-  }
-
-  render() {
-    
-    const entry = this.getEntry();
-    const sidebarMenuActive =
-      entry && entry.active && this.props.sidebarMenuActiveClass
-        ? this.props.sidebarMenuActiveClass
-        : "";
-    const classBase = this.props.isSubNode ? "sidebar-submenu" : `sidebar-menu`;
-    const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
-      [`${classBase}__entry--nested`]: !!this.props.children,
-      open: entry && entry.open,
-      active: entry && entry.active,
-    });
-    const activeMenu = {
-      color: "#323b47",
+    return () => {
+      removeEntry(id);
     };
-    const nonaActiveMenu = {};
+  }, [id, parentId, exact, to, addEntry, removeEntry]);
 
-    function getStyle(itemClass) {
-      if (
-        itemClass.includes("active", 0) &&
-        itemClass.includes("submenu__entry", 0) &&
-        !itemClass.includes("open", 0)
-      ) {
-        return activeMenu;
-      }
-      return nonaActiveMenu;
-    }
+  const getEntry = () => {
+    return entries[id];
+  };
 
-    function getTextStyle(itemClass) {
-      if (
-        itemClass.includes("active", 0) &&
-        itemClass.includes("submenu__entry", 0)
-      ) {
-        return { fontWeight: "bold" };
-      }
-      return null;
+  const toggleNode = () => {
+    const entry = getEntry();
+    if (entry) {
+      updateEntry(id, { open: !entry.open });
     }
-    return (
-      <li
-        style={getStyle(itemClass)}
-        className={classNames(itemClass, {
-          "sidebar-menu__entry--no-caret": this.props.noCaret,
-          "mb-20": !!this.props.icon,
-        })}
-      >
-        {!this.props.isEmptyNode && (
-          <SidebarMenuItemLink
-            to={this.props.to || null}
-            href={this.props.href || null}
-            onToggle={this.toggleNode.bind(this)}
-            classBase={classBase}
-            textStyle={getTextStyle(itemClass) || this.props.textStyle}
-            sidebarMenuActive={sidebarMenuActive}
-            handleClick={this.props.handleClick}
-          >
-            {this.props.icon &&
-              React.cloneElement(this.props.icon, {
-                className: classNames(
-                  this.props.icon.props.className,
-                  `${classBase}__entry__icon`
-                ),
-                fill: sidebarMenuActive ? "#FFF" : "#323b47",
-              })}
-            {typeof this.props.title === "string" ? (
-              <span style={this.props.textStyle}>{this.props.title}</span>
-            ) : (
-              this.props.title
-            )}
-          </SidebarMenuItemLink>
-        )}
-        {this.props.children && (
-          <ul className="sidebar-submenu">
-            {React.Children.map(this.props.children, (child) => (
+  };
+
+  const entry = getEntry();
+  const sidebarMenuActive =
+    entry && entry.active && sidebarMenuActiveClass
+      ? sidebarMenuActiveClass
+      : "";
+  const classBase = isSubNode ? "sidebar-submenu" : `sidebar-menu`;
+  const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
+    [`${classBase}__entry--nested`]: !!children,
+    open: entry && entry.open,
+    active: entry && entry.active,
+  });
+  const activeMenu: CSSProperties = {
+    color: "#323b47",
+  };
+  const nonaActiveMenu: CSSProperties = {};
+
+  function getStyle(itemClass: string): CSSProperties {
+    if (
+      itemClass.includes("active") &&
+      itemClass.includes("submenu__entry") &&
+      !itemClass.includes("open")
+    ) {
+      return activeMenu;
+    }
+    return nonaActiveMenu;
+  }
+
+  function getTextStyle(itemClass: string): CSSProperties | null {
+    if (
+      itemClass.includes("active") &&
+      itemClass.includes("submenu__entry")
+    ) {
+      return { fontWeight: "bold" };
+    }
+    return null;
+  }
+
+  return (
+    <li
+      style={getStyle(itemClass)}
+      className={classNames(itemClass, {
+        "sidebar-menu__entry--no-caret": noCaret,
+        "mb-20": !!icon,
+      })}
+    >
+      {!isEmptyNode && (
+        <SidebarMenuItemLink
+          to={to || null}
+          href={href || null}
+          onToggle={toggleNode}
+          classBase={classBase}
+          textStyle={getTextStyle(itemClass) || textStyle}
+          sidebarMenuActive={sidebarMenuActive}
+          handleClick={handleClick}
+        >
+          {icon &&
+            React.cloneElement(icon, {
+              className: classNames(
+                icon.props.className,
+                `${classBase}__entry__icon`
+              ),
+              fill: sidebarMenuActive ? "#FFF" : "#323b47",
+            })}
+          {typeof title === "string" ? (
+            <span style={textStyle}>{title}</span>
+          ) : (
+            title
+          )}
+        </SidebarMenuItemLink>
+      )}
+      {children && (
+        <ul className="sidebar-submenu">
+          {React.Children.map(children, (child) =>
+            child ? (
               <MenuContext.Consumer>
-                {(ctx) =>
-                  React.cloneElement(child, {
-                    isSubNode: true,
-                    parentId: this.id,
-                    currentUrl: this.props.currentUrl,
-                    slim: this.props.slim,
-                    ...ctx,
-                  })
+                {(ctx: any) =>
+                  React.isValidElement(child)
+                    ? React.cloneElement(child, {
+                        isSubNode: true,
+                        parentId: id,
+                        currentUrl,
+                        slim,
+                        ...ctx,
+                      })
+                    : child
                 }
               </MenuContext.Consumer>
-            ))}
-          </ul>
-        )}
-      </li>
-    );
-  }
-}
+            ) : null
+          )}
+        </ul>
+      )}
+    </li>
+  );
+};

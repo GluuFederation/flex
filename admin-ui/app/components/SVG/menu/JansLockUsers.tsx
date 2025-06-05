@@ -1,8 +1,11 @@
-// @ts-nocheck
 import React from "react";
-import PropTypes from "prop-types";
 
-const JansLockUsers = ({ className, style }) => {
+interface JansLockUsersProps {
+  className: string
+  style: React.CSSProperties
+}
+
+const JansLockUsersIcon: React.FC<JansLockUsersProps> = ({ className, style }) => {
   return (
     <div className={className} style={style}>
       <svg
@@ -51,9 +54,4 @@ l0 -103 360 0 360 0 0 103 c0 181 -24 259 -106 347 -83 88 -241 132 -349 97z"
   );
 };
 
-export default JansLockUsers;
-
-JansLockUsers.propTypes = {
-  style: PropTypes.object,
-  className: PropTypes.string,
-};
+export default JansLockUsersIcon;

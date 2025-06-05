@@ -1,17 +1,26 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { ReactNode } from 'react'
 import isUndefined from 'lodash/isUndefined'
 import map from 'lodash/map'
 
 import 'Styles/components/wizard.scss'
 
-export class Wizard extends React.Component {
-  static propTypes = {
-    children: PropTypes.node,
-    onStepChanged: PropTypes.func,
-    activeStep: PropTypes.string,
-    initialActiveStep: PropTypes.string
+interface WizardProps {
+  children: ReactNode;
+  onStepChanged?: (id: string) => void;
+  activeStep?: string;
+  initialActiveStep?: string;
+}
+
+interface WizardState {
+  activeStep?: string;
+}
+
+export class Wizard extends React.Component<WizardProps, WizardState> {
+  constructor(props: WizardProps) {
+    super(props);
+    this.state = {
+      activeStep: undefined
+    };
   }
 
   componentDidMount() {
@@ -32,12 +41,14 @@ export class Wizard extends React.Component {
     }
   }
 
-  stepClick(id) {
+  stepClick(id: string) {
     this.setState({
       activeStep: id
     })
 
-    this.props.onStepChanged(id)
+    if (this.props.onStepChanged) {
+      this.props.onStepChanged(id)
+    }
   }
 
   getActiveStep() {
@@ -55,7 +66,7 @@ export class Wizard extends React.Component {
     return (
       <div className='wizard'>
         {
-          map(children, (child, index) => (
+          map(children as React.ReactElement[], (child, index) => (
             React.cloneElement(child, {
               onClick: () => {this.stepClick(child.props.id || '')},
               active: child.props.id === activeStep,

@@ -1,6 +1,3 @@
-// @ts-nocheck
-import React from "react";
-
 export default {
   tableHeaderStyle: {
     backgroundColor: "rgb(48, 54, 65)",

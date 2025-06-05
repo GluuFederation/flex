@@ -1,7 +1,12 @@
-// @ts-nocheck
 import React from "react"
 
-const Users = ({ fill = '', className, style }) => {
+interface UsersProps {
+  fill?: string
+  className: string
+  style?: React.CSSProperties
+}
+
+const UsersIcon: React.FC<UsersProps> = ({ fill = '', className, style }) => {
   return (
     <div className={className} style={style}>
       <svg xmlns="http://www.w3.org/2000/svg" fill='#000' viewBox="0 0 640 512">
@@ -11,4 +16,4 @@ const Users = ({ fill = '', className, style }) => {
   )
 }
 
-export default Users
+export default UsersIcon

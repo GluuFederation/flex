@@ -1,7 +1,6 @@
-// @ts-nocheck
 import { makeStyles } from "tss-react/mui";
 
-const styles = makeStyles()((theme) => ({
+const styles = makeStyles()((theme: any) => ({
   root: {
     padding: '1px 10px 1px 10px',
     display: 'flex',

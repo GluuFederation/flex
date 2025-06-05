@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useContext } from 'react'
 import clsx from 'clsx'
 import Drawer from '@mui/material/Drawer'
@@ -11,22 +10,37 @@ import lightBlueThumbnail from 'Images/theme-thumbnail/lightBlue.jpg'
 import lightGreenThumbnail from 'Images/theme-thumbnail/lightGreen.jpg'
 import styles from './styles'
 
-export function ThemeSettings({ userInfo }) {
+interface UserInfo {
+  inum?: string
+  [key: string]: any
+}
+
+interface ThemeSettingsProps {
+  userInfo: UserInfo
+}
+
+interface ThemeListItem {
+  value: string
+  thumbnail: string
+  text: string
+}
+
+export function ThemeSettings({ userInfo }: ThemeSettingsProps) {
   const { classes } = styles()
   const [open, setOpen] = React.useState(false)
-  const themeContext = useContext(ThemeContext)
+  const themeContext = useContext(ThemeContext) as any
 
-  const themeList = [
+  const themeList: ThemeListItem[] = [
     { value: 'darkBlack', thumbnail: darkBlackThumbnail, text: 'Dark Black' }, 
     { value: 'darkBlue', thumbnail: darkBlueThumbnail, text: 'Dark Blue' }, 
     { value: 'lightBlue', thumbnail: lightBlueThumbnail, text: 'Light Blue' }, 
     { value: 'lightGreen', thumbnail: lightGreenThumbnail, text: 'Light Green' },
   ]
-  const existingConfig = JSON.parse(localStorage.getItem('userConfig'))
+  const existingConfig = JSON.parse(localStorage.getItem('userConfig') || '{}')
   const lang = existingConfig?.lang || {}
   const theme = existingConfig?.theme || {}
 
-  const onChangeTheme = (value) => {
+  const onChangeTheme = (value: string) => {
     const { inum } = userInfo
 
     if (inum) {
@@ -40,22 +54,25 @@ export function ThemeSettings({ userInfo }) {
     return
   }
 
-  const toggleDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event.type === 'keydown' &&
+      ('key' in event) &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
       return
     }
-
     setOpen(open)
   }
 
-  const list = (anchor) => (
+  const list = (anchor: 'left' | 'right' | 'top' | 'bottom') => (
     <div
       className={clsx(classes.list, {
         [classes.fullList]: anchor === 'top' || anchor === 'bottom',
       })}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
     >
       <Box className={classes.selectContainer}>
         <Box className={classes.selectInfo}>Choose Theme: </Box>
@@ -77,10 +94,10 @@ export function ThemeSettings({ userInfo }) {
 
   return (
     <React.Fragment>
-      <buttton onClick={toggleDrawer(true)} className={classes.settingsToggeleBtn}>
+      <button onClick={toggleDrawer(true)} className={classes.settingsToggeleBtn}>
         <SettingsIcon  style={{color: "white",width: "35px", height:"100%"}}/>
-      </buttton>
-      <Drawer className={classes.drawerContainer} anchor={'right'} open={open} onClose={toggleDrawer(false)}>
+      </button>
+      <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false)}>
         {list('right')}
       </Drawer>
     </React.Fragment>

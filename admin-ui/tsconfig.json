@@ -17,8 +17,22 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["app/*"]
+      "@/*": ["app/*"],
+      "Components": ["app/components"],
+      "Routes/*": ["app/routes/*"],
+      "Plugins/*": ["plugins/*"],
+      "Context/*": ["app/context/*"],
+      "Utils/*": ["app/utils/*"],
+      "Redux/*": ["app/redux/*"],
+      "Images/*": ["app/images/*"],
+      "Contexts/*": ["app/contexts/*"],
+      "SVG/*": ["app/components/SVG/*"]
     },
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
     "outDir": "./dist",
     "rootDir": ".",
     "sourceMap": true
@@ -26,7 +40,8 @@
   "include": [
     "app/**/*",
     "build/**/*",
-    "plugins/**/*"
+    "plugins/**/*",
+    "app/types/**/*"
   ],
   "exclude": [
     "node_modules",

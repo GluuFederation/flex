@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { makeStyles } from 'tss-react/mui'
 import red from "@mui/material/colors/red"
 

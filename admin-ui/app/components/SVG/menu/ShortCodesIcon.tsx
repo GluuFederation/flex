@@ -1,7 +1,11 @@
-// @ts-nocheck
 import React from 'react'
 
-const ShortCodesIcon = () => {
+interface ShortCodesIconProps {
+  className: string
+  style: React.CSSProperties
+}
+
+const ShortCodesIcon: React.FC<ShortCodesIconProps> = ({ className, style }) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'

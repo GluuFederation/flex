@@ -1,13 +1,17 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
-
 import { Avatar } from './Avatar'
-
 import avatarColors from './../../colors.scss'
 
-const AvatarFont = (props) => {
+interface AvatarFontProps extends React.ComponentProps<typeof Avatar> {
+  children: React.ReactNode
+  bgColor?: string
+  fgColor?: string
+  bgColorCustom?: string
+  fgColorCustom?: string
+}
+
+const AvatarFont: React.FC<AvatarFontProps> = (props) => {
   const {
     children,
     bgColor,
@@ -49,18 +53,4 @@ const AvatarFont = (props) => {
     </Avatar>
   )
 }
-AvatarFont.propTypes = {
-  children: PropTypes.node,
-  bgColor: PropTypes.string,
-  fgColor: PropTypes.string,
-  bgColorCustom: PropTypes.string,
-  fgColorCustom: PropTypes.string,
-  ...Avatar.propTypes
-}
-AvatarFont.defaultProps = {
-  bgColor: '400',
-  fgColor: 'white',
-  size: 'md'
-}
-
 export { AvatarFont }

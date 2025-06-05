@@ -1,202 +1,232 @@
-// @ts-nocheck
-import React, { useState, useEffect, useContext, useMemo } from 'react'
-import { SidebarMenu } from 'Components'
-import { useSelector } from 'react-redux'
-import { hasPermission } from 'Utils/PermChecker'
-import { ErrorBoundary } from 'react-error-boundary'
-import GluuErrorFallBack from './GluuErrorFallBack'
-import { processMenus } from 'Plugins/PluginMenuResolver'
-import { useTranslation } from 'react-i18next'
-import HomeIcon from 'Components/SVG/menu/Home'
-import OAuthIcon from 'Components/SVG/menu/OAuth'
-import UserClaimsIcon from 'Components/SVG/menu/UserClaims'
-import ServicesIcon from 'Components/SVG/menu/Services'
-import UsersIcon from 'Components/SVG/menu/Users'
-import StmpIcon from 'Components/SVG/menu/Smtp'
-import FidoIcon from 'Components/SVG/menu/Fido'
-import ScimIcon from 'Components/SVG/menu/Scim'
-import SamlIcon from 'Components/SVG/menu/Saml'
-import JansKcLinkIcon from 'Components/SVG/menu/JansKcLinkIcon'
-import { useNavigate } from 'react-router-dom'
-import { ThemeContext } from 'Context/theme/themeContext'
-import Wave from 'Components/SVG/SidebarWave'
-import getThemeColor from 'Context/theme/config'
-import CachedIcon from '@mui/icons-material/Cached'
-import LockIcon from '@mui/icons-material/Lock'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import styles from './styles/GluuAppSidebar.style'
+import React, { useState, useEffect, useContext, useMemo } from "react";
+import { SidebarMenu, SidebarMenuItem } from "Components";
+import { useSelector } from "react-redux";
+import { hasPermission } from "Utils/PermChecker";
+import { ErrorBoundary } from "react-error-boundary";
+import GluuErrorFallBack from "./GluuErrorFallBack";
+import { processMenus } from "Plugins/PluginMenuResolver";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "Context/theme/themeContext";
+import getThemeColor from "Context/theme/config";
+import CachedIcon from "@mui/icons-material/Cached";
+import LockIcon from "@mui/icons-material/Lock";
+import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
+import styles from "./styles/GluuAppSidebar.style";
+import { MenuContext } from "../../../components/SidebarMenu/MenuContext";
+import {
+  WaveIcon,
+  HomeIcon,
+  OAuthIcon,
+  UserClaimsIcon,
+  ServicesIcon,
+  UsersIcon,
+  FidoIcon,
+  ScimIcon,
+  SamlIcon,
+  JansKcLinkIcon,
+  StmpZoneIcon,
+} from "../../../components/SVG";
+
+// Type definitions
+interface MenuItem {
+  icon?: string;
+  path?: string;
+  title?: string;
+  permission?: string;
+  children?: MenuItem[];
+}
+
+interface PluginMenu extends MenuItem {}
+
+interface RootState {
+  authReducer: {
+    token?: {
+      scopes: string[];
+    };
+    permissions?: string[];
+  };
+  healthReducer: {
+    health: Record<string, string>;
+  };
+  userReducer: {
+    isUserLogout: boolean;
+  };
+}
 
 function GluuAppSidebar() {
-  const scopes = useSelector(({ authReducer }) =>
-    authReducer.token ? authReducer.token.scopes : authReducer.permissions
-  )
-  const health = useSelector(state => state.healthReducer.health)
-
-  const { isUserLogout } = useSelector(state => state.userReducer)
-  const [pluginMenus, setPluginMenus] = useState([])
-  const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`
-  const { classes } = styles()
-  const themeColors = getThemeColor(selectedTheme)
-  const navigate = useNavigate()
+  const scopes = useSelector((state: RootState) =>
+    state.authReducer.token
+      ? state.authReducer.token.scopes
+      : state.authReducer.permissions
+  );
+  const health = useSelector((state: RootState) => state.healthReducer.health);
+  const { isUserLogout } = useSelector((state: RootState) => state.userReducer);
+  const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([]);
+  const { t } = useTranslation();
+  const theme = useContext(ThemeContext) as { state: { theme: string } };
+  const selectedTheme = theme.state.theme;
+  const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`;
+  const { classes } = styles();
+  const themeColors = getThemeColor(selectedTheme);
+  const navigate = useNavigate();
 
   const fetchedServersLength = useMemo(
     () => Object.keys(health).length > 0,
     [health]
-  )
+  );
 
   useEffect(() => {
-    const menus = processMenus()
+    const menus: PluginMenu[] = processMenus();
 
     if (fetchedServersLength) {
-      const visibilityConditions = {
-        '/jans-lock': 'jans-lock',
-        '/fido/fidomanagement': 'jans-fido2',
-        '/scim': 'jans-scim'
-      }
+      const visibilityConditions: Record<string, string> = {
+        "/jans-lock": "jans-lock",
+        "/fido/fidomanagement": "jans-fido2",
+        "/scim": "jans-scim",
+      };
 
-      const filtered = menus.filter(menu => {
-        const healthKey = visibilityConditions[menu.path]
+      const filtered = menus.filter((menu: PluginMenu) => {
+        const healthKey = visibilityConditions[menu.path || ""];
         if (healthKey) {
-          return health?.[healthKey] === 'Running'
+          return health?.[healthKey] === "Running";
         }
-        return true
-      })
+        return true;
+      });
 
-      setPluginMenus(filtered)
+      setPluginMenus(filtered);
     }
-  }, [health])
+  }, [health, fetchedServersLength]);
 
   useEffect(() => {
     if (isUserLogout) {
-      navigate('/logout')
+      navigate("/logout");
     }
-  }, [isUserLogout])
+  }, [isUserLogout, navigate]);
 
-  function getMenuIcon(name) {
+  function getMenuIcon(name?: string): React.ReactNode {
     switch (name) {
-      case 'home':
-        return <HomeIcon className="menu-icon" />
-
-      case 'oauthserver':
-        return <OAuthIcon className="menu-icon" />
-
-      case 'services':
-        return <ServicesIcon className="menu-icon" />
-
-      case 'user_claims':
-        return <UserClaimsIcon className="menu-icon" />
-
-      case 'scripts':
+      case "home":
+        return <HomeIcon className="menu-icon" />;
+      case "oauthserver":
+        return <OAuthIcon className="menu-icon" />;
+      case "services":
+        return <ServicesIcon className="menu-icon" />;
+      case "user_claims":
+        return <UserClaimsIcon className="menu-icon" />;
+      case "scripts":
         return (
           <i
             className="menu-icon fas fa-file-code"
-            style={{ fontSize: '28px' }}
+            style={{ fontSize: "28px" }}
           />
-        )
-
-      case 'usersmanagement':
-        return <UsersIcon className="menu-icon" />
-
-      case 'stmpmanagement':
-        return <StmpIcon className="menu-icon" />
-
-      case 'fidomanagement':
-        return <FidoIcon className="menu-icon" />
-
-      case 'scim':
-        return <ScimIcon className="menu-icon" />
-
-      case 'jans_link':
+        );
+      case "usersmanagement":
+        return <UsersIcon className="menu-icon" />;
+      case "stmpmanagement":
+        return <StmpZoneIcon className="menu-icon" />;
+      case "fidomanagement":
+        return <FidoIcon className="menu-icon" />;
+      case "scim":
+        return <ScimIcon className="menu-icon" />;
+      case "jans_link":
         return (
           <CachedIcon
             className="menu-icon"
-            style={{ top: '-2px', height: '28px', width: '28px' }}
+            style={{ top: "-2px", height: "28px", width: "28px" }}
           />
-        )
-      case 'jans_lock':
+        );
+      case "jans_lock":
         return (
           <LockIcon
             className="menu-icon"
-            style={{ top: '-2px', height: '28px', width: '28px' }}
+            style={{ top: "-2px", height: "28px", width: "28px" }}
           />
-        )
-      case 'jans_kc_link':
+        );
+      case "jans_kc_link":
         return (
           <JansKcLinkIcon
             className="menu-icon"
-            style={{ top: '-2px', height: '28px', width: '28px' }}
+            style={{ top: "-2px", height: "28px", width: "28px" }}
           />
-        )
-      case 'saml':
+        );
+      case "saml":
         return (
           <SamlIcon
             className="menu-icon"
-            style={{ top: 0, height: '28px', width: '28px' }}
+            style={{ top: 0, height: "28px", width: "28px" }}
           />
-        )
+        );
       default:
-        return null
+        return null;
     }
   }
 
-  function getMenuPath(menu) {
+  function getMenuPath(menu: MenuItem): string | undefined {
     if (menu.children) {
-      return null
+      return undefined;
     }
-    return menu.path
+    return menu.path ?? undefined;
   }
-  function hasChildren(plugin) {
-    return typeof plugin.children !== 'undefined' && plugin.children.length
+
+  function hasChildren(plugin: MenuItem): boolean {
+    return typeof plugin.children !== "undefined" && plugin.children.length > 0;
   }
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
         {fetchedServersLength ? (
-          pluginMenus.map((plugin, key) => (
-            <SidebarMenu.Item
-              key={key}
-              icon={getMenuIcon(plugin.icon)}
-              to={getMenuPath(plugin)}
-              title={t(`${plugin.title}`)}
-              textStyle={{ fontSize: '18px' }}
-              sidebarMenuActiveClass={sidebarMenuActiveClass}
-            >
-              {hasChildren(plugin) &&
-                plugin.children.map((item, idx) => (
-                  <SidebarMenu.Item
-                    key={idx}
-                    title={t(`${item.title}`)}
-                    isEmptyNode={
-                      !hasPermission(scopes, item.permission) &&
-                      !hasChildren(item)
-                    }
-                    to={getMenuPath(item)}
-                    icon={getMenuIcon(item.icon)}
-                    textStyle={{ fontSize: '15px' }}
-                    exact
-                  >
-                    {hasChildren(item) &&
-                      item.children.map((sub, id) => (
-                        <SidebarMenu.Item
-                          key={id}
-                          title={t(`${sub.title}`)}
-                          to={getMenuPath(sub)}
-                          isEmptyNode={!hasPermission(scopes, sub.permission)}
-                          icon={getMenuIcon(sub.icon)}
-                          textStyle={{ fontSize: '15px' }}
-                          exact
-                        ></SidebarMenu.Item>
-                      ))}
-                  </SidebarMenu.Item>
-                ))}
-            </SidebarMenu.Item>
-          ))
+          <MenuContext.Consumer>
+            {(ctx: any) =>
+              pluginMenus.map((plugin, key) => (
+                <SidebarMenuItem
+                  key={key}
+                  icon={getMenuIcon(plugin.icon)}
+                  to={getMenuPath(plugin)}
+                  title={t(`${plugin.title}`)}
+                  textStyle={{ fontSize: "18px" }}
+                  sidebarMenuActiveClass={sidebarMenuActiveClass}
+                  {...ctx}
+                >
+                  {hasChildren(plugin) &&
+                    plugin.children!.map((item, idx) => (
+                      <SidebarMenuItem
+                        key={idx}
+                        title={t(`${item.title}`)}
+                        isEmptyNode={
+                          !hasPermission(scopes, item.permission) &&
+                          !hasChildren(item)
+                        }
+                        to={getMenuPath(item)}
+                        icon={getMenuIcon(item.icon)}
+                        textStyle={{ fontSize: "15px" }}
+                        exact
+                        {...ctx}
+                      >
+                        {hasChildren(item) &&
+                          item.children!.map((sub, id) => (
+                            <SidebarMenuItem
+                              key={id}
+                              title={t(`${sub.title}`)}
+                              to={getMenuPath(sub)}
+                              isEmptyNode={
+                                !hasPermission(scopes, sub.permission)
+                              }
+                              icon={getMenuIcon(sub.icon)}
+                              textStyle={{ fontSize: "15px" }}
+                              exact
+                              {...ctx}
+                            ></SidebarMenuItem>
+                          ))}
+                      </SidebarMenuItem>
+                    ))}
+                </SidebarMenuItem>
+              ))
+            }
+          </MenuContext.Consumer>
         ) : (
-          <div style={{ marginTop: '20vh' }}>
+          <div style={{ marginTop: "20vh" }}>
             <GluuLoader blocking={!fetchedServersLength} />
           </div>
         )}
@@ -208,12 +238,15 @@ function GluuAppSidebar() {
               : classes.waveContainerFixed
           }
         >
-          <Wave className={classes.wave} fill={themeColors.menu.background} />
+          <WaveIcon
+            className={classes.wave}
+            fill={themeColors.menu.background}
+          />
           <div className={classes.powered}>Powered by Gluu</div>
         </div>
       </SidebarMenu>
     </ErrorBoundary>
-  )
+  );
 }
 
-export default GluuAppSidebar
+export default GluuAppSidebar;

@@ -1,11 +1,9 @@
-// @ts-nocheck
-import React from 'react'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 
-function GluuBooleanInput({ label, name, value, lsize, rsize, doc_category }) {
+function GluuBooleanInput({ label, name, value, lsize, rsize, doc_category }:any) {
   const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>

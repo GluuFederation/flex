@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-const NavbarThemeProvider = ({ children, className }) => {
+const NavbarThemeProvider = ({ children, className }: any) => {
   const isSingleChild = React.Children.count(children) === 1
 
   if (isSingleChild) {

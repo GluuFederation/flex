@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
@@ -17,7 +16,9 @@ const profileDetailsSlice = createSlice({
     setUserProfileDetails: (state, action) => {
       state.profileDetails = action.payload
     },
-    getProfileDetails: () => {}
+    getProfileDetails: (state, action) => {
+      state.loading = true
+    }
   },
 })
 

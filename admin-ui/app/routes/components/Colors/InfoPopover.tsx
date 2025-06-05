@@ -1,11 +1,9 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 import {
   UncontrolledPopover,
   PopoverHeader,
   PopoverBody
-} from 'Components'
+} from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 
 export const POPOVER_BODY_PARTS = [
@@ -19,9 +17,23 @@ export const POPOVER_BODY_PARTS = [
   '.by-',
   '.bx-',
   '.btn-'
-]
+] as const
 
-export const InfoPopover = ({ colorId, children, className, tag: Tag, ...otherProps }) => {
+interface InfoPopoverProps {
+  colorId: string;
+  children: React.ReactNode;
+  className?: string;
+  tag?: any;
+  [key: string]: any;
+}
+
+export const InfoPopover: React.FC<InfoPopoverProps> = ({ 
+  colorId, 
+  children, 
+  className, 
+  tag: Tag = 'a', 
+  ...otherProps 
+}) => {
   const { t } = useTranslation()
   return (
     <React.Fragment>
@@ -45,16 +57,4 @@ export const InfoPopover = ({ colorId, children, className, tag: Tag, ...otherPr
       </UncontrolledPopover>
     </React.Fragment>
   )
-}
-InfoPopover.propTypes = {
-  colorId: PropTypes.string,
-  children: PropTypes.node,
-  className: PropTypes.string,
-  tag: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func
-  ])
-}
-InfoPopover.defaultProps = {
-  tag: 'a'
 }

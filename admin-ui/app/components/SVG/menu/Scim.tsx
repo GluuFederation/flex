@@ -1,8 +1,11 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 
-const Scim = ({ className, style }) => {
+interface ScimProps {
+  className: string
+  style?: React.CSSProperties
+}
+
+const ScimIcon: React.FC<ScimProps> = ({ className, style }) => {
   return (
     <div className={className} style={style}>
       <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'>
@@ -11,10 +14,4 @@ const Scim = ({ className, style }) => {
     </div>
   )
 }
-
-Scim.propTypes = {
-  className: PropTypes.any,
-  style: PropTypes.any
-}
-
-export default Scim
+export default ScimIcon

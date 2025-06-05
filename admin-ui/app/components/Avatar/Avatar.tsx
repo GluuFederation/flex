@@ -1,6 +1,4 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { ReactNode } from 'react'
 import classNames from 'classnames'
 import filter from 'lodash/filter'
 import find from 'lodash/find'
@@ -8,26 +6,41 @@ import reduce from 'lodash/reduce'
 import isEmpty from 'lodash/isEmpty'
 import first from 'lodash/first'
 
-const Avatar = (props) => {
+interface AvatarAddOnProps {
+  small?: boolean;
+  type: {
+    addOnId: string;
+  };
+}
+
+interface AvatarProps {
+  size?: string;
+  children: ReactNode;
+  addOns?: ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
+}
+
+const Avatar: React.FC<AvatarProps> = (props) => {
   const avatarClass = classNames(
     'avatar',
-    `avatar--${ props.size }`,
+    `avatar--${props.size}`,
     props.className
   )
   const addOnsdArr = React.Children.toArray(props.addOns)
-  const badge = find(addOnsdArr, (avatarAddOn) =>
+  const badge = find(addOnsdArr, (avatarAddOn: any) =>
     avatarAddOn.type.addOnId === "avatar--badge")
-  const icons = filter(addOnsdArr, (avatarAddOn) =>
+  const icons = filter(addOnsdArr, (avatarAddOn: any) =>
     avatarAddOn.type.addOnId === "avatar--icon")
-  const isNested = reduce(addOnsdArr, (acc, avatarAddOn) =>
+  const isNested = reduce(addOnsdArr, (acc: boolean, avatarAddOn: any) =>
     acc || !!avatarAddOn.props.small, false)
 
   return (
-    <div className={ avatarClass } style={ props.style }>
+    <div className={avatarClass} style={props.style}>
       {
         badge && (
           <div className="avatar__badge">
-            { badge }
+            {badge}
           </div>
         )
       }
@@ -37,7 +50,7 @@ const Avatar = (props) => {
             case 1:
               return (
                 <div className="avatar__icon">
-                  { first(icons) }
+                  {first(icons)}
                 </div>
               )
             default:
@@ -49,28 +62,16 @@ const Avatar = (props) => {
                     }, 'avatar__icon', 'avatar__icon--stack')
                   }
                 >
-                  { icons }
+                  {icons}
                 </div>
               )
           }
         })() 
       }
       <div className='avatar__content'>
-        { props.children }
+        {props.children}
       </div>
     </div>
   )
 }
-Avatar.propTypes = {
-  size: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  addOns: PropTypes.node,
-  style: PropTypes.object,
-  className: PropTypes.string
-}
-Avatar.defaultProps = {
-  size: "md",
-  style: {}
-}
-
 export { Avatar }

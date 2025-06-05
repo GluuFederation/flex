@@ -1,13 +1,10 @@
-// @ts-nocheck
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { FormGroup, Col } from "Components";
-import { AsyncTypeahead, Typeahead } from "react-bootstrap-typeahead";
+import { AsyncTypeahead} from "react-bootstrap-typeahead";
 import GluuLabel from "../Gluu/GluuLabel";
-import GluuTooltip from "./GluuTooltip";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-import _debounce from "lodash/debounce";
 
 const theme = createTheme({
   typography: {
@@ -40,18 +37,18 @@ function GluuTypeAheadForDn({
   onChange,
   hideHelperMessage,
   defaultSelected = [],
-}) {
+}: any) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
-  const getItemName = useCallback((open) => {
-    const data = theOptions?.filter(
-      (e) => e.dn === item || item.includes(e.key)
+  const getItemName = useCallback((items: any, item: any) => {
+    const data = options?.filter(
+      (e: any) => e.dn === item || item.includes(e.key)
     );
     return data[0]?.name;
   }, []);
 
-  const getKey = useCallback((option) => {
+  const getKey = useCallback((option: any) => {
     return `(Claim name: ${option.key})`;
   }, []);
 
@@ -69,18 +66,18 @@ function GluuTypeAheadForDn({
           isLoading={isLoading}
           labelKey={
             haveLabelKey
-              ? (opt) =>
+              ? (opt: any) =>
                   `${opt.name || getItemName(options, opt)} ${
                     opt.key ? getKey(opt) : ""
                   }`
-              : null
+              : undefined
           }
           maxResults={maxResults}
           options={options}
           onPaginate={onPaginate}
           paginate={paginate}
           placeholder={placeholder}
-          renderMenuItemChildren={(option) => {
+          renderMenuItemChildren={(option: any) => {
             return (
               <div key={option.name}>
                 <span>{option.name}</span>

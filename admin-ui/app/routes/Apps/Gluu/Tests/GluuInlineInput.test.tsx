@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import GluuInlineInput from '../GluuInlineInput'
@@ -6,7 +5,7 @@ import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.tes
 
 const LABEL = 'fields.application_type'
 const NAME = 'application_type'
-let VALUE = true
+let VALUE: any = true
 
 function handler() {
   console.log('')
@@ -24,7 +23,7 @@ it('Should render a boolean select box', () => {
       />
     </AppTestWrapper>,
   )
-  const inputEl = container.querySelector(`input[name=${NAME}]`)
+  const inputEl: any = container.querySelector(`input[name=${NAME}]`)
   expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
   expect(inputEl.checked).toBe(true)
   fireEvent.click(inputEl)

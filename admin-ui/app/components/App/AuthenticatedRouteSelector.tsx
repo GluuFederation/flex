@@ -1,7 +1,5 @@
-// @ts-nocheck
-import React from 'react'
 import AppLayout from '../../layout/default'
-import { RoutedContent } from 'Routes'
+import { RoutedContent } from '../../routes/index'
 import ByeBye from 'Routes/Pages/ByeBye'
 import AppAuthProvider from 'Utils/AppAuthProvider'
 import GluuToast from 'Routes/Apps/Gluu/GluuToast'

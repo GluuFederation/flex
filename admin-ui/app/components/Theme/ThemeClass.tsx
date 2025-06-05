@@ -1,25 +1,21 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
-
 import { Consumer } from './ThemeContext'
 
-const ThemeClass = ({ children, color, style }) => {
-  const layoutThemeClass = `layout--theme--${ style }--${ color }`
-    
-  return children(layoutThemeClass)
-}
-ThemeClass.propTypes = {
-  children: PropTypes.func.isRequired,
-  color: PropTypes.string,
-  style: PropTypes.string,
+interface ThemeClassProps {
+  children: (layoutThemeClass: string) => React.ReactNode;
+  color?: string;
+  style?: string;
 }
 
-const ContextThemeClass = (otherProps) =>
+const ThemeClass: React.FC<ThemeClassProps> = ({ children, color, style }) => {
+  const layoutThemeClass = `layout--theme--${style}--${color}`
+  return children(layoutThemeClass)
+}
+
+const ContextThemeClass: React.FC<Omit<ThemeClassProps, 'children'> & { children: (layoutThemeClass: string) => React.ReactNode }> = (otherProps) => (
   <Consumer>
-    {
-      (themeState) => <ThemeClass {...{ ...themeState, ...otherProps }}/>
-    }
+    {(themeState: any) => <ThemeClass {...{ ...themeState, ...otherProps }} />}
   </Consumer>
+)
 
 export { ContextThemeClass as ThemeClass }

@@ -1,7 +1,4 @@
-// @ts-nocheck
-import React from 'react'
-
-function GluuViewWrapper(props) {
+function GluuViewWrapper(props: any) {
   return props.canShow ? (
     <div data-testid="WRAPPER">{props.children}</div>
   ) : (

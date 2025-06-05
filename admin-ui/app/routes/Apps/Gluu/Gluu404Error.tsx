@@ -1,5 +1,3 @@
-// @ts-nocheck
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { EmptyLayout } from 'Components'
 import { HeaderAuth } from 'Routes/components/Pages/HeaderAuth'

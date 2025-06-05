@@ -1,10 +1,31 @@
-// @ts-nocheck
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-const initialState = {
+export interface LicenseDetailsItem {
+  companyName?: string
+  customerEmail?: string
+  customerFirstName?: string
+  customerLastName?: string
+  licenseActive?: boolean
+  licenseEnable?: boolean
+  licenseEnabled?: boolean
+  licenseKey?: string
+  licenseType?: string
+  maxActivations?: number
+  productCode?: string
+  productName?: string
+  validityPeriod?: string
+  licenseExpired?: boolean
+}
+
+export interface LicenseDetailsState {
+  item: LicenseDetailsItem
+  loading: boolean
+}
+
+const initialState: LicenseDetailsState = {
   item: {},
-  loading: true
+  loading: true,
 }
 
 const licenseDetailsSlice = createSlice({
@@ -13,54 +34,54 @@ const licenseDetailsSlice = createSlice({
   reducers: {
     getLicenseDetails: (state) => ({
       ...state,
-      loading: true
+      loading: true,
     }),
-    getLicenseDetailsResponse: (state, action) => {
+    getLicenseDetailsResponse: (state, action: PayloadAction<{ data?: LicenseDetailsItem } | null>) => {
       if (action.payload?.data) {
         return {
           ...state,
-          item: { 
-            ...action.payload.data, 
-            companyName: action.payload.data?.companyName ? action.payload.data?.companyName.replace(/"/g , '') : '', 
-            customerFirstName: action.payload.data?.customerFirstName ? action.payload.data?.customerFirstName.replace(/"/g , '') : '',
-            customerLastName: action.payload.data?.customerLastName ? action.payload.data?.customerLastName.replace(/"/g , '') : '',
-            customerEmail: action.payload.data?.customerEmail ? action.payload.data?.customerEmail.replace(/"/g , '') : ''
+          item: {
+            ...action.payload.data,
+            companyName: action.payload.data?.companyName ? action.payload.data?.companyName.replace(/"/g, '') : '',
+            customerFirstName: action.payload.data?.customerFirstName ? action.payload.data?.customerFirstName.replace(/"/g, '') : '',
+            customerLastName: action.payload.data?.customerLastName ? action.payload.data?.customerLastName.replace(/"/g, '') : '',
+            customerEmail: action.payload.data?.customerEmail ? action.payload.data?.customerEmail.replace(/"/g, '') : '',
           },
-          loading: false
+          loading: false,
         }
       } else {
         return {
           ...state,
-          loading: false
+          loading: false,
         }
       }
     },
     updateLicenseDetails: (state) => ({
       ...state,
-      loading: true
+      loading: true,
     }),
-    updateLicenseDetailsResponse: (state, action) => {
+    updateLicenseDetailsResponse: (state, action: PayloadAction<{ data?: LicenseDetailsItem } | null>) => {
       if (action.payload?.data) {
         return {
           ...state,
-          items: action.payload.data,
-          loading: false
+          item: action.payload.data,
+          loading: false,
         }
       } else {
         return {
           ...state,
-          loading: false
+          loading: false,
         }
       }
-    }
-  }
+    },
+  },
 })
 
 export const {
   getLicenseDetails,
   getLicenseDetailsResponse,
   updateLicenseDetails,
-  updateLicenseDetailsResponse
+  updateLicenseDetailsResponse,
 } = licenseDetailsSlice.actions
-export const { actions, reducer, state } = licenseDetailsSlice
+export const { actions, reducer } = licenseDetailsSlice
 reducerRegistry.register('licenseDetailsReducer', reducer)

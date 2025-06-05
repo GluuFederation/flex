@@ -1,25 +1,57 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import { Container, Row, Col } from "Components";
 import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
 import { useSelector } from "react-redux";
 import moment from "moment";
 
-const UserDetailViewPage = ({ row }) => {
+interface CustomAttribute {
+  name: string;
+  values: string[];
+  multiValued?: boolean;
+  value?: string;
+}
+
+interface UserData {
+  displayName?: string;
+  givenName?: string;
+  userId?: string;
+  mail?: string;
+  customAttributes?: CustomAttribute[];
+}
+
+interface RowProps {
+  row: {
+    rowData: UserData;
+  };
+}
+
+interface RootState {
+  attributesReducerRoot: {
+    items: Array<{
+      name: string;
+      displayName: string;
+      description: string;
+    }>;
+  };
+}
+
+const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row;
   const DOC_SECTION = "user";
   const personAttributes = useSelector(
-    (state) => state.attributesReducerRoot.items
+    (state: RootState) => state.attributesReducerRoot.items
   );
 
-  const getCustomAttributeById = (id) => {
+  const getCustomAttributeById = (id: string) => {
     let claimData = null;
     for (let i in personAttributes) {
-      if (personAttributes[i].name == id) {
+      if (personAttributes[i].name === id) {
         claimData = personAttributes[i];
       }
     }
     return claimData;
   };
+
   return (
     <Container style={{ backgroundColor: "#F5F5F5", minWidth: "100%" }}>
       <Row>
@@ -55,14 +87,14 @@ const UserDetailViewPage = ({ row }) => {
             doc_category={DOC_SECTION}
           />
         </Col>
-        {rowData.customAttributes?.map((data, key) => {
+        {rowData.customAttributes?.map((data: CustomAttribute, key: number) => {
           let valueToShow = "";
-          if (data.name == "birthdate") {
+          if (data.name === "birthdate") {
             valueToShow = moment(data?.values[0]).format("YYYY-MM-DD") || "";
           } else {
             valueToShow = data.multiValued
               ? data?.values?.join(", ")
-              : data.value;
+              : data.value || "";
           }
 
           return (
@@ -94,4 +126,5 @@ const UserDetailViewPage = ({ row }) => {
     </Container>
   );
 };
+
 export default UserDetailViewPage;

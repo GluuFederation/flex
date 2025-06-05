@@ -1,10 +1,7 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
-
-const FooterText = (props) => (
+const FooterText = ({ year, name, desc }: any) => (
   <React.Fragment>
-    (C) {props.year} All Rights Reserved. This is the &quot;{props.name}&quot;
+    (C) {year} All Rights Reserved. This is the &quot;{name}&quot;
     designed and implemented by{' '}
     <a
       href="https://www.gluu.org"
@@ -16,15 +13,6 @@ const FooterText = (props) => (
     </a>
   </React.Fragment>
 )
-FooterText.propTypes = {
-  year: PropTypes.node,
-  name: PropTypes.node,
-  desc: PropTypes.node,
-}
-FooterText.defaultProps = {
-  year: '2021',
-  name: 'Admin UI for Jans OAuth Server',
-  desc: null,
-}
+
 
 export { FooterText }

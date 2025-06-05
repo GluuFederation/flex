@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   DropdownToggle,
@@ -9,11 +8,11 @@ import {
 } from 'Components'
 import { ThemeContext } from "Context/theme/themeContext"
 
-const LanguageMenu = ({ userInfo }) => {
+const LanguageMenu = ({ userInfo }: any) => {
   const [isOpen, setOpen] = useState(false)
   const initLang = localStorage.getItem('initLang') || 'en'
   const initTheme = localStorage.getItem('initTheme') || 'darkBlack'
-  const userConfig = JSON.parse(localStorage.getItem('userConfig'))
+  const userConfig = JSON.parse(localStorage.getItem('userConfig') as string)
   const userConfigLang = userConfig && userConfig !== 'null' ? userConfig?.lang : {}
   const userConfigTheme = userConfig && userConfig !== 'null' ? userConfig?.theme : {}
   const [lang, setLang] = useState('en')
@@ -22,18 +21,15 @@ const LanguageMenu = ({ userInfo }) => {
   const { t, i18n } = useTranslation()
   const { inum } = userInfo
   const toggle = () => setOpen(!isOpen)
-  const themeContext = useContext(ThemeContext)
+  const themeContext: any = useContext(ThemeContext)
 
-  function changeLanguage(code) {
+  function changeLanguage(code: any) {
     i18n.changeLanguage(code)
     setLang(code)
-
     let lang = { ...userConfigLang }
-
     if (inum) {
       lang = { [inum]: code }
     }
-
     const newConfig = { lang, theme: userConfigTheme }
     localStorage.setItem('userConfig', JSON.stringify(newConfig))
   }

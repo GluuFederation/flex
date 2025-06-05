@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { makeStyles } from "tss-react/mui";
 
 const styles = makeStyles()({

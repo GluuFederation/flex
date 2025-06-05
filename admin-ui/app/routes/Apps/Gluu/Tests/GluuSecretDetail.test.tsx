@@ -1,8 +1,7 @@
-// @ts-nocheck
 import React from 'react'
 import GluuSecretDetail from '../GluuSecretDetail'
 import { render, screen, waitFor } from '@testing-library/react'
-import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import AppTestWrapper from './Components/AppTestWrapper.test'
 import userEvent from "@testing-library/user-event"
 
 it('Test GluuSecretDetail component', async () => {
@@ -21,7 +20,7 @@ it('Test GluuSecretDetail component', async () => {
   )
   screen.getByText(/Application Type/i)
 
-  const mouseOverEle = container.querySelector(`div[data-tooltip-id="applicationType"]`)
+  const mouseOverEle: any = container.querySelector(`div[data-tooltip-id="applicationType"]`)
   expect(mouseOverEle).toBeInTheDocument()
   
   userEvent.hover(mouseOverEle)

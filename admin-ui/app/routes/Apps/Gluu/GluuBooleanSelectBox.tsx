@@ -1,7 +1,4 @@
-// @ts-nocheck
-import React from 'react'
 import GluuLabel from './GluuLabel'
-import GluuTooltip from './GluuTooltip'
 import GluuToogle from './GluuToogle'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +14,7 @@ function GluuBooleanSelectBox({
   doc_category,
   disabled,
   toToggle = true,
-}) {
+}: any) {
   const { t } = useTranslation()
   return (
     

@@ -1,7 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import _ from "lodash"
-import PropTypes from "prop-types"
 
 import {
   UncontrolledDropdown,
@@ -13,6 +12,12 @@ import {
   ListGroupItem,
   Media
 } from "Components"
+import { ExtendedDropdownSection } from "@/components/ExtendedDropdown/ExtendedDropdownSection";
+
+interface NavbarActivityFeedProps {
+  className?: string;
+  style?: React.CSSProperties;
+}
 
 /*eslint-disable */
 const activityFeedIcons = [
@@ -35,7 +40,7 @@ const activityFeedIcons = [
 ];
 /*eslint-enable */
 
-const NavbarActivityFeed = props => (
+const NavbarActivityFeed: React.FC<NavbarActivityFeedProps> = (props) => (
   <UncontrolledDropdown nav inNavbar {...props}>
     <DropdownToggle nav>
       <IconWithBadge
@@ -48,13 +53,13 @@ const NavbarActivityFeed = props => (
         <i className="fa fa-bell-o fa-fw" style={{ color: 'white' }} />
       </IconWithBadge>
     </DropdownToggle>
-    <ExtendedDropdown right>
-      <ExtendedDropdown.Section className="d-flex justify-content-between align-items-center">
+    <ExtendedDropdown right className="">
+      <ExtendedDropdownSection className="d-flex justify-content-between align-items-center">
         <h6 className="mb-0">Activity Feed</h6>
         <Badge pill>2</Badge>
-      </ExtendedDropdown.Section>
+      </ExtendedDropdownSection>
 
-      <ExtendedDropdown.Section list>
+      <ExtendedDropdownSection list>
         <ListGroup>
           {_.times(2, index => (
             <ListGroupItem key={index} action>
@@ -74,22 +79,18 @@ const NavbarActivityFeed = props => (
             </ListGroupItem>
           ))}
         </ListGroup>
-      </ExtendedDropdown.Section>
+      </ExtendedDropdownSection>
 
-      <ExtendedDropdown.Section
+      <ExtendedDropdownSection
         className="text-center"
         tag={Link}
         to="/apps/widgets"
       >
         See All Notifications
         <i className="fa fa-angle-right fa-fw ms-2" />
-      </ExtendedDropdown.Section>
+      </ExtendedDropdownSection>
     </ExtendedDropdown>
   </UncontrolledDropdown>
 )
-NavbarActivityFeed.propTypes = {
-  className: PropTypes.string,
-  style: PropTypes.object
-}
 
 export { NavbarActivityFeed }

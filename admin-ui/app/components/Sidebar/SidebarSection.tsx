@@ -1,9 +1,14 @@
-// @ts-nocheck
-import React, { useContext } from 'react'
-import PropTypes from 'prop-types'
+import React, { ReactNode } from 'react'
 import classNames from 'classnames'
 
-const SidebarSection = (props) => {
+interface SidebarSectionProps {
+  children?: ReactNode;
+  fluid?: boolean;
+  cover?: boolean;
+  className?: string;
+}
+
+const SidebarSection: React.FC<SidebarSectionProps> = (props) => {
   const sectionClass = classNames("sidebar__section", {
     'sidebar__section--fluid': props.fluid,
     'sidebar__section--cover': props.cover
@@ -14,13 +19,6 @@ const SidebarSection = (props) => {
       { props.children }
     </div>
   )
-}
-
-SidebarSection.propTypes = {
-  children: PropTypes.node,
-  fluid: PropTypes.bool,
-  cover: PropTypes.bool,
-  className: PropTypes.string
 }
 
 export {

@@ -1,7 +1,5 @@
-// @ts-nocheck
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import PropTypes from 'prop-types'
 import { Box } from '@mui/material'
 import { Button } from 'reactstrap'
 
@@ -14,10 +12,10 @@ const GluuUploadFile = ({
   onClearFiles,
   disabled,
   fileName,
-}) => {
+}: any) => {
   const [preDefinedFileName, setPreDefinedFileName] = useState(fileName || null)
-  const [selectedFile, setSelectedFile] = useState(null)
-  const handleDrop = useCallback((acceptedFiles) => {
+  const [selectedFile, setSelectedFile] = useState<any>(null)
+  const handleDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0]
     setSelectedFile(file)
     onDrop(acceptedFiles)
@@ -33,7 +31,7 @@ const GluuUploadFile = ({
     disabled,
   })
 
-  const clearFiles = useCallback((event) => {
+  const clearFiles = useCallback((event: any) => {
     event.stopPropagation()
     setSelectedFile(null)
     onClearFiles()
@@ -80,12 +78,3 @@ const GluuUploadFile = ({
 }
 
 export default GluuUploadFile
-
-GluuUploadFile.propTypes = {
-  accept: PropTypes.any,
-  placeholder: PropTypes.string,
-  onDrop: PropTypes.func,
-  onClearFiles: PropTypes.func,
-  disabled: PropTypes.bool,
-  fileName: PropTypes.string,
-}

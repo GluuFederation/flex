@@ -1,9 +1,12 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { ReactNode } from 'react'
 import classNames from 'classnames'
 
-const SidebarMobileFluid = (props) => {
+interface SidebarMobileFluidProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+const SidebarMobileFluid: React.FC<SidebarMobileFluidProps> = (props) => {
   const wrapClass = classNames("sidebar__mobile-fluid", props.className)
 
   return (
@@ -11,11 +14,6 @@ const SidebarMobileFluid = (props) => {
       { props.children }
     </div>
   )
-}
-
-SidebarMobileFluid.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string
 }
 
 export {

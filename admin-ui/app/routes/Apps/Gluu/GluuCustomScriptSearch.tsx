@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import { Input, InputGroup, CustomInput, FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
@@ -10,7 +9,7 @@ function GluuCustomScriptSearch({
   scriptType,
   pattern = '',
   options = []
-}) {
+}: any) {
   const { t } = useTranslation()
   return (
     <FormGroup row style={{ marginTop: '10px' }}>
@@ -24,7 +23,7 @@ function GluuCustomScriptSearch({
           onChange={handler}
           className="search-select"
         >
-          {options.map((option) => {
+          {options.map((option: any) => {
             return <option key={option.value} value={option.value}>{option.name}</option>
           })}
         </CustomInput>

@@ -1,7 +1,11 @@
-// @ts-nocheck
 import React from "react"
 
-const Wave = ({ fill = "#323c47ff", className }) => {
+interface WaveProps {
+  fill?: string
+  className: string
+}
+
+const WaveIcon: React.FC<WaveProps> = ({ fill = "#323c47ff", className }) => {
   return (
     <div className={className}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 175">
@@ -17,4 +21,4 @@ const Wave = ({ fill = "#323c47ff", className }) => {
   )
 }
 
-export default Wave
+export default WaveIcon

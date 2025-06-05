@@ -1,12 +1,9 @@
-// @ts-nocheck
-import React from 'react'
-import { FormGroup, Col } from 'Components'
-import { Typeahead } from 'react-bootstrap-typeahead'
-import GluuLabel from '../Gluu/GluuLabel'
-import GluuTooltip from './GluuTooltip'
-import Typography from '@mui/material/Typography'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { useTranslation } from 'react-i18next'
+import { FormGroup, Col } from "Components";
+import { Typeahead } from "react-bootstrap-typeahead";
+import GluuLabel from "../Gluu/GluuLabel";
+import Typography from "@mui/material/Typography";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 const theme = createTheme({
   typography: {
@@ -14,7 +11,7 @@ const theme = createTheme({
       fontSize: 12,
     },
   },
-})
+});
 
 function GluuSingleValueCompleter({
   label,
@@ -25,16 +22,26 @@ function GluuSingleValueCompleter({
   doc_category,
   doc_entry,
   onChange = null,
-  hideHelperMessage = false
-}) {
-  const { t } = useTranslation()
+  hideHelperMessage = false,
+}: any) {
+  const { t } = useTranslation();
   return (
-    
     <FormGroup row>
       {required ? (
-        <GluuLabel label={label} size={4} required doc_category={doc_category} doc_entry={doc_entry || name}/>
+        <GluuLabel
+          label={label}
+          size={4}
+          required
+          doc_category={doc_category}
+          doc_entry={doc_entry || name}
+        />
       ) : (
-        <GluuLabel label={label} size={4} doc_category={doc_category} doc_entry={doc_entry || name} />
+        <GluuLabel
+          label={label}
+          size={4}
+          doc_category={doc_category}
+          doc_entry={doc_entry || name}
+        />
       )}
       <Col sm={8}>
         <Typeahead
@@ -42,23 +49,24 @@ function GluuSingleValueCompleter({
           labelKey={name}
           id={name}
           data-testid={name}
-          name={name}
           defaultSelected={value}
           options={options}
           onChange={(e) => {
             if (onChange) {
-              onChange(e)
+              onChange(e);
             }
           }}
         />
-        {!hideHelperMessage && <ThemeProvider theme={theme}>
-          <Typography variant="subtitle1">
-            {t('placeholders.typeahead_holder_message')}
-          </Typography>
-        </ThemeProvider>}
+        {!hideHelperMessage && (
+          <ThemeProvider theme={theme}>
+            <Typography variant="subtitle1">
+              {t("placeholders.typeahead_holder_message")}
+            </Typography>
+          </ThemeProvider>
+        )}
       </Col>
     </FormGroup>
-  )
+  );
 }
 
-export default GluuSingleValueCompleter
+export default GluuSingleValueCompleter;

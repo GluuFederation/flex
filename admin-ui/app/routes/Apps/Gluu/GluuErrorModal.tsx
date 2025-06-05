@@ -1,9 +1,7 @@
-// @ts-nocheck
-import React from 'react'
 import { useSelector } from 'react-redux'
 
 function GluuErrorModal({ message = '', description = '' }) {
-  const { authServerHost } = useSelector((state) => state.authReducer.config)
+  const { authServerHost } = useSelector((state: any) => state.authReducer.config)
 
   const handleRefresh = () => {
     const host = authServerHost ? `${authServerHost}/admin` : null

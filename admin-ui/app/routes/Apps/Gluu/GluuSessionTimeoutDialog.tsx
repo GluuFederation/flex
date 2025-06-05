@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useContext } from "react"
 import {
   Dialog,
@@ -6,20 +5,21 @@ import {
   DialogContent,
   DialogActions,
   Typography,
-  Slide
+  Slide,
+  SlideProps
 } from "@mui/material"
 import { Button } from 'Components'
 import clsx from "clsx"
 import styles from "./styles/GluuSessionTimeoutDialog.style"
 import { ThemeContext } from 'Context/theme/themeContext'
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
-  const classes = styles()
-  const theme = useContext(ThemeContext)
+const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }: any) => {
+  const classes: any = styles()
+  const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
   return (

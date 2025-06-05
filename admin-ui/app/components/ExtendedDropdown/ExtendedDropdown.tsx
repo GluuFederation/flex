@@ -1,18 +1,17 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { DropdownMenu } from 'reactstrap'
+import { DropdownMenu, DropdownMenuProps } from 'reactstrap'
 
-export const ExtendedDropdown = ({ className, ...otherProps }) => {
+interface ExtendedDropdownProps extends DropdownMenuProps {
+  className?: string;
+}
+
+export const ExtendedDropdown: React.FC<ExtendedDropdownProps> = ({ className, ...otherProps }) => {
   const classes = classNames(
     className,
     'extended-dropdown'
   )
   return (
-    <DropdownMenu className={ classes } { ...otherProps } />
+    <DropdownMenu className={classes} {...otherProps} />
   )
-}
-ExtendedDropdown.propTypes = {
-  className: PropTypes.string,
 }

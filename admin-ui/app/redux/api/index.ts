@@ -1,4 +1,3 @@
-// @ts-nocheck
 import axios from "axios"
 
 export const baseUrl = window['configApiBaseUrl'] || process.env.CONFIG_API_BASE_URL || "http://localhost:8080"

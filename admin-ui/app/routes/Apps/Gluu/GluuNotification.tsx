@@ -1,9 +1,7 @@
-// @ts-nocheck
-import React from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import { Media } from 'Components'
 
-function GluuNotification({ type, message, description, show }) {
+function GluuNotification({ type, message, description, show }: any) {
   let typeIcon = 'fa-question'
   if (type === 'success') {
     typeIcon = 'fa-check'
@@ -31,11 +29,11 @@ function GluuNotification({ type, message, description, show }) {
     </Media>
   )
 
-  function getClassName(theType) {
+  function getClassName(theType: any) {
     return 'fa fa-fw fa-2x ' + theType
   }
 
-  function showToast(aType) {
+  function showToast(aType: any) {
     switch (aType) {
       case 'info':
         toast.info(toastContent)

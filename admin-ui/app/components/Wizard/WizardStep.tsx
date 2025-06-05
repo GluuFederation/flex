@@ -1,47 +1,55 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { ReactNode } from 'react'
 import classNames from 'classnames'
 
-export const WizardStep = (props) => {
+export interface WizardStepProps {
+  active?: boolean;
+  complete?: boolean;
+  disabled?: boolean;
+  className?: string;
+  id: string;
+  onClick: () => void;
+  icon?: ReactNode;
+  successIcon?: ReactNode;
+  children?: ReactNode;
+  'data-testid'?: string;
+}
+
+export const WizardStep: React.FC<WizardStepProps> = ({
+  active,
+  complete,
+  disabled,
+  className,
+  id,
+  onClick = () => {},
+  icon,
+  successIcon = <i className="fa fa-check fa-fw"></i>,
+  children,
+  'data-testid': dataTestId,
+}) => {
   const stepClass = classNames(
     {
-      'wizard-step--active': props.active,
-      'wizard-step--complete': props.complete,
-      'wizard-step--disabled': props.disabled,
+      'wizard-step--active': active,
+      'wizard-step--complete': complete,
+      'wizard-step--disabled': disabled,
     },
     'wizard-step',
-    props.className,
+    className,
   )
 
   return (
     <a
-      href={null}
-      data-testid={props['data-testid']}
+      href="#"
+      data-testid={dataTestId}
       className={stepClass}
-      onClick={() => !props.disabled && props.onClick()}
+      onClick={(e) => {
+        e.preventDefault();
+        if (!disabled) onClick();
+      }}
     >
       <div className="wizard-step__icon">
-        {!props.complete ? props.icon : props.successIcon}
+        {!complete ? icon : successIcon}
       </div>
-      <div className="wizard-step__content">{props.children}</div>
+      <div className="wizard-step__content">{children}</div>
     </a>
   )
-}
-
-WizardStep.defaultProps = {
-  successIcon: <i className="fa fa-check fa-fw"></i>,
-  onClick: () => {},
-}
-
-WizardStep.propTypes = {
-  active: PropTypes.bool,
-  complete: PropTypes.bool,
-  disabled: PropTypes.bool,
-  className: PropTypes.string,
-  id: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  icon: PropTypes.node,
-  successIcon: PropTypes.node,
-  children: PropTypes.node,
 }

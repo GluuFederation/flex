@@ -1,7 +1,11 @@
-// @ts-nocheck
 import React from "react"
 
-const Home = ({ fill = '', className }) => {
+interface HomeProps {
+  fill?: string
+  className: string
+}
+
+const HomeIcon: React.FC<HomeProps> = ({ fill = '', className }) => {
   return (
     <div className={className}>
       <svg xmlns="http://www.w3.org/2000/svg" fill={fill} viewBox="0 0 23 20.51">
@@ -16,4 +20,4 @@ const Home = ({ fill = '', className }) => {
   )
 }
 
-export default Home
+export default HomeIcon

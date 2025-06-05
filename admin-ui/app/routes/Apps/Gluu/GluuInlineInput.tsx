@@ -1,24 +1,16 @@
-// @ts-nocheck
-import React, { useState, useContext } from 'react'
-import GluuLabel from './GluuLabel'
-import GluuTooltip from './GluuTooltip'
-import GluuToogle from './GluuToogle'
-import { useTranslation } from 'react-i18next'
-import { Typeahead } from 'react-bootstrap-typeahead'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import {
-  Col,
-  FormGroup,
-  Input,
-  Button,
-} from 'Components'
-import { ThemeContext } from 'Context/theme/themeContext'
-import PropTypes from 'prop-types'
+import React, { useState, useContext } from "react";
+import GluuLabel from "./GluuLabel";
+import GluuToogle from "./GluuToogle";
+import { useTranslation } from "react-i18next";
+import { Typeahead } from "react-bootstrap-typeahead";
+import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
+import { Col, FormGroup, Input, Button } from "Components";
+import { ThemeContext } from "Context/theme/themeContext";
 
 function GluuInlineInput({
   label,
   name,
-  type = 'text',
+  type = "text",
   value,
   required = false,
   lsize = 3,
@@ -29,52 +21,56 @@ function GluuInlineInput({
   options,
   path,
   doc_category = "json_properties",
-}) {
-  const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const VALUE = 'value'
-  const PATH = 'path'
-  const [show, setShow] = useState(false)
-  const [correctValue, setCorrectValue] = useState([])
-  const [data, setData] = useState(value)
-  const onValueChanged = (e) => {
+}: any) {
+  const { t } = useTranslation();
+  const theme: any = useContext(ThemeContext);
+  const selectedTheme = theme.state.theme;
+  const VALUE = "value";
+  const PATH = "path";
+  const [show, setShow] = useState(false);
+  const [correctValue, setCorrectValue] = useState([]);
+  const [data, setData] = useState(value);
+  const onValueChanged = (e: any) => {
     if (isBoolean) {
-      setData(e.target.checked)
+      setData(e.target.checked);
     } else {
-      setData(e.target.value)
+      setData(e.target.value);
     }
-    setShow(true)
-  }
-  const handleTypeAheadChange = (selectedOptions) => {
-    const object = selectedOptions.filter((data) => typeof data == 'object')
-    const arrayItems = selectedOptions.filter((data) => typeof data != 'object')
+    setShow(true);
+  };
+  const handleTypeAheadChange = (selectedOptions: any) => {
+    const object = selectedOptions.filter(
+      (data: any) => typeof data == "object"
+    );
+    const arrayItems = selectedOptions.filter(
+      (data: any) => typeof data != "object"
+    );
     for (const i in object) {
-      if (!object[i]['tokenEndpointAuthMethodsSupported']) {
-        arrayItems.push(object[i][name])
+      if (!object[i]["tokenEndpointAuthMethodsSupported"]) {
+        arrayItems.push(object[i][name]);
       } else {
-        arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
+        arrayItems.push(object[i]["tokenEndpointAuthMethodsSupported"]);
       }
     }
-    setCorrectValue(arrayItems)
-    setShow(true)
-  }
+    setCorrectValue(arrayItems);
+    setShow(true);
+  };
   const onAccept = () => {
-    const patch = {}
-    patch[PATH] = path
+    const patch: any = {};
+    patch[PATH] = path;
     if (isArray) {
-      patch[VALUE] = correctValue
+      patch[VALUE] = correctValue;
     } else {
-      patch[VALUE] = data
+      patch[VALUE] = data;
     }
-    patch['op'] = 'replace'
-    handler(patch)
-    setShow(!show)
-  }
+    patch["op"] = "replace";
+    handler(patch);
+    setShow(!show);
+  };
   const onCancel = () => {
-    setCorrectValue([])
-    setShow(!show)
-  }
+    setCorrectValue([]);
+    setShow(!show);
+  };
   return (
     <FormGroup row>
       <Col sm={10}>
@@ -110,7 +106,6 @@ function GluuInlineInput({
               <Typeahead
                 id={name}
                 data-testid={name}
-                name={name}
                 allowNew
                 emptyLabel=""
                 labelKey={name}
@@ -133,7 +128,7 @@ function GluuInlineInput({
               onClick={onAccept}
             >
               <i className="fa fa-check me-2"></i>
-            </Button>{' '}
+            </Button>{" "}
             <Button color="danger" size="sm" onClick={onCancel}>
               <i className="fa fa-times me-2"></i>
             </Button>
@@ -141,23 +136,6 @@ function GluuInlineInput({
         )}
       </Col>
     </FormGroup>
-  )
+  );
 }
-
-GluuInlineInput.propTypes = {
-  doc_category: PropTypes.string,
-  label: PropTypes.string,
-  name: PropTypes.string,
-  value: PropTypes.any,
-  type: PropTypes.string,
-  lsize: PropTypes.number,
-  rsize: PropTypes.number,
-  required: PropTypes.bool,
-  isBoolean: PropTypes.bool,
-  isArray: PropTypes.any,
-  handler: PropTypes.func,
-  options: PropTypes.any,
-  path: PropTypes.string,
-}
-
-export default GluuInlineInput
+export default GluuInlineInput;

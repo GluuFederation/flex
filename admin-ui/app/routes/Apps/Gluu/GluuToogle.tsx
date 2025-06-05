@@ -1,34 +1,34 @@
-// @ts-nocheck
-import React, { useEffect, useState } from 'react'
-import Toggle from 'react-toggle'
-function GluuToogle({ name, formik, value, handler, disabled }) {
-  const [checked, setChecked] = useState(value || false)
+import { useEffect, useState } from "react";
+import Toggle from "react-toggle";
+function GluuToogle({ id, name, formik, value, handler, disabled }: any) {
+  const [checked, setChecked] = useState(value || false);
 
   useEffect(() => {
     if (value !== undefined) {
-      setChecked(value)
+      setChecked(value);
     }
-  }, [value])
+  }, [value]);
 
   return (
     <Toggle
+      id={id}
       name={name}
       data-testid={name}
-      onChange={(event) => {
-        setChecked(event.target.checked)
+      onChange={(event: any) => {
+        setChecked(event.target.checked);
         if (formik !== undefined) {
-          formik.handleChange(event)
-          if(handler) {
-            handler(event)
+          formik.handleChange(event);
+          if (handler) {
+            handler(event);
           }
         } else {
-          handler(event)
+          handler(event);
         }
       }}
       disabled={disabled}
       checked={checked}
     />
-  )
+  );
 }
 
-export default GluuToogle
+export default GluuToogle;

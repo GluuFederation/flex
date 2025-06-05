@@ -1,10 +1,10 @@
-// @ts-nocheck
+
 import React from 'react'
 import { TabContent } from 'reactstrap'
 
 import { Consumer } from './context'
 
-const UncontrolledTabsTabContent = (props) => (
+const UncontrolledTabsTabContent = (props: any) => (
   <Consumer>
     {
       (value) => (

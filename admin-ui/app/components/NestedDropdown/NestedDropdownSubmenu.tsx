@@ -1,18 +1,34 @@
-// @ts-nocheck
 import React from 'react'
 import classNames from 'classnames'
-import PropTypes from 'prop-types'
 import { v4 as uuid } from 'uuid'
 
 import { Consumer } from './context'
 
-class NestedDropdownSubmenu extends React.Component {
-  componentDidMount() {
-    this.id = uuid()
+interface NestedDropdownSubmenuProps {
+  children?: React.ReactNode;
+  title?: React.ReactNode;
+  tag?: React.ElementType;
+  subMenuTag?: React.ElementType;
+  className?: string;
+  openId?: string;
+  onOpen: (id: string) => void;
+}
+
+class NestedDropdownSubmenu extends React.Component<NestedDropdownSubmenuProps> {
+  id: string;
+
+  static readonly defaultProps = {
+    tag: 'div',
+    subMenuTag: 'div',
+  };
+
+  constructor(props: NestedDropdownSubmenuProps) {
+    super(props);
+    this.id = uuid();
   }
 
   render() {
-    const {
+    let {
       tag: Tag,
       subMenuTag: SubMenuTag,
       title,
@@ -20,18 +36,20 @@ class NestedDropdownSubmenu extends React.Component {
       className,
       openId,
       onOpen
-    } = this.props
+    } = this.props;
+    Tag = Tag || 'div';
+    SubMenuTag = SubMenuTag || 'div';
     const itemClass = classNames(className, 'nested-dropdown__submenu-item', {
       'nested-dropdown__submenu-item--open': openId === this.id
-    })
-    const linkClass = classNames('nested-dropdown__submenu-item__link', 'dropdown-item')
-        
+    });
+    const linkClass = classNames('nested-dropdown__submenu-item__link', 'dropdown-item');
+
     return (
       <Tag className={ itemClass }>
         <a
           href="#"
           className={ linkClass }
-          onClick={ () => { onOpen(this.id) } }
+          onClick={ (e) => { e.preventDefault(); onOpen(this.id); } }
         >
           { title }
         </a>
@@ -41,43 +59,20 @@ class NestedDropdownSubmenu extends React.Component {
           </SubMenuTag>
         </div>
       </Tag>
-    )
+    );
   }
 }
-NestedDropdownSubmenu.propTypes = {
-  children: PropTypes.node,
-  title: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.node
-  ]),
-  tag: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func
-  ]),
-  subMenuTag: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func
-  ]),
-  className: PropTypes.string,
-  // Context Provided:
-  openId: PropTypes.string,
-  onOpen: PropTypes.func.isRequired
-}
-NestedDropdownSubmenu.defaultProps = {
-  tag: "div",
-  subMenuTag: "div"
-}
 
-const ContextNestedDropdownSubmenu = (props) => (
+const ContextNestedDropdownSubmenu: React.FC<Omit<NestedDropdownSubmenuProps, 'openId' | 'onOpen'> & Partial<Pick<NestedDropdownSubmenuProps, 'openId' | 'onOpen'>>> = (props) => (
   <Consumer>
-    {
-      (contextProps) => (
-        <NestedDropdownSubmenu { ...contextProps } { ...props } />
-      )   
-    }
+    {(contextProps: any) => (
+      <NestedDropdownSubmenu { ...contextProps } { ...props } />
+    )}
   </Consumer>
-)
+);
 
 export {
   ContextNestedDropdownSubmenu as NestedDropdownSubmenu
 }
+
+

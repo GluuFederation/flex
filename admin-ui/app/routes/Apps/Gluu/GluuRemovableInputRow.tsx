@@ -1,5 +1,3 @@
-// @ts-nocheck
-import React from "react";
 import { Col, FormGroup, Input } from "Components";
 import GluuLabel from "./GluuLabel";
 import GluuTooltip from "./GluuTooltip";
@@ -22,7 +20,7 @@ function GluuRemovableInputRow({
   isBoolean,
   modifiedFields,
   setModifiedFields,
-}) {
+}: any) {
   return (
     <GluuTooltip
       doc_category={doc_category}
@@ -33,7 +31,7 @@ function GluuRemovableInputRow({
         {isBoolean ? (
           <GluuToogleRow
             name={name}
-            handler={(e) => {
+            handler={(e: any) => {
               setModifiedFields({
                 ...modifiedFields,
                 [name]: e.target.checked,
@@ -69,7 +67,7 @@ function GluuRemovableInputRow({
         )}
         <div
           role="button"
-          style={applicationStyle.removableInputRow}
+          style={applicationStyle.removableInputRow as any}
           onKeyDown={handler}
           onClick={handler}
         >
@@ -92,6 +90,7 @@ GluuRemovableInputRow.propTypes = {
   handler: PropTypes.func,
   doc_category: PropTypes.string,
   isDirect: PropTypes.bool,
+  isBoolean: PropTypes.bool,
   modifiedFields: PropTypes.any,
   setModifiedFields: PropTypes.func,
 };

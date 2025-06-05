@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import GluuLabel from '../GluuLabel'
@@ -41,7 +40,7 @@ it('Should render the label with internationalized text and tooltip support', as
   expect(screen.getByText(/Application Type/i)).toBeInTheDocument()
 
   
-  const iconElement = container.querySelector(`svg[data-tooltip-id="applicationType"]`)
+  const iconElement: any = container.querySelector(`svg[data-tooltip-id="applicationType"]`)
   expect(iconElement).toBeInTheDocument()
   
   userEvent.hover(iconElement)

@@ -1,36 +1,47 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { UncontrolledDropdown } from 'reactstrap'
 
 import { Provider } from './context'
 
-export class NestedDropdown extends React.Component {
-  constructor(props) {
-    super(props)
+interface NestedDropdownProps {
+  tag?: React.ElementType
+  className?: string
+  children?: React.ReactNode
+}
 
-    this.state = {
-      openId: null
-    }
+interface NestedDropdownState {
+  isOpen: boolean
+}
+
+export class NestedDropdown extends React.Component<NestedDropdownProps, NestedDropdownState> {
+  static readonly defaultProps = {
+    tag: UncontrolledDropdown
   }
 
-  handleOpen(targetId) {
-    this.setState({
-      openId: targetId
-    })
+  constructor(props: NestedDropdownProps) {
+    super(props)
+    this.state = {
+      isOpen: false
+    }
+    this.setIsOpen = this.setIsOpen.bind(this)
+  }
+
+  setIsOpen(isOpen: boolean) {
+    this.setState({ isOpen })
   }
 
   render() {
-    const { tag: Tag, className, children, ...otherProps } = this.props
+    const { tag: TagProp, className, children, ...otherProps } = this.props
+    const Tag = TagProp || UncontrolledDropdown
     const dropdownClass = classNames(className, 'nested-dropdown')
 
     return (
       <Tag { ...otherProps } className={ dropdownClass } >
         <Provider
           value={{
-            openId: this.state.openId,
-            onOpen: this.handleOpen.bind(this)
+            isOpen: this.state.isOpen,
+            setIsOpen: this.setIsOpen
           }}
         >
           { children }
@@ -38,16 +49,4 @@ export class NestedDropdown extends React.Component {
       </Tag>
     )
   }
-}
-
-NestedDropdown.propTypes = {
-  tag: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.func
-  ]),
-  className: PropTypes.string,
-  children: PropTypes.node
-}
-NestedDropdown.defaultProps = {
-  tag: UncontrolledDropdown
 }

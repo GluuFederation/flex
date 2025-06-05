@@ -1,12 +1,9 @@
-// @ts-nocheck
-import React from "react";
 import GluuLabel from "./GluuLabel";
 import { Col, FormGroup, InputGroup } from "Components";
 import { useTranslation } from "react-i18next";
 import GluuTooltip from "./GluuTooltip";
 import { Typeahead } from "react-bootstrap-typeahead";
 import applicationstyle from "./styles/applicationstyle";
-import PropTypes from 'prop-types';
 function GluuRemovableTypeAhead({
   label,
   name,
@@ -21,7 +18,7 @@ function GluuRemovableTypeAhead({
   allowNew = true,
   modifiedFields,
   setModifiedFields,
-}) {
+}: any) {
   const { t } = useTranslation();
   return (
     <GluuTooltip
@@ -37,9 +34,9 @@ function GluuRemovableTypeAhead({
               allowNew={allowNew}
               emptyLabel=""
               labelKey={name}
-              onChange={(selected) => {
+              onChange={(selected: any) => {
                 if (formik) {
-                  const names = selected.map(item => {
+                  const names = selected.map((item: any) => {
                     if (typeof item === 'string') {
                       return item; // String element (from stringArray)
                     } else if (typeof item === 'object' && item.role) {
@@ -54,34 +51,17 @@ function GluuRemovableTypeAhead({
               }}
               id={name}
               data-testid={name}
-              name={name}
               multiple={true}
               defaultSelected={value}
               options={options}
             />
           </InputGroup>
         </Col>
-        <div style={applicationstyle.removableInputRow} onClick={handler}>
+        <div style={applicationstyle.removableInputRow as any} onClick={handler}>
           <i className={"fa fa-fw fa-close"} style={{ color: "red" }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>
   );
 }
-
-GluuRemovableTypeAhead.propTypes = {
-  label: PropTypes.string,
-  name: PropTypes.string,
-  value: PropTypes.any,
-  formik: PropTypes.any,
-  lsize: PropTypes.number,
-  rsize: PropTypes.number,
-  handler: PropTypes.func,
-  doc_category: PropTypes.string,
-  options: PropTypes.array,
-  isDirect: PropTypes.bool,
-  allowNew: PropTypes,
-  modifiedFields: PropTypes.any,
-  setModifiedFields: PropTypes.func,
-};
 export default GluuRemovableTypeAhead;

@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useCallback, useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap'
@@ -9,9 +8,9 @@ import { ThemeContext } from 'Context/theme/themeContext'
 const GluuTimeoutModal = ({ description = '' }) => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { isTimeout } = useSelector((state) => state.initReducer)
-  const { authServerHost } = useSelector((state) => state.authReducer.config)
-  const theme = useContext(ThemeContext)
+  const { isTimeout } = useSelector((state: any) => state.initReducer)
+  const { authServerHost } = useSelector((state: any) => state.authReducer.config)
+  const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
   const handleRefresh = () => {

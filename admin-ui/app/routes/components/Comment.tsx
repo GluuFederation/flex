@@ -1,62 +1,42 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
-import { 
-  Avatar,
-  Media,
-  AvatarAddOn,
-  UncontrolledTooltip 
-} from 'Components'
-import { randomArray, randomAvatar } from './../../utilities'
-import { useTranslation } from 'react-i18next'
+import { Media, AvatarAddOn, UncontrolledTooltip, AvatarImage } from "Components";
+import { randomArray, randomAvatar } from "./../../utilities";
+import { useTranslation } from "react-i18next";
 
-const status = [
-  "success",
-  "danger",
-  "warning",
-  "secondary"
-]
+const status = ["success", "danger", "warning", "secondary"];
 
-const Comment = (props) => {
-  const { t } = useTranslation()
+const Comment = ({ mediaClassName }: any) => {
+  const { t } = useTranslation();
   return (
-
-    <Media className={ `mb-4 ${ props.mediaClassName }` }>
+    <Media className={`mb-4 ${mediaClassName}`}>
       <Media left className="me-3">
-        <Avatar.Image
+        <AvatarImage
           size="md"
-          src={ randomAvatar() }
+          src={randomAvatar()}
           className="me-2"
           addOns={[
-            <AvatarAddOn.Icon 
+            <AvatarAddOn.Icon
               className="fa fa-circle"
               color="white"
               key="avatar-icon-bg"
             />,
-            <AvatarAddOn.Icon 
+            <AvatarAddOn.Icon
               className="fa fa-circle"
-              color={ randomArray(status) }
+              color={randomArray(status)}
               key="avatar-icon-fg"
-            />
+            />,
           ]}
         />
       </Media>
       <Media body>
         <div className="mb-2">
           <span className="text-inverse me-2">
-            { 'faker.name.firstName()' } { 'faker.name.firstName()' }
+            {"faker.name.firstName()"} {"faker.name.firstName()"}
           </span>
-          <span className="small">
-            13-Jun-2015, 08:13
-          </span>
+          <span className="small">13-Jun-2015, 08:13</span>
         </div>
-        <p className="mb-1">
-          { 'faker.lorem.paragraph()' }
-        </p>
+        <p className="mb-1">{"faker.lorem.paragraph()"}</p>
         <div>
-          <span className="text-success me-2">
-            +92
-          </span>
+          <span className="text-success me-2">+92</span>
           <a href="#" id="tooltipVoteUp1" className="me-2">
             <i className="fa fa-angle-up text-success"></i>
           </a>
@@ -74,20 +54,11 @@ const Comment = (props) => {
             {t("Reply")}
           </a>
           <span className="me-2">·</span>
-          <a href="#">
-            {t("Edit")}
-          </a>
+          <a href="#">{t("Edit")}</a>
         </div>
       </Media>
     </Media>
+  );
+};
 
-  )
-}
-Comment.propTypes = {
-  mediaClassName: PropTypes.node
-}
-Comment.defaultProps = {
-  mediaClassName: "text-empty"
-}
-
-export { Comment }
+export { Comment };

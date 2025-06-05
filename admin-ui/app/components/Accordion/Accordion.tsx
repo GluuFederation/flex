@@ -1,63 +1,42 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
-
+import React, { useState, useCallback } from 'react'
+import { AccordionProps } from './Accordion.d'
 import Card from './../Card'
-
 import { Provider } from './context'
 
-export class Accordion extends React.Component {
-  static propTypes = {
-    initialOpen: PropTypes.bool,
-    onToggle: PropTypes.func,
-    open: PropTypes.bool,
-    children: PropTypes.node,
-    className: PropTypes.string
+export function Accordion(props: AccordionProps) {
+  const { className, children, initialOpen, open, onToggle, ...otherProps } = props
+
+  // Error check (mimics constructor logic)
+  if (typeof open !== 'undefined' && typeof onToggle === 'undefined') {
+    throw new Error("Accordion: props.open has to be used combined with props.onToggle " +
+      "use props.initialOpen to create an uncontrolled Accordion.")
   }
 
-  constructor(props) {
-    super(props)
+  // Uncontrolled state
+  const [isOpenState, setIsOpenState] = useState(!!initialOpen)
 
-    this.state = {
-      isOpen: props.initialOpen
-    }
-
-    if (props.open !== 'undefined' && props.onToggle === 'undefined') {
-      throw new Error("Accordion: props.open has to be used combined with props.onToggle " +
-                "use props.initialOpen to create an uncontrolled Accordion.")
-    }
-  }
-
-  toggleHandler() {
-    const { onToggle } = this.props
-
+  // Handler
+  const toggleHandler = useCallback(() => {
     if (!onToggle) {
-      this.setState({ isOpen: !this.state.isOpen })
+      setIsOpenState(prev => !prev)
     } else {
-      this.onToggle(!this.props.open)
+      onToggle(!open)
     }
-  }
+  }, [onToggle, open])
 
-  isOpen() {
-    return !this.props.onToggle ?
-      this.state.isOpen : this.props.open
-  }
+  // Determine open state
+  const isOpen = onToggle ? open : isOpenState
 
-  render() {
-    /* eslint-disable-next-line no-unused-vars */
-    const { className, children, initialOpen, ...otherProps } = this.props
-
-    return (
-      <Provider
-        value={{
-          onToggle: this.toggleHandler.bind(this),
-          isOpen: this.isOpen()
-        }}
-      >
-        <Card className={ className } { ...otherProps }>
-          { children }
-        </Card>
-      </Provider>
-    )
-  }
+  return (
+    <Provider
+      value={{
+        onToggle: toggleHandler,
+        isOpen: isOpen
+      }}
+    >
+      <Card className={className} {...otherProps}>
+        {children}
+      </Card>
+    </Provider>
+  )
 }

@@ -1,8 +1,10 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
+interface JansKcLinkIconProps {
+  className: string
+  style: React.CSSProperties
+}
 
-const JansKcLinkIcon = ({ className, style }) => {
+const JansKcLinkIcon: React.FC<JansKcLinkIconProps> = ({ className, style }) => {
   return (
     <div className={className} style={style}>
       <svg
@@ -19,9 +21,4 @@ const JansKcLinkIcon = ({ className, style }) => {
     </div>
   )
 }
-
 export default JansKcLinkIcon
-JansKcLinkIcon.propTypes = {
-  style: PropTypes.object,
-  className: PropTypes.string,
-}

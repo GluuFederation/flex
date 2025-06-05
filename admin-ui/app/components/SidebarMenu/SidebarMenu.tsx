@@ -1,65 +1,97 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
-import { useWithRouter as withRouter } from 'Utils/WithRouter'
+import React, { ReactNode, useState, useRef, useEffect, useMemo, useContext, useCallback } from 'react'
+import { useLocation } from 'react-router-dom'
 import find from 'lodash/find'
 import includes from 'lodash/includes'
 import mapValues from 'lodash/mapValues'
 import classNames from 'classnames'
-import { withPageConfig } from './../Layout/withPageConfig'
+import { PageConfigContext } from './../Layout/PageConfigContext'
 import Common from './../../common'
 import { MenuContext } from './MenuContext'
 
-class SidebarMenu extends React.Component {
-  static propTypes = {
-    children: PropTypes.node,
-    currentUrl: PropTypes.string,
-    slim: PropTypes.bool,
-    location: PropTypes.object,
-    pageConfig: PropTypes.object,
-    disabled: PropTypes.bool,
-  }
-  containerRef = React.createRef()
-  constructor(props) {
-    super(props)
-    this.state = {
-      entries: (this.entries = {}),
-    }
-  }
+// Types for entries and context
+interface SidebarMenuEntry {
+  id: string
+  parentId?: string
+  exact: boolean
+  url?: string
+  open?: boolean
+  active?: boolean
+}
 
-  addEntry(entry) {
-    this.setState({
-      entries: (this.entries = {
-        ...this.entries,
-        [entry.id]: {
-          open: false,
-          active: false,
-          ...entry,
-        },
-      }),
+interface SidebarMenuContext {
+  entries: Record<string, SidebarMenuEntry>
+  addEntry: (entry: SidebarMenuEntry) => void
+  updateEntry: (id: string, stateMods: Partial<SidebarMenuEntry>) => void
+  removeEntry: (id: string) => void
+}
+
+// Types for injected props
+interface Location {
+  pathname: string
+  [key: string]: any
+}
+
+interface PageConfig {
+  sidebarSlim?: boolean
+  sidebarCollapsed?: boolean
+  screenSize?: string
+  [key: string]: any
+}
+
+export interface SidebarMenuProps {
+  children?: ReactNode
+  currentUrl?: string
+  slim?: boolean
+  disabled?: boolean
+}
+
+const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) => {
+  const location = useLocation() as Location
+  const pageConfig = useContext(PageConfigContext) as PageConfig
+  const containerRef = useRef<HTMLUListElement>(null)
+  const [entries, setEntries] = useState<Record<string, SidebarMenuEntry>>({})
+  const entriesRef = useRef(entries)
+  const sidebarAnimation = useRef<any>(null)
+
+  // Keep entriesRef in sync with entries
+  useEffect(() => {
+    entriesRef.current = entries
+  }, [entries])
+
+  const addEntry = useCallback((entry: SidebarMenuEntry) => {
+    setEntries(prev => ({
+      ...prev,
+      [entry.id]: {
+        open: false,
+        active: false,
+        ...entry,
+      },
+    }))
+  }, [])
+
+  const updateEntry = useCallback((id: string, stateMods: Partial<SidebarMenuEntry>) => {
+    setEntries(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        ...stateMods,
+      },
+    }))
+  }, [])
+
+  const removeEntry = useCallback((id: string) => {
+    setEntries(prev => {
+      const { [id]: toRemove, ...rest } = prev
+      return rest
     })
-  }
+  }, [])
 
-  updateEntry(id, stateMods) {
-    this.setState({
-      entries: (this.entries = {
-        ...this.state.entries,
-        [id]: {
-          ...this.state.entries[id],
-          ...stateMods,
-        },
-      }),
-    })
-  }
-
-  removeEntry(id) {
-    // eslint-disable-next-line no-unused-vars
-    const { [id]: toRemove, ...rest } = this.state.entries
-    this.setState({ entries: (this.entries = rest) })
-  }
-
-  setActiveEntries(openActive = false) {
-    const activeId = (childEntry, entries, previous = []) => {
+  const setActiveEntries = (openActive = false) => {
+    const activeId = (
+      childEntry: SidebarMenuEntry,
+      entries: Record<string, SidebarMenuEntry>,
+      previous: string[] = []
+    ): string[] => {
       if (childEntry.parentId) {
         const parentEntry = entries[childEntry.parentId]
         const activeIds = [...previous, parentEntry.id]
@@ -68,99 +100,96 @@ class SidebarMenu extends React.Component {
       return previous
     }
 
-    const activeChild = find(this.state.entries, (entry) => {
-      const { pathname } = this.props.location
-
+    const activeChild = find(entriesRef.current, (entry: SidebarMenuEntry) => {
+      const { pathname } = location
       const noTailSlashLocation =
         pathname[pathname.length - 1] === '/' && pathname.length > 1
           ? pathname.replace(/\/$/, '')
           : pathname
-
       return entry.exact
         ? entry.url === noTailSlashLocation
-        : includes(noTailSlashLocation, entry.url)
+        : !!entry.url && includes(noTailSlashLocation, entry.url)
     })
 
     if (activeChild) {
       const activeEntries = [
-        ...activeId(activeChild, this.entries),
+        ...activeId(activeChild, entriesRef.current),
         activeChild.id,
       ]
-
-      this.setState({
-        entries: (this.entries = mapValues(this.entries, (entry) => {
+      setEntries(prev =>
+        mapValues(prev, (entry) => {
           const isActive = includes(activeEntries, entry.id)
-
           return {
             ...entry,
             active: isActive,
             open: openActive ? !entry.url && isActive : entry.open,
           }
-        })),
-      })
+        })
+      )
     }
   }
 
-  componentDidMount() {
-    this.sidebarAnimation = new Common.SideMenuAnimate()
-    this.sidebarAnimation.assignParentElement(this.containerRef.current)
-
+  // Animation and active entry logic
+  useEffect(() => {
+    sidebarAnimation.current = new (Common.SideMenuAnimate as any)()
+    sidebarAnimation.current.assignParentElement(containerRef.current)
     setTimeout(() => {
-      this.setActiveEntries(true)
+      setActiveEntries(true)
     }, 0)
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.location.pathname !== prevProps.location.pathname) {
-      this.setActiveEntries()
+    return () => {
+      if (sidebarAnimation.current) {
+        sidebarAnimation.current.destroy()
+      }
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  componentWillUnmount() {
-    if (this.sidebarAnimation) {
-      this.sidebarAnimation.destroy()
-    }
-  }
+  // Update active entries on location change
+  useEffect(() => {
+    setActiveEntries()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname])
 
-  render() {
-    const isSlim =
-      this.props.slim ||
-      (this.props.pageConfig.sidebarSlim &&
-        this.props.pageConfig.sidebarCollapsed &&
-        (this.props.pageConfig.screenSize === 'lg' ||
-          this.props.pageConfig.screenSize === 'xl'))
-    const sidebarMenuClass = classNames('sidebar-menu', {
-      'sidebar-menu--slim': isSlim,
-      'sidebar-menu--disabled': this.props.disabled,
-    })
+  const isSlim =
+    slim ||
+    (pageConfig?.sidebarSlim &&
+      pageConfig?.sidebarCollapsed &&
+      (pageConfig?.screenSize === 'lg' ||
+        pageConfig?.screenSize === 'xl'))
+  const sidebarMenuClass = classNames('sidebar-menu', {
+    'sidebar-menu--slim': isSlim,
+    'sidebar-menu--disabled': disabled,
+  })
 
-    return (
-      <MenuContext.Provider
-        value={{
-          entries: this.state.entries,
-          addEntry: this.addEntry.bind(this),
-          updateEntry: this.updateEntry.bind(this),
-          removeEntry: this.removeEntry.bind(this),
-        }}
-      >
-        <ul className={sidebarMenuClass} ref={this.containerRef}>
-          {React.Children.map(this.props.children, (child) => (
-            <MenuContext.Consumer>
-              {(ctx) =>
-                React.cloneElement(child, {
-                  ...ctx,
-                  currentUrl: this.props.location.pathname,
-                  slim: isSlim,
-                })
-              }
-            </MenuContext.Consumer>
-          ))}
-        </ul>
-      </MenuContext.Provider>
-    )
-  }
+  const contextValue = useMemo(() => ({
+    entries,
+    addEntry,
+    updateEntry,
+    removeEntry,
+  }), [entries])
+
+  return (
+    <MenuContext.Provider value={contextValue}>
+      <ul className={sidebarMenuClass} ref={containerRef}>
+        {React.Children.map(children, (child) => {
+          if (React.isValidElement(child)) {
+            // Only pass currentUrl and slim to SidebarMenuItem
+            const type = child.type as any
+            if (
+              type?.displayName === 'SidebarMenuItem' ||
+              type?.name === 'SidebarMenuItem'
+            ) {
+              return React.cloneElement(child as React.ReactElement<any>, {
+                currentUrl: location.pathname,
+                slim: isSlim,
+              })
+            }
+          }
+          return child
+        })}
+      </ul>
+    </MenuContext.Provider>
+  )
 }
 
-const RouterSidebarMenu = withPageConfig(withRouter(SidebarMenu))
-
-export { RouterSidebarMenu as SidebarMenu }
+export { SidebarMenu }

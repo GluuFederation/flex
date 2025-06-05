@@ -1,12 +1,22 @@
-// @ts-nocheck
-import React from "react"
+import React, { ReactNode } from "react"
 import classNames from "classnames"
-import PropTypes from "prop-types"
 import { Navbar as BSNavbar, Container } from "reactstrap"
 
-const Navbar = ({
-  themed,
-  fluid,
+interface NavbarProps {
+  themed?: boolean
+  fluid?: boolean
+  shadow?: boolean
+  className?: string
+  children?: ReactNode
+  color?: string
+  dark?: boolean
+  light?: boolean
+  [key: string]: any // for ...otherProps
+}
+
+const Navbar: React.FC<NavbarProps> = ({
+  themed = false,
+  fluid = false,
   shadow,
   className,
   children,
@@ -50,20 +60,6 @@ const Navbar = ({
       }
     </BSNavbar>
   )
-}
-Navbar.propTypes = {
-  themed: PropTypes.bool,
-  fluid: PropTypes.bool,
-  shadow: PropTypes.bool,
-  className: PropTypes.string,
-  children: PropTypes.node,
-  color: PropTypes.string,
-  dark: PropTypes.bool,
-  light: PropTypes.bool
-}
-Navbar.defaultProps = {
-  fluid: false,
-  themed: false
 }
 
 export { Navbar }

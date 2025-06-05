@@ -1,7 +1,11 @@
-// @ts-nocheck
 import React from "react"
 
-const Administrator = ({ fill, className }) => {
+interface AdministratorProps {
+  fill: string
+  className: string
+}
+
+const AdministratorIcon: React.FC<AdministratorProps> = ({ fill, className }) => {
   return (
     <div className={className}>
       <svg xmlns="http://www.w3.org/2000/svg" fill={fill} viewBox="0 0 23 22.92">
@@ -13,4 +17,4 @@ const Administrator = ({ fill, className }) => {
   )
 }
 
-export default Administrator
+export default AdministratorIcon

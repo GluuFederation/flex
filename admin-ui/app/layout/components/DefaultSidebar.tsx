@@ -3,37 +3,38 @@ import { Link } from 'react-router-dom'
 import { Sidebar, SidebarTrigger } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
+import { SidebarClose, SidebarHideSlim, SidebarMobileFluid, SidebarSection } from '@/components/Sidebar'
 
 const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 
-const DefaultSidebar = () => (
+const DefaultSidebar: React.FC = () => (
   <Sidebar>
     {/* START SIDEBAR-OVERLAY: Close (x) */}
-    <Sidebar.Close>
+    <SidebarClose>
       <SidebarTrigger tag={'a'} href="#">
         <i className="fa fa-times-circle fa-fw"></i>
       </SidebarTrigger>
-    </Sidebar.Close>
+    </SidebarClose>
     {/* START SIDEBAR-OVERLAY: Close (x) */}
 
     {/* START SIDEBAR: Only for Desktop */}
-    <Sidebar.HideSlim>
-      <Sidebar.Section>
+    <SidebarHideSlim>
+      <SidebarSection>
         <Link to="/" className="sidebar__brand">
-          <LogoThemed checkBackground />
+          <LogoThemed checkBackground className="sidebar__brand" />
         </Link>
-      </Sidebar.Section>
-    </Sidebar.HideSlim>
+      </SidebarSection>
+    </SidebarHideSlim>
     {/* END SIDEBAR: Only for Desktop */}
 
     {/* START SIDEBAR: Only for Mobile */}
-    <Sidebar.MobileFluid>
+    <SidebarMobileFluid>
       {/* <SidebarTopA /> */}
-      <Sidebar.Section fluid cover>
+      <SidebarSection fluid cover>
         {/* SIDEBAR: Menu */}
         <Suspense fallback={<GluuSuspenseLoader />}><GluuAppSidebar /></Suspense>
-      </Sidebar.Section>
-    </Sidebar.MobileFluid>
+      </SidebarSection>
+    </SidebarMobileFluid>
     {/* END SIDEBAR: Only for Mobile */}
   </Sidebar>
 )

@@ -1,6 +1,3 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
 import { 
   Card, 
   CardTitle, 
@@ -11,7 +8,16 @@ import {
 import { InfoPopover } from './InfoPopover'
 import { useTranslation } from 'react-i18next'
 
-const CardColor = (props) => {
+interface CardColorProps {
+  cardClass?: string;
+  color: string;
+  hex: string;
+  rgba: string;
+  cmyk: string;
+  scss?: string;
+}
+
+const CardColor: React.FC<CardColorProps> = (props) => {
   const { t } = useTranslation()
   return (
     <Card className={ `mb-3 ${ props.cardClass }` }>
@@ -39,7 +45,7 @@ const CardColor = (props) => {
           </dd>
           <dt className="col-sm-4">More</dt>
           <dd className="col-sm-8 text-inverse">
-            <InfoPopover colorId={ props.color } href="#">
+            <InfoPopover colorId={ props.color } href="#" className="" tag="">
               {t("Details")}
               <i className="fa fa-angle-up ms-1"></i>
             </InfoPopover>
@@ -47,24 +53,7 @@ const CardColor = (props) => {
         </dl>
       </CardBody>
     </Card>
-
   )
-}
-CardColor.propTypes = {
-  cardClass: PropTypes.node,
-  color: PropTypes.node,
-  hex: PropTypes.node,
-  rgba: PropTypes.node,
-  cmyk: PropTypes.node,
-  scss: PropTypes.node
-}
-CardColor.defaultProps = {
-  cardClass: "",
-  color: "Waiting for Data...",
-  hex: "Waiting for Data...",
-  rgba: "Waiting for Data...",
-  cmyk: "Waiting for Data...",
-  scss: "Waiting for Data...",
 }
 
 export { CardColor }

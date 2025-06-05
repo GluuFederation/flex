@@ -1,19 +1,19 @@
-// @ts-nocheck
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { ReactElement } from 'react'
 import classNames from 'classnames'
 
-export const SidebarHideSlim = ({ children }) => {
-  return React.Children.map(children, (child) =>
-    React.cloneElement(child, {
-      className: classNames(
-        child.props.className,
-        'sidebar__hide-slim'
-      )  
-    })
-  )
+interface SidebarHideSlimProps {
+  children?: React.ReactNode;
 }
 
-SidebarHideSlim.propTypes = {
-  children: PropTypes.node,
+export const SidebarHideSlim: React.FC<SidebarHideSlimProps> = ({ children }) => {
+  return React.Children.map(children, (child) =>
+    React.isValidElement(child)
+      ? React.cloneElement(child as ReactElement<any>, {
+          className: classNames(
+            child.props.className,
+            'sidebar__hide-slim'
+          )
+        })
+      : child
+  )
 }

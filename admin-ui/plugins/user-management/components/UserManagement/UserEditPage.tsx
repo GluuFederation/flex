@@ -15,24 +15,24 @@ function UserEditPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const userDetails = useSelector((state) => state.userReducer.selectedUserData)
+  const userDetails = useSelector((state: any) => state.userReducer.selectedUserData)
   const personAttributes = useSelector(
-    (state) => state.attributesReducerRoot.items
+    (state: any) => state.attributesReducerRoot.items
   )
   const redirectToUserListPage = useSelector(
-    (state) => state.userReducer.redirectToUserListPage
+    (state: any) => state.userReducer.redirectToUserListPage
   )
   const loadingAttributes = useSelector(
-    (state) => state.attributesReducerRoot.initLoading
+    (state: any) => state.attributesReducerRoot.initLoading
   )
 
-  let options = {}
+  let options: any = {}
   useEffect(() => {
     dispatch(getPersistenceType())
   }, [])
 
   const persistenceType = useSelector(
-    (state) => state.persistenceTypeReducer.type
+    (state: any) => state.persistenceTypeReducer.type
   )
 
   useEffect(() => {
@@ -42,12 +42,12 @@ function UserEditPage() {
   }, [redirectToUserListPage])
 
 
-  const createCustomAttributes = (values) => {
+  const createCustomAttributes = (values: any) => {
     let customAttributes = []
     if (values) {
       for (let key in values) {
-        let customAttribute = personAttributes.filter((e) => e.name == key)
-        if (personAttributes.some((e) => e.name == key)) {
+        let customAttribute = personAttributes.filter((e: any) => e.name == key)
+        if (personAttributes.some((e: any) => e.name == key)) {
           let obj = {}
           if (!customAttribute[0]?.oxMultiValuedAttribute) {
             let val = []
@@ -93,11 +93,11 @@ function UserEditPage() {
     }
   }
 
-  const submitData = (values, modifiedFields,usermessage) => {
+  const submitData = (values: any, modifiedFields: any, usermessage: any) => {
     let customAttributes = createCustomAttributes(values)
     let inum = userDetails.inum
 
-    let submitableValues = {
+    let submitableValues: any = {
       inum: inum,
       userId: values.userId || '',
       mail: values.mail,

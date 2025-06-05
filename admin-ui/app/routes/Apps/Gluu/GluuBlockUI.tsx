@@ -1,9 +1,7 @@
-// @ts-nocheck
-import React from 'react'
-function GluuBlockUI(blocking=false) {
+function GluuBlockUI(blocking: boolean = false) {
   if (blocking) {
     return (
-      <div className="block-ui-container" style={{ minHeight: '100px' }}>
+      <div className="block-ui-container" style={{ minHeight: "100px" }}>
         <div className="block-ui-overlay" />
         <div className="block-ui-message-container">
           <div className="block-ui-message">
@@ -15,9 +13,9 @@ function GluuBlockUI(blocking=false) {
           </div>
         </div>
       </div>
-    )
+    );
   } else {
-    return ''
+    return "";
   }
 }
-export default GluuBlockUI
+export default GluuBlockUI;

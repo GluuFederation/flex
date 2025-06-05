@@ -1,4 +1,3 @@
-// @ts-nocheck
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice } from '@reduxjs/toolkit'
 

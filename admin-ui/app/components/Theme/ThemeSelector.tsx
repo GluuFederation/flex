@@ -1,8 +1,6 @@
-// @ts-nocheck
 import React from 'react'
 import map from 'lodash/map'
 import classNames from 'classnames'
-import PropTypes from 'prop-types'
 import {
   Card,
   CardBody,
@@ -14,15 +12,28 @@ import {
 import 'Styles/components/theme-selector.scss'
 import { Consumer } from './ThemeContext'
 
-class ThemeSelector extends React.Component {
-  static propTypes = {
-    style: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-    styleOptions: PropTypes.array,
-    styleDisabled: PropTypes.bool,
-    colorOptions: PropTypes.array,
-    onChangeTheme: PropTypes.func,
-  }
+// Option types
+interface ThemeOption {
+  name: string;
+  value: string;
+}
+
+interface ThemeSelectorProps {
+  style: string;
+  color: string;
+  styleOptions?: ThemeOption[];
+  styleDisabled?: boolean;
+  colorOptions?: ThemeOption[];
+  onChangeTheme?: (theme: Partial<{ color: string; style: string }>) => void;
+}
+
+interface ThemeSelectorState {
+  isActive: boolean;
+  initialStyle: string;
+  initialColor: string;
+}
+
+class ThemeSelector extends React.Component<ThemeSelectorProps, ThemeSelectorState> {
   static defaultProps = {
     styleOptions: [
       { name: 'Light', value: 'light' },
@@ -42,9 +53,8 @@ class ThemeSelector extends React.Component {
     ]
   }
 
-  constructor(props) {
+  constructor(props: ThemeSelectorProps) {
     super(props)
-
     this.state = {
       isActive: false,
       initialStyle: '',
@@ -84,7 +94,7 @@ class ThemeSelector extends React.Component {
                 Nav Color
               </span>
               {
-                map(this.props.colorOptions, (option, index) => (
+                map(this.props.colorOptions, (option: ThemeOption, index: number) => (
                   <CustomInput
                     key={ index }
                     type="radio"
@@ -92,8 +102,8 @@ class ThemeSelector extends React.Component {
                     id={ `sidebarStyle--${option.value}` }
                     value={ option.value }
                     checked={ this.props.color === option.value }
-                    onChange={(ev) => {
-                      if (ev.target.checked) {
+                    onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
+                      if (ev.target.checked && this.props.onChangeTheme) {
                         this.props.onChangeTheme({
                           color: option.value
                         })
@@ -114,7 +124,7 @@ class ThemeSelector extends React.Component {
                 Nav Style
               </span>
               {
-                map(this.props.styleOptions, (option, index) => (
+                map(this.props.styleOptions, (option: ThemeOption, index: number) => (
                   <CustomInput
                     key={ index }
                     type="radio"
@@ -123,8 +133,8 @@ class ThemeSelector extends React.Component {
                     value={ option.value }
                     disabled={ this.props.styleDisabled }
                     checked={ this.props.style === option.value }
-                    onChange={(ev) => {
-                      if (ev.target.checked) {
+                    onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
+                      if (ev.target.checked && this.props.onChangeTheme) {
                         this.props.onChangeTheme({
                           style: option.value
                         })
@@ -141,10 +151,12 @@ class ThemeSelector extends React.Component {
                 outline
                 className="d-block w-100"
                 onClick={() => {
-                  this.props.onChangeTheme({
-                    color: this.state.initialColor,
-                    style: this.state.initialStyle
-                  })
+                  if (this.props.onChangeTheme) {
+                    this.props.onChangeTheme({
+                      color: this.state.initialColor,
+                      style: this.state.initialStyle
+                    })
+                  }
                 }}
               >
                 Reset Options
@@ -157,10 +169,10 @@ class ThemeSelector extends React.Component {
   }
 }
 
-const ContextThemeSelector = (props) =>
+const ContextThemeSelector: React.FC<Partial<ThemeSelectorProps>> = (props) =>
   <Consumer>
     {
-      (themeState) => <ThemeSelector { ...themeState } { ...props } />
+      (themeState: any) => <ThemeSelector { ...themeState } { ...props } />
     }
   </Consumer>
 

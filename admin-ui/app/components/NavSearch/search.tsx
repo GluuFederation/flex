@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import React from 'react'
 import Paper from '@mui/material/Paper'
 import InputBase from '@mui/material/InputBase'
@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton'
 import SearchIcon from '@mui/icons-material/Search'
 import styles from './styles'
 
-export default function Search({ isTabletOrMobile }) {
+export default function Search({ isTabletOrMobile }: any) {
   const { classes } = styles()
 
   return (

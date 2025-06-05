@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { ToastContainer, toast } from "react-toastify"
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -7,7 +6,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 function GluuToast(){
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const { showToast, message, type } = useSelector(state => state.toastReducer)
+  const { showToast, message, type } = useSelector((state: any) => state.toastReducer)
     
   const ToastDesign = () => {
     return (

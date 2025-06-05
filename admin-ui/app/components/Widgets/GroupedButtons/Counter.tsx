@@ -1,10 +1,20 @@
-// @ts-nocheck
 import React from 'react'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 
-class Counter extends React.Component {
-  state = {
+interface CounterProps {
+  disabled: boolean
+  counter?: number
+  onCounterChange: (value: number) => void
+}
+
+interface CounterState {
+  disabled: boolean
+  counter: number
+}
+
+class Counter extends React.Component<CounterProps, CounterState> {
+  state: CounterState = {
     disabled: this.props.disabled,
     counter: this.props.counter ? this.props.counter : 0,
   }
@@ -18,6 +28,7 @@ class Counter extends React.Component {
     await this.setState((state) => ({ counter: state.counter - 1 }))
     await this.props.onCounterChange(this.state.counter)
   }
+
   render() {
     const displayCounter = this.state.counter > 0
 

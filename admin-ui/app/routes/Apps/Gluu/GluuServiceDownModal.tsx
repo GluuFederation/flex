@@ -1,10 +1,8 @@
-// @ts-nocheck
 import { Box } from '@mui/material'
-import React from 'react'
 import { useSelector } from 'react-redux'
 
-function GluuServiceDownModal({ message = '', statusCode }) {
-  const { authServerHost } = useSelector((state) => state.authReducer.config)
+function GluuServiceDownModal({ message = '', statusCode }: any) {
+  const { authServerHost } = useSelector((state: any) => state.authReducer.config)
 
   const handleRefresh = () => {
     const host = authServerHost ? `${authServerHost}/admin` : null

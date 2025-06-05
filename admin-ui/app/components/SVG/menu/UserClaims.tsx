@@ -1,7 +1,10 @@
-// @ts-nocheck
 import React from 'react'
 
-const UserClaims = ({ className }) => {
+interface UserClaimsProps {
+  className: string
+}
+
+const UserClaimsIcon: React.FC<UserClaimsProps> = ({ className }) => {
   return (
     <div className={className}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 23">
@@ -13,4 +16,4 @@ const UserClaims = ({ className }) => {
   )
 }
 
-export default UserClaims
+export default UserClaimsIcon

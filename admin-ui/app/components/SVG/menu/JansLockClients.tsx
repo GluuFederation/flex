@@ -1,8 +1,11 @@
-// @ts-nocheck
 import React from "react";
-import PropTypes from "prop-types";
 
-const JansLockClients = ({ className, style }) => {
+interface JansLockClientsProps {
+  className: string
+  style: React.CSSProperties
+}
+
+const JansLockClientsIcon: React.FC<JansLockClientsProps> = ({ className, style }) => {
   return (
     <div className={className} style={style}>
       <svg
@@ -72,9 +75,4 @@ c112 -84 253 -171 393 -240 953 -474 2103 -296 2873 445 411 396 670 904 754
   );
 };
 
-export default JansLockClients;
-
-JansLockClients.propTypes = {
-  style: PropTypes.object,
-  className: PropTypes.string,
-};
+export default JansLockClientsIcon;

@@ -1,21 +1,30 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import { ThemeConsumer } from 'Components/Theme'
+import { ThemeConsumer } from '../../../components/Theme'
 
-const logos = {
-  'default': require('Images/logos/logo192.png'),
-  'primary': require('Images/logos/logo192.png')
+interface LogoThemedProps {
+  checkBackground?: boolean;
+  className?: string;
+  [key: string]: any; // for otherProps
 }
 
-const getLogoUrl = () => {
+interface ThemeContext {
+  style: string;
+  color: string;
+}
+
+const logos: Record<string, string> = {
+  'default': require('../../../images/logos/logo192.png'),
+  'primary': require('../../../images/logos/logo192.png')
+}
+
+const getLogoUrl = (): string => {
   return logos['default']
 }
 
 // Check for background
-const getLogoUrlBackground = (style, color) => {
+const getLogoUrlBackground = (style: string, color: string): string => {
   if (style === 'color') {
     return logos['default']
   } else {
@@ -23,10 +32,10 @@ const getLogoUrlBackground = (style, color) => {
   }
 }
 
-const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
+const LogoThemed: React.FC<LogoThemedProps> = ({ checkBackground, className, ...otherProps }) => (
   <ThemeConsumer>
     {
-      ({ style, color }) => (
+      ({ style, color }: ThemeContext) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <img style={{ width:'130px', height:'51px' }}
             src={
@@ -43,9 +52,6 @@ const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
     }
   </ThemeConsumer>
 )
-LogoThemed.propTypes = {
-  checkBackground: PropTypes.bool,
-  className: PropTypes.string,
-}
+
 
 export { LogoThemed }

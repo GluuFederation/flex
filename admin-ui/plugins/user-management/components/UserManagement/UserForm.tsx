@@ -13,36 +13,36 @@ import { ThemeContext } from "Context/theme/themeContext";
 import { getAttributesRoot } from "Redux/features/attributesSlice";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { debounce } from "lodash";
+import { debounce, values } from "lodash";
 import { adminUiFeatures } from "Plugins/admin/helper/utils";
 import moment from "moment/moment";
 import { use } from "i18next";
 
-function UserForm({ onSubmitData }) {
+function UserForm({ onSubmitData }:any) {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const DOC_SECTION = "user";
   const [searchClaims, setSearchClaims] = useState("");
-  const [selectedClaims, setSelectedClaims] = useState([]);
+  const [selectedClaims, setSelectedClaims] = useState<any[]>([]);
   const [passwordError, setPasswordError] = useState("");
   const [showButtons, setShowButtons] = useState(false);
   const [modal, setModal] = useState(false);
   const [passwordmodal, setPasswordModal] = useState(false);
   const [changePasswordModal, setChangePasswordModal] = useState(false);
-  const [modifiedFields, setModifiedFields] = useState({});
-  const [operations, setOperations] = useState([]);
+  const [modifiedFields, setModifiedFields] = useState<Record<string, any>>({});
+  const [operations, setOperations] = useState<Array<{path: string; value: any; op: string}>>([]);
 
   const userDetails = useSelector(
-    (state) => state.userReducer.selectedUserData
+    (state: any) => state.userReducer.selectedUserData
   );
   const personAttributes = useSelector(
-    (state) => state.attributesReducerRoot.items
+    (state: any) => state.attributesReducerRoot.items
   );
-  const theme = useContext(ThemeContext);
+  const theme: any = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
-  let options = {};
+  let options: any = {};
 
-  const initialValues = {
+  const initialValues: any = {
     displayName: userDetails?.displayName || "",
     givenName: userDetails?.givenName || "",
     mail: userDetails?.mail || "",
@@ -56,7 +56,7 @@ function UserForm({ onSubmitData }) {
     for (let i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         let customAttribute = personAttributes.filter(
-          (e) => e.name == userDetails.customAttributes[i].name
+          (e: any) => e.name == userDetails.customAttributes[i].name
         );
         if (userDetails.customAttributes[i].name == "birthdate") {
           initialValues[userDetails.customAttributes[i].name] = moment(
@@ -77,7 +77,7 @@ function UserForm({ onSubmitData }) {
 
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (values) => {
+    onSubmit: (values:any) => {
       toggle();
     },
     validationSchema: Yup.object({
@@ -87,17 +87,14 @@ function UserForm({ onSubmitData }) {
       userId: Yup.string().required("User name is required."),
       mail: Yup.string().required("Email is required."),
     }),
-    setFieldValue: (field) => {
-      delete values[field];
-    },
   });
 
   const toggle = () => {
     setModal(!modal);
   };
 
-  const submitChangePassword = (usermessage) => {
-    const submitableValue = {
+  const submitChangePassword = (usermessage:any) => {
+    const submitableValue:any = {
       inum: userDetails.inum,
       jsonPatchString: "[]",
       customAttributes: [
@@ -115,12 +112,12 @@ function UserForm({ onSubmitData }) {
     toggleChangePasswordModal();
   };
 
-  const submitForm = (usermessage) => {
+  const submitForm = (usermessage:any) => {
     toggle();
     onSubmitData(formik.values, modifiedFields, usermessage);
   };
-  const loading = useSelector((state) => state.userReducer.loading);
-  const setSelectedClaimsToState = (data) => {
+  const loading = useSelector((state: any) => state.userReducer.loading);
+  const setSelectedClaimsToState = (data: any) => {
     const tempList = [...selectedClaims];
     tempList.push(data);
     setSelectedClaims(tempList);
@@ -152,7 +149,7 @@ function UserForm({ onSubmitData }) {
     "middleName",
     "sn",
   ];
-  const getCustomAttributeById = (id) => {
+  const getCustomAttributeById = (id: string) => {
     let claimData = null;
     for (const i in personAttributes) {
       if (personAttributes[i].name == id) {
@@ -192,17 +189,18 @@ function UserForm({ onSubmitData }) {
     }
   }, [userDetails]);
 
-  const removeSelectedClaimsFromState = (id) => {
+  const removeSelectedClaimsFromState = (id: string) => {
     const tempList = [...selectedClaims];
     if (userDetails) {
       formik.setFieldValue(id, "");
     } else {
-      formik.setFieldValue(id);
+      formik.setFieldValue(id, "");
     }
-    delete modifiedFields[id];
-    setModifiedFields(modifiedFields);
+    const newModifiedFields = { ...modifiedFields };
+    delete newModifiedFields[id];
+    setModifiedFields(newModifiedFields);
 
-    const newList = tempList.filter((data, index) => data.name !== id);
+    const newList = tempList.filter((data) => data.name !== id);
     setSelectedClaims(newList);
   };
 
@@ -212,9 +210,16 @@ function UserForm({ onSubmitData }) {
 
   const toggleChangePasswordModal = () => {
     setChangePasswordModal(!changePasswordModal);
-    formik.setFieldValue("userPassword");
-    formik.setFieldValue("userConfirmPassword");
+    formik.setFieldValue("userPassword", "");
+    formik.setFieldValue("userConfirmPassword", "");
     setShowButtons(true);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setModifiedFields({
+      ...modifiedFields,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -321,12 +326,7 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.givenName && formik.touched.givenName}
               errorMessage={formik.errors.givenName}
-              handleChange={(e) => {
-                setModifiedFields({
-                  ...modifiedFields,
-                  givenName: e.target.value,
-                });
-              }}
+              handleChange={handleChange}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -338,12 +338,7 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.middleName && formik.touched.middleName}
               errorMessage={formik.errors.middleName}
-              handleChange={(e) => {
-                setModifiedFields({
-                  ...modifiedFields,
-                  middleName: e.target.value,
-                });
-              }}
+              handleChange={handleChange}
             />
 
             <GluuInputRow
@@ -357,12 +352,7 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.sn && formik.touched.sn}
               errorMessage={formik.errors.sn}
-              handleChange={(e) => {
-                setModifiedFields({
-                  ...modifiedFields,
-                  lastName: e.target.value,
-                });
-              }}
+              handleChange={handleChange}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -375,12 +365,7 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.userId && formik.touched.userId}
               errorMessage={formik.errors.userId}
-              handleChange={(e) => {
-                setModifiedFields({
-                  ...modifiedFields,
-                  userName: e.target.value,
-                });
-              }}
+              handleChange={handleChange}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -395,12 +380,7 @@ function UserForm({ onSubmitData }) {
                 formik.errors.displayName && formik.touched.displayName
               }
               errorMessage={formik.errors.displayName}
-              handleChange={(e) => {
-                setModifiedFields({
-                  ...modifiedFields,
-                  displayName: e.target.value,
-                });
-              }}
+              handleChange={handleChange}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -414,9 +394,7 @@ function UserForm({ onSubmitData }) {
               rsize={9}
               showError={formik.errors.mail && formik.touched.mail}
               errorMessage={formik.errors.mail}
-              handleChange={(e) => {
-                setModifiedFields({ ...modifiedFields, mail: e.target.value });
-              }}
+              handleChange={handleChange}
             />
 
             <GluuSelectRow
@@ -428,12 +406,7 @@ function UserForm({ onSubmitData }) {
               formik={formik}
               lsize={3}
               rsize={9}
-              handleChange={(e) => {
-                setModifiedFields({
-                  ...modifiedFields,
-                  status: e.target.value,
-                });
-              }}
+              handleChange={handleChange}
             />
 
             {!userDetails && (
@@ -527,10 +500,10 @@ function UserForm({ onSubmitData }) {
                 value={searchClaims}
               />
               <ul className="list-group">
-                {personAttributes.map((data, key) => {
+                {personAttributes.map((data: any, key: number) => {
                   const name = data.displayName.toLowerCase();
                   const alreadyAddedClaim = selectedClaims.some(
-                    (el) => el.name === data.name
+                    (el: any) => el.name === data.name
                   );
                   if (
                     data.status.toLowerCase() == "active" &&

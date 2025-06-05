@@ -1,7 +1,11 @@
-// @ts-nocheck
 import React from "react"
 
-const OAuth = ({ fill, className }) => {
+interface OAuthProps {
+  fill?: string
+  className: string
+}
+
+const OAuthIcon: React.FC<OAuthProps> = ({ fill, className }) => {
   return (
     <div className={className}>
       <svg xmlns="http://www.w3.org/2000/svg" fill={fill} viewBox="0 0 22.95 22.95">
@@ -16,4 +20,4 @@ const OAuth = ({ fill, className }) => {
   )
 }
 
-export default OAuth
+export default OAuthIcon

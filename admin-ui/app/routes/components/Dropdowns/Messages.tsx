@@ -1,9 +1,6 @@
-// @ts-nocheck
-import React from 'react'
-
-import { 
-  Avatar, 
+import {  
   AvatarAddOn,
+  AvatarImage,
   Media
 } from 'Components'
 import { randomArray, randomAvatar } from './../../../utilities'
@@ -19,10 +16,10 @@ const status = [
 const Messages = () => {
   const { t } = useTranslation()
   return (
-    <React.Fragment>
+   
       <Media>
         <Media left className="me-4">
-          <Avatar.Image
+          <AvatarImage
             size="md"
             src={ randomAvatar() }
             addOns={[
@@ -56,7 +53,7 @@ const Messages = () => {
           </span>
         </Media>
       </Media>
-    </React.Fragment>
+   
 
   )
 }

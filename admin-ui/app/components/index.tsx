@@ -1,6 +1,8 @@
-// @ts-nocheck
 import Accordion from './Accordion'
-import Avatar, { AvatarAddOn } from './Avatar'
+import { AccordionHeader } from './Accordion/AccordionHeader'
+import { AccordionBody } from './Accordion/AccordionBody'
+import Avatar, {AvatarAddOn } from './Avatar'
+import {AvatarImage} from './Avatar/AvatarImage'
 import Card from './Card'
 import CardHeader from './CardHeader'
 import CustomInput from './CustomInput'
@@ -11,6 +13,7 @@ import FloatGrid from './FloatGrid'
 import HolderProvider from './HolderProvider'
 import IconWithBadge from './IconWithBadge'
 import InputGroupAddon from './InputGroupAddon'
+//import { Layout, withPageConfig, setupPage } from './Layout'
 import Layout, {
   withPageConfig,
   setupPage
@@ -24,7 +27,7 @@ import Notifications from './Notifications'
 import OuterClick from './OuterClick'
 import Progress from './Progress'
 import Sidebar from './Sidebar'
-import SidebarMenu from './SidebarMenu'
+import {SidebarMenuItem, SidebarMenu} from './SidebarMenu'
 import SidebarTrigger from './SidebarTrigger'
 import {
   ThemeClass,
@@ -108,7 +111,10 @@ export {
 } from 'reactstrap'
 export {
   Accordion,
+  AccordionHeader,
+  AccordionBody,
   Avatar,
+  AvatarImage,
   AvatarAddOn,
   Card,
   CardHeader,
@@ -133,6 +139,7 @@ export {
   Progress,
   Sidebar,
   SidebarMenu,
+  SidebarMenuItem,
   SidebarTrigger,
   ThemeClass,
   ThemeConsumer,

@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
   FormGroup,
   Col,
@@ -13,7 +12,6 @@ import {
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
-import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
 import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
@@ -26,15 +24,15 @@ const GluuDialog = ({
   subject,
   name,
   feature,
-}) => {
-  const permissions = useSelector((state) => state.authReducer.permissions)
+}: any) => {
+  const permissions = useSelector((state: any) => state.authReducer.permissions)
   const [active, setActive] = useState(false)
   const { t } = useTranslation()
   const [userMessage, setUserMessage] = useState('')
   const { loadingWebhooks, webhookModal } = useSelector(
-    (state) => state.webhookReducer
+    (state: any) => state.webhookReducer
   )
-  const theme = useContext(ThemeContext)
+  const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
@@ -127,12 +125,3 @@ const GluuDialog = ({
 }
 
 export default GluuDialog
-GluuDialog.propTypes = {
-  feature: PropTypes.string,
-  row: PropTypes.any,
-  handler: PropTypes.func,
-  modal: PropTypes.bool.isRequired,
-  onAccept: PropTypes.func,
-  subject: PropTypes.any,
-  name: PropTypes.string,
-}

@@ -1,9 +1,7 @@
 import React from "react"
 import _ from "lodash"
-import PropTypes from "prop-types"
 
 import {
-  Avatar,
   UncontrolledDropdown,
   DropdownToggle,
   IconWithBadge,
@@ -15,12 +13,20 @@ import {
   InputGroup,
   Input,
   InputGroupAddon,
-  Button
+  Button,
+  AvatarImage
 } from "Components"
+import { ExtendedDropdownSection } from "@/components/ExtendedDropdown/ExtendedDropdownSection"
+import { ExtendedDropdownLink } from "@/components/ExtendedDropdown/ExtendedDropdownLink"
 
 const messagesColors = ["text-success", "text-danger", "text-warning"]
 
-const NavbarMessages = props => (
+interface NavbarMessagesProps {
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const NavbarMessages: React.FC<NavbarMessagesProps> = (props) => (
   <UncontrolledDropdown nav inNavbar {...props}>
     <DropdownToggle nav>
       <IconWithBadge
@@ -34,13 +40,13 @@ const NavbarMessages = props => (
       </IconWithBadge>
     </DropdownToggle>
     <ExtendedDropdown right>
-      <ExtendedDropdown.Section className="d-flex justify-content-between align-items-center">
+      <ExtendedDropdownSection className="d-flex justify-content-between align-items-center">
         <h6 className="mb-0">Messages</h6>
-        <ExtendedDropdown.Link to="/apps/new-email">
+        <ExtendedDropdownLink to="/apps/new-email">
           <i className="fa fa-pencil" />
-        </ExtendedDropdown.Link>
-      </ExtendedDropdown.Section>
-      <ExtendedDropdown.Section>
+        </ExtendedDropdownLink>
+      </ExtendedDropdownSection>
+      <ExtendedDropdownSection>
         <InputGroup>
           <Input placeholder="Search Messages..." />
           <InputGroupAddon addonType="append">
@@ -49,19 +55,19 @@ const NavbarMessages = props => (
             </Button>
           </InputGroupAddon>
         </InputGroup>
-      </ExtendedDropdown.Section>
-      <ExtendedDropdown.Section list>
+      </ExtendedDropdownSection>
+      <ExtendedDropdownSection list>
         <ListGroup>
           {_.times(1, index => (
             <ListGroupItem
-              tag={ExtendedDropdown.Link}
+              tag={ExtendedDropdownLink}
               to="/apps/email-details"
               key={index}
               action
             >
               <Media>
                 <Media left>
-                  <Avatar.Image src="admin/static/logo.png" className="me-4" />
+                  <AvatarImage src="admin/static/logo.png" className="me-4" />
                 </Media>
                 <Media body>
                   <span className="d-flex justify-content-start">
@@ -81,21 +87,17 @@ const NavbarMessages = props => (
             </ListGroupItem>
           ))}
         </ListGroup>
-      </ExtendedDropdown.Section>
-      <ExtendedDropdown.Section
+      </ExtendedDropdownSection>
+      <ExtendedDropdownSection
         className="text-center"
-        tag={ExtendedDropdown.Link}
+        tag={ExtendedDropdownLink}
         to="/apps/inbox"
       >
         View All
         <i className="fa fa-angle-right fa-fw ms-2" />
-      </ExtendedDropdown.Section>
+      </ExtendedDropdownSection>
     </ExtendedDropdown>
   </UncontrolledDropdown>
 )
-NavbarMessages.propTypes = {
-  className: PropTypes.string,
-  style: PropTypes.object
-}
 
 export { NavbarMessages }

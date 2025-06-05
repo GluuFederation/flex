@@ -1,7 +1,6 @@
-// @ts-nocheck
 import { useState, useEffect } from 'react'
 
-const initBeforeUnLoad = (showExitPrompt) => {
+const initBeforeUnLoad = (showExitPrompt: any) => {
   window.onbeforeunload = (event) => {
     if (showExitPrompt) {
       const e = event || window.event
@@ -15,7 +14,7 @@ const initBeforeUnLoad = (showExitPrompt) => {
 }
 
 // Hook
-export default function useExitPrompt(bool) {
+export default function useExitPrompt(bool: any) {
   const [showExitPrompt, setShowExitPrompt] = useState(bool)
 
   window.onload = function () {

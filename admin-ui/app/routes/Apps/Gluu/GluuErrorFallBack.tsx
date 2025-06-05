@@ -1,7 +1,4 @@
-// @ts-nocheck
-import React from 'react'
-
-function GluuErrorFallBack({ error }) {
+function GluuErrorFallBack({ error }: any) {
   return (
     <div role="alert">
       <pre>{error.message}</pre>

@@ -4,12 +4,27 @@ import pick from 'lodash/pick'
 import PropTypes from 'prop-types'
 import { withPageConfig } from './withPageConfig'
 
-export const setupPage = (startupConfig) => 
-  (Component) => {
-    class PageSetupWrap extends React.Component {
+interface PageConfig {
+  pageTitle?: string;
+  pageDescription?: string;
+  pageKeywords?: string;
+  changeMeta: (config: PageConfig) => void;
+}
+
+interface PageSetupWrapProps {
+  pageConfig: PageConfig;
+  [key: string]: any;
+}
+
+export const setupPage = (startupConfig: PageConfig) => 
+  (Component: React.ComponentType<any>) => {
+    class PageSetupWrap extends React.Component<PageSetupWrapProps> {
+      private prevConfig: PageConfig;
+
       static propTypes = {
         pageConfig: PropTypes.object
       }
+
       componentDidMount() {
         this.prevConfig = pick(this.props.pageConfig,
           ['pageTitle', 'pageDescription', 'pageKeywords'])
