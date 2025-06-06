@@ -1,6 +1,4 @@
-// @ts-nocheck
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import {
   Card as BsCard
@@ -8,8 +6,18 @@ import {
 
 import classes from './Card.scss'
 
-const Card = (props) => {
-  const { children, type, color, className, ...otherProps } = props
+const Card = ({ 
+  children, 
+  type = 'border', 
+  color = null, 
+  className, 
+  ...otherProps 
+}: {
+  children: any
+  type: string
+  color: string | null
+  className: any
+}) => {
   const cardClass = classNames(className,
     classes['custom-card'],
     classes[`custom-card--${ type }`],
@@ -21,14 +29,4 @@ const Card = (props) => {
     </BsCard>
   )
 }
-Card.propTypes = {
-  ...BsCard.propTypes,
-  type: PropTypes.string,
-  color: PropTypes.string
-}
-Card.defaultProps = {
-  type: 'border',
-  color: null
-}
-
 export { Card }

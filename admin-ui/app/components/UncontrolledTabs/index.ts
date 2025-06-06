@@ -1,3 +1,2 @@
-
-import { UncontrolledTabs } from './UncontrolledTabs'
+import UncontrolledTabs from './UncontrolledTabs'
 export default UncontrolledTabs

@@ -213,7 +213,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
   }
 
   updateNavbarsPositions() {
-    const containerElement = ReactDOM.findDOMNode(this.containerRef.current) as HTMLElement
+    const containerElement = this.containerRef.current
     if (containerElement) {
       const navbarElements = containerElement.querySelectorAll(":scope .layout__navbar")
         

@@ -33,4 +33,4 @@ class UncontrolledTabs extends React.Component<UncontrolledTabsProps, Uncontroll
   }
 }
 
-export { UncontrolledTabs }
+export default UncontrolledTabs

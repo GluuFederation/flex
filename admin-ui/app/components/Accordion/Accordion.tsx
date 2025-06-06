@@ -25,7 +25,7 @@ export function Accordion(props: AccordionProps) {
   }, [onToggle, open])
 
   // Determine open state
-  const isOpen = onToggle ? open : isOpenState
+  const isOpen = onToggle ? (open ?? false) : isOpenState
 
   return (
     <Provider
@@ -34,7 +34,7 @@ export function Accordion(props: AccordionProps) {
         isOpen: isOpen
       }}
     >
-      <Card className={className} {...otherProps}>
+      <Card className={className} type="border" color={null} {...otherProps}>
         {children}
       </Card>
     </Provider>
