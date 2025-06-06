@@ -12,18 +12,20 @@ const initialState = {
   clientScopes: [],
   loadingClientScopes: false,
   selectedClientScopes: [],
+  appliedFilterKey: '',
+  appliedFilterValue: ''
 }
 
 const scopeSlice = createSlice({
   name: 'scope',
   initialState,
   reducers: {
-    scopeHandleLoading: (state) => {
+    scopeHandleLoading: state => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    getScopes: (state) => {
+    getScopes: state => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
@@ -43,7 +45,7 @@ const scopeSlice = createSlice({
       state.item = action.payload.item
       state.loading = false
     },
-    deleteScope: (state) => {
+    deleteScope: state => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
@@ -51,7 +53,7 @@ const scopeSlice = createSlice({
     deleteScopeResponse: (state, action) => {
       state.loading = false
       if (action.payload?.data) {
-        state.items = state.items.filter((i) => i.inum !== action.payload.data)
+        state.items = state.items.filter(i => i.inum !== action.payload.data)
       } else {
         state.saveOperationFlag = false
         state.errorInSaveOperationFlag = false
@@ -104,32 +106,37 @@ const scopeSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    addScope: (state) => {
+    addScope: state => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    editScope: (state) => {
+    editScope: state => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
     getScopeByCreator: () => {},
-    getScopeByInum: (state) => {
+    getScopeByInum: state => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    getClientScopes: (state) => {
+    getClientScopes: state => {
       state.loadingClientScopes = true
     },
-    emptyScopes: (state) => {
+    emptyScopes: state => {
       state.items = []
     },
     setClientSelectedScopes: (state, action) => {
       state.selectedClientScopes = action.payload
+    },
+    // Filter actions
+    applyFilter: (state, action) => {
+      state.appliedFilterKey = action.payload.key
+      state.appliedFilterValue = action.payload.value
     }
-  },
+  }
 })
 
 export const {
@@ -152,6 +159,7 @@ export const {
   getClientScopes,
   emptyScopes,
   setClientSelectedScopes,
+  applyFilter
 } = scopeSlice.actions
 export { initialState }
 export const { actions, reducer, state } = scopeSlice

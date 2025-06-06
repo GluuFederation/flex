@@ -9,18 +9,34 @@ import {
   Box
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import { useSelector, useDispatch } from 'react-redux'
+import { applyFilter } from 'Plugins/auth-server/redux/features/scopeSlice'
 
 const ScopeFilter = ({
   tableColumns,
   visibleColumns,
   toggleFilter,
   themeColors,
-  handleOptionsChange
+  handleOptionsChange,
+  setPageNumber
 }) => {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
 
-  const [selectedFilter, setSelectedFilter] = useState('')
-  const [filterValue, setFilterValue] = useState('')
+  const appliedFilterKey = useSelector(
+    state => state.scopeReducer.appliedFilterKey
+  )
+  const appliedFilterValue = useSelector(
+    state => state.scopeReducer.appliedFilterValue
+  )
+
+  const [selectedFilter, setSelectedFilter] = useState(appliedFilterKey)
+  const [filterValue, setFilterValue] = useState(appliedFilterValue)
+
+  useEffect(() => {
+    setSelectedFilter(appliedFilterKey)
+    setFilterValue(appliedFilterValue)
+  }, [appliedFilterKey, appliedFilterValue])
 
   const availableFilteredColumns = useMemo(
     () =>
@@ -40,16 +56,14 @@ const ScopeFilter = ({
   }
 
   const handleApplyClick = () => {
+    dispatch(applyFilter({ key: selectedFilter, value: filterValue }))
+    setPageNumber(0) // Reset to first page when applying filter
     handleOptionsChange(selectedFilter, filterValue)
   }
 
   const handleCloseClick = () => {
-    setSelectedFilter('')
-    setFilterValue('')
     toggleFilter()
   }
-  console.log('selectedFilter', selectedFilter)
-  console.log('filterValue', filterValue)
 
   return (
     <Box display="flex" alignItems="center" gap={1} width="100%">

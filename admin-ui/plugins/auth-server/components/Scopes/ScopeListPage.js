@@ -97,12 +97,21 @@ function ScopeListPage() {
   const loading = useSelector(state => state.scopeReducer.loading)
   const permissions = useSelector(state => state.authReducer.permissions)
 
+  // Get applied filter state from Redux
+  const appliedFilterKey = useSelector(
+    state => state.scopeReducer.appliedFilterKey
+  )
+  const appliedFilterValue = useSelector(
+    state => state.scopeReducer.appliedFilterValue
+  )
+
   const canRead = hasPermission(permissions, SCOPE_READ)
   const canWrite = hasPermission(permissions, SCOPE_WRITE)
   const canDelete = hasPermission(permissions, SCOPE_DELETE)
 
   useEffect(() => {
-    makeOptions()
+    // Apply existing filters from Redux state when component mounts
+    makeOptions(appliedFilterKey, appliedFilterValue)
     dispatch(getScopes({ action: options }))
 
     const arr = []
@@ -140,7 +149,7 @@ function ScopeListPage() {
         tooltip: `${t('messages.refresh')}`,
         isFreeAction: true,
         onClick: () => {
-          makeOptions()
+          makeOptions(appliedFilterKey, appliedFilterValue)
           dispatch(searchScopes({ action: options }))
         }
       })
@@ -159,7 +168,7 @@ function ScopeListPage() {
       }))
     }
     setMyActions(arr)
-  }, [])
+  }, [appliedFilterKey, appliedFilterValue])
 
   SetTitle(t('titles.scopes'))
 
@@ -209,14 +218,19 @@ function ScopeListPage() {
     if (pattern) {
       options[PATTERN] = pattern
     }
-    if (key !== '' && val !== '') {
+
+    // Use provided parameters first, then fall back to Redux applied filter state
+    const filterKeyToUse = key || appliedFilterKey
+    const filterValueToUse = val || appliedFilterValue
+
+    if (filterKeyToUse && filterValueToUse) {
       options['fieldValuePair'] = `${
-        key === 'id'
+        filterKeyToUse === 'id'
           ? 'jansId'
-          : key === 'scopeType'
+          : filterKeyToUse === 'scopeType'
             ? 'jansScopeTyp'
-            : key === 'description' && 'description'
-      }=${val}`
+            : filterKeyToUse === 'description' && 'description'
+      }=${filterValueToUse}`
     }
   }
 
@@ -244,7 +258,7 @@ function ScopeListPage() {
 
   // 📊 Pagination Handlers
   const onPageChangeClick = page => {
-    makeOptions()
+    makeOptions(appliedFilterKey, appliedFilterValue)
     const startCount = page * limit
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
@@ -253,7 +267,7 @@ function ScopeListPage() {
   }
 
   const onRowCountChangeClick = count => {
-    makeOptions()
+    makeOptions(appliedFilterKey, appliedFilterValue)
     options['startIndex'] = 0
     options['limit'] = count
     setPageNumber(0)
@@ -294,11 +308,10 @@ function ScopeListPage() {
           <ScopeFilter
             tableColumns={tableColumns}
             visibleColumns={visibleColumns}
-            onApply={toggleFilter}
-            onClose={toggleFilter}
+            toggleFilter={toggleFilter}
             themeColors={themeColors}
-            showFiltersBlock={showFiltersBlock}
             handleOptionsChange={handleOptionsChange}
+            setPageNumber={setPageNumber}
           />
         </Box>
       )}
