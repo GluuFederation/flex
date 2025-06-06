@@ -84,7 +84,7 @@ function ScopeListPage() {
     tableColumns.map(col => col.field)
   )
   const [pageNumber, setPageNumber] = useState(0)
-  const [showFiltersBlock, setShowFiltersBlock] = useState(true)
+  const [showFiltersBlock, setShowFiltersBlock] = useState(false)
 
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
