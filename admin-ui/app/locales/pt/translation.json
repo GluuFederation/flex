@@ -752,7 +752,9 @@
     "typeahead_holder_message": "Insira vários itens selecionando na lista suspensa exibida após inserir cada item.",
     "script_path": "Digite o caminho do arquivo de script",
     "expires_after": "Expira após a data",
-    "expires_before": "Expira antes da data"
+    "expires_before": "Expira antes da data",
+    "searchFilter": "Filtro de pesquisa",
+    "valueKey": "valor"
   },
   "titles": {
     "acrs": "ACRs",
@@ -813,7 +815,11 @@
     "change_backend_bind_password": "Alterar senha de ligação de back-end",
     "add_agama_project": "Adicionar projeto Agama",
     "jans_kc_link": "Link KC Jans",
-    "export_csv": "Exportar CSV"
+    "export_csv": "Exportar CSV",
+    "add": "ajouter",
+    "addOrRemoveColumns": "Adicionar ou remover colunas",
+    "filterValue": "Filtrar Valores",
+    "refresh": "Atualizar"
   },
   "links": {
     "support": "https://support.gluu.org/"

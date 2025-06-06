@@ -835,7 +835,9 @@
     "iconUrl": "Icon URL",
     "level": "Level",
     "expires_after": "Expiration After Date",
-    "expires_before": "Expiration Before Date"
+    "expires_before": "Expiration Before Date",
+    "searchFilter": "Search Filter",
+    "valueKey": "value"
   },
   "titles": {
     "activeTokens": "Active Tokens",
@@ -926,7 +928,11 @@
     "filters": "Filters",
     "expiration_date": "Expiration Date",
     "authentication_date": "Authentication Date",
-    "creation_date": "Creation Date"
+    "creation_date": "Creation Date",
+    "add": "Add",
+    "addOrRemoveColumns": "Add or remove columns",
+    "filterValue": "Filter Values",
+    "refresh": "Refresh"
   },
   "links": {
     "support": "https://support.gluu.org/"

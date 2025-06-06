@@ -1,75 +1,57 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { Paper, TablePagination } from '@mui/material'
+import { Box, IconButton, Paper, TablePagination } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
-import { setCurrentItem, getScopes, searchScopes, deleteScope } from 'Plugins/auth-server/redux/features/scopeSlice'
+import {
+  setCurrentItem,
+  getScopes,
+  deleteScope
+} from 'Plugins/auth-server/redux/features/scopeSlice'
 import {
   hasPermission,
   buildPayload,
   SCOPE_READ,
   SCOPE_WRITE,
-  SCOPE_DELETE,
+  SCOPE_DELETE
 } from 'Utils/PermChecker'
 import {
-  LIMIT_ID,
   LIMIT,
   PATTERN,
-  PATTERN_ID,
-  WITH_ASSOCIATED_CLIENTS,
+  WITH_ASSOCIATED_CLIENTS
 } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { Add, FilterList, ViewColumn } from '@mui/icons-material'
+import CustomColumnsToggle from './ScopeCustomColumnToggle'
+import ScopeFilter from './ScopeFilter'
 
 function ScopeListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const userAction = {}
-  const options = {}
-  const clientOptions = {}
-  const myActions = []
   const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const pageSize = localStorage.getItem('paggingSize') || 10
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
-  const toggle = () => setModal(!modal)
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
-  const [pageNumber, setPageNumber] = useState(0)
-  const { totalItems, entriesCount } = useSelector(
-    (state) => state.scopeReducer,
-  )
-  const scopes = useSelector((state) => state.scopeReducer.items)
-  const loading = useSelector((state) => state.scopeReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
-
-  SetTitle(t('titles.scopes'))
-
-  let memoLimit = limit
-  let memoPattern = pattern
-
-  const tableColumns = [
+  const [myActions, setMyActions] = useState([])
+  const [tableColumns] = useState([
     { title: `${t('fields.id')}`, field: 'id' },
     {
       title: `${t('menus.clients')}`,
       field: 'dn',
-      render: (rowData) => {
+      render: rowData => {
         if (!rowData.clients) {
           return 0
         }
@@ -81,149 +63,193 @@ function ScopeListPage() {
             {rowData.clients?.length}
           </Link>
         )
-      },
+      }
     },
     { title: `${t('fields.description')}`, field: 'description' },
     {
       title: `${t('fields.scope_type')}`,
       field: 'scopeType',
-      render: (rowData) => (
+      render: rowData => (
         <Badge key={rowData.inum} color={`primary-${selectedTheme}`}>
           {rowData.scopeType}
         </Badge>
-      ),
-    },
-  ]
+      )
+    }
+  ])
+  const [visibleColumns, setVisibleColumns] = React.useState(
+    tableColumns.map(col => col.field)
+  )
+  const [pageNumber, setPageNumber] = useState(0)
+  const [showFiltersBlock, setShowFiltersBlock] = useState(false)
+
+  const toggle = () => setModal(!modal)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
+  const { totalItems, entriesCount } = useSelector(state => state.scopeReducer)
+  const scopes = useSelector(state => state.scopeReducer.items)
+  const loading = useSelector(state => state.scopeReducer.loading)
+  const permissions = useSelector(state => state.authReducer.permissions)
+
+  // Get applied filter state from Redux
+  const appliedFilterKey = useSelector(
+    state => state.scopeReducer.appliedFilterKey
+  )
+  const appliedFilterValue = useSelector(
+    state => state.scopeReducer.appliedFilterValue
+  )
+
+  const canRead = hasPermission(permissions, SCOPE_READ)
+  const canWrite = hasPermission(permissions, SCOPE_WRITE)
+  const canDelete = hasPermission(permissions, SCOPE_DELETE)
 
   useEffect(() => {
-    makeOptions()
+    makeOptions(appliedFilterKey, appliedFilterValue)
     dispatch(getScopes({ action: options }))
-  }, [])
 
-  function handleOptionsChange(event) {
-    if (event.target.name == 'limit') {
-      memoLimit = event.target.value
-    } else if (event.target.name == 'pattern') {
-      memoPattern = event.target.value
-      if (event.keyCode === 13) {
-        makeOptions()
-        dispatch(getScopes({ action: options }))
-      }
+    const arr = []
+
+    if (canRead) {
+      arr.push({
+        icon: () => buttonIcon('filter'),
+        tooltip: `${t('titles.filters')}`,
+        isFreeAction: true,
+        onClick: toggleFilter
+      })
+    }
+
+    if (canWrite) {
+      arr.push({
+        icon: () => buttonIcon('add'),
+        tooltip: `${t('messages.add_scope')}`,
+        isFreeAction: true,
+        onClick: handleGoToScopeAddPage,
+        disabled: !canWrite
+      })
+
+      arr.push(rowData => ({
+        icon: 'edit',
+        iconProps: {
+          id: 'editScope' + rowData.inum
+        },
+        tooltip: `${t('messages.edit_scope')}`,
+        onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
+        disabled: !canWrite
+      }))
+    }
+
+    if (canDelete) {
+      arr.push(rowData => ({
+        icon: () => <DeleteOutlined />,
+        iconProps: {
+          color: 'secondary',
+          id: 'deleteScope' + rowData.inum
+        },
+        tooltip: `${t('Delete Scope')}`,
+        onClick: (event, rowData) => handleScopeDelete(rowData),
+        disabled: !canDelete
+      }))
+    }
+    setMyActions(arr)
+  }, [appliedFilterKey, appliedFilterValue])
+
+  SetTitle(t('titles.scopes'))
+
+  const userAction = {}
+  const options = {}
+
+  const iconStyle = {
+    ...applicationStyle.barIcon,
+    color: '#000',
+    '&:hover': {
+      ...applicationStyle.hoverBarIcon
     }
   }
 
-  function makeOptions() {
-    setLimit(memoLimit)
-    setPattern(memoPattern)
-    options[LIMIT] = memoLimit
+  const buttonIcon = prop => {
+    const iconMap = {
+      add: <Add />,
+      filter: <FilterList />,
+      columns: <ViewColumn />
+    }
+
+    const titleMap = {
+      add: t('titles.add'),
+      filter: t('titles.filters')
+    }
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+        <IconButton size="small" title={titleMap[prop]} sx={{ ...iconStyle }}>
+          {iconMap[prop]}
+        </IconButton>
+        <span style={{ color: '#000' }}>{titleMap[prop]}</span>
+      </Box>
+    )
+  }
+
+  const handleOptionsChange = (key, val) => {
+    makeOptions(key, val)
+    dispatch(getScopes({ action: options }))
+  }
+
+  const makeOptions = (key = '', val = '') => {
+    options[LIMIT] = limit
     options[WITH_ASSOCIATED_CLIENTS] = true
-    if (memoPattern) {
-      options[PATTERN] = memoPattern
+    if (pattern) {
+      options[PATTERN] = pattern
+    }
+
+    // Use provided parameters first, then fall back to Redux applied filter state
+    const filterKeyToUse = key || appliedFilterKey
+    const filterValueToUse = val || appliedFilterValue
+
+    if (filterKeyToUse && filterValueToUse) {
+      options['fieldValuePair'] = `${
+        filterKeyToUse === 'id'
+          ? 'jansId'
+          : filterKeyToUse === 'scopeType'
+            ? 'jansScopeTyp'
+            : filterKeyToUse === 'description' && 'description'
+      }=${filterValueToUse}`
     }
   }
 
-  function makeClientOptions() {
-    clientOptions[LIMIT] = 200
-  }
-
-  function handleGoToScopeAddPage() {
+  const handleGoToScopeAddPage = () => {
     return navigate('/auth-server/scope/new')
   }
-  function handleGoToScopeEditPage(row) {
+
+  const handleGoToScopeEditPage = row => {
     dispatch(setCurrentItem({ item: row }))
     return navigate(`/auth-server/scope/edit/:` + row.inum)
   }
 
-  function handleScopeDelete(row) {
+  const handleScopeDelete = row => {
     dispatch(setCurrentItem({ item: row }))
     setItem(row)
     toggle()
   }
 
-  function onDeletionConfirmed(message) {
+  const onDeletionConfirmed = message => {
     buildPayload(userAction, message, item)
     dispatch(deleteScope({ action: userAction }))
     navigate('/auth-server/scopes')
     toggle()
   }
 
-  if (hasPermission(permissions, SCOPE_WRITE)) {
-    myActions.push((rowData) => ({
-      icon: 'edit',
-      iconProps: {
-        id: 'editScope' + rowData.inum,
-      },
-      tooltip: `${t('messages.edit_scope')}`,
-      onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
-      disabled: !hasPermission(permissions, SCOPE_WRITE),
-    }))
-  }
-
-  if (hasPermission(permissions, SCOPE_READ)) {
-    myActions.push({
-      icon: () => (
-        <GluuAdvancedSearch
-          limitId={LIMIT_ID}
-          patternId={PATTERN_ID}
-          limit={limit}
-          pattern={pattern}
-          handler={handleOptionsChange}
-          showLimit={false}
-        />
-      ),
-      tooltip: `${t('messages.advanced_search')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => { },
-    })
-  }
-  if (hasPermission(permissions, SCOPE_READ)) {
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary', fontSize: 'large' },
-      isFreeAction: true,
-      onClick: () => {
-        makeOptions()
-        // buildPayload(userAction, SEARCHING_SCOPES, options)
-        dispatch(searchScopes({ action: options }))
-      },
-    })
-  }
-  if (hasPermission(permissions, SCOPE_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('messages.add_scope')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => handleGoToScopeAddPage(),
-      disabled: !hasPermission(permissions, SCOPE_WRITE),
-    })
-  }
-
-  if (hasPermission(permissions, SCOPE_DELETE)) {
-    myActions.push((rowData) => ({
-      icon: () => <DeleteOutlined />,
-      iconProps: {
-        color: 'secondary',
-        id: 'deleteScope' + rowData.inum,
-      },
-      tooltip: `${t('Delete Scope')}`,
-      onClick: (event, rowData) => handleScopeDelete(rowData),
-      disabled: !hasPermission(permissions, SCOPE_DELETE),
-    }))
-  }
-
-  const onPageChangeClick = (page) => {
-    makeOptions()
-    let startCount = page * limit
+  // 📊 Pagination Handlers
+  const onPageChangeClick = page => {
+    makeOptions(appliedFilterKey, appliedFilterValue)
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
     dispatch(getScopes({ action: options }))
   }
-  const onRowCountChangeClick = (count) => {
-    makeOptions()
+
+  const onRowCountChangeClick = count => {
+    makeOptions(appliedFilterKey, appliedFilterValue)
     options['startIndex'] = 0
     options['limit'] = count
     setPageNumber(0)
@@ -231,15 +257,81 @@ function ScopeListPage() {
     dispatch(getScopes({ action: options }))
   }
 
+  // 📃 Column & Filter Logic
+  const filteredColumns = tableColumns.filter(col =>
+    visibleColumns.includes(col.field)
+  )
+
+  const toggleFilter = () => setShowFiltersBlock(prev => !prev)
+
+  const toolbarMenu = props => (
+    <Box sx={{ position: 'relative' }}>
+      {/* Main toolbar row */}
+      <Box
+        sx={{
+          ...applicationStyle.toolbar
+        }}
+      >
+        <Box sx={{ flex: 1 }}></Box>
+
+        <Box
+          sx={{
+            ...applicationStyle.innerToolbar
+          }}
+        >
+          {props.actions
+            ?.filter(a => a.isFreeAction)
+            .map((action, idx) => (
+              <span
+                key={idx}
+                onClick={action.onClick}
+                title={action.tooltip}
+                style={{ cursor: 'pointer' }}
+              >
+                {typeof action.icon === 'function' ? action.icon() : null}
+              </span>
+            ))}
+
+          <CustomColumnsToggle
+            tableColumns={tableColumns}
+            visibleColumns={visibleColumns}
+            setVisibleColumns={setVisibleColumns}
+            iconStyle={iconStyle}
+            themeColors={themeColors}
+            buttonIcon={buttonIcon}
+            t={t}
+          />
+        </Box>
+      </Box>
+
+      {/* Filter section - absolutely positioned on the left */}
+      {showFiltersBlock && (
+        <Box sx={applicationStyle.filterBlock}>
+          <ScopeFilter
+            tableColumns={tableColumns}
+            visibleColumns={visibleColumns}
+            toggleFilter={toggleFilter}
+            themeColors={themeColors}
+            handleOptionsChange={handleOptionsChange}
+            setPageNumber={setPageNumber}
+          />
+        </Box>
+      )}
+    </Box>
+  )
+
+  // ⚙️ Actions
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasPermission(permissions, SCOPE_READ)}>
+        <GluuViewWrapper canShow={canRead}>
           <MaterialTable
             key={limit ? limit : 0}
             components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: (props) => (
+              Toolbar: props => toolbarMenu(props),
+              Container: props => <Paper {...props} elevation={0} />,
+              Pagination: props => (
                 <TablePagination
                   count={totalItems}
                   page={pageNumber}
@@ -251,31 +343,31 @@ function ScopeListPage() {
                     onRowCountChangeClick(count.props.value)
                   }
                 />
-              ),
+              )
             }}
-            columns={tableColumns}
+            columns={filteredColumns}
             data={scopes}
             isLoading={loading}
             title=""
             actions={myActions}
             options={{
               idSynonym: 'inum',
-              columnsButton: true,
+              columnsButton: false,
               search: false,
               selection: false,
               pageSize: limit,
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
+                ...bgThemeColor
               },
-              actionsColumnIndex: -1,
+              actionsColumnIndex: -1
             }}
-            detailPanel={(rowData) => {
+            detailPanel={rowData => {
               return <ScopeDetailPage row={rowData.rowData} />
             }}
           />
         </GluuViewWrapper>
-        {hasPermission(permissions, SCOPE_DELETE) && (
+        {canDelete && (
           <GluuDialog
             row={item}
             name={item.id}
