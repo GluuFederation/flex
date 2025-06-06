@@ -361,6 +361,8 @@ auth-server-key-rotation:
   customScripts: [ ]
   # -- Add custom job's command. If passed, it will override the default conditional command.
   customCommand: []
+  # -- Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+  nodeSelector: {}
 # --  Admin GUI for configuration of the auth-server
 admin-ui:
   # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.
@@ -755,6 +757,8 @@ additionalAnnotations: { }
 customScripts: [ ]
 # -- Add custom pod's command. If passed, it will override the default conditional command.
 customCommand: []
+# -- Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+nodeSelector: {}
 
 # -- Responsible for synchronizing Keycloak SAML clients
 kc-scheduler:
@@ -816,6 +820,8 @@ kc-scheduler:
   customCommand: []
   # -- Boolean flag to enable/disable the kc-scheduler cronjob chart.
   enabled: false
+  # -- Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+  nodeSelector: {}
 
 # -- Cleanup expired entries in persistence
 cleanup:
@@ -879,3 +885,5 @@ cleanup:
   customCommand: []
   # -- Boolean flag to enable/disable the cleanup cronjob chart.
   enabled: true
+  # -- Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+  nodeSelector: {}

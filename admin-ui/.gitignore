@@ -19,6 +19,9 @@ plugins_repo
 .idea/
 .env.*
 *.local
+
+# ESLint cache
+.eslintcache
 .vscode/*
 !.vscode/extensions.json
 configApiSpecs.yaml
