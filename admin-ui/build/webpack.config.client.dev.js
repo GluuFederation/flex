@@ -9,7 +9,6 @@ require('dotenv').config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env.local',
 })
 
-
 const BASE_PATH = process.env.BASE_PATH || '/'
 const CONFIG_API_BASE_URL =
   process.env.CONFIG_API_BASE_URL || 'https://sample.com'
@@ -34,10 +33,12 @@ module.exports = {
     publicPath: BASE_PATH,
   },
   resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     fallback: { querystring: false, crypto: false, util: false, console: false },
     modules: ['node_modules', config.srcDir],
     alias: {
       path: require.resolve('path-browserify'),
+      '@': path.resolve(__dirname, '../app'),
       Components: path.resolve(__dirname, '../app/components'),
       Context: path.resolve(__dirname, '../app/context'),
       Images: path.resolve(__dirname, '../app/images'),
@@ -85,7 +86,19 @@ module.exports = {
         use: 'yaml-loader',
       },
       {
-        test: /\.js$/,
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: 'babel-loader',
       },
