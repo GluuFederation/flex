@@ -1,5 +1,6 @@
 import { ViewColumn } from '@mui/icons-material'
 import {
+  Box,
   Checkbox,
   FormControlLabel,
   IconButton,
@@ -13,7 +14,9 @@ function CustomColumnsToggle({
   visibleColumns,
   iconStyle,
   setVisibleColumns,
-  t
+  t,
+  themeColors,
+  buttonIcon
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
@@ -27,16 +30,27 @@ function CustomColumnsToggle({
 
   return (
     <>
-      <IconButton
+      <Box
         onClick={handleOpen}
-        size="small"
-        title={t('titles.addOrRemoveColumns')}
         sx={{
-          ...iconStyle
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          cursor: 'pointer'
         }}
       >
-        <ViewColumn />
-      </IconButton>
+        <IconButton
+          size="small"
+          title={t('titles.addOrRemoveColumns')}
+          sx={{
+            ...iconStyle
+          }}
+        >
+          <ViewColumn />
+        </IconButton>
+        <span style={{ color: '#000' }}>Columns</span>
+      </Box>
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

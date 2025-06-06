@@ -8,7 +8,6 @@ import { Badge } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
@@ -16,7 +15,6 @@ import { useTranslation } from 'react-i18next'
 import {
   setCurrentItem,
   getScopes,
-  searchScopes,
   deleteScope
 } from 'Plugins/auth-server/redux/features/scopeSlice'
 import {
@@ -27,17 +25,15 @@ import {
   SCOPE_DELETE
 } from 'Utils/PermChecker'
 import {
-  LIMIT_ID,
   LIMIT,
   PATTERN,
-  PATTERN_ID,
   WITH_ASSOCIATED_CLIENTS
 } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import { Add, FilterList, Refresh } from '@mui/icons-material'
+import { Add, FilterList, ViewColumn } from '@mui/icons-material'
 import CustomColumnsToggle from './ScopeCustomColumnToggle'
 import ScopeFilter from './ScopeFilter'
 
@@ -110,11 +106,19 @@ function ScopeListPage() {
   const canDelete = hasPermission(permissions, SCOPE_DELETE)
 
   useEffect(() => {
-    // Apply existing filters from Redux state when component mounts
     makeOptions(appliedFilterKey, appliedFilterValue)
     dispatch(getScopes({ action: options }))
 
     const arr = []
+
+    if (canRead) {
+      arr.push({
+        icon: () => buttonIcon('filter'),
+        tooltip: `${t('titles.filters')}`,
+        isFreeAction: true,
+        onClick: toggleFilter
+      })
+    }
 
     if (canWrite) {
       arr.push({
@@ -134,25 +138,6 @@ function ScopeListPage() {
         onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
         disabled: !canWrite
       }))
-    }
-
-    if (canRead) {
-      arr.push({
-        icon: () => buttonIcon('filter'),
-        tooltip: `${t('titles.filters')}`,
-        isFreeAction: true,
-        onClick: toggleFilter
-      })
-
-      arr.push({
-        icon: () => buttonIcon('refresh'),
-        tooltip: `${t('messages.refresh')}`,
-        isFreeAction: true,
-        onClick: () => {
-          makeOptions(appliedFilterKey, appliedFilterValue)
-          dispatch(searchScopes({ action: options }))
-        }
-      })
     }
 
     if (canDelete) {
@@ -175,38 +160,35 @@ function ScopeListPage() {
   const userAction = {}
   const options = {}
 
-  // 🔐 Permissions
-
-  // 🎨 Styles
   const iconStyle = {
     ...applicationStyle.barIcon,
-    color: themeColors.background,
+    color: '#000',
     '&:hover': {
       ...applicationStyle.hoverBarIcon
     }
   }
 
-  // 🖼 Reusable Render Helpers
   const buttonIcon = prop => {
     const iconMap = {
       add: <Add />,
       filter: <FilterList />,
-      refresh: <Refresh />
+      columns: <ViewColumn />
     }
 
     const titleMap = {
       add: t('titles.add'),
-      filter: t('titles.filterValue'),
-      refresh: t('titles.refresh')
+      filter: t('titles.filters')
     }
     return (
-      <IconButton size="small" title={titleMap[prop]} sx={{ ...iconStyle }}>
-        {iconMap[prop]}
-      </IconButton>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+        <IconButton size="small" title={titleMap[prop]} sx={{ ...iconStyle }}>
+          {iconMap[prop]}
+        </IconButton>
+        <span style={{ color: '#000' }}>{titleMap[prop]}</span>
+      </Box>
     )
   }
 
-  // 📦 Action Handlers
   const handleOptionsChange = (key, val) => {
     makeOptions(key, val)
     dispatch(getScopes({ action: options }))
@@ -282,29 +264,49 @@ function ScopeListPage() {
 
   const toggleFilter = () => setShowFiltersBlock(prev => !prev)
 
-  // 🧰 Toolbar JSX
   const toolbarMenu = props => (
-    <Box
-      sx={{
-        position: 'relative',
-        ...applicationStyle.toolbar
-      }}
-    >
-      {props.actions
-        ?.filter(a => a.isFreeAction)
-        .map((action, idx) => (
-          <span
-            key={idx}
-            onClick={action.onClick}
-            title={action.tooltip}
-            style={{ cursor: 'pointer' }}
-          >
-            {typeof action.icon === 'function' ? action.icon() : null}
-          </span>
-        ))}
+    <Box sx={{ position: 'relative' }}>
+      {/* Main toolbar row */}
+      <Box
+        sx={{
+          ...applicationStyle.toolbar
+        }}
+      >
+        <Box sx={{ flex: 1 }}></Box>
 
+        <Box
+          sx={{
+            ...applicationStyle.innerToolbar
+          }}
+        >
+          {props.actions
+            ?.filter(a => a.isFreeAction)
+            .map((action, idx) => (
+              <span
+                key={idx}
+                onClick={action.onClick}
+                title={action.tooltip}
+                style={{ cursor: 'pointer' }}
+              >
+                {typeof action.icon === 'function' ? action.icon() : null}
+              </span>
+            ))}
+
+          <CustomColumnsToggle
+            tableColumns={tableColumns}
+            visibleColumns={visibleColumns}
+            setVisibleColumns={setVisibleColumns}
+            iconStyle={iconStyle}
+            themeColors={themeColors}
+            buttonIcon={buttonIcon}
+            t={t}
+          />
+        </Box>
+      </Box>
+
+      {/* Filter section - absolutely positioned on the left */}
       {showFiltersBlock && (
-        <Box sx={{ ...applicationStyle.filterBlock }}>
+        <Box sx={applicationStyle.filterBlock}>
           <ScopeFilter
             tableColumns={tableColumns}
             visibleColumns={visibleColumns}
@@ -315,14 +317,6 @@ function ScopeListPage() {
           />
         </Box>
       )}
-
-      <CustomColumnsToggle
-        tableColumns={tableColumns}
-        visibleColumns={visibleColumns}
-        setVisibleColumns={setVisibleColumns}
-        iconStyle={iconStyle}
-        t={t}
-      />
     </Box>
   )
 

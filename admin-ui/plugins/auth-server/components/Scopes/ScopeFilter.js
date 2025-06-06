@@ -57,7 +57,7 @@ const ScopeFilter = ({
 
   const handleApplyClick = () => {
     dispatch(applyFilter({ key: selectedFilter, value: filterValue }))
-    setPageNumber(0) // Reset to first page when applying filter
+    setPageNumber(0)
     handleOptionsChange(selectedFilter, filterValue)
   }
 
@@ -66,7 +66,7 @@ const ScopeFilter = ({
   }
 
   return (
-    <Box display="flex" alignItems="center" gap={1} width="100%">
+    <Box display="flex" alignItems="center" gap={1}>
       <FormControl size="small" sx={{ minWidth: 180 }}>
         <InputLabel
           id="filter-dropdown-label"

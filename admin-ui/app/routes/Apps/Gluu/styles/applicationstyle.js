@@ -79,16 +79,26 @@ export default {
   toolbar: {
     display: 'flex',
     gap: 1,
-    m: 2,
-    alignItems: 'center'
+    alignItems: 'center',
+    position: 'relative',
+    justifyContent: 'space-between',
+    width: '100%',
+    mb: 2
+  },
+  innerToolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1,
+    position: 'relative',
+    zIndex: 15,
+    pr: 2
   },
   filterBlock: {
-    display: 'flex',
     position: 'absolute',
-    left: '250px',
+    right: '30%',
+    bottom: 0,
     zIndex: 10,
-    width: '100%',
-    p: 1
+    minWidth: '600px'
   },
   barIcon: { padding: '4px', height: '32px', width: '32px' },
   hoverBarIcon: {
