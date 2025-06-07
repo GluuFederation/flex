@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
 import { SidebarMenu } from 'Components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { hasPermission } from 'Utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
@@ -24,14 +24,16 @@ import CachedIcon from '@mui/icons-material/Cached'
 import LockIcon from '@mui/icons-material/Lock'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
+import { getDatabaseInfo } from 'Plugins/services/redux/features/persistenceTypeSlice'
 
 function GluuAppSidebar() {
   const scopes = useSelector(({ authReducer }) =>
-    authReducer.token ? authReducer.token.scopes : authReducer.permissions
+    authReducer.token ? authReducer.token.scopes : authReducer.permissions,
   )
-  const health = useSelector(state => state.healthReducer.health)
 
-  const { isUserLogout } = useSelector(state => state.userReducer)
+  const health = useSelector((state) => state.healthReducer.health)
+
+  const { isUserLogout } = useSelector((state) => state.userReducer)
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -40,29 +42,28 @@ function GluuAppSidebar() {
   const { classes } = styles()
   const themeColors = getThemeColor(selectedTheme)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const fetchedServersLength = useMemo(
-    () => Object.keys(health).length > 0,
-    [health]
-  )
+  const fetchedServersLength = useMemo(() => Object.keys(health).length > 0, [health])
 
   useEffect(() => {
+    dispatch(getDatabaseInfo())
+
     const menus = processMenus()
 
     if (fetchedServersLength) {
       const visibilityConditions = {
         '/jans-lock': 'jans-lock',
         '/fido/fidomanagement': 'jans-fido2',
-        '/scim': 'jans-scim'
+        '/scim': 'jans-scim',
       }
 
-      const filtered = menus.filter(menu => {
+      const filtered = menus.reduce((acc, menu) => {
         const healthKey = visibilityConditions[menu.path]
-        if (healthKey) {
-          return health?.[healthKey] === 'Running'
-        }
-        return true
-      })
+        const isHealthOk = !healthKey || health?.[healthKey] === 'Running'
+        if (isHealthOk) acc.push(menu)
+        return acc
+      }, [])
 
       setPluginMenus(filtered)
     }
@@ -89,12 +90,7 @@ function GluuAppSidebar() {
         return <UserClaimsIcon className="menu-icon" />
 
       case 'scripts':
-        return (
-          <i
-            className="menu-icon fas fa-file-code"
-            style={{ fontSize: '28px' }}
-          />
-        )
+        return <i className="menu-icon fas fa-file-code" style={{ fontSize: '28px' }} />
 
       case 'usersmanagement':
         return <UsersIcon className="menu-icon" />
@@ -117,10 +113,7 @@ function GluuAppSidebar() {
         )
       case 'jans_lock':
         return (
-          <LockIcon
-            className="menu-icon"
-            style={{ top: '-2px', height: '28px', width: '28px' }}
-          />
+          <LockIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
         )
       case 'jans_kc_link':
         return (
@@ -130,12 +123,7 @@ function GluuAppSidebar() {
           />
         )
       case 'saml':
-        return (
-          <SamlIcon
-            className="menu-icon"
-            style={{ top: 0, height: '28px', width: '28px' }}
-          />
-        )
+        return <SamlIcon className="menu-icon" style={{ top: 0, height: '28px', width: '28px' }} />
       default:
         return null
     }
@@ -169,10 +157,7 @@ function GluuAppSidebar() {
                   <SidebarMenu.Item
                     key={idx}
                     title={t(`${item.title}`)}
-                    isEmptyNode={
-                      !hasPermission(scopes, item.permission) &&
-                      !hasChildren(item)
-                    }
+                    isEmptyNode={!hasPermission(scopes, item.permission) && !hasChildren(item)}
                     to={getMenuPath(item)}
                     icon={getMenuIcon(item.icon)}
                     textStyle={{ fontSize: '15px' }}
@@ -200,13 +185,7 @@ function GluuAppSidebar() {
           </div>
         )}
 
-        <div
-          className={
-            fetchedServersLength
-              ? classes.waveContainer
-              : classes.waveContainerFixed
-          }
-        >
+        <div className={fetchedServersLength ? classes.waveContainer : classes.waveContainerFixed}>
           <Wave className={classes.wave} fill={themeColors.menu.background} />
           <div className={classes.powered}>Powered by Gluu</div>
         </div>

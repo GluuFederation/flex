@@ -6,6 +6,7 @@ import LdapEditPage from './Components/Configuration/LdapEditPage'
 import SqlListPage from './Components/Configuration/SqlListPage'
 import SqlAddPage from './Components/Configuration/SqlAddPage'
 import SqlEditPage from './Components/Configuration/SqlEditPage'
+import PersistenceDetail from './Components/Configuration/PersistenceDetail'
 import { reducer as cacheReducer } from './redux/features/cacheSlice'
 import { reducer as couchbaseReducer } from './redux/features/couchbaseSlice'
 import { reducer as ldapReducer } from './redux/features/ldapSlice'
@@ -16,6 +17,7 @@ import couchbaseSaga from './redux/sagas/CouchbaseSaga'
 import ldapSaga from './redux/sagas/LdapSaga'
 import sqlSaga from './redux/sagas/SqlSaga'
 import persistenceTypeSaga from './redux/sagas/PersistenceTypeSaga'
+
 import {
   CACHE_READ,
   CACHE_WRITE,
@@ -24,6 +26,7 @@ import {
   LDAP_WRITE,
   SQL_READ,
   SQL_WRITE,
+  PERSISTENCE_DETAIL,
 } from 'Utils/PermChecker'
 
 const pluginMetadata = {
@@ -39,14 +42,19 @@ const pluginMetadata = {
         },
         {
           title: 'menus.persistence',
-          children: [
-            {
-              title: 'menus.ldap',
-              path: '/config/ldap',
-              permission: LDAP_READ,
-            }
-          ],
+          path: '/config/persistence',
+          permission: PERSISTENCE_DETAIL,
         },
+        // {
+        //   title: 'menus.persistence',
+        //   children: [
+        //     {
+        //       title: 'menus.ldap',
+        //       path: '/config/ldap',
+        //       permission: LDAP_READ,
+        //     },
+        //   ],
+        // },
       ],
     },
   ],
@@ -55,6 +63,11 @@ const pluginMetadata = {
       component: CachePage,
       path: '/config/cache',
       permission: CACHE_READ,
+    },
+    {
+      component: PersistenceDetail,
+      path: '/config/persistence',
+      permission: PERSISTENCE_DETAIL,
     },
     {
       component: LdapEditPage,
@@ -99,13 +112,7 @@ const pluginMetadata = {
     { name: 'sqlReducer', reducer: sqlReducer },
     { name: 'persistenceTypeReducer', reducer: persistenceTypeReducer },
   ],
-  sagas: [
-    cacheSaga(),
-    couchbaseSaga(),
-    ldapSaga(),
-    sqlSaga(),
-    persistenceTypeSaga(),
-  ],
+  sagas: [cacheSaga(), couchbaseSaga(), ldapSaga(), sqlSaga(), persistenceTypeSaga()],
 }
 
 export default pluginMetadata
