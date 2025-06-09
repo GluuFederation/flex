@@ -1,12 +1,9 @@
 // @ts-nocheck
 export const BASE_URL = 'https://jans.io/oauth'
 
-export const PROPERTIES_READ =
-  BASE_URL + '/jans-auth-server/config/properties.readonly'
-export const PROPERTIES_WRITE =
-  BASE_URL + '/jans-auth-server/config/properties.write'
-export const PROPERTIES_DELETE =
-  BASE_URL + '/jans-auth-server/config/properties.delete'
+export const PROPERTIES_READ = BASE_URL + '/jans-auth-server/config/properties.readonly'
+export const PROPERTIES_WRITE = BASE_URL + '/jans-auth-server/config/properties.write'
+export const PROPERTIES_DELETE = BASE_URL + '/jans-auth-server/config/properties.delete'
 
 export const ATTRIBUTE_READ = BASE_URL + '/config/attributes.readonly'
 export const ATTRIBUTE_WRITE = BASE_URL + '/config/attributes.write'
@@ -16,12 +13,9 @@ export const CLIENT_READ = BASE_URL + '/config/openid/clients.readonly'
 export const CLIENT_WRITE = BASE_URL + '/config/openid/clients.write'
 export const CLIENT_DELETE = BASE_URL + '/config/openid/clients.delete'
 
-export const ROLE_READ =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly'
-export const ROLE_WRITE =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write'
-export const ROLE_DELETE =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete'
+export const ROLE_READ = 'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly'
+export const ROLE_WRITE = 'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write'
+export const ROLE_DELETE = 'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete'
 
 export const PERMISSION_READ =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly'
@@ -37,11 +31,9 @@ export const MAPPING_WRITE =
 export const MAPPING_DELETE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete'
 
-export const LICENSE_DETAILS_READ =
-  BASE_URL + '/jans-auth-server/config/adminui/license.readonly'
+export const LICENSE_DETAILS_READ = BASE_URL + '/jans-auth-server/config/adminui/license.readonly'
 
-export const LICENSE_DETAILS_WRITE =
-  BASE_URL + '/jans-auth-server/config/adminui/license.write'
+export const LICENSE_DETAILS_WRITE = BASE_URL + '/jans-auth-server/config/adminui/license.write'
 
 export const SCOPE_READ = BASE_URL + '/config/scopes.readonly'
 export const SCOPE_WRITE = BASE_URL + '/config/scopes.write'
@@ -103,6 +95,8 @@ export const SQL_READ = BASE_URL + '/config/database/sql.readonly'
 export const SQL_WRITE = BASE_URL + '/config/database/sql.write'
 export const SQL_DELETE = BASE_URL + '/config/database/sql.delete'
 
+export const PERSISTENCE_DETAIL = BASE_URL + '/jans-auth-server/config/properties.readonly'
+
 export const STAT_READ = BASE_URL + '/config/stats.readonly'
 export const STAT_JANS_READ = 'jans_stat'
 
@@ -125,12 +119,9 @@ export const SCIM_CONFIG_WRITE = 'https://jans.io/scim/config.write'
 
 export const MESSAGE_READ = BASE_URL + '/config/message.readonly'
 export const MESSAGE_WRITE = BASE_URL + '/config/message.write'
-export const WEBHOOK_READ =
-  BASE_URL + '/jans-auth-server/config/adminui/webhook.readonly'
-export const WEBHOOK_WRITE =
-  BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
-export const WEBHOOK_DELETE =
-  BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'
+export const WEBHOOK_READ = BASE_URL + '/jans-auth-server/config/adminui/webhook.readonly'
+export const WEBHOOK_WRITE = BASE_URL + '/jans-auth-server/config/adminui/webhook.write'
+export const WEBHOOK_DELETE = BASE_URL + '/jans-auth-server/config/adminui/webhook.delete'
 export const ASSETS_READ = BASE_URL + '/config/jans_asset-read'
 export const ASSETS_WRITE = BASE_URL + '/config/jans_asset-write'
 export const ASSETS_DELETE = BASE_URL + '/config/jans_asset-delete'
@@ -157,11 +148,7 @@ export const buildPayload = (userAction, message, payload) => {
 
 export const hasAny = (scopes, scope1, scope2, scope3) => {
   if (scopes) {
-    return (
-      scopes.includes(scope1, 0) ||
-      scopes.includes(scope2, 0) ||
-      scopes.includes(scope3, 0)
-    )
+    return scopes.includes(scope1, 0) || scopes.includes(scope2, 0) || scopes.includes(scope3, 0)
   }
   return false
 }
