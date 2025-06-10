@@ -1,3 +1,4 @@
+import React from 'react'
 import Accordion from './Accordion'
 import { AccordionHeader } from './Accordion/AccordionHeader'
 import { AccordionBody } from './Accordion/AccordionBody'

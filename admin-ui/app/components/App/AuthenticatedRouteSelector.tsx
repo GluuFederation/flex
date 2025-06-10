@@ -1,3 +1,4 @@
+import React from 'react'
 import AppLayout from '../../layout/default'
 import { RoutedContent } from '../../routes/index'
 import ByeBye from 'Routes/Pages/ByeBye'

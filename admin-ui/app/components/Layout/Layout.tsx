@@ -21,7 +21,7 @@ import { LayoutSidebar } from './LayoutSidebar'
 import { PageConfigContext } from './PageConfigContext'
 import { ThemeClass } from './../Theme'
 
-import config from './../../../config'
+import config from './../../../config.js'
 
 interface Breakpoint {
   min?: number;

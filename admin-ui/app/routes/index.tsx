@@ -32,7 +32,7 @@ export const RoutedContent = () => {
   const scopes = useSelector((state: any) =>
     state.token ? state.token.scopes : state.authReducer.permissions
   );
-  const [pluginMenus, setPluginMenus] = useState<any[]>([]);
+  const [pluginMenus, setPluginMenus] = useState<Array<any>>([]);
   useEffect(() => {
     setPluginMenus(processRoutes());
   }, []);
