@@ -6,9 +6,10 @@ import { LayoutSidebar } from './LayoutSidebar'
 import { withPageConfig } from './withPageConfig'
 import { setupPage } from './setupPage'
 
-Layout.Sidebar = LayoutSidebar
-Layout.Navbar = LayoutNavbar
-Layout.Content = LayoutContent
+const LayoutWithSubcomponents = Layout as any
+LayoutWithSubcomponents.Sidebar = LayoutSidebar
+LayoutWithSubcomponents.Navbar = LayoutNavbar
+LayoutWithSubcomponents.Content = LayoutContent
 
-export default Layout
+export default LayoutWithSubcomponents
 export { withPageConfig, setupPage }

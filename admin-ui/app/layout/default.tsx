@@ -1,4 +1,4 @@
-import React from "react"
+import React, { ReactNode } from "react"
 import PropTypes from "prop-types"
 import { Layout, ThemeProvider } from "Components"
 
@@ -7,21 +7,30 @@ import "Styles/main.scss"
 import "Styles/plugins/plugins.scss"
 import "Styles/plugins/plugins.css"
 
-import { RoutedNavbars, RoutedSidebars } from "Routes"
+import { RoutedNavbars, RoutedSidebars } from "../routes"
 
-const favIcons = [
+interface FavIcon {
+  rel: string;
+  type?: string;
+  sizes?: string;
+  href: string;
+}
+
+interface AppLayoutProps {
+  children: ReactNode;
+}
+
+const favIcons: FavIcon[] = [
   {
     rel: "icon",
     type: "image/x-icon",
     href: require("Images/favicons/favicon.ico"),
   },
-
   {
     rel: "apple-touch-icon",
     sizes: "180x180",
     href: require("Images/favicons/apple-touch-icon.png"),
   },
-
   {
     rel: "icon",
     type: "image/png",
@@ -36,12 +45,10 @@ const favIcons = [
   },
 ]
 
-const AppLayout = (prop) => {
-  const { children } = prop
-
+const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
     <ThemeProvider initialStyle={'light'} initialColor="primary">
-      <Layout sidebarSlim favIcons={ favIcons }>
+      <Layout sidebarSlim favIcons={favIcons}>
         {/* --------- Navbar ----------- */}
         <Layout.Navbar>
           <RoutedNavbars />
@@ -57,7 +64,9 @@ const AppLayout = (prop) => {
     </ThemeProvider>
   )
 }
-AppLayout.prop = {
+
+AppLayout.propTypes = {
   children: PropTypes.node.isRequired,
 }
+
 export default AppLayout
