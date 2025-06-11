@@ -1,7 +1,9 @@
 import React from 'react'
 import classNames from 'classnames'
 
-import Common from './../../common'
+const SidebarEntryAnimate = require('./../../components/dashboard-style-airframe/sidebar-entry-animate')
+const SlimSidebarAnimate = require('./../../components/dashboard-style-airframe/slim-sidebar-animate')
+const SlimMenuAnimate = require('./../../components/dashboard-style-airframe/slim-menu-animate')
 
 interface SidebarContentProps {
   children?: React.ReactNode;
@@ -34,9 +36,9 @@ export class SidebarContent extends React.Component<SidebarContentProps, Sidebar
   }
 
   componentDidMount() {
-    this.sidebarEntryAnimate = new Common.SidebarEntryAnimate()
-    this.slimSidebarAnimate = new Common.SlimSidebarAnimate()
-    this.slimMenuAnimate = new Common.SlimMenuAnimate()
+    this.sidebarEntryAnimate = new SidebarEntryAnimate()
+    this.slimSidebarAnimate = new SlimSidebarAnimate()
+    this.slimMenuAnimate = new SlimMenuAnimate()
 
     this.sidebarEntryAnimate.assignParentElement(this.sidebarRef.current)
     this.slimSidebarAnimate.assignParentElement(this.sidebarRef.current)

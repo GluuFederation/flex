@@ -5,7 +5,7 @@ import includes from 'lodash/includes'
 import mapValues from 'lodash/mapValues'
 import classNames from 'classnames'
 import { PageConfigContext } from './../Layout/PageConfigContext'
-import Common from './../../common'
+import { SideMenuAnimate } from './../../common'
 import { MenuContext } from './MenuContext'
 
 // Types for entries and context
@@ -131,7 +131,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
 
   // Animation and active entry logic
   useEffect(() => {
-    sidebarAnimation.current = new (Common.SideMenuAnimate as any)()
+    sidebarAnimation.current = new SideMenuAnimate()
     sidebarAnimation.current.assignParentElement(containerRef.current)
     setTimeout(() => {
       setActiveEntries(true)
