@@ -25,15 +25,17 @@ import LockIcon from '@mui/icons-material/Lock'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
 import { getDatabaseInfo } from 'Plugins/services/redux/features/persistenceTypeSlice'
+import buildingCedarlingAuthReq from '../../../cedarling/utils/buildingCedarlingAuthReq'
 
 function GluuAppSidebar() {
-  const scopes = useSelector(({ authReducer }) =>
-    authReducer.token ? authReducer.token.scopes : authReducer.permissions,
-  )
+  const { scopes, role, sub, health, isUserLogout } = useSelector((state) => ({
+    scopes: state.authReducer?.token?.scopes ?? state.authReducer?.permissions,
+    role: state.authReducer?.userinfo?.jansAdminUIRole,
+    sub: state.authReducer?.userinfo?.sub,
+    health: state.healthReducer?.health,
+    isUserLogout: state.userReducer?.isUserLogout,
+  }))
 
-  const health = useSelector((state) => state.healthReducer.health)
-
-  const { isUserLogout } = useSelector((state) => state.userReducer)
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -46,10 +48,10 @@ function GluuAppSidebar() {
 
   const fetchedServersLength = useMemo(() => Object.keys(health).length > 0, [health])
 
+  const processedMenus = useMemo(() => processMenus(), [])
+
   useEffect(() => {
     dispatch(getDatabaseInfo())
-
-    const menus = processMenus()
 
     if (fetchedServersLength) {
       const visibilityConditions = {
@@ -58,7 +60,7 @@ function GluuAppSidebar() {
         '/scim': 'jans-scim',
       }
 
-      const filtered = menus.reduce((acc, menu) => {
+      const filtered = processedMenus.reduce((acc, menu) => {
         const healthKey = visibilityConditions[menu.path]
         const isHealthOk = !healthKey || health?.[healthKey] === 'Running'
         if (isHealthOk) acc.push(menu)
@@ -74,6 +76,10 @@ function GluuAppSidebar() {
       navigate('/logout')
     }
   }, [isUserLogout])
+
+  useEffect(() => {
+    buildingCedarlingAuthReq(role, scopes, sub)
+  }, [role, scopes, sub])
 
   function getMenuIcon(name) {
     switch (name) {
@@ -129,15 +135,9 @@ function GluuAppSidebar() {
     }
   }
 
-  function getMenuPath(menu) {
-    if (menu.children) {
-      return null
-    }
-    return menu.path
-  }
-  function hasChildren(plugin) {
-    return typeof plugin.children !== 'undefined' && plugin.children.length
-  }
+  const getMenuPath = (menu) => (menu.children ? null : menu.path)
+
+  const hasChildren = (plugin) => plugin?.children !== undefined && plugin.children.length > 0
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>

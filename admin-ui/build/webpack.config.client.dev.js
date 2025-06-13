@@ -9,10 +9,8 @@ require('dotenv').config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env.local',
 })
 
-
 const BASE_PATH = process.env.BASE_PATH || '/'
-const CONFIG_API_BASE_URL =
-  process.env.CONFIG_API_BASE_URL || 'https://sample.com'
+const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 
 module.exports = {
   name: 'client',
@@ -55,10 +53,10 @@ module.exports = {
       allowAsyncCycles: false,
       cwd: process.cwd(),
       onDetected: ({ module, paths, compilation }) => {
-        let warnings = []
+        const warnings = []
         warnings.push(new Error(paths.join(' -> ')))
         if (warnings.length > 0) {
-          warnings.forEach(error => error && console.warn(error.message));
+          warnings.forEach((error) => error && console.warn(error.message))
         }
       },
     }),
