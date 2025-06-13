@@ -2,7 +2,7 @@ const program = require('commander');
 const { rimraf } = require('rimraf');
 const mkdirp = require('mkdirp');
 
-const config = require('./../config');
+const config = require('./../config.js');
 
 function dirParamToPath(dirParam) {
     switch (dirParam) {

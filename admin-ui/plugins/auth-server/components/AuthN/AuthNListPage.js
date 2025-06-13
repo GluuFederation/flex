@@ -3,7 +3,6 @@ import MaterialTable from "@material-table/core";
 import { Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Card, CardBody } from "Components";
 import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useTranslation } from "react-i18next";
@@ -78,18 +77,13 @@ function AuthNListPage({isBuiltIn=false}) {
           name: "default_ldap_password",
           acrName: item.configId,
         }));
-
-
         setList({ ...list, ldap: updateLDAPItems });
-
-        console.log(list,updateLDAPItems)
       }
     }
   }, [ldap, loading]);
 
   useEffect(() => {
     setList({ ...list, scripts: [] });
-    console.log("list",list)
     if (scripts.length > 0 && !scriptsLoading) {
       const getEnabledscripts = scripts.filter((item) => item.enabled === true);
       if (getEnabledscripts?.length > 0) {
@@ -99,7 +93,6 @@ function AuthNListPage({isBuiltIn=false}) {
           acrName: item.name,
         }));
         setList({ ...list, scripts: updateScriptsItems });
-        console.log(list,updateScriptsItems)
       }
     }
   }, [scripts]);

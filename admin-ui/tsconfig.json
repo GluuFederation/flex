@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["app/*"],
+      "Components": ["app/components"],
+      "Routes/*": ["app/routes/*"],
+      "Plugins/*": ["plugins/*"],
+      "Context/*": ["app/context/*"],
+      "Utils/*": ["app/utils/*"],
+      "Redux/*": ["app/redux/*"],
+      "Images/*": ["app/images/*"],
+      "Contexts/*": ["app/contexts/*"],
+      "SVG/*": ["app/components/SVG/*"]
+    },
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
+    "outDir": "./dist",
+    "rootDir": ".",
+    "sourceMap": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./build/types"
+    ]
+  },
+  "include": [
+    "app/**/*",
+    "build/**/*",
+    "plugins/**/*",
+    "app/types/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+} 

@@ -165,7 +165,7 @@ function UserList(props) {
       tooltip: `${t("messages.advanced_search")}`,
       iconProps: { color: "primary" },
       isFreeAction: true,
-      onClick: () => {},
+      onClick: () => { },
     });
   }
   if (hasPermission(permissions, USER_READ)) {
@@ -304,22 +304,22 @@ function UserList(props) {
     if (Object.keys(fidoDetails).length > 0 && fidoDetails?.entries?.length > 0) {
       const updatedDetails = fidoDetails
         ? fidoDetails?.entries?.map((item) => {
-            const attenstationRequest = JSON.parse(
-              item.registrationData.attenstationRequest
-            );
+          const attenstationRequest = JSON.parse(
+            item.registrationData.attenstationRequest
+          );
 
-            return {
-              id: item.id,
-              nickName: attenstationRequest.displayName ?? "-",
-              modality: item?.deviceData?.platform ?? "-",
-              dateAdded: moment(item.creationDate).format(
-                "YYYY-MM-DD HH:mm:ss"
-              ),
-              type: item?.deviceData?.platform ? "SUPER GLUU" : "FIDO2",
-              registrationData: item.registrationData,
-              deviceData: item.deviceData,
-            };
-          })
+          return {
+            id: item.id,
+            nickName: attenstationRequest.displayName ?? "-",
+            modality: item?.deviceData?.platform ?? "-",
+            dateAdded: moment(item.creationDate).format(
+              "YYYY-MM-DD HH:mm:ss"
+            ),
+            type: item?.deviceData?.platform ? "SUPER GLUU" : "FIDO2",
+            registrationData: item.registrationData,
+            deviceData: item.deviceData,
+          };
+        })
         : [];
       removeNullValue = updatedDetails
         ? updatedDetails?.filter((item) => item)
@@ -361,7 +361,7 @@ function UserList(props) {
     ),
     [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
   );
-  
+
 
   return (
     <GluuLoader blocking={loading}>

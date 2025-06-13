@@ -1,0 +1,228 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
+import glob from 'glob'
+import webpack from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import CircularDependencyPlugin from 'circular-dependency-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import config from './../config.js'
+import dotenv from 'dotenv'
+import type { WebpackPluginInstance, Configuration as WebpackConfig } from 'webpack'
+import type { Configuration as DevServerConfig } from 'webpack-dev-server'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+dotenv.config({
+  path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
+})
+
+const BASE_PATH = process.env.BASE_PATH || '/admin'
+const CONFIG_API_BASE_URL =
+  process.env.CONFIG_API_BASE_URL || 'https://sample.com'
+const API_BASE_URL =
+  process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
+
+const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
+  devtool: false,
+  mode: 'production',
+  entry: {
+    app: [path.join(config.srcDir, 'index.tsx')]
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 20000,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name(module: any) {
+            const packageName = module.context?.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)?.[1] ?? 'vendor';
+            return `vendor.${packageName.replace('@', '')}`;
+          },
+        },
+        common: {
+          minChunks: 2,
+          priority: -10,
+          reuseExistingChunk: true,
+        },
+      },
+    },
+    minimizer: [
+      `...`,
+      new CssMinimizerPlugin({
+        minimizerOptions: {
+          preset: [
+            "default",
+            {
+              calc: false,
+              discardComments: { removeAll: true },
+            },
+          ],
+        },
+      }),
+      `...`
+    ],
+    runtimeChunk: 'single',
+  },
+  output: {
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].chunk.js',
+    path: config.distDir,
+    publicPath: BASE_PATH,
+  },
+  resolve: {
+    fallback: { 
+      "querystring": false, 
+      crypto: false, 
+      util: false, 
+      console: false,
+      "path": false 
+    },
+    modules: ['node_modules', config.srcDir],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    alias: {
+      '@': path.resolve(__dirname, '../app'),
+      Components: path.resolve(__dirname, '../app/components'),
+      Context: path.resolve(__dirname, '../app/context'),
+      Images: path.resolve(__dirname, '../app/images'),
+      Plugins: path.resolve(__dirname, '../plugins'),
+      Redux: path.resolve(__dirname, '../app/redux'),
+      Routes: path.resolve(__dirname, '../app/routes'),
+      Styles: path.resolve(__dirname, '../app/styles'),
+      Utils: path.resolve(__dirname, '../app/utils'),
+    },
+  },
+  plugins: [
+    new CircularDependencyPlugin({
+      exclude: /a\.js|node_modules/,
+      failOnError: false,
+      allowAsyncCycles: false,
+      cwd: process.cwd(),
+      onDetected: ({ module, paths, compilation }: { 
+        module: any; 
+        paths: string[]; 
+        compilation: webpack.Compilation;
+      }) => {
+        const warnings: Error[] = []
+        warnings.push(new Error(paths.join(' -> ')))
+        if (warnings.length > 0) {
+          warnings.forEach(error => error && console.warn(error.message))
+        }
+      },
+    }) as WebpackPluginInstance,
+    new HtmlWebpackPlugin({
+      template: config.srcHtmlLayout,
+      inject: 'body',
+      title: 'AdminUI',
+      favicon: path.resolve(__dirname, '../app/images/favicons/favicon.ico'),
+    }),
+    new MiniCssExtractPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production'),
+        BASE_PATH: JSON.stringify(BASE_PATH),
+        API_BASE_URL: JSON.stringify(API_BASE_URL),
+        CONFIG_API_BASE_URL: JSON.stringify(CONFIG_API_BASE_URL),
+      },
+    }),
+    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.optimize.AggressiveMergingPlugin()
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        include: [config.srcDir, config.pluginsDir],
+        exclude: /(node_modules|\.test\.(ts|tsx)$)/,
+        use: 'babel-loader',
+        sideEffects: false,
+      },
+      {
+        test: /\.ya?ml$/,
+        use: 'yaml-loader',
+      },
+      {
+        test: /\.js$/,
+        include: [config.srcDir, config.pluginsDir],
+        exclude: /(node_modules|\.test\.js$)/,
+        use: 'babel-loader',
+        sideEffects: false,
+      },
+      {
+        test: /\.test\.js$/,
+        include: [config.srcDir, config.pluginsDir],
+        use: 'ignore-loader',
+      },
+      // Modular Styles
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader", "postcss-loader"]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+            },
+          },
+          { loader: 'postcss-loader' },
+          'sass-loader',
+        ],
+        exclude: [path.resolve(config.srcDir, 'styles')],
+        include: [config.srcDir],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader' },
+          { loader: 'postcss-loader' },
+          {
+            loader: 'sass-loader',
+            options: {},
+          },
+        ],
+        include: [path.resolve(config.srcDir, 'styles')],
+      },
+      // Fonts
+      {
+        test: /\.(ttf|eot|woff|woff2)$/,
+        loader: 'file-loader',
+        options: {
+          name: '/fonts/[name].[ext]',
+          esModule: false,
+        },
+      },
+      // Files
+      {
+        test: /\.(jpg|jpeg|png|gif|svg|ico)$/,
+        loader: 'file-loader',
+        options: {
+          name: '/static/[name].[ext]',
+          esModule: false,
+          limit: 8192,
+        },
+      },
+    ],
+  },
+  devServer: {
+    hot: false,
+    //contentBase: config.distDir,
+    compress: true,
+    historyApiFallback: {
+      index: BASE_PATH,
+    },
+    host: '0.0.0.0',
+    port: 4100,
+  },
+}
+
+export default webpackConfig
