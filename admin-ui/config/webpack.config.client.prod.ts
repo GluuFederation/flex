@@ -60,7 +60,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       crypto: false, 
       util: false, 
       console: false,
-      "path": require.resolve("path-browserify"),
+      "path": "path-browserify",
     },
     modules: ['node_modules', config.srcDir],
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
