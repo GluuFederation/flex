@@ -1,6 +1,5 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
-import glob from 'glob'
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
@@ -33,26 +32,9 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   },
   optimization: {
     splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: Infinity,
-      minSize: 20000,
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name(module: any) {
-            const packageName = module.context?.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)?.[1] ?? 'vendor';
-            return `vendor.${packageName.replace('@', '')}`;
-          },
-        },
-        common: {
-          minChunks: 2,
-          priority: -10,
-          reuseExistingChunk: true,
-        },
-      },
+      chunks: 'all'
     },
-    minimizer: [
-      `...`,
+    minimizer: [`...`,
       new CssMinimizerPlugin({
         minimizerOptions: {
           preset: [
@@ -64,9 +46,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           ],
         },
       }),
-      `...`
-    ],
-    runtimeChunk: 'single',
+      `...`]
   },
   output: {
     filename: '[name].bundle.js',
@@ -130,8 +110,6 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       },
     }),
     new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin()
   ],
   module: {
     rules: [
