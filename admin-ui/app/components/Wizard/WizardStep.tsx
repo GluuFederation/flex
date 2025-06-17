@@ -14,7 +14,7 @@ export interface WizardStepProps {
   'data-testid'?: string;
 }
 
-export const WizardStep: React.FC<WizardStepProps> = ({
+const WizardStep: React.FC<WizardStepProps> = ({
   active,
   complete,
   disabled,
@@ -53,3 +53,5 @@ export const WizardStep: React.FC<WizardStepProps> = ({
     </a>
   )
 }
+
+export default WizardStep;

@@ -38,6 +38,7 @@ import {
 import ThemeSetting from './ThemeSetting'
 import UncontrolledTabs from './UncontrolledTabs'
 import Wizard from './Wizard'
+import WizardStep from './Wizard/WizardStep'
 // Export non overriden Reactstrap components
 export {
   Alert,
@@ -147,5 +148,6 @@ export {
   ThemeProvider,
   ThemeSetting,
   UncontrolledTabs,
-  Wizard
+  Wizard,
+  WizardStep
 }

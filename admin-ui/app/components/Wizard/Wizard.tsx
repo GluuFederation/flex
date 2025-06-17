@@ -15,7 +15,7 @@ interface WizardState {
   activeStep?: string;
 }
 
-export class Wizard extends React.Component<WizardProps, WizardState> {
+class Wizard extends React.Component<WizardProps, WizardState> {
   constructor(props: WizardProps) {
     super(props);
     this.state = {
@@ -78,3 +78,5 @@ export class Wizard extends React.Component<WizardProps, WizardState> {
     )
   }
 }
+
+export default Wizard;
