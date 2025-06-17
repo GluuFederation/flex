@@ -60,7 +60,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       crypto: false, 
       util: false, 
       console: false,
-      "path": false 
+      "path": require.resolve("path-browserify"),
     },
     modules: ['node_modules', config.srcDir],
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -186,14 +186,12 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         options: {
           name: '/static/[name].[ext]',
           esModule: false,
-          limit: 8192,
         },
       },
     ],
   },
   devServer: {
     hot: false,
-    //contentBase: config.distDir,
     compress: true,
     historyApiFallback: {
       index: BASE_PATH,
