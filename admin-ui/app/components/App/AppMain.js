@@ -5,8 +5,8 @@ import { configStore } from 'Redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import AuthenticatedRouteSelector from './AuthenticatedRouteSelector'
 const basePath = process.env.BASE_PATH || '/admin'
-import { cedarlingClient } from '../../cedarling/CedarlingClient'
 import bootstrap from '../../cedarling/config/cedarling-bootstrap.json'
+import { cedarlingClient } from '../../cedarling'
 
 const AppMain = () => {
   useEffect(() => {

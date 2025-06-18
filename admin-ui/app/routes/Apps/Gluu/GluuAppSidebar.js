@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
 import { SidebarMenu } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
-import { hasPermission } from 'Utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
@@ -25,16 +24,15 @@ import LockIcon from '@mui/icons-material/Lock'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
 import { getDatabaseInfo } from 'Plugins/services/redux/features/persistenceTypeSlice'
-import buildingCedarlingAuthReq from '../../../cedarling/utils/buildingCedarlingAuthReq'
+import { useCedarling } from '../../../cedarling/hooks'
 
 function GluuAppSidebar() {
-  const { scopes, role, sub, health, isUserLogout } = useSelector((state) => ({
-    scopes: state.authReducer?.token?.scopes ?? state.authReducer?.permissions,
-    role: state.authReducer?.userinfo?.jansAdminUIRole,
-    sub: state.authReducer?.userinfo?.sub,
-    health: state.healthReducer?.health,
-    isUserLogout: state.userReducer?.isUserLogout,
-  }))
+  const { health, isUserLogout } = useSelector((state) => {
+    return {
+      health: state.healthReducer?.health,
+      isUserLogout: state.userReducer?.isUserLogout,
+    }
+  })
 
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
@@ -45,6 +43,8 @@ function GluuAppSidebar() {
   const themeColors = getThemeColor(selectedTheme)
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  const { hasCedarPermission } = useCedarling()
 
   const fetchedServersLength = useMemo(() => Object.keys(health).length > 0, [health])
 
@@ -77,67 +77,42 @@ function GluuAppSidebar() {
     }
   }, [isUserLogout])
 
-  useEffect(() => {
-    buildingCedarlingAuthReq(role, scopes, sub)
-  }, [role, scopes, sub])
+  const menuIcons = useMemo(
+    () => ({
+      home: <HomeIcon className="menu-icon" />,
+      oauthserver: <OAuthIcon className="menu-icon" />,
+      services: <ServicesIcon className="menu-icon" />,
+      user_claims: <UserClaimsIcon className="menu-icon" />,
+      scripts: <i className="menu-icon fas fa-file-code" style={{ fontSize: '28px' }} />,
+      usersmanagement: <UsersIcon className="menu-icon" />,
+      stmpmanagement: <StmpIcon className="menu-icon" />,
+      fidomanagement: <FidoIcon className="menu-icon" />,
+      scim: <ScimIcon className="menu-icon" />,
+      jans_link: (
+        <CachedIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+      ),
+      jans_lock: (
+        <LockIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
+      ),
+      jans_kc_link: (
+        <JansKcLinkIcon
+          className="menu-icon"
+          style={{ top: '-2px', height: '28px', width: '28px' }}
+        />
+      ),
+      saml: <SamlIcon className="menu-icon" style={{ top: 0, height: '28px', width: '28px' }} />,
+    }),
+    [],
+  )
 
-  function getMenuIcon(name) {
-    switch (name) {
-      case 'home':
-        return <HomeIcon className="menu-icon" />
-
-      case 'oauthserver':
-        return <OAuthIcon className="menu-icon" />
-
-      case 'services':
-        return <ServicesIcon className="menu-icon" />
-
-      case 'user_claims':
-        return <UserClaimsIcon className="menu-icon" />
-
-      case 'scripts':
-        return <i className="menu-icon fas fa-file-code" style={{ fontSize: '28px' }} />
-
-      case 'usersmanagement':
-        return <UsersIcon className="menu-icon" />
-
-      case 'stmpmanagement':
-        return <StmpIcon className="menu-icon" />
-
-      case 'fidomanagement':
-        return <FidoIcon className="menu-icon" />
-
-      case 'scim':
-        return <ScimIcon className="menu-icon" />
-
-      case 'jans_link':
-        return (
-          <CachedIcon
-            className="menu-icon"
-            style={{ top: '-2px', height: '28px', width: '28px' }}
-          />
-        )
-      case 'jans_lock':
-        return (
-          <LockIcon className="menu-icon" style={{ top: '-2px', height: '28px', width: '28px' }} />
-        )
-      case 'jans_kc_link':
-        return (
-          <JansKcLinkIcon
-            className="menu-icon"
-            style={{ top: '-2px', height: '28px', width: '28px' }}
-          />
-        )
-      case 'saml':
-        return <SamlIcon className="menu-icon" style={{ top: 0, height: '28px', width: '28px' }} />
-      default:
-        return null
-    }
-  }
+  const getMenuIcon = useCallback((name) => menuIcons[name] || null, [menuIcons])
 
   const getMenuPath = (menu) => (menu.children ? null : menu.path)
-
   const hasChildren = (plugin) => plugin?.children !== undefined && plugin.children.length > 0
+  const permitted = useCallback(
+    (item) => !hasCedarPermission(item.permission) && !hasChildren(item),
+    [hasCedarPermission],
+  )
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -149,6 +124,7 @@ function GluuAppSidebar() {
               icon={getMenuIcon(plugin.icon)}
               to={getMenuPath(plugin)}
               title={t(`${plugin.title}`)}
+              isEmptyNode={permitted(plugin)}
               textStyle={{ fontSize: '18px' }}
               sidebarMenuActiveClass={sidebarMenuActiveClass}
             >
@@ -157,7 +133,7 @@ function GluuAppSidebar() {
                   <SidebarMenu.Item
                     key={idx}
                     title={t(`${item.title}`)}
-                    isEmptyNode={!hasPermission(scopes, item.permission) && !hasChildren(item)}
+                    isEmptyNode={permitted(item)}
                     to={getMenuPath(item)}
                     icon={getMenuIcon(item.icon)}
                     textStyle={{ fontSize: '15px' }}
@@ -169,7 +145,7 @@ function GluuAppSidebar() {
                           key={id}
                           title={t(`${sub.title}`)}
                           to={getMenuPath(sub)}
-                          isEmptyNode={!hasPermission(scopes, sub.permission)}
+                          isEmptyNode={permitted(sub)}
                           icon={getMenuIcon(sub.icon)}
                           textStyle={{ fontSize: '15px' }}
                           exact

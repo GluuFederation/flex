@@ -7,7 +7,6 @@ let wasmModule = null
 const initialize = async (policyStoreConfig) => {
   if (!initialized) {
     wasmModule = await initWasm()
-    console.log('WASM initialized', wasmModule)
     cedarling = await init(policyStoreConfig)
     initialized = true
   }
@@ -19,7 +18,8 @@ const authorize = async (request) => {
   }
 
   try {
-    return await cedarling.authorize(request)
+    const result = await cedarling.authorize_unsigned(request)
+    return result
   } catch (error) {
     console.error('Error during authorization:', error)
     throw error
