@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React,{ useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@mui/material'
 import UiRoleDetailPage from './UiRoleDetailPage'
@@ -132,6 +132,19 @@ function UiRoleListPage() {
               }),
               headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
+              columns: [
+                {
+                  title: `${t('fields.name')}`,
+                  field: 'role',
+                  width: '40%',
+                  editable: 'never',
+                },
+                { title: `${t('fields.description')}`, field: 'description' },
+                {
+                  title: `${t('fields.deletable')}`,
+                  field: 'deletable',
+                },
+              ],
             }}
             detailPanel={(rowData) => {
               return <UiRoleDetailPage row={rowData} />
