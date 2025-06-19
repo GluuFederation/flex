@@ -48,6 +48,23 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       }),
       `...`]
   },
+    splitChunks: {
+      chunks: 'all'
+    },
+    minimizer: [`...`,
+      new CssMinimizerPlugin({
+        minimizerOptions: {
+          preset: [
+            "default",
+            {
+              calc: false,
+              discardComments: { removeAll: true },
+            },
+          ],
+        },
+      }),
+      `...`]
+  },
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[name].chunk.js',
@@ -98,13 +115,18 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       template: config.srcHtmlLayout,
       inject: 'body',
       title: 'AdminUI',
+      inject: 'body',
+      title: 'AdminUI',
       favicon: path.resolve(__dirname, '../app/images/favicons/favicon.ico'),
     }),
+    new MiniCssExtractPlugin(),
     new MiniCssExtractPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
+        NODE_ENV: JSON.stringify('production'),
         BASE_PATH: JSON.stringify(BASE_PATH),
+        API_BASE_URL: JSON.stringify(API_BASE_URL),
         API_BASE_URL: JSON.stringify(API_BASE_URL),
         CONFIG_API_BASE_URL: JSON.stringify(CONFIG_API_BASE_URL),
       },
@@ -128,7 +150,15 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         test: /\.js$/,
         include: [config.srcDir, config.pluginsDir],
         exclude: /(node_modules|\.test\.js$)/,
+        include: [config.srcDir, config.pluginsDir],
+        exclude: /(node_modules|\.test\.js$)/,
         use: 'babel-loader',
+        sideEffects: false,
+      },
+      {
+        test: /\.test\.js$/,
+        include: [config.srcDir, config.pluginsDir],
+        use: 'ignore-loader',
         sideEffects: false,
       },
       {
@@ -137,8 +167,10 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         use: 'ignore-loader',
       },
       // Modular Styles
+      // Modular Styles
       {
         test: /\.css$/i,
+        use: ["style-loader", "css-loader", "postcss-loader"]
         use: ["style-loader", "css-loader", "postcss-loader"]
       },
       {
@@ -163,6 +195,8 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           MiniCssExtractPlugin.loader,
           { loader: 'css-loader' },
           { loader: 'postcss-loader' },
+          { loader: 'css-loader' },
+          { loader: 'postcss-loader' },
           {
             loader: 'sass-loader',
             options: {},
@@ -176,6 +210,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         loader: 'file-loader',
         options: {
           name: '/fonts/[name].[ext]',
+          name: '/fonts/[name].[ext]',
           esModule: false,
         },
       },
@@ -184,6 +219,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         test: /\.(jpg|jpeg|png|gif|svg|ico)$/,
         loader: 'file-loader',
         options: {
+          name: '/static/[name].[ext]',
           name: '/static/[name].[ext]',
           esModule: false,
         },

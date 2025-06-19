@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
-import { SidebarMenu, SidebarMenuItem } from "Components";
-import { useSelector } from "react-redux";
-import { hasPermission } from "Utils/PermChecker";
-import { ErrorBoundary } from "react-error-boundary";
-import GluuErrorFallBack from "./GluuErrorFallBack";
-import { processMenus } from "Plugins/PluginMenuResolver";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { ThemeContext } from "Context/theme/themeContext";
-import getThemeColor from "Context/theme/config";
-import CachedIcon from "@mui/icons-material/Cached";
-import LockIcon from "@mui/icons-material/Lock";
-import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
-import styles from "./styles/GluuAppSidebar.style";
-import { MenuContext } from "../../../components/SidebarMenu/MenuContext";
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
+import { SidebarMenu, SidebarMenuItem } from 'Components'
+import { useSelector } from 'react-redux'
+import { ErrorBoundary } from 'react-error-boundary'
+import GluuErrorFallBack from './GluuErrorFallBack'
+import { processMenus } from 'Plugins/PluginMenuResolver'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import CachedIcon from '@mui/icons-material/Cached'
+import LockIcon from '@mui/icons-material/Lock'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import styles from './styles/GluuAppSidebar.style'
+import { MenuContext } from '../../../components/SidebarMenu/MenuContext'
+
 import {
   WaveIcon,
   HomeIcon,
@@ -26,15 +26,46 @@ import {
   SamlIcon,
   JansKcLinkIcon,
   StmpZoneIcon,
-} from "../../../components/SVG";
+} from '../../../components/SVG'
+import { useCedarling } from '@/cedarling'
+
+// Constants - Extract to improve performance and maintainability
+const VISIBILITY_CONDITIONS: Record<string, string> = {
+  '/jans-lock': 'jans-lock',
+  '/fido/fidomanagement': 'jans-fido2',
+  '/scim': 'jans-scim',
+} as const
+
+const ICON_STYLES = {
+  default: { top: '-2px', height: '28px', width: '28px' },
+  saml: { top: 0, height: '28px', width: '28px' },
+  script: { fontSize: '28px' },
+} as const
+
+// Icon mapping for better performance - O(1) lookup instead of O(n) switch
+const MENU_ICON_MAP: Record<string, React.ReactNode> = {
+  home: <HomeIcon className="menu-icon" />,
+  oauthserver: <OAuthIcon className="menu-icon" />,
+  services: <ServicesIcon className="menu-icon" />,
+  user_claims: <UserClaimsIcon className="menu-icon" />,
+  scripts: <i className="menu-icon fas fa-file-code" style={ICON_STYLES.script} />,
+  usersmanagement: <UsersIcon className="menu-icon" />,
+  stmpmanagement: <StmpZoneIcon className="menu-icon" />,
+  fidomanagement: <FidoIcon className="menu-icon" />,
+  scim: <ScimIcon className="menu-icon" />,
+  jans_link: <CachedIcon className="menu-icon" style={ICON_STYLES.default} />,
+  jans_lock: <LockIcon className="menu-icon" style={ICON_STYLES.default} />,
+  jans_kc_link: <JansKcLinkIcon className="menu-icon" style={ICON_STYLES.default} />,
+  saml: <SamlIcon className="menu-icon" style={ICON_STYLES.saml} />,
+} as const
 
 // Type definitions
 interface MenuItem {
-  icon?: string;
-  path?: string;
-  title?: string;
-  permission?: string;
-  children?: MenuItem[];
+  icon?: string
+  path?: string
+  title?: string
+  permission?: string
+  children?: MenuItem[]
 }
 
 interface PluginMenu extends MenuItem {}
@@ -42,136 +73,87 @@ interface PluginMenu extends MenuItem {}
 interface RootState {
   authReducer: {
     token?: {
-      scopes: string[];
-    };
-    permissions?: string[];
-  };
+      scopes: string[]
+    }
+    permissions?: string[]
+  }
   healthReducer: {
-    health: Record<string, string>;
-  };
+    health: Record<string, string>
+  }
   userReducer: {
-    isUserLogout: boolean;
-  };
+    isUserLogout: boolean
+  }
 }
 
+// Custom selectors for better performance
+const selectHealth = (state: RootState) => state.healthReducer.health
+const selectIsUserLogout = (state: RootState) => state.userReducer.isUserLogout
+
 function GluuAppSidebar() {
-  const scopes = useSelector((state: RootState) =>
-    state.authReducer.token
-      ? state.authReducer.token.scopes
-      : state.authReducer.permissions
-  );
-  const health = useSelector((state: RootState) => state.healthReducer.health);
-  const { isUserLogout } = useSelector((state: RootState) => state.userReducer);
-  const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([]);
-  const { t } = useTranslation();
-  const theme = useContext(ThemeContext) as { state: { theme: string } };
-  const selectedTheme = theme.state.theme;
-  const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`;
-  const { classes } = styles();
-  const themeColors = getThemeColor(selectedTheme);
-  const navigate = useNavigate();
+  const health = useSelector(selectHealth)
+  const isUserLogout = useSelector(selectIsUserLogout)
+  const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
+  const { t } = useTranslation()
+  const theme = useContext(ThemeContext) as { state: { theme: string } }
+  const selectedTheme = theme.state.theme
+  const { classes } = styles()
+  const navigate = useNavigate()
+  const { authorize, hasCedarPermission } = useCedarling()
 
-  const fetchedServersLength = useMemo(
-    () => Object.keys(health).length > 0,
-    [health]
-  );
+  // Memoized values
+  const fetchedServersLength = useMemo(() => Object.keys(health).length > 0, [health])
 
-  useEffect(() => {
-    const menus: PluginMenu[] = processMenus();
+  const sidebarMenuActiveClass = useMemo(
+    () => `sidebar-menu-active-${selectedTheme}`,
+    [selectedTheme],
+  )
 
-    if (fetchedServersLength) {
-      const visibilityConditions: Record<string, string> = {
-        "/jans-lock": "jans-lock",
-        "/fido/fidomanagement": "jans-fido2",
-        "/scim": "jans-scim",
-      };
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
 
-      const filtered = menus.filter((menu: PluginMenu) => {
-        const healthKey = visibilityConditions[menu.path || ""];
-        if (healthKey) {
-          return health?.[healthKey] === "Running";
-        }
-        return true;
-      });
+  // Optimized icon renderer - O(1) lookup instead of O(n) switch
+  const getMenuIcon = useCallback((name?: string): React.ReactNode => {
+    if (!name) return null
+    return MENU_ICON_MAP[name] ?? null
+  }, [])
 
-      setPluginMenus(filtered);
+  // Memoized helper functions
+  const getMenuPath = useCallback((menu: MenuItem): string | undefined => {
+    return menu.children ? undefined : (menu.path ?? undefined)
+  }, [])
+
+  const hasChildren = useCallback((plugin: MenuItem): boolean => {
+    return Array.isArray(plugin.children) && plugin.children.length > 0
+  }, [])
+
+  // Memoized menu filtering logic
+  const filteredMenus = useMemo(() => {
+    const menus: PluginMenu[] = processMenus()
+
+    if (!fetchedServersLength) {
+      return []
     }
-  }, [health, fetchedServersLength]);
+
+    return menus.filter((menu: PluginMenu) => {
+      const healthKey = VISIBILITY_CONDITIONS[menu.path || '']
+      return healthKey ? health?.[healthKey] === 'Running' : true
+    })
+  }, [health, fetchedServersLength])
+
+  // Update state when filtered menus change
+  useEffect(() => {
+    setPluginMenus(filteredMenus)
+  }, [filteredMenus])
 
   useEffect(() => {
     if (isUserLogout) {
-      navigate("/logout");
+      navigate('/logout')
     }
-  }, [isUserLogout, navigate]);
+  }, [isUserLogout, navigate])
 
-  function getMenuIcon(name?: string): React.ReactNode {
-    switch (name) {
-      case "home":
-        return <HomeIcon className="menu-icon" />;
-      case "oauthserver":
-        return <OAuthIcon className="menu-icon" />;
-      case "services":
-        return <ServicesIcon className="menu-icon" />;
-      case "user_claims":
-        return <UserClaimsIcon className="menu-icon" />;
-      case "scripts":
-        return (
-          <i
-            className="menu-icon fas fa-file-code"
-            style={{ fontSize: "28px" }}
-          />
-        );
-      case "usersmanagement":
-        return <UsersIcon className="menu-icon" />;
-      case "stmpmanagement":
-        return <StmpZoneIcon className="menu-icon" />;
-      case "fidomanagement":
-        return <FidoIcon className="menu-icon" />;
-      case "scim":
-        return <ScimIcon className="menu-icon" />;
-      case "jans_link":
-        return (
-          <CachedIcon
-            className="menu-icon"
-            style={{ top: "-2px", height: "28px", width: "28px" }}
-          />
-        );
-      case "jans_lock":
-        return (
-          <LockIcon
-            className="menu-icon"
-            style={{ top: "-2px", height: "28px", width: "28px" }}
-          />
-        );
-      case "jans_kc_link":
-        return (
-          <JansKcLinkIcon
-            className="menu-icon"
-            style={{ top: "-2px", height: "28px", width: "28px" }}
-          />
-        );
-      case "saml":
-        return (
-          <SamlIcon
-            className="menu-icon"
-            style={{ top: 0, height: "28px", width: "28px" }}
-          />
-        );
-      default:
-        return null;
-    }
-  }
+  const gettingPermissionMemoizing = (item: any) =>
+    !authorize([item.permission]) && !hasChildren(item)
 
-  function getMenuPath(menu: MenuItem): string | undefined {
-    if (menu.children) {
-      return undefined;
-    }
-    return menu.path ?? undefined;
-  }
-
-  function hasChildren(plugin: MenuItem): boolean {
-    return typeof plugin.children !== "undefined" && plugin.children.length > 0;
-  }
+  console.log('pluginMenus', pluginMenus)
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -185,7 +167,9 @@ function GluuAppSidebar() {
                   icon={getMenuIcon(plugin.icon)}
                   to={getMenuPath(plugin)}
                   title={t(`${plugin.title}`)}
-                  textStyle={{ fontSize: "18px" }}
+                  // isEmptyNode={!hasCedarPermission(plugin.permission) && !hasChildren(plugin)}
+                  isEmptyNode={gettingPermissionMemoizing(plugin)}
+                  textStyle={{ fontSize: '18px' }}
                   sidebarMenuActiveClass={sidebarMenuActiveClass}
                   {...ctx}
                 >
@@ -194,13 +178,11 @@ function GluuAppSidebar() {
                       <SidebarMenuItem
                         key={idx}
                         title={t(`${item.title}`)}
-                        isEmptyNode={
-                          !hasPermission(scopes, item.permission) &&
-                          !hasChildren(item)
-                        }
+                        // isEmptyNode={!hasCedarPermission(item.permission) && !hasChildren(item)}
+                        isEmptyNode={gettingPermissionMemoizing(item)}
                         to={getMenuPath(item)}
                         icon={getMenuIcon(item.icon)}
-                        textStyle={{ fontSize: "15px" }}
+                        textStyle={{ fontSize: '15px' }}
                         exact
                         {...ctx}
                       >
@@ -210,11 +192,10 @@ function GluuAppSidebar() {
                               key={id}
                               title={t(`${sub.title}`)}
                               to={getMenuPath(sub)}
-                              isEmptyNode={
-                                !hasPermission(scopes, sub.permission)
-                              }
+                              // isEmptyNode={!hasCedarPermission(sub.permission)}
+                              isEmptyNode={gettingPermissionMemoizing(sub)}
                               icon={getMenuIcon(sub.icon)}
-                              textStyle={{ fontSize: "15px" }}
+                              textStyle={{ fontSize: '15px' }}
                               exact
                               {...ctx}
                             ></SidebarMenuItem>
@@ -226,27 +207,21 @@ function GluuAppSidebar() {
             }
           </MenuContext.Consumer>
         ) : (
-          <div style={{ marginTop: "20vh" }}>
+          <div style={{ marginTop: '20vh' }}>
             <GluuLoader blocking={!fetchedServersLength} />
           </div>
         )}
 
-        <div
-          className={
-            fetchedServersLength
-              ? classes.waveContainer
-              : classes.waveContainerFixed
-          }
-        >
-          <WaveIcon
-            className={classes.wave}
-            fill={themeColors.menu.background}
-          />
+        <div className={fetchedServersLength ? classes.waveContainer : classes.waveContainerFixed}>
+          <WaveIcon className={classes.wave} fill={themeColors.menu.background} />
           <div className={classes.powered}>Powered by Gluu</div>
         </div>
       </SidebarMenu>
     </ErrorBoundary>
-  );
+  )
 }
 
-export default GluuAppSidebar;
+// Memoize the entire component to prevent unnecessary re-renders
+const MemoizedGluuAppSidebar = React.memo(GluuAppSidebar)
+
+export default MemoizedGluuAppSidebar

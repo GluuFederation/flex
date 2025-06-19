@@ -1,13 +1,18 @@
-import React from 'react';
-import { BrowserRouter as Router } from "react-router-dom";
-import { Provider } from "react-redux";
-import { configStore } from "Redux/store";
-import { PersistGate } from "redux-persist/integration/react";
-import AuthenticatedRouteSelector from "./AuthenticatedRouteSelector";
-const basePath = process.env.BASE_PATH || "/admin";
+import React, { useEffect } from 'react'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import { configStore } from 'Redux/store'
+import { PersistGate } from 'redux-persist/integration/react'
+import AuthenticatedRouteSelector from './AuthenticatedRouteSelector'
+const basePath = process.env.BASE_PATH || '/admin'
+import bootstrap from '../../cedarling/config/cedarling-bootstrap.json'
+import { cedarlingClient } from '../../cedarling'
 
 const AppMain = () => {
-  const { store, persistor } = configStore();
+  useEffect(() => {
+    cedarlingClient.initialize(bootstrap).catch(console.error)
+  }, [])
+  const { store, persistor } = configStore()
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -16,7 +21,7 @@ const AppMain = () => {
         </Router>
       </PersistGate>
     </Provider>
-  );
-};
+  )
+}
 
-export default AppMain;
+export default AppMain
