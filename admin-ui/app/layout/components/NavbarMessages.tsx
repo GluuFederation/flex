@@ -1,5 +1,5 @@
-import React from "react"
-import _ from "lodash"
+import React from 'react'
+import _ from 'lodash'
 
 import {
   UncontrolledDropdown,
@@ -14,17 +14,13 @@ import {
   Input,
   InputGroupAddon,
   Button,
-  AvatarImage
-} from "Components"
-import { ExtendedDropdownSection } from "@/components/ExtendedDropdown/ExtendedDropdownSection"
-import { ExtendedDropdownLink } from "@/components/ExtendedDropdown/ExtendedDropdownLink"
+  AvatarImage,
+} from 'Components'
+import { ExtendedDropdownSection } from '@/components/ExtendedDropdown/ExtendedDropdownSection'
+import { ExtendedDropdownLink } from '@/components/ExtendedDropdown/ExtendedDropdownLink'
+import type { NavbarMessagesProps, MessageColorType } from './types'
 
-const messagesColors = ["text-success", "text-danger", "text-warning"]
-
-interface NavbarMessagesProps {
-  className?: string;
-  style?: React.CSSProperties;
-}
+const messagesColors: MessageColorType[] = ['text-success', 'text-danger', 'text-warning']
 
 const NavbarMessages: React.FC<NavbarMessagesProps> = (props) => (
   <UncontrolledDropdown nav inNavbar {...props}>
@@ -58,13 +54,8 @@ const NavbarMessages: React.FC<NavbarMessagesProps> = (props) => (
       </ExtendedDropdownSection>
       <ExtendedDropdownSection list>
         <ListGroup>
-          {_.times(1, index => (
-            <ListGroupItem
-              tag={ExtendedDropdownLink}
-              to="/apps/email-details"
-              key={index}
-              action
-            >
+          {_.times(1, (index) => (
+            <ListGroupItem tag={ExtendedDropdownLink} to="/apps/email-details" key={index} action>
               <Media>
                 <Media left>
                   <AvatarImage src="admin/static/logo.png" className="me-4" />
@@ -75,24 +66,20 @@ const NavbarMessages: React.FC<NavbarMessagesProps> = (props) => (
                       className={`fa fa-circle small ${messagesColors[index]} me-2 d-flex align-items-center`}
                     />
                     <span className="h6 pb-0 mb-0 d-flex align-items-center">
-                      {"faker.name.firstName()"}
+                      {'faker.name.firstName()'}
                     </span>
 
                     <span className="ms-1 small">(23)</span>
                     <span className="ms-auto small">Now</span>
                   </span>
-                  <p className="mt-2 mb-1">{"faker.lorem.sentences()"}</p>
+                  <p className="mt-2 mb-1">{'faker.lorem.sentences()'}</p>
                 </Media>
               </Media>
             </ListGroupItem>
           ))}
         </ListGroup>
       </ExtendedDropdownSection>
-      <ExtendedDropdownSection
-        className="text-center"
-        tag={ExtendedDropdownLink}
-        to="/apps/inbox"
-      >
+      <ExtendedDropdownSection className="text-center" tag={ExtendedDropdownLink} to="/apps/inbox">
         View All
         <i className="fa fa-angle-right fa-fw ms-2" />
       </ExtendedDropdownSection>

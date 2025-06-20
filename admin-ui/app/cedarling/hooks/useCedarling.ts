@@ -1,22 +1,27 @@
-// @ts-nocheck
-
 import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCedarlingPermission } from '../../redux/features/cedarPermissionsSlice'
-
 import { cedarlingClient } from '../client/CedarlingClient'
 import { uuidv4 } from '@/utils/Util'
 import { constants } from '../../cedarling/constants'
+import type {
+  RootState,
+  UseCedarlingReturn,
+  AuthorizationResult,
+  AuthorizationRequest,
+  Principal,
+  Resource,
+} from '../types'
 
-export function useCedarling() {
+export function useCedarling(): UseCedarlingReturn {
   const { APP_ID, APP_NAME, PRINCIPAL_TYPE, RESOURCE_TYPE, ACTION_TYPE } = constants
   const dispatch = useDispatch()
 
-  const { scopes, role, sub, permissions, isLoading, error } = useSelector((state) => {
+  const { scopes, role, sub, permissions, isLoading, error } = useSelector((state: RootState) => {
     return {
-      scopes: state.authReducer?.token?.scopes ?? state.authReducer?.permissions,
-      role: state.authReducer?.userinfo?.jansAdminUIRole,
-      sub: state.authReducer?.userinfo?.sub,
+      scopes: state.authReducer?.token?.scopes ?? state.authReducer?.permissions ?? [],
+      role: state.authReducer?.userinfo?.jansAdminUIRole ?? null,
+      sub: state.authReducer?.userinfo?.sub ?? null,
       permissions: state.cedarPermissions?.permissions || {},
       isLoading: state.cedarPermissions?.loading || false,
       error: state.cedarPermissions?.error,
@@ -24,7 +29,7 @@ export function useCedarling() {
   })
 
   const hasPermission = useCallback(
-    (url) => {
+    (url: string): boolean | undefined => {
       if (url in permissions) {
         return permissions[url] // true or false
       }
@@ -34,11 +39,11 @@ export function useCedarling() {
   )
 
   const cedarRequestBuilder = useCallback(
-    (resourceScope) => {
-      const safeScopes =
+    (resourceScope: string[]): AuthorizationRequest => {
+      const safeScopes: string[] =
         scopes && Array.isArray(scopes) && scopes.length ? scopes : ['stats.readonly']
 
-      const principals = [
+      const principals: Principal[] = [
         {
           id: uuidv4(),
           role,
@@ -48,7 +53,7 @@ export function useCedarling() {
         },
       ]
 
-      const resource = {
+      const resource: Resource = {
         app_id: APP_ID,
         id: APP_ID,
         name: APP_NAME,
@@ -65,42 +70,29 @@ export function useCedarling() {
         context: {},
       }
     },
-    [role, scopes, sub],
+    [role, scopes, sub, APP_ID, APP_NAME, PRINCIPAL_TYPE, RESOURCE_TYPE, ACTION_TYPE],
   )
 
   const authorize = useCallback(
-    async (resourceScope) => {
-      if (!resourceScope[0]) {
-        return { isAuthorized: false }
-      }
-      //Mockup testing
-      // if (
-      //   resourceScope[0] === 'https://jans.io/oauth/jans-auth-server/config/properties.readonly' ||
-      //   resourceScope[0] === 'https://jans.io/oauth/config/stats.readonly' ||
-      //   resourceScope[0] === 'https://jans.io/oauth/config/acrs.readonly' ||
-      //   resourceScope[0] ===
-      //     'https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly' ||
-      //   resourceScope[0] === 'https://jans.io/oauth/config/jans_asset-read'
-      // ) {
-      //   return Promise.resolve({ isAuthorized: false })
-      // }
+    async (resourceScope: string[]): Promise<AuthorizationResult> => {
+      const url = resourceScope[0]
+      if (!url) return { isAuthorized: false }
 
-      const existingPermission = hasPermission(resourceScope[0])
-
+      const existingPermission = hasPermission(url)
       if (existingPermission !== undefined) {
-        return Promise.resolve({ isAuthorized: existingPermission })
+        console.log('📋 Cached permission used:', url, '→', existingPermission)
+        return { isAuthorized: existingPermission }
       }
 
       const request = cedarRequestBuilder(resourceScope)
 
       try {
         const response = await cedarlingClient.authorize(request)
-
-        const isAuthorized = response.decision
+        const isAuthorized = response?.decision === true
 
         dispatch(
           setCedarlingPermission({
-            url: resourceScope[0],
+            url,
             isAuthorized,
           }),
         )
@@ -108,8 +100,10 @@ export function useCedarling() {
         return { isAuthorized, response }
       } catch (error) {
         console.error('❌ Authorization Error:', error)
-
-        return { isAuthorized: false, error: error.message }
+        return {
+          isAuthorized: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        }
       }
     },
     [dispatch, hasPermission, cedarRequestBuilder],

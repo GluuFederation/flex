@@ -13,6 +13,7 @@ import LockIcon from '@mui/icons-material/Lock'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import styles from './styles/GluuAppSidebar.style'
 import { MenuContext } from '../../../components/SidebarMenu/MenuContext'
+import type { SidebarMenuContext } from '../../../components/SidebarMenu/MenuContext'
 
 import {
   WaveIcon,
@@ -28,22 +29,32 @@ import {
   StmpZoneIcon,
 } from '../../../components/SVG'
 import { useCedarling } from '@/cedarling'
+import type {
+  MenuItem,
+  PluginMenu,
+  VisibilityConditions,
+  IconStyles,
+  MenuIconMap,
+  ThemeContextState,
+  ThemeColors,
+  SidebarRootState,
+} from '../../../components/Sidebar'
 
 // Constants - Extract to improve performance and maintainability
-const VISIBILITY_CONDITIONS: Record<string, string> = {
+const VISIBILITY_CONDITIONS: VisibilityConditions = {
   '/jans-lock': 'jans-lock',
   '/fido/fidomanagement': 'jans-fido2',
   '/scim': 'jans-scim',
 } as const
 
-const ICON_STYLES = {
+const ICON_STYLES: IconStyles = {
   default: { top: '-2px', height: '28px', width: '28px' },
   saml: { top: 0, height: '28px', width: '28px' },
   script: { fontSize: '28px' },
 } as const
 
 // Icon mapping for better performance - O(1) lookup instead of O(n) switch
-const MENU_ICON_MAP: Record<string, React.ReactNode> = {
+const MENU_ICON_MAP: MenuIconMap = {
   home: <HomeIcon className="menu-icon" />,
   oauthserver: <OAuthIcon className="menu-icon" />,
   services: <ServicesIcon className="menu-icon" />,
@@ -59,59 +70,36 @@ const MENU_ICON_MAP: Record<string, React.ReactNode> = {
   saml: <SamlIcon className="menu-icon" style={ICON_STYLES.saml} />,
 } as const
 
-// Type definitions
-interface MenuItem {
-  icon?: string
-  path?: string
-  title?: string
-  permission?: string
-  children?: MenuItem[]
-}
-
-interface PluginMenu extends MenuItem {}
-
-interface RootState {
-  authReducer: {
-    token?: {
-      scopes: string[]
-    }
-    permissions?: string[]
-  }
-  healthReducer: {
-    health: Record<string, string>
-  }
-  userReducer: {
-    isUserLogout: boolean
-  }
-}
+// Type definitions for local state
+interface RootState extends SidebarRootState {}
 
 // Custom selectors for better performance
-const selectHealth = (state: RootState) => state.healthReducer.health
-const selectIsUserLogout = (state: RootState) => state.userReducer.isUserLogout
+const selectHealth = (state: RootState): Record<string, string> => state.healthReducer.health
+const selectIsUserLogout = (state: RootState): boolean => state.userReducer.isUserLogout
 
-function GluuAppSidebar() {
+function GluuAppSidebar(): JSX.Element {
   const health = useSelector(selectHealth)
   const isUserLogout = useSelector(selectIsUserLogout)
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as { state: { theme: string } }
+  const theme = useContext(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
   const { classes } = styles()
   const navigate = useNavigate()
   const { authorize, hasCedarPermission } = useCedarling()
 
   // Memoized values
-  const fetchedServersLength = useMemo(() => Object.keys(health).length > 0, [health])
+  const fetchedServersLength = useMemo((): boolean => Object.keys(health).length > 0, [health])
 
   const sidebarMenuActiveClass = useMemo(
-    () => `sidebar-menu-active-${selectedTheme}`,
+    (): string => `sidebar-menu-active-${selectedTheme}`,
     [selectedTheme],
   )
 
-  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const themeColors = useMemo((): ThemeColors => getThemeColor(selectedTheme), [selectedTheme])
 
   // Optimized icon renderer - O(1) lookup instead of O(n) switch
-  const getMenuIcon = useCallback((name?: string): React.ReactNode => {
+  const getMenuIcon = useCallback((name?: string): React.ReactNode | null => {
     if (!name) return null
     return MENU_ICON_MAP[name] ?? null
   }, [])
@@ -125,12 +113,12 @@ function GluuAppSidebar() {
     return Array.isArray(plugin.children) && plugin.children.length > 0
   }, [])
 
-  const filterMenuItems = async (menus) => {
-    const result = []
+  const filterMenuItems = useCallback(async (menus: MenuItem[]): Promise<MenuItem[]> => {
+    const result: MenuItem[] = []
 
     for (const item of menus) {
       if (hasChildren(item)) {
-        const filteredChildren = await filterMenuItems(item.children)
+        const filteredChildren = await filterMenuItems(item.children!)
 
         if (filteredChildren.length > 0) {
           result.push({ ...item, children: filteredChildren })
@@ -140,27 +128,30 @@ function GluuAppSidebar() {
         if (isAuthorized) {
           result.push(item)
         }
+      } else {
+        // Items without permission are always included
+        result.push(item)
       }
     }
     return result
-  }
+  }, [authorize, hasChildren])
 
   // Memoized menu filtering logic
-  const memoizedFilteredMenus = useMemo(() => {
+  const memoizedFilteredMenus = useMemo((): PluginMenu[] => {
     const menus: PluginMenu[] = processMenus()
 
     if (!fetchedServersLength) {
       return []
     }
 
-    return menus.filter((menu: PluginMenu) => {
+    return menus.filter((menu: PluginMenu): boolean => {
       const healthKey = VISIBILITY_CONDITIONS[menu.path || '']
       return healthKey ? health?.[healthKey] === 'Running' : true
     })
   }, [health, fetchedServersLength])
 
   useEffect(() => {
-    async function loadMenus() {
+    async function loadMenus(): Promise<void> {
       console.log('memoizedFilteredMenus', memoizedFilteredMenus)
       const filteredMenus = await filterMenuItems(memoizedFilteredMenus)
       console.log(filteredMenus)
@@ -168,7 +159,7 @@ function GluuAppSidebar() {
     }
 
     loadMenus()
-  }, [memoizedFilteredMenus])
+  }, [memoizedFilteredMenus, filterMenuItems])
 
   useEffect(() => {
     if (isUserLogout) {
@@ -176,15 +167,18 @@ function GluuAppSidebar() {
     }
   }, [isUserLogout, navigate])
 
-  const gettingPermissionMemoizing = (item: any) =>
-    !authorize([item.permission]) && !hasChildren(item)
+  const gettingPermissionMemoizing = useCallback((item: MenuItem): boolean => {
+    if (!item.permission) return false
+    const permission = hasCedarPermission(item.permission)
+    return permission === false && !hasChildren(item)
+  }, [hasCedarPermission, hasChildren])
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
         {fetchedServersLength ? (
           <MenuContext.Consumer>
-            {(ctx: any) =>
+            {(ctx: SidebarMenuContext) =>
               pluginMenus.map((plugin, key) => (
                 <SidebarMenuItem
                   key={key}

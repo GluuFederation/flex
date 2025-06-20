@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from '../reducers/ReducerRegistry'
+import type { CedarPermissionsState, SetCedarlingPermissionPayload } from '../../cedarling/types'
 
-const initialState = {
+const initialState: CedarPermissionsState = {
   permissions: {},
   loading: false,
   error: null,
@@ -11,7 +12,7 @@ const cedarPermissionsSlice = createSlice({
   name: 'cedarPermissions',
   initialState,
   reducers: {
-    setCedarlingPermission: (state, action) => {
+    setCedarlingPermission: (state, action: PayloadAction<SetCedarlingPermissionPayload>) => {
       const { url, isAuthorized } = action.payload
       state.permissions[url] = isAuthorized
       state.loading = false
