@@ -125,8 +125,28 @@ function GluuAppSidebar() {
     return Array.isArray(plugin.children) && plugin.children.length > 0
   }, [])
 
+  const filterMenuItems = async (menus) => {
+    const result = []
+
+    for (const item of menus) {
+      if (hasChildren(item)) {
+        const filteredChildren = await filterMenuItems(item.children)
+
+        if (filteredChildren.length > 0) {
+          result.push({ ...item, children: filteredChildren })
+        }
+      } else if (item.permission) {
+        const { isAuthorized } = await authorize([item.permission])
+        if (isAuthorized) {
+          result.push(item)
+        }
+      }
+    }
+    return result
+  }
+
   // Memoized menu filtering logic
-  const filteredMenus = useMemo(() => {
+  const memoizedFilteredMenus = useMemo(() => {
     const menus: PluginMenu[] = processMenus()
 
     if (!fetchedServersLength) {
@@ -139,10 +159,16 @@ function GluuAppSidebar() {
     })
   }, [health, fetchedServersLength])
 
-  // Update state when filtered menus change
   useEffect(() => {
-    setPluginMenus(filteredMenus)
-  }, [filteredMenus])
+    async function loadMenus() {
+      console.log('memoizedFilteredMenus', memoizedFilteredMenus)
+      const filteredMenus = await filterMenuItems(memoizedFilteredMenus)
+      console.log(filteredMenus)
+      setPluginMenus(filteredMenus)
+    }
+
+    loadMenus()
+  }, [memoizedFilteredMenus])
 
   useEffect(() => {
     if (isUserLogout) {
@@ -152,8 +178,6 @@ function GluuAppSidebar() {
 
   const gettingPermissionMemoizing = (item: any) =>
     !authorize([item.permission]) && !hasChildren(item)
-
-  console.log('pluginMenus', pluginMenus)
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>

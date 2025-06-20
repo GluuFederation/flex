@@ -73,6 +73,17 @@ export function useCedarling() {
       if (!resourceScope[0]) {
         return { isAuthorized: false }
       }
+      //Mockup testing
+      // if (
+      //   resourceScope[0] === 'https://jans.io/oauth/jans-auth-server/config/properties.readonly' ||
+      //   resourceScope[0] === 'https://jans.io/oauth/config/stats.readonly' ||
+      //   resourceScope[0] === 'https://jans.io/oauth/config/acrs.readonly' ||
+      //   resourceScope[0] ===
+      //     'https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly' ||
+      //   resourceScope[0] === 'https://jans.io/oauth/config/jans_asset-read'
+      // ) {
+      //   return Promise.resolve({ isAuthorized: false })
+      // }
 
       const existingPermission = hasPermission(resourceScope[0])
 
@@ -87,21 +98,15 @@ export function useCedarling() {
 
         const isAuthorized = response.decision
 
-        console.log('⚡ Immediate Response:', resourceScope, '→', isAuthorized)
-
-        // Update Redux state directly (background process)
-        await dispatch(
+        dispatch(
           setCedarlingPermission({
             url: resourceScope[0],
             isAuthorized,
           }),
         )
-        debugger
 
-        // Return immediate response
         return { isAuthorized, response }
       } catch (error) {
-        debugger
         console.error('❌ Authorization Error:', error)
 
         return { isAuthorized: false, error: error.message }
