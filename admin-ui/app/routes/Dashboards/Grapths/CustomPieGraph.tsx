@@ -1,16 +1,24 @@
-// @ts-nocheck
 import React from 'react'
 import { getNewColor } from 'Utils/Util'
-import {
-  PieChart,
-  Pie,
-  Legend,
-  Tooltip,
-  Cell,
-  ResponsiveContainer,
-} from 'recharts'
+import { PieChart, Pie, Legend, Tooltip, Cell, ResponsiveContainer } from 'recharts'
 
-function CustomPieGraph({ data, dataKey, nameKey }) {
+interface CustomPieGraphProps {
+  data: Array<{ [key: string]: any }>
+  dataKey: string
+  nameKey: string
+}
+
+interface LabelProps {
+  cx: number
+  cy: number
+  midAngle: number
+  innerRadius: number
+  outerRadius: number
+  percent: number
+  index: number
+}
+
+function CustomPieGraph({ data, dataKey, nameKey }: CustomPieGraphProps) {
   const RADIAN = Math.PI / 180
   const renderCustomizedLabel = ({
     cx,
@@ -20,7 +28,7 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
     outerRadius,
     percent,
     index,
-  }) => {
+  }: LabelProps) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
     const y = cy + radius * Math.sin(-midAngle * RADIAN)
@@ -52,7 +60,7 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
           dataKey={dataKey}
           nameKey={nameKey}
         >
-          {data.map((entry, index) => (
+          {data.map((entry: { [key: string]: any }, index: number) => (
             <Cell key={`cell-${index}`} fill={getNewColor()} />
           ))}
         </Pie>

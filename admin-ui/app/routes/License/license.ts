@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const license = {
   companyName: "Gluu",
   customerEmail: "arnab@gluu.org",

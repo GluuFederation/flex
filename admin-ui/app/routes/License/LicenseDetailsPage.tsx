@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { LICENSE } from 'Utils/ApiResources'
-import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
+import { getLicenseDetails, LicenseDetailsItem } from 'Redux/features/licenseDetailsSlice'
 import { Card, CardBody, Container, Row, Col } from 'Components'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -15,26 +14,33 @@ import { formatDate } from 'Utils/Util'
 
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
-function LicenseDetailsPage() {
-  const item = useSelector((state) => state.licenseDetailsReducer.item)
-  const loading = useSelector((state) => state.licenseDetailsReducer.loading)
+interface RootState {
+  licenseDetailsReducer: {
+    item: LicenseDetailsItem
+    loading: boolean
+  }
+}
+
+function LicenseDetailsPage(): JSX.Element {
+  const item = useSelector((state: RootState) => state.licenseDetailsReducer.item)
+  const loading = useSelector((state: RootState) => state.licenseDetailsReducer.loading)
   const dispatch = useDispatch()
-  const userAction = {}
-  const options = {}
+  const userAction: Record<string, any> = {}
+  const options: Record<string, any> = {}
   const { t } = useTranslation()
 
   useEffect(() => {
     buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
-    dispatch(getLicenseDetails({}))
-  }, [])
+    dispatch(getLicenseDetails())
+  }, [dispatch])
 
   SetTitle(t('fields.licenseDetails'))
   return (
     <GluuLoader blocking={loading}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
+      <Card className="mb-3" type="border" color={null}>
         <CardBody>
           {item.licenseEnabled ? (
-            <Container style={applicationStyle.licensePanel}>
+            <Container style={{ backgroundColor: applicationStyle.licensePanel.backgroundColor, float: 'left' as const }}>
               <Row>
                 <Col sm={6}>
                   <GluuFormDetailRow
@@ -98,7 +104,7 @@ function LicenseDetailsPage() {
                 <Col sm={6}>
                   <GluuFormDetailRow
                     label="fields.customerName"
-                    value={!item.customerFirstName && !item.customerLastName ? undefined : (item.customerFirstName + item.customerLastName)}
+                    value={!item.customerFirstName && !item.customerLastName ? undefined : ((item.customerFirstName || '') + (item.customerLastName || ''))}
                     isBadge={true}
                     lsize={3}
                     rsize={9}

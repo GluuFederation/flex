@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { Paper, TablePagination } from '@mui/material'
+import { Paper, TablePagination, TablePaginationProps } from '@mui/material'
 import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -23,100 +23,142 @@ import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { useNavigate } from 'react-router'
 import { fetchJansAssets, deleteJansAsset, setSelectedAsset, getAssetServices, getAssetTypes } from 'Plugins/admin/redux/features/AssetSlice'
-import moment from 'moment';
+import moment from 'moment'
 
-const JansAssetListPage = () => {
+// Type definitions
+interface Asset {
+    inum: string
+    fileName: string
+    description: string
+    creationDate: string
+    enabled: boolean
+}
+
+interface RootState {
+    assetReducer: {
+        totalItems: number
+        assets: Asset[]
+        loadingAssets: boolean
+    }
+    authReducer: {
+        permissions: string[]
+    }
+}
+
+interface Options {
+    limit?: number
+    pattern?: string | null
+    startIndex?: number
+    [key: string]: any
+}
+
+interface ThemeState {
+    state: {
+        theme: string
+    }
+}
+
+interface DeleteData {
+    inum: string
+    fileName: string
+    description: string
+    creationDate: string
+    enabled: boolean
+}
+
+const JansAssetListPage: React.FC = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { t } = useTranslation()
     SetTitle(t('titles.assets'))
-    const [pageNumber, setPageNumber] = useState(0)
-    const { totalItems, assets } = useSelector((state) => state.assetReducer)
-    const permissions = useSelector((state) => state.authReducer.permissions)
-    const loadingAssets = useSelector((state) => state.assetReducer.loadingAssets)
-    const myActions = []
-    const options = {}
-    const [limit, setLimit] = useState(10)
-    const [pattern, setPattern] = useState(null)
+    const [pageNumber, setPageNumber] = useState<number>(0)
+    const { totalItems, assets } = useSelector((state: RootState) => state.assetReducer)
+    const permissions = useSelector((state: RootState) => state.authReducer.permissions)
+    const loadingAssets = useSelector((state: RootState) => state.assetReducer.loadingAssets)
+    const myActions: any[] = []
+    const options: Options = {}
+    const [limit, setLimit] = useState<number>(10)
+    const [pattern, setPattern] = useState<string | null>(null)
     let memoLimit = limit
     let memoPattern = pattern
     const PaperContainer = useCallback(
-        (props) => <Paper {...props} elevation={0} />,
+        (props: any) => <Paper {...props} elevation={0} />,
         []
     )
-    const theme = useContext(ThemeContext)
-    const themeColors = getThemeColor(theme.state.theme)
+    const theme = useContext(ThemeContext) as ThemeState
+    const themeColors = getThemeColor(theme?.state?.theme || 'default')
     const bgThemeColor = { background: themeColors.background }
-    const [modal, setModal] = useState(false)
-    const [deleteData, setDeleteData] = useState(null)
+    const [modal, setModal] = useState<boolean>(false)
+    const [deleteData, setDeleteData] = useState<DeleteData | null>(null)
     const toggle = () => setModal(!modal)
 
-
-    const submitForm = (userMessage) => {
-        const userAction = {}
+    const submitForm = (userMessage: string) => {
+        const userAction: any = {}
         toggle()
         buildPayload(userAction, userMessage, deleteData)
-        dispatch(deleteJansAsset({ action: userAction }))
+        dispatch(deleteJansAsset({ action: userAction } as any))
     }
 
     useEffect(() => {
         dispatch(getAssetTypes({ action: options }))
-        options['limit'] = 10
+        options.limit = 10
         dispatch(fetchJansAssets({ action: options }))
         dispatch(getAssetServices({ action: options }))
     }, [])
 
-
-    function handleOptionsChange(event) {
-        if (event.target.name == 'limit') {
-            memoLimit = event.target.value
-        } else if (event.target.name == 'pattern') {
+    function handleOptionsChange(event: React.ChangeEvent<HTMLInputElement>) {
+        if (event.target.name === 'limit') {
+            memoLimit = parseInt(event.target.value)
+        } else if (event.target.name === 'pattern') {
             memoPattern = event.target.value
         }
     }
 
-    const onPageChangeClick = (page) => {
-        let startCount = page * limit
-        options['startIndex'] = parseInt(startCount)
-        options['limit'] = limit
-        options['pattern'] = pattern
+    const onPageChangeClick = (page: number) => {
+        const startCount = page * limit
+        options.startIndex = startCount
+        options.limit = limit
+        options.pattern = pattern
         setPageNumber(page)
         dispatch(fetchJansAssets({ action: options }))
     }
-    const onRowCountChangeClick = (count) => {
-        options['limit'] = count
-        options['pattern'] = pattern
+
+    const onRowCountChangeClick = (count: number) => {
+        options.limit = count
+        options.pattern = pattern
         setPageNumber(0)
         setLimit(count)
         dispatch(fetchJansAssets({ action: options }))
     }
 
     const PaginationWrapper = useCallback(
-        (props) => (
+        (props: TablePaginationProps) => (
             <TablePagination
+                {...props}
                 count={totalItems}
                 page={pageNumber}
-                onPageChange={(prop, page) => {
+                onPageChange={(_, page) => {
                     onPageChangeClick(page)
                 }}
                 rowsPerPage={limit}
-                onRowsPerPageChange={(prop, count) =>
-                    onRowCountChangeClick(count.props.value)
-                }
+                onRowsPerPageChange={(event) => {
+                    const target = event.target as HTMLInputElement
+                    onRowCountChangeClick(parseInt(target.value))
+                }}
             />
         ),
-        [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
+        [pageNumber, totalItems, limit]
     )
 
     const navigateToAddPage = useCallback(() => {
         dispatch(setSelectedAsset({}))
         navigate('/adm/asset/add')
-    }, [])
+    }, [dispatch, navigate])
 
-    const navigateToEditPage = useCallback((data) => {
+    const navigateToEditPage = useCallback((data: Asset) => {
         dispatch(setSelectedAsset(data))
         navigate(`/adm/asset/edit/${data.inum}`)
-    }, [])
+    }, [dispatch, navigate])
 
     const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
@@ -131,7 +173,7 @@ const JansAssetListPage = () => {
                 showLimit={false}
             />
         )
-    }, [limit, pattern, handleOptionsChange])
+    }, [limit, pattern])
 
     if (hasPermission(permissions, ASSETS_READ)) {
         myActions.push({
@@ -168,24 +210,24 @@ const JansAssetListPage = () => {
     }
 
     if (hasPermission(permissions, ASSETS_WRITE)) {
-        myActions.push((rowData) => ({
+        myActions.push((rowData: Asset) => ({
             icon: 'edit',
             iconProps: {
                 id: 'editScope' + rowData.inum,
             },
-            onClick: (event, rowData) => navigateToEditPage(rowData),
+            onClick: (event: any, rowData: Asset) => navigateToEditPage(rowData),
             disabled: !hasPermission(permissions, ASSETS_WRITE),
         }))
     }
 
     if (hasPermission(permissions, ASSETS_DELETE)) {
-        myActions.push((rowData) => ({
+        myActions.push((rowData: Asset) => ({
             icon: DeleteOutlinedIcon,
             iconProps: {
                 color: 'secondary',
                 id: 'deleteClient' + rowData.inum,
             },
-            onClick: (event, rowData) => {
+            onClick: (event: any, rowData: Asset) => {
                 setDeleteData(rowData)
                 toggle()
             },
@@ -195,7 +237,7 @@ const JansAssetListPage = () => {
 
     return (
         <GluuLoader blocking={loadingAssets}>
-            <Card style={applicationStyle.mainCard}>
+            <Card type="border" color={null} className="">
                 <CardBody>
                     <GluuViewWrapper canShow={hasPermission(permissions, ASSETS_READ)}>
                         <MaterialTable
@@ -212,15 +254,16 @@ const JansAssetListPage = () => {
                                     title: `${t('fields.description')}`,
                                     field: 'description',
                                     width: '40%',
-                                    render: rowData => (
+                                    render: (rowData: Asset) => (
                                         <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
                                             {rowData.description}
                                         </div>
                                     )
                                 },
                                 {
-                                    title: `${t('fields.creationDate')}`, field: 'creationDate',
-                                    render: rowData => (
+                                    title: `${t('fields.creationDate')}`, 
+                                    field: 'creationDate',
+                                    render: (rowData: Asset) => (
                                         <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
                                             {moment(rowData.creationDate).format('YYYY-MM-DD')}
                                         </div>
@@ -238,13 +281,13 @@ const JansAssetListPage = () => {
                                 searchFieldAlignment: 'left',
                                 selection: false,
                                 pageSize: limit,
-                                rowStyle: (rowData) => ({
+                                rowStyle: (rowData: Asset) => ({
                                     backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
                                 }),
                                 headerStyle: {
                                     ...applicationStyle.tableHeaderStyle,
                                     ...bgThemeColor,
-                                },
+                                } as React.CSSProperties,
                                 actionsColumnIndex: -1,
                             }}
                         />

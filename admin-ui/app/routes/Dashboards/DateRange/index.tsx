@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import { buildPayload } from "Utils/PermChecker";
@@ -8,16 +7,25 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDispatch } from "react-redux";
 import { getMau } from "Plugins/admin/redux/features/mauSlice";
 import { useTranslation } from "react-i18next";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
-export default function MaterialUIPickers() {
+interface UserAction {
+  [key: string]: any;
+}
+
+interface Options {
+  startMonth?: string;
+  endMonth?: string;
+  [key: string]: any;
+}
+
+export default function MaterialUIPickers(): JSX.Element {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  // The first commit of Material-UI
-  const [startDate, setStartDate] = useState(dayjs().subtract(3, "months"));
-  const [endDate, setEndDate] = useState(dayjs());
-  const userAction = {};
-  const options = {};
+  const [startDate, setStartDate] = useState<Dayjs>(dayjs().subtract(3, "months"));
+  const [endDate, setEndDate] = useState<Dayjs>(dayjs());
+  const userAction: UserAction = {};
+  const options: Options = {};
 
   useEffect(() => {
     options["startMonth"] = startDate.format("YYYYMM");
@@ -26,7 +34,7 @@ export default function MaterialUIPickers() {
     dispatch(getMau({ action: userAction }));
   }, [startDate, endDate]);
 
-  const setDate = (val, type) => {
+  const setDate = (val: Dayjs | null, type: "start" | "end"): void => {
     if (type === "start") {
       setStartDate(dayjs(val));
     } else {

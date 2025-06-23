@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import {
   XAxis,
@@ -15,32 +14,51 @@ import { useSelector } from 'react-redux'
 import TooltipDesign from './TooltipDesign'
 import moment from 'moment'
 
-const DashboardChart = () => {
-  const statData = useSelector((state) => state.mauReducer.stat)
-  const startMonth = useSelector((state) => state.mauReducer.startMonth)
-  const endMonth = useSelector((state) => state.mauReducer.endMonth)
+// Type definitions
+interface StatDataItem {
+  month: string
+  mau: number
+  client_credentials_access_token_count: number
+  authz_code_access_token_count: number
+  authz_code_idtoken_count: number
+}
 
-  function doDataAugmentation(stat) {
+interface RootState {
+  mauReducer: {
+    stat: StatDataItem[]
+    loading: boolean
+    startMonth: string
+    endMonth: string
+  }
+}
+
+const DashboardChart: React.FC = () => {
+  const statData = useSelector((state: RootState) => state.mauReducer.stat)
+  const startMonth = useSelector((state: RootState) => state.mauReducer.startMonth)
+  const endMonth = useSelector((state: RootState) => state.mauReducer.endMonth)
+
+  function doDataAugmentation(stat: StatDataItem[]): StatDataItem[] {
     if (startMonth && endMonth) {
       const dateStart = moment(startMonth, 'YYYYMM')
       const dateEnd = moment(endMonth, 'YYYYMM')
-      const prepareStat = []
+      const prepareStat: StatDataItem[] = []
       while (
         dateEnd > dateStart ||
         dateStart.format('M') === dateEnd.format('M')
       ) {
-        const available = stat.filter((obj) => {
+        const available = stat.filter((obj: StatDataItem) => {
           return obj.month == dateStart.format('YYYYMM')
         })
         if (available.length) {
           prepareStat.push(available[0])
         } else {
-          const newEntry = new Object()
-          newEntry['month'] = dateStart.format('YYYYMM')
-          newEntry['mau'] = 0
-          newEntry['client_credentials_access_token_count'] = 0
-          newEntry['authz_code_access_token_count'] = 0
-          newEntry['authz_code_idtoken_count'] = 0
+          const newEntry: StatDataItem = {
+            month: dateStart.format('YYYYMM'),
+            mau: 0,
+            client_credentials_access_token_count: 0,
+            authz_code_access_token_count: 0,
+            authz_code_idtoken_count: 0
+          }
           prepareStat.push(newEntry)
         }
         dateStart.add(1, 'month')

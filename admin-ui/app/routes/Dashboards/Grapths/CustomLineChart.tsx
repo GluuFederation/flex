@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import {
   LineChart,
@@ -10,7 +9,19 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-function CustomLineChart({ data }) {
+
+interface DataPoint {
+  month: string
+  client_credentials_access_token_count: number
+  authz_code_access_token_count: number
+  authz_code_idtoken_count: number
+}
+
+interface CustomLineChartProps {
+  data: DataPoint[]
+}
+
+function CustomLineChart({ data }: CustomLineChartProps) {
   return (
     <ResponsiveContainer className="bar" width="100%" height={400}>
       <LineChart width={400} height={400} data={data}>

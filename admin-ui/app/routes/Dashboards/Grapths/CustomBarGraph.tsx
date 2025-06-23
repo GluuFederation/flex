@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import {
   BarChart,
@@ -11,14 +10,25 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 
-function CustomPieGraph({ data }) {
+interface DataItem {
+  month: string
+  client_credentials_access_token_count: number
+  authz_code_access_token_count: number
+  authz_code_idtoken_count: number
+}
+
+interface CustomPieGraphProps {
+  data: DataItem[]
+}
+
+function CustomPieGraph({ data }: CustomPieGraphProps) {
   return (
     <ResponsiveContainer>
       <BarChart
         width={400}
         height={400}
         data={data.sort(
-          (a, b) => parseInt(a.month, 10) - parseInt(b.month, 10),
+          (a: DataItem, b: DataItem) => parseInt(a.month, 10) - parseInt(b.month, 10),
         )}
       >
         <CartesianGrid strokeDasharray="3 3" />

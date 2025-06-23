@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useMemo } from 'react'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -23,11 +22,11 @@ import CrossIcon from '../../images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 import { formatDate } from 'Utils/Util'
-import UsersIcon from 'components/SVG/menu/Users'
-import Administrator from 'components/SVG/menu/Administrator'
-import OAuthIcon from 'components/SVG/menu/OAuth'
-import JansLockUsers from 'components/SVG/menu/JansLockUsers'
-import JansLockClients from 'components/SVG/menu/JansLockClients'
+import UsersIcon from '../../components/SVG/menu/Users'
+import Administrator from '../../components/SVG/menu/Administrator'
+import OAuthIcon from '../../components/SVG/menu/OAuth'
+import JansLockUsers from '../../components/SVG/menu/JansLockUsers'
+import JansLockClients from '../../components/SVG/menu/JansLockClients'
 import { getHealthServerStatus } from '../../redux/features/healthSlice'
 import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
 import { auditLogoutLogs } from '../../../plugins/user-management/redux/features/userSlice'
@@ -35,35 +34,111 @@ import { useNavigate } from 'react-router'
 import { getLockStatus } from 'Redux/features/lockSlice'
 import moment from 'moment'
 
-function DashboardPage() {
+// Type definitions
+interface StatDataItem {
+  month: number
+  mau: number
+  authz_code_access_token_count: number
+  client_credentials_access_token_count: number
+  authz_code_idtoken_count: number
+}
+
+interface LockDetailItem {
+  monthly_active_users: number
+  monthly_active_clients: number
+}
+
+interface SummaryDataItem {
+  text: string
+  value: number
+  icon: React.ReactNode
+}
+
+interface UserInfoItem {
+  text: string
+  value: string | undefined
+  key?: string
+}
+
+interface StatusDetailItem {
+  label: string
+  status: string | null
+  key: string
+}
+
+interface RootState {
+  mauReducer: {
+    stat: StatDataItem[]
+    loading: boolean
+  }
+  initReducer: {
+    clients: any[]
+    totalClientsEntries: number
+  }
+  lockReducer: {
+    lockDetail: LockDetailItem[]
+  }
+  licenseDetailsReducer: {
+    item: {
+      productName?: string
+      licenseType?: string
+      customerEmail?: string
+      customerFirstName?: string
+      customerLastName?: string
+      validityPeriod?: string
+      licenseActive?: boolean
+    }
+  }
+  healthReducer: {
+    serverStatus: string | null
+    health: Record<string, string>
+    dbStatus: string | null
+  }
+  authReducer: {
+    token?: {
+      access_token: string
+    }
+    permissions: string[]
+  }
+}
+
+interface UserAction {
+  [key: string]: any
+}
+
+interface Options {
+  [key: string]: any
+}
+
+const DashboardPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const breakDashboardCard = useMediaQuery({ query: '(max-width: 1424px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
-  const userAction = {}
-  const options = {}
+  const userAction: UserAction = {}
+  const options: Options = {}
   const { classes } = styles()
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
-  const [mauCount, setMauCount] = useState(null)
-  const [tokenCount, setTokenCount] = useState(null)
+  const [mauCount, setMauCount] = useState<number | null>(null)
+  const [tokenCount, setTokenCount] = useState<number | null>(null)
 
-  const statData = useSelector(state => state.mauReducer.stat)
-  const loading = useSelector(state => state.mauReducer.loading)
-  const clients = useSelector(state => state.initReducer.clients)
-  const lock = useSelector(state => state.lockReducer.lockDetail)
+  const statData = useSelector((state: RootState) => state.mauReducer.stat)
+  const loading = useSelector((state: RootState) => state.mauReducer.loading)
+  const clients = useSelector((state: RootState) => state.initReducer.clients)
+  const lock = useSelector((state: RootState) => state.lockReducer.lockDetail)
 
   const totalClientsEntries = useSelector(
-    state => state.initReducer.totalClientsEntries
+    (state: RootState) => state.initReducer.totalClientsEntries
   )
-  const license = useSelector(state => state.licenseDetailsReducer.item)
-  const serverStatus = useSelector(state => state.healthReducer.serverStatus)
-  const serverHealth = useSelector(state => state.healthReducer.health)
-  const dbStatus = useSelector(state => state.healthReducer.dbStatus)
+  const license = useSelector((state: RootState) => state.licenseDetailsReducer.item)
+  const serverStatus = useSelector((state: RootState) => state.healthReducer.serverStatus)
+  const serverHealth = useSelector((state: RootState) => state.healthReducer.health)
+  const dbStatus = useSelector((state: RootState) => state.healthReducer.dbStatus)
   const access_token = useSelector(
-    state => state.authReducer.token?.access_token
+    (state: RootState) => state.authReducer.token?.access_token
   )
-  const permissions = useSelector(state => state.authReducer.permissions)
+  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
   const dispatch = useDispatch()
 
   SetTitle(t('menus.dashboard'))
@@ -75,13 +150,13 @@ function DashboardPage() {
     const formattedMonth = currentMonth > 9 ? currentMonth : `0${currentMonth}`
     const yearMonth = `${currentYear}${formattedMonth}`
     const currentMonthData = statData.find(
-      ({ month }) => month.toString() === yearMonth
+      ({ month }: StatDataItem) => month.toString() === yearMonth
     )
 
     const mau = currentMonthData?.mau
     const token =
-      currentMonthData?.authz_code_access_token_count +
-      currentMonthData?.client_credentials_access_token_count
+      (currentMonthData?.authz_code_access_token_count || 0) +
+      (currentMonthData?.client_credentials_access_token_count || 0)
     if (mau) {
       setMauCount(mau)
     }
@@ -98,7 +173,7 @@ function DashboardPage() {
     ) {
       getLicense()
     }
-  }, [access_token, license])
+  }, [access_token, license, permissions])
 
   useEffect(() => {
     if (
@@ -107,25 +182,25 @@ function DashboardPage() {
       hasBoth(permissions, STAT_READ, STAT_JANS_READ)
     ) {
       buildPayload(userAction, 'Fetch openid connect clients', {})
-      dispatch(getClients({ action: userAction }))
+      dispatch(getClients())
     }
-  }, [access_token, clients])
+  }, [access_token, clients, permissions, dispatch])
 
   useEffect(() => {
     if (access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
       getServerStatus()
       getJansLockDetails()
       buildPayload(userAction, 'GET Health Status', { service: 'all' })
-      dispatch(getHealthServerStatus({ action: userAction }))
+      dispatch(getHealthServerStatus())
     }
-  }, [access_token])
+  }, [access_token, permissions, dispatch])
 
-  function getLicense() {
+  function getLicense(): void {
     buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
-    dispatch(getLicenseDetails({}))
+    dispatch(getLicenseDetails())
   }
 
-  function isUp(status) {
+  function isUp(status: string | null): boolean {
     if (status) {
       return (
         status.toUpperCase() === 'ONLINE'.toUpperCase() ||
@@ -135,44 +210,39 @@ function DashboardPage() {
     return false
   }
 
-  function getServerStatus() {
+  function getServerStatus(): void {
     buildPayload(userAction, 'GET Health Status', options)
-    dispatch(getHealthStatus({ action: userAction }))
+    dispatch(getHealthStatus())
   }
 
-  function getJansLockDetails() {
-    const months = []
+  function getJansLockDetails(): void {
+    const months: string[] = []
     for (let i = 0; i < 12; i++) {
       months.push(moment().subtract(i, 'months').format('YYYYMM'))
     }
     const startMonth = months[months.length - 1]
     const endMonth = months[0]
 
-    dispatch(
-      getLockStatus({
-        startMonth,
-        endMonth
-      })
-    )
+    dispatch(getLockStatus())
   }
 
-  let summaryData = [
+  let summaryData: SummaryDataItem[] = [
     {
       text: t('dashboard.oidc_clients_count'),
       value: totalClientsEntries,
       icon: (
-        <Administrator className={classes.summaryIcon} style={{ top: '8px' }} />
+        <Administrator className={classes.summaryIcon} fill="#000000" />
       )
     },
     {
       text: t('dashboard.active_users_count'),
       value: mauCount ?? 0,
-      icon: <UsersIcon className={classes.summaryIcon} style={{ top: '4px' }} />
+      icon: <UsersIcon className={classes.summaryIcon} />
     },
     {
       text: t('dashboard.token_issued_count'),
       value: tokenCount ?? 0,
-      icon: <OAuthIcon className={classes.summaryIcon} style={{ top: '8px' }} />
+      icon: <OAuthIcon className={classes.summaryIcon} />
     }
   ]
 
@@ -184,7 +254,7 @@ function DashboardPage() {
         icon: (
           <JansLockUsers
             className={classes.summaryIcon}
-            style={{ top: '8px' }}
+            style={{ fill: '#000000' }}
           />
         )
       },
@@ -194,14 +264,14 @@ function DashboardPage() {
         icon: (
           <JansLockClients
             className={classes.summaryIcon}
-            style={{ top: '8px' }}
+            style={{ fill: '#000000' }}
           />
         )
       }
     )
   }
 
-  const userInfo = [
+  const userInfo: UserInfoItem[] = [
     {
       text: t('dashboard.product_name'),
       value: license?.productName
@@ -232,7 +302,7 @@ function DashboardPage() {
     }
   ]
 
-  const statusDetails = [
+  const statusDetails: StatusDetailItem[] = [
     {
       label: 'menus.oauthserver',
       status: serverStatus,
@@ -247,14 +317,14 @@ function DashboardPage() {
     { label: 'FIDO', status: serverStatus, key: 'jans-fido2' },
     { label: 'CASA', status: serverStatus, key: 'jans-casa' },
     { label: 'dashboard.key_cloak', status: serverStatus, key: 'keycloak' },
-    { label: 'SCIM', status: false, key: 'jans-scim' },
+    { label: 'SCIM', status: null, key: 'jans-scim' },
     { label: 'dashboard.jans_lock', status: serverStatus, key: 'jans-lock' }
   ]
 
   // Helper function to get the status value
-  const getStatusValue = key => {
+  const getStatusValue = (key: string): string | null => {
     if (key !== 'db_status' && key !== 'status') {
-      return serverHealth[key]
+      return serverHealth[key] || null
     } else if (key === 'db_status') {
       return dbStatus
     } else {
@@ -263,19 +333,19 @@ function DashboardPage() {
   }
 
   // Helper function to determine the class name
-  const getClassName = key => {
+  const getClassName = (key: string): string => {
     const value = getStatusValue(key)
     return isUp(value) ? classes.checkText : classes.crossText
   }
 
   // Helper function to get the status text
-  const getStatusText = key => {
+  const getStatusText = (key: string): string => {
     const value = getStatusValue(key)
     return isUp(value) ? 'Running' : 'Down'
   }
 
   // Helper function to get the icon
-  const getStatusIcon = key => {
+  const getStatusIcon = (key: string): string => {
     const value = getStatusValue(key)
     return isUp(value) ? CheckIcon : CrossIcon
   }
@@ -338,7 +408,7 @@ function DashboardPage() {
     )
   }, [serverStatus, serverHealth, dbStatus, t, statusDetails, classes])
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     if (access_token) {
       dispatch(
         auditLogoutLogs({
@@ -407,7 +477,6 @@ function DashboardPage() {
               <Paper
                 className={`${classes.dashboardCard} top-minus-40 d-flex justify-content-center`}
                 elevation={0}
-                spacing={2}
               >
                 <Grid className={classes.flex} container>
                   <Grid item xs={12} className={isMobile ? 'mt-20' : ''}>
