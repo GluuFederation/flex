@@ -16,24 +16,18 @@ function UserEditPage() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const userDetails = useSelector((state: any) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector(
-    (state: any) => state.attributesReducerRoot.items
-  )
+  const personAttributes = useSelector((state: any) => state.attributesReducerRoot.items)
   const redirectToUserListPage = useSelector(
-    (state: any) => state.userReducer.redirectToUserListPage
+    (state: any) => state.userReducer.redirectToUserListPage,
   )
-  const loadingAttributes = useSelector(
-    (state: any) => state.attributesReducerRoot.initLoading
-  )
+  const loadingAttributes = useSelector((state: any) => state.attributesReducerRoot.initLoading)
 
-  let options: any = {}
+  const options: any = {}
   useEffect(() => {
     dispatch(getPersistenceType())
   }, [])
 
-  const persistenceType = useSelector(
-    (state: any) => state.persistenceTypeReducer.type
-  )
+  const persistenceType = useSelector((state: any) => state.persistenceTypeReducer.type)
 
   useEffect(() => {
     if (redirectToUserListPage) {
@@ -41,28 +35,21 @@ function UserEditPage() {
     }
   }, [redirectToUserListPage])
 
-
   const createCustomAttributes = (values: any) => {
-    let customAttributes = []
+    const customAttributes = []
     if (values) {
-      for (let key in values) {
-        let customAttribute = personAttributes.filter((e: any) => e.name == key)
+      for (const key in values) {
+        const customAttribute = personAttributes.filter((e: any) => e.name == key)
         if (personAttributes.some((e: any) => e.name == key)) {
           let obj = {}
           if (!customAttribute[0]?.oxMultiValuedAttribute) {
-            let val = []
+            const val = []
             let value = values[key]
             if (key != 'birthdate') {
               val.push(values[key])
             } else {
-              values[key]
-                ? val.push(
-                  moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
-                )
-                : null
-              value = values[key]
-                ? moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
-                : null
+              values[key] ? val.push(moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')) : null
+              value = values[key] ? moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD') : null
             }
             obj = {
               name: key,
@@ -70,9 +57,9 @@ function UserEditPage() {
               values: val,
             }
           } else {
-            let valE = []
+            const valE = []
             if (values[key]) {
-              for (let i in values[key]) {
+              for (const i in values[key]) {
                 if (typeof values[key][i] == 'object') {
                   valE.push(values[key][i][key])
                 } else {
@@ -94,10 +81,10 @@ function UserEditPage() {
   }
 
   const submitData = (values: any, modifiedFields: any, usermessage: any) => {
-    let customAttributes = createCustomAttributes(values)
-    let inum = userDetails.inum
+    const customAttributes = createCustomAttributes(values)
+    const inum = userDetails.inum
 
-    let submitableValues: any = {
+    const submitableValues: any = {
       inum: inum,
       userId: values.userId || '',
       mail: values.mail,
@@ -108,20 +95,19 @@ function UserEditPage() {
       dn: userDetails.dn,
     }
     if (persistenceType == 'ldap') {
-      submitableValues['customObjectClasses'] = [
-        'top',
-        'jansPerson',
-        'jansCustomPerson',
-      ]
+      submitableValues['customObjectClasses'] = ['top', 'jansPerson', 'jansCustomPerson']
     }
 
     const postValue = Object.keys(modifiedFields).map((key) => {
       return {
         [key]: modifiedFields[key],
       }
-    });
+    })
     submitableValues['modifiedFields'] = postValue
-    submitableValues['performedOn'] = {user_inum: userDetails.inum, useId: userDetails.displayName}
+    submitableValues['performedOn'] = {
+      user_inum: userDetails.inum,
+      useId: userDetails.displayName,
+    }
     submitableValues['action_message'] = usermessage
 
     dispatch(updateUser(submitableValues))
@@ -142,7 +128,7 @@ function UserEditPage() {
         show={false}
       />
       <Container>
-        <Card className='mb-3'>
+        <Card type="border" color={null} className="mb-3">
           <CardBody>
             {loadingAttributes ? (
               <GluuLoader blocking={loadingAttributes} />
