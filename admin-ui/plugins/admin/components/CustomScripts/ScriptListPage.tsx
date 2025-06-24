@@ -25,66 +25,165 @@ import {
   SCRIPT_WRITE,
   SCRIPT_DELETE,
 } from 'Utils/PermChecker'
-import {
-  LIMIT_ID,
-  LIMIT,
-  PATTERN,
-  PATTERN_ID,
-  TYPE,
-  TYPE_ID,
-} from '../../common/Constants'
+import { LIMIT_ID, LIMIT, PATTERN, PATTERN_ID, TYPE, TYPE_ID } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
-function ScriptListTable() {
+// Type definitions
+interface ModuleProperty {
+  value1: string
+  value2: string
+  description?: string
+}
+
+interface ConfigurationProperty {
+  value1: string
+  value2: string
+  hide?: boolean
+}
+
+interface ScriptType {
+  value: string
+  name: string
+}
+
+interface CustomScript {
+  inum?: string
+  name: string
+  description?: string
+  scriptType: string
+  programmingLanguage: string
+  level: number
+  script?: string
+  aliases?: string[]
+  moduleProperties?: ModuleProperty[]
+  configurationProperties?: ConfigurationProperty[]
+  enabled: boolean
+  locationType?: string
+  locationPath?: string
+  scriptError?: {
+    stackTrace: string
+  }
+  revision?: number
+  internal?: boolean
+}
+
+interface CustomScriptState {
+  items: CustomScript[]
+  loading: boolean
+  view: boolean
+  saveOperationFlag: boolean
+  errorInSaveOperationFlag: boolean
+  totalItems: number
+  entriesCount: number
+  scriptTypes: ScriptType[]
+  hasFetchedScriptTypes: boolean
+  loadingScriptTypes: boolean
+  item?: CustomScript
+}
+
+interface RootState {
+  customScriptReducer: CustomScriptState
+  authReducer: {
+    permissions: string[]
+  }
+}
+
+interface ThemeState {
+  theme: string
+}
+
+interface ThemeContextType {
+  state: ThemeState
+}
+
+interface OptionsType {
+  [key: string]: string | number
+}
+
+interface UserActionType {
+  [key: string]: any
+}
+
+interface SearchEvent {
+  target: {
+    name: string
+    value: string
+    keyCode?: number
+  }
+}
+
+interface TableAction {
+  icon: string | (() => React.ReactElement)
+  iconProps?: {
+    id?: string
+    color?:
+      | 'primary'
+      | 'secondary'
+      | 'action'
+      | 'inherit'
+      | 'disabled'
+      | 'error'
+      | 'info'
+      | 'success'
+      | 'warning'
+  }
+  tooltip: string
+  onClick: (event: any, data: CustomScript | CustomScript[]) => void
+  disabled?: boolean
+  isFreeAction?: boolean
+}
+
+function ScriptListTable(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const userAction = {}
-  const options = {}
-  const myActions = []
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
-  const pageSize = localStorage.getItem('paggingSize') || 10
-  const [limit, setLimit] = useState(pageSize)
-  const [pattern, setPattern] = useState(null)
-  const [type, setType] = useState('person_authentication')
-  const toggle = () => setModal(!modal)
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const userAction: UserActionType = {}
+  const options: OptionsType = {}
+  const myActions: (TableAction | ((rowData: CustomScript) => TableAction))[] = []
+  const [item, setItem] = useState<CustomScript>({} as CustomScript)
+  const [modal, setModal] = useState<boolean>(false)
+  const pageSize = localStorage.getItem('paggingSize') || '10'
+  const [limit, setLimit] = useState<number>(parseInt(pageSize))
+  const [pattern, setPattern] = useState<string | null>(null)
+  const [type, setType] = useState<string>('person_authentication')
+  const toggle = (): void => setModal(!modal)
+  const theme = useContext(ThemeContext) as ThemeContextType
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const scripts = useSelector((state) => state.customScriptReducer.items)
-  const loading = useSelector((state) => state.customScriptReducer.loading)
+  const scripts = useSelector((state: RootState) => state.customScriptReducer.items)
+  const loading = useSelector((state: RootState) => state.customScriptReducer.loading)
   const hasFetchedScriptTypes = useSelector(
-    (state) => state.customScriptReducer.hasFetchedScriptTypes
+    (state: RootState) => state.customScriptReducer.hasFetchedScriptTypes,
   )
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
   const { totalItems, scriptTypes, loadingScriptTypes } = useSelector(
-    (state) => state.customScriptReducer
+    (state: RootState) => state.customScriptReducer,
   )
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState<number>(0)
   let memoPattern = pattern
   let memoType = type
   SetTitle(t('titles.scripts'))
 
-  function makeOptions() {
+  function makeOptions(): void {
     setPattern(memoPattern)
     setType(memoType)
-    options[LIMIT] = parseInt(limit)
+    options[LIMIT] = limit
     if (memoPattern) {
       options[PATTERN] = memoPattern
     }
-    if (memoType != '') {
+    if (memoType !== '') {
       options[TYPE] = memoType
     }
   }
+
   useEffect(() => {
     makeOptions()
-    dispatch(getCustomScriptByType({ action: options }))
+    dispatch(getCustomScriptByType({ action: options } as any))
   }, [])
 
   useEffect(() => {
@@ -94,29 +193,32 @@ function ScriptListTable() {
   }, [hasFetchedScriptTypes])
 
   if (hasPermission(permissions, SCRIPT_WRITE)) {
-    myActions.push((rowData) => ({
-      icon: 'edit',
-      iconProps: {
-        id: 'editCustomScript' + rowData.inum,
-      },
-      tooltip: `${t('messages.edit_script')}`,
-      onClick: (event, entry) => {
-        handleGoToCustomScriptEditPage(entry)
-      },
-      disabled: false,
-    }))
+    myActions.push(
+      (rowData: CustomScript): TableAction => ({
+        icon: 'edit',
+        iconProps: {
+          id: 'editCustomScript' + rowData.inum,
+        },
+        tooltip: `${t('messages.edit_script')}`,
+        onClick: (event, entry) => {
+          handleGoToCustomScriptEditPage(entry as CustomScript, false)
+        },
+        disabled: false,
+      }),
+    )
   }
   if (hasPermission(permissions, SCRIPT_READ)) {
-    myActions.push((rowData) => ({
-      icon: 'visibility',
-      iconProps: {
-        id: 'viewCustomScript' + rowData.inum,
-      },
-      tooltip: `${t('messages.view_script_details')}`,
-      onClick: (event, rowData) =>
-        handleGoToCustomScriptEditPage(rowData, true),
-      disabled: false,
-    }))
+    myActions.push(
+      (rowData: CustomScript): TableAction => ({
+        icon: 'visibility',
+        iconProps: {
+          id: 'viewCustomScript' + rowData.inum,
+        },
+        tooltip: `${t('messages.view_script_details')}`,
+        onClick: (event, rowData) => handleGoToCustomScriptEditPage(rowData as CustomScript, true),
+        disabled: false,
+      }),
+    )
   }
   if (hasPermission(permissions, SCRIPT_READ)) {
     myActions.push({
@@ -124,11 +226,7 @@ function ScriptListTable() {
         <>
           {loadingScriptTypes ? (
             <>
-              <Skeleton
-                variant='text'
-                width='10rem'
-                sx={{ fontSize: '3rem' }}
-              />
+              <Skeleton variant="text" width="10rem" sx={{ fontSize: '3rem' }} />
             </>
           ) : (
             <GluuCustomScriptSearch
@@ -147,6 +245,7 @@ function ScriptListTable() {
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
+      onClick: () => {},
     })
   }
   if (hasPermission(permissions, SCRIPT_READ)) {
@@ -157,20 +256,22 @@ function ScriptListTable() {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        dispatch(getCustomScriptByType({ action: options }))
+        dispatch(getCustomScriptByType({ action: options } as any))
       },
     })
   }
   if (hasPermission(permissions, SCRIPT_DELETE)) {
-    myActions.push((rowData) => ({
-      icon: () => <DeleteOutlined />,
-      iconProps: {
-        id: 'deleteCustomScript' + rowData.inum,
-      },
-      tooltip: `${t('messages.delete_script')}`,
-      onClick: (event, row) => handleCustomScriptDelete(row),
-      disabled: false,
-    }))
+    myActions.push(
+      (rowData: CustomScript): TableAction => ({
+        icon: () => <DeleteOutlined />,
+        iconProps: {
+          id: 'deleteCustomScript' + rowData.inum,
+        },
+        tooltip: `${t('messages.delete_script')}`,
+        onClick: (event, row) => handleCustomScriptDelete(row as CustomScript),
+        disabled: false,
+      }),
+    )
   }
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push({
@@ -181,53 +282,59 @@ function ScriptListTable() {
       onClick: () => handleGoToCustomScriptAddPage(),
     })
   }
-  function handleOptionsChange(event) {
+
+  function handleOptionsChange(event: SearchEvent): void {
     const name = event.target.name
-    if (name == 'pattern') {
+    if (name === 'pattern') {
       memoPattern = event.target.value
-      if (event.keyCode === 13) {
+      if (event.target.keyCode === 13) {
         makeOptions()
-        dispatch(getCustomScriptByType({ action: options }))
+        dispatch(getCustomScriptByType({ action: options } as any))
       }
-    } else if (name == 'type') {
+    } else if (name === 'type') {
       memoType = event.target.value
       makeOptions()
-      dispatch(getCustomScriptByType({ action: options }))
+      dispatch(getCustomScriptByType({ action: options } as any))
     }
   }
-  function handleGoToCustomScriptAddPage() {
+
+  function handleGoToCustomScriptAddPage(): void {
     return navigate('/adm/script/new')
   }
-  function handleGoToCustomScriptEditPage(row, edition) {
+
+  function handleGoToCustomScriptEditPage(row: CustomScript, edition?: boolean): void {
     dispatch(viewOnly({ view: edition }))
     dispatch(setCurrentItem({ item: row }))
     return navigate(`/adm/script/edit/:` + row.inum)
   }
-  function handleCustomScriptDelete(row) {
+
+  function handleCustomScriptDelete(row: CustomScript): void {
     setItem(row)
     toggle()
   }
-  function onDeletionConfirmed(message) {
+
+  function onDeletionConfirmed(message: string): void {
     buildPayload(userAction, message, item.inum)
-    dispatch(deleteCustomScript({ action: userAction }))
+    dispatch(deleteCustomScript({ action: userAction } as any))
     navigate('/adm/scripts')
     toggle()
   }
 
-  const onPageChangeClick = (page) => {
+  const onPageChangeClick = (page: number): void => {
     makeOptions()
-    let startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
+    const startCount = page * limit
+    options['startIndex'] = startCount
     options['limit'] = limit
     setPageNumber(page)
-    dispatch(getCustomScriptByType({ action: options }))
+    dispatch(getCustomScriptByType({ action: options } as any))
   }
-  const onRowCountChangeClick = (count) => {
+
+  const onRowCountChangeClick = (count: number): void => {
     makeOptions()
     options['limit'] = count
     setPageNumber(0)
     setLimit(count)
-    dispatch(getCustomScriptByType({ action: options }))
+    dispatch(getCustomScriptByType({ action: options } as any))
   }
 
   return (
@@ -246,8 +353,8 @@ function ScriptListTable() {
                     onPageChangeClick(page)
                   }}
                   rowsPerPage={limit}
-                  onRowsPerPageChange={(prop, count) =>
-                    onRowCountChangeClick(count.props.value)
+                  onRowsPerPageChange={(event) =>
+                    onRowCountChangeClick(parseInt(event.target.value))
                   }
                 />
               ),
@@ -259,14 +366,8 @@ function ScriptListTable() {
                 title: `${t('options.enabled')}`,
                 field: 'enabled',
                 type: 'boolean',
-                render: (rowData) => (
-                  <Badge
-                    color={
-                      rowData.enabled == true
-                        ? `primary-${selectedTheme}`
-                        : 'dimmed'
-                    }
-                  >
+                render: (rowData: CustomScript) => (
+                  <Badge color={rowData.enabled === true ? `primary-${selectedTheme}` : 'dimmed'}>
                     {rowData.enabled ? 'true' : 'false'}
                   </Badge>
                 ),
@@ -275,7 +376,7 @@ function ScriptListTable() {
             ]}
             data={scripts}
             isLoading={loading}
-            title=''
+            title=""
             actions={myActions}
             options={{
               search: false,
@@ -283,7 +384,7 @@ function ScriptListTable() {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: limit,
-              rowStyle: (rowData) => ({
+              rowStyle: (rowData: CustomScript) => ({
                 backgroundColor:
                   rowData.enabled && rowData?.scriptError?.stackTrace
                     ? '#FF5858'
@@ -294,7 +395,7 @@ function ScriptListTable() {
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
                 ...bgThemeColor,
-              },
+              } as React.CSSProperties,
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
@@ -307,7 +408,7 @@ function ScriptListTable() {
             row={item}
             handler={toggle}
             modal={modal}
-            subject='script'
+            subject="script"
             onAccept={onDeletionConfirmed}
             feature={adminUiFeatures.custom_script_delete}
           />

@@ -2,14 +2,7 @@ import React, { Suspense, lazy, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Toggle from 'react-toggle'
-import {
-  Col,
-  InputGroup,
-  CustomInput,
-  Form,
-  FormGroup,
-  Input,
-} from 'Components'
+import { Col, InputGroup, CustomInput, Form, FormGroup, Input } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
@@ -17,8 +10,8 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { Alert, Button } from "reactstrap";
-import ErrorIcon from '@mui/icons-material/Error';
+import { Alert, Button } from 'reactstrap'
+import ErrorIcon from '@mui/icons-material/Error'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 import { useSelector } from 'react-redux'
 import { Skeleton } from '@mui/material'
@@ -26,11 +19,82 @@ import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
-const Counter = lazy(() => import('Components/Widgets/GroupedButtons/Counter'))
+const Counter = lazy(() => import('../../../../app/components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
 
-function CustomScriptForm({ item, handleSubmit, viewOnly }) {
-  const { scriptTypes, loadingScriptTypes } = useSelector((state) => state.customScriptReducer)
+// Type definitions
+interface ModuleProperty {
+  value1: string
+  value2: string
+  description?: string
+  hide?: boolean
+}
+
+interface ConfigurationProperty {
+  value1: string
+  value2: string
+  hide?: boolean
+}
+
+interface ScriptType {
+  value: string
+  name: string
+}
+
+interface CustomScript {
+  inum?: string
+  name: string
+  description?: string
+  scriptType: string
+  programmingLanguage: string
+  level: number
+  script?: string
+  aliases?: string[]
+  moduleProperties?: ModuleProperty[]
+  configurationProperties?: ConfigurationProperty[]
+  enabled: boolean
+  locationType?: string
+  locationPath?: string
+  scriptError?: {
+    stackTrace: string
+  }
+}
+
+interface FormValues {
+  name: string
+  description: string
+  scriptType: string
+  programmingLanguage: string
+  level: number
+  script?: string
+  aliases?: string[]
+  moduleProperties: ModuleProperty[]
+  configurationProperties: ConfigurationProperty[]
+  script_path?: string
+  locationPath?: string
+  location_type?: string
+  enabled?: boolean
+}
+
+interface CustomScriptState {
+  scriptTypes: ScriptType[]
+  loadingScriptTypes: boolean
+}
+
+interface RootState {
+  customScriptReducer: CustomScriptState
+}
+
+interface CustomScriptFormProps {
+  item: CustomScript
+  handleSubmit: (data: { customScript: CustomScript }) => void
+  viewOnly: boolean
+}
+
+function CustomScriptForm({ item, handleSubmit, viewOnly }: CustomScriptFormProps) {
+  const { scriptTypes, loadingScriptTypes } = useSelector(
+    (state: RootState) => state.customScriptReducer,
+  )
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -42,19 +106,16 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
     }
 
     if (
-      item.moduleProperties.filter((i) => i.value1 === 'location_type').length >
-      0
+      item.moduleProperties.filter((i: ModuleProperty) => i.value1 === 'location_type').length > 0
     ) {
       return (
-        item.moduleProperties.filter((it) => it.value1 === 'location_type')[0]
+        item.moduleProperties.filter((it: ModuleProperty) => it.value1 === 'location_type')[0]
           .value2 == 'file'
       )
     }
     return false
   })
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    item.programmingLanguage,
-  )
+  const [selectedLanguage, setSelectedLanguage] = useState(item.programmingLanguage)
 
   function activate() {
     if (!init) {
@@ -67,15 +128,19 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
 
   function submitForm() {
     toggle()
-    document.getElementsByClassName('UserActionSubmitButton')[0].click()
+    const submitButton = document.getElementsByClassName('UserActionSubmitButton')[0] as HTMLElement
+    if (submitButton) {
+      submitButton.click()
+    }
   }
 
-  function getPropertiesConfig(entry, key) {
-    if (
-      entry[key] &&
-      Array.isArray(entry[key])
-    ) {
-      return entry[key].map((e) => ({
+  function getPropertiesConfig(
+    entry: CustomScript,
+    key: keyof CustomScript,
+  ): Array<{ key: string; value: string }> {
+    const properties = entry[key] as ModuleProperty[] | ConfigurationProperty[]
+    if (properties && Array.isArray(properties)) {
+      return properties.map((e) => ({
         key: e.value1,
         value: e.value2,
       }))
@@ -84,67 +149,59 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
     }
   }
 
-  const defaultScriptPathValue = 
+  const defaultScriptPathValue =
     !!item?.moduleProperties &&
-      item?.moduleProperties?.filter(
-        (i) => i.value1 === 'location_path',
-      ).length > 0
-      ? item?.moduleProperties?.filter(
-        (it) => it.value1 === 'location_path',
-      )[0].value2
+    item?.moduleProperties?.filter((i: ModuleProperty) => i.value1 === 'location_path').length > 0
+      ? item?.moduleProperties?.filter((it: ModuleProperty) => it.value1 === 'location_path')[0]
+          .value2
       : undefined
 
-  const formik = useFormik({
+  const formik = useFormik<FormValues>({
     initialValues: {
       name: item.name,
-      description: item.description,
+      description: item.description || '',
       scriptType: item.scriptType,
       programmingLanguage: item.programmingLanguage,
       level: item.level,
-      script: item.script,
-      aliases: item.aliases,
-      moduleProperties: item.moduleProperties,
-      configurationProperties: item.configurationProperties,
-      script_path: defaultScriptPathValue,
-      locationPath: item?.locationPath,
-      location_type: item?.locationType
+      script: item.script || '',
+      aliases: item.aliases || [],
+      moduleProperties: item.moduleProperties || [],
+      configurationProperties: item.configurationProperties || [],
+      script_path: defaultScriptPathValue || '',
+      locationPath: item?.locationPath || '',
+      location_type: item?.locationType || '',
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .matches(
-          /^[a-zA-Z0-9_]+$/,
-          'Name should contain only letters, digits and underscores'
-        )
+        .matches(/^[a-zA-Z0-9_]+$/, 'Name should contain only letters, digits and underscores')
         .min(2, 'Mininum 2 characters')
         .required('Required!'),
       description: Yup.string(),
-      scriptType: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
-      programmingLanguage: Yup.string()
-        .min(3, 'This value is required')
-        .required('Required!'),
+      scriptType: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
+      programmingLanguage: Yup.string().min(3, 'This value is required').required('Required!'),
       script: Yup.string().when('location_type', {
-        is: (value) => {
+        is: (value: string) => {
           return value === 'db'
         },
         then: () => Yup.string().required('Required!'),
       }),
       script_path: Yup.string().when('location_type', {
-        is: (value) => {
+        is: (value: string) => {
           return value === 'file'
         },
         then: () => Yup.string().required('Required!'),
       }),
     }),
 
-    onSubmit: (values) => {
-      if(item.locationType === 'db') {
-        let moduleProperties = item?.moduleProperties?.filter((item) => item?.value1 !== 'location_path')
+    onSubmit: (values: FormValues) => {
+      if (item.locationType === 'db') {
+        let moduleProperties = item?.moduleProperties?.filter(
+          (item: ModuleProperty) => item?.value1 !== 'location_path',
+        )
         item.moduleProperties = moduleProperties
         delete item?.locationPath
         delete values.locationPath
-      } else if(item.locationType === 'file') {
+      } else if (item.locationType === 'file') {
         delete item?.script
         delete values.script
       }
@@ -153,9 +210,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
       // eslint-disable-next-line no-extra-boolean-cast
       if (!!values.configurationProperties) {
         values.configurationProperties = values.configurationProperties
-          .filter((e) => e != null)
-          .filter((e) => Object.keys(e).length !== 0)
-          .map((e) => ({
+          .filter((e: any) => e != null)
+          .filter((e: any) => Object.keys(e).length !== 0)
+          .map((e: any) => ({
             value1: e.key || e.value1,
             value2: e.value || e.value2,
             hide: false,
@@ -163,16 +220,16 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
       }
       if (!!values.moduleProperties && item.locationType !== 'db') {
         values.moduleProperties = values.moduleProperties
-          .filter((e) => e != null)
-          .filter((e) => Object.keys(e).length !== 0)
-          .map((e) => ({
+          .filter((e: any) => e != null)
+          .filter((e: any) => Object.keys(e).length !== 0)
+          .map((e: any) => ({
             value1: e.key || e.value1,
             value2: e.value || e.value2,
             hide: false,
           }))
       }
       if (typeof values.enabled == 'object') {
-        if (values.enabled.length > 0) {
+        if ((values.enabled as any).length > 0) {
           values.enabled = true
         } else {
           values.enabled = false
@@ -183,35 +240,35 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
       delete reqBody?.customScript?.script_path
       delete reqBody?.customScript?.location_type
 
-      if(!reqBody.customScript.aliases) {
+      if (!reqBody.customScript.aliases) {
         delete reqBody.customScript.aliases
       }
       handleSubmit(reqBody)
     },
   })
 
-  function locationTypeChange(value) {
+  function locationTypeChange(value: string) {
     if (value != '') {
       if (!item.moduleProperties) {
         item.moduleProperties = []
       }
       if (value === 'db') {
-        let moduleProperties = item?.moduleProperties?.filter((item) => item?.value1 !== 'location_path')
+        let moduleProperties = item?.moduleProperties?.filter(
+          (item: ModuleProperty) => item?.value1 !== 'location_path',
+        )
         item.moduleProperties = moduleProperties
         formik.setFieldValue('script_path', undefined)
-      } else if(value === 'file') {
+      } else if (value === 'file') {
         delete item.script
         formik.setFieldValue('script', undefined)
       }
       if (
         item.moduleProperties.filter(
-          (candidate) => candidate.value1 === 'location_type',
+          (candidate: ModuleProperty) => candidate.value1 === 'location_type',
         ).length > 0
       ) {
         item.moduleProperties.splice(
-          item.moduleProperties.findIndex(
-            (el) => el.value1 === 'location_type',
-          ),
+          item.moduleProperties.findIndex((el: ModuleProperty) => el.value1 === 'location_type'),
           1,
         )
       }
@@ -220,9 +277,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
         value2: value,
         description: '',
       })
-
     }
-    item.locationType = value;
+    item.locationType = value
     formik.setFieldValue('location_type', value)
     if (value == 'file') {
       setScriptPath(true)
@@ -231,7 +287,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
     }
   }
 
-  function scriptPathChange(value) {
+  function scriptPathChange(value: string) {
     if (value != '') {
       formik.setFieldValue('locationPath', value)
       if (!item.moduleProperties) {
@@ -240,13 +296,11 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
 
       if (
         item.moduleProperties.filter(
-          (candidate) => candidate.value1 === 'location_path',
+          (candidate: ModuleProperty) => candidate.value1 === 'location_path',
         ).length > 0
       ) {
         item.moduleProperties.splice(
-          item.moduleProperties.findIndex(
-            (el) => el.value1 === 'location_path',
-          ),
+          item.moduleProperties.findIndex((el: ModuleProperty) => el.value1 === 'location_path'),
           1,
         )
       }
@@ -258,18 +312,18 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
     }
   }
 
-  function usageTypeChange(value) {
+  function usageTypeChange(value: string) {
     if (value != '') {
       if (!item.moduleProperties) {
         item.moduleProperties = []
       }
 
       if (
-        item.moduleProperties.filter((ligne) => ligne.value1 === 'usage_type')
+        item.moduleProperties.filter((ligne: ModuleProperty) => ligne.value1 === 'usage_type')
           .length > 0
       ) {
         item.moduleProperties.splice(
-          item.moduleProperties.findIndex((row) => row.value1 === 'usage_type'),
+          item.moduleProperties.findIndex((row: ModuleProperty) => row.value1 === 'usage_type'),
           1,
         )
       }
@@ -281,13 +335,13 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
     }
   }
 
-  function onLevelChange(level) {
+  function onLevelChange(level: number) {
     item.level = level
   }
 
   const showErrorModal = () => {
     setIsModalOpen(true)
-  };
+  }
 
   return (
     <>
@@ -295,7 +349,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
         <Suspense fallback={<GluuSuspenseLoader />}>
           <GluuScriptErrorModal
             isOpen={isModalOpen}
-            error={item.scriptError.stackTrace}
+            error={item.scriptError?.stackTrace || ''}
             handler={() => setIsModalOpen(false)}
           />
         </Suspense>
@@ -304,11 +358,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
       {item?.scriptError?.stackTrace ? (
         <>
           <Alert
-            className='d-flex align-items-center justify-content-between w-100 mb-3'
-            color='danger'>
-            <div className='d-flex align-items-center' style={{ gap: '4px' }}>
-              <ErrorIcon color='error' />
-              <h5 className="alert-heading m-0">{t("messages.error_in_script")}!</h5>
+            className="d-flex align-items-center justify-content-between w-100 mb-3"
+            color="danger"
+          >
+            <div className="d-flex align-items-center" style={{ gap: '4px' }}>
+              <ErrorIcon color="error" />
+              <h5 className="alert-heading m-0">{t('messages.error_in_script')}!</h5>
             </div>
             <Button color="danger" onClick={showErrorModal}>
               {t('actions.show_error')}
@@ -329,7 +384,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
         )}
 
         <FormGroup row>
-          <GluuLabel label="fields.name" required doc_category={SCRIPT} doc_entry="name"/>
+          <GluuLabel label="fields.name" required doc_category={SCRIPT} doc_entry="name" />
           <Col sm={9}>
             <Input
               placeholder={t('placeholders.name')}
@@ -342,7 +397,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
               onChange={formik.handleChange}
             />
             {formik.errors.name && formik.touched.name ? (
-              <div style={{ color: 'red' }}>{formik.errors.name}</div>
+              <div style={{ color: 'red' }}>{formik.errors.name as string}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -353,11 +408,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
             <InputGroup>
               <Input
                 placeholder={t('placeholders.description')}
-                valid={
-                  !formik.errors.description &&
-                  !formik.touched.description &&
-                  init
-                }
+                valid={!formik.errors.description && !formik.touched.description && init}
                 id="description"
                 disabled={viewOnly}
                 defaultValue={item.description}
@@ -367,7 +418,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
           </Col>
         </FormGroup>
         {scriptTypeState === 'person_authentication' && (
-
           <FormGroup row>
             <GluuLabel label={t('Select SAML ACRS')} doc_category={SCRIPT} doc_entry="aliases" />
             <Col sm={9}>
@@ -395,41 +445,50 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
         )}
 
         <FormGroup row>
-          <GluuLabel label="fields.script_type" required doc_category={SCRIPT} doc_entry="scriptType"/>
+          <GluuLabel
+            label="fields.script_type"
+            required
+            doc_category={SCRIPT}
+            doc_entry="scriptType"
+          />
           <Col sm={9}>
-              {loadingScriptTypes ? 
-              <Skeleton
-                variant='text'
-                width='100%'
-                sx={{ fontSize: '3rem' }}
-              /> : <InputGroup>
-              <CustomInput
-                type="select"
-                id="scriptType"
-                name="scriptType"
-                defaultValue={item.scriptType}
-                disabled={viewOnly}
-                onChange={(e) => {
-                  setScriptTypeState(e.target.value)
-                  formik.setFieldValue('scriptType', e.target.value)
-                }}
-              >
-                <option value="">{t('options.choose')}...</option>
-                {scriptTypes.map((ele, index) => (
-                  <option key={index} value={ele.value}>
-                    {ele.name}
-                  </option>
-                ))}
-              </CustomInput>
-            </InputGroup>}
+            {loadingScriptTypes ? (
+              <Skeleton variant="text" width="100%" sx={{ fontSize: '3rem' }} />
+            ) : (
+              <InputGroup>
+                <CustomInput
+                  type="select"
+                  id="scriptType"
+                  name="scriptType"
+                  defaultValue={item.scriptType}
+                  disabled={viewOnly}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setScriptTypeState(e.target.value)
+                    formik.setFieldValue('scriptType', e.target.value)
+                  }}
+                >
+                  <option value="">{t('options.choose')}...</option>
+                  {scriptTypes.map((ele: ScriptType, index: number) => (
+                    <option key={index} value={ele.value}>
+                      {ele.name}
+                    </option>
+                  ))}
+                </CustomInput>
+              </InputGroup>
+            )}
             {formik.errors.scriptType && formik.touched.scriptType ? (
-              <div style={{ color: 'red' }}>{formik.errors.scriptType}</div>
+              <div style={{ color: 'red' }}>{formik.errors.scriptType as string}</div>
             ) : null}
           </Col>
         </FormGroup>
 
         <FormGroup row>
-          <GluuLabel label="fields.programming_language" required doc_category={SCRIPT} doc_entry="programmingLanguage"/>
+          <GluuLabel
+            label="fields.programming_language"
+            required
+            doc_category={SCRIPT}
+            doc_entry="programmingLanguage"
+          />
           <Col sm={9}>
             <InputGroup>
               <CustomInput
@@ -438,7 +497,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
                 name="programmingLanguage"
                 defaultValue={item.programmingLanguage}
                 disabled={viewOnly}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   formik.setFieldValue('programmingLanguage', e.target.value)
                   setSelectedLanguage(e.target.value)
                 }}
@@ -448,12 +507,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
                 <option value="python">Jython</option>
               </CustomInput>
             </InputGroup>
-            {formik.errors.programmingLanguage &&
-              formik.touched.programmingLanguage && (
-                <div style={{ color: 'red' }}>
-                  {formik.errors.programmingLanguage}
-                </div>
-              )}
+            {formik.errors.programmingLanguage && formik.touched.programmingLanguage && (
+              <div style={{ color: 'red' }}>{formik.errors.programmingLanguage as string}</div>
+            )}
           </Col>
         </FormGroup>
 
@@ -468,15 +524,14 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
                 disabled={viewOnly}
                 defaultValue={
                   !!item.moduleProperties &&
-                    item.moduleProperties.filter(
-                      (i) => i.value1 === 'location_type',
-                    ).length > 0
+                  item.moduleProperties.filter((i: ModuleProperty) => i.value1 === 'location_type')
+                    .length > 0
                     ? item.moduleProperties.filter(
-                      (it) => it.value1 === 'location_type',
-                    )[0].value2
+                        (it: ModuleProperty) => it.value1 === 'location_type',
+                      )[0].value2
                     : undefined
                 }
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   locationTypeChange(e.target.value)
                 }}
               >
@@ -488,40 +543,36 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
           </Col>
         </FormGroup>
         {scriptPath && (
-
           <FormGroup row>
-            <GluuLabel required label="fields.script_path" doc_category={SCRIPT} doc_entry="scriptPath" />
+            <GluuLabel
+              required
+              label="fields.script_path"
+              doc_category={SCRIPT}
+              doc_entry="scriptPath"
+            />
             <Col sm={9}>
               <InputGroup>
                 <Input
                   placeholder={t('placeholders.script_path')}
-                  valid={
-                    !formik.errors.location_path &&
-                    !formik.touched.location_path &&
-                    init
-                  }
+                  valid={!formik.errors.script_path && !formik.touched.script_path && init}
                   disabled={viewOnly}
-                  id="location_path"
+                  id="script_path"
                   defaultValue={defaultScriptPathValue}
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     scriptPathChange(e.target.value)
                     formik.setFieldValue('script_path', e.target.value)
                   }}
                 />
               </InputGroup>
-              {formik.errors.script_path &&
-              formik.touched.script_path && (
-                <div style={{ color: 'red' }}>
-                  {formik.errors.script_path}
-                </div>
+              {formik.errors.script_path && formik.touched.script_path && (
+                <div style={{ color: 'red' }}>{formik.errors.script_path as string}</div>
               )}
             </Col>
           </FormGroup>
         )}
         {scriptTypeState === 'person_authentication' && (
-
           <FormGroup row>
-            <GluuLabel label="Interactive" doc_category={SCRIPT} doc_entry="usage_type"/>
+            <GluuLabel label="Interactive" doc_category={SCRIPT} doc_entry="usage_type" />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -531,15 +582,15 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
                   disabled={viewOnly}
                   defaultValue={
                     !!item.moduleProperties &&
-                      item.moduleProperties.filter(
-                        (vItem) => vItem.value1 === 'usage_type',
-                      ).length > 0
+                    item.moduleProperties.filter(
+                      (vItem: ModuleProperty) => vItem.value1 === 'usage_type',
+                    ).length > 0
                       ? item.moduleProperties.filter(
-                        (kItem) => kItem.value1 === 'usage_type',
-                      )[0].value2
+                          (kItem: ModuleProperty) => kItem.value1 === 'usage_type',
+                        )[0].value2
                       : undefined
                   }
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     usageTypeChange(e.target.value)
                   }}
                 >
@@ -554,13 +605,13 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
         )}
 
         <FormGroup row>
-          <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level"/>
+          <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level" />
           <Col sm={9}>
             <Suspense fallback={<GluuSuspenseLoader />}>
               <Counter
                 counter={item.level}
                 disabled={viewOnly}
-                onCounterChange={(level) => onLevelChange(level)}
+                onCounterChange={(level: number) => onLevelChange(level)}
               />
             </Suspense>
             <Input type="hidden" id="level" defaultValue={item.level} />
@@ -597,17 +648,14 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
               value={formik.values.script}
               readOnly={viewOnly}
               errorMessage={formik.errors.script}
-              showError={
-                formik.errors.script &&
-                formik.touched.script
-              }
+              showError={formik.errors.script && formik.touched.script}
               required
             />
           </Suspense>
         )}
 
         <FormGroup row>
-          <GluuLabel label="options.enabled" size={3} doc_category={SCRIPT} doc_entry="enabled"/>
+          <GluuLabel label="options.enabled" size={3} doc_category={SCRIPT} doc_entry="enabled" />
           <Col sm={1}>
             <Toggle
               id="enabled"
@@ -624,7 +672,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
           modal={modal}
           onAccept={submitForm}
           formik={formik}
-          disabled={viewOnly}
           feature={adminUiFeatures.custom_script_write}
         />
       </Form>
@@ -634,14 +681,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
 
 CustomScriptForm.propTypes = {
   item: PropTypes.any,
-  handleSubmit: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.any
-  ]),
-  viewOnly: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.any
-  ])
+  handleSubmit: PropTypes.oneOfType([PropTypes.func, PropTypes.any]),
+  viewOnly: PropTypes.oneOfType([PropTypes.bool, PropTypes.any]),
 }
 
 export default CustomScriptForm

@@ -34,7 +34,7 @@ const customScriptSlice = createSlice({
         state.entriesCount = action.payload.data.entriesCount
       }
     },
-    addCustomScript: (state) => {
+    addCustomScript: (state, action) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false

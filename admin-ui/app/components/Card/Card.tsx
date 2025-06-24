@@ -6,18 +6,22 @@ import {
 
 import classes from './Card.scss'
 
+interface CardProps {
+  children: any
+  type?: string
+  color?: string | null
+  className?: any
+  style?: React.CSSProperties
+  [key: string]: any
+}
+
 const Card = ({ 
   children, 
   type = 'border', 
   color = null, 
   className, 
   ...otherProps 
-}: {
-  children: any
-  type: string
-  color: string | null
-  className: any
-}) => {
+}: CardProps) => {
   const cardClass = classNames(className,
     classes['custom-card'],
     classes[`custom-card--${ type }`],

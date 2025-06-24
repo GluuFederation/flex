@@ -5,10 +5,47 @@ import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 
-const CustomScriptDetailPage = ({ row }) => {
+interface ConfigurationProperty {
+  value1: string
+  value2: string
+  hide?: boolean
+}
+
+interface ModuleProperty {
+  value1: string
+  value2: string
+  description?: string
+}
+
+interface CustomScript {
+  inum?: string
+  name: string
+  description?: string
+  scriptType: string
+  programmingLanguage: string
+  level: number
+  script?: string
+  aliases?: string[]
+  moduleProperties?: ModuleProperty[]
+  configurationProperties?: ConfigurationProperty[]
+  enabled: boolean
+  locationType?: string
+  locationPath?: string
+  scriptError?: {
+    stackTrace: string
+  }
+  revision?: number
+  internal?: boolean
+}
+
+interface CustomScriptDetailPageProps {
+  row: CustomScript
+}
+
+const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state.theme || 'darkBlack'
 
   return (
     <React.Fragment>
