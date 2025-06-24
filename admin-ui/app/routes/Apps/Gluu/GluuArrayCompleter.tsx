@@ -42,7 +42,10 @@ function GluuArrayCompleter({
             emptyLabel=""
             labelKey={name}
             onChange={(selected) => {
-              formik.setFieldValue(name, selected.map(value => value[name]))
+              formik.setFieldValue(
+                name,
+                selected.map((value) => value[name]),
+              )
             }}
             id={name}
             name={name}

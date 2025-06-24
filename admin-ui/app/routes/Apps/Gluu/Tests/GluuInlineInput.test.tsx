@@ -14,13 +14,7 @@ function handler() {
 it('Should render a boolean select box', () => {
   const { container } = render(
     <AppTestWrapper>
-      <GluuInlineInput
-        label={LABEL}
-        value={VALUE}
-        name={NAME}
-        isBoolean
-        handler={handler}
-      />
+      <GluuInlineInput label={LABEL} value={VALUE} name={NAME} isBoolean handler={handler} />
     </AppTestWrapper>,
   )
   const inputEl: any = container.querySelector(`input[name=${NAME}]`)
@@ -53,12 +47,7 @@ it('Should render a text input', () => {
   VALUE = 'Client Secret'
   render(
     <AppTestWrapper>
-      <GluuInlineInput
-        label={LABEL}
-        value={VALUE}
-        name={NAME}
-        handler={handler}
-      />
+      <GluuInlineInput label={LABEL} value={VALUE} name={NAME} handler={handler} />
     </AppTestWrapper>,
   )
   expect(screen.getByText(/Application Type/i)).toBeInTheDocument()

@@ -8,12 +8,7 @@ export interface NavProps extends BsNavProps {
 
 const Nav: React.FC<NavProps> = ({ accent = false, className, ...otherProps }) => {
   return (
-    <BsNav
-      className={
-        classNames(className, 'nav', { 'nav-accent': accent })
-      }
-      {...otherProps}
-    />
+    <BsNav className={classNames(className, 'nav', { 'nav-accent': accent })} {...otherProps} />
   )
 }
 

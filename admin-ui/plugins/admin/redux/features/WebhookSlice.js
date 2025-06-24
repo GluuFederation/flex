@@ -21,10 +21,10 @@ const initialState = {
   webhookTriggerErrors: [],
   tiggerPayload: {
     feature: null,
-    payload: null
+    payload: null,
   },
   featureToTrigger: '',
-  showErrorModal: false
+  showErrorModal: false,
 }
 
 const webhookSlice = createSlice({
@@ -125,7 +125,7 @@ const webhookSlice = createSlice({
     },
     setShowErrorModal: (state, action) => {
       state.showErrorModal = action.payload
-    }
+    },
   },
 })
 
@@ -152,7 +152,7 @@ export const {
   setWebhookTriggerErrors,
   setTriggerPayload,
   setFeatureToTrigger,
-  setShowErrorModal
+  setShowErrorModal,
 } = webhookSlice.actions
 export const { actions, reducer, state } = webhookSlice
 export default reducer

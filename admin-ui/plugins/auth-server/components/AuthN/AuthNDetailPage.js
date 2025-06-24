@@ -23,36 +23,36 @@ function AuthNDetailPage({ row }) {
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.acr'
+              label="fields.acr"
               value={row.acrName}
               doc_category={AUTHN}
-              doc_entry='acr'
+              doc_entry="acr"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.level'
+              label="fields.level"
               value={row.level}
               doc_category={AUTHN}
-              doc_entry='level'
+              doc_entry="level"
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.password_attribute'
+              label="fields.password_attribute"
               value={row.passwordAttribute}
               doc_category={AUTHN}
-              doc_entry='password_attribute'
+              doc_entry="password_attribute"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.hash_algorithm'
+              label="fields.hash_algorithm"
               value={row.hashAlgorithm}
               doc_category={AUTHN}
-              doc_entry='hash_algorithm'
+              doc_entry="hash_algorithm"
               isBadge
             />
           </Col>
@@ -61,28 +61,28 @@ function AuthNDetailPage({ row }) {
           {' '}
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.primary_key'
+              label="fields.primary_key"
               value={row.primaryKey}
               doc_category={AUTHN}
-              doc_entry='primary_key'
+              doc_entry="primary_key"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.saml_acr'
+              label="fields.saml_acr"
               value={row.samlACR}
               doc_category={AUTHN}
-              doc_entry='saml_acr'
+              doc_entry="saml_acr"
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.description'
+              label="fields.description"
               value={row.description}
               doc_category={AUTHN}
-              doc_entry='description'
+              doc_entry="description"
             />
           </Col>
         </Row>

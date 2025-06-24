@@ -3,20 +3,15 @@ import React, { useEffect } from 'react'
 import { buildPayload } from 'Utils/PermChecker'
 import { Container, Row, Col } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getAttributes,
-  getScripts,
-  getScopes,
-  getClients,
-} from 'Redux/features/initSlice'
+import { getAttributes, getScripts, getScopes, getClients } from 'Redux/features/initSlice'
 import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 
 function Reports() {
-  const attributes = useSelector(state => state.initReducer.attributes);
-  const clients = useSelector(state => state.initReducer.clients);
-  const scopes = useSelector(state => state.initReducer.scopes);
-  const scripts = useSelector(state => state.initReducer.scripts);
+  const attributes = useSelector((state) => state.initReducer.attributes)
+  const clients = useSelector((state) => state.initReducer.clients)
+  const scopes = useSelector((state) => state.initReducer.scopes)
+  const scripts = useSelector((state) => state.initReducer.scripts)
   const dispatch = useDispatch()
   const { t } = useTranslation()
 
@@ -100,24 +95,16 @@ function Reports() {
           <ReportCard
             data={attributeData}
             title={t('titles.all_attributes')}
-            upValue={
-              attributes.filter((item) => item.status === 'INACTIVE').length
-            }
-            downValue={
-              attributes.filter((item) => item.status === 'ACTIVE').length
-            }
+            upValue={attributes.filter((item) => item.status === 'INACTIVE').length}
+            downValue={attributes.filter((item) => item.status === 'ACTIVE').length}
           />
         </Col>
         <Col lg={3}>
           <ReportCard
             data={scopeData}
             title={t('titles.all_scopes')}
-            upValue={
-              scopes.filter((item) => item.scopeType === 'openid').length
-            }
-            downValue={
-              scopes.filter((item) => item.scopeType === 'oauth').length
-            }
+            upValue={scopes.filter((item) => item.scopeType === 'openid').length}
+            downValue={scopes.filter((item) => item.scopeType === 'oauth').length}
           />
         </Col>
         <Col lg={3}>

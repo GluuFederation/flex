@@ -27,9 +27,7 @@ it('Should show client details properly', () => {
   expect(screen.getByText(/Status/i)).toBeInTheDocument()
   expect(screen.getByText(/Grants/i)).toBeInTheDocument()
   expect(screen.getByText(/Login URIs/i)).toBeInTheDocument()
-  expect(
-    screen.getByText(/Authentication method for the Token Endpoint/i)
-  ).toBeInTheDocument()
+  expect(screen.getByText(/Authentication method for the Token Endpoint/i)).toBeInTheDocument()
   expect(screen.getByText(/Logout Redirect URIs/i)).toBeInTheDocument()
   expect(screen.getByText(/Response types/i)).toBeInTheDocument()
   expect(screen.getByText(/Supress authorization/i)).toBeInTheDocument()

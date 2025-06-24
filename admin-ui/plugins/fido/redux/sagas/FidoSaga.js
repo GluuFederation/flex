@@ -1,12 +1,4 @@
-import {
-  call,
-  all,
-  put,
-  fork,
-  takeLatest,
-  select,
-  takeEvery,
-} from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest, select, takeEvery } from 'redux-saga/effects'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { isFourZeroOneError } from 'Utils/TokenController'
 import { getClient } from 'Redux/api/base'
@@ -14,25 +6,25 @@ import { initAudit } from 'Redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from 'Redux/api/backend-api'
 import FidoApi from '../api/FidoApi'
-import { deleteFido2DeviceDataResponse, getFidoConfiguration, getFidoConfigurationResponse } from '../features/fidoSlice'
+import {
+  deleteFido2DeviceDataResponse,
+  getFidoConfiguration,
+  getFidoConfigurationResponse,
+} from '../features/fidoSlice'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
 const JansConfigApi = require('jans_config_api')
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.Fido2ConfigurationApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.Fido2ConfigurationApi(getClient(JansConfigApi, token, issuer))
   return new FidoApi(api)
 }
 
 function* newFidoFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.Fido2RegistrationApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.Fido2RegistrationApi(getClient(JansConfigApi, token, issuer))
   return new FidoApi(api)
 }
 
@@ -41,11 +33,10 @@ function* errorToast({ error }) {
     updateToast(
       true,
       'error',
-      error?.response?.data?.description || error?.response?.data?.message || error.message
-    )
+      error?.response?.data?.description || error?.response?.data?.message || error.message,
+    ),
   )
 }
-
 
 export function* updateFidoSaga({ payload }) {
   const audit = yield* initAudit()
@@ -71,7 +62,7 @@ export function* getFidoSaga() {
   const audit = yield* initAudit()
   try {
     const fidoApi = yield* newFunction()
-    const data = yield call(fidoApi.getPropertiesFido2);
+    const data = yield call(fidoApi.getPropertiesFido2)
     yield put(getFidoConfigurationResponse(data))
     yield call(postUserAction, audit)
     return data
@@ -100,8 +91,6 @@ export function* deleteFido2DeviceData({ payload }) {
   }
 }
 
-
-
 export function* watchGetFido() {
   yield takeEvery('fido2/getFidoConfiguration', getFidoSaga)
 }
@@ -114,11 +103,6 @@ export function* watchDeleteFido2DeviceData() {
   yield takeLatest('fido2/deleteFido2DeviceData', deleteFido2DeviceData)
 }
 
-
 export default function* rootSaga() {
-  yield all([
-    fork(watchGetFido),
-    fork(watchUpdateFido),
-    fork(watchDeleteFido2DeviceData)
-  ])
+  yield all([fork(watchGetFido), fork(watchUpdateFido), fork(watchDeleteFido2DeviceData)])
 }

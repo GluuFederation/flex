@@ -12,7 +12,7 @@ import {
   WEBHOOK_WRITE,
   WEBHOOK_READ,
   WEBHOOK_DELETE,
-  buildPayload
+  buildPayload,
 } from 'Utils/PermChecker'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -23,7 +23,11 @@ import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { useNavigate } from 'react-router'
-import { getWebhook, deleteWebhook, setSelectedWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import {
+  getWebhook,
+  deleteWebhook,
+  setSelectedWebhook,
+} from 'Plugins/admin/redux/features/WebhookSlice'
 
 const WebhookListPage = () => {
   const dispatch = useDispatch()
@@ -33,10 +37,7 @@ const WebhookListPage = () => {
   const { totalItems, webhooks } = useSelector((state) => state.webhookReducer)
   const permissions = useSelector((state) => state.authReducer.permissions)
   const loading = useSelector((state) => state.webhookReducer.loading)
-  const PaperContainer = useCallback(
-    (props) => <Paper {...props} elevation={0} />,
-    []
-  )
+  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
 
   const theme = useContext(ThemeContext)
   const themeColors = getThemeColor(theme.state.theme)
@@ -100,12 +101,10 @@ const WebhookListPage = () => {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(prop, count) =>
-          onRowCountChangeClick(count.props.value)
-        }
+        onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
+    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
   )
 
   const navigateToAddPage = useCallback(() => {
@@ -212,18 +211,16 @@ const WebhookListPage = () => {
                   title: `${t('fields.url')}`,
                   field: 'url',
                   width: '40%',
-                  render: rowData => (
-                    <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
-                      {rowData.url}
-                    </div>
-                  )
+                  render: (rowData) => (
+                    <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>{rowData.url}</div>
+                  ),
                 },
                 { title: `${t('fields.http_method')}`, field: 'httpMethod' },
-                { title: `${t('fields.enabled')}`, field: 'jansEnabled' }
+                { title: `${t('fields.enabled')}`, field: 'jansEnabled' },
               ]}
               data={webhooks}
               isLoading={loading}
-              title=''
+              title=""
               actions={myActions}
               options={{
                 idSynonym: 'inum',
@@ -243,11 +240,7 @@ const WebhookListPage = () => {
             />
           </GluuViewWrapper>
         </CardBody>
-        <GluuCommitDialog
-          handler={toggle}
-          modal={modal}
-          onAccept={submitForm}
-        />
+        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
       </Card>
     </GluuLoader>
   )

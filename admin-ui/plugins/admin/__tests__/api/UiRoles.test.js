@@ -1,17 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import { log } from 'console'
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/admin/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/admin/__tests__/api/setup.test'
 import authReducer from 'Redux/features/authSlice'
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
-import {
-  getRoles,
-  addRole,
-  editRole,
-  deleteRole,
-} from 'Plugins/admin/redux/sagas/ApiRoleSaga'
+import { getRoles, addRole, editRole, deleteRole } from 'Plugins/admin/redux/sagas/ApiRoleSaga'
 import { expectSaga } from 'redux-saga-test-plan'
 
 let initialState

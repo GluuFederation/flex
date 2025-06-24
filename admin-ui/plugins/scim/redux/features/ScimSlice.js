@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   scim: {},
-  loading: true
+  loading: true,
 }
 
 const scimSlice = createSlice({
@@ -19,14 +19,11 @@ const scimSlice = createSlice({
     getScimConfigurationResponse: (state, action) => {
       state.scim = action.payload ? action.payload : {}
       state.loading = false
-    }
-  }
+    },
+  },
 })
 
-export const {
-  getScimConfiguration,
-  putScimConfiguration,
-  getScimConfigurationResponse
-} = scimSlice.actions
+export const { getScimConfiguration, putScimConfiguration, getScimConfigurationResponse } =
+  scimSlice.actions
 export const { actions, reducer } = scimSlice
 reducerRegistry.register('scimReducer', reducer)

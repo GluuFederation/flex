@@ -1,1 +1,1 @@
-declare module 'circular-dependency-plugin'; 
+declare module 'circular-dependency-plugin'

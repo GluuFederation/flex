@@ -14,13 +14,7 @@ interface RoutesRecursiveWrapperProps {
 export const RoutesRecursiveWrapper: React.FC<RoutesRecursiveWrapperProps> = ({ item }) => {
   const { path, children = [], component } = item
 
-  return (
-    children.length > 0 ? (
-      children.map((child: RouteItem, i: number) => (
-        <RoutesRecursiveWrapper key={i} item={child} />
-      ))
-    ) : (
-      !!path && component && <Route element={React.createElement(component)} path={path} />
-    )
-  )
+  return children.length > 0
+    ? children.map((child: RouteItem, i: number) => <RoutesRecursiveWrapper key={i} item={child} />)
+    : !!path && component && <Route element={React.createElement(component)} path={path} />
 }

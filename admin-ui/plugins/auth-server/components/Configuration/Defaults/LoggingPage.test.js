@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import LoggingPage from './LoggingPage' 
+import LoggingPage from './LoggingPage'
 import { Provider } from 'react-redux'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
@@ -27,7 +27,7 @@ const LOGGING_STATE = {
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = AUTH_STATE) => state,
     loggingReducer: (state = LOGGING_STATE) => state,
     noReducer: (state = {}) => state,
@@ -44,12 +44,8 @@ it('Should render Acr page properly', () => {
   render(<LoggingPage />, {
     wrapper: Wrapper,
   })
-  expect(screen.getByTestId('loggingLayout')).toHaveDisplayValue(
-    logging.loggingLayout,
-  )
-  expect(screen.getByTestId('loggingLevel')).toHaveDisplayValue(
-    logging.loggingLevel,
-  )
+  expect(screen.getByTestId('loggingLayout')).toHaveDisplayValue(logging.loggingLayout)
+  expect(screen.getByTestId('loggingLevel')).toHaveDisplayValue(logging.loggingLevel)
   expect(screen.getByTestId('httpLoggingEnabled')).toBeChecked()
   expect(screen.getByTestId('disableJdkLogger')).not.toBeChecked()
   expect(screen.getByTestId('enabledOAuthAuditLogging')).not.toBeChecked()

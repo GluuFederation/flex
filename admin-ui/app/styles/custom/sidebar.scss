@@ -1,98 +1,98 @@
 .custom-sidebar-container {
-  background-color: #fcfcfc;
-  border-top-right-radius: 28px;
-  border-top-left-radius: 28px;
+    background-color: #fcfcfc;
+    border-top-right-radius: 28px;
+    border-top-left-radius: 28px;
 
-  .sidebar-menu__entry__link {
-    color: #323b47;
-  }
-
-  .sidebar-submenu__entry__link {
-    color: #323b47;
-  }
-
-  .sidebar-menu__entry__link:hover {
-    color: #323b47;
-  }
-  .sidebar-submenu__entry__link:hover {
-    color: #323b47;
-  }
-
-  .sidebar-menu__entry:hover {
-    i {
-      color: #323b47;
+    .sidebar-menu__entry__link {
+        color: #323b47;
     }
-    a {
-      color: #323b47;
-    }
-  }
 
-  .sidebar-menu__entry__icon {
-    color: #323b47;
-  }
+    .sidebar-submenu__entry__link {
+        color: #323b47;
+    }
+
+    .sidebar-menu__entry__link:hover {
+        color: #323b47;
+    }
+    .sidebar-submenu__entry__link:hover {
+        color: #323b47;
+    }
+
+    .sidebar-menu__entry:hover {
+        i {
+            color: #323b47;
+        }
+        a {
+            color: #323b47;
+        }
+    }
+
+    .sidebar-menu__entry__icon {
+        color: #323b47;
+    }
 }
 
 .menu-icon {
-  height: 28px;
-  width: 28px;
-  margin-right: 10px;
-  position: relative;
+    height: 28px;
+    width: 28px;
+    margin-right: 10px;
+    position: relative;
 }
 
 .sidebar-menu__entry {
-  .sidebar-menu__entry__link:hover {
-    background: lightgrey;
-  }
+    .sidebar-menu__entry__link:hover {
+        background: lightgrey;
+    }
 
-  .sidebar-submenu .sidebar-submenu__entry .sidebar-submenu__entry__link:hover {
-    background: lightgrey;
-  }
+    .sidebar-submenu .sidebar-submenu__entry .sidebar-submenu__entry__link:hover {
+        background: lightgrey;
+    }
 }
 
 .cursor-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .sidebar-menu-active-darkBlack {
-  background: #323c46 !important;
-  color: #fff !important;
+    background: #323c46 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-darkBlack:hover {
-  background: #000 !important;
-  color: #fff !important;
+    background: #000 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-darkBlue {
-  background: #323c46 !important;
-  color: #fff !important;
+    background: #323c46 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-darkBlue:hover {
-  background: #323c46 !important;
-  color: #fff !important;
+    background: #323c46 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-lightBlue {
-  background: #274561 !important;
-  color: #fff !important;
+    background: #274561 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-lightBlue:hover {
-  background: #274561 !important;
-  color: #fff !important;
+    background: #274561 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-lightGreen {
-  background: #02b774 !important;
-  color: #fff !important;
+    background: #02b774 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-lightGreen:hover {
-  background: #02b774 !important;
-  color: #fff !important;
+    background: #02b774 !important;
+    color: #fff !important;
 }
 
 .sidebar-active-icon {
-  color: #000 !important;
+    color: #000 !important;
 }

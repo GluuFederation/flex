@@ -13,7 +13,12 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
-import { setCurrentItem, getScopes, searchScopes, deleteScope } from 'Plugins/auth-server/redux/features/scopeSlice'
+import {
+  setCurrentItem,
+  getScopes,
+  searchScopes,
+  deleteScope,
+} from 'Plugins/auth-server/redux/features/scopeSlice'
 import {
   hasPermission,
   buildPayload,
@@ -52,9 +57,7 @@ function ScopeListPage() {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   const [pageNumber, setPageNumber] = useState(0)
-  const { totalItems, entriesCount } = useSelector(
-    (state) => state.scopeReducer,
-  )
+  const { totalItems, entriesCount } = useSelector((state) => state.scopeReducer)
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.scopeReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
@@ -74,10 +77,7 @@ function ScopeListPage() {
           return 0
         }
         return (
-          <Link
-            to={`/auth-server/clients?scopeInum=${rowData.inum}`}
-            className="common-link"
-          >
+          <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`} className="common-link">
             {rowData.clients?.length}
           </Link>
         )
@@ -174,7 +174,7 @@ function ScopeListPage() {
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => { },
+      onClick: () => {},
     })
   }
   if (hasPermission(permissions, SCOPE_READ)) {
@@ -247,9 +247,7 @@ function ScopeListPage() {
                     onPageChangeClick(page)
                   }}
                   rowsPerPage={limit}
-                  onRowsPerPageChange={(prop, count) =>
-                    onRowCountChangeClick(count.props.value)
-                  }
+                  onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
                 />
               ),
             }}

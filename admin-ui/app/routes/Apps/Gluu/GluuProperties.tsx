@@ -1,17 +1,10 @@
-import { useState, useContext } from "react";
-import {
-  FormGroup,
-  Col,
-  Button,
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-} from "Components";
-import GluuPropertyItem from "./GluuPropertyItem";
-import { useTranslation } from "react-i18next";
-import { ThemeContext } from "Context/theme/themeContext";
-import { Tooltip as ReactTooltip } from "react-tooltip";
-import { HelpOutline } from "@mui/icons-material";
+import { useState, useContext } from 'react'
+import { FormGroup, Col, Button, Accordion, AccordionHeader, AccordionBody } from 'Components'
+import GluuPropertyItem from './GluuPropertyItem'
+import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
+import { HelpOutline } from '@mui/icons-material'
 
 function GluuProperties({
   compName,
@@ -23,8 +16,8 @@ function GluuProperties({
   disabled = false,
   buttonText = null,
   isInputLables = false,
-  keyLabel = "",
-  valueLabel = "",
+  keyLabel = '',
+  valueLabel = '',
   isAddButton = true,
   isRemoveButton = true,
   isKeys = true,
@@ -36,37 +29,37 @@ function GluuProperties({
   destinationPlaceholder,
   tooltip,
 }: any) {
-  const [properties, setProperties] = useState(options);
-  const { t, i18n } = useTranslation();
-  const theme: any = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
+  const [properties, setProperties] = useState(options)
+  const { t, i18n } = useTranslation()
+  const theme: any = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   const addProperty = () => {
-    let item;
+    let item
     if (multiProperties) {
-      item = { source: "", destination: "" };
+      item = { source: '', destination: '' }
     } else {
-      item = { key: "", value: "" };
+      item = { key: '', value: '' }
     }
-    setProperties((prev: any) => [...prev, item]);
-  };
+    setProperties((prev: any) => [...prev, item])
+  }
   const changeProperty = (position: any, e: any) => {
-    const { name, value } = e.target;
-    const newDataArr = [...properties];
-    newDataArr[position] = { ...newDataArr[position], [name]: value };
-    setProperties(newDataArr);
-    formik.setFieldValue(compName, newDataArr);
-  };
+    const { name, value } = e.target
+    const newDataArr = [...properties]
+    newDataArr[position] = { ...newDataArr[position], [name]: value }
+    setProperties(newDataArr)
+    formik.setFieldValue(compName, newDataArr)
+  }
   const removeProperty = (position: any) => {
-    let data = [...properties];
-    delete data[position];
-    data = data.filter((element: any) => element != null);
-    setProperties(data);
+    let data = [...properties]
+    delete data[position]
+    data = data.filter((element: any) => element != null)
+    setProperties(data)
     formik.setFieldValue(
       compName,
-      data.filter((element) => element != null)
-    );
-  };
+      data.filter((element) => element != null),
+    )
+  }
 
   function TooltipHeader() {
     return (
@@ -80,7 +73,7 @@ function GluuProperties({
                 id={tooltip}
                 place="right"
                 role="tooltip"
-                style={{ zIndex: 101, maxWidth: "45vw" }}
+                style={{ zIndex: 101, maxWidth: '45vw' }}
               >
                 {t(tooltip)}
               </ReactTooltip>
@@ -94,21 +87,17 @@ function GluuProperties({
           )}
         </h5>
       </AccordionHeader>
-    );
+    )
   }
 
   return (
     <Accordion className="mb-2 b-primary" initialOpen>
-      {tooltip ? (
-        <TooltipHeader />
-      ) : (
-        <AccordionHeader>{t(label).toUpperCase()}</AccordionHeader>
-      )}
+      {tooltip ? <TooltipHeader /> : <AccordionHeader>{t(label).toUpperCase()}</AccordionHeader>}
       <AccordionBody>
         {isAddButton && (
           <Button
             style={{
-              float: "right",
+              float: 'right',
             }}
             type="button"
             color={`primary-${selectedTheme}`}
@@ -116,7 +105,7 @@ function GluuProperties({
             disabled={disabled}
           >
             <i className="fa fa-fw fa-plus me-2"></i>
-            {buttonText ? t(buttonText) : t("actions.add_property")}
+            {buttonText ? t(buttonText) : t('actions.add_property')}
           </Button>
         )}
         <FormGroup row>
@@ -149,9 +138,9 @@ function GluuProperties({
             ))}
           </Col>
         </FormGroup>
-        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
       </AccordionBody>
     </Accordion>
-  );
+  )
 }
-export default GluuProperties;
+export default GluuProperties

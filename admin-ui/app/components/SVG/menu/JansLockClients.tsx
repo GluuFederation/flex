@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 interface JansLockClientsProps {
   className: string
@@ -72,7 +72,7 @@ c112 -84 253 -171 393 -240 953 -474 2103 -296 2873 445 411 396 670 904 754
         </g>
       </svg>
     </div>
-  );
-};
+  )
+}
 
-export default JansLockClientsIcon;
+export default JansLockClientsIcon

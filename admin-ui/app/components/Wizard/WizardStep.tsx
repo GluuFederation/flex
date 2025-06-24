@@ -2,16 +2,16 @@ import React, { ReactNode } from 'react'
 import classNames from 'classnames'
 
 export interface WizardStepProps {
-  active?: boolean;
-  complete?: boolean;
-  disabled?: boolean;
-  className?: string;
-  id: string;
-  onClick: () => void;
-  icon?: ReactNode;
-  successIcon?: ReactNode;
-  children?: ReactNode;
-  'data-testid'?: string;
+  'active'?: boolean
+  'complete'?: boolean
+  'disabled'?: boolean
+  'className'?: string
+  'id': string
+  'onClick': () => void
+  'icon'?: ReactNode
+  'successIcon'?: ReactNode
+  'children'?: ReactNode
+  'data-testid'?: string
 }
 
 const WizardStep: React.FC<WizardStepProps> = ({
@@ -42,16 +42,14 @@ const WizardStep: React.FC<WizardStepProps> = ({
       data-testid={dataTestId}
       className={stepClass}
       onClick={(e) => {
-        e.preventDefault();
-        if (!disabled) onClick();
+        e.preventDefault()
+        if (!disabled) onClick()
       }}
     >
-      <div className="wizard-step__icon">
-        {!complete ? icon : successIcon}
-      </div>
+      <div className="wizard-step__icon">{!complete ? icon : successIcon}</div>
       <div className="wizard-step__content">{children}</div>
     </a>
   )
 }
 
-export default WizardStep;
+export default WizardStep

@@ -1,18 +1,18 @@
-import React, { ReactNode, CSSProperties, MouseEvent, useEffect, useId, useContext } from "react";
-import { Link } from "react-router-dom";
-import classNames from "classnames";
-import { MenuContext } from "./MenuContext";
+import React, { ReactNode, CSSProperties, MouseEvent, useEffect, useId, useContext } from 'react'
+import { Link } from 'react-router-dom'
+import classNames from 'classnames'
+import { MenuContext } from './MenuContext'
 
 interface SidebarMenuItemLinkProps {
-  to?: string | null;
-  handleClick?: () => void;
-  href?: string | null;
-  active?: boolean;
-  onToggle?: () => void;
-  children?: ReactNode;
-  classBase: string;
-  textStyle?: CSSProperties;
-  sidebarMenuActive?: string;
+  to?: string | null
+  handleClick?: () => void
+  href?: string | null
+  active?: boolean
+  onToggle?: () => void
+  children?: ReactNode
+  classBase: string
+  textStyle?: CSSProperties
+  sidebarMenuActive?: string
 }
 
 /**
@@ -20,7 +20,7 @@ interface SidebarMenuItemLinkProps {
  */
 const SidebarMenuItemLink: React.FC<SidebarMenuItemLinkProps> = (props) => {
   return props.to || props.href ? (
-    props.to !== "logout" ? (
+    props.to !== 'logout' ? (
       <Link
         to={props.to as string}
         style={props.textStyle}
@@ -28,14 +28,14 @@ const SidebarMenuItemLink: React.FC<SidebarMenuItemLinkProps> = (props) => {
       >
         {props.children}
       </Link>
-    ) : props.to === "logout" ? (
+    ) : props.to === 'logout' ? (
       <Link
-        to={"#"}
+        to={'#'}
         style={props.textStyle}
         className={`${props.classBase}__entry__link`}
         onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-          e.preventDefault();
-          props.handleClick && props.handleClick();
+          e.preventDefault()
+          props.handleClick && props.handleClick()
         }}
       >
         {props.children}
@@ -59,36 +59,36 @@ const SidebarMenuItemLink: React.FC<SidebarMenuItemLinkProps> = (props) => {
     >
       {props.children}
     </a>
-  );
-};
+  )
+}
 
 interface SidebarMenuEntry {
-  id: string;
-  parentId?: string;
-  exact: boolean;
-  url?: string;
-  open?: boolean;
-  active?: boolean;
+  id: string
+  parentId?: string
+  exact: boolean
+  url?: string
+  open?: boolean
+  active?: boolean
 }
 
 interface SidebarMenuItemProps {
   // Provided props
-  parentId?: string;
-  children?: ReactNode;
-  isSubNode?: boolean;
-  currentUrl?: string;
-  slim?: boolean;
+  parentId?: string
+  children?: ReactNode
+  isSubNode?: boolean
+  currentUrl?: string
+  slim?: boolean
   // User props
-  icon?: any;
-  title?: string | ReactNode;
-  to?: string;
-  href?: string;
-  exact?: boolean;
-  noCaret?: boolean;
-  textStyle?: CSSProperties;
-  handleClick?: () => void;
-  sidebarMenuActiveClass?: string;
-  isEmptyNode?: boolean;
+  icon?: any
+  title?: string | ReactNode
+  to?: string
+  href?: string
+  exact?: boolean
+  noCaret?: boolean
+  textStyle?: CSSProperties
+  handleClick?: () => void
+  sidebarMenuActiveClass?: string
+  isEmptyNode?: boolean
 }
 
 /**
@@ -111,81 +111,76 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   sidebarMenuActiveClass,
   isEmptyNode = false,
 }) => {
-  const { entries, addEntry, updateEntry, removeEntry } = useContext(MenuContext);
-  const id = useId();
+  const { entries, addEntry, updateEntry, removeEntry } = useContext(MenuContext)
+  const id = useId()
 
   useEffect(() => {
     const entry: SidebarMenuEntry = {
       id,
       parentId,
       exact: !!exact,
-    };
+    }
 
     if (to) {
-      entry.url = to;
+      entry.url = to
     }
 
-    addEntry(entry);
+    addEntry(entry)
 
     return () => {
-      removeEntry(id);
-    };
-  }, [id, parentId, exact, to, addEntry, removeEntry]);
+      removeEntry(id)
+    }
+  }, [id, parentId, exact, to, addEntry, removeEntry])
 
   const getEntry = () => {
-    return entries[id];
-  };
+    return entries[id]
+  }
 
   const toggleNode = () => {
-    const entry = getEntry();
+    const entry = getEntry()
     if (entry) {
-      updateEntry(id, { open: !entry.open });
+      updateEntry(id, { open: !entry.open })
     }
-  };
+  }
 
-  const entry = getEntry();
+  const entry = getEntry()
   const sidebarMenuActive =
-    entry && entry.active && sidebarMenuActiveClass
-      ? sidebarMenuActiveClass
-      : "";
-  const classBase = isSubNode ? "sidebar-submenu" : `sidebar-menu`;
+    entry && entry.active && sidebarMenuActiveClass ? sidebarMenuActiveClass : ''
+  const classBase = isSubNode ? 'sidebar-submenu' : `sidebar-menu`
   const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
     [`${classBase}__entry--nested`]: !!children,
     open: entry && entry.open,
     active: entry && entry.active,
-  });
+  })
   const activeMenu: CSSProperties = {
-    color: "#323b47",
-  };
-  const nonaActiveMenu: CSSProperties = {};
+    color: '#323b47',
+  }
+  const nonaActiveMenu: CSSProperties = {}
 
   function getStyle(itemClass: string): CSSProperties {
     if (
-      itemClass.includes("active") &&
-      itemClass.includes("submenu__entry") &&
-      !itemClass.includes("open")
+      itemClass.includes('active') &&
+      itemClass.includes('submenu__entry') &&
+      !itemClass.includes('open')
     ) {
-      return activeMenu;
+      return activeMenu
     }
-    return nonaActiveMenu;
+    return nonaActiveMenu
   }
 
   function getTextStyle(itemClass: string): CSSProperties | null {
-    if (
-      itemClass.includes("active") &&
-      itemClass.includes("submenu__entry")
-    ) {
-      return { fontWeight: "bold" };
+    if (itemClass.includes('active') && itemClass.includes('submenu__entry')) {
+      return { fontWeight: 'bold' }
     }
-    return null;
+    return null
   }
 
   return (
     <li
       style={getStyle(itemClass)}
       className={classNames(itemClass, {
-        "sidebar-menu__entry--no-caret": noCaret,
-        "mb-20": !!icon,
+        'sidebar-menu__entry--no-caret': noCaret,
+        'mb-20': !!icon,
       })}
     >
       {!isEmptyNode && (
@@ -200,17 +195,10 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
         >
           {icon &&
             React.cloneElement(icon, {
-              className: classNames(
-                icon.props.className,
-                `${classBase}__entry__icon`
-              ),
-              fill: sidebarMenuActive ? "#FFF" : "#323b47",
+              className: classNames(icon.props.className, `${classBase}__entry__icon`),
+              fill: sidebarMenuActive ? '#FFF' : '#323b47',
             })}
-          {typeof title === "string" ? (
-            <span style={textStyle}>{title}</span>
-          ) : (
-            title
-          )}
+          {typeof title === 'string' ? <span style={textStyle}>{title}</span> : title}
         </SidebarMenuItemLink>
       )}
       {children && (
@@ -230,10 +218,10 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
                     : child
                 }
               </MenuContext.Consumer>
-            ) : null
+            ) : null,
           )}
         </ul>
       )}
     </li>
-  );
-};
+  )
+}

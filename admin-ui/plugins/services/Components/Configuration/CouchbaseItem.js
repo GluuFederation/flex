@@ -1,12 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Col,
-  FormGroup,
-  Input,
-  Card,
-  CardBody,
-  Badge,
-} from 'Components'
+import { Col, FormGroup, Input, Card, CardBody, Badge } from 'Components'
 import { COUCHBASE } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -228,7 +221,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
       </CardBody>
-    </Card >
+    </Card>
   )
 }
 

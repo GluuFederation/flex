@@ -1,4 +1,4 @@
-import { makeStyles } from "tss-react/mui";
+import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()({
   list: {
@@ -12,14 +12,14 @@ const styles = makeStyles()({
     position: 'relative',
   },
   settingsToggeleBtn: {
-    position: 'relative',
-    textTransform: 'none',
-    padding:"2px",
-    cursor: 'pointer',
-    border:'none',
-    background: 'none',
+    'position': 'relative',
+    'textTransform': 'none',
+    'padding': '2px',
+    'cursor': 'pointer',
+    'border': 'none',
+    'background': 'none',
     '&:active': {
-      backgroundColor: "rgba(217, 217, 217, 0.43)", 
+      backgroundColor: 'rgba(217, 217, 217, 0.43)',
       transform: 'scale(0.95)',
     },
   },
@@ -32,7 +32,7 @@ const styles = makeStyles()({
   },
   selectContainer: {
     textAlign: 'center',
-    marginTop: '25%'
+    marginTop: '25%',
   },
   selectItem: {
     marginBottom: 20,
@@ -47,8 +47,8 @@ const styles = makeStyles()({
   },
   selectTitle: {
     fontSize: 16,
-    fontWeight: '600'
-  }
+    fontWeight: '600',
+  },
 })
 
 export default styles

@@ -1,10 +1,6 @@
 // @ts-nocheck
 import React, { useEffect, useContext } from 'react'
-import {
-  CardBody,
-  Card,
-  CardHeader,
-} from 'Components'
+import { CardBody, Card, CardHeader } from 'Components'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { buildPayload } from 'Utils/PermChecker'
@@ -16,8 +12,8 @@ import SetTitle from 'Utils/SetTitle'
 import { Box } from '@mui/material'
 
 function HealthPage() {
-  const serverStatus = useSelector(state => state.healthReducer.serverStatus);
-  const dbStatus = useSelector(state => state.healthReducer.dbStatus);
+  const serverStatus = useSelector((state) => state.healthReducer.serverStatus)
+  const dbStatus = useSelector((state) => state.healthReducer.dbStatus)
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -49,31 +45,31 @@ function HealthPage() {
   return (
     <Card className="mb-3" style={applicationStyle.mainCard}>
       <CardBody>
-        <Box display='flex' flexDirection='column' gap={2}>
+        <Box display="flex" flexDirection="column" gap={2}>
           <Card className="mb-3" style={applicationStyle.buttonStyle}>
-            <CardHeader tag="h6" className="text-white" style={{ background: themeColors.background }}>
+            <CardHeader
+              tag="h6"
+              className="text-white"
+              style={{ background: themeColors.background }}
+            >
               {t('titles.oauth_server_status_title')}
             </CardHeader>
             <CardBody
-              style={
-                isUp(serverStatus)
-                  ? applicationStyle.healthUp
-                  : applicationStyle.healthDown
-              }
+              style={isUp(serverStatus) ? applicationStyle.healthUp : applicationStyle.healthDown}
             >
               {serverStatus && <h4 className="text-white">{serverStatus}</h4>}
             </CardBody>
           </Card>
           <Card className="mb-3" style={applicationStyle.buttonStyle}>
-            <CardHeader tag="h6" className="text-white" style={{ background: themeColors.background }}>
+            <CardHeader
+              tag="h6"
+              className="text-white"
+              style={{ background: themeColors.background }}
+            >
               {t('titles.database_status_title')}
             </CardHeader>
             <CardBody
-              style={
-                isUp(dbStatus)
-                  ? applicationStyle.healthUp
-                  : applicationStyle.healthDown
-              }
+              style={isUp(dbStatus) ? applicationStyle.healthUp : applicationStyle.healthDown}
             >
               {dbStatus && <h4 className="text-white">{dbStatus}</h4>}
             </CardBody>

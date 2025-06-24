@@ -20,7 +20,7 @@ import {
   buildPayload,
   PERMISSION_READ,
   PERMISSION_WRITE,
-  PERMISSION_DELETE
+  PERMISSION_DELETE,
 } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -28,11 +28,11 @@ import getThemeColor from 'Context/theme/config'
 import { isEmpty } from 'lodash'
 
 function UiPermListPage() {
-  const apiPerms = useSelector(state => state.apiPermissionReducer.items);
-  const loading = useSelector(state => state.apiPermissionReducer.loading);
-  const permissions = useSelector(state => state.authReducer.permissions);
+  const apiPerms = useSelector((state) => state.apiPermissionReducer.items)
+  const loading = useSelector((state) => state.apiPermissionReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -74,15 +74,9 @@ function UiPermListPage() {
     toggle()
   }
 
-  const PaperContainer = useCallback(
-    (props) => <Paper {...props} elevation={0} />,
-    []
-  )
+  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
 
-  const DetailPanel = useCallback(
-    (rowD) => <UiPermDetailPage row={rowD} />,
-    []
-  )
+  const DetailPanel = useCallback((rowD) => <UiPermDetailPage row={rowD} />, [])
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -152,11 +146,7 @@ function UiPermListPage() {
             }}
           />
         </GluuViewWrapper>
-        <PermissionAddDialogForm
-          handler={toggle}
-          modal={modal}
-          onAccept={onAddConfirmed}
-        />
+        <PermissionAddDialogForm handler={toggle} modal={modal} onAccept={onAddConfirmed} />
       </CardBody>
     </Card>
   )

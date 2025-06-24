@@ -48,7 +48,7 @@
 
             &:hover {
                 text-decoration: none;
-            
+
                 @include sidebar-menu-item--hover;
             }
         }
@@ -64,7 +64,7 @@
                     color: $sidebar-menu-highlight-color;
                 }
             }
-            
+
             &.open .sidebar-menu__entry__link::after {
                 content: "\f107";
             }
@@ -105,10 +105,7 @@
 
         &__link {
             display: flex;
-            @include apply-padding-map(
-                $sidebar-submenu-item-padding,
-                $sidebar-submenu-nested-offset
-            );
+            @include apply-padding-map($sidebar-submenu-item-padding, $sidebar-submenu-nested-offset);
             @include sidebar-submenu-item;
 
             > span {
@@ -134,15 +131,12 @@
 }
 
 .sidebar-submenu .sidebar-submenu .sidebar-submenu__entry__link {
-    @include apply-padding-map(
-        $sidebar-submenu-item-padding,
-        2 * $sidebar-submenu-nested-offset
-    );
+    @include apply-padding-map($sidebar-submenu-item-padding, 2 * $sidebar-submenu-nested-offset);
     font-size: $sidebar-submenu-nested-font-size;
 }
 
 /* ------ Slim Sidebar ---------- */
-@media (min-width: breakpoint-min('lg', $grid-breakpoints)) {
+@media (min-width: breakpoint-min("lg", $grid-breakpoints)) {
     .sidebar--collapsed .sidebar-menu--slim {
         .sidebar-menu__entry {
             &.active.open {

@@ -18,7 +18,7 @@ const profileDetailsSlice = createSlice({
     },
     getProfileDetails: (state, action) => {
       state.loading = true
-    }
+    },
   },
 })
 

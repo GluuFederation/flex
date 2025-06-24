@@ -26,18 +26,10 @@ const data = [
 
 // eslint-disable-next-line
 const generateDot = ({ stroke, ...other }) => (
-  <Dot
-    {...other}
-    fill={stroke}
-    stroke={colors['white']}
-    r={4}
-    strokeWidth={2}
-  />
+  <Dot {...other} fill={stroke} stroke={colors['white']} r={4} strokeWidth={2} />
 )
 
-const generateActiveDot = (props) => (
-  <Dot {...props} stroke={colors['white']} r={7} />
-)
+const generateActiveDot = (props) => <Dot {...props} stroke={colors['white']} r={7} />
 
 const SimpleLineChart = () => (
   <ResponsiveContainer width="100%" aspect={6.0 / 3.0}>

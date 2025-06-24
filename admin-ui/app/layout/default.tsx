@@ -1,47 +1,47 @@
-import React, { ReactNode } from "react"
-import PropTypes from "prop-types"
-import { Layout, ThemeProvider } from "Components"
+import React, { ReactNode } from 'react'
+import PropTypes from 'prop-types'
+import { Layout, ThemeProvider } from 'Components'
 
-import "Styles/bootstrap.scss"
-import "Styles/main.scss"
-import "Styles/plugins/plugins.scss"
-import "Styles/plugins/plugins.css"
+import 'Styles/bootstrap.scss'
+import 'Styles/main.scss'
+import 'Styles/plugins/plugins.scss'
+import 'Styles/plugins/plugins.css'
 
-import { RoutedNavbars, RoutedSidebars } from "../routes"
+import { RoutedNavbars, RoutedSidebars } from '../routes'
 
 interface FavIcon {
-  rel: string;
-  type?: string;
-  sizes?: string;
-  href: string;
+  rel: string
+  type?: string
+  sizes?: string
+  href: string
 }
 
 interface AppLayoutProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 const favIcons: FavIcon[] = [
   {
-    rel: "icon",
-    type: "image/x-icon",
-    href: require("Images/favicons/favicon.ico"),
+    rel: 'icon',
+    type: 'image/x-icon',
+    href: require('Images/favicons/favicon.ico'),
   },
   {
-    rel: "apple-touch-icon",
-    sizes: "180x180",
-    href: require("Images/favicons/apple-touch-icon.png"),
+    rel: 'apple-touch-icon',
+    sizes: '180x180',
+    href: require('Images/favicons/apple-touch-icon.png'),
   },
   {
-    rel: "icon",
-    type: "image/png",
-    sizes: "32x32",
-    href: require("Images/favicons/favicon-32x32.png"),
+    rel: 'icon',
+    type: 'image/png',
+    sizes: '32x32',
+    href: require('Images/favicons/favicon-32x32.png'),
   },
   {
-    rel: "icon",
-    type: "image/png",
-    sizes: "16x16",
-    href: require("Images/favicons/favicon-16x16.png"),
+    rel: 'icon',
+    type: 'image/png',
+    sizes: '16x16',
+    href: require('Images/favicons/favicon-16x16.png'),
   },
 ]
 

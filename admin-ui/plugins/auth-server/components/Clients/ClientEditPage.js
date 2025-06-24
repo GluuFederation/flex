@@ -4,7 +4,7 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { editClient } from 'Plugins/auth-server/redux/features/oidcSlice'
-import { getScopeByCreator, emptyScopes} from 'Plugins/auth-server/redux/features/scopeSlice'
+import { getScopeByCreator, emptyScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { getOidcDiscovery } from 'Redux/features/oidcDiscoverySlice'
 import { getUMAResourcesByClient } from 'Plugins/auth-server/redux/features/umaResourceSlice'
 import { getScripts } from 'Redux/features/initSlice'
@@ -28,7 +28,7 @@ function ClientEditPage() {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
-  const navigate =useNavigate()
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(emptyScopes())
@@ -43,8 +43,7 @@ function ClientEditPage() {
     dispatch(getOidcDiscovery())
   }, [])
   useEffect(() => {
-    if (saveOperationFlag)
-      navigate('/auth-server/clients')
+    if (saveOperationFlag) navigate('/auth-server/clients')
   }, [saveOperationFlag])
 
   if (!clientData.attributes) {
@@ -64,7 +63,7 @@ function ClientEditPage() {
   }
   return (
     <GluuLoader blocking={loading || loadingOidcDiscovevry}>
-      {!(loadingOidcDiscovevry || loading) && 
+      {!(loadingOidcDiscovevry || loading) && (
         <>
           <ClientWizardForm
             client_data={{ ...clientData }}
@@ -80,7 +79,7 @@ function ClientEditPage() {
             setModifiedFields={setModifiedFields}
           />
         </>
-      } 
+      )}
     </GluuLoader>
   )
 }

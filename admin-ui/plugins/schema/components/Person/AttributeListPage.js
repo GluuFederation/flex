@@ -11,12 +11,7 @@ import AttributeDetailPage from './AttributeDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import {
-  hasPermission,
-  ATTRIBUTE_WRITE,
-  ATTRIBUTE_READ,
-  ATTRIBUTE_DELETE,
-} from 'Utils/PermChecker'
+import { hasPermission, ATTRIBUTE_WRITE, ATTRIBUTE_READ, ATTRIBUTE_DELETE } from 'Utils/PermChecker'
 import {
   getAttributes,
   searchAttributes,
@@ -32,18 +27,10 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 function AttributeListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const attributes = useSelector(
-    (state) => state.attributeReducer.items
-  )
-  const loading = useSelector(
-    (state) => state.attributeReducer.loading
-  )
-  const permissions = useSelector(
-    (state) => state.authReducer.permissions
-  )
-  const { totalItems } = useSelector(
-    (state) => state.attributeReducer
-  )
+  const attributes = useSelector((state) => state.attributeReducer.items)
+  const loading = useSelector((state) => state.attributeReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const { totalItems } = useSelector((state) => state.attributeReducer)
   const options = {}
   const pageSize = localStorage.getItem('paggingSize')
     ? parseInt(localStorage.getItem('paggingSize'))
@@ -125,10 +112,7 @@ function AttributeListPage() {
   }
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-  const DetailsPanel = useCallback(
-    (rowData) => <AttributeDetailPage row={rowData.rowData} />,
-    []
-  )
+  const DetailsPanel = useCallback((rowData) => <AttributeDetailPage row={rowData.rowData} />, [])
 
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
     myActions.push((rowData) => ({
@@ -232,18 +216,13 @@ function AttributeListPage() {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(event) =>
-          onRowCountChangeClick(event.target.value)
-        }
+        onRowsPerPageChange={(event) => onRowCountChangeClick(event.target.value)}
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
+    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
   )
 
-  const PaperContainer = useCallback(
-    (props) => <Paper {...props} elevation={0} />,
-    []
-  )
+  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -263,15 +242,13 @@ function AttributeListPage() {
                 field: 'status',
                 type: 'boolean',
                 render: (rowData) => (
-                  <Badge color={getBadgeTheme(rowData.status)}>
-                    {rowData.status}
-                  </Badge>
+                  <Badge color={getBadgeTheme(rowData.status)}>{rowData.status}</Badge>
                 ),
               },
             ]}
             data={attributes}
             isLoading={loading}
-            title=''
+            title=""
             actions={myActions}
             options={{
               search: false,
@@ -293,7 +270,7 @@ function AttributeListPage() {
             row={item}
             handler={toggle}
             modal={modal}
-            subject='attribute'
+            subject="attribute"
             onAccept={onDeletionConfirmed}
             feature={adminUiFeatures.attributes_delete}
           />

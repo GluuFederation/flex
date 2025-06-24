@@ -17,13 +17,7 @@ describe('GluuSelectRow', () => {
 
   test('renders select with formik handle change & update value', () => {
     render(
-      <GluuSelectRow
-        label={label}
-        name={name}
-        value={value}
-        values={values}
-        formik={formikMock}
-      />
+      <GluuSelectRow label={label} name={name} value={value} values={values} formik={formikMock} />,
     )
 
     const selectElement = screen.getByTestId(name)
@@ -41,7 +35,7 @@ describe('GluuSelectRow', () => {
           name,
           value: newValue,
         }),
-      })
+      }),
     )
   })
 
@@ -57,7 +51,7 @@ describe('GluuSelectRow', () => {
         values={values}
         formik={formikMock}
         handleChange={handleChangeMock}
-      />
+      />,
     )
 
     const selectElement = screen.getByTestId(name)

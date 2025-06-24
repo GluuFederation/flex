@@ -19,7 +19,11 @@ export default function Lang() {
   }
 
   const handleClose = (event: MouseEvent | TouchEvent) => {
-    if (anchorRef.current && event.target instanceof Node && anchorRef.current.contains(event.target)) {
+    if (
+      anchorRef.current &&
+      event.target instanceof Node &&
+      anchorRef.current.contains(event.target)
+    ) {
       return
     }
 
@@ -39,14 +43,17 @@ export default function Lang() {
   return (
     <div className={classes.root}>
       <div>
-        <button
-          ref={anchorRef}
-          className={classes.notificationBtn}
-          onClick={handleToggle}
-        >
-          <NotificationsIcon style={{color: "white", width: "35px", height: "100%"}}/>
+        <button ref={anchorRef} className={classes.notificationBtn} onClick={handleToggle}>
+          <NotificationsIcon style={{ color: 'white', width: '35px', height: '100%' }} />
         </button>
-        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal className={classes.topElm}>
+        <Popper
+          open={open}
+          anchorEl={anchorRef.current}
+          role={undefined}
+          transition
+          disablePortal
+          className={classes.topElm}
+        >
           {({ TransitionProps, placement }) => (
             <Grow
               {...TransitionProps}
@@ -56,9 +63,7 @@ export default function Lang() {
                 <ClickAwayListener onClickAway={handleClose}>
                   <List component="nav" aria-label="notification">
                     <ListItem button>
-                      <ListItemText 
-                        primary="No new notifications"
-                      />
+                      <ListItemText primary="No new notifications" />
                     </ListItem>
                   </List>
                 </ClickAwayListener>

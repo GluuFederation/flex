@@ -1,11 +1,8 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import {
-  getLoggingResponse,
-  editLoggingResponse,
-} from '../features/loggingSlice'
+import { getLoggingResponse, editLoggingResponse } from '../features/loggingSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import {updateToast} from 'Redux/features/toastSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import LoggingApi from '../api/LoggingApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -13,9 +10,7 @@ const JansConfigApi = require('jans_config_api')
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.ConfigurationLoggingApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.ConfigurationLoggingApi(getClient(JansConfigApi, token, issuer))
   return new LoggingApi(api)
 }
 

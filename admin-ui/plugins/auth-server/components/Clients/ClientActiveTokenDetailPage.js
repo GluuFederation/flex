@@ -1,14 +1,14 @@
-import React from "react";
-import { Container, Row, Col } from "Components";
-import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
+import React from 'react'
+import { Container, Row, Col } from 'Components'
+import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import PropTypes from 'prop-types'
 
 const ClientActiveTokenDetailPage = ({ row }) => {
-  const { rowData } = row;
-  const DOC_SECTION = "user";
+  const { rowData } = row
+  const DOC_SECTION = 'user'
 
   return (
-    <Container style={{ backgroundColor: "#F5F5F5", minWidth: "100%" }}>
+    <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
@@ -23,9 +23,7 @@ const ClientActiveTokenDetailPage = ({ row }) => {
           <GluuFormDetailRow
             label="fields.expiration_date"
             value={
-              rowData.expirationDate
-                ? new Date(rowData.expirationDate).toLocaleString()
-                : "--"
+              rowData.expirationDate ? new Date(rowData.expirationDate).toLocaleString() : '--'
             }
             doc_category={DOC_SECTION}
             doc_entry="creationDate"
@@ -51,7 +49,7 @@ const ClientActiveTokenDetailPage = ({ row }) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.deleteable"
-            value={rowData.deletable ? "true" : "false"}
+            value={rowData.deletable ? 'true' : 'false'}
             doc_category={DOC_SECTION}
             doc_entry="deleteable"
           />
@@ -67,10 +65,10 @@ const ClientActiveTokenDetailPage = ({ row }) => {
         </Col>
       </Row>
     </Container>
-  );
-};
+  )
+}
 
 ClientActiveTokenDetailPage.propTypes = {
-  row: PropTypes.any
+  row: PropTypes.any,
 }
-export default ClientActiveTokenDetailPage;
+export default ClientActiveTokenDetailPage

@@ -7,10 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Card, CardBody } from 'Components'
 import SetTitle from 'Utils/SetTitle'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getFidoConfiguration,
-  putFidoConfiguration,
-} from '../redux/features/fidoSlice'
+import { getFidoConfiguration, putFidoConfiguration } from '../redux/features/fidoSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 const fidoApiPayload = ({ fidoConfiguration, data }) => {
@@ -24,7 +21,7 @@ const fidoApiPayload = ({ fidoConfiguration, data }) => {
   payload.serverMetadataFolder = data.serverMetadataFolder
   payload.userAutoEnrollment = data.userAutoEnrollment
   payload.requestedCredentialTypes = data.requestedCredentialTypes.map((item) =>
-    item?.value ? item?.value : item
+    item?.value ? item?.value : item,
   )
   payload.requestedParties = data.requestedParties.map((item) => {
     return {
@@ -32,7 +29,7 @@ const fidoApiPayload = ({ fidoConfiguration, data }) => {
       domains: [item.value],
     }
   })
-  
+
   const newPayload = {
     ...fidoConfiguration.fido,
     fido2Configuration: payload,
@@ -61,8 +58,8 @@ const fidoApiPayloadDynamicConfig = ({ fidoConfiguration, data }) => {
   payload.metricReporterKeepDataDays = data.metricReporterKeepDataDays
   payload.personCustomObjectClassList = data.personCustomObjectClassList
   payload.superGluuEnabled = data.superGluuEnabled
-  payload.personCustomObjectClassList = data.personCustomObjectClassList.map(
-    (item) => (item?.value ? item?.value : item)
+  payload.personCustomObjectClassList = data.personCustomObjectClassList.map((item) =>
+    item?.value ? item?.value : item,
   )
 
   const opts = {}
@@ -83,20 +80,20 @@ export default function Fido() {
   }, [])
 
   const tabNames = [
-    { name: t("menus.static_configuration"), path: '/fido/fidomanagement/static-configuration' },
-    { name: t("menus.dynamic_configuration"), path: '/fido/fidomanagement/dynamic-configuration' },
-  ];
+    { name: t('menus.static_configuration'), path: '/fido/fidomanagement/static-configuration' },
+    { name: t('menus.dynamic_configuration'), path: '/fido/fidomanagement/dynamic-configuration' },
+  ]
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case t("menus.static_configuration"):
+      case t('menus.static_configuration'):
         return (
           <StaticConfiguration
             handleSubmit={handleStaticConfigurationSubmit}
             fidoConfiguration={fidoConfiguration}
           />
         )
-      case t("menus.dynamic_configuration"):
+      case t('menus.dynamic_configuration'):
         return (
           <DynamicConfiguration
             handleSubmit={handleDyamicConfigurationSubmit}
@@ -115,11 +112,11 @@ export default function Fido() {
     const apiPayload = fidoApiPayload({ data, fidoConfiguration })
     dispatch(putFidoConfiguration(apiPayload))
   }
-  
+
   return (
     <React.Fragment>
       <GluuLoader blocking={fidoConfiguration?.loading}>
-        <Card className='mb-3' style={applicationStyle.mainCard}>
+        <Card className="mb-3" style={applicationStyle.mainCard}>
           <CardBody>
             {!fidoConfiguration?.loading && (
               <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />

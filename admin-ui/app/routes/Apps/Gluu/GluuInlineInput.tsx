@@ -1,16 +1,16 @@
-import React, { useState, useContext } from "react";
-import GluuLabel from "./GluuLabel";
-import GluuToogle from "./GluuToogle";
-import { useTranslation } from "react-i18next";
-import { Typeahead } from "react-bootstrap-typeahead";
-import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
-import { Col, FormGroup, Input, Button } from "Components";
-import { ThemeContext } from "Context/theme/themeContext";
+import React, { useState, useContext } from 'react'
+import GluuLabel from './GluuLabel'
+import GluuToogle from './GluuToogle'
+import { useTranslation } from 'react-i18next'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { Col, FormGroup, Input, Button } from 'Components'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuInlineInput({
   label,
   name,
-  type = "text",
+  type = 'text',
   value,
   required = false,
   lsize = 3,
@@ -20,57 +20,53 @@ function GluuInlineInput({
   handler,
   options,
   path,
-  doc_category = "json_properties",
+  doc_category = 'json_properties',
 }: any) {
-  const { t } = useTranslation();
-  const theme: any = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
-  const VALUE = "value";
-  const PATH = "path";
-  const [show, setShow] = useState(false);
-  const [correctValue, setCorrectValue] = useState([]);
-  const [data, setData] = useState(value);
+  const { t } = useTranslation()
+  const theme: any = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const VALUE = 'value'
+  const PATH = 'path'
+  const [show, setShow] = useState(false)
+  const [correctValue, setCorrectValue] = useState([])
+  const [data, setData] = useState(value)
   const onValueChanged = (e: any) => {
     if (isBoolean) {
-      setData(e.target.checked);
+      setData(e.target.checked)
     } else {
-      setData(e.target.value);
+      setData(e.target.value)
     }
-    setShow(true);
-  };
+    setShow(true)
+  }
   const handleTypeAheadChange = (selectedOptions: any) => {
-    const object = selectedOptions.filter(
-      (data: any) => typeof data == "object"
-    );
-    const arrayItems = selectedOptions.filter(
-      (data: any) => typeof data != "object"
-    );
+    const object = selectedOptions.filter((data: any) => typeof data == 'object')
+    const arrayItems = selectedOptions.filter((data: any) => typeof data != 'object')
     for (const i in object) {
-      if (!object[i]["tokenEndpointAuthMethodsSupported"]) {
-        arrayItems.push(object[i][name]);
+      if (!object[i]['tokenEndpointAuthMethodsSupported']) {
+        arrayItems.push(object[i][name])
       } else {
-        arrayItems.push(object[i]["tokenEndpointAuthMethodsSupported"]);
+        arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
       }
     }
-    setCorrectValue(arrayItems);
-    setShow(true);
-  };
+    setCorrectValue(arrayItems)
+    setShow(true)
+  }
   const onAccept = () => {
-    const patch: any = {};
-    patch[PATH] = path;
+    const patch: any = {}
+    patch[PATH] = path
     if (isArray) {
-      patch[VALUE] = correctValue;
+      patch[VALUE] = correctValue
     } else {
-      patch[VALUE] = data;
+      patch[VALUE] = data
     }
-    patch["op"] = "replace";
-    handler(patch);
-    setShow(!show);
-  };
+    patch['op'] = 'replace'
+    handler(patch)
+    setShow(!show)
+  }
   const onCancel = () => {
-    setCorrectValue([]);
-    setShow(!show);
-  };
+    setCorrectValue([])
+    setShow(!show)
+  }
   return (
     <FormGroup row>
       <Col sm={10}>
@@ -128,7 +124,7 @@ function GluuInlineInput({
               onClick={onAccept}
             >
               <i className="fa fa-check me-2"></i>
-            </Button>{" "}
+            </Button>{' '}
             <Button color="danger" size="sm" onClick={onCancel}>
               <i className="fa fa-times me-2"></i>
             </Button>
@@ -136,6 +132,6 @@ function GluuInlineInput({
         )}
       </Col>
     </FormGroup>
-  );
+  )
 }
-export default GluuInlineInput;
+export default GluuInlineInput

@@ -39,38 +39,24 @@ const GluuUploadFile = ({
   }, [])
 
   return (
-    <div className='col-md-12'>
-      <div
-        {...getRootProps1()}
-        className={isDragActive1 ? 'active' : 'dropzone'}
-      >
+    <div className="col-md-12">
+      <div {...getRootProps1()} className={isDragActive1 ? 'active' : 'dropzone'}>
         <input {...getInputProps1()} />
-        {(selectedFile || preDefinedFileName) ? (
-          <Box
-            display={'flex'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
-            <Box
-              display='flex'
-              justifyContent='flex-start'
-              alignItems='center'
-              gap={1}
-            >
+        {selectedFile || preDefinedFileName ? (
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+            <Box display="flex" justifyContent="flex-start" alignItems="center" gap={1}>
               <strong>{preDefinedFileName || selectedFile?.name}</strong>
               {selectedFile ? (
-                <p className='m-0'>
-                  ({((selectedFile?.size || 0) / 1000).toFixed(0)}K)
-                </p>
+                <p className="m-0">({((selectedFile?.size || 0) / 1000).toFixed(0)}K)</p>
               ) : null}
             </Box>
             <Button onClick={clearFiles}>
-              <i className='fa fa-remove me-2'></i>
+              <i className="fa fa-remove me-2"></i>
               Clear
             </Button>
           </Box>
         ) : (
-          <p className='m-0'>{placeholder}</p>
+          <p className="m-0">{placeholder}</p>
         )}
       </div>
     </div>

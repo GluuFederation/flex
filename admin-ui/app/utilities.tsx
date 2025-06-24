@@ -3,14 +3,14 @@ declare const require: {
   context: (
     directory: string,
     useSubdirectories: boolean,
-    regExp: RegExp
+    regExp: RegExp,
   ) => {
-    keys: () => string[];
-    (id: string): any;
-  };
-};
+    keys: () => string[]
+    (id: string): any
+  }
+}
 
-const allAvatars = (ctx => {
+const allAvatars = ((ctx) => {
   const keys = ctx.keys()
   return keys.map(ctx)
 })(require.context('./images/avatars', true, /.*/))

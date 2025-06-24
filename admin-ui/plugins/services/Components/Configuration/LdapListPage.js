@@ -12,13 +12,7 @@ import LdapDetailPage from './LdapDetailPage'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import {
-  hasPermission,
-  buildPayload,
-  LDAP_READ,
-  LDAP_WRITE,
-  LDAP_DELETE,
-} from 'Utils/PermChecker'
+import { hasPermission, buildPayload, LDAP_READ, LDAP_WRITE, LDAP_DELETE } from 'Utils/PermChecker'
 import {
   getLdapConfig,
   setCurrentItem,
@@ -49,7 +43,7 @@ function LdapListPage() {
   const { t } = useTranslation()
   const userAction = {}
   const myActions = []
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const [testRunning, setTestRunning] = useState(false)
@@ -144,11 +138,10 @@ function LdapListPage() {
       resolve()
     })
 
-    testPromise
-      .then(() => {
-        setTestRunning(true)
-        dispatch(testLdap({ data: row }))
-      })
+    testPromise.then(() => {
+      setTestRunning(true)
+      dispatch(testLdap({ data: row }))
+    })
   }
 
   useEffect(() => {
@@ -196,9 +189,7 @@ function LdapListPage() {
                   type: 'boolean',
                   render: (rowData) => (
                     <Badge color={getBadgeTheme(rowData.enabled)}>
-                      {rowData.enabled
-                        ? `${t('fields.enable')}`
-                        : `${t('fields.disable')}`}
+                      {rowData.enabled ? `${t('fields.enable')}` : `${t('fields.disable')}`}
                     </Badge>
                   ),
                 },
@@ -215,25 +206,15 @@ function LdapListPage() {
                 actionsColumnIndex: -1,
               }}
               detailPanel={(rowData) => {
-                return (
-                  <LdapDetailPage
-                    row={rowData.rowData}
-                    testLdapConnection={testLdapConnect}
-                  />
-                )
+                return <LdapDetailPage row={rowData.rowData} testLdapConnection={testLdapConnect} />
               }}
             />
           ) : (
             <Alert severity="info">
-              {!persistenceTypeLoading &&
-                'The current data store provider is not LDAP based.'}
+              {!persistenceTypeLoading && 'The current data store provider is not LDAP based.'}
             </Alert>
           )}
-          <GluuAlert
-            severity={alertObj.severity}
-            message={alertObj.message}
-            show={alertObj.show}
-          />
+          <GluuAlert severity={alertObj.severity} message={alertObj.message} show={alertObj.show} />
           <GluuDialog
             row={item}
             handler={toggle}

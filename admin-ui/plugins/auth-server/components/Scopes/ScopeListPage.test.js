@@ -19,11 +19,11 @@ const INIT_SCPOPES_STATE = {
   items: [scopes[0]],
   item: {},
   loading: false,
-  totalItems: 0
+  totalItems: 0,
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     scopeReducer: (state = INIT_SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,

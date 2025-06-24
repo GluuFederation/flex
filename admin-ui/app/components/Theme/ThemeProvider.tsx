@@ -3,14 +3,14 @@ import React, { ReactNode } from 'react'
 import { Provider } from './ThemeContext'
 
 interface ThemeProviderProps {
-  children?: ReactNode;
-  initialStyle?: string;
-  initialColor?: string;
+  children?: ReactNode
+  initialStyle?: string
+  initialColor?: string
 }
 
 interface ThemeProviderState {
-  style: string;
-  color: string;
+  style: string
+  color: string
 }
 
 export class ThemeProvider extends React.Component<ThemeProviderProps, ThemeProviderState> {
@@ -40,18 +40,18 @@ export class ThemeProvider extends React.Component<ThemeProviderProps, ThemeProv
       ...themeState,
     }))
   }
-    
+
   render() {
     const { children } = this.props
-        
+
     return (
       <Provider
         value={{
           ...this.state,
-          onChangeTheme: this.onChangeTheme.bind(this)
+          onChangeTheme: this.onChangeTheme.bind(this),
         }}
       >
-        { children }
+        {children}
       </Provider>
     )
   }

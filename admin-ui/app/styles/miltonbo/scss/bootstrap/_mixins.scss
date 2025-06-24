@@ -11,15 +11,35 @@
         }
 
         // Border Color
-        .b-#{$name} { border-color: $color !important; border-style: solid; border-width: 1px; }
+        .b-#{$name} {
+            border-color: $color !important;
+            border-style: solid;
+            border-width: 1px;
+        }
         .bt-#{$name},
-        .by-#{$name} { border-top-color: $color !important; border-top-style: solid; border-top-width: 1px; }
+        .by-#{$name} {
+            border-top-color: $color !important;
+            border-top-style: solid;
+            border-top-width: 1px;
+        }
         .br-#{$name},
-        .bx-#{$name} { border-right-color: $color !important; border-right-style: solid; border-right-width: 1px; }
+        .bx-#{$name} {
+            border-right-color: $color !important;
+            border-right-style: solid;
+            border-right-width: 1px;
+        }
         .bb-#{$name},
-        .by-#{$name} { border-bottom-color: $color !important; border-bottom-style: solid; border-bottom-width: 1px; }
+        .by-#{$name} {
+            border-bottom-color: $color !important;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
         .bl-#{$name},
-        .bx-#{$name} { border-left-color: $color !important; border-left-style: solid; border-left-width: 1px; }
+        .bx-#{$name} {
+            border-left-color: $color !important;
+            border-left-style: solid;
+            border-left-width: 1px;
+        }
     }
 }
 
@@ -31,7 +51,7 @@
 
         .btn-#{$name} {
             @include button-variant($background, $border);
-            
+
             &.btn {
                 color: $color;
             }

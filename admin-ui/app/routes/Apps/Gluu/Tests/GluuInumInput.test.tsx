@@ -9,17 +9,11 @@ const VALUE = 'Public'
 
 it('Should show the disabled input with proper text wit sa', () => {
   function handler() {
-    console.log("========")
+    console.log('========')
   }
   render(
     <AppTestWrapper>
-      <GluuInumInput
-        label={LABEL}
-        value={VALUE}
-        name={NAME}
-        handler={handler}
-        formik={handler}
-      />
+      <GluuInumInput label={LABEL} value={VALUE} name={NAME} handler={handler} formik={handler} />
     </AppTestWrapper>,
   )
   expect(screen.getByText(/Application Type/i)).toBeInTheDocument()

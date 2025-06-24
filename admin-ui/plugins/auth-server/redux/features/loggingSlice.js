@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   logging: {},
-  loading: false
+  loading: false,
 }
 
 const loggingSlice = createSlice({
@@ -27,15 +27,11 @@ const loggingSlice = createSlice({
       if (action.payload?.data) {
         state.logging = action.payload.data
       }
-    }
-  }
+    },
+  },
 })
 
-export const {
-  getLoggingConfig,
-  getLoggingResponse,
-  editLoggingConfig,
-  editLoggingResponse
-} = loggingSlice.actions
+export const { getLoggingConfig, getLoggingResponse, editLoggingConfig, editLoggingResponse } =
+  loggingSlice.actions
 export const { actions, reducer, state } = loggingSlice
 reducerRegistry.register('loggingReducer', reducer)

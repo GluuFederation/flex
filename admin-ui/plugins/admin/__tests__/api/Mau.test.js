@@ -1,9 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import { log } from 'console'
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/admin/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/admin/__tests__/api/setup.test'
 import authReducer from 'Redux/features/authSlice'
 import { reducer as mauReducer } from 'Plugins/admin/redux/features/mauSlice'
 import { getMau } from 'Redux/sagas/MauSaga'

@@ -1,14 +1,11 @@
 import React from 'react'
 
 const { Consumer, Provider } = React.createContext<{
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
 }>({
   isOpen: false,
-  setIsOpen: () => {}
+  setIsOpen: () => {},
 })
 
-export {
-  Consumer,
-  Provider
-}
+export { Consumer, Provider }

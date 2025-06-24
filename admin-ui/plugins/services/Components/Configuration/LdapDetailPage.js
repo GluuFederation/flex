@@ -1,12 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Container,
-  Badge,
-  Row,
-  Col,
-  FormGroup,
-  Label,
-} from 'Components'
+import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 
@@ -59,9 +52,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
               <Label sm={6}>{t('fields.status')}:</Label>
               <Label sm={6}>
                 <Badge color={getBadgeTheme(row.enabled)}>
-                  {row.enabled
-                    ? `${t('options.enabled')}`
-                    : `${t('options.disable')}`}
+                  {row.enabled ? `${t('options.enabled')}` : `${t('options.disable')}`}
                 </Badge>
               </Label>
             </FormGroup>

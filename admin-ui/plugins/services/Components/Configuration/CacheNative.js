@@ -12,10 +12,7 @@ function CacheNative({ formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-          <Col
-            xs="12"
-            style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
-          >
+          <Col xs="12" style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}>
             {t('fields.native_persistence_configuration')}:
           </Col>
         </FormGroup>
@@ -55,5 +52,5 @@ function CacheNative({ formik }) {
 
 export default CacheNative
 CacheNative.propTypes = {
-  formik: PropTypes.object
+  formik: PropTypes.object,
 }

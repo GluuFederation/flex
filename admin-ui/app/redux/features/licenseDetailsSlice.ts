@@ -36,16 +36,27 @@ const licenseDetailsSlice = createSlice({
       ...state,
       loading: true,
     }),
-    getLicenseDetailsResponse: (state, action: PayloadAction<{ data?: LicenseDetailsItem } | null>) => {
+    getLicenseDetailsResponse: (
+      state,
+      action: PayloadAction<{ data?: LicenseDetailsItem } | null>,
+    ) => {
       if (action.payload?.data) {
         return {
           ...state,
           item: {
             ...action.payload.data,
-            companyName: action.payload.data?.companyName ? action.payload.data?.companyName.replace(/"/g, '') : '',
-            customerFirstName: action.payload.data?.customerFirstName ? action.payload.data?.customerFirstName.replace(/"/g, '') : '',
-            customerLastName: action.payload.data?.customerLastName ? action.payload.data?.customerLastName.replace(/"/g, '') : '',
-            customerEmail: action.payload.data?.customerEmail ? action.payload.data?.customerEmail.replace(/"/g, '') : '',
+            companyName: action.payload.data?.companyName
+              ? action.payload.data?.companyName.replace(/"/g, '')
+              : '',
+            customerFirstName: action.payload.data?.customerFirstName
+              ? action.payload.data?.customerFirstName.replace(/"/g, '')
+              : '',
+            customerLastName: action.payload.data?.customerLastName
+              ? action.payload.data?.customerLastName.replace(/"/g, '')
+              : '',
+            customerEmail: action.payload.data?.customerEmail
+              ? action.payload.data?.customerEmail.replace(/"/g, '')
+              : '',
           },
           loading: false,
         }
@@ -60,7 +71,10 @@ const licenseDetailsSlice = createSlice({
       ...state,
       loading: true,
     }),
-    updateLicenseDetailsResponse: (state, action: PayloadAction<{ data?: LicenseDetailsItem } | null>) => {
+    updateLicenseDetailsResponse: (
+      state,
+      action: PayloadAction<{ data?: LicenseDetailsItem } | null>,
+    ) => {
       if (action.payload?.data) {
         return {
           ...state,

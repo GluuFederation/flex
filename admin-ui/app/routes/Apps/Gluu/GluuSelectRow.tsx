@@ -41,7 +41,7 @@ function GluuSelectRow({
   required = false,
   showError = false,
   errorMessage,
-  doc_entry
+  doc_entry,
 }: GluuSelectRowProps) {
   const { t } = useTranslation()
 
@@ -57,7 +57,13 @@ function GluuSelectRow({
 
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} required={required} />
+      <GluuLabel
+        label={label}
+        size={lsize}
+        doc_category={doc_category}
+        doc_entry={doc_entry || name}
+        required={required}
+      />
       <Col sm={rsize}>
         <InputGroup>
           <CustomInput
@@ -67,8 +73,12 @@ function GluuSelectRow({
             name={name}
             defaultValue={value}
             onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-              if (handleChange) { formik.handleChange(event); handleChange(event) }
-              else { formik.handleChange(event); }
+              if (handleChange) {
+                formik.handleChange(event)
+                handleChange(event)
+              } else {
+                formik.handleChange(event)
+              }
             }}
             disabled={disabled}
           >
@@ -77,12 +87,14 @@ function GluuSelectRow({
               const value = typeof item === 'string' ? item : item.value
               const label = typeof item === 'string' ? item : item.label
               return (
-                <option key={value} value={value}>{label}</option>
+                <option key={value} value={value}>
+                  {label}
+                </option>
               )
             })}
           </CustomInput>
         </InputGroup>
-        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

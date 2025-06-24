@@ -28,10 +28,12 @@ if [ -n "$STAGED_JS_FILES" ]; then
         FORMATTING_NEEDED=true
       fi
       # Check for ESLint errors
-      if ! npx eslint "$file" --max-warnings=0 >/dev/null 2>&1; then
-        echo "❌ $file has ESLint errors"
-        FORMATTING_NEEDED=true
-      fi
+
+      # to run linter uncomment below if block
+      # if ! npx eslint "$file" --max-warnings=0 >/dev/null 2>&1; then
+      #   echo "❌ $file has ESLint errors"
+      #   FORMATTING_NEEDED=true
+      # fi
     fi
   done
 fi

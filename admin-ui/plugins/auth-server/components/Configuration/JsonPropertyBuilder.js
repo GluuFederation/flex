@@ -9,9 +9,7 @@ export function generateLabel(name) {
   return result.charAt(0).toUpperCase() + result.slice(1)
 }
 export function isObjectArray(item) {
-  return (
-    Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
-  )
+  return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
 }
 
 export function isObject(item) {
@@ -21,15 +19,7 @@ export function isObject(item) {
     return false
   }
 }
-function JsonPropertyBuilder({
-  propKey,
-  propValue,
-  lSize,
-  path,
-  handler,
-  parentIsArray,
-  schema
-}) {
+function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentIsArray, schema }) {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
   if (!path) {
@@ -59,14 +49,15 @@ function JsonPropertyBuilder({
 
   function isStringArray(item) {
     return (
-      (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') || (schema?.type === 'array' && schema?.items?.type === 'string')
+      (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') ||
+      (schema?.type === 'array' && schema?.items?.type === 'string')
     )
   }
 
   function isEmptyArray(item) {
     return (
       (Array.isArray(item) && item.length === 0) ||
-      (schema?.type === "array" && schema?.items?.type === "string")
+      (schema?.type === 'array' && schema?.items?.type === 'string')
     )
   }
 
@@ -138,9 +129,7 @@ function JsonPropertyBuilder({
   if (isObjectArray(propValue)) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header className="text-primary">
-          {propKey.toUpperCase()}{' '}
-        </Accordion.Header>
+        <Accordion.Header className="text-primary">{propKey.toUpperCase()} </Accordion.Header>
         <Accordion.Body>
           {Object.keys(propValue)?.map((item, idx) => (
             <JsonPropertyBuilder
@@ -206,7 +195,7 @@ function JsonPropertyBuilder({
 }
 
 JsonPropertyBuilder.propTypes = {
-  schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string })
+  schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string }),
 }
 
 export default JsonPropertyBuilder
