@@ -17,18 +17,18 @@ export function useCedarling(): UseCedarlingReturn {
   const { APP_ID, APP_NAME, PRINCIPAL_TYPE, RESOURCE_TYPE, ACTION_TYPE } = constants
   const dispatch = useDispatch()
 
-  const { scopes, role, sub, permissions, isLoading, error } = useSelector((state: RootState) => {
-    return {
-      scopes: state.authReducer?.token?.scopes ?? state.authReducer?.permissions ?? [],
-      role: state.authReducer?.userinfo?.jansAdminUIRole ?? null,
-      sub: state.authReducer?.userinfo?.sub ?? null,
-      permissions: state.cedarPermissions?.permissions || {},
-      isLoading: state.cedarPermissions?.loading || false,
-      error: state.cedarPermissions?.error,
-    }
-  })
+  const scopes = useSelector(
+    (state: RootState) => state.authReducer?.token?.scopes ?? state.authReducer?.permissions ?? [],
+  )
+  const role = useSelector(
+    (state: RootState) => state.authReducer?.userinfo?.jansAdminUIRole ?? null,
+  )
+  const sub = useSelector((state: RootState) => state.authReducer?.userinfo?.sub ?? null)
+  const permissions = useSelector((state: RootState) => state.cedarPermissions?.permissions || {})
+  const isLoading = useSelector((state: RootState) => state.cedarPermissions?.loading || false)
+  const error = useSelector((state: RootState) => state.cedarPermissions?.error)
 
-  const hasPermission = useCallback(
+  const hasReduxPermission = useCallback(
     (url: string): boolean | undefined => {
       if (url in permissions) {
         return permissions[url] // true or false
@@ -78,7 +78,7 @@ export function useCedarling(): UseCedarlingReturn {
       const url = resourceScope[0]
       if (!url) return { isAuthorized: false }
 
-      const existingPermission = hasPermission(url)
+      const existingPermission = hasReduxPermission(url)
       if (existingPermission !== undefined) {
         console.log('📋 Cached permission used:', url, '→', existingPermission)
         return { isAuthorized: existingPermission }
@@ -96,6 +96,7 @@ export function useCedarling(): UseCedarlingReturn {
             isAuthorized,
           }),
         )
+        console.log('📋 API permission used:', url, '→', isAuthorized)
 
         return { isAuthorized, response }
       } catch (error) {
@@ -106,12 +107,12 @@ export function useCedarling(): UseCedarlingReturn {
         }
       }
     },
-    [dispatch, hasPermission, cedarRequestBuilder],
+    [dispatch, hasReduxPermission, cedarRequestBuilder],
   )
 
   return {
     authorize,
-    hasCedarPermission: hasPermission,
+    hasCedarPermission: hasReduxPermission,
     isLoading,
     error,
   }

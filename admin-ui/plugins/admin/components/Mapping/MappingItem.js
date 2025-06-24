@@ -1,20 +1,9 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import {
-  Row,
-  Badge,
-  Col,
-  Button,
-  FormGroup,
-  Accordion,
-  Form,
-} from 'Components'
+import { Row, Badge, Col, Button, FormGroup, Accordion, Form } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import { DeleteOutlined } from '@mui/icons-material'
-import {
-  hasPermission,
-  MAPPING_WRITE,
-  MAPPING_DELETE
-} from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
+import { MAPPING_WRITE, MAPPING_DELETE } from 'Utils/PermChecker'
 import {
   updateMapping,
   addPermissionsToRole,
@@ -31,14 +20,29 @@ import { useTranslation } from 'react-i18next'
 function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const { hasCedarPermission, authorize } = useCedarling()
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
-  const authPermissions = useSelector((state) => state.authReducer.permissions)
   const [searchablePermissions, setSearchAblePermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
   const [isDeleteable, setIsDeleteable] = useState(false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+
+  const authorizePermissions = async () => {
+    const permissions = [MAPPING_WRITE, MAPPING_DELETE]
+    try {
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+      console.log('All mapping permissions authorized successfully')
+    } catch (error) {
+      console.error('Error authorizing mapping permissions:', error)
+    }
+  }
+  useEffect(() => {
+    authorizePermissions()
+  }, [authorize])
 
   useEffect(() => {
     if (roles) {
@@ -57,9 +61,9 @@ function MappingItem({ candidate, roles }) {
   const getPermissionsForSearch = () => {
     const selectedPermissions = candidate.permissions
     const filteredArr = []
-    for (const i in permissions) { 
+    for (const i in permissions) {
       if (!selectedPermissions.includes(permissions[i].permission)) {
-        if(permissions[i].permission) {
+        if (permissions[i].permission) {
           filteredArr.push(permissions[i].permission)
         }
       }
@@ -86,10 +90,12 @@ function MappingItem({ candidate, roles }) {
 
   const doRemove = (id, role) => {
     dispatch(
-      updateMapping({ data: {
-        id,
-        role,
-      }}),
+      updateMapping({
+        data: {
+          id,
+          role,
+        },
+      }),
     )
   }
 
@@ -98,10 +104,12 @@ function MappingItem({ candidate, roles }) {
   const handleAddPermission = (values, { resetForm }) => {
     if (values?.mappingAddPermissions?.length) {
       dispatch(
-        addPermissionsToRole({ data: {
-          data: values?.mappingAddPermissions,
-          userRole: candidate.role,
-        }}),
+        addPermissionsToRole({
+          data: {
+            data: values?.mappingAddPermissions,
+            userRole: candidate.role,
+          },
+        }),
       )
     }
     resetForm()
@@ -109,10 +117,12 @@ function MappingItem({ candidate, roles }) {
   }
   const handleDeleteRole = () => {
     dispatch(
-      deleteMapping({ data: {
-        role: candidate.role,
-        permissions: candidate.permissions,
-      }}),
+      deleteMapping({
+        data: {
+          role: candidate.role,
+          permissions: candidate.permissions,
+        },
+      }),
     )
   }
 
@@ -146,96 +156,95 @@ function MappingItem({ candidate, roles }) {
             </Accordion.Header>
             <Accordion.Body>
               <div style={{ marginTop: 10 }}></div>
-              {hasPermission(authPermissions, MAPPING_WRITE) ? 
-              <Formik
-                initialValues={initialValues}
-                onSubmit={handleAddPermission}
-              >
-                {(formik) => (
-                  <>
-                    <Form onSubmit={formik.handleSubmit}>
-                      <Row>
-                        <Col sm={10}>
-                          <GluuTypeAhead
-                            name="mappingAddPermissions"
-                            label={t('actions.search')}
-                            formik={formik}
-                            options={searchablePermissions}
-                            required={false}
-                            value={[]}
-                            forwardRef={autocompleteRef}
-                            doc_category={'Mapping'}
-                            allowNew={false}
-                          ></GluuTypeAhead>
-                        </Col>
-                        <Col>
-                          <Button
-                            type="submit"
-                            color={`primary-${selectedTheme}`}
-                            style={applicationStyle.buttonStyle}
-                          >
-                            <i className="fa fa-plus me-2"></i>
-                            {t('actions.add')}
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Form>
-                  </>
-                )}
-              </Formik>:null}
+              {hasCedarPermission(MAPPING_WRITE) && (
+                <Formik initialValues={initialValues} onSubmit={handleAddPermission}>
+                  {(formik) => (
+                    <>
+                      <Form onSubmit={formik.handleSubmit}>
+                        <Row>
+                          <Col sm={10}>
+                            <GluuTypeAhead
+                              name="mappingAddPermissions"
+                              label={t('actions.search')}
+                              formik={formik}
+                              options={searchablePermissions}
+                              required={false}
+                              value={[]}
+                              forwardRef={autocompleteRef}
+                              doc_category={'Mapping'}
+                              allowNew={false}
+                            ></GluuTypeAhead>
+                          </Col>
+                          <Col>
+                            <Button
+                              type="submit"
+                              color={`primary-${selectedTheme}`}
+                              style={applicationStyle.buttonStyle}
+                            >
+                              <i className="fa fa-plus me-2"></i>
+                              {t('actions.add')}
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form>
+                    </>
+                  )}
+                </Formik>
+              )}
               {candidate.permissions.map((permission, id) => (
                 <Row key={id}>
                   <Col sm={10}>{permission}</Col>
-                  {hasPermission(authPermissions, MAPPING_DELETE) ? 
-                  <Col sm={2}>
-                    <Button
-                      type="button"
-                      color="danger"
-                      onClick={() => doRemove(id, candidate.role)}
-                      style={{
-                        margin: '1px',
-                        float: 'right',
-                        padding: '0px',
-                      }}
-                    >
-                      <i className="fa fa-trash me-2"></i>
-                      {t('actions.remove')}
-                    </Button>
-                  </Col>:null
-                  }
+                  {hasCedarPermission(MAPPING_DELETE) ? (
+                    <Col sm={2}>
+                      <Button
+                        type="button"
+                        color="danger"
+                        onClick={() => doRemove(id, candidate.role)}
+                        style={{
+                          margin: '1px',
+                          float: 'right',
+                          padding: '0px',
+                        }}
+                      >
+                        <i className="fa fa-trash me-2"></i>
+                        {t('actions.remove')}
+                      </Button>
+                    </Col>
+                  ) : null}
                 </Row>
               ))}
               {/* Bottom Buttons  */}
               <FormGroup row />
-              {hasPermission(authPermissions, MAPPING_WRITE) ?
-              <Row>
-                <Col sm={6}>
-                  <Button
-                    type="button"
-                    color={`primary-${selectedTheme}`}
-                    style={applicationStyle.buttonStyle}
-                    onClick={() => revertLocalChanges()}
-                  >
-                    <i className="fa fa-undo me-2"></i>
-                    {t('actions.revert')}
-                  </Button>
-                </Col>
-                
-                <Col sm={6} className="text-end">
-                  <Button
-                    type="button"
-                    color={`primary-${selectedTheme}`}
-                    style={applicationStyle.buttonStyle}
-                    onClick={() => {
-                      dispatch(updatePermissionsToServer({ data: candidate }))
-                      setServerPermissionsToLocalState()
-                    }}
-                  >
-                    <i className="fa fa-plus me-2"></i>
-                    {t('actions.save')}
-                  </Button>
-                </Col>
-              </Row>:null}
+              {hasCedarPermission(MAPPING_WRITE) ? (
+                <Row>
+                  <Col sm={6}>
+                    <Button
+                      type="button"
+                      color={`primary-${selectedTheme}`}
+                      style={applicationStyle.buttonStyle}
+                      onClick={() => revertLocalChanges()}
+                    >
+                      <i className="fa fa-undo me-2"></i>
+                      {t('actions.revert')}
+                    </Button>
+                  </Col>
+
+                  <Col sm={6} className="text-end">
+                    <Button
+                      type="button"
+                      color={`primary-${selectedTheme}`}
+                      style={applicationStyle.buttonStyle}
+                      onClick={() => {
+                        dispatch(updatePermissionsToServer({ data: candidate }))
+                        setServerPermissionsToLocalState()
+                      }}
+                    >
+                      <i className="fa fa-plus me-2"></i>
+                      {t('actions.save')}
+                    </Button>
+                  </Col>
+                </Row>
+              ) : null}
               {/* Bottom Buttons  */}
             </Accordion.Body>
           </Accordion>

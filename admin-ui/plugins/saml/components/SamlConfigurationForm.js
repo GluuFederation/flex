@@ -1,31 +1,44 @@
-import { useFormik } from "formik";
-import React, { useState } from "react";
-import { Row, Col, Form, FormGroup, CustomInput } from "Components";
-import { useDispatch, useSelector } from "react-redux";
-import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog";
-import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
-import { SAML_CONFIG_WRITE, hasPermission } from "Utils/PermChecker";
-import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import GluuToogleRow from "Routes/Apps/Gluu/GluuToogleRow";
-import { useTranslation } from "react-i18next";
-import { putSamlProperties } from "Plugins/saml/redux/features/SamlSlice";
-import SetTitle from "Utils/SetTitle";
-import { adminUiFeatures } from "Plugins/admin/helper/utils";
+import { useFormik } from 'formik'
+import React, { useState, useEffect } from 'react'
+import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
+import { useDispatch, useSelector } from 'react-redux'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import { SAML_CONFIG_WRITE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import { useTranslation } from 'react-i18next'
+import { putSamlProperties } from 'Plugins/saml/redux/features/SamlSlice'
+import SetTitle from 'Utils/SetTitle'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SamlConfigurationForm = () => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const DOC_SECTION = "samlConfiguration";
+  const { t } = useTranslation()
+  const { hasCedarPermission, authorize } = useCedarling()
+  const dispatch = useDispatch()
+  const DOC_SECTION = 'samlConfiguration'
 
-  const permissions = useSelector((state) => state.authReducer.permissions);
-  const [modal, setModal] = useState(false);
-  const configuration = useSelector(
-    (state) => state.idpSamlReducer.configuration
-  );
-  SetTitle(t("titles.saml_management"));
+  const [modal, setModal] = useState(false)
+  const configuration = useSelector((state) => state.idpSamlReducer.configuration)
+  SetTitle(t('titles.saml_management'))
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      try {
+        await authorize([SAML_CONFIG_WRITE])
+      } catch (error) {
+        console.error('Error authorizing SAML permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [authorize])
+
   const toggle = () => {
-    setModal(!modal);
-  };
+    setModal(!modal)
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -33,36 +46,34 @@ const SamlConfigurationForm = () => {
       applicationName: configuration.applicationName,
     },
     onSubmit: () => {
-      toggle();
+      toggle()
     },
-  });
+  })
 
   const submitForm = (messages) => {
-    toggle();
-    handleSubmit(formik.values, messages);
-  };
+    toggle()
+    handleSubmit(formik.values, messages)
+  }
 
   const handleSubmit = (values, messages) => {
     dispatch(
       putSamlProperties({
         action: { action_message: messages, action_data: values },
-      })
-    );
-  };
+      }),
+    )
+  }
 
   return (
     <Form onSubmit={formik.handleSubmit} className="mt-4">
       <FormGroup row>
         <Col sm={10}>
           <GluuToogleRow
-            name={"enabled"}
+            name={'enabled'}
             lsize={4}
             rsize={8}
-            label={"fields.enable_saml"}
+            label={'fields.enable_saml'}
             isBoolean={true}
-            handler={(event) =>
-              formik.setFieldValue("enabled", event.target.checked)
-            }
+            handler={(event) => formik.setFieldValue('enabled', event.target.checked)}
             value={formik.values.enabled}
             doc_category={DOC_SECTION}
             doc_entry="enabled"
@@ -71,7 +82,7 @@ const SamlConfigurationForm = () => {
         <Col sm={10}>
           <FormGroup row>
             <GluuLabel
-              label={"fields.selected_idp"}
+              label={'fields.selected_idp'}
               size={4}
               doc_category={DOC_SECTION}
               doc_entry="selectedIdp"
@@ -83,10 +94,10 @@ const SamlConfigurationForm = () => {
                 name="selectedIdp"
                 defaultValue={formik.values.selectedIdp}
                 onChange={(e) => {
-                  formik.setFieldValue("selectedIdp", e.target.value);
+                  formik.setFieldValue('selectedIdp', e.target.value)
                 }}
               >
-                <option value="">{t("Choose")}...</option>
+                <option value="">{t('Choose')}...</option>
                 <option value="keycloak">Keycloak</option>
               </CustomInput>
             </Col>
@@ -94,21 +105,19 @@ const SamlConfigurationForm = () => {
         </Col>
         <Col sm={10}>
           <GluuToogleRow
-            name={"ignoreValidation"}
+            name={'ignoreValidation'}
             lsize={4}
             rsize={8}
-            label={"fields.ignore_validation"}
+            label={'fields.ignore_validation'}
             isBoolean={true}
-            handler={(event) =>
-              formik.setFieldValue("ignoreValidation", event.target.checked)
-            }
+            handler={(event) => formik.setFieldValue('ignoreValidation', event.target.checked)}
             value={formik.values.ignoreValidation}
             doc_category={DOC_SECTION}
             doc_entry="ignoreValidation"
           />
         </Col>
       </FormGroup>
-      {hasPermission(permissions, SAML_CONFIG_WRITE) && (
+      {hasCedarPermission(SAML_CONFIG_WRITE) && (
         <Row>
           <Col>
             <GluuCommitFooter
@@ -127,7 +136,7 @@ const SamlConfigurationForm = () => {
         feature={adminUiFeatures.saml_configuration_write}
       />
     </Form>
-  );
-};
+  )
+}
 
-export default SamlConfigurationForm;
+export default SamlConfigurationForm

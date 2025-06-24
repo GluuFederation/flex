@@ -1,36 +1,26 @@
-import React,{ useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@mui/material'
 import UiRoleDetailPage from './UiRoleDetailPage'
 import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { useCedarling } from '@/cedarling'
 import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import {
-  getRoles,
-  addRole,
-  editRole,
-  deleteRole,
-} from 'Plugins/admin/redux/features/apiRoleSlice'
-import {
-  hasPermission,
-  buildPayload,
-  ROLE_READ,
-  ROLE_WRITE,
-} from 'Utils/PermChecker'
+import { getRoles, addRole, editRole, deleteRole } from 'Plugins/admin/redux/features/apiRoleSlice'
+import { buildPayload, ROLE_READ, ROLE_WRITE, ROLE_DELETE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { ROLE_DELETE } from '../../../../app/utils/PermChecker'
 import { toast } from 'react-toastify'
 
 function UiRoleListPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
   const loading = useSelector((state) => state.apiRoleReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
 
   const [modal, setModal] = useState(false)
   const myActions = [],
@@ -45,13 +35,22 @@ function UiRoleListPage() {
     { t } = useTranslation(),
     dispatch = useDispatch()
 
+  // Initialize Cedar permissions
   useEffect(() => {
+    const initPermissions = async () => {
+      const permissions = [ROLE_READ, ROLE_WRITE, ROLE_DELETE]
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+    }
+    initPermissions()
     doFetchList()
-  }, [])
+  }, [authorize])
 
   SetTitle(t('titles.roles'))
 
-  if (hasPermission(permissions, ROLE_WRITE)) {
+  // Add action if user can write
+  if (hasCedarPermission(ROLE_WRITE)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
@@ -74,8 +73,7 @@ function UiRoleListPage() {
     const fetchRoles = apiRoles.filter((role) => role.role === roleData.role)
     if (fetchRoles.length > 0) {
       toast.error(`${t('messages.role_already_exists')}`)
-    }
-    else{
+    } else {
       dispatch(addRole({ action: userAction }))
       toggle()
     }
@@ -83,7 +81,7 @@ function UiRoleListPage() {
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
+        <GluuViewWrapper canShow={hasCedarPermission(ROLE_READ)}>
           <MaterialTable
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
@@ -94,7 +92,9 @@ function UiRoleListPage() {
                 field: 'role',
                 width: '40%',
                 editable: 'never',
-                render: (rowData) => <Badge color={`primary-${selectedTheme}`}>{rowData.role}</Badge>,
+                render: (rowData) => (
+                  <Badge color={`primary-${selectedTheme}`}>{rowData.role}</Badge>
+                ),
               },
               { title: `${t('fields.description')}`, field: 'description' },
               {
@@ -104,11 +104,11 @@ function UiRoleListPage() {
                   return (
                     <select
                       onChange={(e) => rowData.onChange(e.target.value)}
-                      className='form-control'
+                      className="form-control"
                       value={String(rowData.rowData.deletable) == 'true' ? true : false}
                     >
                       <option value={true}>true</option>
-                      <option value={false} >false</option>
+                      <option value={false}>false</option>
                     </select>
                   )
                 },
@@ -119,7 +119,7 @@ function UiRoleListPage() {
             ]}
             data={apiRoles}
             isLoading={loading || false}
-            title=''
+            title=""
             actions={myActions}
             options={{
               search: true,
@@ -150,17 +150,17 @@ function UiRoleListPage() {
               return <UiRoleDetailPage row={rowData} />
             }}
             editable={{
-              isDeleteHidden: () => !hasPermission(permissions, ROLE_DELETE),
-              isEditHidden: () => !hasPermission(permissions, ROLE_WRITE),
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve, reject) => {
+              isDeleteHidden: () => !hasCedarPermission(ROLE_DELETE),
+              isEditHidden: () => !hasCedarPermission(ROLE_WRITE),
+              onRowUpdate: (newData) =>
+                new Promise((resolve) => {
                   buildPayload(userAction, 'Edit role', newData)
                   dispatch(editRole({ action: userAction }))
                   resolve()
                   doFetchList()
                 }),
               onRowDelete: (oldData) =>
-                new Promise((resolve, reject) => {
+                new Promise((resolve) => {
                   buildPayload(userAction, 'remove role', oldData)
                   dispatch(deleteRole({ action: userAction }))
                   resolve()
@@ -169,11 +169,7 @@ function UiRoleListPage() {
             }}
           />
         </GluuViewWrapper>
-        <RoleAddDialogForm
-          handler={toggle}
-          modal={modal}
-          onAccept={onAddConfirmed}
-        />
+        <RoleAddDialogForm handler={toggle} modal={modal} onAccept={onAddConfirmed} />
       </CardBody>
     </Card>
   )

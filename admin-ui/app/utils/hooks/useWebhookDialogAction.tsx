@@ -20,23 +20,23 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Box from '@mui/material/Box'
-import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
+import { WEBHOOK_READ } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 
 const useWebhookDialogAction = ({ feature, modal }) => {
   const dispatch = useDispatch()
+  const { hasCedarPermission, authorize } = useCedarling()
+
   const { t } = useTranslation()
-  const permissions = useSelector((state) => state.authReducer.permissions)
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-  const {
-    featureWebhooks,
-    loadingWebhooks,
-    webhookModal,
-    triggerWebhookInProgress,
-  } = useSelector((state) => state.webhookReducer)
-  const enabledFeatureWebhooks = featureWebhooks.filter(
-    (item) => item.jansEnabled
+
+  const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } = useSelector(
+    (state) => state.webhookReducer,
   )
+
+  const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
 
   const onCloseModal = useCallback(() => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
@@ -46,7 +46,9 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   }, [dispatch, enabledFeatureWebhooks])
 
   useEffect(() => {
-    if (hasPermission(permissions, WEBHOOK_READ))
+    authorize([WEBHOOK_READ]).catch(console.error)
+
+    if (hasCedarPermission(WEBHOOK_READ)) {
       if (modal) {
         if (feature) {
           dispatch(getWebhooksByFeatureId(feature))
@@ -54,7 +56,8 @@ const useWebhookDialogAction = ({ feature, modal }) => {
           dispatch(getWebhooksByFeatureIdResponse([]))
         }
       }
-  }, [modal])
+    }
+  }, [modal, authorize])
 
   useEffect(() => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
@@ -72,10 +75,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
     }
     return (
       <Modal
-        isOpen={
-          (webhookModal || loadingWebhooks) &&
-          hasPermission(permissions, WEBHOOK_READ)
-        }
+        isOpen={(webhookModal || loadingWebhooks) && hasCedarPermission(WEBHOOK_READ)}
         size={'lg'}
         toggle={() => {
           if (!loadingWebhooks) {
@@ -83,7 +83,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
             dispatch(setFeatureToTrigger(''))
           }
         }}
-        className='modal-outline-primary'
+        className="modal-outline-primary"
       >
         <ModalHeader toggle={closeWebhookTriggerModal}>
           {loadingWebhooks ? (
@@ -95,9 +95,9 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 onKeyDown={() => {}}
                 style={{ color: 'green' }}
                 code
-                className='fa fa-2x fa-info fa-fw modal-icon mb-3'
-                role='img'
-                aria-hidden='true'
+                className="fa fa-2x fa-info fa-fw modal-icon mb-3"
+                role="img"
+                aria-hidden="true"
               ></i>{' '}
               {t('messages.webhook_execution_information')}{' '}
             </>
@@ -106,27 +106,17 @@ const useWebhookDialogAction = ({ feature, modal }) => {
         {!loadingWebhooks ? (
           <>
             <ModalBody>
-              <Box flex flexDirection='column' px={2}>
-                <p style={{ fontWeight: 600 }}>
-                  {t('messages.webhook_dialog_dec')}
-                </p>
+              <Box flex flexDirection="column" px={2}>
+                <p style={{ fontWeight: 600 }}>{t('messages.webhook_dialog_dec')}</p>
               </Box>
               {enabledFeatureWebhooks?.length ? (
-                <Table
-                  sx={{ minWidth: 650, marginTop: '20px' }}
-                  aria-label='webhook table'
-                >
+                <Table sx={{ minWidth: 650, marginTop: '20px' }} aria-label="webhook table">
                   <TableHead>
                     <TableRow>
-                      <TableCell
-                        sx={{ fontSize: 16, fontWeight: 600, width: '50%' }}
-                        align='left'
-                      >
+                      <TableCell sx={{ fontSize: 16, fontWeight: 600, width: '50%' }} align="left">
                         <b>{t('fields.webhook_name')}</b>
                       </TableCell>
-                      <TableCell
-                        sx={{ fontSize: 16, fontWeight: 600, width: '50%' }}
-                      >
+                      <TableCell sx={{ fontSize: 16, fontWeight: 600, width: '50%' }}>
                         <b>{t('fields.webhook_id')}</b>
                       </TableCell>
                     </TableRow>
@@ -139,17 +129,13 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                           '&:last-child td, &:last-child th': {
                             border: 0,
                           },
-                          fontSize: 14,
+                          'fontSize': 14,
                         }}
                       >
-                        <TableCell
-                          sx={{ fontSize: 14 }}
-                          component='th'
-                          scope='row'
-                        >
+                        <TableCell sx={{ fontSize: 14 }} component="th" scope="row">
                           {item.displayName}
                         </TableCell>
-                        <TableCell sx={{ fontSize: 16 }} align='left'>
+                        <TableCell sx={{ fontSize: 16 }} align="left">
                           {item.inum}
                         </TableCell>
                       </TableRow>
@@ -165,14 +151,11 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 onClick={handleAcceptWebhookTrigger}
                 style={applicationStyle.buttonStyle}
               >
-                <i className='fa fa-check-circle me-2'></i>
+                <i className="fa fa-check-circle me-2"></i>
                 {t('actions.accept')}
               </Button>
-              <Button
-                disabled={triggerWebhookInProgress}
-                onClick={closeWebhookTriggerModal}
-              >
-                <i className='fa fa-remove me-2'></i>
+              <Button disabled={triggerWebhookInProgress} onClick={closeWebhookTriggerModal}>
+                <i className="fa fa-remove me-2"></i>
                 {t('actions.reject')}
               </Button>
             </ModalFooter>

@@ -73,7 +73,6 @@ const MENU_ICON_MAP: MenuIconMap = {
 // Type definitions for local state
 interface RootState extends SidebarRootState {}
 
-// Custom selectors for better performance
 const selectHealth = (state: RootState): Record<string, string> => state.healthReducer.health
 const selectIsUserLogout = (state: RootState): boolean => state.userReducer.isUserLogout
 
@@ -86,9 +85,8 @@ function GluuAppSidebar(): JSX.Element {
   const selectedTheme = theme.state.theme
   const { classes } = styles()
   const navigate = useNavigate()
-  const { authorize, hasCedarPermission } = useCedarling()
+  const { authorize } = useCedarling()
 
-  // Memoized values
   const fetchedServersLength = useMemo((): boolean => Object.keys(health).length > 0, [health])
 
   const sidebarMenuActiveClass = useMemo(
@@ -98,13 +96,11 @@ function GluuAppSidebar(): JSX.Element {
 
   const themeColors = useMemo((): ThemeColors => getThemeColor(selectedTheme), [selectedTheme])
 
-  // Optimized icon renderer - O(1) lookup instead of O(n) switch
   const getMenuIcon = useCallback((name?: string): React.ReactNode | null => {
     if (!name) return null
     return MENU_ICON_MAP[name] ?? null
   }, [])
 
-  // Memoized helper functions
   const getMenuPath = useCallback((menu: MenuItem): string | undefined => {
     return menu.children ? undefined : (menu.path ?? undefined)
   }, [])
@@ -113,30 +109,31 @@ function GluuAppSidebar(): JSX.Element {
     return Array.isArray(plugin.children) && plugin.children.length > 0
   }, [])
 
-  const filterMenuItems = useCallback(async (menus: MenuItem[]): Promise<MenuItem[]> => {
-    const result: MenuItem[] = []
+  const filterMenuItems = useCallback(
+    async (menus: MenuItem[]): Promise<MenuItem[]> => {
+      const result: MenuItem[] = []
 
-    for (const item of menus) {
-      if (hasChildren(item)) {
-        const filteredChildren = await filterMenuItems(item.children!)
+      for (const item of menus) {
+        if (hasChildren(item)) {
+          const filteredChildren = await filterMenuItems(item.children!)
 
-        if (filteredChildren.length > 0) {
-          result.push({ ...item, children: filteredChildren })
-        }
-      } else if (item.permission) {
-        const { isAuthorized } = await authorize([item.permission])
-        if (isAuthorized) {
+          if (filteredChildren.length > 0) {
+            result.push({ ...item, children: filteredChildren })
+          }
+        } else if (item.permission) {
+          const { isAuthorized } = await authorize([item.permission])
+          if (isAuthorized) {
+            result.push(item)
+          }
+        } else {
           result.push(item)
         }
-      } else {
-        // Items without permission are always included
-        result.push(item)
       }
-    }
-    return result
-  }, [authorize, hasChildren])
+      return result
+    },
+    [authorize, hasChildren],
+  )
 
-  // Memoized menu filtering logic
   const memoizedFilteredMenus = useMemo((): PluginMenu[] => {
     const menus: PluginMenu[] = processMenus()
 
@@ -152,9 +149,7 @@ function GluuAppSidebar(): JSX.Element {
 
   useEffect(() => {
     async function loadMenus(): Promise<void> {
-      console.log('memoizedFilteredMenus', memoizedFilteredMenus)
       const filteredMenus = await filterMenuItems(memoizedFilteredMenus)
-      console.log(filteredMenus)
       setPluginMenus(filteredMenus)
     }
 
@@ -166,12 +161,6 @@ function GluuAppSidebar(): JSX.Element {
       navigate('/logout')
     }
   }, [isUserLogout, navigate])
-
-  const gettingPermissionMemoizing = useCallback((item: MenuItem): boolean => {
-    if (!item.permission) return false
-    const permission = hasCedarPermission(item.permission)
-    return permission === false && !hasChildren(item)
-  }, [hasCedarPermission, hasChildren])
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -185,8 +174,6 @@ function GluuAppSidebar(): JSX.Element {
                   icon={getMenuIcon(plugin.icon)}
                   to={getMenuPath(plugin)}
                   title={t(`${plugin.title}`)}
-                  // isEmptyNode={!hasCedarPermission(plugin.permission) && !hasChildren(plugin)}
-                  isEmptyNode={gettingPermissionMemoizing(plugin)}
                   textStyle={{ fontSize: '18px' }}
                   sidebarMenuActiveClass={sidebarMenuActiveClass}
                   {...ctx}
@@ -196,8 +183,6 @@ function GluuAppSidebar(): JSX.Element {
                       <SidebarMenuItem
                         key={idx}
                         title={t(`${item.title}`)}
-                        // isEmptyNode={!hasCedarPermission(item.permission) && !hasChildren(item)}
-                        isEmptyNode={gettingPermissionMemoizing(item)}
                         to={getMenuPath(item)}
                         icon={getMenuIcon(item.icon)}
                         textStyle={{ fontSize: '15px' }}
@@ -210,8 +195,6 @@ function GluuAppSidebar(): JSX.Element {
                               key={id}
                               title={t(`${sub.title}`)}
                               to={getMenuPath(sub)}
-                              // isEmptyNode={!hasCedarPermission(sub.permission)}
-                              isEmptyNode={gettingPermissionMemoizing(sub)}
                               icon={getMenuIcon(sub.icon)}
                               textStyle={{ fontSize: '15px' }}
                               exact
@@ -239,7 +222,6 @@ function GluuAppSidebar(): JSX.Element {
   )
 }
 
-// Memoize the entire component to prevent unnecessary re-renders
 const MemoizedGluuAppSidebar = React.memo(GluuAppSidebar)
 
 export default MemoizedGluuAppSidebar

@@ -1,52 +1,44 @@
-import { useState, useEffect, lazy, Suspense } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useState, useEffect, lazy, Suspense } from 'react'
+import { Route, Routes, Navigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
-import NavbarOnly from "./Layouts/NavbarOnly";
-import SidebarDefault from "./Layouts/SidebarDefault";
-import SidebarA from "./Layouts/SidebarA";
-import SidebarWithNavbar from "./Layouts/SidebarWithNavbar";
+import NavbarOnly from './Layouts/NavbarOnly'
+import SidebarDefault from './Layouts/SidebarDefault'
+import SidebarA from './Layouts/SidebarA'
+import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
 
 // ----------- Layout Imports ---------------
-import { processRoutes } from "Plugins/PluginMenuResolver";
-import { hasPermission } from "Utils/PermChecker";
-import GluuSuspenseLoader from "Routes/Apps/Gluu/GluuSuspenseLoader";
+import { processRoutes } from 'Plugins/PluginMenuResolver'
 
-import { uuidv4 } from "Utils/Util";
-import ProtectedRoute from "./Pages/ProtectRoutes";
+import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
-const DashboardPage = lazy(() => import("./Dashboards/DashboardPage"));
-const HealthPage = lazy(() => import("./Health/HealthPage"));
-const LicenseDetailsPage = lazy(() => import("./License/LicenseDetailsPage"));
-const ProfilePage = lazy(() => import("./Apps/Profile/ProfilePage"));
-const Gluu404Error = lazy(() => import("./Apps/Gluu/Gluu404Error"));
-const ByeBye = lazy(() => import("./Pages/ByeBye"));
-const GluuNavBar = lazy(() => import("./Apps/Gluu/GluuNavBar"));
-const DefaultSidebar = lazy(
-  () => import("./../layout/components/DefaultSidebar")
-);
+import { uuidv4 } from 'Utils/Util'
+import ProtectedRoute from './Pages/ProtectRoutes'
+
+const DashboardPage = lazy(() => import('./Dashboards/DashboardPage'))
+const ProfilePage = lazy(() => import('./Apps/Profile/ProfilePage'))
+const Gluu404Error = lazy(() => import('./Apps/Gluu/Gluu404Error'))
+const ByeBye = lazy(() => import('./Pages/ByeBye'))
+const GluuNavBar = lazy(() => import('./Apps/Gluu/GluuNavBar'))
+const DefaultSidebar = lazy(() => import('./../layout/components/DefaultSidebar'))
 
 //------ Route Definitions --------
-// eslint-disable-next-line no-unused-vars
-export const RoutedContent = () => {
-  const scopes = useSelector((state: any) =>
-    state.token ? state.token.scopes : state.authReducer.permissions
-  );
-  const [pluginMenus, setPluginMenus] = useState<Array<any>>([]);
-  useEffect(() => {
-    setPluginMenus(processRoutes());
-  }, []);
 
-  const { userinfo } = useSelector((state: any) => state.authReducer);
-  const config = useSelector((state: any) => state.authReducer.config);
+export const RoutedContent = () => {
+  const [pluginMenus, setPluginMenus] = useState<Array<any>>([])
+  useEffect(() => {
+    setPluginMenus(processRoutes())
+  }, [])
+
+  const { userinfo, config } = useSelector((state: any) => state.authReducer)
 
   useEffect(() => {
     if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
-      const state = uuidv4();
-      const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
-      window.location.href = sessionEndpoint;
+      const state = uuidv4()
+      const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
+      window.location.href = sessionEndpoint
     }
-  }, [userinfo]);
+  }, [userinfo])
 
   return (
     <Routes>
@@ -66,18 +58,13 @@ export const RoutedContent = () => {
       <Route path="/layouts/navbar" element={<NavbarOnly />} />
       <Route path="/layouts/sidebar" element={<SidebarDefault />} />
       <Route path="/layouts/sidebar-a" element={<SidebarA />} />
-      <Route
-        path="/layouts/sidebar-with-navbar"
-        element={<SidebarWithNavbar />}
-      />
+      <Route path="/layouts/sidebar-with-navbar" element={<SidebarWithNavbar />} />
 
       {/* -------- Plugins ---------*/}
-      {pluginMenus.map(
-        (item, key) =>
-          hasPermission(scopes, item.permission) && (
-            <Route key={key} path={item.path} element={<item.component />} />
-          )
-      )}
+      {pluginMenus.map((item, key) => (
+        <Route key={key} path={item.path} element={<item.component />} />
+      ))}
+
       {/*    Pages Routes    */}
       <Route
         element={
@@ -110,8 +97,8 @@ export const RoutedContent = () => {
       {/*    404    */}
       <Route path="*" element={<Navigate to="/error-404" />} />
     </Routes>
-  );
-};
+  )
+}
 
 //------ Custom Layout Parts --------
 export const RoutedNavbars = () => (
@@ -125,7 +112,7 @@ export const RoutedNavbars = () => (
       }
     />
   </Routes>
-);
+)
 
 export const RoutedSidebars = () => (
   <Routes>
@@ -138,4 +125,4 @@ export const RoutedSidebars = () => (
       }
     />
   </Routes>
-);
+)

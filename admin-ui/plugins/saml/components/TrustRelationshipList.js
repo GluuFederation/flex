@@ -3,22 +3,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import MaterialTable from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import {
-  hasPermission,
-  SAML_TR_READ,
-  SAML_TR_WRITE,
-  buildPayload,
-} from 'Utils/PermChecker'
+import { SAML_TR_READ, SAML_TR_WRITE, buildPayload } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useNavigate } from 'react-router'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { getTrustRelationship, deleteTrustRelationship } from 'Plugins/saml/redux/features/SamlSlice'
+import {
+  getTrustRelationship,
+  deleteTrustRelationship,
+} from 'Plugins/saml/redux/features/SamlSlice'
 import { PaperContainer, getTableCols } from './SamlIdentityList'
 
 const TrustRelationshipList = () => {
+  const { hasCedarPermission, authorize } = useCedarling()
   const theme = useContext(ThemeContext)
   const themeColors = getThemeColor(theme.state.theme)
   const bgThemeColor = { background: themeColors.background }
@@ -30,11 +30,20 @@ const TrustRelationshipList = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const permissions = useSelector((state) => state.authReducer.permissions)
-  const {
-    trustRelationships,
-    loadingTrustRelationship,
-  } = useSelector((state) => state.idpSamlReducer)
+  const { trustRelationships, loadingTrustRelationship } = useSelector(
+    (state) => state.idpSamlReducer,
+  )
+
+  // Permission initialization
+  useEffect(() => {
+    const initPermissions = async () => {
+      const permissions = [SAML_TR_READ, SAML_TR_WRITE]
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+    }
+    initPermissions()
+  }, [authorize])
 
   useEffect(() => {
     dispatch(getTrustRelationship())
@@ -64,7 +73,7 @@ const TrustRelationshipList = () => {
 
   return (
     <>
-      <GluuViewWrapper canShow={hasPermission(permissions, SAML_TR_READ)}>
+      <GluuViewWrapper canShow={hasCedarPermission(SAML_TR_READ)}>
         <MaterialTable
           components={{
             Container: PaperContainer,
@@ -72,7 +81,7 @@ const TrustRelationshipList = () => {
           columns={getTableCols(t)}
           data={trustRelationships}
           isLoading={loadingTrustRelationship}
-          title=''
+          title=""
           actions={[
             {
               icon: 'edit',
@@ -83,13 +92,13 @@ const TrustRelationshipList = () => {
                 delete data.tableData
                 handleGoToEditPage(data)
               },
-              disabled: !hasPermission(permissions, SAML_TR_WRITE),
+              disabled: !hasCedarPermission(SAML_TR_WRITE),
             },
             {
               icon: 'visibility',
               tooltip: `${t('messages.view_service_provider')}`,
               onClick: (event, rowData) => handleGoToEditPage(rowData, true),
-              disabled: !hasPermission(permissions, SAML_TR_READ),
+              disabled: !hasCedarPermission(SAML_TR_READ),
             },
             {
               icon: DeleteOutlinedIcon,
@@ -98,7 +107,7 @@ const TrustRelationshipList = () => {
               },
               tooltip: `${t('messages.delete_service_provider')}`,
               onClick: (event, rowData) => handleDelete(rowData),
-              disabled: !hasPermission(permissions, SAML_TR_WRITE),
+              disabled: !hasCedarPermission(SAML_TR_WRITE),
             },
             {
               icon: 'add',
@@ -106,7 +115,7 @@ const TrustRelationshipList = () => {
               iconProps: { color: 'primary' },
               isFreeAction: true,
               onClick: () => handleGoToAddPage(),
-              disabled: !hasPermission(permissions, SAML_TR_WRITE),
+              disabled: !hasCedarPermission(SAML_TR_WRITE),
             },
           ]}
           options={{
@@ -122,13 +131,13 @@ const TrustRelationshipList = () => {
           }}
         />
       </GluuViewWrapper>
-      {hasPermission(permissions, SAML_TR_WRITE) && (
+      {hasCedarPermission(SAML_TR_WRITE) && (
         <GluuDialog
           row={item}
           name={item?.displayName || ''}
           handler={toggle}
           modal={modal}
-          subject='saml trust relationship'
+          subject="saml trust relationship"
           onAccept={onDeletionConfirmed}
         />
       )}

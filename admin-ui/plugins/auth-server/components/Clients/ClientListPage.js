@@ -13,25 +13,15 @@ import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-import {
-  LIMIT_ID,
-  LIMIT,
-  PATTERN,
-  PATTERN_ID,
-} from 'Plugins/auth-server/common/Constants'
+import { LIMIT_ID, LIMIT, PATTERN, PATTERN_ID } from 'Plugins/auth-server/common/Constants'
 import {
   getOpenidClients,
   setCurrentItem,
   deleteClient,
   viewOnly,
 } from 'Plugins/auth-server/redux/features/oidcSlice'
-import {
-  hasPermission,
-  buildPayload,
-  CLIENT_WRITE,
-  CLIENT_READ,
-  CLIENT_DELETE,
-} from 'Utils/PermChecker'
+import { buildPayload, CLIENT_WRITE, CLIENT_READ, CLIENT_DELETE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import ClientShowScopes from './ClientShowScopes'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -40,20 +30,20 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function ClientListPage() {
   const { t } = useTranslation()
+  const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
-  let nonExtensibleClients = useSelector((state) => state.oidcReducer.items)
-  const { totalItems, entriesCount } = useSelector((state) => state.oidcReducer)
+  const nonExtensibleClients = useSelector((state) => state.oidcReducer.items)
+  const { totalItems } = useSelector((state) => state.oidcReducer)
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.oidcReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
-  let clients = [...nonExtensibleClients ?? []]
+  let clients = [...(nonExtensibleClients ?? [])]
   clients = clients?.map(addOrg)
   const userAction = {}
   const options = {}
   const myActions = []
   const navigate = useNavigate()
   const { search } = useLocation()
-  const pageSize = localStorage.getItem('paggingSize') || 10
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
@@ -61,8 +51,24 @@ function ClientListPage() {
   const [scopeClients, setScopeClients] = useState()
   const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
   const [isPageLoading, setIsPageLoading] = useState(loading)
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(0)
   SetTitle(t('titles.oidc_clients'))
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      const permissions = [CLIENT_READ, CLIENT_WRITE, CLIENT_DELETE]
+      try {
+        for (const permission of permissions) {
+          await authorize([permission])
+        }
+      } catch (error) {
+        console.error('Error authorizing LDAP permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [authorize])
 
   const [scopesModal, setScopesModal] = useState({
     data: [],
@@ -78,14 +84,14 @@ function ClientListPage() {
   let memoPattern = pattern
 
   function addOrg(...args) {
-    let client = { ...args[0] }
+    const client = { ...args[0] }
     let org = '-'
-    if (client.hasOwnProperty('o')) {
+    if (Object.prototype.hasOwnProperty.call(client, 'o')) {
       client['organization'] = client.o
       return client
     }
     if (
-      client.hasOwnProperty('customAttributes') &&
+      Object.prototype.hasOwnProperty.call(client, 'customAttributes') &&
       Array.isArray(client.customAttributes)
     ) {
       const results = client.customAttributes.filter(
@@ -144,10 +150,7 @@ function ClientListPage() {
       field: 'scopes',
       render: (rowData) => {
         return (
-          <Link
-            className="common-link"
-            onClick={() => setScopeData(rowData.scopes)}
-          >
+          <Link className="common-link" onClick={() => setScopeData(rowData.scopes)}>
             {rowData.scopes?.length || '0'}
           </Link>
         )
@@ -177,8 +180,7 @@ function ClientListPage() {
       const scopeInumParam = search.replace('?scopeInum=', '')
 
       if (scopeInumParam.length > 0) {
-        const clientsScope =
-          scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
+        const clientsScope = scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
         setScopeClients(clientsScope)
       }
     } else {
@@ -239,7 +241,7 @@ function ClientListPage() {
     toggle()
   }
 
-  if (hasPermission(permissions, CLIENT_WRITE)) {
+  if (hasCedarPermission(CLIENT_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
@@ -250,7 +252,7 @@ function ClientListPage() {
       disabled: false,
     }))
   }
-  if (hasPermission(permissions, CLIENT_READ)) {
+  if (hasCedarPermission(CLIENT_READ)) {
     myActions.push({
       icon: () => (
         <GluuAdvancedSearch
@@ -268,7 +270,7 @@ function ClientListPage() {
       onClick: () => {},
     })
   }
-  if (hasPermission(permissions, CLIENT_READ)) {
+  if (hasCedarPermission(CLIENT_READ)) {
     myActions.push({
       icon: 'refresh',
       tooltip: `${t('messages.refresh')}`,
@@ -282,7 +284,7 @@ function ClientListPage() {
       },
     })
   }
-  if (hasPermission(permissions, CLIENT_READ)) {
+  if (hasCedarPermission(CLIENT_READ)) {
     myActions.push((rowData) => ({
       icon: 'visibility',
       iconProps: {
@@ -293,7 +295,7 @@ function ClientListPage() {
       disabled: false,
     }))
   }
-  if (hasPermission(permissions, CLIENT_DELETE)) {
+  if (hasCedarPermission(CLIENT_DELETE)) {
     myActions.push((rowData) => ({
       icon: () => <DeleteOutlined />,
       iconProps: {
@@ -307,7 +309,7 @@ function ClientListPage() {
       disabled: false,
     }))
   }
-  if (hasPermission(permissions, CLIENT_WRITE)) {
+  if (hasCedarPermission(CLIENT_WRITE)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_client')}`,
@@ -328,7 +330,7 @@ function ClientListPage() {
 
   const onPageChangeClick = (page) => {
     makeOptions()
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
@@ -345,18 +347,14 @@ function ClientListPage() {
 
   return (
     <Card style={applicationStyle.mainCard}>
-      <ClientShowScopes
-        handler={handler}
-        isOpen={scopesModal.show}
-        data={scopesModal.data}
-      />
+      <ClientShowScopes handler={handler} isOpen={scopesModal.show} data={scopesModal.data} />
       <CardBody>
-        <GluuViewWrapper canShow={hasPermission(permissions, CLIENT_READ)}>
+        <GluuViewWrapper canShow={hasCedarPermission(CLIENT_READ)}>
           <MaterialTable
             key={limit ? limit : 0}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: (props) => (
+              Pagination: () => (
                 <TablePagination
                   count={totalItems}
                   page={pageNumber}
@@ -364,9 +362,7 @@ function ClientListPage() {
                     onPageChangeClick(page)
                   }}
                   rowsPerPage={limit}
-                  onRowsPerPageChange={(prop, count) =>
-                    onRowCountChangeClick(count.props.value)
-                  }
+                  onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
                 />
               ),
             }}
@@ -392,7 +388,7 @@ function ClientListPage() {
             }}
           />
         </GluuViewWrapper>
-        {hasPermission(permissions, CLIENT_DELETE) && (
+        {hasCedarPermission(CLIENT_DELETE) && (
           <GluuDialog
             row={item}
             name={item?.clientName?.value || ''}

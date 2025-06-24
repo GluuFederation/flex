@@ -5,7 +5,6 @@ import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { Card } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-import { useSelector } from 'react-redux'
 import AgamaListPage from '../Agama/AgamaListPage'
 import AliasesListPage from '../Agama/AgamaAliasListPage'
 
@@ -15,39 +14,35 @@ function AuthNPage() {
   const tabNames = [
     {
       name: t('menus.builtIn'),
-      path: ''
+      path: '',
     },
     { name: t('menus.acrs'), path: '' },
     {
       name: t('menus.aliases'),
-      path: ''
+      path: '',
     },
     {
       name: t('menus.agama_flows'),
-      path: ''
-    }
+      path: '',
+    },
   ]
 
-  const tabToShow = tabName => {
+  const tabToShow = (tabName) => {
     switch (tabName) {
       case t('menus.builtIn'):
         return <AuthNListPage isBuiltIn={true} />
       case t('menus.acrs'):
         return <AuthNListPage />
-      case t('menus.agama_flows'):
-        return <AgamaListPage />
       case t('menus.aliases'):
         return <AliasesListPage />
+      case t('menus.agama_flows'):
+        return <AgamaListPage />
     }
   }
 
   return (
     <Card className="mb-3" style={applicationStyle.mainCard}>
-      <GluuTabs
-        tabNames={tabNames}
-        tabToShow={tabToShow}
-        withNavigation={true}
-      />
+      <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
     </Card>
   )
 }
