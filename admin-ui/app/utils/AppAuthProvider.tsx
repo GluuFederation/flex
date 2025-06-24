@@ -2,18 +2,11 @@
 import React, { useState, useEffect } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
 import { useLocation } from 'react-router'
-import {
-  NoHashQueryStringUtils,
-  saveIssuer,
-  getIssuer
-} from './TokenController'
+import { NoHashQueryStringUtils, saveIssuer, getIssuer } from './TokenController'
 import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  getAPIAccessToken,
-  checkLicensePresent,
-} from 'Redux/actions'
+import { getAPIAccessToken, checkLicensePresent } from 'Redux/actions'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 import { checkLicenseConfigValid, getOAuth2Config, getUserInfoResponse } from '../redux/actions'
 import GluuTimeoutModal from 'Routes/Apps/Gluu/GluuTimeoutModal'
@@ -31,20 +24,16 @@ import {
   GRANT_TYPE_AUTHORIZATION_CODE,
 } from '@openid/appauth'
 import { fetchUserInformation } from 'Redux/api/backend-api'
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode'
 
 export default function AppAuthProvider(props) {
   const dispatch = useDispatch()
   const location = useLocation()
   const [roleNotFound, setRoleNotFound] = useState(false)
   const [showAdminUI, setShowAdminUI] = useState(false)
-  const {
-    config,
-    userinfo,
-    userinfo_jwt,
-    token,
-    issuer,
-  } = useSelector((state) => state.authReducer)
+  const { config, userinfo, userinfo_jwt, token, issuer } = useSelector(
+    (state) => state.authReducer,
+  )
 
   const {
     islicenseCheckResultLoaded,
@@ -76,14 +65,11 @@ export default function AppAuthProvider(props) {
       new LocalStorageBackend(),
       new NoHashQueryStringUtils(),
       window.location,
-      new DefaultCrypto()
+      new DefaultCrypto(),
     )
 
     if (isLicenseValid) {
-      AuthorizationServiceConfiguration.fetchFromIssuer(
-        issuer,
-        new FetchRequestor()
-      )
+      AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
         .then((response) => {
           const additionalParameters = {}
 
@@ -93,7 +79,7 @@ export default function AppAuthProvider(props) {
             }
           }
 
-          let extras = {
+          const extras = {
             acr_values: config.acrValues,
             ...additionalParameters,
           }
@@ -106,10 +92,7 @@ export default function AppAuthProvider(props) {
             extras,
           })
           saveIssuer(issuer)
-          authorizationHandler.performAuthorizationRequest(
-            response,
-            authRequest
-          )
+          authorizationHandler.performAuthorizationRequest(response, authRequest)
         })
         .catch((error) => {
           setError(error)
@@ -118,20 +101,18 @@ export default function AppAuthProvider(props) {
   }, [isLicenseValid])
 
   useEffect(() => {
-    console.log("Heloooo")
     const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor())
     const authorizationHandler = new RedirectRequestHandler(
       new LocalStorageBackend(),
       new NoHashQueryStringUtils(),
       window.location,
-      new DefaultCrypto()
+      new DefaultCrypto(),
     )
     const notifier = new AuthorizationNotifier()
     const issuer = getIssuer()
 
     notifier.setAuthorizationListener((request, response, error) => {
       if (response) {
-
         let extras = null
         if (request.internal) {
           extras = {}
@@ -148,28 +129,27 @@ export default function AppAuthProvider(props) {
         let authConfigs
         dispatch(getOAuth2Config())
 
-        AuthorizationServiceConfiguration.fetchFromIssuer(
-          issuer,
-          new FetchRequestor()
-        )
+        AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
           .then((configuration) => {
             authConfigs = configuration
             return tokenHandler.performTokenRequest(configuration, tokenRequest)
           })
           .then((token) => {
-            return fetchUserInformation({ userInfoEndpoint: authConfigs.userInfoEndpoint, access_token: token.accessToken, token_type: token.tokenType })
+            return fetchUserInformation({
+              userInfoEndpoint: authConfigs.userInfoEndpoint,
+              access_token: token.accessToken,
+              token_type: token.tokenType,
+            })
           })
           .then((ujwt) => {
-            if(!userinfo) {
+            if (!userinfo) {
               dispatch(getUserInfoResponse({ userinfo: jwtDecode(ujwt), ujwt: ujwt }))
               dispatch(getAPIAccessToken(ujwt))
               setShowAdminUI(true)
             } else {
               if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length == 0) {
                 setShowAdminUI(false)
-                alert(
-                  'The logged-in user do not have valid role. Logging out of Admin UI'
-                )
+                alert('The logged-in user do not have valid role. Logging out of Admin UI')
                 setRoleNotFound(true)
                 const state = uuidv4()
                 const sessionEndpoint = `${authConfigs.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${localStorage.getItem('postLogoutRedirectUri')}`
@@ -198,7 +178,6 @@ export default function AppAuthProvider(props) {
     authorizationHandler.setAuthorizationNotifier(notifier)
     authorizationHandler.completeAuthorizationRequestIfPossible()
   }, [code])
-
 
   return (
     <React.Fragment>

@@ -80,7 +80,6 @@ export function useCedarling(): UseCedarlingReturn {
 
       const existingPermission = hasReduxPermission(url)
       if (existingPermission !== undefined) {
-        console.log('📋 Cached permission used:', url, '→', existingPermission)
         return { isAuthorized: existingPermission }
       }
 
@@ -96,11 +95,9 @@ export function useCedarling(): UseCedarlingReturn {
             isAuthorized,
           }),
         )
-        console.log('📋 API permission used:', url, '→', isAuthorized)
 
         return { isAuthorized, response }
       } catch (error) {
-        console.error('❌ Authorization Error:', error)
         return {
           isAuthorized: false,
           error: error instanceof Error ? error.message : 'Unknown error',
