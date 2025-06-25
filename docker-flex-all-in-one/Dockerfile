@@ -3,8 +3,8 @@
 # ==============
 
 # original Janssen base version (without suffix)
-ARG BASE_VERSION=1.8.0
-ARG FLEX_BASE_VERSION=5.8.0
+ARG BASE_VERSION=1.8.0-1
+ARG FLEX_BASE_VERSION=5.8.0-1
 
 # the following ARGs set default base images
 # they can be overriden in build process via --build-arg option
