@@ -29,7 +29,7 @@ import {
   ASSETS_WRITE,
   LICENSE_DETAILS_READ,
   PROPERTIES_READ,
-  STAT_READ
+  STAT_READ,
 } from 'Utils/PermChecker'
 import WebhookAddPage from './components/Webhook/WebhookAddPage'
 import WebhookEditPage from './components/Webhook/WebhookEditPage'
@@ -50,27 +50,27 @@ const pluginMetadata = {
         {
           title: 'menus.dashboard',
           path: PLUGIN_BASE_PATH + '/dashboard',
-          permission: STAT_READ
+          permission: STAT_READ,
         },
         {
           title: 'menus.health',
           path: PLUGIN_BASE_PATH + '/health',
-          permission: PROPERTIES_READ
+          permission: PROPERTIES_READ,
         },
         {
           title: 'menus.licenseDetails',
           path: PLUGIN_BASE_PATH + '/licenseDetails',
-          permission: LICENSE_DETAILS_READ
+          permission: LICENSE_DETAILS_READ,
         },
         {
           title: 'menus.maugraph',
           path: PLUGIN_BASE_PATH + '/maugraph',
-          permission: ACR_READ
+          permission: ACR_READ,
         },
         {
           title: 'menus.settings',
           path: PLUGIN_BASE_PATH + '/settings',
-          permission: ACR_READ
+          permission: ACR_READ,
         },
         {
           title: 'menus.security',
@@ -78,122 +78,116 @@ const pluginMetadata = {
             {
               title: 'menus.securityDropdown.adminUiRoles',
               path: PLUGIN_BASE_PATH + '/roles',
-              permission: ROLE_READ
+              permission: ROLE_READ,
             },
             {
               title: 'menus.securityDropdown.capabilities',
               path: PLUGIN_BASE_PATH + '/capabilities',
-              permission: PERMISSION_READ
+              permission: PERMISSION_READ,
             },
             {
               title: 'menus.securityDropdown.mapping',
               path: PLUGIN_BASE_PATH + '/mapping',
-              permission: MAPPING_READ
-            }
-          ]
+              permission: MAPPING_READ,
+            },
+          ],
         },
 
         {
           title: 'menus.webhooks',
           path: PLUGIN_BASE_PATH + '/webhook',
-          permission: WEBHOOK_READ
+          permission: WEBHOOK_READ,
         },
         {
           title: 'menus.assets',
           path: PLUGIN_BASE_PATH + '/assets',
-          permission: ASSETS_READ
-        }
-      ]
-    }
+          permission: ASSETS_READ,
+        },
+      ],
+    },
   ],
   routes: [
     {
       component: DashboardPage,
       path: PLUGIN_BASE_PATH + '/dashboard',
-      permission: STAT_READ
+      permission: STAT_READ,
     },
     {
       component: HealthPage,
       path: PLUGIN_BASE_PATH + '/health',
-      permission: PROPERTIES_READ
+      permission: PROPERTIES_READ,
     },
     {
       component: LicenseDetailsPage,
       path: PLUGIN_BASE_PATH + '/licenseDetails',
-      permission: LICENSE_DETAILS_READ
+      permission: LICENSE_DETAILS_READ,
     },
     {
       component: MauGraph,
       path: PLUGIN_BASE_PATH + '/maugraph',
-      permission: ACR_READ
+      permission: ACR_READ,
     },
     {
       component: SettingsPage,
       path: PLUGIN_BASE_PATH + '/settings',
-      permission: ACR_READ
+      permission: ACR_READ,
     },
 
     {
       component: UiRoleListPage,
       path: PLUGIN_BASE_PATH + '/roles',
-      permission: ROLE_READ
+      permission: ROLE_READ,
     },
     {
       component: UiPermListPage,
       path: PLUGIN_BASE_PATH + '/capabilities',
-      permission: PERMISSION_READ
+      permission: PERMISSION_READ,
     },
     {
       component: MappingPage,
       path: PLUGIN_BASE_PATH + '/mapping',
-      permission: MAPPING_READ
+      permission: MAPPING_READ,
     },
 
     {
       component: WebhookListPage,
       path: PLUGIN_BASE_PATH + '/webhook',
-      permission: WEBHOOK_READ
+      permission: WEBHOOK_READ,
     },
     {
       component: WebhookAddPage,
       path: PLUGIN_BASE_PATH + '/webhook/add',
-      permission: WEBHOOK_WRITE
+      permission: WEBHOOK_WRITE,
     },
     {
       component: WebhookEditPage,
       path: PLUGIN_BASE_PATH + '/webhook/edit/:id',
-      permission: WEBHOOK_WRITE
+      permission: WEBHOOK_WRITE,
     },
     {
       component: JansAssetListPage,
       path: PLUGIN_BASE_PATH + '/assets',
-      permission: ASSETS_READ
+      permission: ASSETS_READ,
     },
     {
       component: JansAssetAddPage,
       path: PLUGIN_BASE_PATH + '/asset/add',
-      permission: ASSETS_WRITE
+      permission: ASSETS_WRITE,
     },
     {
       component: JansAssetEditPage,
       path: PLUGIN_BASE_PATH + '/asset/edit/:id',
-      permission: ASSETS_WRITE
-    }
+      permission: ASSETS_WRITE,
+    },
   ],
   reducers: [
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
     { name: 'webhookReducer', reducer: webhookReducer },
-    { name: 'assetReducer', reducer: assetReducer }
+    { name: 'assetReducer', reducer: assetReducer },
   ],
-  sagas: [
-    apiRoleSaga(),
-    apiPermissionSaga(),
-    mappingSaga(),
-    webhookSaga(),
-    assetSaga()
-  ]
+  sagas: [apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga(), assetSaga()],
 }
 
 export default pluginMetadata

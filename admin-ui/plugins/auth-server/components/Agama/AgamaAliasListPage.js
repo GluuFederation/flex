@@ -1,78 +1,73 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Form, FormGroup, Col } from "Components";
-import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
-import { useTranslation } from "react-i18next";
-import { hasPermission, SCOPE_READ } from "Utils/PermChecker";
-import GluuViewWrapper from "Routes/Apps/Gluu/GluuViewWrapper";
-import MaterialTable from "@material-table/core";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
-import { SCOPE_WRITE, buildPayload } from "Utils/PermChecker";
-import CircularProgress from "@mui/material/CircularProgress";
-import { ThemeContext } from "Context/theme/themeContext";
-import { useFormik } from "formik";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import getThemeColor from "Context/theme/config";
-import * as Yup from "yup";
-import TablePagination from "@mui/material/TablePagination";
-import Paper from "@mui/material/Paper";
-import {
-  getJsonConfig,
-  patchJsonConfig,
-} from "Plugins/auth-server/redux/features/jsonConfigSlice";
+import React, { useState, useEffect, useContext, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Form, FormGroup, Col } from 'Components'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { useTranslation } from 'react-i18next'
+import { hasPermission, SCOPE_READ } from 'Utils/PermChecker'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import MaterialTable from '@material-table/core'
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
+import { SCOPE_WRITE, buildPayload } from 'Utils/PermChecker'
+import CircularProgress from '@mui/material/CircularProgress'
+import { ThemeContext } from 'Context/theme/themeContext'
+import { useFormik } from 'formik'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import getThemeColor from 'Context/theme/config'
+import * as Yup from 'yup'
+import TablePagination from '@mui/material/TablePagination'
+import Paper from '@mui/material/Paper'
+import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 
 function AliasesListPage() {
-  const theme = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
-  const themeColors = getThemeColor(selectedTheme);
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
 
-  const bgThemeColor = { background: themeColors.background };
-  const { loading } = useSelector((state) => state.jsonConfigReducer);
-  const configuration = useSelector(
-    (state) => state.jsonConfigReducer.configuration
-  );
+  const bgThemeColor = { background: themeColors.background }
+  const { loading } = useSelector((state) => state.jsonConfigReducer)
+  const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
 
   const [initalFormValues, setInitialFormValues] = useState({
-    source: "",
-    mapping: "",
-  });
+    source: '',
+    mapping: '',
+  })
 
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const [listData, setListData] = useState([]);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [pageNumber, setPageNumber] = useState(0);
-  const [isEdit, setIsEdit] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const [listData, setListData] = useState([])
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [pageNumber, setPageNumber] = useState(0)
+  const [isEdit, setIsEdit] = useState(false)
+  const [selectedRow, setSelectedRow] = useState(null)
 
-  const permissions = useSelector((state) => state.authReducer.permissions);
-  const myActions = [];
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const myActions = []
   if (hasPermission(permissions, SCOPE_WRITE)) {
     myActions.push({
-      icon: "add",
-      tooltip: `${t("actions.add_mapping")}`,
-      iconProps: { color: "primary" },
+      icon: 'add',
+      tooltip: `${t('actions.add_mapping')}`,
+      iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
-        formik.resetForm();
-        setIsEdit(false);
-        setShowAddModal(true);
+        formik.resetForm()
+        setIsEdit(false)
+        setShowAddModal(true)
       },
-    });
+    })
 
     myActions.push((rowData) => {
       return {
-        icon: "edit",
-        tooltip: `${t("messages.edit_acr")}`,
+        icon: 'edit',
+        tooltip: `${t('messages.edit_acr')}`,
         onClick: (event, rowData) => handleEdit(rowData),
-      };
-    });
+      }
+    })
   }
 
   const validationSchema = Yup.object().shape({
-    source: Yup.string().required(`${t("fields.source")} is Required!`),
-    mapping: Yup.string().required(`${t("fields.mapping")} is Required!`),
-  });
+    source: Yup.string().required(`${t('fields.source')} is Required!`),
+    mapping: Yup.string().required(`${t('fields.mapping')} is Required!`),
+  })
 
   const formik = useFormik({
     initialValues: {
@@ -81,55 +76,53 @@ function AliasesListPage() {
     },
     validationSchema,
     onSubmit: () => {
-      handleSubmit(formik.values);
+      handleSubmit(formik.values)
     },
-  });
+  })
 
   const handleSubmit = (values) => {
-    const userAction = {};
-    const postBody = {};
-    let value = configuration.acrMappings;
+    const userAction = {}
+    const postBody = {}
+    let value = configuration.acrMappings
 
     if (isEdit) {
-      delete value[selectedRow.mapping];
+      delete value[selectedRow.mapping]
     }
-    value = { ...value, [values.mapping]: values.source };
-    postBody["requestBody"] = [
+    value = { ...value, [values.mapping]: values.source }
+    postBody['requestBody'] = [
       {
-        path: "/acrMappings",
+        path: '/acrMappings',
         value: value,
-        op: configuration?.acrMappings ? "replace" : "add",
+        op: configuration?.acrMappings ? 'replace' : 'add',
       },
-    ];
+    ]
 
-    buildPayload(userAction, "changes", postBody);
-    dispatch(patchJsonConfig({ action: userAction }));
-    setShowAddModal(false);
-  };
+    buildPayload(userAction, 'changes', postBody)
+    dispatch(patchJsonConfig({ action: userAction }))
+    setShowAddModal(false)
+  }
 
   const handleEdit = (rowData) => {
-    setIsEdit(true);
-    formik.setFieldValue("source", rowData.source);
-    formik.setFieldValue("mapping", rowData.mapping);
-    setSelectedRow(rowData);
-    setShowAddModal(true);
-  };
+    setIsEdit(true)
+    formik.setFieldValue('source', rowData.source)
+    formik.setFieldValue('mapping', rowData.mapping)
+    setSelectedRow(rowData)
+    setShowAddModal(true)
+  }
 
   useEffect(() => {
-    dispatch(getJsonConfig({ action: {} }));
-  }, []);
+    dispatch(getJsonConfig({ action: {} }))
+  }, [])
 
   useEffect(() => {
-    const data = Object.entries(configuration?.acrMappings || {}).map(
-      ([key, value]) => {
-        return {
-          mapping: key,
-          source: value,
-        };
+    const data = Object.entries(configuration?.acrMappings || {}).map(([key, value]) => {
+      return {
+        mapping: key,
+        source: value,
       }
-    );
-    setListData(data);
-  }, [configuration]);
+    })
+    setListData(data)
+  }, [configuration])
 
   return (
     <>
@@ -150,12 +143,12 @@ function AliasesListPage() {
             }}
             columns={[
               {
-                title: `${t("fields.mapping")}`,
-                field: "mapping",
+                title: `${t('fields.mapping')}`,
+                field: 'mapping',
               },
               {
-                title: `${t("fields.source")}`,
-                field: "source",
+                title: `${t('fields.source')}`,
+                field: 'source',
               },
             ]}
             data={listData}
@@ -168,7 +161,7 @@ function AliasesListPage() {
               pagination: false,
 
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? "#33AE9A" : "#FFF",
+                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
@@ -181,24 +174,24 @@ function AliasesListPage() {
               onRowDelete: (oldData) => {
                 try {
                   return new Promise((resolve, reject) => {
-                    const userAction = {};
-                    const postBody = {};
+                    const userAction = {}
+                    const postBody = {}
 
-                    let value = configuration?.acrMappings;
-                    delete value[oldData.mapping];
+                    let value = configuration?.acrMappings
+                    delete value[oldData.mapping]
 
-                    postBody["requestBody"] = [
+                    postBody['requestBody'] = [
                       {
-                        path: "/acrMappings",
+                        path: '/acrMappings',
                         value: value,
-                        op: configuration?.acrMappings ? "replace" : "add",
+                        op: configuration?.acrMappings ? 'replace' : 'add',
                       },
-                    ];
+                    ]
 
-                    buildPayload(userAction, "changes", postBody);
-                    dispatch(patchJsonConfig({ action: userAction }));
-                    resolve(true);
-                  });
+                    buildPayload(userAction, 'changes', postBody)
+                    dispatch(patchJsonConfig({ action: userAction }))
+                    resolve(true)
+                  })
                 } catch (error) {}
               },
             }}
@@ -207,14 +200,12 @@ function AliasesListPage() {
         <Modal isOpen={showAddModal}>
           <Form
             onSubmit={(event) => {
-              event.preventDefault();
-              formik.handleSubmit(event);
+              event.preventDefault()
+              formik.handleSubmit(event)
             }}
             className="mt-4"
           >
-            <ModalHeader>
-              {isEdit ? t("titles.edit_alias") : t("titles.add_alias")}
-            </ModalHeader>
+            <ModalHeader>{isEdit ? t('titles.edit_alias') : t('titles.add_alias')}</ModalHeader>
             <ModalBody>
               <FormGroup row>
                 <Col sm={10}>
@@ -256,7 +247,7 @@ function AliasesListPage() {
                     <CircularProgress size={12} /> &nbsp;
                   </>
                 ) : null}
-                {isEdit ? t("actions.edit") : t("actions.add")}
+                {isEdit ? t('actions.edit') : t('actions.add')}
               </Button>
               &nbsp;
               <Button
@@ -264,14 +255,14 @@ function AliasesListPage() {
                 style={applicationStyle.buttonStyle}
                 onClick={() => setShowAddModal(false)}
               >
-                {t("actions.cancel")}
+                {t('actions.cancel')}
               </Button>
             </ModalFooter>
           </Form>
         </Modal>
       </>
     </>
-  );
+  )
 }
 
-export default AliasesListPage;
+export default AliasesListPage

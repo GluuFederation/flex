@@ -1,12 +1,4 @@
-import {
-  call,
-  all,
-  put,
-  fork,
-  takeLatest,
-  select,
-  takeEvery,
-} from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest, select, takeEvery } from 'redux-saga/effects'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getClient } from 'Redux/api/base'
@@ -25,9 +17,7 @@ const JansConfigApi = require('jans_config_api')
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.SCIMConfigManagementApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.SCIMConfigManagementApi(getClient(JansConfigApi, token, issuer))
   return new ScimApi(api)
 }
 
@@ -36,10 +26,7 @@ export function* updateScimSaga({ payload }) {
   try {
     addAdditionalData(audit, PATCH, UPDATE_SCIM_CONFIG, payload)
     const scimApi = yield* newFunction()
-    const data = yield call(
-      scimApi.updateScimConfig,
-      payload.action.action_data
-    )
+    const data = yield call(scimApi.updateScimConfig, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield put(getScimConfigurationResponse(data))
     yield call(postUserAction, audit)

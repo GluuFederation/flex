@@ -1,15 +1,15 @@
-import { useContext } from "react";
-import { Col, Button, FormGroup, Divider } from "Components";
-import { useTranslation } from "react-i18next";
-import { ThemeContext } from "Context/theme/themeContext";
+import { useContext } from 'react'
+import { Col, Button, FormGroup, Divider } from 'Components'
+import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuFooter({ extraOnClick, extraLabel, hideButtons }: any) {
-  const { t } = useTranslation();
-  const theme: any = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
+  const { t } = useTranslation()
+  const theme: any = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   function goBack() {
-    window.history.back();
+    window.history.back()
   }
   return (
     <>
@@ -23,30 +23,30 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }: any) {
             </Button>
           )}
         </Col>
-        {!hideButtons || !hideButtons["back"] ? (
+        {!hideButtons || !hideButtons['back'] ? (
           <Col sm={4} md={2}>
             <Button color={`primary-${selectedTheme}`} onClick={goBack}>
               <i className="fa fa-arrow-circle-left me-2"></i>
-              {t("actions.cancel")}
+              {t('actions.cancel')}
             </Button>
           </Col>
         ) : (
-          ""
+          ''
         )}
         &nbsp;
-        {!hideButtons || !hideButtons["save"] ? (
+        {!hideButtons || !hideButtons['save'] ? (
           <Col sm={4} md={2}>
             <Button color={`primary-${selectedTheme}`} type="submit">
               <i className="fa fa-check-circle me-2"></i>
-              {t("actions.save")}
+              {t('actions.save')}
             </Button>
           </Col>
         ) : (
-          ""
+          ''
         )}
       </FormGroup>
     </>
-  );
+  )
 }
 
-export default GluuFooter;
+export default GluuFooter

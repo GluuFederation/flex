@@ -15,9 +15,7 @@ export const JANS_LOCK = 'jans-link'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.LockConfigurationApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.LockConfigurationApi(getClient(JansConfigApi, token, issuer))
   return new JansLockApi(api)
 }
 
@@ -45,10 +43,7 @@ export function* putJansLockConfigs({ payload }) {
   try {
     addAdditionalData(audit, PATCH, JANS_LOCK, payload)
     const jansKcApi = yield* newFunction()
-    const data = yield call(
-      jansKcApi.updateKcLinkConfig,
-      payload.action.action_data
-    )
+    const data = yield call(jansKcApi.updateKcLinkConfig, payload.action.action_data)
     yield put(getJansLockConfigurationResponse(data))
     yield call(postUserAction, audit)
     return data

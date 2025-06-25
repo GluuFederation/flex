@@ -24,12 +24,10 @@ const i18nConfig: InitOptions = {
   defaultNS: 'translation',
   keySeparator: '.',
   react: {
-    useSuspense: false
+    useSuspense: false,
   },
 }
 
-i18n
-  .use(initReactI18next)
-  .init(i18nConfig)
+i18n.use(initReactI18next).init(i18nConfig)
 
 export default i18n

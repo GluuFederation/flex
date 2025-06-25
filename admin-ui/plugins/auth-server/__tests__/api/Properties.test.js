@@ -2,10 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 import { authReducerInit, beforeAllAsync } from './setup.test'
 import authReducer from 'Redux/features/authSlice'
 import { reducer as jsonConfigReducer } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
-import {
-  getJsonConfig,
-  patchJsonConfig,
-} from 'Plugins/auth-server/redux/sagas/JsonConfigSaga'
+import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/sagas/JsonConfigSaga'
 import { expectSaga } from 'redux-saga-test-plan'
 import { log } from 'console'
 
@@ -49,9 +46,7 @@ describe('fetch & update json configuration', () => {
 
     configuration = result.returnValue
     expect(result.returnValue instanceof Error).toBe(false)
-    expect(result.returnValue).toEqual(
-      result.storeState.jsonConfigReducer.configuration
-    )
+    expect(result.returnValue).toEqual(result.storeState.jsonConfigReducer.configuration)
   })
 
   it('should update config fields', async () => {

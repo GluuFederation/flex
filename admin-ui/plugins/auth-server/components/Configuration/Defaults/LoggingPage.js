@@ -1,13 +1,5 @@
 import React, { useEffect, useContext } from 'react'
-import {
-  Form,
-  Button,
-  FormGroup,
-  Card,
-  CardBody,
-  Col,
-  CustomInput,
-} from 'Components'
+import { Form, Button, FormGroup, Card, CardBody, Col, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -19,11 +11,7 @@ import {
   getLoggingConfig,
   editLoggingConfig,
 } from 'Plugins/auth-server/redux/features/loggingSlice'
-import {
-  hasPermission,
-  LOGGING_READ,
-  LOGGING_WRITE,
-} from 'Utils/PermChecker'
+import { hasPermission, LOGGING_READ, LOGGING_WRITE } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -83,64 +71,68 @@ function LoggingPage() {
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit}>
                   <FormGroup row></FormGroup>
-                  
-                    <FormGroup row>
-                      <GluuLabel label="fields.log_level" size={4} doc_category={JSON_CONFIG} doc_entry="loggingLevel" />
-                      <Col sm={8}>
-                        <CustomInput
-                          type="select"
-                          id="loggingLevel"
-                          name="loggingLevel"
-                          data-testid="loggingLevel"
-                          value={logging.loggingLevel}
-                          onChange={(e) => {
-                            logging.loggingLevel = e.target.value
-                            formik.setFieldValue('loggingLevel', e.target.value)
-                          }}
-                        >
-                          <option value="">{t('actions.choose')}...</option>
-                          {levels.map((item, key) => (
-                            <option value={item} key={key}>
-                              {item}
-                            </option>
-                          ))}
-                        </CustomInput>
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <GluuLabel label="fields.log_layout" size={4} doc_category={JSON_CONFIG} doc_entry="loggingLayout"/>
-                      <Col sm={8}>
-                        <CustomInput
-                          type="select"
-                          id="loggingLayout"
-                          name="loggingLayout"
-                          data-testid="loggingLayout"
-                          value={logging.loggingLayout}
-                          onChange={(e) => {
-                            logging.loggingLayout = e.target.value
-                            formik.setFieldValue(
-                              'loggingLayout',
-                              e.target.value,
-                            )
-                          }}
-                        >
-                          <option value="">{t('actions.choose')}...</option>
-                          {logLayouts.map((item, key) => (
-                            <option value={item} key={key}>
-                              {item}
-                            </option>
-                          ))}
-                        </CustomInput>
-                      </Col>
-                    </FormGroup>
+
+                  <FormGroup row>
+                    <GluuLabel
+                      label="fields.log_level"
+                      size={4}
+                      doc_category={JSON_CONFIG}
+                      doc_entry="loggingLevel"
+                    />
+                    <Col sm={8}>
+                      <CustomInput
+                        type="select"
+                        id="loggingLevel"
+                        name="loggingLevel"
+                        data-testid="loggingLevel"
+                        value={logging.loggingLevel}
+                        onChange={(e) => {
+                          logging.loggingLevel = e.target.value
+                          formik.setFieldValue('loggingLevel', e.target.value)
+                        }}
+                      >
+                        <option value="">{t('actions.choose')}...</option>
+                        {levels.map((item, key) => (
+                          <option value={item} key={key}>
+                            {item}
+                          </option>
+                        ))}
+                      </CustomInput>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <GluuLabel
+                      label="fields.log_layout"
+                      size={4}
+                      doc_category={JSON_CONFIG}
+                      doc_entry="loggingLayout"
+                    />
+                    <Col sm={8}>
+                      <CustomInput
+                        type="select"
+                        id="loggingLayout"
+                        name="loggingLayout"
+                        data-testid="loggingLayout"
+                        value={logging.loggingLayout}
+                        onChange={(e) => {
+                          logging.loggingLayout = e.target.value
+                          formik.setFieldValue('loggingLayout', e.target.value)
+                        }}
+                      >
+                        <option value="">{t('actions.choose')}...</option>
+                        {logLayouts.map((item, key) => (
+                          <option value={item} key={key}>
+                            {item}
+                          </option>
+                        ))}
+                      </CustomInput>
+                    </Col>
+                  </FormGroup>
                   <GluuToogleRow
                     label="fields.http_logging_enabled"
                     name="httpLoggingEnabled"
                     handler={(e) => {
-                      formik.setFieldValue(
-                        'httpLoggingEnabled',
-                        e.target.checked,
-                      )
+                      formik.setFieldValue('httpLoggingEnabled', e.target.checked)
                     }}
                     lsize={5}
                     rsize={7}
@@ -162,10 +154,7 @@ function LoggingPage() {
                     label="fields.enabled_oAuth_audit_logging"
                     name="enabledOAuthAuditLogging"
                     handler={(e) => {
-                      formik.setFieldValue(
-                        'enabledOAuthAuditLogging',
-                        e.target.checked,
-                      )
+                      formik.setFieldValue('enabledOAuthAuditLogging', e.target.checked)
                     }}
                     lsize={5}
                     rsize={7}
@@ -174,10 +163,7 @@ function LoggingPage() {
                   />
 
                   {hasPermission(permissions, LOGGING_WRITE) && (
-                    <Button
-                      color={`primary-${selectedTheme}`}
-                      type="submit"
-                    >
+                    <Button color={`primary-${selectedTheme}`} type="submit">
                       <i className="fa fa-check-circle me-2"></i>
                       {t('actions.save')}
                     </Button>

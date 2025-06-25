@@ -3,7 +3,7 @@ import { select } from 'redux-saga/effects'
 
 export function* initAudit() {
   const auditlog = {
-    headers: {}
+    headers: {},
   }
   const client_id = yield select((state) => state.authReducer.config.clientId)
   const ip_address = yield select((state) => state.authReducer.location.IPv4)
@@ -14,7 +14,7 @@ export function* initAudit() {
   auditlog['client_id'] = client_id
   auditlog['ip_address'] = ip_address
   auditlog['status'] = 'success'
-  auditlog['performedBy'] = {user_inum: inum, userId: author}
+  auditlog['performedBy'] = { user_inum: inum, userId: author }
   auditlog['headers']['Authorization'] = `Bearer ${token}`
   return auditlog
 }

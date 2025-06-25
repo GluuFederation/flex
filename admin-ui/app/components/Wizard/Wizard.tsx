@@ -5,22 +5,22 @@ import map from 'lodash/map'
 import 'Styles/components/wizard.scss'
 
 interface WizardProps {
-  children: ReactNode;
-  onStepChanged?: (id: string) => void;
-  activeStep?: string;
-  initialActiveStep?: string;
+  children: ReactNode
+  onStepChanged?: (id: string) => void
+  activeStep?: string
+  initialActiveStep?: string
 }
 
 interface WizardState {
-  activeStep?: string;
+  activeStep?: string
 }
 
 class Wizard extends React.Component<WizardProps, WizardState> {
   constructor(props: WizardProps) {
-    super(props);
+    super(props)
     this.state = {
-      activeStep: undefined
-    };
+      activeStep: undefined,
+    }
   }
 
   componentDidMount() {
@@ -30,20 +30,20 @@ class Wizard extends React.Component<WizardProps, WizardState> {
       // eslint-disable-next-line no-console
       console.warn(
         'Warning: You need to provide onStepChanged props if you want the ' +
-                'component to be controlled. For uncontrolled type, use initialActiveStep.'
+          'component to be controlled. For uncontrolled type, use initialActiveStep.',
       )
     }
 
     if (!onStepChanged) {
       this.setState({
-        activeStep: initialActiveStep || activeStep
+        activeStep: initialActiveStep || activeStep,
       })
     }
   }
 
   stepClick(id: string) {
     this.setState({
-      activeStep: id
+      activeStep: id,
     })
 
     if (this.props.onStepChanged) {
@@ -64,19 +64,19 @@ class Wizard extends React.Component<WizardProps, WizardState> {
     const activeStep = this.getActiveStep()
 
     return (
-      <div className='wizard'>
-        {
-          map(children as React.ReactElement[], (child, index) => (
-            React.cloneElement(child, {
-              onClick: () => {this.stepClick(child.props.id || '')},
-              active: child.props.id === activeStep,
-              key: index
-            })
-          ))
-        }
+      <div className="wizard">
+        {map(children as React.ReactElement[], (child, index) =>
+          React.cloneElement(child, {
+            onClick: () => {
+              this.stepClick(child.props.id || '')
+            },
+            active: child.props.id === activeStep,
+            key: index,
+          }),
+        )}
       </div>
     )
   }
 }
 
-export default Wizard;
+export default Wizard

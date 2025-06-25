@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { HelpOutline } from '@mui/icons-material'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import PropTypes from 'prop-types'
-import applicationstyle from "Routes/Apps/Gluu/styles/applicationstyle"
+import applicationstyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import ShortCodesIcon from 'Components/SVG/menu/ShortCodesIcon'
 
 export default function ShortcodePopover({
@@ -31,12 +31,7 @@ export default function ShortcodePopover({
 
   return (
     <div style={{ ...applicationstyle.shortCodesWrapperStyles, ...buttonWrapperStyles }}>
-      <Button
-        aria-describedby={id}
-        variant='text'
-        sx={{ border: 0 }}
-        onClick={handleClick}
-      >
+      <Button aria-describedby={id} variant="text" sx={{ border: 0 }} onClick={handleClick}>
         <ShortCodesIcon />
       </Button>
       <Popover
@@ -50,8 +45,8 @@ export default function ShortcodePopover({
         }}
       >
         <Box
-          display='flex'
-          flexDirection='column'
+          display="flex"
+          flexDirection="column"
           // gap={1}
           sx={{
             maxHeight: '300px',
@@ -66,7 +61,7 @@ export default function ShortcodePopover({
                   <React.Fragment key={code.key}>
                     <ListItemButton
                       onClick={() => handleSelectShortcode(code.key)}
-                      component='button'
+                      component="button"
                       sx={{ width: '100%' }}
                     >
                       <ListItemText
@@ -97,21 +92,21 @@ const Label = ({ doc_category, doc_entry, label }) => {
   const { t, i18n } = useTranslation()
 
   return (
-    <Box display='flex' gap={0.5}>
-      <Typography color='black'>{t(label)}</Typography>
+    <Box display="flex" gap={0.5}>
+      <Typography color="black">{t(label)}</Typography>
       {doc_category && i18n.exists(doc_category) && (
         <>
           <ReactTooltip
-            tabIndex='-1'
+            tabIndex="-1"
             id={doc_entry}
-            place='right'
-            role='tooltip'
+            place="right"
+            role="tooltip"
             style={{ zIndex: 101, maxWidth: '45vw' }}
           >
             {t(doc_category)}
           </ReactTooltip>
           <HelpOutline
-            tabIndex='-1'
+            tabIndex="-1"
             style={{ width: 18, height: 18, marginLeft: 6, marginRight: 6 }}
             data-tooltip-id={doc_entry}
             data-for={doc_entry}

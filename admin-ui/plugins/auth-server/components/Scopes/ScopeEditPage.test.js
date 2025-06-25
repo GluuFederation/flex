@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import ScopeEditPage from './ScopeEditPage' 
+import ScopeEditPage from './ScopeEditPage'
 import { Provider } from 'react-redux'
 import scopes from './scopes.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
@@ -22,15 +22,15 @@ const INIT_SHARED_STATE = {
 
 const SCOPE_REDUCER = {
   item: {},
-  loading: false
+  loading: false,
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     initReducer: (state = INIT_SHARED_STATE) => state,
     noReducer: (state = {}) => state,
-    scopeReducer: (state = SCOPE_REDUCER) => state
+    scopeReducer: (state = SCOPE_REDUCER) => state,
   }),
 })
 

@@ -11,7 +11,7 @@ const initialState = {
   loadingTrustRelationship: false,
   totalItems: 0,
   entriesCount: 0,
-  trustRelationships: []
+  trustRelationships: [],
 }
 
 const samlSlice = createSlice({
@@ -30,7 +30,7 @@ const samlSlice = createSlice({
     },
     getSamlIdentitiesResponse: (state, action) => {
       state.loadingSamlIdp = false
-      if (action.payload?.data) { 
+      if (action.payload?.data) {
         state.items = action.payload?.data?.entries || []
         state.totalItems = action.payload.data.totalEntriesCount
         state.entriesCount = action.payload.data.entriesCount
@@ -92,7 +92,7 @@ const samlSlice = createSlice({
     updateTrustRelationshipResponse: (state) => {
       state.loading = false
       state.loadingTrustRelationship = false
-    }
+    },
   },
 })
 
@@ -116,7 +116,7 @@ export const {
   deleteTrustRelationshipResponse,
   createTrustRelationship,
   updateTrustRelationship,
-  updateTrustRelationshipResponse
+  updateTrustRelationshipResponse,
 } = samlSlice.actions
 
 export default samlSlice.reducer

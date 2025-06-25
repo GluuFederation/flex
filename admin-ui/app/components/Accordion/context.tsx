@@ -1,15 +1,12 @@
 import React from 'react'
 
 interface AccordionContextType {
-  isOpen: boolean;
-  onToggle: () => void;
+  isOpen: boolean
+  onToggle: () => void
 }
-const { Provider, Consumer } = React.createContext<AccordionContextType>({ 
+const { Provider, Consumer } = React.createContext<AccordionContextType>({
   isOpen: false,
-  onToggle: () => {}
+  onToggle: () => {},
 })
 
-export {
-  Provider,
-  Consumer
-}
+export { Provider, Consumer }

@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { Col, Container, FormGroup } from "Components";
-import GluuBooleanSelectBox from "Routes/Apps/Gluu/GluuBooleanSelectBox";
-import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import GluuTypeAheadForDn from "Routes/Apps/Gluu/GluuTypeAheadForDn";
-import GluuToogleRow from "Routes/Apps/Gluu/GluuToogleRow";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuTypeAhead from "Routes/Apps/Gluu/GluuTypeAhead";
-import GluuTypeAheadWithAdd from "Routes/Apps/Gluu/GluuTypeAheadWithAdd";
-import { useTranslation } from "react-i18next";
-import ClientShowSpontaneousScopes from "./ClientShowSpontaneousScopes";
-import GluuTooltip from "Routes/Apps/Gluu/GluuTooltip";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import PropTypes from "prop-types";
-const DOC_CATEGORY = "openid_client";
+import React, { useEffect, useState } from 'react'
+import { Col, Container, FormGroup } from 'Components'
+import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
+import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
+import { useTranslation } from 'react-i18next'
+import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import dayjs from 'dayjs'
+import PropTypes from 'prop-types'
+const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({
   client,
@@ -24,42 +24,38 @@ function ClientAdvancedPanel({
   modifiedFields,
   setModifiedFields,
 }) {
-  const { t } = useTranslation();
-  const request_uri_id = "request_uri_id";
-  const requestUris = [];
+  const { t } = useTranslation()
+  const request_uri_id = 'request_uri_id'
+  const requestUris = []
 
-  const [expirable] = useState(
-    formik.values.expirationDate ? formik.values.expirationDate : false
-  );
-  const [scopesModal, setScopesModal] = useState(false);
-  const [expirationDate, setExpirationDate] = useState(
-    expirable ? dayjs(expirable) : undefined
-  );
+  const [expirable] = useState(formik.values.expirationDate ? formik.values.expirationDate : false)
+  const [scopesModal, setScopesModal] = useState(false)
+  const [expirationDate, setExpirationDate] = useState(expirable ? dayjs(expirable) : undefined)
   const handler = () => {
-    setScopesModal(!scopesModal);
-  };
+    setScopesModal(!scopesModal)
+  }
 
   const filteredScripts = scripts
-    ?.filter((item) => item.scriptType == "person_authentication")
+    ?.filter((item) => item.scriptType == 'person_authentication')
     ?.filter((item) => item.enabled)
-    ?.map((item) => item.name);
+    ?.map((item) => item.name)
   function uriValidator(uri) {
-    return uri;
+    return uri
   }
   function getMapping(partial, total) {
     if (!partial) {
-      partial = [];
+      partial = []
     }
-    return total.filter((item) => partial.includes(item));
+    return total.filter((item) => partial.includes(item))
   }
 
   useEffect(() => {
     // Listen for changes on expirable input switch
     if (!formik.values.expirable) {
-      formik.setFieldValue("expirationDate", null);
-      setExpirationDate(null);
+      formik.setFieldValue('expirationDate', null)
+      setExpirationDate(null)
     }
-  }, [formik.values.expirable]);
+  }, [formik.values.expirable])
 
   return (
     <Container>
@@ -69,11 +65,11 @@ function ClientAdvancedPanel({
         lsize={3}
         rsize={9}
         handler={(e) => {
-          formik.setFieldValue("persistClientAuthorizations", e.target.checked);
+          formik.setFieldValue('persistClientAuthorizations', e.target.checked)
           setModifiedFields({
             ...modifiedFields,
-            "Persist Client Authorizations": e.target.checked,
-          });
+            'Persist Client Authorizations': e.target.checked,
+          })
         }}
         label="fields.persist_client_authorizations"
         value={formik.values.persistClientAuthorizations}
@@ -92,8 +88,8 @@ function ClientAdvancedPanel({
         handler={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Allow Spontaneous Scopes": e.target.value,
-          });
+            'Allow Spontaneous Scopes': e.target.value,
+          })
         }}
       />
       <GluuTypeAheadForDn
@@ -111,15 +107,12 @@ function ClientAdvancedPanel({
         onChange={(selected) => {
           setModifiedFields({
             ...modifiedFields,
-            "Spontaneous Scopes": selected,
-          });
+            'Spontaneous Scopes': selected,
+          })
         }}
       ></GluuTypeAheadForDn>
 
-      <GluuTooltip
-        doc_category={DOC_CATEGORY}
-        doc_entry="spontaneousScopesViewContent"
-      >
+      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="spontaneousScopesViewContent">
         {client.inum && (
           <FormGroup row>
             <GluuLabel label="fields.spontaneousScopes" />
@@ -141,15 +134,15 @@ function ClientAdvancedPanel({
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Initiate Login Uri": e.target.value,
-          });
+            'Initiate Login Uri': e.target.value,
+          })
         }}
       />
       <GluuTypeAheadWithAdd
         name="requestUris"
         label="fields.requestUris"
         formik={formik}
-        placeholder={t("Enter a valid request uri eg") + " https://..."}
+        placeholder={t('Enter a valid request uri eg') + ' https://...'}
         value={formik.values.requestUris || []}
         options={requestUris}
         validator={uriValidator}
@@ -161,8 +154,8 @@ function ClientAdvancedPanel({
         handler={(name, items) => {
           setModifiedFields({
             ...modifiedFields,
-            "Request Uris": items,
-          });
+            'Request Uris': items,
+          })
         }}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAhead
@@ -178,8 +171,8 @@ function ClientAdvancedPanel({
         onChange={(selected) => {
           setModifiedFields({
             ...modifiedFields,
-            "Default Acr Values": selected,
-          });
+            'Default Acr Values': selected,
+          })
         }}
       ></GluuTypeAhead>
       <GluuTypeAhead
@@ -187,10 +180,7 @@ function ClientAdvancedPanel({
         label="fields.authorizedAcrValues"
         formik={formik}
         value={
-          getMapping(
-            formik.values?.attributes?.authorizedAcrValues || [],
-            filteredScripts
-          ) || []
+          getMapping(formik.values?.attributes?.authorizedAcrValues || [], filteredScripts) || []
         }
         options={filteredScripts}
         doc_category={DOC_CATEGORY}
@@ -200,8 +190,8 @@ function ClientAdvancedPanel({
         onChange={(selected) => {
           setModifiedFields({
             ...modifiedFields,
-            "Authorized Acr Values": selected,
-          });
+            'Authorized Acr Values': selected,
+          })
         }}
       ></GluuTypeAhead>
       <GluuToogleRow
@@ -211,14 +201,11 @@ function ClientAdvancedPanel({
         label="fields.defaultPromptLogin"
         value={formik.values.attributes.jansDefaultPromptLogin}
         handler={(e) => {
-          formik.setFieldValue(
-            "attributes.jansDefaultPromptLogin",
-            e.target.checked
-          );
+          formik.setFieldValue('attributes.jansDefaultPromptLogin', e.target.checked)
           setModifiedFields({
             ...modifiedFields,
-            "Default Prompt Login": e.target.checked,
-          });
+            'Default Prompt Login': e.target.checked,
+          })
         }}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
@@ -233,8 +220,8 @@ function ClientAdvancedPanel({
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "TLS Client Auth Subject Dn": e.target.value,
-          });
+            'TLS Client Auth Subject Dn': e.target.value,
+          })
         }}
       />
 
@@ -252,8 +239,8 @@ function ClientAdvancedPanel({
             onChange={(e) => {
               setModifiedFields({
                 ...modifiedFields,
-                "Is Expirable Client": e.target.checked,
-              });
+                'Is Expirable Client': e.target.checked,
+              })
             }}
           />
         </Col>
@@ -268,11 +255,11 @@ function ClientAdvancedPanel({
                     disablePast
                     value={expirationDate}
                     onChange={(date) => {
-                      formik.setFieldValue("expirationDate", new Date(date));
-                      setExpirationDate(date);
+                      formik.setFieldValue('expirationDate', new Date(date))
+                      setExpirationDate(date)
                       setModifiedFields({
                         ...modifiedFields,
-                        "Expiration Date": new Date(date).toDateString(),
+                        'Expiration Date': new Date(date).toDateString(),
                       })
                     }}
                   />
@@ -283,10 +270,10 @@ function ClientAdvancedPanel({
         </Col>
       </FormGroup>
     </Container>
-  );
+  )
 }
 
-export default ClientAdvancedPanel;
+export default ClientAdvancedPanel
 ClientAdvancedPanel.propTypes = {
   formik: PropTypes.any,
   client: PropTypes.any,
@@ -294,4 +281,4 @@ ClientAdvancedPanel.propTypes = {
   viewOnly: PropTypes.bool,
   modifiedFields: PropTypes.any,
   setModifiedFields: PropTypes.func,
-};
+}

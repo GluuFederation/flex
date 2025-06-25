@@ -10,7 +10,7 @@ function AttributeAddPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  function onSubmit({ data, userMessage}) {
+  function onSubmit({ data, userMessage }) {
     if (data) {
       dispatch(addAttribute({ action: { action_data: data, action_message: userMessage } }))
       navigate('/attributes')

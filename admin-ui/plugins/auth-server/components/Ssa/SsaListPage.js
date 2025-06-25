@@ -6,12 +6,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import {
-  hasPermission,
-  SSA_PORTAL,
-  SSA_ADMIN,
-  buildPayload,
-} from 'Utils/PermChecker'
+import { hasPermission, SSA_PORTAL, SSA_ADMIN, buildPayload } from 'Utils/PermChecker'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useTranslation } from 'react-i18next'
@@ -41,8 +36,8 @@ const SSAListPage = () => {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ssa_management'))
-  const [ssaDialogOpen, setSsaDialogOpen] = useState(false);
-  const ssaDataRef = useRef();
+  const [ssaDialogOpen, setSsaDialogOpen] = useState(false)
+  const ssaDataRef = useRef()
   useEffect(() => {
     dispatch(getSsaConfig())
   }, [])
@@ -53,15 +48,18 @@ const SSAListPage = () => {
       const blob = new Blob([jwtData?.ssa], { type: 'text/plain' })
       const link = document.createElement('a')
       link.href = URL.createObjectURL(blob)
-      const dateStr = new Date().toLocaleString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }).replace(/[\/:,]/g, '-').replace(/\s/g, '_')
+      const dateStr = new Date()
+        .toLocaleString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        })
+        .replace(/[\/:,]/g, '-')
+        .replace(/\s/g, '_')
       link.download = `ssa-${ssaDataRef.current?.ssa.software_id}-${dateStr}.jwt`
       document.body.appendChild(link)
       link.click()
@@ -73,7 +71,6 @@ const SSAListPage = () => {
     }
   }, [jwtData, downloadRequested])
 
-
   useEffect(() => {
     if (viewRequested && jwtData) {
       ssaDataRef.current = jwtData
@@ -81,10 +78,7 @@ const SSAListPage = () => {
     }
   }, [jwtData, viewRequested])
 
-  const PaperContainer = useCallback(
-    (props) => <Paper {...props} elevation={0} />,
-    []
-  )
+  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
 
   const tableColumns = [
     { title: t('fields.software_id'), field: 'ssa.software_id' },
@@ -158,12 +152,11 @@ const SSAListPage = () => {
     }))
   }
 
-
   const handleSsaDelete = (row) => {
     setItem(row)
     toggle()
   }
-  const toggleSsaDialog = () => setSsaDialogOpen(!ssaDialogOpen);
+  const toggleSsaDialog = () => setSsaDialogOpen(!ssaDialogOpen)
 
   const handleGoToSsaAddPage = () => {
     navigate('/auth-server/config/ssa/new')
@@ -175,17 +168,17 @@ const SSAListPage = () => {
     toggle()
   }
   const handleViewSsa = async (row) => {
-    const userAction = {};
-    buildPayload(userAction, 'getSsaJwt', row.ssa.jti);
+    const userAction = {}
+    buildPayload(userAction, 'getSsaJwt', row.ssa.jti)
     dispatch(getSsaJwt({ action: userAction }))
     setViewRequested(true)
     setDownloadRequested(false)
   }
 
   const handleDownloadSsa = (row) => {
-    ssaDataRef.current = row;
-    const userAction = {};
-    buildPayload(userAction, 'getSsaJwt', row.ssa.jti);
+    ssaDataRef.current = row
+    const userAction = {}
+    buildPayload(userAction, 'getSsaJwt', row.ssa.jti)
     dispatch(getSsaJwt({ action: userAction }))
     setDownloadRequested(true)
     setViewRequested(false)
@@ -203,7 +196,7 @@ const SSAListPage = () => {
             columns={tableColumns}
             data={items || []}
             isLoading={loading}
-            title=''
+            title=""
             actions={myActions}
             options={{
               search: true,
@@ -227,18 +220,20 @@ const SSAListPage = () => {
             name={item?.ssa?.org_id || ''}
             handler={toggle}
             modal={modal}
-            subject='ssa configuration'
+            subject="ssa configuration"
             onAccept={onDeletionConfirmed}
           />
         )}
-        {ssaDataRef.current && ssaDialogOpen && <JsonViewerDialog
-          isOpen={ssaDialogOpen}
-          toggle={() => setSsaDialogOpen(!ssaDialogOpen)}
-          data={ssaDataRef.current}
-          title={`JSON View`}
-          theme="light"
-          expanded={true}
-        />}
+        {ssaDataRef.current && ssaDialogOpen && (
+          <JsonViewerDialog
+            isOpen={ssaDialogOpen}
+            toggle={() => setSsaDialogOpen(!ssaDialogOpen)}
+            data={ssaDataRef.current}
+            title={`JSON View`}
+            theme="light"
+            expanded={true}
+          />
+        )}
       </CardBody>
     </Card>
   )

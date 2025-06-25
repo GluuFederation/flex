@@ -35,7 +35,7 @@ function JsonPropertyBuilderConfigApi({
   schema,
   doc_category = 'json_properties',
   tooltipPropKey = '',
-  parent
+  parent,
 }) {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
@@ -50,7 +50,7 @@ function JsonPropertyBuilderConfigApi({
     patch = {
       path,
       value: propValue,
-      op: 'remove'
+      op: 'remove',
     }
     handler(patch)
     setShow(false)
@@ -95,7 +95,7 @@ function JsonPropertyBuilderConfigApi({
         id={propKey}
         name={tooltipPropKey || propKey}
         lsize={lSize}
-        type='number'
+        type="number"
         rsize={lSize}
         label={generateLabel(propKey)}
         handler={handler}
@@ -127,8 +127,8 @@ function JsonPropertyBuilderConfigApi({
 
   if (isObjectArray(propValue)) {
     return (
-      <Accordion className='mb-2 b-primary' initialOpen>
-        <Accordion.Header className='text-primary'>
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <Accordion.Header className="text-primary">
           <GluuLabel
             label={generateLabel(propKey)}
             size={lSize}
@@ -161,8 +161,8 @@ function JsonPropertyBuilderConfigApi({
     return (
       <>
         {show && (
-          <Accordion className='mb-2 b-primary' initialOpen>
-            <Accordion.Header className='text-primary'>
+          <Accordion className="mb-2 b-primary" initialOpen>
+            <Accordion.Header className="text-primary">
               {propKey.toUpperCase().length > 2 ? (
                 <GluuLabel
                   label={generateLabel(propKey)}
@@ -179,12 +179,12 @@ function JsonPropertyBuilderConfigApi({
                   <Col sm={11} md={11}></Col>
                   <Col sm={1} md={1}>
                     <Button
-                      color='danger'
-                      size='sm'
+                      color="danger"
+                      size="sm"
                       style={{ float: 'right' }}
                       onClick={removeHandler}
                     >
-                      <i className='fa fa-remove me-2'></i>
+                      <i className="fa fa-remove me-2"></i>
                       {'  '}
                       {t('actions.remove')}
                       {'  '}

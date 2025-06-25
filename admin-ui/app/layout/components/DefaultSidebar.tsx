@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom'
 import { Sidebar, SidebarTrigger } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
-import { SidebarClose, SidebarHideSlim, SidebarMobileFluid, SidebarSection } from '@/components/Sidebar'
+import {
+  SidebarClose,
+  SidebarHideSlim,
+  SidebarMobileFluid,
+  SidebarSection,
+} from '@/components/Sidebar'
 
 const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 
@@ -32,7 +37,9 @@ const DefaultSidebar: React.FC = () => (
       {/* <SidebarTopA /> */}
       <SidebarSection fluid cover>
         {/* SIDEBAR: Menu */}
-        <Suspense fallback={<GluuSuspenseLoader />}><GluuAppSidebar /></Suspense>
+        <Suspense fallback={<GluuSuspenseLoader />}>
+          <GluuAppSidebar />
+        </Suspense>
       </SidebarSection>
     </SidebarMobileFluid>
     {/* END SIDEBAR: Only for Mobile */}

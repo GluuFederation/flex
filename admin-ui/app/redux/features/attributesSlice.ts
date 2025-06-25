@@ -24,8 +24,8 @@ const attributesSlice = createSlice({
     },
     toggleInitAttributeLoader: (state, action) => {
       state.initLoading = action.payload
-    }
-  }
+    },
+  },
 })
 
 export const { getAttributesRoot, getAttributesResponseRoot, toggleInitAttributeLoader } =

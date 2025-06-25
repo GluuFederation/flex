@@ -16,13 +16,13 @@ interface NestedDropdownState {
 
 export class NestedDropdown extends React.Component<NestedDropdownProps, NestedDropdownState> {
   static readonly defaultProps = {
-    tag: UncontrolledDropdown
+    tag: UncontrolledDropdown,
   }
 
   constructor(props: NestedDropdownProps) {
     super(props)
     this.state = {
-      isOpen: false
+      isOpen: false,
     }
     this.setIsOpen = this.setIsOpen.bind(this)
   }
@@ -37,14 +37,14 @@ export class NestedDropdown extends React.Component<NestedDropdownProps, NestedD
     const dropdownClass = classNames(className, 'nested-dropdown')
 
     return (
-      <Tag { ...otherProps } className={ dropdownClass } >
+      <Tag {...otherProps} className={dropdownClass}>
         <Provider
           value={{
             isOpen: this.state.isOpen,
-            setIsOpen: this.setIsOpen
+            setIsOpen: this.setIsOpen,
           }}
         >
-          { children }
+          {children}
         </Provider>
       </Tag>
     )

@@ -1,10 +1,10 @@
-import { useCallback, useState } from "react";
-import { FormGroup, Col } from "Components";
-import { AsyncTypeahead} from "react-bootstrap-typeahead";
-import GluuLabel from "../Gluu/GluuLabel";
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useTranslation } from "react-i18next";
+import { useCallback, useState } from 'react'
+import { FormGroup, Col } from 'Components'
+import { AsyncTypeahead } from 'react-bootstrap-typeahead'
+import GluuLabel from '../Gluu/GluuLabel'
+import Typography from '@mui/material/Typography'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 
 const theme = createTheme({
   typography: {
@@ -12,7 +12,7 @@ const theme = createTheme({
       fontSize: 12,
     },
   },
-});
+})
 
 function GluuTypeAheadForDn({
   label,
@@ -38,19 +38,17 @@ function GluuTypeAheadForDn({
   hideHelperMessage,
   defaultSelected = [],
 }: any) {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const { t } = useTranslation()
+  const [open, setOpen] = useState(false)
 
   const getItemName = useCallback((items: any, item: any) => {
-    const data = options?.filter(
-      (e: any) => e.dn === item || item.includes(e.key)
-    );
-    return data[0]?.name;
-  }, []);
+    const data = options?.filter((e: any) => e.dn === item || item.includes(e.key))
+    return data[0]?.name
+  }, [])
 
   const getKey = useCallback((option: any) => {
-    return `(Claim name: ${option.key})`;
-  }, []);
+    return `(Claim name: ${option.key})`
+  }, [])
 
   return (
     <FormGroup row>
@@ -67,9 +65,7 @@ function GluuTypeAheadForDn({
           labelKey={
             haveLabelKey
               ? (opt: any) =>
-                  `${opt.name || getItemName(options, opt)} ${
-                    opt.key ? getKey(opt) : ""
-                  }`
+                  `${opt.name || getItemName(options, opt)} ${opt.key ? getKey(opt) : ''}`
               : undefined
           }
           maxResults={maxResults}
@@ -82,7 +78,7 @@ function GluuTypeAheadForDn({
               <div key={option.name}>
                 <span>{option.name}</span>
               </div>
-            );
+            )
           }}
           open={open}
           onBlur={() => setOpen(false)}
@@ -91,14 +87,10 @@ function GluuTypeAheadForDn({
             formik.setFieldValue(
               name,
               selected.map((item) =>
-                typeof item == "string"
-                  ? item
-                  : item.customOption
-                  ? item.label
-                  : item.dn
-              )
-            );
-            onChange?.(selected);
+                typeof item == 'string' ? item : item.customOption ? item.label : item.dn,
+              ),
+            )
+            onChange?.(selected)
           }}
           disabled={disabled}
           id={name}
@@ -112,13 +104,13 @@ function GluuTypeAheadForDn({
         {!hideHelperMessage && (
           <ThemeProvider theme={theme}>
             <Typography variant="subtitle1">
-              {t("placeholders.typeahead_holder_message")}
+              {t('placeholders.typeahead_holder_message')}
             </Typography>
           </ThemeProvider>
         )}
       </Col>
     </FormGroup>
-  );
+  )
 }
 
-export default GluuTypeAheadForDn;
+export default GluuTypeAheadForDn

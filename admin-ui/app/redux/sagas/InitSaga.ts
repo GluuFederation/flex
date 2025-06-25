@@ -1,9 +1,6 @@
 // @ts-nocheck
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import {
   getAttributesResponse,
   getScriptsResponse,
@@ -20,18 +17,14 @@ const JansConfigApi = require('jans_config_api')
 function* initScripts() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CustomScriptsApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
   return new InitApi(api)
 }
 
 function* initScopes() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthScopesApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.OAuthScopesApi(getClient(JansConfigApi, token, issuer))
   return new InitApi(api)
 }
 
@@ -47,9 +40,7 @@ function* initClients() {
 function* initAttributes() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AttributeApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.AttributeApi(getClient(JansConfigApi, token, issuer))
   return new InitApi(api)
 }
 

@@ -15,4 +15,4 @@ render(
     </ThemeProvider>
   </I18nextProvider>,
   document.querySelector('#root') as HTMLElement,
-) 
+)

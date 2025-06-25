@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  UncontrolledTabs,
-  TabPane,
-  Card,
-  CardBody,
-} from 'Components'
+import { UncontrolledTabs, TabPane, Card, CardBody } from 'Components'
 import { UncontrolledTabsTabContent } from 'Components/UncontrolledTabs/UncontrolledTabsTabContent'
 import JwksPage from './Jwks/JwksPage'
 import { useTranslation } from 'react-i18next'

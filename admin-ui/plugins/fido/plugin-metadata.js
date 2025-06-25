@@ -29,7 +29,7 @@ const pluginMetadata = {
       component: Fido,
       path: PLUGIN_BASE_PATH + '/fidomanagement' + '/dynamic-configuration',
       permission: FIDO_WRITE,
-    }
+    },
   ],
   reducers: [{ name: 'fidoReducer', reducer: fidoReducer }],
   sagas: [fidoSaga()],

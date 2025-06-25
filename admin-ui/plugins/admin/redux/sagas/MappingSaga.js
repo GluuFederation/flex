@@ -1,12 +1,4 @@
-import {
-  call,
-  all,
-  put,
-  fork,
-  takeLatest,
-  select,
-  takeEvery,
-} from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest, select, takeEvery } from 'redux-saga/effects'
 import {
   getMappingResponse,
   updatePermissionsServerResponse,
@@ -16,11 +8,8 @@ import {
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import {updateToast} from 'Redux/features/toastSlice'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { updateToast } from 'Redux/features/toastSlice'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import MappingApi from '../api/MappingApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'

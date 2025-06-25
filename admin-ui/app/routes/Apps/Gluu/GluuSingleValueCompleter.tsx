@@ -1,9 +1,9 @@
-import { FormGroup, Col } from "Components";
-import { Typeahead } from "react-bootstrap-typeahead";
-import GluuLabel from "../Gluu/GluuLabel";
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useTranslation } from "react-i18next";
+import { FormGroup, Col } from 'Components'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import GluuLabel from '../Gluu/GluuLabel'
+import Typography from '@mui/material/Typography'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 
 const theme = createTheme({
   typography: {
@@ -11,7 +11,7 @@ const theme = createTheme({
       fontSize: 12,
     },
   },
-});
+})
 
 function GluuSingleValueCompleter({
   label,
@@ -24,7 +24,7 @@ function GluuSingleValueCompleter({
   onChange = null,
   hideHelperMessage = false,
 }: any) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <FormGroup row>
       {required ? (
@@ -53,20 +53,20 @@ function GluuSingleValueCompleter({
           options={options}
           onChange={(e) => {
             if (onChange) {
-              onChange(e);
+              onChange(e)
             }
           }}
         />
         {!hideHelperMessage && (
           <ThemeProvider theme={theme}>
             <Typography variant="subtitle1">
-              {t("placeholders.typeahead_holder_message")}
+              {t('placeholders.typeahead_holder_message')}
             </Typography>
           </ThemeProvider>
         )}
       </Col>
     </FormGroup>
-  );
+  )
 }
 
-export default GluuSingleValueCompleter;
+export default GluuSingleValueCompleter

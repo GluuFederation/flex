@@ -12,13 +12,7 @@ import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import Alert from '@mui/material/Alert'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
-import {
-  hasPermission,
-  buildPayload,
-  SQL_READ,
-  SQL_WRITE,
-  SQL_DELETE,
-} from 'Utils/PermChecker'
+import { hasPermission, buildPayload, SQL_READ, SQL_WRITE, SQL_DELETE } from 'Utils/PermChecker'
 import {
   getSqlConfig,
   setCurrentItem,
@@ -35,12 +29,8 @@ function SqlListPage() {
   const loading = useSelector((state) => state.sqlReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
   const testStatus = useSelector((state) => state.sqlReducer.testStatus)
-  const persistenceType = useSelector(
-    (state) => state.persistenceTypeReducer.type
-  )
-  const persistenceTypeLoading = useSelector(
-    (state) => state.persistenceTypeReducer.loading
-  )
+  const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
+  const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
 
   const dispatch = useDispatch()
 
@@ -51,7 +41,7 @@ function SqlListPage() {
   const { t } = useTranslation()
   const userAction = {}
   const myActions = []
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
@@ -188,24 +178,13 @@ function SqlListPage() {
                 actionsColumnIndex: -1,
               }}
               detailPanel={(rowData) => {
-                return (
-                  <SqlDetailPage
-                    row={rowData.rowData}
-                    testSqlConnection={testSqlConnect}
-                  />
-                )
+                return <SqlDetailPage row={rowData.rowData} testSqlConnection={testSqlConnect} />
               }}
             />
           ) : (
-            <Alert severity="info">
-              The current data store provider is not RDBMS.
-            </Alert>
+            <Alert severity="info">The current data store provider is not RDBMS.</Alert>
           )}
-          <GluuAlert
-            severity={alertObj.severity}
-            message={alertObj.message}
-            show={alertObj.show}
-          />
+          <GluuAlert severity={alertObj.severity} message={alertObj.message} show={alertObj.show} />
           <GluuDialog
             row={item}
             handler={toggle}

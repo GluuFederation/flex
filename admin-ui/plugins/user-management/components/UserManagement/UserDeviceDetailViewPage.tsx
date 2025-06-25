@@ -1,20 +1,20 @@
-import React from "react";
-import { Container, Row, Col } from "Components";
-import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
+import React from 'react'
+import { Container, Row, Col } from 'Components'
+import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import PropTypes from 'prop-types'
 
 interface UserDeviceDetailViewPageProps {
   row: {
-    rowData: any;
-  };
+    rowData: any
+  }
 }
 
 const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
-  const { rowData } = row;
-  const DOC_SECTION = "user";
+  const { rowData } = row
+  const DOC_SECTION = 'user'
 
   return (
-    <Container style={{ backgroundColor: "#F5F5F5", minWidth: "100%" }}>
+    <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
@@ -52,9 +52,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
 
       {rowData?.deviceData && (
         <Row>
-          <h5 style={{ borderBottom: "2px solid", fontWeight: "bold" }}>
-            Device Information
-          </h5>
+          <h5 style={{ borderBottom: '2px solid', fontWeight: 'bold' }}>Device Information</h5>
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.deviceName"
@@ -90,11 +88,11 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
         </Row>
       )}
     </Container>
-  );
-};
+  )
+}
 
 UserDeviceDetailViewPage.propTypes = {
   row: PropTypes.any,
-};
+}
 
-export default UserDeviceDetailViewPage;
+export default UserDeviceDetailViewPage

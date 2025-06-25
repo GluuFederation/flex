@@ -1,7 +1,15 @@
-import React, { useState, useContext } from "react";
-import { FormGroup, Col, Input, Button, Accordion, AccordionHeader, AccordionBody } from "Components";
-import { useTranslation } from "react-i18next";
-import { ThemeContext } from "Context/theme/themeContext";
+import React, { useState, useContext } from 'react'
+import {
+  FormGroup,
+  Col,
+  Input,
+  Button,
+  Accordion,
+  AccordionHeader,
+  AccordionBody,
+} from 'Components'
+import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuNameValueProperty({
   nameValueLabel,
@@ -15,44 +23,41 @@ function GluuNameValueProperty({
   valuePlaceholder,
   dataArr = [],
 }: any) {
-  const [dataArray, setDataArray] = useState(dataArr);
-  const { t } = useTranslation();
-  const theme: any = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
+  const [dataArray, setDataArray] = useState(dataArr)
+  const { t } = useTranslation()
+  const theme: any = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const addClick = () => {
-    setDataArray((prevDataArray: any) => [
-      ...prevDataArray,
-      { key: "", value: "" },
-    ]);
-  };
+    setDataArray((prevDataArray: any) => [...prevDataArray, { key: '', value: '' }])
+  }
 
   const handleChange = (i: any) => (e: any) => {
-    const { name, value } = e.target;
-    const newDataArr = [...dataArray];
-    newDataArr[i] = { ...newDataArr[i], [name]: value };
-    setDataArray(newDataArr);
-    formik.setFieldValue(componentName, newDataArr);
-  };
+    const { name, value } = e.target
+    const newDataArr = [...dataArray]
+    newDataArr[i] = { ...newDataArr[i], [name]: value }
+    setDataArray(newDataArr)
+    formik.setFieldValue(componentName, newDataArr)
+  }
 
   const removeClick = (i: any) => {
-    const newDataArray = [...dataArray];
-    newDataArray.splice(i, 1);
-    setDataArray(newDataArray);
-    formik.setFieldValue(componentName, newDataArray);
-  };
+    const newDataArray = [...dataArray]
+    newDataArray.splice(i, 1)
+    setDataArray(newDataArray)
+    formik.setFieldValue(componentName, newDataArray)
+  }
 
   return (
     <Accordion className="mb-2 b-primary" initialOpen>
       <AccordionHeader>{t(nameValueLabel).toUpperCase()}</AccordionHeader>
       <AccordionBody>
         <Button
-          style={{ float: "right", marginTop: -30 }}
+          style={{ float: 'right', marginTop: -30 }}
           type="button"
           color={`primary-${selectedTheme}`}
           onClick={addClick}
         >
           <i className="fa fa-fw fa-plus me-2"></i>
-          {t("actions.add_property")}
+          {t('actions.add_property')}
         </Button>
         <FormGroup row>
           <Col sm={12}>
@@ -61,9 +66,7 @@ function GluuNameValueProperty({
                 <Col sm={4}>
                   <Input
                     placeholder={
-                      keyPlaceholder
-                        ? t(keyPlaceholder)
-                        : t("placeholders.enter_property_key")
+                      keyPlaceholder ? t(keyPlaceholder) : t('placeholders.enter_property_key')
                     }
                     id={keyId}
                     name={keyName}
@@ -76,7 +79,7 @@ function GluuNameValueProperty({
                     placeholder={
                       valuePlaceholder
                         ? t(valuePlaceholder)
-                        : t("placeholders.enter_property_value")
+                        : t('placeholders.enter_property_value')
                     }
                     id={valueId}
                     name={valueName}
@@ -85,13 +88,9 @@ function GluuNameValueProperty({
                   />
                 </Col>
                 <Col sm={2}>
-                  <Button
-                    type="button"
-                    color="danger"
-                    onClick={() => removeClick(index)}
-                  >
+                  <Button type="button" color="danger" onClick={() => removeClick(index)}>
                     <i className="fa fa-fw fa-trash me-2"></i>
-                    {t("actions.remove")}
+                    {t('actions.remove')}
                   </Button>
                 </Col>
               </FormGroup>
@@ -100,7 +99,7 @@ function GluuNameValueProperty({
         </FormGroup>
       </AccordionBody>
     </Accordion>
-  );
+  )
 }
 
-export default GluuNameValueProperty;
+export default GluuNameValueProperty

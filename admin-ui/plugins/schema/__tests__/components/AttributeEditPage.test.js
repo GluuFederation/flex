@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import AttributeEditPage from 'Plugins/schema/components/Person/AttributeEditPage' 
+import AttributeEditPage from 'Plugins/schema/components/Person/AttributeEditPage'
 import { Provider } from 'react-redux'
 import attributes from '../../utils/attributes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
@@ -20,7 +20,7 @@ const INIT_ATTRIBUTE_STATE = {
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     attributeReducer: (state = INIT_ATTRIBUTE_STATE) => state,
     noReducer: (state = {}) => state,
@@ -29,9 +29,7 @@ const store = configureStore({
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>
-    <Provider store={store}>
-      {children}
-    </Provider>
+    <Provider store={store}>{children}</Provider>
   </AppTestWrapper>
 )
 

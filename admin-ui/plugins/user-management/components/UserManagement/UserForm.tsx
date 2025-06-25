@@ -1,74 +1,70 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Button, Col, Form, FormGroup } from "Components";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuSelectRow from "Routes/Apps/Gluu/GluuSelectRow";
-import { useTranslation } from "react-i18next";
-import UserClaimEntry from "./UserClaimEntry";
-import { useSelector, useDispatch } from "react-redux";
-import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
-import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { changeUserPassword } from "../../redux/features/userSlice";
-import { ThemeContext } from "Context/theme/themeContext";
-import { getAttributesRoot } from "Redux/features/attributesSlice";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { debounce, values } from "lodash";
-import { adminUiFeatures } from "Plugins/admin/helper/utils";
-import moment from "moment/moment";
-import { use } from "i18next";
+import React, { useEffect, useState, useContext } from 'react'
+import { Button, Col, Form, FormGroup } from 'Components'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import { useTranslation } from 'react-i18next'
+import UserClaimEntry from './UserClaimEntry'
+import { useSelector, useDispatch } from 'react-redux'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { changeUserPassword } from '../../redux/features/userSlice'
+import { ThemeContext } from 'Context/theme/themeContext'
+import { getAttributesRoot } from 'Redux/features/attributesSlice'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import { debounce, values } from 'lodash'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import moment from 'moment/moment'
+import { use } from 'i18next'
 
-function UserForm({ onSubmitData }:any) {
-  const dispatch = useDispatch();
-  const { t } = useTranslation();
-  const DOC_SECTION = "user";
-  const [searchClaims, setSearchClaims] = useState("");
-  const [selectedClaims, setSelectedClaims] = useState<any[]>([]);
-  const [passwordError, setPasswordError] = useState("");
-  const [showButtons, setShowButtons] = useState(false);
-  const [modal, setModal] = useState(false);
-  const [passwordmodal, setPasswordModal] = useState(false);
-  const [changePasswordModal, setChangePasswordModal] = useState(false);
-  const [modifiedFields, setModifiedFields] = useState<Record<string, any>>({});
-  const [operations, setOperations] = useState<Array<{path: string; value: any; op: string}>>([]);
+function UserForm({ onSubmitData }: any) {
+  const dispatch = useDispatch()
+  const { t } = useTranslation()
+  const DOC_SECTION = 'user'
+  const [searchClaims, setSearchClaims] = useState('')
+  const [selectedClaims, setSelectedClaims] = useState<any[]>([])
+  const [passwordError, setPasswordError] = useState('')
+  const [showButtons, setShowButtons] = useState(false)
+  const [modal, setModal] = useState(false)
+  const [passwordmodal, setPasswordModal] = useState(false)
+  const [changePasswordModal, setChangePasswordModal] = useState(false)
+  const [modifiedFields, setModifiedFields] = useState<Record<string, any>>({})
+  const [operations, setOperations] = useState<Array<{ path: string; value: any; op: string }>>([])
 
-  const userDetails = useSelector(
-    (state: any) => state.userReducer.selectedUserData
-  );
-  const personAttributes = useSelector(
-    (state: any) => state.attributesReducerRoot.items
-  );
-  const theme: any = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
-  let options: any = {};
+  const userDetails = useSelector((state: any) => state.userReducer.selectedUserData)
+  const personAttributes = useSelector((state: any) => state.attributesReducerRoot.items)
+  const theme: any = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  let options: any = {}
 
   const initialValues: any = {
-    displayName: userDetails?.displayName || "",
-    givenName: userDetails?.givenName || "",
-    mail: userDetails?.mail || "",
-    userId: userDetails?.userId || "",
-    sn: "",
-    middleName: "",
-    status: userDetails?.status || "",
-  };
+    displayName: userDetails?.displayName || '',
+    givenName: userDetails?.givenName || '',
+    mail: userDetails?.mail || '',
+    userId: userDetails?.userId || '',
+    sn: '',
+    middleName: '',
+    status: userDetails?.status || '',
+  }
 
   if (userDetails) {
     for (let i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         let customAttribute = personAttributes.filter(
-          (e: any) => e.name == userDetails.customAttributes[i].name
-        );
-        if (userDetails.customAttributes[i].name == "birthdate") {
+          (e: any) => e.name == userDetails.customAttributes[i].name,
+        )
+        if (userDetails.customAttributes[i].name == 'birthdate') {
           initialValues[userDetails.customAttributes[i].name] = moment(
-            userDetails.customAttributes[i].values[0]
-          ).format("YYYY-MM-DD");
+            userDetails.customAttributes[i].values[0],
+          ).format('YYYY-MM-DD')
         } else {
           if (customAttribute[0]?.oxMultiValuedAttribute) {
             initialValues[userDetails.customAttributes[i].name] =
-              userDetails.customAttributes[i].values;
+              userDetails.customAttributes[i].values
           } else {
             initialValues[userDetails.customAttributes[i].name] =
-              userDetails.customAttributes[i].values[0];
+              userDetails.customAttributes[i].values[0]
           }
         }
       }
@@ -77,150 +73,146 @@ function UserForm({ onSubmitData }:any) {
 
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (values:any) => {
-      toggle();
+    onSubmit: (values: any) => {
+      toggle()
     },
     validationSchema: Yup.object({
-      displayName: Yup.string().required("Display name is required."),
-      givenName: Yup.string().required("First name is required."),
-      sn: Yup.string().required("Last name is required."),
-      userId: Yup.string().required("User name is required."),
-      mail: Yup.string().required("Email is required."),
+      displayName: Yup.string().required('Display name is required.'),
+      givenName: Yup.string().required('First name is required.'),
+      sn: Yup.string().required('Last name is required.'),
+      userId: Yup.string().required('User name is required.'),
+      mail: Yup.string().required('Email is required.'),
     }),
-  });
+  })
 
   const toggle = () => {
-    setModal(!modal);
-  };
+    setModal(!modal)
+  }
 
-  const submitChangePassword = (usermessage:any) => {
-    const submitableValue:any = {
+  const submitChangePassword = (usermessage: any) => {
+    const submitableValue: any = {
       inum: userDetails.inum,
-      jsonPatchString: "[]",
+      jsonPatchString: '[]',
       customAttributes: [
         {
-          name: "userPassword",
+          name: 'userPassword',
           multiValued: false,
           values: [formik.values.userPassword],
         },
       ],
-    };
-    submitableValue['performedOn'] = {user_inum: userDetails.inum, userId: userDetails.displayName}
+    }
+    submitableValue['performedOn'] = {
+      user_inum: userDetails.inum,
+      userId: userDetails.displayName,
+    }
     submitableValue['action_message'] = usermessage
-    dispatch(changeUserPassword(submitableValue));
-    setPasswordModal(!passwordmodal);
-    toggleChangePasswordModal();
-  };
+    dispatch(changeUserPassword(submitableValue))
+    setPasswordModal(!passwordmodal)
+    toggleChangePasswordModal()
+  }
 
-  const submitForm = (usermessage:any) => {
-    toggle();
-    onSubmitData(formik.values, modifiedFields, usermessage);
-  };
-  const loading = useSelector((state: any) => state.userReducer.loading);
+  const submitForm = (usermessage: any) => {
+    toggle()
+    onSubmitData(formik.values, modifiedFields, usermessage)
+  }
+  const loading = useSelector((state: any) => state.userReducer.loading)
   const setSelectedClaimsToState = (data: any) => {
-    const tempList = [...selectedClaims];
-    tempList.push(data);
-    setSelectedClaims(tempList);
-  };
+    const tempList = [...selectedClaims]
+    tempList.push(data)
+    setSelectedClaims(tempList)
+  }
 
   useEffect(() => {
     if (formik.values.userConfirmPassword && formik.values.userPassword) {
       if (formik.values.userConfirmPassword != formik.values.userPassword) {
-        setPasswordError(
-          "Confirm password should be same as password entered."
-        );
-        setShowButtons(false);
+        setPasswordError('Confirm password should be same as password entered.')
+        setShowButtons(false)
       } else {
-        setPasswordError("");
-        setShowButtons(true);
+        setPasswordError('')
+        setShowButtons(true)
       }
     } else {
-      setPasswordError("");
+      setPasswordError('')
     }
-  }, [formik.values.userConfirmPassword, formik.values.userPassword]);
+  }, [formik.values.userConfirmPassword, formik.values.userPassword])
 
   const usedClaimes = [
-    "userId",
-    "displayName",
-    "mail",
-    "status",
-    "userPassword",
-    "givenName",
-    "middleName",
-    "sn",
-  ];
+    'userId',
+    'displayName',
+    'mail',
+    'status',
+    'userPassword',
+    'givenName',
+    'middleName',
+    'sn',
+  ]
   const getCustomAttributeById = (id: string) => {
-    let claimData = null;
+    let claimData = null
     for (const i in personAttributes) {
       if (personAttributes[i].name == id) {
-        claimData = personAttributes[i];
+        claimData = personAttributes[i]
       }
     }
-    return claimData;
-  };
+    return claimData
+  }
 
   const setAttributes = () => {
-    const tempList = [...selectedClaims];
+    const tempList = [...selectedClaims]
     for (const i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
-        const data = getCustomAttributeById(
-          userDetails.customAttributes[i].name
-        ) && {
+        const data = getCustomAttributeById(userDetails.customAttributes[i].name) && {
           ...getCustomAttributeById(userDetails.customAttributes[i].name),
-        };
-        if (
-          data &&
-          !usedClaimes.includes(userDetails.customAttributes[i].name)
-        ) {
-          data.options = userDetails.customAttributes[i].values;
-          tempList.push(data);
+        }
+        if (data && !usedClaimes.includes(userDetails.customAttributes[i].name)) {
+          data.options = userDetails.customAttributes[i].values
+          tempList.push(data)
         }
       }
     }
-    setSelectedClaims(tempList);
-  };
+    setSelectedClaims(tempList)
+  }
 
   useEffect(() => {
     if (userDetails) {
-      setAttributes();
-      setShowButtons(true);
+      setAttributes()
+      setShowButtons(true)
     } else {
-      setSelectedClaims([]);
+      setSelectedClaims([])
     }
-  }, [userDetails]);
+  }, [userDetails])
 
   const removeSelectedClaimsFromState = (id: string) => {
-    const tempList = [...selectedClaims];
+    const tempList = [...selectedClaims]
     if (userDetails) {
-      formik.setFieldValue(id, "");
+      formik.setFieldValue(id, '')
     } else {
-      formik.setFieldValue(id, "");
+      formik.setFieldValue(id, '')
     }
-    const newModifiedFields = { ...modifiedFields };
-    delete newModifiedFields[id];
-    setModifiedFields(newModifiedFields);
+    const newModifiedFields = { ...modifiedFields }
+    delete newModifiedFields[id]
+    setModifiedFields(newModifiedFields)
 
-    const newList = tempList.filter((data) => data.name !== id);
-    setSelectedClaims(newList);
-  };
+    const newList = tempList.filter((data) => data.name !== id)
+    setSelectedClaims(newList)
+  }
 
   function goBack() {
-    window.history.back();
+    window.history.back()
   }
 
   const toggleChangePasswordModal = () => {
-    setChangePasswordModal(!changePasswordModal);
-    formik.setFieldValue("userPassword", "");
-    formik.setFieldValue("userConfirmPassword", "");
-    setShowButtons(true);
-  };
+    setChangePasswordModal(!changePasswordModal)
+    formik.setFieldValue('userPassword', '')
+    formik.setFieldValue('userConfirmPassword', '')
+    setShowButtons(true)
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setModifiedFields({
       ...modifiedFields,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
 
   return (
     <GluuLoader blocking={loading}>
@@ -244,7 +236,7 @@ function UserForm({ onSubmitData }:any) {
                 label="Password"
                 name="userPassword"
                 type="password"
-                value={formik.values.userPassword || ""}
+                value={formik.values.userPassword || ''}
                 formik={formik}
                 lsize={3}
                 rsize={9}
@@ -254,51 +246,45 @@ function UserForm({ onSubmitData }:any) {
                 label="Confirm Password"
                 name="userConfirmPassword"
                 type="password"
-                value={formik.values.userConfirmPassword || ""}
+                value={formik.values.userConfirmPassword || ''}
                 formik={formik}
                 lsize={3}
                 rsize={9}
               />
 
-              {passwordError != "" && (
-                <span className="text-danger">{passwordError}</span>
-              )}
+              {passwordError != '' && <span className="text-danger">{passwordError}</span>}
             </Col>
           </FormGroup>
         </ModalBody>
         <ModalFooter>
           {formik.values?.userPassword?.length > 3 &&
-            formik.values?.userPassword ==
-              formik.values.userConfirmPassword && (
+            formik.values?.userPassword == formik.values.userConfirmPassword && (
               <Button
                 color={`primary-${selectedTheme}`}
                 type="button"
                 onClick={() => setPasswordModal(!passwordmodal)}
               >
-                {t("actions.change_password")}
+                {t('actions.change_password')}
               </Button>
             )}
           &nbsp;
-          <Button
-            color={`primary-${selectedTheme}`}
-            onClick={toggleChangePasswordModal}
-          >
-            {t("actions.cancel")}
+          <Button color={`primary-${selectedTheme}`} onClick={toggleChangePasswordModal}>
+            {t('actions.cancel')}
           </Button>
         </ModalFooter>
       </Modal>
       <Form
         onSubmit={(e) => {
-          e.preventDefault();
+          e.preventDefault()
           let values = Object.keys(modifiedFields).map((key) => {
             return {
               path: key,
               value: modifiedFields[key],
-              op: "replace",
-            };
-          });
-          setOperations(values);
-          formik.handleSubmit();
+              op: 'replace',
+            }
+          })
+          setOperations(values)
+          formik.handleSubmit()
         }}
       >
         <FormGroup row>
@@ -308,7 +294,7 @@ function UserForm({ onSubmitData }:any) {
                 label="INUM"
                 name="INUM"
                 doc_category={DOC_SECTION}
-                value={userDetails.inum || ""}
+                value={userDetails.inum || ''}
                 lsize={3}
                 rsize={9}
                 formik={formik}
@@ -320,7 +306,7 @@ function UserForm({ onSubmitData }:any) {
               label="First Name"
               name="givenName"
               required
-              value={formik.values.givenName || ""}
+              value={formik.values.givenName || ''}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -332,7 +318,7 @@ function UserForm({ onSubmitData }:any) {
               doc_category={DOC_SECTION}
               label="Middle Name"
               name="middleName"
-              value={formik.values.middleName || ""}
+              value={formik.values.middleName || ''}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -346,7 +332,7 @@ function UserForm({ onSubmitData }:any) {
               label="Last Name"
               name="sn"
               required
-              value={formik.values.sn || ""}
+              value={formik.values.sn || ''}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -359,7 +345,7 @@ function UserForm({ onSubmitData }:any) {
               label="User Name"
               name="userId"
               required
-              value={formik.values.userId || ""}
+              value={formik.values.userId || ''}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -372,13 +358,11 @@ function UserForm({ onSubmitData }:any) {
               label="Display Name"
               name="displayName"
               required
-              value={formik.values.displayName || ""}
+              value={formik.values.displayName || ''}
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={
-                formik.errors.displayName && formik.touched.displayName
-              }
+              showError={formik.errors.displayName && formik.touched.displayName}
               errorMessage={formik.errors.displayName}
               handleChange={handleChange}
             />
@@ -388,7 +372,7 @@ function UserForm({ onSubmitData }:any) {
               name="mail"
               required
               type="email"
-              value={formik.values.mail || ""}
+              value={formik.values.mail || ''}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -401,8 +385,8 @@ function UserForm({ onSubmitData }:any) {
               doc_category={DOC_SECTION}
               label="Status"
               name="status"
-              value={formik.values.status || ""}
-              values={["active", "inactive"]}
+              value={formik.values.status || ''}
+              values={['active', 'inactive']}
               formik={formik}
               lsize={3}
               rsize={9}
@@ -416,7 +400,7 @@ function UserForm({ onSubmitData }:any) {
                 required
                 name="userPassword"
                 type="password"
-                value={formik.values.userPassword || ""}
+                value={formik.values.userPassword || ''}
                 formik={formik}
                 lsize={3}
                 rsize={9}
@@ -429,13 +413,13 @@ function UserForm({ onSubmitData }:any) {
                 required
                 name="userConfirmPassword"
                 type="password"
-                value={formik.values.userConfirmPassword || ""}
+                value={formik.values.userConfirmPassword || ''}
                 formik={formik}
                 lsize={3}
                 rsize={9}
               />
             )}
-            {passwordError != "" && !changePasswordModal && (
+            {passwordError != '' && !changePasswordModal && (
               <span className="text-danger">{passwordError}</span>
             )}
             {selectedClaims.map((data, key) => (
@@ -458,25 +442,21 @@ function UserForm({ onSubmitData }:any) {
                       onClick={() => setChangePasswordModal(true)}
                     >
                       <i className="fa fa-key me-2"></i>
-                      {t("actions.change_password")}
+                      {t('actions.change_password')}
                     </Button>
                   )}
                 </Col>
                 <Col md={8} className="text-end">
-                  <Button
-                    color={`primary-${selectedTheme}`}
-                    type="button"
-                    onClick={goBack}
-                  >
+                  <Button color={`primary-${selectedTheme}`} type="button" onClick={goBack}>
                     <i className="fa fa-arrow-circle-left me-2"></i>
-                    {t("actions.cancel")}
+                    {t('actions.cancel')}
                   </Button>
                   {/* For Space in buttons */}
                   &nbsp; &nbsp; &nbsp;
                   {/* For Space in buttons */}
                   <Button color={`primary-${selectedTheme}`} type="submit">
                     <i className="fa fa-check-circle me-2"></i>
-                    {t("actions.save")}
+                    {t('actions.save')}
                   </Button>
                 </Col>
               </FormGroup>
@@ -490,44 +470,38 @@ function UserForm({ onSubmitData }:any) {
                 className="form-control mb-2"
                 placeholder="Search Claims Here "
                 onChange={(e) => {
-                  setSearchClaims(e.target.value);
+                  setSearchClaims(e.target.value)
                   const delayDebounceFn = debounce(function () {
-                    options["pattern"] = e.target.value;
-                    dispatch(getAttributesRoot({ options }));
-                  }, 500);
-                  delayDebounceFn();
+                    options['pattern'] = e.target.value
+                    dispatch(getAttributesRoot({ options }))
+                  }, 500)
+                  delayDebounceFn()
                 }}
                 value={searchClaims}
               />
               <ul className="list-group">
                 {personAttributes.map((data: any, key: number) => {
-                  const name = data.displayName.toLowerCase();
-                  const alreadyAddedClaim = selectedClaims.some(
-                    (el: any) => el.name === data.name
-                  );
-                  if (
-                    data.status.toLowerCase() == "active" &&
-                    !usedClaimes.includes(data.name)
-                  ) {
+                  const name = data.displayName.toLowerCase()
+                  const alreadyAddedClaim = selectedClaims.some((el: any) => el.name === data.name)
+                  if (data.status.toLowerCase() == 'active' && !usedClaimes.includes(data.name)) {
                     if (
-                      (name.includes(searchClaims.toLowerCase()) ||
-                        searchClaims == "") &&
+                      (name.includes(searchClaims.toLowerCase()) || searchClaims == '') &&
                       !alreadyAddedClaim
                     ) {
                       return (
                         <li
                           className="list-group-item"
-                          key={"list" + key}
+                          key={'list' + key}
                           title="Click to add to the form"
                         >
                           <a
                             onClick={() => setSelectedClaimsToState(data)}
-                            style={{ cursor: "pointer" }}
+                            style={{ cursor: 'pointer' }}
                           >
                             {data.displayName}
                           </a>
                         </li>
-                      );
+                      )
                     }
                   }
                 })}
@@ -545,7 +519,7 @@ function UserForm({ onSubmitData }:any) {
         />
       </Form>
     </GluuLoader>
-  );
+  )
 }
 
-export default UserForm;
+export default UserForm

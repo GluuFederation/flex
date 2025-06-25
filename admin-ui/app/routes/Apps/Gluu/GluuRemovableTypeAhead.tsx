@@ -1,9 +1,9 @@
-import GluuLabel from "./GluuLabel";
-import { Col, FormGroup, InputGroup } from "Components";
-import { useTranslation } from "react-i18next";
-import GluuTooltip from "./GluuTooltip";
-import { Typeahead } from "react-bootstrap-typeahead";
-import applicationstyle from "./styles/applicationstyle";
+import GluuLabel from './GluuLabel'
+import { Col, FormGroup, InputGroup } from 'Components'
+import { useTranslation } from 'react-i18next'
+import GluuTooltip from './GluuTooltip'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import applicationstyle from './styles/applicationstyle'
 function GluuRemovableTypeAhead({
   label,
   name,
@@ -19,13 +19,9 @@ function GluuRemovableTypeAhead({
   modifiedFields,
   setModifiedFields,
 }: any) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
-    <GluuTooltip
-      doc_category={doc_category}
-      isDirect={isDirect}
-      doc_entry={name}
-    >
+    <GluuTooltip doc_category={doc_category} isDirect={isDirect} doc_entry={name}>
       <FormGroup row>
         <GluuLabel label={label} size={lsize} />
         <Col sm={rsize - 1}>
@@ -36,17 +32,19 @@ function GluuRemovableTypeAhead({
               labelKey={name}
               onChange={(selected: any) => {
                 if (formik) {
-                  const names = selected.map((item: any) => {
-                    if (typeof item === 'string') {
-                      return item; // String element (from stringArray)
-                    } else if (typeof item === 'object' && item.role) {
-                      return item.role; // Role property from objectArray
-                    }
-                    return null; // Ignore if not matching criteria
-                  }).filter(Boolean);
+                  const names = selected
+                    .map((item: any) => {
+                      if (typeof item === 'string') {
+                        return item // String element (from stringArray)
+                      } else if (typeof item === 'object' && item.role) {
+                        return item.role // Role property from objectArray
+                      }
+                      return null // Ignore if not matching criteria
+                    })
+                    .filter(Boolean)
 
-                  setModifiedFields({ ...modifiedFields, [name]: names });
-                  formik.setFieldValue(name, selected);
+                  setModifiedFields({ ...modifiedFields, [name]: names })
+                  formik.setFieldValue(name, selected)
                 }
               }}
               id={name}
@@ -58,10 +56,10 @@ function GluuRemovableTypeAhead({
           </InputGroup>
         </Col>
         <div style={applicationstyle.removableInputRow as any} onClick={handler}>
-          <i className={"fa fa-fw fa-close"} style={{ color: "red" }}></i>
+          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
-export default GluuRemovableTypeAhead;
+export default GluuRemovableTypeAhead

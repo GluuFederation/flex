@@ -9,34 +9,31 @@ import { generateTrialLicense } from '../../redux/actions'
 
 const GenerateLicenseCard = () => {
   const dispatch = useDispatch()
-  const generatingTrialKey = useSelector(
-    (state) => state.licenseReducer.generatingTrialKey
-  )
+  const generatingTrialKey = useSelector((state) => state.licenseReducer.generatingTrialKey)
 
   const generateLicenseKey = () => {
     dispatch(generateTrialLicense())
   }
 
   return (
-    <Card className='license-card'>
+    <Card className="license-card">
       <CardContent>
         <Typography variant="h5" component="div" gutterBottom>
           Free Trial
         </Typography>
         <Typography>
-          Start your free trial to manage and configure your Auth Server using simplified web interface.
+          Start your free trial to manage and configure your Auth Server using simplified web
+          interface.
         </Typography>
       </CardContent>
-      <CardActions className='license-card-actions'>
+      <CardActions className="license-card-actions">
         <button
-          type='button'
+          type="button"
           disabled={generatingTrialKey}
           onClick={() => generateLicenseKey()}
-          className='btn license-generate-btn' 
+          className="btn license-generate-btn"
         >
-          {generatingTrialKey
-            ? 'Generating please wait...'
-            : 'Start 30 days trial'}
+          {generatingTrialKey ? 'Generating please wait...' : 'Start 30 days trial'}
         </button>
       </CardActions>
     </Card>

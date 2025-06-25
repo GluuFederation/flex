@@ -1,5 +1,5 @@
-@import './../../styles/variables.scss';
-@import '~bootstrap/scss/mixins/breakpoints';
+@import "./../../styles/variables.scss";
+@import "~bootstrap/scss/mixins/breakpoints";
 
 .wizard {
     display: flex;
@@ -65,7 +65,7 @@
     }
 }
 
-@media (max-width: breakpoint-max('md', $grid-breakpoints)) {
+@media (max-width: breakpoint-max("md", $grid-breakpoints)) {
     .wizard-wrapper {
         max-width: 100vw;
     }
@@ -75,12 +75,12 @@
         padding: 0.5rem;
 
         + .wizard-step {
-            margin-left: 0;    
+            margin-left: 0;
         }
     }
 }
 
-@media (max-width: breakpoint-max('xs', $grid-breakpoints)) {
+@media (max-width: breakpoint-max("xs", $grid-breakpoints)) {
     .wizard-step {
         flex-basis: 100%;
     }

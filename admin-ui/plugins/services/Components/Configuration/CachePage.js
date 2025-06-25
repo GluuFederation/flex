@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import BlockUi from "../../../../app/components/BlockUi/BlockUi";
+import BlockUi from '../../../../app/components/BlockUi/BlockUi'
 import { Formik } from 'formik'
-import {
-  Form,
-  FormGroup,
-  Card,
-  Col,
-  CardBody,
-  InputGroup,
-  CustomInput,
-} from 'Components'
+import { Form, FormGroup, Card, Col, CardBody, InputGroup, CustomInput } from 'Components'
 import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
@@ -48,9 +40,7 @@ function CachePage() {
 
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
-  const [cacheProviderType, setCacheProviderType] = useState(
-    cacheData.cacheProviderType,
-  )
+  const [cacheProviderType, setCacheProviderType] = useState(cacheData.cacheProviderType)
   SetTitle(t('fields.cache_configuration'))
 
   useEffect(() => {
@@ -154,27 +144,25 @@ function CachePage() {
                   defaultPutExpiration: values.memDefaultPutExpiration,
                   connectionFactoryType: values.connectionFactoryType,
                 }
-                if (values.cacheProviderType === "NATIVE_PERSISTENCE") {
+                if (values.cacheProviderType === 'NATIVE_PERSISTENCE') {
                   const opts1 = {}
-                  opts1['nativePersistenceConfiguration'] = JSON.stringify(
-                    nativeCache,
-                  )
+                  opts1['nativePersistenceConfiguration'] = JSON.stringify(nativeCache)
                   dispatch(editNativeCache({ data: opts1 }))
                 }
 
-                if (values.cacheProviderType === "IN_MEMORY") {
+                if (values.cacheProviderType === 'IN_MEMORY') {
                   const opts2 = {}
                   opts2['inMemoryConfiguration'] = JSON.stringify(memoryCache)
                   dispatch(editMemoryCache({ data: opts2 }))
                 }
 
-                if (values.cacheProviderType === "REDIS") {
+                if (values.cacheProviderType === 'REDIS') {
                   const opts3 = {}
                   opts3['redisConfiguration'] = JSON.stringify(redisCache)
                   dispatch(editRedisCache({ data: opts3 }))
                 }
 
-                if (values.cacheProviderType === "MEMCACHED") {
+                if (values.cacheProviderType === 'MEMCACHED') {
                   const opts4 = {}
                   opts4['memcachedConfiguration'] = JSON.stringify(memCache)
                   dispatch(editMemCache({ data: opts4 }))
@@ -193,10 +181,7 @@ function CachePage() {
                     <GluuLabel label="fields.cache_provider_type" size={4} />
                     <Col sm={8}>
                       {cacheData.cacheProviderType && (
-                        <GluuTooltip
-                          doc_category={CACHE}
-                          doc_entry="cacheProviderType"
-                        >
+                        <GluuTooltip doc_category={CACHE} doc_entry="cacheProviderType">
                           <InputGroup>
                             <CustomInput
                               type="select"
@@ -205,21 +190,12 @@ function CachePage() {
                               defaultValue={cacheData.cacheProviderType}
                               onChange={(e) => {
                                 setCacheProviderType(e.target.value)
-                                formik.setFieldValue(
-                                  'cacheProviderType',
-                                  e.target.value,
-                                )
+                                formik.setFieldValue('cacheProviderType', e.target.value)
                               }}
                             >
-                              <option value="IN_MEMORY">
-                                {t('options.in_memory')}
-                              </option>
-                              <option value="MEMCACHED">
-                                {t('options.memcached')}
-                              </option>
-                              <option value="REDIS">
-                                {t('options.redis')}
-                              </option>
+                              <option value="IN_MEMORY">{t('options.in_memory')}</option>
+                              <option value="MEMCACHED">{t('options.memcached')}</option>
+                              <option value="REDIS">{t('options.redis')}</option>
                               <option value="NATIVE_PERSISTENCE">
                                 {t('options.native_persistence')}
                               </option>

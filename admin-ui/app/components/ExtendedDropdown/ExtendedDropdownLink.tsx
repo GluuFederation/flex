@@ -14,7 +14,7 @@ const ExtendedDropdownLink: React.FC<ExtendedDropdownLinkProps> = (props) => {
   return (
     <Dropdown isOpen={dropdownOpen} toggle={toggle} {...otherProps}>
       {children}
-    </Dropdown>   
+    </Dropdown>
   )
 }
 export { ExtendedDropdownLink }

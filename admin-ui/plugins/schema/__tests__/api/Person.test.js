@@ -1,7 +1,4 @@
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/auth-server/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/auth-server/__tests__/api/setup.test'
 import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from 'Redux/features/authSlice'
 import { expectSaga } from 'redux-saga-test-plan'
@@ -84,10 +81,12 @@ describe('perform CRUD for schema person module', () => {
   })
 
   it('should edit newly created person', async () => {
-    const result = await expectSaga(editAttribute, { payload: { data: { ...attribute, displayName: 'update_test' } } })
+    const result = await expectSaga(editAttribute, {
+      payload: { data: { ...attribute, displayName: 'update_test' } },
+    })
       .withReducer(rootReducer, initialState)
       .silentRun(false)
-    
+
     expect(result.returnValue instanceof Error).toBe(false)
   })
 

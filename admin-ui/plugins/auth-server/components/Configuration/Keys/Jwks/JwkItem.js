@@ -1,16 +1,8 @@
 import React from 'react'
-import {
-  Col,
-  FormGroup,
-  Input,
-  Card,
-  CardBody,
-  Accordion,
-} from 'Components'
+import { Col, FormGroup, Input, Card, CardBody, Accordion } from 'Components'
 import moment from 'moment'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 function JwkItem({ item, index }) {
-
   return (
     <div>
       <FormGroup row />
@@ -58,7 +50,7 @@ function JwkItem({ item, index }) {
                     data-testid="exp"
                     name="exp"
                     disabled={true}
-                    defaultValue={moment(item.exp).format("YYYY-MMM-DD")}
+                    defaultValue={moment(item.exp).format('YYYY-MMM-DD')}
                   />
                 </Col>
                 <GluuLabel label="use" size={1} />

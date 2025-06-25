@@ -11,9 +11,7 @@ function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
 
-  const api = new JansConfigApi.ConfigurationPropertiesApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.ConfigurationPropertiesApi(getClient(JansConfigApi, token, issuer))
 
   return new OidcDiscoveryApi(api)
 }

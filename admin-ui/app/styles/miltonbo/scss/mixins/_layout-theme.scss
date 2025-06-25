@@ -3,64 +3,64 @@
 
 // Configurators
 @mixin setup-theme($config) {
-    --theme-theme-color: #{map-get($config, 'theme-color')};
+    --theme-theme-color: #{map-get($config, "theme-color")};
 }
 
 @mixin setup-sidebar($config) {
-    --theme-sidebar-background: #{map-get($config, 'background')};
-    --theme-sidebar-border: #{map-get($config, 'border')};
-    --theme-sidebar-border-slim-submenu: #{map-get($config, 'border-slim-submenu')};
-    --theme-sidebar-brand-color: #{map-get($config, 'brand-color')};
-    --theme-sidebar-badge-override: #{map-get($config, 'badge-override')};
-    --theme-sidebar-close-color: #{map-get($config, 'close-color')};
-    --theme-sidebar-text-color: #{map-get($config, 'text-color')};
-    --theme-sidebar-text-color-muted: #{map-get($config, 'text-color-muted')};
-    --theme-sidebar-link-color: #{map-get($config, 'link-color')};
-    --theme-sidebar-link-color-hover: #{map-get($config, 'link-color-hover')};
-    --theme-sidebar-link-color-muted: #{map-get($config, 'link-color-muted')};
-    --theme-sidebar-scroll-rail-color: #{map-get($config, 'scroll-rail-color')};
-    --theme-sidebar-scroll-thumb-color:  #{map-get($config, 'scroll-thumb-color')};
+    --theme-sidebar-background: #{map-get($config, "background")};
+    --theme-sidebar-border: #{map-get($config, "border")};
+    --theme-sidebar-border-slim-submenu: #{map-get($config, "border-slim-submenu")};
+    --theme-sidebar-brand-color: #{map-get($config, "brand-color")};
+    --theme-sidebar-badge-override: #{map-get($config, "badge-override")};
+    --theme-sidebar-close-color: #{map-get($config, "close-color")};
+    --theme-sidebar-text-color: #{map-get($config, "text-color")};
+    --theme-sidebar-text-color-muted: #{map-get($config, "text-color-muted")};
+    --theme-sidebar-link-color: #{map-get($config, "link-color")};
+    --theme-sidebar-link-color-hover: #{map-get($config, "link-color-hover")};
+    --theme-sidebar-link-color-muted: #{map-get($config, "link-color-muted")};
+    --theme-sidebar-scroll-rail-color: #{map-get($config, "scroll-rail-color")};
+    --theme-sidebar-scroll-thumb-color: #{map-get($config, "scroll-thumb-color")};
 }
 
 @mixin setup-sidebar-menu($config) {
-    --theme-menu-accent-color: #{map-get($config, 'accent-color')};
-    --theme-menu-accent-color-hover: #{map-get($config, 'accent-color-hover')};
-    --theme-menu-background-color: #{map-get($config, 'background-color')};
-    --theme-menu-text-color: #{map-get($config, 'text-color')};
-    --theme-menu-icon-color: #{map-get($config, 'icon-color')};
-    --theme-menu-slim-icon-color: #{map-get($config, 'slim-icon-color')};
-    --theme-menu-arrow-color: #{map-get($config, 'arrow-color')};
-    --theme-menu-background-color-hover: #{map-get($config, 'background-color-hover')};
-    --theme-menu-slim-background-color-hover: #{map-get($config, 'slim-background-color-hover')};
-    --theme-menu-text-color-hover: #{map-get($config, 'text-color-hover')};
-    --theme-menu-slim-text-color-hover: #{map-get($config, 'slim-text-color-hover')};
-    --theme-menu-icon-color-hover: #{map-get($config, 'icon-color-hover')};
-    --theme-menu-slim-icon-color-hover: #{map-get($config, 'slim-icon-color-hover')};
-    --theme-menu-arrow-color-hover: #{map-get($config, 'arrow-color-hover')};
-    --theme-menu-background-color-active: #{map-get($config, 'background-color-active')};
-    --theme-menu-slim-background-color-active: #{map-get($config, 'slim-background-color-active')};
-    --theme-menu-text-color-active: #{map-get($config, 'text-color-active')};
-    --theme-menu-slim-text-color-active: #{map-get($config, 'slim-text-color-active')};
-    --theme-menu-icon-color-active: #{map-get($config, 'icon-color-active')};
-    --theme-menu-slim-icon-color-active: #{map-get($config, 'slim-icon-color-active')};
-    --theme-menu-arrow-color-active: #{map-get($config, 'arrow-color-active')};
+    --theme-menu-accent-color: #{map-get($config, "accent-color")};
+    --theme-menu-accent-color-hover: #{map-get($config, "accent-color-hover")};
+    --theme-menu-background-color: #{map-get($config, "background-color")};
+    --theme-menu-text-color: #{map-get($config, "text-color")};
+    --theme-menu-icon-color: #{map-get($config, "icon-color")};
+    --theme-menu-slim-icon-color: #{map-get($config, "slim-icon-color")};
+    --theme-menu-arrow-color: #{map-get($config, "arrow-color")};
+    --theme-menu-background-color-hover: #{map-get($config, "background-color-hover")};
+    --theme-menu-slim-background-color-hover: #{map-get($config, "slim-background-color-hover")};
+    --theme-menu-text-color-hover: #{map-get($config, "text-color-hover")};
+    --theme-menu-slim-text-color-hover: #{map-get($config, "slim-text-color-hover")};
+    --theme-menu-icon-color-hover: #{map-get($config, "icon-color-hover")};
+    --theme-menu-slim-icon-color-hover: #{map-get($config, "slim-icon-color-hover")};
+    --theme-menu-arrow-color-hover: #{map-get($config, "arrow-color-hover")};
+    --theme-menu-background-color-active: #{map-get($config, "background-color-active")};
+    --theme-menu-slim-background-color-active: #{map-get($config, "slim-background-color-active")};
+    --theme-menu-text-color-active: #{map-get($config, "text-color-active")};
+    --theme-menu-slim-text-color-active: #{map-get($config, "slim-text-color-active")};
+    --theme-menu-icon-color-active: #{map-get($config, "icon-color-active")};
+    --theme-menu-slim-icon-color-active: #{map-get($config, "slim-icon-color-active")};
+    --theme-menu-arrow-color-active: #{map-get($config, "arrow-color-active")};
 }
 
 @mixin setup-navbar($config) {
-    --theme-navbar-background: #{map-get($config, 'background')};
-    --theme-navbar-brand-color: #{map-get($config, 'brand-color')};
-    --theme-navbar-between-border-color: #{map-get($config, 'between-border-color')};
-    --theme-navbar-menu-item-color: #{map-get($config, 'menu-item-color')};
-    --theme-navbar-menu-item-hover-color: #{map-get($config, 'menu-item-hover-color')};
-    --theme-navbar-menu-item-active-background: #{map-get($config, 'menu-item-active-background')};
-    --theme-navbar-menu-item-active-color: #{map-get($config, 'menu-item-active-color')};
-    @if map-has-key($config, 'menu-icon-w-badge-color') {
-        --theme-navbar-menu-icon-w-badge-color: #{map-get($config, 'menu-icon-w-badge-color')};
+    --theme-navbar-background: #{map-get($config, "background")};
+    --theme-navbar-brand-color: #{map-get($config, "brand-color")};
+    --theme-navbar-between-border-color: #{map-get($config, "between-border-color")};
+    --theme-navbar-menu-item-color: #{map-get($config, "menu-item-color")};
+    --theme-navbar-menu-item-hover-color: #{map-get($config, "menu-item-hover-color")};
+    --theme-navbar-menu-item-active-background: #{map-get($config, "menu-item-active-background")};
+    --theme-navbar-menu-item-active-color: #{map-get($config, "menu-item-active-color")};
+    @if map-has-key($config, "menu-icon-w-badge-color") {
+        --theme-navbar-menu-icon-w-badge-color: #{map-get($config, "menu-icon-w-badge-color")};
     }
-    --theme-navbar-menu-item-accent-color: #{map-get($config, 'menu-item-accent-color')};
-    --theme-navbar-menu-item-accent-hover-color: #{map-get($config, 'menu-item-accent-hover-color')};
-    --theme-navbar-dropdown-active-color: #{map-get($config, 'dropdown-active-color')};
-    --theme-navbar-dropdown-active-background: #{map-get($config, 'dropdown-active-background')};
+    --theme-navbar-menu-item-accent-color: #{map-get($config, "menu-item-accent-color")};
+    --theme-navbar-menu-item-accent-hover-color: #{map-get($config, "menu-item-accent-hover-color")};
+    --theme-navbar-dropdown-active-color: #{map-get($config, "dropdown-active-color")};
+    --theme-navbar-dropdown-active-background: #{map-get($config, "dropdown-active-background")};
 }
 
 /**
@@ -256,7 +256,7 @@
         @include collapsed-pills-menu("nav-pills");
 
         // Pill Dropdown Open
-        .nav-pills .show >.nav-link {
+        .nav-pills .show > .nav-link {
             background-color: var(--theme-navbar-menu-item-active-background);
             color: var(--theme-navbar-menu-item-active-color);
         }
@@ -319,7 +319,7 @@
         &::-webkit-scrollbar-track {
             background-color: var(--theme-sidebar-scroll-rail-color);
         }
-    
+
         &::-webkit-scrollbar-thumb {
             background-color: var(--theme-sidebar-scroll-thumb-color);
         }
@@ -403,12 +403,12 @@
             }
         }
     }
-    
+
     // Slim Sidebar
-    @media (min-width: breakpoint-min('lg', $grid-breakpoints)) {
+    @media (min-width: breakpoint-min("lg", $grid-breakpoints)) {
         .sidebar.sidebar--collapsed .sidebar-menu--slim {
             // Main Menu
-            .sidebar-menu__entry{
+            .sidebar-menu__entry {
                 > .sidebar-menu__entry__link > .sidebar-menu__entry__icon {
                     color: var(--theme-menu-slim-icon-color);
                 }
@@ -416,7 +416,7 @@
                 &:hover > .sidebar-menu__entry__link {
                     background-color: var(--theme-menu-slim-background-color-hover);
                     color: var(--theme-menu-slim-text-color-hover);
-                    
+
                     > .sidebar-menu__entry__icon {
                         color: var(--theme-menu-slim-icon-color-hover);
                     }
@@ -464,7 +464,7 @@
         content: " ";
         position: absolute;
         display: block;
-        transition: transform 150ms cubic-bezier(0.645, 0.045, 0.355, 1.000);
+        transition: transform 150ms cubic-bezier(0.645, 0.045, 0.355, 1);
         transform-origin: center center;
         height: 100%;
         width: 100%;
@@ -490,10 +490,10 @@
         &__entry__link {
             position: relative;
             @include add-accent-element($accent);
-            transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1.000);
-            
+            transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1);
+
             &::after {
-                transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1.000);
+                transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1);
             }
         }
 
@@ -507,12 +507,12 @@
             position: relative;
             @include add-accent-element($accent);
 
-            transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1.000);
+            transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1);
             .sidebar-menu__entry__icon {
-                transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1.000);
+                transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1);
             }
             &::after {
-                transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1.000);
+                transition: color 250ms cubic-bezier(0.645, 0.045, 0.355, 1);
             }
         }
 

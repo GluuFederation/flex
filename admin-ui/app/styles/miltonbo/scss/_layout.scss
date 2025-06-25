@@ -14,7 +14,7 @@
         z-index: 1030;
         background: $body-bg;
 
-        @media (max-width: breakpoint-max('md', $grid-breakpoints)) {
+        @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
             left: 0;
             background: $navbar-background-color;
             border-bottom: 1px solid $navbar-border-color;
@@ -27,7 +27,7 @@
 
         .navbar {
             z-index: 2;
-            
+
             + .navbar {
                 z-index: 1;
             }
@@ -39,7 +39,7 @@
         height: 100vh;
         width: $sidebar-default-width;
 
-        @media (min-width: breakpoint-min('lg', $grid-breakpoints)) {
+        @media (min-width: breakpoint-min("lg", $grid-breakpoints)) {
             &--slim {
                 width: $sidebar-slim-width;
             }
@@ -57,7 +57,7 @@
             }
         }
 
-        @media (max-width: breakpoint-max('md', $grid-breakpoints)) {
+        @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
             width: 0;
         }
     }
@@ -65,7 +65,7 @@
     &__content {
         padding: 1.5rem;
 
-        @media (max-width: breakpoint-max('md', $grid-breakpoints)) {
+        @media (max-width: breakpoint-max("md", $grid-breakpoints)) {
             padding: 0.5rem;
         }
     }

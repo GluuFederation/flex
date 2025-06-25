@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import CustomScriptAddPage from 'Plugins/admin/components/CustomScripts/CustomScriptAddPage'
 import { Provider } from 'react-redux'
-import item from "./item.test"
+import item from './item.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
@@ -15,11 +15,9 @@ const INIT_STATE = {
   permissions: permissions,
 }
 const INIT_CUSTOM_SCRIPT_STATE = {
-  items: [
-    item,
-  ],
+  items: [item],
   loading: false,
-} 
+}
 
 const store = configureStore({
   reducer: combineReducers({

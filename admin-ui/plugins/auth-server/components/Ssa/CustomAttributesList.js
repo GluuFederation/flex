@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const CustomAttributesList = ({
   availableAttributes,
@@ -21,20 +21,12 @@ const CustomAttributesList = ({
       />
       <ul className="list-group" role="listbox">
         {availableAttributes.map((attribute) => {
-          const name = attribute.toLowerCase();
-          const alreadyAdded = selectedAttributes.includes(attribute);
+          const name = attribute.toLowerCase()
+          const alreadyAdded = selectedAttributes.includes(attribute)
 
-          if (
-            (name.includes(searchQuery.toLowerCase()) || !searchQuery) &&
-            !alreadyAdded
-          ) {
+          if ((name.includes(searchQuery.toLowerCase()) || !searchQuery) && !alreadyAdded) {
             return (
-              <li
-                className="list-group-item"
-                key={attribute}
-                role="option"
-                aria-selected={false}
-              >
+              <li className="list-group-item" key={attribute} role="option" aria-selected={false}>
                 <button
                   className="btn btn-link p-0"
                   onClick={() => onAttributeSelect(attribute)}
@@ -43,14 +35,14 @@ const CustomAttributesList = ({
                   {attribute}
                 </button>
               </li>
-            );
+            )
           }
-          return null;
+          return null
         })}
       </ul>
     </div>
-  );
-};
+  )
+}
 
 CustomAttributesList.propTypes = {
   availableAttributes: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -58,6 +50,6 @@ CustomAttributesList.propTypes = {
   onAttributeSelect: PropTypes.func.isRequired,
   searchQuery: PropTypes.string.isRequired,
   onSearchChange: PropTypes.func.isRequired,
-};
+}
 
-export default CustomAttributesList;
+export default CustomAttributesList

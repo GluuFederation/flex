@@ -1,14 +1,11 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import ScopeForm from './ScopeForm' 
+import ScopeForm from './ScopeForm'
 import { buildPayload } from 'Utils/PermChecker'
-import {
-  getAttributes,
-  getScripts
-} from 'Redux/features/initSlice'
+import { getAttributes, getScripts } from 'Redux/features/initSlice'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -17,7 +14,7 @@ import { cloneDeep } from 'lodash'
 
 function ScopeEditPage() {
   const userAction = {}
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const { t } = useTranslation()
 
   const [modifiedFields, setModifiedFields] = useState({})
@@ -27,7 +24,9 @@ function ScopeEditPage() {
   const scripts = useSelector((state) => state.initReducer.scripts)
   const attributes = useSelector((state) => state.initReducer.attributes)
   const saveOperationFlag = useSelector((state) => state.scopeReducer.saveOperationFlag)
-  const errorInSaveOperationFlag = useSelector((state) => state.scopeReducer.errorInSaveOperationFlag)
+  const errorInSaveOperationFlag = useSelector(
+    (state) => state.scopeReducer.errorInSaveOperationFlag,
+  )
 
   const dispatch = useDispatch()
 
@@ -49,8 +48,7 @@ function ScopeEditPage() {
     }
   }, [])
   useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag)
-      navigate('/auth-server/scopes')
+    if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/auth-server/scopes')
   }, [saveOperationFlag])
 
   function handleSubmit(data) {
@@ -60,7 +58,7 @@ function ScopeEditPage() {
       const message = data.action_message
       delete data.action_message
       postBody['scope'] = data
-      postBody["modifiedFields"] = modifiedFields;
+      postBody['modifiedFields'] = modifiedFields
       buildPayload(userAction, message, postBody)
       dispatch(editScope({ action: userAction }))
     }
@@ -75,7 +73,10 @@ function ScopeEditPage() {
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <ScopeForm
-            scope={{ ...extensbileScope, attributes: extensbileScope?.attributes && { ...extensbileScope?.attributes } }}
+            scope={{
+              ...extensbileScope,
+              attributes: extensbileScope?.attributes && { ...extensbileScope?.attributes },
+            }}
             attributes={attributes}
             scripts={scripts}
             handleSubmit={handleSubmit}

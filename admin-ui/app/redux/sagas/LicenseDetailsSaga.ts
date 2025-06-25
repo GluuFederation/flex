@@ -15,9 +15,7 @@ import { getAPIAccessToken } from 'Redux/features/authSlice'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token?.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUILicenseApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.AdminUILicenseApi(getClient(JansConfigApi, token, issuer))
   return new LicenseDetailsApi(api)
 }
 
@@ -57,7 +55,6 @@ export function* updateLicenseDetailsWorker({ payload }) {
 }
 
 export function* getLicenseWatcher() {
-
   yield takeEvery('licenseDetails/getLicenseDetails', getLicenseDetailsWorker)
 }
 

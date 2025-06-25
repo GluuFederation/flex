@@ -1,13 +1,13 @@
 import store from 'Redux/store'
 import { handleApiTimeout } from 'Redux/features/initSlice'
-const MAX_RETRIES = 1;
+const MAX_RETRIES = 1
 
 export function handleResponse(
   error: Error | null,
   reject: (error: Error) => void,
   resolve: (data: unknown) => void,
   data: unknown,
-  response: unknown
+  response: unknown,
 ): void {
   if (error) {
     reject(error)
@@ -19,10 +19,7 @@ export function handleResponse(
   }
 }
 
-export function handleError(
-  error: Error | null,
-  reject: (error: Error) => void
-): void {
+export function handleError(error: Error | null, reject: (error: Error) => void): void {
   if (error) {
     reject(error)
     if (error?.message?.toLocaleLowerCase()?.includes('timeout')) {
@@ -31,9 +28,6 @@ export function handleError(
   }
 }
 
-export function handleSuccess(
-  data: unknown,
-  resolve: (data: unknown) => void
-): void {
+export function handleSuccess(data: unknown, resolve: (data: unknown) => void): void {
   resolve(data)
 }

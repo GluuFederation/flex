@@ -33,7 +33,10 @@ function AttributeEditPage() {
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AttributeForm
-            item={{ ...extensibleItems, attributeValidation: { ...extensibleItems.attributeValidation } }}
+            item={{
+              ...extensibleItems,
+              attributeValidation: { ...extensibleItems.attributeValidation },
+            }}
             customOnSubmit={customHandleSubmit}
             hideButtons={{ save: true }}
           />

@@ -11,6 +11,6 @@
 
 :export {
     @each $name, $color in $dashboard-colors {
-        #{$name}: $color
+        #{$name}: $color;
     }
 }

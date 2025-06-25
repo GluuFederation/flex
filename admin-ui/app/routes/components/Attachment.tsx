@@ -1,34 +1,24 @@
-import { Media, Button } from "reactstrap";
+import { Media, Button } from 'reactstrap'
 
-const Attachment = ({
-  mediaClassName,
-  icon,
-  iconClassName,
-  BgIcon,
-  BgIconClassName,
-}: any) => {
+const Attachment = ({ mediaClassName, icon, iconClassName, BgIcon, BgIconClassName }: any) => {
   return (
     <Media className={`${mediaClassName}`}>
       <Media left className="me-2">
         <span className="fa-stack fa-lg">
-          <i
-            className={`fa fa-square fa-stack-2x fa-${BgIcon} fa-stack-1x ${BgIconClassName}`}
-          ></i>
+          <i className={`fa fa-square fa-stack-2x fa-${BgIcon} fa-stack-1x ${BgIconClassName}`}></i>
           <i className={`fa fa-${icon} fa-stack-1x ${iconClassName}`}></i>
         </span>
       </Media>
       <Media body className="d-flex flex-column flex-md-row">
         <div>
-          <div className="text-inverse text-truncate">
-            {"faker.system.fileName()"}
-          </div>
+          <div className="text-inverse text-truncate">{'faker.system.fileName()'}</div>
           <span>
-            by{" "}
+            by{' '}
             <span>
-              {"faker.name.firstName()"} {"faker.name.firstName()"}
+              {'faker.name.firstName()'} {'faker.name.firstName()'}
             </span>
             <span className="text-muted"> · </span>
-            <span>{"faker.finance.amount()"} Kb</span>
+            <span>{'faker.finance.amount()'} Kb</span>
           </span>
         </div>
         <div className="ms-md-auto flex-row-reverse flex-md-row d-flex justify-content-end mt-2 mt-md-0">
@@ -43,14 +33,14 @@ const Attachment = ({
         </div>
       </Media>
     </Media>
-  );
-};
+  )
+}
 Attachment.defaultProps = {
-  mediaClassName: "",
-  icon: "question",
-  iconClassName: "text-white",
-  BgIcon: "square",
-  BgIconClassName: "text-muted",
-};
+  mediaClassName: '',
+  icon: 'question',
+  iconClassName: 'text-white',
+  BgIcon: 'square',
+  BgIconClassName: 'text-muted',
+}
 
-export { Attachment };
+export { Attachment }

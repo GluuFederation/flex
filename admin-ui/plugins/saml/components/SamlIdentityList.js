@@ -1,19 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getSamlIdentites,
-  deleteSamlIdentity,
-} from 'Plugins/saml/redux/features/SamlSlice'
+import { getSamlIdentites, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
 import MaterialTable from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import {
-  hasPermission,
-  SAML_READ,
-  SAML_WRITE,
-  SAML_DELETE,
-  buildPayload,
-} from 'Utils/PermChecker'
+import { hasPermission, SAML_READ, SAML_WRITE, SAML_DELETE, buildPayload } from 'Utils/PermChecker'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -60,9 +51,7 @@ const SamlIdentityList = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const permissions = useSelector((state) => state.authReducer.permissions)
-  const { items, loadingSamlIdp, totalItems } = useSelector(
-    (state) => state.idpSamlReducer
-  )
+  const { items, loadingSamlIdp, totalItems } = useSelector((state) => state.idpSamlReducer)
 
   useEffect(() => {
     makeOptions()
@@ -135,12 +124,10 @@ const SamlIdentityList = () => {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(prop, count) =>
-          onRowCountChangeClick(count.props.value)
-        }
+        onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick]
+    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
   )
 
   const GluuSearch = useCallback(() => {
@@ -167,7 +154,7 @@ const SamlIdentityList = () => {
           columns={getTableCols(t)}
           data={items}
           isLoading={loadingSamlIdp}
-          title=''
+          title=""
           actions={[
             {
               icon: 'edit',
@@ -241,7 +228,7 @@ const SamlIdentityList = () => {
           name={item?.displayName || ''}
           handler={toggle}
           modal={modal}
-          subject='saml idp'
+          subject="saml idp"
           onAccept={onDeletionConfirmed}
           feature={adminUiFeatures.saml_idp_write}
         />

@@ -151,12 +151,14 @@ function MauGraph(): JSX.Element {
                   <Grid container gap={2} justifyContent="space-around">
                     <DatePicker
                       format="MM/DD/YYYY"
+                      id="date-picker-inline"
                       label={t('dashboard.start_date')}
                       value={startDate}
                       onChange={(date: Dayjs | null) => date && setStartDate(date)}
                     />
                     <DatePicker
                       format="MM/DD/YYYY"
+                      id="date-picker-inline"
                       label={t('dashboard.end_date')}
                       value={endDate}
                       onChange={(date: Dayjs | null) => date && setEndDate(date)}

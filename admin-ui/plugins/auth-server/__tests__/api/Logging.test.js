@@ -1,7 +1,4 @@
-import {
-  getLogging,
-  editLogging,
-} from 'Plugins/auth-server/redux/sagas/LoggingSaga'
+import { getLogging, editLogging } from 'Plugins/auth-server/redux/sagas/LoggingSaga'
 import { authReducerInit, beforeAllAsync } from './setup.test'
 import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from 'Redux/features/authSlice'
@@ -61,7 +58,7 @@ describe('test GET & update action for logging page', () => {
         .withReducer(rootReducer, initialState)
         .silentRun(false)
 
-        expect(result.returnValue instanceof Error).toBe(false)
+      expect(result.returnValue instanceof Error).toBe(false)
     } else {
       log('Error occured while fetching')
     }

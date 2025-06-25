@@ -672,6 +672,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }: CustomScriptFormProp
           modal={modal}
           onAccept={submitForm}
           formik={formik}
+          disabled={viewOnly}
           feature={adminUiFeatures.custom_script_write}
         />
       </Form>

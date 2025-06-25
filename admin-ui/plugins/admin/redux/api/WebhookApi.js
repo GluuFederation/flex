@@ -72,13 +72,9 @@ export default class MappingApi {
       shortCodeRequest: payload.outputObject,
     }
     return new Promise((resolve, reject) => {
-      this.api.triggerWebhook(
-        payload.feature,
-        shortCodeRequest,
-        (error, _data, response) => {
-          handleResponse(error, reject, resolve, response)
-        }
-      )
+      this.api.triggerWebhook(payload.feature, shortCodeRequest, (error, _data, response) => {
+        handleResponse(error, reject, resolve, response)
+      })
     })
   }
 }

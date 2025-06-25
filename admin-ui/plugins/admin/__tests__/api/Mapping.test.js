@@ -1,18 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/admin/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/admin/__tests__/api/setup.test'
 import {
   fetchMapping,
   addMapping,
   deleteMapping,
   updateMapping,
 } from 'Plugins/admin/redux/sagas/MappingSaga'
-import {
-  deletePermission,
-  addPermission,
-} from 'Plugins/admin/redux/sagas/ApiPermissionSaga'
+import { deletePermission, addPermission } from 'Plugins/admin/redux/sagas/ApiPermissionSaga'
 import { addRole, deleteRole } from 'Plugins/admin/redux/sagas/ApiRoleSaga'
 import {
   initialState as mappingInitState,

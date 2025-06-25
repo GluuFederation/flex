@@ -11,18 +11,18 @@ const pluginMetadata = {
       title: 'titles.jans_lock',
       icon: 'jans_lock',
       path: PLUGIN_BASE_PATH,
-      permission: JANS_LOCK_READ
-    }
+      permission: JANS_LOCK_READ,
+    },
   ],
   routes: [
     {
       component: JansLock,
       path: PLUGIN_BASE_PATH,
-      permission: JANS_LOCK_READ
-    }
+      permission: JANS_LOCK_READ,
+    },
   ],
   reducers: [{ name: 'jansLockReducer', reducer: jansLockReducer }],
-  sagas: [jansLockSaga()]
+  sagas: [jansLockSaga()],
 }
 
 export default pluginMetadata

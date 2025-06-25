@@ -6,7 +6,7 @@ import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types'
 
 function GluuAutoCompleteWithAdd({
   label,
@@ -18,7 +18,7 @@ function GluuAutoCompleteWithAdd({
   formik = undefined,
   placeholder,
   doc_category,
-  handler=null
+  handler = null,
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
@@ -32,7 +32,7 @@ function GluuAutoCompleteWithAdd({
     if (validator(newItem)) {
       setItems((currItems) => [...currItems, newItem])
       setOpts((currOpts) => [...currOpts, newItem])
-      formik.setFieldValue(name, items);
+      formik.setFieldValue(name, items)
       if (handler) {
         handler(name, items)
       }
@@ -62,11 +62,7 @@ function GluuAutoCompleteWithAdd({
             <Col sm={10}>
               <Input placeholder={placeholder} id={inputId} />
             </Col>
-            <Button
-              color={`primary-${selectedTheme}`}
-              type="button"
-              onClick={addItem}
-            >
+            <Button color={`primary-${selectedTheme}`} type="button" onClick={addItem}>
               {t('actions.add')}
             </Button>
           </Row>
@@ -101,6 +97,6 @@ GluuAutoCompleteWithAdd.propTypes = {
   formik: PropTypes.object,
   placeholder: PropTypes.string,
   doc_category: PropTypes.string,
-  handler: PropTypes.func
+  handler: PropTypes.func,
 }
 export default GluuAutoCompleteWithAdd

@@ -1,31 +1,26 @@
-import React from "react";
-import { Container } from "Components";
-import GluuToogleRow from "Routes/Apps/Gluu/GluuToogleRow";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuTypeAheadWithAdd from "Routes/Apps/Gluu/GluuTypeAheadWithAdd";
-import GluuBooleanSelectBox from "Routes/Apps/Gluu/GluuBooleanSelectBox";
-import { useTranslation } from "react-i18next";
-import PropTypes from "prop-types";
-const DOC_CATEGORY = "openid_client";
+import React from 'react'
+import { Container } from 'Components'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
+import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
+import { useTranslation } from 'react-i18next'
+import PropTypes from 'prop-types'
+const DOC_CATEGORY = 'openid_client'
 
 function uriValidator(uri) {
-  return uri;
+  return uri
 }
-const post_uri_id = "post_uri_id";
-const postLogoutRedirectUris = [];
+const post_uri_id = 'post_uri_id'
+const postLogoutRedirectUris = []
 function postUriValidator(uri) {
-  return uri;
+  return uri
 }
-const backchannelLogoutUris = [];
-const backchannel_uri_id = "backchannel_uri_id";
+const backchannelLogoutUris = []
+const backchannel_uri_id = 'backchannel_uri_id'
 
-function ClientLogoutPanel({
-  formik,
-  viewOnly,
-  modifiedFields,
-  setModifiedFields,
-}) {
-  const { t } = useTranslation();
+function ClientLogoutPanel({ formik, viewOnly, modifiedFields, setModifiedFields }) {
+  const { t } = useTranslation()
 
   return (
     <Container>
@@ -41,15 +36,15 @@ function ClientLogoutPanel({
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Front Channel Logout Uri": e.target.value,
-          });
+            'Front Channel Logout Uri': e.target.value,
+          })
         }}
       />
       <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
         label="fields.post_logout_redirect_uris"
         formik={formik}
-        placeholder={t("placeholders.post_logout_redirect_uris")}
+        placeholder={t('placeholders.post_logout_redirect_uris')}
         value={formik.values.postLogoutRedirectUris || []}
         options={postLogoutRedirectUris}
         validator={postUriValidator}
@@ -59,8 +54,8 @@ function ClientLogoutPanel({
         handler={(name, items) => {
           setModifiedFields({
             ...modifiedFields,
-            "Post Logout Redirect Uris": items,
-          });
+            'Post Logout Redirect Uris': items,
+          })
         }}
       ></GluuTypeAheadWithAdd>
 
@@ -68,7 +63,7 @@ function ClientLogoutPanel({
         name="attributes.backchannelLogoutUri"
         label="fields.backchannelLogoutUri"
         formik={formik}
-        placeholder={t("Enter a valid uri with pattern") + " https://"}
+        placeholder={t('Enter a valid uri with pattern') + ' https://'}
         value={formik.values.attributes.backchannelLogoutUri || []}
         options={backchannelLogoutUris}
         validator={uriValidator}
@@ -78,8 +73,8 @@ function ClientLogoutPanel({
         handler={(name, items) => {
           setModifiedFields({
             ...modifiedFields,
-            "Backchannel Logout Uri": items,
-          });
+            'Backchannel Logout Uri': items,
+          })
         }}
       ></GluuTypeAheadWithAdd>
       <GluuBooleanSelectBox
@@ -94,10 +89,9 @@ function ClientLogoutPanel({
         handler={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Logout Session Required": e.target.value,
-          });
+            'Logout Session Required': e.target.value,
+          })
         }}
-
       />
 
       <GluuToogleRow
@@ -112,19 +106,18 @@ function ClientLogoutPanel({
         handler={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Front Channel Logout Session Required": e.target.value,
-          });
+            'Front Channel Logout Session Required': e.target.value,
+          })
         }}
       />
     </Container>
-  );
+  )
 }
 
-export default ClientLogoutPanel;
+export default ClientLogoutPanel
 ClientLogoutPanel.propTypes = {
   formik: PropTypes.any,
   viewOnly: PropTypes.bool,
   modifiedFields: PropTypes.object,
   setModifiedFields: PropTypes.func,
-
-};
+}

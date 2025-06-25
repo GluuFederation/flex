@@ -15,7 +15,7 @@ function UiRoleDetailPage({ row }: { row: { rowData: { role: string; description
               value={rowData.role}
               isBadge={true}
               doc_category={ROLES}
-              doc_entry='name'
+              doc_entry="name"
             />
           </Col>
           <Col sm={9}>
@@ -25,7 +25,7 @@ function UiRoleDetailPage({ row }: { row: { rowData: { role: string; description
               lsize={3}
               rsize={9}
               doc_category={ROLES}
-              doc_entry='description'
+              doc_entry="description"
             />
           </Col>
         </Row>
