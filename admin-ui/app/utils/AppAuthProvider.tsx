@@ -79,7 +79,7 @@ export default function AppAuthProvider(props) {
             }
           }
 
-          let extras = {
+          const extras = {
             acr_values: config.acrValues,
             ...additionalParameters,
           }
@@ -101,7 +101,6 @@ export default function AppAuthProvider(props) {
   }, [isLicenseValid])
 
   useEffect(() => {
-    console.log('Heloooo')
     const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor())
     const authorizationHandler = new RedirectRequestHandler(
       new LocalStorageBackend(),

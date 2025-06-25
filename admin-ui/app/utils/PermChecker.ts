@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const BASE_URL = 'https://jans.io/oauth'
 
 export const PROPERTIES_READ = BASE_URL + '/jans-auth-server/config/properties.readonly'
@@ -129,31 +128,47 @@ export const ASSETS_DELETE = BASE_URL + '/config/jans_asset-delete'
 export const API_CONFIG_READ = BASE_URL + '/config/properties.readonly'
 export const API_CONFIG_WRITE = BASE_URL + '/config/properties.write'
 
-export const hasPermission = (scopes, scope) => {
-  let available = false
-  if (scopes) {
-    for (const i in scopes) {
-      if (scopes[i] === scope) {
-        available = true
-      }
-    }
-  }
-  return available
+interface UserAction {
+  action_message?: string
+  action_data?: ActionData
+  [key: string]: unknown
 }
 
-export const buildPayload = (userAction, message, payload) => {
+// Union type for the various payload types used across the codebase
+type ActionData =
+  | Record<string, unknown> // Object payloads (most common)
+  | string // ID strings (inum, jti, configId, etc.)
+  | number // Numeric IDs
+  | unknown[] // Array payloads
+  | null
+  | undefined
+
+export const buildPayload = (
+  userAction: UserAction,
+  message: string,
+  payload: ActionData,
+): void => {
   userAction['action_message'] = message
   userAction['action_data'] = payload
 }
 
-export const hasAny = (scopes, scope1, scope2, scope3) => {
+export const hasAny = (
+  scopes: string[] | null | undefined,
+  scope1: string,
+  scope2: string,
+  scope3: string,
+): boolean => {
   if (scopes) {
     return scopes.includes(scope1, 0) || scopes.includes(scope2, 0) || scopes.includes(scope3, 0)
   }
   return false
 }
 
-export const hasBoth = (scopes, scope1, scope2) => {
+export const hasBoth = (
+  scopes: string[] | null | undefined,
+  scope1: string,
+  scope2: string,
+): boolean => {
   if (scopes) {
     return scopes.includes(scope1, 0) && scopes.includes(scope2, 0)
   }

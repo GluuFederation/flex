@@ -9,41 +9,46 @@ import {
   SidebarMobileFluid,
   SidebarSection,
 } from '@/components/Sidebar'
+import type { DefaultSidebarProps } from './types'
 
 const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 
-const DefaultSidebar: React.FC = () => (
-  <Sidebar>
-    {/* START SIDEBAR-OVERLAY: Close (x) */}
-    <SidebarClose>
-      <SidebarTrigger tag={'a'} href="#">
-        <i className="fa fa-times-circle fa-fw"></i>
-      </SidebarTrigger>
-    </SidebarClose>
-    {/* START SIDEBAR-OVERLAY: Close (x) */}
+const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
+  return (
+    <Sidebar>
+      {/* START SIDEBAR-OVERLAY: Close (x) */}
+      <SidebarClose>
+        <SidebarTrigger tag={'a'} href="#">
+          <i className="fa fa-times-circle fa-fw"></i>
+        </SidebarTrigger>
+      </SidebarClose>
+      {/* START SIDEBAR-OVERLAY: Close (x) */}
 
-    {/* START SIDEBAR: Only for Desktop */}
-    <SidebarHideSlim>
-      <SidebarSection>
-        <Link to="/" className="sidebar__brand">
-          <LogoThemed checkBackground className="sidebar__brand" />
-        </Link>
-      </SidebarSection>
-    </SidebarHideSlim>
-    {/* END SIDEBAR: Only for Desktop */}
+      {/* START SIDEBAR: Only for Desktop */}
+      <SidebarHideSlim>
+        <SidebarSection>
+          <Link to="/" className="sidebar__brand">
+            <LogoThemed checkBackground className="sidebar__brand" />
+          </Link>
+        </SidebarSection>
+      </SidebarHideSlim>
+      {/* END SIDEBAR: Only for Desktop */}
 
-    {/* START SIDEBAR: Only for Mobile */}
-    <SidebarMobileFluid>
-      {/* <SidebarTopA /> */}
-      <SidebarSection fluid cover>
-        {/* SIDEBAR: Menu */}
-        <Suspense fallback={<GluuSuspenseLoader />}>
-          <GluuAppSidebar />
-        </Suspense>
-      </SidebarSection>
-    </SidebarMobileFluid>
-    {/* END SIDEBAR: Only for Mobile */}
-  </Sidebar>
-)
+      {/* START SIDEBAR: Only for Mobile */}
+      <SidebarMobileFluid>
+        {/* <SidebarTopA /> */}
+        <SidebarSection fluid cover>
+          {/* SIDEBAR: Menu */}
+          <Suspense fallback={<GluuSuspenseLoader />}>
+            <GluuAppSidebar />
+          </Suspense>
+        </SidebarSection>
+      </SidebarMobileFluid>
+      {/* END SIDEBAR: Only for Mobile */}
+    </Sidebar>
+  )
+}
+
+export { DefaultSidebar }
 
 export default DefaultSidebar

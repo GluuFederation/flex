@@ -14,12 +14,14 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
-import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
+import { WEBHOOK_READ } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: any) => {
-  const permissions = useSelector((state: any) => state.authReducer.permissions)
   const [active, setActive] = useState(false)
   const { t } = useTranslation()
+  const { hasCedarPermission } = useCedarling()
+
   const [userMessage, setUserMessage] = useState('')
   const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
   const theme: any = useContext(ThemeContext)
@@ -53,7 +55,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
 
   return (
     <>
-      {(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ) ? (
+      {(webhookModal || loadingWebhooks) && hasCedarPermission(WEBHOOK_READ) ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">

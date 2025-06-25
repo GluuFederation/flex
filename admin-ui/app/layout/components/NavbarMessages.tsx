@@ -18,13 +18,9 @@ import {
 } from 'Components'
 import { ExtendedDropdownSection } from '@/components/ExtendedDropdown/ExtendedDropdownSection'
 import { ExtendedDropdownLink } from '@/components/ExtendedDropdown/ExtendedDropdownLink'
+import type { NavbarMessagesProps, MessageColorType } from './types'
 
-const messagesColors = ['text-success', 'text-danger', 'text-warning']
-
-interface NavbarMessagesProps {
-  className?: string
-  style?: React.CSSProperties
-}
+const messagesColors: MessageColorType[] = ['text-success', 'text-danger', 'text-warning']
 
 const NavbarMessages: React.FC<NavbarMessagesProps> = (props) => (
   <UncontrolledDropdown nav inNavbar {...props}>

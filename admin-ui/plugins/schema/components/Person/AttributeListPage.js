@@ -11,7 +11,8 @@ import AttributeDetailPage from './AttributeDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { hasPermission, ATTRIBUTE_WRITE, ATTRIBUTE_READ, ATTRIBUTE_DELETE } from 'Utils/PermChecker'
+import { ATTRIBUTE_WRITE, ATTRIBUTE_READ, ATTRIBUTE_DELETE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import {
   getAttributes,
   searchAttributes,
@@ -25,12 +26,29 @@ import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 function AttributeListPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const attributes = useSelector((state) => state.attributeReducer.items)
   const loading = useSelector((state) => state.attributeReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const { totalItems } = useSelector((state) => state.attributeReducer)
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      const permissions = [ATTRIBUTE_READ, ATTRIBUTE_WRITE, ATTRIBUTE_DELETE]
+      try {
+        for (const permission of permissions) {
+          await authorize([permission])
+        }
+      } catch (error) {
+        console.error('Error authorizing attribute permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [authorize])
+
   const options = {}
   const pageSize = localStorage.getItem('paggingSize')
     ? parseInt(localStorage.getItem('paggingSize'))
@@ -73,7 +91,7 @@ function AttributeListPage() {
 
   const onPageChangeClick = (page) => {
     makeOptions()
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = startCount
     options['limit'] = limit
     setPageNumber(page)
@@ -114,7 +132,7 @@ function AttributeListPage() {
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const DetailsPanel = useCallback((rowData) => <AttributeDetailPage row={rowData.rowData} />, [])
 
-  if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
+  if (hasCedarPermission(ATTRIBUTE_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
@@ -122,10 +140,18 @@ function AttributeListPage() {
       },
       tooltip: `${t('tooltips.edit_attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
-      disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
+      disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
     }))
+    myActions.push({
+      icon: 'add',
+      tooltip: `${t('tooltips.add_attribute')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => handleGoToAttributeAddPage(),
+      disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
+    })
   }
-  if (hasPermission(permissions, ATTRIBUTE_READ)) {
+  if (hasCedarPermission(ATTRIBUTE_READ)) {
     myActions.push((rowData) => ({
       icon: 'visibility',
       iconProps: {
@@ -134,6 +160,35 @@ function AttributeListPage() {
       tooltip: `${t('tooltips.view_attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
       disabled: false,
+    }))
+    myActions.push({
+      icon: GluuSearch,
+      tooltip: `${t('tooltips.advanced_search_options')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {},
+    })
+    myActions.push({
+      icon: 'refresh',
+      tooltip: `${t('tooltips.refresh_data')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {
+        makeOptions()
+        dispatch(searchAttributes({ options }))
+      },
+    })
+  }
+  if (hasCedarPermission(ATTRIBUTE_DELETE)) {
+    myActions.push((rowData) => ({
+      icon: DeleteOutlinedIcon,
+      iconProps: {
+        color: 'secondary',
+        id: 'deleteAttribute' + rowData.inum,
+      },
+      tooltip: `${t('tooltips.delete_attribute')}`,
+      onClick: (event, rowData) => handleAttribueDelete(rowData),
+      disabled: !hasCedarPermission(ATTRIBUTE_DELETE),
     }))
   }
 
@@ -150,50 +205,6 @@ function AttributeListPage() {
     )
   }, [limitId, limit, pattern, patternId, handleOptionsChange])
 
-  if (hasPermission(permissions, ATTRIBUTE_READ)) {
-    myActions.push({
-      icon: GluuSearch,
-      tooltip: `${t('tooltips.advanced_search_options')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => {},
-    })
-  }
-  if (hasPermission(permissions, ATTRIBUTE_READ)) {
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('tooltips.refresh_data')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => {
-        makeOptions()
-        dispatch(searchAttributes({ options }))
-      },
-    })
-  }
-  if (hasPermission(permissions, ATTRIBUTE_DELETE)) {
-    myActions.push((rowData) => ({
-      icon: DeleteOutlinedIcon,
-      iconProps: {
-        color: 'secondary',
-        id: 'deleteAttribute' + rowData.inum,
-      },
-      tooltip: `${t('tooltips.delete_attribute')}`,
-      onClick: (event, rowData) => handleAttribueDelete(rowData),
-      disabled: !hasPermission(permissions, ATTRIBUTE_DELETE),
-    }))
-  }
-  if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('tooltips.add_attribute')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => handleGoToAttributeAddPage(),
-      disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
-    })
-  }
-
   function getBadgeTheme(status) {
     if (status === 'ACTIVE') {
       return `primary-${selectedTheme}`
@@ -208,7 +219,7 @@ function AttributeListPage() {
   }
 
   const PaginationWrapper = useCallback(
-    (props) => (
+    () => (
       <TablePagination
         count={totalItems}
         page={pageNumber}
@@ -227,7 +238,7 @@ function AttributeListPage() {
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasPermission(permissions, ATTRIBUTE_READ)}>
+        <GluuViewWrapper canShow={hasCedarPermission(ATTRIBUTE_READ)}>
           <MaterialTable
             key={attributes ? attributes.length : 0}
             components={{
@@ -265,7 +276,7 @@ function AttributeListPage() {
             detailPanel={DetailsPanel}
           />
         </GluuViewWrapper>
-        {hasPermission(permissions, ATTRIBUTE_DELETE) && (
+        {hasCedarPermission(ATTRIBUTE_DELETE) && (
           <GluuDialog
             row={item}
             handler={toggle}
