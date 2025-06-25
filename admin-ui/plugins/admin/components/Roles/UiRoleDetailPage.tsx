@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { ROLES } from 'Utils/ApiResources'
 
-function UiRoleDetailPage({ row }) {
+function UiRoleDetailPage({ row }: { row: { rowData: { role: string; description: string } } }  ) {
   const { rowData } = row
   return (
     <React.Fragment>

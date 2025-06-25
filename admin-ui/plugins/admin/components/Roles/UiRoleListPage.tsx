@@ -1,5 +1,5 @@
-import React,{ useEffect, useState, useContext } from 'react'
-import MaterialTable from '@material-table/core'
+import React, { useEffect, useState, useContext } from 'react'
+import MaterialTable, { Action, MaterialTableProps } from '@material-table/core'
 import { Paper } from '@mui/material'
 import UiRoleDetailPage from './UiRoleDetailPage'
 import RoleAddDialogForm from './RoleAddDialogForm'
@@ -27,23 +27,60 @@ import getThemeColor from 'Context/theme/config'
 import { ROLE_DELETE } from '../../../../app/utils/PermChecker'
 import { toast } from 'react-toastify'
 
-function UiRoleListPage() {
-  const apiRoles = useSelector((state) => state.apiRoleReducer.items)
-  const loading = useSelector((state) => state.apiRoleReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
+// Type definitions
+interface Role {
+  inum: string
+  role: string
+  description: string
+  deletable: boolean
+  enabled?: boolean
+}
 
-  const [modal, setModal] = useState(false)
-  const myActions = [],
-    options = [],
-    userAction = {},
-    pageSize = localStorage.getItem('paggingSize') || 10,
-    theme = useContext(ThemeContext),
-    selectedTheme = theme.state.theme,
-    themeColors = getThemeColor(selectedTheme),
-    bgThemeColor = { background: themeColors.background },
-    toggle = () => setModal(!modal),
-    { t } = useTranslation(),
-    dispatch = useDispatch()
+interface RootState {
+  apiRoleReducer: {
+    items: Role[]
+    loading: boolean
+  }
+  authReducer: {
+    permissions: string[]
+  }
+}
+
+interface RoleData {
+  role: string
+  description: string
+  deletable: boolean
+}
+
+interface UserAction {
+  [key: string]: any
+}
+
+interface ThemeState {
+  theme: string
+}
+
+interface ThemeContextType {
+  state: ThemeState
+}
+
+function UiRoleListPage(): JSX.Element {
+  const apiRoles = useSelector((state: RootState) => state.apiRoleReducer.items)
+  const loading = useSelector((state: RootState) => state.apiRoleReducer.loading)
+  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
+
+  const [modal, setModal] = useState<boolean>(false)
+  const myActions: Action<Role>[] = []
+  const options: any[] = []
+  const userAction: UserAction = {}
+  const pageSize: number = parseInt(localStorage.getItem('paggingSize') || '10', 10)
+  const theme = useContext(ThemeContext) as ThemeContextType
+  const selectedTheme = theme?.state?.theme || 'light'
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+  const toggle = (): void => setModal(!modal)
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     doFetchList()
@@ -55,36 +92,38 @@ function UiRoleListPage() {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
-      iconProps: { color: 'primary' },
+      iconProps: { color: 'primary' as const },
       isFreeAction: true,
       onClick: () => handleAddNewRole(),
     })
   }
 
-  function handleAddNewRole() {
+  function handleAddNewRole(): void {
     toggle()
   }
-  function doFetchList() {
+
+  function doFetchList(): void {
     buildPayload(userAction, 'ROLES', options)
     dispatch(getRoles({ action: userAction }))
   }
-  function onAddConfirmed(roleData) {
+
+  function onAddConfirmed(roleData: RoleData): void {
     buildPayload(userAction, 'message', roleData)
 
-    const fetchRoles = apiRoles.filter((role) => role.role === roleData.role)
+    const fetchRoles = apiRoles.filter((role: Role) => role.role === roleData.role)
     if (fetchRoles.length > 0) {
       toast.error(`${t('messages.role_already_exists')}`)
-    }
-    else{
+    } else {
       dispatch(addRole({ action: userAction }))
       toggle()
     }
   }
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
-          <MaterialTable
+          <MaterialTable<Role>
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
@@ -105,10 +144,10 @@ function UiRoleListPage() {
                     <select
                       onChange={(e) => rowData.onChange(e.target.value)}
                       className='form-control'
-                      value={String(rowData.rowData.deletable) == 'true' ? true : false}
+                      value={String(rowData.rowData.deletable)}
                     >
-                      <option value={true}>true</option>
-                      <option value={false} >false</option>
+                      <option value="true">true</option>
+                      <option value="false">false</option>
                     </select>
                   )
                 },
@@ -128,23 +167,10 @@ function UiRoleListPage() {
               selection: false,
               pageSize: pageSize,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                backgroundColor: (rowData as Role & { enabled?: boolean }).enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor } as React.CSSProperties,
               actionsColumnIndex: -1,
-              columns: [
-                {
-                  title: `${t('fields.name')}`,
-                  field: 'role',
-                  width: '40%',
-                  editable: 'never',
-                },
-                { title: `${t('fields.description')}`, field: 'description' },
-                {
-                  title: `${t('fields.deletable')}`,
-                  field: 'deletable',
-                },
-              ],
             }}
             detailPanel={(rowData) => {
               return <UiRoleDetailPage row={rowData} />
@@ -153,14 +179,14 @@ function UiRoleListPage() {
               isDeleteHidden: () => !hasPermission(permissions, ROLE_DELETE),
               isEditHidden: () => !hasPermission(permissions, ROLE_WRITE),
               onRowUpdate: (newData, oldData) =>
-                new Promise((resolve, reject) => {
+                new Promise<void>((resolve, reject) => {
                   buildPayload(userAction, 'Edit role', newData)
                   dispatch(editRole({ action: userAction }))
                   resolve()
                   doFetchList()
                 }),
               onRowDelete: (oldData) =>
-                new Promise((resolve, reject) => {
+                new Promise<void>((resolve, reject) => {
                   buildPayload(userAction, 'remove role', oldData)
                   dispatch(deleteRole({ action: userAction }))
                   resolve()

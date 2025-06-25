@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react'
-import MaterialTable from '@material-table/core'
-import { Paper } from '@mui/material'
+import MaterialTable, { Action, MaterialTableProps } from '@material-table/core'
+import { Paper, IconProps } from '@mui/material'
 import UiPermDetailPage from './UiPermDetailPage'
 import { Badge } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,21 +27,58 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { isEmpty } from 'lodash'
 
-function UiPermListPage() {
-  const apiPerms = useSelector(state => state.apiPermissionReducer.items);
-  const loading = useSelector(state => state.apiPermissionReducer.loading);
-  const permissions = useSelector(state => state.authReducer.permissions);
+// Define interfaces for the component
+interface Permission {
+  inum: string
+  permission: string
+  tag: string
+  defaultPermissionInToken: boolean
+  description: string
+  enabled?: boolean
+}
 
-  const dispatch = useDispatch();
+interface RootState {
+  apiPermissionReducer: {
+    items: Permission[]
+    loading: boolean
+  }
+  authReducer: {
+    permissions: string[]
+  }
+}
+
+interface UserAction {
+  [key: string]: any
+}
+
+interface RoleData {
+  [key: string]: any
+}
+
+interface PaperProps {
+  [key: string]: any
+}
+
+interface RowData {
+  rowData: Permission
+  [key: string]: any
+}
+
+function UiPermListPage(): JSX.Element {
+  const apiPerms = useSelector((state: RootState) => state.apiPermissionReducer.items)
+  const loading = useSelector((state: RootState) => state.apiPermissionReducer.loading)
+  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
+
+  const dispatch = useDispatch()
   const { t } = useTranslation()
-  const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
-  const myActions = []
-  const options = []
-  const userAction = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
+  const [modal, setModal] = useState<boolean>(false)
+  const toggle = (): void => setModal(!modal)
+  const myActions: Action<Permission>[] = []
+  const options: any[] = []
+  const userAction: UserAction = {}
+  const pageSize = parseInt(localStorage.getItem('paggingSize') || '10', 10)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state.theme || 'darkBlack'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
@@ -55,32 +92,34 @@ function UiPermListPage() {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_permission')}`,
-      iconProps: { color: 'primary' },
+      iconProps: { color: 'primary' as IconProps['color'] },
       isFreeAction: true,
       onClick: () => handleAddNewPermission(),
     })
   }
 
-  function handleAddNewPermission() {
+  function handleAddNewPermission(): void {
     toggle()
   }
-  function doFetchList() {
+
+  function doFetchList(): void {
     buildPayload(userAction, 'PERMISSIONS', options)
     dispatch(getPermissions({ action: userAction }))
   }
-  function onAddConfirmed(roleData) {
+
+  function onAddConfirmed(roleData: RoleData): void {
     buildPayload(userAction, 'message', roleData)
     dispatch(addPermission({ action: userAction }))
     toggle()
   }
 
   const PaperContainer = useCallback(
-    (props) => <Paper {...props} elevation={0} />,
+    (props: PaperProps) => <Paper {...props} elevation={0} />,
     []
   )
 
   const DetailPanel = useCallback(
-    (rowD) => <UiPermDetailPage row={rowD} />,
+    (rowD: RowData) => <UiPermDetailPage row={rowD} />,
     []
   )
 
@@ -98,7 +137,7 @@ function UiPermListPage() {
                 field: 'permission',
                 editable: 'never',
                 width: '50%',
-                render: (rowData) => (
+                render: (rowData: Permission) => (
                   <Badge color={`primary-${selectedTheme}`}>{rowData.permission}</Badge>
                 ),
               },
@@ -124,25 +163,25 @@ function UiPermListPage() {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
-              rowStyle: (rowData) => ({
+              rowStyle: (rowData: Permission) => ({
                 backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor } as React.CSSProperties,
               actionsColumnIndex: -1,
             }}
             detailPanel={DetailPanel}
             editable={{
               isDeleteHidden: () => !hasPermission(permissions, PERMISSION_DELETE),
               isEditHidden: () => !hasPermission(permissions, PERMISSION_WRITE),
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve, reject) => {
+              onRowUpdate: (newData: Permission, oldData?: Permission) =>
+                new Promise<void>((resolve, reject) => {
                   buildPayload(userAction, 'Edit permision', newData)
                   dispatch(editPermission({ action: userAction }))
                   resolve()
                   doFetchList()
                 }),
-              onRowDelete: (oldData) =>
-                new Promise((resolve, reject) => {
+              onRowDelete: (oldData: Permission) =>
+                new Promise<void>((resolve, reject) => {
                   if (!isEmpty(oldData)) {
                     buildPayload(userAction, 'Remove permission', oldData)
                     dispatch(deletePermission({ action: userAction }))

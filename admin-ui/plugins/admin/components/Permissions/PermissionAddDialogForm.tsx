@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, ChangeEvent } from 'react'
 import {
   FormGroup,
   Col,
@@ -15,35 +15,68 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { InputGroup, CustomInput } from 'Components'
 
-const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
-  const [permission, setPermission] = useState('')
-  const [description, setDescription] = useState('')
-  const [defaultPermissionInToken, setDefaultPermissionInToken] = useState()
-  const [tag, setTag] = useState('')
+interface PermissionData {
+  permission: string
+  tag: string
+  description: string
+  defaultPermissionInToken?: boolean
+}
+
+interface PermissionAddDialogFormProps {
+  handler: () => void
+  modal: boolean
+  onAccept: (data: PermissionData) => void
+}
+
+const PermissionAddDialogForm: React.FC<PermissionAddDialogFormProps> = ({ 
+  handler, 
+  modal, 
+  onAccept 
+}) => {
+  const [permission, setPermission] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+  const [defaultPermissionInToken, setDefaultPermissionInToken] = useState<string>('')
+  const [tag, setTag] = useState<string>('')
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const [errorMessages, setErrorMessages] = useState('')
-  const selectedTheme = theme.state.theme
+  const [errorMessages, setErrorMessages] = useState<string>('')
+  const selectedTheme = theme?.state.theme
 
-  function handleAccept() {
+  function handleAccept(): void {
     if (permission?.length < 5) {
       setErrorMessages(t('messages.permission_name_error'))
       return
     }
 
-    const roleData = {
+    const roleData: PermissionData = {
       permission,
       tag,
       description,
       ...(defaultPermissionInToken !== undefined &&
         defaultPermissionInToken !== '' && {
-          defaultPermissionInToken:
-            defaultPermissionInToken === 'true',
-        }),
+        defaultPermissionInToken:
+          defaultPermissionInToken === 'true',
+      }),
     }
 
     onAccept(roleData)
     setErrorMessages('')
+  }
+
+  const handlePermissionChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setPermission(event.target.value)
+  }
+
+  const handleTagChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setTag(event.target.value)
+  }
+
+  const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setDescription(event.target.value)
+  }
+
+  const handleDefaultPermissionChange = (event: ChangeEvent<HTMLSelectElement>): void => {
+    setDefaultPermissionInToken(event.target.value)
   }
 
   return (
@@ -70,7 +103,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                 id='api_permission'
                 type='text'
                 name='api_permission'
-                onChange={(event) => setPermission(event.target.value)}
+                onChange={handlePermissionChange}
                 value={permission}
               />
             </Col>
@@ -82,7 +115,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                 id='tag'
                 type='text'
                 name='tag'
-                onChange={(event) => setTag(event.target.value)}
+                onChange={handleTagChange}
                 value={tag}
               />
             </Col>
@@ -94,7 +127,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                 id='permission_description'
                 type='textarea'
                 name='permission_description'
-                onChange={(event) => setDescription(event.target.value)}
+                onChange={handleDescriptionChange}
                 value={description}
               />
             </Col>
@@ -108,9 +141,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                   id='defaultPermissionInToken'
                   name='defaultPermissionInToken'
                   value={defaultPermissionInToken}
-                  onChange={(event) =>
-                    setDefaultPermissionInToken(event.target.value)
-                  }
+                  onChange={handleDefaultPermissionChange}
                   disabled={false}
                 >
                   <option value=''>{t('actions.choose')}...</option>

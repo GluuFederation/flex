@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, ChangeEvent } from 'react'
 import {
   FormGroup,
   Col,
@@ -15,25 +15,40 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 
-const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
-  const [deletable, setDeletable] = useState(false)
+interface RoleData {
+  role: string
+  description: string
+  deletable: boolean
+}
+
+interface RoleAddDialogFormProps {
+  handler: () => void
+  modal: boolean
+  onAccept: (roleData: RoleData) => void
+}
+
+const RoleAddDialogForm: React.FC<RoleAddDialogFormProps> = ({ handler, modal, onAccept }) => {
+  const [deletable, setDeletable] = useState<boolean>(false)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const [errorMessages, setErrorMessages] = useState('')
+  const selectedTheme = theme?.state.theme || 'light'
+  const [errorMessages, setErrorMessages] = useState<string>('')
 
-  function handleAccept() {
-    const roleData = {}
-    roleData['role'] = document.getElementById('api_role').value
-    roleData['description'] = document.getElementById('api_description').value
-    roleData['deletable'] = deletable
-    if (roleData['role']?.length < 5) {
+  function handleAccept(): void {
+    const roleData: RoleData = {
+      role: (document.getElementById('api_role') as HTMLInputElement)?.value || '',
+      description: (document.getElementById('api_description') as HTMLInputElement)?.value || '',
+      deletable: deletable
+    }
+    
+    if (roleData.role.length < 5) {
       setErrorMessages(t('messages.role_name_error'))
       return
     }
 
     onAccept(roleData)
   }
+  
   return (
     <>
       <Modal isOpen={modal} toggle={handler}>
@@ -72,7 +87,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
             <Col sm={12} className='ps-4'>
               <GluuToogleRow
                 name='deletable'
-                handler={(e) => {
+                handler={(e: ChangeEvent<HTMLInputElement>) => {
                   setDeletable(e.target.checked)
                 }}
                 lsize={4}
