@@ -28,7 +28,9 @@ const UncontrolledTabsNavLink: React.FC<UncontrolledTabsNavLinkProps> = (props) 
       {(value: UncontrolledTabsContextType) => (
         <NavLink
           {...omit(props, ['tabId'])}
-          onClick={() => { value.setActiveTabId(props.tabId) }}
+          onClick={() => {
+            value.setActiveTabId(props.tabId)
+          }}
           className={classNames({ active: props.tabId === value.activeTabId })}
           style={{ color: themeColors.fontColor }}
           href="#"

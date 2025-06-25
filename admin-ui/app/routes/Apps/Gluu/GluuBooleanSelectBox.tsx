@@ -17,40 +17,38 @@ function GluuBooleanSelectBox({
 }: any) {
   const { t } = useTranslation()
   return (
-    
     <FormGroup row>
-      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name} />
       <Col sm={rsize}>
         {!toToggle && (
-        <InputGroup>
-          <CustomInput
-            type="select"
-            id={name}
-            name={name}
-            data-testid={name}
-            defaultValue={value}
-            onChange={formik.handleChange}
-            disabled={disabled}
-          >
-            <option value="false">{t('options.false')}</option>
-            <option value="true">{t('options.true')}</option>
-          </CustomInput>
-        </InputGroup>
+          <InputGroup>
+            <CustomInput
+              type="select"
+              id={name}
+              name={name}
+              data-testid={name}
+              defaultValue={value}
+              onChange={formik.handleChange}
+              disabled={disabled}
+            >
+              <option value="false">{t('options.false')}</option>
+              <option value="true">{t('options.true')}</option>
+            </CustomInput>
+          </InputGroup>
         )}
         {toToggle && (
-        <GluuToogle
-          id={name}
-          data-testid={name}
-          name={name}
-          handler={handler}
-          formik={formik}
-          value={value}
-          disabled={disabled}
-        />
+          <GluuToogle
+            id={name}
+            data-testid={name}
+            name={name}
+            handler={handler}
+            formik={formik}
+            value={value}
+            disabled={disabled}
+          />
         )}
       </Col>
     </FormGroup>
-    
   )
 }
 

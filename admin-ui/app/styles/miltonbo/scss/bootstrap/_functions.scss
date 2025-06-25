@@ -1,6 +1,6 @@
 @function map-collect($maps...) {
     $collection: ();
-  
+
     @each $map in $maps {
         $collection: map-merge($collection, $map);
     }

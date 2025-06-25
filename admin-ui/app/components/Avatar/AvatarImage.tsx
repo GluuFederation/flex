@@ -12,26 +12,24 @@ const AvatarImage: React.FC<AvatarImageProps> = ({
   ...avatarProps
 }) => {
   const [imgLoaded, setImgLoaded] = useState(false)
-  const parentClass = classNames('avatar-image', {
-    'avatar-image--loaded': imgLoaded
-  }, className)
+  const parentClass = classNames(
+    'avatar-image',
+    {
+      'avatar-image--loaded': imgLoaded,
+    },
+    className,
+  )
 
   return (
     <div className={parentClass}>
       <Avatar className="avatar-image__image" {...avatarProps}>
-        <img
-          src={src}
-          alt={alt}
-          onLoad={() => setImgLoaded(true)}
-        />
+        <img src={src} alt={alt} onLoad={() => setImgLoaded(true)} />
       </Avatar>
-      {
-        !imgLoaded && (
-          <AvatarFont className="avatar-image__placeholder" {...avatarProps}>
-            {placeholder}
-          </AvatarFont>
-        )
-      }
+      {!imgLoaded && (
+        <AvatarFont className="avatar-image__placeholder" {...avatarProps}>
+          {placeholder}
+        </AvatarFont>
+      )}
     </div>
   )
 }

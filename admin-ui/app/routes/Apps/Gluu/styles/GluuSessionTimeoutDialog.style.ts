@@ -1,25 +1,25 @@
 import { makeStyles } from 'tss-react/mui'
-import red from "@mui/material/colors/red"
+import red from '@mui/material/colors/red'
 
 const styles = makeStyles()({
   dialog: {
-    borderRadius: 0
+    borderRadius: 0,
   },
   button: {
     borderRadius: 0,
-    textTransform: "none",
-    padding: 5
+    textTransform: 'none',
+    padding: 5,
   },
   logout: {
-    color: "#fff",
-    backgroundColor: "#03A96D",
-    "&:hover": {
-      backgroundColor: red[700]
-    }
+    'color': '#fff',
+    'backgroundColor': '#03A96D',
+    '&:hover': {
+      backgroundColor: red[700],
+    },
   },
   countdown: {
-    color: "red[700]"
-  }
+    color: 'red[700]',
+  },
 })
 
 export default styles

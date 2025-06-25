@@ -16,7 +16,7 @@ function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.ConfigurationUserManagementApi(
-    getClient(JansConfigApi, token, issuer)
+    getClient(JansConfigApi, token, issuer),
   )
   return new UserApi(api)
 }

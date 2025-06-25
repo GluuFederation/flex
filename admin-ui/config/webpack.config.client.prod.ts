@@ -19,26 +19,25 @@ dotenv.config({
 })
 
 const BASE_PATH = process.env.BASE_PATH || '/admin'
-const CONFIG_API_BASE_URL =
-  process.env.CONFIG_API_BASE_URL || 'https://sample.com'
-const API_BASE_URL =
-  process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
+const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
+const API_BASE_URL = process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
 
 const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   devtool: false,
   mode: 'production',
   entry: {
-    app: [path.join(config.srcDir, 'index.tsx')]
+    app: [path.join(config.srcDir, 'index.tsx')],
   },
   optimization: {
     splitChunks: {
-      chunks: 'all'
+      chunks: 'all',
     },
-    minimizer: [`...`,
+    minimizer: [
+      `...`,
       new CssMinimizerPlugin({
         minimizerOptions: {
           preset: [
-            "default",
+            'default',
             {
               calc: false,
               discardComments: { removeAll: true },
@@ -46,7 +45,8 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           ],
         },
       }),
-      `...`]
+      `...`,
+    ],
   },
   output: {
     filename: '[name].bundle.js',
@@ -55,25 +55,25 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     publicPath: BASE_PATH,
   },
   resolve: {
-    fallback: { 
-      "querystring": false, 
-      crypto: false, 
-      util: false, 
+    fallback: {
+      querystring: false,
+      crypto: false,
+      util: false,
       console: false,
-      "path": "path-browserify",
+      path: 'path-browserify',
     },
     modules: ['node_modules', config.srcDir],
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
       '@': path.resolve(__dirname, '../app'),
-      Components: path.resolve(__dirname, '../app/components'),
-      Context: path.resolve(__dirname, '../app/context'),
-      Images: path.resolve(__dirname, '../app/images'),
-      Plugins: path.resolve(__dirname, '../plugins'),
-      Redux: path.resolve(__dirname, '../app/redux'),
-      Routes: path.resolve(__dirname, '../app/routes'),
-      Styles: path.resolve(__dirname, '../app/styles'),
-      Utils: path.resolve(__dirname, '../app/utils'),
+      'Components': path.resolve(__dirname, '../app/components'),
+      'Context': path.resolve(__dirname, '../app/context'),
+      'Images': path.resolve(__dirname, '../app/images'),
+      'Plugins': path.resolve(__dirname, '../plugins'),
+      'Redux': path.resolve(__dirname, '../app/redux'),
+      'Routes': path.resolve(__dirname, '../app/routes'),
+      'Styles': path.resolve(__dirname, '../app/styles'),
+      'Utils': path.resolve(__dirname, '../app/utils'),
     },
   },
   plugins: [
@@ -82,15 +82,19 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       failOnError: false,
       allowAsyncCycles: false,
       cwd: process.cwd(),
-      onDetected: ({ module, paths, compilation }: { 
-        module: any; 
-        paths: string[]; 
-        compilation: webpack.Compilation;
+      onDetected: ({
+        module,
+        paths,
+        compilation,
+      }: {
+        module: any
+        paths: string[]
+        compilation: webpack.Compilation
       }) => {
         const warnings: Error[] = []
         warnings.push(new Error(paths.join(' -> ')))
         if (warnings.length > 0) {
-          warnings.forEach(error => error && console.warn(error.message))
+          warnings.forEach((error) => error && console.warn(error.message))
         }
       },
     }) as WebpackPluginInstance,
@@ -139,7 +143,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       // Modular Styles
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader", "postcss-loader"]
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.scss$/,

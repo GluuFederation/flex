@@ -1,25 +1,20 @@
-import React from "react";
-import { Col, Container, FormGroup } from "Components";
-import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import GluuToogleRow from "Routes/Apps/Gluu/GluuToogleRow";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuBooleanSelectBox from "Routes/Apps/Gluu/GluuBooleanSelectBox";
-import GluuTypeAheadWithAdd from "Routes/Apps/Gluu/GluuTypeAheadWithAdd";
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
-import PropTypes from "prop-types";
-const DOC_CATEGORY = "openid_client";
+import React from 'react'
+import { Col, Container, FormGroup } from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
+import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
+import { FormControlLabel, Radio, RadioGroup } from '@mui/material'
+import PropTypes from 'prop-types'
+const DOC_CATEGORY = 'openid_client'
 
-const audience_id = "audience_id";
+const audience_id = 'audience_id'
 function audienceValidator(aud) {
-  return aud;
+  return aud
 }
 
-function ClientTokensPanel({
-  formik,
-  viewOnly,
-  modifiedFields,
-  setModifiedFields,
-}) {
+function ClientTokensPanel({ formik, viewOnly, modifiedFields, setModifiedFields }) {
   return (
     <Container>
       <FormGroup row>
@@ -35,23 +30,23 @@ function ClientTokensPanel({
               <RadioGroup
                 row
                 name="accessTokenAsJwt"
-                value={formik.values.accessTokenAsJwt?.toString() || "true"}
+                value={formik.values.accessTokenAsJwt?.toString() || 'true'}
                 onChange={(e) => {
                   formik.setFieldValue(
-                    "accessTokenAsJwt",
-                    e.target.value === "true" ? "true" : "false"
-                  );
-                  setModifiedFields({...modifiedFields, "Access Token as jwt": e.target.value});
+                    'accessTokenAsJwt',
+                    e.target.value === 'true' ? 'true' : 'false',
+                  )
+                  setModifiedFields({ ...modifiedFields, 'Access Token as jwt': e.target.value })
                 }}
               >
                 <FormControlLabel
-                  value={"true"}
+                  value={'true'}
                   control={<Radio color="primary" />}
                   label="JWT"
                   disabled={viewOnly}
                 />
                 <FormControlLabel
-                  value={"false"}
+                  value={'false'}
                   control={<Radio color="primary" />}
                   label="Reference"
                   disabled={viewOnly}
@@ -71,7 +66,10 @@ function ClientTokensPanel({
             doc_category={DOC_CATEGORY}
             disabled={viewOnly}
             handler={(e) => {
-              setModifiedFields({...modifiedFields, "Include claims in id token": e.target.checked});
+              setModifiedFields({
+                ...modifiedFields,
+                'Include claims in id token': e.target.checked,
+              })
             }}
           />
         </Col>
@@ -86,8 +84,11 @@ function ClientTokensPanel({
         rsize={8}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
-        handler={(e) => { 
-          setModifiedFields({...modifiedFields, "Run introspection script before jwt creation": e.target.value});
+        handler={(e) => {
+          setModifiedFields({
+            ...modifiedFields,
+            'Run introspection script before jwt creation': e.target.value,
+          })
         }}
       />
       <GluuInputRow
@@ -100,7 +101,7 @@ function ClientTokensPanel({
         rsize={8}
         disabled={viewOnly}
         handleChange={(e) => {
-          setModifiedFields({...modifiedFields, "Id token token binding cnf": e.target.value});
+          setModifiedFields({ ...modifiedFields, 'Id token token binding cnf': e.target.value })
         }}
       />
       <GluuTypeAheadWithAdd
@@ -114,7 +115,7 @@ function ClientTokensPanel({
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
         handler={(name, items) => {
-          setModifiedFields({...modifiedFields, "Additional audience": items});
+          setModifiedFields({ ...modifiedFields, 'Additional audience': items })
         }}
       ></GluuTypeAheadWithAdd>
 
@@ -128,8 +129,8 @@ function ClientTokensPanel({
         lsize={4}
         rsize={8}
         disabled={viewOnly}
-        handleChange={(e) => { 
-          setModifiedFields({...modifiedFields, "Access token lifetime": e.target.value});
+        handleChange={(e) => {
+          setModifiedFields({ ...modifiedFields, 'Access token lifetime': e.target.value })
         }}
       />
       <GluuInputRow
@@ -143,8 +144,8 @@ function ClientTokensPanel({
         rsize={8}
         disabled={viewOnly}
         handleChange={(e) => {
-          setModifiedFields({...modifiedFields, "Refresh token lifetime": e.target.value});
-        }}  
+          setModifiedFields({ ...modifiedFields, 'Refresh token lifetime': e.target.value })
+        }}
       />
       <GluuInputRow
         label="fields.defaultMaxAge"
@@ -157,17 +158,17 @@ function ClientTokensPanel({
         rsize={8}
         disabled={viewOnly}
         handleChange={(e) => {
-          setModifiedFields({...modifiedFields, "Default max age": e.target.value});
-        }}  
+          setModifiedFields({ ...modifiedFields, 'Default max age': e.target.value })
+        }}
       />
     </Container>
-  );
+  )
 }
 
-export default ClientTokensPanel;
+export default ClientTokensPanel
 ClientTokensPanel.propTypes = {
   formik: PropTypes.any,
   viewOnly: PropTypes.bool,
   modifiedFields: PropTypes.any,
   setModifiedFields: PropTypes.func,
-};
+}

@@ -32,9 +32,7 @@ const rootReducer = combineReducers({
 
 describe('fetch & update json configuration', () => {
   it('should GET current JSON configs', async () => {
-    const result = await expectSaga(getJwksConfig)
-      .withReducer(rootReducer, initialState)
-      .run(false)
+    const result = await expectSaga(getJwksConfig).withReducer(rootReducer, initialState).run(false)
 
     expect(result.returnValue instanceof Error).toBe(false)
   })

@@ -16,9 +16,7 @@ const DOC_CATEGORY = 'jans_lock'
 const JansLockConfiguration = () => {
   const dispatch = useDispatch()
   const permissions = useSelector((state) => state.authReducer.permissions)
-  const lockConfigs = useSelector(
-    (state) => state.jansLockReducer.configuration
-  )
+  const lockConfigs = useSelector((state) => state.jansLockReducer.configuration)
 
   const viewOnly = !hasPermission(permissions, JANS_LOCK_WRITE)
   const [modal, setModal] = useState(false)
@@ -39,10 +37,7 @@ const JansLockConfiguration = () => {
 
     for (const key in formik.values) {
       if (lockConfigs.hasOwnProperty(key)) {
-        if (
-          JSON.stringify(lockConfigs[key]) !==
-          JSON.stringify(formik.values[key])
-        ) {
+        if (JSON.stringify(lockConfigs[key]) !== JSON.stringify(formik.values[key])) {
           differences.push({
             op: 'replace',
             path: `/${key}`,
@@ -77,13 +72,13 @@ const JansLockConfiguration = () => {
         e.preventDefault()
         formik.handleSubmit()
       }}
-      className='mt-4'
+      className="mt-4"
     >
       <FormGroup row>
         <Col sm={12}>
           <GluuInputRow
-            label='fields.base_dn'
-            name='baseDN'
+            label="fields.base_dn"
+            name="baseDN"
             value={formik.values.baseDN || ''}
             formik={formik}
             lsize={3}
@@ -97,14 +92,13 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuTypeAhead
-            name='tokenChannels'
-            label='fields.token_channels'
+            name="tokenChannels"
+            label="fields.token_channels"
             value={formik.values.tokenChannels}
             onChange={(options) => {
-              const getLabel = (item) =>
-                item?.customOption && item?.tokenChannels
+              const getLabel = (item) => item?.customOption && item?.tokenChannels
               const values = options?.map((item) =>
-                typeof item == 'string' ? item : getLabel(item)
+                typeof item == 'string' ? item : getLabel(item),
               )
               formik.setFieldValue('tokenChannels', values)
             }}
@@ -118,17 +112,15 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuSelectRow
-            label='fields.disable_jdk_logger'
-            name='disableJdkLogger'
+            label="fields.disable_jdk_logger"
+            name="disableJdkLogger"
             value={formik.values.disableJdkLogger}
             defaultValue={formik.values.disableJdkLogger}
             values={['true', 'false']}
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.disableJdkLogger && formik.touched.disableJdkLogger
-            }
+            showError={formik.errors.disableJdkLogger && formik.touched.disableJdkLogger}
             disabled={viewOnly}
             doc_category={DOC_CATEGORY}
             errorMessage={formik.errors.disableJdkLogger}
@@ -137,8 +129,8 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuSelectRow
-            label='fields.logging_level'
-            name='loggingLevel'
+            label="fields.logging_level"
+            name="loggingLevel"
             value={formik.values.loggingLevel}
             defaultValue={formik.values.loggingLevel}
             values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
@@ -152,16 +144,14 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.logging_layout'
-            name='loggingLayout'
+            label="fields.logging_layout"
+            name="loggingLayout"
             value={formik.values.loggingLayout || ''}
             formik={formik}
             lsize={3}
             rsize={9}
             doc_category={DOC_CATEGORY}
-            showError={
-              formik.errors.loggingLayout && formik.touched.loggingLayout
-            }
+            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
             errorMessage={formik.errors.loggingLayout}
             disabled={viewOnly}
           />
@@ -169,8 +159,8 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.external_logger_configuration'
-            name='externalLoggerConfiguration'
+            label="fields.external_logger_configuration"
+            name="externalLoggerConfiguration"
             value={formik.values.externalLoggerConfiguration || ''}
             formik={formik}
             lsize={3}
@@ -187,8 +177,8 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuSelectRow
-            label='fields.metric_reporter_enabled'
-            name='metricReporterEnabled'
+            label="fields.metric_reporter_enabled"
+            name="metricReporterEnabled"
             value={formik.values.metricReporterEnabled}
             defaultValue={formik.values.metricReporterEnabled}
             values={['true', 'false']}
@@ -196,10 +186,7 @@ const JansLockConfiguration = () => {
             lsize={3}
             rsize={9}
             doc_category={DOC_CATEGORY}
-            showError={
-              formik.errors.metricReporterEnabled &&
-              formik.touched.metricReporterEnabled
-            }
+            showError={formik.errors.metricReporterEnabled && formik.touched.metricReporterEnabled}
             disabled={viewOnly}
             errorMessage={formik.errors.metricReporterEnabled}
           />
@@ -207,17 +194,16 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.metric_reporter_interval'
-            name='metricReporterInterval'
-            type='number'
+            label="fields.metric_reporter_interval"
+            name="metricReporterInterval"
+            type="number"
             value={formik.values.metricReporterInterval || ''}
             formik={formik}
             lsize={3}
             rsize={9}
             doc_category={DOC_CATEGORY}
             showError={
-              formik.errors.metricReporterInterval &&
-              formik.touched.metricReporterInterval
+              formik.errors.metricReporterInterval && formik.touched.metricReporterInterval
             }
             disabled={viewOnly}
             errorMessage={formik.errors.metricReporterInterval}
@@ -226,17 +212,16 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.metric_reporter_keep_data_days'
-            name='metricReporterKeepDataDays'
-            type='number'
+            label="fields.metric_reporter_keep_data_days"
+            name="metricReporterKeepDataDays"
+            type="number"
             doc_category={DOC_CATEGORY}
             value={formik.values.metricReporterKeepDataDays || ''}
             formik={formik}
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.metricReporterKeepDataDays &&
-              formik.touched.metricReporterKeepDataDays
+              formik.errors.metricReporterKeepDataDays && formik.touched.metricReporterKeepDataDays
             }
             disabled={viewOnly}
             errorMessage={formik.errors.metricReporterKeepDataDays}
@@ -245,35 +230,30 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.clean_service_interval'
-            name='cleanServiceInterval'
+            label="fields.clean_service_interval"
+            name="cleanServiceInterval"
             value={formik.values.cleanServiceInterval || ''}
             formik={formik}
             doc_category={DOC_CATEGORY}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.cleanServiceInterval &&
-              formik.touched.cleanServiceInterval
-            }
+            showError={formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval}
             disabled={viewOnly}
             errorMessage={formik.errors.cleanServiceInterval}
-            type='number'
+            type="number"
           />
         </Col>
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.metric_channel'
-            name='metricChannel'
+            label="fields.metric_channel"
+            name="metricChannel"
             value={formik.values.metricChannel || ''}
             formik={formik}
             doc_category={DOC_CATEGORY}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.metricChannel && formik.touched.metricChannel
-            }
+            showError={formik.errors.metricChannel && formik.touched.metricChannel}
             disabled={viewOnly}
             errorMessage={formik.errors.metricChannel}
           />
@@ -281,8 +261,8 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.pdp_type'
-            name='pdpType'
+            label="fields.pdp_type"
+            name="pdpType"
             value={formik.values.pdpType || ''}
             formik={formik}
             doc_category={DOC_CATEGORY}
@@ -296,17 +276,14 @@ const JansLockConfiguration = () => {
 
         {/* OPA Configuration Starts */}
         <Col sm={12}>
-          <Accordion className='mb-2 b-primary' initialOpen>
-            <Accordion.Header className='text-primary'>
-              <GluuLabel
-                label={'fields.opa_configuration'}
-                required={false}
-              />
+          <Accordion className="mb-2 b-primary" initialOpen>
+            <Accordion.Header className="text-primary">
+              <GluuLabel label={'fields.opa_configuration'} required={false} />
             </Accordion.Header>
             <Accordion.Body>
               <GluuInputRow
-                label='fields.base_url'
-                name='opaConfiguration.baseUrl'
+                label="fields.base_url"
+                name="opaConfiguration.baseUrl"
                 value={formik.values.opaConfiguration?.baseUrl || ''}
                 formik={formik}
                 doc_category={DOC_CATEGORY}
@@ -315,8 +292,8 @@ const JansLockConfiguration = () => {
                 disabled={viewOnly}
               />
               <GluuInputRow
-                label='fields.access_token'
-                name='opaConfiguration.accessToken'
+                label="fields.access_token"
+                name="opaConfiguration.accessToken"
                 value={formik.values.opaConfiguration?.accessToken || ''}
                 formik={formik}
                 doc_category={DOC_CATEGORY}
@@ -332,8 +309,8 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.policies_json_uris_authorization_token'
-            name='policiesJsonUrisAuthorizationToken'
+            label="fields.policies_json_uris_authorization_token"
+            name="policiesJsonUrisAuthorizationToken"
             value={formik.values.policiesJsonUrisAuthorizationToken || ''}
             formik={formik}
             lsize={3}
@@ -345,16 +322,15 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuTypeAhead
-            name='policiesJsonUris'
-            label='fields.policies_json_uris'
+            name="policiesJsonUris"
+            label="fields.policies_json_uris"
             value={formik.values.policiesJsonUris}
             options={lockConfigs?.policiesJsonUris || []}
             doc_category={DOC_CATEGORY}
             onChange={(options) => {
-              const getLabel = (item) =>
-                item?.customOption && item?.policiesJsonUris
+              const getLabel = (item) => item?.customOption && item?.policiesJsonUris
               const values = options?.map((item) =>
-                typeof item == 'string' ? item : getLabel(item)
+                typeof item == 'string' ? item : getLabel(item),
               )
               formik.setFieldValue('policiesJsonUris', values)
             }}
@@ -366,8 +342,8 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
-            label='fields.policies_zip_uris_authorization_token'
-            name='policiesZipUrisAuthorizationToken'
+            label="fields.policies_zip_uris_authorization_token"
+            name="policiesZipUrisAuthorizationToken"
             value={formik.values.policiesZipUrisAuthorizationToken || ''}
             formik={formik}
             lsize={3}
@@ -379,16 +355,15 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuTypeAhead
-            name='policiesZipUris'
-            label='fields.policies_zip_uris'
+            name="policiesZipUris"
+            label="fields.policies_zip_uris"
             value={formik.values.policiesZipUris}
             options={lockConfigs?.policiesZipUris || []}
             doc_category={DOC_CATEGORY}
             onChange={(options) => {
-              const getLabel = (item) =>
-                item?.customOption && item?.policiesZipUris
+              const getLabel = (item) => item?.customOption && item?.policiesZipUris
               const values = options?.map((item) =>
-                typeof item == 'string' ? item : getLabel(item)
+                typeof item == 'string' ? item : getLabel(item),
               )
               formik.setFieldValue('policiesZipUris', values)
             }}
@@ -406,16 +381,11 @@ const JansLockConfiguration = () => {
               <GluuCommitFooter
                 saveHandler={toggle}
                 hideButtons={{ save: true, back: false }}
-                type='submit'
+                type="submit"
               />
             </Col>
           </Row>
-          <GluuCommitDialog
-            handler={toggle}
-            modal={modal}
-            onAccept={submitForm}
-            formik={formik}
-          />
+          <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
         </>
       )}
     </Form>

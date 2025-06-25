@@ -6,7 +6,7 @@ const initialState = {
   cacheMem: {},
   cacheNative: {},
   cacheRedis: {},
-  loading: false
+  loading: false,
 }
 
 const cacheSlice = createSlice({
@@ -109,8 +109,8 @@ const cacheSlice = createSlice({
     editRedisCacheResponse: (state, action) => {
       state.cacheRedis = action.payload?.data
       state.loading = false
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -135,7 +135,7 @@ export const {
   editNativeCache,
   editNativeCacheResponse,
   editRedisCache,
-  editRedisCacheResponse
+  editRedisCacheResponse,
 } = cacheSlice.actions
 export { initialState }
 export const { actions, reducer } = cacheSlice

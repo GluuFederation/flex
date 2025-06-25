@@ -51,14 +51,17 @@ export default class UserApi {
 
   /**
    * Get 2FA Details
-   * @param {*} name 
-   * @returns 
+   * @param {*} name
+   * @returns
    */
   getUser2FADetails = (payload) => {
     return new Promise((resolve, reject) => {
-      axios.get(`/fido2/registration/entries/${payload.username}`, { headers: { Authorization: `Bearer ${payload.token}` } })
-      .then(result => handleResponse(undefined, reject, resolve, result))
-      .catch(error => handleResponse(error, reject, resolve, undefined));
+      axios
+        .get(`/fido2/registration/entries/${payload.username}`, {
+          headers: { Authorization: `Bearer ${payload.token}` },
+        })
+        .then((result) => handleResponse(undefined, reject, resolve, result))
+        .catch((error) => handleResponse(error, reject, resolve, undefined))
     })
   }
 }

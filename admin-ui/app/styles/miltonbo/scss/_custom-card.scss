@@ -6,7 +6,7 @@
     &--border {
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
-                border-color: $color
+                border-color: $color;
             }
         }
     }
@@ -16,17 +16,17 @@
 
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
-                border-left-color: $color
+                border-left-color: $color;
             }
         }
     }
 
     &--background {
-        color: map-get($dashboard-colors, 'white');
+        color: map-get($dashboard-colors, "white");
 
         @each $name, $color in $dashboard-colors {
             &.custom-card--color-#{$name} {
-               background-color: $color; 
+                background-color: $color;
             }
         }
     }

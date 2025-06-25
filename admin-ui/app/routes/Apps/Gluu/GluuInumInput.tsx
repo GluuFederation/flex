@@ -1,22 +1,15 @@
-import { Col, FormGroup, Input } from "Components";
-import GluuLabel from "./GluuLabel";
-import GluuTooltip from "./GluuTooltip";
+import { Col, FormGroup, Input } from 'Components'
+import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
 
-function GluuInumInput({
-  label,
-  name,
-  value,
-  lsize = 4,
-  rsize = 8,
-  doc_category,
-}: any) {
+function GluuInumInput({ label, name, value, lsize = 4, rsize = 8, doc_category }: any) {
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
         <GluuLabel label={label} size={lsize} />
         <Col sm={rsize}>
           <Input
-            style={{ backgroundColor: "#F5F5F5" }}
+            style={{ backgroundColor: '#F5F5F5' }}
             id={name}
             data-testid={name}
             name={name}
@@ -26,6 +19,6 @@ function GluuInumInput({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
-export default GluuInumInput;
+export default GluuInumInput

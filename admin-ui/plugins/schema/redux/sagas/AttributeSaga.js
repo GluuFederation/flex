@@ -8,13 +8,8 @@ import {
 } from '../features/attributeSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { postUserAction } from 'Redux/api/backend-api'
-import {updateToast} from 'Redux/features/toastSlice'
-import {
-  CREATE,
-  UPDATE,
-  DELETION,
-  FETCH,
-} from '../../../../app/audit/UserActionType'
+import { updateToast } from 'Redux/features/toastSlice'
+import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import AttributeApi from 'Plugins/schema/redux/api/AttributeApi'
 import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -27,9 +22,7 @@ const JansConfigApi = require('jans_config_api')
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AttributeApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.AttributeApi(getClient(JansConfigApi, token, issuer))
   return new AttributeApi(api)
 }
 
@@ -69,7 +62,7 @@ export function* searchAttributes({ payload }) {
 }
 
 export function* addAttribute({ payload }) {
-    const audit = yield* initAudit()
+  const audit = yield* initAudit()
   try {
     addAdditionalData(audit, CREATE, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
@@ -123,7 +116,9 @@ export function* deleteAttribute({ payload }) {
     yield put(updateToast(true, 'success'))
     yield put(deleteAttributeResponse({ inum: payload.inum }))
     yield call(postUserAction, audit)
-    yield* triggerWebhook({ payload: { createdFeatureValue: { inum: payload?.inum, name: payload?.name } } })
+    yield* triggerWebhook({
+      payload: { createdFeatureValue: { inum: payload?.inum, name: payload?.name } },
+    })
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))

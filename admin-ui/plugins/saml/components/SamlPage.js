@@ -12,9 +12,7 @@ import TrustRelationshipList from './TrustRelationshipList'
 
 const SamlPage = () => {
   const { t } = useTranslation()
-  const { loadingSamlIdp, loading } = useSelector(
-    (state) => state.idpSamlReducer
-  )
+  const { loadingSamlIdp, loading } = useSelector((state) => state.idpSamlReducer)
 
   SetTitle(t('titles.saml_management'))
 
@@ -37,13 +35,9 @@ const SamlPage = () => {
 
   return (
     <GluuLoader blocking={loadingSamlIdp || loading}>
-      <Card className='mb-3' style={applicationStyle.mainCard}>
+      <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuTabs
-            tabNames={tabNames}
-            tabToShow={tabToShow}
-            withNavigation={true}
-          />
+          <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
         </CardBody>
       </Card>
     </GluuLoader>

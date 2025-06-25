@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from 'react'
 import {
   FormGroup,
   Col,
@@ -12,17 +12,17 @@ import {
   Collapse,
   Card,
   CardBody,
-} from "reactstrap";
-import { useTranslation } from "react-i18next";
-import { ThemeContext } from "Context/theme/themeContext";
-import PropTypes from "prop-types";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useSelector } from "react-redux";
-import useWebhookDialogAction from "Utils/hooks/useWebhookDialogAction";
-import { hasPermission, WEBHOOK_READ } from "Utils/PermChecker";
+} from 'reactstrap'
+import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
+import PropTypes from 'prop-types'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import { useSelector } from 'react-redux'
+import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
+import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
 
-const USER_MESSAGE = "user_action_message";
+const USER_MESSAGE = 'user_action_message'
 
 const GluuCommitDialog = ({
   handler,
@@ -34,45 +34,43 @@ const GluuCommitDialog = ({
   placeholderLabel,
   inputType,
   feature,
-}:any) => {
-  const permissions = useSelector((state: any) => state.authReducer.permissions);
-  const { t } = useTranslation();
-  const theme: any = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
-  const [active, setActive] = useState(false);
-  const [isOpen, setIsOpen] = useState(null);
-  const [userMessage, setUserMessage] = useState("");
-  const { loadingWebhooks, webhookModal } = useSelector(
-    (state: any) => state.webhookReducer
-  );
+}: any) => {
+  const permissions = useSelector((state: any) => state.authReducer.permissions)
+  const { t } = useTranslation()
+  const theme: any = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const [active, setActive] = useState(false)
+  const [isOpen, setIsOpen] = useState(null)
+  const [userMessage, setUserMessage] = useState('')
+  const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
     feature,
     modal,
-  });
+  })
 
   useEffect(() => {
     if (userMessage.length >= 10) {
-      setActive(true);
+      setActive(true)
     } else {
-      setActive(false);
+      setActive(false)
     }
-  }, [userMessage]);
+  }, [userMessage])
 
   function handleAccept() {
     if (formik) {
-      formik.setFieldValue("action_message", userMessage);
+      formik.setFieldValue('action_message', userMessage)
     }
-    onAccept(userMessage);
-    setUserMessage("");
+    onAccept(userMessage)
+    setUserMessage('')
   }
   const closeModal = () => {
-    handler();
-    setUserMessage("");
-    onCloseModal();
-  };
+    handler()
+    setUserMessage('')
+    onCloseModal()
+  }
 
   if (!modal) {
-    return <></>;
+    return <></>
   }
   const renderBadges = (values: any) => {
     return (
@@ -80,58 +78,50 @@ const GluuCommitDialog = ({
         {values.map((data: any, index: any) => (
           <Badge
             color={`primary-${selectedTheme}  `}
-            style={{ width: "fit-content" }}
+            style={{ width: 'fit-content' }}
             key={String(data)}
           >
             {JSON.stringify(data)}
           </Badge>
         ))}
       </div>
-    );
-  };
+    )
+  }
   return (
     <>
-      {(webhookModal || loadingWebhooks) &&
-      hasPermission(permissions, WEBHOOK_READ) ? (
+      {(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ) ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
-        <Modal
-          isOpen={modal}
-          size={"lg"}
-          toggle={closeModal}
-          className="modal-outline-primary"
-        >
+        <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">
           <ModalHeader toggle={closeModal}>
             <i
               onClick={closeModal}
               onKeyDown={() => {}}
-              style={{ color: "green" }}
+              style={{ color: 'green' }}
               className="fa fa-2x fa-info fa-fw modal-icon mb-3"
               role="img"
               aria-hidden="true"
             ></i>
-            {!label || label === ""
-              ? t("messages.action_commit_question")
-              : label}
+            {!label || label === '' ? t('messages.action_commit_question') : label}
           </ModalHeader>
           <ModalBody>
             <div
               style={{
-                overflow: "auto",
-                maxHeight: "300px",
-                height: "auto",
-                marginBottom: "10px",
-                overflowX: "hidden",
+                overflow: 'auto',
+                maxHeight: '300px',
+                height: 'auto',
+                marginBottom: '10px',
+                overflowX: 'hidden',
               }}
             >
               {operations?.length ? (
                 <FormGroup row>
                   <h1
                     style={{
-                      fontSize: "1.2rem",
-                      fontWeight: "bold",
+                      fontSize: '1.2rem',
+                      fontWeight: 'bold',
                       margin: 0,
-                      color: "black !important",
+                      color: 'black !important',
                     }}
                   >
                     List of changes
@@ -141,55 +131,43 @@ const GluuCommitDialog = ({
               {operations &&
                 operations.map((item: any, key: any) => (
                   <FormGroup row key={key}>
-                    <Col sm={1} style={{ fontWeight: "bold" }}>
+                    <Col sm={1} style={{ fontWeight: 'bold' }}>
                       Set
                     </Col>
                     <Col
                       sm={5}
                       style={{
-                        overflow: "auto",
+                        overflow: 'auto',
                         width: 300,
                         paddingBottom: 10,
                       }}
                     >
-                      <Badge color={`primary-${selectedTheme}`}>
-                        {item.path}
-                      </Badge>
+                      <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
                     </Col>
-                    <Col sm={1} style={{ fontWeight: "bold" }}>
+                    <Col sm={1} style={{ fontWeight: 'bold' }}>
                       to
                     </Col>
-                    <Col sm={5} style={{ overflow: "auto" }}>
+                    <Col sm={5} style={{ overflow: 'auto' }}>
                       {Array.isArray(item.value) ? (
                         <div className="d-flex flex-column gap-1 align-items-start">
                           {isOpen === key ? (
-                            <Collapse isOpen={isOpen === key}>
-                              {renderBadges(item.value)}
-                            </Collapse>
+                            <Collapse isOpen={isOpen === key}>{renderBadges(item.value)}</Collapse>
                           ) : (
                             renderBadges(item.value.slice(0, 2))
                           )}
                           {item.value.length > 2 && (
                             <Button
                               color="link"
-                              onClick={() =>
-                                setIsOpen(isOpen !== key ? key : null)
-                              }
+                              onClick={() => setIsOpen(isOpen !== key ? key : null)}
                               size="sm"
                             >
-                              {isOpen === key ? "Show Less" : "Show More"}
-                              {isOpen === key ? (
-                                <KeyboardArrowUpIcon />
-                              ) : (
-                                <KeyboardArrowDownIcon />
-                              )}
+                              {isOpen === key ? 'Show Less' : 'Show More'}
+                              {isOpen === key ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                             </Button>
                           )}
                         </div>
                       ) : (
-                        <Badge color={`primary-${selectedTheme}`}>
-                          {String(item.value)}
-                        </Badge>
+                        <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
                       )}
                     </Col>
                   </FormGroup>
@@ -200,12 +178,12 @@ const GluuCommitDialog = ({
                 <Col sm={12}>
                   <Input
                     id={USER_MESSAGE}
-                    type={inputType || "textarea"}
+                    type={inputType || 'textarea'}
                     name={USER_MESSAGE}
                     onChange={(e) => setUserMessage(e.target.value)}
                     placeholder={
-                      !placeholderLabel || placeholderLabel === ""
-                        ? t("placeholders.action_commit_message")
+                      !placeholderLabel || placeholderLabel === ''
+                        ? t('placeholders.action_commit_message')
                         : placeholderLabel
                     }
                     rows="4"
@@ -213,8 +191,8 @@ const GluuCommitDialog = ({
                   />
                   {userMessage.length < 10 && (
                     <span className="text-danger">
-                      {10 - userMessage.length}{" "}
-                      {userMessage.length ? " more" : ""} characters required
+                      {10 - userMessage.length} {userMessage.length ? ' more' : ''} characters
+                      required
                     </span>
                   )}
                 </Col>
@@ -225,21 +203,21 @@ const GluuCommitDialog = ({
             {active && (
               <Button color={`primary-${selectedTheme}`} onClick={handleAccept}>
                 <i className="fa fa-check-circle me-2"></i>
-                {t("actions.accept")}
+                {t('actions.accept')}
               </Button>
-            )}{" "}
+            )}{' '}
             <Button onClick={closeModal}>
               <i className="fa fa-remove me-2"></i>
-              {t("actions.no")}
+              {t('actions.no')}
             </Button>
           </ModalFooter>
         </Modal>
       )}
     </>
-  );
-};
+  )
+}
 
-export default GluuCommitDialog;
+export default GluuCommitDialog
 GluuCommitDialog.propTypes = {
   feature: PropTypes.string,
   operations: PropTypes.any,
@@ -250,4 +228,4 @@ GluuCommitDialog.propTypes = {
   inputType: PropTypes.string,
   label: PropTypes.string,
   formik: PropTypes.object,
-};
+}

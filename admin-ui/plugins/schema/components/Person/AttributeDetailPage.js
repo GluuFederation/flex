@@ -1,12 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Container,
-  Badge,
-  Row,
-  Col,
-  FormGroup,
-  Label,
-} from 'Components'
+import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 

@@ -1,12 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Col,
-  FormGroup,
-  Input,
-  Card,
-  CardBody,
-  Badge,
-} from 'Components'
+import { Col, FormGroup, Input, Card, CardBody, Badge } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { ThemeContext } from 'Context/theme/themeContext'
 

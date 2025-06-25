@@ -64,9 +64,7 @@ describe('perform CRUD for scopes module', () => {
 
     expect(result.returnValue instanceof Error).toBe(false)
     if (result.returnValue.entries) {
-      expect(result.storeState.scopeReducer.items).toBe(
-        result.returnValue.entries
-      )
+      expect(result.storeState.scopeReducer.items).toBe(result.returnValue.entries)
     }
   })
 

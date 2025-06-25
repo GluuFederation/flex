@@ -30,7 +30,7 @@ export default function* rootSaga() {
         licenseDetailsSaga(),
         attributes(),
         profileDetails(),
-        lockSaga()
+        lockSaga(),
       ],
       pluginSagaArr,
     ),

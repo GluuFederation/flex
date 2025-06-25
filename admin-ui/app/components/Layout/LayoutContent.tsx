@@ -6,7 +6,7 @@ import getThemeColor from 'context/theme/config'
 import { ReactNode } from 'react'
 
 interface LayoutContentProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 const LayoutContent = ({ children }: LayoutContentProps) => {
@@ -18,17 +18,15 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
   const themeColors = getThemeColor(selectedTheme)
 
   return (
-    <div className="layout__content" style={{ background: themeColors.background, height:"100%" }}>
-      { children }
+    <div className="layout__content" style={{ background: themeColors.background, height: '100%' }}>
+      {children}
     </div>
   )
 }
 
 LayoutContent.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 }
-LayoutContent.layoutPartName = "content"
+LayoutContent.layoutPartName = 'content'
 
-export {
-  LayoutContent
-}
+export { LayoutContent }

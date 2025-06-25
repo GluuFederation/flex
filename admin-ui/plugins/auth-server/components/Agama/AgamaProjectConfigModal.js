@@ -146,8 +146,8 @@ const AgamaProjectConfigModal = ({
                 updateToast(
                   true,
                   'success',
-                  `Configuration for project ${name} imported successfully.`
-                )
+                  `Configuration for project ${name} imported successfully.`,
+                ),
               )
             })
             .finally(() => {
@@ -189,17 +189,13 @@ const AgamaProjectConfigModal = ({
       dispatch(updateToast(true, 'success', 'File saved successfully'))
     } catch (e) {
       // Show an error message to the user
-      dispatch(
-        updateToast(true, 'success', 'An error occurred while saving the file')
-      )
+      dispatch(updateToast(true, 'success', 'An error occurred while saving the file'))
     }
   }
 
   const handleExportCurrentConfig = () => {
     if (isEmpty(configDetails.data)) {
-      dispatch(
-        updateToast(true, 'error', `No configurations defined for ${name}`)
-      )
+      dispatch(updateToast(true, 'error', `No configurations defined for ${name}`))
       return
     }
     save_data(JSON.stringify(configDetails.data))
@@ -207,13 +203,7 @@ const AgamaProjectConfigModal = ({
 
   const handleExportSampleConfig = () => {
     if (isEmpty(projectConfigs)) {
-      dispatch(
-        updateToast(
-          true,
-          'error',
-          `No sample configurations defined for ${name}`
-        )
-      )
+      dispatch(updateToast(true, 'error', `No sample configurations defined for ${name}`))
       return
     }
     save_data(JSON.stringify(projectConfigs))
@@ -225,22 +215,19 @@ const AgamaProjectConfigModal = ({
       isOpen={isOpen}
       style={{ minWidth: '45vw' }}
       toggle={handler}
-      className='modal-outline-primary'
+      className="modal-outline-primary"
     >
       <ModalHeader
         style={{ padding: '16px', width: '100%' }}
         title={`project ${name}`}
         toggle={handler}
       >
-        {manageConfig
-          ? `Manage Configuration for Project ${name}`
-          : `Details of project ${name}`}
+        {manageConfig ? `Manage Configuration for Project ${name}` : `Details of project ${name}`}
       </ModalHeader>
       <ModalBody style={{ overflowX: 'auto', maxHeight: '60vh' }}>
         {projectDetails?.data?.statusCode === 204 && (
           <p>
-            Project <b>{name}</b> is still being deployed. Try again in 1
-            minute.
+            Project <b>{name}</b> is still being deployed. Try again in 1 minute.
           </p>
         )}
 
@@ -252,9 +239,9 @@ const AgamaProjectConfigModal = ({
               <>
                 {manageConfig ? (
                   <Box
-                    display='flex'
-                    flexDirection='column'
-                    justifyContent='center'
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
                     sx={{ margin: '8px' }}
                     style={{ gap: '12px' }}
                   >
@@ -266,33 +253,26 @@ const AgamaProjectConfigModal = ({
                       {t('fields.export_current_config')}
                     </Button>
 
-                    <Button onClick={handleImportConfig}>
-                      {t('fields.import_configuration')}
-                    </Button>
+                    <Button onClick={handleImportConfig}>{t('fields.import_configuration')}</Button>
                   </Box>
                 ) : (
                   <>
                     <Box>
                       {t('fields.version')}:{' '}
-                      {projectDetails.data?.details?.projectMetadata?.version ??
-                        '-'}
+                      {projectDetails.data?.details?.projectMetadata?.version ?? '-'}
                     </Box>
                     <Box>
                       {t('fields.description')}:{' '}
-                      {projectDetails.data?.details?.projectMetadata
-                        ?.description ?? '-'}
+                      {projectDetails.data?.details?.projectMetadata?.description ?? '-'}
                     </Box>
                     <Box>
-                      {t('fields.deployed_started_on')}:{' '}
-                      {projectDetails.data?.createdAt ?? '-'}
+                      {t('fields.deployed_started_on')}: {projectDetails.data?.createdAt ?? '-'}
                     </Box>
                     <Box>
-                      {t('fields.deployed_finished_on')}:{' '}
-                      {projectDetails.data?.finishedAt ?? '-'}
+                      {t('fields.deployed_finished_on')}: {projectDetails.data?.finishedAt ?? '-'}
                     </Box>
                     <Box>
-                      {t('fields.errors')}:{' '}
-                      {projectDetails.data?.details?.error ?? 'No'}
+                      {t('fields.errors')}: {projectDetails.data?.details?.error ?? 'No'}
                     </Box>
                     <Box mt={2}>
                       <MaterialTable
@@ -308,7 +288,7 @@ const AgamaProjectConfigModal = ({
                         ]}
                         data={projectDetails.data?.tableOptions}
                         isLoading={projectDetails.isLoading}
-                        title=''
+                        title=""
                         options={{
                           search: false,
                           selection: false,
@@ -327,13 +307,9 @@ const AgamaProjectConfigModal = ({
                             readOnly={true}
                             theme={theme}
                             fontSize={14}
-                            width='100%'
-                            height='300px'
-                            defaultValue={JSON.stringify(
-                              projectConfigs,
-                              null,
-                              2
-                            )}
+                            width="100%"
+                            height="300px"
+                            defaultValue={JSON.stringify(projectConfigs, null, 2)}
                             editorProps={{ $blockScrolling: true }}
                           />
                         </Box>

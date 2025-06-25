@@ -4,9 +4,4 @@ import SidebarEntryAnimate from './sidebar-entry-animate'
 import SlimSidebarAnimate from './slim-sidebar-animate'
 import SlimMenuAnimate from './slim-menu-animate'
 
-export {
-    SideMenuAnimate,
-    SidebarEntryAnimate,
-    SlimSidebarAnimate,
-    SlimMenuAnimate,
-};
+export { SideMenuAnimate, SidebarEntryAnimate, SlimSidebarAnimate, SlimMenuAnimate }

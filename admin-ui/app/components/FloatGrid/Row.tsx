@@ -1,36 +1,26 @@
 // @ts-nocheck
 import React from 'react'
 import PropTypes from 'prop-types'
-import { 
-  keys,
-  map,
-  isEqual,
-  isEmpty,
-  drop,
-  isUndefined,
-  pick,
-  indexOf,
-  max
-} from 'lodash'
-import {
-  WidthProvider,
-  Responsive
-} from 'react-grid-layout'
+import { keys, map, isEqual, isEmpty, drop, isUndefined, pick, indexOf, max } from 'lodash'
+import { WidthProvider, Responsive } from 'react-grid-layout'
 import { Row as BSRow } from 'reactstrap'
 
 import { FloatGridContext } from './floatGridContext'
 
 const ResponsiveGrid = WidthProvider(Responsive)
 const responsiveBreakpoints = {
-  xl: 1139, lg: 959, md: 719, sm: 539, xs: 0
+  xl: 1139,
+  lg: 959,
+  md: 719,
+  sm: 539,
+  xs: 0,
   //xl: Number.MAX_VALUE, lg: 1199, md: 991, sm: 767, xs: 576
 }
 const breakPointSteps = keys(responsiveBreakpoints)
 const TOTAL_ROW = 12
 
-const simplifyChildrenArray = (reactChildren) => map(reactChildren, child => (
-  { ...child, key: child.key.replace(/\.\$/g, '') }
-))
+const simplifyChildrenArray = (reactChildren) =>
+  map(reactChildren, (child) => ({ ...child, key: child.key.replace(/\.\$/g, '') }))
 
 export class Row extends React.Component {
   static propTypes = {
@@ -38,15 +28,15 @@ export class Row extends React.Component {
     columns: PropTypes.object,
     onLayoutChange: PropTypes.func,
     rowHeight: PropTypes.number,
-    gridSize: PropTypes.object
+    gridSize: PropTypes.object,
   }
 
   static contextType = FloatGridContext
 
-  _lastLayouts = { }
+  _lastLayouts = {}
   state = {
-    trueColSizes: { },
-    activeLayout: 'xl'
+    trueColSizes: {},
+    activeLayout: 'xl',
   }
   initialDebounceTimeout = false
 
@@ -63,19 +53,21 @@ export class Row extends React.Component {
     const { trueColSizes } = this.state
 
     if (this.context.active) {
-      const layouts = this._lastLayouts = this._calculateLayouts(children)
+      const layouts = (this._lastLayouts = this._calculateLayouts(children))
       const adjustedChildren = simplifyChildrenArray(
         React.Children.map(children, (child) =>
-          React.cloneElement(child, { trueSize: trueColSizes[child.props.i] })))
+          React.cloneElement(child, { trueSize: trueColSizes[child.props.i] }),
+        ),
+      )
 
       return (
         <ResponsiveGrid
           cols={{ xl: 12, lg: 12, md: 12, sm: 12, xs: 12 }}
-          breakpoints={ responsiveBreakpoints }
-          layouts={ layouts }
-          padding={ [ 0, 0 ] }
-          margin={ [ 0, 0 ] }
-          rowHeight={ rowHeight }
+          breakpoints={responsiveBreakpoints}
+          layouts={layouts}
+          padding={[0, 0]}
+          margin={[0, 0]}
+          rowHeight={rowHeight}
           onLayoutChange={(currentLayout, allLayouts) => {
             // Notify the parent
             onLayoutChange(this._transformForChangeHandler(allLayouts))
@@ -90,30 +82,25 @@ export class Row extends React.Component {
           onBreakpointChange={(activeLayout) => {
             this.setState({ activeLayout })
           }}
-          onResize={
-            (layout, oldItem, newItem) => {
-              this.setState({
-                trueColSizes: {
-                  ...trueColSizes,
-                  [newItem.i]: this.context.gridUnitsToPx(newItem.w, newItem.h)
-                }
-              })
-            }
-          }
-          { ...otherProps }
+          onResize={(layout, oldItem, newItem) => {
+            this.setState({
+              trueColSizes: {
+                ...trueColSizes,
+                [newItem.i]: this.context.gridUnitsToPx(newItem.w, newItem.h),
+              },
+            })
+          }}
+          {...otherProps}
         >
-          { adjustedChildren }
+          {adjustedChildren}
         </ResponsiveGrid>
       )
     } else {
       const adjustedChildren = React.Children.map(children, (child) =>
-        React.cloneElement(child, { active: false }))
-            
-      return (
-        <BSRow>
-          { adjustedChildren }
-        </BSRow>
+        React.cloneElement(child, { active: false }),
       )
+
+      return <BSRow>{adjustedChildren}</BSRow>
     }
   }
 
@@ -126,10 +113,10 @@ export class Row extends React.Component {
   }
 
   /**
-     * Finds the nearest breakpoint relative to the one provided in the
-     * first param. For example - when the `definition` param contains
-     * such bps - { md: 6, xs: 8 }, for `breakpoint` - xl/md will return 6
-     */
+   * Finds the nearest breakpoint relative to the one provided in the
+   * first param. For example - when the `definition` param contains
+   * such bps - { md: 6, xs: 8 }, for `breakpoint` - xl/md will return 6
+   */
   _findClosestBreakpoint = (breakpoint, definition) => {
     let found = 12
     for (const bp of drop(breakPointSteps, indexOf(breakPointSteps, breakpoint))) {
@@ -141,41 +128,48 @@ export class Row extends React.Component {
   }
 
   _calculateLayouts = (children) => {
-    let output = { }
+    let output = {}
     const childrenArray = React.Children.toArray(children)
     for (const breakPoint of breakPointSteps) {
       let rowChildren = []
       let rowCounter = 0
       let y = 0
       for (const child of childrenArray) {
-        let bpData = { }
+        let bpData = {}
         // Save the props for current child and breakpoint
         const config = pick(child.props, [
           'i',
-          'h', 'minH', 'maxH',
-          'minW', 'maxW',
-          breakPoint, `${breakPoint}MinW`, `${breakPoint}MaxW`,
-          'moved', 'static', 'isResizable', 'isDraggable'
+          'h',
+          'minH',
+          'maxH',
+          'minW',
+          'maxW',
+          breakPoint,
+          `${breakPoint}MinW`,
+          `${breakPoint}MaxW`,
+          'moved',
+          'static',
+          'isResizable',
+          'isDraggable',
         ])
         // Calculate the needed definition
         bpData = Object.assign(bpData, {
           ...config,
           // Add default heights when none provided
           ...{
-            // Set the x to the calculated value or take from the 
+            // Set the x to the calculated value or take from the
             // props if defined for controlled type
-            x: isUndefined(child.props[`${breakPoint}X`]) ?
-              rowCounter : child.props[`${breakPoint}X`],
+            x: isUndefined(child.props[`${breakPoint}X`])
+              ? rowCounter
+              : child.props[`${breakPoint}X`],
             h: child.props[`${breakPoint}H`] || config.h || 1,
-            minH: config.minH || (config.h || 1),
-            maxH: config.maxH || (config.h || 1),
+            minH: config.minH || config.h || 1,
+            maxH: config.maxH || config.h || 1,
           },
-          w: config[breakPoint] ||
-                        this._findClosestBreakpoint(breakPoint, child.props),
-          // Set the y to the calculated value or take from the 
+          w: config[breakPoint] || this._findClosestBreakpoint(breakPoint, child.props),
+          // Set the y to the calculated value or take from the
           // props if defined for controlled type
-          y: isUndefined(child.props[`${breakPoint}Y`]) ?
-            y : child.props[`${breakPoint}Y`]
+          y: isUndefined(child.props[`${breakPoint}Y`]) ? y : child.props[`${breakPoint}Y`],
         })
         rowChildren = [...rowChildren, bpData]
         rowCounter += bpData.w
@@ -187,7 +181,7 @@ export class Row extends React.Component {
         }
         output = {
           ...output,
-          [breakPoint]: [...(output[breakPoint] || []), bpData]
+          [breakPoint]: [...(output[breakPoint] || []), bpData],
         }
       }
     }
@@ -195,21 +189,21 @@ export class Row extends React.Component {
   }
 
   /**
-     * Transform the calculated layout to a structure
-     * which is provided by `layouts` props
-     */
+   * Transform the calculated layout to a structure
+   * which is provided by `layouts` props
+   */
   _transformForChangeHandler = (layouts) => {
-    const output = { }
+    const output = {}
     for (const breakPoint of breakPointSteps) {
       const bpLayout = layouts[breakPoint]
       for (const element of bpLayout) {
         output[element.i] = {
-          ...(output[element.i]),
-          ...(element),
+          ...output[element.i],
+          ...element,
           [breakPoint]: element.w,
           [`${breakPoint}X`]: element.x,
           [`${breakPoint}Y`]: element.y,
-          [`${breakPoint}H`]: element.h
+          [`${breakPoint}H`]: element.h,
         }
       }
     }

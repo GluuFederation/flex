@@ -17,10 +17,10 @@ it('Test gluutooltip', async () => {
 
   const mouseOverEle = container.querySelector(`div[data-tooltip-id="applicationType"]`)
   expect(mouseOverEle).toBeInTheDocument()
-  
+
   userEvent.hover(mouseOverEle)
 
   await waitFor(() => {
-    expect(screen.getByRole("tooltip")).toHaveTextContent(/Kind of the application/i)
+    expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)
   })
 })

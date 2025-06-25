@@ -2,12 +2,7 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
-import { 
-  Badge,
-  Media,
-  Avatar,
-  AvatarAddOn
-} from 'Components'
+import { Badge, Media, Avatar, AvatarAddOn } from 'Components'
 import { randomAvatar } from './../../../utilities'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -19,38 +14,33 @@ const ProfileHeader = () => {
 
   return (
     <React.Fragment>
-      { /* START Header */}
+      {/* START Header */}
       <Media className="mb-3">
         <Media left middle className="me-3 align-self-center">
           <Avatar.Image
             size="lg"
-            src={ randomAvatar() }
+            src={randomAvatar()}
             className="me-2"
             addOns={[
-              <AvatarAddOn.Icon 
-                className="fa fa-circle"
-                color="white"
-                key="avatar-icon-bg"
-              />,
-              <AvatarAddOn.Icon 
-                className="fa fa-circle"
-                color="success"
-                key="avatar-icon-fg"
-              />
+              <AvatarAddOn.Icon className="fa fa-circle" color="white" key="avatar-icon-bg" />,
+              <AvatarAddOn.Icon className="fa fa-circle" color="success" key="avatar-icon-fg" />,
             ]}
           />
         </Media>
         <Media body>
           <h5 className="mb-1 mt-0">
             <Link to="/apps/profile-details">
-              { 'faker.name.firstName()' } { 'faker.name.lastName()' }
-            </Link> <span className="text-muted mx-1"> / </span> {t("Profile Edit")}
+              {'faker.name.firstName()'} {'faker.name.lastName()'}
+            </Link>{' '}
+            <span className="text-muted mx-1"> / </span> {t('Profile Edit')}
           </h5>
-          <Badge color={`primary-${selectedTheme}`} pill className="me-2">{t("Premium")}</Badge> 
-          <span className="text-muted">{t("Edit Your Name, Avatar, etc.")}</span>
+          <Badge color={`primary-${selectedTheme}`} pill className="me-2">
+            {t('Premium')}
+          </Badge>
+          <span className="text-muted">{t('Edit Your Name, Avatar, etc.')}</span>
         </Media>
       </Media>
-      { /* END Header */}
+      {/* END Header */}
     </React.Fragment>
   )
 }

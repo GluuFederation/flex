@@ -5,7 +5,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
 interface LayoutNavbarProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const LayoutNavbar: React.FC<LayoutNavbarProps> = (props) => {
@@ -16,18 +16,14 @@ const LayoutNavbar: React.FC<LayoutNavbarProps> = (props) => {
 
   return (
     <div className="layout__navbar" style={{ background: themeColors.background }}>
-      {
-        React.cloneElement(navbar, { fixed: null })
-      }
+      {React.cloneElement(navbar, { fixed: null })}
     </div>
   )
 }
 
 LayoutNavbar.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 }
-LayoutNavbar.layoutPartName = "navbar"
+LayoutNavbar.layoutPartName = 'navbar'
 
-export {
-  LayoutNavbar
-}
+export { LayoutNavbar }

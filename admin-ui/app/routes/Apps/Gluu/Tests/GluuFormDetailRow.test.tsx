@@ -8,16 +8,11 @@ const VALUE = 'openid'
 
 it('Should render one label and a badge', () => {
   function handler() {
-    console.log("========")
+    console.log('========')
   }
   render(
     <AppTestWrapper>
-      <GluuFormDetailRow
-        label={LABEL}
-        value={VALUE}
-        name={NAME}
-        handler={handler}
-      />
+      <GluuFormDetailRow label={LABEL} value={VALUE} name={NAME} handler={handler} />
     </AppTestWrapper>,
   )
   screen.getByText(/Application Type/i)

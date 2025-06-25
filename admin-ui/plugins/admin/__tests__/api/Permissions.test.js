@@ -1,10 +1,7 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import { combineReducers } from '@reduxjs/toolkit'
 import { log } from 'console'
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/admin/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/admin/__tests__/api/setup.test'
 import authReducer from 'Redux/features/authSlice'
 import {
   getPermissions,

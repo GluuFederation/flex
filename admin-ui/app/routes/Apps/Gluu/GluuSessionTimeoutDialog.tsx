@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -6,11 +6,11 @@ import {
   DialogActions,
   Typography,
   Slide,
-  SlideProps
-} from "@mui/material"
+  SlideProps,
+} from '@mui/material'
 import { Button } from 'Components'
-import clsx from "clsx"
-import styles from "./styles/GluuSessionTimeoutDialog.style"
+import clsx from 'clsx'
+import styles from './styles/GluuSessionTimeoutDialog.style'
 import { ThemeContext } from 'Context/theme/themeContext'
 
 const Transition = React.forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
@@ -23,17 +23,11 @@ const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }: any) =>
   const selectedTheme = theme.state.theme
 
   return (
-    <Dialog
-      open={open}
-      classes={{ paper: classes.dialog }}
-      TransitionComponent={Transition}
-    >
-      <DialogTitle>
-        Session Timeout
-      </DialogTitle>
+    <Dialog open={open} classes={{ paper: classes.dialog }} TransitionComponent={Transition}>
+      <DialogTitle>Session Timeout</DialogTitle>
       <DialogContent>
         <Typography variant="body2">
-          The current session is about to expire in{" "}
+          The current session is about to expire in{' '}
           <span className={classes.countdown}>{countdown}</span> seconds.
         </Typography>
         <Typography variant="body2">{`Would you like to continue the session?`}</Typography>

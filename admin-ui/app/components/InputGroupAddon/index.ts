@@ -1,4 +1,4 @@
 // @ts-nocheck
-import { InputGroupAddon } from './InputGroupAddon' 
+import { InputGroupAddon } from './InputGroupAddon'
 
 export default InputGroupAddon

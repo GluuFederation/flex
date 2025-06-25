@@ -13,13 +13,13 @@ export class Grid extends React.Component {
     children: PropTypes.node,
     fluid: PropTypes.bool,
     rowHeight: PropTypes.number,
-    className: PropTypes.string
+    className: PropTypes.string,
   }
 
   static defaultProps = {
     active: true,
     fluid: false,
-    rowHeight: 100
+    rowHeight: 100,
   }
 
   state = {
@@ -33,8 +33,8 @@ export class Grid extends React.Component {
     this.setState({
       gridSize: {
         w: this._gridRef.current.clientWidth,
-        h: this._gridRef.current.clientHeight
-      }
+        h: this._gridRef.current.clientHeight,
+      },
     })
 
     if (typeof window !== 'undefined') {
@@ -44,10 +44,7 @@ export class Grid extends React.Component {
 
   componentDidUpdate(nextProps) {
     // HACK
-    if (
-      typeof window !== 'undefined' &&
-            nextProps.fluid !== this.props.fluid
-    ) {
+    if (typeof window !== 'undefined' && nextProps.fluid !== this.props.fluid) {
       window.dispatchEvent(new Event('resize'))
     }
   }
@@ -61,49 +58,49 @@ export class Grid extends React.Component {
   render() {
     const { active, children, fluid, className, rowHeight, ...otherProps } = this.props
     const { gridSize } = this.state
-    const modifiedChildren = React.Children.map(children, child => (
+    const modifiedChildren = React.Children.map(children, (child) =>
       React.cloneElement(child, {
         ...otherProps,
         active,
-        gridSize
-      })
-    ))
+        gridSize,
+      }),
+    )
 
-    const floatWrapClasses = classNames({
-      ['float-grid-parent__static']: !fluid
-    }, className, 'float-grid-parent')
+    const floatWrapClasses = classNames(
+      {
+        ['float-grid-parent__static']: !fluid,
+      },
+      className,
+      'float-grid-parent',
+    )
 
-    return(
+    return (
       <FloatGridContext.Provider
         value={{
           gridUnitsToPx: (w, h) => {
             return {
-              wPx: w / 12 * gridSize.w,
-              hPx: h * rowHeight
+              wPx: (w / 12) * gridSize.w,
+              hPx: h * rowHeight,
             }
           },
           active,
           gridReady: this.state.gridReady,
-          setGridReady: () => { this.setState({ gridReady: true }) }
+          setGridReady: () => {
+            this.setState({ gridReady: true })
+          },
         }}
       >
-        {
-          active ? (
-            <div
-              className={ floatWrapClasses }
-              ref={ this._gridRef }
-            >
-              { modifiedChildren }
-            </div>
-          ) : (
-            <div ref={ this._gridRef }>
-              <Container fluid={ fluid } className={ className } { ...otherProps }>
-                { modifiedChildren }
-              </Container>
-            </div>
-          )
-        }
-                
+        {active ? (
+          <div className={floatWrapClasses} ref={this._gridRef}>
+            {modifiedChildren}
+          </div>
+        ) : (
+          <div ref={this._gridRef}>
+            <Container fluid={fluid} className={className} {...otherProps}>
+              {modifiedChildren}
+            </Container>
+          </div>
+        )}
       </FloatGridContext.Provider>
     )
   }
@@ -111,13 +108,16 @@ export class Grid extends React.Component {
   _resizeHandler = () => {
     clearInterval(this._resizeDebounceTimeout)
 
-    this._resizeDebounceTimeout = setTimeout(() => {
-      this.setState({
-        gridSize: {
-          w: this._gridRef.current.clientWidth,
-          h: this._gridRef.current.clientHeight
-        }
-      })
-    }, 1000 / 60 * 10) //Every 10 frames debounce
+    this._resizeDebounceTimeout = setTimeout(
+      () => {
+        this.setState({
+          gridSize: {
+            w: this._gridRef.current.clientWidth,
+            h: this._gridRef.current.clientHeight,
+          },
+        })
+      },
+      (1000 / 60) * 10,
+    ) //Every 10 frames debounce
   }
 }

@@ -2,7 +2,13 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import SsaApi from '../api/SsaApi'
-import { getSsaConfig, getSsaConfigResponse, removeSsaResponse, toggleSaveConfig, getSsaJwtResponse } from '../features/SsaSlice'
+import {
+  getSsaConfig,
+  getSsaConfigResponse,
+  removeSsaResponse,
+  toggleSaveConfig,
+  getSsaJwtResponse,
+} from '../features/SsaSlice'
 import { CREATE, DELETION } from '../../../../app/audit/UserActionType'
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -34,7 +40,11 @@ export function* getSsaJwt({ payload }) {
   const token = yield select((state) => state.authReducer.token.access_token)
   const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    const data = yield call(new SsaApi().getSsaJwt, { jti: payload.action.action_data, token, authServerHost })
+    const data = yield call(new SsaApi().getSsaJwt, {
+      jti: payload.action.action_data,
+      token,
+      authServerHost,
+    })
     yield put(getSsaJwtResponse(data))
     return data
   } catch (e) {
@@ -53,7 +63,7 @@ export function* addSsaConfig({ payload }) {
     const data = yield call(new SsaApi().createSsa, {
       payload: payload.action.action_data,
       token,
-      authServerHost
+      authServerHost,
     })
     if (!data?.error) {
       createAndDownloadJSONFile(data)
@@ -79,7 +89,7 @@ export function* removeSsaConfig({ payload }) {
     const data = yield call(new SsaApi().deleteSsa, {
       jti: payload.action.action_data,
       token,
-      authServerHost
+      authServerHost,
     })
     yield put(getSsaConfig())
     return data

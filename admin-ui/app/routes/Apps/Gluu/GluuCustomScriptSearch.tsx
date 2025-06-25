@@ -8,7 +8,7 @@ function GluuCustomScriptSearch({
   typeId,
   scriptType,
   pattern = '',
-  options = []
+  options = [],
 }: any) {
   const { t } = useTranslation()
   return (
@@ -24,7 +24,11 @@ function GluuCustomScriptSearch({
           className="search-select"
         >
           {options.map((option: any) => {
-            return <option key={option.value} value={option.value}>{option.name}</option>
+            return (
+              <option key={option.value} value={option.value}>
+                {option.name}
+              </option>
+            )
           })}
         </CustomInput>
       </InputGroup>

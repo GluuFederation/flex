@@ -1,4 +1,4 @@
-@import './variables';
+@import "./variables";
 
 .sidebar--animations-enabled {
     &.sidebar--animate-slim--progress {
@@ -34,8 +34,7 @@
         }
 
         &.active .sidebar-menu__entry__link {
-            transition: background-color 200ms ease-in-out
-                        box-shadow 200ms ease-in-out;
+            transition: background-color 200ms ease-in-out box-shadow 200ms ease-in-out;
         }
     }
 

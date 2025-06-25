@@ -12,7 +12,7 @@ export default class ConfigurationApi {
       })
     })
   }
-  
+
   patchApiConfigConfiguration = (options) => {
     return new Promise((resolve, reject) => {
       this.api.patchConfigApiProperties(options, (error, data) => {

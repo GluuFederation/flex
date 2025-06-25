@@ -12,9 +12,7 @@ const JansConfigApi = require('jans_config_api')
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.StatisticsUserApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.StatisticsUserApi(getClient(JansConfigApi, token, issuer))
   return new MauApi(api)
 }
 
@@ -58,7 +56,6 @@ function buildEntry(el) {
     el.token_count_per_granttype.client_credentials.access_token
   entry['authz_code_access_token_count'] =
     el.token_count_per_granttype.authorization_code.access_token
-  entry['authz_code_idtoken_count'] =
-    el.token_count_per_granttype.authorization_code.id_token
+  entry['authz_code_idtoken_count'] = el.token_count_per_granttype.authorization_code.id_token
   return entry
 }

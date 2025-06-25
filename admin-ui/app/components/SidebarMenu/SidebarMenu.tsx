@@ -1,4 +1,12 @@
-import React, { ReactNode, useState, useRef, useEffect, useMemo, useContext, useCallback } from 'react'
+import React, {
+  ReactNode,
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useContext,
+  useCallback,
+} from 'react'
 import { useLocation } from 'react-router-dom'
 import find from 'lodash/find'
 import includes from 'lodash/includes'
@@ -59,7 +67,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
   }, [entries])
 
   const addEntry = useCallback((entry: SidebarMenuEntry) => {
-    setEntries(prev => ({
+    setEntries((prev) => ({
       ...prev,
       [entry.id]: {
         open: false,
@@ -70,7 +78,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
   }, [])
 
   const updateEntry = useCallback((id: string, stateMods: Partial<SidebarMenuEntry>) => {
-    setEntries(prev => ({
+    setEntries((prev) => ({
       ...prev,
       [id]: {
         ...prev[id],
@@ -80,7 +88,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
   }, [])
 
   const removeEntry = useCallback((id: string) => {
-    setEntries(prev => {
+    setEntries((prev) => {
       const { [id]: toRemove, ...rest } = prev
       return rest
     })
@@ -90,7 +98,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
     const activeId = (
       childEntry: SidebarMenuEntry,
       entries: Record<string, SidebarMenuEntry>,
-      previous: string[] = []
+      previous: string[] = [],
     ): string[] => {
       if (childEntry.parentId) {
         const parentEntry = entries[childEntry.parentId]
@@ -112,11 +120,8 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
     })
 
     if (activeChild) {
-      const activeEntries = [
-        ...activeId(activeChild, entriesRef.current),
-        activeChild.id,
-      ]
-      setEntries(prev =>
+      const activeEntries = [...activeId(activeChild, entriesRef.current), activeChild.id]
+      setEntries((prev) =>
         mapValues(prev, (entry) => {
           const isActive = includes(activeEntries, entry.id)
           return {
@@ -124,7 +129,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
             active: isActive,
             open: openActive ? !entry.url && isActive : entry.open,
           }
-        })
+        }),
       )
     }
   }
@@ -154,19 +159,21 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
     slim ||
     (pageConfig?.sidebarSlim &&
       pageConfig?.sidebarCollapsed &&
-      (pageConfig?.screenSize === 'lg' ||
-        pageConfig?.screenSize === 'xl'))
+      (pageConfig?.screenSize === 'lg' || pageConfig?.screenSize === 'xl'))
   const sidebarMenuClass = classNames('sidebar-menu', {
     'sidebar-menu--slim': isSlim,
     'sidebar-menu--disabled': disabled,
   })
 
-  const contextValue = useMemo(() => ({
-    entries,
-    addEntry,
-    updateEntry,
-    removeEntry,
-  }), [entries])
+  const contextValue = useMemo(
+    () => ({
+      entries,
+      addEntry,
+      updateEntry,
+      removeEntry,
+    }),
+    [entries],
+  )
 
   return (
     <MenuContext.Provider value={contextValue}>
@@ -175,10 +182,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ children, slim, disabled }) =
           if (React.isValidElement(child)) {
             // Only pass currentUrl and slim to SidebarMenuItem
             const type = child.type as any
-            if (
-              type?.displayName === 'SidebarMenuItem' ||
-              type?.name === 'SidebarMenuItem'
-            ) {
+            if (type?.displayName === 'SidebarMenuItem' || type?.name === 'SidebarMenuItem') {
               return React.cloneElement(child as React.ReactElement<any>, {
                 currentUrl: location.pathname,
                 slim: isSlim,

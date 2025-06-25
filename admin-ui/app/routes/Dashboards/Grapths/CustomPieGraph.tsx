@@ -1,14 +1,7 @@
 // @ts-nocheck
 import React from 'react'
 import { getNewColor } from 'Utils/Util'
-import {
-  PieChart,
-  Pie,
-  Legend,
-  Tooltip,
-  Cell,
-  ResponsiveContainer,
-} from 'recharts'
+import { PieChart, Pie, Legend, Tooltip, Cell, ResponsiveContainer } from 'recharts'
 
 function CustomPieGraph({ data, dataKey, nameKey }) {
   const RADIAN = Math.PI / 180

@@ -1,32 +1,32 @@
 {
-    "inputs": [
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/docs/jans-config-api-swagger.yaml"
-      },
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/fido2-plugin-swagger.yaml"
-      },
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/user-mgt-plugin-swagger.yaml"
-      },
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-admin-ui-plugin-swagger.yaml"
-      },
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-link-plugin-swagger.yaml"
-      },
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/scim-plugin-swagger.yaml"
-      },
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/kc-saml-plugin-swagger.yaml"
-      },
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/kc-link-plugin-swagger.yaml"
-      },
-      {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/lock-plugin-swagger.yaml"
-      }
-    ], 
-    "output": "./configApiSpecs.yaml"
-  }
+  "inputs": [
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/docs/jans-config-api-swagger.yaml"
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/fido2-plugin-swagger.yaml"
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/user-mgt-plugin-swagger.yaml"
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-admin-ui-plugin-swagger.yaml"
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-link-plugin-swagger.yaml"
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/scim-plugin-swagger.yaml"
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/kc-saml-plugin-swagger.yaml"
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/kc-link-plugin-swagger.yaml"
+    },
+    {
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/lock-plugin-swagger.yaml"
+    }
+  ],
+  "output": "./configApiSpecs.yaml"
+}

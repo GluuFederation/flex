@@ -12,14 +12,9 @@ import {
   setWebhookModal,
   setWebhookTriggerErrors,
   setFeatureToTrigger,
-  setShowErrorModal
+  setShowErrorModal,
 } from 'Plugins/admin/redux/features/WebhookSlice'
-import {
-  CREATE,
-  FETCH,
-  DELETION,
-  UPDATE,
-} from '../../../../app/audit/UserActionType'
+import { CREATE, FETCH, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
@@ -33,9 +28,7 @@ import { webhookOutputObject } from 'Plugins/admin/helper/utils'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUIWebhooksApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.AdminUIWebhooksApi(getClient(JansConfigApi, token, issuer))
   return new WebhookApi(api)
 }
 
@@ -50,13 +43,7 @@ export function* getWebhooks({ payload }) {
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getWebhookResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -71,21 +58,12 @@ export function* createWebhook({ payload }) {
   try {
     addAdditionalData(audit, CREATE, 'webhook', payload)
     const webhookApi = yield* newFunction()
-    const data = yield call(
-      webhookApi.createWebhook,
-      payload.action.action_data
-    )
+    const data = yield call(webhookApi.createWebhook, payload.action.action_data)
     yield put(createWebhookResponse({ data }))
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(createWebhookResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -100,22 +78,13 @@ export function* deleteWebhook({ payload }) {
   try {
     addAdditionalData(audit, DELETION, 'webhook', payload)
     const webhookApi = yield* newFunction()
-    const data = yield call(
-      webhookApi.deleteWebhookByInum,
-      payload.action.action_data.inum
-    )
+    const data = yield call(webhookApi.deleteWebhookByInum, payload.action.action_data.inum)
     yield put(deleteWebhookResponse({ data }))
     yield call(postUserAction, audit)
     yield put(getWebhook())
     return data
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(deleteWebhookResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -130,22 +99,13 @@ export function* updateWebhook({ payload }) {
   try {
     addAdditionalData(audit, UPDATE, 'webhook', payload)
     const webhookApi = yield* newFunction()
-    const data = yield call(
-      webhookApi.updateWebhook,
-      payload.action.action_data
-    )
+    const data = yield call(webhookApi.updateWebhook, payload.action.action_data)
     yield put(updateWebhookResponse({ data }))
     yield call(postUserAction, audit)
     yield put(getWebhook())
     return data
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(updateWebhookResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -166,13 +126,7 @@ export function* getFeatures() {
     return data
   } catch (e) {
     console.log('error: ', e)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getFeaturesResponse([]))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -193,13 +147,7 @@ export function* getFeaturesByWebhookId({ payload }) {
     return data
   } catch (e) {
     console.log('error: ', e)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getFeaturesByWebhookIdResponse([]))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -215,10 +163,7 @@ export function* getWebhooksByFeatureId({ payload }) {
     addAdditionalData(audit, FETCH, `/webhook/${payload}`, payload)
     const webhookApi = yield* newFunction()
     const data = yield call(webhookApi.getWebhooksByFeatureId, payload)
-    if (
-      data?.body?.length &&
-      data?.body?.filter((item) => item.jansEnabled)?.length
-    ) {
+    if (data?.body?.length && data?.body?.filter((item) => item.jansEnabled)?.length) {
       yield put(setWebhookModal(true))
     }
     yield put(getWebhooksByFeatureIdResponse(data?.body || []))
@@ -226,13 +171,7 @@ export function* getWebhooksByFeatureId({ payload }) {
     return data
   } catch (e) {
     console.log('error: ', e)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getWebhooksByFeatureIdResponse([]))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -246,38 +185,33 @@ export function* triggerWebhook({ payload }) {
   const audit = yield* initAudit()
   try {
     const webhookApi = yield* newFunction()
-    const featureToTrigger = yield select(
-      (state) => state.webhookReducer.featureToTrigger
-    )
-    const featureWebhooks = yield select(
-      (state) => state.webhookReducer.featureWebhooks
-    )
+    const featureToTrigger = yield select((state) => state.webhookReducer.featureToTrigger)
+    const featureWebhooks = yield select((state) => state.webhookReducer.featureWebhooks)
     const enabledFeatureWebhooks = featureWebhooks?.filter((item) => item.jansEnabled)
 
     if (!enabledFeatureWebhooks.length || !featureToTrigger) {
       yield put(setFeatureToTrigger(''))
-      return;
+      return
     }
 
-    const outputObject = webhookOutputObject(
-      enabledFeatureWebhooks,
-      payload.createdFeatureValue
-    )
+    const outputObject = webhookOutputObject(enabledFeatureWebhooks, payload.createdFeatureValue)
     const data = yield call(webhookApi.triggerWebhook, {
       feature: featureToTrigger,
       outputObject,
     })
 
-    const action_data = data?.body?.map((body) => {
-      for (const output of outputObject) {
-        if (output.inum === body?.responseObject?.inum) {
-          return {
-            ...body,
-            url: output?.url
+    const action_data = data?.body
+      ?.map((body) => {
+        for (const output of outputObject) {
+          if (output.inum === body?.responseObject?.inum) {
+            return {
+              ...body,
+              url: output?.url,
+            }
           }
         }
-      }
-    })?.filter((item) => item)
+      })
+      ?.filter((item) => item)
 
     addAdditionalData(audit, FETCH, `/webhook/${featureToTrigger}`, {
       action: { action_data: action_data || [] },
@@ -288,47 +222,21 @@ export function* triggerWebhook({ payload }) {
       yield put(setShowErrorModal(false))
       yield put(setWebhookModal(false))
       yield put(setTriggerWebhookResponse(''))
-      yield put(
-        updateToast(
-          true,
-          'success',
-          'All webhooks triggered successfully.'
-        )
-      )
+      yield put(updateToast(true, 'success', 'All webhooks triggered successfully.'))
     } else {
-      const errors = data?.body
-        ?.map((item) => !item.success && item)
-        ?.filter((err) => err)
+      const errors = data?.body?.map((item) => !item.success && item)?.filter((err) => err)
       yield put(setWebhookTriggerErrors(errors))
-      yield put(
-        setTriggerWebhookResponse(
-          'Something went wrong while triggering webhook.'
-        )
-      )
-      yield put(
-        updateToast(
-          true,
-          'error',
-          'Something went wrong while triggering webhook.'
-        )
-      )
+      yield put(setTriggerWebhookResponse('Something went wrong while triggering webhook.'))
+      yield put(updateToast(true, 'error', 'Something went wrong while triggering webhook.'))
       yield put(setShowErrorModal(true))
     }
     yield call(postUserAction, audit)
     return data
   } catch (e) {
     console.log('error: ', e)
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(setWebhookModal(true))
-    yield put(
-      setTriggerWebhookResponse(e?.response?.body?.responseMessage || e.message)
-    )
+    yield put(setTriggerWebhookResponse(e?.response?.body?.responseMessage || e.message))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

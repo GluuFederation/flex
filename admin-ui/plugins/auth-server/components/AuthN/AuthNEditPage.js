@@ -1,18 +1,18 @@
-import React, { useEffect } from "react"
-import { CardBody, Card } from "Components"
-import AuthNForm from "./AuthNForm"
-import GluuLoader from "Routes/Apps/Gluu/GluuLoader"
-import GluuAlert from "Routes/Apps/Gluu/GluuAlert"
-import { useTranslation } from "react-i18next"
-import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle"
-import { useSelector, useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect } from 'react'
+import { CardBody, Card } from 'Components'
+import AuthNForm from './AuthNForm'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
+import { useTranslation } from 'react-i18next'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import {
   editLDAPAuthAcr,
   editScriptAuthAcr,
   editSimpleAuthAcr,
   setSuccess,
-} from "../../redux/features/authNSlice"
+} from '../../redux/features/authNSlice'
 
 function AuthNEditPage() {
   const dispatch = useDispatch()
@@ -26,7 +26,7 @@ function AuthNEditPage() {
     if (success) {
       dispatch(setSuccess({ data: false }))
       setTimeout(() => {
-        navigate("/auth-server/authn")
+        navigate('/auth-server/authn')
       }, [2000])
     }
   }, [success])
@@ -34,12 +34,12 @@ function AuthNEditPage() {
   function handleSubmit(data) {
     const payload = {}
 
-    if (item.name === "simple_password_auth") {
-      if (data.defaultAuthNMethod === "true" || data.defaultAuthNMethod === true) {
-        payload.authenticationMethod = { defaultAcr: "simple_password_auth" }
+    if (item.name === 'simple_password_auth') {
+      if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
+        payload.authenticationMethod = { defaultAcr: 'simple_password_auth' }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }
-    } else if (item.name === "default_ldap_password") {
+    } else if (item.name === 'default_ldap_password') {
       const ldapPayload = { ...item }
       ldapPayload.level = data.level
       ldapPayload.bindDN = data.bindDN
@@ -52,7 +52,7 @@ function AuthNEditPage() {
       ldapPayload.useSSL = data.useSSL
       ldapPayload.enabled = data.enabled
 
-      if (data.defaultAuthNMethod === "true" || data.defaultAuthNMethod === true) {
+      if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
         payload.authenticationMethod = { defaultAcr: data.configId }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }
@@ -75,7 +75,7 @@ function AuthNEditPage() {
             hide: false,
           }))
       }
-      if (data.defaultAuthNMethod === "true" || data.defaultAuthNMethod === true) {
+      if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
         payload.authenticationMethod = { defaultAcr: item.acrName }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }
@@ -91,10 +91,7 @@ function AuthNEditPage() {
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuAlert
-        severity={t("titles.error")}
-        message={t("messages.error_in_saving")}
-      />
+      <GluuAlert severity={t('titles.error')} message={t('messages.error_in_saving')} />
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AuthNForm handleSubmit={handleSubmit} item={{ ...item }} />

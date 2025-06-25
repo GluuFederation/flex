@@ -8,21 +8,8 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getMau } from 'Plugins/admin/redux/features/mauSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import {
-  Button,
-  Card,
-  CardFooter,
-  CardBody,
-  FormGroup,
-  Col,
-  Row
-} from 'Components'
-import {
-  hasBoth,
-  buildPayload,
-  STAT_READ,
-  STAT_JANS_READ
-} from 'Utils/PermChecker'
+import { Button, Card, CardFooter, CardBody, FormGroup, Col, Row } from 'Components'
+import { hasBoth, buildPayload, STAT_READ, STAT_JANS_READ } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import SetTitle from 'Utils/SetTitle'
@@ -34,9 +21,9 @@ const ActiveUsersGraph = lazy(() => import('Routes/Dashboards/Grapths/ActiveUser
 
 function MauGraph() {
   const dispatch = useDispatch()
-  const statData = useSelector(state => state.mauReducer.stat);
-  const loading = useSelector(state => state.mauReducer.loading);
-  const permissions = useSelector(state => state.authReducer.permissions);
+  const statData = useSelector((state) => state.mauReducer.stat)
+  const loading = useSelector((state) => state.mauReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -44,7 +31,7 @@ function MauGraph() {
   const [endDate, setEndDate] = useState(dayjs())
   const userAction = {}
   const options = {}
-  
+
   useEffect(() => {
     if (statData.length === 0 || !statData) {
       search()
@@ -78,9 +65,7 @@ function MauGraph() {
           stat.push(newEntry)
         }
       }
-      return Array.from(new Set(stat)).sort(
-        (a, b) => parseInt(a.month, 10) - parseInt(b.month, 10)
-      )
+      return Array.from(new Set(stat)).sort((a, b) => parseInt(a.month, 10) - parseInt(b.month, 10))
     }
     return stat
   }
@@ -109,30 +94,28 @@ function MauGraph() {
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuViewWrapper
-        canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
-      >
+      <GluuViewWrapper canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}>
         <Card style={applicationStyle.mainCard}>
           <CardBody>
             <Row>
               <Col sm={5}>
                 <GluuLabel
                   label={t('fields.select_date_range')}
-                  size='4'
+                  size="4"
                   style={{ minWidth: '200px' }}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <Grid container gap={2} justifyContent='space-around'>
+                  <Grid container gap={2} justifyContent="space-around">
                     <DatePicker
-                      format='MM/DD/YYYY'
-                      id='date-picker-inline'
+                      format="MM/DD/YYYY"
+                      id="date-picker-inline"
                       label={t('dashboard.start_date')}
                       value={startDate}
                       onChange={(date) => setStartDate(date)}
                     />
                     <DatePicker
-                      format='MM/DD/YYYY'
-                      id='date-picker-inline'
+                      format="MM/DD/YYYY"
+                      id="date-picker-inline"
                       label={t('dashboard.end_date')}
                       value={endDate}
                       onChange={(date) => setEndDate(date)}
@@ -145,12 +128,12 @@ function MauGraph() {
                   style={{
                     position: 'relative',
                     top: '55px',
-                    ...applicationStyle.customButtonStyle
+                    ...applicationStyle.customButtonStyle,
                   }}
                   color={`primary-${selectedTheme}`}
                   onClick={search}
                 >
-                  <i className='fa fa-search me-2'></i>
+                  <i className="fa fa-search me-2"></i>
                   {t('actions.view')}
                 </Button>
               </Col>
@@ -159,11 +142,13 @@ function MauGraph() {
             <FormGroup row />
             <FormGroup row>
               <Col sm={12}>
-                <Suspense fallback={<div>Loading...</div>}><ActiveUsersGraph data={doDataAugmentation(statData)} /></Suspense>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ActiveUsersGraph data={doDataAugmentation(statData)} />
+                </Suspense>
               </Col>
             </FormGroup>
           </CardBody>
-          <CardFooter className='p-4 bt-0'></CardFooter>
+          <CardFooter className="p-4 bt-0"></CardFooter>
         </Card>
       </GluuViewWrapper>
     </GluuLoader>

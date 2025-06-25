@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   configuration: {},
-  loading: false
+  loading: false,
 }
 
 const jsonConfigSlice = createSlice({
@@ -19,7 +19,7 @@ const jsonConfigSlice = createSlice({
         state.configuration = action.payload.data
       }
     },
-    patchJsonConfig: (state,action) => {
+    patchJsonConfig: (state, action) => {
       state.loading = true
     },
     patchJsonConfigResponse: (state, action) => {
@@ -30,8 +30,8 @@ const jsonConfigSlice = createSlice({
     },
     handleDefault: (state) => {
       state.loading = false
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -39,7 +39,7 @@ export const {
   getJsonConfigResponse,
   patchJsonConfig,
   patchJsonConfigResponse,
-  handleDefault
+  handleDefault,
 } = jsonConfigSlice.actions
 
 export const { actions, reducer, state } = jsonConfigSlice

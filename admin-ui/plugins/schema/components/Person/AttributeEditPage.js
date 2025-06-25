@@ -30,7 +30,7 @@ function AttributeEditPage() {
   }
   return (
     <GluuLoader blocking={loading}>
-      <Card className='mb-3' style={applicationStyle.mainCard}>
+      <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AttributeForm
             item={{

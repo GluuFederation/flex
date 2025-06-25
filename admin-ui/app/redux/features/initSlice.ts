@@ -36,7 +36,10 @@ const initSlice = createSlice({
       }
     },
     getClients: () => {},
-    getClientsResponse: (state, action: PayloadAction<{ data?: { entries?: any[]; totalEntriesCount?: number } }>) => {
+    getClientsResponse: (
+      state,
+      action: PayloadAction<{ data?: { entries?: any[]; totalEntriesCount?: number } }>,
+    ) => {
       if (action.payload?.data) {
         state.clients = action.payload.data?.entries || []
         state.totalClientsEntries = action.payload.data.totalEntriesCount || 0
@@ -57,8 +60,8 @@ const initSlice = createSlice({
     handleApiTimeout: (state, action: PayloadAction<{ isTimeout?: boolean }>) => {
       state.isLoading = false
       state.isTimeout = action.payload.isTimeout || false
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -70,7 +73,7 @@ export const {
   getScopesResponse,
   getAttributes,
   getAttributesResponse,
-  handleApiTimeout
+  handleApiTimeout,
 } = initSlice.actions
 export const { actions, reducer } = initSlice
 reducerRegistry.register('initReducer', reducer)

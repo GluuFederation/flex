@@ -17,12 +17,13 @@ export default class AgamaApi {
   addAgama = ({ payload }) => {
     const { file, name, token } = payload
     return new Promise((resolve, reject) => {
-      axios.post('/api/v1/agama-deployment/' + name, file, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/zip',
-        }
-      })
+      axios
+        .post('/api/v1/agama-deployment/' + name, file, {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/zip',
+          },
+        })
         .then((response) => {
           resolve(response)
         })
@@ -47,15 +48,15 @@ export default class AgamaApi {
     })
   }
 
-
   getAgamaRepositoryFile = (payload) => {
     const { downloadurl, token } = payload
     return new Promise((resolve, reject) => {
-      axios.get(`/api/v1/agama-repo/download/?downloadLink=${decodeURIComponent(downloadurl)}`, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
+      axios
+        .get(`/api/v1/agama-repo/download/?downloadLink=${decodeURIComponent(downloadurl)}`, {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        })
         .then((response) => {
           resolve(response)
         })

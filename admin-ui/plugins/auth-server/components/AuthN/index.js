@@ -15,20 +15,20 @@ function AuthNPage() {
   const tabNames = [
     {
       name: t('menus.builtIn'),
-      path: ''
+      path: '',
     },
     { name: t('menus.acrs'), path: '' },
     {
       name: t('menus.aliases'),
-      path: ''
+      path: '',
     },
     {
       name: t('menus.agama_flows'),
-      path: ''
-    }
+      path: '',
+    },
   ]
 
-  const tabToShow = tabName => {
+  const tabToShow = (tabName) => {
     switch (tabName) {
       case t('menus.builtIn'):
         return <AuthNListPage isBuiltIn={true} />
@@ -43,11 +43,7 @@ function AuthNPage() {
 
   return (
     <Card className="mb-3" style={applicationStyle.mainCard}>
-      <GluuTabs
-        tabNames={tabNames}
-        tabToShow={tabToShow}
-        withNavigation={true}
-      />
+      <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
     </Card>
   )
 }

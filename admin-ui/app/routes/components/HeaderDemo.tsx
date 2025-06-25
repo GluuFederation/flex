@@ -1,4 +1,4 @@
-import { Media } from "reactstrap";
+import { Media } from 'reactstrap'
 
 const HeaderDemo = ({ no, title, subTitle, children, className }: any) => (
   <Media className={`mb-3 ${className}`}>
@@ -10,5 +10,5 @@ const HeaderDemo = ({ no, title, subTitle, children, className }: any) => (
       <p>{children || subTitle}</p>
     </Media>
   </Media>
-);
-export { HeaderDemo };
+)
+export { HeaderDemo }

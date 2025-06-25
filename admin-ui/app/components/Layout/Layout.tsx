@@ -5,15 +5,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 // import { Helmet } from 'react-helmet'
 import { useWithRouter as withRouter } from 'Utils/WithRouter'
-import {
-  filter,
-  forOwn,
-  isUndefined,
-  compact,
-  differenceBy,
-  pick,
-  map 
-} from 'lodash'
+import { filter, forOwn, isUndefined, compact, differenceBy, pick, map } from 'lodash'
 
 import { LayoutContent } from './LayoutContent'
 import { LayoutNavbar } from './LayoutNavbar'
@@ -24,36 +16,39 @@ import { ThemeClass } from './../Theme'
 import config from './../../../config.js'
 
 interface Breakpoint {
-  min?: number;
-  max?: number;
+  min?: number
+  max?: number
 }
 
 interface ResponsiveBreakpoints {
-  [key: string]: Breakpoint;
+  [key: string]: Breakpoint
 }
 
 interface LayoutProps {
-  children: React.ReactNode;
-  sidebarSlim?: boolean;
+  children: React.ReactNode
+  sidebarSlim?: boolean
   location: {
-    pathname: string;
-  };
-  favIcons?: any[];
+    pathname: string
+  }
+  favIcons?: any[]
 }
 
 interface LayoutState {
-  sidebarHidden: boolean;
-  navbarHidden: boolean;
-  footerHidden: boolean;
-  sidebarCollapsed: boolean;
-  screenSize: string;
-  animationsDisabled: boolean;
-  pageTitle: string | null;
-  pageDescription: string;
-  pageKeywords: string;
+  sidebarHidden: boolean
+  navbarHidden: boolean
+  footerHidden: boolean
+  sidebarCollapsed: boolean
+  screenSize: string
+  animationsDisabled: boolean
+  pageTitle: string | null
+  pageDescription: string
+  pageKeywords: string
 }
 
-const findChildByType = (children: React.ReactNode, targetType: any): React.ReactElement | undefined => {
+const findChildByType = (
+  children: React.ReactNode,
+  targetType: any,
+): React.ReactElement | undefined => {
   let result: React.ReactElement | undefined
 
   React.Children.forEach(children, (child) => {
@@ -66,23 +61,26 @@ const findChildByType = (children: React.ReactNode, targetType: any): React.Reac
 }
 
 const findChildrenByType = (children: React.ReactNode, targetType: any): React.ReactElement[] => {
-  return filter(React.Children.toArray(children), (child) =>
-    React.isValidElement(child) && child.type.layoutPartName === targetType.layoutPartName) as React.ReactElement[]
+  return filter(
+    React.Children.toArray(children),
+    (child) =>
+      React.isValidElement(child) && child.type.layoutPartName === targetType.layoutPartName,
+  ) as React.ReactElement[]
 }
 
 const responsiveBreakpoints: ResponsiveBreakpoints = {
-  'xs': { max: 575.8 },
-  'sm': { min: 576, max: 767.8 },
-  'md': { min: 768, max: 991.8 },
-  'lg': { min: 992, max: 1199.8 },
-  'xl': { min: 1200 }
+  xs: { max: 575.8 },
+  sm: { min: 576, max: 767.8 },
+  md: { min: 768, max: 991.8 },
+  lg: { min: 992, max: 1199.8 },
+  xl: { min: 1200 },
 }
 
 class Layout extends React.Component<LayoutProps, LayoutState> {
-  private lastLgSidebarCollapsed: boolean;
-  private containerRef: React.RefObject<HTMLDivElement>;
-  private bodyElement: HTMLBodyElement | null;
-  private documentElement: HTMLElement | null;
+  private lastLgSidebarCollapsed: boolean
+  private containerRef: React.RefObject<HTMLDivElement>
+  private bodyElement: HTMLBodyElement | null
+  private documentElement: HTMLElement | null
 
   constructor(props: LayoutProps) {
     super(props)
@@ -96,7 +94,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
       animationsDisabled: true,
       pageTitle: null,
       pageDescription: config.siteDescription,
-      pageKeywords: config.siteKeywords
+      pageKeywords: config.siteKeywords,
     }
 
     this.lastLgSidebarCollapsed = false
@@ -114,8 +112,8 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
 
       forOwn(responsiveBreakpoints, (value, key) => {
         const queryParts = [
-          `${ isUndefined(value.min) ? '' : `(min-width: ${value.min}px)` }`,
-          `${ isUndefined(value.max) ? '' : `(max-width: ${value.max}px)`}`
+          `${isUndefined(value.min) ? '' : `(min-width: ${value.min}px)`}`,
+          `${isUndefined(value.max) ? '' : `(max-width: ${value.max}px)`}`,
         ]
         const query = compact(queryParts).join(' and ')
 
@@ -135,7 +133,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
       window.addEventListener('resize', () => {
         setTimeout(layoutAdjuster.bind(this), 0)
       })
-            
+
       layoutAdjuster()
 
       window.requestAnimationFrame(() => {
@@ -152,21 +150,23 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
   componentDidUpdate(prevProps: LayoutProps, prevState: LayoutState) {
     // Prevent content scrolling in overlay mode
     if (
-      this.bodyElement && this.documentElement && (
-        this.state.screenSize === 'xs' ||
-                this.state.screenSize === 'sm' ||
-                this.state.screenSize === 'md'
-      )
+      this.bodyElement &&
+      this.documentElement &&
+      (this.state.screenSize === 'xs' ||
+        this.state.screenSize === 'sm' ||
+        this.state.screenSize === 'md')
     ) {
       if (prevState.sidebarCollapsed !== this.state.sidebarCollapsed) {
         // Most of the devices
-        const styleUpdate = this.state.sidebarCollapsed ? {
-          overflowY: 'auto',
-          touchAction: 'auto'
-        }: {
-          overflowY: 'hidden',
-          touchAction: 'none'
-        }
+        const styleUpdate = this.state.sidebarCollapsed
+          ? {
+              overflowY: 'auto',
+              touchAction: 'auto',
+            }
+          : {
+              overflowY: 'hidden',
+              touchAction: 'none',
+            }
         Object.assign(this.bodyElement.style, styleUpdate)
         Object.assign(this.documentElement.style, styleUpdate)
       }
@@ -181,11 +181,10 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
 
       // Hide the sidebar when in overlay mode
       if (
-        !this.state.sidebarCollapsed && (
-          this.state.screenSize === 'xs' ||
-                    this.state.screenSize === 'sm' ||
-                    this.state.screenSize === 'md'
-        )
+        !this.state.sidebarCollapsed &&
+        (this.state.screenSize === 'xs' ||
+          this.state.screenSize === 'sm' ||
+          this.state.screenSize === 'md')
       ) {
         // Add some time to prevent jank while the dom is updating
         setTimeout(() => {
@@ -199,11 +198,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
   }
 
   updateLayoutOnScreenSize(screenSize: string) {
-    if (
-      screenSize === 'md' ||
-            screenSize === 'sm' ||
-            screenSize === 'xs'
-    ) {
+    if (screenSize === 'md' || screenSize === 'sm' || screenSize === 'xs') {
       // Save for recovering to lg later
       this.lastLgSidebarCollapsed = this.state.sidebarCollapsed
       this.setState({ sidebarCollapsed: true })
@@ -215,8 +210,8 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
   updateNavbarsPositions() {
     const containerElement = this.containerRef.current
     if (containerElement) {
-      const navbarElements = containerElement.querySelectorAll(":scope .layout__navbar")
-        
+      const navbarElements = containerElement.querySelectorAll(':scope .layout__navbar')
+
       // Calculate and update style.top of each navbar
       let totalNavbarsHeight = 0
       navbarElements.forEach((navbarElement: Element) => {
@@ -231,7 +226,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
 
   toggleSidebar() {
     this.setState({
-      sidebarCollapsed: !this.state.sidebarCollapsed
+      sidebarCollapsed: !this.state.sidebarCollapsed,
     })
   }
 
@@ -246,12 +241,8 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
     const content = findChildByType(children, LayoutContent)
     const otherChildren = differenceBy(
       React.Children.toArray(children),
-      [
-        sidebar,
-        ...navbars,
-        content
-      ],
-      'type'
+      [sidebar, ...navbars, content],
+      'type',
     )
     const layoutClass = classNames('layout', 'layout--animations-enabled', {
       //'layout--only-navbar': this.state.sidebarHidden && !this.state.navbarHidden
@@ -261,33 +252,34 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
       <PageConfigContext.Provider
         value={{
           ...this.state,
-          sidebarSlim: !!this.props.sidebarSlim && (
-            this.state.screenSize === 'lg' ||
-                        this.state.screenSize === 'xl'
-          ),
+          sidebarSlim:
+            !!this.props.sidebarSlim &&
+            (this.state.screenSize === 'lg' || this.state.screenSize === 'xl'),
 
           toggleSidebar: this.toggleSidebar.bind(this),
           setElementsVisibility: this.setElementsVisibility.bind(this),
-          changeMeta: (metaData: Partial<LayoutState>) => { this.setState(metaData) }
+          changeMeta: (metaData: Partial<LayoutState>) => {
+            this.setState(metaData)
+          },
         }}
       >
         <ThemeClass>
           {(themeClass) => (
-            <div className={ classNames(layoutClass, themeClass) } ref={ this.containerRef }>
-              { 
-                !this.state.sidebarHidden && sidebar && React.cloneElement(sidebar, {
+            <div className={classNames(layoutClass, themeClass)} ref={this.containerRef}>
+              {!this.state.sidebarHidden &&
+                sidebar &&
+                React.cloneElement(sidebar, {
                   sidebarSlim: false,
-                  sidebarCollapsed: this.state.sidebarCollapsed
-                })
-              }
+                  sidebarCollapsed: this.state.sidebarCollapsed,
+                })}
 
               <div className="layout__wrap">
-                { !this.state.navbarHidden && navbars }
+                {!this.state.navbarHidden && navbars}
 
-                { content }
+                {content}
               </div>
 
-              { otherChildren }
+              {otherChildren}
             </div>
           )}
         </ThemeClass>

@@ -12,33 +12,33 @@ const pluginMetadata = {
       title: 'menus.user_claims',
       icon: 'user_claims',
       path: '/attributes',
-      permission: ATTRIBUTE_READ
-    }
+      permission: ATTRIBUTE_READ,
+    },
   ],
   routes: [
     {
       component: AttributeEditPage,
       path: '/attribute/edit/:gid',
-      permission: ATTRIBUTE_WRITE
+      permission: ATTRIBUTE_WRITE,
     },
     {
       component: AttributeViewPage,
       path: '/attribute/view/:gid',
-      permission: ATTRIBUTE_READ
+      permission: ATTRIBUTE_READ,
     },
     {
       component: AttributeAddPage,
       path: '/attribute/new',
-      permission: ATTRIBUTE_WRITE
+      permission: ATTRIBUTE_WRITE,
     },
     {
       component: AttributeListPage,
       path: '/attributes',
-      permission: ATTRIBUTE_READ
-    }
+      permission: ATTRIBUTE_READ,
+    },
   ],
   reducers: [{ name: 'attributeReducer', reducer: attributeReducer }],
-  sagas: [attributeSaga()]
+  sagas: [attributeSaga()],
 }
 
 export default pluginMetadata

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
+import { useState, useEffect } from 'react'
+import Box from '@mui/material/Box'
 import {
   AvatarAddOn,
   DropdownToggle,
@@ -11,24 +11,22 @@ import {
   ThemeSetting,
   UncontrolledDropdown,
   AvatarImage,
-} from "Components";
-import { LanguageMenu } from "./LanguageMenu";
-import { useSelector } from "react-redux";
-import { DropdownProfile } from "Routes/components/Dropdowns/DropdownProfile";
-import { randomAvatar } from "../../../utilities";
-import { ErrorBoundary } from "react-error-boundary";
-import GluuErrorFallBack from "./GluuErrorFallBack";
+} from 'Components'
+import { LanguageMenu } from './LanguageMenu'
+import { useSelector } from 'react-redux'
+import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
+import { randomAvatar } from '../../../utilities'
+import { ErrorBoundary } from 'react-error-boundary'
+import GluuErrorFallBack from './GluuErrorFallBack'
 
 function GluuNavBar() {
-  const userInfo = useSelector((state:any) => state.authReducer.userinfo);
-  const [showCollapse, setShowCollapse] = useState(
-    window.matchMedia("(max-width: 768px)").matches
-  );
+  const userInfo = useSelector((state: any) => state.authReducer.userinfo)
+  const [showCollapse, setShowCollapse] = useState(window.matchMedia('(max-width: 768px)').matches)
   useEffect(() => {
     window
-      .matchMedia("(max-width: 768px)")
-      .addEventListener("change", (e) => setShowCollapse(e.matches));
-  }, []);
+      .matchMedia('(max-width: 768px)')
+      .addEventListener('change', (e) => setShowCollapse(e.matches))
+  }, [])
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <Navbar expand="lg" themed>
@@ -43,25 +41,20 @@ function GluuNavBar() {
           <h3 className="page-title" id="page-title">
             Dashboard
           </h3>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            gap="10px"
-          >
+          <Box display="flex" justifyContent="space-between" alignItems="center" gap="10px">
             <Notifications />
             <ThemeSetting userInfo={userInfo} />
             <div
               className="d-flex justify-content-center align-items-center"
-              style={{ padding: "0px 5px" }}
+              style={{ padding: '0px 5px' }}
             >
               <LanguageMenu userInfo={userInfo} />
             </div>
-            <div style={{padding: '0 5px'}}>
+            <div style={{ padding: '0 5px' }}>
               <UncontrolledDropdown
                 nav
                 direction="down"
-               sx={{ display: { xs: "none", md: "flex" } }}
+                sx={{ display: { xs: 'none', md: 'flex' } }}
               >
                 <DropdownToggle nav>
                   <AvatarImage
@@ -88,7 +81,7 @@ function GluuNavBar() {
         </Box>
       </Navbar>
     </ErrorBoundary>
-  );
+  )
 }
 
-export default GluuNavBar;
+export default GluuNavBar

@@ -1,14 +1,8 @@
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/auth-server/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/auth-server/__tests__/api/setup.test'
 import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from 'Redux/features/authSlice'
 import { expectSaga } from 'redux-saga-test-plan'
-import {
-  getSmtpsSaga,
-  updateStmpSaga,
-} from 'Plugins/smtp-management/redux/sagas/SmtpSaga'
+import { getSmtpsSaga, updateStmpSaga } from 'Plugins/smtp-management/redux/sagas/SmtpSaga'
 import smtpsReducer, {
   initialState as smtpInitState,
 } from 'Plugins/smtp-management/redux/features/smtpSlice'

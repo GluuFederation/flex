@@ -21,7 +21,7 @@ const JansLock = () => {
 
   return (
     <GluuLoader blocking={loading}>
-      <Card className='mb-3' style={applicationStyle.mainCard}>
+      <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>{!loading && <JansLockConfiguration />}</CardBody>
       </Card>
     </GluuLoader>

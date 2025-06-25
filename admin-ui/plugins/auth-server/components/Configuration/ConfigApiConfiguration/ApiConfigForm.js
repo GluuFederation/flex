@@ -3,11 +3,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import spec from '../../../../../configApiSpecs.yaml'
-import {
-  buildPayload,
-  hasPermission,
-  API_CONFIG_WRITE,
-} from 'Utils/PermChecker'
+import { buildPayload, hasPermission, API_CONFIG_WRITE } from 'Utils/PermChecker'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { patchApiConfigConfiguration } from 'Plugins/auth-server/redux/features/configApiSlice'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
@@ -21,18 +17,14 @@ const ApiConfigForm = () => {
   const [patches, setPatches] = useState([])
   const [operations, setOperations] = useState([])
 
-  const configuration = useSelector(
-    (state) => state.configApiReducer.configuration
-  )
+  const configuration = useSelector((state) => state.configApiReducer.configuration)
   const permissions = useSelector((state) => state.authReducer.permissions)
   const userAction = {}
 
   const toggle = useCallback(() => {
-    if(patches?.length > 0){
+    if (patches?.length > 0) {
       setModal(!modal)
-    }
-    else toast.error('No changes to update');
- 
+    } else toast.error('No changes to update')
   }, [modal])
 
   const submitForm = useCallback((userMessage) => {
@@ -83,9 +75,7 @@ const ApiConfigForm = () => {
       })}
 
       <FormGroup row></FormGroup>
-      {hasPermission(permissions, API_CONFIG_WRITE) && (
-        <GluuCommitFooter saveHandler={toggle} />
-      )}
+      {hasPermission(permissions, API_CONFIG_WRITE) && <GluuCommitFooter saveHandler={toggle} />}
 
       {hasPermission(permissions, API_CONFIG_WRITE) && (
         <GluuCommitDialog

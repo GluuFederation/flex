@@ -1,4 +1,4 @@
-import { makeStyles } from "tss-react/mui"; 
+import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()((theme) => ({
   root: {
@@ -17,20 +17,20 @@ const styles = makeStyles()((theme) => ({
     color: '#FFFFFF',
   },
   notificationBtn: {
-    position: 'relative',
-    textTransform: 'none',
-    padding:"2px",
-    cursor: 'pointer',
-    border: 'none',
-    background: 'none',
+    'position': 'relative',
+    'textTransform': 'none',
+    'padding': '2px',
+    'cursor': 'pointer',
+    'border': 'none',
+    'background': 'none',
     '&:active': {
-      backgroundColor: "rgba(217, 217, 217, 0.43)", 
+      backgroundColor: 'rgba(217, 217, 217, 0.43)',
       transform: 'scale(0.95)',
     },
   },
   topElm: {
-    zIndex: 9999
-  }
+    zIndex: 9999,
+  },
 }))
 
 export default styles

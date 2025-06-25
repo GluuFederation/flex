@@ -2,9 +2,9 @@
 export function uuidv4() {
   // Use Web Crypto API if available
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID();
+    return crypto.randomUUID()
   }
-  
+
   // Fallback for older browsers
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = (crypto.getRandomValues(new Uint8Array(1))[0] * 16) | 0,
@@ -15,8 +15,16 @@ export function uuidv4() {
 
 // Predefined color palette for consistent colors
 const colorPalette = [
-  '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
-  '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
+  '#1f77b4',
+  '#ff7f0e',
+  '#2ca02c',
+  '#d62728',
+  '#9467bd',
+  '#8c564b',
+  '#e377c2',
+  '#7f7f7f',
+  '#bcbd22',
+  '#17becf',
 ]
 
 export function getNewColor(index = 0) {
@@ -50,7 +58,7 @@ export function formatDate(date) {
   if (date.length > 10) {
     return date.substring(0, 10)
   }
-  if(date.length == 10) {
+  if (date.length == 10) {
     return date
   }
   return '-'

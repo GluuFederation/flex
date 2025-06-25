@@ -1,21 +1,8 @@
-import {
-  call,
-  all,
-  put,
-  fork,
-  takeEvery,
-  takeLatest,
-  select,
-} from 'redux-saga/effects'
+import { call, all, put, fork, takeEvery, takeLatest, select } from 'redux-saga/effects'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { SCOPE } from '../audit/Resources'
-import {
-  CREATE,
-  UPDATE,
-  DELETION,
-  FETCH,
-} from '../../../../app/audit/UserActionType'
+import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from 'Redux/api/base'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
@@ -38,9 +25,7 @@ import {
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthScopesApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.OAuthScopesApi(getClient(JansConfigApi, token, issuer))
   return new ScopeApi(api)
 }
 
@@ -173,7 +158,7 @@ export function* deleteAnScope({ payload }) {
     yield* triggerWebhook({ payload: { createdFeatureValue: payload.action.action_data } })
   } catch (e) {
     yield put(updateToast(true, 'error'))
-    yield put(deleteScopeResponse({ data: null}))
+    yield put(deleteScopeResponse({ data: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.s.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

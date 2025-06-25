@@ -1,10 +1,10 @@
-import { Col, FormGroup, Input } from "Components";
-import GluuLabel from "./GluuLabel";
-import GluuTooltip from "./GluuTooltip";
+import { Col, FormGroup, Input } from 'Components'
+import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
 function GluuInput({
   label,
   name,
-  type = "text",
+  type = 'text',
   value,
   required = false,
   lsize = 3,
@@ -16,15 +16,10 @@ function GluuInput({
       <FormGroup row>
         <GluuLabel label={label} size={lsize} required={required} />
         <Col sm={rsize}>
-          <Input
-            id={name}
-            data-testid={name}
-            type={type}
-            defaultValue={value}
-          />
+          <Input id={name} data-testid={name} type={type} defaultValue={value} />
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
-export default GluuInput;
+export default GluuInput

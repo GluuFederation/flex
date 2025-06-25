@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const ScimConfiguration = ({ handleSubmit }) => {
-  const scimConfigs = useSelector(state => state.scimReducer.scim)
+  const scimConfigs = useSelector((state) => state.scimReducer.scim)
   const [modal, setModal] = useState(false)
   const toggle = () => {
     setModal(!modal)
@@ -21,10 +21,10 @@ const ScimConfiguration = ({ handleSubmit }) => {
     initialValues: scimConfigs,
     onSubmit: () => {
       toggle()
-    }
+    },
   })
 
-  const submitForm = userMessage => {
+  const submitForm = (userMessage) => {
     const differences = []
     delete formik.values?.action_message
 
@@ -34,14 +34,14 @@ const ScimConfiguration = ({ handleSubmit }) => {
           differences.push({
             op: 'replace',
             path: `/${key}`,
-            value: formik.values[key]
+            value: formik.values[key],
           })
         }
       } else if (formik.values[key]) {
         differences.push({
           op: 'add',
           path: `/${key}`,
-          value: formik.values[key]
+          value: formik.values[key],
         })
       }
     }
@@ -53,7 +53,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
 
   return (
     <Form
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault()
         formik.handleSubmit()
       }}
@@ -80,9 +80,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.applicationUrl && formik.touched.applicationUrl
-            }
+            showError={formik.errors.applicationUrl && formik.touched.applicationUrl}
             errorMessage={formik.errors.applicationUrl}
           />
         </Col>
@@ -94,9 +92,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.baseEndpoint && formik.touched.baseEndpoint
-            }
+            showError={formik.errors.baseEndpoint && formik.touched.baseEndpoint}
             errorMessage={formik.errors.baseEndpoint}
           />
         </Col>
@@ -109,8 +105,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.personCustomObjectClass &&
-              formik.touched.personCustomObjectClass
+              formik.errors.personCustomObjectClass && formik.touched.personCustomObjectClass
             }
             errorMessage={formik.errors.personCustomObjectClass}
           />
@@ -123,9 +118,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.oxAuthIssuer && formik.touched.oxAuthIssuer
-            }
+            showError={formik.errors.oxAuthIssuer && formik.touched.oxAuthIssuer}
             errorMessage={formik.errors.oxAuthIssuer}
           />
         </Col>
@@ -151,10 +144,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.bulkMaxOperations &&
-              formik.touched.bulkMaxOperations
-            }
+            showError={formik.errors.bulkMaxOperations && formik.touched.bulkMaxOperations}
             errorMessage={formik.errors.bulkMaxOperations}
           />
         </Col>
@@ -167,10 +157,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.bulkMaxPayloadSize &&
-              formik.touched.bulkMaxPayloadSize
-            }
+            showError={formik.errors.bulkMaxPayloadSize && formik.touched.bulkMaxPayloadSize}
             errorMessage={formik.errors.bulkMaxPayloadSize}
           />
         </Col>
@@ -183,8 +170,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.userExtensionSchemaURI &&
-              formik.touched.userExtensionSchemaURI
+              formik.errors.userExtensionSchemaURI && formik.touched.userExtensionSchemaURI
             }
             errorMessage={formik.errors.userExtensionSchemaURI}
           />
@@ -209,9 +195,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              formik.errors.loggingLayout && formik.touched.loggingLayout
-            }
+            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
             errorMessage={formik.errors.loggingLayout}
           />
         </Col>
@@ -240,8 +224,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.metricReporterInterval &&
-              formik.touched.metricReporterInterval
+              formik.errors.metricReporterInterval && formik.touched.metricReporterInterval
             }
             errorMessage={formik.errors.metricReporterInterval}
           />
@@ -256,8 +239,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.metricReporterKeepDataDays &&
-              formik.touched.metricReporterKeepDataDays
+              formik.errors.metricReporterKeepDataDays && formik.touched.metricReporterKeepDataDays
             }
             errorMessage={formik.errors.metricReporterKeepDataDays}
           />
@@ -266,7 +248,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuToogleRow
             label="fields.metric_reporter_enabled"
             name="metricReporterEnabled"
-            handler={e => {
+            handler={(e) => {
               formik.setFieldValue('metricReporterEnabled', e.target.checked)
             }}
             lsize={3}
@@ -278,7 +260,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuToogleRow
             label="fields.disable_jdk_logger"
             name="disableJdkLogger"
-            handler={e => {
+            handler={(e) => {
               formik.setFieldValue('disableJdkLogger', e.target.checked)
             }}
             lsize={3}
@@ -290,7 +272,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuToogleRow
             label="fields.use_local_cache"
             name="useLocalCache"
-            handler={e => {
+            handler={(e) => {
               formik.setFieldValue('useLocalCache', e.target.checked)
             }}
             lsize={3}
@@ -321,7 +303,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
 }
 
 ScimConfiguration.propTypes = {
-  handleSubmit: PropTypes.func
+  handleSubmit: PropTypes.func,
 }
 
 export default ScimConfiguration

@@ -59,9 +59,9 @@ const initialState: AuthState = {
   backendStatus: {
     active: true,
     errorMessage: null,
-    statusCode: null
+    statusCode: null,
   },
-  loadingConfig: false
+  loadingConfig: false,
 }
 
 const authSlice = createSlice({
@@ -99,9 +99,15 @@ const authSlice = createSlice({
       }
     },
     getAPIAccessToken: (state, _action: PayloadAction<any>) => {},
-    getAPIAccessTokenResponse: (state, action: PayloadAction<{ access_token?: string; scopes?: string[]; issuer?: string }>) => {
+    getAPIAccessTokenResponse: (
+      state,
+      action: PayloadAction<{ access_token?: string; scopes?: string[]; issuer?: string }>,
+    ) => {
       if (action.payload?.access_token) {
-        state.token = { access_token: action.payload.access_token, scopes: action.payload.scopes || [] }
+        state.token = {
+          access_token: action.payload.access_token,
+          scopes: action.payload.scopes || [],
+        }
         state.issuer = action.payload.issuer || null
         state.permissions = action.payload.scopes || []
         state.isAuthenticated = true
@@ -123,7 +129,7 @@ const authSlice = createSlice({
     putConfigWorkerResponse: (state) => {
       state.loadingConfig = false
     },
-  }
+  },
 })
 
 export const {
@@ -140,7 +146,7 @@ export const {
   setApiDefaultToken,
   setBackendStatus,
   putConfigWorker,
-  putConfigWorkerResponse
+  putConfigWorkerResponse,
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)

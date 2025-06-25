@@ -28,13 +28,11 @@ it('Test gluutooltip', async () => {
 
   const iconElement = container.querySelector(`svg[data-tooltip-id="applicationType"]`)
   expect(iconElement).toBeInTheDocument()
-  
+
   userEvent.hover(iconElement)
 
   await waitFor(() => {
-    expect(screen.getByRole("tooltip")).toHaveTextContent(/Kind of the application/i)
-    expect(
-      screen.getByText(/Kind of the application/i),
-    ).toHaveAttribute('role', 'tooltip')
+    expect(screen.getByRole('tooltip')).toHaveTextContent(/Kind of the application/i)
+    expect(screen.getByText(/Kind of the application/i)).toHaveAttribute('role', 'tooltip')
   })
 })
