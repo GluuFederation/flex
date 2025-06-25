@@ -6,4 +6,5 @@ import { SidebarShowSlim } from './SidebarShowSlim'
 import { SidebarHideSlim } from './SidebarHideSlim'
 
 export { SidebarSection, SidebarClose, SidebarMobileFluid, SidebarShowSlim, SidebarHideSlim }
+export type * from './types'
 export default Sidebar

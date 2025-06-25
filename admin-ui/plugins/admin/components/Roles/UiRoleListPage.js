@@ -5,22 +5,22 @@ import UiRoleDetailPage from './UiRoleDetailPage'
 import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { useCedarling } from '@/cedarling'
 import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { getRoles, addRole, editRole, deleteRole } from 'Plugins/admin/redux/features/apiRoleSlice'
-import { hasPermission, buildPayload, ROLE_READ, ROLE_WRITE } from 'Utils/PermChecker'
+import { buildPayload, ROLE_READ, ROLE_WRITE, ROLE_DELETE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { ROLE_DELETE } from '../../../../app/utils/PermChecker'
 import { toast } from 'react-toastify'
 
 function UiRoleListPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
   const loading = useSelector((state) => state.apiRoleReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
 
   const [modal, setModal] = useState(false)
   const myActions = [],
@@ -35,13 +35,22 @@ function UiRoleListPage() {
     { t } = useTranslation(),
     dispatch = useDispatch()
 
+  // Initialize Cedar permissions
   useEffect(() => {
+    const initPermissions = async () => {
+      const permissions = [ROLE_READ, ROLE_WRITE, ROLE_DELETE]
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+    }
+    initPermissions()
     doFetchList()
-  }, [])
+  }, [authorize])
 
   SetTitle(t('titles.roles'))
 
-  if (hasPermission(permissions, ROLE_WRITE)) {
+  // Add action if user can write
+  if (hasCedarPermission(ROLE_WRITE)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
@@ -72,7 +81,7 @@ function UiRoleListPage() {
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
+        <GluuViewWrapper canShow={hasCedarPermission(ROLE_READ)}>
           <MaterialTable
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
@@ -141,17 +150,17 @@ function UiRoleListPage() {
               return <UiRoleDetailPage row={rowData} />
             }}
             editable={{
-              isDeleteHidden: () => !hasPermission(permissions, ROLE_DELETE),
-              isEditHidden: () => !hasPermission(permissions, ROLE_WRITE),
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve, reject) => {
+              isDeleteHidden: () => !hasCedarPermission(ROLE_DELETE),
+              isEditHidden: () => !hasCedarPermission(ROLE_WRITE),
+              onRowUpdate: (newData) =>
+                new Promise((resolve) => {
                   buildPayload(userAction, 'Edit role', newData)
                   dispatch(editRole({ action: userAction }))
                   resolve()
                   doFetchList()
                 }),
               onRowDelete: (oldData) =>
-                new Promise((resolve, reject) => {
+                new Promise((resolve) => {
                   buildPayload(userAction, 'remove role', oldData)
                   dispatch(deleteRole({ action: userAction }))
                   resolve()

@@ -1,10 +1,11 @@
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { SAML_CONFIG_WRITE, hasPermission } from 'Utils/PermChecker'
+import { SAML_CONFIG_WRITE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { useTranslation } from 'react-i18next'
@@ -14,13 +15,27 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SamlConfigurationForm = () => {
   const { t } = useTranslation()
+  const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
   const DOC_SECTION = 'samlConfiguration'
 
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const [modal, setModal] = useState(false)
   const configuration = useSelector((state) => state.idpSamlReducer.configuration)
   SetTitle(t('titles.saml_management'))
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      try {
+        await authorize([SAML_CONFIG_WRITE])
+      } catch (error) {
+        console.error('Error authorizing SAML permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [authorize])
+
   const toggle = () => {
     setModal(!modal)
   }
@@ -102,7 +117,7 @@ const SamlConfigurationForm = () => {
           />
         </Col>
       </FormGroup>
-      {hasPermission(permissions, SAML_CONFIG_WRITE) && (
+      {hasCedarPermission(SAML_CONFIG_WRITE) && (
         <Row>
           <Col>
             <GluuCommitFooter

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import MappingAddDialogForm from './MappingAddDialogForm'
 import { Card, Col, CardBody, FormGroup, Button } from 'Components'
@@ -11,16 +12,17 @@ import { getMapping, addNewRolePermissions } from 'Plugins/admin/redux/features/
 import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { getPermissions } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import MappingItem from './MappingItem'
-import { hasPermission, buildPayload, MAPPING_WRITE, MAPPING_READ } from 'Utils/PermChecker'
+import { buildPayload, MAPPING_WRITE, MAPPING_READ } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { useCedarling } from '@/cedarling'
 
 function MappingPage() {
   const dispatch = useDispatch()
+  const { hasCedarPermission, authorize } = useCedarling()
   const mapping = useSelector((state) => state.mappingReducer.items)
   const loading = useSelector((state) => state.mappingReducer.loading)
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const permissionLoading = useSelector((state) => state.apiPermissionReducer.loading)
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
@@ -31,16 +33,28 @@ function MappingPage() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
+  const authorizePermissions = async () => {
+    const permissions = [MAPPING_READ, MAPPING_WRITE]
+    try {
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+      console.log('All mapping permissions authorized successfully')
+    } catch (error) {
+      console.error('Error authorizing mapping permissions:', error)
+    }
+  }
+  useEffect(() => {
+    authorizePermissions()
+    doFetchList()
+    doFetchRoles()
+    doFetchPermissionsList()
+  }, [authorize])
+
   function doFetchPermissionsList() {
     buildPayload(userAction, 'PERMISSIONS', options)
     dispatch(getPermissions({ payload: userAction }))
   }
-
-  useEffect(() => {
-    doFetchList()
-    doFetchRoles()
-    doFetchPermissionsList()
-  }, [])
 
   function onAddConfirmed(mappingData) {
     buildPayload(userAction, 'Add new mapping', mappingData)
@@ -65,8 +79,8 @@ function MappingPage() {
     <GluuLoader blocking={loading || permissionLoading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasPermission(permissions, MAPPING_READ)}>
-            {hasPermission(permissions, MAPPING_WRITE) ? (
+          <GluuViewWrapper canShow={hasCedarPermission(MAPPING_READ)}>
+            {hasCedarPermission(MAPPING_WRITE) && (
               <FormGroup row>
                 <Col sm={10}></Col>
                 <Col sm={2}>
@@ -83,7 +97,7 @@ function MappingPage() {
                   </Box>
                 </Col>
               </FormGroup>
-            ) : null}
+            )}
             {mapping.map((candidate, idx) => (
               <MappingItem key={idx} candidate={candidate} roles={apiRoles} />
             ))}

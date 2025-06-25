@@ -4,12 +4,13 @@ import { FormGroup, Card, CardBody, CardHeader } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import useExitPrompt from 'Routes/Apps/Gluu/useExitPrompt'
+
 import PropertyBuilder from './JsonPropertyBuilder'
 import { useDispatch, useSelector } from 'react-redux'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import spec from '../../../../configApiSpecs.yaml'
-import { buildPayload, hasPermission, PROPERTIES_WRITE } from 'Utils/PermChecker'
+import { buildPayload, PROPERTIES_WRITE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 import SetTitle from 'Utils/SetTitle'
 import DefaultAcrInput from './DefaultAcrInput'
@@ -21,8 +22,8 @@ import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrS
 import { getScripts } from 'Redux/features/initSlice'
 
 function ConfigPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const scripts = useSelector((state) => state.initReducer.scripts)
 
@@ -34,7 +35,7 @@ function ConfigPage() {
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState([])
   const [operations, setOperations] = useState([])
-  const [showExitPrompt, setShowExitPrompt] = useExitPrompt(true)
+
   const [search, setSearch] = useState('')
   const [finalSearch, setFinalSearch] = useState('')
   const schema = spec.components.schemas.AppConfiguration.properties
@@ -46,6 +47,19 @@ function ConfigPage() {
   SetTitle(t('titles.jans_json_property'))
 
   const [put, setPut] = useState([])
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      try {
+        await authorize([PROPERTIES_WRITE])
+      } catch (error) {
+        console.error('Error authorizing properties permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [authorize])
   const authScripts = scripts
     .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)
@@ -59,11 +73,7 @@ function ConfigPage() {
     dispatch(getAcrsConfig())
     dispatch(getScripts({ action: userAction }))
   }, [])
-  useEffect(() => {
-    return () => {
-      setShowExitPrompt(false)
-    }
-  }, [])
+
   const patchHandler = (patch) => {
     setPatches((existingPatches) => [...existingPatches, patch])
     const newPatches = patches
@@ -85,7 +95,7 @@ function ConfigPage() {
       postBody['requestBody'] = patches
 
       buildPayload(userAction, message, postBody)
-      if (!!put) {
+      if (put) {
         const opts = {}
         opts['authenticationMethod'] = { defaultAcr: put.value || acrs.defaultAcr }
         dispatch(editAcrs({ data: opts }))
@@ -173,13 +183,11 @@ function ConfigPage() {
           )}
 
           <FormGroup row></FormGroup>
-          {hasPermission(permissions, PROPERTIES_WRITE) && (
-            <GluuCommitFooter saveHandler={toggle} />
-          )}
+          {hasCedarPermission(PROPERTIES_WRITE) && <GluuCommitFooter saveHandler={toggle} />}
           <FormGroup row></FormGroup>
           <FormGroup row></FormGroup>
           <FormGroup row></FormGroup>
-          {hasPermission(permissions, PROPERTIES_WRITE) && (
+          {hasCedarPermission(PROPERTIES_WRITE) && (
             <GluuCommitDialog
               handler={toggle}
               modal={modal}

@@ -1,7 +1,8 @@
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { buildPayload, hasPermission, JANS_LOCK_WRITE } from 'Utils/PermChecker'
+import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import { Row, Col, Form, FormGroup, Accordion } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -15,11 +16,25 @@ const DOC_CATEGORY = 'jans_lock'
 
 const JansLockConfiguration = () => {
   const dispatch = useDispatch()
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  const { hasCedarPermission, authorize } = useCedarling()
   const lockConfigs = useSelector((state) => state.jansLockReducer.configuration)
 
-  const viewOnly = !hasPermission(permissions, JANS_LOCK_WRITE)
+  const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
   const [modal, setModal] = useState(false)
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      try {
+        await authorize([JANS_LOCK_WRITE])
+      } catch (error) {
+        console.error('Error authorizing Jans Lock permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [authorize])
+
   const toggle = () => {
     setModal(!modal)
   }
@@ -36,7 +51,7 @@ const JansLockConfiguration = () => {
     delete formik.values?.action_message
 
     for (const key in formik.values) {
-      if (lockConfigs.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(lockConfigs, key)) {
         if (JSON.stringify(lockConfigs[key]) !== JSON.stringify(formik.values[key])) {
           differences.push({
             op: 'replace',

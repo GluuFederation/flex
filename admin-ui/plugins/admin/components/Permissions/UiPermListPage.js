@@ -4,6 +4,7 @@ import { Paper } from '@mui/material'
 import UiPermDetailPage from './UiPermDetailPage'
 import { Badge } from 'reactstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { useCedarling } from '@/cedarling'
 import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -16,7 +17,6 @@ import {
   addPermission,
 } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import {
-  hasPermission,
   buildPayload,
   PERMISSION_READ,
   PERMISSION_WRITE,
@@ -28,50 +28,118 @@ import getThemeColor from 'Context/theme/config'
 import { isEmpty } from 'lodash'
 
 function UiPermListPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const apiPerms = useSelector((state) => state.apiPermissionReducer.items)
   const loading = useSelector((state) => state.apiPermissionReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
 
   const dispatch = useDispatch()
   const { t } = useTranslation()
+
+  // State for managing actions and UI
+  const [myActions, setMyActions] = useState([])
   const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
-  const myActions = []
-  const options = []
-  const userAction = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
+
+  // Theme and styling
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
+  // Constants
+  const userAction = {}
+  const pageSize = localStorage.getItem('paggingSize') || 10
+
+  SetTitle(t('menus.securityDropdown.capabilities'))
+
+  // Permission initialization and data fetching
   useEffect(() => {
+    const authorizePermissions = async () => {
+      const permissions = [PERMISSION_READ, PERMISSION_WRITE, PERMISSION_DELETE]
+      try {
+        for (const permission of permissions) {
+          await authorize([permission])
+        }
+      } catch (error) {
+        console.error('Error authorizing permission permissions:', error)
+      }
+    }
+
+    authorizePermissions()
     doFetchList()
+  }, [authorize])
+
+  // Build actions based on permissions
+  useEffect(() => {
+    const actions = []
+
+    if (hasCedarPermission(PERMISSION_WRITE)) {
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('messages.add_permission')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => handleAddNewPermission(),
+      })
+    }
+
+    setMyActions(actions)
+  }, [hasCedarPermission, t])
+
+  // Handler functions
+  const handleAddNewPermission = useCallback(() => {
+    toggle()
   }, [])
 
-  SetTitle(t('titles.permissions'))
+  const toggle = useCallback(() => setModal(!modal), [modal])
 
-  if (hasPermission(permissions, PERMISSION_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('messages.add_permission')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => handleAddNewPermission(),
-    })
-  }
-
-  function handleAddNewPermission() {
-    toggle()
-  }
-  function doFetchList() {
+  const doFetchList = useCallback(() => {
+    const options = []
     buildPayload(userAction, 'PERMISSIONS', options)
     dispatch(getPermissions({ action: userAction }))
+  }, [dispatch])
+
+  const onAddConfirmed = useCallback(
+    (roleData) => {
+      buildPayload(userAction, 'message', roleData)
+      dispatch(addPermission({ action: userAction }))
+      toggle()
+    },
+    [dispatch, toggle],
+  )
+
+  // MaterialTable options
+  const tableOptions = {
+    search: true,
+    idSynonym: 'inum',
+    searchFieldAlignment: 'left',
+    selection: false,
+    pageSize: pageSize,
+    rowStyle: (rowData) => ({
+      backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+    }),
+    headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+    actionsColumnIndex: -1,
   }
-  function onAddConfirmed(roleData) {
-    buildPayload(userAction, 'message', roleData)
-    dispatch(addPermission({ action: userAction }))
-    toggle()
+
+  // Editable configuration
+  const editableConfig = {
+    isDeleteHidden: () => !hasCedarPermission(PERMISSION_DELETE),
+    isEditHidden: () => !hasCedarPermission(PERMISSION_WRITE),
+    onRowUpdate: (newData) =>
+      new Promise((resolve) => {
+        buildPayload(userAction, 'Edit permision', newData)
+        dispatch(editPermission({ action: userAction }))
+        resolve()
+        doFetchList()
+      }),
+    onRowDelete: (oldData) =>
+      new Promise((resolve) => {
+        if (!isEmpty(oldData)) {
+          buildPayload(userAction, 'Remove permission', oldData)
+          dispatch(deletePermission({ action: userAction }))
+        }
+        resolve()
+      }),
   }
 
   const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
@@ -81,7 +149,7 @@ function UiPermListPage() {
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasPermission(permissions, PERMISSION_READ)}>
+        <GluuViewWrapper canShow={hasCedarPermission(PERMISSION_READ)}>
           <MaterialTable
             components={{
               Container: PaperContainer,
@@ -112,38 +180,9 @@ function UiPermListPage() {
             isLoading={loading || false}
             title=""
             actions={myActions}
-            options={{
-              search: true,
-              idSynonym: 'inum',
-              searchFieldAlignment: 'left',
-              selection: false,
-              pageSize: pageSize,
-              rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
-              }),
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
-              actionsColumnIndex: -1,
-            }}
+            options={tableOptions}
             detailPanel={DetailPanel}
-            editable={{
-              isDeleteHidden: () => !hasPermission(permissions, PERMISSION_DELETE),
-              isEditHidden: () => !hasPermission(permissions, PERMISSION_WRITE),
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve, reject) => {
-                  buildPayload(userAction, 'Edit permision', newData)
-                  dispatch(editPermission({ action: userAction }))
-                  resolve()
-                  doFetchList()
-                }),
-              onRowDelete: (oldData) =>
-                new Promise((resolve, reject) => {
-                  if (!isEmpty(oldData)) {
-                    buildPayload(userAction, 'Remove permission', oldData)
-                    dispatch(deletePermission({ action: userAction }))
-                  }
-                  resolve()
-                }),
-            }}
+            editable={editableConfig}
           />
         </GluuViewWrapper>
         <PermissionAddDialogForm handler={toggle} modal={modal} onAccept={onAddConfirmed} />

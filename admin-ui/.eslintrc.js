@@ -36,7 +36,7 @@ module.exports = {
     // indent: ['error', 2, { ignoredNodes: ['JSXElement'], "SwitchCase": 1 }],
     // 'react/jsx-indent': ['error', 2],
     // 'react/jsx-indent-props': ['error', 2],
-
+    'react/react-in-jsx-scope': 'off',
     'no-var': 'error',
     'prefer-const': 'error',
     'no-unused-vars': 'off',

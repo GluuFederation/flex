@@ -45,7 +45,6 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           ],
         },
       }),
-      `...`,
     ],
   },
   output: {
@@ -83,11 +82,9 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       allowAsyncCycles: false,
       cwd: process.cwd(),
       onDetected: ({
-        module,
         paths,
-        compilation,
       }: {
-        module: any
+        module: unknown
         paths: string[]
         compilation: webpack.Compilation
       }) => {
@@ -139,6 +136,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         test: /\.test\.js$/,
         include: [config.srcDir, config.pluginsDir],
         use: 'ignore-loader',
+        sideEffects: false,
       },
       // Modular Styles
       {

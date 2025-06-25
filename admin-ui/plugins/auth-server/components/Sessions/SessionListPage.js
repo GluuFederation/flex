@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import moment from 'moment'
 import isEmpty from 'lodash/isEmpty'
 import MaterialTable from '@material-table/core'
@@ -29,7 +29,8 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SessionDetailPage from '../Sessions/SessionDetailPage'
-import { hasPermission, SESSION_DELETE } from 'Utils/PermChecker'
+import { SESSION_DELETE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import { searchSessions } from '../../redux/features/sessionSlice'
 import dayjs from 'dayjs'
 import { Button as MaterialButton } from '@mui/material'
@@ -39,9 +40,9 @@ import ViewColumnIcon from '@mui/icons-material/ViewColumn'
 import PropTypes from 'prop-types'
 
 function SessionListPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const sessions = useSelector((state) => state.sessionReducer.items)
   const loading = useSelector((state) => state.sessionReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
 
   const dispatch = useDispatch()
 
@@ -55,8 +56,24 @@ function SessionListPage() {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const sessionUsername = sessions.map((session) => session.sessionAttributes.auth_user)
-  const usernames = [...new Set(sessionUsername)]
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      try {
+        await authorize([SESSION_DELETE])
+      } catch (error) {
+        console.error('Error authorizing session permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [authorize])
+  const sessionUsername = useMemo(
+    () => sessions.map((session) => session.sessionAttributes.auth_user),
+    [sessions],
+  )
+  const usernames = useMemo(() => [...new Set(sessionUsername)], [sessionUsername])
   const [revokeUsername, setRevokeUsername] = useState()
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
@@ -66,47 +83,53 @@ function SessionListPage() {
   const [updatedColumns, setUpdatedColumns] = useState([])
   const [showFilter, setShowFilter] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
-  let memoLimit = limit
+  const memoLimit = limit
   let memoPattern = pattern
 
   SetTitle(t('menus.sessions'))
 
-  const tableColumns = [
-    { title: `${t('fields.username')}`, field: 'sessionAttributes.auth_user' },
-    {
-      title: `${t('fields.ip_address')}`,
-      field: 'sessionAttributes.remote_ip',
-    },
-    {
-      title: `${t('fields.client_id_used')}`,
-      field: 'sessionAttributes.client_id',
-    },
-    {
-      title: `${t('fields.auth_time')}`,
-      field: 'authenticationTime',
-      render: (rowData) => (
-        <span>{moment(rowData.authenticationTime).format('ddd, MMM DD, YYYY h:mm:ss A')}</span>
-      ),
-    },
-    {
-      title: `${t('fields.acr')}`,
-      field: 'sessionAttributes.acr_values',
-    },
-    { title: `${t('fields.state')}`, field: 'state' },
-  ]
+  const tableColumns = useMemo(
+    () => [
+      { title: `${t('fields.username')}`, field: 'sessionAttributes.auth_user' },
+      {
+        title: `${t('fields.ip_address')}`,
+        field: 'sessionAttributes.remote_ip',
+      },
+      {
+        title: `${t('fields.client_id_used')}`,
+        field: 'sessionAttributes.client_id',
+      },
+      {
+        title: `${t('fields.auth_time')}`,
+        field: 'authenticationTime',
+        render: (rowData) => (
+          <span>{moment(rowData.authenticationTime).format('ddd, MMM DD, YYYY h:mm:ss A')}</span>
+        ),
+      },
+      {
+        title: `${t('fields.acr')}`,
+        field: 'sessionAttributes.acr_values',
+      },
+      { title: `${t('fields.state')}`, field: 'state' },
+    ],
+    [t],
+  )
 
-  const handleCheckboxChange = (title) => {
-    setCheckedColumns((prev) => {
-      const newCheckedColumns = prev.includes(title)
-        ? prev.filter((item) => item !== title)
-        : [...prev, title]
-      const newUpdatedColumns = tableColumns.filter((column) =>
-        newCheckedColumns.includes(column.title),
-      )
-      setUpdatedColumns(newUpdatedColumns)
-      return newCheckedColumns
-    })
-  }
+  const handleCheckboxChange = useCallback(
+    (title) => {
+      setCheckedColumns((prev) => {
+        const newCheckedColumns = prev.includes(title)
+          ? prev.filter((item) => item !== title)
+          : [...prev, title]
+        const newUpdatedColumns = tableColumns.filter((column) =>
+          newCheckedColumns.includes(column.title),
+        )
+        setUpdatedColumns(newUpdatedColumns)
+        return newCheckedColumns
+      })
+    },
+    [tableColumns],
+  )
 
   useEffect(() => {
     dispatch(getSessions())
@@ -115,7 +138,7 @@ function SessionListPage() {
     setUpdatedColumns(tableColumns)
   }, [])
 
-  const handleRevoke = () => {
+  const handleRevoke = useCallback(() => {
     const row = !isEmpty(sessions)
       ? sessions.find(({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername)
       : null
@@ -123,41 +146,47 @@ function SessionListPage() {
       setItem(row)
       toggle()
     }
-  }
+  }, [sessions, revokeUsername])
 
-  const onRevokeConfirmed = (message) => {
-    const { userDn } = item
-    const params = { userDn, action_message: message }
-    dispatch(revokeSession(params))
-    toggle()
-  }
+  const onRevokeConfirmed = useCallback(
+    (message) => {
+      const { userDn } = item
+      const params = { userDn, action_message: message }
+      dispatch(revokeSession(params))
+      toggle()
+    },
+    [item, dispatch],
+  )
 
   //export csv
-  const convertToCSV = (data) => {
-    const keys = updatedColumns.map((item) => item.title)
+  const convertToCSV = useCallback(
+    (data) => {
+      const keys = updatedColumns.map((item) => item.title)
 
-    const header = keys.map((item) => item.replace(/-/g, ' ').toUpperCase()).join(',')
+      const header = keys.map((item) => item.replace(/-/g, ' ').toUpperCase()).join(',')
 
-    const updateData = data.map((row) => {
-      return {
-        [t('fields.username')]: row.sessionAttributes.auth_user,
-        [t('fields.ip_address')]: row.sessionAttributes.remote_ip,
-        [t('fields.client_id_used')]: row.sessionAttributes.client_id,
-        [t('fields.auth_time')]: moment(row.authenticationTime).format('YYYY-MM-DD h:mm:ss A'),
-        [t('fields.acr')]: row.sessionAttributes.acr_values,
-        [t('fields.state')]: row.state,
-      }
-    })
+      const updateData = data.map((row) => {
+        return {
+          [t('fields.username')]: row.sessionAttributes.auth_user,
+          [t('fields.ip_address')]: row.sessionAttributes.remote_ip,
+          [t('fields.client_id_used')]: row.sessionAttributes.client_id,
+          [t('fields.auth_time')]: moment(row.authenticationTime).format('YYYY-MM-DD h:mm:ss A'),
+          [t('fields.acr')]: row.sessionAttributes.acr_values,
+          [t('fields.state')]: row.state,
+        }
+      })
 
-    const rows = updateData.map((row) => {
-      return keys.map((key) => row[key]).join(',')
-    })
+      const rows = updateData.map((row) => {
+        return keys.map((key) => row[key]).join(',')
+      })
 
-    return [header, ...rows].join('\n')
-  }
+      return [header, ...rows].join('\n')
+    },
+    [updatedColumns, t],
+  )
 
   // Function to handle file download
-  const downloadCSV = () => {
+  const downloadCSV = useCallback(() => {
     const csv = convertToCSV(sessions)
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -168,14 +197,60 @@ function SessionListPage() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }
+  }, [convertToCSV, sessions])
+
+  // Stable callback references to avoid dependency array size changes
+  const handleUsernameChange = useCallback((_, value) => {
+    setRevokeUsername(value)
+  }, [])
+
+  const handleFilterToggle = useCallback(() => {
+    setShowFilter(!showFilter)
+  }, [showFilter])
+
+  const handleColumnMenuOpen = useCallback((event) => {
+    setAnchorEl(event.currentTarget)
+  }, [])
+
+  const handleColumnMenuClose = useCallback(() => {
+    setAnchorEl(null)
+  }, [])
+
+  const handleFilterApply = useCallback(() => {
+    setLimit(memoLimit)
+    setPattern(memoPattern)
+    if (memoPattern || date) {
+      dispatch(
+        searchSessions({
+          action: {
+            fieldValuePair: `${searchFilter}=${
+              searchFilter !== 'expirationDate' && searchFilter !== 'authenticationTime'
+                ? memoPattern
+                : dayjs(date).format('YYYY-MM-DD')
+            }`,
+          },
+        }),
+      )
+    } else {
+      dispatch(getSessions())
+    }
+  }, [searchFilter, date, dispatch])
+
+  const handleFilterClose = useCallback(() => {
+    setShowFilter(false)
+    dispatch(getSessions())
+  }, [dispatch])
+
+  const handleDetailPanel = useCallback((rowData) => {
+    return <SessionDetailPage row={rowData.rowData} />
+  }, [])
 
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuViewWrapper canShow>
           <div className="d-flex justify-content-between align-items-center">
-            {hasPermission(permissions, SESSION_DELETE) && (
+            {hasCedarPermission(SESSION_DELETE) && (
               <Box display="flex" justifyContent="flex-end">
                 <Box display="flex" alignItems="center" fontSize="16px" mr="20px">
                   {t('fields.selectUserRevoke')}
@@ -186,9 +261,7 @@ function SessionListPage() {
                   options={usernames}
                   getOptionLabel={(option) => option}
                   style={{ width: 300 }}
-                  onChange={(_, value) => {
-                    setRevokeUsername(value)
-                  }}
+                  onChange={handleUsernameChange}
                   renderInput={(params) => (
                     <TextField {...params} label="Username" variant="outlined" />
                   )}
@@ -203,10 +276,7 @@ function SessionListPage() {
             {/* searchFilter */}
             <Box position="relative">
               <Box display="flex" justifyContent="flex-end" alignItems="center" p={2} width="500px">
-                <MaterialButton
-                  startIcon={<FilterListIcon />}
-                  onClick={() => setShowFilter(!showFilter)}
-                >
+                <MaterialButton startIcon={<FilterListIcon />} onClick={handleFilterToggle}>
                   {t('titles.filters')}
                 </MaterialButton>
                 <MaterialButton onClick={downloadCSV} startIcon={<GetAppIcon />} sx={{ ml: 2 }}>
@@ -215,14 +285,14 @@ function SessionListPage() {
 
                 <MaterialButton
                   sx={{ ml: 2 }}
-                  onClick={(event) => setAnchorEl(event.currentTarget)}
+                  onClick={handleColumnMenuOpen}
                   startIcon={<ViewColumnIcon />}
                 >
                   Columns
                 </MaterialButton>
               </Box>
 
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleColumnMenuClose}>
                 <FormControl sx={{ m: 1, width: 200 }}>
                   <div className="d-flex flex-column gap-2 mt-2">
                     {tableColumns.map((column) => (
@@ -309,43 +379,13 @@ function SessionListPage() {
                     )}
 
                     <Grid item xs={2}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          setLimit(memoLimit)
-                          setPattern(memoPattern)
-                          if (memoPattern || date) {
-                            dispatch(
-                              searchSessions({
-                                action: {
-                                  fieldValuePair: `${searchFilter}=${
-                                    searchFilter !== 'expirationDate' &&
-                                    searchFilter !== 'authenticationTime'
-                                      ? memoPattern
-                                      : dayjs(date).format('YYYY-MM-DD')
-                                  }`,
-                                },
-                              }),
-                            )
-                          } else {
-                            dispatch(getSessions())
-                          }
-                        }}
-                      >
+                      <Button variant="contained" color="primary" onClick={handleFilterApply}>
                         {t('actions.apply')}
                       </Button>
                     </Grid>
 
                     <Grid item xs={2}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          setShowFilter(false)
-                          dispatch(getSessions())
-                        }}
-                      >
+                      <Button variant="contained" color="primary" onClick={handleFilterClose}>
                         {t('actions.close')}
                       </Button>
                     </Grid>
@@ -364,22 +404,23 @@ function SessionListPage() {
             isLoading={loading}
             title=""
             actions={myActions}
-            options={{
-              idSynonym: 'username',
-              columnsButton: false,
-              search: false,
-              searchFieldAlignment: 'left',
-              selection: false,
-              pageSize: pageSize,
-              headerStyle: {
-                ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
-              },
-              actionsColumnIndex: -1,
-            }}
-            detailPanel={(rowData) => {
-              return <SessionDetailPage row={rowData.rowData} />
-            }}
+            options={useMemo(
+              () => ({
+                idSynonym: 'username',
+                columnsButton: false,
+                search: false,
+                searchFieldAlignment: 'left',
+                selection: false,
+                pageSize: pageSize,
+                headerStyle: {
+                  ...applicationStyle.tableHeaderStyle,
+                  ...bgThemeColor,
+                },
+                actionsColumnIndex: -1,
+              }),
+              [pageSize, bgThemeColor],
+            )}
+            detailPanel={handleDetailPanel}
           />
         </GluuViewWrapper>
         {!isEmpty(item) && (

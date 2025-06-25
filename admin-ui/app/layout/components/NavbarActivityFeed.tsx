@@ -13,32 +13,36 @@ import {
   Media,
 } from 'Components'
 import { ExtendedDropdownSection } from '@/components/ExtendedDropdown/ExtendedDropdownSection'
+import type { NavbarActivityFeedProps, ActivityFeedIconMap } from './types'
 
-interface NavbarActivityFeedProps {
-  className?: string
-  style?: React.CSSProperties
+const activityFeedIcons: ActivityFeedIconMap = {
+  success: (
+    <span className="fa-stack fa-lg fa-fw d-flex me-3">
+      <i className="fa fa-circle fa-fw fa-stack-2x text-success"></i>
+      <i className="fa fa-check fa-stack-1x fa-fw text-white"></i>
+    </span>
+  ),
+  danger: (
+    <span className="fa-stack fa-lg fa-fw d-flex me-3">
+      <i className="fa fa-circle fa-fw fa-stack-2x text-danger"></i>
+      <i className="fa fa-close fa-stack-1x fa-fw text-white"></i>
+    </span>
+  ),
+  warning: (
+    <span className="fa-stack fa-lg fa-fw d-flex me-3">
+      <i className="fa fa-circle fa-fw fa-stack-2x text-warning"></i>
+      <i className="fa fa-exclamation fa-stack-1x fa-fw text-white"></i>
+    </span>
+  ),
+  info: (
+    <span className="fa-stack fa-lg fa-fw d-flex me-3">
+      <i className="fa fa-circle fa-fw fa-stack-2x text-primary"></i>
+      <i className="fa fa-info fa-stack-1x fa-fw text-white"></i>
+    </span>
+  ),
 }
 
-/*eslint-disable */
-const activityFeedIcons = [
-  <span className="fa-stack fa-lg fa-fw d-flex me-3">
-    <i className="fa fa-circle fa-fw fa-stack-2x text-success"></i>
-    <i className="fa fa-check fa-stack-1x fa-fw text-white"></i>
-  </span>,
-  <span className="fa-stack fa-lg fa-fw d-flex me-3">
-    <i className="fa fa-circle fa-fw fa-stack-2x text-danger"></i>
-    <i className="fa fa-close fa-stack-1x fa-fw text-white"></i>
-  </span>,
-  <span className="fa-stack fa-lg fa-fw d-flex me-3">
-    <i className="fa fa-circle fa-fw fa-stack-2x text-warning"></i>
-    <i className="fa fa-exclamation fa-stack-1x fa-fw text-white"></i>
-  </span>,
-  <span className="fa-stack fa-lg fa-fw d-flex me-3">
-    <i className="fa fa-circle fa-fw fa-stack-2x text-primary"></i>
-    <i className="fa fa-info fa-stack-1x fa-fw text-white"></i>
-  </span>,
-]
-/*eslint-enable */
+const iconTypes: Array<keyof ActivityFeedIconMap> = ['success', 'danger', 'warning', 'info']
 
 const NavbarActivityFeed: React.FC<NavbarActivityFeedProps> = (props) => (
   <UncontrolledDropdown nav inNavbar {...props}>
@@ -61,21 +65,24 @@ const NavbarActivityFeed: React.FC<NavbarActivityFeedProps> = (props) => (
 
       <ExtendedDropdownSection list>
         <ListGroup>
-          {_.times(2, (index) => (
-            <ListGroupItem key={index} action>
-              <Media>
-                <Media left>{activityFeedIcons[index % 4]}</Media>
-                <Media body>
-                  <span className="h6">
-                    {'faker.name.firstName()'} {'faker.name.lastName()'}
-                  </span>{' '}
-                  changed Description to &quot;{'faker.random.words()'}&quot;
-                  <p className="mt-2 mb-1">{'faker.lorem.sentence()'}</p>
-                  <div className="small mt-2">{'faker.date.past().toString()'}</div>
+          {_.times(2, (index) => {
+            const iconType = iconTypes[index % iconTypes.length]
+            return (
+              <ListGroupItem key={index} action>
+                <Media>
+                  <Media left>{activityFeedIcons[iconType]}</Media>
+                  <Media body>
+                    <span className="h6">
+                      {'faker.name.firstName()'} {'faker.name.lastName()'}
+                    </span>{' '}
+                    changed Description to &quot;{'faker.random.words()'}&quot;
+                    <p className="mt-2 mb-1">{'faker.lorem.sentence()'}</p>
+                    <div className="small mt-2">{'faker.date.past().toString()'}</div>
+                  </Media>
                 </Media>
-              </Media>
-            </ListGroupItem>
-          ))}
+              </ListGroupItem>
+            )
+          })}
         </ListGroup>
       </ExtendedDropdownSection>
 

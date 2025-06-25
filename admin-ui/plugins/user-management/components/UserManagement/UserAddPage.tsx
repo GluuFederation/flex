@@ -17,14 +17,14 @@ function UserAddPage() {
   const { t } = useTranslation()
   const personAttributes = useSelector((state: any) => state.attributesReducerRoot.items)
   const createCustomAttributes = (values: any) => {
-    let customAttributes = []
+    const customAttributes = []
     if (values) {
-      for (let key in values) {
-        let customAttribute = personAttributes.filter((e: any) => e.name == key)
+      for (const key in values) {
+        const customAttribute = personAttributes.filter((e: any) => e.name == key)
         if (personAttributes.some((e: any) => e.name == key)) {
           let obj = {}
           if (!customAttribute[0]?.oxMultiValuedAttribute) {
-            let val = []
+            const val = []
             let value = values[key]
             if (key != 'birthdate') {
               val.push(values[key])
@@ -38,9 +38,9 @@ function UserAddPage() {
               values: val,
             }
           } else {
-            let valE = []
+            const valE = []
             if (values[key]) {
-              for (let i in values[key]) {
+              for (const i in values[key]) {
                 if (typeof values[key][i] == 'object') {
                   valE.push(values[key][i][key])
                 } else {
@@ -62,8 +62,8 @@ function UserAddPage() {
   }
 
   const submitData = (values: any, modifiedFields: any, message: any) => {
-    let customAttributes = createCustomAttributes(values)
-    let submitableValues = {
+    const customAttributes = createCustomAttributes(values)
+    const submitableValues = {
       userId: values.userId || '',
       mail: values.mail,
       displayName: values.displayName || '',
@@ -90,7 +90,7 @@ function UserAddPage() {
         show={false}
       />
       <Container>
-        <Card className="mb-3">
+        <Card type="border" color={null} className="mb-3">
           <CardBody>
             <UserForm onSubmitData={submitData} />
           </CardBody>

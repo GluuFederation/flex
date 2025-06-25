@@ -15,10 +15,9 @@ STAGED_CSS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^a
 # Flag to track if any files need formatting
 FORMATTING_NEEDED=false
 
-# Check JavaScript files
+# Check JavaScript/TypeScript files
 if [ -n "$STAGED_JS_FILES" ]; then
-  echo "Checking JavaScript/TypeScript files:"
-  echo "$STAGED_JS_FILES" | tr ' ' '\n' | sed 's/^/  - /'
+  echo "Checking JavaScript/TypeScript files..."
   for file in $STAGED_JS_FILES; do
     if [ -f "$file" ]; then
       echo "  Checking $file..."

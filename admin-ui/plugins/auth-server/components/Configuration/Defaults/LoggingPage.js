@@ -11,7 +11,8 @@ import {
   getLoggingConfig,
   editLoggingConfig,
 } from 'Plugins/auth-server/redux/features/loggingSlice'
-import { hasPermission, LOGGING_READ, LOGGING_WRITE } from 'Utils/PermChecker'
+import { LOGGING_READ, LOGGING_WRITE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -19,17 +20,26 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 
 function LoggingPage() {
   const { t } = useTranslation()
+  const { hasCedarPermission, authorize } = useCedarling()
   const theme = useContext(ThemeContext)
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
 
   const dispatch = useDispatch()
 
   const selectedTheme = theme.state.theme
+
   useEffect(() => {
+    const initPermissions = async () => {
+      const permissions = [LOGGING_READ, LOGGING_WRITE]
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+    }
+    initPermissions()
+
     dispatch(getLoggingConfig())
-  }, [])
+  }, [authorize, dispatch])
 
   const initialValues = {
     loggingLevel: logging.loggingLevel,
@@ -46,7 +56,7 @@ function LoggingPage() {
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
-          <GluuViewWrapper canShow={hasPermission(permissions, LOGGING_READ)}>
+          <GluuViewWrapper canShow={hasCedarPermission(LOGGING_READ)}>
             <Formik
               initialValues={initialValues}
               onSubmit={(values) => {
@@ -162,7 +172,7 @@ function LoggingPage() {
                     value={logging.enabledOAuthAuditLogging}
                   />
 
-                  {hasPermission(permissions, LOGGING_WRITE) && (
+                  {hasCedarPermission(LOGGING_WRITE) && (
                     <Button color={`primary-${selectedTheme}`} type="submit">
                       <i className="fa fa-check-circle me-2"></i>
                       {t('actions.save')}
