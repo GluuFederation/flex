@@ -44,7 +44,6 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   roles,
   mapping = [],
 }) => {
-  console.log(roles)
   const [active, setActive] = useState<boolean>(false)
   const [autoCompleteRoles, setAutoCompleteRoles] = useState<string[]>([])
   const [searchablePermissions, setSearchAblePermissions] = useState<string[]>([])
@@ -76,17 +75,11 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   }, [apiRole, selectedPermissions])
 
   useEffect(() => {
-    console.log('mapping', mapping)
-    console.log('roles', roles)
-    const addedRoles: string[] = []
-    for (const i in mapping) {
-      addedRoles.push(mapping[i].role)
-    }
-
     const rolesArr: string[] = []
-    for (const i in roles) {
-      if (!addedRoles.includes(roles[i].role)) {
-        rolesArr.push(roles[i].role)
+    for (const role of roles) {
+      const isRoleInMapping = mapping.some(mappingItem => mappingItem.role === role.role)
+      if (!isRoleInMapping) {
+        rolesArr.push(role.role)
       }
     }
     setAutoCompleteRoles(rolesArr)
@@ -116,7 +109,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
             hideHelperMessage
             onChange={(selected: string[]) => setApiRole(selected.length ? selected[0] : '')}
             doc_category={DOC_CATEGORY}
-          ></GluuSingleValueCompleter>
+          />
           <GluuTypeAhead
             name="addMappingRolePermissions"
             label="Permissions"
@@ -128,7 +121,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
             value={[]}
             forwardRef={autocompleteRef}
             doc_category={'Mapping'}
-          ></GluuTypeAhead>
+          />
         </ModalBody>
         <ModalFooter>
           {active && (

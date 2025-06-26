@@ -90,7 +90,7 @@ const webhookSlice = createSlice({
       state.loadingFeatures = false
       state.features = action.payload
     },
-    getFeaturesByWebhookId: (state) => {
+    getFeaturesByWebhookId: (state, action) => {
       state.loadingWebhookFeatures = true
     },
     getFeaturesByWebhookIdResponse: (state, action) => {

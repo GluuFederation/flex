@@ -29,93 +29,169 @@ import {
   setSelectedWebhook,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 
-const WebhookListPage = () => {
+// Type definitions
+interface Webhook {
+  inum: string
+  displayName: string
+  url: string
+  httpMethod: string
+  jansEnabled: boolean
+  enabled?: boolean
+}
+
+interface WebhookState {
+  totalItems: number
+  webhooks: Webhook[]
+  loading: boolean
+}
+
+interface AuthState {
+  permissions: string[]
+}
+
+interface RootState {
+  webhookReducer: WebhookState
+  authReducer: AuthState
+}
+
+interface Options {
+  limit?: number
+  pattern?: string | null
+  startIndex?: number
+}
+
+interface UserAction {
+  [key: string]: any
+}
+
+interface DeleteData {
+  inum: string
+  displayName: string
+  url: string
+  httpMethod: string
+  jansEnabled: boolean
+}
+
+interface PaperProps {
+  [key: string]: any
+}
+
+interface PaginationProps {
+  [key: string]: any
+}
+
+interface EventTarget {
+  name: string
+  value: string | number
+}
+
+interface ChangeEvent {
+  target: EventTarget
+}
+
+interface RowData {
+  inum: string
+  displayName: string
+  url: string
+  httpMethod: string
+  jansEnabled: boolean
+  enabled?: boolean
+}
+
+const WebhookListPage: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const [pageNumber, setPageNumber] = useState(0)
-  const { totalItems, webhooks } = useSelector((state) => state.webhookReducer)
-  const permissions = useSelector((state) => state.authReducer.permissions)
-  const loading = useSelector((state) => state.webhookReducer.loading)
-  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+  const [pageNumber, setPageNumber] = useState<number>(0)
+  const { totalItems, webhooks } = useSelector((state: RootState) => state.webhookReducer)
+  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
+  const loading = useSelector((state: RootState) => state.webhookReducer.loading)
+  const PaperContainer = useCallback((props: PaperProps) => <Paper {...props} elevation={0} />, [])
 
   const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme.state.theme)
+  const themeColors = getThemeColor(theme?.state.theme || 'darkBlack')
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.webhooks'))
 
-  const [modal, setModal] = useState(false)
-  const [deleteData, setDeleteData] = useState(null)
-  const toggle = () => setModal(!modal)
-  const submitForm = (userMessage) => {
-    const userAction = {}
+  const [modal, setModal] = useState<boolean>(false)
+  const [deleteData, setDeleteData] = useState<DeleteData | null>(null)
+  const toggle = (): void => setModal(!modal)
+  const submitForm = (userMessage: string): void => {
+    const userAction: UserAction = {}
     toggle()
     buildPayload(userAction, userMessage, deleteData)
-    dispatch(deleteWebhook({ action: userAction }))
+    dispatch(deleteWebhook({ action: userAction } as any))
   }
 
-  const myActions = []
-  const options = {}
+  const myActions: any[] = []
+  const options: Options = {}
 
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState(null)
+  const [limit, setLimit] = useState<number>(10)
+  const [pattern, setPattern] = useState<string | null>(null)
 
   useEffect(() => {
-    options['limit'] = 10
+    options.limit = 10
     dispatch(getWebhook({ action: options }))
   }, [])
 
   let memoLimit = limit
   let memoPattern = pattern
 
-  function handleOptionsChange(event) {
-    if (event.target.name == 'limit') {
-      memoLimit = event.target.value
-    } else if (event.target.name == 'pattern') {
-      memoPattern = event.target.value
+  function handleOptionsChange(event: ChangeEvent): void {
+    if (event.target.name === 'limit') {
+      memoLimit = Number(event.target.value)
+    } else if (event.target.name === 'pattern') {
+      memoPattern = String(event.target.value)
     }
   }
 
-  const onPageChangeClick = (page) => {
-    let startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
-    options['limit'] = limit
-    options['pattern'] = pattern
+  const onPageChangeClick = (page: number): void => {
+    const startCount = page * limit
+    options.startIndex = startCount
+    options.limit = limit
+    options.pattern = pattern
     setPageNumber(page)
     dispatch(getWebhook({ action: options }))
   }
-  const onRowCountChangeClick = (count) => {
-    options['limit'] = count
-    options['pattern'] = pattern
+
+  const onRowCountChangeClick = (count: number): void => {
+    options.limit = count
+    options.pattern = pattern
     setPageNumber(0)
     setLimit(count)
     dispatch(getWebhook({ action: options }))
   }
 
   const PaginationWrapper = useCallback(
-    (props) => (
+    (props: PaginationProps) => (
       <TablePagination
         count={totalItems}
         page={pageNumber}
-        onPageChange={(prop, page) => {
+        onPageChange={(_event, page) => {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
+        onRowsPerPageChange={(_event) => {
+          const target = _event.target as HTMLInputElement
+          onRowCountChangeClick(Number(target.value))
+        }}
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
+    [pageNumber, totalItems, limit],
   )
 
-  const navigateToAddPage = useCallback(() => {
+  const navigateToAddPage = useCallback((): void => {
     dispatch(setSelectedWebhook({}))
     navigate('/adm/webhook/add')
-  }, [])
+  }, [dispatch, navigate])
 
-  const navigateToEditPage = useCallback((data) => {
-    dispatch(setSelectedWebhook(data))
-    navigate(`/adm/webhook/edit/${data.inum}`)
-  }, [])
+  const navigateToEditPage = useCallback(
+    (data: RowData): void => {
+      dispatch(setSelectedWebhook(data))
+      navigate(`/adm/webhook/edit/${data.inum}`)
+    },
+    [dispatch, navigate],
+  )
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
@@ -130,7 +206,7 @@ const WebhookListPage = () => {
         showLimit={false}
       />
     )
-  }, [limit, pattern, handleOptionsChange])
+  }, [limit, pattern])
 
   if (hasPermission(permissions, WEBHOOK_READ)) {
     myActions.push({
@@ -167,24 +243,24 @@ const WebhookListPage = () => {
   }
 
   if (hasPermission(permissions, WEBHOOK_WRITE)) {
-    myActions.push((rowData) => ({
+    myActions.push((rowData: RowData) => ({
       icon: 'edit',
       iconProps: {
         id: 'editScope' + rowData.inum,
       },
-      onClick: (event, rowData) => navigateToEditPage(rowData),
+      onClick: (_event: any, rowData: RowData) => navigateToEditPage(rowData),
       disabled: !hasPermission(permissions, WEBHOOK_WRITE),
     }))
   }
 
   if (hasPermission(permissions, WEBHOOK_DELETE)) {
-    myActions.push((rowData) => ({
+    myActions.push((rowData: RowData) => ({
       icon: DeleteOutlinedIcon,
       iconProps: {
         color: 'secondary',
         id: 'deleteClient' + rowData.inum,
       },
-      onClick: (event, rowData) => {
+      onClick: (_event: any, rowData: RowData) => {
         setDeleteData(rowData)
         toggle()
       },
@@ -211,7 +287,7 @@ const WebhookListPage = () => {
                   title: `${t('fields.url')}`,
                   field: 'url',
                   width: '40%',
-                  render: (rowData) => (
+                  render: (rowData: RowData) => (
                     <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>{rowData.url}</div>
                   ),
                 },
@@ -228,13 +304,13 @@ const WebhookListPage = () => {
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData) => ({
-                  backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                rowStyle: (rowData: RowData) => ({
+                  backgroundColor: rowData.jansEnabled ? '#33AE9A' : '#FFF',
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
-                },
+                } as React.CSSProperties,
                 actionsColumnIndex: -1,
               }}
             />

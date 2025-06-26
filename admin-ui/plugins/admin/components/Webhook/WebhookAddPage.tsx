@@ -5,8 +5,17 @@ import WebhookForm from './WebhookForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useSelector } from 'react-redux'
 
-const WebhookAddPage = () => {
-  const loading = useSelector((state) => state.webhookReducer.loading)
+// Type definitions
+interface WebhookState {
+  loading: boolean
+}
+
+interface RootState {
+  webhookReducer: WebhookState
+}
+
+const WebhookAddPage: React.FC = () => {
+  const loading = useSelector((state: RootState) => state.webhookReducer.loading)
 
   return (
     <GluuLoader blocking={loading}>

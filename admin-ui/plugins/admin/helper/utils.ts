@@ -1,29 +1,26 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 // Helper function to get nested object values
-const getNestedValue = (obj, path) => {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj)
+const getNestedValue = (obj: any, path: string) => {
+  return path.split('.').reduce((acc: any, part: string) => acc && acc[part], obj)
 }
 
-export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue) => {
-  return enabledFeatureWebhooks.map((originalWebhook) => {
+export const webhookOutputObject = (enabledFeatureWebhooks: any, createdFeatureValue: any) => {
+  return enabledFeatureWebhooks.map((originalWebhook: any) => {
     const webhook = cloneDeep(originalWebhook) // Create a deep copy of the webhook
     let url = webhook.url
-    const shortcodeValueMap = {}
-
+    const shortcodeValueMap: Record<string, any> = {}
     // Replace placeholders in the URL
-    url.match(/\{([^{}]+?)\}/g)?.forEach((placeholder) => {
+    url.match(/\{([^{}]+?)\}/g)?.forEach((placeholder: string) => {
       const key = placeholder.slice(1, -1)
       let value = key?.includes('.')
         ? getNestedProperty(createdFeatureValue, key)
         : createdFeatureValue[key]
-
       if (value !== undefined) {
         shortcodeValueMap[key] = value
         webhook.url = webhook.url.replace(new RegExp(`\\{${key}\\}`, 'g'), value) // Modify the clone
       }
     })
-
     // Process httpRequestBody if it exists
     if (webhook.httpRequestBody) {
       Object.entries(webhook.httpRequestBody).forEach(([key, templateValue]) => {
@@ -44,7 +41,6 @@ export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue)
         }
       })
     }
-
     return {
       webhookId: webhook.inum,
       shortcodeValueMap,
@@ -53,17 +49,15 @@ export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue)
   })
 }
 
-function getNestedProperty(obj, path) {
+function getNestedProperty(obj: any, path: string) {
   const keys = path.split('.')
   let current = obj
-
   for (let key of keys) {
     if (current[key] === undefined) {
       return undefined
     }
     current = current[key]
   }
-
   return current
 }
 
