@@ -4,7 +4,7 @@ objectClass: jansClnt
 del: false
 displayName: Admin UI Web Client %(org_id)s
 inum: %(admin_ui_client_id)s
-jansAccessTknAsJwt: false
+jansAccessTknAsJwt: true
 jansAccessTknSigAlg: RS256
 jansAppTyp: web
 jansAttrs: {"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":"RS256","jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}

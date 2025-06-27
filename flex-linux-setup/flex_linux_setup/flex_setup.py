@@ -498,6 +498,7 @@ class flex_installer(JettyInstaller):
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
             ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client']
             ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['none']
+            ldif_parser.entries[0][1]['jansAccessTknAsJwt'] = ['TRUE']
             ldif_parser.entries[0][1]['jansAttrs'] = [
                 '{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']
 
