@@ -27,5 +27,5 @@ const mauSlice = createSlice({
 })
 
 export const { getMau, getMauResponse } = mauSlice.actions
-export const { actions, reducer, state } = mauSlice
+export const { actions, reducer } = mauSlice
 reducerRegistry.register('mauReducer', reducer)

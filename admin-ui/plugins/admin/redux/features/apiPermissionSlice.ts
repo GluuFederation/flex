@@ -1,7 +1,20 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-const initialState = {
+// Define the permission item interface
+interface PermissionItem {
+  inum: string
+  [key: string]: any // Allow for additional properties
+}
+
+// Define the state interface
+interface ApiPermissionState {
+  items: PermissionItem[]
+  loading: boolean
+  item?: PermissionItem
+}
+
+const initialState: ApiPermissionState = {
   items: [],
   loading: true,
 }
@@ -10,20 +23,20 @@ const apiPermissionSlice = createSlice({
   name: 'apiPermission',
   initialState,
   reducers: {
-    getPermissions: (state, action) => {
+    getPermissions: (state) => {
       state.loading = true
     },
-    getPermissionsResponse: (state, action) => {
+    getPermissionsResponse: (state, action: PayloadAction<{ data?: PermissionItem[] }>) => {
       if (action.payload?.data) {
         return handleItems(state, action.payload.data)
       } else {
         return handleDefault(state)
       }
     },
-    addPermission: (state, action) => {
+    addPermission: (state) => {
       state.loading = true
     },
-    addPermissionResponse: (state, action) => {
+    addPermissionResponse: (state, action: PayloadAction<{ data?: PermissionItem }>) => {
       if (action.payload?.data) {
         return {
           ...state,
@@ -34,10 +47,10 @@ const apiPermissionSlice = createSlice({
         return handleDefault(state)
       }
     },
-    editPermission: (state, action) => {
+    editPermission: (state) => {
       state.loading = true
     },
-    editPermissionResponse: (state, action) => {
+    editPermissionResponse: (state, action: PayloadAction<{ data?: PermissionItem[] }>) => {
       if (action.payload?.data) {
         return {
           ...state,
@@ -48,20 +61,20 @@ const apiPermissionSlice = createSlice({
         return handleDefault(state)
       }
     },
-    getPermission: (state, action) => {
+    getPermission: (state) => {
       state.loading = true
     },
-    getPermissionResponse: (state, action) => {
+    getPermissionResponse: (state, action: PayloadAction<{ data?: PermissionItem[] }>) => {
       if (action.payload?.data) {
         return handleItems(state, action.payload.data)
       } else {
         return handleDefault(state)
       }
     },
-    deletePermission: (state, action) => {
+    deletePermission: (state) => {
       state.loading = true
     },
-    deletePermissionResponse: (state, action) => {
+    deletePermissionResponse: (state, action: PayloadAction<{ inum?: string }>) => {
       if (action.payload?.inum) {
         return {
           ...state,
@@ -72,7 +85,7 @@ const apiPermissionSlice = createSlice({
         return handleDefault(state)
       }
     },
-    setCurrentItem: (state, action) => ({
+    setCurrentItem: (state, action: PayloadAction<{ item?: PermissionItem }>) => ({
       ...state,
       item: action.payload?.item,
       loading: false,
@@ -80,7 +93,7 @@ const apiPermissionSlice = createSlice({
   },
 })
 
-function handleItems(state, data) {
+function handleItems(state: ApiPermissionState, data: PermissionItem[]): ApiPermissionState {
   return {
     ...state,
     items: data,
@@ -88,7 +101,7 @@ function handleItems(state, data) {
   }
 }
 
-function handleDefault(state) {
+function handleDefault(state: ApiPermissionState): ApiPermissionState {
   return {
     ...state,
     loading: false,
@@ -108,5 +121,7 @@ export const {
   deletePermissionResponse,
   setCurrentItem,
 } = apiPermissionSlice.actions
-export const { actions, reducer, state } = apiPermissionSlice
+
+export const { actions, reducer } = apiPermissionSlice
+export type { ApiPermissionState, PermissionItem }
 reducerRegistry.register('apiPermissionReducer', reducer)

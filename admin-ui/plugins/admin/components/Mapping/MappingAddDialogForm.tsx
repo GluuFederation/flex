@@ -77,7 +77,7 @@ const MappingAddDialogForm: React.FC<MappingAddDialogFormProps> = ({
   useEffect(() => {
     const rolesArr: string[] = []
     for (const role of roles) {
-      const isRoleInMapping = mapping.some(mappingItem => mappingItem.role === role.role)
+      const isRoleInMapping = mapping.some((mappingItem) => mappingItem.role === role.role)
       if (!isRoleInMapping) {
         rolesArr.push(role.role)
       }

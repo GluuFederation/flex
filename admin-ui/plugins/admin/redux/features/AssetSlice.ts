@@ -121,6 +121,6 @@ export const {
   setAssetModal,
   setShowErrorModal,
 } = assetSlice.actions
-export const { actions, reducer, state } = assetSlice
+export const { actions, reducer } = assetSlice
 export default reducer
 reducerRegistry.register('assetReducer', reducer)

@@ -154,6 +154,6 @@ export const {
   setFeatureToTrigger,
   setShowErrorModal,
 } = webhookSlice.actions
-export const { actions, reducer, state } = webhookSlice
+export const { actions, reducer } = webhookSlice
 export default reducer
 reducerRegistry.register('webhookReducer', reducer)

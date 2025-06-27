@@ -1,7 +1,31 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = {
+// Define interfaces for better type safety
+interface CustomScript {
+  inum: string
+  [key: string]: any
+}
+
+interface ScriptType {
+  [key: string]: any
+}
+
+interface CustomScriptState {
+  items: CustomScript[]
+  loading: boolean
+  view: boolean
+  saveOperationFlag: boolean
+  errorInSaveOperationFlag: boolean
+  totalItems: number
+  entriesCount: number
+  scriptTypes: ScriptType[]
+  hasFetchedScriptTypes: boolean
+  loadingScriptTypes: boolean
+  item?: CustomScript
+}
+
+const initialState: CustomScriptState = {
   items: [],
   loading: true,
   view: false,
@@ -90,7 +114,8 @@ const customScriptSlice = createSlice({
       }
     },
     setScriptTypes: (state, action) => {
-      ;(state.scriptTypes = action.payload || []), (state.hasFetchedScriptTypes = true)
+      state.scriptTypes = action.payload || []
+      state.hasFetchedScriptTypes = true
     },
     setCurrentItem: (state, action) => {
       state.item = action.payload?.item
@@ -126,5 +151,5 @@ export const {
   setIsScriptTypesLoading,
 } = customScriptSlice.actions
 export { initialState }
-export const { actions, reducer, state } = customScriptSlice
+export const { actions, reducer } = customScriptSlice
 reducerRegistry.register('customScriptReducer', reducer)
