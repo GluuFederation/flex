@@ -1,12 +1,36 @@
-// @ts-nocheck
 import React from 'react'
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
 import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 
-function ReportPiChartItem({ data }) {
+interface DataItem {
+  name: string
+  value: number
+}
+
+interface ReportPiChartItemProps {
+  data: DataItem[]
+}
+
+interface CustomizedLabelProps {
+  cx: number
+  cy: number
+  midAngle: number
+  innerRadius: number
+  outerRadius: number
+  percent: number
+}
+
+function ReportPiChartItem({ data }: ReportPiChartItemProps) {
   const COLORS = ['#7aefc0', '#3B4371']
   const RADIAN = Math.PI / 180
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+  const renderCustomizedLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+  }: CustomizedLabelProps) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
     const y = cy + radius * Math.sin(-midAngle * RADIAN)
@@ -36,7 +60,7 @@ function ReportPiChartItem({ data }) {
         fill="#8884d8"
         dataKey="value"
       >
-        {data.map((e, index) => (
+        {data.map((e: DataItem, index: number) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>

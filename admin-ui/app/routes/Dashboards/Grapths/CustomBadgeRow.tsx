@@ -1,11 +1,15 @@
-// @ts-nocheck
 import React from 'react'
 import { Card, CardBody, CardTitle, Badge } from 'Components'
 import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 
-function CustomBadgeRow({ label, value }) {
+interface CustomBadgeRowProps {
+  label: string
+  value: string | number
+}
+
+function CustomBadgeRow({ label, value }: CustomBadgeRowProps): JSX.Element {
   return (
-    <Card className="mb-3" style={{ borderRadius: '20px', width: '200px' }}>
+    <Card className="mb-3" type="border" color={null}>
       <CardBody>
         <CardTitle tag="h6" className="mb-4">
           <GluuRibbon title={label} />

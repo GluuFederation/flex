@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import {
   XAxis,
@@ -12,7 +11,16 @@ import {
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
 
-function ActiveUsersGraph({ data }) {
+interface DataPoint {
+  month: string
+  mau: number
+}
+
+interface ActiveUsersGraphProps {
+  data: DataPoint[]
+}
+
+function ActiveUsersGraph({ data }: ActiveUsersGraphProps) {
   const { t } = useTranslation()
 
   return (
