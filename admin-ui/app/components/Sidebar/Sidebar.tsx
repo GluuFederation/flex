@@ -10,43 +10,42 @@ import { SidebarShowSlim } from './SidebarShowSlim'
 import { SidebarHideSlim } from './SidebarHideSlim'
 
 export interface PageConfig {
-  sidebarCollapsed: boolean;
-  screenSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '';
-  toggleSidebar: () => void;
-  sidebarSlim?: boolean;
-  animationsDisabled?: boolean;
-  [key: string]: any; // for other dynamic keys like setElementsVisibility, changeMeta, etc
+  sidebarCollapsed: boolean
+  screenSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | ''
+  toggleSidebar: () => void
+  sidebarSlim?: boolean
+  animationsDisabled?: boolean
+  [key: string]: any // for other dynamic keys like setElementsVisibility, changeMeta, etc
 }
 
 export interface SidebarProps {
-  children?: React.ReactNode;
-  slim?: boolean;
-  collapsed?: boolean;
-  animationsDisabled?: boolean;
-  pageConfig: PageConfig;
+  children?: React.ReactNode
+  slim?: boolean
+  collapsed?: boolean
+  animationsDisabled?: boolean
+  pageConfig: PageConfig
 }
 
 const Sidebar: React.FC<SidebarProps> & {
-  Section: typeof SidebarSection;
-  Close: typeof SidebarClose;
-  MobileFluid: typeof SidebarMobileFluid;
-  ShowSlim: typeof SidebarShowSlim;
-  HideSlim: typeof SidebarHideSlim;
+  Section: typeof SidebarSection
+  Close: typeof SidebarClose
+  MobileFluid: typeof SidebarMobileFluid
+  ShowSlim: typeof SidebarShowSlim
+  HideSlim: typeof SidebarHideSlim
 } = (props) => {
-  return(
+  return (
     <React.Fragment>
-      { /* Enable OuterClick only in sidebar overlay mode */}
+      {/* Enable OuterClick only in sidebar overlay mode */}
       <OuterClick
         active={
-          !props.pageConfig.sidebarCollapsed && (
-            props.pageConfig.screenSize === 'xs' ||
-                      props.pageConfig.screenSize === 'sm' ||
-                      props.pageConfig.screenSize === 'md'
-          )
+          !props.pageConfig.sidebarCollapsed &&
+          (props.pageConfig.screenSize === 'xs' ||
+            props.pageConfig.screenSize === 'sm' ||
+            props.pageConfig.screenSize === 'md')
         }
-        onClickOutside={() => props.pageConfig.toggleSidebar() }
+        onClickOutside={() => props.pageConfig.toggleSidebar()}
       >
-        <SidebarContent { ...props } />
+        <SidebarContent {...props} />
       </OuterClick>
     </React.Fragment>
   )
@@ -61,6 +60,4 @@ Sidebar.HideSlim = SidebarHideSlim
 
 const cfgSidebar = withPageConfig(Sidebar)
 
-export {
-  cfgSidebar as Sidebar
-}
+export { cfgSidebar as Sidebar }

@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   items: [],
-  loading: false
+  loading: false,
 }
 
 const apiRoleSlice = createSlice({
@@ -54,16 +54,14 @@ const apiRoleSlice = createSlice({
     deleteRoleResponse: (state, action) => {
       state.loading = false
       if (action.payload?.inum) {
-        state.items = state.items.filter(
-          (item) => item.inum !== action.payload.inum
-        )
+        state.items = state.items.filter((item) => item.inum !== action.payload.inum)
       }
     },
     setCurrentItem: (state, action) => {
       state.item = action.payload.item
       state.loading = false
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -77,7 +75,7 @@ export const {
   deleteRoleResponse,
   editRole,
   editRoleResponse,
-  setCurrentItem
+  setCurrentItem,
 } = apiRoleSlice.actions
 export const { actions, reducer, state } = apiRoleSlice
 reducerRegistry.register('apiRoleReducer', reducer)

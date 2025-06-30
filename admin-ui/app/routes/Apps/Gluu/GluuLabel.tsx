@@ -15,11 +15,10 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }: an
   }
   return (
     <Label for={t(label)} sm={getSize()} data-for={doc_entry} style={style}>
-      <h5 className='d-flex' aria-label={label}>
+      <h5 className="d-flex" aria-label={label}>
         {t(label)}
         {required && <span style={applicationStyle.fieldRequired}> *</span>}
-        
-        {(doc_category && i18n.exists('documentation.' + doc_category + '.' + doc_entry)) &&  
+        {doc_category && i18n.exists('documentation.' + doc_category + '.' + doc_entry) && (
           <>
             <ReactTooltip
               id={doc_entry}
@@ -29,9 +28,14 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }: an
             >
               {t('documentation.' + doc_category + '.' + doc_entry)}
             </ReactTooltip>
-            <HelpOutline tabIndex={-1} style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tooltip-id={doc_entry} data-for={doc_entry} />
+            <HelpOutline
+              tabIndex={-1}
+              style={{ width: 18, height: 18, marginLeft: 6, marginRight: 6 }}
+              data-tooltip-id={doc_entry}
+              data-for={doc_entry}
+            />
           </>
-        }
+        )}
         :
       </h5>
     </Label>

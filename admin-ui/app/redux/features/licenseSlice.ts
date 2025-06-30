@@ -13,7 +13,7 @@ const initialState = {
   generatingTrialKey: false,
   isNoValidLicenseKeyFound: false,
   isUnderThresholdLimit: true,
-  isValidatingFlow: false
+  isValidatingFlow: false,
 }
 
 const licenseSlice = createSlice({
@@ -81,7 +81,7 @@ const licenseSlice = createSlice({
     },
     setLicenseError: (state, action) => {
       state.error = action.payload
-    }
+    },
   },
 })
 
@@ -101,7 +101,7 @@ export const {
   retrieveLicenseKeyResponse,
   checkThresholdLimit,
   setValidatingFlow,
-  setLicenseError
+  setLicenseError,
 } = licenseSlice.actions
 
 export default licenseSlice.reducer

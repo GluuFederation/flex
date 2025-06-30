@@ -8,18 +8,18 @@ const styles = makeStyles()({
     top: 140,
     height: 70,
     borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20
+    borderBottomRightRadius: 20,
   },
   wave: {
     position: 'relative',
-    top: -75
+    top: -75,
   },
   powered: {
     color: '#fff',
     textAlign: 'center',
     position: 'relative',
     top: -130,
-    fontWeight: 500
+    fontWeight: 500,
   },
   waveContainerFixed: {
     position: 'absolute',
@@ -27,8 +27,8 @@ const styles = makeStyles()({
     left: 0,
     right: 0,
     zIndex: 10,
-    background: 'inherit'
-  }
+    background: 'inherit',
+  },
 })
 
 export default styles

@@ -7,18 +7,10 @@ import {
   deleteRoleResponse,
 } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { API_ROLE } from '../audit/Resources'
-import {
-  CREATE,
-  UPDATE,
-  DELETION,
-  FETCH,
-} from '../../../../app/audit/UserActionType'
+import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import {updateToast} from 'Redux/features/toastSlice'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { updateToast } from 'Redux/features/toastSlice'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import RoleApi from '../api/RoleApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -28,9 +20,7 @@ import { initAudit } from 'Redux/sagas/SagaUtils'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AdminUIRoleApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.AdminUIRoleApi(getClient(JansConfigApi, token, issuer))
   return new RoleApi(api)
 }
 

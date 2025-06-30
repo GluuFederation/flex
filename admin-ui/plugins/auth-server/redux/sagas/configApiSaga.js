@@ -11,11 +11,9 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 
 function* newFunction() {
-  const { token = null, issuer = '' } = yield select(
-    (state) => state.authReducer
-  )
+  const { token = null, issuer = '' } = yield select((state) => state.authReducer)
   const api = new JansConfigApi.ConfigurationConfigAPIApi(
-    getClient(JansConfigApi, token?.access_token, issuer)
+    getClient(JansConfigApi, token?.access_token, issuer),
   )
   return new ConfigurationApi(api)
 }
@@ -31,13 +29,7 @@ export function* getConfigApiConfiguration() {
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getConfigApiConfigurationResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -53,21 +45,12 @@ export function* patchApiConfigConfiguration({ payload }) {
   try {
     addAdditionalData(audit, PATCH, 'Config API configuration', payload)
     const configApiApi = yield* newFunction()
-    const data = yield call(
-      configApiApi.patchApiConfigConfiguration,
-      payload.action.action_data
-    )
+    const data = yield call(configApiApi.patchApiConfigConfiguration, payload.action.action_data)
     yield put(getConfigApiConfigurationResponse(data))
     yield call(postUserAction, audit)
     return data
-  } catch (e) { 
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+  } catch (e) {
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getConfigApiConfigurationResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -78,22 +61,13 @@ export function* patchApiConfigConfiguration({ payload }) {
 }
 
 export function* watchGetConfigApiConfiguration() {
-  yield takeLatest(
-    'config_api/getConfigApiConfiguration',
-    getConfigApiConfiguration
-  )
+  yield takeLatest('config_api/getConfigApiConfiguration', getConfigApiConfiguration)
 }
 
 export function* watchPatchApiConfigConfiguration() {
-  yield takeLatest(
-    'config_api/patchApiConfigConfiguration',
-    patchApiConfigConfiguration
-  )
+  yield takeLatest('config_api/patchApiConfigConfiguration', patchApiConfigConfiguration)
 }
 
 export default function* rootSaga() {
-  yield all([
-    fork(watchGetConfigApiConfiguration),
-    fork(watchPatchApiConfigConfiguration),
-  ])
+  yield all([fork(watchGetConfigApiConfiguration), fork(watchPatchApiConfigConfiguration)])
 }

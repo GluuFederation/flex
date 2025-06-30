@@ -3,19 +3,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import MaterialTable from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import {
-  hasPermission,
-  SAML_TR_READ,
-  SAML_TR_WRITE,
-  buildPayload,
-} from 'Utils/PermChecker'
+import { hasPermission, SAML_TR_READ, SAML_TR_WRITE, buildPayload } from 'Utils/PermChecker'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useNavigate } from 'react-router'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { getTrustRelationship, deleteTrustRelationship } from 'Plugins/saml/redux/features/SamlSlice'
+import {
+  getTrustRelationship,
+  deleteTrustRelationship,
+} from 'Plugins/saml/redux/features/SamlSlice'
 import { PaperContainer, getTableCols } from './SamlIdentityList'
 
 const TrustRelationshipList = () => {
@@ -31,10 +29,9 @@ const TrustRelationshipList = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const permissions = useSelector((state) => state.authReducer.permissions)
-  const {
-    trustRelationships,
-    loadingTrustRelationship,
-  } = useSelector((state) => state.idpSamlReducer)
+  const { trustRelationships, loadingTrustRelationship } = useSelector(
+    (state) => state.idpSamlReducer,
+  )
 
   useEffect(() => {
     dispatch(getTrustRelationship())
@@ -72,7 +69,7 @@ const TrustRelationshipList = () => {
           columns={getTableCols(t)}
           data={trustRelationships}
           isLoading={loadingTrustRelationship}
-          title=''
+          title=""
           actions={[
             {
               icon: 'edit',
@@ -128,7 +125,7 @@ const TrustRelationshipList = () => {
           name={item?.displayName || ''}
           handler={toggle}
           modal={modal}
-          subject='saml trust relationship'
+          subject="saml trust relationship"
           onAccept={onDeletionConfirmed}
         />
       )}

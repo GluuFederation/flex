@@ -1,16 +1,11 @@
 // @ts-nocheck
-import React from "react"
+import React from 'react'
 
-import {
-  Button,
-  Sidebar,
-  UncontrolledPopover,
-  PopoverBody
-} from "Components"
+import { Button, Sidebar, UncontrolledPopover, PopoverBody } from 'Components'
 
-import { FooterAuth } from "../Pages/FooterAuth"
-import { FooterText } from "../FooterText"
-import { VersionSelector } from "../VersionSelector"
+import { FooterAuth } from '../Pages/FooterAuth'
+import { FooterText } from '../FooterText'
+import { VersionSelector } from '../VersionSelector'
 
 const SidebarBottomA = () => (
   <React.Fragment>
@@ -44,10 +39,7 @@ const SidebarBottomA = () => (
         >
           <i className="fa fa-fw fa-question-circle-o"></i>
         </Button>
-        <UncontrolledPopover
-          placement="left-end"
-          target="UncontrolledSidebarPopoverFooter"
-        >
+        <UncontrolledPopover placement="left-end" target="UncontrolledSidebarPopoverFooter">
           <PopoverBody>
             <FooterText />
           </PopoverBody>

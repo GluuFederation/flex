@@ -23,7 +23,7 @@ const appReducers = {
   licenseDetailsReducer,
   attributesReducerRoot,
   toastReducer,
-  profileDetailsReducer
+  profileDetailsReducer,
 }
 
 export default appReducers

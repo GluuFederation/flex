@@ -12,31 +12,31 @@ function UiPermDetailPage({ row }) {
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label='fields.name'
+              label="fields.name"
               value={rowData.permission}
               isBadge={true}
               lsize={3}
               rsize={9}
               doc_category={PERMISSIONS}
-              doc_entry='name'
+              doc_entry="name"
             />
           </Col>
           {rowData.tag && (
             <Col sm={6}>
               <GluuFormDetailRow
-                label='fields.tag'
+                label="fields.tag"
                 value={rowData.tag}
                 lsize={3}
                 rsize={9}
                 doc_category={PERMISSIONS}
-                doc_entry='tag'
+                doc_entry="tag"
               />
             </Col>
           )}
           {rowData.defaultPermissionInToken !== undefined ? (
             <Col sm={6}>
               <GluuFormDetailRow
-                label='fields.default_permission_in_token'
+                label="fields.default_permission_in_token"
                 value={
                   rowData.defaultPermissionInToken !== undefined
                     ? JSON.stringify(rowData.defaultPermissionInToken)
@@ -45,19 +45,19 @@ function UiPermDetailPage({ row }) {
                 lsize={8}
                 rsize={4}
                 doc_category={PERMISSIONS}
-                doc_entry='default_permission_in_token'
+                doc_entry="default_permission_in_token"
               />
             </Col>
           ) : null}
           {rowData.description && (
             <Col sm={6}>
               <GluuFormDetailRow
-                label='fields.description'
+                label="fields.description"
                 value={rowData?.description || '-'}
                 lsize={3}
                 rsize={9}
                 doc_category={PERMISSIONS}
-                doc_entry='description'
+                doc_entry="description"
               />
             </Col>
           )}
@@ -74,8 +74,8 @@ UiPermDetailPage.propTypes = {
       permission: PropTypes.string.isRequired,
       tag: PropTypes.string.isRequired,
       defaultPermissionInToken: PropTypes.bool.isRequired,
-    })
-  })
+    }),
+  }),
 }
 
 export default UiPermDetailPage

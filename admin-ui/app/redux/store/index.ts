@@ -32,7 +32,7 @@ const persistedReducer = persistReducer(persistConfig, reducers)
 
 const store = configureStore({
   middleware: () => middlewares,
-  reducer: persistedReducer
+  reducer: persistedReducer,
 })
 
 let rootReducers
@@ -57,4 +57,3 @@ export function configStore() {
 }
 
 export default store
-

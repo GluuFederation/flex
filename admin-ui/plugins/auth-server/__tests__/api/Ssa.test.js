@@ -2,12 +2,10 @@ import { authReducerInit, beforeAllAsync } from './setup.test'
 import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from 'Redux/features/authSlice'
 import { log } from 'console'
-import ssaReducer, { initialState as ssaIniState } from 'Plugins/auth-server/redux/features/SsaSlice'
-import {
-  getSsa,
-  addSsaConfig,
-  removeSsaConfig,
-} from 'Plugins/auth-server/redux/sagas/SsaSaga'
+import ssaReducer, {
+  initialState as ssaIniState,
+} from 'Plugins/auth-server/redux/features/SsaSlice'
+import { getSsa, addSsaConfig, removeSsaConfig } from 'Plugins/auth-server/redux/sagas/SsaSaga'
 import { expectSaga } from 'redux-saga-test-plan'
 
 let initialState
@@ -59,14 +57,10 @@ describe('test create, read & delete actions for ssa module', () => {
   })
 
   it('should fetch all exiting ssa', async () => {
-    const result = await expectSaga(getSsa)
-      .withReducer(rootReducer, initialState)
-      .run(false)
+    const result = await expectSaga(getSsa).withReducer(rootReducer, initialState).run(false)
 
     newConfig = result.returnValue?.find(
-      ({ ssa }) =>
-        ssa?.software_id === payload.software_id &&
-        ssa?.org_id === payload.org_id
+      ({ ssa }) => ssa?.software_id === payload.software_id && ssa?.org_id === payload.org_id,
     )
     expect(result.returnValue instanceof Error).toBe(false)
   })

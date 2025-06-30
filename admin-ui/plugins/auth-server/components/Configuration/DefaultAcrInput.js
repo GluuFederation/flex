@@ -2,13 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import {
-  Col,
-  InputGroup,
-  CustomInput,
-  FormGroup,
-  Button,
-} from 'Components'
+import { Col, InputGroup, CustomInput, FormGroup, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 
 function DefaultAcrInput({
@@ -76,13 +70,13 @@ function DefaultAcrInput({
                 id={name}
                 name={name}
                 value={data}
-                onChange={(e) => { onValueChanged(e.target.value) }}
+                onChange={(e) => {
+                  onValueChanged(e.target.value)
+                }}
               >
                 <option value="">{t('actions.choose')}...</option>
                 {options.map((item, key) => (
-                  <option key={key}>
-                    {item}
-                  </option>
+                  <option key={key}>{item}</option>
                 ))}
               </CustomInput>
             </InputGroup>

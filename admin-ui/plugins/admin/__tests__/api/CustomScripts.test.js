@@ -1,8 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/admin/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/admin/__tests__/api/setup.test'
 import {
   getScriptsByType,
   addScript,
@@ -80,9 +77,7 @@ describe('fetch & update custom scripts', () => {
 
     expect(result.returnValue instanceof Error).toBe(false)
     if (!(result.returnValue instanceof Error)) {
-      expect(result.returnValue.entries).toEqual(
-        result.storeState.customScriptReducer.items
-      )
+      expect(result.returnValue.entries).toEqual(result.storeState.customScriptReducer.items)
     }
   })
 
@@ -126,7 +121,7 @@ describe('fetch & update custom scripts', () => {
       })
         .withReducer(rootReducer, initialState)
         .silentRun(false)
-        expect(result.returnValue instanceof Error).toBe(false)
+      expect(result.returnValue instanceof Error).toBe(false)
     } else {
       log('failed to created script, ABORTING delete test')
     }

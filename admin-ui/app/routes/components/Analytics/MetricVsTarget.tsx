@@ -2,13 +2,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import {
-  Progress,
-  InputGroupAddon,
-  InputGroupText,
-  Input,
-  InputGroup,
-} from 'Components'
+import { Progress, InputGroupAddon, InputGroupText, Input, InputGroup } from 'Components'
 
 const MetricVsTarget = (props) => {
   return (

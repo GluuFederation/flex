@@ -1,13 +1,7 @@
 import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import {
-  Col,
-  InputGroup,
-  Form,
-  FormGroup,
-  Input,
-} from 'Components'
+import { Col, InputGroup, Form, FormGroup, Input } from 'Components'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { SQL } from 'Utils/ApiResources'
@@ -44,16 +38,12 @@ function SqlForm({ item, handleSubmit }) {
       serverTimezone: item.serverTimezone,
       binaryAttributes: item.binaryAttributes,
       certificateAttributes: item.certificateAttributes,
-      enabled: item.enabled
+      enabled: item.enabled,
     },
     validationSchema: Yup.object({
-      configId: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
+      configId: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
       userName: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
-      userPassword: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
+      userPassword: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
       connectionUri: Yup.array().required('Required!'),
       schemaName: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
     }),
@@ -71,9 +61,7 @@ function SqlForm({ item, handleSubmit }) {
           <Col sm={9}>
             {!!item.configId ? (
               <Input
-                valid={
-                  !formik.errors.configId && !formik.touched.configId && init
-                }
+                valid={!formik.errors.configId && !formik.touched.configId && init}
                 placeholder={t('placeholders.sql_config_name')}
                 id="configId"
                 name="configId"
@@ -83,18 +71,16 @@ function SqlForm({ item, handleSubmit }) {
                 onChange={formik.handleChange}
               />
             ) : (
-                <Input
-                  valid={
-                    !formik.errors.configId && !formik.touched.configId && init
-                  }
-                  placeholder={t('placeholders.sql_config_name')}
-                  id="configId"
-                  name="configId"
-                  defaultValue={item.configId}
-                  onKeyUp={toogle}
-                  onChange={formik.handleChange}
-                />
-              )}
+              <Input
+                valid={!formik.errors.configId && !formik.touched.configId && init}
+                placeholder={t('placeholders.sql_config_name')}
+                id="configId"
+                name="configId"
+                defaultValue={item.configId}
+                onKeyUp={toogle}
+                onChange={formik.handleChange}
+              />
+            )}
             {formik.errors.configId && formik.touched.configId ? (
               <div style={{ color: 'red' }}>{formik.errors.configId}</div>
             ) : null}
@@ -127,11 +113,7 @@ function SqlForm({ item, handleSubmit }) {
             <InputGroup>
               <Input
                 placeholder={t('placeholders.sql_password')}
-                valid={
-                  !formik.errors.userPassword &&
-                  !formik.touched.userPassword &&
-                  init
-                }
+                valid={!formik.errors.userPassword && !formik.touched.userPassword && init}
                 onKeyUp={toogle}
                 id="userPassword"
                 type="password"
@@ -145,26 +127,26 @@ function SqlForm({ item, handleSubmit }) {
           </Col>
         </FormGroup>
       </GluuTooltip>
-        <FormGroup row>
-          <Col sm={9}>
-            <GluuTypeAhead
-              name="connectionUri"
-              label="fields.connectionUris"
-              formik={formik}
-              required={true}
-              options={['jdbc:mysql://localhost:3306/gluudb']}
-              value={item.connectionUri}
-              valid={!formik.errors.connectionUri && !formik.touched.connectionUri && init}
-              onKeyUp={toogle}
-              doc_category={SQL}
-              doc_entry="connectionUri"
-            ></GluuTypeAhead>
+      <FormGroup row>
+        <Col sm={9}>
+          <GluuTypeAhead
+            name="connectionUri"
+            label="fields.connectionUris"
+            formik={formik}
+            required={true}
+            options={['jdbc:mysql://localhost:3306/gluudb']}
+            value={item.connectionUri}
+            valid={!formik.errors.connectionUri && !formik.touched.connectionUri && init}
+            onKeyUp={toogle}
+            doc_category={SQL}
+            doc_entry="connectionUri"
+          ></GluuTypeAhead>
 
-            {formik.errors.connectionUri && formik.touched.connectionUri ? (
-              <div style={{ color: 'red' }}>{formik.errors.connectionUri}</div>
-            ) : null}
-          </Col>
-        </FormGroup>
+          {formik.errors.connectionUri && formik.touched.connectionUri ? (
+            <div style={{ color: 'red' }}>{formik.errors.connectionUri}</div>
+          ) : null}
+        </Col>
+      </FormGroup>
       <GluuTooltip doc_category={SQL} doc_entry="schemaname">
         <FormGroup row>
           <GluuLabel label="fields.schemaName" required />
@@ -191,7 +173,11 @@ function SqlForm({ item, handleSubmit }) {
             <Input
               placeholder={t('placeholders.sql_passwordEncryptionMethod')}
               id="passwordEncryptionMethod"
-              valid={!formik.errors.passwordEncryptionMethod && !formik.touched.passwordEncryptionMethod && init}
+              valid={
+                !formik.errors.passwordEncryptionMethod &&
+                !formik.touched.passwordEncryptionMethod &&
+                init
+              }
               name="passwordEncryptionMethod"
               defaultValue={item.passwordEncryptionMethod}
               onKeyUp={toogle}
@@ -216,38 +202,40 @@ function SqlForm({ item, handleSubmit }) {
           </Col>
         </FormGroup>
       </GluuTooltip>
-        <FormGroup row>
-          <Col sm={9}>
-            <GluuTypeAhead
-              name="binaryAttributes"
-              label="fields.binaryAttributes"
-              formik={formik}
-              required={false}
-              options={['objectGUID']}
-              value={item.binaryAttributes}
-              valid={!formik.errors.binaryAttributes && !formik.touched.binaryAttributes && init}
-              onKeyUp={toogle}
-              doc_category={SQL} 
-              doc_entry="binaryAttributes"
-            ></GluuTypeAhead>
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Col sm={9}>
-            <GluuTypeAhead
-              name="certificateAttributes"
-              label="fields.certificateAttributes"
-              formik={formik}
-              required={false}
-              options={['userCertificate']}
-              value={item.certificateAttributes}
-              valid={!formik.errors.certificateAttributes && !formik.touched.certificateAttributes && init}
-              onKeyUp={toogle}
-              doc_category={SQL} 
-              doc_entry="certificateAttributes"
-            ></GluuTypeAhead>
-          </Col>
-        </FormGroup>
+      <FormGroup row>
+        <Col sm={9}>
+          <GluuTypeAhead
+            name="binaryAttributes"
+            label="fields.binaryAttributes"
+            formik={formik}
+            required={false}
+            options={['objectGUID']}
+            value={item.binaryAttributes}
+            valid={!formik.errors.binaryAttributes && !formik.touched.binaryAttributes && init}
+            onKeyUp={toogle}
+            doc_category={SQL}
+            doc_entry="binaryAttributes"
+          ></GluuTypeAhead>
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Col sm={9}>
+          <GluuTypeAhead
+            name="certificateAttributes"
+            label="fields.certificateAttributes"
+            formik={formik}
+            required={false}
+            options={['userCertificate']}
+            value={item.certificateAttributes}
+            valid={
+              !formik.errors.certificateAttributes && !formik.touched.certificateAttributes && init
+            }
+            onKeyUp={toogle}
+            doc_category={SQL}
+            doc_entry="certificateAttributes"
+          ></GluuTypeAhead>
+        </Col>
+      </FormGroup>
       <GluuTooltip doc_category={SQL} doc_entry="activate">
         <FormGroup row>
           <GluuLabel label="fields.activate" />
@@ -268,12 +256,7 @@ function SqlForm({ item, handleSubmit }) {
       </GluuTooltip>
       <FormGroup row></FormGroup>
       <GluuCommitFooter saveHandler={toggle} />
-      <GluuCommitDialog
-        handler={toggle}
-        modal={modal}
-        onAccept={submitForm}
-        formik={formik}
-      />
+      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
     </Form>
   )
 }

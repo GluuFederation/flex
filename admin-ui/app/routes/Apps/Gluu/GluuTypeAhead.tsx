@@ -1,9 +1,9 @@
-import { FormGroup, Col } from "Components";
-import { Typeahead } from "react-bootstrap-typeahead";
-import GluuLabel from "../Gluu/GluuLabel";
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useTranslation } from "react-i18next";
+import { FormGroup, Col } from 'Components'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import GluuLabel from '../Gluu/GluuLabel'
+import Typography from '@mui/material/Typography'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { useTranslation } from 'react-i18next'
 
 const theme = createTheme({
   typography: {
@@ -11,7 +11,7 @@ const theme = createTheme({
       fontSize: 12,
     },
   },
-});
+})
 
 function GluuTypeAhead({
   label,
@@ -35,7 +35,7 @@ function GluuTypeAhead({
   multiple = true,
   hideHelperMessage = false,
 }: any) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <FormGroup row>
       {required ? (
@@ -64,12 +64,12 @@ function GluuTypeAhead({
           isLoading={isLoading}
           onChange={(selected) => {
             if (formik) {
-              formik.setFieldValue(name, selected);
+              formik.setFieldValue(name, selected)
               if (onChange) {
-                onChange(selected);
+                onChange(selected)
               }
             } else if (onChange) {
-              onChange(selected);
+              onChange(selected)
             }
           }}
           id={name}
@@ -81,13 +81,13 @@ function GluuTypeAhead({
         {!hideHelperMessage && (
           <ThemeProvider theme={theme}>
             <Typography variant="subtitle1">
-              {t("placeholders.typeahead_holder_message")}
+              {t('placeholders.typeahead_holder_message')}
             </Typography>
           </ThemeProvider>
         )}
-        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
-  );
+  )
 }
-export default GluuTypeAhead;
+export default GluuTypeAhead

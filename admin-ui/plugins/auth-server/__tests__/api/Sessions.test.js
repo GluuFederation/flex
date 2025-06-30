@@ -1,9 +1,6 @@
 import { log } from 'console'
 import { expectSaga } from 'redux-saga-test-plan'
-import {
-  getSessions,
-  revokeSessionByUserDn,
-} from 'Plugins/auth-server/redux/sagas/SessionSaga'
+import { getSessions, revokeSessionByUserDn } from 'Plugins/auth-server/redux/sagas/SessionSaga'
 import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from 'Redux/features/authSlice'
 import { reducer as sessionReducer } from 'Plugins/auth-server/redux/features/sessionSlice'
@@ -61,7 +58,9 @@ describe('sessions module api calls', () => {
         .withReducer(rootReducer, initialState)
         .run(false)
 
-      const sessions = result.storeState.sessionReducer.items.map((item) => item.userDn !== testSession.userDn)
+      const sessions = result.storeState.sessionReducer.items.map(
+        (item) => item.userDn !== testSession.userDn,
+      )
       expect(result.returnValue instanceof Error).toBe(false)
       expect(result.storeState.sessionReducer.items?.sort()).toEqual(sessions?.sort())
     } else {

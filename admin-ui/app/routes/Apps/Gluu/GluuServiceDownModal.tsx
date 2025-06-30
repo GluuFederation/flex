@@ -56,19 +56,27 @@ function GluuServiceDownModal({ message = '', statusCode }: any) {
           maxHeight: '60%',
           margin: 'auto',
           gap: '40px',
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
         }}
-      > 
+      >
         <img
           src={require('Images/backend-down.png')}
           style={{
             width: 'auto',
             height: 'auto',
-            fill: '#fff'
+            fill: '#fff',
           }}
         />
-        <Box display='flex' alignItems='start' flexDirection='column' gap={2} maxWidth={{ sm: '100%', md: '70%' }}>
-          {statusCode ? <h2 style={{ color: 'white', fontWeight: 'bolder', }}>Error code: {statusCode}</h2> : null}
+        <Box
+          display="flex"
+          alignItems="start"
+          flexDirection="column"
+          gap={2}
+          maxWidth={{ sm: '100%', md: '70%' }}
+        >
+          {statusCode ? (
+            <h2 style={{ color: 'white', fontWeight: 'bolder' }}>Error code: {statusCode}</h2>
+          ) : null}
           <h3
             style={{
               color: 'white',

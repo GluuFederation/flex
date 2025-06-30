@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React from "react"
+import React from 'react'
 
 function Loader() {
   return (
@@ -8,7 +8,7 @@ function Loader() {
       <span className="loading-bullet">&bull;</span>
       <span className="loading-bullet">&bull;</span>
     </div>
-  );
+  )
 }
 
 export default Loader

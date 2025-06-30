@@ -1,11 +1,11 @@
-import { Col, FormGroup } from "Components";
-import GluuLabel from "../Gluu/GluuLabel";
-import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/mode-java";
-import "ace-builds/src-noconflict/mode-python";
-import "ace-builds/src-noconflict/theme-xcode";
-import "ace-builds/src-noconflict/theme-monokai";
-import "ace-builds/src-noconflict/ext-language_tools";
+import { Col, FormGroup } from 'Components'
+import GluuLabel from '../Gluu/GluuLabel'
+import AceEditor from 'react-ace'
+import 'ace-builds/src-noconflict/mode-java'
+import 'ace-builds/src-noconflict/mode-python'
+import 'ace-builds/src-noconflict/theme-xcode'
+import 'ace-builds/src-noconflict/theme-monokai'
+import 'ace-builds/src-noconflict/ext-language_tools'
 
 function GluuInputEditor({
   name,
@@ -20,16 +20,16 @@ function GluuInputEditor({
   label,
   showError = false,
   errorMessage,
-  theme = "xcode",
-  placeholder = "Write your custom script here",
+  theme = 'xcode',
+  placeholder = 'Write your custom script here',
   doc_entry,
   shortcode,
   onCursorChange,
-  width = "100%",
+  width = '100%',
 }: any) {
   const handleChange = (scripts: any) => {
-    formik.handleChange(name)(scripts);
-  };
+    formik.handleChange(name)(scripts)
+  }
 
   return (
     <FormGroup row>
@@ -40,7 +40,7 @@ function GluuInputEditor({
         size={lsize}
         required={required}
       />
-      <Col sm={rsize} style={{ position: "relative" }}>
+      <Col sm={rsize} style={{ position: 'relative' }}>
         {shortcode}
         <AceEditor
           mode={language}
@@ -57,9 +57,9 @@ function GluuInputEditor({
           value={value}
           editorProps={{ $blockScrolling: true }}
         />
-        {showError ? <div style={{ color: "red" }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
-  );
+  )
 }
-export default GluuInputEditor;
+export default GluuInputEditor

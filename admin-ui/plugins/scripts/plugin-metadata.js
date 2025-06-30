@@ -13,28 +13,28 @@ const pluginMetadata = {
       title: 'menus.scripts',
       icon: 'scripts',
       path: `${BASE_PLUGIN_PATH}/scripts`,
-      permission: SCRIPT_READ
-    }
+      permission: SCRIPT_READ,
+    },
   ],
   routes: [
     {
       component: ScriptListPage,
       path: BASE_PLUGIN_PATH + '/scripts',
-      permission: SCRIPT_READ
+      permission: SCRIPT_READ,
     },
     {
       component: CustomScriptAddPage,
       path: BASE_PLUGIN_PATH + '/script/new',
-      permission: SCRIPT_WRITE
+      permission: SCRIPT_WRITE,
     },
     {
       component: CustomScriptEditPage,
       path: BASE_PLUGIN_PATH + '/script/edit/:id',
-      permission: SCRIPT_READ
-    }
+      permission: SCRIPT_READ,
+    },
   ],
   reducers: [{ name: 'scriptReducer', reducer: scriptReducer }],
-  sagas: [scriptSaga()]
+  sagas: [scriptSaga()],
 }
 
 export default pluginMetadata

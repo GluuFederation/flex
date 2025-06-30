@@ -1,18 +1,18 @@
-import React from "react";
-import classNames from "classnames";
-import CardHeader from "./../CardHeader";
-import { Consumer } from "./context";
-import classes from "./AccordionHeader.scss";
-import { AccordionHeaderProps } from "./Accordion.d";
+import React from 'react'
+import classNames from 'classnames'
+import CardHeader from './../CardHeader'
+import { Consumer } from './context'
+import classes from './AccordionHeader.scss'
+import { AccordionHeaderProps } from './Accordion.d'
 
 interface AccordionContext {
-  onToggle: () => void;
+  onToggle: () => void
 }
 
 export const AccordionHeader: React.FC<AccordionHeaderProps> = (props) => (
   <Consumer>
     {(context) => {
-      const typedContext = context as AccordionContext;
+      const typedContext = context as AccordionContext
       return (
         <CardHeader
           className={classNames(props.className, classes.header)}
@@ -20,7 +20,7 @@ export const AccordionHeader: React.FC<AccordionHeaderProps> = (props) => (
         >
           {props.children}
         </CardHeader>
-      );
+      )
     }}
   </Consumer>
-);
+)

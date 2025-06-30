@@ -1,7 +1,7 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import { SETTINGS } from "Utils/ApiResources";
+import React, { useState, useContext, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import { SETTINGS } from 'Utils/ApiResources'
 import {
   Card,
   CardBody,
@@ -13,42 +13,36 @@ import {
   CustomInput,
   Form,
   Button,
-} from "Components";
-import SetTitle from "Utils/SetTitle";
-import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
-import { ThemeContext } from "Context/theme/themeContext";
-import { putConfigWorker } from "Redux/features/authSlice";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import { useFormik } from "formik";
-import { useDispatch, useSelector } from "react-redux";
-import * as Yup from "yup";
-import { SIMPLE_PASSWORD_AUTH } from "Plugins/auth-server/common/Constants";
-import { getScripts } from "Redux/features/initSlice";
-import GluuLoader from "Routes/Apps/Gluu/GluuLoader";
-import GluuProperties from "Routes/Apps/Gluu/GluuProperties";
-import packageJson from "../../../../package.json";
+} from 'Components'
+import SetTitle from 'Utils/SetTitle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import { putConfigWorker } from 'Redux/features/authSlice'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import { useFormik } from 'formik'
+import { useDispatch, useSelector } from 'react-redux'
+import * as Yup from 'yup'
+import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
+import { getScripts } from 'Redux/features/initSlice'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import packageJson from '../../../../package.json'
 
-const levels = [1, 5, 10, 20];
+const levels = [1, 5, 10, 20]
 
 function SettingsPage() {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const loadingScripts = useSelector(
-    (state) => state.initReducer.loadingScripts
-  );
-  const loadingConfig = useSelector(
-    (state) => state.authReducer?.loadingConfig
-  );
-  const theme = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
-  const [paggingSize, setPaggingSize] = useState(
-    localStorage.getItem("paggingSize") || 10
-  );
-  SetTitle(t("titles.application_settings"));
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
+  const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const [paggingSize, setPaggingSize] = useState(localStorage.getItem('paggingSize') || 10)
+  SetTitle(t('titles.application_settings'))
 
   useEffect(() => {
-    dispatch(getScripts({ action: {} }));
-  }, []);
+    dispatch(getScripts({ action: {} }))
+  }, [])
 
   return (
     <React.Fragment>
@@ -69,7 +63,7 @@ function SettingsPage() {
 
             <FormGroup row>
               <GluuLabel
-                label={t("fields.list_paging_size")}
+                label={t('fields.list_paging_size')}
                 size={4}
                 doc_category={SETTINGS}
                 doc_entry="pageSize"
@@ -83,14 +77,14 @@ function SettingsPage() {
                     defaultValue={
                       levels[
                         levels.findIndex((element) => {
-                          return element == paggingSize;
+                          return element == paggingSize
                         })
                       ]
                     }
                     onChange={(value) => {
-                      const size = levels[value.target.options.selectedIndex];
-                      setPaggingSize(size);
-                      localStorage.setItem("paggingSize", size);
+                      const size = levels[value.target.options.selectedIndex]
+                      setPaggingSize(size)
+                      localStorage.setItem('paggingSize', size)
                     }}
                   >
                     {levels.map((item, key) => (
@@ -103,9 +97,9 @@ function SettingsPage() {
               </Col>
             </FormGroup>
 
-            <FormGroup row style={{ justifyContent: "space-between" }}>
+            <FormGroup row style={{ justifyContent: 'space-between' }}>
               <GluuLabel
-                label={t("fields.config_api_url")}
+                label={t('fields.config_api_url')}
                 doc_category={SETTINGS}
                 size={4}
                 doc_entry="configApiUrl"
@@ -113,16 +107,14 @@ function SettingsPage() {
               <Col sm={8}>
                 <Label
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    paddingRight: "15px",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    paddingRight: '15px',
                   }}
                 >
                   <h3>
-                    <Badge color={`primary-${selectedTheme}`}>
-                      {window.configApiBaseUrl}
-                    </Badge>
+                    <Badge color={`primary-${selectedTheme}`}>{window.configApiBaseUrl}</Badge>
                   </h3>
                 </Label>
               </Col>
@@ -133,49 +125,43 @@ function SettingsPage() {
         </Card>
       </GluuLoader>
     </React.Fragment>
-  );
+  )
 }
 
 function SettingsForm() {
-  const { t } = useTranslation();
-  const theme = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
-  const loadingConfig = useSelector(
-    (state) => state.authReducer?.loadingConfig
-  );
+  const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
   const additionalParameters =
-    useSelector((state) => state.authReducer?.config?.additionalParameters) ||
-    [];
-  const acrValues = useSelector(
-    (state) => state.authReducer?.config?.acrValues
-  );
+    useSelector((state) => state.authReducer?.config?.additionalParameters) || []
+  const acrValues = useSelector((state) => state.authReducer?.config?.acrValues)
   const sessionTimeout =
-    useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) ||
-    5;
-  const scripts = useSelector((state) => state.initReducer.scripts);
-  const dispatch = useDispatch();
+    useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) || 5
+  const scripts = useSelector((state) => state.initReducer.scripts)
+  const dispatch = useDispatch()
 
   const authScripts = scripts
-    .filter((item) => item.scriptType == "person_authentication")
+    .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)
-    .map((item) => item.name);
+    .map((item) => item.name)
 
-  authScripts.push(SIMPLE_PASSWORD_AUTH);
+  authScripts.push(SIMPLE_PASSWORD_AUTH)
 
   const formik = useFormik({
     initialValues: {
       sessionTimeoutInMins: sessionTimeout,
-      acrValues: acrValues || "",
+      acrValues: acrValues || '',
     },
     onSubmit: (values) => {
-      dispatch(putConfigWorker(values));
+      dispatch(putConfigWorker(values))
     },
     validationSchema: Yup.object().shape({
       sessionTimeoutInMins: Yup.number()
-        .min(1, t("messages.session_timeout_error"))
-        .required(t("messages.session_timeout_required_error")),
+        .min(1, t('messages.session_timeout_error'))
+        .required(t('messages.session_timeout_required_error')),
     }),
-  });
+  })
 
   return (
     <Form onSubmit={formik.handleSubmit}>
@@ -190,30 +176,27 @@ function SettingsForm() {
         doc_category={SETTINGS}
         doc_entry="sessionTimeoutInMins"
         errorMessage={formik.errors.sessionTimeoutInMins}
-        showError={
-          formik.errors.sessionTimeoutInMins &&
-          formik.touched.sessionTimeoutInMins
-        }
+        showError={formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins}
       />
 
       <FormGroup row>
         <GluuLabel
           size={4}
           doc_category="settings"
-          doc_entry={"adminui_default_acr"}
-          label={t("fields.adminui_default_acr")}
+          doc_entry={'adminui_default_acr'}
+          label={t('fields.adminui_default_acr')}
         />
         <Col sm={8}>
           <InputGroup>
             <CustomInput
               type="select"
-              data-testid={"acrValues"}
-              id={"acrValues"}
-              name={"acrValues"}
+              data-testid={'acrValues'}
+              id={'acrValues'}
+              name={'acrValues'}
               value={formik?.values?.acrValues}
               onChange={formik.handleChange}
             >
-              <option value="">{t("actions.choose")}...</option>
+              <option value="">{t('actions.choose')}...</option>
               {authScripts.map((item) => (
                 <option key={item.toString()}>{item}</option>
               ))}
@@ -226,8 +209,8 @@ function SettingsForm() {
           compName="additionalParameters"
           label="fields.custom_params_auth"
           formik={formik}
-          keyPlaceholder={t("placeholders.enter_property_key")}
-          valuePlaceholder={t("placeholders.enter_property_value")}
+          keyPlaceholder={t('placeholders.enter_property_key')}
+          valuePlaceholder={t('placeholders.enter_property_value')}
           options={additionalParameters}
           tooltip="documentation.settings.custom_params"
         />
@@ -238,10 +221,10 @@ function SettingsForm() {
         className="UserActionSubmitButton"
         disabled={loadingConfig || !formik.dirty}
       >
-        {t("actions.submit")}
+        {t('actions.submit')}
       </Button>
     </Form>
-  );
+  )
 }
 
-export default SettingsPage;
+export default SettingsPage

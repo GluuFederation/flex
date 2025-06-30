@@ -1,8 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import {
   getLdapResponse,
@@ -10,17 +7,12 @@ import {
   addLdapResponse,
   deleteLdapResponse,
   testLdapResponse,
-  toggleSavedFormFlag
+  toggleSavedFormFlag,
 } from '../features/ldapSlice'
-import {updateToast} from 'Redux/features/toastSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { LDAP } from '../audit/Resources'
-import {
-  CREATE,
-  UPDATE,
-  DELETION,
-  FETCH,
-} from '../../../../app/audit/UserActionType'
+import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import LdapApi from '../api/LdapApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')

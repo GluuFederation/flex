@@ -3,7 +3,7 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 const initialState = {
   configuration: {},
-  loading: false
+  loading: false,
 }
 
 const oidcDiscoverySlice = createSlice({
@@ -19,12 +19,11 @@ const oidcDiscoverySlice = createSlice({
       if (configuration) {
         state.configuration = configuration
       }
-    }
-  }
+    },
+  },
 })
 
-export const { getOidcDiscovery, getOidcDiscoveryResponse } =
-  oidcDiscoverySlice.actions
+export const { getOidcDiscovery, getOidcDiscoveryResponse } = oidcDiscoverySlice.actions
 
 export default oidcDiscoverySlice.reducer
 reducerRegistry.register('oidcDiscoveryReducer', oidcDiscoverySlice.reducer)

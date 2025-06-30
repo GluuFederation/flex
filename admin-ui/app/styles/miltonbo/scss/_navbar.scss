@@ -3,8 +3,8 @@
 @import "variables";
 
 .navbar.navbar-shadow {
-    box-shadow: map-get($navbar-shadow, 'shadow');
-    border-bottom: map-get($navbar-shadow, 'border');
+    box-shadow: map-get($navbar-shadow, "shadow");
+    border-bottom: map-get($navbar-shadow, "border");
 }
 
 .navbar-toggler.nav-link {
@@ -35,7 +35,7 @@
                     .navbar-collapse {
                         align-self: stretch;
                     }
-                    
+
                     @include media-breakpoint-down($breakpoint) {
                         .navbar-collapse-wrap {
                             display: flex;
@@ -63,7 +63,7 @@
         display: flex;
 
         align-self: stretch;
-        
+
         .nav-link {
             display: flex;
             align-self: stretch;
@@ -89,7 +89,7 @@
 
                 .nav-item {
                     display: block;
-                    
+
                     .nav-link {
                         display: block;
                         margin: 0;
@@ -137,7 +137,7 @@
                 .dropdown.show > .nav-link {
                     color: $navbar-light-hover-color;
                 }
-            } 
+            }
 
             &.navbar-dark .nav-accent {
                 .dropdown-menu .dropdown-item {
@@ -162,7 +162,6 @@
         }
     }
 }
-
 
 // Default Colors
 .navbar-light .nav-accent {

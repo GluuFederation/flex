@@ -98,7 +98,11 @@ function LicenseDetailsPage() {
                 <Col sm={6}>
                   <GluuFormDetailRow
                     label="fields.customerName"
-                    value={!item.customerFirstName && !item.customerLastName ? undefined : (item.customerFirstName + item.customerLastName)}
+                    value={
+                      !item.customerFirstName && !item.customerLastName
+                        ? undefined
+                        : item.customerFirstName + item.customerLastName
+                    }
                     isBadge={true}
                     lsize={3}
                     rsize={9}
@@ -157,9 +161,7 @@ function LicenseDetailsPage() {
               </Row>
             </Container>
           ) : (
-            <Alert severity="warning">
-              {!loading && t('messages.license_api_not_enabled')}
-            </Alert>
+            <Alert severity="warning">{!loading && t('messages.license_api_not_enabled')}</Alert>
           )}
         </CardBody>
       </Card>

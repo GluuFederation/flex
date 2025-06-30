@@ -37,8 +37,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
       description,
       ...(defaultPermissionInToken !== undefined &&
         defaultPermissionInToken !== '' && {
-          defaultPermissionInToken:
-            defaultPermissionInToken === 'true',
+          defaultPermissionInToken: defaultPermissionInToken === 'true',
         }),
     }
 
@@ -52,78 +51,71 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
         style={{ minWidth: '50vw' }}
         isOpen={modal}
         toggle={handler}
-        className='modal-outline-primary'
+        className="modal-outline-primary"
       >
         <ModalHeader toggle={handler}>
-          <i
-            style={{ color: 'green' }}
-            className='fa fa-2x fa-info fa-fw modal-icon mb-3'
-          ></i>
+          <i style={{ color: 'green' }} className="fa fa-2x fa-info fa-fw modal-icon mb-3"></i>
           New Permission
         </ModalHeader>
         <ModalBody>Adding new api permission</ModalBody>
         <ModalBody>
           <FormGroup row>
-            <GluuLabel required label='fields.name' size={4} />
+            <GluuLabel required label="fields.name" size={4} />
             <Col sm={8}>
               <Input
-                id='api_permission'
-                type='text'
-                name='api_permission'
+                id="api_permission"
+                type="text"
+                name="api_permission"
                 onChange={(event) => setPermission(event.target.value)}
                 value={permission}
               />
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label='fields.tag' size={4} />
+            <GluuLabel label="fields.tag" size={4} />
             <Col sm={8}>
               <Input
-                id='tag'
-                type='text'
-                name='tag'
+                id="tag"
+                type="text"
+                name="tag"
                 onChange={(event) => setTag(event.target.value)}
                 value={tag}
               />
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label='fields.description' size={4} />
+            <GluuLabel label="fields.description" size={4} />
             <Col sm={8}>
               <Input
-                id='permission_description'
-                type='textarea'
-                name='permission_description'
+                id="permission_description"
+                type="textarea"
+                name="permission_description"
                 onChange={(event) => setDescription(event.target.value)}
                 value={description}
               />
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label='fields.default_permission_in_token' size={4} />
+            <GluuLabel label="fields.default_permission_in_token" size={4} />
             <Col sm={8}>
               <InputGroup>
                 <CustomInput
-                  type='select'
-                  id='defaultPermissionInToken'
-                  name='defaultPermissionInToken'
+                  type="select"
+                  id="defaultPermissionInToken"
+                  name="defaultPermissionInToken"
                   value={defaultPermissionInToken}
-                  onChange={(event) =>
-                    setDefaultPermissionInToken(event.target.value)
-                  }
+                  onChange={(event) => setDefaultPermissionInToken(event.target.value)}
                   disabled={false}
                 >
-                  <option value=''>{t('actions.choose')}...</option>
-                  <option value='true'>true</option>
-                  <option value='false'>false</option>
+                  <option value="">{t('actions.choose')}...</option>
+                  <option value="true">true</option>
+                  <option value="false">false</option>
                 </CustomInput>
               </InputGroup>
             </Col>
           </FormGroup>
 
-          {errorMessages ? (
-            <span style={{ color: '#e74c3c' }}>{errorMessages}</span>
-          ) : null}
+          {errorMessages ? <span style={{ color: '#e74c3c' }}>{errorMessages}</span> : null}
         </ModalBody>
         <ModalFooter>
           <Button

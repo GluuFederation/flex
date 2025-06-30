@@ -1,7 +1,7 @@
-import React from "react";
-import { Col, FormGroup } from "Components";
-import GluuLabel from "./GluuLabel";
-import GluuToogle from "./GluuToogle";
+import React from 'react'
+import { Col, FormGroup } from 'Components'
+import GluuLabel from './GluuLabel'
+import GluuToogle from './GluuToogle'
 
 function GluuToogleRow({
   label,
@@ -11,7 +11,7 @@ function GluuToogleRow({
   lsize = 3,
   handler,
   rsize = 9,
-  doc_category = "no_category",
+  doc_category = 'no_category',
   disabled = false,
   required = false,
 }: any) {
@@ -36,6 +36,6 @@ function GluuToogleRow({
         />
       </Col>
     </FormGroup>
-  );
+  )
 }
-export default GluuToogleRow;
+export default GluuToogleRow

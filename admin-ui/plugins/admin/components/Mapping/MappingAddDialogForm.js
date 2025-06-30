@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import GluuSingleValueCompleter from '../../../../app/routes/Apps/Gluu/GluuSingleValueCompleter'
@@ -15,13 +9,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 
 const DOC_CATEGORY = 'openid_client'
 
-const MappingAddDialogForm = ({
-  handler,
-  modal,
-  onAccept,
-  roles,
-  mapping = [],
-}) => {
+const MappingAddDialogForm = ({ handler, modal, onAccept, roles, mapping = [] }) => {
   const [active, setActive] = useState(false)
   const [autoCompleteRoles, setAutoCompleteRoles] = useState([])
   const [searchablePermissions, setSearchAblePermissions] = useState([])
@@ -75,16 +63,9 @@ const MappingAddDialogForm = ({
   }
   return (
     <>
-      <Modal
-        isOpen={modal}
-        toggle={handler}
-        className="modal-outline-primary modal-lg"
-      >
+      <Modal isOpen={modal} toggle={handler} className="modal-outline-primary modal-lg">
         <ModalHeader toggle={handler}>
-          <i
-            style={{ color: 'green' }}
-            className="fa fa-2x fa-info fa-fw modal-icon mb-3"
-          ></i>
+          <i style={{ color: 'green' }} className="fa fa-2x fa-info fa-fw modal-icon mb-3"></i>
           {t('messages.new_role')}
         </ModalHeader>
         <ModalBody>{t('messages.adding_new_permission')}</ModalBody>
@@ -95,9 +76,7 @@ const MappingAddDialogForm = ({
             options={autoCompleteRoles}
             value={[]}
             hideHelperMessage
-            onChange={(selected) =>
-              setApiRole(selected.length ? selected[0] : '')
-            }
+            onChange={(selected) => setApiRole(selected.length ? selected[0] : '')}
             doc_category={DOC_CATEGORY}
           ></GluuSingleValueCompleter>
           <GluuTypeAhead

@@ -15,7 +15,7 @@ import {
   getSamlIdentites,
   getTrustRelationshipResponse,
   deleteTrustRelationshipResponse,
-  updateTrustRelationshipResponse
+  updateTrustRelationshipResponse,
 } from '../features/SamlSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -27,27 +27,21 @@ const JansConfigApi = require('jans_config_api')
 function* newSamlConfigFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.SAMLConfigurationApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.SAMLConfigurationApi(getClient(JansConfigApi, token, issuer))
   return new SamlApi(api)
 }
 
 function* newSamlIdentityFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.SAMLIdentityBrokerApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.SAMLIdentityBrokerApi(getClient(JansConfigApi, token, issuer))
   return new SamlApi(api)
 }
 
 function* newTrustRelationFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.SAMLTrustRelationshipApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.SAMLTrustRelationshipApi(getClient(JansConfigApi, token, issuer))
   return new SamlApi(api)
 }
 
@@ -106,7 +100,7 @@ export function* postSamlIdentity({ payload }) {
     addAdditionalData(audit, CREATE, 'SAML', payload)
     const token = yield select((state) => state.authReducer.token.access_token)
     const api = yield* newSamlIdentityFunction()
-    const data =yield call(api.postSamlIdentityProvider, {
+    const data = yield call(api.postSamlIdentityProvider, {
       formdata: payload.action.action_data,
       token,
     })
@@ -195,10 +189,7 @@ export function* deleteTrustRelationship({ payload }) {
   try {
     addAdditionalData(audit, DELETION, 'TRUST-RELATIONSHIP', payload)
     const api = yield* newTrustRelationFunction()
-    const data = yield call(
-      api.deleteTrustRelationship,
-      payload.action.action_data
-    )
+    const data = yield call(api.deleteTrustRelationship, payload.action.action_data)
     yield put(deleteTrustRelationshipResponse(data))
     yield getTrustRelationshipsSaga()
     yield call(postUserAction, audit)
@@ -242,10 +233,7 @@ export function* deleteSamlIdentity({ payload }) {
   try {
     addAdditionalData(audit, DELETION, 'SAML', payload)
     const api = yield* newSamlIdentityFunction()
-    const data = yield call(
-      api.deleteSamlIdentityProvider,
-      payload.action.action_data
-    )
+    const data = yield call(api.deleteSamlIdentityProvider, payload.action.action_data)
     yield put(deleteSamlIdentityResponse(data))
     yield put(getSamlIdentites())
     yield call(postUserAction, audit)
@@ -264,8 +252,8 @@ function* errorToast({ error }) {
     updateToast(
       true,
       'error',
-      error?.response?.data?.description || error?.response?.data?.message || error.message
-    )
+      error?.response?.data?.description || error?.response?.data?.message || error.message,
+    ),
   )
 }
 

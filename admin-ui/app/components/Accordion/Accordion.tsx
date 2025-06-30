@@ -8,8 +8,10 @@ export function Accordion(props: AccordionProps) {
 
   // Error check (mimics constructor logic)
   if (typeof open !== 'undefined' && typeof onToggle === 'undefined') {
-    throw new Error("Accordion: props.open has to be used combined with props.onToggle " +
-      "use props.initialOpen to create an uncontrolled Accordion.")
+    throw new Error(
+      'Accordion: props.open has to be used combined with props.onToggle ' +
+        'use props.initialOpen to create an uncontrolled Accordion.',
+    )
   }
 
   // Uncontrolled state
@@ -18,7 +20,7 @@ export function Accordion(props: AccordionProps) {
   // Handler
   const toggleHandler = useCallback(() => {
     if (!onToggle) {
-      setIsOpenState(prev => !prev)
+      setIsOpenState((prev) => !prev)
     } else {
       onToggle(!open)
     }
@@ -31,7 +33,7 @@ export function Accordion(props: AccordionProps) {
     <Provider
       value={{
         onToggle: toggleHandler,
-        isOpen: isOpen
+        isOpen: isOpen,
       }}
     >
       <Card className={className} type="border" color={null} {...otherProps}>

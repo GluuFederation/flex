@@ -25,14 +25,7 @@ import {
   SCRIPT_WRITE,
   SCRIPT_DELETE,
 } from 'Utils/PermChecker'
-import {
-  LIMIT_ID,
-  LIMIT,
-  PATTERN,
-  PATTERN_ID,
-  TYPE,
-  TYPE_ID,
-} from '../../common/Constants'
+import { LIMIT_ID, LIMIT, PATTERN, PATTERN_ID, TYPE, TYPE_ID } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -60,11 +53,11 @@ function ScriptListTable() {
   const scripts = useSelector((state) => state.customScriptReducer.items)
   const loading = useSelector((state) => state.customScriptReducer.loading)
   const hasFetchedScriptTypes = useSelector(
-    (state) => state.customScriptReducer.hasFetchedScriptTypes
+    (state) => state.customScriptReducer.hasFetchedScriptTypes,
   )
   const permissions = useSelector((state) => state.authReducer.permissions)
   const { totalItems, scriptTypes, loadingScriptTypes } = useSelector(
-    (state) => state.customScriptReducer
+    (state) => state.customScriptReducer,
   )
   const [pageNumber, setPageNumber] = useState(0)
   let memoPattern = pattern
@@ -113,8 +106,7 @@ function ScriptListTable() {
         id: 'viewCustomScript' + rowData.inum,
       },
       tooltip: `${t('messages.view_script_details')}`,
-      onClick: (event, rowData) =>
-        handleGoToCustomScriptEditPage(rowData, true),
+      onClick: (event, rowData) => handleGoToCustomScriptEditPage(rowData, true),
       disabled: false,
     }))
   }
@@ -124,11 +116,7 @@ function ScriptListTable() {
         <>
           {loadingScriptTypes ? (
             <>
-              <Skeleton
-                variant='text'
-                width='10rem'
-                sx={{ fontSize: '3rem' }}
-              />
+              <Skeleton variant="text" width="10rem" sx={{ fontSize: '3rem' }} />
             </>
           ) : (
             <GluuCustomScriptSearch
@@ -246,9 +234,7 @@ function ScriptListTable() {
                     onPageChangeClick(page)
                   }}
                   rowsPerPage={limit}
-                  onRowsPerPageChange={(prop, count) =>
-                    onRowCountChangeClick(count.props.value)
-                  }
+                  onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
                 />
               ),
             }}
@@ -260,13 +246,7 @@ function ScriptListTable() {
                 field: 'enabled',
                 type: 'boolean',
                 render: (rowData) => (
-                  <Badge
-                    color={
-                      rowData.enabled == true
-                        ? `primary-${selectedTheme}`
-                        : 'dimmed'
-                    }
-                  >
+                  <Badge color={rowData.enabled == true ? `primary-${selectedTheme}` : 'dimmed'}>
                     {rowData.enabled ? 'true' : 'false'}
                   </Badge>
                 ),
@@ -275,7 +255,7 @@ function ScriptListTable() {
             ]}
             data={scripts}
             isLoading={loading}
-            title=''
+            title=""
             actions={myActions}
             options={{
               search: false,
@@ -307,7 +287,7 @@ function ScriptListTable() {
             row={item}
             handler={toggle}
             modal={modal}
-            subject='script'
+            subject="script"
             onAccept={onDeletionConfirmed}
             feature={adminUiFeatures.custom_script_delete}
           />

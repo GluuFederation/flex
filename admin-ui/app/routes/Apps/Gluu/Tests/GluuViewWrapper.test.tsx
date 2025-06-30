@@ -22,7 +22,5 @@ it('Check view wrapper with no show', () => {
       <GluuViewWrapper />
     </I18nextProvider>,
   )
-  expect(screen.getByTestId('MISSING')).toHaveTextContent(
-    'Missing required permission',
-  )
+  expect(screen.getByTestId('MISSING')).toHaveTextContent('Missing required permission')
 })

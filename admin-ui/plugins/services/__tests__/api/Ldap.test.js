@@ -1,17 +1,9 @@
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/auth-server/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/auth-server/__tests__/api/setup.test'
 import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from 'Redux/features/authSlice'
 import { expectSaga } from 'redux-saga-test-plan'
 import { log } from 'console'
-import {
-  getLdap,
-  addLdap,
-  editLdap,
-  deleteLdap,
-} from 'Plugins/services/redux/sagas/LdapSaga'
+import { getLdap, addLdap, editLdap, deleteLdap } from 'Plugins/services/redux/sagas/LdapSaga'
 import {
   initialState as ldapInitState,
   reducer as ldapReducer,
@@ -57,9 +49,7 @@ const payload = {
 describe('perform CRUD for ldap module', () => {
   let configs
   test('GET ldap configs', async () => {
-    const result = await expectSaga(getLdap)
-      .withReducer(rootReducer, initialState)
-      .silentRun(false)
+    const result = await expectSaga(getLdap).withReducer(rootReducer, initialState).silentRun(false)
 
     expect(result.returnValue instanceof Error).toBe(false)
   })

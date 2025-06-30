@@ -24,7 +24,7 @@ const GluuScriptErrorModal = ({ title = 'Error', error, isOpen, handler }: any) 
       isOpen={isOpen}
       style={{ minWidth: '45vw' }}
       toggle={handler}
-      className='modal-outline-primary'
+      className="modal-outline-primary"
     >
       <ModalHeader style={{ padding: '16px' }} toggle={handler}>
         <h4 style={{ fontWeight: 500 }}>{title}</h4>
@@ -34,11 +34,7 @@ const GluuScriptErrorModal = ({ title = 'Error', error, isOpen, handler }: any) 
       </ModalBody>
       <ModalFooter>
         <Button onClick={() => !isCopied && copyToClipboard()}>
-          {isCopied ? (
-            <>{t('messages.copied')}</>
-          ) : (
-            <>{t('actions.copy_to_clipboard')}</>
-          )}
+          {isCopied ? <>{t('messages.copied')}</> : <>{t('actions.copy_to_clipboard')}</>}
         </Button>
         <Button
           color={`primary-${selectedTheme}`}

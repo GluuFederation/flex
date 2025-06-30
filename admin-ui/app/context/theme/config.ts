@@ -1,56 +1,56 @@
 export const themeConfig = {
   darkBlack: {
-    background: "#303641",
-    lightBackground: "#989ea7",
-    fontColor: "#FFFFFF",
+    background: '#303641',
+    lightBackground: '#989ea7',
+    fontColor: '#FFFFFF',
     menu: {
-      background: "#323C46",
-      color: "#FFFFFF",
+      background: '#323C46',
+      color: '#FFFFFF',
     },
     dashboard: {
-      supportCard: "#274560",
+      supportCard: '#274560',
     },
   },
   darkBlue: {
-    background: "#284461",
-    lightBackground: "#81a8d0",
-    fontColor: "#FFFFFF",
+    background: '#284461',
+    lightBackground: '#81a8d0',
+    fontColor: '#FFFFFF',
     menu: {
-      background: "#323C46",
-      color: "#FFFFFF",
+      background: '#323C46',
+      color: '#FFFFFF',
     },
     dashboard: {
-      supportCard: "#9DBDE2",
+      supportCard: '#9DBDE2',
     },
   },
   lightBlue: {
-    background: "#9DBDE2",
-    lightBackground: "#c9def6",
-    fontColor: "#303641",
+    background: '#9DBDE2',
+    lightBackground: '#c9def6',
+    fontColor: '#303641',
     menu: {
-      background: "#274561",
-      color: "#FFFFFF",
+      background: '#274561',
+      color: '#FFFFFF',
     },
     dashboard: {
-      supportCard: "#274560",
+      supportCard: '#274560',
     },
   },
   lightGreen: {
-    background: "#3BC391",
-    lightBackground: "#abebd4",
-    fontColor: "#303641",
+    background: '#3BC391',
+    lightBackground: '#abebd4',
+    fontColor: '#303641',
     menu: {
-      background: "#02B774",
-      color: "#FFFFFF",
+      background: '#02B774',
+      color: '#FFFFFF',
     },
     dashboard: {
-      supportCard: "#274560",
+      supportCard: '#274560',
     },
   },
-};
+}
 
-const getThemeColor = (config: string): typeof themeConfig[keyof typeof themeConfig] => {
-  return themeConfig[config as keyof typeof themeConfig];
-};
+const getThemeColor = (config: string): (typeof themeConfig)[keyof typeof themeConfig] => {
+  return themeConfig[config as keyof typeof themeConfig]
+}
 
-export default getThemeColor;
+export default getThemeColor

@@ -1,10 +1,5 @@
 import React, { useEffect } from 'react'
-import {
-  Container,
-  CardBody,
-  Card,
-  CardHeader,
-} from 'Components'
+import { Container, CardBody, Card, CardHeader } from 'Components'
 import { useTranslation } from 'react-i18next'
 
 function HealthPage() {

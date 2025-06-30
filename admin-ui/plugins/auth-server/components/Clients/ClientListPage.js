@@ -13,12 +13,7 @@ import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-import {
-  LIMIT_ID,
-  LIMIT,
-  PATTERN,
-  PATTERN_ID,
-} from 'Plugins/auth-server/common/Constants'
+import { LIMIT_ID, LIMIT, PATTERN, PATTERN_ID } from 'Plugins/auth-server/common/Constants'
 import {
   getOpenidClients,
   setCurrentItem,
@@ -46,7 +41,7 @@ function ClientListPage() {
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.oidcReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
-  let clients = [...nonExtensibleClients ?? []]
+  let clients = [...(nonExtensibleClients ?? [])]
   clients = clients?.map(addOrg)
   const userAction = {}
   const options = {}
@@ -61,7 +56,7 @@ function ClientListPage() {
   const [scopeClients, setScopeClients] = useState()
   const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
   const [isPageLoading, setIsPageLoading] = useState(loading)
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(0)
   SetTitle(t('titles.oidc_clients'))
 
   const [scopesModal, setScopesModal] = useState({
@@ -84,10 +79,7 @@ function ClientListPage() {
       client['organization'] = client.o
       return client
     }
-    if (
-      client.hasOwnProperty('customAttributes') &&
-      Array.isArray(client.customAttributes)
-    ) {
+    if (client.hasOwnProperty('customAttributes') && Array.isArray(client.customAttributes)) {
       const results = client.customAttributes.filter(
         (item) => item.name == 'o' || item.name == 'organization',
       )
@@ -144,10 +136,7 @@ function ClientListPage() {
       field: 'scopes',
       render: (rowData) => {
         return (
-          <Link
-            className="common-link"
-            onClick={() => setScopeData(rowData.scopes)}
-          >
+          <Link className="common-link" onClick={() => setScopeData(rowData.scopes)}>
             {rowData.scopes?.length || '0'}
           </Link>
         )
@@ -177,8 +166,7 @@ function ClientListPage() {
       const scopeInumParam = search.replace('?scopeInum=', '')
 
       if (scopeInumParam.length > 0) {
-        const clientsScope =
-          scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
+        const clientsScope = scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
         setScopeClients(clientsScope)
       }
     } else {
@@ -345,11 +333,7 @@ function ClientListPage() {
 
   return (
     <Card style={applicationStyle.mainCard}>
-      <ClientShowScopes
-        handler={handler}
-        isOpen={scopesModal.show}
-        data={scopesModal.data}
-      />
+      <ClientShowScopes handler={handler} isOpen={scopesModal.show} data={scopesModal.data} />
       <CardBody>
         <GluuViewWrapper canShow={hasPermission(permissions, CLIENT_READ)}>
           <MaterialTable
@@ -364,9 +348,7 @@ function ClientListPage() {
                     onPageChangeClick(page)
                   }}
                   rowsPerPage={limit}
-                  onRowsPerPageChange={(prop, count) =>
-                    onRowCountChangeClick(count.props.value)
-                  }
+                  onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
                 />
               ),
             }}

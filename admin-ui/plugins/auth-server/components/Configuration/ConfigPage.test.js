@@ -10,33 +10,23 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 const config = {
   issuer: 'https://admin-ui-test.gluu.org',
   baseEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1',
-  authorizationEndpoint:
-    'https://admin-ui-test.gluu.org/jans-auth/restv1/authorize',
+  authorizationEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/authorize',
   tokenEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/token',
-  tokenRevocationEndpoint:
-    'https://admin-ui-test.gluu.org/jans-auth/restv1/revoke',
+  tokenRevocationEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/revoke',
   userInfoEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/userinfo',
-  clientInfoEndpoint:
-    'https://admin-ui-test.gluu.org/jans-auth/restv1/clientinfo',
+  clientInfoEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/clientinfo',
   checkSessionIFrame: 'https://admin-ui-test.gluu.org/jans-auth/opiframe.htm',
-  endSessionEndpoint:
-    'https://admin-ui-test.gluu.org/jans-auth/restv1/end_session',
+  endSessionEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/end_session',
   jwksUri: 'https://admin-ui-test.gluu.org/jans-auth/restv1/jwks',
-  registrationEndpoint:
-    'https://admin-ui-test.gluu.org/jans-auth/restv1/register',
-  openIdDiscoveryEndpoint:
-    'https://admin-ui-test.gluu.org/.well-known/webfinger',
-  openIdConfigurationEndpoint:
-    'https://admin-ui-test.gluu.org/.well-known/openid-configuration',
+  registrationEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/register',
+  openIdDiscoveryEndpoint: 'https://admin-ui-test.gluu.org/.well-known/webfinger',
+  openIdConfigurationEndpoint: 'https://admin-ui-test.gluu.org/.well-known/openid-configuration',
   idGenerationEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/id',
-  introspectionEndpoint:
-    'https://admin-ui-test.gluu.org/jans-auth/restv1/introspection',
-  deviceAuthzEndpoint:
-    'https://admin-ui-test.gluu.org/jans-auth/restv1/device_authorization',
+  introspectionEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/introspection',
+  deviceAuthzEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/device_authorization',
   sessionAsJwt: false,
   sectorIdentifierCacheLifetimeInMinutes: 1440,
-  umaConfigurationEndpoint:
-    'https://admin-ui-test.gluu.org/jans-auth/restv1/uma2-configuration',
+  umaConfigurationEndpoint: 'https://admin-ui-test.gluu.org/jans-auth/restv1/uma2-configuration',
   umaRptAsJwt: false,
   umaRptLifetime: 3600,
   umaTicketLifetime: 3600,
@@ -136,11 +126,11 @@ const CONFIG_STATE = {
 }
 
 const ACER_STATE = {
-  acrReponse: {}
+  acrReponse: {},
 }
 
 const SCRIPTS_STATE = {
-  scripts: []
+  scripts: [],
 }
 
 const INIT_STATE = {
@@ -156,7 +146,7 @@ const INIT_STATE = {
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     jsonConfigReducer: (state = CONFIG_STATE) => state,
     noReducer: (state = {}) => state,
@@ -178,8 +168,6 @@ it('Should render json properties page properly', () => {
   waitFor(() => expect(screen.getByText(config.issuer)).toBeInTheDocument())
   expect(screen.getByTestId('issuer')).toHaveValue(config.issuer)
   expect(screen.getByTestId('baseEndpoint')).toHaveValue(config.baseEndpoint)
-  expect(screen.getByTestId('authorizationEndpoint')).toHaveValue(
-    config.authorizationEndpoint,
-  )
+  expect(screen.getByTestId('authorizationEndpoint')).toHaveValue(config.authorizationEndpoint)
   screen.getByText(/Base Endpoint:/)
 })

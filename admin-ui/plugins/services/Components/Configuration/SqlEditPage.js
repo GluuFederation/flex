@@ -12,7 +12,7 @@ function SqlEditPage() {
   const dispatch = useDispatch()
 
   const userAction = {}
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   function handleSubmit(data) {
     if (data) {
       const message = data.sql.action_message

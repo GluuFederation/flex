@@ -103,8 +103,8 @@
 
     .ag-filter-select {
         -webkit-appearance: none;
-           -moz-appearance: none;
-                appearance: none;
+        -moz-appearance: none;
+        appearance: none;
         max-width: calc(100% - 8px);
         outline: none !important;
         box-shadow: none !important;
@@ -113,7 +113,8 @@
         display: inline-block;
         width: 100%;
         height: $custom-select-height-sm;
-        padding: $custom-select-padding-y-sm ($custom-select-padding-x + $custom-select-indicator-padding) $custom-select-padding-y-sm $custom-select-padding-x-sm;
+        padding: $custom-select-padding-y-sm ($custom-select-padding-x + $custom-select-indicator-padding)
+            $custom-select-padding-y-sm $custom-select-padding-x-sm;
         font-family: $custom-select-font-family;
         @include font-size($custom-select-font-size-sm);
         font-weight: $custom-select-font-weight;
@@ -131,19 +132,19 @@
             border-color: $custom-select-focus-border-color;
             outline: 0;
             @if $enable-shadows {
-            box-shadow: $custom-select-box-shadow, $custom-select-focus-box-shadow;
+                box-shadow: $custom-select-box-shadow, $custom-select-focus-box-shadow;
             } @else {
-            box-shadow: $custom-select-focus-box-shadow;
+                box-shadow: $custom-select-focus-box-shadow;
             }
 
             &::-ms-value {
-            // For visual consistency with other platforms/browsers,
-            // suppress the default white text on blue background highlight given to
-            // the selected option text when the (still closed) <select> receives focus
-            // in IE and (under certain conditions) Edge.
-            // See https://github.com/twbs/bootstrap/issues/19398.
-            color: $input-color;
-            background-color: $input-bg;
+                // For visual consistency with other platforms/browsers,
+                // suppress the default white text on blue background highlight given to
+                // the selected option text when the (still closed) <select> receives focus
+                // in IE and (under certain conditions) Edge.
+                // See https://github.com/twbs/bootstrap/issues/19398.
+                color: $input-color;
+                background-color: $input-bg;
             }
         }
 

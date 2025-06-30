@@ -4,20 +4,16 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const initialState = {
   showToast: false,
   message: '',
-  type: 'success'
+  type: 'success',
 }
 
-export const updateToast = (
-  showToast = false,
-  type = 'success',
-  message = ''
-) => ({
+export const updateToast = (showToast = false, type = 'success', message = '') => ({
   type: 'toast/updateToast',
   payload: {
     showToast: showToast,
     message: message,
-    type: type
-  }
+    type: type,
+  },
 })
 
 const toastSlice = createSlice({
@@ -29,8 +25,8 @@ const toastSlice = createSlice({
       state.showToast = showToast
       state.type = type
       state.message = message
-    }
-  }
+    },
+  },
 })
 
 export default toastSlice.reducer

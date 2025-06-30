@@ -1,8 +1,8 @@
-import { DropdownMenu, DropdownItem } from "Components";
-import { useTranslation } from "react-i18next";
+import { DropdownMenu, DropdownItem } from 'Components'
+import { useTranslation } from 'react-i18next'
 
 const SwitchVersion = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <DropdownMenu>
       <DropdownItem header>Bootstrap 4 Versions:</DropdownItem>
@@ -14,11 +14,7 @@ const SwitchVersion = () => {
         </span>
         <i className="fa fa-fw ms-auto align-self-center ps-2" />
       </DropdownItem>
-      <DropdownItem
-        href="https://react.bs4.webkom.co"
-        active
-        className="d-flex"
-      >
+      <DropdownItem href="https://react.bs4.webkom.co" active className="d-flex">
         <span>
           React 2.0
           <br />
@@ -43,7 +39,7 @@ const SwitchVersion = () => {
         <i className="fa fa-fw ms-auto align-self-center ps-2" />
       </DropdownItem>
     </DropdownMenu>
-  );
-};
+  )
+}
 
-export { SwitchVersion };
+export { SwitchVersion }

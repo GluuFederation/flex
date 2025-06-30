@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react"
-import classNames from "classnames"
-import { Navbar as BSNavbar, Container } from "reactstrap"
+import React, { ReactNode } from 'react'
+import classNames from 'classnames'
+import { Navbar as BSNavbar, Container } from 'reactstrap'
 
 interface NavbarProps {
   themed?: boolean
@@ -27,10 +27,10 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   let navbarClass = classNames(
     {
-      "navbar-shadow": shadow
+      'navbar-shadow': shadow,
     },
-    "navbar-multi-collapse",
-    className
+    'navbar-multi-collapse',
+    className,
   )
 
   // When a combination of light or dark is present
@@ -38,7 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({
   if ((dark || light) && color) {
     navbarClass = classNames(
       navbarClass,
-      `navbar-${light ? "light" : ""}${dark ? "dark" : ""}-${color}`
+      `navbar-${light ? 'light' : ''}${dark ? 'dark' : ''}-${color}`,
     )
   }
 

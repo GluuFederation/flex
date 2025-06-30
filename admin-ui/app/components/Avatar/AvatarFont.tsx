@@ -12,43 +12,35 @@ interface AvatarFontProps extends React.ComponentProps<typeof Avatar> {
 }
 
 const AvatarFont: React.FC<AvatarFontProps> = (props) => {
-  const {
-    children,
-    bgColor,
-    fgColor,
-    bgColorCustom,
-    fgColorCustom,
-    ...avatarProps
-  } = props
+  const { children, bgColor, fgColor, bgColorCustom, fgColorCustom, ...avatarProps } = props
   const parentClass = classNames(
     'avatar-font',
     `avatar-font--${avatarProps.size}`,
-    bgColor && avatarColors[`bg-color--${ bgColor }`]
+    bgColor && avatarColors[`bg-color--${bgColor}`],
   )
-  const childClass = classNames('avatar-font__text',
-    fgColor && avatarColors[`fg-color--${ fgColor }`]
+  const childClass = classNames(
+    'avatar-font__text',
+    fgColor && avatarColors[`fg-color--${fgColor}`],
   )
-  const parentCustomStyle = bgColorCustom ? {
-    backgroundColor: bgColorCustom
-  } : { }
-  const childCustomStyle = fgColorCustom ? {
-    color: fgColorCustom
-  } : { }
-  const child = (
-    <span>
-      { children }
-    </span>
-  )
+  const parentCustomStyle = bgColorCustom
+    ? {
+        backgroundColor: bgColorCustom,
+      }
+    : {}
+  const childCustomStyle = fgColorCustom
+    ? {
+        color: fgColorCustom,
+      }
+    : {}
+  const child = <span>{children}</span>
 
   return (
-    <Avatar { ...avatarProps }>
-      <div className={ parentClass } style={parentCustomStyle}>
-        {
-          React.cloneElement(child, {
-            style: childCustomStyle,
-            className: classNames(child.props.className, childClass)
-          })
-        }
+    <Avatar {...avatarProps}>
+      <div className={parentClass} style={parentCustomStyle}>
+        {React.cloneElement(child, {
+          style: childCustomStyle,
+          className: classNames(child.props.className, childClass),
+        })}
       </div>
     </Avatar>
   )

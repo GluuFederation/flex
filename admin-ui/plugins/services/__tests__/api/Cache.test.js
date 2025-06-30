@@ -1,7 +1,4 @@
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/auth-server/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/auth-server/__tests__/api/setup.test'
 import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from 'Redux/features/authSlice'
 import { expectSaga } from 'redux-saga-test-plan'
@@ -61,8 +58,7 @@ describe('get & update services cache configs', () => {
             nativePersistenceConfiguration: {
               ...configs.nativePersistenceConfiguration,
               defaultPutExpiration:
-                (configs.nativePersistenceConfiguration?.defaultPutExpiration ||
-                  0) + 5,
+                (configs.nativePersistenceConfiguration?.defaultPutExpiration || 0) + 5,
             },
           },
         },
@@ -83,8 +79,7 @@ describe('get & update services cache configs', () => {
           data: {
             nativePersistenceConfiguration: {
               ...configs.nativePersistenceConfiguration,
-              defaultPutExpiration:
-                configs.nativePersistenceConfiguration?.defaultPutExpiration,
+              defaultPutExpiration: configs.nativePersistenceConfiguration?.defaultPutExpiration,
             },
           },
         },
@@ -105,8 +100,7 @@ describe('get & update services cache configs', () => {
           data: {
             redisConfiguration: {
               ...configs.redisConfiguration,
-              defaultPutExpiration:
-                (configs.redisConfiguration?.defaultPutExpiration || 0) + 5,
+              defaultPutExpiration: (configs.redisConfiguration?.defaultPutExpiration || 0) + 5,
             },
           },
         },
@@ -127,8 +121,7 @@ describe('get & update services cache configs', () => {
           data: {
             redisConfiguration: {
               ...configs.redisConfiguration,
-              defaultPutExpiration:
-                configs.redisConfiguration?.defaultPutExpiration,
+              defaultPutExpiration: configs.redisConfiguration?.defaultPutExpiration,
             },
           },
         },
@@ -149,8 +142,7 @@ describe('get & update services cache configs', () => {
           data: {
             memcachedConfiguration: {
               ...configs.memcachedConfiguration,
-              defaultPutExpiration:
-                (configs.memcachedConfiguration?.defaultPutExpiration || 0) + 5,
+              defaultPutExpiration: (configs.memcachedConfiguration?.defaultPutExpiration || 0) + 5,
             },
           },
         },
@@ -170,8 +162,7 @@ describe('get & update services cache configs', () => {
           data: {
             memcachedConfiguration: {
               ...configs.memcachedConfiguration,
-              defaultPutExpiration:
-                configs.memcachedConfiguration?.defaultPutExpiration,
+              defaultPutExpiration: configs.memcachedConfiguration?.defaultPutExpiration,
             },
           },
         },
@@ -192,8 +183,7 @@ describe('get & update services cache configs', () => {
           data: {
             inMemoryConfiguration: {
               ...configs.inMemoryConfiguration,
-              defaultPutExpiration:
-                (configs.inMemoryConfiguration?.defaultPutExpiration || 0) + 5,
+              defaultPutExpiration: (configs.inMemoryConfiguration?.defaultPutExpiration || 0) + 5,
             },
           },
         },
@@ -213,8 +203,7 @@ describe('get & update services cache configs', () => {
           data: {
             inMemoryConfiguration: {
               ...configs.inMemoryConfiguration,
-              defaultPutExpiration:
-                configs.inMemoryConfiguration?.defaultPutExpiration,
+              defaultPutExpiration: configs.inMemoryConfiguration?.defaultPutExpiration,
             },
           },
         },

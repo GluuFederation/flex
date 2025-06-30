@@ -11,7 +11,7 @@ function LdapEditPage() {
   const item = useSelector((state) => state.ldapReducer.item)
   const dispatch = useDispatch()
   const userAction = {}
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const { savedForm } = useSelector((state) => state.ldapReducer)
 
   useEffect(() => {

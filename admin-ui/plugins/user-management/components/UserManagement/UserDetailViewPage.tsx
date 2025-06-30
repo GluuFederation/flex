@@ -1,59 +1,57 @@
-import { Fragment } from "react";
-import { Container, Row, Col } from "Components";
-import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
-import { useSelector } from "react-redux";
-import moment from "moment";
+import { Fragment } from 'react'
+import { Container, Row, Col } from 'Components'
+import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
+import { useSelector } from 'react-redux'
+import moment from 'moment'
 
 interface CustomAttribute {
-  name: string;
-  values: string[];
-  multiValued?: boolean;
-  value?: string;
+  name: string
+  values: string[]
+  multiValued?: boolean
+  value?: string
 }
 
 interface UserData {
-  displayName?: string;
-  givenName?: string;
-  userId?: string;
-  mail?: string;
-  customAttributes?: CustomAttribute[];
+  displayName?: string
+  givenName?: string
+  userId?: string
+  mail?: string
+  customAttributes?: CustomAttribute[]
 }
 
 interface RowProps {
   row: {
-    rowData: UserData;
-  };
+    rowData: UserData
+  }
 }
 
 interface RootState {
   attributesReducerRoot: {
     items: Array<{
-      name: string;
-      displayName: string;
-      description: string;
-    }>;
-  };
+      name: string
+      displayName: string
+      description: string
+    }>
+  }
 }
 
 const UserDetailViewPage = ({ row }: RowProps) => {
-  const { rowData } = row;
-  const DOC_SECTION = "user";
-  const personAttributes = useSelector(
-    (state: RootState) => state.attributesReducerRoot.items
-  );
+  const { rowData } = row
+  const DOC_SECTION = 'user'
+  const personAttributes = useSelector((state: RootState) => state.attributesReducerRoot.items)
 
   const getCustomAttributeById = (id: string) => {
-    let claimData = null;
+    let claimData = null
     for (let i in personAttributes) {
       if (personAttributes[i].name === id) {
-        claimData = personAttributes[i];
+        claimData = personAttributes[i]
       }
     }
-    return claimData;
-  };
+    return claimData
+  }
 
   return (
-    <Container style={{ backgroundColor: "#F5F5F5", minWidth: "100%" }}>
+    <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
@@ -88,43 +86,33 @@ const UserDetailViewPage = ({ row }: RowProps) => {
           />
         </Col>
         {rowData.customAttributes?.map((data: CustomAttribute, key: number) => {
-          let valueToShow = "";
-          if (data.name === "birthdate") {
-            valueToShow = moment(data?.values[0]).format("YYYY-MM-DD") || "";
+          let valueToShow = ''
+          if (data.name === 'birthdate') {
+            valueToShow = moment(data?.values[0]).format('YYYY-MM-DD') || ''
           } else {
-            valueToShow = data.multiValued
-              ? data?.values?.join(", ")
-              : data.value || "";
+            valueToShow = data.multiValued ? data?.values?.join(', ') : data.value || ''
           }
 
           return (
-            <Fragment key={"customAttributes" + key}>
-              {valueToShow !== "" ? (
-                <Col sm={6} xl={4} key={"customAttributes" + key}>
+            <Fragment key={'customAttributes' + key}>
+              {valueToShow !== '' ? (
+                <Col sm={6} xl={4} key={'customAttributes' + key}>
                   <GluuFormDetailRow
-                    label={
-                      getCustomAttributeById(data?.name)?.displayName ||
-                      data?.name
-                    }
-                    doc_category={
-                      getCustomAttributeById(data?.name)?.description ||
-                      data?.name
-                    }
+                    label={getCustomAttributeById(data?.name)?.displayName || data?.name}
+                    doc_category={getCustomAttributeById(data?.name)?.description || data?.name}
                     isDirect={true}
                     value={
-                      typeof valueToShow === "boolean"
-                        ? JSON.stringify(valueToShow)
-                        : valueToShow
+                      typeof valueToShow === 'boolean' ? JSON.stringify(valueToShow) : valueToShow
                     }
                   />
                 </Col>
               ) : null}
             </Fragment>
-          );
+          )
         })}
       </Row>
     </Container>
-  );
-};
+  )
+}
 
-export default UserDetailViewPage;
+export default UserDetailViewPage
