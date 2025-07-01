@@ -37,14 +37,23 @@ jobs:
   docker:
     permissions:
       packages: write
+      id-token: write
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 8
       matrix:
         docker-images: ["admin-ui", "flex-monolith", "flex-all-in-one"]
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@a4aa98b93cab29d9b1101a6143fb8bce00e2eac4 # v2.7.1
+        with:
+          egress-policy: audit
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021dabca52bb # v3.8.2
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0
           sparse-checkout: |
@@ -64,10 +73,11 @@ jobs:
             echo "$DEFAULT_ALL"
           fi
           # Detect actual docker folders that changed if error arises default to all images
-          DIRECTORIES_CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | cut -d/ -f1 | sort -u | grep "docker" || echo "$DEFAULT_ALL")
+          pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          DIRECTORIES_CHANGED=$(gh pr view $pull_number --json files --jq '.files.[].path' | cut -d/ -f1 | sort -u | grep "docker-jans" || echo "$DEFAULT_ALL")
           if [[ "$DIRECTORIES_CHANGED" =~ "${{ matrix.docker-images }}" ]]; then
-            echo "A change in this images directory has occured"
-            echo ::set-output name=build::${BUILD}
+            echo "A change in this images directory has occurred"
+            echo "build=${BUILD}" >> $GITHUB_OUTPUT
           fi
 
       - name: Install dependencies
@@ -76,7 +86,7 @@ jobs:
           sudo apt-get update
           sudo python3 -m pip install --upgrade pip || echo "Failed to upgrade pip"
           sudo pip3 install --ignore-installed setuptools --upgrade
-          sudo pip3 install --ignore-installed -r ./automation/requirements.txt 
+          sudo pip3 install --ignore-installed -r ./automation/requirements.txt
           sudo apt-get update
 
 
@@ -151,7 +161,7 @@ jobs:
           sudo apt-get update
           sudo python3 -m pip install --upgrade pip || echo "Failed to upgrade pip"
           sudo pip3 install --ignore-installed setuptools --upgrade
-          sudo pip3 install --ignore-installed -r ./automation/requirements.txt 
+          sudo pip3 install --ignore-installed -r ./automation/requirements.txt
           sudo apt-get update
           sudo apt-get install jq
 
@@ -164,7 +174,7 @@ jobs:
 
       - name: Set up QEMU
         if: steps.build_docker_image.outputs.build && steps.prep.outputs.build
-        uses: docker/setup-qemu-action@master
+        uses: docker/setup-qemu-action@737ba1e397ec2caff0d098f75e1136f9a926dc0a # master
         with:
           image: tonistiigi/binfmt:master
           platforms: all
@@ -172,11 +182,11 @@ jobs:
       - name: Set up Docker Buildx
         if: steps.build_docker_image.outputs.build && steps.prep.outputs.build
         id: buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
 
       - name: Login to ghcr
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -185,11 +195,13 @@ jobs:
       - name: Build and push
         if: steps.build_docker_image.outputs.build && steps.prep.outputs.build
         id: docker_build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0 # v5.3.0
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./docker-${{ matrix.docker-images }}
           file: ./docker-${{ matrix.docker-images }}/Dockerfile
+          sbom: true
+          provenance: true
           #target: prod
           # add to platforms comma seperated linux/ppc64leL Issue: py3-grpcio
           # add to platforms comma seperated linux/386 : Issue: openjdk11-jre-headless alpine package not
@@ -198,9 +210,26 @@ jobs:
           # add to platforms comma seperated ,linux/s390x: All images with openjdk hav an issue with linux/s390x Problematic frame: J 6 c1 java.lang.String.hashCode()I java.base@11.0.9 (49 bytes) : Issue: openjdk11-jre-headles
           # add to platforms comma seperated ,linux/arm64:  : PyDev issue only
 
-          platforms: linux/amd64
+          platforms: linux/amd64, linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.prep.outputs.tags }}
       - name: Image digest
         if: steps.build_docker_image.outputs.build && steps.prep.outputs.build
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Sign the images with GitHub OIDC Token
+        if: steps.build_docker_image.outputs.build && steps.prep.outputs.build
+        env:
+          DIGEST: ${{ steps.docker_build.outputs.digest }}
+          TAGS: ${{ steps.prep.outputs.tags }}
+        run: |
+          images=""
+          for tag in ${TAGS//,/ }; do
+            if [[ $tag == *"_dev"* && $TAGS == *","* ]]; then
+              continue
+            fi
+            images+="${tag}@${DIGEST} "
+          done
+          if [[ -n $images ]]; then
+            cosign sign --yes -a author=GluuFederation ${images} || echo "Failed to sign images"
+          fi
