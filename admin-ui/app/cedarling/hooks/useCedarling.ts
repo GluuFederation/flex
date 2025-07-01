@@ -1,76 +1,85 @@
-import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useCallback } from 'react'
 import { setCedarlingPermission } from '../../redux/features/cedarPermissionsSlice'
 import { cedarlingClient } from '../client/CedarlingClient'
-import { uuidv4 } from '@/utils/Util'
 import { constants } from '../../cedarling/constants'
 import type {
   RootState,
   UseCedarlingReturn,
   AuthorizationResult,
-  AuthorizationRequest,
-  Principal,
-  Resource,
+  IPermissionWithTags,
 } from '../types'
+import { findPermissionByUrl } from '../utility/mapRolePermissions'
+import { uuidv4 } from '@/utils/Util'
 
 export function useCedarling(): UseCedarlingReturn {
-  const { APP_ID, APP_NAME, PRINCIPAL_TYPE, RESOURCE_TYPE, ACTION_TYPE } = constants
+  const { ACTION_TYPE, RESOURCE_TYPE } = constants
+
   const dispatch = useDispatch()
 
-  const scopes = useSelector(
-    (state: RootState) => state.authReducer?.token?.scopes ?? state.authReducer?.permissions ?? [],
+  const {
+    userinfo_jwt: userinfo_token,
+    idToken: id_token,
+    JwtToken: access_token,
+  } = useSelector((state: RootState) => state.authReducer)
+  const apiPermission = useSelector((state: RootState) => state.apiPermissionReducer.items)
+
+  const {
+    permissions,
+    loading: isLoading,
+    error,
+  } = useSelector((state: RootState) => state.cedarPermissions)
+
+  const getActionFromUrl = useCallback(
+    (url: string): string => {
+      const action = url.toLowerCase().includes('write')
+        ? 'Write'
+        : url.includes('delete')
+          ? 'Delete'
+          : 'Read'
+      return `${ACTION_TYPE}"${action}"`
+    },
+    [ACTION_TYPE],
   )
-  const role = useSelector(
-    (state: RootState) => state.authReducer?.userinfo?.jansAdminUIRole ?? null,
-  )
-  const sub = useSelector((state: RootState) => state.authReducer?.userinfo?.sub ?? null)
-  const permissions = useSelector((state: RootState) => state.cedarPermissions?.permissions || {})
-  const isLoading = useSelector((state: RootState) => state.cedarPermissions?.loading || false)
-  const error = useSelector((state: RootState) => state.cedarPermissions?.error)
 
   const hasReduxPermission = useCallback(
     (url: string): boolean | undefined => {
-      if (url in permissions) {
-        return permissions[url] // true or false
-      }
-      return undefined // unknown (not checked or not yet resolved)
+      return url in permissions ? permissions[url] : undefined
     },
     [permissions],
   )
 
-  const cedarRequestBuilder = useCallback(
-    (resourceScope: string[]): AuthorizationRequest => {
-      const safeScopes: string[] =
-        scopes && Array.isArray(scopes) && scopes.length ? scopes : ['stats.readonly']
+  const token_authorizeCedarRequestBuilder = useCallback(
+    (permissionsWithTags: IPermissionWithTags) => {
+      const { permission, tag: id } = permissionsWithTags
 
-      const principals: Principal[] = [
-        {
-          id: uuidv4(),
-          role,
-          scopes: safeScopes,
-          sub,
-          type: PRINCIPAL_TYPE,
-        },
-      ]
-
-      const resource: Resource = {
-        app_id: APP_ID,
-        id: APP_ID,
-        name: APP_NAME,
-        role,
-        scopes: resourceScope,
-        sub,
-        type: RESOURCE_TYPE,
+      // Ensure all tokens are available
+      if (!access_token || !id_token || !userinfo_token) {
+        throw new Error('Required tokens are missing')
       }
 
-      return {
-        principals,
-        action: ACTION_TYPE,
+      const tokens = {
+        access_token,
+        id_token,
+        userinfo_token,
+      }
+
+      const resource = {
+        app_id: uuidv4(),
+        id,
+        type: RESOURCE_TYPE,
+      }
+      const action = getActionFromUrl(permission)
+      const req = {
+        tokens,
+        action,
         resource,
         context: {},
       }
+
+      return req
     },
-    [role, scopes, sub, APP_ID, APP_NAME, PRINCIPAL_TYPE, RESOURCE_TYPE, ACTION_TYPE],
+    [access_token, id_token, userinfo_token, RESOURCE_TYPE, getActionFromUrl],
   )
 
   const authorize = useCallback(
@@ -78,15 +87,31 @@ export function useCedarling(): UseCedarlingReturn {
       const url = resourceScope[0]
       if (!url) return { isAuthorized: false }
 
+      // Check if tokens are available
+      if (!access_token || !id_token || !userinfo_token) {
+        return {
+          isAuthorized: false,
+          error: 'Required tokens are missing',
+        }
+      }
+
       const existingPermission = hasReduxPermission(url)
       if (existingPermission !== undefined) {
         return { isAuthorized: existingPermission }
       }
 
-      const request = cedarRequestBuilder(resourceScope)
+      const permissionsWithTags = findPermissionByUrl(apiPermission, url)
+      if (!permissionsWithTags) {
+        return {
+          isAuthorized: false,
+          error: 'Permission not found for the given URL',
+        }
+      }
 
       try {
-        const response = await cedarlingClient.authorize(request)
+        const request = token_authorizeCedarRequestBuilder(permissionsWithTags)
+        const response = await cedarlingClient.token_authorize(request)
+
         const isAuthorized = response?.decision === true
 
         dispatch(
@@ -104,7 +129,15 @@ export function useCedarling(): UseCedarlingReturn {
         }
       }
     },
-    [dispatch, hasReduxPermission, cedarRequestBuilder],
+    [
+      hasReduxPermission,
+      apiPermission,
+      token_authorizeCedarRequestBuilder,
+      dispatch,
+      access_token,
+      id_token,
+      userinfo_token,
+    ],
   )
 
   return {

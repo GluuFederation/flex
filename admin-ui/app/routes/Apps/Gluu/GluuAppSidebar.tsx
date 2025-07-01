@@ -80,6 +80,7 @@ function GluuAppSidebar(): JSX.Element {
   const health = useSelector(selectHealth)
   const isUserLogout = useSelector(selectIsUserLogout)
   const [pluginMenus, setPluginMenus] = useState<PluginMenu[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext) as ThemeContextState
   const selectedTheme = theme.state.theme
@@ -151,6 +152,7 @@ function GluuAppSidebar(): JSX.Element {
     async function loadMenus(): Promise<void> {
       const filteredMenus = await filterMenuItems(memoizedFilteredMenus)
       setPluginMenus(filteredMenus)
+      setLoading(true)
     }
 
     loadMenus()
@@ -165,7 +167,7 @@ function GluuAppSidebar(): JSX.Element {
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
-        {fetchedServersLength ? (
+        {loading ? (
           <MenuContext.Consumer>
             {(ctx: SidebarMenuContext) =>
               pluginMenus.map((plugin, key) => (
@@ -209,11 +211,11 @@ function GluuAppSidebar(): JSX.Element {
           </MenuContext.Consumer>
         ) : (
           <div style={{ marginTop: '20vh' }}>
-            <GluuLoader blocking={!fetchedServersLength} />
+            <GluuLoader blocking={!loading} />
           </div>
         )}
 
-        <div className={fetchedServersLength ? classes.waveContainer : classes.waveContainerFixed}>
+        <div className={loading ? classes.waveContainer : classes.waveContainerFixed}>
           <WaveIcon className={classes.wave} fill={themeColors.menu.background} />
           <div className={classes.powered}>Powered by Gluu</div>
         </div>

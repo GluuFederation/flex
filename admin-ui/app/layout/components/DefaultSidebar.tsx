@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Sidebar, SidebarTrigger } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
@@ -14,6 +15,8 @@ import type { DefaultSidebarProps } from './types'
 const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
+  const cedarlingInitialized = useSelector((state: any) => state.cedarPermissions.initialized)
+
   return (
     <Sidebar>
       {/* START SIDEBAR-OVERLAY: Close (x) */}
@@ -39,9 +42,24 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
         {/* <SidebarTopA /> */}
         <SidebarSection fluid cover>
           {/* SIDEBAR: Menu */}
-          <Suspense fallback={<GluuSuspenseLoader />}>
-            <GluuAppSidebar />
-          </Suspense>
+          {cedarlingInitialized ? (
+            <Suspense fallback={<GluuSuspenseLoader />}>
+              <GluuAppSidebar />
+            </Suspense>
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: window.innerHeight * 0.9,
+                padding: '20px',
+              }}
+            >
+              <GluuSuspenseLoader />
+            </div>
+          )}
         </SidebarSection>
       </SidebarMobileFluid>
       {/* END SIDEBAR: Only for Mobile */}

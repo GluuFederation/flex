@@ -1,30 +1,38 @@
 import initWasm, { init, Cedarling, AuthorizeResult } from '@janssenproject/cedarling_wasm'
 import type {
   ICedarlingClient,
-  PolicyStoreConfig,
-  AuthorizationRequest,
+  BootStrapConfig,
   AuthorizationResponse,
+  TokenAuthorizationRequest,
 } from '../types'
 
 let cedarling: Cedarling | null = null
-let initialized: boolean = false
+let cedarlingInitialized: boolean = false
 
-const initialize = async (policyStoreConfig: PolicyStoreConfig): Promise<void> => {
-  if (!initialized) {
-    await initWasm()
-    cedarling = await init(policyStoreConfig)
-    initialized = true
+const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
+  if (!cedarlingInitialized) {
+    try {
+      await initWasm()
+
+      cedarling = await init(bootStrapConfig)
+
+      cedarlingInitialized = true
+    } catch (err) {
+      console.error('Error during Cedarling init:', err)
+      throw err // rethrow so .catch gets it
+    }
   }
 }
 
-const authorize = async (request: AuthorizationRequest): Promise<AuthorizationResponse> => {
-  if (!initialized || !cedarling) {
+const token_authorize = async (
+  request: TokenAuthorizationRequest,
+): Promise<AuthorizationResponse> => {
+  if (!cedarlingInitialized || !cedarling) {
     throw new Error('Cedarling not initialized')
   }
 
   try {
-    const result: AuthorizeResult = await cedarling.authorize_unsigned(request)
-    // Convert AuthorizeResult to AuthorizationResponse
+    const result: AuthorizeResult = await cedarling.authorize(request)
     return {
       ...result,
       decision: result.decision,
@@ -37,5 +45,5 @@ const authorize = async (request: AuthorizationRequest): Promise<AuthorizationRe
 
 export const cedarlingClient: ICedarlingClient = {
   initialize,
-  authorize,
+  token_authorize,
 }

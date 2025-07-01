@@ -1,37 +1,42 @@
 // Core Cedarling Types
 export interface CedarlingConstants {
-  readonly PRINCIPAL_TYPE: string
   readonly RESOURCE_TYPE: string
-  readonly ACTION_TYPE: string
   readonly APP_ID: string
-  readonly APP_NAME: string
+  readonly ACTION_TYPE: string
+}
+export interface IPermissionWithTags {
+  permission: string
+  tag: string
+  defaultPermissionInToken?: boolean
 }
 
 // Principal Types
-export interface Principal {
+export interface IPrincipal {
   id: string
   role: string | null
   scopes: string[]
   sub: string | null
   type: string
 }
+export interface IToken {
+  access_token: string
+  id_token: string
+  userinfo_token: string
+}
 
 // Resource Types
-export interface Resource {
+export interface ITokenResource {
   app_id: string
   id: string
-  name: string
-  role: string | null
-  scopes: string[]
-  sub: string | null
   type: string
 }
 
 // Authorization Request
-export interface AuthorizationRequest {
-  principals: Principal[]
+
+export interface TokenAuthorizationRequest {
+  tokens: IToken
   action: string
-  resource: Resource
+  resource: ITokenResource
   context: Record<string, unknown>
 }
 
@@ -53,14 +58,14 @@ export interface AuthorizationResult {
 }
 
 // Policy Store Configuration
-export interface PolicyStoreConfig {
+export interface BootStrapConfig {
   [key: string]: unknown
 }
 
 // Cedarling Client Interface
 export interface ICedarlingClient {
-  initialize: (policyStoreConfig: PolicyStoreConfig) => Promise<void>
-  authorize: (request: AuthorizationRequest) => Promise<AuthorizationResponse>
+  initialize: (BootStrapConfig: BootStrapConfig) => Promise<void>
+  token_authorize: (request: TokenAuthorizationRequest) => Promise<AuthorizationResponse>
 }
 
 // Redux State Types for Cedar Permissions
@@ -68,6 +73,7 @@ export interface CedarPermissionsState {
   permissions: Record<string, boolean>
   loading: boolean
   error: string | null
+  initialized: boolean
 }
 
 export interface SetCedarlingPermissionPayload {
@@ -83,8 +89,20 @@ export interface UseCedarlingReturn {
   error: string | null
 }
 
+// API Permission interface
+export interface ApiPermission {
+  permission: string
+  tag: string
+  inum?: string
+  defaultPermissionInToken?: boolean
+  description?: string
+}
+
 // Auth Reducer State (partial interface for what Cedar needs)
 export interface AuthReducerState {
+  userinfo_jwt?: string
+  idToken?: string
+  JwtToken?: string
   token?: {
     scopes: string[]
   }
@@ -99,4 +117,8 @@ export interface AuthReducerState {
 export interface RootState {
   authReducer: AuthReducerState
   cedarPermissions: CedarPermissionsState
+  apiPermissionReducer: {
+    items: ApiPermission[]
+    loading: boolean
+  }
 }

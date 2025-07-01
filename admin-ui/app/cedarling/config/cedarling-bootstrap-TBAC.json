@@ -9,7 +9,6 @@
   "CEDARLING_JWT_STATUS_VALIDATION": "disabled",
   "CEDARLING_LISTEN_SSE": "disabled",
   "CEDARLING_LOCAL_JWKS": null,
-  "CEDARLING_LOCAL_POLICY_STORE": null,
   "CEDARLING_LOCK": "disabled",
   "CEDARLING_LOCK_MASTER_CONFIGURATION_URI": null,
   "CEDARLING_LOCK_SSA_JWT": null,
@@ -17,7 +16,7 @@
   "CEDARLING_LOG_TTL": 120,
   "CEDARLING_LOG_TYPE": "memory",
   "CEDARLING_POLICY_STORE_ID": "cdeb4b635459898300a5893589a76b726e202dcb5a86",
-  "CEDARLING_POLICY_STORE_URI": "https://raw.githubusercontent.com/duttarnab/cedarling_store/refs/heads/agama-lab-policy-designer/4384dd7a6c152b925327ccc7676a2ee4947b0583a665.json",
+  "CEDARLING_POLICY_STORE_LOCAL": "",
   "CEDARLING_PRINCIPAL_BOOLEAN_OPERATION": {
     "===": [
       {
