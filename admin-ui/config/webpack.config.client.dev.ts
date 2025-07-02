@@ -1,19 +1,16 @@
-import path from 'path'
-import webpack, { Configuration as WebpackConfig } from 'webpack'
+import * as path from 'path'
+import * as webpack from 'webpack'
+import type { Configuration as WebpackConfig } from 'webpack'
 import type { Configuration as DevServerConfig } from 'webpack-dev-server'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import CircularDependencyPlugin from 'circular-dependency-plugin'
+import * as HtmlWebpackPlugin from 'html-webpack-plugin'
+import * as CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import * as CircularDependencyPlugin from 'circular-dependency-plugin'
 import type { WebpackPluginInstance } from 'webpack'
 import type { PolicyStoreConfig } from './types/policy-store'
 import config from './../config.js'
-import dotenv from 'dotenv'
+import * as dotenv from 'dotenv'
 import { readFileSync } from 'fs'
-import { createRequire } from 'module'
-
-// Create require function for ES modules
-const require = createRequire(import.meta.url)
 
 // Set __dirname to point to the config directory for file path resolution
 const __dirname = path.join(process.cwd(), 'config')
@@ -25,7 +22,7 @@ dotenv.config({
 const BASE_PATH: string = process.env.BASE_PATH || '/'
 const CONFIG_API_BASE_URL: string = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 
-// Load policy store configuration
+// Load policy store configuration (dev uses static URLs, no replacement needed)
 const devPolicyStoreJson: PolicyStoreConfig = JSON.parse(
   readFileSync(path.resolve(__dirname, '../app/cedarling/config/policy-store-dev.json'), 'utf-8'),
 )
@@ -34,7 +31,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   name: 'client',
   optimization: {
     moduleIds: 'named',
-    minimizer: [`...`, new CssMinimizerPlugin()],
+    minimizer: [`...`, new (CssMinimizerPlugin as any)()],
   },
   devtool: 'source-map',
   target: 'web',
@@ -56,8 +53,8 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       crypto: false,
       util: false,
       console: false,
-      path: require.resolve('path-browserify'),
-      url: require.resolve('url/'),
+      path: 'path-browserify',
+      url: 'url/',
     },
     modules: ['node_modules', config.srcDir],
     alias: {
@@ -73,19 +70,17 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     },
   },
   plugins: [
-    new CircularDependencyPlugin({
+    new (CircularDependencyPlugin as any)({
       exclude: /a\.js|node_modules/,
       failOnError: false,
       allowAsyncCycles: false,
       cwd: process.cwd(),
       onDetected: ({
-        module,
         paths,
-        compilation,
       }: {
-        module: any
+        module: unknown
         paths: string[]
-        compilation: any
+        compilation: webpack.Compilation
       }) => {
         const warnings: Error[] = []
         warnings.push(new Error(paths.join(' -> ')))
@@ -94,7 +89,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         }
       },
     }) as WebpackPluginInstance,
-    new HtmlWebpackPlugin({
+    new (HtmlWebpackPlugin as any)({
       title: 'AdminUI',
       inject: 'body',
       template: config.srcHtmlLayout,
@@ -109,7 +104,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         POLICY_STORE_CONFIG: JSON.stringify(devPolicyStoreJson),
       },
     }),
-    new MiniCssExtractPlugin(),
+    new (MiniCssExtractPlugin as any)(),
   ],
   module: {
     rules: [
@@ -196,4 +191,4 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   },
 }
 
-export default webpackConfig as any
+export default webpackConfig

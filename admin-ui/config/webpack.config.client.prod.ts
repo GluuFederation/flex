@@ -1,13 +1,13 @@
-import path from 'path'
-import webpack from 'webpack'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import CircularDependencyPlugin from 'circular-dependency-plugin'
+import * as path from 'path'
+import * as webpack from 'webpack'
+import * as HtmlWebpackPlugin from 'html-webpack-plugin'
+import * as CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import * as CircularDependencyPlugin from 'circular-dependency-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import type { PolicyStoreConfig } from './types/policy-store'
 import config from './../config.js'
-import dotenv from 'dotenv'
+import * as dotenv from 'dotenv'
 import type { WebpackPluginInstance, Configuration as WebpackConfig } from 'webpack'
 import type { Configuration as DevServerConfig } from 'webpack-dev-server'
 import { readFileSync } from 'fs'
@@ -23,9 +23,15 @@ const BASE_PATH = process.env.BASE_PATH || '/admin'
 const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 const API_BASE_URL = process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
 
-// Load policy store configuration
+// Get hostname for policy store configuration (fallback to localhost for development)
+const JANS_HOSTNAME = process.env.JANS_HOSTNAME || process.env.HOSTNAME || 'localhost'
+
+// Load policy store configuration and replace hostname template
 const prodPolicyStoreJson: PolicyStoreConfig = JSON.parse(
-  readFileSync(path.resolve(__dirname, '../app/cedarling/config/policy-store-prod.json'), 'utf-8'),
+  readFileSync(
+    path.resolve(__dirname, '../app/cedarling/config/policy-store-prod.json'),
+    'utf-8',
+  ).replace(/%(hostname)s/g, JANS_HOSTNAME),
 )
 
 const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
@@ -40,7 +46,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     },
     minimizer: [
       `...`,
-      new CssMinimizerPlugin({
+      new (CssMinimizerPlugin as any)({
         minimizerOptions: {
           preset: [
             'default',
@@ -82,7 +88,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     },
   },
   plugins: [
-    new CircularDependencyPlugin({
+    new (CircularDependencyPlugin as any)({
       exclude: /a\.js|node_modules/,
       failOnError: false,
       allowAsyncCycles: false,
@@ -100,14 +106,14 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           warnings.forEach((error) => error && console.warn(error.message))
         }
       },
-    }) as WebpackPluginInstance,
-    new HtmlWebpackPlugin({
+    }) as webpack.WebpackPluginInstance,
+    new (HtmlWebpackPlugin as any)({
       template: config.srcHtmlLayout,
       inject: 'body',
       title: 'AdminUI',
       favicon: path.resolve(__dirname, '../app/images/favicons/favicon.ico'),
     }),
-    new MiniCssExtractPlugin(),
+    new (MiniCssExtractPlugin as any)(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),

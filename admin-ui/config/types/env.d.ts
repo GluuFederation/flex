@@ -8,6 +8,8 @@ declare global {
       BASE_PATH?: string
       API_BASE_URL?: string
       CONFIG_API_BASE_URL?: string
+      JANS_HOSTNAME?: string // Hostname for Jans server
+      HOSTNAME?: string // Alternative hostname environment variable
       POLICY_STORE_CONFIG?: string // JSON string injected by webpack DefinePlugin
     }
   }

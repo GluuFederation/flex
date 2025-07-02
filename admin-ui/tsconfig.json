@@ -38,6 +38,6 @@
     "sourceMap": true,
     "typeRoots": ["./node_modules/@types", "./build/types"]
   },
-  "include": ["app/**/*", "build/**/*", "plugins/**/*", "app/types/**/*", "config/types/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "config/webpack.*.ts"]
+  "include": ["app/**/*", "build/**/*", "plugins/**/*", "app/types/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
 }
