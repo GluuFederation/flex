@@ -1,14 +1,14 @@
-import * as path from 'path'
-import * as webpack from 'webpack'
-import * as HtmlWebpackPlugin from 'html-webpack-plugin'
-import * as CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import * as CircularDependencyPlugin from 'circular-dependency-plugin'
+import path from 'path'
+import webpack from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import CircularDependencyPlugin from 'circular-dependency-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import type { PolicyStoreConfig } from './types/policy-store'
 import config from './../config.js'
-import * as dotenv from 'dotenv'
-import type { WebpackPluginInstance, Configuration as WebpackConfig } from 'webpack'
+import dotenv from 'dotenv'
+import type { Configuration as WebpackConfig } from 'webpack'
 import type { Configuration as DevServerConfig } from 'webpack-dev-server'
 import { readFileSync } from 'fs'
 
@@ -46,7 +46,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     },
     minimizer: [
       `...`,
-      new (CssMinimizerPlugin as any)({
+      new CssMinimizerPlugin({
         minimizerOptions: {
           preset: [
             'default',
@@ -88,7 +88,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     },
   },
   plugins: [
-    new (CircularDependencyPlugin as any)({
+    new CircularDependencyPlugin({
       exclude: /a\.js|node_modules/,
       failOnError: false,
       allowAsyncCycles: false,
@@ -107,13 +107,13 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         }
       },
     }) as webpack.WebpackPluginInstance,
-    new (HtmlWebpackPlugin as any)({
+    new HtmlWebpackPlugin({
       template: config.srcHtmlLayout,
       inject: 'body',
       title: 'AdminUI',
       favicon: path.resolve(__dirname, '../app/images/favicons/favicon.ico'),
     }),
-    new (MiniCssExtractPlugin as any)(),
+    new MiniCssExtractPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),

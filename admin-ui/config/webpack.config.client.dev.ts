@@ -1,15 +1,15 @@
-import * as path from 'path'
-import * as webpack from 'webpack'
+import path from 'path'
+import webpack from 'webpack'
 import type { Configuration as WebpackConfig } from 'webpack'
 import type { Configuration as DevServerConfig } from 'webpack-dev-server'
-import * as HtmlWebpackPlugin from 'html-webpack-plugin'
-import * as CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import * as CircularDependencyPlugin from 'circular-dependency-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import CircularDependencyPlugin from 'circular-dependency-plugin'
 import type { WebpackPluginInstance } from 'webpack'
 import type { PolicyStoreConfig } from './types/policy-store'
 import config from './../config.js'
-import * as dotenv from 'dotenv'
+import dotenv from 'dotenv'
 import { readFileSync } from 'fs'
 
 // Set __dirname to point to the config directory for file path resolution
@@ -31,7 +31,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   name: 'client',
   optimization: {
     moduleIds: 'named',
-    minimizer: [`...`, new (CssMinimizerPlugin as any)()],
+    minimizer: [`...`, new CssMinimizerPlugin()],
   },
   devtool: 'source-map',
   target: 'web',
@@ -70,7 +70,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     },
   },
   plugins: [
-    new (CircularDependencyPlugin as any)({
+    new CircularDependencyPlugin({
       exclude: /a\.js|node_modules/,
       failOnError: false,
       allowAsyncCycles: false,
@@ -89,7 +89,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         }
       },
     }) as WebpackPluginInstance,
-    new (HtmlWebpackPlugin as any)({
+    new HtmlWebpackPlugin({
       title: 'AdminUI',
       inject: 'body',
       template: config.srcHtmlLayout,
@@ -104,7 +104,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         POLICY_STORE_CONFIG: JSON.stringify(devPolicyStoreJson),
       },
     }),
-    new (MiniCssExtractPlugin as any)(),
+    new MiniCssExtractPlugin(),
   ],
   module: {
     rules: [
