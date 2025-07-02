@@ -15,7 +15,7 @@
         "516ccb6d665d2ab37655a3a86d2d496495496c47015a": {
           "name": "AdminUITrustedIssuer",
           "description": "Admin UI Trusted Issuer",
-          "openid_configuration_endpoint": "https://admin-ui-test.gluu.org/.well-known/openid-configuration",
+          "openid_configuration_endpoint": "https://%(hostname)s/.well-known/openid-configuration",
           "token_metadata": {
             "access_token": {
               "trusted": true,

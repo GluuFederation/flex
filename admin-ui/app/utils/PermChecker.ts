@@ -40,6 +40,12 @@ export const SCOPE_DELETE = BASE_URL + '/config/scopes.delete'
 
 export const SSA_PORTAL = 'https://jans.io/auth/ssa.portal'
 export const SSA_ADMIN = 'https://jans.io/auth/ssa.admin'
+export const SSA_DEVELOPER = 'https://jans.io/auth/ssa.developer'
+
+export const REVOKE_SESSION = 'revoke_session'
+export const OPENID = 'openid'
+
+export const SCIM_BULK = 'https://jans.io/scim/bulk'
 
 export const SAML_READ = 'https://jans.io/idp/saml.readonly'
 export const SAML_WRITE = 'https://jans.io/idp/saml.write'

@@ -122,3 +122,32 @@ export interface RootState {
     loading: boolean
   }
 }
+
+// Policy Generation Types
+export interface Permission {
+  name: string
+  tag: string
+}
+
+export interface RolePermissionEntry {
+  role: string
+  permissions: Permission[]
+}
+
+export type RolePermissionMapping = RolePermissionEntry[]
+
+// Policy store structure for runtime usage (subset of config types)
+export interface RuntimePolicyStore {
+  policies: Record<
+    string,
+    {
+      description: string
+      creation_date: string
+      policy_content: string
+    }
+  >
+}
+
+export interface RuntimePolicyStoreConfig {
+  policy_stores: Record<string, RuntimePolicyStore>
+}

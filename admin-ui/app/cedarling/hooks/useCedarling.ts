@@ -11,6 +11,14 @@ import type {
 } from '../types'
 import { findPermissionByUrl } from '../utility/mapRolePermissions'
 import { uuidv4 } from '@/utils/Util'
+import {
+  OPENID,
+  REVOKE_SESSION,
+  SCIM_BULK,
+  SSA_ADMIN,
+  SSA_DEVELOPER,
+  SSA_PORTAL,
+} from '@/utils/PermChecker'
 
 export function useCedarling(): UseCedarlingReturn {
   const { ACTION_TYPE, RESOURCE_TYPE } = constants
@@ -32,11 +40,21 @@ export function useCedarling(): UseCedarlingReturn {
 
   const getActionFromUrl = useCallback(
     (url: string): string => {
-      const action = url.toLowerCase().includes('write')
-        ? 'Write'
-        : url.includes('delete')
-          ? 'Delete'
-          : 'Read'
+      const action =
+        url === 'https://jans.io/scim/all-resources.search'
+          ? 'Read'
+          : url === SSA_ADMIN ||
+              url === SSA_PORTAL ||
+              url === SSA_DEVELOPER ||
+              url === SCIM_BULK ||
+              url === REVOKE_SESSION ||
+              url === OPENID
+            ? 'Execute'
+            : url.toLowerCase().includes('write')
+              ? 'Write'
+              : url.includes('delete')
+                ? 'Delete'
+                : 'Read'
       return `${ACTION_TYPE}"${action}"`
     },
     [ACTION_TYPE],
@@ -69,7 +87,9 @@ export function useCedarling(): UseCedarlingReturn {
         id,
         type: RESOURCE_TYPE,
       }
+
       const action = getActionFromUrl(permission)
+
       const req = {
         tokens,
         action,
@@ -87,7 +107,6 @@ export function useCedarling(): UseCedarlingReturn {
       const url = resourceScope[0]
       if (!url) return { isAuthorized: false }
 
-      // Check if tokens are available
       if (!access_token || !id_token || !userinfo_token) {
         return {
           isAuthorized: false,
