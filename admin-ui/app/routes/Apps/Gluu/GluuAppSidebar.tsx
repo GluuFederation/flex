@@ -148,13 +148,16 @@ function GluuAppSidebar(): JSX.Element {
     })
   }, [health, fetchedServersLength])
 
-  useEffect(() => {
-    async function loadMenus(): Promise<void> {
+  const loadMenus = async () => {
+    try {
       const filteredMenus = await filterMenuItems(memoizedFilteredMenus)
       setPluginMenus(filteredMenus)
-      setLoading(true)
+    } finally {
+      !loading && setLoading(true)
     }
+  }
 
+  useEffect(() => {
     loadMenus()
   }, [memoizedFilteredMenus, filterMenuItems])
 

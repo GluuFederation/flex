@@ -38,24 +38,36 @@ export function useCedarling(): UseCedarlingReturn {
     error,
   } = useSelector((state: RootState) => state.cedarPermissions)
 
+  const executeUrls = new Set([
+    SSA_ADMIN,
+    SSA_PORTAL,
+    SSA_DEVELOPER,
+    SCIM_BULK,
+    REVOKE_SESSION,
+    OPENID,
+  ])
   const getActionFromUrl = useCallback(
     (url: string): string => {
-      const action =
-        url === 'https://jans.io/scim/all-resources.search'
-          ? 'Read'
-          : url === SSA_ADMIN ||
-              url === SSA_PORTAL ||
-              url === SSA_DEVELOPER ||
-              url === SCIM_BULK ||
-              url === REVOKE_SESSION ||
-              url === OPENID
-            ? 'Execute'
-            : url.toLowerCase().includes('write')
-              ? 'Write'
-              : url.includes('delete')
-                ? 'Delete'
-                : 'Read'
-      return `${ACTION_TYPE}"${action}"`
+      const lowerUrl = url.toLowerCase()
+
+      if (executeUrls.has(url)) {
+        return `${ACTION_TYPE}"Execute"` // Matched known action-based endpoint
+      }
+
+      if (lowerUrl.includes('write')) {
+        return `${ACTION_TYPE}"Write"` // Detected write operation
+      }
+
+      if (lowerUrl.includes('delete')) {
+        return `${ACTION_TYPE}"Delete"` // Detected delete operation
+      }
+
+      if (lowerUrl.includes('read')) {
+        return `${ACTION_TYPE}"Read"` // Detected read operation
+      }
+
+      // Default fallback if no specific match — still safe to proceed
+      return `${ACTION_TYPE}"Read"`
     },
     [ACTION_TYPE],
   )
