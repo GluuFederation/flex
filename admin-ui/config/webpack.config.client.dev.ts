@@ -12,7 +12,6 @@ import config from './../config.js'
 import dotenv from 'dotenv'
 import { readFileSync } from 'fs'
 
-// Set __dirname to point to the config directory for file path resolution
 const __dirname = path.join(process.cwd(), 'config')
 
 dotenv.config({
@@ -22,7 +21,6 @@ dotenv.config({
 const BASE_PATH: string = process.env.BASE_PATH || '/'
 const CONFIG_API_BASE_URL: string = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 
-// Load policy store configuration (dev uses static URLs, no replacement needed)
 const devPolicyStoreJson: PolicyStoreConfig = JSON.parse(
   readFileSync(path.resolve(__dirname, '../app/cedarling/config/policy-store-dev.json'), 'utf-8'),
 )

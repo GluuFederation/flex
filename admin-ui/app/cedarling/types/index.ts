@@ -151,3 +151,34 @@ export interface RuntimePolicyStore {
 export interface RuntimePolicyStoreConfig {
   policy_stores: Record<string, RuntimePolicyStore>
 }
+
+/**
+ * Interface for trusted issuer with openid_configuration_endpoint
+ */
+export interface TrustedIssuer {
+  name?: string
+  description?: string
+  openid_configuration_endpoint: string
+  token_metadata?: Record<string, unknown>
+  [key: string]: unknown
+}
+
+/**
+ * Extended RuntimePolicyStore that includes trusted_issuers
+ */
+export interface ExtendedPolicyStore extends RuntimePolicyStore {
+  trusted_issuers?: Record<string, TrustedIssuer>
+  name?: string
+  description?: string
+  schema?: string
+  [key: string]: unknown
+}
+
+/**
+ * Extended RuntimePolicyStoreConfig that allows for the extended store
+ */
+export interface ExtendedPolicyStoreConfig {
+  policy_stores: Record<string, ExtendedPolicyStore>
+  cedar_version?: string
+  [key: string]: unknown
+}

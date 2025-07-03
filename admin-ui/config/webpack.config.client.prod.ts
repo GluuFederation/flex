@@ -23,15 +23,8 @@ const BASE_PATH = process.env.BASE_PATH || '/admin'
 const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 const API_BASE_URL = process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
 
-// Get hostname for policy store configuration (fallback to localhost for development)
-const JANS_HOSTNAME = process.env.JANS_HOSTNAME || process.env.HOSTNAME || 'localhost'
-
-// Load policy store configuration and replace hostname template
 const prodPolicyStoreJson: PolicyStoreConfig = JSON.parse(
-  readFileSync(
-    path.resolve(__dirname, '../app/cedarling/config/policy-store-prod.json'),
-    'utf-8',
-  ).replace(/%(hostname)s/g, JANS_HOSTNAME),
+  readFileSync(path.resolve(__dirname, '../app/cedarling/config/policy-store-prod.json'), 'utf-8'),
 )
 
 const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {

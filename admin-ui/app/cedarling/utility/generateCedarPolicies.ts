@@ -1,9 +1,55 @@
-import type { RolePermissionMapping, Permission, RuntimePolicyStoreConfig } from '../types'
+import type {
+  RolePermissionMapping,
+  Permission,
+  RuntimePolicyStoreConfig,
+  ExtendedPolicyStoreConfig,
+} from '../types'
 
-/**
- * Generates Cedar policies from role-permission mappings
- * Optimized with caching and error handling
- */
+const baseUrl = window.configApiBaseUrl || process.env.CONFIG_API_BASE_URL
+
+const updateOpenIdConfigurationEndpoint = (
+  policyStoreJson: ExtendedPolicyStoreConfig,
+): ExtendedPolicyStoreConfig => {
+  let hostname = 'localhost'
+
+  const appBaseUrl = baseUrl || 'http://localhost:8080'
+
+  try {
+    const url = new URL(appBaseUrl)
+    hostname = url.hostname
+  } catch (error) {
+    console.warn('Failed to parse baseUrl:', error)
+  }
+  try {
+    const policyStores = policyStoreJson.policy_stores
+    if (!policyStores || typeof policyStores !== 'object') {
+      console.warn('Policy stores not found or invalid')
+      return policyStoreJson
+    }
+
+    for (const storeId of Object.keys(policyStores)) {
+      const store = policyStores[storeId]
+
+      if (!store.trusted_issuers || typeof store.trusted_issuers !== 'object') {
+        continue
+      }
+
+      for (const issuerId of Object.keys(store.trusted_issuers)) {
+        const issuer = store.trusted_issuers[issuerId]
+        if (issuer && typeof issuer === 'object') {
+          if (issuer.openid_configuration_endpoint && baseUrl) {
+            issuer.openid_configuration_endpoint = baseUrl.replace('%(hostname)s', hostname)
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Failed to update OpenID Configuration endpoint:', error)
+  }
+
+  return policyStoreJson
+}
+
 export const generateCedarPolicies = (
   rolePermissionMapping: RolePermissionMapping,
 ): RuntimePolicyStoreConfig => {
@@ -12,19 +58,24 @@ export const generateCedarPolicies = (
     throw new Error('Invalid rolePermissionMapping: must be an array')
   }
 
-  // Get policy store configuration injected by webpack at build time
-  // Note: webpack DefinePlugin already injects this as a parsed object, no need to JSON.parse
   const policyStoreConfig = process.env.POLICY_STORE_CONFIG
   let policyStoreJson: RuntimePolicyStoreConfig
 
   try {
+    let initialPolicyJson: unknown
+
     if (typeof policyStoreConfig === 'string') {
-      policyStoreJson = JSON.parse(policyStoreConfig)
+      initialPolicyJson = JSON.parse(policyStoreConfig)
     } else if (policyStoreConfig && typeof policyStoreConfig === 'object') {
-      policyStoreJson = policyStoreConfig as RuntimePolicyStoreConfig
+      initialPolicyJson = policyStoreConfig
     } else {
-      policyStoreJson = { policy_stores: {} }
+      initialPolicyJson = { policy_stores: {} }
     }
+
+    const extendedConfig = initialPolicyJson as ExtendedPolicyStoreConfig
+
+    const updatedConfig = updateOpenIdConfigurationEndpoint(extendedConfig)
+    policyStoreJson = updatedConfig as unknown as RuntimePolicyStoreConfig
   } catch (error) {
     console.warn('Failed to parse POLICY_STORE_CONFIG, using default structure:', error)
     policyStoreJson = { policy_stores: {} }
@@ -55,12 +106,10 @@ export const generateCedarPolicies = (
 );`
   }
 
-  // Ensure policy store structure exists
   if (!policyStoreJson.policy_stores || typeof policyStoreJson.policy_stores !== 'object') {
     policyStoreJson.policy_stores = {}
   }
 
-  // Get or create the first policy store
   const storeIds = Object.keys(policyStoreJson.policy_stores)
   let storeId = storeIds[0]
 
@@ -74,8 +123,6 @@ export const generateCedarPolicies = (
   if (!policyStore?.policies || typeof policyStore.policies !== 'object') {
     policyStore.policies = {}
   }
-
-  // Remove policies with empty policy_content
   for (const [key, value] of Object.entries(policyStore.policies)) {
     if (!value?.policy_content || value.policy_content.trim() === '') {
       delete policyStore.policies[key]
@@ -83,7 +130,6 @@ export const generateCedarPolicies = (
   }
 
   rolePermissionMapping.forEach((entry) => {
-    // Validate entry structure
     if (!entry || typeof entry !== 'object' || !entry.role || !Array.isArray(entry.permissions)) {
       console.warn('Skipping invalid role permission entry:', entry)
       return
@@ -92,7 +138,6 @@ export const generateCedarPolicies = (
     const { role, permissions } = entry
 
     permissions.forEach((permission) => {
-      // Validate permission structure
       if (!permission || typeof permission !== 'object' || !permission.name || !permission.tag) {
         console.warn('Skipping invalid permission:', permission)
         return
