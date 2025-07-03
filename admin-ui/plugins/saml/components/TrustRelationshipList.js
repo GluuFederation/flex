@@ -43,7 +43,7 @@ const TrustRelationshipList = () => {
       }
     }
     initPermissions()
-  }, [authorize])
+  }, [])
 
   useEffect(() => {
     dispatch(getTrustRelationship())

@@ -66,7 +66,7 @@ function AuthNListPage({ isBuiltIn = false }) {
     return () => {
       // Cleanup if needed
     }
-  }, [authorize, dispatch])
+  }, [dispatch])
 
   // Actions as state that will rebuild when permissions change
   useEffect(() => {

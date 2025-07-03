@@ -95,7 +95,7 @@ function AgamaListPage() {
       dispatch(getJsonConfig({ action: {} }))
     }
     dispatch(getAgama())
-  }, [authorize, dispatch, configuration])
+  }, [dispatch, configuration])
 
   function convertFileToByteArray(file) {
     return new Promise((resolve, reject) => {

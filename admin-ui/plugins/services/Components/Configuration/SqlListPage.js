@@ -46,7 +46,7 @@ function SqlListPage() {
     initPermissions()
     dispatch(getSqlConfig())
     dispatch(getPersistenceType())
-  }, [authorize, dispatch])
+  }, [dispatch])
 
   const { t } = useTranslation()
   const userAction = {}
@@ -76,6 +76,13 @@ function SqlListPage() {
     const canDelete = hasCedarPermission(SQL_DELETE)
 
     if (canWrite) {
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('tooltips.add_sql')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: handleGoToSqlAddPage,
+      })
       actions.push((rowData) => ({
         icon: 'edit',
         iconProps: {
@@ -110,16 +117,6 @@ function SqlListPage() {
         onClick: (event, rowData) => handleSqlDelete(rowData),
         disabled: !canDelete,
       }))
-    }
-
-    if (canWrite) {
-      actions.push({
-        icon: 'add',
-        tooltip: `${t('tooltips.add_sql')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: handleGoToSqlAddPage,
-      })
     }
 
     setMyActions(actions)

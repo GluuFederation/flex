@@ -59,7 +59,7 @@ function ConfigPage() {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
   const authScripts = scripts
     .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)

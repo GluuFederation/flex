@@ -67,7 +67,7 @@ function ScopeListPage() {
       }
     }
     initPermissions()
-  }, [authorize])
+  }, [])
 
   const userAction = useMemo(() => ({}), [])
   const options = useMemo(() => ({}), [])

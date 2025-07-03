@@ -43,7 +43,7 @@ const MessageForm = () => {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   const isDisabled = !hasCedarPermission(MESSAGE_WRITE)
 

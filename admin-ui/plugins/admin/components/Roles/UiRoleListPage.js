@@ -45,7 +45,7 @@ function UiRoleListPage() {
     }
     initPermissions()
     doFetchList()
-  }, [authorize])
+  }, [])
 
   SetTitle(t('titles.roles'))
 

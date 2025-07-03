@@ -35,14 +35,13 @@ function MappingItem({ candidate, roles }) {
       for (const permission of permissions) {
         await authorize([permission])
       }
-      console.log('All mapping permissions authorized successfully')
     } catch (error) {
       console.error('Error authorizing mapping permissions:', error)
     }
   }
   useEffect(() => {
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   useEffect(() => {
     if (roles) {

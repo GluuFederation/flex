@@ -57,7 +57,7 @@ function AliasesListPage() {
 
     authorizePermissions()
     dispatch(getJsonConfig({ action: {} }))
-  }, [authorize, dispatch])
+  }, [dispatch])
 
   // Build actions based on permissions
   useEffect(() => {

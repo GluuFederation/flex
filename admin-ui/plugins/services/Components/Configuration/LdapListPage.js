@@ -78,7 +78,7 @@ function LdapListPage() {
     authorizePermissions()
     dispatch(getLdapConfig())
     dispatch(getPersistenceType())
-  }, [authorize, dispatch])
+  }, [dispatch])
 
   // Navigation handlers
   const handleGoToLdapEditPage = useCallback(

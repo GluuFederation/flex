@@ -33,7 +33,7 @@ const JansLockConfiguration = () => {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   const toggle = () => {
     setModal(!modal)

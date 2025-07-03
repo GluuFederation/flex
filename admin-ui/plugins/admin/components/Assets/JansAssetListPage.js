@@ -55,7 +55,7 @@ const JansAssetListPage = () => {
     options['limit'] = 10
     dispatch(fetchJansAssets({ action: options }))
     dispatch(getAssetServices({ action: options }))
-  }, [authorize, dispatch])
+  }, [dispatch])
 
   // Build actions only when permissions change
   useEffect(() => {

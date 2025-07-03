@@ -71,7 +71,7 @@ function ClientWizardForm({
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   const initialValues = {
     inum: client_data.inum,

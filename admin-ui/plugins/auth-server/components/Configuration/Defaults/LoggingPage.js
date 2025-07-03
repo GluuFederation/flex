@@ -39,7 +39,7 @@ function LoggingPage() {
     initPermissions()
 
     dispatch(getLoggingConfig())
-  }, [authorize, dispatch])
+  }, [dispatch])
 
   const initialValues = {
     loggingLevel: logging.loggingLevel,

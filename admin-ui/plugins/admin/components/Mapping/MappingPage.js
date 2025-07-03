@@ -39,7 +39,6 @@ function MappingPage() {
       for (const permission of permissions) {
         await authorize([permission])
       }
-      console.log('All mapping permissions authorized successfully')
     } catch (error) {
       console.error('Error authorizing mapping permissions:', error)
     }
@@ -49,7 +48,7 @@ function MappingPage() {
     doFetchList()
     doFetchRoles()
     doFetchPermissionsList()
-  }, [authorize])
+  }, [])
 
   function doFetchPermissionsList() {
     buildPayload(userAction, 'PERMISSIONS', options)

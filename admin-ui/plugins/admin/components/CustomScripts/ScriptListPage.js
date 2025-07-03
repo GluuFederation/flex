@@ -83,7 +83,7 @@ function ScriptListTable() {
     makeOptions()
     dispatch(getCustomScriptByType({ action: options }))
     initPermissions()
-  }, [authorize, dispatch])
+  }, [dispatch])
 
   useEffect(() => {
     if (!hasFetchedScriptTypes) {
@@ -100,6 +100,13 @@ function ScriptListTable() {
     const canDelete = hasCedarPermission(SCRIPT_DELETE)
 
     if (canWrite) {
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('messages.add_script')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: handleGoToCustomScriptAddPage,
+      })
       actions.push((rowData) => ({
         icon: 'edit',
         iconProps: {
@@ -170,16 +177,6 @@ function ScriptListTable() {
         onClick: (event, row) => handleCustomScriptDelete(row),
         disabled: false,
       }))
-    }
-
-    if (canWrite) {
-      actions.push({
-        icon: 'add',
-        tooltip: `${t('messages.add_script')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: handleGoToCustomScriptAddPage,
-      })
     }
 
     setMyActions(actions)

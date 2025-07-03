@@ -34,7 +34,7 @@ const SamlConfigurationForm = () => {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   const toggle = () => {
     setModal(!modal)

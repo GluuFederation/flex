@@ -33,7 +33,7 @@ const ApiConfigForm = () => {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   const toggle = useCallback(() => {
     if (patches?.length > 0) {

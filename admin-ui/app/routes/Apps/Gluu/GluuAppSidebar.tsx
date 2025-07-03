@@ -132,7 +132,7 @@ function GluuAppSidebar(): JSX.Element {
       }
       return result
     },
-    [authorize, hasChildren],
+    [hasChildren],
   )
 
   const memoizedFilteredMenus = useMemo((): PluginMenu[] => {

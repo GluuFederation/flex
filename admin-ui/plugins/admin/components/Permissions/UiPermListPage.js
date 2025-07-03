@@ -66,9 +66,8 @@ function UiPermListPage() {
 
     authorizePermissions()
     doFetchList()
-  }, [authorize])
+  }, [])
 
-  // Build actions based on permissions
   useEffect(() => {
     const actions = []
 

@@ -63,7 +63,7 @@ const SamlIdentityList = () => {
       }
     }
     initPermissions()
-  }, [authorize])
+  }, [])
 
   useEffect(() => {
     makeOptions()

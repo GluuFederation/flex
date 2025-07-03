@@ -47,7 +47,7 @@ function AttributeListPage() {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   const options = {}
   const pageSize = localStorage.getItem('paggingSize')

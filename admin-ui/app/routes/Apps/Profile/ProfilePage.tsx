@@ -107,7 +107,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = () => {
 
   useEffect(() => {
     authorize([USER_WRITE]).catch(console.error)
-  }, [authorize])
+  }, [])
 
   const navigateToUserManagement = useCallback((): void => {
     if (profileDetails) {

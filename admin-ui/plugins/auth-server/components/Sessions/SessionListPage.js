@@ -68,7 +68,7 @@ function SessionListPage() {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
   const sessionUsername = useMemo(
     () => sessions.map((session) => session.sessionAttributes.auth_user),
     [sessions],

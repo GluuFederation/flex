@@ -56,7 +56,7 @@ function UserList() {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   useEffect(() => {
     opt['limit'] = 10
@@ -186,8 +186,6 @@ function UserList() {
       isFreeAction: true,
       onClick: () => handleGoToUserAddPage(),
     })
-  }
-  if (hasCedarPermission(USER_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {

@@ -68,7 +68,7 @@ function ClientListPage() {
     }
 
     authorizePermissions()
-  }, [authorize])
+  }, [])
 
   const [scopesModal, setScopesModal] = useState({
     data: [],
@@ -242,6 +242,14 @@ function ClientListPage() {
   }
 
   if (hasCedarPermission(CLIENT_WRITE)) {
+    myActions.push({
+      icon: 'add',
+      tooltip: `${t('messages.add_client')}`,
+      iconProps: { color: 'primary' },
+      ['data-testid']: `${t('messages.add_client')}`,
+      isFreeAction: true,
+      onClick: () => handleGoToClientAddPage(),
+    })
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
@@ -252,6 +260,7 @@ function ClientListPage() {
       disabled: false,
     }))
   }
+
   if (hasCedarPermission(CLIENT_READ)) {
     myActions.push({
       icon: () => (
@@ -269,8 +278,6 @@ function ClientListPage() {
       isFreeAction: true,
       onClick: () => {},
     })
-  }
-  if (hasCedarPermission(CLIENT_READ)) {
     myActions.push({
       icon: 'refresh',
       tooltip: `${t('messages.refresh')}`,
@@ -283,8 +290,6 @@ function ClientListPage() {
         dispatch(getOpenidClients({ action: options }))
       },
     })
-  }
-  if (hasCedarPermission(CLIENT_READ)) {
     myActions.push((rowData) => ({
       icon: 'visibility',
       iconProps: {
@@ -308,16 +313,6 @@ function ClientListPage() {
       onClick: (event, rowData) => handleClientDelete(rowData),
       disabled: false,
     }))
-  }
-  if (hasCedarPermission(CLIENT_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('messages.add_client')}`,
-      iconProps: { color: 'primary' },
-      ['data-testid']: `${t('messages.add_client')}`,
-      isFreeAction: true,
-      onClick: () => handleGoToClientAddPage(),
-    })
   }
 
   function getTrustedTheme(status) {
