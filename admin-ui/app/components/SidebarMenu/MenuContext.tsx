@@ -24,4 +24,4 @@ const MenuContext = React.createContext<SidebarMenuContext>({
   removeEntry: () => {},
 })
 
-export { MenuContext }
+export { MenuContext, type SidebarMenuContext }

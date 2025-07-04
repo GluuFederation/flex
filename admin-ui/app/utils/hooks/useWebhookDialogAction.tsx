@@ -20,17 +20,22 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Box from '@mui/material/Box'
-import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
+import { WEBHOOK_READ } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 
 const useWebhookDialogAction = ({ feature, modal }) => {
   const dispatch = useDispatch()
+  const { hasCedarPermission, authorize } = useCedarling()
+
   const { t } = useTranslation()
-  const permissions = useSelector((state) => state.authReducer.permissions)
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+
   const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } = useSelector(
     (state) => state.webhookReducer,
   )
+
   const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
 
   const onCloseModal = useCallback(() => {
@@ -41,7 +46,9 @@ const useWebhookDialogAction = ({ feature, modal }) => {
   }, [dispatch, enabledFeatureWebhooks])
 
   useEffect(() => {
-    if (hasPermission(permissions, WEBHOOK_READ))
+    authorize([WEBHOOK_READ]).catch(console.error)
+
+    if (hasCedarPermission(WEBHOOK_READ)) {
       if (modal) {
         if (feature) {
           dispatch(getWebhooksByFeatureId(feature))
@@ -49,7 +56,8 @@ const useWebhookDialogAction = ({ feature, modal }) => {
           dispatch(getWebhooksByFeatureIdResponse([]))
         }
       }
-  }, [modal])
+    }
+  }, [modal, authorize])
 
   useEffect(() => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
@@ -67,7 +75,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
     }
     return (
       <Modal
-        isOpen={(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ)}
+        isOpen={(webhookModal || loadingWebhooks) && hasCedarPermission(WEBHOOK_READ)}
         size={'lg'}
         toggle={() => {
           if (!loadingWebhooks) {

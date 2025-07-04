@@ -1,30 +1,18 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import {
-  Container,
-  Col,
-  InputGroup,
-  CustomInput,
-  Form,
-  FormGroup,
-  Input,
-  Row,
-  Button,
-} from 'Components'
+import { Container, Col, InputGroup, CustomInput, Form, FormGroup, Input, Row } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import { ThemeContext } from 'Context/theme/themeContext'
+
 import { useSelector } from 'react-redux'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 
 function AuthNForm({ item, handleSubmit }) {
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
@@ -50,21 +38,17 @@ function AuthNForm({ item, handleSubmit }) {
     configId: item?.configId || '',
     baseDn: item?.baseDn,
     inum: item?.inum,
-    configId: item?.configId,
   }
 
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (values) => {
+    onSubmit: () => {
       toggle()
     },
     validationSchema: Yup.object({
       acr: Yup.string().required('ACR name is required.'),
       level: Yup.string().required('Level is required.'),
     }),
-    setFieldValue: (field) => {
-      delete values[field]
-    },
   })
 
   const toggle = () => {
@@ -74,10 +58,6 @@ function AuthNForm({ item, handleSubmit }) {
   const submitForm = () => {
     toggle()
     handleSubmit(formik.values)
-  }
-
-  const goBack = () => {
-    window.history.back()
   }
 
   const getPropertiesConfig = (entry) => {

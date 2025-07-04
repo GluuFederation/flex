@@ -30,6 +30,8 @@ interface AuthState {
   userinfo: UserInfo | null
   userinfo_jwt: string | null
   token: Token | null
+  idToken: string | null
+  JwtToken: string | null
   issuer: string | null
   permissions: string[]
   location: Location
@@ -62,6 +64,8 @@ const initialState: AuthState = {
     statusCode: null,
   },
   loadingConfig: false,
+  idToken: null,
+  JwtToken: null,
 }
 
 const authSlice = createSlice({
@@ -89,10 +93,20 @@ const authSlice = createSlice({
       state.isAuthenticated = action.payload?.state
     },
     getUserInfo: (state, _action: PayloadAction<any>) => {},
-    getUserInfoResponse: (state, action: PayloadAction<{ ujwt?: string; userinfo?: UserInfo }>) => {
+    getUserInfoResponse: (
+      state,
+      action: PayloadAction<{
+        ujwt?: string
+        userinfo?: UserInfo
+        idToken?: string
+        JwtToken?: string
+      }>,
+    ) => {
       if (action.payload?.ujwt) {
+        state.JwtToken = action.payload.JwtToken ?? null
         state.userinfo = action.payload.userinfo ?? null
         state.userinfo_jwt = action.payload.ujwt
+        state.idToken = action.payload.idToken ?? null
         state.isAuthenticated = true
       } else {
         state.isAuthenticated = true

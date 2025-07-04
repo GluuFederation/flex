@@ -1,19 +1,18 @@
 import path from 'path'
-import webpack, { Configuration as WebpackConfig } from 'webpack'
+import webpack from 'webpack'
+import type { Configuration as WebpackConfig } from 'webpack'
 import type { Configuration as DevServerConfig } from 'webpack-dev-server'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CircularDependencyPlugin from 'circular-dependency-plugin'
 import type { WebpackPluginInstance } from 'webpack'
+import type { PolicyStoreConfig } from './types/policy-store'
 import config from './../config.js'
 import dotenv from 'dotenv'
-import { fileURLToPath } from 'url'
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
+import { readFileSync } from 'fs'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __dirname = path.join(process.cwd(), 'config')
 
 dotenv.config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env.local',
@@ -21,6 +20,10 @@ dotenv.config({
 
 const BASE_PATH: string = process.env.BASE_PATH || '/'
 const CONFIG_API_BASE_URL: string = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
+
+const devPolicyStoreJson: PolicyStoreConfig = JSON.parse(
+  readFileSync(path.resolve(__dirname, '../app/cedarling/config/policy-store-dev.json'), 'utf-8'),
+)
 
 const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   name: 'client',
@@ -48,8 +51,8 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       crypto: false,
       util: false,
       console: false,
-      path: require.resolve('path-browserify'),
-      url: require.resolve('url/'),
+      path: 'path-browserify',
+      url: 'url/',
     },
     modules: ['node_modules', config.srcDir],
     alias: {
@@ -71,15 +74,13 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       allowAsyncCycles: false,
       cwd: process.cwd(),
       onDetected: ({
-        module,
         paths,
-        compilation,
       }: {
-        module: any
+        module: unknown
         paths: string[]
-        compilation: any
+        compilation: webpack.Compilation
       }) => {
-        let warnings: Error[] = []
+        const warnings: Error[] = []
         warnings.push(new Error(paths.join(' -> ')))
         if (warnings.length > 0) {
           warnings.forEach((error) => error && console.warn(error.message))
@@ -98,6 +99,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         BASE_PATH: JSON.stringify(BASE_PATH),
         API_BASE_URL: JSON.stringify(process.env.API_BASE_URL),
         CONFIG_API_BASE_URL: JSON.stringify(CONFIG_API_BASE_URL),
+        POLICY_STORE_CONFIG: JSON.stringify(devPolicyStoreJson),
       },
     }),
     new MiniCssExtractPlugin(),
@@ -187,4 +189,4 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   },
 }
 
-export default webpackConfig as any
+export default webpackConfig

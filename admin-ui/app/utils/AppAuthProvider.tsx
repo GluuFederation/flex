@@ -79,7 +79,7 @@ export default function AppAuthProvider(props) {
             }
           }
 
-          let extras = {
+          const extras = {
             acr_values: config.acrValues,
             ...additionalParameters,
           }
@@ -101,7 +101,6 @@ export default function AppAuthProvider(props) {
   }, [isLicenseValid])
 
   useEffect(() => {
-    console.log('Heloooo')
     const tokenHandler = new BaseTokenRequestHandler(new FetchRequestor())
     const authorizationHandler = new RedirectRequestHandler(
       new LocalStorageBackend(),
@@ -129,6 +128,8 @@ export default function AppAuthProvider(props) {
         })
         let authConfigs
         dispatch(getOAuth2Config())
+        let idToken = null
+        let JwtToken = null
 
         AuthorizationServiceConfiguration.fetchFromIssuer(issuer, new FetchRequestor())
           .then((configuration) => {
@@ -136,6 +137,8 @@ export default function AppAuthProvider(props) {
             return tokenHandler.performTokenRequest(configuration, tokenRequest)
           })
           .then((token) => {
+            idToken = token?.idToken
+            JwtToken = token?.accessToken
             return fetchUserInformation({
               userInfoEndpoint: authConfigs.userInfoEndpoint,
               access_token: token.accessToken,
@@ -144,7 +147,7 @@ export default function AppAuthProvider(props) {
           })
           .then((ujwt) => {
             if (!userinfo) {
-              dispatch(getUserInfoResponse({ userinfo: jwtDecode(ujwt), ujwt: ujwt }))
+              dispatch(getUserInfoResponse({ userinfo: jwtDecode(ujwt), ujwt, idToken, JwtToken }))
               dispatch(getAPIAccessToken(ujwt))
               setShowAdminUI(true)
             } else {

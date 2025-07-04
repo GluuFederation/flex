@@ -15,7 +15,7 @@ interface CardColorProps {
 const CardColor: React.FC<CardColorProps> = (props) => {
   const { t } = useTranslation()
   return (
-    <Card className={`mb-3 ${props.cardClass}`}>
+    <Card type="border" color={props.color} className={`mb-3 ${props.cardClass}`}>
       <CardHeader className={`bg-${props.color}`} style={{ height: '120px' }} />
       <CardBody>
         <CardTitle tag="h6">{props.color}</CardTitle>

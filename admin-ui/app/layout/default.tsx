@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react'
-import PropTypes from 'prop-types'
 import { Layout, ThemeProvider } from 'Components'
 
 import 'Styles/bootstrap.scss'
@@ -63,10 +62,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       </Layout>
     </ThemeProvider>
   )
-}
-
-AppLayout.propTypes = {
-  children: PropTypes.node.isRequired,
 }
 
 export default AppLayout

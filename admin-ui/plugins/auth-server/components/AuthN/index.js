@@ -5,7 +5,6 @@ import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { Card } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-import { useSelector } from 'react-redux'
 import AgamaListPage from '../Agama/AgamaListPage'
 import AliasesListPage from '../Agama/AgamaAliasListPage'
 
@@ -34,10 +33,10 @@ function AuthNPage() {
         return <AuthNListPage isBuiltIn={true} />
       case t('menus.acrs'):
         return <AuthNListPage />
-      case t('menus.agama_flows'):
-        return <AgamaListPage />
       case t('menus.aliases'):
         return <AliasesListPage />
+      case t('menus.agama_flows'):
+        return <AgamaListPage />
     }
   }
 

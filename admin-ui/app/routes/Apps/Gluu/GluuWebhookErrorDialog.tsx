@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
+import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import {
   setShowErrorModal,
@@ -11,13 +11,15 @@ import {
 import { Box } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { useCedarling } from '@/cedarling'
 
 const GluuWebhookErrorDialog = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { triggerWebhookMessage, webhookTriggerErrors, triggerWebhookInProgress, showErrorModal } =
     useSelector((state: any) => state.webhookReducer)
-  const permissions = useSelector((state: any) => state.authReducer.permissions)
+  const { hasCedarPermission } = useCedarling()
+
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
@@ -29,7 +31,7 @@ const GluuWebhookErrorDialog = () => {
 
   return (
     <Modal
-      isOpen={showErrorModal && hasPermission(permissions, WEBHOOK_READ)}
+      isOpen={showErrorModal && hasCedarPermission(WEBHOOK_READ)}
       size={'lg'}
       toggle={closeModal}
       className="modal-outline-primary"

@@ -5,7 +5,9 @@ import ByeBye from 'Routes/Pages/ByeBye'
 import AppAuthProvider from 'Utils/AppAuthProvider'
 import GluuToast from 'Routes/Apps/Gluu/GluuToast'
 import GluuWebhookErrorDialog from 'Routes/Apps/Gluu/GluuWebhookErrorDialog'
-export default function AuthenticatedRouteSelector() {
+import PermissionsPolicyInitializer from './PermissionsPolicyInitializer'
+
+const AuthenticatedRouteSelector = () => {
   const selectedComponents =
     window.location.href.indexOf('logout') > -1 ? (
       <ByeBye />
@@ -15,9 +17,12 @@ export default function AuthenticatedRouteSelector() {
           <RoutedContent />
           <GluuToast />
           <GluuWebhookErrorDialog />
+          <PermissionsPolicyInitializer />
         </AppLayout>
       </AppAuthProvider>
     )
 
   return <div>{selectedComponents}</div>
 }
+
+export default AuthenticatedRouteSelector

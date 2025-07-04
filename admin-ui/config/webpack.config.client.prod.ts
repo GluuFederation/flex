@@ -1,18 +1,19 @@
 import path from 'path'
-import { fileURLToPath } from 'url'
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CircularDependencyPlugin from 'circular-dependency-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import type { PolicyStoreConfig } from './types/policy-store'
 import config from './../config.js'
 import dotenv from 'dotenv'
-import type { WebpackPluginInstance, Configuration as WebpackConfig } from 'webpack'
+import type { Configuration as WebpackConfig } from 'webpack'
 import type { Configuration as DevServerConfig } from 'webpack-dev-server'
+import { readFileSync } from 'fs'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+// Set __dirname to point to the config directory for file path resolution
+const __dirname = path.join(process.cwd(), 'config')
 
 dotenv.config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
@@ -21,6 +22,10 @@ dotenv.config({
 const BASE_PATH = process.env.BASE_PATH || '/admin'
 const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 const API_BASE_URL = process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
+
+const prodPolicyStoreJson: PolicyStoreConfig = JSON.parse(
+  readFileSync(path.resolve(__dirname, '../app/cedarling/config/policy-store-prod.json'), 'utf-8'),
+)
 
 const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   devtool: false,
@@ -45,7 +50,6 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           ],
         },
       }),
-      `...`,
     ],
   },
   output: {
@@ -83,11 +87,9 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       allowAsyncCycles: false,
       cwd: process.cwd(),
       onDetected: ({
-        module,
         paths,
-        compilation,
       }: {
-        module: any
+        module: unknown
         paths: string[]
         compilation: webpack.Compilation
       }) => {
@@ -97,7 +99,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           warnings.forEach((error) => error && console.warn(error.message))
         }
       },
-    }) as WebpackPluginInstance,
+    }) as webpack.WebpackPluginInstance,
     new HtmlWebpackPlugin({
       template: config.srcHtmlLayout,
       inject: 'body',
@@ -111,6 +113,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         BASE_PATH: JSON.stringify(BASE_PATH),
         API_BASE_URL: JSON.stringify(API_BASE_URL),
         CONFIG_API_BASE_URL: JSON.stringify(CONFIG_API_BASE_URL),
+        POLICY_STORE_CONFIG: JSON.stringify(prodPolicyStoreJson),
       },
     }),
     new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }),
@@ -139,6 +142,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         test: /\.test\.js$/,
         include: [config.srcDir, config.pluginsDir],
         use: 'ignore-loader',
+        sideEffects: false,
       },
       // Modular Styles
       {

@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Container, Row, Col, Card, CardBody, CardHeader } from 'Components'
+import { Container, Row, Col, Card, CardBody } from 'Components'
 import { getDatabaseInfo } from '../../redux/features/persistenceTypeSlice'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'

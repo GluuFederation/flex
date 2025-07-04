@@ -13,7 +13,7 @@ const CardRgbaColor: React.FC<CardRgbaColorProps> = ({
   cardClass = '',
   color = 'Waiting for Data...',
 }) => (
-  <Card className={`mb-3 ${cardClass}`}>
+  <Card type="border" color={null} className={`mb-3 ${cardClass}`}>
     {times(9, (index) => {
       let Tag: React.ElementType = CardFooter
       Tag = index === 0 ? CardHeader : CardBody
