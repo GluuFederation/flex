@@ -53,6 +53,7 @@ const SamlIdentityList = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { items, loadingSamlIdp, totalItems } = useSelector((state) => state.idpSamlReducer)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   // Permission initialization
   useEffect(() => {
@@ -68,7 +69,7 @@ const SamlIdentityList = () => {
   useEffect(() => {
     makeOptions()
     dispatch(getSamlIdentites(options))
-  }, [])
+  }, [cedarPermissions])
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
     navigate('/saml/identity-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })

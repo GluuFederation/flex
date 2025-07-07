@@ -73,7 +73,8 @@ export interface CedarPermissionsState {
   permissions: Record<string, boolean>
   loading: boolean
   error: string | null
-  initialized: boolean
+  initialized: null | boolean
+  isInitializing: boolean
 }
 
 export interface SetCedarlingPermissionPayload {

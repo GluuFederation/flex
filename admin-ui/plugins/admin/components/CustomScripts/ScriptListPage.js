@@ -48,6 +48,7 @@ function ScriptListTable() {
 
   const scripts = useSelector((state) => state.customScriptReducer.items)
   const loading = useSelector((state) => state.customScriptReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const hasFetchedScriptTypes = useSelector(
     (state) => state.customScriptReducer.hasFetchedScriptTypes,
   )
@@ -181,9 +182,7 @@ function ScriptListTable() {
 
     setMyActions(actions)
   }, [
-    hasCedarPermission(SCRIPT_READ),
-    hasCedarPermission(SCRIPT_WRITE),
-    hasCedarPermission(SCRIPT_DELETE),
+    cedarPermissions,
     loadingScriptTypes,
     limit,
     type,

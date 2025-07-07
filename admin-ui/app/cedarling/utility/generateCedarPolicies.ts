@@ -72,9 +72,9 @@ export const generateCedarPolicies = (
       initialPolicyJson = { policy_stores: {} }
     }
 
-    const extendedConfig = initialPolicyJson as ExtendedPolicyStoreConfig
-
-    const updatedConfig = updateOpenIdConfigurationEndpoint(extendedConfig)
+    const updatedConfig = updateOpenIdConfigurationEndpoint(
+      initialPolicyJson as ExtendedPolicyStoreConfig,
+    )
     policyStoreJson = updatedConfig as unknown as RuntimePolicyStoreConfig
   } catch (error) {
     console.warn('Failed to parse POLICY_STORE_CONFIG, using default structure:', error)

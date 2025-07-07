@@ -36,6 +36,7 @@ function ClientListPage() {
   const { totalItems } = useSelector((state) => state.oidcReducer)
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.oidcReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   let clients = [...(nonExtensibleClients ?? [])]
   clients = clients?.map(addOrg)
   const userAction = {}
@@ -201,6 +202,7 @@ function ClientListPage() {
   useEffect(() => {
     dispatch(resetUMAResources())
   }, [])
+  useEffect(() => {}, [cedarPermissions])
 
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {

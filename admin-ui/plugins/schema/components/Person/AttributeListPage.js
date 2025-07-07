@@ -32,6 +32,7 @@ function AttributeListPage() {
   const attributes = useSelector((state) => state.attributeReducer.items)
   const loading = useSelector((state) => state.attributeReducer.loading)
   const { totalItems } = useSelector((state) => state.attributeReducer)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   // Permission initialization
   useEffect(() => {
@@ -48,6 +49,8 @@ function AttributeListPage() {
 
     authorizePermissions()
   }, [])
+
+  useEffect(() => {}, [cedarPermissions])
 
   const options = {}
   const pageSize = localStorage.getItem('paggingSize')

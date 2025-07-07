@@ -47,7 +47,12 @@ const useWebhookDialogAction = ({ feature, modal }) => {
 
   useEffect(() => {
     authorize([WEBHOOK_READ]).catch(console.error)
+  }, [authorize])
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootStateOfRedux) => state.cedarPermissions,
+  )
 
+  useEffect(() => {
     if (hasCedarPermission(WEBHOOK_READ)) {
       if (modal) {
         if (feature) {
@@ -57,7 +62,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
         }
       }
     }
-  }, [modal, authorize])
+  }, [cedarPermissions, modal])
 
   useEffect(() => {
     dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))

@@ -21,6 +21,7 @@ function UiRoleListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
   const loading = useSelector((state) => state.apiRoleReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const [modal, setModal] = useState(false)
   const myActions = [],
@@ -48,17 +49,17 @@ function UiRoleListPage() {
   }, [])
 
   SetTitle(t('titles.roles'))
-
-  // Add action if user can write
-  if (hasCedarPermission(ROLE_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('messages.add_role')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => handleAddNewRole(),
-    })
-  }
+  useEffect(() => {
+    if (hasCedarPermission(ROLE_WRITE)) {
+      myActions.push({
+        icon: 'add',
+        tooltip: `${t('messages.add_role')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => handleAddNewRole(),
+      })
+    }
+  }, [cedarPermissions])
 
   function handleAddNewRole() {
     toggle()

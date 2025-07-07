@@ -35,6 +35,8 @@ const JansAssetListPage = () => {
   const [pageNumber, setPageNumber] = useState(0)
   const { totalItems, assets } = useSelector((state) => state.assetReducer)
   const loadingAssets = useSelector((state) => state.assetReducer.loadingAssets)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
   const [myActions, setMyActions] = useState([])
   const options = {}
   const [limit, setLimit] = useState(10)
@@ -57,7 +59,6 @@ const JansAssetListPage = () => {
     dispatch(getAssetServices({ action: options }))
   }, [dispatch])
 
-  // Build actions only when permissions change
   useEffect(() => {
     const actions = []
 
@@ -131,16 +132,7 @@ const JansAssetListPage = () => {
     }
 
     setMyActions(actions)
-  }, [
-    hasCedarPermission(ASSETS_READ),
-    hasCedarPermission(ASSETS_WRITE),
-    hasCedarPermission(ASSETS_DELETE),
-    limit,
-    pattern,
-    t,
-    navigateToAddPage,
-    navigateToEditPage,
-  ])
+  }, [cedarPermissions, limit, pattern, t, navigateToAddPage, navigateToEditPage])
 
   const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
   const theme = useContext(ThemeContext)

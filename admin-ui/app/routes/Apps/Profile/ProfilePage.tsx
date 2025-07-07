@@ -16,6 +16,7 @@ import { setSelectedUserData } from 'Plugins/user-management/redux/features/user
 import { USER_WRITE } from 'Utils/PermChecker'
 import getThemeColor from '../../../context/theme/config'
 import { useCedarling } from '@/cedarling'
+import type { RootState as RootStateOfRedux } from '@/cedarling/types'
 
 // --- TypeScript interfaces ---
 interface CustomAttribute {
@@ -85,6 +86,9 @@ interface ProfileDetailsProps {}
 const ProfileDetails: React.FC<ProfileDetailsProps> = () => {
   const { t } = useTranslation()
   const { loading, profileDetails } = useSelector((state: RootState) => state.profileDetailsReducer)
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootStateOfRedux) => state.cedarPermissions,
+  )
   const { userinfo } = useSelector((state: RootState) => state.authReducer)
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
@@ -108,6 +112,8 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = () => {
   useEffect(() => {
     authorize([USER_WRITE]).catch(console.error)
   }, [])
+
+  useEffect(() => {}, [cedarPermissions])
 
   const navigateToUserManagement = useCallback((): void => {
     if (profileDetails) {

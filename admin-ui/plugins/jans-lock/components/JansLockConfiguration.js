@@ -18,6 +18,7 @@ const JansLockConfiguration = () => {
   const dispatch = useDispatch()
   const { hasCedarPermission, authorize } = useCedarling()
   const lockConfigs = useSelector((state) => state.jansLockReducer.configuration)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
   const [modal, setModal] = useState(false)
@@ -34,6 +35,8 @@ const JansLockConfiguration = () => {
 
     authorizePermissions()
   }, [])
+
+  useEffect(() => {}, [cedarPermissions])
 
   const toggle = () => {
     setModal(!modal)

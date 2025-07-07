@@ -23,6 +23,8 @@ function MappingItem({ candidate, roles }) {
   const { hasCedarPermission, authorize } = useCedarling()
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
   const [searchablePermissions, setSearchAblePermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
   const [isDeleteable, setIsDeleteable] = useState(false)
@@ -39,8 +41,10 @@ function MappingItem({ candidate, roles }) {
       console.error('Error authorizing mapping permissions:', error)
     }
   }
+
   useEffect(() => {
     authorizePermissions()
+    setServerPermissionsToLocalState()
   }, [])
 
   useEffect(() => {
@@ -80,12 +84,8 @@ function MappingItem({ candidate, roles }) {
   }
 
   useEffect(() => {
-    setServerPermissionsToLocalState()
-  }, [false])
-
-  useEffect(() => {
     getPermissionsForSearch()
-  }, [permissions, candidate?.permissions?.length])
+  }, [permissions, candidate?.permissions?.length, cedarPermissions])
 
   const doRemove = (id, role) => {
     dispatch(

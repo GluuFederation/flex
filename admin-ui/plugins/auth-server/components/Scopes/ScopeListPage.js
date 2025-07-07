@@ -53,6 +53,7 @@ function ScopeListPage() {
   const { totalItems } = useSelector((state) => state.scopeReducer)
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.scopeReducer.loading)
+  const { permissions } = useSelector((state) => state.cedarPermissions)
 
   const toggle = useCallback(() => setModal(!modal), [modal])
 
@@ -68,6 +69,8 @@ function ScopeListPage() {
     }
     initPermissions()
   }, [])
+
+  useEffect(() => {}, [permissions])
 
   const userAction = useMemo(() => ({}), [])
   const options = useMemo(() => ({}), [])

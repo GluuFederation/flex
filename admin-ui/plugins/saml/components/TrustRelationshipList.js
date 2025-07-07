@@ -33,6 +33,7 @@ const TrustRelationshipList = () => {
   const { trustRelationships, loadingTrustRelationship } = useSelector(
     (state) => state.idpSamlReducer,
   )
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   // Permission initialization
   useEffect(() => {
@@ -48,6 +49,7 @@ const TrustRelationshipList = () => {
   useEffect(() => {
     dispatch(getTrustRelationship())
   }, [])
+  useEffect(() => {}, [cedarPermissions])
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
     navigate('/saml/service-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })

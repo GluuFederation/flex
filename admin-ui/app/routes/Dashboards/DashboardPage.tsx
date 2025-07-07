@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { useMediaQuery } from 'react-responsive'
@@ -33,11 +33,11 @@ import moment from 'moment'
 function DashboardPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const userAction = useMemo(() => ({}), [])
+  const options = useMemo(() => ({}), [])
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const breakDashboardCard = useMediaQuery({ query: '(max-width: 1424px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
-  const userAction = {}
-  const options = {}
   const { classes } = styles()
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
   const [mauCount, setMauCount] = useState(null)
@@ -83,18 +83,19 @@ function DashboardPage() {
     if (
       Object.keys(license).length === 0 &&
       access_token &&
-      hasBoth(permissions, STAT_READ, STAT_JANS_READ)
+      hasBoth(permissions, STAT_READ, STAT_JANS_READ) &&
+      !loading
     ) {
       getLicense()
     }
-  }, [access_token, license])
+  }, [access_token, license, permissions, loading])
 
   useEffect(() => {
     if (clients.length === 0 && access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
       buildPayload(userAction, 'Fetch openid connect clients', {})
       dispatch(getClients({ action: userAction }))
     }
-  }, [access_token, clients])
+  }, [access_token, clients, permissions])
 
   useEffect(() => {
     if (access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
@@ -105,10 +106,15 @@ function DashboardPage() {
     }
   }, [access_token])
 
-  function getLicense() {
+  const getLicense = useCallback(() => {
     buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
     dispatch(getLicenseDetails({}))
-  }
+  }, [userAction, options])
+
+  const getServerStatus = useCallback(() => {
+    buildPayload(userAction, 'GET Health Status', options)
+    dispatch(getHealthStatus({ action: userAction }))
+  }, [userAction, options])
 
   function isUp(status) {
     if (status) {
@@ -118,11 +124,6 @@ function DashboardPage() {
       )
     }
     return false
-  }
-
-  function getServerStatus() {
-    buildPayload(userAction, 'GET Health Status', options)
-    dispatch(getHealthStatus({ action: userAction }))
   }
 
   function getJansLockDetails() {
@@ -141,7 +142,7 @@ function DashboardPage() {
     )
   }
 
-  let summaryData = [
+  const summaryData = [
     {
       text: t('dashboard.oidc_clients_count'),
       value: totalClientsEntries,

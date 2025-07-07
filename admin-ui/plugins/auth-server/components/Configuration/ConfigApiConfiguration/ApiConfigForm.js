@@ -20,6 +20,8 @@ const ApiConfigForm = () => {
   const [operations, setOperations] = useState([])
 
   const configuration = useSelector((state) => state.configApiReducer.configuration)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
   const userAction = {}
 
   // Permission initialization
@@ -34,6 +36,8 @@ const ApiConfigForm = () => {
 
     authorizePermissions()
   }, [])
+
+  useEffect(() => {}, [cedarPermissions])
 
   const toggle = useCallback(() => {
     if (patches?.length > 0) {

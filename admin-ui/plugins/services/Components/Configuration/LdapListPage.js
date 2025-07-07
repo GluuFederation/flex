@@ -34,6 +34,7 @@ function LdapListPage() {
   const testStatus = useSelector((state) => state.ldapReducer.testStatus)
   const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
   const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -224,6 +225,7 @@ function LdapListPage() {
       })
     }
   }, [testStatus])
+  useEffect(() => {}, [cedarPermissions])
 
   // MaterialTable options
   const tableOptions = {

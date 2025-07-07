@@ -11,11 +11,30 @@ import {
   SidebarSection,
 } from '@/components/Sidebar'
 import type { DefaultSidebarProps } from './types'
+import { useTranslation } from 'react-i18next'
+import { RootState } from '@/cedarling'
 
 const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
-  const cedarlingInitialized = useSelector((state: any) => state.cedarPermissions.initialized)
+  const { t } = useTranslation()
+
+  const cedarlingInitialized = useSelector((state: RootState) => state.cedarPermissions.initialized)
+
+  const cedarConditionalLoader = () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: window.innerHeight * 0.9,
+        padding: '20px',
+      }}
+    >
+      {cedarlingInitialized ? <p>{t('titles.no_Cedar')}</p> : <GluuSuspenseLoader />}
+    </div>
+  )
 
   return (
     <Sidebar>
@@ -41,24 +60,12 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
       <SidebarMobileFluid>
         {/* <SidebarTopA /> */}
         <SidebarSection fluid cover>
-          {/* SIDEBAR: Menu */}
           {cedarlingInitialized ? (
             <Suspense fallback={<GluuSuspenseLoader />}>
               <GluuAppSidebar />
             </Suspense>
           ) : (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: window.innerHeight * 0.9,
-                padding: '20px',
-              }}
-            >
-              <GluuSuspenseLoader />
-            </div>
+            cedarConditionalLoader()
           )}
         </SidebarSection>
       </SidebarMobileFluid>

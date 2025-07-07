@@ -26,6 +26,7 @@ function ConfigPage() {
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const scripts = useSelector((state) => state.initReducer.scripts)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
 
@@ -73,6 +74,7 @@ function ConfigPage() {
     dispatch(getAcrsConfig())
     dispatch(getScripts({ action: userAction }))
   }, [])
+  useEffect(() => {}, [cedarPermissions])
 
   const patchHandler = (patch) => {
     setPatches((existingPatches) => [...existingPatches, patch])

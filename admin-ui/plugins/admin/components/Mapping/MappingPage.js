@@ -24,6 +24,8 @@ function MappingPage() {
   const loading = useSelector((state) => state.mappingReducer.loading)
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
   const permissionLoading = useSelector((state) => state.apiPermissionReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -49,6 +51,8 @@ function MappingPage() {
     doFetchRoles()
     doFetchPermissionsList()
   }, [])
+
+  useEffect(() => {}, [cedarPermissions])
 
   function doFetchPermissionsList() {
     buildPayload(userAction, 'PERMISSIONS', options)

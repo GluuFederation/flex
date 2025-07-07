@@ -24,6 +24,7 @@ function LoggingPage() {
   const theme = useContext(ThemeContext)
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
 
@@ -40,6 +41,8 @@ function LoggingPage() {
 
     dispatch(getLoggingConfig())
   }, [dispatch])
+
+  useEffect(() => {}, [cedarPermissions])
 
   const initialValues = {
     loggingLevel: logging.loggingLevel,

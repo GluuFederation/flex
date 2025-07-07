@@ -27,6 +27,7 @@ function AliasesListPage() {
   const bgThemeColor = { background: themeColors.background }
   const { loading } = useSelector((state) => state.jsonConfigReducer)
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const [initalFormValues] = useState({
     source: '',
@@ -84,7 +85,7 @@ function AliasesListPage() {
     }
 
     setMyActions(actions)
-  }, [hasCedarPermission, t, formik, handleEdit])
+  }, [cedarPermissions])
 
   const validationSchema = Yup.object().shape({
     source: Yup.string().required(`${t('fields.source')} is Required!`),

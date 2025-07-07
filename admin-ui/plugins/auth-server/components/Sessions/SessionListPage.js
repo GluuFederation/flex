@@ -43,6 +43,7 @@ function SessionListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
   const sessions = useSelector((state) => state.sessionReducer.items)
   const loading = useSelector((state) => state.sessionReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
 
@@ -69,6 +70,8 @@ function SessionListPage() {
 
     authorizePermissions()
   }, [])
+  useEffect(() => {}, [cedarPermissions])
+
   const sessionUsername = useMemo(
     () => sessions.map((session) => session.sessionAttributes.auth_user),
     [sessions],

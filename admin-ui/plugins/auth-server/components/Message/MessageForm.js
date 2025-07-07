@@ -25,6 +25,8 @@ const MessageForm = () => {
   const { t } = useTranslation()
   const { hasCedarPermission, authorize } = useCedarling()
   const config = useSelector((state) => state.messageReducer.config)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
 
@@ -44,6 +46,7 @@ const MessageForm = () => {
 
     authorizePermissions()
   }, [])
+  useEffect(() => {}, [cedarPermissions])
 
   const isDisabled = !hasCedarPermission(MESSAGE_WRITE)
 

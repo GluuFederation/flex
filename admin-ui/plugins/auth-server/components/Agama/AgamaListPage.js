@@ -69,7 +69,7 @@ function AgamaListPage() {
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
   const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
   const isConfigLoading = useSelector((state) => state.jsonConfigReducer.loading)
-
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const agamaFileResponse = useSelector((state) => state.agamaReducer.agamaFileResponse)
 
   const theme = useContext(ThemeContext)
@@ -96,6 +96,7 @@ function AgamaListPage() {
     }
     dispatch(getAgama())
   }, [dispatch, configuration])
+  useEffect(() => {}, [cedarPermissions])
 
   function convertFileToByteArray(file) {
     return new Promise((resolve, reject) => {

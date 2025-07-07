@@ -42,6 +42,7 @@ function AuthNListPage({ isBuiltIn = false }) {
   const loading = useSelector((state) => state.ldapReducer.loading)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const customScriptloading = useSelector((state) => state.customScriptReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   SetTitle(t('titles.authn'))
 
@@ -87,7 +88,7 @@ function AuthNListPage({ isBuiltIn = false }) {
     }
 
     setMyActions(newActions)
-  }, [hasCedarPermission, t, handleGoToAuthNEditPage])
+  }, [cedarPermissions, t, handleGoToAuthNEditPage])
 
   useEffect(() => {
     setList({ ...list, ldap: [] })

@@ -32,6 +32,7 @@ function SqlListPage() {
   const testStatus = useSelector((state) => state.sqlReducer.testStatus)
   const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
   const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
 
@@ -120,13 +121,7 @@ function SqlListPage() {
     }
 
     setMyActions(actions)
-  }, [
-    hasCedarPermission(SQL_READ),
-    hasCedarPermission(SQL_WRITE),
-    hasCedarPermission(SQL_DELETE),
-    t,
-    dispatch,
-  ])
+  }, [cedarPermissions, t, dispatch])
 
   const handleGoToSqlEditPage = useCallback(
     (row) => {

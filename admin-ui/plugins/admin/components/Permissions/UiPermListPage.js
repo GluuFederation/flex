@@ -31,6 +31,7 @@ function UiPermListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
   const apiPerms = useSelector((state) => state.apiPermissionReducer.items)
   const loading = useSelector((state) => state.apiPermissionReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -82,7 +83,7 @@ function UiPermListPage() {
     }
 
     setMyActions(actions)
-  }, [hasCedarPermission, t])
+  }, [cedarPermissions])
 
   // Handler functions
   const handleAddNewPermission = useCallback(() => {

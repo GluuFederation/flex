@@ -21,6 +21,7 @@ const SamlConfigurationForm = () => {
 
   const [modal, setModal] = useState(false)
   const configuration = useSelector((state) => state.idpSamlReducer.configuration)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   SetTitle(t('titles.saml_management'))
 
   // Permission initialization
@@ -35,6 +36,8 @@ const SamlConfigurationForm = () => {
 
     authorizePermissions()
   }, [])
+
+  useEffect(() => {}, [cedarPermissions])
 
   const toggle = () => {
     setModal(!modal)

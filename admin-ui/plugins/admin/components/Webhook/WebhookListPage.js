@@ -32,6 +32,7 @@ const WebhookListPage = () => {
   const [pageNumber, setPageNumber] = useState(0)
   const { totalItems, webhooks } = useSelector((state) => state.webhookReducer)
   const loading = useSelector((state) => state.webhookReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
 
   const theme = useContext(ThemeContext)
@@ -142,16 +143,7 @@ const WebhookListPage = () => {
     }
 
     setMyActions(actions)
-  }, [
-    hasCedarPermission(WEBHOOK_READ),
-    hasCedarPermission(WEBHOOK_WRITE),
-    hasCedarPermission(WEBHOOK_DELETE),
-    limit,
-    pattern,
-    t,
-    navigateToAddPage,
-    navigateToEditPage,
-  ])
+  }, [cedarPermissions, limit, pattern, t, navigateToAddPage, navigateToEditPage])
 
   let memoLimit = limit
   let memoPattern = pattern

@@ -36,6 +36,8 @@ export function useCedarling(): UseCedarlingReturn {
     permissions,
     loading: isLoading,
     error,
+    initialized: cedarlingInitialized,
+    isInitializing,
   } = useSelector((state: RootState) => state.cedarPermissions)
 
   const executeUrls = new Set([
@@ -74,7 +76,11 @@ export function useCedarling(): UseCedarlingReturn {
 
   const hasReduxPermission = useCallback(
     (url: string): boolean | undefined => {
-      return url in permissions ? permissions[url] : undefined
+      if (url in permissions) {
+        return permissions[url]
+      } else {
+        return undefined
+      }
     },
     [permissions],
   )
@@ -119,6 +125,13 @@ export function useCedarling(): UseCedarlingReturn {
       const url = resourceScope[0]
       if (!url) return { isAuthorized: false }
 
+      if (!cedarlingInitialized || isInitializing) {
+        return {
+          isAuthorized: false,
+          error: 'Cedarling is not yet initialized. Please wait...',
+        }
+      }
+
       if (!access_token || !id_token || !userinfo_token) {
         return {
           isAuthorized: false,
@@ -151,7 +164,6 @@ export function useCedarling(): UseCedarlingReturn {
             isAuthorized,
           }),
         )
-
         return { isAuthorized, response }
       } catch (error) {
         return {
@@ -168,6 +180,8 @@ export function useCedarling(): UseCedarlingReturn {
       access_token,
       id_token,
       userinfo_token,
+      cedarlingInitialized,
+      isInitializing,
     ],
   )
 

@@ -8,20 +8,31 @@ import type {
 
 let cedarling: Cedarling | null = null
 let cedarlingInitialized: boolean = false
+let initializationPromise: Promise<void> | null = null
 
 const initialize = async (bootStrapConfig: BootStrapConfig): Promise<void> => {
-  if (!cedarlingInitialized) {
+  if (cedarlingInitialized) {
+    return Promise.resolve()
+  }
+
+  if (initializationPromise) {
+    return initializationPromise
+  }
+
+  initializationPromise = (async () => {
     try {
       await initWasm()
-
       cedarling = await init(bootStrapConfig)
-
       cedarlingInitialized = true
+      console.log('WASM Cedarling successfully initialized')
     } catch (err) {
       console.error('Error during Cedarling init:', err)
-      throw err // rethrow so .catch gets it
+      initializationPromise = null // Reset on error to allow retry
+      throw err
     }
-  }
+  })()
+
+  return initializationPromise
 }
 
 const token_authorize = async (

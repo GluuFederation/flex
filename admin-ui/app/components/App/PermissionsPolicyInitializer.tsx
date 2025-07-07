@@ -2,7 +2,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useCallback } from 'react'
 import { getMapping } from 'Plugins/admin/redux/features/mappingSlice'
 import { getPermissions } from 'Plugins/admin/redux/features/apiPermissionSlice'
-import { setCedarlingInitialized } from '../../redux/features/cedarPermissionsSlice'
+import {
+  setCedarlingInitialized,
+  setCedarlingInitializing,
+} from '../../redux/features/cedarPermissionsSlice'
 import { generateCedarPolicies, mapRolePermissions } from '@/cedarling/utility'
 import { cedarlingClient } from '@/cedarling'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
@@ -26,6 +29,7 @@ interface ExtendedRootState {
   }
   cedarPermissions: {
     initialized: boolean
+    isInitializing: boolean
   }
 }
 
@@ -38,7 +42,9 @@ const PermissionsPolicyInitializer = () => {
   )
   const apiPermission = useSelector((state: ExtendedRootState) => state.apiPermissionReducer.items)
   const token = useSelector((state: ExtendedRootState) => state.authReducer.token)
-  const { initialized } = useSelector((state: ExtendedRootState) => state.cedarPermissions)
+  const { initialized, isInitializing } = useSelector(
+    (state: ExtendedRootState) => state.cedarPermissions,
+  )
 
   const doFetchPermissionsList = useCallback(() => {
     const userAction = {}
@@ -70,27 +76,34 @@ const PermissionsPolicyInitializer = () => {
       token &&
       token?.access_token &&
       applicableToCall(rolePermissionMapping) &&
-      applicableToCall(apiPermission) &&
-      !initialized
+      applicableToCall(apiPermission)
     ) {
-      const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
-      const policies = generateCedarPolicies(allPermissions)
+      if (!initialized && !isInitializing) {
+        console.log("Cedar didn't initialized yet, initializing now...")
+        dispatch(setCedarlingInitializing(true))
 
-      // Create a copy of bootstrap to avoid mutations
-      const bootstrapConfig = {
-        ...bootstrap,
-        CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policies),
+        const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
+        const policies = generateCedarPolicies(allPermissions)
+
+        const bootstrapConfig = {
+          ...bootstrap,
+          CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policies),
+        }
+
+        cedarlingClient
+          .initialize(bootstrapConfig)
+          .then(() => {
+            dispatch(setCedarlingInitialized(true))
+            console.log('Cedarling initialized!')
+          })
+          .catch((error) => {
+            console.error('Cedarling initialization failed', error)
+            dispatch(setCedarlingInitialized(false))
+            dispatch(setCedarlingInitializing(false))
+          })
       }
-
-      cedarlingClient
-        .initialize(bootstrapConfig)
-        .then(() => {
-          dispatch(setCedarlingInitialized(true))
-          console.log('Cedarling initialized!')
-        })
-        .catch(console.error)
     }
-  }, [rolePermissionMapping, apiPermission, dispatch, token, initialized])
+  }, [rolePermissionMapping, apiPermission, dispatch, token, initialized, isInitializing])
 
   return null
 }
