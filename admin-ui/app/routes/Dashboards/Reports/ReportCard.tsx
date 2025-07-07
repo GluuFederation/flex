@@ -1,12 +1,18 @@
-// @ts-nocheck
 import React from 'react'
 import { Card, CardBody, CardTitle, Badge } from 'Components'
 import ReportPiChartItem from './ReportPiChartItem'
 import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 
-function ReportCard({ title, data, upValue, downValue }) {
+interface ReportCardProps {
+  title: string
+  data: Array<{ name: string; value: number }>
+  upValue: string | number
+  downValue: string | number
+}
+
+function ReportCard({ title, data, upValue, downValue }: ReportCardProps) {
   return (
-    <Card className="mb-3" style={{ borderRadius: '10px' }}>
+    <Card className="mb-3" type="border" color={null}>
       <CardBody>
         <CardTitle tag="h6" className="mb-4">
           <GluuRibbon title={title} fromLeft />

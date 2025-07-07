@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useMemo } from 'react'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -6,7 +5,12 @@ import { useMediaQuery } from 'react-responsive'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getClients } from 'Redux/features/initSlice'
-import { hasBoth, buildPayload, STAT_READ, STAT_JANS_READ } from 'Utils/PermChecker'
+import {
+  hasBoth,
+  buildPayload,
+  STAT_READ,
+  STAT_JANS_READ
+} from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
@@ -18,11 +22,11 @@ import CrossIcon from '../../images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 import { formatDate } from 'Utils/Util'
-import UsersIcon from 'components/SVG/menu/Users'
-import Administrator from 'components/SVG/menu/Administrator'
-import OAuthIcon from 'components/SVG/menu/OAuth'
-import JansLockUsers from 'components/SVG/menu/JansLockUsers'
-import JansLockClients from 'components/SVG/menu/JansLockClients'
+import UsersIcon from '../../components/SVG/menu/Users'
+import Administrator from '../../components/SVG/menu/Administrator'
+import OAuthIcon from '../../components/SVG/menu/OAuth'
+import JansLockUsers from '../../components/SVG/menu/JansLockUsers'
+import JansLockClients from '../../components/SVG/menu/JansLockClients'
 import { getHealthServerStatus } from '../../redux/features/healthSlice'
 import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
 import { auditLogoutLogs } from '../../../plugins/user-management/redux/features/userSlice'
@@ -30,31 +34,111 @@ import { useNavigate } from 'react-router'
 import { getLockStatus } from 'Redux/features/lockSlice'
 import moment from 'moment'
 
-function DashboardPage() {
+// Type definitions
+interface StatDataItem {
+  month: number
+  mau: number
+  authz_code_access_token_count: number
+  client_credentials_access_token_count: number
+  authz_code_idtoken_count: number
+}
+
+interface LockDetailItem {
+  monthly_active_users: number
+  monthly_active_clients: number
+}
+
+interface SummaryDataItem {
+  text: string
+  value: number
+  icon: React.ReactNode
+}
+
+interface UserInfoItem {
+  text: string
+  value: string | undefined
+  key?: string
+}
+
+interface StatusDetailItem {
+  label: string
+  status: string | null
+  key: string
+}
+
+interface RootState {
+  mauReducer: {
+    stat: StatDataItem[]
+    loading: boolean
+  }
+  initReducer: {
+    clients: any[]
+    totalClientsEntries: number
+  }
+  lockReducer: {
+    lockDetail: LockDetailItem[]
+  }
+  licenseDetailsReducer: {
+    item: {
+      productName?: string
+      licenseType?: string
+      customerEmail?: string
+      customerFirstName?: string
+      customerLastName?: string
+      validityPeriod?: string
+      licenseActive?: boolean
+    }
+  }
+  healthReducer: {
+    serverStatus: string | null
+    health: Record<string, string>
+    dbStatus: string | null
+  }
+  authReducer: {
+    token?: {
+      access_token: string
+    }
+    permissions: string[]
+  }
+}
+
+interface UserAction {
+  [key: string]: any
+}
+
+interface Options {
+  [key: string]: any
+}
+
+const DashboardPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const breakDashboardCard = useMediaQuery({ query: '(max-width: 1424px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
-  const userAction = {}
-  const options = {}
+  const userAction: UserAction = {}
+  const options: Options = {}
   const { classes } = styles()
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
-  const [mauCount, setMauCount] = useState(null)
-  const [tokenCount, setTokenCount] = useState(null)
+  const [mauCount, setMauCount] = useState<number | null>(null)
+  const [tokenCount, setTokenCount] = useState<number | null>(null)
 
-  const statData = useSelector((state) => state.mauReducer.stat)
-  const loading = useSelector((state) => state.mauReducer.loading)
-  const clients = useSelector((state) => state.initReducer.clients)
-  const lock = useSelector((state) => state.lockReducer.lockDetail)
+  const statData = useSelector((state: RootState) => state.mauReducer.stat)
+  const loading = useSelector((state: RootState) => state.mauReducer.loading)
+  const clients = useSelector((state: RootState) => state.initReducer.clients)
+  const lock = useSelector((state: RootState) => state.lockReducer.lockDetail)
 
-  const totalClientsEntries = useSelector((state) => state.initReducer.totalClientsEntries)
-  const license = useSelector((state) => state.licenseDetailsReducer.item)
-  const serverStatus = useSelector((state) => state.healthReducer.serverStatus)
-  const serverHealth = useSelector((state) => state.healthReducer.health)
-  const dbStatus = useSelector((state) => state.healthReducer.dbStatus)
-  const access_token = useSelector((state) => state.authReducer.token?.access_token)
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  const totalClientsEntries = useSelector(
+    (state: RootState) => state.initReducer.totalClientsEntries
+  )
+  const license = useSelector((state: RootState) => state.licenseDetailsReducer.item)
+  const serverStatus = useSelector((state: RootState) => state.healthReducer.serverStatus)
+  const serverHealth = useSelector((state: RootState) => state.healthReducer.health)
+  const dbStatus = useSelector((state: RootState) => state.healthReducer.dbStatus)
+  const access_token = useSelector(
+    (state: RootState) => state.authReducer.token?.access_token
+  )
+  const permissions = useSelector((state: RootState) => state.authReducer.permissions)
   const dispatch = useDispatch()
 
   SetTitle(t('menus.dashboard'))
@@ -65,12 +149,14 @@ function DashboardPage() {
     const currentMonth = date.getMonth() + 1
     const formattedMonth = currentMonth > 9 ? currentMonth : `0${currentMonth}`
     const yearMonth = `${currentYear}${formattedMonth}`
-    const currentMonthData = statData.find(({ month }) => month.toString() === yearMonth)
+    const currentMonthData = statData.find(
+      ({ month }: StatDataItem) => month.toString() === yearMonth
+    )
 
     const mau = currentMonthData?.mau
     const token =
-      currentMonthData?.authz_code_access_token_count +
-      currentMonthData?.client_credentials_access_token_count
+      (currentMonthData?.authz_code_access_token_count || 0) +
+      (currentMonthData?.client_credentials_access_token_count || 0)
     if (mau) {
       setMauCount(mau)
     }
@@ -87,30 +173,34 @@ function DashboardPage() {
     ) {
       getLicense()
     }
-  }, [access_token, license])
+  }, [access_token, license, permissions])
 
   useEffect(() => {
-    if (clients.length === 0 && access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
+    if (
+      clients.length === 0 &&
+      access_token &&
+      hasBoth(permissions, STAT_READ, STAT_JANS_READ)
+    ) {
       buildPayload(userAction, 'Fetch openid connect clients', {})
-      dispatch(getClients({ action: userAction }))
+      dispatch(getClients())
     }
-  }, [access_token, clients])
+  }, [access_token, clients, permissions, dispatch])
 
   useEffect(() => {
     if (access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
       getServerStatus()
       getJansLockDetails()
       buildPayload(userAction, 'GET Health Status', { service: 'all' })
-      dispatch(getHealthServerStatus({ action: userAction }))
+      dispatch(getHealthServerStatus())
     }
-  }, [access_token])
+  }, [access_token, permissions, dispatch])
 
-  function getLicense() {
+  function getLicense(): void {
     buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
-    dispatch(getLicenseDetails({}))
+    dispatch(getLicenseDetails())
   }
 
-  function isUp(status) {
+  function isUp(status: string | null): boolean {
     if (status) {
       return (
         status.toUpperCase() === 'ONLINE'.toUpperCase() ||
@@ -120,43 +210,40 @@ function DashboardPage() {
     return false
   }
 
-  function getServerStatus() {
+  function getServerStatus(): void {
     buildPayload(userAction, 'GET Health Status', options)
-    dispatch(getHealthStatus({ action: userAction }))
+    dispatch(getHealthStatus())
   }
 
-  function getJansLockDetails() {
-    const months = []
+  function getJansLockDetails(): void {
+    const months: string[] = []
     for (let i = 0; i < 12; i++) {
       months.push(moment().subtract(i, 'months').format('YYYYMM'))
     }
     const startMonth = months[months.length - 1]
     const endMonth = months[0]
 
-    dispatch(
-      getLockStatus({
-        startMonth,
-        endMonth,
-      }),
-    )
+    dispatch(getLockStatus())
   }
 
-  let summaryData = [
+  let summaryData: SummaryDataItem[] = [
     {
       text: t('dashboard.oidc_clients_count'),
       value: totalClientsEntries,
-      icon: <Administrator className={classes.summaryIcon} style={{ top: '8px' }} />,
+      icon: (
+        <Administrator className={classes.summaryIcon} fill="#000000" />
+      )
     },
     {
       text: t('dashboard.active_users_count'),
       value: mauCount ?? 0,
-      icon: <UsersIcon className={classes.summaryIcon} style={{ top: '4px' }} />,
+      icon: <UsersIcon className={classes.summaryIcon} />
     },
     {
       text: t('dashboard.token_issued_count'),
       value: tokenCount ?? 0,
-      icon: <OAuthIcon className={classes.summaryIcon} style={{ top: '8px' }} />,
-    },
+      icon: <OAuthIcon className={classes.summaryIcon} />
+    }
   ]
 
   if (lock && lock.length > 0) {
@@ -164,68 +251,80 @@ function DashboardPage() {
       {
         text: t('dashboard.mau_users'),
         value: lock[0]?.monthly_active_users ?? 0,
-        icon: <JansLockUsers className={classes.summaryIcon} style={{ top: '8px' }} />,
+        icon: (
+          <JansLockUsers
+            className={classes.summaryIcon}
+            style={{ fill: '#000000' }}
+          />
+        )
       },
       {
         text: t('dashboard.mau_clients'),
         value: lock[0]?.monthly_active_clients ?? 0,
-        icon: <JansLockClients className={classes.summaryIcon} style={{ top: '8px' }} />,
-      },
+        icon: (
+          <JansLockClients
+            className={classes.summaryIcon}
+            style={{ fill: '#000000' }}
+          />
+        )
+      }
     )
   }
 
-  const userInfo = [
+  const userInfo: UserInfoItem[] = [
     {
       text: t('dashboard.product_name'),
-      value: license?.productName,
+      value: license?.productName
     },
     {
       text: t('dashboard.license_type'),
-      value: license?.licenseType,
+      value: license?.licenseType
     },
     {
       text: t('dashboard.customer_email'),
-      value: license?.customerEmail,
+      value: license?.customerEmail
     },
     {
       text: t('dashboard.customer_name'),
-      value: `${license?.customerFirstName || ''} ${license?.customerLastName || ''}`,
+      value: `${license?.customerFirstName || ''} ${
+        license?.customerLastName || ''
+      }`
     },
     {
       text: t('fields.validityPeriod'),
       value: formatDate(license.validityPeriod),
-      key: 'License Validity Period',
+      key: 'License Validity Period'
     },
     {
       text: t('dashboard.license_status'),
       value: license?.licenseActive ? 'active' : 'inactive',
-      key: 'License Status',
-    },
+      key: 'License Status'
+    }
   ]
 
-  const statusDetails = [
+  const statusDetails: StatusDetailItem[] = [
     {
       label: 'menus.oauthserver',
       status: serverStatus,
-      key: 'status',
+      key: 'status'
     },
     {
       label: 'dashboard.config_api',
       status: serverStatus,
-      key: 'jans-config-api',
+      key: 'jans-config-api'
     },
     { label: 'dashboard.database_status', status: dbStatus, key: 'db_status' },
     { label: 'FIDO', status: serverStatus, key: 'jans-fido2' },
     { label: 'CASA', status: serverStatus, key: 'jans-casa' },
     { label: 'dashboard.key_cloak', status: serverStatus, key: 'keycloak' },
-    { label: 'SCIM', status: false, key: 'jans-scim' },
-    { label: 'dashboard.jans_lock', status: serverStatus, key: 'jans-lock' },
+    { label: 'SCIM', status: null, key: 'jans-scim' },
+    { label: 'dashboard.jans_lock', status: serverStatus, key: 'jans-lock' }
   ]
 
   // Helper function to get the status value
-  const getStatusValue = (key) => {
+  const getStatusValue = (key: string): string | null => {
     if (key !== 'db_status' && key !== 'status') {
-      return serverHealth[key]
+      return serverHealth[key] || null
     } else if (key === 'db_status') {
       return dbStatus
     } else {
@@ -234,19 +333,19 @@ function DashboardPage() {
   }
 
   // Helper function to determine the class name
-  const getClassName = (key) => {
+  const getClassName = (key: string): string => {
     const value = getStatusValue(key)
     return isUp(value) ? classes.checkText : classes.crossText
   }
 
   // Helper function to get the status text
-  const getStatusText = (key) => {
+  const getStatusText = (key: string): string => {
     const value = getStatusValue(key)
     return isUp(value) ? 'Running' : 'Down'
   }
 
   // Helper function to get the icon
-  const getStatusIcon = (key) => {
+  const getStatusIcon = (key: string): string => {
     const value = getStatusValue(key)
     return isUp(value) ? CheckIcon : CrossIcon
   }
@@ -262,7 +361,7 @@ function DashboardPage() {
               color: 'white',
               fontSize: 24,
               fontWeight: 400,
-              marginBottom: '10px',
+              marginBottom: '10px'
             }}
           >
             {t('dashboard.system_status')}
@@ -279,17 +378,26 @@ function DashboardPage() {
                   style={{
                     width: '100%',
                     borderLeft: '4px solid #FFA500',
-                    paddingLeft: '10px',
+                    paddingLeft: '10px'
                   }}
                 >
                   <div>
-                    <span style={{ display: 'block', marginBottom: '-4px' }}>{t(label)}</span>
-                    <span className={getClassName(key)} style={{ fontSize: '16px' }}>
+                    <span style={{ display: 'block', marginBottom: '-4px' }}>
+                      {t(label)}
+                    </span>
+                    <span
+                      className={getClassName(key)}
+                      style={{ fontSize: '16px' }}
+                    >
                       {getStatusText(key)}
                     </span>
                   </div>
                   <span style={{ width: '18%', marginTop: '10px' }}>
-                    <img src={getStatusIcon(key)} className={getClassName(key)} alt={label} />
+                    <img
+                      src={getStatusIcon(key)}
+                      className={getClassName(key)}
+                      alt={label}
+                    />
                   </span>
                 </div>
               </div>
@@ -300,12 +408,13 @@ function DashboardPage() {
     )
   }, [serverStatus, serverHealth, dbStatus, t, statusDetails, classes])
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     if (access_token) {
       dispatch(
         auditLogoutLogs({
-          message: 'Logging out due to insufficient permissions for Admin UI access.',
-        }),
+          message:
+            'Logging out due to insufficient permissions for Admin UI access.'
+        })
       )
     } else navigate('/logout')
   }
@@ -316,9 +425,13 @@ function DashboardPage() {
         handler={() => {
           handleLogout()
         }}
-        isOpen={!access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
+        isOpen={
+          !access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)
+        }
       />
-      <GluuViewWrapper canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}>
+      <GluuViewWrapper
+        canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
+      >
         <div className={classes.root}>
           <Grid container className="px-40 h-100" spacing={2}>
             <Grid item lg={3} md={12} xs={12} height="auto">
@@ -328,12 +441,15 @@ function DashboardPage() {
                   color: 'white',
                   fontSize: 24,
                   fontWeight: 400,
-                  marginBottom: '10px',
+                  marginBottom: '10px'
                 }}
               >
                 {t('dashboard.summary_title')}
               </div>
-              <div className="d-flex flex-column" style={{ gap: '10px', marginTop: '11px' }}>
+              <div
+                className="d-flex flex-column"
+                style={{ gap: '10px', marginTop: '11px' }}
+              >
                 {summaryData.map((data, key) => (
                   <Paper key={key} className={classes.summary}>
                     <div className={classes.summaryDetails}>
@@ -361,7 +477,6 @@ function DashboardPage() {
               <Paper
                 className={`${classes.dashboardCard} top-minus-40 d-flex justify-content-center`}
                 elevation={0}
-                spacing={2}
               >
                 <Grid className={classes.flex} container>
                   <Grid item xs={12} className={isMobile ? 'mt-20' : ''}>
@@ -372,7 +487,7 @@ function DashboardPage() {
                           color: 'white',
                           fontSize: 24,
                           fontWeight: 400,
-                          marginBottom: '10px',
+                          marginBottom: '10px'
                         }}
                       >
                         {t('dashboard.user_info')}
@@ -382,16 +497,20 @@ function DashboardPage() {
                         style={{
                           backgroundColor: 'white',
                           padding: '20px',
-                          borderRadius: '5px',
+                          borderRadius: '5px'
                         }}
                       >
                         {userInfo.map((info, key) => (
                           <div className={classes.userInfoText} key={key}>
-                            <span style={{ fontWeight: 600 }}>{info.text}: </span>
+                            <span style={{ fontWeight: 600 }}>
+                              {info.text}:{' '}
+                            </span>
                             {info?.key === 'License Status' ? (
                               <span
                                 className={
-                                  info.value === 'active' ? classes.greenBlock : classes.redBlock
+                                  info.value === 'active'
+                                    ? classes.greenBlock
+                                    : classes.redBlock
                                 }
                               >
                                 {info.value}
@@ -411,14 +530,18 @@ function DashboardPage() {
 
           <Grid container className={`px-40`} sx={{ marginTop: '20px' }}>
             <Grid lg={12} xs={12} item>
-              <h3 className="text-white">{t('dashboard.access_tokens_graph')}</h3>
+              <h3 className="text-white">
+                {t('dashboard.access_tokens_graph')}
+              </h3>
               {isTabletOrMobile ? (
                 <Grid container className={`${classes.whiteBg}`}>
                   <Grid
                     xs={12}
                     item
                     style={
-                      isTabletOrMobile ? { marginLeft: 40 } : { marginLeft: 40, marginBottom: 40 }
+                      isTabletOrMobile
+                        ? { marginLeft: 40 }
+                        : { marginLeft: 40, marginBottom: 40 }
                     }
                   >
                     <div>{t('dashboard.select_date_range')}</div>
@@ -429,12 +552,22 @@ function DashboardPage() {
                   </Grid>
                 </Grid>
               ) : (
-                <Grid container className={`${classes.whiteBg} ${classes.flex}`}>
-                  <Grid md={9} xs={12} item className={classes.desktopChartStyle}>
+                <Grid
+                  container
+                  className={`${classes.whiteBg} ${classes.flex}`}
+                >
+                  <Grid
+                    md={9}
+                    xs={12}
+                    item
+                    className={classes.desktopChartStyle}
+                  >
                     <DashboardChart />
                   </Grid>
                   <Grid md={3} xs={6} item>
-                    <div style={{ fontSize: 'large' }}>{t('dashboard.select_date_range')}</div>
+                    <div style={{ fontSize: 'large' }}>
+                      {t('dashboard.select_date_range')}
+                    </div>
                     <DateRange />
                   </Grid>
                 </Grid>
@@ -444,7 +577,11 @@ function DashboardPage() {
 
           <Grid container className={`${classes.flex} px-40`}>
             <Grid xs={12} item>
-              <Grid xs={12} item className={`${isMobile ? classes.block : classes.flex} mt-20`}>
+              <Grid
+                xs={12}
+                item
+                className={`${isMobile ? classes.block : classes.flex} mt-20`}
+              >
                 <ul className="me-40">
                   <li className={classes.orange}>
                     {t('dashboard.client_credentials_access_token')}
