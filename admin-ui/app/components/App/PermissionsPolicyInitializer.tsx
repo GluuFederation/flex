@@ -79,7 +79,7 @@ const PermissionsPolicyInitializer = () => {
       applicableToCall(apiPermission)
     ) {
       if (!initialized && !isInitializing) {
-        console.log("Cedar didn't initialized yet, initializing now...")
+        // console.log("Cedar didn't initialized yet, initializing now...")
         dispatch(setCedarlingInitializing(true))
 
         const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
