@@ -49,17 +49,16 @@ function UiRoleListPage() {
   }, [])
 
   SetTitle(t('titles.roles'))
-  useEffect(() => {
-    if (hasCedarPermission(ROLE_WRITE)) {
-      myActions.push({
-        icon: 'add',
-        tooltip: `${t('messages.add_role')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: () => handleAddNewRole(),
-      })
-    }
-  }, [cedarPermissions])
+
+  if (hasCedarPermission(ROLE_WRITE)) {
+    myActions.push({
+      icon: 'add',
+      tooltip: `${t('messages.add_role')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => handleAddNewRole(),
+    })
+  }
 
   function handleAddNewRole() {
     toggle()

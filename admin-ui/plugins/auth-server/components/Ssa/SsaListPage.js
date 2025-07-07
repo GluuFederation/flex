@@ -127,48 +127,46 @@ const SSAListPage = () => {
   const DownloadIcon = useCallback(() => <DownloadOutlined style={{ color: 'primary' }} />, [])
   const ViewIcon = useCallback(() => <VisibilityOutlined style={{ color: 'primary' }} />, [])
 
-  useEffect(() => {
-    if (hasCedarPermission(SSA_ADMIN)) {
-      myActions.push({
-        icon: 'add',
-        tooltip: `${t('messages.add_ssa')}`,
-        iconProps: { color: 'primary' },
-        isFreeAction: true,
-        onClick: () => handleGoToSsaAddPage(),
-        disabled: !hasCedarPermission(SSA_ADMIN),
-      })
-      myActions.push((rowData) => ({
-        icon: DeleteIcon,
-        iconProps: {
-          sx: { color: 'red' },
-          id: rowData.org_id,
-        },
-        onClick: (event, rowData) => handleSsaDelete(rowData),
-        disabled: false,
-      }))
-    }
+  if (hasCedarPermission(SSA_ADMIN)) {
+    myActions.push({
+      icon: 'add',
+      tooltip: `${t('messages.add_ssa')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => handleGoToSsaAddPage(),
+      disabled: !hasCedarPermission(SSA_ADMIN),
+    })
+    myActions.push((rowData) => ({
+      icon: DeleteIcon,
+      iconProps: {
+        sx: { color: 'red' },
+        id: rowData.org_id,
+      },
+      onClick: (event, rowData) => handleSsaDelete(rowData),
+      disabled: false,
+    }))
+  }
 
-    if (hasCedarPermission(SSA_PORTAL) || hasCedarPermission(SSA_ADMIN)) {
-      myActions.push((rowData) => ({
-        icon: ViewIcon,
-        iconProps: {
-          color: 'primary',
-          id: rowData.org_id,
-        },
-        onClick: (event, rowData) => handleViewSsa(rowData),
-        disabled: false,
-      }))
-      myActions.push((rowData) => ({
-        icon: DownloadIcon,
-        iconProps: {
-          color: 'primary',
-          id: rowData.org_id,
-        },
-        onClick: (event, rowData) => handleDownloadSsa(rowData),
-        disabled: false,
-      }))
-    }
-  }, [cedarPermissions])
+  if (hasCedarPermission(SSA_PORTAL) || hasCedarPermission(SSA_ADMIN)) {
+    myActions.push((rowData) => ({
+      icon: ViewIcon,
+      iconProps: {
+        color: 'primary',
+        id: rowData.org_id,
+      },
+      onClick: (event, rowData) => handleViewSsa(rowData),
+      disabled: false,
+    }))
+    myActions.push((rowData) => ({
+      icon: DownloadIcon,
+      iconProps: {
+        color: 'primary',
+        id: rowData.org_id,
+      },
+      onClick: (event, rowData) => handleDownloadSsa(rowData),
+      disabled: false,
+    }))
+  }
 
   const handleSsaDelete = (row) => {
     setItem(row)
