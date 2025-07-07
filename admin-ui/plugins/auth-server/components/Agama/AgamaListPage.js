@@ -15,13 +15,13 @@ import {
   getAgamaRepository,
   getAgamaRepositoryFile,
 } from 'Plugins/auth-server/redux/features/agamaSlice'
-import { hasPermission, AGAMA_READ, AGAMA_WRITE } from 'Utils/PermChecker'
+import { AGAMA_READ, AGAMA_WRITE, AGAMA_DELETE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
-import { AGAMA_DELETE } from 'Utils/PermChecker'
 import CircularProgress from '@mui/material/CircularProgress'
 import InfoIcon from '@mui/icons-material/Info'
 import AgamaProjectConfigModal from './AgamaProjectConfigModal'
@@ -45,10 +45,10 @@ const dateTimeFormatOptions = {
 }
 
 function AgamaListPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const options = {}
-  const myActions = []
+  const [myActions, setMyActions] = useState([])
   const [limit, setLimit] = useState(10)
   const [pageNumber, setPageNumber] = useState(0)
   const [showAddModal, setShowAddModal] = useState(false)
@@ -65,16 +65,38 @@ function AgamaListPage() {
   const [listData, setListData] = useState([])
   const [selectedRow, setSelectedRow] = useState({})
   const [repoName, setRepoName] = useState(null)
+
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
   const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
   const isConfigLoading = useSelector((state) => state.jsonConfigReducer.loading)
-
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const agamaFileResponse = useSelector((state) => state.agamaReducer.agamaFileResponse)
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      const permissions = [AGAMA_READ, AGAMA_WRITE, AGAMA_DELETE]
+      try {
+        for (const permission of permissions) {
+          await authorize([permission])
+        }
+      } catch (error) {
+        console.error('Error authorizing Agama permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+    if (isEmpty(configuration)) {
+      dispatch(getJsonConfig({ action: {} }))
+    }
+    dispatch(getAgama())
+  }, [dispatch, configuration])
+  useEffect(() => {}, [cedarPermissions])
 
   function convertFileToByteArray(file) {
     return new Promise((resolve, reject) => {
@@ -106,7 +128,7 @@ function AgamaListPage() {
     try {
       dispatch(getAgamaRepository())
     } catch (error) {
-      setRespositoriesData({ loading: false, repositories: [] })
+      console.error('Error fetching repository data:', error)
     }
   }
 
@@ -118,7 +140,7 @@ function AgamaListPage() {
   useEffect(() => {
     if (agamaFileResponse) {
       const byteArray = convertFileFrombase64(agamaFileResponse)
-      let object = {
+      const object = {
         name: projectName,
         file: byteArray,
       }
@@ -130,8 +152,8 @@ function AgamaListPage() {
   }, [agamaFileResponse])
 
   const submitData = async () => {
-    let file = await convertFileToByteArray(selectedFile)
-    let object = {
+    const file = await convertFileToByteArray(selectedFile)
+    const object = {
       name: projectName,
       file: file,
     }
@@ -202,7 +224,6 @@ function AgamaListPage() {
   )
 
   const agamaList = useSelector((state) => state.agamaReducer.agamaList)
-  const permissions = useSelector((state) => state.authReducer.permissions)
   SetTitle(t('titles.agama'))
 
   useEffect(() => {
@@ -214,7 +235,7 @@ function AgamaListPage() {
   }, [agamaList])
 
   const formDeploymentDetailsData = () => {
-    let data = []
+    const data = []
     if (agamaList.length) {
       for (const project of agamaList) {
         const error =
@@ -238,64 +259,80 @@ function AgamaListPage() {
     setListData(data)
   }
 
-  const onPageChangeClick = (page) => {
-    let startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
-    options['limit'] = limit
-    options['pattern'] = null
-    setPageNumber(page)
-    dispatch(getAgama(options))
-  }
+  const onPageChangeClick = useCallback(
+    (page) => {
+      const paginationOptions = {
+        startIndex: parseInt(page * limit),
+        limit: limit,
+        pattern: null,
+      }
+      setPageNumber(page)
+      dispatch(getAgama(paginationOptions))
+    },
+    [limit, dispatch],
+  )
 
-  const onRowCountChangeClick = (count) => {
-    options['limit'] = count
-    options['pattern'] = null
-    setPageNumber(0)
-    setLimit(count)
-    dispatch(getAgama(options))
-  }
+  const onRowCountChangeClick = useCallback(
+    (count) => {
+      const paginationOptions = {
+        limit: count,
+        pattern: null,
+      }
+      setPageNumber(0)
+      setLimit(count)
+      dispatch(getAgama(paginationOptions))
+    },
+    [dispatch],
+  )
 
-  if (hasPermission(permissions, AGAMA_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('titles.add_new_agama_project')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => {
-        setSelectedFile(null)
-        setSelectedFileName(null)
-        setGetProjectName(false)
-        setSHAfile(null)
-        fetchRespositoryData()
-        if (isAgamaEnabled) {
-          setShowAddModal(true)
-        } else {
-          dispatch(updateToast(true, 'error', t('messages.agama_is_not_enabled')))
-        }
-      },
-    })
-    myActions.push({
-      icon: () => <InfoIcon />,
-      tooltip: `${t('messages.see_project_details')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: false,
-      onClick: (event, rowData) => {
-        setSelectedRow(rowData)
-        setShowConfigModal(true)
-      },
-    })
-    myActions.push({
-      icon: () => <SettingsIcon />,
-      tooltip: `${t('messages.manage_configurations')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: false,
-      onClick: (event, rowData) => {
-        setSelectedRow(rowData)
-        setShowConfigModal(true)
-        setManageConfig(true)
-      },
-    })
-  }
+  // Actions as state that will rebuild when permissions change
+  useEffect(() => {
+    const newActions = []
+
+    if (hasCedarPermission(AGAMA_WRITE)) {
+      newActions.push({
+        icon: 'add',
+        tooltip: `${t('titles.add_new_agama_project')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => {
+          setSelectedFile(null)
+          setSelectedFileName(null)
+          setGetProjectName(false)
+          setSHAfile(null)
+          fetchRespositoryData()
+          if (isAgamaEnabled) {
+            setShowAddModal(true)
+          } else {
+            dispatch(updateToast(true, 'error', t('messages.agama_is_not_enabled')))
+          }
+        },
+      })
+      newActions.push({
+        icon: () => <InfoIcon />,
+        tooltip: `${t('messages.see_project_details')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: false,
+        onClick: (event, rowData) => {
+          setSelectedRow(rowData)
+          setShowConfigModal(true)
+        },
+      })
+      newActions.push({
+        icon: () => <SettingsIcon />,
+        tooltip: `${t('messages.manage_configurations')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: false,
+        onClick: (event, rowData) => {
+          setSelectedRow(rowData)
+          setShowConfigModal(true)
+          setManageConfig(true)
+        },
+      })
+    }
+
+    setMyActions(newActions)
+  }, [hasCedarPermission, t, isAgamaEnabled, dispatch])
 
   const getSHA256 = async (sha256sum) => {
     const uint8Array = new Uint8Array(await new Blob([selectedFile]).arrayBuffer())
@@ -478,7 +515,7 @@ function AgamaListPage() {
                   {fileLoading ? (
                     <CircularProgress />
                   ) : agamaRepostoriesList?.projects?.length ? (
-                    agamaRepostoriesList?.projects?.map((item, index) => (
+                    agamaRepostoriesList?.projects?.map((item) => (
                       <FormControlLabel
                         key={item['repository-name']}
                         control={
@@ -578,13 +615,12 @@ function AgamaListPage() {
         />
       )}
       <>
-        {' '}
-        <GluuViewWrapper canShow={hasPermission(permissions, AGAMA_READ)}>
+        <GluuViewWrapper canShow={hasCedarPermission(AGAMA_READ)}>
           <MaterialTable
             key={limit}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: (props) => (
+              Pagination: () => (
                 <TablePagination
                   count={totalItems}
                   page={pageNumber}
@@ -642,9 +678,9 @@ function AgamaListPage() {
               actionsColumnIndex: -1,
             }}
             editable={{
-              isDeleteHidden: () => !hasPermission(permissions, AGAMA_DELETE),
+              isDeleteHidden: () => !hasCedarPermission(AGAMA_DELETE),
               onRowDelete: (oldData) => {
-                return new Promise((resolve, reject) => {
+                return new Promise((resolve) => {
                   dispatch(
                     deleteAgama({
                       name: oldData.details.projectMetadata.projectName,

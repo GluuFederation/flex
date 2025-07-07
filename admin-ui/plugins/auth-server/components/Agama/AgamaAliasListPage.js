@@ -3,11 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Form, FormGroup, Col } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-import { hasPermission, SCOPE_READ } from 'Utils/PermChecker'
+import { buildPayload, SCOPE_READ, SCOPE_WRITE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
-import { SCOPE_WRITE, buildPayload } from 'Utils/PermChecker'
 import CircularProgress from '@mui/material/CircularProgress'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useFormik } from 'formik'
@@ -19,6 +19,7 @@ import Paper from '@mui/material/Paper'
 import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 
 function AliasesListPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
@@ -26,8 +27,9 @@ function AliasesListPage() {
   const bgThemeColor = { background: themeColors.background }
   const { loading } = useSelector((state) => state.jsonConfigReducer)
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
-  const [initalFormValues, setInitialFormValues] = useState({
+  const [initalFormValues] = useState({
     source: '',
     mapping: '',
   })
@@ -36,33 +38,54 @@ function AliasesListPage() {
   const dispatch = useDispatch()
   const [listData, setListData] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber] = useState(0)
   const [isEdit, setIsEdit] = useState(false)
   const [selectedRow, setSelectedRow] = useState(null)
+  const [myActions, setMyActions] = useState([])
 
-  const permissions = useSelector((state) => state.authReducer.permissions)
-  const myActions = []
-  if (hasPermission(permissions, SCOPE_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('actions.add_mapping')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => {
-        formik.resetForm()
-        setIsEdit(false)
-        setShowAddModal(true)
-      },
-    })
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      const permissions = [SCOPE_READ, SCOPE_WRITE]
+      try {
+        for (const permission of permissions) {
+          await authorize([permission])
+        }
+      } catch (error) {
+        console.error('Error authorizing scope permissions:', error)
+      }
+    }
 
-    myActions.push((rowData) => {
-      return {
+    authorizePermissions()
+    dispatch(getJsonConfig({ action: {} }))
+  }, [dispatch])
+
+  // Build actions based on permissions
+  useEffect(() => {
+    const actions = []
+
+    if (hasCedarPermission(SCOPE_WRITE)) {
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('actions.add_mapping')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => {
+          formik.resetForm()
+          setIsEdit(false)
+          setShowAddModal(true)
+        },
+      })
+
+      actions.push(() => ({
         icon: 'edit',
         tooltip: `${t('messages.edit_acr')}`,
         onClick: (event, rowData) => handleEdit(rowData),
-      }
-    })
-  }
+      }))
+    }
+
+    setMyActions(actions)
+  }, [cedarPermissions])
 
   const validationSchema = Yup.object().shape({
     source: Yup.string().required(`${t('fields.source')} is Required!`),
@@ -80,35 +103,41 @@ function AliasesListPage() {
     },
   })
 
-  const handleSubmit = (values) => {
-    const userAction = {}
-    const postBody = {}
-    let value = configuration.acrMappings
+  const handleSubmit = useCallback(
+    (values) => {
+      const userAction = {}
+      const postBody = {}
+      let value = configuration.acrMappings
 
-    if (isEdit) {
-      delete value[selectedRow.mapping]
-    }
-    value = { ...value, [values.mapping]: values.source }
-    postBody['requestBody'] = [
-      {
-        path: '/acrMappings',
-        value: value,
-        op: configuration?.acrMappings ? 'replace' : 'add',
-      },
-    ]
+      if (isEdit) {
+        delete value[selectedRow.mapping]
+      }
+      value = { ...value, [values.mapping]: values.source }
+      postBody['requestBody'] = [
+        {
+          path: '/acrMappings',
+          value: value,
+          op: configuration?.acrMappings ? 'replace' : 'add',
+        },
+      ]
 
-    buildPayload(userAction, 'changes', postBody)
-    dispatch(patchJsonConfig({ action: userAction }))
-    setShowAddModal(false)
-  }
+      buildPayload(userAction, 'changes', postBody)
+      dispatch(patchJsonConfig({ action: userAction }))
+      setShowAddModal(false)
+    },
+    [configuration, isEdit, selectedRow, dispatch],
+  )
 
-  const handleEdit = (rowData) => {
-    setIsEdit(true)
-    formik.setFieldValue('source', rowData.source)
-    formik.setFieldValue('mapping', rowData.mapping)
-    setSelectedRow(rowData)
-    setShowAddModal(true)
-  }
+  const handleEdit = useCallback(
+    (rowData) => {
+      setIsEdit(true)
+      formik.setFieldValue('source', rowData.source)
+      formik.setFieldValue('mapping', rowData.mapping)
+      setSelectedRow(rowData)
+      setShowAddModal(true)
+    },
+    [formik],
+  )
 
   useEffect(() => {
     dispatch(getJsonConfig({ action: {} }))
@@ -127,17 +156,17 @@ function AliasesListPage() {
   return (
     <>
       <>
-        <GluuViewWrapper canShow={hasPermission(permissions, SCOPE_READ)}>
+        <GluuViewWrapper canShow={hasCedarPermission(SCOPE_READ)}>
           <MaterialTable
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: (props) => (
+              Pagination: () => (
                 <TablePagination
                   count={listData?.length}
                   page={pageNumber}
-                  onPageChange={(prop, page) => {}}
+                  onPageChange={() => {}}
                   rowsPerPage={10}
-                  onRowsPerPageChange={(prop, count) => {}}
+                  onRowsPerPageChange={() => {}}
                 />
               ),
             }}
@@ -170,14 +199,14 @@ function AliasesListPage() {
               actionsColumnIndex: -1,
             }}
             editable={{
-              isDeleteHidden: () => false,
+              isDeleteHidden: () => !hasCedarPermission(SCOPE_WRITE),
               onRowDelete: (oldData) => {
                 try {
-                  return new Promise((resolve, reject) => {
+                  return new Promise((resolve) => {
                     const userAction = {}
                     const postBody = {}
 
-                    let value = configuration?.acrMappings
+                    const value = { ...configuration?.acrMappings }
                     delete value[oldData.mapping]
 
                     postBody['requestBody'] = [
@@ -192,7 +221,9 @@ function AliasesListPage() {
                     dispatch(patchJsonConfig({ action: userAction }))
                     resolve(true)
                   })
-                } catch (error) {}
+                } catch (error) {
+                  console.error('Error deleting row:', error)
+                }
               },
             }}
           />

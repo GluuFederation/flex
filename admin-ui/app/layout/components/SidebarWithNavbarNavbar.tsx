@@ -16,10 +16,11 @@ import { NavbarActivityFeed } from './NavbarActivityFeed'
 import { NavbarMessages } from './NavbarMessages'
 import { NavbarUser } from './NavbarUser'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
+import type { SidebarWithNavbarNavbarProps, LayoutThemeContext } from './types'
 
-export const SidebarWithNavbarNavbar = () => (
+export const SidebarWithNavbarNavbar: React.FC<SidebarWithNavbarNavbarProps> = () => (
   <ThemeConsumer>
-    {({ color }) => (
+    {({ color }: LayoutThemeContext) => (
       <React.Fragment>
         {/*    First Navbar    */}
         <Navbar light expand fluid className="bg-white pb-0 pb-lg-2">

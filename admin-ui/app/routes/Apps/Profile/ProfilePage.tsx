@@ -1,8 +1,9 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useCallback } from 'react'
 import { Container, Row, Col, Card, CardBody, Button, Badge, AvatarImage } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { useDispatch, useSelector } from 'react-redux'
+import type { AnyAction } from '@reduxjs/toolkit'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from '../../../context/theme/themeContext'
 import SetTitle from 'Utils/SetTitle'
@@ -12,8 +13,10 @@ import { useNavigate } from 'react-router'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
 import { setSelectedUserData } from 'Plugins/user-management/redux/features/userSlice'
-import { USER_WRITE, hasPermission } from 'Utils/PermChecker'
+import { USER_WRITE } from 'Utils/PermChecker'
 import getThemeColor from '../../../context/theme/config'
+import { useCedarling } from '@/cedarling'
+import type { RootState as RootStateOfRedux } from '@/cedarling/types'
 
 // --- TypeScript interfaces ---
 interface CustomAttribute {
@@ -33,7 +36,7 @@ interface ProfileDetails {
 interface UserInfo {
   inum?: string
   family_name?: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface ProfileDetailsState {
@@ -55,24 +58,50 @@ interface RootState {
 
 interface ThemeContextType {
   state: { theme: string }
-  dispatch: React.Dispatch<any>
+  dispatch: React.Dispatch<React.SetStateAction<unknown>>
 }
+
+// Theme colors interface
+interface ThemeColors {
+  fontColor: string
+  background: string
+  lightBackground: string
+  menu: {
+    background: string
+    color: string
+  }
+  dashboard: {
+    supportCard: string
+  }
+  [key: string]: unknown
+}
+
+// Redux dispatch type
+type AppDispatch = (action: AnyAction) => void
+
+// Component props type
+interface ProfileDetailsProps {}
 // --- End TypeScript interfaces ---
 
-const ProfileDetails = () => {
+const ProfileDetails: React.FC<ProfileDetailsProps> = () => {
   const { t } = useTranslation()
   const { loading, profileDetails } = useSelector((state: RootState) => state.profileDetailsReducer)
-  const scopes = useSelector((state: RootState) =>
-    state.token ? state.token.scopes : state.authReducer.permissions,
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootStateOfRedux) => state.cedarPermissions,
   )
   const { userinfo } = useSelector((state: RootState) => state.authReducer)
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(theme.state.theme as string)
+  const themeColors: ThemeColors = getThemeColor(theme.state.theme)
   const navigate = useNavigate()
   const { classes } = styles()
+
+  // Set page title
   SetTitle(t('titles.profile_detail'))
-  const dispatch = useDispatch()
+
+  const dispatch = useDispatch() as AppDispatch
+
+  const { hasCedarPermission, authorize } = useCedarling()
 
   useEffect(() => {
     if (userinfo?.inum) {
@@ -80,15 +109,21 @@ const ProfileDetails = () => {
     }
   }, [dispatch, userinfo?.inum])
 
-  const navigateToUserManagement = () => {
+  useEffect(() => {
+    authorize([USER_WRITE]).catch(console.error)
+  }, [])
+
+  useEffect(() => {}, [cedarPermissions])
+
+  const navigateToUserManagement = useCallback((): void => {
     if (profileDetails) {
       dispatch(setSelectedUserData(profileDetails))
-      navigate(`/user/usermanagement/edit/:` + profileDetails.inum)
+      navigate(`/user/usermanagement/edit/:${profileDetails.inum}`)
     }
-  }
+  }, [profileDetails, dispatch, navigate])
 
   const jansAdminUIRole = profileDetails?.customAttributes?.find(
-    (att: CustomAttribute) => att?.name === 'jansAdminUIRole',
+    (att: CustomAttribute): boolean => att?.name === 'jansAdminUIRole',
   )
 
   return (
@@ -96,7 +131,7 @@ const ProfileDetails = () => {
       <Container>
         <Row className={classes.centerCard}>
           <Col xs={10} md={8} lg={5}>
-            <Card>
+            <Card className="" type="" color={null}>
               <CardBody className={classes.profileCard}>
                 <React.Fragment>
                   <Box className={`${classes.avatar_wrapper} d-flex justify-content-center my-3`}>
@@ -182,16 +217,18 @@ const ProfileDetails = () => {
                               alignItems={'end'}
                               justifyContent={'end'}
                             >
-                              {jansAdminUIRole?.values.map((role: string, index: number) => (
-                                <Badge
-                                  style={{ padding: '4px 6px' }}
-                                  color={`primary-${selectedTheme}`}
-                                  className="me-1"
-                                  key={index}
-                                >
-                                  <span style={{ color: themeColors.fontColor }}>{role}</span>
-                                </Badge>
-                              ))}
+                              {jansAdminUIRole?.values.map(
+                                (role: string, index: number): JSX.Element => (
+                                  <Badge
+                                    style={{ padding: '4px 6px' }}
+                                    color={`primary-${selectedTheme}`}
+                                    className="me-1"
+                                    key={index}
+                                  >
+                                    <span style={{ color: themeColors.fontColor }}>{role}</span>
+                                  </Badge>
+                                ),
+                              )}
                             </Box>
                           )}
                         </Box>
@@ -212,7 +249,7 @@ const ProfileDetails = () => {
                       )}
                       <Divider />
                     </Box>
-                    {hasPermission(scopes, USER_WRITE) ? (
+                    {hasCedarPermission(USER_WRITE) ? (
                       <>
                         {loading ? (
                           <Skeleton animation="wave" height={40} />

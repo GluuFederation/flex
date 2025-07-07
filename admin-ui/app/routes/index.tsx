@@ -9,15 +9,13 @@ import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
 
 // ----------- Layout Imports ---------------
 import { processRoutes } from 'Plugins/PluginMenuResolver'
-import { hasPermission } from 'Utils/PermChecker'
+
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
 import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
 
 const DashboardPage = lazy(() => import('./Dashboards/DashboardPage'))
-const HealthPage = lazy(() => import('./Health/HealthPage'))
-const LicenseDetailsPage = lazy(() => import('./License/LicenseDetailsPage'))
 const ProfilePage = lazy(() => import('./Apps/Profile/ProfilePage'))
 const Gluu404Error = lazy(() => import('./Apps/Gluu/Gluu404Error'))
 const ByeBye = lazy(() => import('./Pages/ByeBye'))
@@ -25,18 +23,14 @@ const GluuNavBar = lazy(() => import('./Apps/Gluu/GluuNavBar'))
 const DefaultSidebar = lazy(() => import('./../layout/components/DefaultSidebar'))
 
 //------ Route Definitions --------
-// eslint-disable-next-line no-unused-vars
+
 export const RoutedContent = () => {
-  const scopes = useSelector((state: any) =>
-    state.token ? state.token.scopes : state.authReducer.permissions,
-  )
   const [pluginMenus, setPluginMenus] = useState<Array<any>>([])
   useEffect(() => {
     setPluginMenus(processRoutes())
   }, [])
 
-  const { userinfo } = useSelector((state: any) => state.authReducer)
-  const config = useSelector((state: any) => state.authReducer.config)
+  const { userinfo, config } = useSelector((state: any) => state.authReducer)
 
   useEffect(() => {
     if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length === 0) {
@@ -67,12 +61,10 @@ export const RoutedContent = () => {
       <Route path="/layouts/sidebar-with-navbar" element={<SidebarWithNavbar />} />
 
       {/* -------- Plugins ---------*/}
-      {pluginMenus.map(
-        (item, key) =>
-          hasPermission(scopes, item.permission) && (
-            <Route key={key} path={item.path} element={<item.component />} />
-          ),
-      )}
+      {pluginMenus.map((item, key) => (
+        <Route key={key} path={item.path} element={<item.component />} />
+      ))}
+
       {/*    Pages Routes    */}
       <Route
         element={

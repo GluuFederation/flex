@@ -1,9 +1,11 @@
+import React from 'react'
 import { SidebarMenu, SidebarMenuItem } from 'Components'
 import { auditLogoutLogs } from '../../../plugins/user-management/redux/features/userSlice'
 import { useDispatch } from 'react-redux'
+import type { SidebarMiddleNavProps, LayoutDispatch } from './types'
 
-export const SidebarMiddleNav = () => {
-  const dispatch = useDispatch()
+export const SidebarMiddleNav: React.FC<SidebarMiddleNavProps> = () => {
+  const dispatch = useDispatch() as LayoutDispatch
   return (
     <SidebarMenu>
       {/* -------- Home ---------*/}

@@ -8,7 +8,8 @@ import ClientActiveTokens from './ClientActiveTokens'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
-import { hasPermission, CLIENT_WRITE } from 'Utils/PermChecker'
+import { CLIENT_WRITE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import ClientTokensPanel from './ClientTokensPanel'
@@ -19,7 +20,7 @@ import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
 import { toast } from 'react-toastify'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import { cloneDeep } from 'lodash'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
@@ -42,7 +43,7 @@ function ClientWizardForm({
   viewOnly,
   scopes,
   scripts,
-  permissions,
+
   customOnSubmit,
   oidcConfiguration,
   umaResources,
@@ -50,6 +51,7 @@ function ClientWizardForm({
   modifiedFields,
   setModifiedFields,
 }) {
+  const { hasCedarPermission, authorize } = useCedarling()
   const formRef = useRef()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -57,6 +59,20 @@ function ClientWizardForm({
   const [modal, setModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(sequence[0])
   const dispatch = useDispatch()
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      try {
+        await authorize([CLIENT_WRITE])
+      } catch (error) {
+        console.error('Error authorizing client permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [])
 
   const initialValues = {
     inum: client_data.inum,
@@ -184,6 +200,7 @@ function ClientWizardForm({
       dispatch(setClientSelectedScopes([]))
     }
   }, [])
+  useEffect(() => {}, [cedarPermissions])
 
   const activeClientStep = (formik) => {
     switch (currentStep) {
@@ -338,7 +355,7 @@ function ClientWizardForm({
           innerRef={formRef}
           initialValues={initialValues}
           onSubmit={(...args) => {
-            let values = {
+            const values = {
               ...args[0],
               accessTokenAsJwt: args[0]?.accessTokenAsJwt && JSON.parse(args[0]?.accessTokenAsJwt),
               rptAsJwt: args[0]?.rptAsJwt && JSON.parse(args[0]?.rptAsJwt),
@@ -496,7 +513,7 @@ function ClientWizardForm({
                           <i className="fa fa-angle-right ms-2"></i>
                         </Button>
                       )}
-                      {!viewOnly && hasPermission(permissions, CLIENT_WRITE) && (
+                      {!viewOnly && hasCedarPermission(CLIENT_WRITE) && (
                         <Button
                           type="button"
                           color={`primary-${selectedTheme}`}

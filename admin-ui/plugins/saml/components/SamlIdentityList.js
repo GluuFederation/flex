@@ -4,7 +4,8 @@ import { getSamlIdentites, deleteSamlIdentity } from 'Plugins/saml/redux/feature
 import MaterialTable from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { hasPermission, SAML_READ, SAML_WRITE, SAML_DELETE, buildPayload } from 'Utils/PermChecker'
+import { SAML_READ, SAML_WRITE, SAML_DELETE, buildPayload } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -33,6 +34,7 @@ export const getTableCols = (t) => {
 }
 
 const SamlIdentityList = () => {
+  const { hasCedarPermission, authorize } = useCedarling()
   const options = {}
   const theme = useContext(ThemeContext)
   const themeColors = getThemeColor(theme.state.theme)
@@ -50,13 +52,24 @@ const SamlIdentityList = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const { items, loadingSamlIdp, totalItems } = useSelector((state) => state.idpSamlReducer)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
+  // Permission initialization
+  useEffect(() => {
+    const initPermissions = async () => {
+      const permissions = [SAML_READ, SAML_WRITE, SAML_DELETE]
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+    }
+    initPermissions()
+  }, [])
 
   useEffect(() => {
     makeOptions()
     dispatch(getSamlIdentites(options))
-  }, [])
+  }, [cedarPermissions])
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
     navigate('/saml/identity-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
@@ -98,7 +111,7 @@ const SamlIdentityList = () => {
 
   const onPageChangeClick = (page) => {
     makeOptions()
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
@@ -116,7 +129,7 @@ const SamlIdentityList = () => {
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
   const PaginationWrapper = useCallback(
-    (props) => (
+    () => (
       <TablePagination
         count={totalItems}
         page={pageNumber}
@@ -145,7 +158,7 @@ const SamlIdentityList = () => {
 
   return (
     <>
-      <GluuViewWrapper canShow={hasPermission(permissions, SAML_READ)}>
+      <GluuViewWrapper canShow={hasCedarPermission(SAML_READ)}>
         <MaterialTable
           components={{
             Container: PaperContainer,
@@ -165,13 +178,13 @@ const SamlIdentityList = () => {
                 delete data.tableData
                 handleGoToEditPage(data)
               },
-              disabled: !hasPermission(permissions, SAML_WRITE),
+              disabled: !hasCedarPermission(SAML_WRITE),
             },
             {
               icon: 'visibility',
               tooltip: `${t('messages.view_identity_provider')}`,
               onClick: (event, rowData) => handleGoToEditPage(rowData, true),
-              disabled: !hasPermission(permissions, SAML_READ),
+              disabled: !hasCedarPermission(SAML_READ),
             },
             {
               icon: DeleteOutlinedIcon,
@@ -180,7 +193,7 @@ const SamlIdentityList = () => {
               },
               tooltip: `${t('messages.delete_identity_provider')}`,
               onClick: (event, rowData) => handleDelete(rowData),
-              disabled: !hasPermission(permissions, SAML_DELETE),
+              disabled: !hasCedarPermission(SAML_DELETE),
             },
             {
               icon: GluuSearch,
@@ -206,7 +219,7 @@ const SamlIdentityList = () => {
               iconProps: { color: 'primary' },
               isFreeAction: true,
               onClick: () => handleGoToAddPage(),
-              disabled: !hasPermission(permissions, SAML_WRITE),
+              disabled: !hasCedarPermission(SAML_WRITE),
             },
           ]}
           options={{
@@ -222,7 +235,7 @@ const SamlIdentityList = () => {
           }}
         />
       </GluuViewWrapper>
-      {hasPermission(permissions, SAML_DELETE) && (
+      {hasCedarPermission(SAML_DELETE) && (
         <GluuDialog
           row={item}
           name={item?.displayName || ''}

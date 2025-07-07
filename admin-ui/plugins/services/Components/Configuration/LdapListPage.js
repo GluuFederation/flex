@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { useCedarling } from '@/cedarling'
 import { Badge } from 'reactstrap'
 import { Paper } from '@mui/material'
 import { Card, CardBody } from 'Components'
@@ -12,7 +13,7 @@ import LdapDetailPage from './LdapDetailPage'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
-import { hasPermission, buildPayload, LDAP_READ, LDAP_WRITE, LDAP_DELETE } from 'Utils/PermChecker'
+import { buildPayload, LDAP_READ, LDAP_WRITE, LDAP_DELETE } from 'Utils/PermChecker'
 import {
   getLdapConfig,
   setCurrentItem,
@@ -27,122 +28,176 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
 function LdapListPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const ldapConfigurations = useSelector((state) => state.ldapReducer.ldap)
   const loading = useSelector((state) => state.ldapReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const testStatus = useSelector((state) => state.ldapReducer.testStatus)
   const persistenceType = useSelector((state) => state.persistenceTypeReducer.type)
   const persistenceTypeLoading = useSelector((state) => state.persistenceTypeReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getLdapConfig())
-    dispatch(getPersistenceType())
-  }, [])
-  const { t } = useTranslation()
-  const userAction = {}
-  const myActions = []
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  // State for managing actions and UI
+  const [myActions, setMyActions] = useState([])
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const [testRunning, setTestRunning] = useState(false)
-  const pageSize = localStorage.getItem('paggingSize') || 10
   const [alertObj, setAlertObj] = useState({
     severity: '',
     message: '',
     show: false,
   })
+
+  // Theme and styling
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+
+  // Constants
+  const userAction = {}
+  const pageSize = localStorage.getItem('paggingSize') || 10
+
   SetTitle(t('titles.ldap_authentication'))
-  const toggle = () => setModal(!modal)
 
-  function handleGoToLdapEditPage(row) {
-    dispatch(setCurrentItem({ item: row }))
-    return navigate(`/config/ldap/edit/:` + row.configId)
-  }
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      const permissions = [LDAP_READ, LDAP_WRITE, LDAP_DELETE]
+      try {
+        for (const permission of permissions) {
+          await authorize([permission])
+        }
+      } catch (error) {
+        console.error('Error authorizing LDAP permissions:', error)
+      }
+    }
 
-  function handleLdapDelete(row) {
+    authorizePermissions()
+    dispatch(getLdapConfig())
+    dispatch(getPersistenceType())
+  }, [dispatch])
+
+  // Navigation handlers
+  const handleGoToLdapEditPage = useCallback(
+    (row) => {
+      dispatch(setCurrentItem({ item: row }))
+      return navigate(`/config/ldap/edit/:` + row.configId)
+    },
+    [dispatch, navigate],
+  )
+
+  const handleLdapDelete = useCallback((row) => {
     setItem(row)
     toggle()
-  }
-  function handleGoToLdapAddPage() {
+  }, [])
+
+  const handleGoToLdapAddPage = useCallback(() => {
     return navigate('/config/ldap/new')
-  }
+  }, [navigate])
 
-  if (hasPermission(permissions, LDAP_WRITE)) {
-    myActions.push((rowData) => ({
-      icon: 'edit',
-      iconProps: {
-        id: 'editLdap' + rowData.configId,
-      },
-      tooltip: `${t('tooltips.edit_ldap')}`,
-      onClick: (event, rowData) => handleGoToLdapEditPage(rowData),
-      disabled: !hasPermission(permissions, LDAP_WRITE),
-    }))
-  }
+  const toggle = useCallback(() => setModal(!modal), [modal])
 
-  if (hasPermission(permissions, LDAP_READ)) {
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('tooltips.refresh_data')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => {
-        dispatch(getLdapConfig())
-      },
-    })
-  }
-  if (hasPermission(permissions, LDAP_DELETE)) {
-    myActions.push((rowData) => ({
-      icon: () => <DeleteOutlined />,
-      iconProps: {
-        color: 'secondary',
-        id: 'deleteLdap' + rowData.configId,
-      },
-      tooltip: `${t('tooltips.delete_record')}`,
-      onClick: (event, rowData) => handleLdapDelete(rowData),
-      disabled: !hasPermission(permissions, LDAP_DELETE),
-    }))
-  }
-  if (hasPermission(permissions, LDAP_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('tooltips.add_ldap')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => handleGoToLdapAddPage(),
-    })
-  }
+  // Build actions based on permissions
+  useEffect(() => {
+    const actions = []
 
-  function getBadgeTheme(status) {
-    if (status) {
-      return `primary-${selectedTheme}`
-    } else {
-      return 'warning'
+    if (hasCedarPermission(LDAP_WRITE)) {
+      actions.push((rowData) => ({
+        icon: 'edit',
+        iconProps: {
+          id: 'editLdap' + rowData.configId,
+        },
+        tooltip: `${t('tooltips.edit_ldap')}`,
+        onClick: (event, rowData) => handleGoToLdapEditPage(rowData),
+        disabled: false,
+      }))
     }
-  }
-  function onDeletionConfirmed(message) {
-    buildPayload(userAction, message, item.configId)
-    dispatch(deleteLdap({ configId: item.configId }))
-    navigate('/config/ldap')
-    toggle()
-  }
-  function testLdapConnect(row) {
-    const testPromise = new Promise(function (resolve, reject) {
-      setAlertObj({ ...alertObj, show: false })
-      dispatch(resetTestLdap())
-      resolve()
-    })
 
-    testPromise.then(() => {
-      setTestRunning(true)
-      dispatch(testLdap({ data: row }))
-    })
-  }
+    if (hasCedarPermission(LDAP_READ)) {
+      actions.push({
+        icon: 'refresh',
+        tooltip: `${t('tooltips.refresh_data')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => {
+          dispatch(getLdapConfig())
+        },
+      })
+    }
+
+    if (hasCedarPermission(LDAP_DELETE)) {
+      actions.push((rowData) => ({
+        icon: () => <DeleteOutlined />,
+        iconProps: {
+          color: 'secondary',
+          id: 'deleteLdap' + rowData.configId,
+        },
+        tooltip: `${t('tooltips.delete_record')}`,
+        onClick: (event, rowData) => handleLdapDelete(rowData),
+        disabled: false,
+      }))
+    }
+
+    if (hasCedarPermission(LDAP_WRITE)) {
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('tooltips.add_ldap')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => handleGoToLdapAddPage(),
+      })
+    }
+
+    setMyActions(actions)
+  }, [
+    hasCedarPermission,
+    t,
+    dispatch,
+    handleGoToLdapEditPage,
+    handleLdapDelete,
+    handleGoToLdapAddPage,
+  ])
+
+  const getBadgeTheme = useCallback(
+    (status) => {
+      if (status) {
+        return `primary-${selectedTheme}`
+      } else {
+        return 'warning'
+      }
+    },
+    [selectedTheme],
+  )
+
+  const onDeletionConfirmed = useCallback(
+    (message) => {
+      buildPayload(userAction, message, item.configId)
+      dispatch(deleteLdap({ configId: item.configId }))
+      navigate('/config/ldap')
+      toggle()
+    },
+    [item.configId, navigate, toggle, dispatch],
+  )
+
+  const testLdapConnect = useCallback(
+    (row) => {
+      const testPromise = new Promise(function (resolve) {
+        setAlertObj({ ...alertObj, show: false })
+        dispatch(resetTestLdap())
+        resolve()
+      })
+
+      testPromise.then(() => {
+        setTestRunning(true)
+        dispatch(testLdap({ data: row }))
+      })
+    },
+    [alertObj, dispatch],
+  )
 
   useEffect(() => {
     dispatch(resetTestLdap())
@@ -170,6 +225,26 @@ function LdapListPage() {
       })
     }
   }, [testStatus])
+  useEffect(() => {}, [cedarPermissions])
+
+  // MaterialTable options
+  const tableOptions = {
+    search: true,
+    selection: false,
+    pageSize: pageSize,
+    headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+    actionsColumnIndex: -1,
+  }
+
+  // Container and DetailPanel components
+  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+
+  const DetailPanel = useCallback(
+    (rowData) => {
+      return <LdapDetailPage row={rowData.rowData} testLdapConnection={testLdapConnect} />
+    },
+    [testLdapConnect],
+  )
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -178,7 +253,7 @@ function LdapListPage() {
           {persistenceType == `ldap` ? (
             <MaterialTable
               components={{
-                Container: (props) => <Paper {...props} elevation={0} />,
+                Container: PaperContainer,
               }}
               columns={[
                 { title: `${t('fields.configuration_id')}`, field: 'configId' },
@@ -198,16 +273,8 @@ function LdapListPage() {
               isLoading={loading}
               title=""
               actions={myActions}
-              options={{
-                search: true,
-                selection: false,
-                pageSize: pageSize,
-                headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
-                actionsColumnIndex: -1,
-              }}
-              detailPanel={(rowData) => {
-                return <LdapDetailPage row={rowData.rowData} testLdapConnection={testLdapConnect} />
-              }}
+              options={tableOptions}
+              detailPanel={DetailPanel}
             />
           ) : (
             <Alert severity="info">

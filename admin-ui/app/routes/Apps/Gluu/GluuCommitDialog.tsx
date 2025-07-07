@@ -10,8 +10,6 @@ import {
   ModalBody,
   ModalFooter,
   Collapse,
-  Card,
-  CardBody,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -20,7 +18,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
-import { hasPermission, WEBHOOK_READ } from 'Utils/PermChecker'
+import { WEBHOOK_READ } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -35,8 +34,9 @@ const GluuCommitDialog = ({
   inputType,
   feature,
 }: any) => {
-  const permissions = useSelector((state: any) => state.authReducer.permissions)
   const { t } = useTranslation()
+  const { hasCedarPermission } = useCedarling()
+
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [active, setActive] = useState(false)
@@ -89,7 +89,7 @@ const GluuCommitDialog = ({
   }
   return (
     <>
-      {(webhookModal || loadingWebhooks) && hasPermission(permissions, WEBHOOK_READ) ? (
+      {(webhookModal || loadingWebhooks) && hasCedarPermission(WEBHOOK_READ) ? (
         <>{webhookTriggerModal({ closeModal })}</>
       ) : (
         <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">

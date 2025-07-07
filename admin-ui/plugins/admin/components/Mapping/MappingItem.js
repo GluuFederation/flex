@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef, useContext } from 'react'
 import { Row, Badge, Col, Button, FormGroup, Accordion, Form } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import { DeleteOutlined } from '@mui/icons-material'
-import { hasPermission, MAPPING_WRITE, MAPPING_DELETE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
+import { MAPPING_WRITE, MAPPING_DELETE } from 'Utils/PermChecker'
 import {
   updateMapping,
   addPermissionsToRole,
@@ -19,14 +20,32 @@ import { useTranslation } from 'react-i18next'
 function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const { hasCedarPermission, authorize } = useCedarling()
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
-  const authPermissions = useSelector((state) => state.authReducer.permissions)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
   const [searchablePermissions, setSearchAblePermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
   const [isDeleteable, setIsDeleteable] = useState(false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+
+  const authorizePermissions = async () => {
+    const permissions = [MAPPING_WRITE, MAPPING_DELETE]
+    try {
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+    } catch (error) {
+      console.error('Error authorizing mapping permissions:', error)
+    }
+  }
+
+  useEffect(() => {
+    authorizePermissions()
+    setServerPermissionsToLocalState()
+  }, [])
 
   useEffect(() => {
     if (roles) {
@@ -65,12 +84,8 @@ function MappingItem({ candidate, roles }) {
   }
 
   useEffect(() => {
-    setServerPermissionsToLocalState()
-  }, [false])
-
-  useEffect(() => {
     getPermissionsForSearch()
-  }, [permissions, candidate?.permissions?.length])
+  }, [permissions, candidate?.permissions?.length, cedarPermissions])
 
   const doRemove = (id, role) => {
     dispatch(
@@ -140,7 +155,7 @@ function MappingItem({ candidate, roles }) {
             </Accordion.Header>
             <Accordion.Body>
               <div style={{ marginTop: 10 }}></div>
-              {hasPermission(authPermissions, MAPPING_WRITE) ? (
+              {hasCedarPermission(MAPPING_WRITE) && (
                 <Formik initialValues={initialValues} onSubmit={handleAddPermission}>
                   {(formik) => (
                     <>
@@ -174,11 +189,11 @@ function MappingItem({ candidate, roles }) {
                     </>
                   )}
                 </Formik>
-              ) : null}
+              )}
               {candidate.permissions.map((permission, id) => (
                 <Row key={id}>
                   <Col sm={10}>{permission}</Col>
-                  {hasPermission(authPermissions, MAPPING_DELETE) ? (
+                  {hasCedarPermission(MAPPING_DELETE) ? (
                     <Col sm={2}>
                       <Button
                         type="button"
@@ -199,7 +214,7 @@ function MappingItem({ candidate, roles }) {
               ))}
               {/* Bottom Buttons  */}
               <FormGroup row />
-              {hasPermission(authPermissions, MAPPING_WRITE) ? (
+              {hasCedarPermission(MAPPING_WRITE) ? (
                 <Row>
                   <Col sm={6}>
                     <Button

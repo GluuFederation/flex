@@ -9,6 +9,7 @@ import {
   setSelectedUserData,
   deleteUser,
   getUser2FADetails,
+  updateUser,
 } from '../../redux/features/userSlice'
 
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
@@ -18,7 +19,8 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useNavigate } from 'react-router-dom'
-import { hasPermission, USER_WRITE, USER_READ, USER_DELETE } from 'Utils/PermChecker'
+import { USER_WRITE, USER_READ, USER_DELETE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
@@ -34,10 +36,28 @@ import moment from 'moment'
 import { deleteFido2DeviceData } from '../../../fido/redux/features/fidoSlice'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 
-function UserList(props) {
+function UserList() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
   const renders = useRef(0)
   const opt = {}
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      const permissions = [USER_READ, USER_WRITE, USER_DELETE]
+      try {
+        for (const permission of permissions) {
+          await authorize([permission])
+        }
+      } catch (error) {
+        console.error('Error authorizing User permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [])
+
   useEffect(() => {
     opt['limit'] = 10
     dispatch(getUsers({ action: opt }))
@@ -47,8 +67,8 @@ function UserList(props) {
   const [pageNumber, setPageNumber] = useState(0)
   const usersList = useSelector((state) => state.userReducer.items)
   const loading = useSelector((state) => state.userReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const token = useSelector((state) => state.authReducer.token.access_token)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [isViewDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -138,7 +158,7 @@ function UserList(props) {
     )
   }, [limit, pattern, handleOptionsChange])
 
-  if (hasPermission(permissions, USER_READ)) {
+  if (hasCedarPermission(USER_READ)) {
     myActions.push({
       icon: GluuSearch,
       tooltip: `${t('messages.advanced_search')}`,
@@ -146,8 +166,6 @@ function UserList(props) {
       isFreeAction: true,
       onClick: () => {},
     })
-  }
-  if (hasPermission(permissions, USER_READ)) {
     myActions.push({
       icon: 'refresh',
       tooltip: `${t('messages.refresh')}`,
@@ -160,7 +178,8 @@ function UserList(props) {
       },
     })
   }
-  if (hasPermission(permissions, USER_WRITE)) {
+
+  if (hasCedarPermission(USER_WRITE)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
@@ -168,19 +187,14 @@ function UserList(props) {
       isFreeAction: true,
       onClick: () => handleGoToUserAddPage(),
     })
-  }
-  if (hasPermission(permissions, USER_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
         id: 'editScope' + rowData.inum,
       },
       onClick: (event, rowData) => handleGoToUserEditPage(rowData),
-      disabled: !hasPermission(permissions, USER_WRITE),
+      disabled: !hasCedarPermission(USER_WRITE),
     }))
-  }
-
-  if (hasPermission(permissions, USER_READ)) {
     myActions.push((rowData) => ({
       icon: LockedOpenIcon,
       iconProps: {
@@ -188,11 +202,11 @@ function UserList(props) {
       },
       tooltip: `${t('messages.credentials')}`,
       onClick: (event, rowData) => handleView2FADetails(rowData),
-      disabled: !hasPermission(permissions, USER_WRITE),
+      disabled: !hasCedarPermission(USER_WRITE),
     }))
   }
 
-  if (hasPermission(permissions, USER_DELETE)) {
+  if (hasCedarPermission(USER_DELETE)) {
     myActions.push((rowData) => ({
       icon: DeleteOutlinedIcon,
       iconProps: {
@@ -208,9 +222,9 @@ function UserList(props) {
   }
 
   const onPageChangeClick = (page) => {
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount)
-    options['limit'] = limyActionsmit
+    options['limit'] = limit
     options['pattern'] = pattern
     setPageNumber(page)
     dispatch(getUsers({ action: options }))
@@ -224,7 +238,7 @@ function UserList(props) {
   }
 
   const updateUserData = (values) => {
-    let submitableValues = {
+    const submitableValues = {
       inum: userDetails.inum,
       userId: userDetails.userId || '',
       dn: userDetails.dn,
@@ -251,12 +265,12 @@ function UserList(props) {
   }
 
   useEffect(() => {
-    let usedAttributes = []
+    const usedAttributes = []
     if (usersList?.length && renders.current < 1) {
       renders.current = 1
-      for (let i in usersList) {
-        for (let j in usersList[i].customAttributes) {
-          let val = usersList[i].customAttributes[j].name
+      for (const i in usersList) {
+        for (const j in usersList[i].customAttributes) {
+          const val = usersList[i].customAttributes[j].name
           if (!usedAttributes.includes(val)) {
             usedAttributes.push(val)
           }
@@ -310,7 +324,7 @@ function UserList(props) {
   const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
 
   const PaginationWrapper = useCallback(
-    (props) => (
+    () => (
       <TablePagination
         count={totalItems}
         page={pageNumber}
@@ -360,7 +374,7 @@ function UserList(props) {
           editable={{
             isDeleteHidden: () => false,
             onRowDelete: (oldData) => {
-              return new Promise((resolve, reject) => {
+              return new Promise((resolve) => {
                 handleRemove2Fa(oldData)
                 resolve()
               })
@@ -372,7 +386,7 @@ function UserList(props) {
 
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasPermission(permissions, USER_READ)}>
+          <GluuViewWrapper canShow={hasCedarPermission(USER_READ)}>
             <MaterialTable
               key={limit}
               components={{

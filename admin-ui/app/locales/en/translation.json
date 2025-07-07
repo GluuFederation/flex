@@ -940,7 +940,8 @@
     "filters": "Filters",
     "expiration_date": "Expiration Date",
     "authentication_date": "Authentication Date",
-    "creation_date": "Creation Date"
+    "creation_date": "Creation Date",
+    "no_Cedar": "You do not have any authorized component to view"
   },
   "links": {
     "support": "https://support.gluu.org/"

@@ -3,16 +3,11 @@ import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
 import { Card, CardBody } from 'Components'
+import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
-import {
-  hasPermission,
-  ASSETS_WRITE,
-  ASSETS_READ,
-  ASSETS_DELETE,
-  buildPayload,
-} from 'Utils/PermChecker'
+import { ASSETS_WRITE, ASSETS_READ, ASSETS_DELETE, buildPayload } from 'Utils/PermChecker'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useDispatch, useSelector } from 'react-redux'
@@ -34,18 +29,111 @@ import moment from 'moment'
 const JansAssetListPage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   SetTitle(t('titles.assets'))
   const [pageNumber, setPageNumber] = useState(0)
   const { totalItems, assets } = useSelector((state) => state.assetReducer)
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const loadingAssets = useSelector((state) => state.assetReducer.loadingAssets)
-  const myActions = []
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
+  const [myActions, setMyActions] = useState([])
   const options = {}
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
   let memoLimit = limit
   let memoPattern = pattern
+
+  // Initialize Cedar permissions
+  useEffect(() => {
+    const initPermissions = async () => {
+      const permissions = [ASSETS_READ, ASSETS_WRITE, ASSETS_DELETE]
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+    }
+    initPermissions()
+    dispatch(getAssetTypes({ action: options }))
+    options['limit'] = 10
+    dispatch(fetchJansAssets({ action: options }))
+    dispatch(getAssetServices({ action: options }))
+  }, [dispatch])
+
+  useEffect(() => {
+    const actions = []
+
+    const canRead = hasCedarPermission(ASSETS_READ)
+    const canWrite = hasCedarPermission(ASSETS_WRITE)
+    const canDelete = hasCedarPermission(ASSETS_DELETE)
+
+    if (canRead) {
+      actions.push({
+        icon: () => (
+          <GluuAdvancedSearch
+            limitId={LIMIT_ID}
+            patternId={PATTERN_ID}
+            limit={limit}
+            pattern={pattern}
+            handler={handleOptionsChange}
+            showLimit={false}
+          />
+        ),
+        tooltip: `${t('messages.advanced_search')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => {},
+      })
+
+      actions.push({
+        icon: 'refresh',
+        tooltip: `${t('messages.refresh')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: () => {
+          setLimit(memoLimit)
+          setPattern(memoPattern)
+          dispatch(fetchJansAssets({ action: { limit: memoLimit, pattern: memoPattern } }))
+        },
+      })
+    }
+
+    if (canWrite) {
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('messages.add_asset')}`,
+        iconProps: { color: 'primary' },
+        isFreeAction: true,
+        onClick: navigateToAddPage,
+      })
+
+      actions.push((rowData) => ({
+        icon: 'edit',
+        iconProps: {
+          id: 'editScope' + rowData.inum,
+        },
+        onClick: (event, rowData) => navigateToEditPage(rowData),
+        disabled: !canWrite,
+      }))
+    }
+
+    if (canDelete) {
+      actions.push((rowData) => ({
+        icon: () => <DeleteOutlined />,
+        iconProps: {
+          color: 'secondary',
+          id: 'deleteClient' + rowData.inum,
+        },
+        onClick: (event, rowData) => {
+          setDeleteData(rowData)
+          toggle()
+        },
+        disabled: false,
+      }))
+    }
+
+    setMyActions(actions)
+  }, [cedarPermissions, limit, pattern, t, navigateToAddPage, navigateToEditPage])
+
   const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
   const theme = useContext(ThemeContext)
   const themeColors = getThemeColor(theme.state.theme)
@@ -54,46 +142,53 @@ const JansAssetListPage = () => {
   const [deleteData, setDeleteData] = useState(null)
   const toggle = () => setModal(!modal)
 
-  const submitForm = (userMessage) => {
-    const userAction = {}
-    toggle()
-    buildPayload(userAction, userMessage, deleteData)
-    dispatch(deleteJansAsset({ action: userAction }))
-  }
+  const submitForm = useCallback(
+    (userMessage) => {
+      const userAction = {}
+      toggle()
+      buildPayload(userAction, userMessage, deleteData)
+      dispatch(deleteJansAsset({ action: userAction }))
+    },
+    [deleteData, dispatch],
+  )
 
-  useEffect(() => {
-    dispatch(getAssetTypes({ action: options }))
-    options['limit'] = 10
-    dispatch(fetchJansAssets({ action: options }))
-    dispatch(getAssetServices({ action: options }))
-  }, [])
-
-  function handleOptionsChange(event) {
+  const handleOptionsChange = useCallback((event) => {
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
     } else if (event.target.name == 'pattern') {
       memoPattern = event.target.value
     }
-  }
+  }, [])
 
-  const onPageChangeClick = (page) => {
-    let startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
-    options['limit'] = limit
-    options['pattern'] = pattern
-    setPageNumber(page)
-    dispatch(fetchJansAssets({ action: options }))
-  }
-  const onRowCountChangeClick = (count) => {
-    options['limit'] = count
-    options['pattern'] = pattern
-    setPageNumber(0)
-    setLimit(count)
-    dispatch(fetchJansAssets({ action: options }))
-  }
+  const onPageChangeClick = useCallback(
+    (page) => {
+      const startCount = page * limit
+      const newOptions = {
+        startIndex: parseInt(startCount),
+        limit: limit,
+        pattern: pattern,
+      }
+      setPageNumber(page)
+      dispatch(fetchJansAssets({ action: newOptions }))
+    },
+    [limit, pattern, dispatch],
+  )
+
+  const onRowCountChangeClick = useCallback(
+    (count) => {
+      const newOptions = {
+        limit: count,
+        pattern: pattern,
+      }
+      setPageNumber(0)
+      setLimit(count)
+      dispatch(fetchJansAssets({ action: newOptions }))
+    },
+    [pattern, dispatch],
+  )
 
   const PaginationWrapper = useCallback(
-    (props) => (
+    () => (
       <TablePagination
         count={totalItems}
         page={pageNumber}
@@ -110,93 +205,21 @@ const JansAssetListPage = () => {
   const navigateToAddPage = useCallback(() => {
     dispatch(setSelectedAsset({}))
     navigate('/adm/asset/add')
-  }, [])
+  }, [dispatch, navigate])
 
-  const navigateToEditPage = useCallback((data) => {
-    dispatch(setSelectedAsset(data))
-    navigate(`/adm/asset/edit/${data.inum}`)
-  }, [])
-
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-
-  const GluuSearch = useCallback(() => {
-    return (
-      <GluuAdvancedSearch
-        limitId={LIMIT_ID}
-        patternId={PATTERN_ID}
-        limit={limit}
-        pattern={pattern}
-        handler={handleOptionsChange}
-        showLimit={false}
-      />
-    )
-  }, [limit, pattern, handleOptionsChange])
-
-  if (hasPermission(permissions, ASSETS_READ)) {
-    myActions.push({
-      icon: GluuSearch,
-      tooltip: `${t('messages.advanced_search')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => {},
-    })
-  }
-
-  if (hasPermission(permissions, ASSETS_READ)) {
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => {
-        setLimit(memoLimit)
-        setPattern(memoPattern)
-        dispatch(fetchJansAssets({ action: { limit: memoLimit, pattern: memoPattern } }))
-      },
-    })
-  }
-
-  if (hasPermission(permissions, ASSETS_WRITE)) {
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('messages.add_asset')}`,
-      iconProps: { color: 'primary' },
-      isFreeAction: true,
-      onClick: () => navigateToAddPage(),
-    })
-  }
-
-  if (hasPermission(permissions, ASSETS_WRITE)) {
-    myActions.push((rowData) => ({
-      icon: 'edit',
-      iconProps: {
-        id: 'editScope' + rowData.inum,
-      },
-      onClick: (event, rowData) => navigateToEditPage(rowData),
-      disabled: !hasPermission(permissions, ASSETS_WRITE),
-    }))
-  }
-
-  if (hasPermission(permissions, ASSETS_DELETE)) {
-    myActions.push((rowData) => ({
-      icon: DeleteOutlinedIcon,
-      iconProps: {
-        color: 'secondary',
-        id: 'deleteClient' + rowData.inum,
-      },
-      onClick: (event, rowData) => {
-        setDeleteData(rowData)
-        toggle()
-      },
-      disabled: false,
-    }))
-  }
+  const navigateToEditPage = useCallback(
+    (data) => {
+      dispatch(setSelectedAsset(data))
+      navigate(`/adm/asset/edit/${data.inum}`)
+    },
+    [dispatch, navigate],
+  )
 
   return (
     <GluuLoader blocking={loadingAssets}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasPermission(permissions, ASSETS_READ)}>
+          <GluuViewWrapper canShow={hasCedarPermission(ASSETS_READ)}>
             <MaterialTable
               components={{
                 Container: PaperContainer,

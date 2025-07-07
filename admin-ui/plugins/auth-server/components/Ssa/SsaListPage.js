@@ -6,7 +6,8 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { hasPermission, SSA_PORTAL, SSA_ADMIN, buildPayload } from 'Utils/PermChecker'
+import { SSA_PORTAL, SSA_ADMIN, buildPayload } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { useTranslation } from 'react-i18next'
@@ -17,18 +18,19 @@ import { DeleteOutlined, DownloadOutlined, VisibilityOutlined } from '@mui/icons
 import SsaDetailPage from './SsaDetailPage'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
 const SSAListPage = () => {
+  const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   const userAction = {}
   const navigate = useNavigate()
   const myActions = []
   const dispatch = useDispatch()
-  const [limit, setLimit] = useState(10)
+  const [limit] = useState(10)
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
   const { items, loading } = useSelector((state) => state.ssaReducer)
-  const permissions = useSelector((state) => state.authReducer.permissions)
   const jwtData = useSelector((state) => state.ssaReducer.jwt)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const [downloadRequested, setDownloadRequested] = useState(false)
   const [viewRequested, setViewRequested] = useState(false)
   const theme = useContext(ThemeContext)
@@ -38,6 +40,23 @@ const SSAListPage = () => {
   SetTitle(t('titles.ssa_management'))
   const [ssaDialogOpen, setSsaDialogOpen] = useState(false)
   const ssaDataRef = useRef()
+
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      const permissions = [SSA_PORTAL, SSA_ADMIN]
+      try {
+        for (const permission of permissions) {
+          await authorize([permission])
+        }
+      } catch (error) {
+        console.error('Error authorizing SSA permissions:', error)
+      }
+    }
+
+    authorizePermissions()
+  }, [])
+
   useEffect(() => {
     dispatch(getSsaConfig())
   }, [])
@@ -58,6 +77,7 @@ const SSAListPage = () => {
           second: '2-digit',
           hour12: false,
         })
+        // eslint-disable-next-line no-useless-escape -- warn only
         .replace(/[\/:,]/g, '-')
         .replace(/\s/g, '_')
       link.download = `ssa-${ssaDataRef.current?.ssa.software_id}-${dateStr}.jwt`
@@ -103,22 +123,31 @@ const SSAListPage = () => {
       },
     },
   ]
+  const DeleteIcon = useCallback(() => <DeleteOutlined style={{ color: 'primary' }} />, [])
+  const DownloadIcon = useCallback(() => <DownloadOutlined style={{ color: 'primary' }} />, [])
+  const ViewIcon = useCallback(() => <VisibilityOutlined style={{ color: 'primary' }} />, [])
 
-  if (hasPermission(permissions, SSA_ADMIN)) {
+  if (hasCedarPermission(SSA_ADMIN)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_ssa')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToSsaAddPage(),
-      disabled: !hasPermission(permissions, SSA_ADMIN),
+      disabled: !hasCedarPermission(SSA_ADMIN),
     })
+    myActions.push((rowData) => ({
+      icon: DeleteIcon,
+      iconProps: {
+        sx: { color: 'red' },
+        id: rowData.org_id,
+      },
+      onClick: (event, rowData) => handleSsaDelete(rowData),
+      disabled: false,
+    }))
   }
-  const DeleteIcon = useCallback(() => <DeleteOutlined style={{ color: 'red' }} />, [])
-  const DownloadIcon = useCallback(() => <DownloadOutlined style={{ color: 'primary' }} />, [])
-  const ViewIcon = useCallback(() => <VisibilityOutlined style={{ color: 'primary' }} />, [])
 
-  if (hasPermission(permissions, SSA_PORTAL) || hasPermission(permissions, SSA_ADMIN)) {
+  if (hasCedarPermission(SSA_PORTAL) || hasCedarPermission(SSA_ADMIN)) {
     myActions.push((rowData) => ({
       icon: ViewIcon,
       iconProps: {
@@ -128,8 +157,6 @@ const SSAListPage = () => {
       onClick: (event, rowData) => handleViewSsa(rowData),
       disabled: false,
     }))
-  }
-  if (hasPermission(permissions, SSA_PORTAL) || hasPermission(permissions, SSA_ADMIN)) {
     myActions.push((rowData) => ({
       icon: DownloadIcon,
       iconProps: {
@@ -137,17 +164,6 @@ const SSAListPage = () => {
         id: rowData.org_id,
       },
       onClick: (event, rowData) => handleDownloadSsa(rowData),
-      disabled: false,
-    }))
-  }
-  if (hasPermission(permissions, SSA_ADMIN)) {
-    myActions.push((rowData) => ({
-      icon: DeleteIcon,
-      iconProps: {
-        sx: { color: 'red' },
-        id: rowData.org_id,
-      },
-      onClick: (event, rowData) => handleSsaDelete(rowData),
       disabled: false,
     }))
   }
@@ -187,7 +203,7 @@ const SSAListPage = () => {
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasPermission(permissions, SSA_PORTAL)}>
+        <GluuViewWrapper canShow={hasCedarPermission(SSA_PORTAL)}>
           <MaterialTable
             key={limit || 0}
             components={{
@@ -214,7 +230,7 @@ const SSAListPage = () => {
             }}
           />
         </GluuViewWrapper>
-        {hasPermission(permissions, SSA_ADMIN) && (
+        {hasCedarPermission(SSA_ADMIN) && (
           <GluuDialog
             row={item}
             name={item?.ssa?.org_id || ''}
