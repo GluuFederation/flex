@@ -49,7 +49,7 @@ function ClientListPage() {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const [scopeClients, setScopeClients] = useState()
+  const [scopeClients, setScopeClients] = useState([])
   const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
   const [isPageLoading, setIsPageLoading] = useState(loading)
   const [pageNumber, setPageNumber] = useState(0)
@@ -180,7 +180,7 @@ function ClientListPage() {
     if (haveScopeINUMParam) {
       const scopeInumParam = search.replace('?scopeInum=', '')
 
-      if (scopeInumParam.length > 0) {
+      if (scopeInumParam?.length > 0) {
         const clientsScope = scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
         setScopeClients(clientsScope)
       }
@@ -344,7 +344,7 @@ function ClientListPage() {
 
   return (
     <Card style={applicationStyle.mainCard}>
-      <ClientShowScopes handler={handler} isOpen={scopesModal.show} data={scopesModal.data} />
+      <ClientShowScopes handler={handler} isOpen={scopesModal?.show} data={scopesModal?.data} />
       <CardBody>
         <GluuViewWrapper canShow={hasCedarPermission(CLIENT_READ)}>
           <MaterialTable
