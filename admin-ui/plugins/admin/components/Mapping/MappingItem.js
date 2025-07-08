@@ -13,6 +13,7 @@ import {
 } from 'Plugins/admin/redux/features/mappingSlice'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import mappingItemStyles from './styles/MappingItem.style'
 import { Formik } from 'formik'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +27,7 @@ function MappingItem({ candidate, roles }) {
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const [searchablePermissions, setSearchAblePermissions] = useState([])
+  const [essentialPermissions, setEssentialPermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
   const [isDeleteable, setIsDeleteable] = useState(false)
   const theme = useContext(ThemeContext)
@@ -64,14 +66,22 @@ function MappingItem({ candidate, roles }) {
   const getPermissionsForSearch = () => {
     const selectedPermissions = candidate.permissions
     const filteredArr = []
+    const essentialArr = []
+
     for (const i in permissions) {
       if (!selectedPermissions.includes(permissions[i].permission)) {
         if (permissions[i].permission) {
-          filteredArr.push(permissions[i].permission)
+          // Check if it's an essential permission
+          if (permissions[i].essentialPermissionInAdminUI === true) {
+            essentialArr.push(permissions[i].permission)
+          } else {
+            filteredArr.push(permissions[i].permission)
+          }
         }
       }
     }
     setSearchAblePermissions(filteredArr)
+    setEssentialPermissions(essentialArr)
   }
 
   const revertLocalChanges = () => {
@@ -86,17 +96,6 @@ function MappingItem({ candidate, roles }) {
   useEffect(() => {
     getPermissionsForSearch()
   }, [permissions, candidate?.permissions?.length, cedarPermissions])
-
-  const doRemove = (id, role) => {
-    dispatch(
-      updateMapping({
-        data: {
-          id,
-          role,
-        },
-      }),
-    )
-  }
 
   const initialValues = {}
 
@@ -113,6 +112,28 @@ function MappingItem({ candidate, roles }) {
     }
     resetForm()
     autocompleteRef.current.clear()
+  }
+
+  const handleAddEssentialPermission = (permission) => {
+    dispatch(
+      addPermissionsToRole({
+        data: {
+          data: [permission],
+          userRole: candidate.role,
+        },
+      }),
+    )
+  }
+
+  const handleRemovePermission = (permissionIndex, role) => {
+    dispatch(
+      updateMapping({
+        data: {
+          id: permissionIndex,
+          role,
+        },
+      }),
+    )
   }
   const handleDeleteRole = () => {
     dispatch(
@@ -190,28 +211,64 @@ function MappingItem({ candidate, roles }) {
                   )}
                 </Formik>
               )}
+
               {candidate.permissions.map((permission, id) => (
-                <Row key={id}>
-                  <Col sm={10}>{permission}</Col>
+                <Row key={id} style={mappingItemStyles.permissionRow}>
+                  <Col sm={10} style={mappingItemStyles.permissionColumn}>
+                    <span style={mappingItemStyles.permissionText}>{permission}</span>
+                  </Col>
                   {hasCedarPermission(MAPPING_DELETE) ? (
-                    <Col sm={2}>
+                    <Col sm={2} style={mappingItemStyles.buttonContainer}>
                       <Button
                         type="button"
                         color="danger"
-                        onClick={() => doRemove(id, candidate.role)}
+                        size="sm"
+                        onClick={() => handleRemovePermission(id, candidate.role)}
                         style={{
-                          margin: '1px',
-                          float: 'right',
-                          padding: '0px',
+                          ...applicationStyle.buttonStyle,
+                          ...mappingItemStyles.removeButton,
                         }}
                       >
-                        <i className="fa fa-trash me-2"></i>
+                        <i className="fa fa-trash"></i>
                         {t('actions.remove')}
                       </Button>
                     </Col>
                   ) : null}
                 </Row>
               ))}
+
+              {hasCedarPermission(MAPPING_WRITE) && essentialPermissions.length > 0 && (
+                <div style={mappingItemStyles.essentialSection}>
+                  <div style={mappingItemStyles.essentialSectionHeader}>
+                    <h6 style={mappingItemStyles.essentialTitle}>
+                      Essential Permissions Available
+                    </h6>
+                  </div>
+                  {essentialPermissions.map((permission, id) => (
+                    <Row key={`essential-${id}`} style={mappingItemStyles.essentialPermissionRow}>
+                      <Col sm={10} style={mappingItemStyles.permissionColumn}>
+                        <span style={mappingItemStyles.essentialPermissionText}>{permission}</span>
+                      </Col>
+                      <Col sm={2} style={mappingItemStyles.buttonContainer}>
+                        <Button
+                          type="button"
+                          color="success"
+                          size="sm"
+                          onClick={() => handleAddEssentialPermission(permission)}
+                          style={{
+                            ...applicationStyle.buttonStyle,
+                            ...mappingItemStyles.addButton,
+                          }}
+                        >
+                          <i className="fa fa-plus"></i>
+                          {t('actions.add')}
+                        </Button>
+                      </Col>
+                    </Row>
+                  ))}
+                </div>
+              )}
+
               {/* Bottom Buttons  */}
               <FormGroup row />
               {hasCedarPermission(MAPPING_WRITE) ? (
