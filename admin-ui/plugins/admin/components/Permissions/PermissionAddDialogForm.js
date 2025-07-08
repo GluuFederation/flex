@@ -19,6 +19,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
   const [permission, setPermission] = useState('')
   const [description, setDescription] = useState('')
   const [defaultPermissionInToken, setDefaultPermissionInToken] = useState()
+  const [essentialUIPermission, setEssentialUIPermission] = useState(false)
   const [tag, setTag] = useState('')
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -35,6 +36,7 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
       permission,
       tag,
       description,
+      essentialPermissionInAdminUI: essentialUIPermission,
       ...(defaultPermissionInToken !== undefined &&
         defaultPermissionInToken !== '' && {
           defaultPermissionInToken: defaultPermissionInToken === 'true',
@@ -55,9 +57,9 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
       >
         <ModalHeader toggle={handler}>
           <i style={{ color: 'green' }} className="fa fa-2x fa-info fa-fw modal-icon mb-3"></i>
-          New Permission
+          {t('titles.newPermission')}
         </ModalHeader>
-        <ModalBody>Adding new api permission</ModalBody>
+        <ModalBody>{t('titles.addingNewApiPermission')}</ModalBody>
         <ModalBody>
           <FormGroup row>
             <GluuLabel required label="fields.name" size={4} />
@@ -105,6 +107,25 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                   name="defaultPermissionInToken"
                   value={defaultPermissionInToken}
                   onChange={(event) => setDefaultPermissionInToken(event.target.value)}
+                  disabled={false}
+                >
+                  <option value="">{t('actions.choose')}...</option>
+                  <option value="true">true</option>
+                  <option value="false">false</option>
+                </CustomInput>
+              </InputGroup>
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <GluuLabel label="fields.essentialUIPermission" size={4} />
+            <Col sm={8}>
+              <InputGroup>
+                <CustomInput
+                  type="select"
+                  id="essentialUIPermission"
+                  name="essentialUIPermission"
+                  value={essentialUIPermission}
+                  onChange={(event) => setEssentialUIPermission(event.target.value === 'true')}
                   disabled={false}
                 >
                   <option value="">{t('actions.choose')}...</option>

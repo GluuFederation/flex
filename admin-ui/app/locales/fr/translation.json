@@ -269,6 +269,7 @@
     "application_name": "Nom de l'application",
     "trustedIdpDn": "DN de l'IDP de confiance",
     "default_permission_in_token": "Permission par défaut dans le jeton",
+    "essentialUIPermission": "L'autorisation de l'interface utilisateur d'administration est-elle essentielle ?",
     "http_request_body": "Corps de la requête HTTP",
     "webhook_name": "Nom du Webhook",
     "webhook_url": "URL",
@@ -831,7 +832,9 @@
     "change_backend_bind_password": "Modifier le mot de passe de liaison du backend",
     "add_agama_project": "Ajouter un projet Agama",
     "export_csv": "Exporter CSV",
-    "no_Cedar": "Vous n'avez aucun composant autorisé à afficher"
+    "no_Cedar": "Vous n'avez aucun composant autorisé à afficher",
+    "newPermission": "Nouvelle Permission",
+    "addingNewApiPermission": "Ajout d'une nouvelle autorisation API"
   },
   "links": {
     "support": "https://support.gluu.org/"
