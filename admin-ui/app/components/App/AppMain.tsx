@@ -5,8 +5,9 @@ import { PersistGate } from 'redux-persist/integration/react'
 import AuthenticatedRouteSelector from './AuthenticatedRouteSelector'
 const basePath = process.env.BASE_PATH || '/admin'
 
+const { store, persistor } = configStore()
+
 const AppMain = () => {
-  const { store, persistor } = configStore()
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
