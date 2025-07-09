@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
 import { Row, Badge, Col, Button, FormGroup, Accordion, Form } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
-import { DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined, HelpOutline } from '@mui/icons-material'
 import { useCedarling } from '@/cedarling'
 import { MAPPING_WRITE, MAPPING_DELETE } from 'Utils/PermChecker'
 import {
@@ -14,6 +14,7 @@ import {
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import mappingItemStyles from './styles/MappingItem.style'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { Formik } from 'formik'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
@@ -241,7 +242,14 @@ function MappingItem({ candidate, roles }) {
                 <div style={mappingItemStyles.essentialSection}>
                   <div style={mappingItemStyles.essentialSectionHeader}>
                     <h6 style={mappingItemStyles.essentialTitle}>
-                      Essential Permissions Available
+                      {t('titles.followingPermissionRequiredToBeAdded')}
+                      <GluuTooltip
+                        doc_category={t('tooltips.followingPermissionRequiredToBeAdded')}
+                        doc_entry="essential-permissions-help"
+                        isDirect={true}
+                      >
+                        <HelpOutline style={mappingItemStyles.tooltipIcon} />
+                      </GluuTooltip>
                     </h6>
                   </div>
                   {essentialPermissions.map((permission, id) => (

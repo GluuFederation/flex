@@ -57,12 +57,22 @@ export const mappingItemStyles = {
   },
 
   essentialTitle: {
-    color: '#495057',
     fontWeight: '600',
     fontSize: '16px',
+    color: 'red',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
     marginTop: '30px',
+    display: 'flex',
+    alignItems: 'center',
+  },
+
+  tooltipIcon: {
+    width: '18px',
+    height: '18px',
+    marginLeft: '8px',
+    color: '#6c757d',
+    cursor: 'pointer',
   },
 
   essentialSubtitle: {

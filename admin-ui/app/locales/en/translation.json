@@ -789,7 +789,8 @@
     "product_name": "Name of this database product",
     "product_version": "Version number of this database product",
     "driver_name": "Name of this JDBC driver",
-    "driver_version": "Version number of this JDBC driver"
+    "driver_version": "Version number of this JDBC driver",
+    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI."
   },
   "placeholders": {
     "id": "Enter id",
@@ -944,7 +945,8 @@
     "creation_date": "Creation Date",
     "no_Cedar": "You do not have any authorized component to view",
     "newPermission": "New Permission",
-    "addingNewApiPermission": "Adding new API Permission"
+    "addingNewApiPermission": "Adding new API Permission",
+    "followingPermissionRequiredToBeAdded": "Following permission required to be added!"
   },
   "links": {
     "support": "https://support.gluu.org/"

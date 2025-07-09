@@ -721,7 +721,8 @@
     "product_name": "Nom de ce produit de base de données",
     "product_version": "Numéro de version de ce produit de base de données",
     "driver_name": "Nom de ce pilote JDBC",
-    "driver_version": "Numéro de version de ce pilote JDBC"
+    "driver_version": "Numéro de version de ce pilote JDBC",
+    "followingPermissionRequiredToBeAdded": "Nous devons ajouter les autorisations essentielles suivantes au rôle pour garantir que les utilisateurs disposant de ce rôle peuvent accéder à l'interface utilisateur d'administration."
   },
   "placeholders": {
     "id": "Enter id",
@@ -834,7 +835,8 @@
     "export_csv": "Exporter CSV",
     "no_Cedar": "Vous n'avez aucun composant autorisé à afficher",
     "newPermission": "Nouvelle Permission",
-    "addingNewApiPermission": "Ajout d'une nouvelle autorisation API"
+    "addingNewApiPermission": "Ajout d'une nouvelle autorisation API",
+    "followingPermissionRequiredToBeAdded": "Une autorisation est requise pour être ajouté!"
   },
   "links": {
     "support": "https://support.gluu.org/"
