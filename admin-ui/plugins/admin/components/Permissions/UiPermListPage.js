@@ -170,6 +170,11 @@ function UiPermListPage() {
                 editable: 'never',
               },
               {
+                title: `${t('fields.essentialUIPermission')}`,
+                field: 'essentialPermissionInAdminUI',
+                editable: 'never',
+              },
+              {
                 title: `${t('fields.default_permission_in_token')}`,
                 field: 'defaultPermissionInToken',
                 editable: 'never',

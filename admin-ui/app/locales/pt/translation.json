@@ -164,6 +164,7 @@
     "upload": "Select a file to upload",
     "jansService": "Related Services",
     "default_permission_in_token": "Permissão padrão no token",
+    "essentialUIPermission": "A permissão da interface do administrador é essencial?",
     "introspection_signed_response_alg": "Algoritmo de assinatura da resposta de introspeção",
     "introspection_encrypted_response_alg": "Algoritmo de criptografia da resposta de introspeção",
     "aui_feature_ids": "Recursos da interface do administrador",
@@ -715,7 +716,8 @@
     "product_name": "Nome deste produto de banco de dados",
     "product_version": "Número da versão deste produto de banco de dados",
     "driver_name": "Nome deste driver JDBC",
-    "driver_version": "Número da versão deste driver JDBC"
+    "driver_version": "Número da versão deste driver JDBC",
+    "followingPermissionRequiredToBeAdded": "Precisamos adicionar as seguintes permissões essenciais à função para garantir que os usuários com essa função possam acessar a interface do usuário do administrador."
   },
   "placeholders": {
     "id": "Enter id",
@@ -828,7 +830,10 @@
     "add_agama_project": "Adicionar projeto Agama",
     "jans_kc_link": "Link KC Jans",
     "export_csv": "Exportar CSV",
-    "no_Cedar": "Você não tem nenhum componente autorizado para visualizar"
+    "no_Cedar": "Você não tem nenhum componente autorizado para visualizar",
+    "newPermission": "Nova Permissão",
+    "addingNewApiPermission": "Adicionando nova permissão de API",
+    "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!"
   },
   "links": {
     "support": "https://support.gluu.org/"

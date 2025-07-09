@@ -18,12 +18,22 @@ import { InputGroup, CustomInput } from 'Components'
 const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
   const [permission, setPermission] = useState('')
   const [description, setDescription] = useState('')
-  const [defaultPermissionInToken, setDefaultPermissionInToken] = useState()
+  const [defaultPermissionInToken, setDefaultPermissionInToken] = useState(null)
+  const [essentialUIPermission, setEssentialUIPermission] = useState(null)
   const [tag, setTag] = useState('')
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const [errorMessages, setErrorMessages] = useState('')
   const selectedTheme = theme.state.theme
+
+  const emptyingState = () => {
+    setErrorMessages('')
+    setDefaultPermissionInToken(null)
+    setEssentialUIPermission(null)
+    setPermission('')
+    setDescription('')
+    setTag('')
+  }
 
   function handleAccept() {
     if (permission?.length < 5) {
@@ -35,14 +45,20 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
       permission,
       tag,
       description,
+
+      ...(essentialUIPermission !== undefined &&
+        essentialUIPermission !== '' && {
+          essentialPermissionInAdminUI: essentialUIPermission,
+        }),
       ...(defaultPermissionInToken !== undefined &&
         defaultPermissionInToken !== '' && {
-          defaultPermissionInToken: defaultPermissionInToken === 'true',
+          defaultPermissionInToken: defaultPermissionInToken,
         }),
     }
-
+    console.log(roleData)
+    debugger
     onAccept(roleData)
-    setErrorMessages('')
+    emptyingState()
   }
 
   return (
@@ -55,9 +71,9 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
       >
         <ModalHeader toggle={handler}>
           <i style={{ color: 'green' }} className="fa fa-2x fa-info fa-fw modal-icon mb-3"></i>
-          New Permission
+          {t('titles.newPermission')}
         </ModalHeader>
-        <ModalBody>Adding new api permission</ModalBody>
+        <ModalBody>{t('titles.addingNewApiPermission')}</ModalBody>
         <ModalBody>
           <FormGroup row>
             <GluuLabel required label="fields.name" size={4} />
@@ -104,7 +120,26 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
                   id="defaultPermissionInToken"
                   name="defaultPermissionInToken"
                   value={defaultPermissionInToken}
-                  onChange={(event) => setDefaultPermissionInToken(event.target.value)}
+                  onChange={(event) => setDefaultPermissionInToken(event.target.value === 'true')}
+                  disabled={false}
+                >
+                  <option value="">{t('actions.choose')}...</option>
+                  <option value="true">true</option>
+                  <option value="false">false</option>
+                </CustomInput>
+              </InputGroup>
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <GluuLabel label="fields.essentialUIPermission" size={4} />
+            <Col sm={8}>
+              <InputGroup>
+                <CustomInput
+                  type="select"
+                  id="essentialUIPermission"
+                  name="essentialUIPermission"
+                  value={essentialUIPermission}
+                  onChange={(event) => setEssentialUIPermission(event.target.value === 'true')}
                   disabled={false}
                 >
                   <option value="">{t('actions.choose')}...</option>

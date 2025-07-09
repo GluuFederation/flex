@@ -98,6 +98,7 @@
     "upload": "Select a file to upload",
     "jansService": "Related Services",
     "default_permission_in_token": "Default permission in token",
+    "essentialUIPermission": "Is Essential Admin UI Permission?",
     "aui_feature_ids": "Admin UI Features",
     "introspection_signed_response_alg": "Introspection Signed Response Alg",
     "introspection_encrypted_response_alg": "Introspection Encrypted Response Alg",
@@ -788,7 +789,8 @@
     "product_name": "Name of this database product",
     "product_version": "Version number of this database product",
     "driver_name": "Name of this JDBC driver",
-    "driver_version": "Version number of this JDBC driver"
+    "driver_version": "Version number of this JDBC driver",
+    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI."
   },
   "placeholders": {
     "id": "Enter id",
@@ -941,7 +943,10 @@
     "expiration_date": "Expiration Date",
     "authentication_date": "Authentication Date",
     "creation_date": "Creation Date",
-    "no_Cedar": "You do not have any authorized component to view"
+    "no_Cedar": "You do not have any authorized component to view",
+    "newPermission": "New Permission",
+    "addingNewApiPermission": "Adding new API Permission",
+    "followingPermissionRequiredToBeAdded": "Following permission required to be added!"
   },
   "links": {
     "support": "https://support.gluu.org/"

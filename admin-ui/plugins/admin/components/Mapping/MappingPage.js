@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import MappingAddDialogForm from './MappingAddDialogForm'
 import { Card, Col, CardBody, FormGroup, Button } from 'Components'
@@ -19,19 +18,20 @@ import { useCedarling } from '@/cedarling'
 
 function MappingPage() {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
+  SetTitle(t('titles.mapping'))
   const { hasCedarPermission, authorize } = useCedarling()
-  const mapping = useSelector((state) => state.mappingReducer.items)
-  const loading = useSelector((state) => state.mappingReducer.loading)
+
+  const { items: mapping, loading } = useSelector((state) => state.mappingReducer)
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
   const permissionLoading = useSelector((state) => state.apiPermissionReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
-  const { t } = useTranslation()
   const [modal, setModal] = useState(false)
+
   const toggle = () => setModal(!modal)
   const options = []
   const userAction = {}
-  SetTitle(t('titles.mapping'))
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
@@ -45,6 +45,7 @@ function MappingPage() {
       console.error('Error authorizing mapping permissions:', error)
     }
   }
+
   useEffect(() => {
     authorizePermissions()
     doFetchList()
