@@ -286,7 +286,7 @@ const ClientBasicPanel = ({
             'Grant Types': e?.grantTypes ?? e,
           })
         }}
-      ></GluuTypeAhead>
+      />
       <GluuTypeAhead
         name="responseTypes"
         label="fields.response_types"
@@ -303,7 +303,7 @@ const ClientBasicPanel = ({
             'Response Types': e?.responseTypes ?? e,
           })
         }}
-      ></GluuTypeAhead>
+      />
       <FormGroup row>
         <Col sm={6}>
           <GluuToogleRow
@@ -385,7 +385,7 @@ const ClientBasicPanel = ({
             'Redirect URIs': items,
           })
         }}
-      ></GluuTypeAheadWithAdd>
+      />
 
       <GluuInputRow
         label="fields.redirectUrisRegex"
@@ -422,7 +422,7 @@ const ClientBasicPanel = ({
           defaultSelected={scopeFieldValue}
           placeholder="Search for a scope..."
           onChange={saveSelectedScopes}
-        ></GluuTypeAheadForDn>
+        />
       )}
     </Container>
   )

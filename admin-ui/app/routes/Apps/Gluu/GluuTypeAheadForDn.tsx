@@ -100,6 +100,9 @@ function GluuTypeAheadForDn({
           multiple={true}
           selected={defaultSelected}
           onSearch={onSearch}
+          dropup={false}
+          flip={true}
+          positionFixed={true}
         />
         {!hideHelperMessage && (
           <ThemeProvider theme={theme}>
