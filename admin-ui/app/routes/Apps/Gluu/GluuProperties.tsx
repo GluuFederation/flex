@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { HelpOutline } from '@mui/icons-material'
+import customColors from '@/customColors'
 
 function GluuProperties({
   compName,
@@ -138,7 +139,7 @@ function GluuProperties({
             ))}
           </Col>
         </FormGroup>
-        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: customColors.accentRed }}>{errorMessage}</div> : null}
       </AccordionBody>
     </Accordion>
   )

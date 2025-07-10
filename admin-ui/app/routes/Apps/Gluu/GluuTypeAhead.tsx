@@ -4,6 +4,7 @@ import GluuLabel from '../Gluu/GluuLabel'
 import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
+import customColors from '@/customColors'
 
 const theme = createTheme({
   typography: {
@@ -85,7 +86,7 @@ function GluuTypeAhead({
             </Typography>
           </ThemeProvider>
         )}
-        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: customColors.accentRed }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

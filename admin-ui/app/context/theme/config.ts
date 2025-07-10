@@ -1,50 +1,52 @@
+import customColors from '@/customColors'
+
 export const themeConfig = {
   darkBlack: {
-    background: '#303641',
-    lightBackground: '#989ea7',
-    fontColor: '#FFFFFF',
+    background: customColors.darkGray,
+    lightBackground: customColors.darkBlueLightBackground,
+    fontColor: customColors.darkGray,
     menu: {
-      background: '#323C46',
-      color: '#FFFFFF',
+      background: customColors.darkBlueMenuBackground,
+      color: customColors.white,
     },
     dashboard: {
-      supportCard: '#274560',
+      supportCard: customColors.darkGray,
     },
   },
   darkBlue: {
-    background: '#284461',
-    lightBackground: '#81a8d0',
-    fontColor: '#FFFFFF',
+    background: customColors.darkBlueThemeBackground,
+    lightBackground: customColors.blueThemelightBackground,
+    fontColor: customColors.darkGray,
     menu: {
-      background: '#323C46',
-      color: '#FFFFFF',
+      background: customColors.darkBlueThemeBackground,
+      color: customColors.white,
     },
     dashboard: {
-      supportCard: '#9DBDE2',
+      supportCard: customColors.blueThemebackground,
     },
   },
   lightBlue: {
-    background: '#9DBDE2',
-    lightBackground: '#c9def6',
-    fontColor: '#303641',
+    background: customColors.blueThemebackground,
+    lightBackground: customColors.blueThemelightBackground,
+    fontColor: customColors.darkGray,
     menu: {
-      background: '#274561',
-      color: '#FFFFFF',
+      background: customColors.blueThemebackground,
+      color: customColors.white,
     },
     dashboard: {
-      supportCard: '#274560',
+      supportCard: customColors.darkGray,
     },
   },
   lightGreen: {
-    background: '#3BC391',
-    lightBackground: '#abebd4',
-    fontColor: '#303641',
+    background: customColors.logo,
+    lightBackground: customColors.greenThemeLightBackground,
+    fontColor: customColors.darkGray,
     menu: {
-      background: '#02B774',
-      color: '#FFFFFF',
+      background: customColors.logo,
+      color: customColors.white,
     },
     dashboard: {
-      supportCard: '#274560',
+      supportCard: customColors.darkGray,
     },
   },
 }

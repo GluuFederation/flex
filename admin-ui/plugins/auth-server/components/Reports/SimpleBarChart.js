@@ -11,6 +11,7 @@ import {
 } from 'Components/recharts'
 
 import colors from '../../../../app/colors'
+import customColors from '@/customColors'
 
 const data = [
   { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
@@ -32,7 +33,7 @@ const SimpleBarChart = () => (
         contentStyle={{
           background: colors['900'],
           border: `1px solid ${colors['900']}`,
-          color: colors['white'],
+          color: customColors.white,
         }}
       />
       <Legend wrapperStyle={{ color: colors['900'] }} />

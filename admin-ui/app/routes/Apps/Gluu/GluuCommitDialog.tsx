@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
 import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import customColors from '@/customColors'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -97,7 +98,7 @@ const GluuCommitDialog = ({
             <i
               onClick={closeModal}
               onKeyDown={() => {}}
-              style={{ color: 'green' }}
+              style={{ color: customColors.logo }}
               className="fa fa-2x fa-info fa-fw modal-icon mb-3"
               role="img"
               aria-hidden="true"
@@ -121,7 +122,7 @@ const GluuCommitDialog = ({
                       fontSize: '1.2rem',
                       fontWeight: 'bold',
                       margin: 0,
-                      color: 'black !important',
+                      color: `${customColors.black} !important`,
                     }}
                   >
                     List of changes
@@ -190,7 +191,11 @@ const GluuCommitDialog = ({
                     value={userMessage}
                   />
                   {userMessage.length < 10 && (
-                    <span className="text-danger">
+                    <span
+                      style={{
+                        color: customColors.accentRed,
+                      }}
+                    >
                       {10 - userMessage.length} {userMessage.length ? ' more' : ''} characters
                       required
                     </span>

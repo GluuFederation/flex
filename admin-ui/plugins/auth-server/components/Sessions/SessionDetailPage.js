@@ -2,12 +2,13 @@ import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 function SessionDetailPage({ row }) {
   const DOC_CATEGORY = 'sessions'
 
   return (
-    <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
+    <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
       <Row>
         <Col sm={4}>
           <GluuFormDetailRow

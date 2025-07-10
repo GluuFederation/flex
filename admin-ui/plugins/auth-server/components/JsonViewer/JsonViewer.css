@@ -7,8 +7,8 @@
 }
 
 .json-viewer .jv-ellipsis {
-    color: #999;
-    background-color: #eee;
+    color: #323c47;
+    background-color: #eaecf1;
     display: inline-block;
     line-height: 0.9;
     font-size: 0.9em;
@@ -20,7 +20,7 @@
 }
 
 .json-viewer .jv-button {
-    color: #49b3ff;
+    color: #3573a6;
 }
 
 .json-viewer .jv-key {
@@ -28,7 +28,7 @@
 }
 
 .json-viewer .jv-string {
-    color: #c41a16;
+    color: #b3424a;
 }
 
 .json-viewer .jv-number {
@@ -40,9 +40,9 @@
 }
 
 .json-viewer .jv-null {
-    color: #808080;
+    color: #323c47;
 }
 
 .json-viewer .jv-undefined {
-    color: #808080;
+    color: #323c47;
 }

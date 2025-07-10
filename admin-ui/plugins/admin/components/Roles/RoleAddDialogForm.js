@@ -14,6 +14,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import customColors from '@/customColors'
 
 const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
   const [deletable, setDeletable] = useState(false)
@@ -38,7 +39,10 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
     <>
       <Modal isOpen={modal} toggle={handler}>
         <ModalHeader toggle={handler}>
-          <i style={{ color: 'green' }} className="fa fa-2x fa-info fa-fw modal-icon mb-3"></i>
+          <i
+            style={{ color: customColors.logo }}
+            className="fa fa-2x fa-info fa-fw modal-icon mb-3"
+          ></i>
           {t('messages.new_role')}
         </ModalHeader>
         <ModalBody>{t('messages.adding_new_permission')}</ModalBody>
@@ -70,7 +74,9 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
             </Col>
           </FormGroup>
 
-          {errorMessages ? <span style={{ color: '#e74c3c' }}>{errorMessages}</span> : null}
+          {errorMessages ? (
+            <span style={{ color: customColors.accentRed }}>{errorMessages}</span>
+          ) : null}
         </ModalBody>
         <ModalFooter>
           <Button

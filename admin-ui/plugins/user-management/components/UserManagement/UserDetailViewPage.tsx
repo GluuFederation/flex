@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
+import customColors from '@/customColors'
 
 interface CustomAttribute {
   name: string
@@ -42,7 +43,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
 
   const getCustomAttributeById = (id: string) => {
     let claimData = null
-    for (let i in personAttributes) {
+    for (const i in personAttributes) {
       if (personAttributes[i].name === id) {
         claimData = personAttributes[i]
       }
@@ -51,7 +52,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
   }
 
   return (
-    <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
+    <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow

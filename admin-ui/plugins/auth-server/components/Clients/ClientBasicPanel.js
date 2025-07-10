@@ -22,6 +22,7 @@ import {
   getClientScopes,
   setClientSelectedScopes,
 } from 'Plugins/auth-server/redux/features/scopeSlice'
+import customColors from '@/customColors'
 const DOC_CATEGORY = 'openid_client'
 
 const grantTypes = [
@@ -81,7 +82,7 @@ const ClientBasicPanel = ({
   useEffect(() => {
     const scopeInums = []
     if (client.inum) {
-      let userAction = {}
+      const userAction = {}
       if (client?.scopes?.length) {
         for (const scope of client.scopes) {
           scopeInums.push(getClientScopeByInum(scope))
@@ -93,7 +94,7 @@ const ClientBasicPanel = ({
     }
   }, [])
 
-  const handlePagination = (event, shownResults) => {
+  const handlePagination = () => {
     userScopeAction['limit'] = PER_PAGE_SCOPES
     userScopeAction['startIndex'] = 0
     if (!userScopeAction.pattern) {
@@ -138,7 +139,7 @@ const ClientBasicPanel = ({
             <GluuLabel label="fields.inum" />
             <Col sm={9}>
               <Input
-                style={{ backgroundColor: '#F5F5F5' }}
+                style={{ backgroundColor: customColors.whiteSmoke }}
                 id="inum"
                 name="inum"
                 disabled={viewOnly}
@@ -262,7 +263,7 @@ const ClientBasicPanel = ({
         value={formik.values.sectorIdentifierUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
-        handleChange={(e) => {
+        handleChange={() => {
           setModifiedFields({
             ...modifiedFields,
             'Sector Identifier URI': formik.values.sectorIdentifierUri,

@@ -2,6 +2,7 @@ import React from 'react'
 import { Col, FormGroup, Input, Card, CardBody, Accordion } from 'Components'
 import moment from 'moment'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import customColors from '@/customColors'
 function JwkItem({ item, index }) {
   return (
     <div>
@@ -15,7 +16,7 @@ function JwkItem({ item, index }) {
           <Card
             style={{
               marginBottom: '5px',
-              backgroundColor: index % 2 === 0 ? 'white' : '#f7f7f7',
+              backgroundColor: index % 2 === 0 ? customColors.white : customColors.whiteSmoke,
             }}
           >
             <CardBody>

@@ -1,3 +1,12 @@
+$dark-gray: #323c47;
+$accent-red: #b3424a;
+$light-blue: #3573a6;
+$light-cyan: #bdd4d5;
+$light-gray: #eaecf1;
+$pale-yellow: #cfd76f;
+$darkBlueThemeBackground: #284461;
+$blueThemebackground: #9dbde2;
+
 .custom-sidebar-container {
     background-color: #fcfcfc;
     border-top-right-radius: 28px;
@@ -54,7 +63,7 @@
 }
 
 .sidebar-menu-active-darkBlack {
-    background: #323c46 !important;
+    background: $dark-gray !important;
     color: #fff !important;
 }
 
@@ -64,7 +73,7 @@
 }
 
 .sidebar-menu-active-darkBlue {
-    background: #323c46 !important;
+    background: $darkBlueThemeBackground !important;
     color: #fff !important;
 }
 
@@ -74,7 +83,7 @@
 }
 
 .sidebar-menu-active-lightBlue {
-    background: #274561 !important;
+    background: $blueThemebackground !important;
     color: #fff !important;
 }
 

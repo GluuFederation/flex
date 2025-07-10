@@ -16,6 +16,7 @@ import {
   deleteTrustRelationship,
 } from 'Plugins/saml/redux/features/SamlSlice'
 import { PaperContainer, getTableCols } from './SamlIdentityList'
+import customColors from '@/customColors'
 
 const TrustRelationshipList = () => {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -88,7 +89,7 @@ const TrustRelationshipList = () => {
             {
               icon: 'edit',
               tooltip: `${t('messages.edit_service_provider')}`,
-              iconProps: { color: 'primary' },
+              iconProps: { color: 'primary', style: { color: customColors.darkGray } },
               onClick: (event, rowData) => {
                 const data = { ...rowData }
                 delete data.tableData
@@ -98,6 +99,9 @@ const TrustRelationshipList = () => {
             },
             {
               icon: 'visibility',
+              iconProps: {
+                style: { color: customColors.darkGray },
+              },
               tooltip: `${t('messages.view_service_provider')}`,
               onClick: (event, rowData) => handleGoToEditPage(rowData, true),
               disabled: !hasCedarPermission(SAML_TR_READ),
@@ -114,7 +118,7 @@ const TrustRelationshipList = () => {
             {
               icon: 'add',
               tooltip: `${t('messages.add_service_provider')}`,
-              iconProps: { color: 'primary' },
+              iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
               isFreeAction: true,
               onClick: () => handleGoToAddPage(),
               disabled: !hasCedarPermission(SAML_TR_WRITE),

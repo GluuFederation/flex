@@ -22,6 +22,7 @@ import TableRow from '@mui/material/TableRow'
 import Box from '@mui/material/Box'
 import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import customColors from '@/customColors'
 
 const useWebhookDialogAction = ({ feature, modal }) => {
   const dispatch = useDispatch()
@@ -98,7 +99,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
               <i
                 onClick={closeWebhookTriggerModal}
                 onKeyDown={() => {}}
-                style={{ color: 'green' }}
+                style={{ color: customColors.logo }}
                 code
                 className="fa fa-2x fa-info fa-fw modal-icon mb-3"
                 role="img"

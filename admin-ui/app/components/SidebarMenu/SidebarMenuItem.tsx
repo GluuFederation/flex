@@ -2,6 +2,7 @@ import React, { ReactNode, CSSProperties, MouseEvent, useEffect, useId, useConte
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { MenuContext } from './MenuContext'
+import customColors from '@/customColors'
 
 interface SidebarMenuItemLinkProps {
   to?: string | null
@@ -153,7 +154,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
     active: entry && entry.active,
   })
   const activeMenu: CSSProperties = {
-    color: '#323b47',
+    color: customColors.darkGray,
   }
   const nonaActiveMenu: CSSProperties = {}
 
@@ -196,7 +197,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
           {icon &&
             React.cloneElement(icon, {
               className: classNames(icon.props.className, `${classBase}__entry__icon`),
-              fill: sidebarMenuActive ? '#FFF' : '#323b47',
+              fill: sidebarMenuActive ? customColors.white : customColors.darkGray,
             })}
           {typeof title === 'string' ? <span style={textStyle}>{title}</span> : title}
         </SidebarMenuItemLink>

@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import * as Yup from 'yup'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 function AttributeForm(props) {
   const { item, customOnSubmit, hideButtons } = props
@@ -140,7 +141,7 @@ function AttributeForm(props) {
                 onChange={formik.handleChange}
               />
               <ErrorMessage name="name">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -164,7 +165,7 @@ function AttributeForm(props) {
                 />
               </InputGroup>
               <ErrorMessage name="displayName">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -189,7 +190,7 @@ function AttributeForm(props) {
                 />
               </InputGroup>
               <ErrorMessage name="description">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -211,7 +212,7 @@ function AttributeForm(props) {
                 </CustomInput>
               </InputGroup>
               <ErrorMessage name="status">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -243,7 +244,7 @@ function AttributeForm(props) {
                 </CustomInput>
               </InputGroup>
               <ErrorMessage name="dataType">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -268,7 +269,7 @@ function AttributeForm(props) {
                 <option value="user">{t('options.user')}</option>
               </Input>
               <ErrorMessage name="editType">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -293,7 +294,7 @@ function AttributeForm(props) {
                 <option value="user">{t('options.user')}</option>
               </Input>
               <ErrorMessage name="viewType">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -317,7 +318,7 @@ function AttributeForm(props) {
                 <option value="openid">{t('options.openid')}</option>
               </Input>
               <ErrorMessage name="usageType">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>

@@ -1,5 +1,6 @@
+import customColors from '@/customColors'
+
 export const mappingItemStyles = {
-  // Permission Row Styles
   permissionRow: {
     alignItems: 'center',
     padding: '2px 0',
@@ -15,10 +16,9 @@ export const mappingItemStyles = {
     justifyContent: 'flex-end',
   },
 
-  // Action Button Styles
   removeButton: {
-    backgroundColor: '#b3424a',
-    borderColor: '#b3424a',
+    backgroundColor: customColors.accentRed,
+    borderColor: customColors.accentRed,
     borderRadius: '4px',
     padding: '6px 12px',
     fontSize: '12px',
@@ -27,12 +27,12 @@ export const mappingItemStyles = {
     gap: '4px',
     minWidth: '80px',
     justifyContent: 'center',
-    color: '#fff',
+    color: customColors.white,
   },
 
   addButton: {
-    backgroundColor: '#00b875',
-    borderColor: '#00b875',
+    backgroundColor: customColors.logo,
+    borderColor: customColors.logo,
     borderRadius: '4px',
     padding: '6px 12px',
     fontSize: '12px',
@@ -41,17 +41,15 @@ export const mappingItemStyles = {
     gap: '4px',
     minWidth: '80px',
     justifyContent: 'center',
-    color: '#fff',
+    color: customColors.white,
   },
 
-  // Section Divider
   sectionDivider: {
     margin: '40px 0',
-    borderTop: '1px solid #323c47',
+    borderTop: `1px solid ${customColors.darkGray}`,
     paddingTop: '40px',
   },
 
-  // Essential Permissions Section
   essentialSectionHeader: {
     marginBottom: '7px',
   },
@@ -59,7 +57,7 @@ export const mappingItemStyles = {
   essentialTitle: {
     fontWeight: '600',
     fontSize: '16px',
-    color: 'red',
+    color: customColors.accentRed,
     textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
     marginTop: '30px',
@@ -71,12 +69,12 @@ export const mappingItemStyles = {
     width: '18px',
     height: '18px',
     marginLeft: '8px',
-    color: '#6c757d',
+    color: customColors.darkGray,
     cursor: 'pointer',
   },
 
   essentialSubtitle: {
-    color: '#6c757d',
+    color: customColors.darkGray,
     fontSize: '12px',
     margin: '0',
     fontStyle: 'italic' as const,
@@ -99,21 +97,19 @@ export const mappingItemStyles = {
     fontSize: '12px',
   },
 
-  // Column Styles
   permissionColumn: {
     display: 'flex',
     alignItems: 'center',
   },
 
-  // Hover Effects
   removeButtonHover: {
-    backgroundColor: '#9a3a41',
-    borderColor: '#9a3a41',
+    backgroundColor: customColors.accentRed,
+    borderColor: customColors.accentRed,
   },
 
   addButtonHover: {
-    backgroundColor: '#009865',
-    borderColor: '#009865',
+    backgroundColor: customColors.logo,
+    borderColor: customColors.logo,
   },
   essentialSection: {
     marginBottom: '20px',

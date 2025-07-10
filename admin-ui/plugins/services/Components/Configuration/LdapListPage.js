@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import customColors from '@/customColors'
 
 function LdapListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -110,6 +111,7 @@ function LdapListPage() {
         icon: 'edit',
         iconProps: {
           id: 'editLdap' + rowData.configId,
+          style: { color: customColors.darkGray },
         },
         tooltip: `${t('tooltips.edit_ldap')}`,
         onClick: (event, rowData) => handleGoToLdapEditPage(rowData),
@@ -121,7 +123,7 @@ function LdapListPage() {
       actions.push({
         icon: 'refresh',
         tooltip: `${t('tooltips.refresh_data')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
           dispatch(getLdapConfig())
@@ -135,6 +137,7 @@ function LdapListPage() {
         iconProps: {
           color: 'secondary',
           id: 'deleteLdap' + rowData.configId,
+          style: { color: customColors.darkGray },
         },
         tooltip: `${t('tooltips.delete_record')}`,
         onClick: (event, rowData) => handleLdapDelete(rowData),
@@ -146,7 +149,7 @@ function LdapListPage() {
       actions.push({
         icon: 'add',
         tooltip: `${t('tooltips.add_ldap')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => handleGoToLdapAddPage(),
       })

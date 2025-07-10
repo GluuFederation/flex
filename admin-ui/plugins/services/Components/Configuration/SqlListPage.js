@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import customColors from '@/customColors'
 
 function SqlListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -80,7 +81,7 @@ function SqlListPage() {
       actions.push({
         icon: 'add',
         tooltip: `${t('tooltips.add_sql')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: handleGoToSqlAddPage,
       })
@@ -88,6 +89,7 @@ function SqlListPage() {
         icon: 'edit',
         iconProps: {
           id: 'editSql' + rowData.configId,
+          style: { color: customColors.darkGray },
         },
         tooltip: `${t('tooltips.edit_sql')}`,
         onClick: (event, rowData) => handleGoToSqlEditPage(rowData),
@@ -99,7 +101,7 @@ function SqlListPage() {
       actions.push({
         icon: 'refresh',
         tooltip: `${t('tooltips.refresh_data')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
           dispatch(getSqlConfig())
@@ -113,6 +115,7 @@ function SqlListPage() {
         iconProps: {
           color: 'secondary',
           id: 'deleteSql' + rowData.configId,
+          style: { color: customColors.darkGray },
         },
         tooltip: `${t('tooltips.delete_record')}`,
         onClick: (event, rowData) => handleSqlDelete(rowData),

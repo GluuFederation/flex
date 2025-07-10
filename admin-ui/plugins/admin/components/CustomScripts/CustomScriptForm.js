@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux'
 import { Skeleton } from '@mui/material'
 import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('Components/Widgets/GroupedButtons/Counter'))
@@ -111,7 +112,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
 
     onSubmit: (values) => {
       if (item.locationType === 'db') {
-        let moduleProperties = item?.moduleProperties?.filter(
+        const moduleProperties = item?.moduleProperties?.filter(
           (item) => item?.value1 !== 'location_path',
         )
         item.moduleProperties = moduleProperties
@@ -169,7 +170,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
         item.moduleProperties = []
       }
       if (value === 'db') {
-        let moduleProperties = item?.moduleProperties?.filter(
+        const moduleProperties = item?.moduleProperties?.filter(
           (item) => item?.value1 !== 'location_path',
         )
         item.moduleProperties = moduleProperties
@@ -306,7 +307,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
               onChange={formik.handleChange}
             />
             {formik.errors.name && formik.touched.name ? (
-              <div style={{ color: 'red' }}>{formik.errors.name}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.name}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -386,7 +387,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
               </InputGroup>
             )}
             {formik.errors.scriptType && formik.touched.scriptType ? (
-              <div style={{ color: 'red' }}>{formik.errors.scriptType}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.scriptType}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -417,7 +418,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
               </CustomInput>
             </InputGroup>
             {formik.errors.programmingLanguage && formik.touched.programmingLanguage && (
-              <div style={{ color: 'red' }}>{formik.errors.programmingLanguage}</div>
+              <div style={{ color: customColors.accentRed }}>
+                {formik.errors.programmingLanguage}
+              </div>
             )}
           </Col>
         </FormGroup>
@@ -471,7 +474,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
                 />
               </InputGroup>
               {formik.errors.script_path && formik.touched.script_path && (
-                <div style={{ color: 'red' }}>{formik.errors.script_path}</div>
+                <div style={{ color: customColors.accentRed }}>{formik.errors.script_path}</div>
               )}
             </Col>
           </FormGroup>

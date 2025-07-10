@@ -7,8 +7,8 @@ import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-
 import { SCOPE_READ, SCOPE_WRITE } from 'Utils/PermChecker'
+import customColors from '@/customColors'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -79,6 +79,7 @@ function AuthNListPage({ isBuiltIn = false }) {
           icon: 'edit',
           iconProps: {
             id: 'editAutN' + rowData.inum,
+            style: { color: customColors.darkGray },
           },
           tooltip: `${t('messages.edit_authn')}`,
           onClick: (event, rowData) => handleGoToAuthNEditPage(rowData),
@@ -145,9 +146,15 @@ function AuthNListPage({ isBuiltIn = false }) {
             field: '',
             render: (rowData) => {
               return rowData.acrName === acrs.defaultAcr ? (
-                <i className="fa fa-check" style={{ color: 'green', fontSize: '24px' }}></i>
+                <i
+                  className="fa fa-check"
+                  style={{ color: customColors.logo, fontSize: '24px' }}
+                ></i>
               ) : (
-                <i className="fa fa-close" style={{ color: 'red', fontSize: '24px' }}></i>
+                <i
+                  className="fa fa-close"
+                  style={{ color: customColors.accentRed, fontSize: '24px' }}
+                ></i>
               )
             },
           },

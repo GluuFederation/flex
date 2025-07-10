@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { generateLabel, isObject, isObjectArray } from '../JsonPropertyBuilder'
+import customColors from '@/customColors'
 
 function _isNumber(item) {
   return typeof item === 'number' || typeof item === 'bigint'
@@ -128,7 +129,11 @@ function JsonPropertyBuilderConfigApi({
   if (isObjectArray(propValue)) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header className="text-primary">
+        <Accordion.Header
+          style={{
+            color: customColors.lightBlue,
+          }}
+        >
           <GluuLabel
             label={generateLabel(propKey)}
             size={lSize}
@@ -162,7 +167,11 @@ function JsonPropertyBuilderConfigApi({
       <>
         {show && (
           <Accordion className="mb-2 b-primary" initialOpen>
-            <Accordion.Header className="text-primary">
+            <Accordion.Header
+              style={{
+                color: customColors.lightBlue,
+              }}
+            >
               {propKey.toUpperCase().length > 2 ? (
                 <GluuLabel
                   label={generateLabel(propKey)}
@@ -179,9 +188,13 @@ function JsonPropertyBuilderConfigApi({
                   <Col sm={11} md={11}></Col>
                   <Col sm={1} md={1}>
                     <Button
-                      color="danger"
+                      style={{
+                        backgroundColor: customColors.accentRed,
+                        color: customColors.white,
+                        float: 'right',
+                        border: 'none',
+                      }}
                       size="sm"
-                      style={{ float: 'right' }}
                       onClick={removeHandler}
                     >
                       <i className="fa fa-remove me-2"></i>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Col, FormGroup, Input } from 'Components'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import GluuLabel from './GluuLabel'
+import customColors from '@/customColors'
 
 function GluuInputRow({
   label,
@@ -72,7 +73,7 @@ function GluuInputRow({
             )}
           </div>
         )}
-        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: customColors.accentRed }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

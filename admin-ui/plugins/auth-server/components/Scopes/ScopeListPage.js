@@ -32,6 +32,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 function ScopeListPage() {
   const { t } = useTranslation()
@@ -131,7 +132,7 @@ function ScopeListPage() {
       actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_scope')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => handleGoToScopeAddPage(),
         disabled: !hasCedarPermission(SCOPE_WRITE),
@@ -151,7 +152,7 @@ function ScopeListPage() {
           />
         ),
         tooltip: `${t('messages.advanced_search')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {},
       })
@@ -159,7 +160,11 @@ function ScopeListPage() {
       actions.push({
         icon: 'refresh',
         tooltip: `${t('messages.refresh')}`,
-        iconProps: { color: 'primary', fontSize: 'large' },
+        iconProps: {
+          color: 'primary',
+          fontSize: 'large',
+          style: { color: customColors.lightBlue },
+        },
         isFreeAction: true,
         onClick: () => {
           makeOptions()

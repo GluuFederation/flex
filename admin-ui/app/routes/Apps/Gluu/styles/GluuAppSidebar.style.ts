@@ -1,3 +1,4 @@
+import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()({
@@ -15,7 +16,7 @@ const styles = makeStyles()({
     top: -75,
   },
   powered: {
-    color: '#fff',
+    color: customColors.white,
     textAlign: 'center',
     position: 'relative',
     top: -130,

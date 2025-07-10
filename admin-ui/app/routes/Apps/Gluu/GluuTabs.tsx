@@ -3,8 +3,17 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import { useLocation, useNavigate } from 'react-router'
+import customColors from '@/customColors'
 
-const TabPanel = (props: any) => {
+interface TabPanelProps {
+  children?: React.ReactNode
+  value: number
+  px?: number
+  py?: number
+  index: number
+}
+
+const TabPanel = (props: TabPanelProps) => {
   const { children, value, px, py, index, ...other } = props
   return (
     <div
@@ -23,16 +32,16 @@ const TabPanel = (props: any) => {
   )
 }
 
-const a11yProps = (index: any) => {
+const a11yProps = (index: number) => {
   return {
     'id': `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   }
 }
 
-const initTabValue = (tabNames: any, path: any) => {
+const initTabValue = (tabNames: any[], path: any) => {
   const tab = tabNames
-    .map((tab: any, index: any) => {
+    .map((tab: any, index: number) => {
       if (tab.path === path.pathname) {
         return { ...tab, index: index }
       }
@@ -42,15 +51,21 @@ const initTabValue = (tabNames: any, path: any) => {
   return tab?.index || 0
 }
 
-export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }: any) {
+interface GluuTabsProps {
+  tabNames: any[]
+  tabToShow: (tabName: any) => React.ReactNode
+  withNavigation?: boolean
+}
+
+export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }: GluuTabsProps) {
   const path = useLocation()
   const [value, setValue] = useState(withNavigation ? initTabValue(tabNames, path) : 0)
   const navigate = useNavigate()
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
     if (withNavigation) {
-      const tab = tabNames.find((tab: any, index: any) => index === newValue)
+      const tab = tabNames.find((tab: any, index: number) => index === newValue)
       navigate(tab.path, { replace: true })
     }
   }
@@ -58,7 +73,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
   useEffect(() => {
     if (withNavigation) {
       const tab = tabNames
-        .map((tab: any, index: any) => {
+        .map((tab: any, index: number) => {
           if (tab.path === path.pathname) {
             return { ...tab, index: index }
           }
@@ -79,8 +94,29 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} variant="scrollable" onChange={handleChange}>
-          {tabNames?.map((tab: any, index: any) => (
+        <Tabs
+          value={value}
+          variant="scrollable"
+          onChange={handleChange}
+          sx={{
+            '& .MuiTab-root.Mui-selected': {
+              color: customColors.lightBlue,
+              fontWeight: 600,
+              background: customColors.lightBlue,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              position: 'relative',
+            },
+            '& .MuiTabs-indicator': {
+              background: customColors.lightBlue,
+              height: 3,
+              borderRadius: '2px',
+              boxShadow: `0 2px 4px ${customColors.logo}`,
+            },
+          }}
+        >
+          {tabNames?.map((tab: any, index: number) => (
             <Tab
               data-testid={withNavigation ? tab.name : tab}
               key={(withNavigation ? tab.name : tab) + index.toString()}
@@ -90,11 +126,13 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
           ))}
         </Tabs>
       </Box>
-      {tabNames?.map((tab: any, index: any) => (
+      {tabNames?.map((tab: any, index: number) => (
         <TabPanel
           value={value}
           key={(withNavigation ? tab.name : tab) + index.toString()}
           index={index}
+          px={0}
+          py={2}
         >
           {tabToShow(withNavigation ? tab.name : tab)}
         </TabPanel>

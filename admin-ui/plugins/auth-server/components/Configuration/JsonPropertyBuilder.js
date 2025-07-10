@@ -3,6 +3,7 @@ import { Accordion, FormGroup, Col, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 export function generateLabel(name) {
   const result = name.replace(/([A-Z])/g, ' $1')
@@ -129,7 +130,13 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentI
   if (isObjectArray(propValue)) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header className="text-primary">{propKey.toUpperCase()} </Accordion.Header>
+        <Accordion.Header
+          style={{
+            color: customColors.lightBlue,
+          }}
+        >
+          {propKey.toUpperCase()}
+        </Accordion.Header>
         <Accordion.Body>
           {Object.keys(propValue)?.map((item, idx) => (
             <JsonPropertyBuilder
@@ -151,7 +158,11 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentI
       <div>
         {show && (
           <Accordion className="mb-2 b-primary" initialOpen>
-            <Accordion.Header className="text-primary">
+            <Accordion.Header
+              style={{
+                color: customColors.lightBlue,
+              }}
+            >
               {propKey.toUpperCase().length > 10 ? propKey.toUpperCase() : ''}
             </Accordion.Header>
             <Accordion.Body>
@@ -160,9 +171,13 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentI
                   <Col sm={11} md={11}></Col>
                   <Col sm={1} md={1}>
                     <Button
-                      color="danger"
+                      style={{
+                        backgroundColor: customColors.accentRed,
+                        color: customColors.white,
+                        float: 'right',
+                        border: 'none',
+                      }}
                       size="sm"
-                      style={{ float: 'right' }}
                       onClick={removeHandler}
                     >
                       <i className="fa fa-remove me-2"></i>

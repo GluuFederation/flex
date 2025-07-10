@@ -29,6 +29,7 @@ import { auditLogoutLogs } from '../../../plugins/user-management/redux/features
 import { useNavigate } from 'react-router'
 import { getLockStatus } from 'Redux/features/lockSlice'
 import moment from 'moment'
+import customColors from '@/customColors'
 
 function DashboardPage() {
   const { t } = useTranslation()
@@ -36,7 +37,6 @@ function DashboardPage() {
   const userAction = useMemo(() => ({}), [])
   const options = useMemo(() => ({}), [])
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
-  const breakDashboardCard = useMediaQuery({ query: '(max-width: 1424px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const { classes } = styles()
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
@@ -260,7 +260,7 @@ function DashboardPage() {
           <div
             className={classes.userInfoTitle}
             style={{
-              color: 'white',
+              color: customColors.white,
               fontSize: 24,
               fontWeight: 400,
               marginBottom: '10px',
@@ -279,7 +279,7 @@ function DashboardPage() {
                   className="d-flex justify-content-between"
                   style={{
                     width: '100%',
-                    borderLeft: '4px solid #FFA500',
+                    borderLeft: `4px solid ${customColors.orange}`,
                     paddingLeft: '10px',
                   }}
                 >
@@ -326,7 +326,7 @@ function DashboardPage() {
               <div
                 className={classes.userInfoTitle}
                 style={{
-                  color: 'white',
+                  color: customColors.white,
                   fontSize: 24,
                   fontWeight: 400,
                   marginBottom: '10px',
@@ -370,7 +370,7 @@ function DashboardPage() {
                       <div
                         className={classes.userInfoTitle}
                         style={{
-                          color: 'white',
+                          color: customColors.white,
                           fontSize: 24,
                           fontWeight: 400,
                           marginBottom: '10px',
@@ -381,7 +381,7 @@ function DashboardPage() {
                       <div
                         className="d-flex flex-column justify-content-between"
                         style={{
-                          backgroundColor: 'white',
+                          backgroundColor: customColors.white,
                           padding: '20px',
                           borderRadius: '5px',
                         }}
@@ -457,9 +457,7 @@ function DashboardPage() {
                   </li>
                 </ul>
                 <ul>
-                  <li className={classes.lightGreen}>
-                    {t('dashboard.authorization_code_id_token')}
-                  </li>
+                  <li className={classes.redText}>{t('dashboard.authorization_code_id_token')}</li>
                 </ul>
               </Grid>
             </Grid>

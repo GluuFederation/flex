@@ -26,6 +26,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { isEmpty } from 'lodash'
+import customColors from '@/customColors'
 
 function UiPermListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -76,7 +77,7 @@ function UiPermListPage() {
       actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_permission')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => handleAddNewPermission(),
       })
@@ -115,7 +116,7 @@ function UiPermListPage() {
     selection: false,
     pageSize: pageSize,
     rowStyle: (rowData) => ({
-      backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+      backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
     }),
     headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
     actionsColumnIndex: -1,

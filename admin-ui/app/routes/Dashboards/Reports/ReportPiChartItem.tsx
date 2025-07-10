@@ -2,9 +2,10 @@
 import React from 'react'
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
 import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
+import customColors from '@/customColors'
 
 function ReportPiChartItem({ data }) {
-  const COLORS = ['#7aefc0', '#3B4371']
+  const COLORS = [customColors.lightGreen, customColors.black]
   const RADIAN = Math.PI / 180
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
@@ -15,7 +16,7 @@ function ReportPiChartItem({ data }) {
       <text
         x={x}
         y={y}
-        fill="white"
+        fill={customColors.white}
         textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
       >
@@ -33,7 +34,7 @@ function ReportPiChartItem({ data }) {
         labelLine={false}
         label={renderCustomizedLabel}
         outerRadius={80}
-        fill="#8884d8"
+        fill={customColors.lightBlue}
         dataKey="value"
       >
         {data.map((e, index) => (

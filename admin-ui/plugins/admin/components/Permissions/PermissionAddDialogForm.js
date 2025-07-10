@@ -14,6 +14,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { InputGroup, CustomInput } from 'Components'
+import customColors from '@/customColors'
 
 const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
   const [permission, setPermission] = useState('')
@@ -70,7 +71,10 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
         className="modal-outline-primary"
       >
         <ModalHeader toggle={handler}>
-          <i style={{ color: 'green' }} className="fa fa-2x fa-info fa-fw modal-icon mb-3"></i>
+          <i
+            style={{ color: customColors.logo }}
+            className="fa fa-2x fa-info fa-fw modal-icon mb-3"
+          ></i>
           {t('titles.newPermission')}
         </ModalHeader>
         <ModalBody>{t('titles.addingNewApiPermission')}</ModalBody>
@@ -150,7 +154,9 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
             </Col>
           </FormGroup>
 
-          {errorMessages ? <span style={{ color: '#e74c3c' }}>{errorMessages}</span> : null}
+          {errorMessages ? (
+            <span style={{ color: customColors.accentRed }}>{errorMessages}</span>
+          ) : null}
         </ModalBody>
         <ModalFooter>
           <Button

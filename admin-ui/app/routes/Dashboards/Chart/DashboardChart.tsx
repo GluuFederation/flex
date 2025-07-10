@@ -14,6 +14,7 @@ import './styles.css'
 import { useSelector } from 'react-redux'
 import TooltipDesign from './TooltipDesign'
 import moment from 'moment'
+import customColors from '@/customColors'
 
 const DashboardChart = () => {
   const statData = useSelector((state) => state.mauReducer.stat)
@@ -59,10 +60,10 @@ const DashboardChart = () => {
         <YAxis />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip content={<TooltipDesign />} />
-        <Legend wrapperStyle={{ color: '#fff' }} />
-        <Bar dataKey="client_credentials_access_token_count" fill={'#FE9F01'} />
-        <Bar dataKey="authz_code_access_token_count" fill={'#9CBEE0'} />
-        <Bar dataKey="authz_code_idtoken_count" fill={'#8D9460'} />
+        <Legend wrapperStyle={{ color: customColors.white }} />
+        <Bar dataKey="client_credentials_access_token_count" fill={customColors.orange} />
+        <Bar dataKey="authz_code_access_token_count" fill={customColors.lightBlue} />
+        <Bar dataKey="authz_code_idtoken_count" fill={customColors.accentRed} />
       </BarChart>
     </ResponsiveContainer>
   )

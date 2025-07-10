@@ -31,7 +31,7 @@ import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import GluuViewDetailModal from '../../../../app/routes/Apps/Gluu/GluuViewDetailsModal'
-
+import customColors from '@/customColors'
 import moment from 'moment'
 import { deleteFido2DeviceData } from '../../../fido/redux/features/fidoSlice'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
@@ -68,7 +68,6 @@ function UserList() {
   const usersList = useSelector((state) => state.userReducer.items)
   const loading = useSelector((state) => state.userReducer.loading)
   const token = useSelector((state) => state.authReducer.token.access_token)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [isViewDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -162,14 +161,19 @@ function UserList() {
     myActions.push({
       icon: GluuSearch,
       tooltip: `${t('messages.advanced_search')}`,
-      iconProps: { color: 'primary' },
+      iconProps: {
+        color: 'primary',
+        style: {
+          borderColor: customColors.lightBlue,
+        },
+      },
       isFreeAction: true,
       onClick: () => {},
     })
     myActions.push({
       icon: 'refresh',
       tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary' },
+      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       isFreeAction: true,
       onClick: () => {
         setLimit(memoLimit)
@@ -183,7 +187,7 @@ function UserList() {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
-      iconProps: { color: 'primary' },
+      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       isFreeAction: true,
       onClick: () => handleGoToUserAddPage(),
     })
@@ -191,6 +195,7 @@ function UserList() {
       icon: 'edit',
       iconProps: {
         id: 'editScope' + rowData.inum,
+        style: { color: customColors.darkGray },
       },
       onClick: (event, rowData) => handleGoToUserEditPage(rowData),
       disabled: !hasCedarPermission(USER_WRITE),
@@ -199,6 +204,7 @@ function UserList() {
       icon: LockedOpenIcon,
       iconProps: {
         id: 'viewDetail' + rowData.inum,
+        style: { color: customColors.darkGray },
       },
       tooltip: `${t('messages.credentials')}`,
       onClick: (event, rowData) => handleView2FADetails(rowData),
@@ -212,6 +218,7 @@ function UserList() {
       iconProps: {
         color: 'secondary',
         id: 'deleteClient' + rowData.inum,
+        style: { color: customColors.darkGray },
       },
       onClick: (event, rowData) => {
         setDeleteData(rowData)
@@ -362,7 +369,7 @@ function UserList() {
             idSynonym: 'inum',
             selection: false,
             rowStyle: (rowData) => ({
-              backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+              backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
             }),
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
@@ -412,7 +419,7 @@ function UserList() {
                 selection: false,
                 pageSize: limit,
                 rowStyle: (rowData) => ({
-                  backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                  backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,

@@ -11,6 +11,7 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { putJansLockConfiguration } from 'Plugins/jans-lock/redux/features/JansLockSlice'
+import customColors from '@/customColors'
 
 const DOC_CATEGORY = 'jans_lock'
 
@@ -296,7 +297,13 @@ const JansLockConfiguration = () => {
         <Col sm={12}>
           <Accordion className="mb-2 b-primary" initialOpen>
             <Accordion.Header className="text-primary">
-              <GluuLabel label={'fields.opa_configuration'} required={false} />
+              <GluuLabel
+                style={{
+                  color: customColors.lightBlue,
+                }}
+                label={'fields.opa_configuration'}
+                required={false}
+              />
             </Accordion.Header>
             <Accordion.Body>
               <GluuInputRow

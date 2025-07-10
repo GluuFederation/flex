@@ -4,6 +4,7 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 const CustomScriptDetailPage = ({ row }) => {
   const { t } = useTranslation()
@@ -12,7 +13,7 @@ const CustomScriptDetailPage = ({ row }) => {
 
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
+      <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
         <Row>
           <Col sm={4}>
             <GluuFormDetailRow

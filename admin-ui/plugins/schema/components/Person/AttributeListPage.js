@@ -24,6 +24,8 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
+import styled from 'styled-components'
 
 function AttributeListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -63,6 +65,11 @@ function AttributeListPage() {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const StyledBadge = styled(Badge)`
+    background-color: ${(props) =>
+      props.status === 'active' ? customColors.darkGray : customColors.paleYellow} !important;
+    color: ${customColors.white} !important;
+  `
 
   useEffect(() => {
     makeOptions()
@@ -140,6 +147,7 @@ function AttributeListPage() {
       icon: 'edit',
       iconProps: {
         id: 'editAttribute' + rowData.inum,
+        style: { color: customColors.darkGray },
       },
       tooltip: `${t('tooltips.edit_attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
@@ -148,7 +156,9 @@ function AttributeListPage() {
     myActions.push({
       icon: 'add',
       tooltip: `${t('tooltips.add_attribute')}`,
-      iconProps: { color: 'primary' },
+      iconProps: {
+        style: { color: customColors.lightBlue },
+      },
       isFreeAction: true,
       onClick: () => handleGoToAttributeAddPage(),
       disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
@@ -159,6 +169,7 @@ function AttributeListPage() {
       icon: 'visibility',
       iconProps: {
         id: 'viewAttribute' + rowData.inum,
+        style: { color: customColors.darkGray },
       },
       tooltip: `${t('tooltips.view_attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
@@ -167,14 +178,18 @@ function AttributeListPage() {
     myActions.push({
       icon: GluuSearch,
       tooltip: `${t('tooltips.advanced_search_options')}`,
-      iconProps: { color: 'primary' },
+      iconProps: {
+        style: { color: customColors.lightBlue },
+      },
       isFreeAction: true,
       onClick: () => {},
     })
     myActions.push({
       icon: 'refresh',
       tooltip: `${t('tooltips.refresh_data')}`,
-      iconProps: { color: 'primary' },
+      iconProps: {
+        style: { color: customColors.lightBlue },
+      },
       isFreeAction: true,
       onClick: () => {
         makeOptions()
@@ -186,8 +201,7 @@ function AttributeListPage() {
     myActions.push((rowData) => ({
       icon: DeleteOutlinedIcon,
       iconProps: {
-        color: 'secondary',
-        id: 'deleteAttribute' + rowData.inum,
+        style: { color: customColors.darkGray, id: 'deleteAttribute' + rowData.inum },
       },
       tooltip: `${t('tooltips.delete_attribute')}`,
       onClick: (event, rowData) => handleAttribueDelete(rowData),
@@ -256,7 +270,7 @@ function AttributeListPage() {
                 field: 'status',
                 type: 'boolean',
                 render: (rowData) => (
-                  <Badge color={getBadgeTheme(rowData.status)}>{rowData.status}</Badge>
+                  <StyledBadge status={rowData.status}>{rowData.status}</StyledBadge>
                 ),
               },
             ]}

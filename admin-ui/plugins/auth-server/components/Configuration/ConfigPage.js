@@ -20,6 +20,7 @@ import {
 } from 'Plugins/auth-server/common/Constants'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
 import { getScripts } from 'Redux/features/initSlice'
+import customColors from '@/customColors'
 
 function ConfigPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -134,7 +135,7 @@ function ConfigPage() {
               <div style={{ paddingLeft: 5 }}>
                 <RefreshIcon
                   onClick={() => setFinalSearch(search.toLowerCase())}
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: 'pointer', color: customColors.lightBlue }}
                 />
               </div>
             </div>

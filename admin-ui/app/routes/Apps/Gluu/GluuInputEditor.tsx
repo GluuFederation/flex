@@ -6,6 +6,7 @@ import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/theme-xcode'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/ext-language_tools'
+import customColors from '@/customColors'
 
 function GluuInputEditor({
   name,
@@ -57,7 +58,7 @@ function GluuInputEditor({
           value={value}
           editorProps={{ $blockScrolling: true }}
         />
-        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: customColors.accentRed }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

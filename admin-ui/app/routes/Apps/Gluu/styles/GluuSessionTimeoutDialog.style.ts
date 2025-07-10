@@ -1,5 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 import red from '@mui/material/colors/red'
+import customColors from '@/customColors'
 
 const styles = makeStyles()({
   dialog: {
@@ -11,14 +12,14 @@ const styles = makeStyles()({
     padding: 5,
   },
   logout: {
-    'color': '#fff',
-    'backgroundColor': '#03A96D',
+    'color': customColors.white,
+    'backgroundColor': customColors.logo,
     '&:hover': {
-      backgroundColor: red[700],
+      backgroundColor: customColors.accentRed,
     },
   },
   countdown: {
-    color: 'red[700]',
+    color: customColors.accentRed,
   },
 })
 

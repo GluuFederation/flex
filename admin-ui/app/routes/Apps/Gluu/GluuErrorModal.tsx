@@ -1,3 +1,4 @@
+import customColors from '@/customColors'
 import { useSelector } from 'react-redux'
 
 function GluuErrorModal({ message = '', description = '' }) {
@@ -21,8 +22,8 @@ function GluuErrorModal({ message = '', description = '' }) {
         bottom: 0,
         right: 0,
         left: 0,
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        color: 'white',
+        backgroundColor: customColors.black,
+        color: customColors.white,
         justifyContent: 'center',
         alignItems: 'center',
         display: 'flex',
@@ -37,13 +38,13 @@ function GluuErrorModal({ message = '', description = '' }) {
           marginBottom: 50,
         }}
       />
-      <h2 style={{ color: 'white' }}>{message}</h2>
+      <h2 style={{ color: customColors.white }}>{message}</h2>
       <p dangerouslySetInnerHTML={{ __html: description }}></p>
       <button
         style={{
           border: 0,
           backgroundColor: 'transparent',
-          color: 'white',
+          color: customColors.white,
           textDecoration: 'underline',
         }}
         onClick={handleRefresh}

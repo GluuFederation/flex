@@ -6,6 +6,7 @@ import GluuSingleValueCompleter from '../../../../app/routes/Apps/Gluu/GluuSingl
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import { useSelector } from 'react-redux'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 const DOC_CATEGORY = 'openid_client'
 
@@ -65,7 +66,10 @@ const MappingAddDialogForm = ({ handler, modal, onAccept, roles, mapping = [] })
     <>
       <Modal isOpen={modal} toggle={handler} className="modal-outline-primary modal-lg">
         <ModalHeader toggle={handler}>
-          <i style={{ color: 'green' }} className="fa fa-2x fa-info fa-fw modal-icon mb-3"></i>
+          <i
+            style={{ color: customColors.logo }}
+            className="fa fa-2x fa-info fa-fw modal-icon mb-3"
+          ></i>
           {t('messages.new_role')}
         </ModalHeader>
         <ModalBody>{t('messages.adding_new_permission')}</ModalBody>

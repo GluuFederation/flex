@@ -4,6 +4,7 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuSecretDetail from 'Routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 const DOC_CATEGORY = 'openid_client'
 
@@ -26,7 +27,7 @@ function ClientDetailPage({ row, scopes }) {
   const dash = '-'
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: '#F5F5F5' }}>
+      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow

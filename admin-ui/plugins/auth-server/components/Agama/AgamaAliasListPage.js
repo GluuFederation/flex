@@ -17,6 +17,7 @@ import * as Yup from 'yup'
 import TablePagination from '@mui/material/TablePagination'
 import Paper from '@mui/material/Paper'
 import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
+import customColors from '@/customColors'
 
 function AliasesListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -68,7 +69,7 @@ function AliasesListPage() {
       actions.push({
         icon: 'add',
         tooltip: `${t('actions.add_mapping')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
           formik.resetForm()
@@ -79,6 +80,9 @@ function AliasesListPage() {
 
       actions.push(() => ({
         icon: 'edit',
+        iconProps: {
+          style: { color: customColors.darkGray },
+        },
         tooltip: `${t('messages.edit_acr')}`,
         onClick: (event, rowData) => handleEdit(rowData),
       }))
@@ -190,7 +194,7 @@ function AliasesListPage() {
               pagination: false,
 
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                backgroundColor: rowData.enabled ? customColors.lightGreen : customColors.white,
               }),
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,

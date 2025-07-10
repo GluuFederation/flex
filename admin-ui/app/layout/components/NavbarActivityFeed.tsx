@@ -14,6 +14,7 @@ import {
 } from 'Components'
 import { ExtendedDropdownSection } from '@/components/ExtendedDropdown/ExtendedDropdownSection'
 import type { NavbarActivityFeedProps, ActivityFeedIconMap } from './types'
+import customColors from '@/customColors'
 
 const activityFeedIcons: ActivityFeedIconMap = {
   success: (
@@ -54,7 +55,7 @@ const NavbarActivityFeed: React.FC<NavbarActivityFeedProps> = (props) => (
           </Badge>
         }
       >
-        <i className="fa fa-bell-o fa-fw" style={{ color: 'white' }} />
+        <i className="fa fa-bell-o fa-fw" style={{ color: customColors.white }} />
       </IconWithBadge>
     </DropdownToggle>
     <ExtendedDropdown right className="">

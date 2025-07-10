@@ -16,6 +16,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { toast } from 'react-toastify'
+import customColors from '@/customColors'
 
 function UiRoleListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -54,7 +55,7 @@ function UiRoleListPage() {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
-      iconProps: { color: 'primary' },
+      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       isFreeAction: true,
       onClick: () => handleAddNewRole(),
     })
@@ -128,7 +129,7 @@ function UiRoleListPage() {
               selection: false,
               pageSize: pageSize,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
               }),
               headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,

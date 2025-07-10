@@ -1,31 +1,21 @@
 // @ts-nocheck
 import { Box, Divider, Typography } from '@mui/material'
 import React, { useContext } from 'react'
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  CartesianGrid,
-} from 'recharts'
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
+import customColors from '@/customColors'
 
 const ActivityPage = () => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme && theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
 
   SetTitle(t('menus.activity'))
-
-  console.log(`themeColors`, themeColors, `selectedTheme`, selectedTheme)
 
   return (
     <Box maxWidth="1200px" display="flex" flexDirection="column" gap="2rem" margin="0 auto">
@@ -37,7 +27,7 @@ const ActivityPage = () => {
           width="100%"
           style={{
             padding: '16px',
-            border: '1px solid rgba(112, 112, 112, 0.3)',
+            border: `1px solid ${customColors.darkGray}`,
             borderRadius: '6px',
             boxShadow: `4px 9px 37px -10px rgba(0,0,0,0.75)`,
           }}
@@ -68,7 +58,7 @@ const ActivityPage = () => {
           width="100%"
           style={{
             padding: '16px',
-            border: '1px solid rgba(112, 112, 112, 0.3)',
+            border: `1px solid ${customColors.darkGray}`,
             borderRadius: '6px',
             boxShadow: `4px 9px 37px -10px rgba(0,0,0,0.75)`,
           }}
@@ -102,7 +92,7 @@ const ActivityPage = () => {
         width="100%"
         height="400px"
         style={{
-          border: '1px solid rgba(112, 112, 112, 0.3)',
+          border: `1px solid ${customColors.darkGray}`,
           borderRadius: '6px',
           boxShadow: `4px 9px 37px -10px rgba(0,0,0,0.75)`,
         }}
@@ -121,7 +111,7 @@ const ActivityPage = () => {
               Sign-ups
             </Typography>
             <Typography variant="subtitle2">
-              230 <span style={{ color: 'green' }}>+134</span>
+              230 <span style={{ color: customColors.logo }}>+134</span>
             </Typography>
           </Box>
           <Divider
@@ -134,7 +124,7 @@ const ActivityPage = () => {
               Logins
             </Typography>
             <Typography variant="subtitle2">
-              82 <span style={{ color: 'green' }}>+1</span>
+              82 <span style={{ color: customColors.logo }}>+1</span>
             </Typography>
           </Box>
         </Box>
@@ -150,13 +140,12 @@ const ActivityPage = () => {
               bottom: 5,
             }}
           >
-            {/* <CartesianGrid horizontalPoints={[80, 140, 200]} strokeDasharray="3 3" /> */}
             <XAxis dataKey="name" tick={{ fill: themeColors.lightBackground }} />
             <YAxis tick={{ fill: themeColors.lightBackground }} />
             <Tooltip />
             <Legend />
-            <Line type="basic" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line type="basic" dataKey="uv" stroke="#82ca9d" />
+            <Line type="basic" dataKey="pv" stroke={customColors.lightBlue} activeDot={{ r: 8 }} />
+            <Line type="basic" dataKey="uv" stroke={customColors.lightGreen} />
           </LineChart>
         </ResponsiveContainer>
       </Box>

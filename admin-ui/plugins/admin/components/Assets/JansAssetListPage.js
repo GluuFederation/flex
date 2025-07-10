@@ -24,6 +24,7 @@ import {
   getAssetServices,
   getAssetTypes,
 } from 'Plugins/admin/redux/features/AssetSlice'
+import customColors from '@/customColors'
 import moment from 'moment'
 
 const JansAssetListPage = () => {
@@ -262,11 +263,19 @@ const JansAssetListPage = () => {
                 selection: false,
                 pageSize: limit,
                 rowStyle: (rowData) => ({
-                  backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                  backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
+                },
+                cellStyle: {
+                  backgroundColor: customColors.white,
+                  border: `1px solid ${customColors.lightGray}`,
+                },
+                actionsCellStyle: {
+                  backgroundColor: customColors.white,
+                  border: `1px solid ${customColors.lightGray}`,
                 },
                 actionsColumnIndex: -1,
               }}

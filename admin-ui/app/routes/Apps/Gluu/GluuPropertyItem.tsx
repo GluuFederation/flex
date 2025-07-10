@@ -1,6 +1,7 @@
 import { FormGroup, Col, Input, Button } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
+import customColors from '@/customColors'
 
 function GluuPropertyItem({
   property,
@@ -77,6 +78,10 @@ function GluuPropertyItem({
           <Button
             type="button"
             color="danger"
+            style={{
+              backgroundColor: customColors.accentRed,
+              color: customColors.white,
+            }}
             disabled={disabled}
             onClick={() => onPropertyRemove(position)}
           >

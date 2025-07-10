@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { Paper, TablePagination } from '@mui/material'
-
+import customColors from '@/customColors'
 import { Card, CardBody } from 'Components'
 import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -90,7 +90,7 @@ const WebhookListPage = () => {
           />
         ),
         tooltip: `${t('messages.advanced_search')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { borderColor: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {},
       })
@@ -98,7 +98,7 @@ const WebhookListPage = () => {
       actions.push({
         icon: 'refresh',
         tooltip: `${t('messages.refresh')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
           setLimit(memoLimit)
@@ -112,7 +112,7 @@ const WebhookListPage = () => {
       actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_webhook')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: navigateToAddPage,
       })
@@ -120,7 +120,9 @@ const WebhookListPage = () => {
       actions.push((rowData) => ({
         icon: 'edit',
         iconProps: {
+          color: 'primary',
           id: 'editScope' + rowData.inum,
+          style: { color: customColors.darkGray },
         },
         onClick: (event, rowData) => navigateToEditPage(rowData),
         disabled: !canWrite,
@@ -131,7 +133,7 @@ const WebhookListPage = () => {
       actions.push((rowData) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
-          color: 'secondary',
+          style: { color: customColors.darkGray },
           id: 'deleteClient' + rowData.inum,
         },
         onClick: (event, rowData) => {
@@ -237,7 +239,7 @@ const WebhookListPage = () => {
                 selection: false,
                 pageSize: limit,
                 rowStyle: (rowData) => ({
-                  backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                  backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,

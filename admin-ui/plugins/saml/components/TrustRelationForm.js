@@ -25,6 +25,7 @@ import { nameIDPolicyFormat } from '../helper'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
 import { getAttributes } from 'Plugins/schema/redux/features/attributeSlice'
+import customColors from '@/customColors'
 
 const TrustRelationForm = ({ configs, viewOnly }) => {
   const { t } = useTranslation()
@@ -156,9 +157,9 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   }
 
   function handleSubmit(values, user_message) {
-    let formdata = new FormData()
+    const formdata = new FormData()
 
-    let payload = {
+    const payload = {
       trustRelationship: { ...values },
     }
 
@@ -369,7 +370,9 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                         disabled={viewOnly}
                       />
                       {fileError && (
-                        <div style={{ color: 'red' }}>{t('messages.import_metadata_file')}</div>
+                        <div style={{ color: customColors.accentRed }}>
+                          {t('messages.import_metadata_file')}
+                        </div>
                       )}
                     </Col>
                   </FormGroup>

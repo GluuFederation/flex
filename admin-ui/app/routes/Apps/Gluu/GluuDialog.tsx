@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
 import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import customColors from '@/customColors'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: any) => {
   const [active, setActive] = useState(false)
@@ -60,7 +61,10 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
       ) : (
         <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">
           <ModalHeader toggle={closeModal}>
-            <i style={{ color: 'red' }} className="fa fa-2x fa-warning fa-fw modal-icon mb-3"></i>
+            <i
+              style={{ color: customColors.accentRed }}
+              className="fa fa-2x fa-warning fa-fw modal-icon mb-3"
+            ></i>
             {t('messages.action_deletion_for')} {subject} ({name}-{row.inum ? row.inum : row.id})
           </ModalHeader>
           <ModalBody>{t('messages.action_deletion_question')}</ModalBody>
@@ -77,7 +81,11 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
                   value={userMessage}
                 />
                 {userMessage.length < 10 && (
-                  <span className="text-danger">
+                  <span
+                    style={{
+                      color: customColors.accentRed,
+                    }}
+                  >
                     {10 - userMessage.length} {userMessage.length ? ' more' : ''} characters
                     required
                   </span>

@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import moment from 'moment'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 function ScopeForm({
   scope,
@@ -191,7 +192,7 @@ function ScopeForm({
                 />
               </Col>
               <ErrorMessage name="id">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </FormGroup>
             {scope.inum && (
@@ -236,7 +237,7 @@ function ScopeForm({
                 />
               </Col>
               <ErrorMessage name="displayName">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
               </ErrorMessage>
             </FormGroup>
 
@@ -343,7 +344,7 @@ function ScopeForm({
                   </InputGroup>
                 </Col>
                 <ErrorMessage name="scopeType">
-                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                  {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
                 </ErrorMessage>
               </FormGroup>
             )}

@@ -18,6 +18,7 @@ import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import { randomAvatar } from '../../../utilities'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
+import customColors from '@/customColors'
 
 function GluuNavBar() {
   const userInfo = useSelector((state: any) => state.authReducer.userinfo)
@@ -63,7 +64,7 @@ function GluuNavBar() {
                     addOns={[
                       <AvatarAddOn.Icon
                         className="fa fa-circle"
-                        color="white"
+                        color={customColors.white}
                         key="avatar-icon-bg"
                       />,
                       <AvatarAddOn.Icon

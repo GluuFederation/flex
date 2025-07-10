@@ -2,6 +2,7 @@ import React from 'react'
 import GluuLabel from './GluuLabel'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
+import customColors from '@/customColors'
 
 interface SelectOption {
   value: string
@@ -94,7 +95,7 @@ function GluuSelectRow({
             })}
           </CustomInput>
         </InputGroup>
-        {showError ? <div style={{ color: 'red' }}>{errorMessage}</div> : null}
+        {showError ? <div style={{ color: customColors.accentRed }}>{errorMessage}</div> : null}
       </Col>
     </FormGroup>
   )

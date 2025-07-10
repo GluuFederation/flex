@@ -19,6 +19,7 @@ import {
 import { ExtendedDropdownSection } from '@/components/ExtendedDropdown/ExtendedDropdownSection'
 import { ExtendedDropdownLink } from '@/components/ExtendedDropdown/ExtendedDropdownLink'
 import type { NavbarMessagesProps, MessageColorType } from './types'
+import customColors from '@/customColors'
 
 const messagesColors: MessageColorType[] = ['text-success', 'text-danger', 'text-warning']
 
@@ -32,7 +33,7 @@ const NavbarMessages: React.FC<NavbarMessagesProps> = (props) => (
           </Badge>
         }
       >
-        <i className="fa fa-envelope-o fa-fw" style={{ color: 'white' }} />
+        <i className="fa fa-envelope-o fa-fw" style={{ color: customColors.white }} />
       </IconWithBadge>
     </DropdownToggle>
     <ExtendedDropdown right>

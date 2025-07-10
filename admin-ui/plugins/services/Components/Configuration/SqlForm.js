@@ -9,6 +9,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
+import customColors from '@/customColors'
 
 function SqlForm({ item, handleSubmit }) {
   const { t } = useTranslation()
@@ -59,7 +60,7 @@ function SqlForm({ item, handleSubmit }) {
         <FormGroup row>
           <GluuLabel label="fields.name" required />
           <Col sm={9}>
-            {!!item.configId ? (
+            {item.configId ? (
               <Input
                 valid={!formik.errors.configId && !formik.touched.configId && init}
                 placeholder={t('placeholders.sql_config_name')}
@@ -82,7 +83,7 @@ function SqlForm({ item, handleSubmit }) {
               />
             )}
             {formik.errors.configId && formik.touched.configId ? (
-              <div style={{ color: 'red' }}>{formik.errors.configId}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.configId}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -101,7 +102,7 @@ function SqlForm({ item, handleSubmit }) {
               onChange={formik.handleChange}
             />
             {formik.errors.userName && formik.touched.userName ? (
-              <div style={{ color: 'red' }}>{formik.errors.userName}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.userName}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -122,7 +123,7 @@ function SqlForm({ item, handleSubmit }) {
               />
             </InputGroup>
             {formik.errors.userPassword && formik.touched.userPassword ? (
-              <div style={{ color: 'red' }}>{formik.errors.userPassword}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.userPassword}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -143,7 +144,7 @@ function SqlForm({ item, handleSubmit }) {
           ></GluuTypeAhead>
 
           {formik.errors.connectionUri && formik.touched.connectionUri ? (
-            <div style={{ color: 'red' }}>{formik.errors.connectionUri}</div>
+            <div style={{ color: customColors.accentRed }}>{formik.errors.connectionUri}</div>
           ) : null}
         </Col>
       </FormGroup>
@@ -161,7 +162,7 @@ function SqlForm({ item, handleSubmit }) {
               onChange={formik.handleChange}
             />
             {formik.errors.schemaName && formik.touched.schemaName ? (
-              <div style={{ color: 'red' }}>{formik.errors.schemaName}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.schemaName}</div>
             ) : null}
           </Col>
         </FormGroup>

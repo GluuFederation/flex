@@ -4,6 +4,7 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 function ScopeDetailPage({ row }) {
   const { t } = useTranslation()
@@ -19,7 +20,7 @@ function ScopeDetailPage({ row }) {
   }
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: '#F5F5F5' }}>
+      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
