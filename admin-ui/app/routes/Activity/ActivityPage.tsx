@@ -16,6 +16,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
+import customColors from '@/customColors'
 
 const ActivityPage = () => {
   const { t } = useTranslation()
@@ -155,8 +156,8 @@ const ActivityPage = () => {
             <YAxis tick={{ fill: themeColors.lightBackground }} />
             <Tooltip />
             <Legend />
-            <Line type="basic" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line type="basic" dataKey="uv" stroke="#82ca9d" />
+            <Line type="basic" dataKey="pv" stroke={customColors.lightBlue} activeDot={{ r: 8 }} />
+            <Line type="basic" dataKey="uv" stroke={customColors.lightGreen} />
           </LineChart>
         </ResponsiveContainer>
       </Box>

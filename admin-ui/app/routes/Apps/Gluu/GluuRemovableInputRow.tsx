@@ -4,6 +4,7 @@ import GluuTooltip from './GluuTooltip'
 import applicationStyle from './styles/applicationstyle'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 function GluuRemovableInputRow({
   label,
@@ -67,7 +68,7 @@ function GluuRemovableInputRow({
           onKeyDown={handler}
           onClick={handler}
         >
-          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
+          <i className={'fa fa-fw fa-close'} style={{ color: customColors.accentRed }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>

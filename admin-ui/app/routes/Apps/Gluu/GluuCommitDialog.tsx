@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
 import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import customColors from '@/customColors'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -190,7 +191,11 @@ const GluuCommitDialog = ({
                     value={userMessage}
                   />
                   {userMessage.length < 10 && (
-                    <span className="text-danger">
+                    <span
+                      style={{
+                        color: customColors.accentRed,
+                      }}
+                    >
                       {10 - userMessage.length} {userMessage.length ? ' more' : ''} characters
                       required
                     </span>

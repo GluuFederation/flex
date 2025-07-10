@@ -18,6 +18,7 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { Formik } from 'formik'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
+import customColors from '@/customColors'
 
 function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
@@ -26,7 +27,6 @@ function MappingItem({ candidate, roles }) {
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-
   const [searchablePermissions, setSearchAblePermissions] = useState([])
   const [essentialPermissions, setEssentialPermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
@@ -162,7 +162,7 @@ function MappingItem({ candidate, roles }) {
                   onClick={() => handleDeleteRole()}
                   style={{
                     float: 'right',
-                    color: '#000',
+                    color: customColors.black,
                   }}
                 />
               )}

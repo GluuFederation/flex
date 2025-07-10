@@ -3,6 +3,8 @@ import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuTooltip from './GluuTooltip'
 import applicationstyle from './styles/applicationstyle'
+import customColors from '@/customColors'
+
 function GluuRemovableSelectRow({
   label,
   name,
@@ -48,7 +50,7 @@ function GluuRemovableSelectRow({
           </InputGroup>
         </Col>
         <div style={applicationstyle.removableInputRow as any} onClick={handler}>
-          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
+          <i className={'fa fa-fw fa-close'} style={{ color: customColors.accentRed }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>

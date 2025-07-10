@@ -6,6 +6,7 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Col, FormGroup, Input, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 function GluuInlineInput({
   label,
@@ -124,8 +125,16 @@ function GluuInlineInput({
               onClick={onAccept}
             >
               <i className="fa fa-check me-2"></i>
-            </Button>{' '}
-            <Button color="danger" size="sm" onClick={onCancel}>
+            </Button>
+            <Button
+              style={{
+                backgroundColor: customColors.accentRed,
+                color: customColors.white,
+                border: 'none',
+              }}
+              size="sm"
+              onClick={onCancel}
+            >
               <i className="fa fa-times me-2"></i>
             </Button>
           </>

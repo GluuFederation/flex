@@ -38,6 +38,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import GetAppIcon from '@mui/icons-material/GetApp'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 function SessionListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -266,7 +267,14 @@ function SessionListPage() {
                   style={{ width: 300 }}
                   onChange={handleUsernameChange}
                   renderInput={(params) => (
-                    <TextField {...params} label="Username" variant="outlined" />
+                    <TextField
+                      {...params}
+                      style={{
+                        borderColor: customColors.lightBlue,
+                      }}
+                      label="Username"
+                      variant="outlined"
+                    />
                   )}
                 />
                 {revokeUsername && (
@@ -279,15 +287,28 @@ function SessionListPage() {
             {/* searchFilter */}
             <Box position="relative">
               <Box display="flex" justifyContent="flex-end" alignItems="center" p={2} width="500px">
-                <MaterialButton startIcon={<FilterListIcon />} onClick={handleFilterToggle}>
+                <MaterialButton
+                  sx={{
+                    color: customColors.lightBlue,
+                  }}
+                  startIcon={<FilterListIcon />}
+                  onClick={handleFilterToggle}
+                >
                   {t('titles.filters')}
                 </MaterialButton>
-                <MaterialButton onClick={downloadCSV} startIcon={<GetAppIcon />} sx={{ ml: 2 }}>
+                <MaterialButton
+                  onClick={downloadCSV}
+                  sx={{
+                    color: customColors.lightBlue,
+                    ml: 2,
+                  }}
+                  startIcon={<GetAppIcon />}
+                >
                   {t('titles.export_csv')}
                 </MaterialButton>
 
                 <MaterialButton
-                  sx={{ ml: 2 }}
+                  sx={{ ml: 2, color: customColors.lightBlue }}
                   onClick={handleColumnMenuOpen}
                   startIcon={<ViewColumnIcon />}
                 >
@@ -362,6 +383,9 @@ function SessionListPage() {
                             format="MM/DD/YYYY"
                             label={t('dashboard.start_date')}
                             value={date}
+                            style={{
+                              borderColor: customColors.lightBlue,
+                            }}
                             onChange={(val) => {
                               setDate(val)
                             }}
@@ -377,18 +401,37 @@ function SessionListPage() {
                           variant="outlined"
                           fullWidth
                           onChange={(event) => (memoPattern = event.target.value)}
+                          style={{
+                            borderColor: customColors.lightBlue,
+                          }}
                         />
                       </Grid>
                     )}
 
                     <Grid item xs={2}>
-                      <Button variant="contained" color="primary" onClick={handleFilterApply}>
+                      <Button
+                        style={{
+                          backgroundColor: customColors.lightBlue,
+                          color: customColors.white,
+                        }}
+                        variant="contained"
+                        color="primary"
+                        onClick={handleFilterApply}
+                      >
                         {t('actions.apply')}
                       </Button>
                     </Grid>
 
                     <Grid item xs={2}>
-                      <Button variant="contained" color="primary" onClick={handleFilterClose}>
+                      <Button
+                        style={{
+                          backgroundColor: customColors.lightBlue,
+                          color: customColors.white,
+                        }}
+                        variant="contained"
+                        color="primary"
+                        onClick={handleFilterClose}
+                      >
                         {t('actions.close')}
                       </Button>
                     </Grid>

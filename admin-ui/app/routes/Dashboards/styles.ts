@@ -1,9 +1,9 @@
-// @ts-nocheck
+import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()({
   root: {
-    color: '#FFFFFF',
+    color: customColors.white,
     maxWidth: '100vw',
   },
   flex: {
@@ -18,7 +18,7 @@ const styles = makeStyles()({
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
-    border: '3px solid #FFF',
+    border: `3px solid ${customColors.white} `,
     borderRadius: 5,
     alignItems: 'start',
     flexDirection: 'column',
@@ -35,7 +35,7 @@ const styles = makeStyles()({
     display: 'flex',
   },
   summaryValue: {
-    color: '#303641',
+    color: customColors.darkGray,
     width: 50,
     height: 36,
     fontWeight: 600,
@@ -56,21 +56,21 @@ const styles = makeStyles()({
     marginTop: 40,
   },
   slider: {
-    border: '5px solid #fff',
+    border: `5px solid ${customColors.white} `,
     borderRadius: 24,
     height: 120,
     background: 'rgba(255, 255, 255, 0.2)',
     display: 'flex',
     justifyContent: 'left',
     alignItems: 'center',
-    color: '#fff',
+    color: customColors.white,
     padding: '0px 14px 0px 14px',
   },
   news: {
     borderRadius: 24,
     height: 140,
-    background: '#3B6694',
-    color: '#FFF',
+    background: customColors.lightBlue,
+    color: customColors.white,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -88,8 +88,8 @@ const styles = makeStyles()({
     borderRadius: 24,
     marginLeft: 20,
     height: 140,
-    background: '#FFF',
-    color: '#303641',
+    background: customColors.white,
+    color: customColors.darkGray,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -106,7 +106,7 @@ const styles = makeStyles()({
   userInfo: {
     borderRadius: 24,
     height: 'auto',
-    color: '#303641',
+    color: customColors.darkGray,
   },
   userInfoTitle: {
     fontWeight: 'bold',
@@ -133,7 +133,7 @@ const styles = makeStyles()({
   },
   supportCard: {
     borderRadius: 14,
-    color: '#FFF',
+    color: customColors.white,
     padding: 20,
     width: '100%',
     maxWidth: 140,
@@ -150,7 +150,7 @@ const styles = makeStyles()({
   },
   verticalTextContainer: {
     borderRadius: 14,
-    color: '#FFF',
+    color: customColors.white,
     padding: '20px 10px',
     width: '100%',
     maxWidth: 140,
@@ -169,11 +169,11 @@ const styles = makeStyles()({
   statusContainer: {
     minWidth: 320,
     height: '100%',
-    color: '#303641',
+    color: customColors.darkGray,
     display: 'block',
   },
   statusText: {
-    background: '#FFF',
+    background: customColors.white,
     width: '48%',
     fontSize: 18,
     display: 'flex',
@@ -192,25 +192,25 @@ const styles = makeStyles()({
     marginTop: '10px',
   },
   checkText: {
-    color: '#26BC26',
+    color: customColors.logo,
   },
   crossText: {
-    color: '#F22222',
+    color: customColors.accentRed,
   },
   orange: {
-    color: '#FE9F01',
+    color: customColors.orange,
     fontWeight: 600,
   },
   lightBlue: {
-    color: '#9CBEE0',
+    color: customColors.lightBlue,
     fontWeight: 600,
   },
   lightGreen: {
-    color: '#8D9460',
+    color: customColors.lightGreen,
     fontWeight: 600,
   },
   whiteBg: {
-    background: '#FFF',
+    background: customColors.white,
     paddingTop: 30,
     paddingBottom: 20,
     color: '#303641',
@@ -218,17 +218,17 @@ const styles = makeStyles()({
     height: 430,
   },
   redText: {
-    color: '#F22222',
+    color: customColors.accentRed,
   },
   greenBlock: {
-    background: '#25C309',
-    color: '#FFF',
+    background: customColors.logo,
+    color: customColors.white,
     borderRadius: 5,
     padding: '5px 10px',
   },
   redBlock: {
-    background: '#c30909',
-    color: '#FFF',
+    background: customColors.accentRed,
+    color: customColors.white,
     borderRadius: 5,
     padding: '5px 10px',
   },

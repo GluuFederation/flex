@@ -17,6 +17,8 @@ import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { DeleteOutlined, DownloadOutlined, VisibilityOutlined } from '@mui/icons-material'
 import SsaDetailPage from './SsaDetailPage'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
+import customColors from '@/customColors'
+
 const SSAListPage = () => {
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
@@ -123,15 +125,25 @@ const SSAListPage = () => {
       },
     },
   ]
-  const DeleteIcon = useCallback(() => <DeleteOutlined style={{ color: 'primary' }} />, [])
-  const DownloadIcon = useCallback(() => <DownloadOutlined style={{ color: 'primary' }} />, [])
-  const ViewIcon = useCallback(() => <VisibilityOutlined style={{ color: 'primary' }} />, [])
+
+  const DeleteIcon = useCallback(
+    () => <DeleteOutlined style={{ color: customColors.darkGray }} />,
+    [],
+  )
+  const DownloadIcon = useCallback(
+    () => <DownloadOutlined style={{ color: customColors.darkGray }} />,
+    [],
+  )
+  const ViewIcon = useCallback(
+    () => <VisibilityOutlined style={{ color: customColors.darkGray }} />,
+    [],
+  )
 
   if (hasCedarPermission(SSA_ADMIN)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_ssa')}`,
-      iconProps: { color: 'primary' },
+      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       isFreeAction: true,
       onClick: () => handleGoToSsaAddPage(),
       disabled: !hasCedarPermission(SSA_ADMIN),
@@ -150,19 +162,13 @@ const SSAListPage = () => {
   if (hasCedarPermission(SSA_PORTAL) || hasCedarPermission(SSA_ADMIN)) {
     myActions.push((rowData) => ({
       icon: ViewIcon,
-      iconProps: {
-        color: 'primary',
-        id: rowData.org_id,
-      },
+      iconProps: { color: 'primary', id: rowData.org_id, style: { color: customColors.lightBlue } },
       onClick: (event, rowData) => handleViewSsa(rowData),
       disabled: false,
     }))
     myActions.push((rowData) => ({
       icon: DownloadIcon,
-      iconProps: {
-        color: 'primary',
-        id: rowData.org_id,
-      },
+      iconProps: { color: 'primary', id: rowData.org_id, style: { color: customColors.lightBlue } },
       onClick: (event, rowData) => handleDownloadSsa(rowData),
       disabled: false,
     }))

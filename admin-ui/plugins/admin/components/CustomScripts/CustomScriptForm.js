@@ -111,7 +111,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
 
     onSubmit: (values) => {
       if (item.locationType === 'db') {
-        let moduleProperties = item?.moduleProperties?.filter(
+        const moduleProperties = item?.moduleProperties?.filter(
           (item) => item?.value1 !== 'location_path',
         )
         item.moduleProperties = moduleProperties
@@ -169,7 +169,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly }) {
         item.moduleProperties = []
       }
       if (value === 'db') {
-        let moduleProperties = item?.moduleProperties?.filter(
+        const moduleProperties = item?.moduleProperties?.filter(
           (item) => item?.value1 !== 'location_path',
         )
         item.moduleProperties = moduleProperties

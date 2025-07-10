@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
-import { DeleteOutlined } from '@mui/icons-material'
+import { BorderColor, DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { Paper, Skeleton, TablePagination } from '@mui/material'
 import { Badge } from 'reactstrap'
@@ -26,6 +26,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 function ScriptListTable() {
   const { t } = useTranslation()
@@ -104,14 +105,22 @@ function ScriptListTable() {
       actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_script')}`,
-        iconProps: { color: 'primary' },
+        iconProps: {
+          color: 'primary',
+          style: {
+            color: customColors.lightBlue,
+          },
+        },
         isFreeAction: true,
         onClick: handleGoToCustomScriptAddPage,
       })
       actions.push((rowData) => ({
         icon: 'edit',
         iconProps: {
-          id: 'editCustomScript' + rowData.inum,
+          color: 'primary',
+          style: {
+            color: customColors.darkGray,
+          },
         },
         tooltip: `${t('messages.edit_script')}`,
         onClick: (event, entry) => {
@@ -125,7 +134,10 @@ function ScriptListTable() {
       actions.push((rowData) => ({
         icon: 'visibility',
         iconProps: {
-          id: 'viewCustomScript' + rowData.inum,
+          color: 'primary',
+          style: {
+            color: customColors.darkGray,
+          },
         },
         tooltip: `${t('messages.view_script_details')}`,
         onClick: (event, rowData) => handleGoToCustomScriptEditPage(rowData, true),
@@ -152,14 +164,24 @@ function ScriptListTable() {
           </>
         ),
         tooltip: `${t('messages.advanced_search')}`,
-        iconProps: { color: 'primary' },
+        iconProps: {
+          color: 'primary',
+          style: {
+            borderColor: customColors.lightBlue,
+          },
+        },
         isFreeAction: true,
       })
 
       actions.push({
         icon: 'refresh',
         tooltip: `${t('messages.refresh')}`,
-        iconProps: { color: 'primary' },
+        iconProps: {
+          color: 'primary',
+          style: {
+            color: customColors.lightBlue,
+          },
+        },
         isFreeAction: true,
         onClick: () => {
           makeOptions()
@@ -172,7 +194,10 @@ function ScriptListTable() {
       actions.push((rowData) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
-          id: 'deleteCustomScript' + rowData.inum,
+          color: 'primary',
+          style: {
+            color: customColors.darkGray,
+          },
         },
         tooltip: `${t('messages.delete_script')}`,
         onClick: (event, row) => handleCustomScriptDelete(row),
@@ -302,10 +327,10 @@ function ScriptListTable() {
     rowStyle: (rowData) => ({
       backgroundColor:
         rowData.enabled && rowData?.scriptError?.stackTrace
-          ? '#FF5858'
+          ? customColors.accentRed
           : rowData.enabled
             ? themeColors.lightBackground
-            : '#FFF',
+            : customColors.white,
     }),
     headerStyle: {
       ...applicationStyle.tableHeaderStyle,

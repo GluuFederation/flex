@@ -1,21 +1,22 @@
 import React from 'react'
+import customColors from '@/customColors'
 
 export default {
   tableHeaderStyle: {
     backgroundColor: 'rgb(48, 54, 65)',
-    color: '#FFF',
+    color: customColors.white,
     padding: '12px',
     textTransform: 'uppercase',
     fontSize: '16px',
   },
   homeStatTooltip: {
-    backgroundColor: '#00C9FF',
+    backgroundColor: customColors.lightBlue,
     borderRadius: '30px',
     padding: '0px 5px 0px 5px',
     color: 'white',
   },
   buttonStyle: {
-    background: '#00a260',
+    background: customColors.logo,
   },
   buttonFlexIconStyles: {
     display: 'flex',
@@ -23,7 +24,7 @@ export default {
     gap: '6px',
   },
   customButtonStyle: {
-    background: '#00a260',
+    background: customColors.logo,
     paddingLeft: '20px',
     paddingRight: '30px',
     color: 'white',
@@ -31,7 +32,7 @@ export default {
     fontWeight: 'bold',
   },
   healthDown: {
-    background: 'rgb(241 35 32)',
+    background: customColors.accentRed,
   },
   healthUp: {
     content: '',
@@ -42,11 +43,11 @@ export default {
     padding: 12,
   },
   licensePanel: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: customColors.white,
     float: 'left',
   },
   fieldRequired: {
-    color: 'red',
+    color: customColors.accentRed,
     fontSize: '22px',
   },
   removableInputRow: {
@@ -101,7 +102,7 @@ export default {
   },
   barIcon: { padding: '4px', height: '32px', width: '32px' },
   hoverBarIcon: {
-    backgroundColor: '#F6F6F6',
+    backgroundColor: customColors.white,
     borderRadius: '50%',
   },
   persistenceCard: {

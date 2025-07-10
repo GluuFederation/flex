@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSamlIdentites, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
 import MaterialTable from '@material-table/core'
@@ -7,14 +7,13 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { SAML_READ, SAML_WRITE, SAML_DELETE, buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
 import { useNavigate } from 'react-router'
 import { DeleteOutlined } from '@mui/icons-material'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { Paper, TablePagination } from '@mui/material'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 export const getTableCols = (t) => {
   return [
@@ -36,9 +35,6 @@ export const getTableCols = (t) => {
 const SamlIdentityList = () => {
   const { hasCedarPermission, authorize } = useCedarling()
   const options = {}
-  const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme.state.theme)
-  const bgThemeColor = { background: themeColors.background }
   const [modal, setModal] = useState(false)
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
@@ -229,7 +225,8 @@ const SamlIdentityList = () => {
             pageSize: limit,
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
-              ...bgThemeColor,
+              backgroundColor: customColors.logo,
+              color: customColors.white,
             },
             actionsColumnIndex: -1,
           }}

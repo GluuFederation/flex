@@ -35,6 +35,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { toast } from 'react-toastify'
+import customColors from '@/customColors'
 
 const dateTimeFormatOptions = {
   year: '2-digit',
@@ -293,7 +294,7 @@ function AgamaListPage() {
       newActions.push({
         icon: 'add',
         tooltip: `${t('titles.add_new_agama_project')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: true,
         onClick: () => {
           setSelectedFile(null)
@@ -311,7 +312,7 @@ function AgamaListPage() {
       newActions.push({
         icon: () => <InfoIcon />,
         tooltip: `${t('messages.see_project_details')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: false,
         onClick: (event, rowData) => {
           setSelectedRow(rowData)
@@ -321,7 +322,7 @@ function AgamaListPage() {
       newActions.push({
         icon: () => <SettingsIcon />,
         tooltip: `${t('messages.manage_configurations')}`,
-        iconProps: { color: 'primary' },
+        iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
         isFreeAction: false,
         onClick: (event, rowData) => {
           setSelectedRow(rowData)
@@ -669,7 +670,7 @@ function AgamaListPage() {
               selection: false,
               pageSize: limit,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                backgroundColor: rowData.enabled ? customColors.lightGreen : customColors.white,
               }),
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,

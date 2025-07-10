@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next'
 import GluuTooltip from './GluuTooltip'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationstyle from './styles/applicationstyle'
+import customColors from '@/customColors'
+
 function GluuRemovableTypeAhead({
   label,
   name,
@@ -56,7 +58,7 @@ function GluuRemovableTypeAhead({
           </InputGroup>
         </Col>
         <div style={applicationstyle.removableInputRow as any} onClick={handler}>
-          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
+          <i className={'fa fa-fw fa-close'} style={{ color: customColors.accentRed }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
+import customColors from '@/customColors'
 
 import colors from './../../../colors'
 
@@ -20,7 +21,7 @@ const TinyDonutChart = () => (
       stroke={colors['white']}
       innerRadius={21}
       outerRadius={27}
-      fill="#8884d8"
+      fill={customColors.lightBlue}
     >
       {data.map((entry, index) => (
         <Cell key={index} fill={COLORS[index % COLORS.length]} />

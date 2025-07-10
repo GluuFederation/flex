@@ -27,6 +27,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 function ClientListPage() {
   const { t } = useTranslation()
@@ -256,6 +257,7 @@ function ClientListPage() {
       icon: 'edit',
       iconProps: {
         id: 'editClient' + rowData.inum,
+        style: { color: customColors.darkGray },
       },
       tooltip: `${t('messages.edit_client')}`,
       onClick: (event, rowData) => handleGoToClientEditPage(rowData, false),
@@ -276,14 +278,19 @@ function ClientListPage() {
         />
       ),
       tooltip: `${t('messages.advanced_search')}`,
-      iconProps: { color: 'primary' },
+      iconProps: {
+        color: 'primary',
+        style: {
+          borderColor: customColors.lightBlue,
+        },
+      },
       isFreeAction: true,
       onClick: () => {},
     })
     myActions.push({
       icon: 'refresh',
       tooltip: `${t('messages.refresh')}`,
-      iconProps: { color: 'primary' },
+      iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       ['data-testid']: `${t('messages.refresh')}`,
       isFreeAction: true,
       onClick: () => {
@@ -296,6 +303,7 @@ function ClientListPage() {
       icon: 'visibility',
       iconProps: {
         id: 'viewClient' + rowData.inum,
+        style: { color: customColors.darkGray },
       },
       tooltip: `${t('messages.view_client_details')}`,
       onClick: (event, rowData) => handleGoToClientEditPage(rowData, true),
@@ -308,6 +316,7 @@ function ClientListPage() {
       iconProps: {
         color: 'secondary',
         id: 'deleteClient' + rowData.inum,
+        style: { color: customColors.darkGray },
       },
       tooltip: rowData.deletable
         ? `${t('messages.delete_client')}`

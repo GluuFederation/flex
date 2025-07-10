@@ -1,6 +1,7 @@
 import React from 'react'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
+import customColors from '@/customColors'
 
 interface CounterProps {
   disabled: boolean
@@ -38,9 +39,27 @@ class Counter extends React.Component<CounterProps, CounterState> {
         size="small"
         aria-label="small outlined button group"
       >
-        <Button onClick={this.handleIncrement}>+</Button>
+        <Button
+          style={{
+            color: customColors.lightBlue,
+            border: `1px solid ${customColors.lightBlue}`,
+          }}
+          onClick={this.handleIncrement}
+        >
+          +
+        </Button>
         {displayCounter && <Button disabled>{this.state.counter}</Button>}
-        {displayCounter && <Button onClick={this.handleDecrement}>-</Button>}
+        {displayCounter && (
+          <Button
+            style={{
+              color: customColors.lightBlue,
+              border: `1px solid ${customColors.lightBlue}`,
+            }}
+            onClick={this.handleDecrement}
+          >
+            -
+          </Button>
+        )}
       </ButtonGroup>
     )
   }

@@ -24,10 +24,10 @@ const SamlPage = () => {
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case t('menus.identity_providers'):
-        return <SamlIdentityList />
       case t('menus.configuration'):
         return <IdpConfigTab />
+      case t('menus.identity_providers'):
+        return <SamlIdentityList />
       case t('menus.service_providers'):
         return <TrustRelationshipList />
     }

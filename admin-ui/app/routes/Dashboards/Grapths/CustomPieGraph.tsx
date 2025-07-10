@@ -2,6 +2,7 @@
 import React from 'react'
 import { getNewColor } from 'Utils/Util'
 import { PieChart, Pie, Legend, Tooltip, Cell, ResponsiveContainer } from 'recharts'
+import customColors from '@/customColors'
 
 function CustomPieGraph({ data, dataKey, nameKey }) {
   const RADIAN = Math.PI / 180
@@ -22,7 +23,7 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
       <text
         x={x}
         y={y}
-        fill="white"
+        fill={customColors.white}
         textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
       >
@@ -41,7 +42,7 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
           labelLine={false}
           label={renderCustomizedLabel}
           outerRadius={80}
-          fill="#8884d8"
+          fill={customColors.lightBlue}
           dataKey={dataKey}
           nameKey={nameKey}
         >
