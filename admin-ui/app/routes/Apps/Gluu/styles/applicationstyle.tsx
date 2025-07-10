@@ -1,9 +1,8 @@
-import React from 'react'
 import customColors from '@/customColors'
 
 export default {
   tableHeaderStyle: {
-    backgroundColor: 'rgb(48, 54, 65)',
+    backgroundColor: customColors.darkGray,
     color: customColors.white,
     padding: '12px',
     textTransform: 'uppercase',
@@ -13,7 +12,7 @@ export default {
     backgroundColor: customColors.lightBlue,
     borderRadius: '30px',
     padding: '0px 5px 0px 5px',
-    color: 'white',
+    color: customColors.white,
   },
   buttonStyle: {
     background: customColors.logo,
@@ -27,7 +26,7 @@ export default {
     background: customColors.logo,
     paddingLeft: '20px',
     paddingRight: '30px',
-    color: 'white',
+    color: customColors.white,
     fontSize: '1.5em',
     fontWeight: 'bold',
   },

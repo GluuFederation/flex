@@ -541,7 +541,7 @@ function AgamaListPage() {
                             <div
                               style={{
                                 fontSize: '12px',
-                                color: 'gray',
+                                color: customColors.darkGray,
                                 marginTop: 6,
                               }}
                             >

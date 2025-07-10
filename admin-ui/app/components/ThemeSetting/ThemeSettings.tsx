@@ -9,6 +9,7 @@ import darkBlueThumbnail from 'Images/theme-thumbnail/darkBlue.jpg'
 import lightBlueThumbnail from 'Images/theme-thumbnail/lightBlue.jpg'
 import lightGreenThumbnail from 'Images/theme-thumbnail/lightGreen.jpg'
 import styles from './styles'
+import customColors from '@/customColors'
 
 interface UserInfo {
   inum?: string
@@ -99,7 +100,7 @@ export function ThemeSettings({ userInfo }: ThemeSettingsProps) {
   return (
     <React.Fragment>
       <button onClick={toggleDrawer(true)} className={classes.settingsToggeleBtn}>
-        <SettingsIcon style={{ color: 'white', width: '35px', height: '100%' }} />
+        <SettingsIcon style={{ color: customColors.white, width: '35px', height: '100%' }} />
       </button>
       <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false)}>
         {list('right')}

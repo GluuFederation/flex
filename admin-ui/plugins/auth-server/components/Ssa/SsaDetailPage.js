@@ -4,6 +4,7 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { SSA } from 'Utils/ApiResources'
 import GluuFormActionRow from 'Routes/Apps/Gluu/GluuFormActionRow'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
+import customColors from '@/customColors'
 
 const SsaDetailPage = ({ row }) => {
   const [ssaDialogOpen, setSsaDialogOpen] = useState(false)
@@ -15,7 +16,7 @@ const SsaDetailPage = ({ row }) => {
   }
 
   return (
-    <Container style={{ backgroundColor: '#F5F5F5' }}>
+    <Container style={{ backgroundColor: customColors.whiteSmoke }}>
       <Row>
         <Col sm={6}>
           <GluuFormDetailRow

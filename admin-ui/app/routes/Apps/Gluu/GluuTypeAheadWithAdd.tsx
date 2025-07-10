@@ -5,6 +5,7 @@ import GluuLabel from '../Gluu/GluuLabel'
 import applicationStyle from './styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 function GluuTypeAheadWithAdd({
   label,
@@ -61,7 +62,7 @@ function GluuTypeAheadWithAdd({
         style={{
           borderStyle: 'solid',
           borderRadius: '5px',
-          borderColor: '#03a96d',
+          borderColor: customColors.logo,
         }}
       >
         &nbsp;

@@ -1,3 +1,4 @@
+import customColors from '@/customColors'
 import { useTranslation } from 'react-i18next'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 
@@ -34,7 +35,7 @@ const GluuPermissionModal = ({ handler, isOpen }: any) => {
       <style>
         {`
           .modal {
-            background: #000 !important;
+            background: ${customColors.black} !important;
           }
         `}
       </style>

@@ -7,6 +7,7 @@ import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 function GluuAutoCompleteWithAdd({
   label,
@@ -54,7 +55,7 @@ function GluuAutoCompleteWithAdd({
           style={{
             borderStyle: 'solid',
             borderRadius: '5px',
-            borderColor: '#03a96d',
+            borderColor: customColors.logo,
           }}
         >
           &nbsp;

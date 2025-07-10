@@ -3,6 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input } from 'react
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 function GluuModal({ title, modal, handler, onAccept }: any) {
   const { t } = useTranslation()
@@ -12,7 +13,10 @@ function GluuModal({ title, modal, handler, onAccept }: any) {
   return (
     <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
       <ModalHeader toggle={handler}>
-        <i style={{ color: 'red' }} className="fa fa-2x fa-item fa-fw modal-icon mb-3"></i>
+        <i
+          style={{ color: customColors.accentRed }}
+          className="fa fa-2x fa-item fa-fw modal-icon mb-3"
+        ></i>
         {title}
       </ModalHeader>
       <ModalBody>

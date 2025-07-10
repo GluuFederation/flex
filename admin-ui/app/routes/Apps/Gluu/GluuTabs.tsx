@@ -112,7 +112,7 @@ export default function GluuTabs({ tabNames, tabToShow, withNavigation = false }
               background: customColors.lightBlue,
               height: 3,
               borderRadius: '2px',
-              boxShadow: '0 2px 4px rgba(76, 175, 80, 0.3)',
+              boxShadow: `0 2px 4px ${customColors.logo}`,
             },
           }}
         >

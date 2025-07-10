@@ -151,7 +151,7 @@ const SSAListPage = () => {
     myActions.push((rowData) => ({
       icon: DeleteIcon,
       iconProps: {
-        sx: { color: 'red' },
+        sx: { color: customColors.accentRed },
         id: rowData.org_id,
       },
       onClick: (event, rowData) => handleSsaDelete(rowData),

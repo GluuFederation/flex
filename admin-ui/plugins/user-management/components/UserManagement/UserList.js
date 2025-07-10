@@ -68,7 +68,6 @@ function UserList() {
   const usersList = useSelector((state) => state.userReducer.items)
   const loading = useSelector((state) => state.userReducer.loading)
   const token = useSelector((state) => state.authReducer.token.access_token)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [isViewDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -370,7 +369,7 @@ function UserList() {
             idSynonym: 'inum',
             selection: false,
             rowStyle: (rowData) => ({
-              backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+              backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
             }),
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
@@ -420,7 +419,7 @@ function UserList() {
                 selection: false,
                 pageSize: limit,
                 rowStyle: (rowData) => ({
-                  backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                  backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,

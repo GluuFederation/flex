@@ -15,6 +15,13 @@ export const customColors = {
   orange: '#ff993a',
   white: '#ffffff',
   black: '#000000',
+  whiteSmoke: '#f5f5f5',
+  greenThemeLightBackground: '#abebd4',
+  blueThemelightBackground: '#c9def6',
+  blueThemebackground: '#9DBDE2',
+  darkBlueThemeBackground: '#284461',
+  darkBlueMenuBackground: '#323C46',
+  darkBlueLightBackground: '#989ea7',
 } as const
 
 export type CustomColorKeys = keyof typeof customColors

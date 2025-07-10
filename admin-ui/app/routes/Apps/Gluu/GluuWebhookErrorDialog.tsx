@@ -12,6 +12,7 @@ import { Box } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useCedarling } from '@/cedarling'
+import customColors from '@/customColors'
 
 const GluuWebhookErrorDialog = () => {
   const { t } = useTranslation()
@@ -40,7 +41,7 @@ const GluuWebhookErrorDialog = () => {
         <i
           onClick={closeModal}
           onKeyDown={() => {}}
-          style={{ color: 'green' }}
+          style={{ color: customColors.logo }}
           className="fa fa-2x fa-info fa-fw modal-icon mb-3"
           role="img"
           aria-hidden="true"
@@ -50,7 +51,7 @@ const GluuWebhookErrorDialog = () => {
       <ModalBody>
         <Box px={2} flexDirection="column">
           {triggerWebhookMessage ? (
-            <Box component="div" my={2} style={{ color: 'red' }}>
+            <Box component="div" my={2} style={{ color: customColors.accentRed }}>
               {triggerWebhookMessage}
             </Box>
           ) : null}
@@ -60,7 +61,7 @@ const GluuWebhookErrorDialog = () => {
                 <li
                   key={item.responseMessage}
                   style={{
-                    color: 'red',
+                    color: customColors.accentRed,
                     display: 'flex',
                     flexDirection: 'column',
                     position: 'relative',
@@ -70,7 +71,7 @@ const GluuWebhookErrorDialog = () => {
                     width={'10px'}
                     height={'10px'}
                     sx={{
-                      background: 'red',
+                      background: customColors.accentRed,
                       borderRadius: '100%',
                       position: 'absolute',
                       left: '-20px',

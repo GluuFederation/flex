@@ -2,6 +2,7 @@ import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 interface UserDeviceDetailViewPageProps {
   row: {
@@ -14,7 +15,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const DOC_SECTION = 'user'
 
   return (
-    <Container style={{ backgroundColor: '#F5F5F5', minWidth: '100%' }}>
+    <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
       <Row>
         <Col sm={6} xl={4}>
           <GluuFormDetailRow

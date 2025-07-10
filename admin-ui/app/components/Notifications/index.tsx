@@ -8,6 +8,7 @@ import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import styles from './styles'
+import customColors from '@/customColors'
 
 export default function Lang() {
   const { classes } = styles()
@@ -44,7 +45,7 @@ export default function Lang() {
     <div className={classes.root}>
       <div>
         <button ref={anchorRef} className={classes.notificationBtn} onClick={handleToggle}>
-          <NotificationsIcon style={{ color: 'white', width: '35px', height: '100%' }} />
+          <NotificationsIcon style={{ color: customColors.white, width: '35px', height: '100%' }} />
         </button>
         <Popper
           open={open}

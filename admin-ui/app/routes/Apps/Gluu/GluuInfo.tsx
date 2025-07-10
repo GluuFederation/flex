@@ -3,6 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
+import customColors from '@/customColors'
 
 export default function GluuInfo({ item, handler }: any) {
   const theme: any = useContext(ThemeContext)
@@ -12,7 +13,10 @@ export default function GluuInfo({ item, handler }: any) {
   return (
     <Modal isOpen={item.openModal} className="modal-outline-primary">
       <ModalHeader>
-        <i style={{ color: 'red' }} className="fa fa-2x fa-item fa-fw modal-icon mb-3"></i>
+        <i
+          style={{ color: customColors.accentRed }}
+          className="fa fa-2x fa-item fa-fw modal-icon mb-3"
+        ></i>
       </ModalHeader>
       <ModalBody>
         {item.testStatus ? (

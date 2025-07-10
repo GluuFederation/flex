@@ -129,7 +129,7 @@ function UiRoleListPage() {
               selection: false,
               pageSize: pageSize,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
               }),
               headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,

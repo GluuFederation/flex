@@ -269,6 +269,14 @@ const JansAssetListPage = () => {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
                 },
+                cellStyle: {
+                  backgroundColor: customColors.white,
+                  border: `1px solid ${customColors.lightGray}`,
+                },
+                actionsCellStyle: {
+                  backgroundColor: customColors.white,
+                  border: `1px solid ${customColors.lightGray}`,
+                },
                 actionsColumnIndex: -1,
               }}
             />

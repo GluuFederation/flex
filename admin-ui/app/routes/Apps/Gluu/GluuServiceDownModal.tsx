@@ -1,3 +1,4 @@
+import customColors from '@/customColors'
 import { Box } from '@mui/material'
 import { useSelector } from 'react-redux'
 
@@ -22,8 +23,8 @@ function GluuServiceDownModal({ message = '', statusCode }: any) {
         bottom: 0,
         right: 0,
         left: 0,
-        backgroundColor: '#110000',
-        color: 'white',
+        backgroundColor: customColors.black,
+        color: customColors.white,
         justifyContent: 'center',
         alignItems: 'center',
         display: 'flex',
@@ -48,7 +49,7 @@ function GluuServiceDownModal({ message = '', statusCode }: any) {
           bottom: 0,
           right: 0,
           left: 0,
-          color: 'white',
+          color: customColors.white,
           justifyContent: 'center',
           alignItems: 'center',
           display: 'flex',
@@ -64,7 +65,7 @@ function GluuServiceDownModal({ message = '', statusCode }: any) {
           style={{
             width: 'auto',
             height: 'auto',
-            fill: '#fff',
+            fill: customColors.white,
           }}
         />
         <Box
@@ -75,11 +76,13 @@ function GluuServiceDownModal({ message = '', statusCode }: any) {
           maxWidth={{ sm: '100%', md: '70%' }}
         >
           {statusCode ? (
-            <h2 style={{ color: 'white', fontWeight: 'bolder' }}>Error code: {statusCode}</h2>
+            <h2 style={{ color: customColors.white, fontWeight: 'bolder' }}>
+              Error code: {statusCode}
+            </h2>
           ) : null}
           <h3
             style={{
-              color: 'white',
+              color: customColors.white,
               fontWeight: 'bolder',
             }}
           >
@@ -89,7 +92,7 @@ function GluuServiceDownModal({ message = '', statusCode }: any) {
             style={{
               border: 0,
               backgroundColor: 'transparent',
-              color: 'white',
+              color: customColors.white,
               textDecoration: 'underline',
             }}
             onClick={handleRefresh}

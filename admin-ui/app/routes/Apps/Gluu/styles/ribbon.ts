@@ -1,3 +1,5 @@
+import customColors from '@/customColors'
+
 export default {
   ribbon_right: {
     position: 'absolute',
@@ -6,10 +8,9 @@ export default {
     padding: '0.5rem',
     fontWeight: 'bold',
     minWidth: '12rem',
-    background: 'rgb(1 162 97)',
-    //background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+    background: customColors.logo,
     zIndex: 3,
-    color: 'white',
+    color: customColors.white,
     borderRadius: '50px 0px 0px 50px',
     textAlign: 'center',
     boxShadow: '4px 4px 15px rgba(26, 35, 126, 0.2)',
@@ -20,10 +21,9 @@ export default {
     left: '-5px',
     padding: '0.5rem',
     minWidth: '12rem',
-    background: 'rgb(1 162 97)',
-    // background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+    background: customColors.logo,
     zIndex: 3,
-    color: 'white',
+    color: customColors.white,
     borderRadius: '0px 50px 50px 0px',
     textAlign: 'center',
     boxShadow: '4px 4px 15px rgba(26, 35, 126, 0.2)',

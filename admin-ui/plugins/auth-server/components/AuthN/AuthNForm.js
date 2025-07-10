@@ -11,6 +11,7 @@ import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 
 import { useSelector } from 'react-redux'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import customColors from '@/customColors'
 
 function AuthNForm({ item, handleSubmit }) {
   const { t } = useTranslation()
@@ -304,7 +305,7 @@ function AuthNForm({ item, handleSubmit }) {
             ></GluuTypeAhead>
 
             {formik.errors.servers && formik.touched.servers ? (
-              <div style={{ color: 'red' }}>{formik.errors.servers}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.servers}</div>
             ) : null}
 
             <GluuTypeAhead
@@ -315,7 +316,7 @@ function AuthNForm({ item, handleSubmit }) {
               value={item.baseDNs}
             ></GluuTypeAhead>
             {formik.errors.baseDNs && formik.touched.baseDNs ? (
-              <div style={{ color: 'red' }}>{formik.errors.baseDNs}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.baseDNs}</div>
             ) : null}
 
             <FormGroup row>

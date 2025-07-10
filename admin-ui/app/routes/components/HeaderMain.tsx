@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import getThemeColor from '../../context/theme/config'
 import { ThemeContext } from '../../context/theme/themeContext'
+import customColors from '@/customColors'
 
 const HeaderMain = ({ title, subTitle, className }: any) => {
   const theme: any = useContext(ThemeContext)
@@ -13,7 +14,7 @@ const HeaderMain = ({ title, subTitle, className }: any) => {
       <div className={` d-flex ${className}`}>
         <h1
           className="display-4 me-3 mb-0 align-self-start"
-          style={{ color: themeColors.fontColor ?? '#000' }}
+          style={{ color: themeColors.fontColor ?? customColors.black }}
         >
           {title}
         </h1>

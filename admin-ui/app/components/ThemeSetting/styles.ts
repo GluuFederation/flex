@@ -1,3 +1,4 @@
+import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()({
@@ -8,7 +9,7 @@ const styles = makeStyles()({
     width: 'auto',
   },
   whiteColor: {
-    color: '#FFFFFF',
+    color: customColors.white,
     position: 'relative',
   },
   settingsToggeleBtn: {
@@ -40,7 +41,7 @@ const styles = makeStyles()({
     paddingTop: 16,
   },
   selectedItem: {
-    background: '#eaeaea',
+    background: customColors.lightGray,
   },
   selectImage: {
     width: '75%',

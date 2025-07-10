@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 const LdapDetailPage = ({ row, testLdapConnection }) => {
   const { t } = useTranslation()
@@ -22,7 +23,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
 
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: '#F5F5F5' }}>
+      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
         <FormGroup row> </FormGroup>
         <Row>
           <Col sm={6}>

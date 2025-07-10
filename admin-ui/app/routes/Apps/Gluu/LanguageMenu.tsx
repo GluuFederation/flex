@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DropdownToggle, DropdownMenu, DropdownItem, ButtonDropdown } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 const LanguageMenu = ({ userInfo }: any) => {
   const [isOpen, setOpen] = useState(false)
@@ -44,16 +45,16 @@ const LanguageMenu = ({ userInfo }: any) => {
       setThemeUpdated(true)
     }
   }, [userConfigLang, userConfigTheme, langUpdated, themeUpdated])
-  // style={{ border: '1px solid #9a9a9a', paddingRight: '24px' }}
+
   return (
     <ButtonDropdown isOpen={isOpen} toggle={toggle}>
       <DropdownToggle
         caret
         color="transparent"
-        style={{ border: '1px solid #9a9a9a', fontSize: '12px' }}
+        style={{ border: `1px solid ${customColors.white}`, fontSize: '12px' }}
         data-testid="ACTIVE_LANG"
       >
-        <span style={{ color: '#fff' }}>{lang}</span>
+        <span style={{ color: customColors.white }}>{lang}</span>
       </DropdownToggle>
       <DropdownMenu>
         <DropdownItem onClick={() => changeLanguage('fr')} data-testid="FRE">

@@ -3,6 +3,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import JsonViewer from './JsonViewer'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 const JsonViewerDialog = ({
   isOpen,
@@ -16,7 +17,10 @@ const JsonViewerDialog = ({
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="lg" className="modal-outline-primary">
       <ModalHeader toggle={toggle}>
-        <i style={{ color: 'green' }} className="fa fa-2x fa-code fa-fw modal-icon mb-3" />
+        <i
+          style={{ color: customColors.logo }}
+          className="fa fa-2x fa-code fa-fw modal-icon mb-3"
+        />
         {title}
       </ModalHeader>
       <ModalBody style={{ maxHeight: '70vh', overflow: 'auto' }}>

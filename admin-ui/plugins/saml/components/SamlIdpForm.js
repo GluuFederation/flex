@@ -24,6 +24,7 @@ import Toggle from 'react-toggle'
 import { nameIDPolicyFormat } from '../helper'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import customColors from '@/customColors'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
@@ -101,9 +102,9 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
   function handleSubmit(values, user_message) {
     delete values.importMetadataFile
-    let formdata = new FormData()
+    const formdata = new FormData()
 
-    let payload = {
+    const payload = {
       identityProvider: { ...values },
     }
 
@@ -277,7 +278,9 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       )}
                     </Box>
                     {fileError && (
-                      <div style={{ color: 'red' }}>{t('messages.import_metadata_file')}</div>
+                      <div style={{ color: customColors.accentRed }}>
+                        {t('messages.import_metadata_file')}
+                      </div>
                     )}
                   </Col>
                 </FormGroup>

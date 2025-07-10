@@ -5,6 +5,7 @@ import { Card, CardBody, Button, FormGroup, Input as CustomInput } from 'reactst
 
 import 'Styles/components/theme-selector.scss'
 import { Consumer } from './ThemeContext'
+import customColors from '@/customColors'
 
 // Option types
 interface ThemeOption {
@@ -35,7 +36,7 @@ class ThemeSelector extends React.Component<ThemeSelectorProps, ThemeSelectorSta
       { name: 'Color', value: 'color' },
     ],
     colorOptions: [
-      { name: 'Primary', value: '#03a96d' },
+      { name: 'Primary', value: customColors.logo },
       { name: 'Success', value: 'success' },
       { name: 'Info', value: 'info' },
       { name: 'Danger', value: 'danger' },

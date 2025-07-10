@@ -381,7 +381,7 @@ function DashboardPage() {
                       <div
                         className="d-flex flex-column justify-content-between"
                         style={{
-                          backgroundColor: 'white',
+                          backgroundColor: customColors.white,
                           padding: '20px',
                           borderRadius: '5px',
                         }}

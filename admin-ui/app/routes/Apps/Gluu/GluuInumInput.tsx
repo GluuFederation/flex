@@ -1,6 +1,7 @@
 import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
+import customColors from '@/customColors'
 
 function GluuInumInput({ label, name, value, lsize = 4, rsize = 8, doc_category }: any) {
   return (
@@ -9,7 +10,7 @@ function GluuInumInput({ label, name, value, lsize = 4, rsize = 8, doc_category 
         <GluuLabel label={label} size={lsize} />
         <Col sm={rsize}>
           <Input
-            style={{ backgroundColor: '#F5F5F5' }}
+            style={{ backgroundColor: customColors.whiteSmoke }}
             id={name}
             data-testid={name}
             name={name}

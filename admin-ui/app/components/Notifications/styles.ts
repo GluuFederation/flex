@@ -1,3 +1,4 @@
+import customColors from '@/customColors'
 import { makeStyles } from 'tss-react/mui'
 
 const styles = makeStyles()((theme) => ({
@@ -5,7 +6,7 @@ const styles = makeStyles()((theme) => ({
     display: 'flex',
   },
   whiteColor: {
-    color: '#FFFFFF',
+    color: customColors.white,
   },
   paper: {
     marginRight: theme.spacing(2),
@@ -14,7 +15,7 @@ const styles = makeStyles()((theme) => ({
     position: 'relative',
     top: 8,
     textTransform: 'none',
-    color: '#FFFFFF',
+    color: customColors.white,
   },
   notificationBtn: {
     'position': 'relative',

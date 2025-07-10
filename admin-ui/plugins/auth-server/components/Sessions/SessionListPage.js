@@ -341,13 +341,13 @@ function SessionListPage() {
                     position: 'absolute',
                     top: '50%',
                     zIndex: 2,
-                    backgroundColor: 'white',
+                    backgroundColor: customColors.white,
                     width: '500px',
                   }}
                   display="flex"
                   flexDirection="column"
                   alignItems="center"
-                  border="1px solid #e0e0e0"
+                  border={`1px solid ${customColors.lightGray}`}
                 >
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={4}>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSamlIdentites, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
 import MaterialTable from '@material-table/core'
@@ -14,6 +14,8 @@ import { Paper, TablePagination } from '@mui/material'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
+import getThemeColor from 'Context/theme/config'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 export const getTableCols = (t) => {
   return [
@@ -40,6 +42,9 @@ const SamlIdentityList = () => {
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})
   const [pageNumber, setPageNumber] = useState(0)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state.theme
+  const themeColors = getThemeColor(selectedTheme)
 
   let memoLimit = limit
   let memoPattern = pattern
@@ -225,7 +230,7 @@ const SamlIdentityList = () => {
             pageSize: limit,
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
-              backgroundColor: customColors.logo,
+              backgroundColor: themeColors.menu.background,
               color: customColors.white,
             },
             actionsColumnIndex: -1,

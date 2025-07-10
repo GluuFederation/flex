@@ -9,6 +9,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SetTitle from 'Utils/SetTitle'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import colors from 'colors'
+import customColors from '@/customColors'
 
 function PersistenceDetail() {
   const { databaseInfo, databaseInfoLoading } = useSelector((state) => state.persistenceTypeReducer)
@@ -24,8 +25,8 @@ function PersistenceDetail() {
   }
 
   const inputBoxStyle = {
-    backgroundColor: colors.white,
-    color: colors.black,
+    backgroundColor: customColors.white,
+    color: customColors.black,
     borderColor: themeColors.fontColor + '40',
   }
 

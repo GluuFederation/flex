@@ -19,6 +19,7 @@ import { Formik } from 'formik'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
+import getThemeColor from '@/context/theme/config'
 
 function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
@@ -33,6 +34,7 @@ function MappingItem({ candidate, roles }) {
   const [isDeleteable, setIsDeleteable] = useState(false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
 
   const authorizePermissions = async () => {
     const permissions = [MAPPING_WRITE, MAPPING_DELETE]
@@ -153,9 +155,17 @@ function MappingItem({ candidate, roles }) {
       <Row>
         <Col sm={12}>
           <Accordion className="mb-12">
-            <Accordion.Header className="text-info">
-              <Accordion.Indicator className="me-2" />
-              {candidate.role}
+            <Accordion.Header className="text-info" style={{ color: themeColors?.background }}>
+              <span
+                style={{
+                  color: themeColors?.background,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                <Accordion.Indicator className="me-2" />
+                {candidate.role}
+              </span>
 
               {isDeleteable && (
                 <DeleteOutlined

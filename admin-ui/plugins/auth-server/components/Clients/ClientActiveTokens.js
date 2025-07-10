@@ -22,6 +22,7 @@ import PropTypes from 'prop-types'
 import { Button as MaterialButton } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import GetAppIcon from '@mui/icons-material/GetApp'
+import customColors from '@/customColors'
 function ClientActiveTokens({ client }) {
   const myActions = []
   const options = {}
@@ -49,7 +50,7 @@ function ClientActiveTokens({ client }) {
   const { totalItems } = useSelector((state) => state.oidcReducer.tokens)
 
   const onPageChangeClick = (page) => {
-    let startCount = page * limit
+    const startCount = page * limit
     setPageNumber(page)
     let conditionquery = `clnId=${client.inum}`
     if (pattern.dateAfter && pattern.dateBefore) {
@@ -69,7 +70,7 @@ function ClientActiveTokens({ client }) {
   const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
 
   const PaginationWrapper = useCallback(
-    (props) => (
+    () => (
       <TablePagination
         count={totalItems}
         page={pageNumber}
@@ -88,7 +89,7 @@ function ClientActiveTokens({ client }) {
   }, [])
 
   const handleSearch = () => {
-    let startCount = pageNumber * limit
+    const startCount = pageNumber * limit
     let conditionquery = `clnId=${client.inum}`
     if (pattern.dateAfter && pattern.dateBefore) {
       conditionquery += `,${searchFilter}>${dayjs(pattern.dateAfter).format('YYYY-MM-DD')}`
@@ -99,14 +100,14 @@ function ClientActiveTokens({ client }) {
 
   const handleClear = () => {
     setPattern({ dateAfter: null, dateBefore: null })
-    let startCount = pageNumber * limit
-    let conditionquery = `clnId=${client.inum}`
+    const startCount = pageNumber * limit
+    const conditionquery = `clnId=${client.inum}`
     getTokens(startCount, limit, conditionquery)
   }
 
   const handleRevokeToken = async (oldData) => {
     await dispatch(deleteClientToken({ tknCode: oldData.tokenCode }))
-    let startCount = pageNumber * limit
+    const startCount = pageNumber * limit
     getTokens(startCount, limit, `clnId=${client.inum}`)
   }
 
@@ -215,13 +216,13 @@ function ClientActiveTokens({ client }) {
                     position: 'absolute',
                     top: '50%',
                     zIndex: 2,
-                    backgroundColor: 'white',
+                    backgroundColor: customColors.white,
                     width: '500px',
                   }}
                   display="flex"
                   flexDirection="column"
                   alignItems="center"
-                  border="1px solid #e0e0e0"
+                  border={`1px solid ${customColors.lightGray}`}
                 >
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs={4}>
@@ -333,7 +334,7 @@ function ClientActiveTokens({ client }) {
                 selection: false,
                 pageSize: limit,
                 rowStyle: (rowData) => ({
-                  backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                  backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
@@ -344,7 +345,7 @@ function ClientActiveTokens({ client }) {
               editable={{
                 isDeleteHidden: () => false,
                 onRowDelete: (oldData) => {
-                  return new Promise((resolve, reject) => {
+                  return new Promise((resolve) => {
                     handleRevokeToken(oldData)
                     resolve()
                   })

@@ -98,7 +98,7 @@ const GluuCommitDialog = ({
             <i
               onClick={closeModal}
               onKeyDown={() => {}}
-              style={{ color: 'green' }}
+              style={{ color: customColors.logo }}
               className="fa fa-2x fa-info fa-fw modal-icon mb-3"
               role="img"
               aria-hidden="true"
@@ -122,7 +122,7 @@ const GluuCommitDialog = ({
                       fontSize: '1.2rem',
                       fontWeight: 'bold',
                       margin: 0,
-                      color: 'black !important',
+                      color: `${customColors.black} !important`,
                     }}
                   >
                     List of changes

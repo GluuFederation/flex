@@ -3,12 +3,13 @@ import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { PERMISSIONS } from 'Utils/ApiResources'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 function UiPermDetailPage({ row }) {
   const { rowData } = row
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: '#F5F5F5' }}>
+      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
