@@ -11,7 +11,7 @@ tags:
 !!! Warning 
     **This image is for testing and development purposes only. Use Flex [helm charts](https://github.com/GluuFederation/flex/tree/main/charts/gluu) for production setups.**
 
-# Overview
+# Docker Compose
 
 Docker monolith image packaging for Gluu Flex. This image packs janssen services including the auth-server, config-api, fido2, casa, scim and the Gluu admin ui.
 

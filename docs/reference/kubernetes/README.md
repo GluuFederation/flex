@@ -7,7 +7,7 @@ tags:
   - components
 ---
 
-# Overview
+# Reference Guide
 
 This Reference guide helps you learn about the components and architecture of Gluu Flex.
 

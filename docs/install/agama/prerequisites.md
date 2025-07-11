@@ -3,8 +3,9 @@ tags:
 - administration
 - installation
 ---
+# Prerequisites
 
-# Agama Lab
+## Agama Lab
 
 [Agama Lab](https://gluu.org/agama-lab/) is a platform to manage your Gluu license. This is where you may subscribe to Gluu Flex or obtain credentials for your enterprise license.
 
@@ -13,11 +14,11 @@ tags:
     - If you want to author or test [Agama](https://docs.jans.io/head/agama/introduction/) or [Cedarling](https://docs.jans.io/head/cedarling/cedarling-getting-started/) projects, you will need to login via GitHub
 - Once you have logged in, please navigate to `Market` > `Flex`
 
-# Software Statement Assertions
+## Software Statement Assertions
 
 In order to install Flex, you will need a Software Statement Assertion (SSA). An SSA is a signed JSON Web Token (JWT) that is required by the Flex install script to validate your license.
 
-## Obtaining an SSA
+### Obtaining an SSA
 
 Gluu issues SSAs through the Agama Lab web interface. You can obtain an SSA for use with Flex by following these steps:
 
@@ -41,7 +42,7 @@ Gluu issues SSAs through the Agama Lab web interface. You can obtain an SSA for 
 - You will be shown a long string of characters. Copy this and save it to a file.
 - You may now use this file during Flex installation.
 
-# License
+## License
 Gluu Flex uses the SSA obtained in the above step to either request a 30 day trial license or verify presence of a license tied to your Agama Lab account. One account may request one trial license in its lifetime. To purchase a full license, please navigate to the `Flex` tab of the marketplace where you may purchase licenses for up to 1600 MAU (monthly active users). To purchase an enterprise license for more MAU, please contact [Sales](mailto:sales@gluu.org).
 
 If you have subscribed to Flex via Agama Lab, the SSA obtained in the step before will automatically link your license to your installation. For enterprise licenses, please open a support ticket so that we can issue a license against your account. Once this is done, you may use the SSA obtained to proceed to installation.
