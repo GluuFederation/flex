@@ -31,7 +31,7 @@ sudo firewall-cmd --reload
 ```
 sudo SUSEConnect -p PackageHub/15.4/x86_64
 ```
-- Please obtain an [SSA](../agama/prerequisites.md) to trial Flex, after which you are issued a JWT
+- Please obtain an [SSA](../../install/agama/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
 
 ## Install the Package
@@ -119,7 +119,7 @@ environment, Janssen Server needs details about CA certificate. Update the
 HTTPS cofiguration file `https_jans.conf` as shown below:
 
 !!! Note
-    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](https://docs.jans.io/stable/contribute/developer-faq/#suse).
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../openbanking/install-vm.md#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore).
 - Open `_https_jans.conf` 
 ```bash
  sudo vi /etc/apache2/vhosts.d/_https_jans.conf
