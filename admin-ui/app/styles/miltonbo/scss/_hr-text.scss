@@ -11,7 +11,7 @@
     &:after {
         content: " ";
     }
-    >*:first-child {
+    > *:first-child {
         padding-left: 0;
         padding-right: 1rem;
         text-align: left;
@@ -21,7 +21,7 @@
         &:before {
             content: " ";
         }
-        >*:first-child {
+        > *:first-child {
             text-align: center;
             padding-left: 1rem;
         }
@@ -33,7 +33,7 @@
         &:after {
             content: none;
         }
-        >*:first-child {
+        > *:first-child {
             text-align: right;
             padding-left: 1rem;
             padding-right: 0;

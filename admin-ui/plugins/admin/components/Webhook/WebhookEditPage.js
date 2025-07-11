@@ -4,7 +4,10 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import WebhookForm from './WebhookForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useDispatch, useSelector } from 'react-redux'
-import { getFeaturesByWebhookId, getFeaturesByWebhookIdResponse } from 'Plugins/admin/redux/features/WebhookSlice'
+import {
+  getFeaturesByWebhookId,
+  getFeaturesByWebhookIdResponse,
+} from 'Plugins/admin/redux/features/WebhookSlice'
 import { useParams } from 'react-router'
 
 const WebhookEditPage = () => {
@@ -22,9 +25,7 @@ const WebhookEditPage = () => {
 
   return (
     <GluuLoader blocking={loading || loadingWebhookFeatures}>
-      <Card style={applicationStyle.mainCard}>
-        {!loadingWebhookFeatures && <WebhookForm />}
-      </Card>
+      <Card style={applicationStyle.mainCard}>{!loadingWebhookFeatures && <WebhookForm />}</Card>
     </GluuLoader>
   )
 }

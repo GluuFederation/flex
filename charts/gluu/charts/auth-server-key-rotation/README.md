@@ -14,7 +14,7 @@ Responsible for regenerating auth-keys per x hours
 
 ## Source Code
 
-* <https://github.com/JanssenProject/docker-jans-certmanager>
+* <https://github.com/JanssenProject/docker-jans-cloudtools>
 * <https://github.com/GluuFederation/flex/tree/main/charts/gluu/charts/auth-server-key-rotation>
 
 ## Requirements
@@ -34,7 +34,7 @@ Kubernetes: `>=v1.21.0-0`
 | dnsPolicy | string | `""` | Add custom dns policy |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
-| image.repository | string | `"janssenproject/certmanager"` | Image  to use for deploying. |
+| image.repository | string | `"janssenproject/cloudtools"` | Image  to use for deploying. |
 | image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
 | keysLife | int | `48` | Auth server key rotation keys life in hours |
 | keysPushDelay | int | `0` | Delay (in seconds) before pushing private keys to Auth server |
@@ -42,6 +42,7 @@ Kubernetes: `>=v1.21.0-0`
 | keysStrategy | string | `"NEWER"` | Set key selection strategy used by Auth server |
 | lifecycle | object | `{}` |  |
 | nodeSelector | object | `{}` |  |
+| nodeSelector | object | `{}` | Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) |
 | resources | object | `{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}}` | Resource specs. |
 | tolerations | list | `[]` |  |
 | usrEnvs | object | `{"normal":{},"secret":{}}` | Add custom normal and secret envs to the service |

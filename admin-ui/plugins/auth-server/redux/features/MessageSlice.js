@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   config: {},
   loading: true,
-  savingConfig: false
+  savingConfig: false,
 }
 
 const messageSlice = createSlice({
@@ -34,7 +34,7 @@ const messageSlice = createSlice({
     },
     toggleSaveConfigLoader: (state, action) => {
       state.savingConfig = action.payload
-    }
+    },
   },
 })
 
@@ -46,7 +46,7 @@ export const {
   putConfigMessagePostgres,
   putConfigMessageRedis,
   toggleMessageConfigLoader,
-  toggleSaveConfigLoader
+  toggleSaveConfigLoader,
 } = messageSlice.actions
 
 export const { actions, state } = messageSlice

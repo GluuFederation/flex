@@ -2,12 +2,13 @@ import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { ROLES } from 'Utils/ApiResources'
+import customColors from '@/customColors'
 
 function UiRoleDetailPage({ row }) {
   const { rowData } = row
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: '#F5F5F5' }}>
+      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
         <Row>
           <Col sm={3}>
             <GluuFormDetailRow
@@ -15,7 +16,7 @@ function UiRoleDetailPage({ row }) {
               value={rowData.role}
               isBadge={true}
               doc_category={ROLES}
-              doc_entry='name'
+              doc_entry="name"
             />
           </Col>
           <Col sm={9}>
@@ -25,7 +26,7 @@ function UiRoleDetailPage({ row }) {
               lsize={3}
               rsize={9}
               doc_category={ROLES}
-              doc_entry='description'
+              doc_entry="description"
             />
           </Col>
         </Row>

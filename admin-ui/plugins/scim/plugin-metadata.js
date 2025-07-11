@@ -19,7 +19,7 @@ const pluginMetadata = {
       component: ScimPage,
       path: PLUGIN_BASE_PATH,
       permission: SCIM_CONFIG_WRITE,
-    }
+    },
   ],
   reducers: [{ name: 'scimReducer', reducer: scimReducer }],
   sagas: [scimSaga()],

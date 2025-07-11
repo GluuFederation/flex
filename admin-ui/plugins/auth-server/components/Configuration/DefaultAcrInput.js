@@ -1,24 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import {
-  Col,
-  InputGroup,
-  CustomInput,
-  FormGroup,
-  Button,
-} from 'Components'
+import { Col, InputGroup, CustomInput, FormGroup, Button } from 'Components'
 import { ThemeContext } from 'Context/theme/themeContext'
 
 function DefaultAcrInput({
   label,
   name,
   value,
-  required,
-  lsize,
-  rsize,
+  required = false,
+  lsize = 3,
+  rsize = 9,
   isArray,
   handler,
   options,
@@ -60,35 +53,35 @@ function DefaultAcrInput({
   return (
     <FormGroup row>
       <Col sm={10}>
-          <FormGroup row>
-            <GluuLabel
-              label={label}
-              size={lsize}
-              required={required}
-              withTooltip={false}
-              doc_category="json_properties" 
-              doc_entry={name}
-            />
-            <Col sm={rsize}>
-              <InputGroup>
-                <CustomInput
-                  type="select"
-                  data-testid={name}
-                  id={name}
-                  name={name}
-                  value={data}
-                  onChange={(e) => { onValueChanged(e.target.value) }}
-                >
-                  <option value="">{t('actions.choose')}...</option>
-                  {options.map((item, key) => (
-                    <option key={key}>
-                      {item}
-                    </option>
-                  ))}
-                </CustomInput>
-              </InputGroup>
-            </Col>
-          </FormGroup>
+        <FormGroup row>
+          <GluuLabel
+            label={label}
+            size={lsize}
+            required={required}
+            withTooltip={false}
+            doc_category="json_properties"
+            doc_entry={name}
+          />
+          <Col sm={rsize}>
+            <InputGroup>
+              <CustomInput
+                type="select"
+                data-testid={name}
+                id={name}
+                name={name}
+                value={data}
+                onChange={(e) => {
+                  onValueChanged(e.target.value)
+                }}
+              >
+                <option value="">{t('actions.choose')}...</option>
+                {options.map((item, key) => (
+                  <option key={key}>{item}</option>
+                ))}
+              </CustomInput>
+            </InputGroup>
+          </Col>
+        </FormGroup>
       </Col>
       <Col sm={2}>
         {show && (
@@ -109,13 +102,6 @@ function DefaultAcrInput({
       </Col>
     </FormGroup>
   )
-}
-
-DefaultAcrInput.defaultProps = {
-  type: 'text',
-  lsize: 3,
-  rsize: 9,
-  required: false,
 }
 
 export default DefaultAcrInput

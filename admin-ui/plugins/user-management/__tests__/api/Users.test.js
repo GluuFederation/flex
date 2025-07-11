@@ -1,7 +1,4 @@
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/auth-server/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/auth-server/__tests__/api/setup.test'
 import { combineReducers } from '@reduxjs/toolkit'
 import authReducer from 'Redux/features/authSlice'
 import { expectSaga } from 'redux-saga-test-plan'

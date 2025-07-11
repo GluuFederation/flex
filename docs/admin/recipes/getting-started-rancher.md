@@ -127,7 +127,6 @@ kubectl get secret cn -o json -n <namespace>
 | `ssl_cert`                                    | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`           |
 | `ssl_csr`                                     | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`           |
 | `ssl_key`                                     | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`           |
-| `super_gluu_creds`                            | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx3`          |
 | `token_server_admin_ui_client_encoded_pw`     | `Q1Z1cmtYWUlYSVg4U2tLTldVcnZVTUF`                  |
 | `token_server_admin_ui_client_pw`             | `ZHd2VW01Y3VOUW6638`                               |
 

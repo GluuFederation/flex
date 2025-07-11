@@ -22,13 +22,9 @@ export default class ScriptApi {
 
   getScriptsByType = (options) => {
     return new Promise((resolve, reject) => {
-      this.api.getConfigScriptsByType(
-        options['type'],
-        options,
-        (error, data) => {
-          handleResponse(error, reject, resolve, data)
-        },
-      )
+      this.api.getConfigScriptsByType(options['type'], options, (error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
     })
   }
 

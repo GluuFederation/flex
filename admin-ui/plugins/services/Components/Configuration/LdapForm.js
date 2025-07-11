@@ -10,13 +10,11 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { LDAP } from 'Utils/ApiResources'
-import {
-  testLdap,
-  resetTestLdap,
-} from 'Plugins/services/redux/features/ldapSlice'
+import { testLdap, resetTestLdap } from 'Plugins/services/redux/features/ldapSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
+import customColors from '@/customColors'
 
 function LdapForm({ item, handleSubmit, createLdap }) {
   const dispatch = useDispatch()
@@ -56,35 +54,19 @@ function LdapForm({ item, handleSubmit, createLdap }) {
       level: item.level,
     },
     validationSchema: Yup.object({
-      configId: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
+      configId: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
       bindDN: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
-      bindPassword: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
+      bindPassword: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
       servers: Yup.array().required('Required!'),
       level: Yup.number().integer('Level should be integer.'),
-      maxConnections: Yup.number()
-        .required()
-        .positive()
-        .integer()
-        .required('Required!'),
+      maxConnections: Yup.number().required().positive().integer().required('Required!'),
       baseDNs: Yup.array().required('Required!'),
-      primaryKey: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
-      localPrimaryKey: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
+      primaryKey: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
+      localPrimaryKey: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
     }),
     onSubmit: (values) => {
-      values.servers = values.servers.map((ele) =>
-        !!ele.servers ? ele.servers : ele,
-      )
-      values.baseDNs = values.baseDNs.map((ele) =>
-        !!ele.baseDNs ? ele.baseDNs : ele,
-      )
+      values.servers = values.servers.map((ele) => (ele.servers ? ele.servers : ele))
+      values.baseDNs = values.baseDNs.map((ele) => (ele.baseDNs ? ele.baseDNs : ele))
 
       const result = Object.assign(item, values)
       handleSubmit(createLdap ? { ldap: result } : result)
@@ -92,7 +74,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
   })
 
   function checkLdapConnection() {
-    const testPromise = new Promise(function (resolve, reject) {
+    const testPromise = new Promise(function (resolve) {
       dispatch(resetTestLdap())
       resolve()
     })
@@ -121,7 +103,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
   return (
     <Form onSubmit={formik.handleSubmit}>
       <GluuLoader blocking={loading}>
-      <FormGroup row>
+        <FormGroup row>
           <Col sm={12} className="text-end">
             <button
               onClick={checkLdapConnection}
@@ -133,18 +115,11 @@ function LdapForm({ item, handleSubmit, createLdap }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel
-            label="fields.acr"
-            required
-            doc_category={LDAP}
-            doc_entry="configId"
-          />
+          <GluuLabel label="fields.acr" required doc_category={LDAP} doc_entry="configId" />
           <Col sm={9}>
-            {!!item.configId ? (
+            {item.configId ? (
               <Input
-                valid={
-                  !formik.errors.configId && !formik.touched.configId && init
-                }
+                valid={!formik.errors.configId && !formik.touched.configId && init}
                 placeholder={t('placeholders.ldap_name')}
                 id="configId"
                 name="configId"
@@ -155,9 +130,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               />
             ) : (
               <Input
-                valid={
-                  !formik.errors.configId && !formik.touched.configId && init
-                }
+                valid={!formik.errors.configId && !formik.touched.configId && init}
                 placeholder={t('placeholders.ldap_name')}
                 id="configId"
                 name="configId"
@@ -167,17 +140,12 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               />
             )}
             {formik.errors.configId && formik.touched.configId ? (
-              <div style={{ color: 'red' }}>{formik.errors.configId}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.configId}</div>
             ) : null}
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel
-            label="fields.bind_dn"
-            required
-            doc_category={LDAP}
-            doc_entry="bind_dn"
-          />
+          <GluuLabel label="fields.bind_dn" required doc_category={LDAP} doc_entry="bind_dn" />
           <Col sm={9}>
             <Input
               placeholder={t('placeholders.ldap_bind_dn')}
@@ -189,7 +157,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               onChange={formik.handleChange}
             />
             {formik.errors.bindDN && formik.touched.bindDN ? (
-              <div style={{ color: 'red' }}>{formik.errors.bindDN}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.bindDN}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -204,11 +172,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
             <InputGroup>
               <Input
                 placeholder={t('placeholders.ldap_bind_max_connections')}
-                valid={
-                  !formik.errors.maxConnections &&
-                  !formik.touched.maxConnections &&
-                  init
-                }
+                valid={!formik.errors.maxConnections && !formik.touched.maxConnections && init}
                 id="maxConnections"
                 onKeyUp={toogle}
                 defaultValue={item.maxConnections}
@@ -216,7 +180,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               />
             </InputGroup>
             {formik.errors.maxConnections && formik.touched.maxConnections ? (
-              <div style={{ color: 'red' }}>{formik.errors.maxConnections}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.maxConnections}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -231,11 +195,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
             <InputGroup>
               <Input
                 placeholder={t('placeholders.ldap_primary_key')}
-                valid={
-                  !formik.errors.primaryKey &&
-                  !formik.touched.primaryKey &&
-                  init
-                }
+                valid={!formik.errors.primaryKey && !formik.touched.primaryKey && init}
                 id="primaryKey"
                 onKeyUp={toogle}
                 defaultValue={item.primaryKey}
@@ -243,7 +203,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               />
             </InputGroup>
             {formik.errors.primaryKey && formik.touched.primaryKey ? (
-              <div style={{ color: 'red' }}>{formik.errors.primaryKey}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.primaryKey}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -258,11 +218,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
             <InputGroup>
               <Input
                 placeholder={t('placeholders.ldap_primary_key')}
-                valid={
-                  !formik.errors.localPrimaryKey &&
-                  !formik.touched.localPrimaryKey &&
-                  init
-                }
+                valid={!formik.errors.localPrimaryKey && !formik.touched.localPrimaryKey && init}
                 id="localPrimaryKey"
                 onKeyUp={toogle}
                 defaultValue={item.localPrimaryKey}
@@ -270,9 +226,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               />
             </InputGroup>
             {formik.errors.localPrimaryKey && formik.touched.localPrimaryKey ? (
-              <div style={{ color: 'red' }}>
-                {formik.errors.localPrimaryKey}
-              </div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.localPrimaryKey}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -292,7 +246,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
             ></GluuTypeAhead>
 
             {formik.errors.servers && formik.touched.servers ? (
-              <div style={{ color: 'red' }}>{formik.errors.servers}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.servers}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -310,7 +264,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               value={item.baseDNs}
             ></GluuTypeAhead>
             {formik.errors.baseDNs && formik.touched.baseDNs ? (
-              <div style={{ color: 'red' }}>{formik.errors.baseDNs}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.baseDNs}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -325,11 +279,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
             <InputGroup>
               <Input
                 placeholder={t('placeholders.ldap_bind_password')}
-                valid={
-                  !formik.errors.bindPassword &&
-                  !formik.touched.bindPassword &&
-                  init
-                }
+                valid={!formik.errors.bindPassword && !formik.touched.bindPassword && init}
                 onKeyUp={toogle}
                 id="bindPassword"
                 type="password"
@@ -338,50 +288,28 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               />
             </InputGroup>
             {formik.errors.bindPassword && formik.touched.bindPassword ? (
-              <div style={{ color: 'red' }}>{formik.errors.bindPassword}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.bindPassword}</div>
             ) : null}
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel
-            label="fields.use_ssl"
-            required
-            doc_category={LDAP}
-            doc_entry="use_ssl"
-          />
+          <GluuLabel label="fields.use_ssl" required doc_category={LDAP} doc_entry="use_ssl" />
           <Col sm={9}>
             <InputGroup>
-              <GluuToogle
-                value={item.useSSL}
-                formik={formik}
-                name='useSSL'
-              />
+              <GluuToogle value={item.useSSL} formik={formik} name="useSSL" />
             </InputGroup>
           </Col>
         </FormGroup>
         <FormGroup row>
-         <GluuLabel
-            label="fields.enabled"
-            doc_category={LDAP}
-            doc_entry="activate"
-          />
+          <GluuLabel label="fields.enabled" doc_category={LDAP} doc_entry="activate" />
           <Col sm={9}>
             <InputGroup>
-              <GluuToogle
-                value={item.enabled}
-                formik={formik}
-                name='enabled'
-              />
+              <GluuToogle value={item.enabled} formik={formik} name="enabled" />
             </InputGroup>
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel
-            label="fields.level"
-            required
-            doc_category={LDAP}
-            doc_entry="level"
-          />
+          <GluuLabel label="fields.level" required doc_category={LDAP} doc_entry="level" />
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -395,28 +323,18 @@ function LdapForm({ item, handleSubmit, createLdap }) {
               />
             </InputGroup>
             {formik.errors.level && formik.touched.level ? (
-              <div style={{ color: 'red' }}>{formik.errors.level}</div>
+              <div style={{ color: customColors.accentRed }}>{formik.errors.level}</div>
             ) : null}
           </Col>
         </FormGroup>
-        
 
         <FormGroup row>
           {' '}
-          <Input
-            type="hidden"
-            id="moduleProperties"
-            defaultValue={item.moduleProperties}
-          />
+          <Input type="hidden" id="moduleProperties" defaultValue={item.moduleProperties} />
         </FormGroup>
         <FormGroup row></FormGroup>
         <GluuCommitFooter saveHandler={toggle} />
-        <GluuCommitDialog
-          handler={toggle}
-          modal={modal}
-          onAccept={submitForm}
-          formik={formik}
-        />
+        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
       </GluuLoader>
     </Form>
   )

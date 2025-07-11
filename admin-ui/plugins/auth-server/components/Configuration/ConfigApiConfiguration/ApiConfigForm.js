@@ -1,13 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import spec from '../../../../../configApiSpecs.yaml'
-import {
-  buildPayload,
-  hasPermission,
-  API_CONFIG_WRITE,
-} from 'Utils/PermChecker'
+import { buildPayload, API_CONFIG_WRITE } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { patchApiConfigConfiguration } from 'Plugins/auth-server/redux/features/configApiSlice'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
@@ -16,23 +13,36 @@ import { toast } from 'react-toastify'
 const schema = spec.components.schemas.ApiAppConfiguration.properties
 
 const ApiConfigForm = () => {
+  const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState([])
   const [operations, setOperations] = useState([])
 
-  const configuration = useSelector(
-    (state) => state.configApiReducer.configuration
-  )
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  const configuration = useSelector((state) => state.configApiReducer.configuration)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
   const userAction = {}
 
-  const toggle = useCallback(() => {
-    if(patches?.length > 0){
-      setModal(!modal)
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      try {
+        await authorize([API_CONFIG_WRITE])
+      } catch (error) {
+        console.error('Error authorizing API config permissions:', error)
+      }
     }
-    else toast.error('No changes to update');
- 
+
+    authorizePermissions()
+  }, [])
+
+  useEffect(() => {}, [cedarPermissions])
+
+  const toggle = useCallback(() => {
+    if (patches?.length > 0) {
+      setModal(!modal)
+    } else toast.error('No changes to update')
   }, [modal])
 
   const submitForm = useCallback((userMessage) => {
@@ -83,11 +93,9 @@ const ApiConfigForm = () => {
       })}
 
       <FormGroup row></FormGroup>
-      {hasPermission(permissions, API_CONFIG_WRITE) && (
-        <GluuCommitFooter saveHandler={toggle} />
-      )}
+      {hasCedarPermission(API_CONFIG_WRITE) && <GluuCommitFooter saveHandler={toggle} />}
 
-      {hasPermission(permissions, API_CONFIG_WRITE) && (
+      {hasCedarPermission(API_CONFIG_WRITE) && (
         <GluuCommitDialog
           handler={toggle}
           modal={modal}

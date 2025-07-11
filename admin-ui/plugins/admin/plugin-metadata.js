@@ -1,23 +1,18 @@
 import HealthPage from './components/Health/HealthPage'
-import ReportPage from './components/Reports/ReportPage'
 import UiRoleListPage from './components/Roles/UiRoleListPage'
 import UiPermListPage from './components/Permissions/UiPermListPage'
 import MappingPage from './components/Mapping/MappingPage'
-import ScriptListPage from './components/CustomScripts/ScriptListPage'
-import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
-import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
+
 import SettingsPage from './components/Settings/SettingsPage'
 import MauGraph from './components/MAU/MauGraph'
 import WebhookListPage from './components/Webhook/WebhookListPage'
 
-import scriptSaga from './redux/sagas/CustomScriptSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
 import webhookSaga from './redux/sagas/WebhookSaga'
 import assetSaga from './redux/sagas/AssetSaga'
 
-import { reducer as scriptReducer } from 'Plugins/admin/redux/features/customScriptSlice'
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
@@ -27,71 +22,85 @@ import {
   ACR_READ,
   ROLE_READ,
   PERMISSION_READ,
-  SCRIPT_READ,
-  SCRIPT_WRITE,
   MAPPING_READ,
   WEBHOOK_READ,
   WEBHOOK_WRITE,
   ASSETS_READ,
   ASSETS_WRITE,
+  LICENSE_DETAILS_READ,
+  PROPERTIES_READ,
+  STAT_READ,
 } from 'Utils/PermChecker'
 import WebhookAddPage from './components/Webhook/WebhookAddPage'
 import WebhookEditPage from './components/Webhook/WebhookEditPage'
 import JansAssetListPage from './components/Assets/JansAssetListPage'
 import JansAssetEditPage from './components/Assets/JansAssetEditPage'
 import JansAssetAddPage from './components/Assets/JansAssetAddPage'
+import DashboardPage from '../../app/routes/Dashboards/DashboardPage'
+import LicenseDetailsPage from '../../app/routes/License/LicenseDetailsPage'
 
-const PLUGIN_BASE_APTH = '/adm'
+const PLUGIN_BASE_PATH = '/adm'
 
 const pluginMetadata = {
   menus: [
     {
-      title: 'menus.adminui',
-      icon: 'admin',
+      title: 'menus.home',
+      icon: 'home',
       children: [
         {
-          title: 'menus.config-api',
-          children: [
-            {
-              title: 'menus.api.roles',
-              path: PLUGIN_BASE_APTH + '/roles',
-              permission: ROLE_READ,
-            },
-            {
-              title: 'menus.api.permissions',
-              path: PLUGIN_BASE_APTH + '/permissions',
-              permission: PERMISSION_READ,
-            },
-            {
-              title: 'menus.api.mapping',
-              path: PLUGIN_BASE_APTH + '/mapping',
-              permission: MAPPING_READ,
-            },
-          ],
+          title: 'menus.dashboard',
+          path: PLUGIN_BASE_PATH + '/dashboard',
+          permission: STAT_READ,
         },
         {
-          title: 'menus.scripts',
-          path: PLUGIN_BASE_APTH + '/scripts',
-          permission: SCRIPT_READ,
+          title: 'menus.health',
+          path: PLUGIN_BASE_PATH + '/health',
+          permission: PROPERTIES_READ,
+        },
+        {
+          title: 'menus.licenseDetails',
+          path: PLUGIN_BASE_PATH + '/licenseDetails',
+          permission: LICENSE_DETAILS_READ,
         },
         {
           title: 'menus.maugraph',
-          path: PLUGIN_BASE_APTH + '/maugraph',
+          path: PLUGIN_BASE_PATH + '/maugraph',
           permission: ACR_READ,
         },
         {
           title: 'menus.settings',
-          path: PLUGIN_BASE_APTH + '/settings',
+          path: PLUGIN_BASE_PATH + '/settings',
           permission: ACR_READ,
         },
         {
+          title: 'menus.security',
+          children: [
+            {
+              title: 'menus.securityDropdown.adminUiRoles',
+              path: PLUGIN_BASE_PATH + '/roles',
+              permission: ROLE_READ,
+            },
+            {
+              title: 'menus.securityDropdown.capabilities',
+              path: PLUGIN_BASE_PATH + '/capabilities',
+              permission: PERMISSION_READ,
+            },
+            {
+              title: 'menus.securityDropdown.mapping',
+              path: PLUGIN_BASE_PATH + '/mapping',
+              permission: MAPPING_READ,
+            },
+          ],
+        },
+
+        {
           title: 'menus.webhooks',
-          path: PLUGIN_BASE_APTH + '/webhook',
+          path: PLUGIN_BASE_PATH + '/webhook',
           permission: WEBHOOK_READ,
         },
         {
           title: 'menus.assets',
-          path: PLUGIN_BASE_APTH + '/assets',
+          path: PLUGIN_BASE_PATH + '/assets',
           permission: ASSETS_READ,
         },
       ],
@@ -99,95 +108,86 @@ const pluginMetadata = {
   ],
   routes: [
     {
-      component: MauGraph,
-      path: PLUGIN_BASE_APTH + '/maugraph',
-      permission: ACR_READ,
+      component: DashboardPage,
+      path: PLUGIN_BASE_PATH + '/dashboard',
+      permission: STAT_READ,
     },
     {
       component: HealthPage,
-      path: PLUGIN_BASE_APTH + '/health',
+      path: PLUGIN_BASE_PATH + '/health',
+      permission: PROPERTIES_READ,
+    },
+    {
+      component: LicenseDetailsPage,
+      path: PLUGIN_BASE_PATH + '/licenseDetails',
+      permission: LICENSE_DETAILS_READ,
+    },
+    {
+      component: MauGraph,
+      path: PLUGIN_BASE_PATH + '/maugraph',
       permission: ACR_READ,
     },
     {
-      component: ReportPage,
-      path: PLUGIN_BASE_APTH + '/reports',
+      component: SettingsPage,
+      path: PLUGIN_BASE_PATH + '/settings',
       permission: ACR_READ,
     },
+
     {
       component: UiRoleListPage,
-      path: PLUGIN_BASE_APTH + '/roles',
+      path: PLUGIN_BASE_PATH + '/roles',
       permission: ROLE_READ,
     },
     {
       component: UiPermListPage,
-      path: PLUGIN_BASE_APTH + '/permissions',
+      path: PLUGIN_BASE_PATH + '/capabilities',
       permission: PERMISSION_READ,
     },
     {
       component: MappingPage,
-      path: PLUGIN_BASE_APTH + '/mapping',
+      path: PLUGIN_BASE_PATH + '/mapping',
       permission: MAPPING_READ,
     },
-    {
-      component: ScriptListPage,
-      path: PLUGIN_BASE_APTH + '/scripts',
-      permission: SCRIPT_READ,
-    },
-    {
-      component: CustomScriptAddPage,
-      path: PLUGIN_BASE_APTH + '/script/new',
-      permission: SCRIPT_WRITE,
-    },
-    {
-      component: CustomScriptEditPage,
-      path: PLUGIN_BASE_APTH + '/script/edit/:id',
-      permission: SCRIPT_READ,
-    },
-    {
-      component: SettingsPage,
-      path: PLUGIN_BASE_APTH + '/settings',
-      permission: ACR_READ,
-    },
+
     {
       component: WebhookListPage,
-      path: PLUGIN_BASE_APTH + '/webhook',
+      path: PLUGIN_BASE_PATH + '/webhook',
       permission: WEBHOOK_READ,
     },
     {
       component: WebhookAddPage,
-      path: PLUGIN_BASE_APTH + '/webhook/add',
+      path: PLUGIN_BASE_PATH + '/webhook/add',
       permission: WEBHOOK_WRITE,
     },
     {
       component: WebhookEditPage,
-      path: PLUGIN_BASE_APTH + '/webhook/edit/:id',
+      path: PLUGIN_BASE_PATH + '/webhook/edit/:id',
       permission: WEBHOOK_WRITE,
     },
     {
       component: JansAssetListPage,
-      path: PLUGIN_BASE_APTH + '/assets',
+      path: PLUGIN_BASE_PATH + '/assets',
       permission: ASSETS_READ,
     },
     {
       component: JansAssetAddPage,
-      path: PLUGIN_BASE_APTH + '/asset/add',
+      path: PLUGIN_BASE_PATH + '/asset/add',
       permission: ASSETS_WRITE,
     },
     {
       component: JansAssetEditPage,
-      path: PLUGIN_BASE_APTH + '/asset/edit/:id',
+      path: PLUGIN_BASE_PATH + '/asset/edit/:id',
       permission: ASSETS_WRITE,
     },
   ],
   reducers: [
-    { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
     { name: 'webhookReducer', reducer: webhookReducer },
-    { name: 'assetReducer', reducer: assetReducer }
+    { name: 'assetReducer', reducer: assetReducer },
   ],
-  sagas: [scriptSaga(), apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga(), assetSaga()],
+  sagas: [apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga(), assetSaga()],
 }
 
 export default pluginMetadata

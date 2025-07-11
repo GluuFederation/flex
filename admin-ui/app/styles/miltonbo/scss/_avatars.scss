@@ -25,8 +25,8 @@
                         // FALLBACK for older versions, SHOULD BE REMOVED LATER
                         &.avatar__icon--small {
                             $fallDef: map-get($avatar, status-icon);
-                            
-                            font-size: map-get($fallDef, status-icon-size-ratio) * map-get($def,  background-size);
+
+                            font-size: map-get($fallDef, status-icon-size-ratio) * map-get($def, background-size);
                         }
                     }
                 }
@@ -44,9 +44,9 @@
 
                     > * ~ * {
                         font-size: map-get($def, status-size-ratio) * map-get($def, background-size);
-        
+
                         &.avatar__icon__inner {
-                            font-size: map-get($def, status-icon-size-ratio) * map-get($def,  background-size);
+                            font-size: map-get($def, status-icon-size-ratio) * map-get($def, background-size);
                         }
                     }
                 }
@@ -90,17 +90,17 @@
         transform: translate(50%, -50%);
         z-index: 1;
     }
-    
+
     &__icon {
         position: absolute;
         display: block;
         transform: translate(50%, 50%);
         z-index: 1;
-  
+
         &--stack {
             > .fa {
                 display: block;
-                
+
                 ~ .fa {
                     position: absolute;
                     top: 50%;

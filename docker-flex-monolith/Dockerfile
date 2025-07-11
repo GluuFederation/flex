@@ -17,9 +17,8 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
 # @TODO: remove python-ldap3 after ldap support removed
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update \
-    && apt-get install -y python3 tini curl ca-certificates dbus systemd iproute2 gpg python3-pip python3-dev libpq-dev gcc python3-psycopg2 \
+    && apt-get install -y python3 tini curl ca-certificates dbus systemd iproute2 gpg python3-pip python3-dev libpq-dev gcc python3-psycopg2 libaugeas-dev \
     # install certbot
-    && apt-get -y install libaugeas0 \
     && pip install ruamel.yaml certbot certbot-apache \
     # Cleaning up package lists \
     && apt-get clean \
@@ -42,7 +41,8 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-ENV FLEX_SOURCE_VERSION=c3b2cdac73ddcf32b0408b8898268b1e9e339917
+ENV FLEX_SOURCE_VERSION=ec9488d2ff477850943ad41984a4fe5016461e7c
+
 # cleanup
 RUN rm -rf /tmp/jans
 
@@ -73,8 +73,6 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
     CN_INSTALL_FIDO2="true" \
     CN_INSTALL_CASA="true" \
     CN_INSTALL_ADMIN_UI="true" \
-    CN_INSTALL_KC_LINK="true" \
-    CN_INSTALL_LINK="true" \
     CN_INSTALL_LOCK="true" \
     CN_INSTALL_SAML="true" \
     CN_INSTALL_OPA="true" \

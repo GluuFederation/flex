@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { hasPermission, MESSAGE_WRITE, buildPayload } from 'Utils/PermChecker'
+import { MESSAGE_WRITE, buildPayload } from 'Utils/PermChecker'
+import { useCedarling } from '@/cedarling'
 import { Col, Form, Row } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -22,7 +23,10 @@ const DISABLED = 'DISABLED'
 
 const MessageForm = () => {
   const { t } = useTranslation()
+  const { hasCedarPermission, authorize } = useCedarling()
   const config = useSelector((state) => state.messageReducer.config)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
 
@@ -30,9 +34,21 @@ const MessageForm = () => {
     setModal(!modal)
   }
 
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  // Permission initialization
+  useEffect(() => {
+    const authorizePermissions = async () => {
+      try {
+        await authorize([MESSAGE_WRITE])
+      } catch (error) {
+        console.error('Error authorizing message permissions:', error)
+      }
+    }
 
-  const isDisabled = !hasPermission(permissions, MESSAGE_WRITE)
+    authorizePermissions()
+  }, [])
+  useEffect(() => {}, [cedarPermissions])
+
+  const isDisabled = !hasCedarPermission(MESSAGE_WRITE)
 
   const formik = useFormik({
     initialValues: config,
@@ -42,9 +58,7 @@ const MessageForm = () => {
       }
     },
     validationSchema: Yup.object().shape({
-      messageProviderType: Yup.string().required(
-        t('messages.select_message_provider_type')
-      ),
+      messageProviderType: Yup.string().required(t('messages.select_message_provider_type')),
     }),
   })
 
@@ -88,7 +102,7 @@ const MessageForm = () => {
       <Form onSubmit={formik.handleSubmit}>
         <Col sm={12}>
           <GluuSelectRow
-            label='fields.message_provider_type'
+            label="fields.message_provider_type"
             formik={formik}
             value={formik.values.messageProviderType}
             values={[
@@ -98,12 +112,9 @@ const MessageForm = () => {
             ]}
             lsize={4}
             rsize={8}
-            name='messageProviderType'
+            name="messageProviderType"
             disabled={isDisabled}
-            showError={
-              formik.errors.messageProviderType &&
-              formik.touched.messageProviderType
-            }
+            showError={formik.errors.messageProviderType && formik.touched.messageProviderType}
             errorMessage={formik.errors.messageProviderType}
           />
         </Col>
@@ -111,7 +122,7 @@ const MessageForm = () => {
         {formik.values.messageProviderType === REDIS && (
           <Col sm={12}>
             <GluuSelectRow
-              label='fields.redis_provider_type'
+              label="fields.redis_provider_type"
               formik={formik}
               value={formik.values.redisConfiguration?.redisProviderType}
               values={[
@@ -122,146 +133,143 @@ const MessageForm = () => {
               ]}
               lsize={4}
               rsize={8}
-              name='redisConfiguration.redisProviderType'
+              name="redisConfiguration.redisProviderType"
               disabled={isDisabled}
             />
             <GluuInputRow
-              label='fields.servers'
+              label="fields.servers"
               formik={formik}
               disabled={isDisabled}
               value={formik.values.redisConfiguration?.servers}
               lsize={4}
               rsize={8}
-              name='redisConfiguration.servers'
+              name="redisConfiguration.servers"
             />
             <GluuInputRow
-              label='fields.default_put_expiration'
+              label="fields.default_put_expiration"
               formik={formik}
               disabled={isDisabled}
               value={formik.values.redisConfiguration?.defaultPutExpiration}
               lsize={4}
               rsize={8}
-              type='number'
-              name='redisConfiguration.defaultPutExpiration'
+              type="number"
+              name="redisConfiguration.defaultPutExpiration"
             />
             <GluuInputRow
-              label='fields.sentinel_master_group_name_message'
+              label="fields.sentinel_master_group_name_message"
               formik={formik}
               disabled={isDisabled}
               value={formik.values.redisConfiguration?.sentinelMasterGroupName}
               lsize={4}
               rsize={8}
-              name='redisConfiguration.sentinelMasterGroupName'
+              name="redisConfiguration.sentinelMasterGroupName"
             />
             <GluuInputRow
-              label='fields.password'
+              label="fields.password"
               formik={formik}
               disabled={isDisabled}
               value={formik.values.redisConfiguration?.password}
               lsize={4}
               rsize={8}
-              name='redisConfiguration.password'
+              name="redisConfiguration.password"
             />
             <GluuToogleRow
-              label='fields.use_ssl'
+              label="fields.use_ssl"
               formik={formik}
               disabled={isDisabled}
               value={formik.values.redisConfiguration?.useSSL}
               lsize={4}
               rsize={8}
-              name='redisConfiguration.useSSL'
+              name="redisConfiguration.useSSL"
               handler={(e) => {
-                formik.setFieldValue(
-                  'redisConfiguration.useSSL',
-                  e.target.checked
-                )
+                formik.setFieldValue('redisConfiguration.useSSL', e.target.checked)
               }}
             />
             <GluuInputRow
-              label='fields.ssl_key_store_file_path'
+              label="fields.ssl_key_store_file_path"
               formik={formik}
               disabled={isDisabled}
-              name='redisConfiguration.sslKeyStoreFilePath'
+              name="redisConfiguration.sslKeyStoreFilePath"
               value={formik.values.redisConfiguration?.sslKeyStoreFilePath}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.ssl_trust_store_file_path_message'
+              label="fields.ssl_trust_store_file_path_message"
               formik={formik}
               disabled={isDisabled}
-              name='redisConfiguration.sslTrustStoreFilePath'
+              name="redisConfiguration.sslTrustStoreFilePath"
               value={formik.values.redisConfiguration?.sslTrustStoreFilePath}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.ssl_trust_store_password'
+              label="fields.ssl_trust_store_password"
               formik={formik}
               disabled={isDisabled}
-              name='redisConfiguration.sslTrustStorePassword'
+              name="redisConfiguration.sslTrustStorePassword"
               value={formik.values.redisConfiguration?.sslTrustStorePassword}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.ssl_key_store_password'
+              label="fields.ssl_key_store_password"
               formik={formik}
               disabled={isDisabled}
-              name='redisConfiguration.sslKeyStorePassword'
+              name="redisConfiguration.sslKeyStorePassword"
               value={formik.values.redisConfiguration?.sslKeyStorePassword}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.max_idle_connections'
+              label="fields.max_idle_connections"
               formik={formik}
               disabled={isDisabled}
-              name='redisConfiguration.maxIdleConnections'
+              name="redisConfiguration.maxIdleConnections"
               value={formik.values.redisConfiguration?.maxIdleConnections}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
             <GluuInputRow
-              label='fields.max_total_connections'
+              label="fields.max_total_connections"
               formik={formik}
               disabled={isDisabled}
-              name='redisConfiguration.maxTotalConnections'
+              name="redisConfiguration.maxTotalConnections"
               value={formik.values.redisConfiguration?.maxTotalConnections}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
             <GluuInputRow
-              label='fields.connection_timeout'
+              label="fields.connection_timeout"
               formik={formik}
-              name='redisConfiguration.connectionTimeout'
+              name="redisConfiguration.connectionTimeout"
               disabled={isDisabled}
               value={formik.values.redisConfiguration?.connectionTimeout}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
             <GluuInputRow
-              label='fields.so_timeout'
+              label="fields.so_timeout"
               formik={formik}
               disabled={isDisabled}
-              name='redisConfiguration.soTimeout'
+              name="redisConfiguration.soTimeout"
               value={formik.values.redisConfiguration?.soTimeout}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
             <GluuInputRow
-              label='fields.max_retry_attempts'
+              label="fields.max_retry_attempts"
               formik={formik}
               disabled={isDisabled}
-              name='redisConfiguration.maxRetryAttempts'
+              name="redisConfiguration.maxRetryAttempts"
               value={formik.values.redisConfiguration?.maxRetryAttempts}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
           </Col>
         )}
@@ -269,103 +277,99 @@ const MessageForm = () => {
         {formik.values.messageProviderType === POSTGRES && (
           <>
             <GluuInputRow
-              label='fields.driver_class_name'
+              label="fields.driver_class_name"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.driverClassName'
+              name="postgresConfiguration.driverClassName"
               value={formik.values.postgresConfiguration?.driverClassName}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.db_schema_name'
+              label="fields.db_schema_name"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.dbSchemaName'
+              name="postgresConfiguration.dbSchemaName"
               value={formik.values.postgresConfiguration?.dbSchemaName}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.connection_uri'
+              label="fields.connection_uri"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.connectionUri'
+              name="postgresConfiguration.connectionUri"
               value={formik.values.postgresConfiguration?.connectionUri}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.auth_user_name'
+              label="fields.auth_user_name"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.authUserName'
+              name="postgresConfiguration.authUserName"
               value={formik.values.postgresConfiguration?.authUserName}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.auth_user_password'
+              label="fields.auth_user_password"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.authUserPassword'
+              name="postgresConfiguration.authUserPassword"
               value={formik.values.postgresConfiguration?.authUserPassword}
               lsize={4}
               rsize={8}
             />
             <GluuInputRow
-              label='fields.connection_pool_max_total'
+              label="fields.connection_pool_max_total"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.connectionPoolMaxTotal'
-              value={
-                formik.values.postgresConfiguration?.connectionPoolMaxTotal
-              }
+              name="postgresConfiguration.connectionPoolMaxTotal"
+              value={formik.values.postgresConfiguration?.connectionPoolMaxTotal}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
             <GluuInputRow
-              label='fields.connection_pool_max_idle'
+              label="fields.connection_pool_max_idle"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.connectionPoolMaxIdle'
+              name="postgresConfiguration.connectionPoolMaxIdle"
               value={formik.values.postgresConfiguration?.connectionPoolMaxIdle}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
             <GluuInputRow
-              label='fields.connection_pool_min_idle'
+              label="fields.connection_pool_min_idle"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.connectionPoolMinIdle'
+              name="postgresConfiguration.connectionPoolMinIdle"
               value={formik.values.postgresConfiguration?.connectionPoolMinIdle}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
             <GluuInputRow
-              label='fields.message_wait_millis'
+              label="fields.message_wait_millis"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.messageWaitMillis'
+              name="postgresConfiguration.messageWaitMillis"
               value={formik.values.postgresConfiguration?.messageWaitMillis}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
             <GluuInputRow
-              label='fields.message_sleep_thread_time'
+              label="fields.message_sleep_thread_time"
               formik={formik}
               disabled={isDisabled}
-              name='postgresConfiguration.messageSleepThreadTime'
-              value={
-                formik.values.postgresConfiguration?.messageSleepThreadTime
-              }
+              name="postgresConfiguration.messageSleepThreadTime"
+              value={formik.values.postgresConfiguration?.messageSleepThreadTime}
               lsize={4}
               rsize={8}
-              type='number'
+              type="number"
             />
           </>
         )}
@@ -375,7 +379,7 @@ const MessageForm = () => {
             <GluuCommitFooter
               saveHandler={toggle}
               hideButtons={{ save: true, back: false }}
-              type='submit'
+              type="submit"
             />
           </Col>
         </Row>

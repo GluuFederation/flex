@@ -265,6 +265,7 @@ def resolve_conf_app(old_conf, new_conf):
 def render_env_config(manager):
     hostname = manager.config.get("hostname")
     ctx = {
+        "hostname": hostname,
         "config_api_base_url": os.environ.get("CN_CONFIG_API_BASE_URL", f"https://{hostname}"),
     }
 

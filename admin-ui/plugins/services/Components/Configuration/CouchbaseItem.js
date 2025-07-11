@@ -1,17 +1,11 @@
 import React, { useContext } from 'react'
-import {
-  Col,
-  FormGroup,
-  Input,
-  Card,
-  CardBody,
-  Badge,
-} from 'Components'
+import { Col, FormGroup, Input, Card, CardBody, Badge } from 'Components'
 import { COUCHBASE } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 function CouchbaseItem({ couchbase, index, formik }) {
   const { t } = useTranslation()
@@ -22,7 +16,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
     <Card
       style={{
         marginBottom: '5px',
-        backgroundColor: index % 2 === 0 ? 'white' : '#f7f7f7',
+        backgroundColor: index % 2 === 0 ? customColors.white : customColors.whiteSmoke,
       }}
     >
       <CardBody>
@@ -228,7 +222,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
           </GluuTooltip>
         )}
       </CardBody>
-    </Card >
+    </Card>
   )
 }
 

@@ -1,8 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import {
-  authReducerInit,
-  beforeAllAsync,
-} from 'Plugins/fido/__tests__/api/setup.test'
+import { authReducerInit, beforeAllAsync } from 'Plugins/fido/__tests__/api/setup.test'
 import { updateFidoSaga, getFidoSaga } from 'Plugins/fido/redux/sagas/FidoSaga'
 import { reducer as fidoReducer } from 'Plugins/fido/redux/features/fidoSlice'
 import { expectSaga } from 'redux-saga-test-plan'
@@ -34,9 +31,7 @@ const rootReducer = combineReducers({
 describe('fetch & update fido configuration', () => {
   let configurations
   it('should GET current fido configuration', async () => {
-    const result = await expectSaga(getFidoSaga)
-      .withReducer(rootReducer, initialState)
-      .run(false)
+    const result = await expectSaga(getFidoSaga).withReducer(rootReducer, initialState).run(false)
 
     expect(result.returnValue instanceof Error).toBe(false)
     if (!(result.returnValue instanceof Error)) {

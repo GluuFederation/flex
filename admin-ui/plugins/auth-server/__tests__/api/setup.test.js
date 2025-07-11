@@ -1,7 +1,4 @@
-import {
-  fetchApiTokenWithDefaultScopes,
-  fetchApiAccessToken,
-} from 'Redux/api/backend-api'
+import { fetchApiTokenWithDefaultScopes, fetchApiAccessToken } from 'Redux/api/backend-api'
 
 export const beforeAllAsync = async (formInitState) => {
   const { issuer, token } = global

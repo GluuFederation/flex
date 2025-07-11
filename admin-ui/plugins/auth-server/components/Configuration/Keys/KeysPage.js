@@ -1,10 +1,6 @@
 import React from 'react'
-import {
-  UncontrolledTabs,
-  TabPane,
-  Card,
-  CardBody,
-} from 'Components'
+import { UncontrolledTabs, TabPane, Card, CardBody } from 'Components'
+import { UncontrolledTabsTabContent } from 'Components/UncontrolledTabs/UncontrolledTabsTabContent'
 import JwksPage from './Jwks/JwksPage'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -18,11 +14,11 @@ function KeysPage() {
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <UncontrolledTabs initialActiveTabId="jwkpanel">
-          <UncontrolledTabs.TabContent>
+          <UncontrolledTabsTabContent>
             <TabPane tabId="jwkpanel">
               <JwksPage />
             </TabPane>
-          </UncontrolledTabs.TabContent>
+          </UncontrolledTabsTabContent>
         </UncontrolledTabs>
       </CardBody>
     </Card>

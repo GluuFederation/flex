@@ -1,13 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Badge,
-  FormGroup,
-  Card,
-  Col,
-  CardBody,
-  InputGroup,
-  CustomInput,
-} from 'Components'
+import { Badge, FormGroup, Card, Col, CardBody, InputGroup, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -26,10 +18,7 @@ function CacheRedis({ config, formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-          <Col
-            sm="12"
-            style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
-          >
+          <Col sm="12" style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}>
             {t('fields.redis_configuration')}:
           </Col>
         </FormGroup>
@@ -167,5 +156,5 @@ function CacheRedis({ config, formik }) {
 export default CacheRedis
 CacheRedis.propTypes = {
   formik: PropTypes.object,
-  config: PropTypes.any
+  config: PropTypes.any,
 }

@@ -23,8 +23,8 @@ function JwksPage() {
         <CardBody>
           {Object.keys(jwks).length
             ? Array.from(jwks['keys']).map((item, index) => (
-              <JwkItem key={index} item={item} index={index} />
-            ))
+                <JwkItem key={index} item={item} index={index} />
+              ))
             : ''}
         </CardBody>
       </Card>

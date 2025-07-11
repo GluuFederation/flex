@@ -106,7 +106,7 @@ const formInitState = (token, issuer) => {
 
 beforeAll(async () => {
   try {
-    await beforeAllAsync() 
+    await beforeAllAsync()
   } catch (error) {
     error(error.message)
   }

@@ -5,13 +5,13 @@
     }
 }
 .react-toggle-track {
-	background-color: $gray-500 !important;
+    background-color: $gray-500 !important;
     position: relative;
 }
 .react-toggle-thumb {
-	border: 1px solid $gray-500 !important;	
+    border: 1px solid $gray-500 !important;
 }
 
 .react-toggle--checked .react-toggle-track {
-	background-color: $success !important;
+    background-color: $success !important;
 }

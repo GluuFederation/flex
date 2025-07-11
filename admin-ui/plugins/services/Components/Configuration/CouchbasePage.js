@@ -6,10 +6,7 @@ import { Form, FormGroup, Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useDispatch, useSelector } from 'react-redux'
 import Alert from '@mui/material/Alert'
-import {
-  getCouchBaseConfig,
-  editCouchBase,
-} from 'Plugins/services/redux/features/couchbaseSlice'
+import { getCouchBaseConfig, editCouchBase } from 'Plugins/services/redux/features/couchbaseSlice'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
@@ -62,9 +59,7 @@ function CouchbasePage() {
       ) : (
         <Card style={applicationStyle.mainCard}>
           <CardBody>
-            <Alert severity="info">
-              The current data store provider is not Couchbase.
-            </Alert>
+            <Alert severity="info">The current data store provider is not Couchbase.</Alert>
           </CardBody>
         </Card>
       )}

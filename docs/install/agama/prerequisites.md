@@ -11,8 +11,8 @@ tags:
 
 - To begin, please visit [Agama Lab](https://cloud.gluu.org/agama-lab)
 - You may register via email or login via GitHub
-    - If you want to author or test Agama projects, you will need to login via GitHub
-- Once you have logged in, please navigate to `Market` > `SCAN` and subscribe to the free tier. SCAN is the API gateway Gluu uses to validate licenses. The free tier will give you 500 credits. As license calls do not cost credits, this will not cost you anything.
+    - If you want to author or test [Agama](https://docs.jans.io/head/agama/introduction/) or [Cedarling](https://docs.jans.io/head/cedarling/cedarling-getting-started/) projects, you will need to login via GitHub
+- Once you have logged in, please navigate to `Market` > `Flex`
 
 ## Software Statement Assertions
 
@@ -24,8 +24,7 @@ Gluu issues SSAs through the Agama Lab web interface. You can obtain an SSA for 
 
 - Login to Agama Lab
 - On the left navigation bar, select `Market`
-- Navigate to the tab named `SSA`.
-- Sign up for a free SCAN subscription, which will give you 500 SCAN credits. Flex does not cost any SCAN credits, so you will not be charged for SCAN.
+- Navigate to the tab named `Flex`.
 ![ssa-management](../../assets/agama-lab/ssa-management.png)
 - Click on `Create New SSA`
     - On `Software Name`, fill in a unique identifier for this SSA
@@ -46,4 +45,4 @@ Gluu issues SSAs through the Agama Lab web interface. You can obtain an SSA for 
 ## License
 Gluu Flex uses the SSA obtained in the above step to either request a 30 day trial license or verify presence of a license tied to your Agama Lab account. One account may request one trial license in its lifetime. To purchase a full license, please navigate to the `Flex` tab of the marketplace where you may purchase licenses for up to 1600 MAU (monthly active users). To purchase an enterprise license for more MAU, please contact [Sales](mailto:sales@gluu.org).
 
-If you have subscribed to Flex via Agama Lab, the SSA obtained in the step before will automatically link your license to your installation. For enterprise licenses, please open a support ticket so that we can issue a license against your Agama account. Once this is done, you may use the SSA obtained to proceed to installation.
+If you have subscribed to Flex via Agama Lab, the SSA obtained in the step before will automatically link your license to your installation. For enterprise licenses, please open a support ticket so that we can issue a license against your account. Once this is done, you may use the SSA obtained to proceed to installation.

@@ -40,7 +40,6 @@ services:
       - CN_INSTALL_FIDO2=true
       - CN_INSTALL_CASA=true
       - CN_INSTALL_ADMIN_UI=true
-      - CN_INSTALL_KC_LINK=true
       - CN_INSTALL_LOCK=true
       - CN_INSTALL_SAML=true
       - CN_INSTALL_OPA=true

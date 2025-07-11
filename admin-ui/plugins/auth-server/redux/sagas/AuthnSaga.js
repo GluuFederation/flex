@@ -17,7 +17,7 @@ function* newACRFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.DefaultAuthenticationMethodApi(
-    getClient(JansConfigApi, token, issuer)
+    getClient(JansConfigApi, token, issuer),
   )
   return new AcrApi(api)
 }
@@ -26,7 +26,7 @@ function* newLDAPFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
-    getClient(JansConfigApi, token, issuer)
+    getClient(JansConfigApi, token, issuer),
   )
   return new LdapApi(api)
 }
@@ -34,9 +34,7 @@ function* newLDAPFunction() {
 function* newScriptFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CustomScriptsApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
   return new ScriptApi(api)
 }
 
@@ -45,7 +43,7 @@ export function* editSimpleAuthAcr({ payload }) {
     const api = yield* newACRFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
     yield put(setSimpleAuthAcrResponse({ data }))
-    yield put(setSuccess({ data: true}))
+    yield put(setSuccess({ data: true }))
     return data
   } catch (e) {
     yield put(setSimpleAuthAcrResponse(null))

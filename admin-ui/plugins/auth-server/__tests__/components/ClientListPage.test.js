@@ -1,6 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import ClientListPage from 'Plugins/auth-server/components/Clients/ClientListPage' 
+import ClientListPage from 'Plugins/auth-server/components/Clients/ClientListPage'
 import { Provider } from 'react-redux'
 import clients from './clients.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
@@ -20,7 +20,7 @@ const INIT_CLIENTS_STATE = {
   item: {},
   view: false,
   loading: false,
-  totalItems: 0
+  totalItems: 0,
 }
 
 const INIT_SCPOPES_STATE = {
@@ -36,7 +36,7 @@ const INIT_SCPOPES_STATE = {
       attributes: { showInConfigurationEndpoint: false },
       umaType: false,
       tableData: { id: 0 },
-      totalItems: 0
+      totalItems: 0,
     },
   ],
   item: {},
@@ -44,20 +44,17 @@ const INIT_SCPOPES_STATE = {
 }
 
 const store = configureStore({
-  reducer:  combineReducers({
+  reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     oidcReducer: (state = INIT_CLIENTS_STATE) => state,
     scopeReducer: (state = INIT_SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,
-    
   }),
 })
 
 const Wrapper = ({ children }) => (
   <AppTestWrapper>
-    <Provider store={store}>
-      {children}
-    </Provider>
+    <Provider store={store}>{children}</Provider>
   </AppTestWrapper>
 )
 

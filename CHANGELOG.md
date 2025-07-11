@@ -1,5 +1,84 @@
 # Changelog
 
+## [5.8.0](https://github.com/GluuFederation/flex/compare/v5.7.0...v5.8.0) (2025-06-30)
+
+
+### Features
+
+* add cronjob schedule override ([#2112](https://github.com/GluuFederation/flex/issues/2112)) ([75c90b9](https://github.com/GluuFederation/flex/commit/75c90b9ad70dda26d94d366f22b99ade8730a687))
+* admin ui web OIDC client should be set to generate the access_token in JWT format by default ([#2142](https://github.com/GluuFederation/flex/issues/2142)) ([78ccc50](https://github.com/GluuFederation/flex/commit/78ccc503045dd5cfb19c7e50673e46600f237c43))
+* **admin-ui:** Add support for typescript ([#2103](https://github.com/GluuFederation/flex/issues/2103)) ([feb12f8](https://github.com/GluuFederation/flex/commit/feb12f8c5d17191ccc737b1a34fc8df0315c261b))
+* **admin-ui:** Downloaded SSA should be in a jwt file ([#2080](https://github.com/GluuFederation/flex/issues/2080)) ([e849a8a](https://github.com/GluuFederation/flex/commit/e849a8ab1b6899fcb0f57e76e970065e5a6f5837))
+* **admin-ui:** Downloaded SSA should be in a jwt file [#2079](https://github.com/GluuFederation/flex/issues/2079) ([e849a8a](https://github.com/GluuFederation/flex/commit/e849a8ab1b6899fcb0f57e76e970065e5a6f5837))
+* **admin-ui:** enforce consistent code formatting with Prettier and Husky ([#2101](https://github.com/GluuFederation/flex/issues/2101)) ([86bd415](https://github.com/GluuFederation/flex/commit/86bd415e724b1ccb2f446448ea8ef2c6f81a94d9))
+* **admin-ui:** hide optional components from sidebar if not installed ([#2091](https://github.com/GluuFederation/flex/issues/2091)) ([94c1cf7](https://github.com/GluuFederation/flex/commit/94c1cf777e7c39c5731166b80da3e6cd29670a5b)), closes [#2087](https://github.com/GluuFederation/flex/issues/2087)
+* **admin-ui:** rename schema and update user-claims visuals ([#2075](https://github.com/GluuFederation/flex/issues/2075)) ([b4be1ee](https://github.com/GluuFederation/flex/commit/b4be1ee5ac76b6a3868ec874b9de77a64f0d9331))
+* **admin-ui:** reordering Admin-UI's left menu ([#2085](https://github.com/GluuFederation/flex/issues/2085)) ([21ee51d](https://github.com/GluuFederation/flex/commit/21ee51df42f388441d3506ef2c7038fa6dfc3493))
+* **admin-ui:** show persistence details on Admin UI ([#2099](https://github.com/GluuFederation/flex/issues/2099)) ([#2110](https://github.com/GluuFederation/flex/issues/2110)) ([4633f77](https://github.com/GluuFederation/flex/commit/4633f7700da3ec1bb847fdb538729a47fe374b9e))
+* **charts:** add nodeSelector spec ([#2097](https://github.com/GluuFederation/flex/issues/2097)) ([e950b66](https://github.com/GluuFederation/flex/commit/e950b6617142a98bfe52cd577c50d8a60063c754))
+
+
+### Bug Fixes
+
+* **admin-ui:** white screen on AuthN page load [#2093](https://github.com/GluuFederation/flex/issues/2093) ([52539f9](https://github.com/GluuFederation/flex/commit/52539f990b233ea6c890a9e82594b7666dd04d62))
+* **admin-ui:** White screen on AuthN page load [#2093](https://github.com/GluuFederation/flex/issues/2093) ([#2094](https://github.com/GluuFederation/flex/issues/2094)) ([52539f9](https://github.com/GluuFederation/flex/commit/52539f990b233ea6c890a9e82594b7666dd04d62))
+* **docs:** Fix broken Let's Encrypt documentation links for RHEL and SUSE ([#2076](https://github.com/GluuFederation/flex/issues/2076)) ([06dde5f](https://github.com/GluuFederation/flex/commit/06dde5fc3484f49ca071db70ab1050c9378f2747))
+* **flex-linux-setup:** update admin-ui ([#2098](https://github.com/GluuFederation/flex/issues/2098)) ([56b0c8a](https://github.com/GluuFederation/flex/commit/56b0c8abf5bb981aa534a8aabb04e2d2d013a897))
+* **flex-linux-setyp:** update admin-ui ([56b0c8a](https://github.com/GluuFederation/flex/commit/56b0c8abf5bb981aa534a8aabb04e2d2d013a897))
+* update Husky prepare script for proper git repository detection ([#2105](https://github.com/GluuFederation/flex/issues/2105)) ([ec9488d](https://github.com/GluuFederation/flex/commit/ec9488d2ff477850943ad41984a4fe5016461e7c))
+
+## [5.7.0](https://github.com/GluuFederation/flex/compare/v5.6.0...v5.7.0) (2025-05-21)
+
+
+### Features
+
+* **admin-ui:** add download/view feature in SSA page of Admin UI ([#2068](https://github.com/GluuFederation/flex/issues/2068)) ([ea231b0](https://github.com/GluuFederation/flex/commit/ea231b0a1b7b5c00676c2b2898c8bdbca0464d1b))
+* **admin-ui:** add download/view feature in SSA page of Admin UI [#2063](https://github.com/GluuFederation/flex/issues/2063) ([ea231b0](https://github.com/GluuFederation/flex/commit/ea231b0a1b7b5c00676c2b2898c8bdbca0464d1b))
+
+
+### Bug Fixes
+
+* **charts:** invalid template function calls when using AWS secrets manager ([#2072](https://github.com/GluuFederation/flex/issues/2072)) ([652fa2e](https://github.com/GluuFederation/flex/commit/652fa2e12c1c97de375a494960e52a342fd02518))
+
+## [5.6.0](https://github.com/GluuFederation/flex/compare/v5.5.0...v5.6.0) (2025-05-13)
+
+
+### Bug Fixes
+
+* **charts:** missing feature of jans-keycloak-link ([#2056](https://github.com/GluuFederation/flex/issues/2056)) ([0c0fafd](https://github.com/GluuFederation/flex/commit/0c0fafd7456b10eebbcc74183dd743ba76b11569))
+* **charts:** revert saml service to be disabled by default ([#2051](https://github.com/GluuFederation/flex/issues/2051)) ([32816f0](https://github.com/GluuFederation/flex/commit/32816f02019fc9e4be4f9768a7ebac8927227221))
+* **cloud-native:** demo scripts fail to deploy cluster due to python externally-managed-environment error ([#2053](https://github.com/GluuFederation/flex/issues/2053)) ([62418de](https://github.com/GluuFederation/flex/commit/62418de0bbdc6a33d86257b3b7984cac7625e163))
+* **docs:** add how to document for adding claims to token ([#2060](https://github.com/GluuFederation/flex/issues/2060)) ([65fb131](https://github.com/GluuFederation/flex/commit/65fb1312349a0cb4adbfa7c470a3a02da5c8227c))
+* override release ([340801c](https://github.com/GluuFederation/flex/commit/340801cd44522badc4171451981e79239d4e1bc8))
+
+## [5.5.0](https://github.com/GluuFederation/flex/compare/v5.4.0...v5.5.0) (2025-04-11)
+
+
+### Features
+
+* add custom java options for AIO and tolerations ([#2030](https://github.com/GluuFederation/flex/issues/2030)) ([b1d99ab](https://github.com/GluuFederation/flex/commit/b1d99ab84d8ca8a57a21cc226b2ada1943e51d60))
+* add field in Admin UI configuration to set interval to sync license details into configuration ([#2016](https://github.com/GluuFederation/flex/issues/2016)) ([5510b97](https://github.com/GluuFederation/flex/commit/5510b97041b0a01ec96f732412deeea9e9927077))
+* **charts:** cloudtools integration with Helm charts ([#2037](https://github.com/GluuFederation/flex/issues/2037)) ([b82564d](https://github.com/GluuFederation/flex/commit/b82564d4ec1c5c755cc18164ad0123ca9eb57dac))
+* **docker-admin-ui:** add configuration to set interval to sync license details ([#2018](https://github.com/GluuFederation/flex/issues/2018)) ([bcc5cb2](https://github.com/GluuFederation/flex/commit/bcc5cb2d18f7cd25ec78c9ebf7748e3bb606adfc))
+
+
+### Bug Fixes
+
+* **admin-ui:** adding ssa custom attributes ([#2007](https://github.com/GluuFederation/flex/issues/2007)) ([b48e7af](https://github.com/GluuFederation/flex/commit/b48e7af6c4ce4bef436aaa79e98d184d75217b6a))
+* **admin-ui:** change max size of attribute results ([#2025](https://github.com/GluuFederation/flex/issues/2025)) ([95622ac](https://github.com/GluuFederation/flex/commit/95622ace855127ff6d2a15c2d24411eac577805e))
+* **admin-ui:** fix closing loader ([#2031](https://github.com/GluuFederation/flex/issues/2031)) ([d5e58c8](https://github.com/GluuFederation/flex/commit/d5e58c86a872a218454ff43fd612c865fecbf72d))
+* **admin-ui:** fix get time for expired date ([#2041](https://github.com/GluuFederation/flex/issues/2041)) ([d220989](https://github.com/GluuFederation/flex/commit/d220989885038994a86ae1c322ed6c129a2bcd33))
+* **admin-ui:** fix showing customer attributes on user preview for string or array ([442c648](https://github.com/GluuFederation/flex/commit/442c648b146402851e962aea23201fbaf4ce5671))
+* **admin-ui:** fix showing user custom attributes ([#2026](https://github.com/GluuFederation/flex/issues/2026)) ([442c648](https://github.com/GluuFederation/flex/commit/442c648b146402851e962aea23201fbaf4ce5671))
+* **charts:** broken istio integration ([#2023](https://github.com/GluuFederation/flex/issues/2023)) ([d7de4ca](https://github.com/GluuFederation/flex/commit/d7de4ca759872e678e611f378b01cbeeadda657e))
+* **docs:** add SAML SSO test instructions ([#2020](https://github.com/GluuFederation/flex/issues/2020)) ([c52ad6c](https://github.com/GluuFederation/flex/commit/c52ad6c26e1a63784dd31fdc1fdbcaabaf860f98))
+
+
+### Miscellaneous Chores
+
+* remove commit check ([190fbd1](https://github.com/GluuFederation/flex/commit/190fbd1c0844fd36a5827769b664754850cea328))
+* update srouce version ([4849729](https://github.com/GluuFederation/flex/commit/4849729684949746616051e095c6c0c664656960))
+
 ## [5.4.0](https://github.com/GluuFederation/flex/compare/v5.3.0...v5.4.0) (2025-02-23)
 
 

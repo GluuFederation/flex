@@ -1,99 +1,107 @@
+$dark-gray: #323c47;
+$accent-red: #b3424a;
+$light-blue: #3573a6;
+$light-cyan: #bdd4d5;
+$light-gray: #eaecf1;
+$pale-yellow: #cfd76f;
+$darkBlueThemeBackground: #284461;
+$blueThemebackground: #9dbde2;
+
 .custom-sidebar-container {
-  background-color: #FCFCFC;
-  border-top-right-radius: 28px;
-  border-top-left-radius: 28px;
+    background-color: #fcfcfc;
+    border-top-right-radius: 28px;
+    border-top-left-radius: 28px;
 
-  .sidebar-menu__entry__link {
-    color: #323b47;
-  }
-
-  .sidebar-submenu__entry__link {
-    color: #323b47;
-  }
-
-  .sidebar-menu__entry__link:hover {
-    color: #323b47;
-  }
-  .sidebar-submenu__entry__link:hover {
-    color: #323b47;
-  }
-
-  .sidebar-menu__entry:hover {
-    i {
-      color: #323b47;
+    .sidebar-menu__entry__link {
+        color: #323b47;
     }
-    a {
-      color: #323b47;
-    }
-  }
 
-  .sidebar-menu__entry__icon {
-    color: #323b47;
-  }
+    .sidebar-submenu__entry__link {
+        color: #323b47;
+    }
+
+    .sidebar-menu__entry__link:hover {
+        color: #323b47;
+    }
+    .sidebar-submenu__entry__link:hover {
+        color: #323b47;
+    }
+
+    .sidebar-menu__entry:hover {
+        i {
+            color: #323b47;
+        }
+        a {
+            color: #323b47;
+        }
+    }
+
+    .sidebar-menu__entry__icon {
+        color: #323b47;
+    }
 }
 
 .menu-icon {
-  height: 28px;
-  width: 28px;
-  margin-right: 10px;
-  position: relative;
-  top: -5px;
+    height: 28px;
+    width: 28px;
+    margin-right: 10px;
+    position: relative;
 }
 
 .sidebar-menu__entry {
-  .sidebar-menu__entry__link:hover {
-    background: lightgrey;
-  }
+    .sidebar-menu__entry__link:hover {
+        background: lightgrey;
+    }
 
-  .sidebar-submenu .sidebar-submenu__entry .sidebar-submenu__entry__link:hover {
-    background: lightgrey;
-  }
+    .sidebar-submenu .sidebar-submenu__entry .sidebar-submenu__entry__link:hover {
+        background: lightgrey;
+    }
 }
 
 .cursor-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .sidebar-menu-active-darkBlack {
-  background: #323C46!important;
-  color: #FFF!important;
+    background: $dark-gray !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-darkBlack:hover {
-  background: #323C46!important;
-  color: #FFF!important;
+    background: #000 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-darkBlue {
-  background: #323C46!important;
-  color: #FFF!important;
+    background: $darkBlueThemeBackground !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-darkBlue:hover {
-  background: #323C46!important;
-  color: #FFF!important;
+    background: #323c46 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-lightBlue {
-  background: #274561!important;
-  color: #FFF!important;
+    background: $blueThemebackground !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-lightBlue:hover {
-  background: #274561!important;
-  color: #FFF!important;
+    background: #274561 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-lightGreen {
-  background: #02B774!important;
-  color: #FFF!important;
+    background: #02b774 !important;
+    color: #fff !important;
 }
 
 .sidebar-menu-active-lightGreen:hover {
-  background: #02B774!important;
-  color: #FFF!important;
+    background: #02b774 !important;
+    color: #fff !important;
 }
 
 .sidebar-active-icon {
-  color: #FFF!important;
+    color: #000 !important;
 }

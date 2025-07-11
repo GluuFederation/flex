@@ -22,9 +22,7 @@ const REDIS = 'redis'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.MessageConfigurationApi(
-    getClient(JansConfigApi, token, issuer)
-  )
+  const api = new JansConfigApi.MessageConfigurationApi(getClient(JansConfigApi, token, issuer))
   return new MessageApi(api)
 }
 
@@ -32,7 +30,7 @@ function* newPostgresFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.MessageConfigurationPostgresApi(
-    getClient(JansConfigApi, token, issuer)
+    getClient(JansConfigApi, token, issuer),
   )
   return new MessageApi(api)
 }
@@ -41,7 +39,7 @@ function* newRedisFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.MessageConfigurationRedisApi(
-    getClient(JansConfigApi, token, issuer)
+    getClient(JansConfigApi, token, issuer),
   )
   return new MessageApi(api)
 }
@@ -57,13 +55,7 @@ export function* getConfigMessage() {
     yield put(toggleMessageConfigLoader(false))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(getMessageResponse(null))
     yield put(toggleMessageConfigLoader(false))
     if (isFourZeroOneError(e)) {
@@ -84,13 +76,7 @@ export function* editMessageConfig({ payload }) {
     yield put(toggleMessageConfigLoader(false))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(editMessageConfigResponse(null))
     yield put(toggleMessageConfigLoader(false))
     if (isFourZeroOneError(e)) {
@@ -111,13 +97,7 @@ export function* putConfigMessagePostgres({ payload }) {
     yield put(toggleSaveConfigLoader(false))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(toggleSaveConfigLoader(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -137,13 +117,7 @@ export function* putConfigMessageRedis({ payload }) {
     yield put(toggleSaveConfigLoader(false))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(
-      updateToast(
-        true,
-        'error',
-        e?.response?.body?.responseMessage || e.message
-      )
-    )
+    yield put(updateToast(true, 'error', e?.response?.body?.responseMessage || e.message))
     yield put(toggleSaveConfigLoader(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

@@ -1,13 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import item from "./item.test"
-import script from "./script.test"
+import item from './item.test'
+import script from './script.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import CustomScriptForm from 'Plugins/admin/components/CustomScripts/CustomScriptForm'
 
-const Wrapper = ({ children }) => (
-  <AppTestWrapper>{children}</AppTestWrapper>
-)
+const Wrapper = ({ children }) => <AppTestWrapper>{children}</AppTestWrapper>
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
   'https://jans.io/oauth/config/attributes.write',

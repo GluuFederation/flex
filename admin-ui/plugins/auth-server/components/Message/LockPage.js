@@ -21,7 +21,7 @@ const LockPage = () => {
   return (
     <GluuLoader blocking={loading || savingConfig}>
       <Card style={applicationStyle.mainCard}>
-        <CardBody style={{ minHeight: '70vh' }} className='p-2'>
+        <CardBody style={{ minHeight: '70vh' }} className="p-2">
           {!loading && !savingConfig && <MessageForm />}
         </CardBody>
       </Card>

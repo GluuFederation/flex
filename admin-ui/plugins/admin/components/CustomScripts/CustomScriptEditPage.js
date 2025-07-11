@@ -12,20 +12,21 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function CustomScriptEditPage() {
   const dispatch = useDispatch()
-  const item = useSelector(state => state.customScriptReducer.item);
-  const scripts = useSelector(state => state.customScriptReducer.items);
-  const loading = useSelector(state => state.customScriptReducer.loading);
-  const saveOperationFlag = useSelector(state => state.customScriptReducer.saveOperationFlag);
-  const errorInSaveOperationFlag = useSelector(state => state.customScriptReducer.errorInSaveOperationFlag);
-  const viewOnly = useSelector(state => state.customScriptReducer.view);
+  const item = useSelector((state) => state.customScriptReducer.item)
+  const scripts = useSelector((state) => state.customScriptReducer.items)
+  const loading = useSelector((state) => state.customScriptReducer.loading)
+  const saveOperationFlag = useSelector((state) => state.customScriptReducer.saveOperationFlag)
+  const errorInSaveOperationFlag = useSelector(
+    (state) => state.customScriptReducer.errorInSaveOperationFlag,
+  )
+  const viewOnly = useSelector((state) => state.customScriptReducer.view)
 
   const userAction = {}
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const { t } = useTranslation()
-  
+
   useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag)
-      navigate('/adm/scripts')
+    if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/scripts')
   }, [saveOperationFlag])
 
   function handleSubmit(data) {

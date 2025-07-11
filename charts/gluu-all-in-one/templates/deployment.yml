@@ -35,7 +35,7 @@ spec:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
       {{- end }}
       {{- if .Values.customAnnotations.pod }}
-      {{ toYaml .Values.customAnnotations.pod | indent 4 }}              
+      {{ toYaml .Values.customAnnotations.pod | indent 4 }}
       {{- end }}
       {{- end }}
     spec:
@@ -74,8 +74,6 @@ spec:
             value: {{ include "saml.customJavaOptions" . | trim }}
           - name: CN_SCIM_JAVA_OPTIONS
             value: {{ include "scim.customJavaOptions" . | trim }}
-          - name: CN_LINK_JAVA_OPTIONS
-            value: {{ include "link.customJavaOptions" . | trim }}
           {{- include "flex-all-in-one.usr-envs" . | indent 12 }}
           {{- include "flex-all-in-one.usr-secret-envs" . | indent 12 }}
         securityContext:
@@ -164,4 +162,8 @@ spec:
         - name: {{ include "flex-all-in-one.fullname" . }}-updatelbip
           configMap:
             name: {{ .Release.Name }}-updatelbip
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}

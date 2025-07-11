@@ -27,17 +27,7 @@ const sortMenu = (menu) => {
 }
 
 const sortParentMenu = (menu) => {
-  menu.sort((a, b) => {
-    var titleA = a.title.toUpperCase()
-    var titleB = b.title.toUpperCase()
-    if (titleA < titleB) {
-      return -1
-    }
-    if (titleA > titleB) {
-      return 1
-    }
-    return 0
-  })
+  menu.sort((a, b) => a?.order - b?.order)
 
   return menu
 }
