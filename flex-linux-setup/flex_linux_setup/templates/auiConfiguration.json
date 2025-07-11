@@ -35,7 +35,8 @@
   },
   "uiConfig": {
     "sessionTimeoutInMins": 30,
-    "allowSmtpKeystoreEdit": true
+    "allowSmtpKeystoreEdit": true,
+    "cedarlingLogType":"off"
   },
   "licenseConfig": {
     "ssa": "%(ssa)s",
