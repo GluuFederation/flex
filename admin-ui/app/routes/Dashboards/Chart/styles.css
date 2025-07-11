@@ -1,7 +1,8 @@
 .recharts-legend-wrapper {
-  display: none;
+    display: none;
 }
 
-table > thead > tr > th .Mui-active, table > thead > tr > th .Mui-active > svg {
-  color: #fff !important;
+table > thead > tr > th .Mui-active,
+table > thead > tr > th .Mui-active > svg {
+    color: #fff !important;
 }

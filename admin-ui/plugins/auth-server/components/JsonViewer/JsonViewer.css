@@ -1,0 +1,48 @@
+.json-viewer {
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: auto;
+    max-height: 500px;
+}
+
+.json-viewer .jv-ellipsis {
+    color: #323c47;
+    background-color: #eaecf1;
+    display: inline-block;
+    line-height: 0.9;
+    font-size: 0.9em;
+    padding: 0px 4px 2px 4px;
+    border-radius: 3px;
+    vertical-align: 2px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.json-viewer .jv-button {
+    color: #3573a6;
+}
+
+.json-viewer .jv-key {
+    color: #881391;
+}
+
+.json-viewer .jv-string {
+    color: #b3424a;
+}
+
+.json-viewer .jv-number {
+    color: #1c00cf;
+}
+
+.json-viewer .jv-boolean {
+    color: #0000ff;
+}
+
+.json-viewer .jv-null {
+    color: #323c47;
+}
+
+.json-viewer .jv-undefined {
+    color: #323c47;
+}

@@ -20,9 +20,7 @@ const sessionSlice = createSlice({
     },
     handleRevokeSession: (state, action) => {
       state.loading = false
-      state.items = state.items.filter(
-        ({ userDn }) => userDn !== action.payload.data
-      )
+      state.items = state.items.filter(({ userDn }) => userDn !== action.payload.data)
     },
     getSessions: (state) => {
       state.loading = true
@@ -43,7 +41,7 @@ export const {
   handleRevokeSession,
   getSessions,
   revokeSession,
-  searchSessions
+  searchSessions,
 } = sessionSlice.actions
 
 export const { actions, reducer, state } = sessionSlice

@@ -14,20 +14,16 @@ const dynamicConfigInitValues = (staticConfiguration) => {
     issuer: staticConfiguration?.issuer || '',
     baseEndpoint: staticConfiguration?.baseEndpoint || '',
     cleanServiceInterval: staticConfiguration?.cleanServiceInterval || '',
-    cleanServiceBatchChunkSize:
-      staticConfiguration?.cleanServiceBatchChunkSize || '',
+    cleanServiceBatchChunkSize: staticConfiguration?.cleanServiceBatchChunkSize || '',
     useLocalCache: staticConfiguration?.useLocalCache || '',
     disableJdkLogger: staticConfiguration?.disableJdkLogger || '',
     loggingLevel: staticConfiguration?.loggingLevel || '',
     loggingLayout: staticConfiguration?.loggingLayout || '',
-    externalLoggerConfiguration:
-      staticConfiguration?.externalLoggerConfiguration || '',
+    externalLoggerConfiguration: staticConfiguration?.externalLoggerConfiguration || '',
     metricReporterEnabled: staticConfiguration?.metricReporterEnabled,
     metricReporterInterval: staticConfiguration?.metricReporterInterval || '',
-    metricReporterKeepDataDays:
-      staticConfiguration?.metricReporterKeepDataDays || '',
-    personCustomObjectClassList:
-      staticConfiguration?.personCustomObjectClassList || [],
+    metricReporterKeepDataDays: staticConfiguration?.metricReporterKeepDataDays || '',
+    personCustomObjectClassList: staticConfiguration?.personCustomObjectClassList || [],
     superGluuEnabled: staticConfiguration?.superGluuEnabled,
   }
 }
@@ -35,28 +31,17 @@ const dynamicConfigInitValues = (staticConfiguration) => {
 const dynamicConfigValidationSchema = Yup.object({
   issuer: Yup.string().required('Issuer is required.'),
   baseEndpoint: Yup.string().required('Base Endpoint is required.'),
-  cleanServiceInterval: Yup.string().required(
-    'Clean Service Interval is required.'
-  ),
-  cleanServiceBatchChunkSize: Yup.string().required(
-    'Clean Service Batch Chunk Size is required.'
-  ),
+  cleanServiceInterval: Yup.string().required('Clean Service Interval is required.'),
+  cleanServiceBatchChunkSize: Yup.string().required('Clean Service Batch Chunk Size is required.'),
   useLocalCache: Yup.boolean().required('Use Local Cache is required.'),
   disableJdkLogger: Yup.boolean().required('Disable Jdk Logger is required.'),
   loggingLevel: Yup.string().required('Logging Level is required.'),
   loggingLayout: Yup.string().required('Logging Layout is required.'),
-  metricReporterEnabled: Yup.boolean().required(
-    'Metric Reporter Enabled is required.'
-  ),
-  metricReporterInterval: Yup.number().required(
-    'Metric Reporter Interval is required.'
-  ),
-  metricReporterKeepDataDays: Yup.number().required(
-    'Metric Reporter Keep Data Days is required.'
-  ),
+  metricReporterEnabled: Yup.boolean().required('Metric Reporter Enabled is required.'),
+  metricReporterInterval: Yup.number().required('Metric Reporter Interval is required.'),
+  metricReporterKeepDataDays: Yup.number().required('Metric Reporter Keep Data Days is required.'),
   superGluuEnabled: Yup.boolean().required('Enable Super Gluu is required.'),
 })
-
 
 function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido
@@ -70,7 +55,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
     onSubmit: () => {
       toggle()
     },
-    validationSchema: dynamicConfigValidationSchema
+    validationSchema: dynamicConfigValidationSchema,
   })
 
   const submitForm = () => {
@@ -84,13 +69,13 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
         e.preventDefault()
         formik.handleSubmit()
       }}
-      className='mt-3'
+      className="mt-3"
     >
       <FormGroup row>
         <Col sm={8}>
           <GluuInputRow
-            label='fields.issuer'
-            name='issuer'
+            label="fields.issuer"
+            name="issuer"
             value={formik.values.issuer || ''}
             formik={formik}
             lsize={4}
@@ -102,123 +87,109 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label='fields.base_endpoint'
-            name='baseEndpoint'
+            label="fields.base_endpoint"
+            name="baseEndpoint"
             value={formik.values.baseEndpoint || ''}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={
-              formik.errors.baseEndpoint && formik.touched.baseEndpoint
-            }
+            showError={formik.errors.baseEndpoint && formik.touched.baseEndpoint}
             errorMessage={formik.errors.baseEndpoint}
           />
         </Col>
 
         <Col sm={8}>
           <GluuInputRow
-            label='fields.clean_service_interval'
-            name='cleanServiceInterval'
+            label="fields.clean_service_interval"
+            name="cleanServiceInterval"
             value={formik.values.cleanServiceInterval || ''}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={
-              formik.errors.cleanServiceInterval &&
-              formik.touched.cleanServiceInterval
-            }
+            showError={formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval}
             errorMessage={formik.errors.cleanServiceInterval}
-            type='number'
+            type="number"
           />
         </Col>
 
         <Col sm={8}>
           <GluuInputRow
-            label='fields.clean_service_batch_chunk'
-            name='cleanServiceBatchChunkSize'
+            label="fields.clean_service_batch_chunk"
+            name="cleanServiceBatchChunkSize"
             value={formik.values.cleanServiceBatchChunkSize || ''}
             formik={formik}
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.cleanServiceBatchChunkSize &&
-              formik.touched.cleanServiceBatchChunkSize
+              formik.errors.cleanServiceBatchChunkSize && formik.touched.cleanServiceBatchChunkSize
             }
             errorMessage={formik.errors.cleanServiceBatchChunkSize}
-            type='number'
+            type="number"
           />
         </Col>
 
         <Col sm={8}>
           <GluuSelectRow
-            label='fields.use_local_cache'
-            name='useLocalCache'
+            label="fields.use_local_cache"
+            name="useLocalCache"
             value={formik.values.useLocalCache}
             defaultValue={formik.values.useLocalCache}
             values={['true', 'false']}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={
-              formik.errors.useLocalCache && formik.touched.useLocalCache
-            }
+            showError={formik.errors.useLocalCache && formik.touched.useLocalCache}
             errorMessage={formik.errors.useLocalCache}
           />
         </Col>
 
         <Col sm={8}>
           <GluuSelectRow
-            label='fields.disable_jdk_logger'
-            name='disableJdkLogger'
+            label="fields.disable_jdk_logger"
+            name="disableJdkLogger"
             value={formik.values.disableJdkLogger}
             defaultValue={formik.values.disableJdkLogger}
             values={['true', 'false']}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={
-              formik.errors.disableJdkLogger && formik.touched.disableJdkLogger
-            }
+            showError={formik.errors.disableJdkLogger && formik.touched.disableJdkLogger}
             errorMessage={formik.errors.disableJdkLogger}
           />
         </Col>
 
         <Col sm={8}>
           <GluuSelectRow
-            label='fields.logging_level'
-            name='loggingLevel'
+            label="fields.logging_level"
+            name="loggingLevel"
             value={formik.values.loggingLevel}
             defaultValue={formik.values.loggingLevel}
             values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={
-              formik.errors.loggingLevel && formik.touched.loggingLevel
-            }
+            showError={formik.errors.loggingLevel && formik.touched.loggingLevel}
             errorMessage={formik.errors.loggingLevel}
           />
         </Col>
 
         <Col sm={8}>
           <GluuInputRow
-            label='fields.logging_layout'
-            name='loggingLayout'
+            label="fields.logging_layout"
+            name="loggingLayout"
             value={formik.values.loggingLayout || ''}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={
-              formik.errors.loggingLayout && formik.touched.loggingLayout
-            }
+            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
             errorMessage={formik.errors.loggingLayout}
           />
         </Col>
 
         <Col sm={8}>
           <GluuInputRow
-            label='fields.external_logger_configuration'
-            name='externalLoggerConfiguration'
+            label="fields.external_logger_configuration"
+            name="externalLoggerConfiguration"
             value={formik.values.externalLoggerConfiguration || ''}
             formik={formik}
             lsize={4}
@@ -233,16 +204,15 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label='fields.metric_reporter_interval'
-            name='metricReporterInterval'
-            type='number'
+            label="fields.metric_reporter_interval"
+            name="metricReporterInterval"
+            type="number"
             value={formik.values.metricReporterInterval || ''}
             formik={formik}
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.metricReporterInterval &&
-              formik.touched.metricReporterInterval
+              formik.errors.metricReporterInterval && formik.touched.metricReporterInterval
             }
             errorMessage={formik.errors.metricReporterInterval}
           />
@@ -250,16 +220,15 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label='fields.metric_reporter_keep_data_days'
-            name='metricReporterKeepDataDays'
-            type='number'
+            label="fields.metric_reporter_keep_data_days"
+            name="metricReporterKeepDataDays"
+            type="number"
             value={formik.values.metricReporterKeepDataDays || ''}
             formik={formik}
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.metricReporterKeepDataDays &&
-              formik.touched.metricReporterKeepDataDays
+              formik.errors.metricReporterKeepDataDays && formik.touched.metricReporterKeepDataDays
             }
             errorMessage={formik.errors.metricReporterKeepDataDays}
           />
@@ -267,56 +236,52 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuSelectRow
-            label='fields.metric_reporter_enabled'
-            name='metricReporterEnabled'
+            label="fields.metric_reporter_enabled"
+            name="metricReporterEnabled"
             value={formik.values.metricReporterEnabled}
             defaultValue={formik.values.metricReporterEnabled}
             values={['true', 'false']}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={
-              formik.errors.metricReporterEnabled &&
-              formik.touched.metricReporterEnabled
-            }
+            showError={formik.errors.metricReporterEnabled && formik.touched.metricReporterEnabled}
             errorMessage={formik.errors.metricReporterEnabled}
           />
         </Col>
 
         <Col sm={8}>
           <Row>
-            <GluuLabel label='fields.person_custom_object_classes' size={4} />
+            <GluuLabel label="fields.person_custom_object_classes" size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName='personCustomObjectClassList'
+                compName="personCustomObjectClassList"
                 isInputLables={true}
                 formik={formik}
                 options={
                   formik?.values?.personCustomObjectClassList
-                    ? formik?.values?.personCustomObjectClassList.map(
-                        (item) => ({ key: '', value: item })
-                      )
+                    ? formik?.values?.personCustomObjectClassList.map((item) => ({
+                        key: '',
+                        value: item,
+                      }))
                     : []
                 }
                 isKeys={false}
-                buttonText='actions.add_classes'
+                buttonText="actions.add_classes"
               ></GluuProperties>
             </Col>
           </Row>
         </Col>
-        <Col sm={8} className='mt-2'>
+        <Col sm={8} className="mt-2">
           <GluuSelectRow
-            label='fields.enable_super_gluu'
-            name='superGluuEnabled'
+            label="fields.enable_super_gluu"
+            name="superGluuEnabled"
             value={formik.values.superGluuEnabled}
             defaultValue={formik.values.superGluuEnabled}
             values={['true', 'false']}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={
-              formik.errors.superGluuEnabled && formik.touched.superGluuEnabled
-            }
+            showError={formik.errors.superGluuEnabled && formik.touched.superGluuEnabled}
             errorMessage={formik.errors.superGluuEnabled}
           />
         </Col>
@@ -326,16 +291,11 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
           <GluuCommitFooter
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}
-            type='submit'
+            type="submit"
           />
         </Col>
       </Row>
-      <GluuCommitDialog
-        handler={toggle}
-        modal={modal}
-        onAccept={submitForm}
-        formik={formik}
-      />
+      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
     </Form>
   )
 }

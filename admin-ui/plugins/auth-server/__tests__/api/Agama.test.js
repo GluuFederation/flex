@@ -37,9 +37,7 @@ const rootReducer = combineReducers({
 
 describe('fetch agama projects', () => {
   it('GET Agama projects', async () => {
-    const result = await expectSaga(getAgamas)
-      .withReducer(rootReducer, initialState)
-      .run(false)
+    const result = await expectSaga(getAgamas).withReducer(rootReducer, initialState).run(false)
 
     expect(result.returnValue instanceof Error).toBe(false)
   })

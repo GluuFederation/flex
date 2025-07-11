@@ -4,6 +4,7 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuSecretDetail from 'Routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 const DOC_CATEGORY = 'openid_client'
 
@@ -17,9 +18,7 @@ function ClientDetailPage({ row, scopes }) {
     .filter((item) => scopesDns.includes(item.dn, 0))
     .map((item) => item.id)
   function extractDescription(customAttributes) {
-    const result = customAttributes.filter(
-      (item) => item.name === 'description',
-    )
+    const result = customAttributes.filter((item) => item.name === 'description')
     if (result && result.length >= 1) {
       return result[0].values
     }
@@ -28,7 +27,7 @@ function ClientDetailPage({ row, scopes }) {
   const dash = '-'
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: '#F5F5F5' }}>
+      <Container style={{ backgroundColor: customColors.whiteSmoke }}>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
@@ -41,7 +40,7 @@ function ClientDetailPage({ row, scopes }) {
           <Col sm={6}>
             <GluuSecretDetail
               label="fields.client_secret"
-              value={row.clientSecret ? row.clientSecret : dash }
+              value={row.clientSecret ? row.clientSecret : dash}
               doc_category={DOC_CATEGORY}
               doc_entry="clientSecret"
             />
@@ -89,9 +88,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.is_trusted_client')}:</Label>
               <Label sm={6}>
                 {row.trustedClient ? (
-                  <Badge color={`primary-${selectedTheme}`}>
-                    {t('options.yes')}
-                  </Badge>
+                  <Badge color={`primary-${selectedTheme}`}>{t('options.yes')}</Badge>
                 ) : (
                   <Badge color="secondary">{t('options.no')}</Badge>
                 )}
@@ -103,9 +100,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.status')}:</Label>
               <Label sm={6}>
                 {!row.disabled ? (
-                  <Badge color={`primary-${selectedTheme}`}>
-                    {t('options.enabled')}
-                  </Badge>
+                  <Badge color={`primary-${selectedTheme}`}>{t('options.enabled')}</Badge>
                 ) : (
                   <Badge color="danger">{t('options.disabled')}</Badge>
                 )}
@@ -189,9 +184,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.authentication_method')}:</Label>
               <Label sm={6}>
                 {row.authenticationMethod && (
-                  <Badge color={`primary-${selectedTheme}`}>
-                    {row.authenticationMethod}
-                  </Badge>
+                  <Badge color={`primary-${selectedTheme}`}>{row.authenticationMethod}</Badge>
                 )}
               </Label>
             </FormGroup>

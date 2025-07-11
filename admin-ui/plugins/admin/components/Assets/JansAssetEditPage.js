@@ -8,17 +8,17 @@ import { useSelector } from 'react-redux'
 import SetTitle from 'Utils/SetTitle'
 
 const JansAssetEditPage = () => {
-    const { t } = useTranslation()
-    SetTitle(t('titles.asset_edit'))
-    const { loading } = useSelector((state) => state.assetReducer)
+  const { t } = useTranslation()
+  SetTitle(t('titles.asset_edit'))
+  const { loading } = useSelector((state) => state.assetReducer)
 
-    return (
-        <GluuLoader blocking={loading}>
-            <Card style={applicationStyle.mainCard}>
-                <AssetForm />
-            </Card>
-        </GluuLoader>
-    )
+  return (
+    <GluuLoader blocking={loading}>
+      <Card style={applicationStyle.mainCard}>
+        <AssetForm />
+      </Card>
+    </GluuLoader>
+  )
 }
 
 export default JansAssetEditPage

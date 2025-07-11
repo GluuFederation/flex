@@ -11,10 +11,7 @@ function CacheInMemory({ formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-          <Col
-            xs="12"
-            style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
-          >
+          <Col xs="12" style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}>
             {t('fields.in_memory_configuration')}:
           </Col>
         </FormGroup>

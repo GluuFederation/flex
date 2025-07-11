@@ -20,9 +20,7 @@ function ConfigApiPage() {
 
   return (
     <GluuLoader blocking={loading}>
-      <Card style={applicationStyle.mainCard}>
-        {!loading && <ApiConfigForm />}
-      </Card>
+      <Card style={applicationStyle.mainCard}>{!loading && <ApiConfigForm />}</Card>
     </GluuLoader>
   )
 }

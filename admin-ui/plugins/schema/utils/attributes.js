@@ -31,4 +31,4 @@ export const scopes = [
   },
 ]
 
-export default scopes;
+export default scopes

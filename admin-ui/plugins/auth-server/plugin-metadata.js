@@ -1,3 +1,4 @@
+import React, { Suspense, lazy } from 'react'
 import ScopeListPage from './components/Scopes/ScopeListPage'
 import ScopeAddPage from './components/Scopes/ScopeAddPage'
 import ScopeEditPage from './components/Scopes/ScopeEditPage'
@@ -36,8 +37,8 @@ import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
 import agamaSaga from './redux/sagas/AgamaSaga'
 import authnSaga from './redux/sagas/AuthnSaga'
-import ssaSaga from './redux/sagas/SsaSaga' 
-import messageSaga from './redux/sagas/MessageSaga' 
+import ssaSaga from './redux/sagas/SsaSaga'
+import messageSaga from './redux/sagas/MessageSaga'
 import configApiSaga from './redux/sagas/configApiSaga'
 
 import {
@@ -53,23 +54,26 @@ import {
   AGAMA_READ,
   SSA_PORTAL,
   MESSAGE_READ,
-  API_CONFIG_READ
+  API_CONFIG_READ,
 } from 'Utils/PermChecker'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import configApiReducer from 'Plugins/auth-server/redux/features/configApiSlice'
 import AuthNListPage from './components/AuthN/AuthNListPage'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
-import SsaListPage from './components/Ssa/SsaListPage' 
+import SsaListPage from './components/Ssa/SsaListPage'
 import SsaAddPage from './components/Ssa/SsaAddPage'
-import React, { Suspense, lazy } from 'react'
 import LockPage from './components/Message/LockPage'
 import AuthNPage from './components/AuthN'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
 function AgamaListPageWrapper() {
-  return <Suspense fallback={<div>Loading...</div>}><AgamaListPage /></Suspense>
-} 
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AgamaListPage />
+    </Suspense>
+  )
+}
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -115,7 +119,7 @@ const pluginMetadata = {
           permission: SCOPE_READ,
         },
         {
-          title: 'menus.api.api_config',
+          title: 'menus.api_config',
           path: PLUGIN_BASE_APTH + '/config-api-configuration',
           permission: API_CONFIG_READ,
         },
@@ -256,7 +260,7 @@ const pluginMetadata = {
     authnSaga(),
     ssaSaga(),
     messageSaga(),
-    configApiSaga()
+    configApiSaga(),
   ],
 }
 

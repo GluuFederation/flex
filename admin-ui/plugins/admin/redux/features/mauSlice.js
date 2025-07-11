@@ -5,7 +5,7 @@ const initialState = {
   stat: [],
   loading: false,
   startMonth: '',
-  endMonth: ''
+  endMonth: '',
 }
 
 const mauSlice = createSlice({
@@ -22,8 +22,8 @@ const mauSlice = createSlice({
       if (action.payload?.data) {
         state.stat = action.payload.data
       }
-    }
-  }
+    },
+  },
 })
 
 export const { getMau, getMauResponse } = mauSlice.actions

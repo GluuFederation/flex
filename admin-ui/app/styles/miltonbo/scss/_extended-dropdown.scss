@@ -31,9 +31,9 @@
 
             > .list-group {
                 > .list-group-item {
-                    border-width: 0; 
+                    border-width: 0;
                     margin-bottom: 0;
-                    
+
                     + .list-group-item {
                         border-top-width: 1px;
                     }
@@ -63,7 +63,7 @@
 }
 
 // Navbar dropdown on XS
-@media (max-width: breakpoint-max('xs', $grid-breakpoints)) {
+@media (max-width: breakpoint-max("xs", $grid-breakpoints)) {
     .navbar .nav .dropdown-menu.extended-dropdown,
     .navbar .navbar-nav .dropdown-menu.extended-dropdown {
         position: fixed;

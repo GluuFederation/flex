@@ -1,14 +1,8 @@
 import React, { useContext } from 'react'
-import {
-  Col,
-  FormGroup,
-  Input,
-  Card,
-  CardBody,
-  Badge,
-} from 'Components'
+import { Col, FormGroup, Input, Card, CardBody, Badge } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { ThemeContext } from 'Context/theme/themeContext'
+import customColors from '@/customColors'
 
 function SqlItem({ ldap, index, formik }) {
   const theme = useContext(ThemeContext)
@@ -18,7 +12,7 @@ function SqlItem({ ldap, index, formik }) {
     <Card
       style={{
         marginBottom: '5px',
-        backgroundColor: index % 2 === 0 ? 'white' : '#f7f7f7',
+        backgroundColor: index % 2 === 0 ? customColors.white : customColors.whiteSmoke,
       }}
     >
       <CardBody>

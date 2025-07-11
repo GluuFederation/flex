@@ -1,8 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import {
   getSqlResponse,
   addSqlResponse,
@@ -12,12 +9,7 @@ import {
 } from '../features/sqlSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { SQL } from '../audit/Resources'
-import {
-  CREATE,
-  UPDATE,
-  DELETION,
-  FETCH,
-} from '../../../../app/audit/UserActionType'
+import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import SqlApi from '../api/SqlApi'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -27,9 +19,7 @@ const JansConfigApi = require('jans_config_api')
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.DatabaseSqlConfigurationApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.DatabaseSqlConfigurationApi(getClient(JansConfigApi, token, issuer))
   return new SqlApi(api)
 }
 

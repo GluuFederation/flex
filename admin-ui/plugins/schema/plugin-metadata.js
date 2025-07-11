@@ -9,15 +9,10 @@ import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils//PermChecker'
 const pluginMetadata = {
   menus: [
     {
-      title: 'menus.schema',
-      icon: 'schema',
-      children: [
-        {
-          title: 'menus.person',
-          path: '/attributes',
-          permission: ATTRIBUTE_READ,
-        },
-      ],
+      title: 'menus.user_claims',
+      icon: 'user_claims',
+      path: '/attributes',
+      permission: ATTRIBUTE_READ,
     },
   ],
   routes: [

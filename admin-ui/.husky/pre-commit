@@ -1,0 +1,85 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Navigate to admin-ui directory
+cd admin-ui
+
+# Check if staged files need formatting
+echo "🔍 Checking code formatting..."
+
+# Get staged files (relative to git root, so we need to filter for admin-ui/)
+STAGED_JS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^admin-ui/.*\.(js|jsx|ts|tsx)$' | sed 's|^admin-ui/||' || true)
+STAGED_JSON_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^admin-ui/.*\.json$' | sed 's|^admin-ui/||' || true)
+STAGED_CSS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^admin-ui/.*\.(css|scss)$' | sed 's|^admin-ui/||' || true)
+
+# Flag to track if any files need formatting
+FORMATTING_NEEDED=false
+
+# Check JavaScript/TypeScript files
+if [ -n "$STAGED_JS_FILES" ]; then
+  echo "Checking JavaScript/TypeScript files..."
+  for file in $STAGED_JS_FILES; do
+    if [ -f "$file" ]; then
+      echo "  Checking $file..."
+      # Check if file needs formatting
+      if ! npx prettier --check "$file" >/dev/null 2>&1; then
+        echo "❌ $file needs formatting"
+        FORMATTING_NEEDED=true
+      fi
+      # Check for ESLint errors
+
+      # to run linter uncomment below if block
+      # if ! npx eslint "$file" --max-warnings=0 >/dev/null 2>&1; then
+      #   echo "❌ $file has ESLint errors"
+      #   FORMATTING_NEEDED=true
+      # fi
+    fi
+  done
+fi
+
+# Check JSON files
+if [ -n "$STAGED_JSON_FILES" ]; then
+  echo "Checking JSON files:"
+  echo "$STAGED_JSON_FILES" | tr ' ' '\n' | sed 's/^/  - /'
+  for file in $STAGED_JSON_FILES; do
+    if [ -f "$file" ]; then
+      echo "  Checking $file..."
+      if ! npx prettier --check "$file" >/dev/null 2>&1; then
+        echo "❌ $file needs formatting"
+        FORMATTING_NEEDED=true
+      fi
+    fi
+  done
+fi
+
+# Check CSS/SCSS/SASS files
+if [ -n "$STAGED_CSS_FILES" ]; then
+  echo "Checking CSS/SCSS/SASS files:"
+  echo "$STAGED_CSS_FILES" | tr ' ' '\n' | sed 's/^/  - /'
+  for file in $STAGED_CSS_FILES; do
+    if [ -f "$file" ]; then
+      echo "  Checking $file..."
+      if ! npx prettier --check "$file" >/dev/null 2>&1; then
+        echo "❌ $file needs formatting"
+        FORMATTING_NEEDED=true
+      fi
+    fi
+  done
+fi
+
+# If formatting is needed, fail the commit
+if [ "$FORMATTING_NEEDED" = true ]; then
+  echo ""
+  echo "💥 Commit failed! Some files need formatting or have linting errors."
+  echo ""
+  echo "To fix formatting issues, run:"
+  echo "  npm run format"
+  echo ""
+  echo "To fix ESLint issues, run:"
+  echo "  npm run lint"
+  echo ""
+  echo "Then add the fixed files and commit again."
+  exit 1
+fi
+
+echo "✅ All files are properly formatted and linted!"

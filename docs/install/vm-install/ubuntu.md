@@ -22,13 +22,21 @@ sudo ufw allow https
 ```
 - Please obtain an [SSA](../agama/prerequisites.md) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
-
+  
+## Supported Versions
+- Ubuntu 24.04
+- Ubuntu 22.04
+- Ubuntu 20.04
 ## Install the Package
 
 ### Download and Verify the Release Package
 
 - Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases). Choose
 the correct command from below based on the OS version.
+```shell
+#Ubuntu 24.04
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb -P /tmp
+```
 ```shell
 #Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb -P /tmp
@@ -54,6 +62,10 @@ sudo gpg --import automation-flex-public-gpg.asc;
 - Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the 
 package.  Choose the correct command from below based on the OS version.
 ```shell
+#Ubuntu 24.04
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb.sha256sum  -P /tmp
+```
+```shell
 #Ubuntu 22.04
 wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum  -P /tmp
 ```
@@ -64,6 +76,11 @@ wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-vers
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the `.sha256sum` files are located.
 Choose the correct command from below based on the OS version.
+```shell
+#Ubuntu 24.04
+cd /tmp
+sha256sum -c flex_replace-flex-version-stable.ubuntu24.04_amd64.deb.sha256sum
+```
 ```shell
 #Ubuntu 22.04
 cd /tmp
@@ -83,6 +100,10 @@ flex_replace-flex-version-stable.ubuntu<version>_amd64.deb: ok
 
 Choose the correct command from below based on the OS version.
 
+```shell
+#Ubuntu 24.04
+apt install -y /tmp/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb
+```
 ```shell
 #Ubuntu 22.04
 apt install -y /tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb

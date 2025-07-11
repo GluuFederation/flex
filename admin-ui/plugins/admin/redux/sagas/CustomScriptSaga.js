@@ -5,18 +5,13 @@ import {
   editCustomScriptResponse,
   deleteCustomScriptResponse,
   setScriptTypes,
-  setIsScriptTypesLoading
+  setIsScriptTypesLoading,
 } from 'Plugins/admin/redux/features/customScriptSlice'
 import { SCRIPT } from '../audit/Resources'
-import {
-  CREATE,
-  UPDATE,
-  DELETION,
-  FETCH,
-} from '../../../../app/audit/UserActionType'
+import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
-import {updateToast} from 'Redux/features/toastSlice'
+import { updateToast } from 'Redux/features/toastSlice'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -28,9 +23,7 @@ import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CustomScriptsApi(
-    getClient(JansConfigApi, token, issuer),
-  )
+  const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
   return new ScriptApi(api)
 }
 
@@ -73,10 +66,7 @@ export function* addScript({ payload }) {
   try {
     addAdditionalData(audit, CREATE, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(
-      scriptApi.addCustomScript,
-      payload.action.action_data,
-    )
+    const data = yield call(scriptApi.addCustomScript, payload.action.action_data)
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(addCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
@@ -98,10 +88,7 @@ export function* editScript({ payload }) {
   try {
     addAdditionalData(audit, UPDATE, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(
-      scriptApi.editCustomScript,
-      payload.action.action_data,
-    )
+    const data = yield call(scriptApi.editCustomScript, payload.action.action_data)
     yield put(editCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield put(updateToast(true, 'success'))
@@ -127,7 +114,9 @@ export function* deleteScript({ payload }) {
     const data = yield call(scriptApi.deleteCustomScript, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield put(deleteCustomScriptResponse({ inum: payload.action.action_data }))
-    yield* triggerWebhook({ payload: { createdFeatureValue: { inum: payload.action.action_data } } })
+    yield* triggerWebhook({
+      payload: { createdFeatureValue: { inum: payload.action.action_data } },
+    })
     yield call(postUserAction, audit)
     return data
   } catch (e) {
@@ -146,15 +135,17 @@ export function* getScriptTypes() {
   try {
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.getCustomScriptTypes)
-    
+
     const types = data.map((type) => {
-      if(type?.includes('_')) {
+      if (type?.includes('_')) {
         const splitFormat = type?.split('_')
-        const formattedTypes = splitFormat?.map((formattedType) => formattedType?.charAt(0)?.toUpperCase() + formattedType?.slice(1))
-        return { value: type, name: formattedTypes?.join(' ') };
+        const formattedTypes = splitFormat?.map(
+          (formattedType) => formattedType?.charAt(0)?.toUpperCase() + formattedType?.slice(1),
+        )
+        return { value: type, name: formattedTypes?.join(' ') }
       }
-    
-      return { value: type, name: type?.charAt(0)?.toUpperCase() + type?.slice(1) };
+
+      return { value: type, name: type?.charAt(0)?.toUpperCase() + type?.slice(1) }
     })
     yield put(setScriptTypes(types || []))
   } catch (e) {
@@ -196,6 +187,6 @@ export default function* rootSaga() {
     fork(watchEditScript),
     fork(watchDeleteScript),
     fork(watchScriptsByType),
-    fork(watchGetScriptTypes)
+    fork(watchGetScriptTypes),
   ])
 }

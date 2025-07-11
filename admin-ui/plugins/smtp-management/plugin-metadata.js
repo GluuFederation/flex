@@ -19,7 +19,7 @@ const pluginMetadata = {
       component: SmtpEditPage,
       path: PLUGIN_BASE_PATH + '/smtpmanagement',
       permission: SMTP_WRITE,
-    }
+    },
   ],
   reducers: [{ name: 'stmpReducer', reducer: smtpReducer }],
   sagas: [smtpSaga()],

@@ -56,5 +56,7 @@ additionalAnnotations: {}
 customScripts: []
 # -- Add custom job's command. If passed, it will override the default conditional command.
 customCommand: []
+# -- Add nodeSelector (see https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)
+nodeSelector: {}
 # -- Add tolerations for the pods
 tolerations: []

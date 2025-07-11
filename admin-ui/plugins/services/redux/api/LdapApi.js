@@ -17,7 +17,7 @@ export default class LdapApi {
   // update Ldap Config
   updateLdapConfig = (input) => {
     let options = {
-      gluuLdapConfiguration:input
+      gluuLdapConfiguration: input,
     }
     return new Promise((resolve, reject) => {
       this.api.putConfigDatabaseLdap(options, (error, data) => {
@@ -29,7 +29,7 @@ export default class LdapApi {
   // Add Ldap Config
   addLdapConfig = (input) => {
     let options = {
-      gluuLdapConfiguration:input.ldap
+      gluuLdapConfiguration: input.ldap,
     }
     return new Promise((resolve, reject) => {
       this.api.postConfigDatabaseLdap(options, (error, data) => {

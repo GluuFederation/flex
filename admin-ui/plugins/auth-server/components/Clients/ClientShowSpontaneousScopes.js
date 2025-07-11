@@ -7,13 +7,9 @@ import { ThemeContext } from 'Context/theme/themeContext'
 
 function ClientShowSpontaneousScopes({ handler, isOpen }) {
   const { t } = useTranslation()
-  const scopesByCreator = useSelector(
-    (state) => state.scopeReducer.scopesByCreator,
-  )
+  const scopesByCreator = useSelector((state) => state.scopeReducer.scopesByCreator)
 
-  const printableScopes = scopesByCreator.filter(
-    (item) => item.scopeType == 'spontaneous',
-  )
+  const printableScopes = scopesByCreator.filter((item) => item.scopeType == 'spontaneous')
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 

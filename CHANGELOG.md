@@ -1,5 +1,45 @@
 # Changelog
 
+## [5.8.0](https://github.com/GluuFederation/flex/compare/v5.7.0...v5.8.0) (2025-06-30)
+
+
+### Features
+
+* add cronjob schedule override ([#2112](https://github.com/GluuFederation/flex/issues/2112)) ([75c90b9](https://github.com/GluuFederation/flex/commit/75c90b9ad70dda26d94d366f22b99ade8730a687))
+* admin ui web OIDC client should be set to generate the access_token in JWT format by default ([#2142](https://github.com/GluuFederation/flex/issues/2142)) ([78ccc50](https://github.com/GluuFederation/flex/commit/78ccc503045dd5cfb19c7e50673e46600f237c43))
+* **admin-ui:** Add support for typescript ([#2103](https://github.com/GluuFederation/flex/issues/2103)) ([feb12f8](https://github.com/GluuFederation/flex/commit/feb12f8c5d17191ccc737b1a34fc8df0315c261b))
+* **admin-ui:** Downloaded SSA should be in a jwt file ([#2080](https://github.com/GluuFederation/flex/issues/2080)) ([e849a8a](https://github.com/GluuFederation/flex/commit/e849a8ab1b6899fcb0f57e76e970065e5a6f5837))
+* **admin-ui:** Downloaded SSA should be in a jwt file [#2079](https://github.com/GluuFederation/flex/issues/2079) ([e849a8a](https://github.com/GluuFederation/flex/commit/e849a8ab1b6899fcb0f57e76e970065e5a6f5837))
+* **admin-ui:** enforce consistent code formatting with Prettier and Husky ([#2101](https://github.com/GluuFederation/flex/issues/2101)) ([86bd415](https://github.com/GluuFederation/flex/commit/86bd415e724b1ccb2f446448ea8ef2c6f81a94d9))
+* **admin-ui:** hide optional components from sidebar if not installed ([#2091](https://github.com/GluuFederation/flex/issues/2091)) ([94c1cf7](https://github.com/GluuFederation/flex/commit/94c1cf777e7c39c5731166b80da3e6cd29670a5b)), closes [#2087](https://github.com/GluuFederation/flex/issues/2087)
+* **admin-ui:** rename schema and update user-claims visuals ([#2075](https://github.com/GluuFederation/flex/issues/2075)) ([b4be1ee](https://github.com/GluuFederation/flex/commit/b4be1ee5ac76b6a3868ec874b9de77a64f0d9331))
+* **admin-ui:** reordering Admin-UI's left menu ([#2085](https://github.com/GluuFederation/flex/issues/2085)) ([21ee51d](https://github.com/GluuFederation/flex/commit/21ee51df42f388441d3506ef2c7038fa6dfc3493))
+* **admin-ui:** show persistence details on Admin UI ([#2099](https://github.com/GluuFederation/flex/issues/2099)) ([#2110](https://github.com/GluuFederation/flex/issues/2110)) ([4633f77](https://github.com/GluuFederation/flex/commit/4633f7700da3ec1bb847fdb538729a47fe374b9e))
+* **charts:** add nodeSelector spec ([#2097](https://github.com/GluuFederation/flex/issues/2097)) ([e950b66](https://github.com/GluuFederation/flex/commit/e950b6617142a98bfe52cd577c50d8a60063c754))
+
+
+### Bug Fixes
+
+* **admin-ui:** white screen on AuthN page load [#2093](https://github.com/GluuFederation/flex/issues/2093) ([52539f9](https://github.com/GluuFederation/flex/commit/52539f990b233ea6c890a9e82594b7666dd04d62))
+* **admin-ui:** White screen on AuthN page load [#2093](https://github.com/GluuFederation/flex/issues/2093) ([#2094](https://github.com/GluuFederation/flex/issues/2094)) ([52539f9](https://github.com/GluuFederation/flex/commit/52539f990b233ea6c890a9e82594b7666dd04d62))
+* **docs:** Fix broken Let's Encrypt documentation links for RHEL and SUSE ([#2076](https://github.com/GluuFederation/flex/issues/2076)) ([06dde5f](https://github.com/GluuFederation/flex/commit/06dde5fc3484f49ca071db70ab1050c9378f2747))
+* **flex-linux-setup:** update admin-ui ([#2098](https://github.com/GluuFederation/flex/issues/2098)) ([56b0c8a](https://github.com/GluuFederation/flex/commit/56b0c8abf5bb981aa534a8aabb04e2d2d013a897))
+* **flex-linux-setyp:** update admin-ui ([56b0c8a](https://github.com/GluuFederation/flex/commit/56b0c8abf5bb981aa534a8aabb04e2d2d013a897))
+* update Husky prepare script for proper git repository detection ([#2105](https://github.com/GluuFederation/flex/issues/2105)) ([ec9488d](https://github.com/GluuFederation/flex/commit/ec9488d2ff477850943ad41984a4fe5016461e7c))
+
+## [5.7.0](https://github.com/GluuFederation/flex/compare/v5.6.0...v5.7.0) (2025-05-21)
+
+
+### Features
+
+* **admin-ui:** add download/view feature in SSA page of Admin UI ([#2068](https://github.com/GluuFederation/flex/issues/2068)) ([ea231b0](https://github.com/GluuFederation/flex/commit/ea231b0a1b7b5c00676c2b2898c8bdbca0464d1b))
+* **admin-ui:** add download/view feature in SSA page of Admin UI [#2063](https://github.com/GluuFederation/flex/issues/2063) ([ea231b0](https://github.com/GluuFederation/flex/commit/ea231b0a1b7b5c00676c2b2898c8bdbca0464d1b))
+
+
+### Bug Fixes
+
+* **charts:** invalid template function calls when using AWS secrets manager ([#2072](https://github.com/GluuFederation/flex/issues/2072)) ([652fa2e](https://github.com/GluuFederation/flex/commit/652fa2e12c1c97de375a494960e52a342fd02518))
+
 ## [5.6.0](https://github.com/GluuFederation/flex/compare/v5.5.0...v5.6.0) (2025-05-13)
 
 

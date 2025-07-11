@@ -1,12 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Badge,
-  FormGroup,
-  Card,
-  Col,
-  CardBody,
-  CustomInput,
-} from 'Components'
+import { Badge, FormGroup, Card, Col, CardBody, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { CACHE } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
@@ -86,5 +79,5 @@ function CacheMemcached({ config, formik }) {
 export default CacheMemcached
 CacheMemcached.propTypes = {
   formik: PropTypes.object,
-  config: PropTypes.any
+  config: PropTypes.any,
 }

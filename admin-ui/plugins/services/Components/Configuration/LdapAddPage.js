@@ -40,13 +40,9 @@ function LdapAddPage() {
   return (
     <React.Fragment>
       <Container>
-        <Card className='mb-3'>
+        <Card className="mb-3">
           <CardBody>
-            <LdapForm
-              item={defautConfigurations}
-              handleSubmit={handleSubmit}
-              createLdap={true}
-            />
+            <LdapForm item={defautConfigurations} handleSubmit={handleSubmit} createLdap={true} />
           </CardBody>
         </Card>
       </Container>

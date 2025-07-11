@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   couchbase: [],
-  loading: false
+  loading: false,
 }
 
 const couchbaseSlice = createSlice({
@@ -29,8 +29,8 @@ const couchbaseSlice = createSlice({
     editCouchBaseResponse: (state, action) => {
       state.couchbase = action.payload?.data || {}
       state.loading = false
-    }
-  }
+    },
+  },
 })
 
 export const {
@@ -39,6 +39,6 @@ export const {
   addCouchBase,
   addCouchBaseResponse,
   editCouchBase,
-  editCouchBaseResponse
+  editCouchBaseResponse,
 } = couchbaseSlice.actions
 export const { actions, reducer } = couchbaseSlice

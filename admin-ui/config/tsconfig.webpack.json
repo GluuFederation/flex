@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "es2021",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "lib": ["es2021"],
+    "skipLibCheck": true
+  },
+  "include": ["webpack.*.ts", "types/**/*"],
+  "exclude": []
+}

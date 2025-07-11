@@ -42,6 +42,7 @@
     "adminui": "Administratrice",
     "assets": "Assets",
     "config-api": "Config-API",
+    "security": "Sécurité",
     "webhooks": "Webhooks",
     "add_source": "Ajouter une source",
     "edit_source": "Modifier la source",
@@ -53,12 +54,12 @@
     "acrs": "ACRs",
     "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
+    "api_config": "Configurer les propriétés de l'API",
     "builtIn": "Intégré",
-    "api": {
-      "roles": "Rôles d'accès",
-      "permissions": "Autorisations",
-      "mapping": "Mapping",
-      "api_config": "Configurer les propriétés de l'API"
+    "securityDropdown": {
+      "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
+      "capabilities": "Capacités",
+      "mapping": "Mapping"
     },
     "lock": "Verrouillage",
     "cache": "Cacher",
@@ -92,6 +93,7 @@
     "reports": "Rapports",
     "roles": "Les rôles",
     "schema": "Schéma",
+    "user_claims": "Réclamations des utilisateurs",
     "scopes": "Portées",
     "scripts": "Scénarios",
     "services": "Prestations de service",
@@ -212,6 +214,12 @@
     "metadata_url": "URL des métadonnées",
     "driver_class_name": "Nom de la classe du pilote",
     "db_schema_name": "Nom du schéma de la base de données",
+    "database_name": "Nom de la base de données",
+    "schema_name": "Nom du schéma",
+    "product_name": "Nom du produit",
+    "product_version": "Version du produit",
+    "driver_name": "Nom du pilote",
+    "driver_version": "Version du pilote",
     "connection_uri": "URI de connexion",
     "delete_script": "Supprimer le script",
     "auth_user_name": "Nom d'utilisateur d'authentification",
@@ -261,6 +269,7 @@
     "application_name": "Nom de l'application",
     "trustedIdpDn": "DN de l'IDP de confiance",
     "default_permission_in_token": "Permission par défaut dans le jeton",
+    "essentialUIPermission": "L'autorisation de l'interface utilisateur d'administration est-elle essentielle ?",
     "http_request_body": "Corps de la requête HTTP",
     "webhook_name": "Nom du Webhook",
     "webhook_url": "URL",
@@ -706,7 +715,14 @@
     "view_attribute": "Afficher l'attribut",
     "client_credentials_access_token_count": "Nombre de jetons d'accès aux informations d'identification du client",
     "authz_code_access_token_count": "Code d'accès Authz token count",
-    "authz_code_idtoken_count": "Code d'autorisation - nombre d'idtoken"
+    "authz_code_idtoken_count": "Code d'autorisation - nombre d'idtoken",
+    "database_name": "Nom du catalogue actuel de l'objet",
+    "schema_name": "Nom du schéma actuel de l'objet",
+    "product_name": "Nom de ce produit de base de données",
+    "product_version": "Numéro de version de ce produit de base de données",
+    "driver_name": "Nom de ce pilote JDBC",
+    "driver_version": "Numéro de version de ce pilote JDBC",
+    "followingPermissionRequiredToBeAdded": "Nous devons ajouter les autorisations essentielles suivantes au rôle pour garantir que les utilisateurs disposant de ce rôle peuvent accéder à l'interface utilisateur d'administration."
   },
   "placeholders": {
     "id": "Enter id",
@@ -767,6 +783,8 @@
     "all_custom_scripts": "Tous les scripts personnalisés",
     "jans_lock": "Verrou Jans",
     "config_api_configuration": "Configuration de l'API de configuration",
+    "database_information": "Informations sur la base de données",
+    "loading_database_information": "Chargement des informations de la base de données...",
     "jans_json_property": "Propriétés",
     "all_oidc_clients": "Tous les clients OIDC",
     "jans_kc_link": "Lien KC Jans",
@@ -814,7 +832,11 @@
     "jans_ink": "Jans Link",
     "change_backend_bind_password": "Modifier le mot de passe de liaison du backend",
     "add_agama_project": "Ajouter un projet Agama",
-    "export_csv": "Exporter CSV"
+    "export_csv": "Exporter CSV",
+    "no_Cedar": "Vous n'avez aucun composant autorisé à afficher",
+    "newPermission": "Nouvelle Permission",
+    "addingNewApiPermission": "Ajout d'une nouvelle autorisation API",
+    "followingPermissionRequiredToBeAdded": "Une autorisation est requise pour être ajouté!"
   },
   "links": {
     "support": "https://support.gluu.org/"

@@ -160,10 +160,7 @@ export const scopes = [
     id: 'phone',
     description: 'View your phone number.',
     scopeType: 'openid',
-    claims: [
-      'inum=B17A,ou=attributes,o=jans',
-      'inum=0C18,ou=attributes,o=jans',
-    ],
+    claims: ['inum=B17A,ou=attributes,o=jans', 'inum=0C18,ou=attributes,o=jans'],
     defaultScope: false,
     attributes: { showInConfigurationEndpoint: true },
     umaType: false,
@@ -261,8 +258,7 @@ export const scopes = [
     inum: '7D90',
     displayName: 'revoke_session',
     id: 'revoke_session',
-    description:
-      'revoke_session scope which is required to be able call /revoke_session endpoint',
+    description: 'revoke_session scope which is required to be able call /revoke_session endpoint',
     scopeType: 'openid',
     defaultScope: false,
     attributes: { showInConfigurationEndpoint: true },
@@ -271,8 +267,7 @@ export const scopes = [
   {
     dn: 'inum=CACA-0690,ou=scopes,o=jans',
     inum: 'CACA-0690',
-    displayName:
-      'https://jans.io/oauth/config/openid/sectoridentifiers.readonly',
+    displayName: 'https://jans.io/oauth/config/openid/sectoridentifiers.readonly',
     id: 'https://jans.io/oauth/config/openid/sectoridentifiers.readonly',
     description: 'View sector related information',
     scopeType: 'oauth',
@@ -297,10 +292,7 @@ export const scopes = [
     id: 'email',
     description: 'View your email address.',
     scopeType: 'openid',
-    claims: [
-      'inum=8F88,ou=attributes,o=jans',
-      'inum=CAE3,ou=attributes,o=jans',
-    ],
+    claims: ['inum=8F88,ou=attributes,o=jans', 'inum=CAE3,ou=attributes,o=jans'],
     defaultScope: false,
     attributes: { showInConfigurationEndpoint: true },
     umaType: false,
@@ -320,10 +312,7 @@ export const scopes = [
     id: 'clientinfo',
     description: 'View the client info.',
     scopeType: 'openid',
-    claims: [
-      'inum=2B29,ou=attributes,o=jans',
-      'inum=29DA,ou=attributes,o=jans',
-    ],
+    claims: ['inum=2B29,ou=attributes,o=jans', 'inum=29DA,ou=attributes,o=jans'],
     defaultScope: false,
     attributes: { showInConfigurationEndpoint: true },
     umaType: false,
@@ -351,8 +340,7 @@ export const scopes = [
   {
     dn: 'inum=CACA-34F1,ou=scopes,o=jans',
     inum: 'CACA-34F1',
-    displayName:
-      'https://jans.io/oauth/jans-auth-server/config/properties.readonly',
+    displayName: 'https://jans.io/oauth/jans-auth-server/config/properties.readonly',
     id: 'https://jans.io/oauth/jans-auth-server/config/properties.readonly',
     description: 'View Auth Server properties related information',
     scopeType: 'oauth',
@@ -548,8 +536,7 @@ export const scopes = [
     dn: 'inum=C4F6,ou=scopes,o=jans',
     inum: 'C4F6',
     id: 'offline_access',
-    description:
-      'This scope value requests that an OAuth 2.0 Refresh Token be issued.',
+    description: 'This scope value requests that an OAuth 2.0 Refresh Token be issued.',
     scopeType: 'openid',
     defaultScope: true,
     attributes: { showInConfigurationEndpoint: true },
@@ -558,8 +545,7 @@ export const scopes = [
   {
     dn: 'inum=CACA-889F,ou=scopes,o=jans',
     inum: 'CACA-889F',
-    displayName:
-      'https://jans.io/oauth/jans-auth-server/config/properties.write',
+    displayName: 'https://jans.io/oauth/jans-auth-server/config/properties.write',
     id: 'https://jans.io/oauth/jans-auth-server/config/properties.write',
     description: 'Manage Auth Server properties related information',
     scopeType: 'oauth',
@@ -580,4 +566,4 @@ export const scopes = [
   },
 ]
 
-export default scopes;
+export default scopes

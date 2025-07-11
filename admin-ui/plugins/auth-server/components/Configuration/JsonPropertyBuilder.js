@@ -3,15 +3,14 @@ import { Accordion, FormGroup, Col, Button } from 'Components'
 import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
+import customColors from '@/customColors'
 
 export function generateLabel(name) {
   const result = name.replace(/([A-Z])/g, ' $1')
   return result.charAt(0).toUpperCase() + result.slice(1)
 }
 export function isObjectArray(item) {
-  return (
-    Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
-  )
+  return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
 }
 
 export function isObject(item) {
@@ -21,15 +20,7 @@ export function isObject(item) {
     return false
   }
 }
-function JsonPropertyBuilder({
-  propKey,
-  propValue,
-  lSize,
-  path,
-  handler,
-  parentIsArray,
-  schema
-}) {
+function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentIsArray, schema }) {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
   if (!path) {
@@ -59,14 +50,15 @@ function JsonPropertyBuilder({
 
   function isStringArray(item) {
     return (
-      (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') || (schema?.type === 'array' && schema?.items?.type === 'string')
+      (Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string') ||
+      (schema?.type === 'array' && schema?.items?.type === 'string')
     )
   }
 
   function isEmptyArray(item) {
     return (
       (Array.isArray(item) && item.length === 0) ||
-      (schema?.type === "array" && schema?.items?.type === "string")
+      (schema?.type === 'array' && schema?.items?.type === 'string')
     )
   }
 
@@ -138,8 +130,12 @@ function JsonPropertyBuilder({
   if (isObjectArray(propValue)) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header className="text-primary">
-          {propKey.toUpperCase()}{' '}
+        <Accordion.Header
+          style={{
+            color: customColors.lightBlue,
+          }}
+        >
+          {propKey.toUpperCase()}
         </Accordion.Header>
         <Accordion.Body>
           {Object.keys(propValue)?.map((item, idx) => (
@@ -162,7 +158,11 @@ function JsonPropertyBuilder({
       <div>
         {show && (
           <Accordion className="mb-2 b-primary" initialOpen>
-            <Accordion.Header className="text-primary">
+            <Accordion.Header
+              style={{
+                color: customColors.lightBlue,
+              }}
+            >
               {propKey.toUpperCase().length > 10 ? propKey.toUpperCase() : ''}
             </Accordion.Header>
             <Accordion.Body>
@@ -171,9 +171,13 @@ function JsonPropertyBuilder({
                   <Col sm={11} md={11}></Col>
                   <Col sm={1} md={1}>
                     <Button
-                      color="danger"
+                      style={{
+                        backgroundColor: customColors.accentRed,
+                        color: customColors.white,
+                        float: 'right',
+                        border: 'none',
+                      }}
                       size="sm"
-                      style={{ float: 'right' }}
                       onClick={removeHandler}
                     >
                       <i className="fa fa-remove me-2"></i>
@@ -206,7 +210,7 @@ function JsonPropertyBuilder({
 }
 
 JsonPropertyBuilder.propTypes = {
-  schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string })
+  schema: PropTypes.shape({ items: PropTypes.any, type: PropTypes.string }),
 }
 
 export default JsonPropertyBuilder

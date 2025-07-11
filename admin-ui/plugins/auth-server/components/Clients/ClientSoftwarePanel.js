@@ -1,35 +1,28 @@
-import React from "react";
-import { Container } from "Components";
-import GluuInputRow from "Routes/Apps/Gluu/GluuInputRow";
-import GluuTypeAheadWithAdd from "Routes/Apps/Gluu/GluuTypeAheadWithAdd";
-import { useTranslation } from "react-i18next";
-import isEmpty from "lodash/isEmpty";
-import PropTypes from "prop-types";
-const DOC_CATEGORY = "openid_client";
+import React from 'react'
+import { Container } from 'Components'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
+import { useTranslation } from 'react-i18next'
+import isEmpty from 'lodash/isEmpty'
+import PropTypes from 'prop-types'
+const DOC_CATEGORY = 'openid_client'
 
-const EMPTY = "";
-const origin_uri_id = "origin_uri_id";
-const contact_uri_id = "contact_uri_id";
-const contacts = [];
-const authorizedOrigins = [];
+const EMPTY = ''
+const origin_uri_id = 'origin_uri_id'
+const contact_uri_id = 'contact_uri_id'
+const contacts = []
+const authorizedOrigins = []
 
 function uriValidator(uri) {
-  return uri;
+  return uri
 }
 
 function emailValidator(email) {
-  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-    email
-  );
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)
 }
 
-function ClientSoftwarePanel({
-  formik,
-  viewOnly,
-  modifiedFields,
-  setModifiedFields,
-}) {
-  const { t } = useTranslation();
+function ClientSoftwarePanel({ formik, viewOnly, modifiedFields, setModifiedFields }) {
+  const { t } = useTranslation()
 
   return (
     <Container>
@@ -37,32 +30,28 @@ function ClientSoftwarePanel({
         label="fields.clientUri"
         name="clientUri"
         formik={formik}
-        value={
-          isEmpty(formik.values.clientUri) ? EMPTY : formik.values.clientUri
-        }
+        value={isEmpty(formik.values.clientUri) ? EMPTY : formik.values.clientUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Client Uri": e.target.value,
-          });
+            'Client Uri': e.target.value,
+          })
         }}
       />
       <GluuInputRow
         label="fields.policy_uri"
         name="policyUri"
         formik={formik}
-        value={
-          isEmpty(formik.values.policyUri) ? EMPTY : formik.values.policyUri
-        }
+        value={isEmpty(formik.values.policyUri) ? EMPTY : formik.values.policyUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-           "Policy Uri": e.target.value,
-          });
+            'Policy Uri': e.target.value,
+          })
         }}
       />
       <GluuInputRow
@@ -75,8 +64,8 @@ function ClientSoftwarePanel({
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-          "logo Uri": e.target.value,
-          });
+            'logo Uri': e.target.value,
+          })
         }}
       />
       <GluuInputRow
@@ -89,9 +78,9 @@ function ClientSoftwarePanel({
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Tos Uri": e.target.value,
-          });
-         }}
+            'Tos Uri': e.target.value,
+          })
+        }}
       />
       <GluuTypeAheadWithAdd
         name="contacts"
@@ -109,15 +98,15 @@ function ClientSoftwarePanel({
         handler={(name, items) => {
           setModifiedFields({
             ...modifiedFields,
-            "Contacts": items,
-          });
+            Contacts: items,
+          })
         }}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="authorizedOrigins"
         label="fields.authorizedOrigins"
         formik={formik}
-        placeholder={t("Enter a valid origin uri eg") + " https://..."}
+        placeholder={t('Enter a valid origin uri eg') + ' https://...'}
         value={formik.values.authorizedOrigins || []}
         options={authorizedOrigins}
         validator={uriValidator}
@@ -129,8 +118,8 @@ function ClientSoftwarePanel({
         handler={(name, items) => {
           setModifiedFields({
             ...modifiedFields,
-            "Authorized Origins": items,
-          });
+            'Authorized Origins': items,
+          })
         }}
       ></GluuTypeAheadWithAdd>
 
@@ -144,8 +133,8 @@ function ClientSoftwarePanel({
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Software Id": e.target.value,
-          });
+            'Software Id': e.target.value,
+          })
         }}
       />
 
@@ -159,8 +148,8 @@ function ClientSoftwarePanel({
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Software Version": e.target.value,
-          });
+            'Software Version': e.target.value,
+          })
         }}
       />
 
@@ -174,12 +163,12 @@ function ClientSoftwarePanel({
         handleChange={(e) => {
           setModifiedFields({
             ...modifiedFields,
-            "Software Statement": e.target.value,
-          });
+            'Software Statement': e.target.value,
+          })
         }}
       />
     </Container>
-  );
+  )
 }
 
 ClientSoftwarePanel.propTypes = {
@@ -188,4 +177,4 @@ ClientSoftwarePanel.propTypes = {
   modifiedFields: PropTypes.object,
   setModifiedFields: PropTypes.func,
 }
-export default ClientSoftwarePanel;
+export default ClientSoftwarePanel

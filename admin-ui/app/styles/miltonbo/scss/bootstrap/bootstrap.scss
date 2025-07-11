@@ -37,7 +37,6 @@
 @import "~bootstrap/scss/carousel";
 @import "~bootstrap/scss/utilities";
 
-
 /* Modifications */
 // Recovered Button Nowrap
 body .btn {
@@ -59,8 +58,8 @@ body .btn {
 
 .input-group-append,
 .input-group-prepend {
-    .form-check-input[type=radio],
-    .form-check-input[type=checkbox] {
+    .form-check-input[type="radio"],
+    .form-check-input[type="checkbox"] {
         margin: 0;
         position: static;
     }
@@ -76,19 +75,19 @@ body {
 
 .custom-select {
     -webkit-appearance: none;
-       -moz-appearance: none;
-            appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .custom-range {
     -webkit-appearance: none;
-       -moz-appearance: none;
-            appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
-           -moz-appearance: none;
-                appearance: none;
+        -moz-appearance: none;
+        appearance: none;
     }
 }
 
@@ -188,7 +187,7 @@ body {
     padding-bottom: 0px;
 }
 
-// MODALS: "Interface/MODALS (ALERTS)" section: 4 
+// MODALS: "Interface/MODALS (ALERTS)" section: 4
 // ---------------------------------------------
 // Modal ALERT DANGER
 .modal-danger .modal-text {
@@ -205,13 +204,13 @@ body {
 }
 .modal-danger .modal-body,
 .modal-danger .modal-header {
-    background-color: lighten($danger,40%) !important;
+    background-color: lighten($danger, 40%) !important;
 }
 .modal-danger .modal-content {
-    border-color: lighten($danger,35%) !important;
+    border-color: lighten($danger, 35%) !important;
 }
 .modal-danger .modal-footer {
-    background-color: lighten($danger,40%) !important;
+    background-color: lighten($danger, 40%) !important;
 }
 // Modal ALERT PRIMARY
 .modal-primary .modal-text {
@@ -228,13 +227,13 @@ body {
 }
 .modal-primary .modal-body,
 .modal-primary .modal-header {
-    background-color: lighten($primary,40%) !important;
+    background-color: lighten($primary, 40%) !important;
 }
 .modal-primary .modal-content {
-    border-color: lighten($primary,35%) !important;
+    border-color: lighten($primary, 35%) !important;
 }
 .modal-primary .modal-footer {
-    background-color: lighten($primary,40%) !important;
+    background-color: lighten($primary, 40%) !important;
 }
 // Modal ALERT SUCCESS
 .modal-success .modal-text {
@@ -251,13 +250,13 @@ body {
 }
 .modal-success .modal-body,
 .modal-success .modal-header {
-    background-color: lighten($success,46%) !important;
+    background-color: lighten($success, 46%) !important;
 }
 .modal-success .modal-content {
-    border-color: lighten($success,35%) !important;
+    border-color: lighten($success, 35%) !important;
 }
 .modal-success .modal-footer {
-    background-color: lighten($success,46%) !important;
+    background-color: lighten($success, 46%) !important;
 }
 // Modal ALERT INFO
 .modal-info .modal-text {
@@ -274,13 +273,13 @@ body {
 }
 .modal-info .modal-body,
 .modal-info .modal-header {
-    background-color: lighten($info,47%) !important;
+    background-color: lighten($info, 47%) !important;
 }
 .modal-info .modal-content {
-    border-color: lighten($info,35%) !important;
+    border-color: lighten($info, 35%) !important;
 }
 .modal-info .modal-footer {
-    background-color: lighten($info,47%) !important;
+    background-color: lighten($info, 47%) !important;
 }
 // Modal ALERT WARNING
 .modal-warning .modal-text {
@@ -297,13 +296,13 @@ body {
 }
 .modal-warning .modal-body,
 .modal-warning .modal-header {
-    background-color: lighten($warning,40%) !important;
+    background-color: lighten($warning, 40%) !important;
 }
 .modal-warning .modal-content {
-    border-color: lighten($warning,35%) !important;
+    border-color: lighten($warning, 35%) !important;
 }
 .modal-warning .modal-footer {
-    background-color: lighten($warning,40%) !important;
+    background-color: lighten($warning, 40%) !important;
 }
 // Modal ALERT DARK
 .modal-dark .modal-text {
@@ -329,7 +328,7 @@ body {
     background-color: $white !important;
 }
 
-// MODALS: "Interface/MODALS (OUTLINES)" section: 3 
+// MODALS: "Interface/MODALS (OUTLINES)" section: 3
 // ---------------------------------------------
 // Modal ALERT PRIMARY
 .modal-outline-primary .modal-content {
@@ -550,11 +549,13 @@ body {
     th {
         border-bottom-color: none !important;
     }
-    td,th {
+    td,
+    th {
         border-top-color: none !important;
     }
     &.table-bordered {
-        th,td {
+        th,
+        td {
             border-color: none !important;
         }
     }
@@ -605,11 +606,11 @@ th {
 }
 // Override code
 code {
-    background-color: #EFF2F7 !important;
+    background-color: #eff2f7 !important;
 }
 // Override .btn-link (removed underline)
 .btn-link:hover {
-    text-decoration: none !important; 
+    text-decoration: none !important;
 }
 
 // Override .btn-outline-secondary
@@ -641,7 +642,7 @@ code {
     @each $breakpoint in map-keys($grid-breakpoints) {
         $next: breakpoint-next($breakpoint, $grid-breakpoints);
         $infix: breakpoint-infix($next, $grid-breakpoints);
-    
+
         &.navbar-expand#{$infix} {
             @include media-breakpoint-down($breakpoint) {
                 .dropdown-menu {
@@ -657,7 +658,7 @@ dt {
     font-weight: normal !important;
 }
 
-// New style for .nav: "nav-item-line" 
+// New style for .nav: "nav-item-line"
 .nav-tabs .nav-item-line {
     margin-bottom: -3px !important;
 }
@@ -679,7 +680,7 @@ dt {
     border-bottom: none !important;
 }
 .nav-item-line .nav-link.active:hover {
-    box-shadow: inset -1px -12px 0px -8px darken($primary, 13% ) !important;
+    box-shadow: inset -1px -12px 0px -8px darken($primary, 13%) !important;
     border-top: none !important;
     border-right: none !important;
     border-left: none !important;
@@ -690,7 +691,7 @@ dt {
 }
 
 // Overwritten LINKS in NAVBARS Bootstrap
-.navbar .navbar-tabs  {
+.navbar .navbar-tabs {
     margin-bottom: -1px !important;
 }
 .navbar-tabs .nav-link {
@@ -706,5 +707,5 @@ dt {
     box-shadow: inset -1px -11px 0px -8px $gray-400 !important;
 }
 .navbar-tabs .nav-link.active:hover {
-    box-shadow: inset -1px -11px 0px -8px darken($primary, 13% ) !important;
+    box-shadow: inset -1px -11px 0px -8px darken($primary, 13%) !important;
 }

@@ -1,16 +1,9 @@
 import React from 'react'
-import {
-  Col,
-  FormGroup,
-  Input,
-  Card,
-  CardBody,
-  Accordion,
-} from 'Components'
+import { Col, FormGroup, Input, Card, CardBody, Accordion } from 'Components'
 import moment from 'moment'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import customColors from '@/customColors'
 function JwkItem({ item, index }) {
-
   return (
     <div>
       <FormGroup row />
@@ -23,7 +16,7 @@ function JwkItem({ item, index }) {
           <Card
             style={{
               marginBottom: '5px',
-              backgroundColor: index % 2 === 0 ? 'white' : '#f7f7f7',
+              backgroundColor: index % 2 === 0 ? customColors.white : customColors.whiteSmoke,
             }}
           >
             <CardBody>
@@ -58,7 +51,7 @@ function JwkItem({ item, index }) {
                     data-testid="exp"
                     name="exp"
                     disabled={true}
-                    defaultValue={moment(item.exp).format("YYYY-MMM-DD")}
+                    defaultValue={moment(item.exp).format('YYYY-MMM-DD')}
                   />
                 </Col>
                 <GluuLabel label="use" size={1} />
