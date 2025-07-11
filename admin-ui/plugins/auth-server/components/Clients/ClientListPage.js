@@ -237,10 +237,19 @@ function ClientListPage() {
       options[PATTERN] = memoPattern
     }
   }
+  const removeClientFromList = (deletedClient) => {
+    if (haveScopeINUMParam) {
+      setScopeClients((prev) => prev.filter((client) => client.inum !== deletedClient.inum))
+    }
+  }
+
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item)
     dispatch(deleteClient({ action: userAction }))
-    navigate('/auth-server/clients')
+    removeClientFromList(item)
+    if (!haveScopeINUMParam) {
+      navigate('/auth-server/clients')
+    }
     toggle()
   }
 
