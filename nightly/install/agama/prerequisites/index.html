@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#agama-lab" class="md-skip">
+        <a href="#prerequisites" class="md-skip">
           Skip to content
         </a>
       
@@ -435,9 +435,67 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Prerequisites
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         Prerequisites
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#agama-lab" class="md-nav__link">
+    Agama Lab
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-statement-assertions" class="md-nav__link">
+    Software Statement Assertions
+  </a>
+  
+    <nav class="md-nav" aria-label="Software Statement Assertions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obtaining-an-ssa" class="md-nav__link">
+    Obtaining an SSA
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    License
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1754,6 +1812,48 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#agama-lab" class="md-nav__link">
+    Agama Lab
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#software-statement-assertions" class="md-nav__link">
+    Software Statement Assertions
+  </a>
+  
+    <nav class="md-nav" aria-label="Software Statement Assertions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obtaining-an-ssa" class="md-nav__link">
+    Obtaining an SSA
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    License
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1789,7 +1889,8 @@
   </a>
 
 
-<h1 id="agama-lab">Agama Lab<a class="headerlink" href="#agama-lab" title="Permanent link">#</a></h1>
+<h1 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h1>
+<h2 id="agama-lab">Agama Lab<a class="headerlink" href="#agama-lab" title="Permanent link">#</a></h2>
 <p><a href="https://gluu.org/agama-lab/">Agama Lab</a> is a platform to manage your Gluu license. This is where you may subscribe to Gluu Flex or obtain credentials for your enterprise license.</p>
 <ul>
 <li>To begin, please visit <a href="https://cloud.gluu.org/agama-lab">Agama Lab</a></li>
@@ -1799,9 +1900,9 @@
 </li>
 <li>Once you have logged in, please navigate to <code>Market</code> &gt; <code>Flex</code></li>
 </ul>
-<h1 id="software-statement-assertions">Software Statement Assertions<a class="headerlink" href="#software-statement-assertions" title="Permanent link">#</a></h1>
+<h2 id="software-statement-assertions">Software Statement Assertions<a class="headerlink" href="#software-statement-assertions" title="Permanent link">#</a></h2>
 <p>In order to install Flex, you will need a Software Statement Assertion (SSA). An SSA is a signed JSON Web Token (JWT) that is required by the Flex install script to validate your license.</p>
-<h2 id="obtaining-an-ssa">Obtaining an SSA<a class="headerlink" href="#obtaining-an-ssa" title="Permanent link">#</a></h2>
+<h3 id="obtaining-an-ssa">Obtaining an SSA<a class="headerlink" href="#obtaining-an-ssa" title="Permanent link">#</a></h3>
 <p>Gluu issues SSAs through the Agama Lab web interface. You can obtain an SSA for use with Flex by following these steps:</p>
 <ul>
 <li>Login to Agama Lab</li>
@@ -1828,7 +1929,7 @@
 </li>
 <li>You may now use this file during Flex installation.</li>
 </ul>
-<h1 id="license">License<a class="headerlink" href="#license" title="Permanent link">#</a></h1>
+<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">#</a></h2>
 <p>Gluu Flex uses the SSA obtained in the above step to either request a 30 day trial license or verify presence of a license tied to your Agama Lab account. One account may request one trial license in its lifetime. To purchase a full license, please navigate to the <code>Flex</code> tab of the marketplace where you may purchase licenses for up to 1600 MAU (monthly active users). To purchase an enterprise license for more MAU, please contact <a href="mailto:sales@gluu.org">Sales</a>.</p>
 <p>If you have subscribed to Flex via Agama Lab, the SSA obtained in the step before will automatically link your license to your installation. For enterprise licenses, please open a support ticket so that we can issue a license against your account. Once this is done, you may use the SSA obtained to proceed to installation.</p>
 
@@ -1837,7 +1938,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-04-29T13:48:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-04-29</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-07-11T08:46:16+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-07-11</span>
       
         <br>
         Created:
@@ -1882,13 +1983,13 @@
       
       
         
-        <a href="../../helm-install/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview" rel="next">
+        <a href="../../helm-install/" class="md-footer__link md-footer__link--next" aria-label="Next: Helm Deployment" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Overview
+              Helm Deployment
             </div>
           </div>
           <div class="md-footer__button md-icon">

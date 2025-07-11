@@ -1916,7 +1916,7 @@ The requested page was not found on this server.
 <div class="highlight"><pre><span></span><code>Error Code: 503
 Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).
 </code></pre></div>
-<p>Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, <a href="https://docs.jans.io/nightly/contribute/implementation-design/jans-config-api/">Jans Config API</a>. This error prompts administrators to perform a series of troubleshooting steps.</p>
+<p>Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, <a href="https://docs.jans.io/vreplace-janssen-version/contribute/implementation-design/jans-config-api/">Jans Config API</a>. This error prompts administrators to perform a series of troubleshooting steps.</p>
 <ol>
 <li>Verify the status of the Jans Config API service by using the command <code>systemctl status jans-config-api.service</code>. In the majority of cases, this error is displayed when the Jans Config API is not running. </li>
 <li>It is essential to verify the server's network connectivity, including firewall rules, ports, and routing, to ensure that there are no network-related impediments preventing communication with the Jans Config API. Jans Config API runs at port <code>8074</code> for Janssen vm installation.</li>
@@ -1936,7 +1936,7 @@ Error in generating token to access Jans Config Api endpoints.
 </ol>
 <h3 id="why-is-the-gluu-flex-admin-ui-is-displaying-following-page-to-upload-ssa">Why is the Gluu Flex Admin UI is displaying following page to upload SSA?<a class="headerlink" href="#why-is-the-gluu-flex-admin-ui-is-displaying-following-page-to-upload-ssa" title="Permanent link">#</a></h3>
 <p><img alt="image" src="../../../assets/admin-ui/upload-ssa.png" /></p>
-<p>During installation, it is necessary to provide a Software Statement Assertion (SSA), which the Admin UI utilizes to register an OIDC client for accessing license APIs. To obtain a new SSA or renew an existing one, please follow the steps outlined in the provided <a href="../agama/prerequisites.md">guide</a> from the Agama Lab web interface. If the SSA used during the installation has expired or become invalidated, you will need to upload a fresh SSA to regain access to the Admin UI.</p>
+<p>During installation, it is necessary to provide a Software Statement Assertion (SSA), which the Admin UI utilizes to register an OIDC client for accessing license APIs. To obtain a new SSA or renew an existing one, please follow the steps outlined in the provided <a href="../../../install/agama/prerequisites/#software-statement-assertions">guide</a> from the Agama Lab web interface. If the SSA used during the installation has expired or become invalidated, you will need to upload a fresh SSA to regain access to the Admin UI.</p>
 <h3 id="why-is-the-gluu-flex-admin-ui-is-displaying-following-message-on-screen-to-generate-trial-license">Why is the Gluu Flex Admin UI is displaying following message on screen to generate trial license?<a class="headerlink" href="#why-is-the-gluu-flex-admin-ui-is-displaying-following-message-on-screen-to-generate-trial-license" title="Permanent link">#</a></h3>
 <p><img alt="image" src="../../../assets/admin-ui/license-error-payment-required.png" /></p>
 <div class="highlight"><pre><span></span><code>Payment Required.
@@ -1951,7 +1951,7 @@ Error in generating token to access Jans Config Api endpoints.
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-04-29T13:48:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-04-29</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-07-11T10:28:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-07-11</span>
       
         <br>
         Created:

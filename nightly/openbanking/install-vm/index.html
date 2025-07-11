@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#vm-based-distribution" class="md-skip">
+        <a href="#installing-and-configuring-gluu-open-banking-identity-platform-on-a-vm" class="md-skip">
           Skip to content
         </a>
       
@@ -1530,6 +1530,8 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           VM (only recommended for development/testing)
@@ -1545,6 +1547,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -1848,6 +1852,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1953,8 +1959,7 @@
   </a>
 
 
-  <h1>VM (only recommended for development/testing)</h1>
-
+<h1 id="installing-and-configuring-gluu-open-banking-identity-platform-on-a-vm">Installing and Configuring Gluu Open Banking Identity Platform on a VM<a class="headerlink" href="#installing-and-configuring-gluu-open-banking-identity-platform-on-a-vm" title="Permanent link">#</a></h1>
 <h2 id="vm-based-distribution">VM Based Distribution<a class="headerlink" href="#vm-based-distribution" title="Permanent link">#</a></h2>
 <p>This section covers details on installing Gluu Openbanking Indentity Platform 1.0 in a VM. We recommend the Cloud Native Distribution for production environment. However, for development and testing VM distribution will be easier.</p>
 <h2 id="vm-preparation">VM Preparation<a class="headerlink" href="#vm-preparation" title="Permanent link">#</a></h2>
@@ -2099,14 +2104,14 @@ openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -set_serial 101 -days 
 ./keytool -importkeystore -srckeystore /path/to/file/filename.jks -srcstoretype JKS -destkeystore /opt/jre/lib/security/cacerts -deststoretype JKS
 </code></pre></div>
 <h2 id="accessing-the-platform">Accessing the Platform<a class="headerlink" href="#accessing-the-platform" title="Permanent link">#</a></h2>
-<p>After successful installation, access the Gluu Open Banking Platform using either <a href="https://docs.gluu.org/nightly/openbanking/jans-cli/">jans-cli</a> or <a href="https://docs.gluu.org/nightly/openbanking/curl/">curl</a>.</p>
+<p>After successful installation, access the Gluu Open Banking Platform using either <a href="https://docs.gluu.org/vreplace-flex-version/openbanking/jans-cli/">jans-cli</a> or <a href="https://docs.gluu.org/vreplace-flex-version/openbanking/curl/">curl</a>.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-09-19T09:10:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-09-19</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-07-11T08:46:16+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-07-11</span>
       
         <br>
         Created:
