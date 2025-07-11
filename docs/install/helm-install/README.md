@@ -5,7 +5,7 @@ tags:
   - helm
 ---
 
-# Overview
+# Helm Deployment
 
 Gluu Flex enables organizations to build a scalable centralized authentication and authorization service using free open source software.
 
