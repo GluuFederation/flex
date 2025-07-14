@@ -17,7 +17,7 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
 # @TODO: remove python-ldap3 after ldap support removed
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update \
-    && apt-get install -y python3 tini curl ca-certificates dbus systemd iproute2 gpg python3-pip python3-dev libpq-dev gcc python3-psycopg2 libaugeas-dev \
+    && apt-get install -y python3 tini curl ca-certificates dbus systemd iproute2 gpg python3-pip python3-dev libpq-dev gcc python3-psycopg2 libaugeas-dev apache2 \
     # install certbot
     && pip install ruamel.yaml certbot certbot-apache \
     # Cleaning up package lists \
@@ -41,7 +41,7 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-ENV FLEX_SOURCE_VERSION=ec9488d2ff477850943ad41984a4fe5016461e7c
+ENV FLEX_SOURCE_VERSION=361fbe3889548245752756d3f484b7a20d215ba5
 
 # cleanup
 RUN rm -rf /tmp/jans
