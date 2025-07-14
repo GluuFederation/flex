@@ -6,10 +6,11 @@
       "clientSecret": "%(admin_ui_client_encoded_pw)s",
       "scopes": [
         "openid",
-        "profile",
-        "user_name",
+        "https://jans.io/auth/ssa.admin",
         "email",
-        "clientinfo"
+        "profile",
+        "offline_access",
+        "jans_stat"
       ],
       "acrValues": [
         "%(adminui_authentication_mode)s"
@@ -27,9 +28,7 @@
       "tokenEndpoint": "https://%(hostname)s/jans-auth/restv1/token",
       "scopes": [
         "openid",
-        "profile",
-        "user_name",
-        "email"
+        "https://jans.io/auth/ssa.admin"
       ]
     }
   },
