@@ -130,3 +130,35 @@ The Gluu Flex Admin UI provides a user-friendly interface for managing various U
 
 ![image](../../assets/admin-ui/settings.png)
 
+## Assets
+
+ The Jans Assets feature in the gluu Admin UI allows administrators to manage static or configuration-releted files.
+ This module is accessible from the left-hand navigation panel under the `Home` > `Assets` menu. Upon navigating to the Jans Assets page, the user is presented with a table view that displays the existing assets. 
+
+ ![image](../../assets/flex-asset-list.png)
+
+ The table includes columns such as `Name`, `Description`, `Creation Date`, `Enabled`, and `Actions`.  Above the table, a search bar labeled `Search pattern` is available to help users filter assets by keywords.  To the right of the search bar, a `+` icon allows users to add a new asset.
+
+### Create Jans Asset
+
+  Clicking on the `+` button opens the Add New Jans Asset form. In this view, users are prompted to upload a file by dragging and dropping it into the designated area or by clicking to select a file manually.
+
+ ![image](../../assets/flex-create-asset.png)
+
+
+ The form also includes an `Asset Name` field, which is mandatory and serves as the identifier for the uploaded asset. An optional `Description` field is available for additional context.
+
+ Another required field is `Related Services`, where users can specify which services the asset relates to. Users can select options from a dropdown that appears as they type. Lastly, there is a toggle switch labeled `Enabled`, which allows the user to activate or deactivate the asset at the time of creation. 
+ 
+
+### Edit Jans Asset
+
+ Once an asset has been added, it will appear in the listing. Each row in the table has two action icons: a pencil icon for editing and a trash bin icon for deletion. By clicking the pencil (edit) icon, users are directed to the Edit Jans Asset screen.
+
+ ![image](../../assets/flex-edit-asset-screen.png)
+
+ The Edit Jans Asset screen allows users to update previously uploaded assets. The form layout remains consistent with the Add form but includes an additional `inum` field shown in a read-only format. The uploaded file can be replaced, or left unchanged. Users can modify the asset name, description, related services, or the enabled status. After making changes, clicking the Apply button will update the asset, while clicking Cancel will return the user to the asset listing without applying changes.
+
+
+ 
+
