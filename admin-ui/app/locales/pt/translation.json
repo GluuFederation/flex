@@ -606,7 +606,9 @@
     "OSName": "Nome do sistema operacional",
     "OSVersion": "Versão do sistema operacional",
     "platform": "Plataforma",
-    "authType": "Tipo de autenticação"
+    "authType": "Tipo de autenticação",
+    "showCedarLogs?": "O Cedar Log está habilitado?",
+    "reloginToViewCedarlingChanges": "Por favor, faça login novamente para ver as alterações do cedarling."
   },
   "messages": {
     "add_permission": "Adicionar permissão",
@@ -1101,7 +1103,8 @@
       "configApiUrl": "A URL da API de configuração atualmente em uso.",
       "sessionTimeoutInMins": "Determina a duração da inatividade permitida antes que a sessão atual expire.",
       "adminui_default_acr": "Este campo controla o mecanismo de autenticação padrão usado na interface de administração.",
-      "custom_params": "Os parâmetros personalizados permitem que você passe informações adicionais para o servidor de autorização durante a autenticação da UI de Administração."
+      "custom_params": "Os parâmetros personalizados permitem que você passe informações adicionais para o servidor de autorização durante a autenticação da UI de Administração.",
+      "cedarSwitch": "Este interruptor é usado para ativar ou desativar os logs Cedar no console do navegador."
     },
     "script": {
       "inum": "ID único identificando o script",

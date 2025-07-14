@@ -14,16 +14,19 @@ function GluuToogleRow({
   doc_category = 'no_category',
   disabled = false,
   required = false,
+  isLabelVisible = true,
 }: any) {
   return (
     <FormGroup row>
-      <GluuLabel
-        required={required}
-        label={label}
-        size={lsize}
-        doc_category={doc_category}
-        doc_entry={name}
-      />
+      {isLabelVisible && (
+        <GluuLabel
+          required={required}
+          label={label}
+          size={lsize}
+          doc_category={doc_category}
+          doc_entry={name}
+        />
+      )}
       <Col sm={rsize}>
         <GluuToogle
           id={name}
