@@ -28,44 +28,117 @@ import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 
-function ScriptListTable() {
+// Type definitions
+interface ModuleProperty {
+  value1: string
+  value2: string
+  description?: string
+  hide?: boolean
+}
+
+interface ConfigurationProperty {
+  key?: string
+  value?: string
+  value1?: string
+  value2?: string
+  hide?: boolean
+}
+
+interface ScriptError {
+  stackTrace?: string
+}
+
+interface CustomScriptItem {
+  inum: string
+  name: string
+  description: string
+  scriptType: string
+  programmingLanguage: string
+  level: number
+  script: string
+  aliases: string[]
+  moduleProperties: ModuleProperty[]
+  configurationProperties: ConfigurationProperty[]
+  locationPath: string
+  locationType: string
+  enabled: boolean
+  scriptError?: ScriptError
+}
+
+interface ScriptType {
+  value: string
+  name: string
+}
+
+interface CustomScriptReducerState {
+  items: CustomScriptItem[]
+  loading: boolean
+  saveOperationFlag: boolean
+  errorInSaveOperationFlag: boolean
+  totalItems: number
+  entriesCount: number
+  scriptTypes: ScriptType[]
+  hasFetchedScriptTypes: boolean
+  loadingScriptTypes: boolean
+  item?: CustomScriptItem
+  view?: boolean
+}
+
+interface CedarPermissionsState {
+  permissions: string[]
+}
+
+interface RootState {
+  customScriptReducer: CustomScriptReducerState
+  cedarPermissions: CedarPermissionsState
+}
+
+interface UserAction {
+  action_message?: string
+  action_data?: any
+  [key: string]: any
+}
+
+function ScriptListTable(): JSX.Element {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<any>()
   const navigate = useNavigate()
   const { hasCedarPermission, authorize } = useCedarling()
-  const userAction = {}
-  const options = {}
-  const [myActions, setMyActions] = useState([])
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
+  const userAction: UserAction = {}
+  const options: any = {}
+  const [myActions, setMyActions] = useState<any[]>([])
+  const [item, setItem] = useState<any>({})
+  const [modal, setModal] = useState<boolean>(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
-  const [limit, setLimit] = useState(pageSize)
-  const [pattern, setPattern] = useState(null)
-  const [type, setType] = useState('person_authentication')
+  const [limit, setLimit] = useState<string | number>(pageSize)
+  const [pattern, setPattern] = useState<string | null>(null)
+  const [type, setType] = useState<string>('person_authentication')
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'darkBlack'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  const scripts = useSelector((state) => state.customScriptReducer.items)
-  const loading = useSelector((state) => state.customScriptReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const scripts = useSelector((state: RootState) => state.customScriptReducer.items)
+  const loading = useSelector((state: RootState) => state.customScriptReducer.loading)
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootState) => state.cedarPermissions,
+  )
   const hasFetchedScriptTypes = useSelector(
-    (state) => state.customScriptReducer.hasFetchedScriptTypes,
+    (state: RootState) => state.customScriptReducer.hasFetchedScriptTypes,
   )
   const { totalItems, scriptTypes, loadingScriptTypes } = useSelector(
-    (state) => state.customScriptReducer,
+    (state: RootState) => state.customScriptReducer,
   )
 
-  const [pageNumber, setPageNumber] = useState(0)
+  const [pageNumber, setPageNumber] = useState<number>(0)
   let memoPattern = pattern
   let memoType = type
   SetTitle(t('titles.scripts'))
 
-  function makeOptions() {
+  function makeOptions(): void {
     setPattern(memoPattern)
     setType(memoType)
-    options[LIMIT] = parseInt(limit)
+    options[LIMIT] = parseInt(String(limit))
     if (memoPattern) {
       options[PATTERN] = memoPattern
     }
@@ -83,7 +156,7 @@ function ScriptListTable() {
       }
     }
     makeOptions()
-    dispatch(getCustomScriptByType({ action: options }))
+    dispatch(getCustomScriptByType({ action: options } as any))
     initPermissions()
   }, [dispatch])
 
@@ -93,14 +166,86 @@ function ScriptListTable() {
     }
   }, [hasFetchedScriptTypes, dispatch])
 
+  const handleOptionsChange = useCallback(
+    (event: any) => {
+      const name = event.target.name
+      if (name == 'pattern') {
+        memoPattern = event.target.value
+        if (event.keyCode === 13) {
+          makeOptions()
+          dispatch(getCustomScriptByType({ action: options } as any))
+        }
+      } else if (name == 'type') {
+        memoType = event.target.value
+        makeOptions()
+        dispatch(getCustomScriptByType({ action: options } as any))
+      }
+    },
+    [dispatch],
+  )
+
+  const handleGoToCustomScriptAddPage = useCallback(() => {
+    return navigate('/adm/script/new')
+  }, [navigate])
+
+  const handleGoToCustomScriptEditPage = useCallback(
+    (row: any, edition?: boolean) => {
+      dispatch(viewOnly({ view: edition || false }))
+      dispatch(setCurrentItem({ item: row }))
+      return navigate(`/adm/script/edit/:` + row.inum)
+    },
+    [dispatch, navigate],
+  )
+
+  const toggle = useCallback(() => setModal(!modal), [modal])
+
+  const handleCustomScriptDelete = useCallback(
+    (row: any) => {
+      setItem(row)
+      toggle()
+    },
+    [toggle],
+  )
+
+  const onDeletionConfirmed = useCallback(
+    (message: string) => {
+      buildPayload(userAction, message, item.inum)
+      dispatch(deleteCustomScript({ action: userAction } as any))
+      navigate('/adm/scripts')
+      toggle()
+    },
+    [item.inum, dispatch, navigate, toggle],
+  )
+
+  const onPageChangeClick = useCallback(
+    (page: number) => {
+      makeOptions()
+      const startCount = page * Number(limit)
+      options['startIndex'] = parseInt(String(startCount))
+      options['limit'] = Number(limit)
+      setPageNumber(page)
+      dispatch(getCustomScriptByType({ action: options } as any))
+    },
+    [limit, dispatch],
+  )
+
+  const onRowCountChangeClick = useCallback(
+    (count: number) => {
+      makeOptions()
+      options['limit'] = count
+      setPageNumber(0)
+      setLimit(count)
+      dispatch(getCustomScriptByType({ action: options } as any))
+    },
+    [dispatch],
+  )
+
   // Build actions only when permissions change
   useEffect(() => {
-    const actions = []
-
+    const actions: any[] = []
     const canRead = hasCedarPermission(SCRIPT_READ)
     const canWrite = hasCedarPermission(SCRIPT_WRITE)
     const canDelete = hasCedarPermission(SCRIPT_DELETE)
-
     if (canWrite) {
       actions.push({
         icon: 'add',
@@ -114,7 +259,7 @@ function ScriptListTable() {
         isFreeAction: true,
         onClick: handleGoToCustomScriptAddPage,
       })
-      actions.push((rowData) => ({
+      actions.push((rowData: any) => ({
         icon: 'edit',
         iconProps: {
           color: 'primary',
@@ -123,15 +268,15 @@ function ScriptListTable() {
           },
         },
         tooltip: `${t('messages.edit_script')}`,
-        onClick: (event, entry) => {
-          handleGoToCustomScriptEditPage(entry)
+        onClick: (event?: any, entry?: any) => {
+          if (entry) handleGoToCustomScriptEditPage(entry)
         },
         disabled: false,
       }))
     }
 
     if (canRead) {
-      actions.push((rowData) => ({
+      actions.push((rowData: any) => ({
         icon: 'visibility',
         iconProps: {
           color: 'primary',
@@ -140,7 +285,9 @@ function ScriptListTable() {
           },
         },
         tooltip: `${t('messages.view_script_details')}`,
-        onClick: (event, rowData) => handleGoToCustomScriptEditPage(rowData, true),
+        onClick: (event?: any, rowData?: any) => {
+          if (rowData) handleGoToCustomScriptEditPage(rowData, true)
+        },
         disabled: false,
       }))
 
@@ -185,13 +332,13 @@ function ScriptListTable() {
         isFreeAction: true,
         onClick: () => {
           makeOptions()
-          dispatch(getCustomScriptByType({ action: options }))
+          dispatch(getCustomScriptByType({ action: options } as any))
         },
       })
     }
 
     if (canDelete) {
-      actions.push((rowData) => ({
+      actions.push((rowData: any) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
           color: 'primary',
@@ -200,7 +347,9 @@ function ScriptListTable() {
           },
         },
         tooltip: `${t('messages.delete_script')}`,
-        onClick: (event, row) => handleCustomScriptDelete(row),
+        onClick: (event?: any, row?: any) => {
+          if (row) handleCustomScriptDelete(row)
+        },
         disabled: false,
       }))
     }
@@ -221,110 +370,38 @@ function ScriptListTable() {
     handleOptionsChange,
   ])
 
-  const handleOptionsChange = useCallback(
-    (event) => {
-      const name = event.target.name
-      if (name == 'pattern') {
-        memoPattern = event.target.value
-        if (event.keyCode === 13) {
-          makeOptions()
-          dispatch(getCustomScriptByType({ action: options }))
-        }
-      } else if (name == 'type') {
-        memoType = event.target.value
-        makeOptions()
-        dispatch(getCustomScriptByType({ action: options }))
-      }
-    },
-    [dispatch],
-  )
-
-  const handleGoToCustomScriptAddPage = useCallback(() => {
-    return navigate('/adm/script/new')
-  }, [navigate])
-
-  const handleGoToCustomScriptEditPage = useCallback(
-    (row, edition) => {
-      dispatch(viewOnly({ view: edition }))
-      dispatch(setCurrentItem({ item: row }))
-      return navigate(`/adm/script/edit/:` + row.inum)
-    },
-    [dispatch, navigate],
-  )
-
-  const handleCustomScriptDelete = useCallback(
-    (row) => {
-      setItem(row)
-      toggle()
-    },
-    [toggle],
-  )
-
-  const onDeletionConfirmed = useCallback(
-    (message) => {
-      buildPayload(userAction, message, item.inum)
-      dispatch(deleteCustomScript({ action: userAction }))
-      navigate('/adm/scripts')
-      toggle()
-    },
-    [item.inum, dispatch, navigate, toggle],
-  )
-
-  const onPageChangeClick = useCallback(
-    (page) => {
-      makeOptions()
-      const startCount = page * limit
-      options['startIndex'] = parseInt(startCount)
-      options['limit'] = limit
-      setPageNumber(page)
-      dispatch(getCustomScriptByType({ action: options }))
-    },
-    [limit, dispatch],
-  )
-
-  const onRowCountChangeClick = useCallback(
-    (count) => {
-      makeOptions()
-      options['limit'] = count
-      setPageNumber(0)
-      setLimit(count)
-      dispatch(getCustomScriptByType({ action: options }))
-    },
-    [dispatch],
-  )
-
-  const toggle = useCallback(() => setModal(!modal), [modal])
-
   // MaterialTable components
-  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback((props: any) => <Paper {...props} elevation={0} />, [])
 
   const CustomPagination = useCallback(
     () => (
       <TablePagination
         count={totalItems}
         page={pageNumber}
-        onPageChange={(prop, page) => {
+        onPageChange={(event: unknown, page: number) => {
           onPageChangeClick(page)
         }}
-        rowsPerPage={limit}
-        onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
+        rowsPerPage={Number(limit)}
+        onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          onRowCountChangeClick(Number(event.target.value))
+        }}
       />
     ),
     [totalItems, pageNumber, limit, onPageChangeClick, onRowCountChangeClick],
   )
 
-  const DetailPanel = useCallback((rowData) => {
+  const DetailPanel = useCallback((rowData: { rowData: any }) => {
     return <CustomScriptDetailPage row={rowData.rowData} />
   }, [])
 
   // MaterialTable options
-  const tableOptions = {
+  const tableOptions: any = {
     search: false,
     idSynonym: 'inum',
     searchFieldAlignment: 'left',
     selection: false,
-    pageSize: limit,
-    rowStyle: (rowData) => ({
+    pageSize: Number(limit),
+    rowStyle: (rowData: any) => ({
       backgroundColor:
         rowData.enabled && rowData?.scriptError?.stackTrace
           ? customColors.accentRed
@@ -344,7 +421,7 @@ function ScriptListTable() {
       <CardBody>
         <GluuViewWrapper canShow={hasCedarPermission(SCRIPT_READ)}>
           <MaterialTable
-            key={limit}
+            key={Number(limit)}
             components={{
               Container: PaperContainer,
               Pagination: CustomPagination,
@@ -356,7 +433,7 @@ function ScriptListTable() {
                 title: `${t('options.enabled')}`,
                 field: 'enabled',
                 type: 'boolean',
-                render: (rowData) => (
+                render: (rowData: any) => (
                   <Badge color={rowData.enabled == true ? `primary-${selectedTheme}` : 'dimmed'}>
                     {rowData.enabled ? 'true' : 'false'}
                   </Badge>
