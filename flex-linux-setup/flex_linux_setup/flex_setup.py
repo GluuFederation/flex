@@ -272,7 +272,7 @@ from setup_app.installers.jans import JansInstaller
 from setup_app.installers.jans_cli import JansCliInstaller
 from setup_app.installers.jans_casa import CasaInstaller
 from setup_app.utils.properties_utils import propertiesUtils
-from setup_app.utils.ldif_utils import myLdifParser
+from setup_app.utils.ldif_utils import myLdifParser, create_client_ldif
 
 Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
 if not os.path.exists(Config.outputFolder):
@@ -472,6 +472,9 @@ class flex_installer(JettyInstaller):
             Config.templateRenderingDict['admin_ui_apache_root']
         )
 
+    def get_scope_dn_by_id(self, jansid):
+        scope_search_result = self.dbUtils.search('ou=scopes,o=jans', search_filter=f'(&(jansId={jansid})(objectClass=jansScope))')
+        return scope_search_result['dn']
 
     def install_gluu_admin_ui(self):
 
@@ -479,71 +482,62 @@ class flex_installer(JettyInstaller):
 
         self.unpack_gluu_admin_ui_archive()
 
-        def get_client_parser():
-
-            cli_ldif_client_fn = os.path.join(jans_cli_installer.templates_folder,
-                                              os.path.basename(jans_cli_installer.ldif_client))
-            ldif_parser = myLdifParser(cli_ldif_client_fn)
-            ldif_parser.parse()
-
-            return ldif_parser
+        aui_config_template_vars = base.readJsonFile(self.admin_ui_config_properties_path)
 
         print("Creating Gluu Flex Admin UI Web Client")
 
         client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
         if client_check_result['2001.'] == -1:
-            ldif_parser = get_client_parser()
-
-            ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
-            ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Web Client']
-            ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['none']
-            ldif_parser.entries[0][1]['jansAccessTknAsJwt'] = ['TRUE']
-            ldif_parser.entries[0][1]['jansAttrs'] = [
-                '{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']
-
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
+            admin_ui_client_scopes = []
+            for scope in aui_config_template_vars['oidcConfig']['auiWebClient']['scopes']:
+                scope_id = self.get_scope_dn_by_id(scope)
+                admin_ui_client_scopes.append(scope_id)
+
+            create_client_ldif(
+                ldif_fn=client_tmp_fn,
+                client_id=Config.admin_ui_client_id,
+                encoded_pw=Config.admin_ui_client_encoded_pw,
+                scopes=admin_ui_client_scopes,
+                redirect_uri=['https://{}/admin-ui'.format(Config.hostname), 'http://localhost:4100'],
+                display_name='Admin UI Web Client',
+                authorization_methods=['none'],
+                other_props={'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}'],
+                             'jansAccessTknAsJwt': ['TRUE'],
+                             }
+                )
 
             print("\033[1mAdmin UI Web Client ID:\033[0m", Config.admin_ui_client_id)
             print("\033[1mAdmin UI Web Client Secret:\033[0m", Config.admin_ui_client_pw)
 
-            with open(client_tmp_fn, 'wb') as w:
-                ldif_writer = LDIFWriter(w)
-                ldif_writer.unparse('inum=%(admin_ui_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
-
-            config_api_installer.renderTemplateInOut(client_tmp_fn, self.templates_dir, self.source_dir)
-            self.dbUtils.import_ldif([
-                os.path.join(self.source_dir, os.path.basename(client_tmp_fn)),
-                self.admin_ui_web_hook_ldif_fn
-            ])
+            self.dbUtils.import_ldif([client_tmp_fn])
 
         client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == -1:
-
-            ldif_parser = get_client_parser()
-
-            ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_web_client_id)s']
-            ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_web_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Backend API Client']
-            ldif_parser.entries[0][1]['jansGrantTyp'] = ['client_credentials']
-            ldif_parser.entries[0][1]['jansRespTyp'] = ['token']
-            ldif_parser.entries[0][1]['jansScope'] = ['inum=F0C4,ou=scopes,o=jans', 'inum=B9D2-D6E5,ou=scopes,o=jans']
-            ldif_parser.entries[0][1]['jansTknEndpointAuthMethod'] = ['client_secret_basic']
-            ldif_parser.entries[0][1]['jansTrustedClnt'] = ['FALSE']
-            for del_entry in ('jansLogoutURI', 'jansPostLogoutRedirectURI', 'jansRedirectURI', 'jansSignedRespAlg'):
-                del ldif_parser.entries[0][1][del_entry]
-
-            web_client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_web_client.ldif')
+            admin_ui_web_client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_web_client.ldif')
+            admin_ui_backend_client_scopes = []
+            for scope in aui_config_template_vars['oidcConfig']['auiBackendApiClient']['scopes']:
+                scope_id = self.get_scope_dn_by_id(scope)
+                admin_ui_backend_client_scopes.append(scope_id)
 
             print("\033[1mAdmin UI Backend API Client ID:\033[0m", Config.admin_ui_web_client_id)
             print("\033[1mAdmin UI Backend API Secret:\033[0m", Config.admin_ui_web_client_encoded_pw)
 
-            with open(web_client_tmp_fn, 'wb') as w:
-                ldif_writer = LDIFWriter(w)
-                ldif_writer.unparse('inum=%(admin_ui_web_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
+            create_client_ldif(
+                ldif_fn=admin_ui_web_client_tmp_fn,
+                client_id=Config.admin_ui_web_client_id,
+                encoded_pw=Config.admin_ui_web_client_encoded_pw,
+                redirect_uri=None,
+                display_name='Admin UI Backend API Client',
+                grant_types=['client_credentials'],
+                response_types=['token'],
+                scopes=admin_ui_backend_client_scopes,
+                authorization_methods=['client_secret_basic'],
+                trusted_client='FALSE',
+                unset_props=('jansLogoutURI', 'jansPostLogoutRedirectURI', 'jansRedirectURI', 'jansSignedRespAlg')
+            )
 
-            config_api_installer.renderTemplateInOut(web_client_tmp_fn, self.templates_dir, self.source_dir)
-            self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(web_client_tmp_fn))])
+            self.dbUtils.import_ldif([admin_ui_web_client_tmp_fn])
 
         self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
 
