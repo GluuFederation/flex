@@ -24,7 +24,7 @@ flowchart TD
 
     click A href "#agama-lab-sign-in"
     click B href "#subscription"
-    click C href "#setting-up-gluu-solo-environment"
+    click C href "#setting-up-gluu-solo-cloud-environment-and-idp"
     click D href "#go-live"
 ```
 
@@ -42,7 +42,7 @@ Check out [subscription process](./solo-subscription.md) to know more.
 
 ## Setting up Gluu Solo cloud environment and IDP
 
-Once your subscription is active, cloud instance provisioning starts. Administrator can set up the [domain](./solo-administration-guide.md#using-a-custom-domain), [configure](./solo-administration-guide.md#terraform-configuration) Gluu Solo, [integrate monitoring tools](./solo-administration-guide.md#monitoring-and-logging).
+Once your subscription is active, cloud instance provisioning starts. Administrator can set up the [domain](../solo/solo-subscription.md#gluu-solo-subscription), configure Gluu Solo, integrate monitoring tools.
 
 ## Go Live
 

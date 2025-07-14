@@ -20,7 +20,7 @@ This is a step-by-step guide for installation and uninstallation of Gluu Flex on
 ```shell
 sudo ufw allow https
 ```
-- Please obtain an [SSA](../agama/prerequisites.md) to trial Flex, after which you are issued a JWT
+- Please obtain an [SSA](../../install/agama/prerequisites.md#software-statement-assertions) to trial Flex, after which you are issued a JWT
   that you can use during installation. SSA should be stored in a text file on an accessible path.
   
 ## Supported Versions
@@ -153,7 +153,7 @@ To enable communication with Janssen Server over TLS (https) in a production
 environment, Janssen Server needs details about CA certificate.
 
 !!! Note
-    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../../contribute/developer-faq.md#how-to-get-certificate-from-lets-encrypt).
+    Want to use `Let's Encrypt` to get a certificate? Follow [this guide](../../openbanking/install-vm.md#importing-the-ca-certificate-in-jvm-truststore-and-signing-encryption-keys-into-auth-server-keystore).
 
 ## Uninstallation
 Removing Flex is a two step process:
