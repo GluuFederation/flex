@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { SETTINGS } from 'Utils/ApiResources'
 import {
   Card,
@@ -27,6 +28,8 @@ import { getScripts } from 'Redux/features/initSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import packageJson from '../../../../package.json'
+import { CedarlingLogType } from '@/cedarling'
+import { updateToast } from '@/redux/features/toastSlice'
 
 const levels = [1, 5, 10, 20]
 
@@ -138,6 +141,8 @@ function SettingsForm() {
   const acrValues = useSelector((state) => state.authReducer?.config?.acrValues)
   const sessionTimeout =
     useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) || 5
+  const cedarlingLogType =
+    useSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
   const scripts = useSelector((state) => state.initReducer.scripts)
   const dispatch = useDispatch()
 
@@ -152,9 +157,12 @@ function SettingsForm() {
     initialValues: {
       sessionTimeoutInMins: sessionTimeout,
       acrValues: acrValues || '',
+      cedarlingLogType,
     },
     onSubmit: (values) => {
       dispatch(putConfigWorker(values))
+      !(values?.cedarlingLogType === cedarlingLogType) &&
+        dispatch(updateToast(true, 'success', t('fields.reloginToViewCedarlingChanges')))
     },
     validationSchema: Yup.object().shape({
       sessionTimeoutInMins: Yup.number()
@@ -204,6 +212,35 @@ function SettingsForm() {
           </InputGroup>
         </Col>
       </FormGroup>
+
+      <FormGroup row>
+        <GluuLabel
+          size={4}
+          doc_category={SETTINGS}
+          doc_entry={'cedarSwitch'}
+          label={t('fields.showCedarLogs?')}
+        />
+
+        <Col sm={8}>
+          <GluuToogleRow
+            isLabelVisible={false}
+            name={t('fields.showCedarLogs?')}
+            formik={formik}
+            value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
+            doc_category={SETTINGS}
+            doc_entry={'cedarSwitch'}
+            lsize={4}
+            rsize={8}
+            handler={(event) => {
+              formik.setFieldValue(
+                'cedarlingLogType',
+                event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
+              )
+            }}
+          />
+        </Col>
+      </FormGroup>
+
       <div className="mb-3">
         <GluuProperties
           compName="additionalParameters"

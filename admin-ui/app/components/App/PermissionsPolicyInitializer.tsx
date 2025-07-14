@@ -7,7 +7,7 @@ import {
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
 import { generateCedarPolicies, mapRolePermissions } from '@/cedarling/utility'
-import { cedarlingClient } from '@/cedarling'
+import { cedarlingClient, CedarlingLogType } from '@/cedarling'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 import { buildPayload } from '@/utils/PermChecker'
 
@@ -45,6 +45,8 @@ const PermissionsPolicyInitializer = () => {
   const { initialized, isInitializing } = useSelector(
     (state: ExtendedRootState) => state.cedarPermissions,
   )
+  const cedarlingLogType =
+    useSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
 
   const doFetchPermissionsList = useCallback(() => {
     const userAction = {}
@@ -78,8 +80,7 @@ const PermissionsPolicyInitializer = () => {
       applicableToCall(rolePermissionMapping) &&
       applicableToCall(apiPermission)
     ) {
-      if (!initialized && !isInitializing) {
-        // console.log("Cedar didn't initialized yet, initializing now...")
+      if (!initialized && !isInitializing && cedarlingLogType) {
         dispatch(setCedarlingInitializing(true))
 
         const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
@@ -87,6 +88,7 @@ const PermissionsPolicyInitializer = () => {
 
         const bootstrapConfig = {
           ...bootstrap,
+          CEDARLING_LOG_TYPE: cedarlingLogType,
           CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policies),
         }
 
@@ -103,7 +105,15 @@ const PermissionsPolicyInitializer = () => {
           })
       }
     }
-  }, [rolePermissionMapping, apiPermission, dispatch, token, initialized, isInitializing])
+  }, [
+    rolePermissionMapping,
+    apiPermission,
+    dispatch,
+    token,
+    initialized,
+    isInitializing,
+    cedarlingLogType,
+  ])
 
   return null
 }
