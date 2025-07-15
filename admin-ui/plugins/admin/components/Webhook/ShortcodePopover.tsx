@@ -8,17 +8,36 @@ import { List, ListItemButton, ListItemText } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { HelpOutline } from '@mui/icons-material'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
-import PropTypes from 'prop-types'
-import applicationstyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import ShortCodesIcon from 'Components/SVG/menu/ShortCodesIcon'
+import 'react-tooltip/dist/react-tooltip.css'
+import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import ShortCodesIcon from '../../../../app/components/SVG/menu/ShortCodesIcon'
+
+interface ShortcodeItem {
+  key: string
+  label: string
+  description?: string
+}
+
+interface ShortcodePopoverProps {
+  codes?: ShortcodeItem[]
+  buttonWrapperStyles?: React.CSSProperties
+  handleSelectShortcode: (key: string) => void
+}
+
+interface LabelProps {
+  doc_category?: string
+  doc_entry?: string
+  label: string
+}
 
 export default function ShortcodePopover({
   codes,
   buttonWrapperStyles = {},
   handleSelectShortcode,
-}) {
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const handleClick = (event) => {
+}: ShortcodePopoverProps) {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+  
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -30,9 +49,9 @@ export default function ShortcodePopover({
   const id = open ? 'simple-popover' : undefined
 
   return (
-    <div style={{ ...applicationstyle.shortCodesWrapperStyles, ...buttonWrapperStyles }}>
+    <div style={{ ...applicationstyle.shortCodesWrapperStyles, ...buttonWrapperStyles } as React.CSSProperties}>
       <Button aria-describedby={id} variant="text" sx={{ border: 0 }} onClick={handleClick}>
-        <ShortCodesIcon />
+        <ShortCodesIcon className="" style={{}} />
       </Button>
       <Popover
         id={id}
@@ -47,7 +66,6 @@ export default function ShortcodePopover({
         <Box
           display="flex"
           flexDirection="column"
-          // gap={1}
           sx={{
             maxHeight: '300px',
             overflowY: 'auto',
@@ -56,7 +74,7 @@ export default function ShortcodePopover({
         >
           {codes?.length ? (
             <List>
-              {codes?.map((code, index) => {
+              {codes.map((code: ShortcodeItem, index: number) => {
                 return (
                   <React.Fragment key={code.key}>
                     <ListItemButton
@@ -74,7 +92,7 @@ export default function ShortcodePopover({
                         }
                       />
                     </ListItemButton>
-                    {index + 1 !== codes?.length && <Divider />}
+                    {index + 1 !== codes.length && <Divider />}
                   </React.Fragment>
                 )
               })}
@@ -88,7 +106,7 @@ export default function ShortcodePopover({
   )
 }
 
-const Label = ({ doc_category, doc_entry, label }) => {
+const Label: React.FC<LabelProps> = ({ doc_category, doc_entry, label }) => {
   const { t, i18n } = useTranslation()
 
   return (
@@ -97,7 +115,6 @@ const Label = ({ doc_category, doc_entry, label }) => {
       {doc_category && i18n.exists(doc_category) && (
         <>
           <ReactTooltip
-            tabIndex="-1"
             id={doc_entry}
             place="right"
             role="tooltip"
@@ -106,7 +123,7 @@ const Label = ({ doc_category, doc_entry, label }) => {
             {t(doc_category)}
           </ReactTooltip>
           <HelpOutline
-            tabIndex="-1"
+            tabIndex={-1}
             style={{ width: 18, height: 18, marginLeft: 6, marginRight: 6 }}
             data-tooltip-id={doc_entry}
             data-for={doc_entry}
@@ -115,17 +132,4 @@ const Label = ({ doc_category, doc_entry, label }) => {
       )}
     </Box>
   )
-}
-
-// Adding prop validation
-Label.propTypes = {
-  doc_category: PropTypes.string,
-  doc_entry: PropTypes.string,
-  label: PropTypes.string,
-}
-
-ShortcodePopover.propTypes = {
-  codes: PropTypes.array,
-  buttonWrapperStyles: PropTypes.any,
-  handleSelectShortcode: PropTypes.func,
 }

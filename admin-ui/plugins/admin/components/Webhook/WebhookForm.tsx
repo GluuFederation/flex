@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useCallback, useState, useEffect } from 'react'
 import { Col, Form, Row, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { useFormik } from 'formik'
+import { useFormik, FormikProps } from 'formik'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
@@ -27,27 +27,109 @@ import ShortcodePopover from './ShortcodePopover'
 import shortCodes from 'Plugins/admin/helper/shortCodes.json'
 import { isValid } from './WebhookURLChecker'
 
-const WebhookForm = () => {
-  const { id } = useParams()
-  const userAction = {}
+// Type definitions
+interface WebhookHeader {
+  key: string
+  value: string
+  source?: string
+  destination?: string
+}
+
+interface WebhookFeature {
+  auiFeatureId: string
+  displayName: string
+  [key: string]: any
+}
+
+interface SelectedWebhook {
+  inum?: string
+  dn?: string
+  baseDn?: string
+  displayName?: string
+  url?: string
+  httpMethod?: string
+  httpRequestBody?: any
+  httpHeaders?: WebhookHeader[]
+  jansEnabled?: boolean
+  description?: string
+  [key: string]: any
+}
+
+interface WebhookState {
+  selectedWebhook: SelectedWebhook
+  features: WebhookFeature[]
+  webhookFeatures: WebhookFeature[]
+  loadingFeatures: boolean
+  saveOperationFlag: boolean
+  errorInSaveOperationFlag: boolean
+}
+
+interface RootState {
+  webhookReducer: WebhookState
+}
+
+interface UserAction {
+  action_data?: any
+  [key: string]: any
+}
+
+interface FormValues {
+  httpRequestBody: string
+  httpMethod: string
+  url: string
+  displayName: string
+  httpHeaders: WebhookHeader[]
+  jansEnabled: boolean
+  description: string
+}
+
+interface CursorPosition {
+  url: number
+  httpRequestBody: number
+}
+
+interface ShortcodeField {
+  key: string
+  label: string
+  description?: string
+}
+
+interface ShortcodeData {
+  [key: string]: {
+    fields: ShortcodeField[]
+  }
+}
+
+interface WebhookPayload extends Omit<FormValues, 'httpRequestBody'>, Record<string, unknown> {
+  auiFeatureIds: string[]
+  inum?: string
+  dn?: string
+  baseDn?: string
+  httpRequestBody?: any
+}
+
+const WebhookForm: React.FC = () => {
+  const { id } = useParams<{ id?: string }>()
+  const userAction: UserAction = {}
   const { selectedWebhook, features, webhookFeatures, loadingFeatures } = useSelector(
-    (state) => state.webhookReducer,
+    (state: RootState) => state.webhookReducer,
   )
-  const [selectedFeatures, setSelectedFeatures] = useState(webhookFeatures || {})
-  const [cursorPosition, setCursorPosition] = useState({
+  const [selectedFeatures, setSelectedFeatures] = useState<WebhookFeature[]>(webhookFeatures || [])
+  const [cursorPosition, setCursorPosition] = useState<CursorPosition>({
     url: 0,
     httpRequestBody: 0,
   })
 
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const saveOperationFlag = useSelector((state) => state.webhookReducer.saveOperationFlag)
+  const saveOperationFlag = useSelector((state: RootState) => state.webhookReducer.saveOperationFlag)
   const errorInSaveOperationFlag = useSelector(
-    (state) => state.webhookReducer.errorInSaveOperationFlag,
+    (state: RootState) => state.webhookReducer.errorInSaveOperationFlag,
   )
   const dispatch = useDispatch()
-  const [modal, setModal] = useState(false)
-  const validatePayload = (values) => {
+  const [modal, setModal] = useState<boolean>(false)
+  
+  const validatePayload = (values: FormValues): boolean => {
     let faulty = false
     if (values.httpRequestBody) {
       try {
@@ -65,11 +147,11 @@ const WebhookForm = () => {
     return faulty
   }
 
-  const getHttpHeaders = () => {
+  const getHttpHeaders = (): WebhookHeader[] => {
     return selectedWebhook?.httpHeaders || []
   }
 
-  const formik = useFormik({
+  const formik: FormikProps<FormValues> = useFormik<FormValues>({
     initialValues: {
       httpRequestBody: selectedWebhook?.httpRequestBody
         ? JSON.stringify(selectedWebhook.httpRequestBody, null, 2)
@@ -81,7 +163,7 @@ const WebhookForm = () => {
       jansEnabled: selectedWebhook?.jansEnabled || false,
       description: selectedWebhook?.description || '',
     },
-    onSubmit: (values) => {
+    onSubmit: (values: FormValues) => {
       const faulty = validatePayload(values)
       if (faulty) {
         return
@@ -95,7 +177,7 @@ const WebhookForm = () => {
         .matches(/^\S*$/, `${t('fields.webhook_name')} ${t('messages.no_spaces')}`),
       url: Yup.string().required(t('messages.url_error')),
       httpRequestBody: Yup.string().when('httpMethod', {
-        is: (value) => {
+        is: (value: string) => {
           return !(value === 'GET' || value === 'DELETE')
         },
         then: () => Yup.string().required(t('messages.request_body_error')),
@@ -103,61 +185,61 @@ const WebhookForm = () => {
     }),
   })
 
-  const toggle = () => {
+  const toggle = (): void => {
     setModal(!modal)
   }
 
   const submitForm = useCallback(
-    (userMessage) => {
+    (userMessage: string) => {
       toggle()
 
-      const httpHeaders = formik.values.httpHeaders?.map((header) => {
+      const httpHeaders = formik.values.httpHeaders?.map((header: WebhookHeader) => {
         return {
-          key: header.key || header.source,
-          value: header.value || header.destination,
+          key: header.key || header.source || '',
+          value: header.value || header.destination || '',
         }
       })
 
-      const payload = {
+      const payload: WebhookPayload = {
         ...formik.values,
         httpHeaders: httpHeaders || [],
-        auiFeatureIds: selectedFeatures?.map((feature) => feature.auiFeatureId) || [],
+        auiFeatureIds: selectedFeatures?.map((feature: WebhookFeature) => feature.auiFeatureId) || [],
       }
 
       if (formik.values.httpMethod !== 'GET' && formik.values.httpMethod !== 'DELETE') {
-        payload['httpRequestBody'] = JSON.parse(formik.values.httpRequestBody)
+        payload.httpRequestBody = JSON.parse(formik.values.httpRequestBody)
       } else {
         delete payload.httpRequestBody
       }
 
       if (id) {
-        payload['inum'] = selectedWebhook.inum
-        payload['dn'] = selectedWebhook.dn
-        payload['baseDn'] = selectedWebhook.baseDn
+        payload.inum = selectedWebhook.inum
+        payload.dn = selectedWebhook.dn
+        payload.baseDn = selectedWebhook.baseDn
       }
 
       buildPayload(userAction, userMessage, payload)
       if (id) {
-        dispatch(updateWebhook({ action: userAction }))
+        dispatch(updateWebhook({ action: userAction } as any))
       } else {
-        dispatch(createWebhook({ action: userAction }))
+        dispatch(createWebhook({ action: userAction } as any))
       }
     },
-    [formik],
+    [formik, selectedFeatures, selectedWebhook, id, userAction, dispatch],
   )
 
   useEffect(() => {
-    if (!features?.length) dispatch(getFeatures()) // cache features response using redux store
+    if (!features?.length) dispatch(getFeatures() as any) // cache features response using redux store
     if (saveOperationFlag && !errorInSaveOperationFlag) navigate('/adm/webhook')
 
     return function cleanup() {
-      dispatch(resetFlags())
+      dispatch(resetFlags() as any)
     }
-  }, [saveOperationFlag, errorInSaveOperationFlag])
+  }, [saveOperationFlag, errorInSaveOperationFlag, features, dispatch, navigate])
 
-  function getPropertiesConfig(entry, key) {
+  function getPropertiesConfig(entry: any, key: string): { source: string; destination: string }[] {
     if (entry[key] && Array.isArray(entry[key])) {
-      return entry[key].map((e) => ({
+      return entry[key].map((e: any) => ({
         source: e.key,
         destination: e.value,
       }))
@@ -166,16 +248,16 @@ const WebhookForm = () => {
     }
   }
 
-  const featureShortcodes = selectedFeatures?.[0]?.auiFeatureId
-    ? shortCodes?.[selectedFeatures?.[0]?.auiFeatureId]?.fields || []
+  const featureShortcodes: ShortcodeField[] = selectedFeatures?.[0]?.auiFeatureId
+    ? (shortCodes as ShortcodeData)?.[selectedFeatures?.[0]?.auiFeatureId]?.fields || []
     : []
 
-  const handleSelectShortcode = (code, name, withString = false) => {
+  const handleSelectShortcode = (code: string, name: keyof CursorPosition, withString: boolean = false): void => {
     const _code = withString ? '"${' + `${code}` + '}"' : '${' + `${code}` + '}'
     const currentPosition = cursorPosition[name]
-    let value = formik.values[name] || ''
+    let value = (formik.values as any)[name] || ''
     if (currentPosition >= 0 && value) {
-      const str = formik.values[name]
+      const str = (formik.values as any)[name]
       value = str.slice(0, currentPosition) + _code + str.slice(currentPosition)
     } else if (value) {
       value += _code
@@ -226,7 +308,7 @@ const WebhookForm = () => {
             labelKey="displayName"
             value={selectedFeatures}
             options={features}
-            onChange={(options) => {
+            onChange={(options: WebhookFeature[]) => {
               setSelectedFeatures(options || [])
             }}
             lsize={4}
@@ -246,19 +328,19 @@ const WebhookForm = () => {
             rsize={8}
             required
             doc_category={WEBHOOK}
-            handleChange={(event) => {
+            handleChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               const currentPosition = event.target.selectionStart
               setCursorPosition((prevState) => ({
                 ...prevState,
-                url: currentPosition,
+                url: currentPosition || 0,
               }))
             }}
-            onFocus={(event) => {
+            onFocus={(event: React.FocusEvent<HTMLInputElement>) => {
               setTimeout(() => {
                 const currentPosition = event.target.selectionStart
                 setCursorPosition((prevState) => ({
                   ...prevState,
-                  url: currentPosition,
+                  url: currentPosition || 0,
                 }))
               }, 0)
             }}
@@ -269,7 +351,7 @@ const WebhookForm = () => {
             shortcode={
               <ShortcodePopover
                 codes={featureShortcodes}
-                handleSelectShortcode={(code) => handleSelectShortcode(code, 'url')}
+                handleSelectShortcode={(code: string) => handleSelectShortcode(code, 'url')}
               />
             }
           />
@@ -291,7 +373,7 @@ const WebhookForm = () => {
             rsize={8}
             required
             errorMessage={formik.errors.httpMethod}
-            showError={formik.errors.httpMethod && formik.touched.httpMethod}
+            showError={Boolean(formik.errors.httpMethod && formik.touched.httpMethod)}
             name="httpMethod"
           />
 
@@ -341,7 +423,7 @@ const WebhookForm = () => {
                   lsize={4}
                   required
                   rsize={8}
-                  onCursorChange={(value) => {
+                  onCursorChange={(value: any) => {
                     setTimeout(() => {
                       const cursorPos = value.cursor
                       const lines = value.cursor?.document?.$lines
@@ -372,7 +454,7 @@ const WebhookForm = () => {
                         zIndex: 1,
                         marginRight: '2.5rem',
                       }}
-                      handleSelectShortcode={(code) =>
+                      handleSelectShortcode={(code: string) =>
                         handleSelectShortcode(code, 'httpRequestBody', true)
                       }
                     />
@@ -388,8 +470,10 @@ const WebhookForm = () => {
             <Toggle
               id="jansEnabled"
               name="jansEnabled"
-              onChange={formik.handleChange}
-              defaultChecked={formik.values.jansEnabled}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                formik.setFieldValue('jansEnabled', e.target.checked)
+              }}
+              defaultChecked={Boolean(formik.values.jansEnabled)}
             />
           </Col>
         </FormGroup>

@@ -1,7 +1,34 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-const initialState = {
+// Define types for the state
+interface WebhookState {
+  webhooks: any[]
+  loading: boolean
+  saveOperationFlag: boolean
+  errorInSaveOperationFlag: boolean
+  totalItems: number
+  entriesCount: number
+  selectedWebhook: any
+  loadingFeatures: boolean
+  features: any[]
+  webhookFeatures: any[]
+  loadingWebhookFeatures: boolean
+  loadingWebhooks: boolean
+  featureWebhooks: any[]
+  webhookModal: boolean
+  triggerWebhookInProgress: boolean
+  triggerWebhookMessage: string
+  webhookTriggerErrors: any[]
+  tiggerPayload: {
+    feature: any
+    payload: any
+  }
+  featureToTrigger: string
+  showErrorModal: boolean
+}
+
+const initialState: WebhookState = {
   webhooks: [],
   loading: false,
   saveOperationFlag: false,
@@ -31,10 +58,10 @@ const webhookSlice = createSlice({
   name: 'webhook',
   initialState,
   reducers: {
-    getWebhook: (state, action) => {
+    getWebhook: (state, action: PayloadAction<any>) => {
       state.loading = true
     },
-    getWebhookResponse: (state, action) => {
+    getWebhookResponse: (state, action: PayloadAction<any>) => {
       state.loading = false
       if (action.payload?.data) {
         state.webhooks = action.payload.data?.entries || []
@@ -47,7 +74,7 @@ const webhookSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    createWebhookResponse: (state, action) => {
+    createWebhookResponse: (state, action: PayloadAction<any>) => {
       state.loading = false
       state.saveOperationFlag = true
       if (action.payload?.data) {
@@ -62,7 +89,7 @@ const webhookSlice = createSlice({
     deleteWebhookResponse: (state) => {
       state.loading = false
     },
-    setSelectedWebhook: (state, action) => {
+    setSelectedWebhook: (state, action: PayloadAction<any>) => {
       state.selectedWebhook = action.payload
     },
     updateWebhook: (state) => {
@@ -70,7 +97,7 @@ const webhookSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    updateWebhookResponse: (state, action) => {
+    updateWebhookResponse: (state, action: PayloadAction<any>) => {
       state.saveOperationFlag = true
       state.loading = false
       if (action.payload?.data) {
@@ -86,44 +113,44 @@ const webhookSlice = createSlice({
     getFeatures: (state) => {
       state.loadingFeatures = true
     },
-    getFeaturesResponse: (state, action) => {
+    getFeaturesResponse: (state, action: PayloadAction<any>) => {
       state.loadingFeatures = false
       state.features = action.payload
     },
     getFeaturesByWebhookId: (state) => {
       state.loadingWebhookFeatures = true
     },
-    getFeaturesByWebhookIdResponse: (state, action) => {
+    getFeaturesByWebhookIdResponse: (state, action: PayloadAction<any>) => {
       state.loadingWebhookFeatures = false
       state.webhookFeatures = action.payload
     },
     getWebhooksByFeatureId: (state) => {
       state.loadingWebhooks = true
     },
-    getWebhooksByFeatureIdResponse: (state, action) => {
+    getWebhooksByFeatureIdResponse: (state, action: PayloadAction<any>) => {
       state.featureWebhooks = action.payload
       state.loadingWebhooks = false
     },
-    setWebhookModal: (state, action) => {
+    setWebhookModal: (state, action: PayloadAction<boolean>) => {
       state.webhookModal = action.payload
     },
     triggerWebhook: (state) => {
       state.triggerWebhookInProgress = true
     },
-    setTriggerWebhookResponse: (state, action) => {
+    setTriggerWebhookResponse: (state, action: PayloadAction<string>) => {
       state.triggerWebhookInProgress = false
       state.triggerWebhookMessage = action.payload
     },
-    setWebhookTriggerErrors: (state, action) => {
+    setWebhookTriggerErrors: (state, action: PayloadAction<any[]>) => {
       state.webhookTriggerErrors = action.payload
     },
-    setTriggerPayload: (state, action) => {
+    setTriggerPayload: (state, action: PayloadAction<{ feature: any; payload: any }>) => {
       state.tiggerPayload = action.payload
     },
-    setFeatureToTrigger: (state, action) => {
+    setFeatureToTrigger: (state, action: PayloadAction<string>) => {
       state.featureToTrigger = action.payload
     },
-    setShowErrorModal: (state, action) => {
+    setShowErrorModal: (state, action: PayloadAction<boolean>) => {
       state.showErrorModal = action.payload
     },
   },
@@ -154,6 +181,6 @@ export const {
   setFeatureToTrigger,
   setShowErrorModal,
 } = webhookSlice.actions
-export const { actions, reducer, state } = webhookSlice
+export const { actions, reducer } = webhookSlice
 export default reducer
 reducerRegistry.register('webhookReducer', reducer)

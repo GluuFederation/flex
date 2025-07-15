@@ -10,13 +10,23 @@ import {
 } from 'Plugins/admin/redux/features/WebhookSlice'
 import { useParams } from 'react-router'
 
+interface WebhookState {
+  loadingFeatures: boolean
+  saveOperationFlag: boolean
+  errorInSaveOperationFlag: boolean
+  loadingWebhookFeatures: boolean
+  loading: boolean
+}
+interface RootState {
+  webhookReducer: WebhookState
+}
 const WebhookEditPage = () => {
   const { id } = useParams()
   const dispatch = useDispatch()
-  const { loading, loadingWebhookFeatures } = useSelector((state) => state.webhookReducer)
+  const { loading, loadingWebhookFeatures } = useSelector((state: RootState) => state.webhookReducer)
 
   useEffect(() => {
-    if (id) dispatch(getFeaturesByWebhookId(id))
+    if (id) dispatch(getFeaturesByWebhookId())
 
     return function cleanup() {
       dispatch(getFeaturesByWebhookIdResponse([]))

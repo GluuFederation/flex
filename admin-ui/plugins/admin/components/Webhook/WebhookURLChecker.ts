@@ -13,7 +13,7 @@ const NOT_ALLOWED = [
 ]
 const PATTERN = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(:\d+)?(\/[\w-.]*)*$/i
 
-export const isValid = (url) => {
+export const isValid = (url: string) => {
   if (url === undefined || url === null || !isAllowed(url)) {
     return false
   } else {
@@ -21,7 +21,7 @@ export const isValid = (url) => {
   }
 }
 
-const isAllowed = (url) => {
+const isAllowed = (url: string) => {
   let result = true
   for (let extention in NOT_ALLOWED) {
     if (url.startsWith(NOT_ALLOWED[extention])) {

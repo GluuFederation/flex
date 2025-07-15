@@ -24,37 +24,96 @@ import {
   setSelectedWebhook,
 } from 'Plugins/admin/redux/features/WebhookSlice'
 
-const WebhookListPage = () => {
+// Type definitions
+interface Webhook {
+  inum: string
+  displayName: string
+  url: string
+  httpMethod: string
+  jansEnabled: boolean
+  enabled?: boolean
+}
+
+interface WebhookState {
+  loading: boolean
+  webhooks: Webhook[]
+  totalItems: number
+}
+
+interface RootState {
+  webhookReducer: WebhookState
+  cedarPermissions: {
+    permissions: string[]
+  }
+}
+
+interface SearchOptions {
+  limit?: number
+  pattern?: string | null
+  startIndex?: number
+}
+
+interface TableAction {
+  icon: string | (() => JSX.Element)
+  tooltip?: string
+  iconProps?: {
+    color?: string
+    id?: string
+    style?: React.CSSProperties
+  }
+  isFreeAction?: boolean
+  disabled?: boolean
+  onClick: (event?: React.MouseEvent, rowData?: Webhook) => void
+}
+
+interface MaterialTableProps {
+  elevation?: number
+}
+
+const WebhookListPage: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
-  const [pageNumber, setPageNumber] = useState(0)
-  const { totalItems, webhooks } = useSelector((state) => state.webhookReducer)
-  const loading = useSelector((state) => state.webhookReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+  const [pageNumber, setPageNumber] = useState<number>(0)
+  const { totalItems, webhooks } = useSelector((state: RootState) => state.webhookReducer)
+  const loading = useSelector((state: RootState) => state.webhookReducer.loading)
+  const { permissions: cedarPermissions } = useSelector((state: RootState) => state.cedarPermissions)
+  const PaperContainer = useCallback((props: MaterialTableProps) => <Paper {...props} elevation={0} />, [])
 
   const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme.state.theme)
+  const themeColors = getThemeColor(theme?.state.theme || 'light')
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.webhooks'))
 
-  const [modal, setModal] = useState(false)
-  const [deleteData, setDeleteData] = useState(null)
+  const [modal, setModal] = useState<boolean>(false)
+  const [deleteData, setDeleteData] = useState<Webhook | null>(null)
   const toggle = () => setModal(!modal)
-  const submitForm = (userMessage) => {
-    const userAction = {}
+  const submitForm = (userMessage: string) => {
+    const userAction: Record<string, any> = {}
     toggle()
-    buildPayload(userAction, userMessage, deleteData)
-    dispatch(deleteWebhook({ action: userAction }))
+    buildPayload(userAction, userMessage, deleteData as any)
+    dispatch(deleteWebhook({ action: userAction } as any))
   }
 
-  const [myActions, setMyActions] = useState([])
-  const options = {}
+  const [myActions, setMyActions] = useState<TableAction[]>([])
+  const options: SearchOptions = {}
 
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState(null)
+  const [limit, setLimit] = useState<number>(10)
+  const [pattern, setPattern] = useState<string | null>(null)
+
+  const navigateToAddPage = useCallback(() => {
+    dispatch(setSelectedWebhook({}) as any)
+    navigate('/adm/webhook/add')
+  }, [dispatch, navigate])
+
+  const navigateToEditPage = useCallback(
+    (data: Webhook) => {
+      dispatch(setSelectedWebhook(data) as any)
+      navigate(`/adm/webhook/edit/${data.inum}`)
+    },
+    [dispatch, navigate],
+  )
 
   // Initialize Cedar permissions
   useEffect(() => {
@@ -65,13 +124,13 @@ const WebhookListPage = () => {
       }
     }
     initPermissions()
-    options['limit'] = 10
-    dispatch(getWebhook({ action: options }))
+    options.limit = 10
+    dispatch(getWebhook({ action: options }) as any)
   }, [])
 
   // Build actions only when permissions change
   useEffect(() => {
-    const actions = []
+    const actions: TableAction[] = []
 
     const canRead = hasCedarPermission(WEBHOOK_READ)
     const canWrite = hasCedarPermission(WEBHOOK_WRITE)
@@ -103,7 +162,7 @@ const WebhookListPage = () => {
         onClick: () => {
           setLimit(memoLimit)
           setPattern(memoPattern)
-          dispatch(getWebhook({ action: { limit: memoLimit, pattern: memoPattern } }))
+          dispatch(getWebhook({ action: { limit: memoLimit, pattern: memoPattern } }) as any)
         },
       })
     }
@@ -117,31 +176,35 @@ const WebhookListPage = () => {
         onClick: navigateToAddPage,
       })
 
-      actions.push((rowData) => ({
+      actions.push({
         icon: 'edit',
         iconProps: {
           color: 'primary',
-          id: 'editScope' + rowData.inum,
           style: { color: customColors.darkGray },
         },
-        onClick: (event, rowData) => navigateToEditPage(rowData),
+        onClick: (event?: React.MouseEvent, rowData?: Webhook) => {
+          if (rowData) {
+            navigateToEditPage(rowData)
+          }
+        },
         disabled: !canWrite,
-      }))
+      })
     }
 
     if (canDelete) {
-      actions.push((rowData) => ({
+      actions.push({
         icon: () => <DeleteOutlined />,
         iconProps: {
           style: { color: customColors.darkGray },
-          id: 'deleteClient' + rowData.inum,
         },
-        onClick: (event, rowData) => {
-          setDeleteData(rowData)
-          toggle()
+        onClick: (event?: React.MouseEvent, rowData?: Webhook) => {
+          if (rowData) {
+            setDeleteData(rowData)
+            toggle()
+          }
         },
         disabled: false,
-      }))
+      })
     }
 
     setMyActions(actions)
@@ -150,28 +213,29 @@ const WebhookListPage = () => {
   let memoLimit = limit
   let memoPattern = pattern
 
-  const handleOptionsChange = useCallback((event) => {
-    if (event.target.name == 'limit') {
-      memoLimit = event.target.value
-    } else if (event.target.name == 'pattern') {
+  const handleOptionsChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.name === 'limit') {
+      memoLimit = parseInt(event.target.value)
+    } else if (event.target.name === 'pattern') {
       memoPattern = event.target.value
     }
   }, [])
 
-  const onPageChangeClick = (page) => {
+  const onPageChangeClick = (page: number) => {
     const startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
-    options['limit'] = limit
-    options['pattern'] = pattern
+    options.startIndex = startCount
+    options.limit = limit
+    options.pattern = pattern
     setPageNumber(page)
-    dispatch(getWebhook({ action: options }))
+    dispatch(getWebhook({ action: options }) as any)
   }
-  const onRowCountChangeClick = (count) => {
-    options['limit'] = count
-    options['pattern'] = pattern
+
+  const onRowCountChangeClick = (count: number) => {
+    options.limit = count
+    options.pattern = pattern
     setPageNumber(0)
     setLimit(count)
-    dispatch(getWebhook({ action: options }))
+    dispatch(getWebhook({ action: options }) as any)
   }
 
   const PaginationWrapper = useCallback(
@@ -179,27 +243,16 @@ const WebhookListPage = () => {
       <TablePagination
         count={totalItems}
         page={pageNumber}
-        onPageChange={(prop, page) => {
+        onPageChange={(_event, page) => {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
+        onRowsPerPageChange={(event) => {
+          onRowCountChangeClick(parseInt(event.target.value))
+        }}
       />
     ),
     [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
-  )
-
-  const navigateToAddPage = useCallback(() => {
-    dispatch(setSelectedWebhook({}))
-    navigate('/adm/webhook/add')
-  }, [dispatch, navigate])
-
-  const navigateToEditPage = useCallback(
-    (data) => {
-      dispatch(setSelectedWebhook(data))
-      navigate(`/adm/webhook/edit/${data.inum}`)
-    },
-    [dispatch, navigate],
   )
 
   return (
@@ -221,7 +274,7 @@ const WebhookListPage = () => {
                   title: `${t('fields.url')}`,
                   field: 'url',
                   width: '40%',
-                  render: (rowData) => (
+                  render: (rowData: Webhook) => (
                     <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>{rowData.url}</div>
                   ),
                 },
@@ -231,18 +284,18 @@ const WebhookListPage = () => {
               data={webhooks}
               isLoading={loading}
               title=""
-              actions={myActions}
+              actions={myActions as any}
               options={{
                 idSynonym: 'inum',
                 search: false,
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData) => ({
-                  backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
+                rowStyle: (rowData: Webhook) => ({
+                  backgroundColor: rowData.jansEnabled ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
-                  ...applicationStyle.tableHeaderStyle,
+                  ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
                   ...bgThemeColor,
                 },
                 actionsColumnIndex: -1,
