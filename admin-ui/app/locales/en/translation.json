@@ -585,7 +585,7 @@
     "OSVersion": "OS Version",
     "platform": "Platform",
     "authType": "Auth Type",
-    "showCedarLogs?": "Cedar Log enabled?",
+    "showCedarLogs?": "Cedarling Log enabled?",
     "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes."
   },
   "languages": {
@@ -1521,7 +1521,7 @@
       "sessionTimeoutInMins": "Determines the duration of inactivity allowed before the current session expires.",
       "adminui_default_acr": "This field controls the default authentication mechanism used in Admin UI.",
       "custom_params": "The custom parameters allow you to pass additional information to the authorization server during Admin UI authentication.",
-      "cedarSwitch": "This switch is used to enable or disable Cedar logs in the browser console."
+      "cedarSwitch": "This switch is used to enable or disable Cedarling logs in the browser console."
     },
     "license": {
       "productName": "The license is registered under following product.",
