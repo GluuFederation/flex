@@ -67,11 +67,6 @@ class Upgrade:
 
         should_update = False
 
-        # set attributes to False
-        if as_boolean(entry.attrs["jansAccessTknAsJwt"]):
-            entry.attrs["jansAccessTknAsJwt"] = False
-            should_update = True
-
         if not self.backend.client.use_simple_json:
             scopes = entry.attrs["jansScope"]["v"]
             grant_types = entry.attrs["jansGrantTyp"]["v"]
