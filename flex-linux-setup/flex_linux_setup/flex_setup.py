@@ -488,7 +488,7 @@ class flex_installer(JettyInstaller):
 
         client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
         if client_check_result['2001.'] == -1:
-            client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
+            client_tmp_fn = os.path.join(self.source_dir, 'admin_ui_client.ldif')
             admin_ui_client_scopes = []
             for scope in aui_config_template_vars['oidcConfig']['auiWebClient']['scopes']:
                 scope_id = self.get_scope_dn_by_id(scope)
@@ -504,6 +504,7 @@ class flex_installer(JettyInstaller):
                 authorization_methods=['none'],
                 other_props={'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}'],
                              'jansAccessTknAsJwt': ['TRUE'],
+                             'jansSignedRespAlg': ['RS256']
                              }
                 )
 
@@ -514,7 +515,7 @@ class flex_installer(JettyInstaller):
 
         client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == -1:
-            admin_ui_web_client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_web_client.ldif')
+            admin_ui_web_client_tmp_fn = os.path.join(self.source_dir, 'admin_ui_web_client.ldif')
             admin_ui_backend_client_scopes = []
             for scope in aui_config_template_vars['oidcConfig']['auiBackendApiClient']['scopes']:
                 scope_id = self.get_scope_dn_by_id(scope)
@@ -534,6 +535,7 @@ class flex_installer(JettyInstaller):
                 scopes=admin_ui_backend_client_scopes,
                 authorization_methods=['client_secret_basic'],
                 trusted_client='FALSE',
+                other_props={'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":["inum=2D3E.5A04,ou=scripts,o=jans"],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']},
                 unset_props=('jansLogoutURI', 'jansPostLogoutRedirectURI', 'jansRedirectURI', 'jansSignedRespAlg')
             )
 
