@@ -9,7 +9,7 @@ function HealthPage() {
   const { t } = useTranslation()
   SetTitle(t('menus.services_health'))
   const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme.state.theme)
+  const themeColors = getThemeColor(theme?.state?.theme || 'light')
 
   return (
     <Container>

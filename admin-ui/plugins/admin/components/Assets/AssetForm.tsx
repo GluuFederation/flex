@@ -20,24 +20,74 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { ASSET } from 'Utils/ApiResources'
 
-const AssetForm = () => {
-  const { id } = useParams()
-  const [assetFile, setAssetFile] = useState(null)
-  const userAction = {}
-  const { selectedAsset, services } = useSelector((state) => state.assetReducer)
+// Type definitions
+interface Asset {
+  inum: string
+  dn: string
+  baseDn: string
+  creationDate: string
+  document: File | null
+  fileName: string
+  enabled: boolean
+  description: string
+  service: string
+}
+
+interface FormValues {
+  creationDate: string
+  document: File | null
+  fileName: string
+  enabled: boolean
+  description: string
+  service: string[]
+}
+
+interface AssetPayload extends Record<string, unknown> {
+  creationDate: string
+  document: File | null
+  fileName: string
+  enabled: boolean
+  description: string
+  service: string
+  inum?: string
+  dn?: string
+  baseDn?: string
+}
+
+interface AssetReducerState {
+  selectedAsset: Asset | null
+  services: string[]
+  saveOperationFlag: boolean
+  errorInSaveOperationFlag: boolean
+}
+
+interface RootState {
+  assetReducer: AssetReducerState
+}
+
+interface UserAction extends Record<string, unknown> {
+  [key: string]: any
+}
+
+const AssetForm: React.FC = () => {
+  const { id } = useParams<{ id: string }>()
+  const [assetFile, setAssetFile] = useState<File | null>(null)
+  const userAction: UserAction = {}
+  const { selectedAsset, services } = useSelector((state: RootState) => state.assetReducer)
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const saveOperationFlag = useSelector((state) => state.assetReducer.saveOperationFlag)
+  const saveOperationFlag = useSelector((state: RootState) => state.assetReducer.saveOperationFlag)
   const errorInSaveOperationFlag = useSelector(
-    (state) => state.assetReducer.errorInSaveOperationFlag,
+    (state: RootState) => state.assetReducer.errorInSaveOperationFlag,
   )
   const dispatch = useDispatch()
-  const [modal, setModal] = useState(false)
-  const validatePayload = (values) => {
+  const [modal, setModal] = useState<boolean>(false)
+
+  const validatePayload = (values: FormValues): boolean => {
     return false
   }
 
-  const buildAcceptFileTypes = () => {
+  const buildAcceptFileTypes = (): Record<string, string[]> => {
     return {
       'text/plain': ['.properties'],
       'text/css': ['.css'],
@@ -50,7 +100,7 @@ const AssetForm = () => {
     }
   }
 
-  const handleFileDrop = (files) => {
+  const handleFileDrop = (files: File[]): void => {
     const file = files[0]
     if (file) {
       setAssetFile(file)
@@ -59,11 +109,11 @@ const AssetForm = () => {
     }
   }
 
-  const handleClearFiles = () => {
+  const handleClearFiles = (): void => {
     setAssetFile(null)
   }
 
-  const formik = useFormik({
+  const formik = useFormik<FormValues>({
     initialValues: {
       creationDate: selectedAsset?.creationDate || '',
       document: selectedAsset?.document || null,
@@ -72,7 +122,7 @@ const AssetForm = () => {
       description: selectedAsset?.description || '',
       service: selectedAsset?.service ? [selectedAsset?.service] : [],
     },
-    onSubmit: (values) => {
+    onSubmit: (values: FormValues) => {
       const faulty = validatePayload(values)
       if (faulty) {
         return
@@ -86,29 +136,29 @@ const AssetForm = () => {
     }),
   })
 
-  const toggle = () => {
+  const toggle = (): void => {
     setModal(!modal)
   }
 
   const submitForm = useCallback(
-    (userMessage) => {
+    (userMessage: string): void => {
       toggle()
-      const payload = {
+      const payload: AssetPayload = {
         ...formik.values,
         service: formik.values.service[0],
       }
-      if (id) {
-        payload['inum'] = selectedAsset.inum
-        payload['dn'] = selectedAsset.dn
-        payload['baseDn'] = selectedAsset.baseDn
+      if (id && selectedAsset) {
+        payload.inum = selectedAsset.inum
+        payload.dn = selectedAsset.dn
+        payload.baseDn = selectedAsset.baseDn
         buildPayload(userAction, userMessage, payload)
-        dispatch(updateJansAsset({ action: userAction }))
+        dispatch(updateJansAsset({ action: userAction } as any))
       } else {
         buildPayload(userAction, userMessage, payload)
-        dispatch(createJansAsset({ action: userAction }))
+        dispatch(createJansAsset({ action: userAction } as any))
       }
     },
-    [formik],
+    [formik, selectedAsset, id, dispatch, userAction],
   )
 
   useEffect(() => {
@@ -116,7 +166,7 @@ const AssetForm = () => {
     return function cleanup() {
       dispatch(resetFlags())
     }
-  }, [saveOperationFlag, errorInSaveOperationFlag])
+  }, [saveOperationFlag, errorInSaveOperationFlag, navigate, dispatch])
 
   return (
     <>

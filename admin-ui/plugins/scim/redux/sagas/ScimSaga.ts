@@ -14,19 +14,43 @@ const UPDATE_SCIM_CONFIG = 'update_scim_config'
 const GET_SCIM_CONFIG = 'get_scim_config'
 
 const JansConfigApi = require('jans_config_api')
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
+
+// Type definitions
+interface ScimActionPayload {
+  action: {
+    action_data: unknown
+  }
+}
+
+interface ScimUpdateActionPayload {
+  payload: ScimActionPayload
+}
+
+interface AuthState {
+  token: {
+    access_token: string
+  }
+  issuer: string
+  userinfo_jwt: string
+}
+
+interface RootState {
+  authReducer: AuthState
+}
+
+function* newFunction(): Generator<any, ScimApi, any> {
+  const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
+  const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
   const api = new JansConfigApi.SCIMConfigManagementApi(getClient(JansConfigApi, token, issuer))
   return new ScimApi(api)
 }
 
-export function* updateScimSaga({ payload }) {
+export function* updateScimSaga({ payload }: ScimUpdateActionPayload): Generator<any, any, any> {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, PATCH, UPDATE_SCIM_CONFIG, payload)
-    const scimApi = yield* newFunction()
-    const data = yield call(scimApi.updateScimConfig, payload.action.action_data)
+    const scimApi: ScimApi = yield* newFunction()
+    const data: unknown = yield call(scimApi.updateScimConfig, payload.action.action_data)
     yield put(updateToast(true, 'success'))
     yield put(getScimConfigurationResponse(data))
     yield call(postUserAction, audit)
@@ -35,40 +59,40 @@ export function* updateScimSaga({ payload }) {
   } catch (e) {
     yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
     return e
   }
 }
 
-export function* getScimSaga() {
+export function* getScimSaga(): Generator<any, any, any> {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, GET_SCIM_CONFIG, {})
-    const scimApi = yield* newFunction()
-    const data = yield call(scimApi.getScimConfig)
+    const scimApi: ScimApi = yield* newFunction()
+    const data: unknown = yield call(scimApi.getScimConfig)
     yield put(getScimConfigurationResponse(data))
     yield call(postUserAction, audit)
     return data
   } catch (e) {
     yield put(getScimConfigurationResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
     return e
   }
 }
 
-export function* watchGetScim() {
+export function* watchGetScim(): Generator<any, void, any> {
   yield takeEvery('scim/getScimConfiguration', getScimSaga)
 }
 
-export function* watchUpdateScim() {
-  yield takeLatest('scim/putScimConfiguration', updateScimSaga)
+export function* watchUpdateScim(): Generator<any, void, any> {
+  yield takeLatest('scim/putScimConfiguration' as any, updateScimSaga)
 }
 
-export default function* rootSaga() {
+export default function* rootSaga(): Generator<any, void, any> {
   yield all([fork(watchGetScim), fork(watchUpdateScim)])
 }

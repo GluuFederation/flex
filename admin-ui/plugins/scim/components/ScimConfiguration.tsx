@@ -7,12 +7,56 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
-const ScimConfiguration = ({ handleSubmit }) => {
-  const scimConfigs = useSelector((state) => state.scimReducer.scim)
-  const [modal, setModal] = useState(false)
+// Define the SCIM configuration data structure
+interface ScimConfig {
+  baseDN?: string
+  applicationUrl?: string
+  baseEndpoint?: string
+  personCustomObjectClass?: string
+  oxAuthIssuer?: string
+  maxCount?: number
+  bulkMaxOperations?: number
+  bulkMaxPayloadSize?: number
+  userExtensionSchemaURI?: string
+  loggingLevel?: string
+  loggingLayout?: string
+  externalLoggerConfiguration?: string
+  metricReporterInterval?: number
+  metricReporterKeepDataDays?: number
+  metricReporterEnabled?: boolean
+  disableJdkLogger?: boolean
+  useLocalCache?: boolean
+  action_message?: string
+  [key: string]: any
+}
+
+// Define the Redux state structure
+interface ScimState {
+  scim: ScimConfig
+  loading: boolean
+}
+
+interface RootState {
+  scimReducer: ScimState
+}
+
+// Define the component props interface
+interface ScimConfigurationProps {
+  handleSubmit: (differences: any[], userMessage: string) => void
+}
+
+// Define the patch operation interface
+interface PatchOperation {
+  op: 'replace' | 'add' | 'remove'
+  path: string
+  value: any
+}
+
+const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) => {
+  const scimConfigs = useSelector((state: RootState) => state.scimReducer.scim)
+  const [modal, setModal] = useState<boolean>(false)
   const toggle = () => {
     setModal(!modal)
   }
@@ -24,8 +68,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
     },
   })
 
-  const submitForm = (userMessage) => {
-    const differences = []
+  const submitForm = (userMessage: string) => {
+    const differences: PatchOperation[] = []
     delete formik.values?.action_message
 
     for (const key in formik.values) {
@@ -180,7 +224,6 @@ const ScimConfiguration = ({ handleSubmit }) => {
             label="fields.logging_level"
             name="loggingLevel"
             value={formik.values.loggingLevel}
-            defaultValue={formik.values.loggingLevel}
             values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
             formik={formik}
             lsize={3}
@@ -248,7 +291,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuToogleRow
             label="fields.metric_reporter_enabled"
             name="metricReporterEnabled"
-            handler={(e) => {
+            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
               formik.setFieldValue('metricReporterEnabled', e.target.checked)
             }}
             lsize={3}
@@ -260,7 +303,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuToogleRow
             label="fields.disable_jdk_logger"
             name="disableJdkLogger"
-            handler={(e) => {
+            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
               formik.setFieldValue('disableJdkLogger', e.target.checked)
             }}
             lsize={3}
@@ -272,7 +315,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuToogleRow
             label="fields.use_local_cache"
             name="useLocalCache"
-            handler={(e) => {
+            handler={(e: React.ChangeEvent<HTMLInputElement>) => {
               formik.setFieldValue('useLocalCache', e.target.checked)
             }}
             lsize={3}
@@ -300,10 +343,6 @@ const ScimConfiguration = ({ handleSubmit }) => {
       />
     </Form>
   )
-}
-
-ScimConfiguration.propTypes = {
-  handleSubmit: PropTypes.func,
 }
 
 export default ScimConfiguration
