@@ -6,9 +6,11 @@
             "clientSecret": "%(admin_ui_client_encoded_pw)s",
             "scopes": [
                 "openid",
+                "https://jans.io/auth/ssa.admin",
+                "email",
                 "profile",
-                "user_name",
-                "email"
+                "offline_access",
+                "jans_stat"
             ],
             "acrValues": [
                 "%(adminui_authentication_mode)s"
@@ -22,20 +24,24 @@
             "opHost": "%(token_server_base_url)s",
             "clientId": "%(token_server_admin_ui_client_id)s",
             "clientSecret": "%(token_server_admin_ui_client_encoded_pw)s",
+            "introspectionEndpoint": "%(token_server_introspection_url)s",
             "tokenEndpoint": "%(token_server_token_url)s",
             "scopes": [
-                "openid"
-            ],
-            "introspectionEndpoint": "%(token_server_introspection_url)s"
+                "openid",
+                "https://jans.io/auth/ssa.admin"
+            ]
         }
     },
     "uiConfig": {
-      "sessionTimeoutInMins": 30
+      "sessionTimeoutInMins": 30,
+      "allowSmtpKeystoreEdit": true,
+      "cedarlingLogType": "off"
     },
     "licenseConfig": {
         "ssa": "%(ssa)s",
         "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
         "licenseHardwareKey": "%(license_hardware_key)s",
+        "intervalForSyncLicenseDetailsInDays": 30,
         "oidcClient": {
             "opHost": "%(op_host)s",
             "clientId": "%(oidc_client_id)s",
