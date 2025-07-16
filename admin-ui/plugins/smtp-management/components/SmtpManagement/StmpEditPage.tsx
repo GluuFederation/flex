@@ -9,25 +9,67 @@ import { clearSmtpConfig, getSmpts, updateSmpt } from '../../redux/features/smtp
 import SmtpForm from './SmtpForm'
 import GluuInfo from '../../../../app/routes/Apps/Gluu/GluuInfo'
 
+// Define interfaces for SMTP state
+interface SmtpConfiguration {
+  host?: string
+  port?: number
+  connect_protection?: string
+  from_name?: string
+  from_email_address?: string
+  requires_authentication?: boolean
+  smtp_authentication_account_username?: string
+  smtp_authentication_account_password?: string
+  trust_host?: boolean
+  key_store?: string
+  key_store_password?: string
+  key_store_alias?: string
+  signing_algorithm?: string
+}
+
+interface SmtpState {
+  smtp: SmtpConfiguration
+  loading: boolean
+  testStatus: any
+  openModal: boolean
+}
+
+interface AuthState {
+  config?: {
+    allowSmtpKeystoreEdit?: boolean
+  }
+}
+
+interface RootState {
+  smtpsReducer: SmtpState
+  authReducer: AuthState
+}
+
+interface UpdateSmtpOptions {
+  smtpConfiguration: SmtpConfiguration
+}
+
 function StmpEditPage() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const loading = useSelector((state) => state.smtpsReducer.loading)
-  const item = useSelector((state) => state.smtpsReducer)
+  const loading = useSelector((state: RootState) => state.smtpsReducer.loading)
+  const item = useSelector((state: RootState) => state.smtpsReducer)
 
-  const handleSubmit = (data) => {
-    const opts = {}
-    const smtpData = JSON.stringify(data)
-    opts['smtpConfiguration'] = JSON.parse(smtpData)
+  const handleSubmit = (data: SmtpConfiguration) => {
+    const opts: UpdateSmtpOptions = {
+      smtpConfiguration: data,
+    }
     dispatch(updateSmpt(opts))
   }
+
   const allowSmtpKeystoreEdit = useSelector(
-    (state) => state.authReducer?.config?.allowSmtpKeystoreEdit,
+    (state: RootState) => state.authReducer?.config?.allowSmtpKeystoreEdit || false,
   )
+
   SetTitle(t('menus.stmp_management'))
+
   useEffect(() => {
-    dispatch(getSmpts())
-  }, [])
+    dispatch(getSmpts({ payload: {} }))
+  }, [dispatch])
 
   return (
     <GluuLoader blocking={loading}>
@@ -51,4 +93,5 @@ function StmpEditPage() {
     </GluuLoader>
   )
 }
+
 export default StmpEditPage

@@ -143,6 +143,7 @@ const authSlice = createSlice({
         sessionTimeoutInMins?: number
         acrValues?: string
         cedarlingLogType?: any
+        allowSmtpKeystoreEdit?: boolean
       }>,
     ) => {
       state.loadingConfig = true
