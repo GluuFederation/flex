@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Formik, ErrorMessage } from 'formik'
+import { Formik, ErrorMessage, FormikProps } from 'formik'
 import { Col, InputGroup, CustomInput, Form, FormGroup, Input } from 'Components'
 import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -13,17 +13,66 @@ import * as Yup from 'yup'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 
-function AttributeForm(props) {
+interface AttributeValidation {
+  regexp?: string | null
+  minLength?: number | null
+  maxLength?: number | null
+}
+
+interface AttributeItem {
+  inum?: string
+  name: string
+  displayName: string
+  description: string
+  status: string
+  dataType: string
+  editType: string[]
+  viewType: string[]
+  usageType: string[]
+  jansHideOnDiscovery: boolean
+  oxMultiValuedAttribute: boolean
+  attributeValidation: AttributeValidation
+  scimCustomAttr: boolean
+  claimName?: string
+  saml1Uri?: string
+  saml2Uri?: string
+}
+
+interface AttributeFormValues extends AttributeItem {
+  maxLength?: number | null
+  minLength?: number | null
+  regexp?: string | null
+}
+
+interface SubmitData {
+  data: string
+  userMessage: string
+}
+
+interface AttributeFormProps {
+  item: AttributeItem
+  customOnSubmit: (data: SubmitData) => void
+  hideButtons?: boolean
+}
+
+interface HandleAttributeSubmitParams {
+  item: AttributeItem
+  values: AttributeFormValues
+  customOnSubmit: (data: SubmitData) => void
+  userMessage: string
+}
+
+function AttributeForm(props: AttributeFormProps) {
   const { item, customOnSubmit, hideButtons } = props
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
-  const [values, setValues] = useState({})
+  const [values, setValues] = useState<AttributeFormValues>({} as AttributeFormValues)
   const [modal, setModal] = useState(false)
   const toggleModal = () => {
     setModal(!modal)
   }
 
-  const getInitialState = (item) => {
+  const getInitialState = (item: AttributeItem): boolean => {
     return (
       item.attributeValidation?.regexp != null ||
       item.attributeValidation?.minLength != null ||
@@ -43,11 +92,16 @@ function AttributeForm(props) {
     }
   }
 
-  const submitForm = (userMessage) => {
+  const submitForm = (userMessage: string) => {
     handleAttributeSubmit({ values, item, customOnSubmit, userMessage })
   }
 
-  const handleAttributeSubmit = ({ item, values, customOnSubmit, userMessage }) => {
+  const handleAttributeSubmit = ({
+    item,
+    values,
+    customOnSubmit,
+    userMessage,
+  }: HandleAttributeSubmitParams) => {
     const result = Object.assign(item, values)
     if (result.maxLength !== null) {
       result['attributeValidation'].maxLength = result.maxLength
@@ -86,7 +140,7 @@ function AttributeForm(props) {
     viewType: Yup.array().required('Required!'),
   })
 
-  const getInitialAttributeValues = (item) => {
+  const getInitialAttributeValues = (item: AttributeItem): AttributeFormValues => {
     return {
       ...item,
       name: item.name,
@@ -116,7 +170,7 @@ function AttributeForm(props) {
         toggleModal()
       }}
     >
-      {(formik) => (
+      {(formik: FormikProps<AttributeFormValues>) => (
         <Form onSubmit={formik.handleSubmit}>
           {item.inum && (
             <GluuInumInput
@@ -338,7 +392,7 @@ function AttributeForm(props) {
                 rsize={6}
                 label="fields.multivalued"
                 value={formik.values?.oxMultiValuedAttribute}
-                handler={(e) => {
+                handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                   formik.setFieldValue('oxMultiValuedAttribute', e.target.checked)
                 }}
                 doc_category={ATTRIBUTE}
@@ -353,7 +407,7 @@ function AttributeForm(props) {
                 label="fields.hide_on_discovery"
                 value={formik.values?.jansHideOnDiscovery}
                 doc_category={ATTRIBUTE}
-                handler={(e) => {
+                handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                   formik.setFieldValue('jansHideOnDiscovery', e.target.checked)
                 }}
               />
@@ -367,7 +421,7 @@ function AttributeForm(props) {
                 label="fields.include_in_scim_extension"
                 value={formik.values?.scimCustomAttr}
                 doc_category={ATTRIBUTE}
-                handler={(e) => {
+                handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                   formik.setFieldValue('scimCustomAttr', e.target.checked)
                 }}
               />

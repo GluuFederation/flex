@@ -8,9 +8,52 @@ import { editAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { cloneDeep } from 'lodash'
 
-function AttributeEditPage() {
-  const item = useSelector((state) => state.attributeReducer.item),
-    loading = useSelector((state) => state.attributeReducer.loading),
+// Define interfaces for TypeScript
+interface AttributeValidation {
+  maxLength?: number | null
+  regexp?: string | null
+  minLength?: number | null
+}
+
+interface AttributeItem {
+  inum?: string
+  name: string
+  displayName: string
+  description: string
+  status: string
+  dataType: string
+  editType: string[]
+  viewType: string[]
+  usageType: string[]
+  jansHideOnDiscovery: boolean
+  oxMultiValuedAttribute: boolean
+  attributeValidation: AttributeValidation
+  scimCustomAttr: boolean
+  claimName?: string
+  saml1Uri?: string
+  saml2Uri?: string
+}
+
+interface AttributeState {
+  item: AttributeItem
+  loading: boolean
+  items: AttributeItem[]
+  totalItems: number
+  entriesCount: number
+}
+
+interface RootState {
+  attributeReducer: AttributeState
+}
+
+interface SubmitData {
+  data: string
+  userMessage: string
+}
+
+function AttributeViewPage() {
+  const item = useSelector((state: RootState) => state.attributeReducer.item),
+    loading = useSelector((state: RootState) => state.attributeReducer.loading),
     extensibleItems = cloneDeep(item),
     dispatch = useDispatch(),
     navigate = useNavigate()
@@ -22,12 +65,14 @@ function AttributeEditPage() {
       minLength: null,
     }
   }
-  function customHandleSubmit(data) {
+
+  function customHandleSubmit(data: SubmitData) {
     if (data) {
-      dispatch(editAttribute({ data }))
+      dispatch(editAttribute({ data } as any))
       navigate('/attributes')
     }
   }
+
   return (
     <GluuLoader blocking={loading}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
@@ -38,7 +83,7 @@ function AttributeEditPage() {
               attributeValidation: { ...extensibleItems.attributeValidation },
             }}
             customOnSubmit={customHandleSubmit}
-            hideButtons={{ save: true }}
+            hideButtons={true}
           />
         </CardBody>
       </Card>
@@ -46,4 +91,4 @@ function AttributeEditPage() {
   )
 }
 
-export default AttributeEditPage
+export default AttributeViewPage

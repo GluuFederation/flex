@@ -4,10 +4,38 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 
-const AttributeDetailPage = ({ row }) => {
+// Import the AttributeItem interface from the form component
+interface AttributeItem {
+  inum?: string
+  name: string
+  displayName: string
+  description: string
+  status: string
+  dataType: string
+  editType: string[]
+  viewType: string[]
+  usageType: string[]
+  jansHideOnDiscovery: boolean
+  oxMultiValuedAttribute: boolean
+  attributeValidation: {
+    regexp?: string | null
+    minLength?: number | null
+    maxLength?: number | null
+  }
+  scimCustomAttr: boolean
+  claimName?: string
+  saml1Uri?: string
+  saml2Uri?: string
+}
+
+interface AttributeDetailPageProps {
+  row: AttributeItem
+}
+
+const AttributeDetailPage: React.FC<AttributeDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state.theme || 'darkBlack'
 
   return (
     <React.Fragment>
@@ -56,8 +84,8 @@ const AttributeDetailPage = ({ row }) => {
             <Label sm={12}>{t('fields.attribute_edit_type')}:</Label>
           </Col>
           <Col sm={3}>
-            {Array.from(row.editType).map((item, index) => (
-              <Badge key={item} color={`primary-${selectedTheme}`}>
+            {row.editType.map((item: string, index: number) => (
+              <Badge key={`edit-${index}`} color={`primary-${selectedTheme}`}>
                 {item}
               </Badge>
             ))}
@@ -66,8 +94,8 @@ const AttributeDetailPage = ({ row }) => {
             <Label sm={12}>{t('fields.attribute_view_type')}:</Label>
           </Col>
           <Col sm={3}>
-            {Array.from(row.viewType).map((item, index) => (
-              <Badge key={item} color={`primary-${selectedTheme}`}>
+            {row.viewType.map((item: string, index: number) => (
+              <Badge key={`view-${index}`} color={`primary-${selectedTheme}`}>
                 {item}
               </Badge>
             ))}
@@ -77,4 +105,5 @@ const AttributeDetailPage = ({ row }) => {
     </React.Fragment>
   )
 }
+
 export default AttributeDetailPage

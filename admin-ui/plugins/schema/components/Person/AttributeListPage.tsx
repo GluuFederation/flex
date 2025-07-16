@@ -27,14 +27,75 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import styled from 'styled-components'
 
+// Define interfaces for TypeScript
+interface AttributeValidation {
+  regexp?: string | null
+  minLength?: number | null
+  maxLength?: number | null
+}
+
+interface AttributeItem {
+  inum: string
+  name: string
+  displayName: string
+  description: string
+  status: string
+  dataType: string
+  editType: string[]
+  viewType: string[]
+  usageType: string[]
+  jansHideOnDiscovery: boolean
+  oxMultiValuedAttribute: boolean
+  attributeValidation: AttributeValidation
+  scimCustomAttr: boolean
+  claimName?: string
+  saml1Uri?: string
+  saml2Uri?: string
+}
+
+interface AttributeState {
+  items: AttributeItem[]
+  item: AttributeItem
+  loading: boolean
+  totalItems: number
+  entriesCount: number
+}
+
+interface CedarPermissionsState {
+  permissions: { [key: string]: boolean }
+  loading: boolean
+  error: string | null
+  initialized: boolean | null
+  isInitializing: boolean
+}
+
+interface RootState {
+  attributeReducer: AttributeState
+  cedarPermissions: CedarPermissionsState
+}
+
+interface SearchOptions {
+  startIndex?: number
+  limit?: number
+  pattern?: string
+}
+
+interface ThemeContextType {
+  state: {
+    theme: string
+  }
+}
+
 function AttributeListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const attributes = useSelector((state) => state.attributeReducer.items)
-  const loading = useSelector((state) => state.attributeReducer.loading)
-  const { totalItems } = useSelector((state) => state.attributeReducer)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const attributes = useSelector((state: RootState) => state.attributeReducer.items)
+  const loading = useSelector((state: RootState) => state.attributeReducer.loading)
+  const { totalItems } = useSelector((state: RootState) => state.attributeReducer)
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootState) => state.cedarPermissions,
+  )
 
   // Permission initialization
   useEffect(() => {
@@ -50,22 +111,22 @@ function AttributeListPage() {
     }
 
     authorizePermissions()
-  }, [])
+  }, [authorize])
 
   useEffect(() => {}, [cedarPermissions])
 
-  const options = {}
+  const options: SearchOptions = {}
   const pageSize = localStorage.getItem('paggingSize')
-    ? parseInt(localStorage.getItem('paggingSize'))
+    ? parseInt(localStorage.getItem('paggingSize') || '10')
     : 10
   const [limit, setLimit] = useState(pageSize)
   const [pageNumber, setPageNumber] = useState(0)
-  const [pattern, setPattern] = useState(null)
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const [pattern, setPattern] = useState<string | null>(null)
+  const theme = useContext(ThemeContext) as ThemeContextType
+  const selectedTheme = theme?.state?.theme || 'darkBlack'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const StyledBadge = styled(Badge)`
+  const StyledBadge = styled(Badge)<{ status: string }>`
     background-color: ${(props) =>
       props.status === 'active' ? customColors.darkGray : customColors.paleYellow} !important;
     color: ${customColors.white} !important;
@@ -74,43 +135,46 @@ function AttributeListPage() {
   useEffect(() => {
     makeOptions()
     dispatch(getAttributes({ options }))
-  }, [])
+  }, [dispatch])
+
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
-  const myActions = []
+  const myActions: any[] = []
   SetTitle(t('fields.attributes'))
 
   let memoLimit = limit
   let memoPattern = pattern
 
   const navigate = useNavigate()
-  const [item, setItem] = useState({})
+  const [item, setItem] = useState<AttributeItem>({} as AttributeItem)
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
-  function handleOptionsChange(event) {
-    if (event.target.name == 'limit') {
-      memoLimit = event.target.value
-    } else if (event.target.name == 'pattern') {
+
+  function handleOptionsChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.target.name === 'limit') {
+      memoLimit = parseInt(event.target.value)
+    } else if (event.target.name === 'pattern') {
       memoPattern = event.target.value
-      if (event.keyCode === 13) {
+      if ((event as any).keyCode === 13) {
         makeOptions()
         dispatch(searchAttributes({ options }))
       }
     }
   }
 
-  const onPageChangeClick = (page) => {
+  const onPageChangeClick = (page: number) => {
     makeOptions()
     const startCount = page * limit
-    options['startIndex'] = startCount
-    options['limit'] = limit
+    options.startIndex = startCount
+    options.limit = limit
     setPageNumber(page)
     dispatch(getAttributes({ options }))
   }
-  const onRowCountChangeClick = (count) => {
+
+  const onRowCountChangeClick = (count: number) => {
     makeOptions()
-    options['startIndex'] = 0
-    options['limit'] = count
+    options.startIndex = 0
+    options.limit = count
     setPageNumber(0)
     setLimit(count)
     dispatch(getAttributes({ options }))
@@ -118,39 +182,60 @@ function AttributeListPage() {
 
   function makeOptions() {
     setPattern(memoPattern)
-    options['limit'] = memoLimit
+    options.limit = memoLimit
     if (memoPattern) {
-      options['pattern'] = memoPattern
+      options.pattern = memoPattern
     }
   }
-  function handleGoToAttributeEditPage(row) {
+
+  function handleGoToAttributeEditPage(row: AttributeItem) {
     dispatch(setCurrentItem({ item: row }))
-    return navigate(`/attribute/edit/:` + row.inum)
+    return navigate(`/attribute/edit/:${row.inum}`)
   }
-  function handleGoToAttributeViewPage(row) {
+
+  function handleGoToAttributeViewPage(row: AttributeItem) {
     dispatch(setCurrentItem({ item: row }))
-    return navigate(`/attribute/view/:` + row.inum)
+    return navigate(`/attribute/view/:${row.inum}`)
   }
-  function handleAttribueDelete(row) {
+
+  function handleAttribueDelete(row: AttributeItem) {
     setItem(row)
     toggle()
   }
+
   function handleGoToAttributeAddPage() {
     return navigate('/attribute/new')
   }
 
+  const GluuSearch = useCallback(() => {
+    return (
+      <GluuAdvancedSearch
+        limitId={limitId}
+        limit={limit}
+        pattern={pattern}
+        patternId={patternId}
+        handler={handleOptionsChange}
+        showLimit={false}
+      />
+    )
+  }, [limitId, limit, pattern, patternId])
+
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-  const DetailsPanel = useCallback((rowData) => <AttributeDetailPage row={rowData.rowData} />, [])
+  const DetailsPanel = useCallback(
+    (rowData: { rowData: AttributeItem }) => <AttributeDetailPage row={rowData.rowData} />,
+    [],
+  )
 
   if (hasCedarPermission(ATTRIBUTE_WRITE)) {
-    myActions.push((rowData) => ({
+    myActions.push((rowData: AttributeItem) => ({
       icon: 'edit',
       iconProps: {
         id: 'editAttribute' + rowData.inum,
         style: { color: customColors.darkGray },
       },
       tooltip: `${t('tooltips.edit_attribute')}`,
-      onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+      onClick: (event: React.MouseEvent, rowData: AttributeItem) =>
+        handleGoToAttributeEditPage(rowData),
       disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
     }))
     myActions.push({
@@ -165,14 +250,15 @@ function AttributeListPage() {
     })
   }
   if (hasCedarPermission(ATTRIBUTE_READ)) {
-    myActions.push((rowData) => ({
+    myActions.push((rowData: AttributeItem) => ({
       icon: 'visibility',
       iconProps: {
         id: 'viewAttribute' + rowData.inum,
         style: { color: customColors.darkGray },
       },
       tooltip: `${t('tooltips.view_attribute')}`,
-      onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
+      onClick: (event: React.MouseEvent, rowData: AttributeItem) =>
+        handleGoToAttributeViewPage(rowData),
       disabled: false,
     }))
     myActions.push({
@@ -198,39 +284,27 @@ function AttributeListPage() {
     })
   }
   if (hasCedarPermission(ATTRIBUTE_DELETE)) {
-    myActions.push((rowData) => ({
+    myActions.push((rowData: AttributeItem) => ({
       icon: DeleteOutlinedIcon,
       iconProps: {
         style: { color: customColors.darkGray, id: 'deleteAttribute' + rowData.inum },
       },
       tooltip: `${t('tooltips.delete_attribute')}`,
-      onClick: (event, rowData) => handleAttribueDelete(rowData),
+      onClick: (event: React.MouseEvent, rowData: AttributeItem) => handleAttribueDelete(rowData),
       disabled: !hasCedarPermission(ATTRIBUTE_DELETE),
     }))
   }
 
-  const GluuSearch = useCallback(() => {
-    return (
-      <GluuAdvancedSearch
-        limitId={limitId}
-        limit={limit}
-        pattern={pattern}
-        patternId={patternId}
-        handler={handleOptionsChange}
-        showLimit={false}
-      />
-    )
-  }, [limitId, limit, pattern, patternId, handleOptionsChange])
-
-  function getBadgeTheme(status) {
+  function getBadgeTheme(status: string) {
     if (status === 'ACTIVE') {
       return `primary-${selectedTheme}`
     } else {
       return 'warning'
     }
   }
+
   function onDeletionConfirmed() {
-    dispatch(deleteAttribute({ inum: item.inum, name: item?.name }))
+    dispatch(deleteAttribute({ inum: item.inum, name: item?.name } as any))
     navigate('/attributes')
     toggle()
   }
@@ -240,17 +314,19 @@ function AttributeListPage() {
       <TablePagination
         count={totalItems}
         page={pageNumber}
-        onPageChange={(prop, page) => {
+        onPageChange={(prop: any, page: number) => {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(event) => onRowCountChangeClick(event.target.value)}
+        onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          onRowCountChangeClick(parseInt(event.target.value))
+        }
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
+    [pageNumber, totalItems, limit],
   )
 
-  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback((props: any) => <Paper {...props} elevation={0} />, [])
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -269,7 +345,7 @@ function AttributeListPage() {
                 title: `${t('fields.status')}`,
                 field: 'status',
                 type: 'boolean',
-                render: (rowData) => (
+                render: (rowData: AttributeItem) => (
                   <StyledBadge status={rowData.status}>{rowData.status}</StyledBadge>
                 ),
               },
@@ -285,8 +361,11 @@ function AttributeListPage() {
               searchFieldAlignment: 'left',
               pageSize: limit,
               headerStyle: {
-                ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
+                backgroundColor: bgThemeColor.background,
+                color: customColors.white,
+                padding: '12px',
+                textTransform: 'uppercase' as const,
+                fontSize: '16px',
               },
               actionsColumnIndex: -1,
             }}
