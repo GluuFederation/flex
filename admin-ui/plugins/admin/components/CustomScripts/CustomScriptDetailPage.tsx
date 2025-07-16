@@ -6,10 +6,30 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
 
-const CustomScriptDetailPage = ({ row }) => {
+// Type definition for CustomScript item based on the existing interface
+interface CustomScriptItem {
+  inum?: string
+  name?: string
+  description?: string
+  scriptType?: string
+  programmingLanguage?: string
+  level?: number
+  script?: string
+  aliases?: string[]
+  locationType?: string
+  enabled?: boolean
+  internal?: boolean
+  revision?: number
+}
+
+interface CustomScriptDetailPageProps {
+  row: CustomScriptItem
+}
+
+const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state.theme || 'darkBlack'
 
   return (
     <React.Fragment>
@@ -114,4 +134,5 @@ const CustomScriptDetailPage = ({ row }) => {
     </React.Fragment>
   )
 }
+
 export default CustomScriptDetailPage
