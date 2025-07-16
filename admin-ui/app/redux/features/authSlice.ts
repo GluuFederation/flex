@@ -137,7 +137,14 @@ const authSlice = createSlice({
       state.defaultToken = action.payload
       state.issuer = action.payload.issuer
     },
-    putConfigWorker: (state) => {
+    putConfigWorker: (
+      state,
+      action: PayloadAction<{
+        sessionTimeoutInMins?: number
+        acrValues?: string
+        cedarlingLogType?: any
+      }>,
+    ) => {
       state.loadingConfig = true
     },
     putConfigWorkerResponse: (state) => {
