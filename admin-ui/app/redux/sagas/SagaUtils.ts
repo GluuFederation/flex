@@ -1,20 +1,65 @@
-// @ts-nocheck
 import { select } from 'redux-saga/effects'
 
-export function* initAudit() {
-  const auditlog = {
+// Define types for the audit log structure
+interface PerformedBy {
+  user_inum: string
+  userId: string
+}
+
+interface AuditLogHeaders {
+  Authorization?: string
+  [key: string]: any
+}
+
+interface AuditLog {
+  headers: AuditLogHeaders
+  client_id?: string
+  ip_address?: string
+  status?: string
+  performedBy?: PerformedBy
+  [key: string]: any
+}
+
+// Define types for Redux state structure
+interface AuthState {
+  config: {
+    clientId: string
+  }
+  location: {
+    IPv4: string
+  }
+  userinfo?: {
+    name: string
+    inum: string
+  }
+  token: {
+    access_token: string
+  }
+}
+
+interface RootState {
+  authReducer: AuthState
+}
+
+export function* initAudit(): Generator<any, AuditLog, any> {
+  const auditlog: AuditLog = {
     headers: {},
   }
-  const client_id = yield select((state) => state.authReducer.config.clientId)
-  const ip_address = yield select((state) => state.authReducer.location.IPv4)
-  const userinfo = yield select((state) => state.authReducer.userinfo)
-  const author = userinfo ? userinfo.name : '-'
-  const inum = userinfo ? userinfo.inum : '-'
-  const token = yield select((state) => state.authReducer.token.access_token)
-  auditlog['client_id'] = client_id
-  auditlog['ip_address'] = ip_address
-  auditlog['status'] = 'success'
-  auditlog['performedBy'] = { user_inum: inum, userId: author }
-  auditlog['headers']['Authorization'] = `Bearer ${token}`
+
+  const client_id: string = yield select((state: RootState) => state.authReducer.config.clientId)
+  const ip_address: string = yield select((state: RootState) => state.authReducer.location.IPv4)
+  const userinfo: AuthState['userinfo'] = yield select(
+    (state: RootState) => state.authReducer.userinfo,
+  )
+  const author: string = userinfo ? userinfo.name : '-'
+  const inum: string = userinfo ? userinfo.inum : '-'
+  const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
+
+  auditlog.client_id = client_id
+  auditlog.ip_address = ip_address
+  auditlog.status = 'success'
+  auditlog.performedBy = { user_inum: inum, userId: author }
+  auditlog.headers.Authorization = `Bearer ${token}`
+
   return auditlog
 }

@@ -4,18 +4,14 @@ import { Card as BsCard } from 'reactstrap'
 
 import classes from './Card.scss'
 
-const Card = ({
-  children,
-  type = 'border',
-  color = null,
-  className,
-  ...otherProps
-}: {
+interface CardProps extends Omit<React.ComponentProps<typeof BsCard>, 'color'> {
   children: any
-  type: string
-  color: string | null
-  className: any
-}) => {
+  type?: string
+  color?: string | null
+  className?: any
+}
+
+const Card = ({ children, type = 'border', color = null, className, ...otherProps }: CardProps) => {
   const cardClass = classNames(
     className,
     classes['custom-card'],
