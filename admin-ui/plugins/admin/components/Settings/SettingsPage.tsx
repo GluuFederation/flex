@@ -31,20 +31,56 @@ import packageJson from '../../../../package.json'
 import { CedarlingLogType } from '@/cedarling'
 import { updateToast } from '@/redux/features/toastSlice'
 
+// Define types for the Redux state
+interface AuthState {
+  loadingConfig: boolean
+  config: {
+    additionalParameters?: any[]
+    acrValues?: string
+    sessionTimeoutInMins?: number
+    cedarlingLogType?: CedarlingLogType
+  }
+}
+
+interface InitState {
+  loadingScripts: boolean
+  scripts: Script[]
+}
+
+interface Script {
+  scriptType: string
+  enabled: boolean
+  name: string
+}
+
+interface RootState {
+  authReducer: AuthState
+  initReducer: InitState
+}
+
+// Define formik values interface
+interface FormValues {
+  sessionTimeoutInMins: number
+  acrValues: string
+  cedarlingLogType: CedarlingLogType
+}
+
 const levels = [1, 5, 10, 20]
 
 function SettingsPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
-  const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
+  const loadingScripts = useSelector((state: RootState) => state.initReducer.loadingScripts)
+  const loadingConfig = useSelector((state: RootState) => state.authReducer?.loadingConfig)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const [paggingSize, setPaggingSize] = useState(localStorage.getItem('paggingSize') || 10)
+  const selectedTheme = theme?.state.theme || 'darkBlack'
+  const [paggingSize, setPaggingSize] = useState<number>(
+    parseInt(localStorage.getItem('paggingSize') || '10', 10),
+  )
   SetTitle(t('titles.application_settings'))
 
   useEffect(() => {
-    dispatch(getScripts({ action: {} }))
+    dispatch(getScripts({ action: {} } as any))
   }, [])
 
   return (
@@ -80,14 +116,14 @@ function SettingsPage() {
                     defaultValue={
                       levels[
                         levels.findIndex((element) => {
-                          return element == paggingSize
+                          return element === paggingSize
                         })
                       ]
                     }
-                    onChange={(value) => {
-                      const size = levels[value.target.options.selectedIndex]
+                    onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                      const size = levels[event.target.options.selectedIndex]
                       setPaggingSize(size)
-                      localStorage.setItem('paggingSize', size)
+                      localStorage.setItem('paggingSize', size.toString())
                     }}
                   >
                     {levels.map((item, key) => (
@@ -134,26 +170,27 @@ function SettingsPage() {
 function SettingsForm() {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
+  const selectedTheme = theme?.state.theme || 'darkBlack'
+  const loadingConfig = useSelector((state: RootState) => state.authReducer?.loadingConfig)
   const additionalParameters =
-    useSelector((state) => state.authReducer?.config?.additionalParameters) || []
-  const acrValues = useSelector((state) => state.authReducer?.config?.acrValues)
+    useSelector((state: RootState) => state.authReducer?.config?.additionalParameters) || []
+  const acrValues = useSelector((state: RootState) => state.authReducer?.config?.acrValues)
   const sessionTimeout =
-    useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) || 5
+    useSelector((state: RootState) => state.authReducer?.config?.sessionTimeoutInMins) || 5
   const cedarlingLogType =
-    useSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
-  const scripts = useSelector((state) => state.initReducer.scripts)
+    useSelector((state: RootState) => state.authReducer?.config?.cedarlingLogType) ||
+    CedarlingLogType.OFF
+  const scripts = useSelector((state: RootState) => state.initReducer.scripts)
   const dispatch = useDispatch()
 
   const authScripts = scripts
-    .filter((item) => item.scriptType == 'person_authentication')
-    .filter((item) => item.enabled)
-    .map((item) => item.name)
+    .filter((item: Script) => item.scriptType === 'person_authentication')
+    .filter((item: Script) => item.enabled)
+    .map((item: Script) => item.name)
 
   authScripts.push(SIMPLE_PASSWORD_AUTH)
 
-  const formik = useFormik({
+  const formik = useFormik<FormValues>({
     initialValues: {
       sessionTimeoutInMins: sessionTimeout,
       acrValues: acrValues || '',
@@ -161,8 +198,9 @@ function SettingsForm() {
     },
     onSubmit: (values) => {
       dispatch(putConfigWorker(values))
-      !(values?.cedarlingLogType === cedarlingLogType) &&
+      if (values?.cedarlingLogType !== cedarlingLogType) {
         dispatch(updateToast(true, 'success', t('fields.reloginToViewCedarlingChanges')))
+      }
     },
     validationSchema: Yup.object().shape({
       sessionTimeoutInMins: Yup.number()
@@ -231,7 +269,7 @@ function SettingsForm() {
             doc_entry={'cedarSwitch'}
             lsize={4}
             rsize={8}
-            handler={(event) => {
+            handler={(event: React.ChangeEvent<HTMLInputElement>) => {
               formik.setFieldValue(
                 'cedarlingLogType',
                 event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
