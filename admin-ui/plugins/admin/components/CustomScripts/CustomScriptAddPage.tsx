@@ -7,65 +7,7 @@ import { addCustomScript } from 'Plugins/admin/redux/features/customScriptSlice'
 import { buildPayload } from 'Utils/PermChecker'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-
-// Type definitions
-interface CustomScriptItem {
-  inum?: string
-  name?: string
-  description?: string
-  scriptType?: string
-  programmingLanguage?: string
-  level?: number
-  script?: string
-  aliases?: string[]
-  moduleProperties?: Array<{
-    value1: string
-    value2: string
-    description?: string
-    hide?: boolean
-  }>
-  configurationProperties?: Array<{
-    key?: string
-    value?: string
-    value1?: string
-    value2?: string
-    hide?: boolean
-  }>
-  locationPath?: string
-  locationType?: string
-  enabled?: boolean
-  action_message?: string
-}
-
-interface CustomScriptReducerState {
-  items: CustomScriptItem[]
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  scriptTypes: Array<{
-    value: string
-    name: string
-  }>
-  hasFetchedScriptTypes: boolean
-  loadingScriptTypes: boolean
-}
-
-interface RootState {
-  customScriptReducer: CustomScriptReducerState
-}
-
-interface UserAction {
-  action_message?: string
-  action_data?: any
-  [key: string]: unknown
-}
-
-interface SubmitData {
-  customScript: CustomScriptItem
-  [key: string]: unknown
-}
+import { CustomScriptItem, CustomScriptReducerState, RootState, UserAction, SubmitData } from './types'
 
 function CustomScriptAddPage() {
   const userAction: UserAction = {}

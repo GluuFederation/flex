@@ -17,86 +17,10 @@ import { useSelector } from 'react-redux'
 import { Skeleton } from '@mui/material'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
+import { CustomScriptFormProps, CustomScriptItem, CustomScriptReducerState, RootState, FormValues, ModuleProperty, ConfigurationProperty, ScriptType } from './types'
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
-
-// Type definitions
-interface ModuleProperty {
-  value1: string
-  value2: string
-  description?: string
-  hide?: boolean
-  key?: string
-  value?: string
-}
-
-interface ConfigurationProperty {
-  key?: string
-  value?: string
-  value1?: string
-  value2?: string
-  hide?: boolean
-}
-
-interface ScriptError {
-  stackTrace?: string
-}
-
-interface ScriptType {
-  value: string
-  name: string
-}
-
-interface CustomScriptItem {
-  inum?: string
-  name?: string
-  description?: string
-  scriptType?: string
-  programmingLanguage?: string
-  level?: number
-  script?: string
-  aliases?: string[]
-  moduleProperties?: ModuleProperty[]
-  configurationProperties?: ConfigurationProperty[]
-  locationPath?: string
-  locationType?: string
-  enabled?: boolean
-  scriptError?: ScriptError
-  script_path?: string
-  location_type?: string
-}
-
-interface CustomScriptFormProps {
-  item: CustomScriptItem
-  handleSubmit: (data: { customScript: CustomScriptItem }) => void
-  viewOnly?: boolean
-}
-
-interface CustomScriptReducerState {
-  scriptTypes: ScriptType[]
-  loadingScriptTypes: boolean
-}
-
-interface RootState {
-  customScriptReducer: CustomScriptReducerState
-}
-
-interface FormValues {
-  name: string
-  description: string
-  scriptType: string
-  programmingLanguage: string
-  level: number
-  script: string
-  aliases: string[]
-  moduleProperties: ModuleProperty[]
-  configurationProperties: ConfigurationProperty[]
-  script_path: string
-  locationPath: string
-  location_type: string
-  enabled?: boolean | string[]
-}
 
 function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScriptFormProps) {
   const { scriptTypes, loadingScriptTypes } = useSelector(

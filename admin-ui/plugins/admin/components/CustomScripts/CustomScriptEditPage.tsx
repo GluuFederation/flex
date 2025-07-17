@@ -9,71 +9,7 @@ import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-
-// Type definitions
-interface ModuleProperty {
-  value1: string
-  value2: string
-  description?: string
-  hide?: boolean
-  key?: string
-  value?: string
-}
-
-interface CustomScriptItem {
-  inum?: string
-  name?: string
-  description?: string
-  scriptType?: string
-  programmingLanguage?: string
-  level?: number
-  script?: string
-  aliases?: string[]
-  moduleProperties?: ModuleProperty[]
-  configurationProperties?: Array<{
-    key?: string
-    value?: string
-    value1?: string
-    value2?: string
-    hide?: boolean
-  }>
-  locationPath?: string
-  locationType?: string
-  enabled?: boolean
-  action_message?: string
-}
-
-interface CustomScriptReducerState {
-  items: CustomScriptItem[]
-  item: CustomScriptItem
-  loading: boolean
-  view: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  scriptTypes: Array<{
-    value: string
-    name: string
-  }>
-  hasFetchedScriptTypes: boolean
-  loadingScriptTypes: boolean
-}
-
-interface RootState {
-  customScriptReducer: CustomScriptReducerState
-}
-
-interface UserAction {
-  action_message?: string
-  action_data?: any
-  [key: string]: any
-}
-
-interface SubmitData {
-  customScript: CustomScriptItem
-  [key: string]: any
-}
+import { CustomScriptItem, CustomScriptReducerState, RootState, UserAction, SubmitData, ModuleProperty } from './types'
 
 function CustomScriptEditPage() {
   const dispatch = useDispatch()

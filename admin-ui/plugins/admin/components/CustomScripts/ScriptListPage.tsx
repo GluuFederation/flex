@@ -27,77 +27,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-
-// Type definitions
-interface ModuleProperty {
-  value1: string
-  value2: string
-  description?: string
-  hide?: boolean
-}
-
-interface ConfigurationProperty {
-  key?: string
-  value?: string
-  value1?: string
-  value2?: string
-  hide?: boolean
-}
-
-interface ScriptError {
-  stackTrace?: string
-}
-
-interface CustomScriptItem {
-  inum: string
-  name: string
-  description: string
-  scriptType: string
-  programmingLanguage: string
-  level: number
-  script: string
-  aliases: string[]
-  moduleProperties: ModuleProperty[]
-  configurationProperties: ConfigurationProperty[]
-  locationPath: string
-  locationType: string
-  enabled: boolean
-  scriptError?: ScriptError
-}
-
-interface ScriptType {
-  value: string
-  name: string
-}
-
-interface CustomScriptReducerState {
-  items: CustomScriptItem[]
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  scriptTypes: ScriptType[]
-  hasFetchedScriptTypes: boolean
-  loadingScriptTypes: boolean
-  item?: CustomScriptItem
-  view?: boolean
-}
-
-interface CedarPermissionsState {
-  permissions: string[]
-}
-
-interface RootState {
-  customScriptReducer: CustomScriptReducerState
-  cedarPermissions: CedarPermissionsState
-}
-
-interface UserAction {
-  action_message?: string
-  action_data?: any
-  [key: string]: any
-}
+import { CustomScriptItem, CustomScriptReducerState, RootState, UserAction } from './types'
 
 function ScriptListTable(): JSX.Element {
   const { t } = useTranslation()
