@@ -23,7 +23,7 @@ function* newFunction() {
 export function* resetLicenseConfigWorker() {
   const audit = yield* initAudit()
   try {
-    yield put(setLicenseResetResponse())
+    yield put(setLicenseReset())
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.resetLicense)
     yield put(setLicenseResetResponse(data))
@@ -39,10 +39,8 @@ export function* resetLicenseConfigWorker() {
 export function* getLicenseDetailsWorker() {
   const audit = yield* initAudit()
   try {
-    debugger
     //addAdditionalData(audit, FETCH, GET_LICENSE_DETAILS, payload)
     const licenseApi = yield* newFunction()
-    debugger
 
     const data = yield call(licenseApi.getLicenseDetails)
     yield put(getLicenseDetailsResponse({ data }))

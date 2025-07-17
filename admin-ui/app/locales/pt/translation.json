@@ -655,6 +655,7 @@
     "adding_new_permission": "Adicionando nova permissão",
     "add_role": "Adicionar função",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
+    "licenseAuditLog": "Você realmente deseja redefinir a licença existente?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",
     "action_deletion_for": "Confirmação de exclusão para",
     "add_client": "Adicionar Cliente",

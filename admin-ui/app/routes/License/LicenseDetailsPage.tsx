@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -16,6 +15,7 @@ import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
 import { formatDate } from 'Utils/Util'
 import { useCedarling } from '@/cedarling'
+import GluuCommitDialog from '../Apps/Gluu/GluuCommitDialog'
 
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
@@ -27,6 +27,7 @@ function LicenseDetailsPage() {
   const options = {}
   const { t } = useTranslation()
   const { hasCedarPermission, authorize } = useCedarling()
+  const [modal, setModal] = useState(false)
 
   const initPermissions = async () => {
     await authorize([LICENSE_DETAILS_WRITE])
@@ -39,7 +40,6 @@ function LicenseDetailsPage() {
   }, [])
 
   SetTitle(t('menus.licenseDetails'))
-  const { classes } = styles()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'darkBlack'
   const themeColors = getThemeColor(selectedTheme)
@@ -98,7 +98,11 @@ function LicenseDetailsPage() {
   )
 
   const handleReset = () => {
+    setModal((prev) => !prev)
     dispatch({ type: 'license/resetConfig' })
+  }
+  const toggle = () => {
+    setModal((prev) => !prev)
   }
 
   return (
@@ -143,14 +147,20 @@ function LicenseDetailsPage() {
                         borderRadius: 6,
                       }}
                       size="md"
-                      onClick={handleReset}
+                      onClick={toggle}
                     >
                       <i className="fa fa-undo-alt me-2"></i>
-                      {t('actions.remove')}
+                      {t('actions.reset')}
                     </Button>
                   </Col>
                 </Row>
               )}
+              <GluuCommitDialog
+                handler={toggle}
+                modal={modal}
+                onAccept={handleReset}
+                isLicenseLabel={true}
+              />
             </>
           ) : (
             <Alert severity="warning">{!loading && t('messages.license_api_not_enabled')}</Alert>
