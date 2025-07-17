@@ -9,7 +9,14 @@ import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { CustomScriptItem, CustomScriptReducerState, RootState, UserAction, SubmitData, ModuleProperty } from './types'
+import {
+  CustomScriptItem,
+  CustomScriptReducerState,
+  RootState,
+  UserAction,
+  SubmitData,
+  ModuleProperty,
+} from './types'
 
 function CustomScriptEditPage() {
   const dispatch = useDispatch()

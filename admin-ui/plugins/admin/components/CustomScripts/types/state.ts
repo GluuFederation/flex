@@ -23,4 +23,4 @@ export interface CedarPermissionsState {
 export interface RootState {
   customScriptReducer: CustomScriptReducerState
   cedarPermissions: CedarPermissionsState
-} 
+}

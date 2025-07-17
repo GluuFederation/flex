@@ -11,4 +11,4 @@ export interface UserAction {
 export interface SubmitData {
   customScript: CustomScriptItem
   [key: string]: any
-} 
+}

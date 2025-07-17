@@ -17,7 +17,16 @@ import { useSelector } from 'react-redux'
 import { Skeleton } from '@mui/material'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import { CustomScriptFormProps, CustomScriptItem, CustomScriptReducerState, RootState, FormValues, ModuleProperty, ConfigurationProperty, ScriptType } from './types'
+import {
+  CustomScriptFormProps,
+  CustomScriptItem,
+  CustomScriptReducerState,
+  RootState,
+  FormValues,
+  ModuleProperty,
+  ConfigurationProperty,
+  ScriptType,
+} from './types'
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))

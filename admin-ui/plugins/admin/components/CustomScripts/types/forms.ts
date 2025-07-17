@@ -26,4 +26,4 @@ export interface FormValues {
   locationPath: string
   location_type: string
   enabled?: boolean | string[]
-} 
+}

@@ -46,4 +46,4 @@ export interface CustomScriptItem {
   action_message?: string
   script_path?: string
   location_type?: string
-} 
+}
