@@ -3,10 +3,15 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
+import { useContext } from 'react'
+import { Box } from '@mui/material'
+import styles from './styles'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
+import customColors from '@/customColors'
 import { LICENSE } from 'Utils/ApiResources'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
-import { Card, CardBody, Container, Row, Col } from 'Components'
+import { Card, CardBody, Container, Row, Col, Button } from 'Components'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
@@ -29,137 +34,118 @@ function LicenseDetailsPage() {
   }, [])
 
   SetTitle(t('fields.licenseDetails'))
+  const { classes } = styles()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state?.theme || 'darkBlack'
+  const themeColors = getThemeColor(selectedTheme)
+
+  const labelStyle = {
+    color: themeColors.fontColor,
+  }
+
+  const inputBoxStyle = {
+    backgroundColor: customColors.white,
+    color: customColors.black,
+    borderColor: themeColors.fontColor + '40',
+  }
+
+  const licenseFields = [
+    { key: 'productName', label: 'fields.productName', value: item.productName },
+    { key: 'productCode', label: 'fields.productCode', value: item.productCode },
+    { key: 'licenseType', label: 'fields.licenseType', value: item.licenseType },
+    { key: 'licenseKey', label: 'fields.licenseKey', value: item.licenseKey },
+    { key: 'customerEmail', label: 'fields.customerEmail', value: item.customerEmail },
+    {
+      key: 'customerName',
+      label: 'fields.customerName',
+      value:
+        !item.customerFirstName && !item.customerLastName
+          ? '-'
+          : item.customerFirstName + ' ' + item.customerLastName,
+    },
+    { key: 'companyName', label: 'fields.companyName', value: item.companyName },
+    {
+      key: 'validityPeriod',
+      label: 'fields.validityPeriod',
+      value: formatDate(item.validityPeriod),
+    },
+    {
+      key: 'isLicenseActive',
+      label: 'fields.isLicenseActive',
+      value: item.licenseActive ? 'Yes' : 'No',
+    },
+    {
+      key: 'isLicenseExpired',
+      label: 'fields.isLicenseExpired',
+      value: item.licenseExpired ? 'Yes' : 'No',
+    },
+  ]
+
+  const renderLicenseField = (field) => (
+    <Col sm={6} key={field.key}>
+      <div className="mb-3">
+        <strong style={labelStyle}>{t(field.label)}:</strong>
+        <div className="mt-1 p-2 border rounded" style={inputBoxStyle}>
+          {field.value || 'N/A'}
+        </div>
+      </div>
+    </Col>
+  )
+
+  const handleReset = () => {
+    // buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
+    // dispatch(getLicenseDetails({}))
+  }
+
   return (
     <GluuLoader blocking={loading}>
-      <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
+      <Card style={applicationStyle.persistenceCard}>
+        <CardBody style={{ padding: '30px' }}>
           {item.licenseEnabled ? (
-            <Container style={applicationStyle.licensePanel}>
+            <>
+              <Container
+                style={{
+                  backgroundColor: themeColors.lightBackground,
+                  padding: '20px',
+                  borderRadius: '8px',
+                }}
+              >
+                {licenseFields?.map((field, index) => {
+                  if (index % 2 === 0) {
+                    const nextField = licenseFields[index + 1]
+                    return (
+                      <Row className="mb-3" key={`row-${index}`}>
+                        {renderLicenseField(field)}
+                        {nextField && renderLicenseField(nextField)}
+                      </Row>
+                    )
+                  }
+                  return null
+                })}
+              </Container>
               <Row>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.productName"
-                    value={item.productName}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="productName"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.productCode"
-                    value={item.productCode}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="productCode"
-                    doc_category={LICENSE}
-                  />
+                <Col
+                  className="d-flex justify-content-start"
+                  style={{ marginTop: 35, marginLeft: 40 }}
+                >
+                  <Button
+                    style={{
+                      backgroundColor: customColors.accentRed,
+                      color: customColors.white,
+                      border: 'none',
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                      borderRadius: 6,
+                    }}
+                    size="md"
+                    onClick={handleReset}
+                  >
+                    <i className="fa fa-undo-alt me-2"></i>
+                    {t('actions.remove')}
+                  </Button>
                 </Col>
               </Row>
-              <Row>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.licenseType"
-                    value={item.licenseType}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="licenseType"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.licenseKey"
-                    value={item.licenseKey}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="licenseKey"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.customerEmail"
-                    value={item.customerEmail}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="customerEmail"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.customerName"
-                    value={
-                      !item.customerFirstName && !item.customerLastName
-                        ? undefined
-                        : item.customerFirstName + item.customerLastName
-                    }
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="customerName"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.companyName"
-                    value={item.companyName}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="companyName"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.validityPeriod"
-                    value={formatDate(item.validityPeriod)}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="validityPeriod"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.isLicenseActive"
-                    value={item.licenseActive ? 'Yes' : 'No'}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="isLicenseActive"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-                <Col sm={6}>
-                  <GluuFormDetailRow
-                    label="fields.isLicenseExpired"
-                    value={item.licenseExpired ? 'Yes' : 'No'}
-                    isBadge={true}
-                    lsize={3}
-                    rsize={9}
-                    doc_entry="isLicenseExpired"
-                    doc_category={LICENSE}
-                  />
-                </Col>
-              </Row>
-            </Container>
+            </>
           ) : (
             <Alert severity="warning">{!loading && t('messages.license_api_not_enabled')}</Alert>
           )}
