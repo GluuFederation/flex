@@ -45,7 +45,7 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=b8cd454fc6356ae05952516a1ecf419b79515b47
+ENV FLEX_SOURCE_VERSION=581ab7475d28436de002eadcbffbec6e139deb37
 
 RUN mkdir -p /app/templates/admin-ui
 

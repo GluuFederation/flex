@@ -1,6 +1,5 @@
 import json
 import logging.config
-import os
 from collections import namedtuple
 
 from jans.pycloudlib import get_manager
@@ -68,11 +67,6 @@ class Upgrade:
 
         should_update = False
 
-        # set attributes to False
-        if as_boolean(entry.attrs["jansAccessTknAsJwt"]):
-            entry.attrs["jansAccessTknAsJwt"] = False
-            should_update = True
-
         if not self.backend.client.use_simple_json:
             scopes = entry.attrs["jansScope"]["v"]
             grant_types = entry.attrs["jansGrantTyp"]["v"]
@@ -85,18 +79,24 @@ class Upgrade:
             scopes = [scopes]
 
         for scope in [
-            "inum=B9D2-D6E5,ou=scopes,o=jans",
-            "inum=C4F7,ou=scopes,o=jans",
-            "inum=C4F6,ou=scopes,o=jans",
+            "inum=F0C4,ou=scopes,o=jans",  # openid
+            "inum=B9D2-D6E5,ou=scopes,o=jans",  # https://jans.io/auth/ssa.admin
+            "inum=764C,ou=scopes,o=jans",  # email
+            "inum=43F1,ou=scopes,o=jans",  # profile
+            "inum=C4F6,ou=scopes,o=jans",  # offline_access
+            "inum=C4F7,ou=scopes,o=jans",  # jans_stat
+        ]:
+            if scope not in scopes:
+                scopes.append(scope)
+                should_update = True
+
+        # invalid scopes should be removed
+        for scope in [
+            "inum=6D90,ou=scopes,o=jans",
         ]:
             if scope in scopes:
-                continue
-            scopes.append(scope)
-            should_update = True
-
-        if "inum=6D90,ou=scopes,o=jans" in scopes:
-            scopes.remove("inum=6D90,ou=scopes,o=jans")
-            should_update = True
+                scopes.remove("inum=6D90,ou=scopes,o=jans")
+                should_update = True
 
         # update jansGrantTyp
         if not isinstance(grant_types, list):
@@ -159,14 +159,22 @@ class Upgrade:
             scopes = [scopes]
 
         for scope in [
-            "inum=43F1,ou=scopes,o=jans",
-            "inum=6D90,ou=scopes,o=jans",
-            "inum=764C,ou=scopes,o=jans",
+            "inum=F0C4,ou=scopes,o=jans",  # openid
+            "inum=B9D2-D6E5,ou=scopes,o=jans",  # https://jans.io/auth/ssa.admin
         ]:
             if scope not in scopes:
-                continue
-            scopes.remove(scope)
-            should_update = True
+                scopes.append(scope)
+                should_update = True
+
+        # invalid scopes should be removed
+        for scope in [
+            "inum=43F1,ou=scopes,o=jans",  # profile
+            "inum=6D90,ou=scopes,o=jans",
+            "inum=764C,ou=scopes,o=jans",  # email
+        ]:
+            if scope in scopes:
+                scopes.remove(scope)
+                should_update = True
 
         # update jansGrantTyp
         if not isinstance(grant_types, list):
