@@ -6,6 +6,7 @@ interface ApiInterface {
     options: { licenseRequest: any },
     callback: (error: Error | null, data: any) => void,
   ) => void
+  resetLicenseConfig: (callback: (error: Error | null, data: any, response?: any) => void) => void
 }
 
 interface LicenseRequest {
@@ -22,7 +23,7 @@ export default class LicenseDetailsApi {
   }
 
   getLicenseDetails = (): Promise<any> => {
-    let retries = 0
+    const retries = 0
     return new Promise((resolve, reject) => {
       const makeRequest = (retries: number): void => {
         new Promise((resolve, reject) => {
@@ -57,6 +58,15 @@ export default class LicenseDetailsApi {
     }
     return new Promise((resolve, reject) => {
       this.api.editAdminuiLicense(options, (error: Error | null, response: any) => {
+        handleResponse(error, reject, resolve, data, response)
+      })
+    })
+  }
+
+  resetLicense = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      this.api.resetLicenseConfig((error: Error | null, data: any, response?: any) => {
+        // debugger
         handleResponse(error, reject, resolve, data, response)
       })
     })

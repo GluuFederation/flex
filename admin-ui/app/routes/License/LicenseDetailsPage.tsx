@@ -4,19 +4,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useContext } from 'react'
-import { Box } from '@mui/material'
 import styles from './styles'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
-import { LICENSE } from 'Utils/ApiResources'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
 import { Card, CardBody, Container, Row, Col, Button } from 'Components'
-import { buildPayload } from 'Utils/PermChecker'
+import { buildPayload, LICENSE_DETAILS_WRITE } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@mui/material/Alert'
 import SetTitle from 'Utils/SetTitle'
 import { formatDate } from 'Utils/Util'
+import { useCedarling } from '@/cedarling'
 
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
@@ -27,13 +26,19 @@ function LicenseDetailsPage() {
   const userAction = {}
   const options = {}
   const { t } = useTranslation()
+  const { hasCedarPermission, authorize } = useCedarling()
+
+  const initPermissions = async () => {
+    await authorize([LICENSE_DETAILS_WRITE])
+  }
 
   useEffect(() => {
+    initPermissions()
     buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
     dispatch(getLicenseDetails({}))
   }, [])
 
-  SetTitle(t('fields.licenseDetails'))
+  SetTitle(t('menus.licenseDetails'))
   const { classes } = styles()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'darkBlack'
@@ -93,8 +98,7 @@ function LicenseDetailsPage() {
   )
 
   const handleReset = () => {
-    // buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
-    // dispatch(getLicenseDetails({}))
+    dispatch({ type: 'license/resetConfig' })
   }
 
   return (
@@ -123,28 +127,30 @@ function LicenseDetailsPage() {
                   return null
                 })}
               </Container>
-              <Row>
-                <Col
-                  className="d-flex justify-content-start"
-                  style={{ marginTop: 35, marginLeft: 40 }}
-                >
-                  <Button
-                    style={{
-                      backgroundColor: customColors.accentRed,
-                      color: customColors.white,
-                      border: 'none',
-                      fontSize: '1rem',
-                      fontWeight: 500,
-                      borderRadius: 6,
-                    }}
-                    size="md"
-                    onClick={handleReset}
+              {hasCedarPermission(LICENSE_DETAILS_WRITE) && (
+                <Row>
+                  <Col
+                    className="d-flex justify-content-start"
+                    style={{ marginTop: 35, marginLeft: 40 }}
                   >
-                    <i className="fa fa-undo-alt me-2"></i>
-                    {t('actions.remove')}
-                  </Button>
-                </Col>
-              </Row>
+                    <Button
+                      style={{
+                        backgroundColor: customColors.accentRed,
+                        color: customColors.white,
+                        border: 'none',
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                        borderRadius: 6,
+                      }}
+                      size="md"
+                      onClick={handleReset}
+                    >
+                      <i className="fa fa-undo-alt me-2"></i>
+                      {t('actions.remove')}
+                    </Button>
+                  </Col>
+                </Row>
+              )}
             </>
           ) : (
             <Alert severity="warning">{!loading && t('messages.license_api_not_enabled')}</Alert>

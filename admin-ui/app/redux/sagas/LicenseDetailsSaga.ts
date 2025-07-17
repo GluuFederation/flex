@@ -1,7 +1,8 @@
-// @ts-nocheck
 import { all, call, fork, put, takeEvery, select } from 'redux-saga/effects'
 import {
   getLicenseDetailsResponse,
+  setLicenseReset,
+  setLicenseResetResponse,
   updateLicenseDetailsResponse,
 } from '../features/licenseDetailsSlice'
 import { getClient } from 'Redux/api/base'
@@ -19,11 +20,30 @@ function* newFunction() {
   return new LicenseDetailsApi(api)
 }
 
-export function* getLicenseDetailsWorker({ payload }) {
+export function* resetLicenseConfigWorker() {
   const audit = yield* initAudit()
   try {
+    yield put(setLicenseResetResponse())
+    const roleApi = yield* newFunction()
+    const data = yield call(roleApi.resetLicense)
+    yield put(setLicenseResetResponse(data))
+    yield call(postUserAction, audit)
+  } catch (error) {
+    if (isFourZeroOneError(error)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
+export function* getLicenseDetailsWorker() {
+  const audit = yield* initAudit()
+  try {
+    debugger
     //addAdditionalData(audit, FETCH, GET_LICENSE_DETAILS, payload)
     const licenseApi = yield* newFunction()
+    debugger
+
     const data = yield call(licenseApi.getLicenseDetails)
     yield put(getLicenseDetailsResponse({ data }))
     yield call(postUserAction, audit)
@@ -61,7 +81,10 @@ export function* getLicenseWatcher() {
 export function* updateLicenseWatcher() {
   yield takeEvery('licenseDetails/updateLicenseDetails', updateLicenseDetailsWorker)
 }
+export function* resetLicenseWatcher() {
+  yield takeEvery('license/resetConfig', resetLicenseConfigWorker)
+}
 
 export default function* rootSaga() {
-  yield all([fork(getLicenseWatcher), fork(updateLicenseWatcher)])
+  yield all([fork(getLicenseWatcher), fork(updateLicenseWatcher), fork(resetLicenseWatcher)])
 }
