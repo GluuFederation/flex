@@ -2,6 +2,7 @@ import { all, call, fork, put, takeEvery, select } from 'redux-saga/effects'
 import {
   getLicenseDetailsResponse,
   setLicenseReset,
+  setLicenseResetFailure,
   setLicenseResetResponse,
   updateLicenseDetailsResponse,
 } from '../features/licenseDetailsSlice'
@@ -24,10 +25,16 @@ export function* resetLicenseConfigWorker() {
   const audit = yield* initAudit()
   try {
     yield put(setLicenseReset())
+
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.resetLicense)
-    yield put(setLicenseResetResponse(data))
-    yield call(postUserAction, audit)
+    const { success, responseCode } = data
+    if (success && responseCode === 200) {
+      yield put(setLicenseResetResponse(data))
+      yield call(postUserAction, audit)
+    } else {
+      yield put(setLicenseResetFailure())
+    }
   } catch (error) {
     if (isFourZeroOneError(error)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -37,11 +44,10 @@ export function* resetLicenseConfigWorker() {
 }
 
 export function* getLicenseDetailsWorker() {
-  const audit = yield* initAudit()
   try {
+    const audit = yield* initAudit()
     //addAdditionalData(audit, FETCH, GET_LICENSE_DETAILS, payload)
     const licenseApi = yield* newFunction()
-
     const data = yield call(licenseApi.getLicenseDetails)
     yield put(getLicenseDetailsResponse({ data }))
     yield call(postUserAction, audit)

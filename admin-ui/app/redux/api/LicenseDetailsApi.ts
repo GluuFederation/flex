@@ -6,7 +6,7 @@ interface ApiInterface {
     options: { licenseRequest: any },
     callback: (error: Error | null, data: any) => void,
   ) => void
-  resetLicenseConfig: (callback: (error: Error | null, data: any, response?: any) => void) => void
+  licenseConfigReset: (callback: (error: Error | null, data: any, response?: any) => void) => void
 }
 
 interface LicenseRequest {
@@ -65,9 +65,8 @@ export default class LicenseDetailsApi {
 
   resetLicense = (): Promise<any> => {
     return new Promise((resolve, reject) => {
-      this.api.resetLicenseConfig((error: Error | null, data: any, response?: any) => {
-        // debugger
-        handleResponse(error, reject, resolve, data, response)
+      this.api.licenseConfigReset((error: Error | null, data: any) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
