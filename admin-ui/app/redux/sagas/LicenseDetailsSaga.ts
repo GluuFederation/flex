@@ -8,11 +8,13 @@ import {
 } from '../features/licenseDetailsSlice'
 import { getClient } from 'Redux/api/base'
 import LicenseDetailsApi from '../api/LicenseDetailsApi'
-const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import { addAdditionalData, isFourZeroOneError } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
+import { API_LICENSE } from 'Plugins/user-management/redux/audit/Resources'
+import { DELETION } from '@/audit/UserActionType'
+const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token?.access_token)
@@ -25,9 +27,10 @@ export function* resetLicenseConfigWorker() {
   const audit = yield* initAudit()
   try {
     yield put(setLicenseReset())
-
+    addAdditionalData(audit, DELETION, API_LICENSE, {})
+    audit.message = 'User reset SSA manually'
     const roleApi = yield* newFunction()
-    const data = yield call(roleApi.resetLicense)
+    const data = yield call(roleApi.deleteLicense)
     const { success, responseCode } = data
     if (success && responseCode === 200) {
       yield put(setLicenseResetResponse(data))
