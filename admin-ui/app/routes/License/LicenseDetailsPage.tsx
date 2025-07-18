@@ -102,9 +102,9 @@ function LicenseDetailsPage() {
     </Col>
   )
 
-  const handleReset = () => {
+  const handleReset = (message: string) => {
     setModal((prev) => !prev)
-    dispatch({ type: 'license/resetConfig' })
+    dispatch({ type: 'license/resetConfig', message })
   }
   const toggle = () => {
     setModal((prev) => !prev)
@@ -164,7 +164,7 @@ function LicenseDetailsPage() {
               <GluuCommitDialog
                 handler={toggle}
                 modal={modal}
-                onAccept={handleReset}
+                onAccept={(userMessage) => handleReset(userMessage)}
                 isLicenseLabel={true}
               />
             </>
