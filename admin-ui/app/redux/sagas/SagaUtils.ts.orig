@@ -1,7 +1,18 @@
 import { select } from 'redux-saga/effects'
 import type { AuditLog, AuthState, RootState } from './types/audit'
+
+<<<<<<< HEAD
 export function* initAudit(): Generator<any, AuditLog, any> {
   const auditlog: AuditLog = {
+=======
+export interface IAuditLog {
+  headers: {}
+  message?: string
+}
+
+export function* initAudit() {
+  const auditlog: IAuditLog = {
+>>>>>>> main
     headers: {},
   }
   const client_id: string = yield select((state: RootState) => state.authReducer.config.clientId)

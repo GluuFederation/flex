@@ -34,6 +34,7 @@ const GluuCommitDialog = ({
   placeholderLabel,
   inputType,
   feature,
+  isLicenseLabel = false,
 }: any) => {
   const { t } = useTranslation()
   const { hasCedarPermission } = useCedarling()
@@ -103,7 +104,11 @@ const GluuCommitDialog = ({
               role="img"
               aria-hidden="true"
             ></i>
-            {!label || label === '' ? t('messages.action_commit_question') : label}
+            {isLicenseLabel
+              ? t('messages.licenseAuditLog')
+              : !label || label === ''
+                ? t('messages.action_commit_question')
+                : label}
           </ModalHeader>
           <ModalBody>
             <div
@@ -233,4 +238,5 @@ GluuCommitDialog.propTypes = {
   inputType: PropTypes.string,
   label: PropTypes.string,
   formik: PropTypes.object,
+  isLicenseLabel: PropTypes.bool,
 }
