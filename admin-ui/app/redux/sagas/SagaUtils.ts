@@ -1,8 +1,13 @@
 // @ts-nocheck
 import { select } from 'redux-saga/effects'
 
+export interface IAuditLog {
+  headers: {}
+  message?: string
+}
+
 export function* initAudit() {
-  const auditlog = {
+  const auditlog: IAuditLog = {
     headers: {},
   }
   const client_id = yield select((state) => state.authReducer.config.clientId)
