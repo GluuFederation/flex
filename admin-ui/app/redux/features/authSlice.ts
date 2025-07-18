@@ -1,49 +1,6 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-interface BackendStatus {
-  active: boolean
-  errorMessage: string | null
-  statusCode: number | null
-}
-
-interface Token {
-  access_token: string
-  scopes: string[]
-}
-
-interface UserInfo {
-  // Define userinfo properties as needed, using 'any' for now
-  [key: string]: any
-}
-
-interface Config {
-  [key: string]: any
-}
-
-interface Location {
-  [key: string]: any
-}
-
-interface AuthState {
-  isAuthenticated: boolean
-  userinfo: UserInfo | null
-  userinfo_jwt: string | null
-  token: Token | null
-  idToken: string | null
-  JwtToken: string | null
-  issuer: string | null
-  permissions: string[]
-  location: Location
-  config: Config
-  defaultToken: any
-  codeChallenge: string | null
-  codeChallengeMethod: string
-  codeVerifier: string | null
-  backendStatus: BackendStatus
-  loadingConfig: boolean
-  authState?: any
-}
+import type { BackendStatus, Token, UserInfo, Config, Location, AuthState } from './types/authTypes'
 
 const initialState: AuthState = {
   isAuthenticated: false,

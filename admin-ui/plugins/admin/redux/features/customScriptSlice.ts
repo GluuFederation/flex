@@ -1,8 +1,17 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import type {
+  CustomScriptItem,
+  CustomScriptState,
+  CustomScriptResponse,
+  ScriptType,
+  ModuleProperty,
+  ConfigurationProperty,
+} from './types/customScript'
 
-const initialState = {
+const initialState: CustomScriptState = {
   items: [],
+  item: undefined,
   loading: true,
   view: false,
   saveOperationFlag: false,
@@ -23,15 +32,15 @@ const customScriptSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    setIsScriptTypesLoading: (state, action) => {
+    setIsScriptTypesLoading: (state, action: PayloadAction<boolean>) => {
       state.loadingScriptTypes = action.payload
     },
-    getCustomScriptsResponse: (state, action) => {
+    getCustomScriptsResponse: (state, action: PayloadAction<CustomScriptResponse>) => {
       state.loading = false
       if (action.payload?.data) {
         state.items = action.payload.data?.entries || []
-        state.totalItems = action.payload.data.totalEntriesCount
-        state.entriesCount = action.payload.data.entriesCount
+        state.totalItems = action.payload.data.totalEntriesCount || 0
+        state.entriesCount = action.payload.data.entriesCount || 0
       }
     },
     addCustomScript: (state) => {
@@ -39,7 +48,7 @@ const customScriptSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    addCustomScriptResponse: (state, action) => {
+    addCustomScriptResponse: (state, action: PayloadAction<CustomScriptResponse>) => {
       state.loading = false
       state.errorInSaveOperationFlag = false
       if (action.payload?.data) {
@@ -53,7 +62,7 @@ const customScriptSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    editCustomScriptResponse: (state, action) => {
+    editCustomScriptResponse: (state, action: PayloadAction<CustomScriptResponse>) => {
       state.loading = false
       state.saveOperationFlag = true
       if (action.payload?.data) {
@@ -70,16 +79,16 @@ const customScriptSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    getCustomScriptByTypeResponse: (state, action) => {
+    getCustomScriptByTypeResponse: (state, action: PayloadAction<CustomScriptResponse>) => {
       if (action.payload.data) {
-        state.items = action.payload.data.entries
+        state.items = action.payload.data.entries || []
       }
       state.loading = false
     },
     deleteCustomScript: (state) => {
       state.loading = true
     },
-    deleteCustomScriptResponse: (state, action) => {
+    deleteCustomScriptResponse: (state, action: PayloadAction<{ inum?: string }>) => {
       state.loading = false
       if (action.payload?.inum) {
         const items = state.items.filter((item) => item.inum !== action.payload.inum)
@@ -89,14 +98,15 @@ const customScriptSlice = createSlice({
         state.errorInSaveOperationFlag = false
       }
     },
-    setScriptTypes: (state, action) => {
-      ;(state.scriptTypes = action.payload || []), (state.hasFetchedScriptTypes = true)
+    setScriptTypes: (state, action: PayloadAction<ScriptType[]>) => {
+      state.scriptTypes = action.payload || []
+      state.hasFetchedScriptTypes = true
     },
-    setCurrentItem: (state, action) => {
+    setCurrentItem: (state, action: PayloadAction<{ item: CustomScriptItem }>) => {
       state.item = action.payload?.item
       state.loading = false
     },
-    viewOnly: (state, action) => {
+    viewOnly: (state, action: PayloadAction<{ view: boolean }>) => {
       state.loading = false
       if (action.payload) {
         state.view = action.payload.view
@@ -119,12 +129,22 @@ export const {
   deleteCustomScript,
   deleteCustomScriptResponse,
   getCustomScriptByType,
+  getCustomScriptByTypeResponse,
   viewOnly,
   setCurrentItem,
   setScriptTypes,
   getScriptTypes,
   setIsScriptTypesLoading,
 } = customScriptSlice.actions
+
 export { initialState }
-export const { actions, reducer, state } = customScriptSlice
+export type {
+  CustomScriptItem,
+  CustomScriptState,
+  ScriptType,
+  ModuleProperty,
+  ConfigurationProperty,
+  CustomScriptResponse,
+}
+export const { actions, reducer } = customScriptSlice
 reducerRegistry.register('customScriptReducer', reducer)
