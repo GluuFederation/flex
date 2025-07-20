@@ -499,12 +499,14 @@ class flex_installer(JettyInstaller):
                 client_id=Config.admin_ui_client_id,
                 encoded_pw=Config.admin_ui_client_encoded_pw,
                 scopes=admin_ui_client_scopes,
-                redirect_uri=['https://{}/admin-ui'.format(Config.hostname), 'http://localhost:4100'],
+                redirect_uri=[f'https://{Config.hostname}/admin', 'http://localhost:4100'],
                 display_name='Admin UI Web Client',
                 authorization_methods=['none'],
                 other_props={'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}'],
                              'jansAccessTknAsJwt': ['TRUE'],
                              'jansSignedRespAlg': ['RS256'],
+                             'jansPostLogoutRedirectURI': [f'https://{Config.hostname}/admin', 'http://localhost:4100'],
+                             'jansLogoutURI': [f'http://{Config.hostname}:4100/logout', f'https://{Config.hostname}/admin/logout'],
                              }
                 )
 
