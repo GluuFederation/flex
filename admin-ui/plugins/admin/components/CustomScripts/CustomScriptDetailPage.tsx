@@ -5,26 +5,7 @@ import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
-
-// Type definition for CustomScript item based on the existing interface
-interface CustomScriptItem {
-  inum?: string
-  name?: string
-  description?: string
-  scriptType?: string
-  programmingLanguage?: string
-  level?: number
-  script?: string
-  aliases?: string[]
-  locationType?: string
-  enabled?: boolean
-  internal?: boolean
-  revision?: number
-}
-
-interface CustomScriptDetailPageProps {
-  row: CustomScriptItem
-}
+import { CustomScriptDetailPageProps } from './types'
 
 const CustomScriptDetailPage: React.FC<CustomScriptDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()

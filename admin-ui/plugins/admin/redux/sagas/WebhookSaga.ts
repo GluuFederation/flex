@@ -36,80 +36,16 @@ import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { webhookOutputObject } from 'Plugins/admin/helper/utils'
-
-// Define interfaces
-interface RootState {
-  authReducer: {
-    token: {
-      access_token: string
-    }
-    issuer: string
-    userinfo_jwt: string
-  }
-  webhookReducer: {
-    featureToTrigger: string
-    featureWebhooks: Webhook[]
-  }
-}
-
-interface Webhook {
-  inum: string
-  jansEnabled: boolean
-  url: string
-  httpRequestBody?: any
-  [key: string]: any
-}
-
-interface WebhookActionPayload {
-  action?: {
-    action_data?: any
-  }
-  [key: string]: any
-}
-
-interface FeatureActionPayload {
-  [key: string]: any
-}
-
-interface TriggerWebhookPayload {
-  createdFeatureValue: any
-  [key: string]: any
-}
-
-interface AuditLog {
-  headers: Record<string, string>
-  client_id?: string
-  ip_address?: string
-  status?: string
-  performedBy?: {
-    user_inum: string
-    userId: string
-  }
-  action?: string
-  resource?: string
-  message?: string
-  modifiedFields?: any
-  performedOn?: any
-  payload?: any
-  date?: Date
-}
-
-interface ApiError {
-  response?: {
-    body?: {
-      responseMessage?: string
-    }
-  }
-  message?: string
-}
-
-interface WebhookResponse {
-  body?: any[]
-  success?: boolean
-  responseObject?: {
-    inum: string
-  }
-}
+import {
+  RootState,
+  Webhook,
+  WebhookActionPayload,
+  FeatureActionPayload,
+  TriggerWebhookPayload,
+  AuditLog,
+  ApiError,
+  WebhookResponse,
+} from './types'
 
 function* newFunction(): Generator<SelectEffect, WebhookApi, any> {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)

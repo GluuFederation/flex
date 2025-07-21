@@ -176,6 +176,7 @@ export function* auditLogoutLogsSaga({ payload }) {
   try {
     addAdditionalData(audit, CREATE, API_USERS, {})
     audit.message = payload.message
+    debugger
     const data = yield call(postUserAction, audit)
     if (data.status === 200) {
       yield put(auditLogoutLogsResponse(true))
