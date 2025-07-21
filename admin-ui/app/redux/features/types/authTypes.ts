@@ -40,4 +40,5 @@ export interface AuthState {
   backendStatus: BackendStatus
   loadingConfig: boolean
   authState?: any
+  userInum?: string | null
 }
