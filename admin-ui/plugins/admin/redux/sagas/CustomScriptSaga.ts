@@ -15,89 +15,11 @@ import { updateToast } from 'Redux/features/toastSlice'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
+import { CustomScript, ScriptType, UserAction, ActionPayload, AuditLog, RootState } from './types'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
-
-// Define interfaces
-interface CustomScript {
-  inum?: string
-  name: string
-  description?: string
-  scriptType: string
-  programmingLanguage: string
-  level: number
-  script?: string
-  aliases?: string[]
-  moduleProperties?: any[]
-  configurationProperties?: any[]
-  enabled: boolean
-  locationType?: string
-  locationPath?: string
-  scriptError?: {
-    stackTrace: string
-  }
-  revision?: number
-  internal?: boolean
-  [key: string]: any
-}
-
-interface ScriptType {
-  value: string
-  name: string
-}
-
-interface UserAction {
-  action_message?: string
-  action_data?: any
-  [key: string]: any
-}
-
-interface ActionPayload {
-  action: UserAction
-}
-
-interface AuditLog {
-  headers: Record<string, string>
-  client_id?: string
-  ip_address?: string
-  status?: string
-  performedBy?: {
-    user_inum: string
-    userId: string
-  }
-  action?: string
-  resource?: string
-  message?: string
-  modifiedFields?: any
-  performedOn?: any
-  payload?: any
-  date?: Date
-}
-
-interface RootState {
-  authReducer: {
-    token: {
-      access_token: string
-    }
-    issuer: string
-    userinfo_jwt: string
-  }
-  customScriptReducer: {
-    items: CustomScript[]
-    loading: boolean
-    view: boolean
-    saveOperationFlag: boolean
-    errorInSaveOperationFlag: boolean
-    totalItems: number
-    entriesCount: number
-    scriptTypes: ScriptType[]
-    hasFetchedScriptTypes: boolean
-    loadingScriptTypes: boolean
-    item?: CustomScript
-  }
-}
 
 function* newFunction(): any {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)

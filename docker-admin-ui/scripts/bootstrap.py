@@ -201,40 +201,33 @@ def resolve_conf_app(old_conf, new_conf):
             old_conf["licenseConfig"].pop("credentialsEncryptionKey", None)
             should_update = True
 
-        client_changes = [
-            # authServerClient is renamed to auiWebClient
-            ("auiWebClient", "authServerClient"),
-            # tokenServerClient is renamed to auiBackendApiClient
-            ("auiBackendApiClient", "tokenServerClient"),
-        ]
-        for new_client, old_client in client_changes:
-            if new_client in old_conf["oidcConfig"]:
-                continue
-
-            old_conf["oidcConfig"][new_client] = old_conf["oidcConfig"].pop(
-                old_client, new_conf["oidcConfig"][new_client],
-            )
+        # add missing intervalForSyncLicenseDetailsInDays under licenseConfig
+        if "intervalForSyncLicenseDetailsInDays" not in old_conf["licenseConfig"]:
+            old_conf["licenseConfig"]["intervalForSyncLicenseDetailsInDays"] = 30
             should_update = True
 
-        # opHost changes on auiWebClient and auiBackendApiClient
-        for srv_client in ("auiWebClient", "auiBackendApiClient"):
-            if new_conf["oidcConfig"][srv_client]["opHost"] != old_conf["oidcConfig"][srv_client]["opHost"]:
-                old_conf["oidcConfig"][srv_client]["opHost"] = new_conf["oidcConfig"][srv_client]["opHost"]
+        # changes for admin-ui clients
+        client_changes = [
+            ("auiWebClient", "authServerClient"),  # authServerClient is renamed to auiWebClient
+            ("auiBackendApiClient", "tokenServerClient"),  # tokenServerClient is renamed to auiBackendApiClient
+        ]
+        for new_client, old_client in client_changes:
+            if new_client not in old_conf["oidcConfig"]:
+                old_conf["oidcConfig"][new_client] = old_conf["oidcConfig"].pop(
+                    old_client, new_conf["oidcConfig"][new_client],
+                )
                 should_update = True
+
+        for client in ("auiWebClient", "auiBackendApiClient"):
+            # sync opHost and scopes
+            for attr in ["opHost", "scopes"]:
+                if old_conf["oidcConfig"][client][attr] != new_conf["oidcConfig"][client][attr]:
+                    old_conf["oidcConfig"][client][attr] = new_conf["oidcConfig"][client][attr]
+                    should_update = True
 
         # add missing introspectionEndpoint
         if "introspectionEndpoint" not in old_conf["oidcConfig"]["auiBackendApiClient"]:
             old_conf["oidcConfig"]["auiBackendApiClient"]["introspectionEndpoint"] = new_conf["oidcConfig"]["auiBackendApiClient"]["introspectionEndpoint"]
-            should_update = True
-
-        # set scope to openid only
-        if old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] != new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]:
-            old_conf["oidcConfig"]["auiBackendApiClient"]["scopes"] = new_conf["oidcConfig"]["auiBackendApiClient"]["scopes"]
-            should_update = True
-
-        # add missing uiConfig
-        if "uiConfig" not in old_conf:
-            old_conf["uiConfig"] = {"sessionTimeoutInMins": 30}
             should_update = True
 
         # add missing additionalParameters
@@ -248,14 +241,18 @@ def resolve_conf_app(old_conf, new_conf):
                 old_conf["oidcConfig"]["auiBackendApiClient"][endpoint] = new_conf["oidcConfig"]["auiBackendApiClient"][endpoint]
                 should_update = True
 
+        # add missing uiConfig
+        if "uiConfig" not in old_conf:
+            old_conf["uiConfig"] = {"sessionTimeoutInMins": 30}
+            should_update = True
+
         # add missing config under uiConfig
         if "allowSmtpKeystoreEdit" not in old_conf["uiConfig"]:
             old_conf["uiConfig"]["allowSmtpKeystoreEdit"] = True
             should_update = True
 
-        # add missing intervalForSyncLicenseDetailsInDays under licenseConfig
-        if "intervalForSyncLicenseDetailsInDays" not in old_conf["licenseConfig"]:
-            old_conf["licenseConfig"]["intervalForSyncLicenseDetailsInDays"] = 30
+        if "cedarlingLogType" not in old_conf["uiConfig"]:
+            old_conf["uiConfig"]["cedarlingLogType"] = "off"
             should_update = True
 
     # finalized status and conf

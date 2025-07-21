@@ -88,6 +88,16 @@ const licenseDetailsSlice = createSlice({
         }
       }
     },
+    setLicenseReset: (state) => {
+      state.loading = true
+    },
+    setLicenseResetResponse: (state) => {
+      state.loading = false
+      state.item.licenseExpired = true
+    },
+    setLicenseResetFailure: (state) => {
+      state.loading = false
+    },
   },
 })
 
@@ -96,6 +106,9 @@ export const {
   getLicenseDetailsResponse,
   updateLicenseDetails,
   updateLicenseDetailsResponse,
+  setLicenseReset,
+  setLicenseResetResponse,
+  setLicenseResetFailure,
 } = licenseDetailsSlice.actions
 export const { actions, reducer } = licenseDetailsSlice
 reducerRegistry.register('licenseDetailsReducer', reducer)

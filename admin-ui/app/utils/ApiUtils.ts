@@ -7,7 +7,7 @@ export function handleResponse(
   reject: (error: Error) => void,
   resolve: (data: unknown) => void,
   data: unknown,
-  response: unknown,
+  response?: unknown,
 ): void {
   if (error) {
     reject(error)

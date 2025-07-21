@@ -1,73 +1,13 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-// Type definitions
-interface ModuleProperty {
-  value1: string
-  value2: string
-  description?: string
-  hide?: boolean
-}
-
-interface ConfigurationProperty {
-  key?: string
-  value?: string
-  value1?: string
-  value2?: string
-  hide?: boolean
-}
-
-interface ScriptError {
-  type?: string
-  message?: string
-  stackTrace?: string
-}
-
-interface ScriptType {
-  value: string
-  name: string
-}
-
-interface CustomScriptItem {
-  inum?: string
-  name?: string
-  description?: string
-  scriptType?: string
-  programmingLanguage?: string
-  level?: number
-  script?: string
-  aliases?: string[]
-  moduleProperties?: ModuleProperty[]
-  configurationProperties?: ConfigurationProperty[]
-  locationPath?: string
-  locationType?: string
-  enabled?: boolean
-  scriptError?: ScriptError
-  internal?: boolean
-  revision?: number
-}
-
-interface CustomScriptResponse {
-  data?: {
-    entries?: CustomScriptItem[]
-    totalEntriesCount?: number
-    entriesCount?: number
-  }
-}
-
-interface CustomScriptState {
-  items: CustomScriptItem[]
-  item?: CustomScriptItem
-  loading: boolean
-  view: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  scriptTypes: ScriptType[]
-  hasFetchedScriptTypes: boolean
-  loadingScriptTypes: boolean
-}
+import type {
+  CustomScriptItem,
+  CustomScriptState,
+  CustomScriptResponse,
+  ScriptType,
+  ModuleProperty,
+  ConfigurationProperty,
+} from './types/customScript'
 
 const initialState: CustomScriptState = {
   items: [],
