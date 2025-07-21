@@ -6,26 +6,7 @@ import { useTranslation } from 'react-i18next'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useSelector } from 'react-redux'
 import SetTitle from 'Utils/SetTitle'
-
-// TypeScript interface for the assetReducer state
-interface AssetReducerState {
-  loading: boolean
-  assets: any[]
-  services: any[]
-  fileTypes: any[]
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  totalItems: number
-  entriesCount: number
-  selectedAsset: any
-  loadingAssets: boolean
-  assetModal: boolean
-  showErrorModal: boolean
-}
-
-interface RootState {
-  assetReducer: AssetReducerState
-}
+import type { RootState } from './types'
 
 const JansAssetAddPage = () => {
   const { t } = useTranslation()

@@ -26,66 +26,7 @@ import {
 } from 'Plugins/admin/redux/features/AssetSlice'
 import customColors from '@/customColors'
 import moment from 'moment'
-
-// Type definitions
-interface Asset {
-  inum: string
-  dn: string
-  baseDn: string
-  creationDate: string
-  fileName: string
-  enabled: boolean
-  description: string
-  service: string
-  [key: string]: any // Add index signature for compatibility with ActionData
-}
-
-interface AssetReducerState {
-  totalItems: number
-  assets: Asset[]
-  services: string[]
-  fileTypes: string[]
-  loading: boolean
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-  entriesCount: number
-  selectedAsset: Asset | null
-  loadingAssets: boolean
-  assetModal: boolean
-  showErrorModal: boolean
-}
-
-interface CedarPermissionsState {
-  permissions: Record<string, boolean>
-  loading: boolean
-  error: string | null
-  initialized: boolean | null
-  isInitializing: boolean
-}
-
-interface RootState {
-  assetReducer: AssetReducerState
-  cedarPermissions: CedarPermissionsState
-}
-
-interface ActionOptions {
-  limit?: number
-  pattern?: string | null
-  startIndex?: number
-}
-
-interface SearchEvent {
-  target: {
-    name: string
-    value: string | number
-  }
-}
-
-interface UserAction {
-  action_message?: string
-  action_data?: any
-  [key: string]: any
-}
+import type { Asset, RootState, ActionOptions, SearchEvent, UserAction } from './types'
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()

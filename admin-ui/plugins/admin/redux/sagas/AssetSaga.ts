@@ -27,50 +27,9 @@ import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import AssetApi from '../api/AssetApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
+import { RootState, AuditLog, AssetActionPayload, ApiError } from './types'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
-
-// Define interfaces
-interface RootState {
-  authReducer: {
-    token: {
-      access_token: string
-    }
-    issuer: string
-    userinfo_jwt: string
-  }
-}
-
-interface AssetActionPayload {
-  action?: {
-    action_data?: any
-    [key: string]: any
-  }
-  [key: string]: any
-}
-
-interface AuditLog {
-  headers: Record<string, string>
-  client_id?: string
-  ip_address?: string
-  status?: string
-  performedBy?: {
-    user_inum: string
-    userId: string
-  }
-  action?: string
-  resource?: string
-  message?: string
-}
-
-interface ApiError {
-  response?: {
-    body?: {
-      responseMessage?: string
-    }
-  }
-  message?: string
-}
 
 function* newFunction(): Generator<SelectEffect, AssetApi, any> {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)

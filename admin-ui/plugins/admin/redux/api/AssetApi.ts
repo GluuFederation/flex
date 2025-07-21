@@ -1,40 +1,6 @@
 import { handleResponse } from 'Utils/ApiUtils'
 import axios from 'Redux/api/axios'
-
-// Type definitions
-interface Asset {
-  inum: string
-  dn: string
-  baseDn: string
-  creationDate: string
-  fileName: string
-  enabled: boolean
-  description: string
-  service: string
-}
-
-interface AssetBody {
-  fileName: string
-  description: string
-  document: string
-  service?: string
-  enabled: boolean
-  inum?: string
-  dn?: string
-  baseDn?: string
-}
-
-interface AssetApiClient {
-  getAllAssets: (
-    opts: Record<string, unknown>,
-    callback: (error: Error | null, data: unknown) => void,
-  ) => void
-  getAssetServices: (callback: (error: Error | null, data: unknown) => void) => void
-  getAssetTypes: (callback: (error: Error | null, data: unknown) => void) => void
-  deleteAsset: (id: string, callback: (error: Error | null, data: unknown) => void) => void
-  getAssetByInum: (id: string, callback: (error: Error | null, data: unknown) => void) => void
-  getAssetByName: (name: string, callback: (error: Error | null, data: unknown) => void) => void
-}
+import { AssetApiClient, AssetBody } from './types/AssetApiTypes'
 
 export default class AssetApi {
   private readonly api: AssetApiClient

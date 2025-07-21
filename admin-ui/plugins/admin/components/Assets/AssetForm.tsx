@@ -19,55 +19,7 @@ import { useNavigate, useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { ASSET } from 'Utils/ApiResources'
-
-// Type definitions
-interface Asset {
-  inum: string
-  dn: string
-  baseDn: string
-  creationDate: string
-  document: File | null
-  fileName: string
-  enabled: boolean
-  description: string
-  service: string
-}
-
-interface FormValues {
-  creationDate: string
-  document: File | null
-  fileName: string
-  enabled: boolean
-  description: string
-  service: string[]
-}
-
-interface AssetPayload extends Record<string, unknown> {
-  creationDate: string
-  document: File | null
-  fileName: string
-  enabled: boolean
-  description: string
-  service: string
-  inum?: string
-  dn?: string
-  baseDn?: string
-}
-
-interface AssetReducerState {
-  selectedAsset: Asset | null
-  services: string[]
-  saveOperationFlag: boolean
-  errorInSaveOperationFlag: boolean
-}
-
-interface RootState {
-  assetReducer: AssetReducerState
-}
-
-interface UserAction extends Record<string, unknown> {
-  [key: string]: any
-}
+import type { Asset, FormValues, AssetPayload, RootState, UserAction } from './types'
 
 const AssetForm: React.FC = () => {
   const { id } = useParams<{ id: string }>()
