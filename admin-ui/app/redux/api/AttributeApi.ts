@@ -1,17 +1,10 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
-interface IApi {
-  getAttributes: (opts: any, callback: (error: any, data: any) => void) => void
-}
-
-interface AttributeOptions {
-  [key: string]: any
-}
+import { IAttributeApi, AttributeOptions } from './types/attribute'
 
 export default class AttributeApi {
-  private readonly api: IApi
+  private readonly api: IAttributeApi
 
-  constructor(api: IApi) {
+  constructor(api: IAttributeApi) {
     this.api = api
   }
 

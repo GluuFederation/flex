@@ -14,28 +14,25 @@ import { addAdditionalData, isFourZeroOneError } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { API_LICENSE } from 'Plugins/user-management/redux/audit/Resources'
 import { DELETION } from '@/audit/UserActionType'
+import type { LicenseDetailsItem } from '../features/types/licenseDetailsTypes'
+import type { ResetLicenseAction, UpdateLicenseDetailsAction } from './types/licenseDetails'
 const JansConfigApi = require('jans_config_api')
 
-type ResetLicenseAction = {
-  type: 'license/resetConfig'
-  message: string
-}
-
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token?.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
+function* newFunction(): Generator<any, LicenseDetailsApi, any> {
+  const token: string = yield select((state: any) => state.authReducer.token?.access_token)
+  const issuer: string = yield select((state: any) => state.authReducer.issuer)
   const api = new JansConfigApi.AdminUILicenseApi(getClient(JansConfigApi, token, issuer))
   return new LicenseDetailsApi(api)
 }
 
-export function* resetLicenseConfigWorker(action: ResetLicenseAction) {
+export function* resetLicenseConfigWorker(action: ResetLicenseAction): Generator<any, void, any> {
   const audit = yield* initAudit()
   try {
     yield put(setLicenseReset())
     addAdditionalData(audit, DELETION, API_LICENSE, {})
     audit.message = action?.message
-    const roleApi = yield* newFunction()
-    const data = yield call(roleApi.deleteLicense)
+    const roleApi: LicenseDetailsApi = yield* newFunction()
+    const data: any = yield call(roleApi.deleteLicense)
     const { success, responseCode } = data
     if (success && responseCode === 200) {
       yield put(setLicenseResetResponse(data))
@@ -45,58 +42,64 @@ export function* resetLicenseConfigWorker(action: ResetLicenseAction) {
     }
   } catch (error) {
     if (isFourZeroOneError(error)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select((state: any) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
   }
 }
 
-export function* getLicenseDetailsWorker() {
+export function* getLicenseDetailsWorker(): Generator<any, void, any> {
   try {
     const audit = yield* initAudit()
     //addAdditionalData(audit, FETCH, GET_LICENSE_DETAILS, payload)
-    const licenseApi = yield* newFunction()
-    const data = yield call(licenseApi.getLicenseDetails)
+    const licenseApi: LicenseDetailsApi = yield* newFunction()
+    const data: LicenseDetailsItem = yield call(licenseApi.getLicenseDetails)
     yield put(getLicenseDetailsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     console.log('error in getting license details: ', e)
     yield put(getLicenseDetailsResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select((state: any) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
   }
 }
 
-export function* updateLicenseDetailsWorker({ payload }) {
+export function* updateLicenseDetailsWorker({
+  payload,
+}: UpdateLicenseDetailsAction): Generator<any, void, any> {
   const audit = yield* initAudit()
   try {
     //addAdditionalData(audit, UPDATE, UPDATE_LICENSE_DETAILS, payload)
-    const roleApi = yield* newFunction()
-    const data = yield call(roleApi.updateLicenseDetails, payload.action.action_data)
+    const roleApi: LicenseDetailsApi = yield* newFunction()
+    const data: LicenseDetailsItem = yield call(
+      roleApi.updateLicenseDetails,
+      payload.action.action_data,
+    )
     yield put(updateLicenseDetailsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateLicenseDetailsResponse(null))
     if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select((state: any) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
   }
 }
 
-export function* getLicenseWatcher() {
+export function* getLicenseWatcher(): Generator<any, void, any> {
   yield takeEvery('licenseDetails/getLicenseDetails', getLicenseDetailsWorker)
 }
 
-export function* updateLicenseWatcher() {
+export function* updateLicenseWatcher(): Generator<any, void, any> {
   yield takeEvery('licenseDetails/updateLicenseDetails', updateLicenseDetailsWorker)
 }
-export function* resetLicenseWatcher() {
+
+export function* resetLicenseWatcher(): Generator<any, void, any> {
   yield takeEvery('license/resetConfig', resetLicenseConfigWorker)
 }
 
-export default function* rootSaga() {
+export default function* rootSaga(): Generator<any, void, any> {
   yield all([fork(getLicenseWatcher), fork(updateLicenseWatcher), fork(resetLicenseWatcher)])
 }

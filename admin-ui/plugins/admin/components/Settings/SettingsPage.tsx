@@ -30,40 +30,7 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import packageJson from '../../../../package.json'
 import { CedarlingLogType } from '@/cedarling'
 import { updateToast } from '@/redux/features/toastSlice'
-
-// Define types for the Redux state
-interface AuthState {
-  loadingConfig: boolean
-  config: {
-    additionalParameters?: any[]
-    acrValues?: string
-    sessionTimeoutInMins?: number
-    cedarlingLogType?: CedarlingLogType
-  }
-}
-
-interface InitState {
-  loadingScripts: boolean
-  scripts: Script[]
-}
-
-interface Script {
-  scriptType: string
-  enabled: boolean
-  name: string
-}
-
-interface RootState {
-  authReducer: AuthState
-  initReducer: InitState
-}
-
-// Define formik values interface
-interface FormValues {
-  sessionTimeoutInMins: number
-  acrValues: string
-  cedarlingLogType: CedarlingLogType
-}
+import { AuthState, InitState, Script, RootState, FormValues } from './types'
 
 const levels = [1, 5, 10, 20]
 

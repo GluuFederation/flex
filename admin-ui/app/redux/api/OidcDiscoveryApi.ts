@@ -1,13 +1,10 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
-interface Api {
-  getProperties: (callback: (error: Error | null, data: unknown) => void) => void
-}
+import { OidcDiscoveryApiInterface } from './types/oidc'
 
 export default class OidcDiscoveryApi {
-  private readonly api: Api
+  private readonly api: OidcDiscoveryApiInterface
 
-  constructor(api: Api) {
+  constructor(api: OidcDiscoveryApiInterface) {
     this.api = api
   }
 

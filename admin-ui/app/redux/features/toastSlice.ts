@@ -1,13 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
+import type { ToastState, ToastType } from './types/toastTypes'
 
-const initialState = {
+const initialState: ToastState = {
   showToast: false,
   message: '',
   type: 'success',
 }
 
-export const updateToast = (showToast = false, type = 'success', message = '') => ({
+export const updateToast = (showToast = false, type: ToastType = 'success', message = '') => ({
   type: 'toast/updateToast',
   payload: {
     showToast: showToast,

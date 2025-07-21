@@ -1,24 +1,12 @@
 import { handleResponse, handleError } from 'Utils/ApiUtils'
-
-interface ApiInterface {
-  getAdminuiLicense: (callback: (error: Error | null, data: any) => void) => void
-  editAdminuiLicense: (
-    options: { licenseRequest: any },
-    callback: (error: Error | null, data: any) => void,
-  ) => void
-  licenseConfigDelete: (callback: (error: Error | null, data: any, response?: any) => void) => void
-}
-
-interface LicenseRequest {
-  [key: string]: any
-}
+import { LicenseDetailsApiInterface, LicenseRequest } from './types/license'
 
 const MAX_RETRIES = 1
 
 export default class LicenseDetailsApi {
-  private readonly api: ApiInterface
+  private readonly api: LicenseDetailsApiInterface
 
-  constructor(api: ApiInterface) {
+  constructor(api: LicenseDetailsApiInterface) {
     this.api = api
   }
 

@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import unionBy from 'lodash/unionBy'
+import type { AttributesState } from './types/attributesTypes'
 
-const initialState = {
+const initialState: AttributesState = {
   items: [],
   loading: false,
   initLoading: true,

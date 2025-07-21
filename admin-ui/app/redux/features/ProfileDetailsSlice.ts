@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
+import type { ProfileDetailsState } from './types/profileDetailsTypes'
 
-const initialState = {
+const initialState: ProfileDetailsState = {
   profileDetails: null,
   loading: false,
 }

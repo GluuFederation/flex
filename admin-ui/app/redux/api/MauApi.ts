@@ -1,11 +1,5 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
-interface MauApiClient {
-  getStat: (
-    options: Record<string, unknown>,
-    callback: (error: Error | null, data: unknown) => void,
-  ) => void
-}
+import { MauApiClient } from './types/mau'
 
 export default class MauApi {
   private readonly api: MauApiClient

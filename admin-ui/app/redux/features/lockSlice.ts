@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
+import type { LockState } from './types/lockTypes'
 
-const initialState = {
+const initialState: LockState = {
   lockDetail: {},
   loading: false,
 }

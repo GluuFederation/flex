@@ -1,28 +1,10 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
-interface ApiClient {
-  getOauthScopes: (
-    options: Record<string, unknown>,
-    callback: (error: Error | null, data: unknown) => void,
-  ) => void
-  getConfigScripts: (
-    options: Record<string, unknown>,
-    callback: (error: Error | null, data: unknown) => void,
-  ) => void
-  getAttributes: (
-    options: Record<string, unknown>,
-    callback: (error: Error | null, data: unknown) => void,
-  ) => void
-  getOauthOpenidClients: (
-    options: Record<string, unknown>,
-    callback: (error: Error | null, data: unknown) => void,
-  ) => void
-}
+import { InitApiClient } from './types/init'
 
 export default class InitApi {
-  private readonly api: ApiClient
+  private readonly api: InitApiClient
 
-  constructor(api: ApiClient) {
+  constructor(api: InitApiClient) {
     this.api = api
   }
 

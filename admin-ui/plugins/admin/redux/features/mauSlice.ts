@@ -1,25 +1,6 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-interface MauState {
-  stat: any[]
-  loading: boolean
-  startMonth: string
-  endMonth: string
-}
-
-interface MauRequestPayload {
-  action?: {
-    action_data?: {
-      startMonth: string
-      endMonth: string
-    }
-  }
-}
-
-interface MauResponsePayload {
-  data?: any[]
-}
+import { MauState, MauRequestPayload, MauResponsePayload } from './types'
 
 const initialState: MauState = {
   stat: [],
