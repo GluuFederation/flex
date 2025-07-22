@@ -77,6 +77,20 @@ function ConfigPage() {
   }, [])
   useEffect(() => {}, [cedarPermissions])
 
+  const renamedFieldFromObject = (obj) => {
+    const { discoveryDenyKeys, ...rest } = obj
+
+    return {
+      ...rest,
+      'OpenID Configuration Response OP Metadata Suppression List': discoveryDenyKeys ?? [],
+    }
+  }
+  function isRenamedKey(propKey) {
+    const renamedKeys = ['OpenID Configuration Response OP Metadata Suppression List']
+
+    return renamedKeys.includes(propKey)
+  }
+
   const patchHandler = (patch) => {
     setPatches((existingPatches) => [...existingPatches, patch])
     const newPatches = patches
@@ -142,20 +156,23 @@ function ConfigPage() {
           </div>
         </CardHeader>
         <CardBody style={{ minHeight: 500 }}>
-          {Object.keys(configuration).map((propKey) => {
-            if (generateLabel(propKey).includes(finalSearch)) {
-              return (
-                <PropertyBuilder
-                  key={propKey}
-                  propKey={propKey}
-                  propValue={configuration[propKey]}
-                  lSize={lSize}
-                  handler={patchHandler}
-                  schema={schema[propKey]}
-                />
-              )
-            }
-          })}
+          {Object.keys(configuration).length > 0 &&
+            Object.entries(renamedFieldFromObject(configuration)).map(([propKey, propValue]) => {
+              if (generateLabel(propKey).includes(finalSearch)) {
+                return (
+                  <PropertyBuilder
+                    isRenamedKey={isRenamedKey(propKey)}
+                    key={propKey}
+                    propKey={propKey}
+                    propValue={propValue}
+                    lSize={lSize}
+                    handler={patchHandler}
+                    schema={schema[propKey]}
+                  />
+                )
+              }
+            })}
+
           {Object.keys(configuration).length > 0 &&
             missing_properties_data.map((propKey) => {
               if (generateLabel(propKey).includes(finalSearch)) {
