@@ -238,11 +238,13 @@ const JansAssetListPage: React.FC = () => {
     {
       title: `${t('fields.name')}`,
       field: 'fileName',
+      cellStyle: { backgroundColor: customColors.white },
     },
     {
       title: `${t('fields.description')}`,
       field: 'description',
       width: '40%',
+      cellStyle: { backgroundColor: customColors.white },
       render: (rowData: Asset) => (
         <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>{rowData.description}</div>
       ),
@@ -250,13 +252,18 @@ const JansAssetListPage: React.FC = () => {
     {
       title: `${t('fields.creationDate')}`,
       field: 'creationDate',
+      cellStyle: { backgroundColor: customColors.white },
       render: (rowData: Asset) => (
         <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
           {moment(rowData.creationDate).format('YYYY-MM-DD')}
         </div>
       ),
     },
-    { title: `${t('fields.enabled')}`, field: 'enabled' },
+    {
+      title: `${t('fields.enabled')}`,
+      field: 'enabled',
+      cellStyle: { backgroundColor: customColors.white },
+    },
   ]
 
   return (
@@ -280,12 +287,15 @@ const JansAssetListPage: React.FC = () => {
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData: Asset) => ({
+                rowStyle: (rowData) => ({
                   backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
+                } as React.CSSProperties,
+                actionsCellStyle: {
+                  backgroundColor: customColors.white,
                 } as React.CSSProperties,
                 actionsColumnIndex: -1,
               }}
