@@ -1,13 +1,5 @@
 // Type definitions for Asset functionality
-
-export interface Asset {
-  id?: string
-  name: string
-  type: string
-  service: string
-  content?: string
-  // Add other asset properties as needed
-}
+import { Asset } from '../../../components/Assets/types/Asset'
 
 export interface AssetData {
   entries: Asset[]
@@ -24,7 +16,7 @@ export interface AssetState {
   errorInSaveOperationFlag: boolean
   totalItems: number
   entriesCount: number
-  selectedAsset: Asset | {}
+  selectedAsset: Asset | Record<string, unknown>
   loadingAssets: boolean
   assetModal: boolean
   showErrorModal: boolean

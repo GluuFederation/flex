@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react'
 import MaterialTable, { Action, Column } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { Paper, TablePagination } from '@mui/material'
+import { Paper, PaperProps, TablePagination } from '@mui/material'
 import { Card, CardBody } from 'Components'
 import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -26,7 +26,7 @@ import {
 } from 'Plugins/admin/redux/features/AssetSlice'
 import customColors from '@/customColors'
 import moment from 'moment'
-import type { Asset, RootState, ActionOptions, SearchEvent, UserAction } from './types'
+import type { Asset, RootState, ActionOptions, SearchEvent, UserAction } from './types/'
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
@@ -49,13 +49,13 @@ const JansAssetListPage: React.FC = () => {
   let memoPattern = pattern
 
   const navigateToAddPage = useCallback(() => {
-    dispatch(setSelectedAsset({} as any))
+    dispatch(setSelectedAsset({} as Asset))
     navigate('/adm/asset/add')
   }, [dispatch, navigate])
 
   const navigateToEditPage = useCallback(
     (data: Asset) => {
-      dispatch(setSelectedAsset(data as any))
+      dispatch(setSelectedAsset(data))
       navigate(`/adm/asset/edit/${data.inum}`)
     },
     [dispatch, navigate],
@@ -129,7 +129,7 @@ const JansAssetListPage: React.FC = () => {
         iconProps: {
           id: 'editScope',
         },
-        onClick: (_event: any, data: Asset | Asset[]) => {
+        onClick: (_event: MouseEvent, data: Asset | Asset[]) => {
           if (!Array.isArray(data)) {
             navigateToEditPage(data)
           }
@@ -145,7 +145,7 @@ const JansAssetListPage: React.FC = () => {
           color: 'secondary',
           id: 'deleteClient',
         },
-        onClick: (_event: any, data: Asset | Asset[]) => {
+        onClick: (_event: MouseEvent, data: Asset | Asset[]) => {
           if (!Array.isArray(data)) {
             setDeleteData(data)
             toggle()
@@ -166,7 +166,7 @@ const JansAssetListPage: React.FC = () => {
     hasCedarPermission,
   ])
 
-  const PaperContainer = useCallback((props: any) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback((props: PaperProps) => <Paper {...props} elevation={0} />, [])
   const theme = useContext(ThemeContext)
   const themeColors = getThemeColor(theme?.state.theme || 'darkBlack')
   const bgThemeColor = { background: themeColors.background }
@@ -179,7 +179,7 @@ const JansAssetListPage: React.FC = () => {
       const userAction: UserAction = {}
       toggle()
       buildPayload(userAction, userMessage, deleteData)
-      dispatch((deleteJansAsset as any)({ action: userAction }))
+      dispatch(deleteJansAsset({ action: userAction }))
     },
     [deleteData, dispatch],
   )

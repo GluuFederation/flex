@@ -8,5 +8,5 @@ export interface Asset {
   description: string
   service: string
   document?: File | null
-  [key: string]: any // Add index signature for compatibility with ActionData
+  [key: string]: unknown
 }

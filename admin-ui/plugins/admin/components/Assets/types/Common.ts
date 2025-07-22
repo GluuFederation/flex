@@ -16,8 +16,8 @@ export interface SearchEvent {
 
 export interface UserAction {
   action_message?: string
-  action_data?: any
-  [key: string]: any
+  action_data?: unknown
+  [key: string]: unknown
 }
 
 export interface RootState {

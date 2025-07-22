@@ -1,6 +1,7 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Asset, AssetData, AssetState } from './types'
+import { Asset } from '../../components/Assets/types/Asset'
+import { AssetData, AssetState } from './types'
 
 const initialState: AssetState = {
   assets: [],
@@ -21,10 +22,10 @@ const assetSlice = createSlice({
   name: 'asset',
   initialState,
   reducers: {
-    fetchJansAssets: (state, action: PayloadAction<any>) => {
+    fetchJansAssets: (state) => {
       state.loadingAssets = true
     },
-    getJansAssets: (state, action: PayloadAction<any>) => {
+    getJansAssets: (state) => {
       state.loading = true
     },
     getJansAssetResponse: (state, action: PayloadAction<{ data?: AssetData }>) => {
@@ -35,7 +36,7 @@ const assetSlice = createSlice({
         state.entriesCount = action.payload.data.entriesCount
       }
     },
-    getAssetServices: (state, action: PayloadAction<any>) => {
+    getAssetServices: (state) => {
       state.loading = true
     },
     getAssetServicesResponse: (state, action: PayloadAction<{ data?: string[] }>) => {
@@ -44,7 +45,7 @@ const assetSlice = createSlice({
         state.services = action.payload.data
       }
     },
-    getAssetTypes: (state, action: PayloadAction<any>) => {
+    getAssetTypes: (state) => {
       state.loading = true
     },
     getAssetTypesResponse: (state, action: PayloadAction<{ data?: string[] }>) => {
@@ -58,7 +59,7 @@ const assetSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    createJansAssetResponse: (state, action: PayloadAction<{ data?: any }>) => {
+    createJansAssetResponse: (state, action: PayloadAction<{ data?: Asset }>) => {
       state.loading = false
       state.saveOperationFlag = true
       if (action.payload?.data) {
@@ -81,7 +82,7 @@ const assetSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    updateJansAssetResponse: (state, action: PayloadAction<{ data?: any }>) => {
+    updateJansAssetResponse: (state, action: PayloadAction<{ data?: Asset }>) => {
       state.saveOperationFlag = true
       state.loading = false
       if (action.payload?.data) {

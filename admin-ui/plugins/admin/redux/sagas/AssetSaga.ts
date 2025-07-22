@@ -28,10 +28,12 @@ import AssetApi from '../api/AssetApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 import { RootState, AuditLog, AssetActionPayload, ApiError } from './types'
-const JansConfigApi = require('jans_config_api')
+import { Asset } from '../../components/Assets/types/Asset'
+import { AssetData } from '../features/types/asset'
+import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 
-function* newFunction(): Generator<SelectEffect, AssetApi, any> {
+function* createAssetApiClient(): Generator<SelectEffect, AssetApi, string> {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
   const api = new JansConfigApi.JansAssetsApi(getClient(JansConfigApi, token, issuer))
@@ -42,16 +44,17 @@ export function* getAllJansAssets({
   payload,
 }: {
   payload: AssetActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
+}): Generator<CallEffect | PutEffect | SelectEffect, AssetData | ApiError, any> {
   const audit: AuditLog = yield call(initAudit)
   try {
     payload = payload || { action: {} }
-    addAdditionalData(audit, FETCH, 'asset', payload)
-    const assetApi: AssetApi = yield call(newFunction)
-    const data: any = yield call(assetApi.getAllJansAssets, payload.action || {})
-    yield put(getJansAssetResponse({ data }))
+    const safePayload = payload || { action: {} }
+    addAdditionalData(audit, FETCH, 'asset', safePayload)
+    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const data = yield call(assetApi.getAllJansAssets, safePayload.action || {})
+    yield put(getJansAssetResponse({ data: data as AssetData }))
     yield call(postUserAction, audit)
-    return data
+    return data as AssetData
   } catch (e: unknown) {
     const error = e as ApiError
     yield put(
@@ -70,20 +73,16 @@ export function* getAllJansAssets({
   }
 }
 
-export function* getAssetServices({
-  payload,
-}: {
-  payload: AssetActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
+export function* getAssetServices({ payload }: { payload: AssetActionPayload }): any {
   const audit: AuditLog = yield call(initAudit)
   try {
     payload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'assetServices', payload)
-    const assetApi: AssetApi = yield call(newFunction)
-    const data: any = yield call(assetApi.getAssetServices)
-    yield put(getAssetServicesResponse({ data }))
+    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const data = yield call(assetApi.getAssetServices)
+    yield put(getAssetServicesResponse({ data: data as string[] }))
     yield call(postUserAction, audit)
-    return data
+    return data as string[]
   } catch (e: unknown) {
     const error = e as ApiError
     yield put(
@@ -106,16 +105,16 @@ export function* getAssetTypes({
   payload,
 }: {
   payload: AssetActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
+}): Generator<CallEffect | PutEffect | SelectEffect, string[] | ApiError, any> {
   const audit: AuditLog = yield call(initAudit)
   try {
     payload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'assetTypes', payload)
-    const assetApi: AssetApi = yield call(newFunction)
-    const data: any = yield call(assetApi.getAssetTypes)
-    yield put(getAssetTypesResponse({ data }))
+    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const data = yield call(assetApi.getAssetTypes)
+    yield put(getAssetTypesResponse({ data: data as string[] }))
     yield call(postUserAction, audit)
-    return data
+    return data as string[]
   } catch (e: unknown) {
     const error = e as ApiError
     yield put(
@@ -138,16 +137,20 @@ export function* createJansAsset({
   payload,
 }: {
   payload: AssetActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
+}): Generator<CallEffect | PutEffect | SelectEffect, Asset | ApiError, any> {
   const audit: AuditLog = yield call(initAudit)
   try {
     const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
     addAdditionalData(audit, CREATE, 'asset', payload)
-    const assetApi: AssetApi = yield call(newFunction)
-    const data: any = yield call(assetApi.createJansAsset, payload.action?.action_data, token)
-    yield put(createJansAssetResponse({ data }))
+    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const data = yield call(
+      assetApi.createJansAsset.bind(assetApi),
+      payload.action?.action_data,
+      token,
+    )
+    yield put(createJansAssetResponse({ data: data as Asset }))
     yield call(postUserAction, audit)
-    return data
+    return data as Asset
   } catch (e: unknown) {
     const error = e as ApiError
     yield put(
@@ -170,16 +173,15 @@ export function* deleteJansAsset({
   payload,
 }: {
   payload: AssetActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
+}): Generator<CallEffect | PutEffect | SelectEffect, void | ApiError, any> {
   const audit: AuditLog = yield call(initAudit)
   try {
     addAdditionalData(audit, DELETION, 'asset', payload)
-    const assetApi: AssetApi = yield call(newFunction)
-    const data: any = yield call(assetApi.deleteJansAssetByInum, payload.action?.action_data?.inum)
+    const assetApi: AssetApi = yield call(createAssetApiClient)
+    yield call(assetApi.deleteJansAssetByInum.bind(assetApi), payload.action?.action_data?.inum)
     yield put(deleteJansAssetResponse())
     yield call(postUserAction, audit)
-    yield put(fetchJansAssets({ action: {} }))
-    return data
+    yield put(fetchJansAssets())
   } catch (e: unknown) {
     const error = e as ApiError
     yield put(
@@ -202,17 +204,21 @@ export function* updateJansAsset({
   payload,
 }: {
   payload: AssetActionPayload
-}): Generator<CallEffect | PutEffect | SelectEffect, any, any> {
+}): Generator<CallEffect | PutEffect | SelectEffect, Asset | ApiError, any> {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
   const audit: AuditLog = yield call(initAudit)
   try {
     addAdditionalData(audit, UPDATE, 'asset', payload)
-    const assetApi: AssetApi = yield call(newFunction)
-    const data: any = yield call(assetApi.updateJansAsset, payload.action?.action_data, token)
-    yield put(updateJansAssetResponse({ data }))
+    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const data = yield call(
+      assetApi.updateJansAsset.bind(assetApi),
+      payload.action?.action_data,
+      token,
+    )
+    yield put(updateJansAssetResponse({ data: data as Asset }))
     yield call(postUserAction, audit)
-    yield put(fetchJansAssets({ action: {} }))
-    return data
+    yield put(fetchJansAssets())
+    return data as Asset
   } catch (e: unknown) {
     const error = e as ApiError
     yield put(

@@ -19,7 +19,7 @@ import { useNavigate, useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { ASSET } from 'Utils/ApiResources'
-import type { Asset, FormValues, AssetPayload, RootState, UserAction } from './types'
+import type { FormValues, AssetPayload, RootState, UserAction } from './types'
 
 const AssetForm: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -34,10 +34,6 @@ const AssetForm: React.FC = () => {
   )
   const dispatch = useDispatch()
   const [modal, setModal] = useState<boolean>(false)
-
-  const validatePayload = (values: FormValues): boolean => {
-    return false
-  }
 
   const buildAcceptFileTypes = (): Record<string, string[]> => {
     return {
@@ -74,11 +70,7 @@ const AssetForm: React.FC = () => {
       description: selectedAsset?.description || '',
       service: selectedAsset?.service ? [selectedAsset?.service] : [],
     },
-    onSubmit: (values: FormValues) => {
-      const faulty = validatePayload(values)
-      if (faulty) {
-        return
-      }
+    onSubmit: () => {
       toggle()
     },
     validationSchema: Yup.object().shape({
@@ -104,10 +96,10 @@ const AssetForm: React.FC = () => {
         payload.dn = selectedAsset.dn
         payload.baseDn = selectedAsset.baseDn
         buildPayload(userAction, userMessage, payload)
-        dispatch(updateJansAsset({ action: userAction } as any))
+        dispatch(updateJansAsset({ action: userAction }))
       } else {
         buildPayload(userAction, userMessage, payload)
-        dispatch(createJansAsset({ action: userAction } as any))
+        dispatch(createJansAsset({ action: userAction }))
       }
     },
     [formik, selectedAsset, id, dispatch, userAction],
