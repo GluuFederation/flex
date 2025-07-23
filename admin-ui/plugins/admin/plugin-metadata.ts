@@ -108,11 +108,11 @@ const pluginMetadata = {
           path: PLUGIN_BASE_PATH + '/assets',
           permission: ASSETS_READ,
         },
-        {
-          title: 'menus.audit_logs',
-          path: PLUGIN_BASE_PATH + '/audit-logs',
-          permission: LOGGING_READ,
-        },
+        // {
+        //   title: 'menus.audit_logs',
+        //   path: PLUGIN_BASE_PATH + '/audit-logs',
+        //   permission: LOGGING_READ,
+        // },
       ],
     },
   ],
