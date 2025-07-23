@@ -155,6 +155,13 @@ const WebhookListPage = () => {
       memoLimit = event.target.value
     } else if (event.target.name == 'pattern') {
       memoPattern = event.target.value
+      if (event.keyCode === 13) {
+        const newOptions = {
+          limit: limit,
+          pattern: memoPattern,
+        }
+        dispatch(getWebhook({ action: newOptions }))
+      }
     }
   }, [])
 

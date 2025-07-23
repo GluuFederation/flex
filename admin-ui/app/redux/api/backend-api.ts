@@ -1,6 +1,5 @@
 import axios from '../api/axios'
 import axios_instance from 'axios'
-const JansConfigApi = require('jans_config_api')
 
 export const fetchServerConfiguration = (token: any) => {
   const headers = { Authorization: `Bearer ${token}` }
@@ -79,6 +78,20 @@ export const fetchApiAccessToken = (jwt: any, permissionTag: any) => {
     .then((response) => response.data)
     .catch((error) => {
       console.error('Problems getting API access token in order to process api calls.', error)
+      return -1
+    })
+}
+
+export const fetchAuditLogs = (jwt: any) => {
+  const headers = { Authorization: `Bearer ${jwt}` }
+
+  return axios
+    .get('/api/v1/audit?startIndex=1&limit=20', {
+      headers,
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error('Problems getting Audit logs.', error)
       return -1
     })
 }

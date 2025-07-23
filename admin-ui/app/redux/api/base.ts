@@ -1,3 +1,5 @@
+import store from '../store'
+
 export const getDefaultClient = (JansConfigApi: any) => {
   let defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
@@ -19,6 +21,7 @@ export const getDefaultClient = (JansConfigApi: any) => {
 }
 
 export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
+  const userInum = store.getState()?.authReducer?.userInum || ''
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
@@ -32,12 +35,15 @@ export const getClient = (JansConfigApi: any, r_token: any, r_issuer: any) => {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Credentials': true,
     'issuer': r_issuer,
+    'jans-client': 'admin-ui',
+    'User-inum': userInum,
   }
   defaultClient.defaultHeaders = headers
   jansauth.accessToken = r_token
   return defaultClient
 }
 export const getClientWithToken = (JansConfigApi: any, token: any) => {
+  const userInum = store.getState()?.authReducer?.userInum || ''
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 60000
   const jansauth = defaultClient.authentications['oauth2']
@@ -51,6 +57,8 @@ export const getClientWithToken = (JansConfigApi: any, token: any) => {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Credentials': true,
     'Authorization': 'Bearer ' + token,
+    'jans-client': 'admin-ui',
+    'User-inum': userInum,
   }
   defaultClient.defaultHeaders = headers
   return defaultClient
