@@ -56,8 +56,6 @@ const PermissionAddDialogForm = ({ handler, modal, onAccept }) => {
           defaultPermissionInToken: defaultPermissionInToken,
         }),
     }
-    console.log(roleData)
-    debugger
     onAccept(roleData)
     emptyingState()
   }

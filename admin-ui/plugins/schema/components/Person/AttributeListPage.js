@@ -35,6 +35,7 @@ function AttributeListPage() {
   const loading = useSelector((state) => state.attributeReducer.loading)
   const { totalItems } = useSelector((state) => state.attributeReducer)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const [myActions, setMyActions] = useState([])
 
   // Permission initialization
   useEffect(() => {
@@ -77,7 +78,6 @@ function AttributeListPage() {
   }, [])
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
-  const myActions = []
   SetTitle(t('fields.attributes'))
 
   let memoLimit = limit
@@ -139,75 +139,154 @@ function AttributeListPage() {
     return navigate('/attribute/new')
   }
 
+  useEffect(() => {
+    const actions = []
+
+    const canRead = hasCedarPermission(ATTRIBUTE_READ)
+    const canWrite = hasCedarPermission(ATTRIBUTE_WRITE)
+    const canDelete = hasCedarPermission(ATTRIBUTE_DELETE)
+
+    if (canRead) {
+      actions.push((rowData) => ({
+        icon: 'visibility',
+        iconProps: {
+          id: 'viewAttribute' + rowData.inum,
+          style: { color: customColors.darkGray },
+        },
+        tooltip: `${t('tooltips.view_attribute')}`,
+        onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
+        disabled: false,
+      }))
+      actions.push({
+        icon: GluuSearch,
+        tooltip: `${t('tooltips.advanced_search_options')}`,
+        iconProps: {
+          style: { color: customColors.lightBlue },
+        },
+        isFreeAction: true,
+        onClick: () => {},
+      })
+      actions.push({
+        icon: 'refresh',
+        tooltip: `${t('tooltips.refresh_data')}`,
+        iconProps: {
+          style: { color: customColors.lightBlue },
+        },
+        isFreeAction: true,
+        onClick: () => {
+          makeOptions()
+          dispatch(searchAttributes({ options }))
+        },
+      })
+    }
+
+    if (canWrite) {
+      actions.push((rowData) => ({
+        icon: 'edit',
+        iconProps: {
+          id: 'editAttribute' + rowData.inum,
+          style: { color: customColors.darkGray },
+        },
+        tooltip: `${t('tooltips.edit_attribute')}`,
+        onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+        disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
+      }))
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('tooltips.add_attribute')}`,
+        iconProps: {
+          style: { color: customColors.lightBlue },
+        },
+        isFreeAction: true,
+        onClick: () => handleGoToAttributeAddPage(),
+        disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
+      })
+    }
+
+    if (canDelete) {
+      actions.push((rowData) => ({
+        icon: DeleteOutlinedIcon,
+        iconProps: {
+          style: { color: customColors.darkGray, id: 'deleteAttribute' + rowData.inum },
+        },
+        tooltip: `${t('tooltips.delete_attribute')}`,
+        onClick: (event, rowData) => handleAttribueDelete(rowData),
+        disabled: !hasCedarPermission(ATTRIBUTE_DELETE),
+      }))
+    }
+
+    setMyActions(actions)
+  }, [cedarPermissions, limit, pattern, t])
+
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const DetailsPanel = useCallback((rowData) => <AttributeDetailPage row={rowData.rowData} />, [])
 
-  if (hasCedarPermission(ATTRIBUTE_WRITE)) {
-    myActions.push((rowData) => ({
-      icon: 'edit',
-      iconProps: {
-        id: 'editAttribute' + rowData.inum,
-        style: { color: customColors.darkGray },
-      },
-      tooltip: `${t('tooltips.edit_attribute')}`,
-      onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
-      disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
-    }))
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('tooltips.add_attribute')}`,
-      iconProps: {
-        style: { color: customColors.lightBlue },
-      },
-      isFreeAction: true,
-      onClick: () => handleGoToAttributeAddPage(),
-      disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
-    })
-  }
-  if (hasCedarPermission(ATTRIBUTE_READ)) {
-    myActions.push((rowData) => ({
-      icon: 'visibility',
-      iconProps: {
-        id: 'viewAttribute' + rowData.inum,
-        style: { color: customColors.darkGray },
-      },
-      tooltip: `${t('tooltips.view_attribute')}`,
-      onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
-      disabled: false,
-    }))
-    myActions.push({
-      icon: GluuSearch,
-      tooltip: `${t('tooltips.advanced_search_options')}`,
-      iconProps: {
-        style: { color: customColors.lightBlue },
-      },
-      isFreeAction: true,
-      onClick: () => {},
-    })
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('tooltips.refresh_data')}`,
-      iconProps: {
-        style: { color: customColors.lightBlue },
-      },
-      isFreeAction: true,
-      onClick: () => {
-        makeOptions()
-        dispatch(searchAttributes({ options }))
-      },
-    })
-  }
-  if (hasCedarPermission(ATTRIBUTE_DELETE)) {
-    myActions.push((rowData) => ({
-      icon: DeleteOutlinedIcon,
-      iconProps: {
-        style: { color: customColors.darkGray, id: 'deleteAttribute' + rowData.inum },
-      },
-      tooltip: `${t('tooltips.delete_attribute')}`,
-      onClick: (event, rowData) => handleAttribueDelete(rowData),
-      disabled: !hasCedarPermission(ATTRIBUTE_DELETE),
-    }))
-  }
+  // if (hasCedarPermission(ATTRIBUTE_WRITE)) {
+  //   myActions.push((rowData) => ({
+  //     icon: 'edit',
+  //     iconProps: {
+  //       id: 'editAttribute' + rowData.inum,
+  //       style: { color: customColors.darkGray },
+  //     },
+  //     tooltip: `${t('tooltips.edit_attribute')}`,
+  //     onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+  //     disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
+  //   }))
+  //   myActions.push({
+  //     icon: 'add',
+  //     tooltip: `${t('tooltips.add_attribute')}`,
+  //     iconProps: {
+  //       style: { color: customColors.lightBlue },
+  //     },
+  //     isFreeAction: true,
+  //     onClick: () => handleGoToAttributeAddPage(),
+  //     disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
+  //   })
+  // }
+  // if (hasCedarPermission(ATTRIBUTE_READ)) {
+  //   myActions.push((rowData) => ({
+  //     icon: 'visibility',
+  //     iconProps: {
+  //       id: 'viewAttribute' + rowData.inum,
+  //       style: { color: customColors.darkGray },
+  //     },
+  //     tooltip: `${t('tooltips.view_attribute')}`,
+  //     onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
+  //     disabled: false,
+  //   }))
+  //   myActions.push({
+  //     icon: GluuSearch,
+  //     tooltip: `${t('tooltips.advanced_search_options')}`,
+  //     iconProps: {
+  //       style: { color: customColors.lightBlue },
+  //     },
+  //     isFreeAction: true,
+  //     onClick: () => {},
+  //   })
+  //   myActions.push({
+  //     icon: 'refresh',
+  //     tooltip: `${t('tooltips.refresh_data')}`,
+  //     iconProps: {
+  //       style: { color: customColors.lightBlue },
+  //     },
+  //     isFreeAction: true,
+  //     onClick: () => {
+  //       makeOptions()
+  //       dispatch(searchAttributes({ options }))
+  //     },
+  //   })
+  // }
+  // if (hasCedarPermission(ATTRIBUTE_DELETE)) {
+  //   myActions.push((rowData) => ({
+  //     icon: DeleteOutlinedIcon,
+  //     iconProps: {
+  //       style: { color: customColors.darkGray, id: 'deleteAttribute' + rowData.inum },
+  //     },
+  //     tooltip: `${t('tooltips.delete_attribute')}`,
+  //     onClick: (event, rowData) => handleAttribueDelete(rowData),
+  //     disabled: !hasCedarPermission(ATTRIBUTE_DELETE),
+  //   }))
+  // }
 
   const GluuSearch = useCallback(() => {
     return (
@@ -220,7 +299,7 @@ function AttributeListPage() {
         showLimit={false}
       />
     )
-  }, [limitId, limit, pattern, patternId, handleOptionsChange])
+  }, [])
 
   function getBadgeTheme(status) {
     if (status === 'ACTIVE') {

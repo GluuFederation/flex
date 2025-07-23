@@ -1,6 +1,5 @@
 import axios from '../api/axios'
 import axios_instance from 'axios'
-const JansConfigApi = require('jans_config_api')
 
 export const fetchServerConfiguration = (token: any) => {
   const headers = { Authorization: `Bearer ${token}` }
