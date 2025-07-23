@@ -19,4 +19,5 @@ export interface AssetBody {
   inum?: string
   dn?: string
   baseDn?: string
+  creationDate?: string
 }

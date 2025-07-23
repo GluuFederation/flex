@@ -1,8 +1,8 @@
-import { Asset } from '../../../components/Assets/types/Asset'
+import { AssetBody } from '../../api/types/AssetApiTypes'
 
 export interface AssetActionPayload {
   action?: {
-    action_data?: Asset
+    action_data?: AssetBody
     [key: string]: unknown
   }
   [key: string]: unknown

@@ -32,10 +32,11 @@ import { Asset } from '../../components/Assets/types/Asset'
 import { AssetData } from '../features/types/asset'
 import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { AssetBody } from '../api/types/AssetApiTypes'
 
-function* createAssetApiClient(): Generator<SelectEffect, AssetApi, string> {
-  const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
-  const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
+function* createAssetApiClient(): Generator<SelectEffect, AssetApi, any> {
+  const token = yield select((state: RootState) => state.authReducer.token.access_token)
+  const issuer = yield select((state: RootState) => state.authReducer.issuer)
   const api = new JansConfigApi.JansAssetsApi(getClient(JansConfigApi, token, issuer))
   return new AssetApi(api)
 }
@@ -50,7 +51,7 @@ export function* getAllJansAssets({
     payload = payload || { action: {} }
     const safePayload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'asset', safePayload)
-    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const assetApi = yield* createAssetApiClient()
     const data = yield call(assetApi.getAllJansAssets, safePayload.action || {})
     yield put(getJansAssetResponse({ data: data as AssetData }))
     yield call(postUserAction, audit)
@@ -73,12 +74,12 @@ export function* getAllJansAssets({
   }
 }
 
-export function* getAssetServices({ payload }: { payload: AssetActionPayload }): any {
+export function* getAssetServices({ payload }: { payload: AssetActionPayload }): unknown {
   const audit: AuditLog = yield call(initAudit)
   try {
     payload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'assetServices', payload)
-    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const assetApi = yield* createAssetApiClient()
     const data = yield call(assetApi.getAssetServices)
     yield put(getAssetServicesResponse({ data: data as string[] }))
     yield call(postUserAction, audit)
@@ -110,7 +111,7 @@ export function* getAssetTypes({
   try {
     payload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'assetTypes', payload)
-    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const assetApi = yield* createAssetApiClient()
     const data = yield call(assetApi.getAssetTypes)
     yield put(getAssetTypesResponse({ data: data as string[] }))
     yield call(postUserAction, audit)
@@ -142,10 +143,10 @@ export function* createJansAsset({
   try {
     const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
     addAdditionalData(audit, CREATE, 'asset', payload)
-    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const assetApi = yield* createAssetApiClient()
     const data = yield call(
-      assetApi.createJansAsset.bind(assetApi),
-      payload.action?.action_data,
+      assetApi.createJansAsset,
+      payload.action?.action_data as AssetBody,
       token,
     )
     yield put(createJansAssetResponse({ data: data as Asset }))
@@ -177,8 +178,8 @@ export function* deleteJansAsset({
   const audit: AuditLog = yield call(initAudit)
   try {
     addAdditionalData(audit, DELETION, 'asset', payload)
-    const assetApi: AssetApi = yield call(createAssetApiClient)
-    yield call(assetApi.deleteJansAssetByInum.bind(assetApi), payload.action?.action_data?.inum)
+    const assetApi = yield* createAssetApiClient()
+    yield call(assetApi.deleteJansAssetByInum, payload.action?.action_data?.inum as string)
     yield put(deleteJansAssetResponse())
     yield call(postUserAction, audit)
     yield put(fetchJansAssets())
@@ -209,10 +210,10 @@ export function* updateJansAsset({
   const audit: AuditLog = yield call(initAudit)
   try {
     addAdditionalData(audit, UPDATE, 'asset', payload)
-    const assetApi: AssetApi = yield call(createAssetApiClient)
+    const assetApi = yield* createAssetApiClient()
     const data = yield call(
-      assetApi.updateJansAsset.bind(assetApi),
-      payload.action?.action_data,
+      assetApi.updateJansAsset,
+      payload.action?.action_data as AssetBody,
       token,
     )
     yield put(updateJansAssetResponse({ data: data as Asset }))
