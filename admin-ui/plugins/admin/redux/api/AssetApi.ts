@@ -1,35 +1,39 @@
 import { handleResponse } from 'Utils/ApiUtils'
 import axios from 'Redux/api/axios'
+import { AssetApiClient, AssetBody } from './types/AssetApiTypes'
+
 export default class AssetApi {
-  constructor(api) {
+  private readonly api: AssetApiClient
+
+  constructor(api: AssetApiClient) {
     this.api = api
   }
 
-  getAllJansAssets = (opts) => {
+  getAllJansAssets = (opts: Record<string, unknown>): Promise<unknown> => {
     return new Promise((resolve, reject) => {
-      this.api.getAllAssets(opts, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getAllAssets(opts, (error: Error | null, data: unknown) => {
+        handleResponse(error, reject, resolve, data, null)
       })
     })
   }
 
-  getAssetServices = () => {
+  getAssetServices = (): Promise<unknown> => {
     return new Promise((resolve, reject) => {
-      this.api.getAssetServices((error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getAssetServices((error: Error | null, data: unknown) => {
+        handleResponse(error, reject, resolve, data, null)
       })
     })
   }
 
-  getAssetTypes = () => {
+  getAssetTypes = (): Promise<unknown> => {
     return new Promise((resolve, reject) => {
-      this.api.getAssetTypes((error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getAssetTypes((error: Error | null, data: unknown) => {
+        handleResponse(error, reject, resolve, data, null)
       })
     })
   }
 
-  createJansAsset = (body, token) => {
+  createJansAsset = (body: AssetBody, token: string): Promise<unknown> => {
     const document = {
       fileName: body.fileName,
       description: body.description,
@@ -43,12 +47,12 @@ export default class AssetApi {
         .postForm('/api/v1/jans-assets/upload', formData, {
           headers: { Authorization: `Bearer ${token}` },
         })
-        .then((result) => handleResponse(undefined, reject, resolve, result))
-        .catch((error) => handleResponse(error, reject, resolve, undefined))
+        .then((result) => handleResponse(null, reject, resolve, result, null))
+        .catch((error) => handleResponse(error, reject, resolve, null, null))
     })
   }
 
-  updateJansAsset = (body, token) => {
+  updateJansAsset = (body: AssetBody, token: string): Promise<unknown> => {
     const document = {
       fileName: body.fileName,
       description: body.description,
@@ -65,36 +69,36 @@ export default class AssetApi {
         .putForm('/api/v1/jans-assets/upload', formData, {
           headers: { Authorization: `Bearer ${token}` },
         })
-        .then((result) => handleResponse(undefined, reject, resolve, result))
-        .catch((error) => handleResponse(error, reject, resolve, undefined))
+        .then((result) => handleResponse(null, reject, resolve, result, null))
+        .catch((error) => handleResponse(error, reject, resolve, null, null))
     })
   }
 
-  deleteJansAssetByInum = (id) => {
+  deleteJansAssetByInum = (id: string): Promise<unknown> => {
     return new Promise((resolve, reject) => {
-      this.api.deleteAsset(id, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.deleteAsset(id, (error: Error | null, data: unknown) => {
+        handleResponse(error, reject, resolve, data, null)
       })
     })
   }
 
-  getJansAssetByInum = (id) => {
+  getJansAssetByInum = (id: string): Promise<unknown> => {
     return new Promise((resolve, reject) => {
-      this.api.getAssetByInum(id, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getAssetByInum(id, (error: Error | null, data: unknown) => {
+        handleResponse(error, reject, resolve, data, null)
       })
     })
   }
 
-  getJansAssetByName = (name) => {
+  getJansAssetByName = (name: string): Promise<unknown> => {
     return new Promise((resolve, reject) => {
-      this.api.getAssetByName(name, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getAssetByName(name, (error: Error | null, data: unknown) => {
+        handleResponse(error, reject, resolve, data, null)
       })
     })
   }
 
-  buildFormData(body, document) {
+  private buildFormData(body: AssetBody, document: Record<string, unknown>): FormData {
     const formData = new FormData()
     const assetFileBlob = new Blob([body.document], {
       type: 'application/octet-stream',

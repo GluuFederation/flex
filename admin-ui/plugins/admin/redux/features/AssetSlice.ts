@@ -1,7 +1,9 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Asset } from '../../components/Assets/types/Asset'
+import { AssetData, AssetState } from './types'
 
-const initialState = {
+const initialState: AssetState = {
   assets: [],
   services: [],
   fileTypes: [],
@@ -20,13 +22,13 @@ const assetSlice = createSlice({
   name: 'asset',
   initialState,
   reducers: {
-    fetchJansAssets: (state, action) => {
+    fetchJansAssets: (state) => {
       state.loadingAssets = true
     },
-    getJansAssets: (state, action) => {
+    getJansAssets: (state) => {
       state.loading = true
     },
-    getJansAssetResponse: (state, action) => {
+    getJansAssetResponse: (state, action: PayloadAction<{ data?: AssetData }>) => {
       state.loadingAssets = false
       if (action.payload?.data) {
         state.assets = action.payload.data.entries
@@ -34,19 +36,19 @@ const assetSlice = createSlice({
         state.entriesCount = action.payload.data.entriesCount
       }
     },
-    getAssetServices: (state, action) => {
+    getAssetServices: (state) => {
       state.loading = true
     },
-    getAssetServicesResponse: (state, action) => {
+    getAssetServicesResponse: (state, action: PayloadAction<{ data?: string[] }>) => {
       state.loading = false
       if (action.payload?.data) {
         state.services = action.payload.data
       }
     },
-    getAssetTypes: (state, action) => {
+    getAssetTypes: (state) => {
       state.loading = true
     },
-    getAssetTypesResponse: (state, action) => {
+    getAssetTypesResponse: (state, action: PayloadAction<{ data?: string[] }>) => {
       state.loading = false
       if (action.payload?.data) {
         state.fileTypes = action.payload.data
@@ -57,7 +59,7 @@ const assetSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    createJansAssetResponse: (state, action) => {
+    createJansAssetResponse: (state, action: PayloadAction<{ data?: Asset }>) => {
       state.loading = false
       state.saveOperationFlag = true
       if (action.payload?.data) {
@@ -72,7 +74,7 @@ const assetSlice = createSlice({
     deleteJansAssetResponse: (state) => {
       state.loading = false
     },
-    setSelectedAsset: (state, action) => {
+    setSelectedAsset: (state, action: PayloadAction<Asset>) => {
       state.selectedAsset = action.payload
     },
     updateJansAsset: (state) => {
@@ -80,7 +82,7 @@ const assetSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    updateJansAssetResponse: (state, action) => {
+    updateJansAssetResponse: (state, action: PayloadAction<{ data?: Asset }>) => {
       state.saveOperationFlag = true
       state.loading = false
       if (action.payload?.data) {
@@ -93,10 +95,10 @@ const assetSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    setAssetModal: (state, action) => {
+    setAssetModal: (state, action: PayloadAction<boolean>) => {
       state.assetModal = action.payload
     },
-    setShowErrorModal: (state, action) => {
+    setShowErrorModal: (state, action: PayloadAction<boolean>) => {
       state.showErrorModal = action.payload
     },
   },
@@ -121,6 +123,6 @@ export const {
   setAssetModal,
   setShowErrorModal,
 } = assetSlice.actions
-export const { actions, reducer, state } = assetSlice
+export const { actions, reducer } = assetSlice
 export default reducer
 reducerRegistry.register('assetReducer', reducer)

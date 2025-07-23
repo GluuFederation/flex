@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react'
-import MaterialTable from '@material-table/core'
+import MaterialTable, { Action, Column } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
-import { Paper, TablePagination } from '@mui/material'
+import { Paper, PaperProps, TablePagination } from '@mui/material'
 import { Card, CardBody } from 'Components'
 import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -26,24 +26,40 @@ import {
 } from 'Plugins/admin/redux/features/AssetSlice'
 import customColors from '@/customColors'
 import moment from 'moment'
+import type { Asset, RootState, ActionOptions, SearchEvent, UserAction } from './types/'
 
-const JansAssetListPage = () => {
+const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   SetTitle(t('titles.assets'))
-  const [pageNumber, setPageNumber] = useState(0)
-  const { totalItems, assets } = useSelector((state) => state.assetReducer)
-  const loadingAssets = useSelector((state) => state.assetReducer.loadingAssets)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const [pageNumber, setPageNumber] = useState<number>(0)
+  const { totalItems, assets } = useSelector((state: RootState) => state.assetReducer)
+  const loadingAssets = useSelector((state: RootState) => state.assetReducer.loadingAssets)
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootState) => state.cedarPermissions,
+  )
 
-  const [myActions, setMyActions] = useState([])
-  const options = {}
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState(null)
+  const [myActions, setMyActions] = useState<Action<Asset>[]>([])
+  const [options, setOptions] = useState<ActionOptions>({})
+  const [limit, setLimit] = useState<number>(10)
+  const [pattern, setPattern] = useState<string | null>(null)
   let memoLimit = limit
   let memoPattern = pattern
+
+  const navigateToAddPage = useCallback(() => {
+    dispatch(setSelectedAsset({} as Asset))
+    navigate('/adm/asset/add')
+  }, [dispatch, navigate])
+
+  const navigateToEditPage = useCallback(
+    (data: Asset) => {
+      dispatch(setSelectedAsset(data))
+      navigate(`/adm/asset/edit/${data.inum}`)
+    },
+    [dispatch, navigate],
+  )
 
   // Initialize Cedar permissions
   useEffect(() => {
@@ -55,13 +71,14 @@ const JansAssetListPage = () => {
     }
     initPermissions()
     dispatch(getAssetTypes({ action: options }))
-    options['limit'] = 10
-    dispatch(fetchJansAssets({ action: options }))
+    const initialOptions: ActionOptions = { limit: 10 }
+    setOptions(initialOptions)
+    dispatch(fetchJansAssets({ action: initialOptions }))
     dispatch(getAssetServices({ action: options }))
-  }, [dispatch])
+  }, [dispatch, authorize])
 
   useEffect(() => {
-    const actions = []
+    const actions: Action<Asset>[] = []
 
     const canRead = hasCedarPermission(ASSETS_READ)
     const canWrite = hasCedarPermission(ASSETS_WRITE)
@@ -107,45 +124,59 @@ const JansAssetListPage = () => {
         onClick: navigateToAddPage,
       })
 
-      actions.push((rowData) => ({
+      actions.push({
         icon: 'edit',
         iconProps: {
-          id: 'editScope' + rowData.inum,
+          id: 'editScope',
         },
-        onClick: (event, rowData) => navigateToEditPage(rowData),
+        onClick: (_event: MouseEvent, data: Asset | Asset[]) => {
+          if (!Array.isArray(data)) {
+            navigateToEditPage(data)
+          }
+        },
         disabled: !canWrite,
-      }))
+      })
     }
 
     if (canDelete) {
-      actions.push((rowData) => ({
+      actions.push({
         icon: () => <DeleteOutlined />,
         iconProps: {
           color: 'secondary',
-          id: 'deleteClient' + rowData.inum,
+          id: 'deleteClient',
         },
-        onClick: (event, rowData) => {
-          setDeleteData(rowData)
-          toggle()
+        onClick: (_event: MouseEvent, data: Asset | Asset[]) => {
+          if (!Array.isArray(data)) {
+            setDeleteData(data)
+            toggle()
+          }
         },
         disabled: false,
-      }))
+      })
     }
 
     setMyActions(actions)
-  }, [cedarPermissions, limit, pattern, t, navigateToAddPage, navigateToEditPage])
+  }, [
+    cedarPermissions,
+    limit,
+    pattern,
+    t,
+    navigateToAddPage,
+    navigateToEditPage,
+    hasCedarPermission,
+  ])
 
-  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback((props: PaperProps) => <Paper {...props} elevation={0} />, [])
   const theme = useContext(ThemeContext)
-  const themeColors = getThemeColor(theme.state.theme)
+  const themeColors = getThemeColor(theme?.state.theme || 'darkBlack')
   const bgThemeColor = { background: themeColors.background }
-  const [modal, setModal] = useState(false)
-  const [deleteData, setDeleteData] = useState(null)
+  const [modal, setModal] = useState<boolean>(false)
+  const [deleteData, setDeleteData] = useState<Asset | null>(null)
   const toggle = () => setModal(!modal)
 
   const submitForm = useCallback(
-    (userMessage) => {
-      const userAction = {}
+    (userMessage: string) => {
+      const userAction: UserAction = {}
       toggle()
       buildPayload(userAction, userMessage, deleteData)
       dispatch(deleteJansAsset({ action: userAction }))
@@ -153,19 +184,19 @@ const JansAssetListPage = () => {
     [deleteData, dispatch],
   )
 
-  const handleOptionsChange = useCallback((event) => {
-    if (event.target.name == 'limit') {
-      memoLimit = event.target.value
-    } else if (event.target.name == 'pattern') {
-      memoPattern = event.target.value
+  const handleOptionsChange = useCallback((event: SearchEvent) => {
+    if (event.target.name === 'limit') {
+      memoLimit = Number(event.target.value)
+    } else if (event.target.name === 'pattern') {
+      memoPattern = String(event.target.value)
     }
   }, [])
 
   const onPageChangeClick = useCallback(
-    (page) => {
+    (page: number) => {
       const startCount = page * limit
-      const newOptions = {
-        startIndex: parseInt(startCount),
+      const newOptions: ActionOptions = {
+        startIndex: startCount,
         limit: limit,
         pattern: pattern,
       }
@@ -176,8 +207,8 @@ const JansAssetListPage = () => {
   )
 
   const onRowCountChangeClick = useCallback(
-    (count) => {
-      const newOptions = {
+    (count: number) => {
+      const newOptions: ActionOptions = {
         limit: count,
         pattern: pattern,
       }
@@ -193,28 +224,47 @@ const JansAssetListPage = () => {
       <TablePagination
         count={totalItems}
         page={pageNumber}
-        onPageChange={(prop, page) => {
+        onPageChange={(_event, page) => {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
+        onRowsPerPageChange={(event) => onRowCountChangeClick(Number(event.target.value))}
       />
     ),
     [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
   )
 
-  const navigateToAddPage = useCallback(() => {
-    dispatch(setSelectedAsset({}))
-    navigate('/adm/asset/add')
-  }, [dispatch, navigate])
-
-  const navigateToEditPage = useCallback(
-    (data) => {
-      dispatch(setSelectedAsset(data))
-      navigate(`/adm/asset/edit/${data.inum}`)
+  const columns: Column<Asset>[] = [
+    {
+      title: `${t('fields.name')}`,
+      field: 'fileName',
+      cellStyle: { backgroundColor: customColors.white },
     },
-    [dispatch, navigate],
-  )
+    {
+      title: `${t('fields.description')}`,
+      field: 'description',
+      width: '40%',
+      cellStyle: { backgroundColor: customColors.white },
+      render: (rowData: Asset) => (
+        <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>{rowData.description}</div>
+      ),
+    },
+    {
+      title: `${t('fields.creationDate')}`,
+      field: 'creationDate',
+      cellStyle: { backgroundColor: customColors.white },
+      render: (rowData: Asset) => (
+        <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
+          {moment(rowData.creationDate).format('YYYY-MM-DD')}
+        </div>
+      ),
+    },
+    {
+      title: `${t('fields.enabled')}`,
+      field: 'enabled',
+      cellStyle: { backgroundColor: customColors.white },
+    },
+  ]
 
   return (
     <GluuLoader blocking={loadingAssets}>
@@ -226,32 +276,7 @@ const JansAssetListPage = () => {
                 Container: PaperContainer,
                 Pagination: PaginationWrapper,
               }}
-              columns={[
-                {
-                  title: `${t('fields.name')}`,
-                  field: 'fileName',
-                },
-                {
-                  title: `${t('fields.description')}`,
-                  field: 'description',
-                  width: '40%',
-                  render: (rowData) => (
-                    <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
-                      {rowData.description}
-                    </div>
-                  ),
-                },
-                {
-                  title: `${t('fields.creationDate')}`,
-                  field: 'creationDate',
-                  render: (rowData) => (
-                    <div style={{ wordWrap: 'break-word', maxWidth: '420px' }}>
-                      {moment(rowData.creationDate).format('YYYY-MM-DD')}
-                    </div>
-                  ),
-                },
-                { title: `${t('fields.enabled')}`, field: 'enabled' },
-              ]}
+              columns={columns}
               data={assets || []}
               isLoading={loadingAssets}
               title=""
@@ -268,15 +293,10 @@ const JansAssetListPage = () => {
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
-                },
-                cellStyle: {
-                  backgroundColor: customColors.white,
-                  border: `1px solid ${customColors.lightGray}`,
-                },
+                } as React.CSSProperties,
                 actionsCellStyle: {
                   backgroundColor: customColors.white,
-                  border: `1px solid ${customColors.lightGray}`,
-                },
+                } as React.CSSProperties,
                 actionsColumnIndex: -1,
               }}
             />
