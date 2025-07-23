@@ -1,10 +1,5 @@
 import axios from 'axios'
-
-declare global {
-  interface Window {
-    configApiBaseUrl?: string
-  }
-}
+import './types/axios'
 
 export const baseUrl =
   window.configApiBaseUrl || process.env.CONFIG_API_BASE_URL || 'http://localhost:8080'

@@ -1,20 +1,10 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
-interface Api {
-  getServiceStatus: (
-    input: ServiceStatusInput,
-    callback: (error: Error | null, data: any) => void,
-  ) => void
-}
-
-interface ServiceStatusInput {
-  [key: string]: any
-}
+import { HealthCheckApiInterface, ServiceStatusInput } from './types/health'
 
 export default class HealthCheckApi {
-  private readonly api: Api
+  private readonly api: HealthCheckApiInterface
 
-  constructor(api: Api) {
+  constructor(api: HealthCheckApiInterface) {
     this.api = api
   }
 

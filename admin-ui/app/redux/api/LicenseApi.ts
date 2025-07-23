@@ -1,31 +1,12 @@
 import { handleResponse, handleError } from 'Utils/ApiUtils'
-
-interface ApiInterface {
-  isLicenseActive: (callback: (error: any, data: any) => void) => void
-  checkAdminuiLicenseConfig: (callback: (error: any, data: any) => void) => void
-  activateAdminuiLicense: (options: any, callback: (error: any, data: any) => void) => void
-  adminuiPostSsa: (options: any, callback: (error: any, data: any, response: any) => void) => void
-  addAdminuiPermission: (options: any, callback: (error: any, data: any) => void) => void
-  editAdminuiPermission: (options: any, callback: (error: any, data: any) => void) => void
-  deleteAdminuiPermission: (options: any, callback: (error: any, data: any) => void) => void
-  getTrialLicense: (callback: (error: any, data: any) => void) => void
-  retrieveLicense: (callback: (error: any, data: any) => void) => void
-}
-
-interface LicenseRequest {
-  payload: any
-}
-
-interface AdminPermission {
-  [key: string]: any
-}
+import { LicenseApiInterface, LicenseRequest, AdminPermission } from './types/license'
 
 const MAX_RETRIES = 1
 
 export default class LicenseApi {
-  private api: ApiInterface
+  private api: LicenseApiInterface
 
-  constructor(api: ApiInterface) {
+  constructor(api: LicenseApiInterface) {
     this.api = api
   }
 

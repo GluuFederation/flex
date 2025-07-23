@@ -1,5 +1,11 @@
 import axios from '../api/axios'
 import axios_instance from 'axios'
+import {
+  ServerConfigurationPayload,
+  UserInfoRequest,
+  UserActionPayload,
+  ApiTokenRequest,
+} from './types/backend'
 const JansConfigApi = require('jans_config_api')
 
 export const fetchServerConfiguration = (token: any) => {
@@ -13,7 +19,7 @@ export const fetchServerConfiguration = (token: any) => {
     })
 }
 
-export const putServerConfiguration = (payload: any) => {
+export const putServerConfiguration = (payload: ServerConfigurationPayload) => {
   const { token, props } = payload
   const headers = { Authorization: `Bearer ${token}` }
   return axios
@@ -37,7 +43,11 @@ export const getUserIpAndLocation = () => {
 }
 
 // Retrieve user information
-export const fetchUserInformation = ({ userInfoEndpoint, token_type, access_token }: any) => {
+export const fetchUserInformation = ({
+  userInfoEndpoint,
+  token_type,
+  access_token,
+}: UserInfoRequest) => {
   const headers = { Authorization: `${token_type} ${access_token}` }
   return axios
     .get(userInfoEndpoint, { headers })
@@ -49,7 +59,7 @@ export const fetchUserInformation = ({ userInfoEndpoint, token_type, access_toke
 }
 
 // post user action
-export const postUserAction = (userAction: any) => {
+export const postUserAction = (userAction: UserActionPayload) => {
   const token = userAction?.headers?.Authorization
   delete userAction?.headers
   return axios

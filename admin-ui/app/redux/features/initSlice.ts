@@ -1,16 +1,6 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-interface InitState {
-  scripts: any[]
-  clients: any[]
-  scopes: any[]
-  attributes: any[]
-  totalClientsEntries: number
-  isTimeout: boolean
-  loadingScripts: boolean
-  isLoading?: boolean
-}
+import type { InitState } from './types/initTypes'
 
 const initialState: InitState = {
   scripts: [],

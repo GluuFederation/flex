@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
+import type { OidcDiscoveryState } from './types/oidcDiscoveryTypes'
 
-const initialState = {
+const initialState: OidcDiscoveryState = {
   configuration: {},
   loading: false,
 }

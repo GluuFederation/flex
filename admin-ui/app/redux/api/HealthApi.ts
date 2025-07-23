@@ -1,8 +1,5 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
-interface AuthServerHealthCheckApi {
-  getAuthServerHealth: (callback: (error: Error | null, data: any) => void) => void
-}
+import { AuthServerHealthCheckApi } from './types/health'
 
 export default class HealthApi {
   private readonly api: AuthServerHealthCheckApi

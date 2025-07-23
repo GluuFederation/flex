@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
+import type { LicenseState } from './types/licenseTypes'
 
-const initialState = {
+const initialState: LicenseState = {
   isLicenseValid: false,
   islicenseCheckResultLoaded: false,
   isLicenseActivationResultLoaded: false,

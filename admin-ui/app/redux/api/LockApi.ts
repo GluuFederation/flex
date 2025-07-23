@@ -1,11 +1,5 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
-interface LockApiClient {
-  getLockStat: (
-    options: Record<string, unknown>,
-    callback: (error: Error | null, data: unknown) => void,
-  ) => void
-}
+import { LockApiClient } from './types/lock'
 
 export default class LockApi {
   private readonly api: LockApiClient

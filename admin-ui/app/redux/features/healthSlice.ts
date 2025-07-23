@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
+import type { HealthState } from './types/healthTypes'
 
-const initialState = {
+const initialState: HealthState = {
   serverStatus: null,
   dbStatus: null,
   health: {},
