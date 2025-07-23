@@ -278,7 +278,14 @@ function SessionListPage() {
                   )}
                 />
                 {revokeUsername && (
-                  <Button color={`danger`} style={{ marginLeft: 20 }} onClick={handleRevoke}>
+                  <Button
+                    style={{
+                      marginLeft: 20,
+                      backgroundColor: customColors.accentRed,
+                      border: 'none',
+                    }}
+                    onClick={handleRevoke}
+                  >
                     {t('actions.revoke')}
                   </Button>
                 )}

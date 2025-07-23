@@ -6,18 +6,22 @@ import MappingPage from './components/Mapping/MappingPage'
 import SettingsPage from './components/Settings/SettingsPage'
 import MauGraph from './components/MAU/MauGraph'
 import WebhookListPage from './components/Webhook/WebhookListPage'
+import AuditListPage from '../admin/components/Audit/AuditListPage'
 
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
 import webhookSaga from './redux/sagas/WebhookSaga'
 import assetSaga from './redux/sagas/AssetSaga'
+import auditSaga from '../admin/redux/sagas/AuditSaga'
 
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
 import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
 import { reducer as assetReducer } from 'Plugins/admin/redux/features/AssetSlice'
+import { reducer as auditReducer } from '../admin/redux/features/auditSlice'
+
 import {
   ACR_READ,
   ROLE_READ,
@@ -28,6 +32,7 @@ import {
   ASSETS_READ,
   ASSETS_WRITE,
   LICENSE_DETAILS_READ,
+  LOGGING_READ,
   PROPERTIES_READ,
   STAT_READ,
 } from 'Utils/PermChecker'
@@ -102,6 +107,11 @@ const pluginMetadata = {
           title: 'menus.assets',
           path: PLUGIN_BASE_PATH + '/assets',
           permission: ASSETS_READ,
+        },
+        {
+          title: 'menus.audit_logs',
+          path: PLUGIN_BASE_PATH + '/audit-logs',
+          permission: LOGGING_READ,
         },
       ],
     },
@@ -179,15 +189,28 @@ const pluginMetadata = {
       path: PLUGIN_BASE_PATH + '/asset/edit/:id',
       permission: ASSETS_WRITE,
     },
+    {
+      component: AuditListPage,
+      path: PLUGIN_BASE_PATH + '/audit-logs',
+      permission: LOGGING_READ,
+    },
   ],
   reducers: [
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
+    { name: 'auditReducer', reducer: auditReducer },
     { name: 'webhookReducer', reducer: webhookReducer },
     { name: 'assetReducer', reducer: assetReducer },
   ],
-  sagas: [apiRoleSaga(), apiPermissionSaga(), mappingSaga(), webhookSaga(), assetSaga()],
+  sagas: [
+    apiRoleSaga(),
+    auditSaga(),
+    apiPermissionSaga(),
+    mappingSaga(),
+    webhookSaga(),
+    assetSaga(),
+  ],
 }
 
 export default pluginMetadata
