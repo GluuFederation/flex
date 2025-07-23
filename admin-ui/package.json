@@ -25,7 +25,7 @@
     "test": "set NODE_ENV=test&& jest --forceExit",
     "clear_jest": "jest --clearCache",
     "test:watch": "npm test -- --watch",
-    "start": "npm run start:dev",
+    "start": "npm cache clean --f && reset && npm run start:dev",
     "build:dev": "node \"./build/cli-tools.js\" --clear dist --create dist && webpack --config \"./config/webpack.config.client.dev.ts\"",
     "build:prod": "node \"./build/cli-tools.js\" --clear dist --create dist && webpack --config \"./config/webpack.config.client.prod.ts\"",
     "build:adminuitest": "NODE_ENV=adminuitest node \"./build/cli-tools.js\" --clear dist --create dist && NODE_ENV=adminuitest webpack --config \"./config/webpack.config.client.prod.ts\"",

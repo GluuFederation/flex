@@ -65,7 +65,7 @@ function UserList() {
   }, [])
   const { totalItems, fidoDetails } = useSelector((state) => state.userReducer)
   const [pageNumber, setPageNumber] = useState(0)
-  const usersList = useSelector((state) => state.userReducer.items)
+  const usersList = useSelector((state) => state.userReducer.items) || []
   const loading = useSelector((state) => state.userReducer.loading)
   const token = useSelector((state) => state.authReducer.token.access_token)
   const { t } = useTranslation()

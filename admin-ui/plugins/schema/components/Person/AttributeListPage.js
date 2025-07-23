@@ -26,6 +26,7 @@ import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import styled from 'styled-components'
+import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 
 function AttributeListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -35,6 +36,7 @@ function AttributeListPage() {
   const loading = useSelector((state) => state.attributeReducer.loading)
   const { totalItems } = useSelector((state) => state.attributeReducer)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const [myActions, setMyActions] = useState([])
 
   // Permission initialization
   useEffect(() => {
@@ -77,24 +79,21 @@ function AttributeListPage() {
   }, [])
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
-  const myActions = []
   SetTitle(t('fields.attributes'))
-
-  let memoLimit = limit
-  let memoPattern = pattern
 
   const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
   function handleOptionsChange(event) {
-    if (event.target.name == 'limit') {
-      memoLimit = event.target.value
-    } else if (event.target.name == 'pattern') {
-      memoPattern = event.target.value
+    if (event.target.name === 'limit') {
+      setLimit(event.target.value)
+    } else if (event.target.name === 'pattern') {
+      setPattern(event.target.value)
       if (event.keyCode === 13) {
-        makeOptions()
-        dispatch(searchAttributes({ options }))
+        // Use the value from the event directly for search
+        const searchOpts = { ...options, limit, pattern: event.target.value }
+        dispatch(searchAttributes({ options: searchOpts }))
       }
     }
   }
@@ -117,10 +116,11 @@ function AttributeListPage() {
   }
 
   function makeOptions() {
-    setPattern(memoPattern)
-    options['limit'] = memoLimit
-    if (memoPattern) {
-      options['pattern'] = memoPattern
+    options['limit'] = limit
+    if (pattern) {
+      options['pattern'] = pattern
+    } else {
+      delete options['pattern']
     }
   }
   function handleGoToAttributeEditPage(row) {
@@ -139,88 +139,96 @@ function AttributeListPage() {
     return navigate('/attribute/new')
   }
 
+  useEffect(() => {
+    const actions = []
+
+    const canRead = hasCedarPermission(ATTRIBUTE_READ)
+    const canWrite = hasCedarPermission(ATTRIBUTE_WRITE)
+    const canDelete = hasCedarPermission(ATTRIBUTE_DELETE)
+
+    if (canRead) {
+      actions.push((rowData) => ({
+        icon: 'visibility',
+        iconProps: {
+          id: 'viewAttribute' + rowData.inum,
+          style: { color: customColors.darkGray },
+        },
+        tooltip: `${t('tooltips.view_attribute')}`,
+        onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
+        disabled: false,
+      }))
+      actions.push({
+        icon: () => (
+          <GluuAdvancedSearch
+            limitId={LIMIT_ID}
+            patternId={PATTERN_ID}
+            limit={limit}
+            pattern={pattern}
+            handler={handleOptionsChange}
+            showLimit={false}
+          />
+        ),
+        tooltip: `${t('tooltips.advanced_search_options')}`,
+        iconProps: {
+          style: { color: customColors.lightBlue },
+        },
+        isFreeAction: true,
+        onClick: () => {},
+      })
+      actions.push({
+        icon: 'refresh',
+        tooltip: `${t('tooltips.refresh_data')}`,
+        iconProps: {
+          style: { color: customColors.lightBlue },
+        },
+        isFreeAction: true,
+        onClick: () => {
+          makeOptions()
+          dispatch(searchAttributes({ options }))
+        },
+      })
+    }
+
+    if (canWrite) {
+      actions.push((rowData) => ({
+        icon: 'edit',
+        iconProps: {
+          id: 'editAttribute' + rowData.inum,
+          style: { color: customColors.darkGray },
+        },
+        tooltip: `${t('tooltips.edit_attribute')}`,
+        onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+        disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
+      }))
+      actions.push({
+        icon: 'add',
+        tooltip: `${t('tooltips.add_attribute')}`,
+        iconProps: {
+          style: { color: customColors.lightBlue },
+        },
+        isFreeAction: true,
+        onClick: () => handleGoToAttributeAddPage(),
+        disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
+      })
+    }
+
+    if (canDelete) {
+      actions.push((rowData) => ({
+        icon: DeleteOutlinedIcon,
+        iconProps: {
+          style: { color: customColors.darkGray, id: 'deleteAttribute' + rowData.inum },
+        },
+        tooltip: `${t('tooltips.delete_attribute')}`,
+        onClick: (event, rowData) => handleAttribueDelete(rowData),
+        disabled: !hasCedarPermission(ATTRIBUTE_DELETE),
+      }))
+    }
+
+    setMyActions(actions)
+  }, [cedarPermissions, limit, pattern, t])
+
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const DetailsPanel = useCallback((rowData) => <AttributeDetailPage row={rowData.rowData} />, [])
-
-  if (hasCedarPermission(ATTRIBUTE_WRITE)) {
-    myActions.push((rowData) => ({
-      icon: 'edit',
-      iconProps: {
-        id: 'editAttribute' + rowData.inum,
-        style: { color: customColors.darkGray },
-      },
-      tooltip: `${t('tooltips.edit_attribute')}`,
-      onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
-      disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
-    }))
-    myActions.push({
-      icon: 'add',
-      tooltip: `${t('tooltips.add_attribute')}`,
-      iconProps: {
-        style: { color: customColors.lightBlue },
-      },
-      isFreeAction: true,
-      onClick: () => handleGoToAttributeAddPage(),
-      disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
-    })
-  }
-  if (hasCedarPermission(ATTRIBUTE_READ)) {
-    myActions.push((rowData) => ({
-      icon: 'visibility',
-      iconProps: {
-        id: 'viewAttribute' + rowData.inum,
-        style: { color: customColors.darkGray },
-      },
-      tooltip: `${t('tooltips.view_attribute')}`,
-      onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
-      disabled: false,
-    }))
-    myActions.push({
-      icon: GluuSearch,
-      tooltip: `${t('tooltips.advanced_search_options')}`,
-      iconProps: {
-        style: { color: customColors.lightBlue },
-      },
-      isFreeAction: true,
-      onClick: () => {},
-    })
-    myActions.push({
-      icon: 'refresh',
-      tooltip: `${t('tooltips.refresh_data')}`,
-      iconProps: {
-        style: { color: customColors.lightBlue },
-      },
-      isFreeAction: true,
-      onClick: () => {
-        makeOptions()
-        dispatch(searchAttributes({ options }))
-      },
-    })
-  }
-  if (hasCedarPermission(ATTRIBUTE_DELETE)) {
-    myActions.push((rowData) => ({
-      icon: DeleteOutlinedIcon,
-      iconProps: {
-        style: { color: customColors.darkGray, id: 'deleteAttribute' + rowData.inum },
-      },
-      tooltip: `${t('tooltips.delete_attribute')}`,
-      onClick: (event, rowData) => handleAttribueDelete(rowData),
-      disabled: !hasCedarPermission(ATTRIBUTE_DELETE),
-    }))
-  }
-
-  const GluuSearch = useCallback(() => {
-    return (
-      <GluuAdvancedSearch
-        limitId={limitId}
-        limit={limit}
-        pattern={pattern}
-        patternId={patternId}
-        handler={handleOptionsChange}
-        showLimit={false}
-      />
-    )
-  }, [limitId, limit, pattern, patternId, handleOptionsChange])
 
   function getBadgeTheme(status) {
     if (status === 'ACTIVE') {
