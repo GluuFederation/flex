@@ -190,10 +190,13 @@ function ScopeListPage() {
   }, [hasCedarPermission, t, limit, pattern, dispatch, options])
 
   function handleOptionsChange(event) {
+    console.log('event.target.name', event.target.name)
+
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
     } else if (event.target.name == 'pattern') {
       memoPattern = event.target.value
+      console.log('memoPattern', memoPattern)
       if (event.keyCode === 13) {
         makeOptions()
         dispatch(getScopes({ action: options }))
@@ -206,9 +209,7 @@ function ScopeListPage() {
     setPattern(memoPattern)
     options[LIMIT] = memoLimit
     options[WITH_ASSOCIATED_CLIENTS] = true
-    if (memoPattern) {
-      options[PATTERN] = memoPattern
-    }
+    options[PATTERN] = memoPattern
   }
 
   const handleGoToScopeAddPage = useCallback(() => {

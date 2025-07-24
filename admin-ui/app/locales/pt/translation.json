@@ -1277,7 +1277,7 @@
       "dpopTimeframe": "Demonstração do intervalo de tempo Proof-of-Possession (DPoP)",
       "dpopJtiCacheTime": "Demonstração do tempo de cache Proof-of-Possession (DPoP)",
       "allowIdTokenWithoutImplicitGrantType": "Especifica se um token sem tipos de concessão implícitos é permitido",
-      "discoveryDenyKeys": "Lista das reivindicações de resposta de configuração que não devem ser exibidas na resposta do endpoint de descoberta",
+      "OpenID Configuration Response OP Metadata Suppression List": "Lista das reivindicações de resposta de configuração que não devem ser exibidas na resposta do endpoint de descoberta",
       "blockWebviewAuthorizationEnabled": "Ativar/Desativar a autorização de bloqueio que se originam do Webview (aplicativos móveis).",
       "defaultAcr": "Este campo controla o mecanismo de autenticação padrão apresentado aos usuários de todos os aplicativos que utilizam o Janssen Server para autenticação.",
       "accessTokenLifetime": "Especifica a expiração do token de acesso específico do cliente.",

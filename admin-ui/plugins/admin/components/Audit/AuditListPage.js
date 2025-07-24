@@ -10,13 +10,13 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { getAuditLogs } from 'Plugins/admin/redux/features/auditSlice'
-import { fetchAuditLogs } from 'Redux/api/backend-api'
 import SetTitle from 'Utils/SetTitle'
+import { buildPayload } from '@/utils/PermChecker'
+import { getAuditLogs } from 'Plugins/admin/redux/features/auditSlice'
 
 function AuditListPage() {
-  const audits = useSelector((state) => state.auditReducer.audits)
-  const loading = useSelector((state) => state.auditReducer.loading)
+  const { audits, loading } = useSelector((state) => state.auditReducer)
+
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const pageSize = Number(localStorage.getItem('paggingSize')) || 10
@@ -24,8 +24,9 @@ function AuditListPage() {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const token = useSelector((state) => state.authReducer.token.access_token)
-  console.log('token', token)
+
+  const userAction = {}
+  const options = {}
 
   SetTitle(t('menus.audit_logs'))
 
@@ -46,33 +47,26 @@ function AuditListPage() {
   const [updatedColumns, setUpdatedColumns] = useState(tableColumns)
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState('')
-  let memoLimit = limit
-  let memoPattern = pattern
 
-  // Handler for GluuAdvancedSearch
   const handleOptionsChange = useCallback((event) => {
     console.log('event.target.name', event.target.name)
     if (event.target.name === 'limit') {
-      memoLimit = event.target.value
       setLimit(event.target.value)
     } else if (event.target.name === 'pattern') {
-      memoPattern = event.target.value
       setPattern(event.target.value)
     }
   }, [])
 
+  function fetchAuditInfo() {
+    buildPayload(userAction, 'GET Audit Logs', options)
+    // dispatch({ type: 'audit/getAuditLogs', action: options })
+    dispatch({ type: 'audit/getAuditLogs', payload: options })
+  }
+
   useEffect(() => {
-    dispatch(getAuditLogs())
+    fetchAuditInfo()
     setUpdatedColumns(tableColumns)
-
-    fetchAuditLogs(token).then((data) => {
-      console.log('fetchAuditLogs result:', data)
-    })
-  }, [dispatch, tableColumns])
-
-  // const handleDetailPanel = useCallback((rowData) => {
-  //   return <AuditDetailPage row={rowData.rowData} />
-  // }, [])
+  }, [tableColumns])
 
   return (
     <Card style={applicationStyle.mainCard}>

@@ -1149,7 +1149,7 @@
       "dpopTimeframe": "Demonstration of Proof-of-Possession (DPoP) timeout",
       "dpopJtiCacheTime": "Demonstration of Proof-of-Possession (DPoP) cache time",
       "allowIdTokenWithoutImplicitGrantType": "Specifies if a token without implicit grant types is allowed",
-      "discoveryDenyKeys": "List of configuration response claims which must not be displayed in discovery endpoint response",
+      "OpenID Configuration Response OP Metadata Suppression List": "List of configuration response claims which must not be displayed in discovery endpoint response",
       "blockWebviewAuthorizationEnabled": "Enable/Disable block authorizations that originate from Webview (Mobile apps).",
       "fapiCompatibility": "Boolean value specifying whether to turn on FAPI compatibility mode. If true AS behaves in a more strict mode.",
       "defaultAcr": "This field controls the default authentication mechanism that is presented to users from all applications that leverage Janssen Server for authentication.",

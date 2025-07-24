@@ -6,9 +6,10 @@ export default class AuditApi {
   }
 
   getAuditLogs = () => {
-    console.log('Fetching audit logs...')
     return new Promise((resolve, reject) => {
-      this.api.getAuditLogs((error, data) => {
+      this.api.getAuditData((error, data) => {
+        debugger
+
         handleResponse(error, reject, resolve, data)
       })
     })

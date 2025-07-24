@@ -20,7 +20,23 @@ export function isObject(item) {
     return false
   }
 }
-function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentIsArray, schema }) {
+const migratingTextIfRenamed = (isRenamedKey, text) => {
+  if (isRenamedKey) {
+    return text
+  } else {
+    return generateLabel(text)
+  }
+}
+function JsonPropertyBuilder({
+  propKey,
+  propValue,
+  lSize,
+  path,
+  handler,
+  parentIsArray,
+  schema,
+  isRenamedKey,
+}) {
   const { t } = useTranslation()
   const [show, setShow] = useState(true)
   if (!path) {
@@ -69,7 +85,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentI
         name={propKey}
         lsize={lSize}
         rsize={lSize}
-        label={generateLabel(propKey)}
+        label={migratingTextIfRenamed(isRenamedKey, propKey)}
         isBoolean={true}
         handler={handler}
         value={propValue}
@@ -85,7 +101,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentI
         name={propKey}
         lsize={lSize}
         rsize={lSize}
-        label={generateLabel(propKey)}
+        label={migratingTextIfRenamed(isRenamedKey, propKey)}
         handler={handler}
         value={propValue}
         parentIsArray={parentIsArray}
@@ -101,7 +117,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentI
         lsize={lSize}
         type="number"
         rsize={lSize}
-        label={generateLabel(propKey)}
+        label={migratingTextIfRenamed(isRenamedKey, propKey)}
         handler={handler}
         value={propValue}
         parentIsArray={parentIsArray}
@@ -114,7 +130,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler, parentI
       <GluuInlineInput
         id={propKey}
         name={propKey}
-        label={generateLabel(propKey)}
+        label={migratingTextIfRenamed(isRenamedKey, propKey)}
         value={propValue || []}
         lsize={lSize}
         rsize={lSize}

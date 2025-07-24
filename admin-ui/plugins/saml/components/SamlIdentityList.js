@@ -119,13 +119,20 @@ const SamlIdentityList = () => {
     dispatch(getSamlIdentites(options))
   }
 
-  function handleOptionsChange(event) {
+  const handleOptionsChange = useCallback((event) => {
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
     } else if (event.target.name == 'pattern') {
       memoPattern = event.target.value
+      if (event.keyCode === 13) {
+        const newOptions = {
+          limit: limit,
+          pattern: memoPattern,
+        }
+        dispatch(getSamlIdentites({ action: newOptions }))
+      }
     }
-  }
+  }, [])
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
