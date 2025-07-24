@@ -20,7 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=7ebc2a5991ad39f1a8f58b6c8a25dd5b88d18713
+ENV JANS_SOURCE_VERSION=67b36806c69928d6458fe397d95245eccd0c0b10
 
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
@@ -45,7 +45,7 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=581ab7475d28436de002eadcbffbec6e139deb37
+ENV FLEX_SOURCE_VERSION=125432a77f3d4564bc2f84ea424e16c4b3a3e272
 
 RUN mkdir -p /app/templates/admin-ui
 
