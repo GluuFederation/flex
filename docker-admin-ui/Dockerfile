@@ -20,7 +20,7 @@ EXPOSE 8080
 # Assets sync
 # ===========
 
-ENV JANS_SOURCE_VERSION=7ebc2a5991ad39f1a8f58b6c8a25dd5b88d18713
+ENV JANS_SOURCE_VERSION=67b36806c69928d6458fe397d95245eccd0c0b10
 
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
@@ -45,7 +45,7 @@ RUN cd /tmp/jans \
     && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
     && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
 
-ENV FLEX_SOURCE_VERSION=581ab7475d28436de002eadcbffbec6e139deb37
+ENV FLEX_SOURCE_VERSION=125432a77f3d4564bc2f84ea424e16c4b3a3e272
 
 RUN mkdir -p /app/templates/admin-ui
 
@@ -162,7 +162,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="0.0.0-nightly" \
+    org.opencontainers.image.version="5.9.0-1" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 
