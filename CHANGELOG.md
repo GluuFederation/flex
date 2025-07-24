@@ -1,5 +1,40 @@
 # Changelog
 
+## [5.9.0](https://github.com/GluuFederation/flex/compare/v5.8.0...v5.9.0) (2025-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **admin-ui:** Components now require TypeScript interfaces instead of PropTypes
+
+### Features
+
+* add cedarlingLogType attribute in Admin UI configuration ([#2162](https://github.com/GluuFederation/flex/issues/2162)) ([610f00c](https://github.com/GluuFederation/flex/commit/610f00cd7fbff631fd14b48827f2177910f9322b))
+* add server-hostname environment variable in admin-ui ([#2148](https://github.com/GluuFederation/flex/issues/2148)) ([b8cd454](https://github.com/GluuFederation/flex/commit/b8cd454fc6356ae05952516a1ecf419b79515b47))
+* **admin-ui:** add ability to upload new SSA license via admin portal ([#2184](https://github.com/GluuFederation/flex/issues/2184)) ([#2188](https://github.com/GluuFederation/flex/issues/2188)) ([98b5d36](https://github.com/GluuFederation/flex/commit/98b5d36555ffe1f4e281cc5c30e8c86099daef70))
+* **admin-ui:** add Cedar log toggle in Settings page ([#2157](https://github.com/GluuFederation/flex/issues/2157)) ([#2169](https://github.com/GluuFederation/flex/issues/2169)) ([361fbe3](https://github.com/GluuFederation/flex/commit/361fbe3889548245752756d3f484b7a20d215ba5))
+* **admin-ui:** add feature related to essentialPermissionInAdminUI attribute in Capabilities ([#2153](https://github.com/GluuFederation/flex/issues/2153)) ([#2156](https://github.com/GluuFederation/flex/issues/2156)) ([111fb8d](https://github.com/GluuFederation/flex/commit/111fb8da2f9f57b281ad18025ad5459e9f11ecf1))
+* **admin-ui:** integrate Cedarling for access control [#2114](https://github.com/GluuFederation/flex/issues/2114) ([#2137](https://github.com/GluuFederation/flex/issues/2137)) ([011d750](https://github.com/GluuFederation/flex/commit/011d7505037fd812d39a926f5a11a15cd579244c))
+* **admin-ui:** update label in Auth Server Properties to match OP metadata context ([#2193](https://github.com/GluuFederation/flex/issues/2193)) ([3729236](https://github.com/GluuFederation/flex/commit/372923635f05c90b7203478c1b49497ead7475df))
+* **admin-ui:** update label in Auth Server Properties to match OP metadata context. ([#2194](https://github.com/GluuFederation/flex/issues/2194)) ([3729236](https://github.com/GluuFederation/flex/commit/372923635f05c90b7203478c1b49497ead7475df))
+* **cloud-native:** add server-hostname environment variable in admin-ui ([#2151](https://github.com/GluuFederation/flex/issues/2151)) ([51e4abb](https://github.com/GluuFederation/flex/commit/51e4abb5b476ec7e74a644652fbae255e807cfe3))
+* **flex-linux-setup:** sync AdminUI scopes ([#2168](https://github.com/GluuFederation/flex/issues/2168)) ([e644ae8](https://github.com/GluuFederation/flex/commit/e644ae831ede6beedc6c4c710a3638e35dfd0bfb))
+
+
+### Bug Fixes
+
+* **admin-ui:** add type annotations for custom scripts ([#2173](https://github.com/GluuFederation/flex/issues/2173)) ([134afbc](https://github.com/GluuFederation/flex/commit/134afbcc22ee51af54ade1947667a28277812133))
+* **admin-ui:** Follow brand color ([#2113](https://github.com/GluuFederation/flex/issues/2113)) ([#2158](https://github.com/GluuFederation/flex/issues/2158)) ([c4b1e28](https://github.com/GluuFederation/flex/commit/c4b1e28bce1d85fa8e8560d1f7cf31d3dcdf7403))
+* **admin-ui:** rename cedar to cedarling in field and tooltip ([#2170](https://github.com/GluuFederation/flex/issues/2170)) ([581ab74](https://github.com/GluuFederation/flex/commit/581ab7475d28436de002eadcbffbec6e139deb37))
+* **admin-ui:** replace ReactDOM.render with createRoot for React 18 compatibility ([dbc1b79](https://github.com/GluuFederation/flex/commit/dbc1b79c18feb16b4b399e0d5c530d5607380d5b))
+* **admin-ui:** replace ReactDOM.render with createRoot for React 18 compatibility. ([#2155](https://github.com/GluuFederation/flex/issues/2155)) ([dbc1b79](https://github.com/GluuFederation/flex/commit/dbc1b79c18feb16b4b399e0d5c530d5607380d5b))
+* **admin-ui:** Role - Clients using Role Screen not updated after delete ([#2160](https://github.com/GluuFederation/flex/issues/2160)) ([08d22e9](https://github.com/GluuFederation/flex/commit/08d22e978be66f4a0148643eac79a10fa023128d))
+* **docs:** fix hyperlinks ([#2166](https://github.com/GluuFederation/flex/issues/2166)) ([dc3d415](https://github.com/GluuFederation/flex/commit/dc3d415fabebe7b854c85e589e81f9fafc6a1a81))
+* **docs:** update title for better search visibility ([#2164](https://github.com/GluuFederation/flex/issues/2164)) ([12f891f](https://github.com/GluuFederation/flex/commit/12f891ff937431ccbf03844eb1fa001379b21d67))
+* **flex-linux-setup:** Admin UI Web Client URIs ([#2190](https://github.com/GluuFederation/flex/issues/2190)) ([3b68efd](https://github.com/GluuFederation/flex/commit/3b68efdd23775e422889f583594d4c4b54c4b68d))
+* **flex-linux-setup:** bugs in client creation ([#2177](https://github.com/GluuFederation/flex/issues/2177)) ([d94eba3](https://github.com/GluuFederation/flex/commit/d94eba3a6ad34aba8bb392648cb9f0ab26067d28))
+* remove airframe note ([#2202](https://github.com/GluuFederation/flex/issues/2202)) ([e282390](https://github.com/GluuFederation/flex/commit/e2823909a86d4bfeff03f36123883aacb2be0359))
+
 ## [5.8.0](https://github.com/GluuFederation/flex/compare/v5.7.0...v5.8.0) (2025-06-30)
 
 
