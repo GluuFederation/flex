@@ -27,7 +27,7 @@ export function* getAuditLogs(payload) {
     const auditApi = yield* newFunction()
     debugger
 
-    const data = yield call(auditApi.getAuditLogs)
+    const data = yield call(auditApi.getAuditLogs, payload)
     debugger
     console.log('data', data)
 

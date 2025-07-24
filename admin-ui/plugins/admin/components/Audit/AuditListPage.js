@@ -24,9 +24,13 @@ function AuditListPage() {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const [options, setOptions] = useState({
+    pattern: '',
+    // startIndex: 0,
+    // limit: 50,
+  })
 
   const userAction = {}
-  const options = {}
 
   SetTitle(t('menus.audit_logs'))
 
