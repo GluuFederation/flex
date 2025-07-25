@@ -19,7 +19,9 @@ const GluuAppSidebar = lazy(() => import('Routes/Apps/Gluu/GluuAppSidebar'))
 const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
   const { t } = useTranslation()
 
-  const cedarlingInitialized = useSelector((state: RootState) => state.cedarPermissions.initialized)
+  const { initialized, cedarFailedStatusAfterMaxTries } = useSelector(
+    (state: RootState) => state.cedarPermissions,
+  )
 
   const cedarConditionalLoader = () => (
     <div
@@ -32,7 +34,11 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
         padding: '20px',
       }}
     >
-      {cedarlingInitialized ? <p>{t('titles.no_Cedar')}</p> : <GluuSuspenseLoader />}
+      {cedarFailedStatusAfterMaxTries && !initialized ? (
+        <p>{t('titles.no_Cedar')}</p>
+      ) : (
+        <GluuSuspenseLoader />
+      )}
     </div>
   )
 
@@ -60,7 +66,7 @@ const DefaultSidebar: React.FC<DefaultSidebarProps> = () => {
       <SidebarMobileFluid>
         {/* <SidebarTopA /> */}
         <SidebarSection fluid cover>
-          {cedarlingInitialized ? (
+          {initialized ? (
             <Suspense fallback={<GluuSuspenseLoader />}>
               <GluuAppSidebar />
             </Suspense>

@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import { getMapping } from 'Plugins/admin/redux/features/mappingSlice'
 import { getPermissions } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import {
+  setCedarFailedStatusAfterMaxTries,
   setCedarlingInitialized,
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
@@ -41,6 +42,14 @@ const PermissionsPolicyInitializer = () => {
     (state: ExtendedRootState) => state.mappingReducer.items,
   )
   const apiPermission = useSelector((state: ExtendedRootState) => state.apiPermissionReducer.items)
+
+  const retryCount = useRef({
+    tryCount: 0,
+    callMethod: true,
+  })
+
+  const [maxRetries] = useState(10)
+
   const token = useSelector((state: ExtendedRootState) => state.authReducer.token)
   const { initialized, isInitializing } = useSelector(
     (state: ExtendedRootState) => state.cedarPermissions,
@@ -74,46 +83,50 @@ const PermissionsPolicyInitializer = () => {
   }, [token, initialized, initializations])
 
   useEffect(() => {
-    if (
+    const shouldTryInit =
       token &&
-      token?.access_token &&
+      token.access_token &&
       applicableToCall(rolePermissionMapping) &&
-      applicableToCall(apiPermission)
-    ) {
-      if (!initialized && !isInitializing && cedarlingLogType) {
-        dispatch(setCedarlingInitializing(true))
+      applicableToCall(apiPermission) &&
+      !initialized &&
+      !isInitializing &&
+      cedarlingLogType &&
+      retryCount.current.tryCount < maxRetries
 
-        const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
-        const policies = generateCedarPolicies(allPermissions)
+    if (!shouldTryInit) return
 
-        const bootstrapConfig = {
-          ...bootstrap,
-          CEDARLING_LOG_TYPE: cedarlingLogType,
-          CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policies),
-        }
+    dispatch(setCedarlingInitializing(true))
 
-        cedarlingClient
-          .initialize(bootstrapConfig)
-          .then(() => {
-            dispatch(setCedarlingInitialized(true))
-            console.log('Cedarling initialized!')
-          })
-          .catch((error) => {
-            console.error('Cedarling initialization failed', error)
-            dispatch(setCedarlingInitialized(false))
-            dispatch(setCedarlingInitializing(false))
-          })
-      }
+    const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
+    const policies = generateCedarPolicies(allPermissions)
+
+    const bootstrapConfig = {
+      ...bootstrap,
+      CEDARLING_LOG_TYPE: cedarlingLogType,
+      CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policies),
     }
-  }, [
-    rolePermissionMapping,
-    apiPermission,
-    dispatch,
-    token,
-    initialized,
-    isInitializing,
-    cedarlingLogType,
-  ])
+
+    cedarlingClient
+      .initialize(bootstrapConfig)
+      .then(() => {
+        retryCount.current = { tryCount: 0, callMethod: false }
+        dispatch(setCedarlingInitialized(true))
+        console.log('✅ Cedarling initialized!')
+      })
+      .catch(() => {
+        retryCount.current.tryCount += 1
+        console.warn(`❌ Cedarling got failed. Retrying in 1000ms`)
+
+        if (retryCount.current.tryCount < maxRetries) {
+          setTimeout(() => {
+            dispatch(setCedarlingInitialized(false)) // Triggers re-run of useEffect
+          }, 1000)
+        } else {
+          console.error('❌ Max retry attempts reached. Cedarling init failed permanently.')
+          dispatch(setCedarFailedStatusAfterMaxTries())
+        }
+      })
+  }, [token, initialized, isInitializing, rolePermissionMapping, apiPermission, cedarlingLogType])
 
   return null
 }

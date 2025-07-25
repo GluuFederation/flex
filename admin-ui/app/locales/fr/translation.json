@@ -842,6 +842,7 @@
     "add_agama_project": "Ajouter un projet Agama",
     "export_csv": "Exporter CSV",
     "no_Cedar": "Vous n'avez aucun composant autorisé à afficher",
+    "cedar_Init": "Cedarling est en cours d'initialisation, veuillez patienter",
     "newPermission": "Nouvelle Permission",
     "addingNewApiPermission": "Ajout d'une nouvelle autorisation API",
     "followingPermissionRequiredToBeAdded": "Une autorisation est requise pour être ajouté!"

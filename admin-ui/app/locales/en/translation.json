@@ -952,6 +952,7 @@
     "authentication_date": "Authentication Date",
     "creation_date": "Creation Date",
     "no_Cedar": "You do not have any authorized component to view",
+    "cedar_Init": "Cedarling is trying to initialize, please wait",
     "newPermission": "New Permission",
     "addingNewApiPermission": "Adding new API Permission",
     "followingPermissionRequiredToBeAdded": "Following permission required to be added!"
