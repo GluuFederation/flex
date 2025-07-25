@@ -20,16 +20,12 @@ function* newFunction() {
   return new AuditApi(api)
 }
 
-export function* getAuditLogs(payload) {
+export function* getAuditLogs({ payload }) {
   try {
     const audit = yield* initAudit()
     addAdditionalData(audit, FETCH, 'AUDIT', payload)
     const auditApi = yield* newFunction()
-    debugger
-
     const data = yield call(auditApi.getAuditLogs, payload)
-    debugger
-    console.log('data', data)
 
     const { totalEntriesCount } = data
 
@@ -41,8 +37,6 @@ export function* getAuditLogs(payload) {
     yield call(postUserAction, audit)
     return
   } catch (error) {
-    console.error('Error fetching audit logs:', error)
-    debugger
     if (isFourZeroOneError(error)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
