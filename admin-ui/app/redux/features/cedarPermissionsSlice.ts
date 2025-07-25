@@ -8,6 +8,7 @@ const initialState: CedarPermissionsState = {
   error: null,
   initialized: null,
   isInitializing: false,
+  cedarFailedStatusAfterMaxTries: null,
 }
 
 const cedarPermissionsSlice = createSlice({
@@ -27,10 +28,17 @@ const cedarPermissionsSlice = createSlice({
     setCedarlingInitializing: (state, action: PayloadAction<boolean>) => {
       state.isInitializing = action.payload
     },
+    setCedarFailedStatusAfterMaxTries: (state) => {
+      state.cedarFailedStatusAfterMaxTries = true
+    },
   },
 })
 
 reducerRegistry.register('cedarPermissions', cedarPermissionsSlice.reducer)
-export const { setCedarlingPermission, setCedarlingInitialized, setCedarlingInitializing } =
-  cedarPermissionsSlice.actions
+export const {
+  setCedarlingPermission,
+  setCedarlingInitialized,
+  setCedarlingInitializing,
+  setCedarFailedStatusAfterMaxTries,
+} = cedarPermissionsSlice.actions
 export default cedarPermissionsSlice.reducer
