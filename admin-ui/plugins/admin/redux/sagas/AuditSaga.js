@@ -2,7 +2,7 @@ import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { getAuditLogsResponse } from '../features/auditSlice'
+import { failedAuditLogsResponse, getAuditLogsResponse } from '../features/auditSlice'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import AuditApi from '../api/AuditApi'
 import { initAudit } from 'Redux/sagas/SagaUtils'
@@ -41,6 +41,7 @@ export function* getAuditLogs({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    yield put(failedAuditLogsResponse())
   }
 }
 

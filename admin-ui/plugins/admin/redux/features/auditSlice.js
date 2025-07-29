@@ -17,9 +17,13 @@ const auditSlice = createSlice({
       state.loading = false
       state.audits = action.payload?.data || []
     },
+    failedAuditLogsResponse: (state) => {
+      state.loading = false
+      state.audits = []
+    },
   },
 })
 reducerRegistry.register('auditReducer', auditSlice.reducer)
 
-export const { getAuditLogs, getAuditLogsResponse } = auditSlice.actions
+export const { getAuditLogs, getAuditLogsResponse, failedAuditLogsResponse } = auditSlice.actions
 export default auditSlice.reducer
