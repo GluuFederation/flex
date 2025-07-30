@@ -46,15 +46,6 @@ function UserForm({ onSubmitData }: UserFormProps) {
   const userDetails = useSelector((state: UserFormState) => state.userReducer.selectedUserData)
   const personAttributes = useSelector((state: UserFormState) => state.attributesReducerRoot.items)
 
-  // Debug log to verify userDetails value
-  console.log(
-    'UserForm - userDetails:',
-    userDetails,
-    'Type:',
-    typeof userDetails,
-    'Is falsy:',
-    !userDetails,
-  )
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
   const options: GetUserOptions = {}
@@ -62,11 +53,11 @@ function UserForm({ onSubmitData }: UserFormProps) {
   const initialValues: UserEditFormValues = {
     displayName: userDetails?.displayName || '',
     givenName: userDetails?.givenName || '',
-    mail: userDetails?.email || '',
+    mail: userDetails?.mail || '',
     userId: userDetails?.userId || '',
     sn: userDetails?.familyName || '',
     middleName: (userDetails?.middleName as string) || '',
-    status: (userDetails?.jansStatus as string) || '',
+    status: (userDetails?.jansStatus as string) || userDetails?.status || '',
   }
 
   if (userDetails && userDetails.customAttributes) {

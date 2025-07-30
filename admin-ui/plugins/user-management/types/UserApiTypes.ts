@@ -5,8 +5,9 @@ export interface CustomUser {
   displayName?: string
   givenName?: string
   familyName?: string
-  email?: string
+  mail?: string
   jansStatus?: string
+  status?: string
   userPassword?: string
   customAttributes?: CustomAttribute[]
   customObjectClasses?: string[]
