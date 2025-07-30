@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
-import MaterialTable from '@material-table/core'
+import MaterialTable, { Action, Column } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { Paper, TablePagination } from '@mui/material'
@@ -35,16 +35,28 @@ import customColors from '@/customColors'
 import moment from 'moment'
 import { deleteFido2DeviceData } from '../../../fido/redux/features/fidoSlice'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
+import {
+  CustomUser,
+  CustomAttribute,
+  User2FAPayload,
+  SearchOptions,
+  UserListRootState,
+  DeviceData,
+  UserTableData,
+  UserActionData,
+  OTPDevicesData,
+  OTPDevice,
+} from '../../types'
 
-function UserList() {
+function UserList(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
   const renders = useRef(0)
-  const opt = {}
+  const opt: SearchOptions = {}
 
   // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async () => {
+    const authorizePermissions = async (): Promise<void> => {
       const permissions = [USER_READ, USER_WRITE, USER_DELETE]
       try {
         for (const permission of permissions) {
@@ -56,92 +68,113 @@ function UserList() {
     }
 
     authorizePermissions()
-  }, [])
+  }, [authorize])
 
   useEffect(() => {
-    opt['limit'] = 10
-    dispatch(getUsers({ action: opt }))
+    opt.limit = 10
+    dispatch(getUsers(opt))
     dispatch(getRoles({}))
-  }, [])
-  const { totalItems, fidoDetails } = useSelector((state) => state.userReducer)
-  const [pageNumber, setPageNumber] = useState(0)
-  const usersList = useSelector((state) => state.userReducer.items) || []
-  const loading = useSelector((state) => state.userReducer.loading)
-  const token = useSelector((state) => state.authReducer.token.access_token)
+  }, [dispatch])
+
+  const { totalItems, fidoDetails } = useSelector((state: UserListRootState) => state.userReducer)
+  const [pageNumber, setPageNumber] = useState<number>(0)
+  const usersList = useSelector((state: UserListRootState) => state.userReducer.items) || []
+  const loading = useSelector((state: UserListRootState) => state.userReducer.loading)
+  const token = useSelector((state: UserListRootState) => state.authReducer.token.access_token)
   const { t } = useTranslation()
-  const [modal, setModal] = useState(false)
-  const [isViewDetailModalOpen, setIsDetailModalOpen] = useState(false)
-  const [faDetails, setFADetails] = useState([])
-  const [otpDevicesList, setOTPDevicesList] = useState([])
-  const [userDetails, setUserDetails] = useState(false)
-  const [deleteData, setDeleteData] = useState(null)
-  const toggle = () => setModal(!modal)
-  const submitForm = (message) => {
+  const [modal, setModal] = useState<boolean>(false)
+  const [isViewDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false)
+  const [faDetails, setFADetails] = useState<DeviceData[]>([])
+  const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
+  const [userDetails, setUserDetails] = useState<UserTableData | null>(null)
+  const [deleteData, setDeleteData] = useState<UserActionData | null>(null)
+  const toggle = (): void => setModal(!modal)
+  const submitForm = (message: string): void => {
     toggle()
-    deleteData.action_message = message
-    handleUserDelete(deleteData)
+    if (deleteData) {
+      deleteData.action_message = message
+      handleUserDelete(deleteData)
+    }
   }
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.user_management'))
 
-  const myActions = []
-  const options = {}
+  const myActions: (Action<UserTableData> | ((rowData: UserTableData) => Action<UserTableData>))[] =
+    []
+  const options: SearchOptions = {}
   const navigate = useNavigate()
 
-  function handleGoToUserAddPage() {
-    dispatch(setSelectedUserData(null))
-    return navigate('/user/usermanagement/add')
+  function handleGoToUserAddPage(): void {
+    dispatch(setSelectedUserData({} as CustomUser))
+    navigate('/user/usermanagement/add')
   }
 
-  async function handleView2FADetails(row) {
+  async function handleView2FADetails(row: UserTableData): Promise<void> {
     setUserDetails(row)
-    const getOTPDevices = row?.customAttributes.filter((item) => item.name === 'jansOTPDevices')
-    const getOTPDevicesValue = getOTPDevices.map((item) => JSON.parse(item.value))
-    const getDevices = getOTPDevicesValue?.map((item) => [...item.devices])
+    const getOTPDevices =
+      row?.customAttributes?.filter((item: CustomAttribute) => item.name === 'jansOTPDevices') || []
+    const getOTPDevicesValue = getOTPDevices.map((item: CustomAttribute) =>
+      JSON.parse(item.value || '{}'),
+    )
+    const getDevices = getOTPDevicesValue?.map((item: OTPDevicesData) => [...(item.devices || [])])
     const getDevicesList = getDevices?.flat()
-    const otpDevices = getDevicesList?.map((item) => {
-      return {
-        id: item?.id ?? '-',
-        nickName: item?.nickName ?? '-',
-        modality: item?.soft ? 'Soft token - time based (totp)' : 'Hard token - time based (totp)',
-        dateAdded: moment(new Date(item.addedOn).toString()).format('YYYY-MM-DD HH:mm:ss'),
-        type: 'OTP',
-      }
-    })
+    const otpDevices: DeviceData[] =
+      getDevicesList?.map((item: OTPDevice) => {
+        return {
+          id: item?.id ?? '-',
+          nickName: item?.nickName ?? '-',
+          modality: item?.soft
+            ? 'Soft token - time based (totp)'
+            : 'Hard token - time based (totp)',
+          dateAdded: moment(new Date((item.addedOn || 0) * 1000).toString()).format(
+            'YYYY-MM-DD HH:mm:ss',
+          ),
+          type: 'OTP',
+        }
+      }) || []
     setOTPDevicesList(otpDevices)
 
-    dispatch(getUser2FADetails({ username: row.givenName.toLowerCase(), token: token }))
+    const payload: User2FAPayload = {
+      username: (row.givenName || '').toLowerCase(),
+      token: token,
+    }
+    dispatch(getUser2FADetails(payload))
     setIsDetailModalOpen(!isViewDetailModalOpen)
   }
 
-  function handleGoToUserEditPage(row) {
+  function handleGoToUserEditPage(row: UserTableData): void {
     dispatch(setSelectedUserData(row))
-    return navigate(`/user/usermanagement/edit/:` + row.tableData.uuid)
+    navigate(`/user/usermanagement/edit/:${row.tableData?.uuid || ''}`)
   }
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState(null)
+
+  const [limit, setLimit] = useState<number>(10)
+  const [pattern, setPattern] = useState<string | undefined>(undefined)
 
   let memoLimit = limit
   let memoPattern = pattern
 
-  function handleOptionsChange(event) {
-    if (event.target.name == 'limit') {
-      memoLimit = event.target.value
-    } else if (event.target.name == 'pattern') {
+  function handleOptionsChange(
+    event: React.ChangeEvent<HTMLInputElement> & { keyCode?: number },
+  ): void {
+    if (event.target.name === 'limit') {
+      memoLimit = parseInt(event.target.value, 10)
+    } else if (event.target.name === 'pattern') {
       memoPattern = event.target.value
       if (event.keyCode === 13) {
         setLimit(memoLimit)
         setPattern(memoPattern)
-        dispatch(getUsers({ action: { limit: memoLimit, pattern: memoPattern } }))
+        dispatch(getUsers({ limit: memoLimit, pattern: memoPattern }))
       }
     }
   }
 
-  function handleUserDelete(row) {
-    dispatch(deleteUser(row))
+  function handleUserDelete(row: UserActionData): void {
+    if (row.inum) {
+      dispatch(deleteUser({ inum: row.inum }))
+    }
   }
 
   const GluuSearch = useCallback(() => {
@@ -178,7 +211,7 @@ function UserList() {
       onClick: () => {
         setLimit(memoLimit)
         setPattern(memoPattern)
-        dispatch(getUsers({ action: { limit: memoLimit, pattern: memoPattern } }))
+        dispatch(getUsers({ limit: memoLimit, pattern: memoPattern }))
       },
     })
   }
@@ -191,95 +224,116 @@ function UserList() {
       isFreeAction: true,
       onClick: () => handleGoToUserAddPage(),
     })
-    myActions.push((rowData) => ({
+    myActions.push((rowData: UserTableData) => ({
       icon: 'edit',
       iconProps: {
-        id: 'editScope' + rowData.inum,
+        id: 'editScope' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
       },
-      onClick: (event, rowData) => handleGoToUserEditPage(rowData),
+      onClick: (_event: React.MouseEvent, rowData?: UserTableData) => {
+        if (rowData) handleGoToUserEditPage(rowData)
+      },
       disabled: !hasCedarPermission(USER_WRITE),
     }))
-    myActions.push((rowData) => ({
+    myActions.push((rowData: UserTableData) => ({
       icon: LockedOpenIcon,
       iconProps: {
-        id: 'viewDetail' + rowData.inum,
+        id: 'viewDetail' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
       },
       tooltip: `${t('messages.credentials')}`,
-      onClick: (event, rowData) => handleView2FADetails(rowData),
+      onClick: (_event: React.MouseEvent, rowData?: UserTableData) => {
+        if (rowData) handleView2FADetails(rowData)
+      },
       disabled: !hasCedarPermission(USER_WRITE),
     }))
   }
 
   if (hasCedarPermission(USER_DELETE)) {
-    myActions.push((rowData) => ({
+    myActions.push((rowData: UserTableData) => ({
       icon: DeleteOutlinedIcon,
       iconProps: {
         color: 'secondary',
-        id: 'deleteClient' + rowData.inum,
+        id: 'deleteClient' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
       },
-      onClick: (event, rowData) => {
-        setDeleteData(rowData)
-        toggle()
+      onClick: (_event: React.MouseEvent, rowData?: UserTableData) => {
+        if (rowData) {
+          setDeleteData(rowData)
+          toggle()
+        }
       },
       disabled: false,
     }))
   }
 
-  const onPageChangeClick = (page) => {
+  const onPageChangeClick = (page: number): void => {
     const startCount = page * limit
-    options['startIndex'] = parseInt(startCount)
-    options['limit'] = limit
-    options['pattern'] = pattern
+    options.startIndex = startCount
+    options.limit = limit
+    options.pattern = pattern
     setPageNumber(page)
-    dispatch(getUsers({ action: options }))
-  }
-  const onRowCountChangeClick = (count) => {
-    options['limit'] = count
-    options['pattern'] = pattern
-    setPageNumber(0)
-    setLimit(count)
-    dispatch(getUsers({ action: options }))
+    dispatch(getUsers(options))
   }
 
-  const updateUserData = (values) => {
+  const onRowCountChangeClick = (count: number): void => {
+    options.limit = count
+    options.pattern = pattern
+    setPageNumber(0)
+    setLimit(count)
+    dispatch(getUsers(options))
+  }
+
+  const updateUserData = (values: string): void => {
+    if (!userDetails) return
+
     const submitableValues = {
-      inum: userDetails.inum,
-      userId: userDetails.userId || '',
-      dn: userDetails.dn,
-      jansOTPDevices: values,
+      customUser: {
+        inum: userDetails.inum,
+        userId: userDetails.userId || '',
+        dn: userDetails.dn,
+        jansOTPDevices: values,
+      },
     }
     dispatch(updateUser(submitableValues))
   }
 
-  const handleRemove2Fa = (row) => {
+  const handleRemove2Fa = (row: DeviceData): void => {
     if (row.type === 'FIDO2' || row.type === 'SUPER GLUU') {
-      dispatch(deleteFido2DeviceData(row.id))
+      dispatch(deleteFido2DeviceData(row.id || ''))
     } else if (row.type === 'OTP') {
-      const getOTPDevices = userDetails?.customAttributes.filter(
-        (item) => item.name === 'jansOTPDevices',
+      const getOTPDevices =
+        userDetails?.customAttributes?.filter(
+          (item: CustomAttribute) => item.name === 'jansOTPDevices',
+        ) || []
+      const getOTPDevicesValue = getOTPDevices.map((item: CustomAttribute) =>
+        JSON.parse(item.value || '{}'),
       )
-      const getOTPDevicesValue = getOTPDevices.map((item) => JSON.parse(item.value))
 
-      const removedDevice = getOTPDevicesValue[0].devices.filter((item) => item.id !== row.id)
-      const jansOTPDevices = { devices: removedDevice }
-      updateUserData(JSON.stringify(jansOTPDevices))
-    } else return false
+      if (getOTPDevicesValue.length > 0) {
+        const removedDevice =
+          getOTPDevicesValue[0].devices?.filter((item: OTPDevice) => item.id !== row.id) || []
+        const jansOTPDevices = { devices: removedDevice }
+        updateUserData(JSON.stringify(jansOTPDevices))
+      }
+    }
 
-    handleView2FADetails(userDetails)
+    if (userDetails) {
+      handleView2FADetails(userDetails)
+    }
   }
 
   useEffect(() => {
-    const usedAttributes = []
+    const usedAttributes: string[] = []
     if (usersList?.length && renders.current < 1) {
       renders.current = 1
-      for (const i in usersList) {
-        for (const j in usersList[i].customAttributes) {
-          const val = usersList[i].customAttributes[j].name
-          if (!usedAttributes.includes(val)) {
-            usedAttributes.push(val)
+      for (const user of usersList) {
+        if (user.customAttributes) {
+          for (const attribute of user.customAttributes) {
+            const val = attribute.name
+            if (!usedAttributes.includes(val)) {
+              usedAttributes.push(val)
+            }
           }
         }
       }
@@ -291,39 +345,40 @@ function UserList() {
         )
       }
     }
-  }, [usersList])
+  }, [usersList, dispatch])
 
   useEffect(() => {
-    let removeNullValue = []
-    if (Object.keys(fidoDetails).length > 0 && fidoDetails?.entries?.length > 0) {
-      const updatedDetails = fidoDetails
-        ? fidoDetails?.entries?.map((item) => {
-            const attenstationRequest = JSON.parse(item.registrationData.attenstationRequest)
+    let removeNullValue: DeviceData[] = []
+    if (Array.isArray(fidoDetails) && fidoDetails.length > 0) {
+      const updatedDetails: DeviceData[] = fidoDetails.map((item: any) => {
+        const attenstationRequest = JSON.parse(item.registrationData?.attenstationRequest || '{}')
 
-            return {
-              id: item.id,
-              nickName: attenstationRequest.displayName ?? '-',
-              modality: item?.deviceData?.platform ?? '-',
-              dateAdded: moment(item.creationDate).format('YYYY-MM-DD HH:mm:ss'),
-              type: item?.deviceData?.platform ? 'SUPER GLUU' : 'FIDO2',
-              registrationData: item.registrationData,
-              deviceData: item.deviceData,
-            }
-          })
-        : []
-      removeNullValue = updatedDetails ? updatedDetails?.filter((item) => item) : []
+        return {
+          id: item.id,
+          nickName: attenstationRequest.displayName ?? '-',
+          modality: item?.deviceData?.platform ?? '-',
+          dateAdded: moment(item.creationDate).format('YYYY-MM-DD HH:mm:ss'),
+          type: item?.deviceData?.platform ? 'SUPER GLUU' : 'FIDO2',
+          registrationData: item.registrationData,
+          deviceData: item.deviceData,
+        }
+      })
+      removeNullValue = updatedDetails.filter((item: DeviceData) => item)
     }
 
     setFADetails([...removeNullValue, ...otpDevicesList])
-  }, [fidoDetails])
+  }, [fidoDetails, otpDevicesList])
 
-  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback(
+    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+    [],
+  )
 
-  const DetailPanel = useCallback((rowData) => {
+  const DetailPanel = useCallback((rowData: { rowData: UserTableData }) => {
     return <UserDetailViewPage row={rowData} />
   }, [])
 
-  const DetailPanelForDevices = useCallback((rowData) => {
+  const DetailPanelForDevices = useCallback((rowData: { rowData: DeviceData }) => {
     return <UserDeviceDetailViewPage row={rowData} />
   }, [])
 
@@ -333,16 +388,17 @@ function UserList() {
   const PaginationWrapper = useCallback(
     () => (
       <TablePagination
+        component="div"
         count={totalItems}
         page={pageNumber}
-        onPageChange={(prop, page) => {
+        onPageChange={(_event, page) => {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(prop, count) => onRowCountChangeClick(count.props.value)}
+        onRowsPerPageChange={(event) => onRowCountChangeClick(parseInt(event.target.value, 10))}
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
+    [pageNumber, totalItems, limit],
   )
 
   return (
@@ -351,7 +407,7 @@ function UserList() {
         isOpen={isViewDetailModalOpen}
         handleClose={() => setIsDetailModalOpen(!isViewDetailModalOpen)}
       >
-        <MaterialTable
+        <MaterialTable<DeviceData>
           key={limit}
           columns={[
             { title: `${t('fields.nickName')}`, field: 'nickName' },
@@ -368,20 +424,19 @@ function UserList() {
             toolbar: false,
             idSynonym: 'inum',
             selection: false,
-            rowStyle: (rowData) => ({
-              backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
+            rowStyle: (rowData: DeviceData) => ({
+              backgroundColor: customColors.white,
             }),
             headerStyle: {
               ...applicationStyle.tableHeaderStyle,
               ...bgThemeColor,
-            },
-
+            } as React.CSSProperties,
             actionsColumnIndex: -1,
           }}
           editable={{
             isDeleteHidden: () => false,
-            onRowDelete: (oldData) => {
-              return new Promise((resolve) => {
+            onRowDelete: (oldData: DeviceData) => {
+              return new Promise<void>((resolve) => {
                 handleRemove2Fa(oldData)
                 resolve()
               })
@@ -394,7 +449,7 @@ function UserList() {
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={hasCedarPermission(USER_READ)}>
-            <MaterialTable
+            <MaterialTable<UserTableData>
               key={limit}
               components={{
                 Container: PaperContainer,
@@ -408,7 +463,7 @@ function UserList() {
                 { title: `${t('fields.userName')}`, field: 'userId' },
                 { title: `${t('fields.email')}`, field: 'mail' },
               ]}
-              data={usersList}
+              data={usersList as UserTableData[]}
               isLoading={loading}
               title=""
               actions={myActions}
@@ -418,13 +473,13 @@ function UserList() {
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData) => ({
+                rowStyle: (rowData: UserTableData) => ({
                   backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
-                },
+                } as React.CSSProperties,
                 actionsColumnIndex: -1,
               }}
               detailPanel={DetailPanel}

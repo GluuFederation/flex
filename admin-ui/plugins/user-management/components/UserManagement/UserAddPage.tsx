@@ -7,22 +7,37 @@ import { useTranslation } from 'react-i18next'
 import { createUser } from '../../redux/features/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
+import {
+  PersonAttribute,
+  UserManagementRootState,
+  UserModifyOptions,
+} from 'Plugins/user-management/types/UserApiTypes'
+
 function UserAddPage() {
   const dispatch = useDispatch()
-  const userAction = {}
   const navigate = useNavigate()
   const redirectToUserListPage = useSelector(
-    (state: any) => state.userReducer.redirectToUserListPage,
+    (state: UserManagementRootState) => state.userReducer.redirectToUserListPage,
   )
   const { t } = useTranslation()
-  const personAttributes = useSelector((state: any) => state.attributesReducerRoot.items)
-  const createCustomAttributes = (values: any) => {
-    const customAttributes = []
+  const personAttributes = useSelector(
+    (state: UserManagementRootState) => state.attributesReducerRoot.items,
+  )
+  const createCustomAttributes = (values: Record<string, any>) => {
+    const customAttributes: Array<{
+      name: string
+      multiValued: boolean
+      values: string[]
+    }> = []
     if (values) {
       for (const key in values) {
-        const customAttribute = personAttributes.filter((e: any) => e.name == key)
-        if (personAttributes.some((e: any) => e.name == key)) {
-          let obj = {}
+        const customAttribute = personAttributes.filter((e: PersonAttribute) => e.name == key)
+        if (personAttributes.some((e: PersonAttribute) => e.name == key)) {
+          let obj: {
+            name: string
+            multiValued: boolean
+            values: string[]
+          }
           if (!customAttribute[0]?.oxMultiValuedAttribute) {
             const val = []
             let value = values[key]
@@ -61,7 +76,7 @@ function UserAddPage() {
     }
   }
 
-  const submitData = (values: any, modifiedFields: any, message: any) => {
+  const submitData = (values: Record<string, any>, modifiedFields: string[], message: string) => {
     const customAttributes = createCustomAttributes(values)
     const submitableValues = {
       userId: values.userId || '',
@@ -73,7 +88,7 @@ function UserAddPage() {
       customAttributes: customAttributes,
       action_message: message,
     }
-    dispatch(createUser(submitableValues))
+    dispatch(createUser(submitableValues as UserModifyOptions))
   }
 
   useEffect(() => {

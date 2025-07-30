@@ -1,14 +1,8 @@
 import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import PropTypes from 'prop-types'
 import customColors from '@/customColors'
-
-interface UserDeviceDetailViewPageProps {
-  row: {
-    rowData: any
-  }
-}
+import { UserDeviceDetailViewPageProps } from '../../types/ComponentTypes'
 
 const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const { rowData } = row
@@ -91,9 +85,4 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
     </Container>
   )
 }
-
-UserDeviceDetailViewPage.propTypes = {
-  row: PropTypes.any,
-}
-
 export default UserDeviceDetailViewPage

@@ -17,8 +17,10 @@ import { debounce, values } from 'lodash'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import moment from 'moment/moment'
 import { use } from 'i18next'
+import { UserFormProps, UserFormState, FormOperation } from '../../types/ComponentTypes'
+import { PersonAttribute, ChangeUserPasswordPayload } from '../../types/UserApiTypes'
 
-function UserForm({ onSubmitData }: any) {
+function UserForm({ onSubmitData }: UserFormProps) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
@@ -30,10 +32,10 @@ function UserForm({ onSubmitData }: any) {
   const [passwordmodal, setPasswordModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<Record<string, any>>({})
-  const [operations, setOperations] = useState<Array<{ path: string; value: any; op: string }>>([])
+  const [operations, setOperations] = useState<FormOperation[]>([])
 
-  const userDetails = useSelector((state: any) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector((state: any) => state.attributesReducerRoot.items)
+  const userDetails = useSelector((state: UserFormState) => state.userReducer.selectedUserData)
+  const personAttributes = useSelector((state: UserFormState) => state.attributesReducerRoot.items)
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   let options: any = {}
@@ -52,7 +54,7 @@ function UserForm({ onSubmitData }: any) {
     for (let i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
         let customAttribute = personAttributes.filter(
-          (e: any) => e.name == userDetails.customAttributes[i].name,
+          (e: PersonAttribute) => e.name == userDetails.customAttributes[i].name,
         )
         if (userDetails.customAttributes[i].name == 'birthdate') {
           initialValues[userDetails.customAttributes[i].name] = moment(
@@ -89,33 +91,24 @@ function UserForm({ onSubmitData }: any) {
     setModal(!modal)
   }
 
-  const submitChangePassword = (usermessage: any) => {
-    const submitableValue: any = {
+  const submitChangePassword = (usermessage: string) => {
+    const submitableValue: ChangeUserPasswordPayload = {
       inum: userDetails.inum,
-      jsonPatchString: '[]',
-      customAttributes: [
-        {
-          name: 'userPassword',
-          multiValued: false,
-          values: [formik.values.userPassword],
-        },
-      ],
+      userPassword: formik.values.userPassword,
     }
-    submitableValue['performedOn'] = {
-      user_inum: userDetails.inum,
-      userId: userDetails.displayName,
+    // Set action_message for audit logging
+    if (usermessage) {
+      submitableValue.action_message = usermessage
     }
-    submitableValue['action_message'] = usermessage
     dispatch(changeUserPassword(submitableValue))
     setPasswordModal(!passwordmodal)
     toggleChangePasswordModal()
   }
-
   const submitForm = (usermessage: any) => {
     toggle()
     onSubmitData(formik.values, modifiedFields, usermessage)
   }
-  const loading = useSelector((state: any) => state.userReducer.loading)
+  const loading = useSelector((state: UserFormState) => state.userReducer.loading)
   const setSelectedClaimsToState = (data: any) => {
     const tempList = [...selectedClaims]
     tempList.push(data)
@@ -480,10 +473,14 @@ function UserForm({ onSubmitData }: any) {
                 value={searchClaims}
               />
               <ul className="list-group">
-                {personAttributes.map((data: any, key: number) => {
-                  const name = data.displayName.toLowerCase()
+                {personAttributes.map((data: PersonAttribute, key: number) => {
+                  const name = data.displayName?.toLowerCase() || ''
                   const alreadyAddedClaim = selectedClaims.some((el: any) => el.name === data.name)
-                  if (data.status.toLowerCase() == 'active' && !usedClaimes.includes(data.name)) {
+                  if (
+                    data.status &&
+                    data.status.toLowerCase() == 'active' &&
+                    !usedClaimes.includes(data.name)
+                  ) {
                     if (
                       (name.includes(searchClaims.toLowerCase()) || searchClaims == '') &&
                       !alreadyAddedClaim
