@@ -20,6 +20,13 @@ export const isStartAfterEnd = (startDate, endDate) =>
 
 export const dateConverter = (date, datePattern = 'MM-DD-YYYY') => dayjs(date).format(datePattern)
 
+export const clearInputById = (id) => {
+  const el = document.getElementById(id)
+  if (el) {
+    el.value = ''
+  }
+}
+
 export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue) => {
   return enabledFeatureWebhooks.map((originalWebhook) => {
     const webhook = cloneDeep(originalWebhook) // Create a deep copy of the webhook

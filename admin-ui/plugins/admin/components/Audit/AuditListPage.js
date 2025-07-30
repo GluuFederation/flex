@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext, useCallback } from 'react'
+import React, { useState, useMemo, useContext, useCallback, useLayoutEffect } from 'react'
 import { Badge } from 'reactstrap'
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -7,7 +7,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import MaterialTable from '@material-table/core'
 import { Paper, Button } from '@mui/material'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
-import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
+import { LIMIT_ID, AUDIT_PATTERN_ID } from 'Plugins/admin/common/Constants'
 import { useDispatch } from 'react-redux'
 import { Card, CardBody } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -16,6 +16,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload } from '@/utils/PermChecker'
+import { clearInputById } from 'Plugins/admin/helper/utils'
 
 const AuditListPage = () => {
   const dispatch = useDispatch()
@@ -92,6 +93,12 @@ const AuditListPage = () => {
     [selectedTheme],
   )
 
+  useLayoutEffect(() => {
+    return () => {
+      clearInputById(AUDIT_PATTERN_ID)
+    }
+  }, [])
+
   const userAction = {}
 
   const handleOptionsChange = useCallback((event) => {
@@ -125,7 +132,7 @@ const AuditListPage = () => {
   const handleViewClick = () => {
     if (isViewDisabled) return
     setStartIndex(0)
-    const currentPattern = document.getElementById(PATTERN_ID)?.value?.trim() || ''
+    const currentPattern = document.getElementById(AUDIT_PATTERN_ID)?.value?.trim() || ''
     const params = { limit: Number(limit), startIndex: 0 }
     if (currentPattern !== '') params.pattern = currentPattern
     if (filters.hasBothDates) {
@@ -231,7 +238,7 @@ const AuditListPage = () => {
                 >
                   <GluuAdvancedSearch
                     limitId={LIMIT_ID}
-                    patternId={PATTERN_ID}
+                    patternId={AUDIT_PATTERN_ID}
                     limit={limit}
                     pattern="" // Don't pass pattern state
                     handler={handleOptionsChange}
