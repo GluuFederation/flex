@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback, useRef } from 'react'
-import MaterialTable, { Action, Column } from '@material-table/core'
+import MaterialTable, { Action } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { Paper, TablePagination } from '@mui/material'
@@ -36,7 +36,6 @@ import moment from 'moment'
 import { deleteFido2DeviceData } from '../../../fido/redux/features/fidoSlice'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
-  CustomUser,
   CustomAttribute,
   User2FAPayload,
   SearchOptions,
@@ -46,6 +45,7 @@ import {
   UserActionData,
   OTPDevicesData,
   OTPDevice,
+  FidoRegistrationEntry,
 } from '../../types'
 
 function UserList(): JSX.Element {
@@ -108,7 +108,7 @@ function UserList(): JSX.Element {
   const navigate = useNavigate()
 
   function handleGoToUserAddPage(): void {
-    dispatch(setSelectedUserData({} as CustomUser))
+    dispatch(setSelectedUserData(null))
     navigate('/user/usermanagement/add')
   }
 
@@ -230,7 +230,8 @@ function UserList(): JSX.Element {
         id: 'editScope' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
       },
-      onClick: (_event: React.MouseEvent, rowData?: UserTableData) => {
+      onClick: (_event: React.MouseEvent<HTMLElement>, data: UserTableData | UserTableData[]) => {
+        const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) handleGoToUserEditPage(rowData)
       },
       disabled: !hasCedarPermission(USER_WRITE),
@@ -242,7 +243,8 @@ function UserList(): JSX.Element {
         style: { color: customColors.darkGray },
       },
       tooltip: `${t('messages.credentials')}`,
-      onClick: (_event: React.MouseEvent, rowData?: UserTableData) => {
+      onClick: (_event: React.MouseEvent<HTMLElement>, data: UserTableData | UserTableData[]) => {
+        const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) handleView2FADetails(rowData)
       },
       disabled: !hasCedarPermission(USER_WRITE),
@@ -257,7 +259,8 @@ function UserList(): JSX.Element {
         id: 'deleteClient' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
       },
-      onClick: (_event: React.MouseEvent, rowData?: UserTableData) => {
+      onClick: (_event: React.MouseEvent<HTMLElement>, data: UserTableData | UserTableData[]) => {
+        const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) {
           setDeleteData(rowData)
           toggle()
@@ -350,7 +353,7 @@ function UserList(): JSX.Element {
   useEffect(() => {
     let removeNullValue: DeviceData[] = []
     if (Array.isArray(fidoDetails) && fidoDetails.length > 0) {
-      const updatedDetails: DeviceData[] = fidoDetails.map((item: any) => {
+      const updatedDetails: DeviceData[] = fidoDetails.map((item: FidoRegistrationEntry) => {
         const attenstationRequest = JSON.parse(item.registrationData?.attenstationRequest || '{}')
 
         return {
@@ -424,7 +427,7 @@ function UserList(): JSX.Element {
             toolbar: false,
             idSynonym: 'inum',
             selection: false,
-            rowStyle: (rowData: DeviceData) => ({
+            rowStyle: () => ({
               backgroundColor: customColors.white,
             }),
             headerStyle: {

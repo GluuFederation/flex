@@ -15,7 +15,7 @@ import {
   SubmitableUserValues,
   UserEditFormValues,
 } from '../../types/ComponentTypes'
-import { PersonAttribute, GetUserOptions } from '../../types/UserApiTypes'
+import { PersonAttribute, GetUserOptions, CustomAttribute } from '../../types/UserApiTypes'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -56,12 +56,10 @@ function UserEditPage() {
           let obj = {}
           if (!customAttribute[0]?.oxMultiValuedAttribute) {
             const val = []
-            let value = values[key]
             if (key != 'birthdate') {
               val.push(values[key])
             } else {
               values[key] ? val.push(moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')) : null
-              value = values[key] ? moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD') : null
             }
             obj = {
               name: key,
@@ -99,7 +97,7 @@ function UserEditPage() {
     usermessage: string,
   ) => {
     const customAttributes = createCustomAttributes(values)
-    const inum = userDetails.inum
+    const inum = userDetails?.inum
 
     const submitableValues: SubmitableUserValues = {
       inum: inum,
@@ -110,8 +108,8 @@ function UserEditPage() {
         : values.displayName || '',
       status: Array.isArray(values.status) ? values.status[0] : values.status || '',
       givenName: Array.isArray(values.givenName) ? values.givenName[0] : values.givenName || '',
-      customAttributes: customAttributes,
-      dn: userDetails.dn,
+      customAttributes: customAttributes as CustomAttribute[],
+      dn: userDetails?.dn || '',
     }
     if (persistenceType == 'ldap') {
       submitableValues['customObjectClasses'] = ['top', 'jansPerson', 'jansCustomPerson']
@@ -122,10 +120,10 @@ function UserEditPage() {
         [key]: modifiedFields[key],
       }
     })
-    submitableValues['modifiedFields'] = postValue
+    submitableValues['modifiedFields'] = postValue as Record<string, string | string[]>[]
     submitableValues['performedOn'] = {
-      user_inum: userDetails.inum,
-      useId: userDetails.displayName,
+      user_inum: userDetails?.inum,
+      useId: userDetails?.displayName,
     }
     submitableValues['action_message'] = usermessage
 

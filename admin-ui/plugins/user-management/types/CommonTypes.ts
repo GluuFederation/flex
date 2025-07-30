@@ -16,5 +16,12 @@ export interface ApiRoleReducerState {
 }
 
 export interface UserFormValues {
-  [key: string]: string | string[] | undefined
+  [key: string]: string | string[] | null | undefined
+}
+
+// Define theme context interface
+export interface ThemeContext {
+  state: {
+    theme: string
+  }
 }

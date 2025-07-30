@@ -41,7 +41,7 @@ const userSlice = createSlice({
       state.loading = false
       state.fidoDetails = action?.payload?.data ?? []
     },
-    setSelectedUserData: (state, action: PayloadAction<CustomUser>) => {
+    setSelectedUserData: (state, action: PayloadAction<CustomUser | null>) => {
       state.selectedUserData = action.payload
     },
     getUserResponse: (state, action: PayloadAction<UserPagedResult>) => {

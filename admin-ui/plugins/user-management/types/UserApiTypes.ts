@@ -14,7 +14,7 @@ export interface CustomUser {
   createdAt?: string
   updatedAt?: string
   baseDn?: string
-  [key: string]: any // Allow additional properties
+  [key: string]: string | string[] | number | boolean | CustomAttribute[] | undefined // Allow additional properties with proper types
 }
 
 // Custom attribute interface
@@ -39,7 +39,7 @@ export interface UserPatchRequest {
   inum?: string
   op?: 'add' | 'remove' | 'replace'
   path?: string
-  value?: any
+  value?: string | string[] | number | boolean | null
   patches?: UserPatch[]
 }
 
@@ -47,7 +47,7 @@ export interface UserPatchRequest {
 export interface UserPatch {
   op: 'add' | 'remove' | 'replace'
   path: string
-  value?: any
+  value?: string | string[] | number | boolean | null
 }
 
 // Options for getting users
@@ -95,7 +95,19 @@ export interface FidoRegistrationEntry {
   creationDate?: string
   counter?: number
   status?: string
-  deviceData?: string
+  deviceData?: {
+    platform?: string
+    name?: string
+    os_name?: string
+    os_version?: string
+  }
+  registrationData?: {
+    attenstationRequest?: string
+    domain?: string
+    type?: string
+    status?: string
+    createdBy?: string
+  }
 }
 
 // API Error interface
@@ -106,7 +118,7 @@ export interface ApiError {
 }
 
 // Generic API response wrapper
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T
   error?: ApiError
   status?: number
@@ -114,28 +126,31 @@ export interface ApiResponse<T = any> {
 
 // Configuration User Management API interface
 export interface IConfigurationUserManagementApi {
-  deleteUser(inum: string, callback: (error: any, data?: any, response?: any) => void): any
+  deleteUser(
+    inum: string,
+    callback: (error: Error | null, data?: unknown, response?: unknown) => void,
+  ): unknown
   getUser(
     opts: GetUserOptions,
-    callback: (error: any, data?: UserPagedResult, response?: any) => void,
-  ): any
+    callback: (error: Error | null, data?: UserPagedResult, response?: unknown) => void,
+  ): unknown
   getUserByInum(
     inum: string,
-    callback: (error: any, data?: CustomUser, response?: any) => void,
-  ): any
+    callback: (error: Error | null, data?: CustomUser, response?: unknown) => void,
+  ): unknown
   patchUserByInum(
     inum: string,
     opts: UserPatchOptions,
-    callback: (error: any, data?: CustomUser, response?: any) => void,
-  ): any
+    callback: (error: Error | null, data?: CustomUser, response?: unknown) => void,
+  ): unknown
   postUser(
     opts: UserModifyOptions,
-    callback: (error: any, data?: CustomUser, response?: any) => void,
-  ): any
+    callback: (error: Error | null, data?: CustomUser, response?: unknown) => void,
+  ): unknown
   putUser(
     opts: UserModifyOptions,
-    callback: (error: any, data?: CustomUser, response?: any) => void,
-  ): any
+    callback: (error: Error | null, data?: CustomUser, response?: unknown) => void,
+  ): unknown
 }
 
 // Type definitions for Redux state
@@ -198,7 +213,7 @@ export interface PersonAttribute {
   }
   scimCustomAttr?: boolean
   inum?: string
-  options?: any[] // Added for dynamic options used in forms
+  options?: string[] // Added for dynamic options used in forms
 }
 
 interface AttributesState {

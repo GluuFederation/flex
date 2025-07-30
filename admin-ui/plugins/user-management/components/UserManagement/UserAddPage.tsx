@@ -12,6 +12,8 @@ import {
   UserManagementRootState,
   UserModifyOptions,
 } from 'Plugins/user-management/types/UserApiTypes'
+import { UserEditFormValues } from '../../types/ComponentTypes'
+import { setSelectedUserData } from '../../redux/features/userSlice'
 
 function UserAddPage() {
   const dispatch = useDispatch()
@@ -23,7 +25,7 @@ function UserAddPage() {
   const personAttributes = useSelector(
     (state: UserManagementRootState) => state.attributesReducerRoot.items,
   )
-  const createCustomAttributes = (values: Record<string, any>) => {
+  const createCustomAttributes = (values: UserEditFormValues) => {
     const customAttributes: Array<{
       name: string
       multiValued: boolean
@@ -39,13 +41,17 @@ function UserAddPage() {
             values: string[]
           }
           if (!customAttribute[0]?.oxMultiValuedAttribute) {
-            const val = []
-            let value = values[key]
+            const val: string[] = []
             if (key != 'birthdate') {
-              val.push(values[key])
+              if (typeof values[key] === 'string') {
+                val.push(values[key] as string)
+              } else if (Array.isArray(values[key])) {
+                val.push(...(values[key] as string[]))
+              }
             } else {
-              val.push(moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD'))
-              value = moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
+              const dateValue = values[key] as string
+              const formattedDate = moment(dateValue, 'YYYY-MM-DD').format('YYYY-MM-DD')
+              val.push(formattedDate)
             }
             obj = {
               name: key,
@@ -53,15 +59,23 @@ function UserAddPage() {
               values: val,
             }
           } else {
-            const valE = []
-            if (values[key]) {
-              for (const i in values[key]) {
-                if (typeof values[key][i] == 'object') {
-                  valE.push(values[key][i][key])
-                } else {
-                  valE.push(values[key][i])
+            const valE: string[] = []
+            const fieldValue = values[key]
+            if (Array.isArray(fieldValue)) {
+              for (const i in fieldValue) {
+                const item = fieldValue[i]
+                if (typeof item === 'object' && item !== null) {
+                  // Handle object case - extract the key value
+                  const objectItem = item as Record<string, string>
+                  if (objectItem[key]) {
+                    valE.push(objectItem[key])
+                  }
+                } else if (typeof item === 'string') {
+                  valE.push(item)
                 }
               }
+            } else if (typeof fieldValue === 'string') {
+              valE.push(fieldValue)
             }
             obj = {
               name: key,
@@ -76,7 +90,11 @@ function UserAddPage() {
     }
   }
 
-  const submitData = (values: Record<string, any>, modifiedFields: string[], message: string) => {
+  const submitData = (
+    values: UserEditFormValues,
+    modifiedFields: Record<string, string | string[]>,
+    message: string,
+  ) => {
     const customAttributes = createCustomAttributes(values)
     const submitableValues = {
       userId: values.userId || '',
@@ -90,6 +108,11 @@ function UserAddPage() {
     }
     dispatch(createUser(submitableValues as UserModifyOptions))
   }
+
+  useEffect(() => {
+    // Clear selectedUserData when adding a new user
+    dispatch(setSelectedUserData(null))
+  }, [dispatch])
 
   useEffect(() => {
     if (redirectToUserListPage) {

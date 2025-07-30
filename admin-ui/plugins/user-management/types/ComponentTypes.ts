@@ -1,6 +1,12 @@
 // Component-specific type definitions
 import { FormikProps } from 'formik'
-import { CustomUser, GetUserOptions, PersonAttribute, UserState } from './UserApiTypes'
+import {
+  CustomUser,
+  GetUserOptions,
+  PersonAttribute,
+  UserState,
+  CustomAttribute,
+} from './UserApiTypes'
 import { UserFormValues } from './CommonTypes'
 
 export interface UserClaimEntryProps {
@@ -8,17 +14,21 @@ export interface UserClaimEntryProps {
   entry: string | number
   formik: FormikProps<UserFormValues>
   handler: (name: string) => void
-  modifiedFields: Record<string, unknown>
-  setModifiedFields: React.Dispatch<React.SetStateAction<Record<string, unknown>>>
+  modifiedFields: Record<string, string | string[]>
+  setModifiedFields: React.Dispatch<React.SetStateAction<Record<string, string | string[]>>>
 }
 
 export interface UserFormProps {
-  onSubmitData: (values: any, modifiedFields: any, usermessage: any) => void
+  onSubmitData: (
+    values: UserEditFormValues,
+    modifiedFields: Record<string, string | string[]>,
+    usermessage: string,
+  ) => void
 }
 
 export interface UserEditPageState {
   userReducer: {
-    selectedUserData: any
+    selectedUserData: CustomUser | null
     redirectToUserListPage: boolean
     loading: boolean
   }
@@ -44,7 +54,7 @@ export interface UserEditFormValues {
 
 export interface UserFormState {
   userReducer: {
-    selectedUserData: any
+    selectedUserData: CustomUser | null
     loading: boolean
   }
   attributesReducerRoot: {
@@ -54,8 +64,8 @@ export interface UserFormState {
 
 export interface FormOperation {
   path: string
-  value: any
-  op: string
+  value: string | string[]
+  op: 'add' | 'remove' | 'replace'
 }
 
 export interface SubmitableUserValues {
@@ -65,10 +75,10 @@ export interface SubmitableUserValues {
   displayName?: string
   status?: string
   givenName?: string
-  customAttributes?: any[]
+  customAttributes?: CustomAttribute[]
   dn?: string
   customObjectClasses?: string[]
-  modifiedFields?: Array<Record<string, any>>
+  modifiedFields?: Array<Record<string, string | string[]>>
   performedOn?: {
     user_inum?: string
     useId?: string
@@ -78,7 +88,7 @@ export interface SubmitableUserValues {
 
 export interface UserDeviceDetailViewPageProps {
   row: {
-    rowData: any
+    rowData: DeviceData
   }
 }
 
@@ -99,7 +109,24 @@ export interface UserListRootState {
   }
 }
 
-export interface UserTableData extends CustomUser {
+export interface UserTableData {
+  // Include all CustomUser properties explicitly
+  inum?: string
+  userId?: string
+  displayName?: string
+  givenName?: string
+  familyName?: string
+  email?: string
+  jansStatus?: string
+  userPassword?: string
+  customAttributes?: CustomAttribute[]
+  customObjectClasses?: string[]
+  dn?: string
+  createdAt?: string
+  updatedAt?: string
+  baseDn?: string
+
+  // Additional properties specific to table data
   tableData?: {
     uuid: string
     id: number
@@ -117,10 +144,17 @@ export interface DeviceData {
   soft?: boolean
   addedOn?: number
   registrationData?: {
-    attenstationRequest: string
+    attenstationRequest?: string
+    domain?: string
+    type?: string
+    status?: string
+    createdBy?: string
   }
   deviceData?: {
     platform?: string
+    name?: string
+    os_name?: string
+    os_version?: string
   }
   creationDate?: string
 }

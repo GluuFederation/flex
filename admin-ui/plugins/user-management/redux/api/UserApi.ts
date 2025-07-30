@@ -10,6 +10,7 @@ import {
   IConfigurationUserManagementApi,
   UserModifyOptions,
   UserPatchOptions,
+  SagaError,
 } from '../../types/UserApiTypes'
 
 export default class UserApi {
@@ -21,7 +22,7 @@ export default class UserApi {
 
   getUsers = (payload: GetUsersPayload): Promise<UserPagedResult> => {
     return new Promise<UserPagedResult>((resolve, reject) => {
-      this.api.getUser(payload.action, (error: any, data?: UserPagedResult) => {
+      this.api.getUser(payload.action, (error: Error | null, data?: UserPagedResult) => {
         handleResponse(error, reject, resolve as (data: unknown) => void, data)
       })
     })
@@ -32,7 +33,7 @@ export default class UserApi {
       customUser: data,
     }
     return new Promise<CustomUser>((resolve, reject) => {
-      this.api.postUser(options, (error: any, data?: CustomUser) => {
+      this.api.postUser(options, (error: Error | null, data?: CustomUser) => {
         handleResponse(error, reject, resolve as (data: unknown) => void, data)
       })
     })
@@ -43,7 +44,7 @@ export default class UserApi {
       customUser: data,
     }
     return new Promise<CustomUser>((resolve, reject) => {
-      this.api.putUser(options, (error: any, data?: CustomUser) => {
+      this.api.putUser(options, (error: Error | null, data?: CustomUser) => {
         handleResponse(error, reject, resolve as (data: unknown) => void, data)
       })
     })
@@ -54,7 +55,7 @@ export default class UserApi {
       userPatchRequest: data,
     }
     return new Promise<CustomUser>((resolve, reject) => {
-      this.api.patchUserByInum(data.inum, options, (error: any, data?: CustomUser) => {
+      this.api.patchUserByInum(data.inum, options, (error: Error | null, data?: CustomUser) => {
         handleResponse(error, reject, resolve as (data: unknown) => void, data)
       })
     })
@@ -62,7 +63,7 @@ export default class UserApi {
 
   deleteUser = (inum: string): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
-      this.api.deleteUser(inum, (error: any, data?: any) => {
+      this.api.deleteUser(inum, (error: Error | null, data?: unknown) => {
         handleResponse(error, reject, resolve as (data: unknown) => void, data)
       })
     })
