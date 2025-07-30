@@ -13,6 +13,8 @@ export const hasBothDates = (startDate, endDate) => !!startDate && !!endDate
 export const hasOnlyOneDate = (startDate, endDate) =>
   (!!startDate && !endDate) || (!startDate && !!endDate)
 
+export const isValidDate = (date) => dayjs(date).isValid()
+
 export const isStartAfterEnd = (startDate, endDate) =>
   startDate && endDate && dayjs(startDate).isAfter(dayjs(endDate))
 
