@@ -3,11 +3,9 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import {
   CustomUser,
   UserPagedResult,
-  FidoRegistrationEntry,
   User2FAPayload,
   GetUserOptions,
   UserModifyOptions,
-  UserPatchOptions,
   UserState,
   SetUser2FADetailsPayload,
   ChangeUserPasswordPayload,
@@ -31,10 +29,12 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     getUsers: (state, action: PayloadAction<GetUserOptions>) => {
+      console.trace('getUsers', action.payload)
       state.loading = true
       state.redirectToUserListPage = false
     },
     getUser2FADetails: (state, action: PayloadAction<User2FAPayload>) => {
+      console.trace('getUser2FADetails', action.payload)
       state.loading = true
     },
     setUser2FADetails: (state, action: PayloadAction<SetUser2FADetailsPayload>) => {
@@ -51,6 +51,7 @@ const userSlice = createSlice({
       state.entriesCount = action.payload ? action.payload.entriesCount || 0 : 0
     },
     createUser: (state, action: PayloadAction<UserModifyOptions>) => {
+      console.trace('createUser', action.payload)
       state.loading = true
     },
     createUserResponse: (state, action: PayloadAction<boolean>) => {
@@ -58,6 +59,7 @@ const userSlice = createSlice({
       state.redirectToUserListPage = action?.payload || false
     },
     updateUser: (state, action: PayloadAction<UserModifyOptions>) => {
+      console.trace('updateUser', action.payload)
       state.loading = true
     },
     updateUserResponse: (state, action: PayloadAction<boolean>) => {
@@ -65,18 +67,23 @@ const userSlice = createSlice({
       state.redirectToUserListPage = action?.payload || false
     },
     changeUserPassword: (state, action: PayloadAction<ChangeUserPasswordPayload>) => {
+      console.trace('changeUserPassword', action.payload)
       state.loading = true
     },
-    changeUserPasswordResponse: (state, action: PayloadAction<void>) => {
+    changeUserPasswordResponse: (state, action: PayloadAction<CustomUser | null>) => {
+      console.trace('changeUserPasswordResponse', action.payload)
       state.loading = false
     },
     deleteUser: (state, action: PayloadAction<DeleteUserPayload>) => {
+      console.trace('deleteUser', action.payload)
       state.loading = true
     },
     deleteUserResponse: (state, action: PayloadAction<void>) => {
+      console.trace('deleteUserResponse', action.payload)
       state.loading = false
     },
     auditLogoutLogs: (state, action: PayloadAction<AuditLogoutLogsPayload>) => {
+      console.trace('auditLogoutLogs', action.payload)
       state.loading = true
     },
     auditLogoutLogsResponse: (state, action: PayloadAction<boolean>) => {

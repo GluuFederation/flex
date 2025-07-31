@@ -131,6 +131,7 @@ export interface UserTableData {
     uuid: string
     id: number
   }
+  action_message?: string
   enabled?: boolean
   mail?: string
 }

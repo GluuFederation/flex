@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select, takeEvery } from 'redux-saga/effects'
-import type { CallEffect, PutEffect, SelectEffect, AllEffect, ForkEffect } from 'redux-saga/effects'
+import type { PutEffect, SelectEffect } from 'redux-saga/effects'
 import { SagaIterator } from 'redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { API_USERS } from '../audit/Resources'
@@ -8,7 +8,7 @@ import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import UserApi from '../api/UserApi'
 import { getClient } from '../../../../app/redux/api/base'
-const JansConfigApi = require('jans_config_api')
+import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import {
   getUserResponse,
@@ -19,9 +19,7 @@ import {
   getUsers,
   setUser2FADetails,
   auditLogoutLogsResponse,
-  ChangeUserPasswordPayload,
   DeleteUserPayload,
-  AuditLogoutLogsPayload,
 } from '../features/userSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -31,11 +29,9 @@ import {
   UserPagedResult,
   GetUserOptions,
   RootState,
-  UserModifyOptions,
   User2FAPayload,
   FidoRegistrationEntry,
   UserPatchRequest,
-  ApiError,
   ApiResponse,
   SagaError,
 } from '../../types/UserApiTypes'
@@ -138,7 +134,7 @@ export function* changeUserPasswordSaga({
     const userApi: UserApi = yield* newFunction()
     const data: CustomUser = yield call(userApi.changeUserPassword, payload)
     yield put(updateToast(true, 'success'))
-    yield put(changeUserPasswordResponse())
+    yield put(changeUserPasswordResponse(data))
 
     addAdditionalData(audit, UPDATE, API_USERS, payload)
     audit.message = payload?.action_message || ``
@@ -146,7 +142,7 @@ export function* changeUserPasswordSaga({
   } catch (e: unknown) {
     const errMsg = getErrorMessage(e)
     yield* errorToast(errMsg)
-    yield put(changeUserPasswordResponse())
+    yield put(changeUserPasswordResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

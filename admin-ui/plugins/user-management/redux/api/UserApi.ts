@@ -10,7 +10,6 @@ import {
   IConfigurationUserManagementApi,
   UserModifyOptions,
   UserPatchOptions,
-  SagaError,
 } from '../../types/UserApiTypes'
 
 export default class UserApi {

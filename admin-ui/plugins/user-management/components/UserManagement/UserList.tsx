@@ -42,10 +42,10 @@ import {
   UserListRootState,
   DeviceData,
   UserTableData,
-  UserActionData,
   OTPDevicesData,
   OTPDevice,
   FidoRegistrationEntry,
+  CustomUser,
 } from '../../types'
 
 function UserList(): JSX.Element {
@@ -87,7 +87,7 @@ function UserList(): JSX.Element {
   const [faDetails, setFADetails] = useState<DeviceData[]>([])
   const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
   const [userDetails, setUserDetails] = useState<UserTableData | null>(null)
-  const [deleteData, setDeleteData] = useState<UserActionData | null>(null)
+  const [deleteData, setDeleteData] = useState<UserTableData | null>(null)
   const toggle = (): void => setModal(!modal)
   const submitForm = (message: string): void => {
     toggle()
@@ -101,12 +101,10 @@ function UserList(): JSX.Element {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.user_management'))
-
   const myActions: (Action<UserTableData> | ((rowData: UserTableData) => Action<UserTableData>))[] =
     []
   const options: SearchOptions = {}
   const navigate = useNavigate()
-
   function handleGoToUserAddPage(): void {
     dispatch(setSelectedUserData(null))
     navigate('/user/usermanagement/add')
@@ -136,7 +134,6 @@ function UserList(): JSX.Element {
         }
       }) || []
     setOTPDevicesList(otpDevices)
-
     const payload: User2FAPayload = {
       username: (row.givenName || '').toLowerCase(),
       token: token,
@@ -146,13 +143,12 @@ function UserList(): JSX.Element {
   }
 
   function handleGoToUserEditPage(row: UserTableData): void {
-    dispatch(setSelectedUserData(row))
+    dispatch(setSelectedUserData(row as unknown as CustomUser))
     navigate(`/user/usermanagement/edit/:${row.tableData?.uuid || ''}`)
   }
 
   const [limit, setLimit] = useState<number>(10)
   const [pattern, setPattern] = useState<string | undefined>(undefined)
-
   let memoLimit = limit
   let memoPattern = pattern
 
@@ -171,7 +167,7 @@ function UserList(): JSX.Element {
     }
   }
 
-  function handleUserDelete(row: UserActionData): void {
+  function handleUserDelete(row: UserTableData): void {
     if (row.inum) {
       dispatch(deleteUser({ inum: row.inum }))
     }
