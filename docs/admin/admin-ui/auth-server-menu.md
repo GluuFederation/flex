@@ -1,13 +1,13 @@
 ---
 tags:
+  - clients
+  - sessions
+  - keys
+  - auth server
+  - logging
   - administration
   - admin-ui
-  - auth server
-  - sessions
   - configuration
-  - keys
-  - logging
-  - clients
   - scopes
 ---
 
@@ -15,14 +15,14 @@ tags:
 
 The **Auth Server** menu covers the following important sub-menus to configure and manage Auth server.
 
-- Sessions
-- Server configuration
-- Keys
-- Logging
 - Clients
-- Scopes
+- Sessions
+- Keys
+- Server configuration
+- Logging
 - Enabled Acrs
 - Agama deployment
+- Scopes
 
 ## Auth Server Configuration Properties
 
