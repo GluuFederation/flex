@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable from '@material-table/core'
-import { BorderColor, DeleteOutlined } from '@mui/icons-material'
+import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { Paper, Skeleton, TablePagination } from '@mui/material'
 import { Badge } from 'reactstrap'
@@ -27,7 +27,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import { CustomScriptItem, CustomScriptReducerState, RootState, UserAction } from './types'
+import { RootState, UserAction } from './types'
 
 function ScriptListTable(): JSX.Element {
   const { t } = useTranslation()
@@ -41,12 +41,14 @@ function ScriptListTable(): JSX.Element {
   const [modal, setModal] = useState<boolean>(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
   const [limit, setLimit] = useState<string | number>(pageSize)
-  const [pattern, setPattern] = useState<string | null>(null)
+  const [pattern, setPattern] = useState<string>('')
   const [type, setType] = useState<string>('person_authentication')
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'darkBlack'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+
+  let memoType = type
 
   const scripts = useSelector((state: RootState) => state.customScriptReducer.items)
   const loading = useSelector((state: RootState) => state.customScriptReducer.loading)
@@ -61,16 +63,16 @@ function ScriptListTable(): JSX.Element {
   )
 
   const [pageNumber, setPageNumber] = useState<number>(0)
-  let memoPattern = pattern
-  let memoType = type
   SetTitle(t('titles.scripts'))
 
   function makeOptions(): void {
-    setPattern(memoPattern)
     setType(memoType)
     options[LIMIT] = parseInt(String(limit))
-    if (memoPattern) {
-      options[PATTERN] = memoPattern
+    const patternValue = pattern.trim()
+    if (patternValue !== '') {
+      options[PATTERN] = patternValue
+    } else {
+      delete options[PATTERN]
     }
     if (memoType != '') {
       options[TYPE] = memoType
@@ -99,19 +101,20 @@ function ScriptListTable(): JSX.Element {
   const handleOptionsChange = useCallback(
     (event: any) => {
       const name = event.target.name
-      if (name == 'pattern') {
-        memoPattern = event.target.value
+      const value = event.target.value
+      if (name === 'pattern') {
+        setPattern(value)
         if (event.keyCode === 13) {
           makeOptions()
           dispatch(getCustomScriptByType({ action: options } as any))
         }
-      } else if (name == 'type') {
+      } else if (name === 'type') {
         memoType = event.target.value
         makeOptions()
         dispatch(getCustomScriptByType({ action: options } as any))
       }
     },
-    [dispatch],
+    [dispatch, pattern, type, limit],
   )
 
   const handleGoToCustomScriptAddPage = useCallback(() => {
