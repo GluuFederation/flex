@@ -4,9 +4,9 @@ import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
 import GluuRemovableTypeAhead from 'Routes/Apps/Gluu/GluuRemovableTypeAhead'
 import { countries } from 'Plugins/user-management/common/countries'
-import { RootState } from '../../types/UserApiTypes'
-import { Role } from '../../types/CommonTypes'
-import { UserClaimEntryProps } from '../../types/ComponentTypes'
+import { RootState } from '../types/UserApiTypes'
+import { Role } from '../types/CommonTypes'
+import { UserClaimEntryProps } from '../types/ComponentTypes'
 
 function UserClaimEntry({
   data,

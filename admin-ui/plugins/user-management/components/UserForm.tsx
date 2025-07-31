@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { changeUserPassword } from '../../redux/features/userSlice'
+import { changeUserPassword } from '../redux/features/userSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useFormik } from 'formik'
@@ -21,13 +21,9 @@ import {
   UserFormState,
   FormOperation,
   UserEditFormValues,
-} from '../../types/ComponentTypes'
-import { ThemeContext as ThemeContextType } from '../../types/CommonTypes'
-import {
-  PersonAttribute,
-  ChangeUserPasswordPayload,
-  GetUserOptions,
-} from '../../types/UserApiTypes'
+} from '../types/ComponentTypes'
+import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
+import { PersonAttribute, ChangeUserPasswordPayload, GetUserOptions } from '../types/UserApiTypes'
 
 function UserForm({ onSubmitData }: UserFormProps) {
   const dispatch = useDispatch()

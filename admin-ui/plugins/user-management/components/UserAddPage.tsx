@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { Container, CardBody, Card } from '../../../app/components'
 import UserForm from './UserForm'
-import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+import GluuAlert from '../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
-import { createUser } from '../../redux/features/userSlice'
+import { createUser } from '../redux/features/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 import {
@@ -12,8 +12,8 @@ import {
   UserManagementRootState,
   UserModifyOptions,
 } from 'Plugins/user-management/types/UserApiTypes'
-import { UserEditFormValues } from '../../types/ComponentTypes'
-import { setSelectedUserData } from '../../redux/features/userSlice'
+import { UserEditFormValues } from '../types/ComponentTypes'
+import { setSelectedUserData } from '../redux/features/userSlice'
 
 function UserAddPage() {
   const dispatch = useDispatch()

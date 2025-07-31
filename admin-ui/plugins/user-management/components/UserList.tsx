@@ -10,11 +10,11 @@ import {
   deleteUser,
   getUser2FADetails,
   updateUser,
-} from '../../redux/features/userSlice'
+} from '../redux/features/userSlice'
 
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card, CardBody } from '../../../../app/components'
+import { Card, CardBody } from '../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -28,12 +28,12 @@ import { getRoles } from 'Plugins/admin/redux/features/apiRoleSlice'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
+import { LIMIT_ID, PATTERN_ID } from '../common/Constants'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import GluuViewDetailModal from '../../../../app/routes/Apps/Gluu/GluuViewDetailsModal'
+import GluuViewDetailModal from '../../../app/routes/Apps/Gluu/GluuViewDetailsModal'
 import customColors from '@/customColors'
 import moment from 'moment'
-import { deleteFido2DeviceData } from '../../../fido/redux/features/fidoSlice'
+import { deleteFido2DeviceData } from '../../fido/redux/features/fidoSlice'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
   CustomAttribute,
@@ -46,7 +46,7 @@ import {
   OTPDevice,
   FidoRegistrationEntry,
   CustomUser,
-} from '../../types'
+} from '../types'
 
 function UserList(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
