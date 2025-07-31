@@ -507,6 +507,7 @@ class flex_installer(JettyInstaller):
                              'jansSignedRespAlg': ['RS256'],
                              'jansPostLogoutRedirectURI': [f'https://{Config.hostname}/admin', 'http://localhost:4100'],
                              'jansLogoutURI': [f'http://{Config.hostname}:4100/logout', f'https://{Config.hostname}/admin/logout'],
+                             'jansAccessTknLife':['2592000']
                              }
                 )
 
@@ -537,7 +538,10 @@ class flex_installer(JettyInstaller):
                 scopes=admin_ui_backend_client_scopes,
                 authorization_methods=['client_secret_basic'],
                 trusted_client='FALSE',
-                other_props={'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":["inum=2D3E.5A04,ou=scripts,o=jans"],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']},
+                other_props={
+                    'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":["inum=2D3E.5A04,ou=scripts,o=jans"],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}'],
+                    'jansAccessTknLife':['2592000'],
+                    },
                 unset_props=('jansLogoutURI', 'jansPostLogoutRedirectURI', 'jansRedirectURI', 'jansSignedRespAlg')
             )
 
