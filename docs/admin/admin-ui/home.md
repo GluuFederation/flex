@@ -3,15 +3,30 @@ tags:
   - administration
   - admin-ui
   - dashboard
+  - health
+  - license
+  - mau
+  - setting
+  - security
+  - admin-ui-roles
+  - roles
+  - mappings
+  - permissions
+  - capabilities
+  - webhooks
+  - assets
+  - Jans-assets
 ---
 
-# Dashboard
+# Home
+
+## Dashboard
 
 After successful authentication, the administrator is taken to the dashboard. The dashboard brings an organized presentation of crucial details at one place adding to the convenience of users in tracking and analysis of auth server and other details.
 
 ![image](../../assets/admin-ui/dashboard.png)
 
-## Dashboard fields descriptions
+### Dashboard Descriptions Fields
 
 - **OIDC Clients Count:** The count of OIDC clients created on auth server.
 - **Active Users Count:** The count of `active` users on auth server.
@@ -19,11 +34,27 @@ After successful authentication, the administrator is taken to the dashboard. Th
 - **OAuth server status:** The health status of the auth server. For e.g. `Running` or `Down`.
 - **Database status:** The health status of the persistence (e.g. PostgreSQL, MySQL, Google Spanner etc).
 
-## Access Token Graph
+### Access Token Graph
 
 The dashboard has a bar graph showing month-wise access-token with grant-type `client credentials`, `authorization code` and `id_token` generated from auth server.
 
 ![image](../../assets/admin-ui/access-token-graph.png)
+
+### Localization and Theme selection
+
+Admin UI supports localization. The default language is English. The other supported languages are French and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.
+
+![image](../../assets/admin-ui/localization.png)
+
+The administrator can also select from four website themes in Admin UI.
+
+![image](../../assets/admin-ui/theme-selection.png)
+
+## Health
+
+The health section show the statuses of the `OAuth Server` and `Database`.
+
+![image](../../assets/admin-ui/health.png)
 
 ## License Details
 
@@ -128,12 +159,8 @@ Webhooks can be created and mapped to various Admin UI features to execute custo
 
 ## Assets
 
-## Localization and Theme selection
+## Audit log
 
-Admin UI supports localization. The default language is English. The other supported languages are French and Portuguese. A new preferred language can be selected from the top right corner of the dashboard which will convert the labels and tooltip to the selected language.
+The Audit Log section displays backend activity logs for specific dates, including the log level (e.g., info, warning, error) to help identify the nature and severity of each event.
 
-![image](../../assets/admin-ui/localization.png)
-
-The administrator can also select from four website themes in Admin UI.
-
-![image](../../assets/admin-ui/theme-selection.png)
+![image](../../assets/admin-ui/audit-log.png)
