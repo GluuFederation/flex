@@ -1,17 +1,12 @@
 import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import PropTypes from 'prop-types'
 import customColors from '@/customColors'
-
-interface UserDeviceDetailViewPageProps {
-  row: {
-    rowData: any
-  }
-}
+import { UserDeviceDetailViewPageProps, DeviceData } from '../../types/ComponentTypes'
 
 const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const { rowData } = row
+  const deviceData = rowData as DeviceData
   const DOC_SECTION = 'user'
 
   return (
@@ -20,7 +15,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.domain"
-            value={rowData.registrationData.domain}
+            value={deviceData.registrationData?.domain}
             doc_category={DOC_SECTION}
             doc_entry="domain"
           />
@@ -28,7 +23,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.type"
-            value={rowData.registrationData.type}
+            value={deviceData.registrationData?.type}
             doc_category={DOC_SECTION}
             doc_entry="type"
           />
@@ -36,7 +31,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.status"
-            value={rowData.registrationData.status}
+            value={deviceData.registrationData?.status}
             doc_category={DOC_SECTION}
             doc_entry="status"
           />
@@ -44,20 +39,20 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.createdBy"
-            value={rowData.registrationData.createdBy}
+            value={deviceData.registrationData?.createdBy}
             doc_category={DOC_SECTION}
             doc_entry="createdBy"
           />
         </Col>
       </Row>
 
-      {rowData?.deviceData && (
+      {deviceData?.deviceData && (
         <Row>
           <h5 style={{ borderBottom: '2px solid', fontWeight: 'bold' }}>Device Information</h5>
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.deviceName"
-              value={rowData.deviceData.name}
+              value={deviceData.deviceData?.name}
               doc_category={DOC_SECTION}
               doc_entry="deviceName"
             />
@@ -65,7 +60,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.OSName"
-              value={rowData.deviceData.os_name}
+              value={deviceData.deviceData?.os_name}
               doc_category={DOC_SECTION}
               doc_entry="OSName"
             />
@@ -73,7 +68,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.OSVersion"
-              value={rowData.deviceData.os_version}
+              value={deviceData.deviceData?.os_version}
               doc_category={DOC_SECTION}
               doc_entry="OSVersion"
             />
@@ -81,7 +76,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.platform"
-              value={rowData.deviceData.platform}
+              value={deviceData.deviceData?.platform}
               doc_category={DOC_SECTION}
               doc_entry="platform"
             />
@@ -91,9 +86,4 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
     </Container>
   )
 }
-
-UserDeviceDetailViewPage.propTypes = {
-  row: PropTypes.any,
-}
-
 export default UserDeviceDetailViewPage
