@@ -16,6 +16,8 @@ tags:
   - webhooks
   - assets
   - Jans-assets
+  - audit-log
+  - logs
 ---
 
 # Home
@@ -159,8 +161,25 @@ Webhooks can be created and mapped to various Admin UI features to execute custo
 
 ## Assets
 
+Custom Assets are the building blocks that allow you to personalize and extend the existing features beyond its standard design. Admin UI provides the ability to add, update, and delete custom assets into Server.
+
+### Asset Fields
+
+- **Asset Name** _(required)_: This is the title or label for your custom asset. It should be unique so you can easily identify it later. For example, if you're uploading a script, you might name it `Token_Cleanup_Script` or `Custom_Login_Theme`.
+- **Description:** A brief note about what this asset does or why you're adding it.
+- **Related Services** _(required)_: Here you mention which parts of the system this asset is connected to or supports. For example, if your asset is used by the authentication service or a specific database, list those here. This helps track dependencies.
+  &nbsp;  
+  **Available Servers:** `Config-API` `Auth-Server` `Casa` `Agama` `Fido2` `Lock` `KeyCloak-link` `Link`
+
+- **Enabled:** This is a switch (on/off) that controls whether the asset is currently in use.
+
+![image](../../assets/admin-ui/jans-assets.png)
+
 ## Audit log
 
-The Audit Log section displays backend activity logs for specific dates, including the log level (e.g., info, warning, error) to help identify the nature and severity of each event.
+The Audit Log section shows a record of actions and events that have occurred within the system over a selected date range. It helps users track who did what and when. Each entry also includes a severity level (like info, warning, or error) to indicate whether the event was routine, needs attention, or signals a problem. This makes it easier to monitor activity, troubleshoot issues, and maintain accountability across the system.
 
 ![image](../../assets/admin-ui/audit-log.png)
+
+LicenseSpring | Secure & Flexible Software Licensing Solutions
+LicenseSpring offers powerful software licensing solutions for vendors and developers. Simplify license management, protect your software, and scale with ease.
