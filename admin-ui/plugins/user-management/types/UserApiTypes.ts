@@ -247,8 +247,10 @@ export interface SetUser2FADetailsPayload {
 
 export interface ChangeUserPasswordPayload {
   inum: string
-  userPassword: string
+  userPassword?: string
   action_message?: string
+  jsonPatchString?: string
+  customAttributes?: CustomAttribute[]
 }
 
 export interface DeleteUserPayload {

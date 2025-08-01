@@ -105,9 +105,14 @@ function UserForm({ onSubmitData }: UserFormProps) {
 
     const submitableValue: ChangeUserPasswordPayload = {
       inum: userDetails.inum,
-      userPassword: Array.isArray(formik.values.userPassword)
-        ? formik.values.userPassword[0]
-        : formik.values.userPassword,
+      jsonPatchString: '[]',
+      customAttributes: [
+        {
+          name: 'userPassword',
+          multiValued: false,
+          values: [formik.values.userPassword as string],
+        },
+      ],
     }
     // Set action_message for audit logging
     if (usermessage) {
