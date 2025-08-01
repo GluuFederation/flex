@@ -82,20 +82,6 @@ export const fetchApiAccessToken = (jwt: any, permissionTag: any) => {
     })
 }
 
-export const fetchAuditLogs = (jwt: any) => {
-  const headers = { Authorization: `Bearer ${jwt}` }
-
-  return axios
-    .get('/api/v1/audit?startIndex=1&limit=20', {
-      headers,
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error('Problems getting Audit logs.', error)
-      return -1
-    })
-}
-
 export const fetchApiTokenWithDefaultScopes = () => {
   return axios
     .post('/app/admin-ui/oauth2/api-protection-token', {})

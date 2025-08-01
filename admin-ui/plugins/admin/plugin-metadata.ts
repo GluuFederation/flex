@@ -20,7 +20,7 @@ import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/ap
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
 import { reducer as assetReducer } from 'Plugins/admin/redux/features/AssetSlice'
-import { reducer as auditReducer } from '../admin/redux/features/auditSlice'
+import auditReducer from '../admin/redux/features/auditSlice'
 
 import {
   ACR_READ,
@@ -108,11 +108,11 @@ const pluginMetadata = {
           path: PLUGIN_BASE_PATH + '/assets',
           permission: ASSETS_READ,
         },
-        // {
-        //   title: 'menus.audit_logs',
-        //   path: PLUGIN_BASE_PATH + '/audit-logs',
-        //   permission: LOGGING_READ,
-        // },
+        {
+          title: 'menus.audit_logs',
+          path: PLUGIN_BASE_PATH + '/audit-logs',
+          permission: LOGGING_READ,
+        },
       ],
     },
   ],
