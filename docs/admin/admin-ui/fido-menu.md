@@ -3,6 +3,7 @@ tags:
   - administration
   - admin-ui
   - fido2
+  - fido
 ---
 
 # FIDO

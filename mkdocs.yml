@@ -21,8 +21,8 @@ plugins:
   - git-revision-date-localized:
       type: timeago
       enable_creation_date: true
-  - git-committers:
-      repository: GluuFederation/flex
+  # - git-committers:
+  #     repository: GluuFederation/flex
 # Configuration
 theme:
   name: material
