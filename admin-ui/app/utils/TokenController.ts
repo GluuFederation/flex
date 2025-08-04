@@ -43,8 +43,6 @@ export const addAdditionalData = (audit, action, resource, payload) => {
     audit['performedOn'] = payload.action
       ? payload.action?.action_data?.performedOn
       : payload?.performedOn
-    delete payload.action?.action_data?.performedOn
-    delete payload?.performedOn
   }
   delete payload.action?.action_data?.modifiedFields
   delete payload?.modifiedFields
