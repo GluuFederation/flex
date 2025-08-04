@@ -34,6 +34,7 @@ import {
   UserPatchRequest,
   ApiResponse,
   SagaError,
+  CustomAttribute,
 } from '../../types/UserApiTypes'
 
 // Type guard function to check if error is SagaError
@@ -127,7 +128,7 @@ export function* updateUserSaga({
 export function* changeUserPasswordSaga({
   payload,
 }: PayloadAction<
-  UserPatchRequest & { inum: string; action_message?: string }
+  UserPatchRequest & { inum: string; action_message?: string; customAttributes: CustomAttribute[] }
 >): SagaIterator<void> {
   const audit = yield* initAudit()
   try {
@@ -135,7 +136,9 @@ export function* changeUserPasswordSaga({
     const data: CustomUser = yield call(userApi.changeUserPassword, payload)
     yield put(updateToast(true, 'success'))
     yield put(changeUserPasswordResponse(data))
-
+    if (payload.customAttributes && payload.customAttributes[0]) {
+      delete payload.customAttributes[0].values
+    }
     addAdditionalData(audit, UPDATE, API_USERS, payload)
     audit.message = payload?.action_message || ``
     yield call(postUserAction, audit)

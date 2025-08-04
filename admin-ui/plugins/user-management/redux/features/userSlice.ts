@@ -29,12 +29,12 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     getUsers: (state, action: PayloadAction<GetUserOptions>) => {
-      console.trace('getUsers', action.payload)
+      console.trace('getUsers', action.payload.limit, action.payload.pattern)
       state.loading = true
       state.redirectToUserListPage = false
     },
     getUser2FADetails: (state, action: PayloadAction<User2FAPayload>) => {
-      console.trace('getUser2FADetails', action.payload)
+      console.trace('getUser2FADetails', action.payload.username.substring(0, 1))
       state.loading = true
     },
     setUser2FADetails: (state, action: PayloadAction<SetUser2FADetailsPayload>) => {
@@ -51,7 +51,7 @@ const userSlice = createSlice({
       state.entriesCount = action.payload ? action.payload.entriesCount || 0 : 0
     },
     createUser: (state, action: PayloadAction<UserModifyOptions>) => {
-      console.trace('createUser', action.payload)
+      console.trace('createUser', action.payload.customUser?.inum)
       state.loading = true
     },
     createUserResponse: (state, action: PayloadAction<boolean>) => {
@@ -59,7 +59,7 @@ const userSlice = createSlice({
       state.redirectToUserListPage = action?.payload || false
     },
     updateUser: (state, action: PayloadAction<UserModifyOptions>) => {
-      console.trace('updateUser', action.payload)
+      console.trace('updateUser', action.payload.customUser?.inum)
       state.loading = true
     },
     updateUserResponse: (state, action: PayloadAction<boolean>) => {
@@ -67,15 +67,15 @@ const userSlice = createSlice({
       state.redirectToUserListPage = action?.payload || false
     },
     changeUserPassword: (state, action: PayloadAction<ChangeUserPasswordPayload>) => {
-      console.trace('changeUserPassword', action.payload)
+      console.trace('changeUserPassword', action.payload.inum)
       state.loading = true
     },
     changeUserPasswordResponse: (state, action: PayloadAction<CustomUser | null>) => {
-      console.trace('changeUserPasswordResponse', action.payload)
+      console.trace('changeUserPasswordResponse', action.payload?.inum)
       state.loading = false
     },
     deleteUser: (state, action: PayloadAction<DeleteUserPayload>) => {
-      console.trace('deleteUser', action.payload)
+      console.trace('deleteUser', action.payload.inum)
       state.loading = true
     },
     deleteUserResponse: (state, action: PayloadAction<void>) => {

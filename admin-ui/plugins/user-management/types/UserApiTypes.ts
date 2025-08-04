@@ -251,6 +251,10 @@ export interface ChangeUserPasswordPayload {
   action_message?: string
   jsonPatchString?: string
   customAttributes?: CustomAttribute[]
+  performedOn?: {
+    user_inum: string
+    userId: string | undefined
+  }
 }
 
 export interface DeleteUserPayload {
