@@ -41,7 +41,7 @@ import {
   SearchOptions,
   UserListRootState,
   DeviceData,
-  UserTableData,
+  UserTableRowData,
   OTPDevicesData,
   OTPDevice,
   FidoRegistrationEntry,
@@ -86,8 +86,8 @@ function UserList(): JSX.Element {
   const [isViewDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false)
   const [faDetails, setFADetails] = useState<DeviceData[]>([])
   const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
-  const [userDetails, setUserDetails] = useState<UserTableData | null>(null)
-  const [deleteData, setDeleteData] = useState<UserTableData | null>(null)
+  const [userDetails, setUserDetails] = useState<UserTableRowData | null>(null)
+  const [deleteData, setDeleteData] = useState<UserTableRowData | null>(null)
   const toggle = (): void => setModal(!modal)
   const submitForm = (message: string): void => {
     toggle()
@@ -101,8 +101,10 @@ function UserList(): JSX.Element {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.user_management'))
-  const myActions: (Action<UserTableData> | ((rowData: UserTableData) => Action<UserTableData>))[] =
-    []
+  const myActions: (
+    | Action<UserTableRowData>
+    | ((rowData: UserTableRowData) => Action<UserTableRowData>)
+  )[] = []
   const options: SearchOptions = {}
   const navigate = useNavigate()
   function handleGoToUserAddPage(): void {
@@ -110,7 +112,7 @@ function UserList(): JSX.Element {
     navigate('/user/usermanagement/add')
   }
 
-  async function handleView2FADetails(row: UserTableData): Promise<void> {
+  async function handleView2FADetails(row: UserTableRowData): Promise<void> {
     setUserDetails(row)
     const getOTPDevices =
       row?.customAttributes?.filter((item: CustomAttribute) => item.name === 'jansOTPDevices') || []
@@ -142,7 +144,7 @@ function UserList(): JSX.Element {
     setIsDetailModalOpen(!isViewDetailModalOpen)
   }
 
-  function handleGoToUserEditPage(row: UserTableData): void {
+  function handleGoToUserEditPage(row: UserTableRowData): void {
     dispatch(setSelectedUserData(row as unknown as CustomUser))
     navigate(`/user/usermanagement/edit/:${row.tableData?.uuid || ''}`)
   }
@@ -167,9 +169,9 @@ function UserList(): JSX.Element {
     }
   }
 
-  function handleUserDelete(row: UserTableData): void {
+  function handleUserDelete(row: UserTableRowData): void {
     if (row.inum) {
-      dispatch(deleteUser({ inum: row.inum }))
+      dispatch(deleteUser(row))
     }
   }
 
@@ -220,26 +222,32 @@ function UserList(): JSX.Element {
       isFreeAction: true,
       onClick: () => handleGoToUserAddPage(),
     })
-    myActions.push((rowData: UserTableData) => ({
+    myActions.push((rowData: UserTableRowData) => ({
       icon: 'edit',
       iconProps: {
         id: 'editScope' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
       },
-      onClick: (_event: React.MouseEvent<HTMLElement>, data: UserTableData | UserTableData[]) => {
+      onClick: (
+        _event: React.MouseEvent<HTMLElement>,
+        data: UserTableRowData | UserTableRowData[],
+      ) => {
         const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) handleGoToUserEditPage(rowData)
       },
       disabled: !hasCedarPermission(USER_WRITE),
     }))
-    myActions.push((rowData: UserTableData) => ({
+    myActions.push((rowData: UserTableRowData) => ({
       icon: LockedOpenIcon,
       iconProps: {
         id: 'viewDetail' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
       },
       tooltip: `${t('messages.credentials')}`,
-      onClick: (_event: React.MouseEvent<HTMLElement>, data: UserTableData | UserTableData[]) => {
+      onClick: (
+        _event: React.MouseEvent<HTMLElement>,
+        data: UserTableRowData | UserTableRowData[],
+      ) => {
         const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) handleView2FADetails(rowData)
       },
@@ -248,14 +256,17 @@ function UserList(): JSX.Element {
   }
 
   if (hasCedarPermission(USER_DELETE)) {
-    myActions.push((rowData: UserTableData) => ({
+    myActions.push((rowData: UserTableRowData) => ({
       icon: DeleteOutlinedIcon,
       iconProps: {
         color: 'secondary',
         id: 'deleteClient' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
       },
-      onClick: (_event: React.MouseEvent<HTMLElement>, data: UserTableData | UserTableData[]) => {
+      onClick: (
+        _event: React.MouseEvent<HTMLElement>,
+        data: UserTableRowData | UserTableRowData[],
+      ) => {
         const rowData = Array.isArray(data) ? data[0] : data
         if (rowData) {
           setDeleteData(rowData)
@@ -373,7 +384,7 @@ function UserList(): JSX.Element {
     [],
   )
 
-  const DetailPanel = useCallback((rowData: { rowData: UserTableData }) => {
+  const DetailPanel = useCallback((rowData: { rowData: UserTableRowData }) => {
     return <UserDetailViewPage row={rowData} />
   }, [])
 
@@ -448,7 +459,7 @@ function UserList(): JSX.Element {
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={hasCedarPermission(USER_READ)}>
-            <MaterialTable<UserTableData>
+            <MaterialTable<UserTableRowData>
               key={limit}
               components={{
                 Container: PaperContainer,
@@ -462,7 +473,7 @@ function UserList(): JSX.Element {
                 { title: `${t('fields.userName')}`, field: 'userId' },
                 { title: `${t('fields.email')}`, field: 'mail' },
               ]}
-              data={usersList as UserTableData[]}
+              data={usersList as UserTableRowData[]}
               isLoading={loading}
               title=""
               actions={myActions}
@@ -472,8 +483,9 @@ function UserList(): JSX.Element {
                 searchFieldAlignment: 'left',
                 selection: false,
                 pageSize: limit,
-                rowStyle: (rowData: UserTableData) => ({
-                  backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
+                rowStyle: (rowData: UserTableRowData) => ({
+                  backgroundColor:
+                    rowData.status === 'active' ? customColors.logo : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,

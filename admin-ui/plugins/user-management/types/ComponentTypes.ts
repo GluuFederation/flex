@@ -109,15 +109,16 @@ export interface UserListRootState {
   }
 }
 
-export interface UserTableData {
+export interface UserTableRowData {
   // Include all CustomUser properties explicitly
   inum?: string
   userId?: string
   displayName?: string
   givenName?: string
   familyName?: string
-  email?: string
+  mail?: string
   jansStatus?: string
+  status?: string
   userPassword?: string
   customAttributes?: CustomAttribute[]
   customObjectClasses?: string[]
@@ -125,15 +126,12 @@ export interface UserTableData {
   createdAt?: string
   updatedAt?: string
   baseDn?: string
-
   // Additional properties specific to table data
   tableData?: {
     uuid: string
     id: number
   }
   action_message?: string
-  enabled?: boolean
-  mail?: string
 }
 
 export interface DeviceData {

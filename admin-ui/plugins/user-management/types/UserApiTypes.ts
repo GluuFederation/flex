@@ -257,10 +257,6 @@ export interface ChangeUserPasswordPayload {
   }
 }
 
-export interface DeleteUserPayload {
-  inum: string
-}
-
 export interface AuditLogoutLogsPayload {
   username: string
 }

@@ -9,9 +9,9 @@ import {
   UserState,
   SetUser2FADetailsPayload,
   ChangeUserPasswordPayload,
-  DeleteUserPayload,
   AuditLogoutLogsPayload,
 } from '../../types/UserApiTypes'
+import { UserTableRowData } from 'Plugins/user-management/types'
 
 const initialState: UserState = {
   items: [],
@@ -74,7 +74,7 @@ const userSlice = createSlice({
       console.trace('changeUserPasswordResponse', action.payload?.inum)
       state.loading = false
     },
-    deleteUser: (state, action: PayloadAction<DeleteUserPayload>) => {
+    deleteUser: (state, action: PayloadAction<UserTableRowData>) => {
       console.trace('deleteUser', action.payload.inum)
       state.loading = true
     },
@@ -115,7 +115,7 @@ export type {
   UserState,
   SetUser2FADetailsPayload,
   ChangeUserPasswordPayload,
-  DeleteUserPayload,
+  UserTableRowData,
   AuditLogoutLogsPayload,
 }
 

@@ -19,7 +19,7 @@ import {
   getUsers,
   setUser2FADetails,
   auditLogoutLogsResponse,
-  DeleteUserPayload,
+  UserTableRowData,
 } from '../features/userSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from 'Redux/api/backend-api'
@@ -76,10 +76,7 @@ export function* createUserSaga({
     yield put(updateToast(true, 'success'))
     yield put(createUserResponse(true))
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
-
     addAdditionalData(audit, CREATE, API_USERS, payload)
-    audit.message = payload?.action_message || ``
-
     delete payload.userPassword
     yield call(postUserAction, audit)
     return data
@@ -110,7 +107,6 @@ export function* updateUserSaga({
       delete payload.customAttributes[0].values
     }
     addAdditionalData(audit, UPDATE, API_USERS, payload)
-    audit.message = payload.action_message || ``
     yield call(postUserAction, audit)
     return data
   } catch (e: unknown) {
@@ -140,7 +136,6 @@ export function* changeUserPasswordSaga({
       delete payload.customAttributes[0].values
     }
     addAdditionalData(audit, UPDATE, API_USERS, payload)
-    audit.message = payload?.action_message || ``
     yield call(postUserAction, audit)
   } catch (e: unknown) {
     const errMsg = getErrorMessage(e)
@@ -161,7 +156,6 @@ export function* getUsersSaga({
     const userApi: UserApi = yield* newFunction()
     const data: UserPagedResult = yield call(userApi.getUsers, { action: payload })
     yield put(getUserResponse(data))
-
     addAdditionalData(audit, FETCH, API_USERS, payload)
     audit.message = `Fetched users`
     yield call(postUserAction, audit)
@@ -179,18 +173,16 @@ export function* getUsersSaga({
 
 export function* deleteUserSaga({
   payload,
-}: PayloadAction<DeleteUserPayload & { action_message?: string }>): SagaIterator<void | unknown> {
+}: PayloadAction<UserTableRowData>): SagaIterator<void | unknown> {
   const audit = yield* initAudit()
   try {
     const userApi: UserApi = yield* newFunction()
-    yield call(userApi.deleteUser, payload.inum)
+    yield call(userApi.deleteUser, payload.inum as string)
     yield put(updateToast(true, 'success'))
     yield put(getUsers({}))
     yield put(deleteUserResponse())
     yield* triggerWebhook({ payload: { createdFeatureValue: payload } })
-
     addAdditionalData(audit, DELETION, API_USERS, payload)
-    audit.message = payload.action_message || ``
     yield call(postUserAction, audit)
   } catch (e: unknown) {
     const errMsg = getErrorMessage(e)
