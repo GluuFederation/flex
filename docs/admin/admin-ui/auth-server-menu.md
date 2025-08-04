@@ -99,7 +99,7 @@ The Client details are as follows:
 
 The scope is a mechanism to limit an application's access to a user's account. An application can request one or
 more scopes, this information is then presented to the user in the consent screen, and the access token issued to
-the application will be limited to the scopes granted. Please check [here](https://docs.jans.io/v1.0.15/admin/auth-server/scopes/) for detail documentation on scopes.
+the application will be limited to the scopes granted. Please check [here](https://docs.jans.io/stable/janssen-server/auth-server/scopes/) for detail documentation on scopes.
 
 ### OAuth 2.0 scopes
 
@@ -157,7 +157,7 @@ the authorization server.
 
 ## Auth Server Properties
 
-The auth server [configuration properties](https://docs.jans.io/head/admin/reference/json/properties/janssenauthserver-properties/) can be updated using GUI.
+The auth server [configuration properties](https://docs.jans.io/stable/janssen-server/reference/json/properties/janssenauthserver-properties/) can be updated using GUI.
 
 ![image](../../assets/admin-ui/auth-server-configuration.png)
 
@@ -165,13 +165,16 @@ The auth server [configuration properties](https://docs.jans.io/head/admin/refer
 
 Following AS configuration properties can be used to customize AS logging:
 
-- **Log level:** Specify the [log levels](https://docs.jans.io/head/admin/auth-server/logging/log-levels/) of loggers
+- **Log level:** Specify the [log levels](https://docs.jans.io/stable/janssen-server/auth-server/logging/log-levels/) of loggers
 - **Log layout:** Logging layout used for Jans Authorization Server loggers
 - **Enable HTTP Logging:** Enable/disable the request/response logging filter. Disabled by default.
 - **Disable JDK Logger?:** Choose whether to disable JDK loggers
 - **Enable Oauth Audit Logging?:** enable OAuth Audit Logging
 
 ## SSA
+
+The SSA is a signed token that contains trusted metadata used to securely register OAuth clients in the Janssen Server.
+You'll find instructions for creating, retrieving, deleting, and validating SSAs, along with required parameters, sample commands, and security considerations [here.](https://docs.jans.io/stable/janssen-server/config-guide/auth-server-config/ssa-config/)
 
 ## Authn
 

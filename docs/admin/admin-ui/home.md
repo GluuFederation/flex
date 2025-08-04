@@ -155,7 +155,11 @@ The below table lists the Permissions used in Admin UI:
 
 ## Webhooks
 
-Webhooks can be created and mapped to various Admin UI features to execute custom business logic when events associated with those features occur. Follow this [tutorial](./webhooks.md) for more details.
+Webhooks in the Admin UI work by sending an HTTP request to a specified URL when certain events occur, such as user creation or updates. The request includes event data, which external systems can use to trigger custom actions like notifications or syncing.
+
+They can be mapped to various Admin UI features, making it easy to extend functionality without changing the core system.
+
+Follow this [tutorial](./webhooks.md) for setup instructions.
 
 ![image](../../assets/admin-ui/webhook-view.png)
 
