@@ -485,7 +485,7 @@ function UserList(): JSX.Element {
                 pageSize: limit,
                 rowStyle: (rowData: UserTableRowData) => ({
                   backgroundColor:
-                    rowData.status === 'active' ? customColors.logo : customColors.white,
+                    rowData.status === 'active' ? themeColors.lightBackground : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
