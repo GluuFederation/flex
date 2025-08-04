@@ -116,7 +116,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
     }
     submitableValue.performedOn = {
       user_inum: userDetails.inum,
-      userId: userDetails.displayName,
+      userId: userDetails.displayName as string,
     }
     // Set action_message for audit logging
     if (usermessage) {
