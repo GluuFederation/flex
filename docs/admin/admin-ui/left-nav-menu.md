@@ -14,7 +14,6 @@ navigation menu establishes a clear information hierarchy to access the core fea
 Gluu Flex Admin UI has the following main menus on the left navigation:
 
 - [Home](./home.md)
-<!-- - [Admin](./admin-menu.md) -->
 - [Auth server](./auth-server-menu.md)
 - [Users](./user-management-menu.md)
 - [Scripts](./scripts.md)

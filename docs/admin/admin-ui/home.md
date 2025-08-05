@@ -33,8 +33,8 @@ After successful authentication, the administrator is taken to the dashboard. Th
 - **OIDC Clients Count:** The count of OIDC clients created on auth server.
 - **Active Users Count:** The count of `active` users on auth server.
 - **Token Issued Count:** This figure is the sum of the access-tokens with grant-type `client credentials` and `authorization code` and id-token.
-- **OAuth server status:** The health status of the auth server. For e.g. `Running` or `Down`.
-- **Database status:** The health status of the persistence (e.g. PostgreSQL, MySQL, Google Spanner etc).
+- **Server statuses:** The health status of the `Auth Server` `CASA` `SCIM` `Config API` `FIDO` `Keycloak` `Jans Lock` . For e.g. `Running` or `Down`.
+- **Database status:** The health status of the persistence (e.g. PostgreSQL, MySQL etc).
 
 ### Access Token Graph
 
@@ -90,7 +90,15 @@ The Gluu Flex Admin UI provides a user-friendly interface for managing various U
 
 ## Security
 
-The features like managing Admin UI Roles and Capabilities and Mappings are placed under the Security menu. These features will be discussed one by one in this section.
+The features like managing Admin UI Roles and Capabilities and Mappings are placed under the Security menu. These features will be discussed one by one below:
+
+### GUI Access Control
+
+The administrator can control view/edit/delete access of users of Gluu Flex Admin UI by adding or removing the
+appropriate Permissions mapped to the user's Admin UI Role. For e.g. if the **read** Permission of OIDC
+clients (`https://jans.io/oauth/config/clients.readonly`) is not mapped to the logged-in user's Role, the contents of
+the page showing OIDC client records will not be visible to the user. In the same way, if the write and delete
+Permissions of OIDC clients are not mapped then the user will not be able to edit or delete any OIDC client record.
 
 ### Admin UI Roles
 
@@ -105,22 +113,19 @@ log into Gluu Flex Admin UI.
 ### Capabilities
 
 Gluu Flex Admin UI uses [Config API](https://github.com/JanssenProject/jans/tree/main/jans-config-api) to manage and
-configure the Jans Auth server. The user interface has the capability to add, edit and delete the Permissions used to access the APIs (i.e. rest APIs
-used by Admin UI).
+configure the Jans Auth server.The user interface allows to add, edit and delete the Permissions or Capabilities used to access the APIs (i.e. rest APIs used by Admin UI).
 
 ![image](../../assets/admin-ui/permission.png)
 
 ### Role-Permission Mapping
 
-The administrator can map the Admin UI Role with one or more Permission(s) using the Role-Permission Mapping page.
-The Role mapped with Permissions can be then assigned to the user to allow access to the corresponding operations of
-the GUI.
+The administrator can map the Admin UI Role with one or more Capabilities using the Role-Permission Mapping page. The Role mapped with Capabilities can be then assigned to the user to allow access to the corresponding operations of the GUI.
 
 ![image](../../assets/admin-ui/role-permission.png)
 
-The below table lists the Permissions used in Admin UI:
+The below table lists the Capabilities used in Admin UI:
 
-| Permission                                                                                  | Description                           |
+| Capability                                                                                  | Description                           |
 | ------------------------------------------------------------------------------------------- | ------------------------------------- |
 | `https://jans.io/oauth/config/attributes.readonly`                                          | View Person attributes                |
 | `https://jans.io/oauth/config/attributes.write`                                             | Add/Edit Person attributes            |
@@ -155,9 +160,7 @@ The below table lists the Permissions used in Admin UI:
 
 ## Webhooks
 
-Webhooks in the Admin UI work by sending an HTTP request to a specified URL when certain events occur, such as user creation or updates. The request includes event data, which external systems can use to trigger custom actions like notifications or syncing.
-
-They can be mapped to various Admin UI features, making it easy to extend functionality without changing the core system.
+Gluu Flex Admin UI uses webhooks to automate custom business logic during create, update, and delete operations (e.g., when a new user is created). Administrators can map webhooks to specific features and events, enabling dynamic and extensible workflows.
 
 Follow this [tutorial](./webhooks.md) for setup instructions.
 
@@ -165,25 +168,14 @@ Follow this [tutorial](./webhooks.md) for setup instructions.
 
 ## Assets
 
-Custom Assets are the building blocks that allow you to personalize and extend the existing features beyond its standard design. Admin UI provides the ability to add, update, and delete custom assets into Server.
+The Custom Asset Upload feature enables users to upload various types of assets directly to the Janssen Auth Server and its associated components through the graphical user interface (Admin UI) — without the need to manually access or modify the backend file system. It reduces dependency on system-level access or DevOps intervention and the file uploads are handled within the scope of user permissions defined in the Admin UI.
 
-### Asset Fields
+### Key Use Cases:
 
-- **Asset Name** _(required)_: This is the title or label for your custom asset. It should be unique so you can easily identify it later. For example, if you're uploading a script, you might name it `Token_Cleanup_Script` or `Custom_Login_Theme`.
-- **Description:** A brief note about what this asset does or why you're adding it.
-- **Related Services** _(required)_: Here you mention which parts of the system this asset is connected to or supports. For example, if your asset is used by the authentication service or a specific database, list those here. This helps track dependencies.
-  &nbsp;  
-  **Available Servers:** `Config-API` `Auth-Server` `Casa` `Agama` `Fido2` `Lock` `KeyCloak-link` `Link`
+- **Web UI Customization:** Users can upload assets such as .js, .css, or .png files to modify the look and feel of authentication-related web pages (e.g., login or error pages) to meet branding or accessibility requirements.
 
-- **Enabled:** This is a switch (on/off) that controls whether the asset is currently in use.
+- **Library or Plugin Addition:** Developers can upload .jar files or other supporting resources to introduce new functionality into the running server such as custom authentication mechanisms, filters, or extensions.
+
+- **Configuration Enhancements:** The feature supports uploading configuration-related files like .xml, .properties, or .json which may define behaviors, rules, or component settings for the server or its modules.
 
 ![image](../../assets/admin-ui/jans-assets.png)
-
-## Audit log
-
-The Audit Log section shows a record of actions and events that have occurred within the system over a selected date range. It helps users track who did what and when. Each entry also includes a severity level (like info, warning, or error) to indicate whether the event was routine, needs attention, or signals a problem. This makes it easier to monitor activity, troubleshoot issues, and maintain accountability across the system.
-
-![image](../../assets/admin-ui/audit-log.png)
-
-LicenseSpring | Secure & Flexible Software Licensing Solutions
-LicenseSpring offers powerful software licensing solutions for vendors and developers. Simplify license management, protect your software, and scale with ease.

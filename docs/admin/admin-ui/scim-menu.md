@@ -7,7 +7,9 @@ tags:
 
 # SCIM Admin Guide
 
-**System for Cross-domain Identity Management (SCIM)** is a standard that simplifies the exchange of user identity information across different domains. Developers can think of SCIM as a RESTful API that provides CRUD operations—create, read, update, and delete—on user and group resources. SCIM defines reference schemas for users and groups, along with REST APIs to manage them. For more details, refer to the official specification documents: [RFC 7642](https://tools.ietf.org/html/rfc7642), [RFC 7643](https://tools.ietf.org/html/rfc7643), and [RFC 7644](https://tools.ietf.org/html/rfc7644).
+System for Cross-domain Identity Management, in short SCIM, is a specification that simplifies the exchange of user identity information across different domains. The Janssen Server provides an implementation for the [SCIM specification](https://docs.jans.io/stable/janssen-server/scim/).
+
+Gluu Flex Admin UI allows administrators to view and manage the [configuration](https://docs.jans.io/stable/janssen-server/scim/config/) of the Janssen SCIM server.
 
 ## SCIM Use Cases
 

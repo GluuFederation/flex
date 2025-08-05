@@ -5,16 +5,13 @@ tags:
   - admin
   - role
   - permission
-  - scripts
+  - custom scripts
   - mau
 ---
 
-# Scripts
+## Custom Scripts
 
 [Custom Scripts](https://docs.jans.io/head/admin/developer/scripts/) are used to implement custom business logic for
-authentication, authorization, client registration, cache refresh, scopes, token revocation etc.
-
-## Custom Scripts
 
 The Janssen Authentication Server leverages Custom Scripts when implemented can facilitate complex business workflows without
 changing the server code. Gluu Flex Admin UI provides the interface to add/edit/delete custom scripts.
