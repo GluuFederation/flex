@@ -15,83 +15,83 @@ edit_uri: edit/main/docs/
 
 # Plugins
 plugins:
-  - include-markdown
-  - tags
-  - search
-  - git-revision-date-localized:
-      type: timeago
-      enable_creation_date: true
-  - git-committers:
-      repository: GluuFederation/flex
+   - include-markdown
+   - tags
+   - search
+   - git-revision-date-localized:
+       type: timeago
+       enable_creation_date: true
+   - git-committers:
+       repository: GluuFederation/flex
 # Configuration
 theme:
-  name: material
-  highlightjs: true
-  hljs_languages:
-    - yaml
-    - java
-    - bash
-    - python
-  shortcuts:
-    help: 191 # ?
-    next: 78 # n
-    previous: 80 # p
-    search: 83 # s
-  language: "en"
-  font:
-    text: Roboto
-    code: Roboto Mono
-  palette:
-    # Palette toggle for automatic mode
-    - media: "(prefers-color-scheme)"
-      primary: green
-      accent: green
-      toggle:
-        icon: material/brightness-auto
-        name: Switch to light mode
-    # Palette toggle for light mode
-    - media: "(prefers-color-scheme: light)"
-      primary: green
-      accent: green
-      scheme: default
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    # Palette toggle for dark mode
-    - media: "(prefers-color-scheme: dark)"
-      primary: green
-      accent: green
-      scheme: slate
-      toggle:
-        icon: material/brightness-4
-        name: Switch to system preference
-  logo: "assets/logo/gluu.png"
-  favicon: "assets/logo/favicon.ico"
-  features:
-    - toc.autohide
-      - search.suggest
-      - search.highlight
-    - navigation.tracking
-    - navigation.tabs
-    - navigation.tabs.sticky
-    - navigation.indexes
+    name: material
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - java
+        - bash
+        - python
+    shortcuts:
+        help: 191    # ?
+        next: 78     # n
+        previous: 80 # p
+        search: 83   # s
+    language: 'en'
+    font:
+        text: Roboto
+        code: Roboto Mono
+    palette:
+        # Palette toggle for automatic mode
+        - media: "(prefers-color-scheme)"
+          primary: green
+          accent: green
+          toggle:
+            icon: material/brightness-auto
+            name: Switch to light mode
+        # Palette toggle for light mode
+        - media: "(prefers-color-scheme: light)"
+          primary: green
+          accent: green
+          scheme: default
+          toggle:
+            icon: material/brightness-7
+            name: Switch to dark mode
+        # Palette toggle for dark mode
+        - media: "(prefers-color-scheme: dark)"
+          primary: green
+          accent: green
+          scheme: slate
+          toggle:
+            icon: material/brightness-4
+            name: Switch to system preference
+    logo: 'assets/logo/gluu.png'
+    favicon: 'assets/logo/favicon.ico'
+    features:
+        - toc.autohide
+          - search.suggest
+          - search.highlight
+        - navigation.tracking
+        - navigation.tabs
+        - navigation.tabs.sticky
+        - navigation.indexes
 extra_css:
   - css/tabs.css
   - stylesheets/mermaid-extra.css
 
 # Extensions
 markdown_extensions:
-  - admonition
-  - attr_list
-  - toc:
-      permalink: "#"
-  - codehilite
-  - pymdownx.superfences:
-      custom_fences:
+- admonition
+- attr_list
+- toc:
+    permalink: '#'
+- codehilite
+- pymdownx.superfences:
+    custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.tabbed
+- pymdownx.tabbed
 
 extra:
   generator: false
@@ -107,79 +107,78 @@ extra:
     default: stable
 # Navigation
 nav:
-  - "Overview": "README.md"
-  - "Installation":
-      - "install/README.md"
-      - "Prerequisites": "install/agama/prerequisites.md"
-      - "Helm Deployments":
-          - "install/helm-install/README.md"
-          - "Local Kubernetes Cluster": "install/helm-install/local.md"
-          - "Amazon EKS": "install/helm-install/amazon-eks.md"
-          - "Google GKE": "install/helm-install/google-gke.md"
-          - "Microsoft Azure AKS": "install/helm-install/microsoft-azure.md"
-          - "Rancher Marketplace": "install/helm-install/rancher.md"
-      - "Docker Deployments":
-          - "Quick Start": "install/docker-install/quick-start.md"
-          - "Docker compose": "install/docker-install/compose.md"
-      - "VM Installation":
-          - "install/vm-install/vm-requirements.md"
-          - "Ubuntu": "install/vm-install/ubuntu.md"
-          - "RHEL": "install/vm-install/rhel.md"
-          - "SUSE": "install/vm-install/suse.md"
-  - "Administration":
-      - "admin/README.md"
-      - "Configuration": "admin/config.md"
-      - "K8s Operations Guide":
-          - "admin/kubernetes-ops/README.md"
-          - "Upgrade": "admin/kubernetes-ops/upgrade.md"
-          - "Admin-UI Private": "admin/kubernetes-ops/admin-ui-private.md"
-      - "Admin UI":
-          - "Introduction": "admin/admin-ui/introduction.md"
-          - "Design & Implementation":
-              - "Auth Server Interaction": "admin/admin-ui/auth-server-interaction.md"
-          - "Configuration": "admin/admin-ui/configuration.md"
-          - "Logs": "admin/admin-ui/logs.md"
+- 'Overview': 'README.md'
+- 'Installation':
+    - 'install/README.md'
+    - 'Prerequisites': 'install/agama/prerequisites.md'
+    - 'Helm Deployments':
+        - 'install/helm-install/README.md'
+        - 'Local Kubernetes Cluster': 'install/helm-install/local.md'
+        - 'Amazon EKS': 'install/helm-install/amazon-eks.md'
+        - 'Google GKE': 'install/helm-install/google-gke.md'
+        - 'Microsoft Azure AKS': 'install/helm-install/microsoft-azure.md'
+        - 'Rancher Marketplace': 'install/helm-install/rancher.md'
+    - 'Docker Deployments':
+        - 'Quick Start': 'install/docker-install/quick-start.md'
+        - 'Docker compose': 'install/docker-install/compose.md'
+    - 'VM Installation':
+        - 'install/vm-install/vm-requirements.md'
+        - 'Ubuntu': 'install/vm-install/ubuntu.md'
+        - 'RHEL': 'install/vm-install/rhel.md'
+        - 'SUSE': 'install/vm-install/suse.md'
+- 'Administration':
+    - 'admin/README.md'
+    - 'Configuration': 'admin/config.md'
+    - 'K8s Operations Guide': 
+      - 'admin/kubernetes-ops/README.md'
+      - 'Upgrade': 'admin/kubernetes-ops/upgrade.md'
+      - 'Admin-UI Private': 'admin/kubernetes-ops/admin-ui-private.md'
+    - 'Admin UI':
+        - 'Introduction': 'admin/admin-ui/introduction.md'
+        - 'Design & Implementation':
+          - 'Auth Server Interaction': 'admin/admin-ui/auth-server-interaction.md'
+        - 'Configuration': 'admin/admin-ui/configuration.md'
+        - 'Logs': 'admin/admin-ui/logs.md'
+        - 'Left Navigation Menu':
+          - 'admin/admin-ui/left-nav-menu.md'
+          - 'Home': 'admin/admin-ui/home.md'
+          - 'Auth server': 'admin/admin-ui/auth-server-menu.md'
+          - 'Users': 'admin/admin-ui/user-management-menu.md'
+          - 'Scripts': 'admin/admin-ui/scripts.md'
+          - 'User Claims': 'admin/admin-ui/user-claims.md'
+          - 'Services': 'admin/admin-ui/services-menu.md'
+          - 'SMTP': 'admin/admin-ui/smtp-menu.md'
+          - 'SCIM': 'admin/admin-ui/scim-menu.md'
+          - 'FIDO': 'admin/admin-ui/fido-menu.md'
+          - 'SAML': 'admin/admin-ui/saml-menu.md'
+          - 'Jans Lock': 'admin/admin-ui/jans-lock-menu.md'
+        - 'FAQ & Troubleshooting': 'admin/admin-ui/faq.md'
+    - 'Flex Recipes':
+        - 'admin/recipes/README.md'
+        - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
+        - 'Testing Flex SAML SSO with sptest': 'admin/recipes/testing-flex-saml-sso-sptest.md'
+        - 'Add required claims to id-token': 'admin/recipes/add-claims-to-token.md'
+    -  'Migrating from Gluu4': 'admin/gluu-migration.md'
 
-          - "Left Navigation Menu":
-              - "admin/admin-ui/left-nav-menu.md"
-              - "Home": "admin/admin-ui/home.md"
-              # - "Admin": "admin/admin-ui/admin-menu.md"
-              - "Auth server": "admin/admin-ui/auth-server-menu.md"
-              - "Users": "admin/admin-ui/user-management-menu.md"
-              - "Scripts": "admin/admin-ui/scripts.md"
-              - "User Claims": "admin/admin-ui/user-claims.md"
-              - "Services": "admin/admin-ui/services-menu.md"
-              - "SMTP": "admin/admin-ui/smtp-menu.md"
-              - "SCIM": "admin/admin-ui/scim-menu.md"
-              - "FIDO": "admin/admin-ui/fido-menu.md"
-              - "SAML": "admin/admin-ui/saml-menu.md"
-              - "Jans Lock": "admin/admin-ui/jans-lock-menu.md"
-          - "FAQ & Troubleshooting": "admin/admin-ui/faq.md"
-      - "Flex Recipes":
-          - "admin/recipes/README.md"
-          - "Getting Started with Rancher": "admin/recipes/getting-started-rancher.md"
-          - "Testing Flex SAML SSO with sptest": "admin/recipes/testing-flex-saml-sso-sptest.md"
-          - "Add required claims to id-token": "admin/recipes/add-claims-to-token.md"
-      - "Migrating from Gluu4": "admin/gluu-migration.md"
+- 'Reference':
+    - 'reference/kubernetes/README.md'
+    - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
+    - 'Flex Monolith Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
+    - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
 
-  - "Reference":
-      - "reference/kubernetes/README.md"
-      - "Flex Helm Chart": "reference/kubernetes/helm-chart.md"
-      - "Flex Monolith Docker Image": "reference/kubernetes/docker-flex-monolith.md"
-      - "Admin UI Docker Image": "reference/kubernetes/docker-admin-ui.md"
+- 'Open Banking':
+  - Overview: openbanking/index.md
+  - Installation:
+      - Cloud-Native: openbanking/install-cn.md
+      - VM (only recommended for development/testing): openbanking/install-vm.md
+  - Operation Guide:
+      - Configuration Instructions: openbanking/configuration-instructions.md
+      - Managing scripts with CURL: openbanking/curl.md
+      - Managing Scripts with the jans-cli: openbanking/jans-cli.md
+  - PAR and JARM: openbanking/par-jarm.md
 
-  - "Open Banking":
-      - Overview: openbanking/index.md
-      - Installation:
-          - Cloud-Native: openbanking/install-cn.md
-          - VM (only recommended for development/testing): openbanking/install-vm.md
-      - Operation Guide:
-          - Configuration Instructions: openbanking/configuration-instructions.md
-          - Managing scripts with CURL: openbanking/curl.md
-          - Managing Scripts with the jans-cli: openbanking/jans-cli.md
-      - PAR and JARM: openbanking/par-jarm.md
-
-  - "Gluu Solo":
-      - "solo/solo-getting-started.md"
-      - How To Subscribe: solo/solo-subscription.md
-      - Administration Guide: solo/solo-administration-guide.md
+- 'Gluu Solo':
+  - 'solo/solo-getting-started.md'
+  - How To Subscribe: solo/solo-subscription.md
+  - Administration Guide: solo/solo-administration-guide.md
+      
