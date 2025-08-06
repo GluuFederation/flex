@@ -8,63 +8,68 @@ import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { changeUserPassword } from '../../redux/features/userSlice'
+import { changeUserPassword } from '../redux/features/userSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { debounce, values } from 'lodash'
+import { debounce } from 'lodash'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import moment from 'moment/moment'
-import { use } from 'i18next'
+import {
+  UserFormProps,
+  UserFormState,
+  FormOperation,
+  UserEditFormValues,
+} from '../types/ComponentTypes'
+import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
+import { PersonAttribute, ChangeUserPasswordPayload, GetUserOptions } from '../types/UserApiTypes'
 
-function UserForm({ onSubmitData }: any) {
+function UserForm({ onSubmitData }: UserFormProps) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
-  const [selectedClaims, setSelectedClaims] = useState<any[]>([])
+  const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
   const [passwordError, setPasswordError] = useState('')
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
   const [passwordmodal, setPasswordModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
-  const [modifiedFields, setModifiedFields] = useState<Record<string, any>>({})
-  const [operations, setOperations] = useState<Array<{ path: string; value: any; op: string }>>([])
+  const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
+  const [operations, setOperations] = useState<FormOperation[]>([])
 
-  const userDetails = useSelector((state: any) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector((state: any) => state.attributesReducerRoot.items)
-  const theme: any = useContext(ThemeContext)
+  const userDetails = useSelector((state: UserFormState) => state.userReducer.selectedUserData)
+  const personAttributes = useSelector((state: UserFormState) => state.attributesReducerRoot.items)
+
+  const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
-  let options: any = {}
+  const options: GetUserOptions = {}
 
-  const initialValues: any = {
+  const initialValues: UserEditFormValues = {
     displayName: userDetails?.displayName || '',
     givenName: userDetails?.givenName || '',
     mail: userDetails?.mail || '',
     userId: userDetails?.userId || '',
-    sn: '',
-    middleName: '',
-    status: userDetails?.status || '',
+    sn: userDetails?.familyName || '',
+    middleName: (userDetails?.middleName as string) || '',
+    status: (userDetails?.jansStatus as string) || userDetails?.status || '',
   }
 
-  if (userDetails) {
-    for (let i in userDetails.customAttributes) {
-      if (userDetails.customAttributes[i].values) {
-        let customAttribute = personAttributes.filter(
-          (e: any) => e.name == userDetails.customAttributes[i].name,
+  if (userDetails && userDetails.customAttributes) {
+    for (let i = 0; i < userDetails.customAttributes.length; i++) {
+      const customAttr = userDetails.customAttributes[i]
+      if (customAttr.values && customAttr.values.length > 0) {
+        const customAttribute = personAttributes.filter(
+          (e: PersonAttribute) => e.name === customAttr.name,
         )
-        if (userDetails.customAttributes[i].name == 'birthdate') {
-          initialValues[userDetails.customAttributes[i].name] = moment(
-            userDetails.customAttributes[i].values[0],
-          ).format('YYYY-MM-DD')
+        if (customAttr.name === 'birthdate') {
+          initialValues[customAttr.name] = moment(customAttr.values[0]).format('YYYY-MM-DD')
         } else {
           if (customAttribute[0]?.oxMultiValuedAttribute) {
-            initialValues[userDetails.customAttributes[i].name] =
-              userDetails.customAttributes[i].values
+            initialValues[customAttr.name] = customAttr.values
           } else {
-            initialValues[userDetails.customAttributes[i].name] =
-              userDetails.customAttributes[i].values[0]
+            initialValues[customAttr.name] = customAttr.values[0]
           }
         }
       }
@@ -73,8 +78,10 @@ function UserForm({ onSubmitData }: any) {
 
   const formik = useFormik({
     initialValues: initialValues,
-    onSubmit: (values: any) => {
-      toggle()
+    onSubmit: (values: UserEditFormValues) => {
+      if (values) {
+        toggle()
+      }
     },
     validationSchema: Yup.object({
       displayName: Yup.string().required('Display name is required.'),
@@ -82,6 +89,10 @@ function UserForm({ onSubmitData }: any) {
       sn: Yup.string().required('Last name is required.'),
       userId: Yup.string().required('User name is required.'),
       mail: Yup.string().required('Email is required.'),
+      userPassword: !userDetails ? Yup.string().required('Password is required.') : Yup.string(),
+      userConfirmPassword: !userDetails
+        ? Yup.string().required('Confirm password is required.')
+        : Yup.string(),
     }),
   })
 
@@ -89,34 +100,38 @@ function UserForm({ onSubmitData }: any) {
     setModal(!modal)
   }
 
-  const submitChangePassword = (usermessage: any) => {
-    const submitableValue: any = {
+  const submitChangePassword = (usermessage: string) => {
+    if (!userDetails?.inum || !formik.values.userPassword) return
+
+    const submitableValue: ChangeUserPasswordPayload = {
       inum: userDetails.inum,
       jsonPatchString: '[]',
       customAttributes: [
         {
           name: 'userPassword',
           multiValued: false,
-          values: [formik.values.userPassword],
+          values: [formik.values.userPassword as string],
         },
       ],
     }
-    submitableValue['performedOn'] = {
+    submitableValue.performedOn = {
       user_inum: userDetails.inum,
-      userId: userDetails.displayName,
+      userId: userDetails.displayName as string,
     }
-    submitableValue['action_message'] = usermessage
+    // Set action_message for audit logging
+    if (usermessage) {
+      submitableValue.action_message = usermessage
+    }
     dispatch(changeUserPassword(submitableValue))
     setPasswordModal(!passwordmodal)
     toggleChangePasswordModal()
   }
-
-  const submitForm = (usermessage: any) => {
+  const submitForm = (usermessage: string) => {
     toggle()
     onSubmitData(formik.values, modifiedFields, usermessage)
   }
-  const loading = useSelector((state: any) => state.userReducer.loading)
-  const setSelectedClaimsToState = (data: any) => {
+  const loading = useSelector((state: UserFormState) => state.userReducer.loading)
+  const setSelectedClaimsToState = (data: PersonAttribute) => {
     const tempList = [...selectedClaims]
     tempList.push(data)
     setSelectedClaims(tempList)
@@ -157,14 +172,15 @@ function UserForm({ onSubmitData }: any) {
   }
 
   const setAttributes = () => {
+    if (!userDetails?.customAttributes) return
+
     const tempList = [...selectedClaims]
-    for (const i in userDetails.customAttributes) {
-      if (userDetails.customAttributes[i].values) {
-        const data = getCustomAttributeById(userDetails.customAttributes[i].name) && {
-          ...getCustomAttributeById(userDetails.customAttributes[i].name),
-        }
-        if (data && !usedClaimes.includes(userDetails.customAttributes[i].name)) {
-          data.options = userDetails.customAttributes[i].values
+    for (let i = 0; i < userDetails.customAttributes.length; i++) {
+      const customAttr = userDetails.customAttributes[i]
+      if (customAttr.values && customAttr.values.length > 0) {
+        const attributeData = getCustomAttributeById(customAttr.name)
+        if (attributeData && !usedClaimes.includes(customAttr.name)) {
+          const data = { ...attributeData, options: customAttr.values }
           tempList.push(data)
         }
       }
@@ -178,6 +194,7 @@ function UserForm({ onSubmitData }: any) {
       setShowButtons(true)
     } else {
       setSelectedClaims([])
+      setShowButtons(true) // Enable buttons when adding new user
     }
   }, [userDetails])
 
@@ -257,8 +274,9 @@ function UserForm({ onSubmitData }: any) {
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-          {formik.values?.userPassword?.length > 3 &&
-            formik.values?.userPassword == formik.values.userConfirmPassword && (
+          {formik.values?.userPassword &&
+            formik.values.userPassword.length > 3 &&
+            formik.values?.userPassword === formik.values.userConfirmPassword && (
               <Button
                 color={`primary-${selectedTheme}`}
                 type="button"
@@ -276,11 +294,11 @@ function UserForm({ onSubmitData }: any) {
       <Form
         onSubmit={(e) => {
           e.preventDefault()
-          let values = Object.keys(modifiedFields).map((key) => {
+          const values = Object.keys(modifiedFields).map((key) => {
             return {
               path: key,
               value: modifiedFields[key],
-              op: 'replace',
+              op: 'replace' as const,
             }
           })
           setOperations(values)
@@ -404,6 +422,9 @@ function UserForm({ onSubmitData }: any) {
                 formik={formik}
                 lsize={3}
                 rsize={9}
+                showError={formik.errors.userPassword && formik.touched.userPassword}
+                errorMessage={formik.errors.userPassword}
+                handleChange={handleChange}
               />
             )}
             {!userDetails && (
@@ -417,6 +438,9 @@ function UserForm({ onSubmitData }: any) {
                 formik={formik}
                 lsize={3}
                 rsize={9}
+                showError={formik.errors.userConfirmPassword && formik.touched.userConfirmPassword}
+                errorMessage={formik.errors.userConfirmPassword}
+                handleChange={handleChange}
               />
             )}
             {passwordError != '' && !changePasswordModal && (
@@ -480,10 +504,16 @@ function UserForm({ onSubmitData }: any) {
                 value={searchClaims}
               />
               <ul className="list-group">
-                {personAttributes.map((data: any, key: number) => {
-                  const name = data.displayName.toLowerCase()
-                  const alreadyAddedClaim = selectedClaims.some((el: any) => el.name === data.name)
-                  if (data.status.toLowerCase() == 'active' && !usedClaimes.includes(data.name)) {
+                {personAttributes.map((data: PersonAttribute, key: number) => {
+                  const name = data.displayName?.toLowerCase() || ''
+                  const alreadyAddedClaim = selectedClaims.some(
+                    (el: PersonAttribute) => el.name === data.name,
+                  )
+                  if (
+                    data.status &&
+                    data.status.toLowerCase() == 'active' &&
+                    !usedClaimes.includes(data.name)
+                  ) {
                     if (
                       (name.includes(searchClaims.toLowerCase()) || searchClaims == '') &&
                       !alreadyAddedClaim

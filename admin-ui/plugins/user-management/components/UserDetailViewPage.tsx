@@ -4,42 +4,18 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import customColors from '@/customColors'
-
-interface CustomAttribute {
-  name: string
-  values: string[]
-  multiValued?: boolean
-  value?: string
-}
-
-interface UserData {
-  displayName?: string
-  givenName?: string
-  userId?: string
-  mail?: string
-  customAttributes?: CustomAttribute[]
-}
-
-interface RowProps {
-  row: {
-    rowData: UserData
-  }
-}
-
-interface RootState {
-  attributesReducerRoot: {
-    items: Array<{
-      name: string
-      displayName: string
-      description: string
-    }>
-  }
-}
+import {
+  CustomAttribute,
+  RowProps,
+  UserDetailState,
+} from 'Plugins/user-management/types/UserApiTypes'
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
   const DOC_SECTION = 'user'
-  const personAttributes = useSelector((state: RootState) => state.attributesReducerRoot.items)
+  const personAttributes = useSelector(
+    (state: UserDetailState) => state.attributesReducerRoot.items,
+  )
 
   const getCustomAttributeById = (id: string) => {
     let claimData = null
@@ -89,9 +65,9 @@ const UserDetailViewPage = ({ row }: RowProps) => {
         {rowData.customAttributes?.map((data: CustomAttribute, key: number) => {
           let valueToShow = ''
           if (data.name === 'birthdate') {
-            valueToShow = moment(data?.values[0]).format('YYYY-MM-DD') || ''
+            valueToShow = moment(data?.values?.[0]).format('YYYY-MM-DD') || ''
           } else {
-            valueToShow = data.multiValued ? data?.values?.join(', ') : data.value || ''
+            valueToShow = data.multiValued ? data?.values?.join(', ') || '' : data.value || ''
           }
 
           return (

@@ -33,8 +33,7 @@ export const isValidState = (newState) => {
 export const addAdditionalData = (audit, action, resource, payload) => {
   audit['action'] = action
   audit['resource'] = resource
-  audit['message'] = payload?.action ? payload?.action?.action_message : payload.message || ''
-
+  audit['message'] = payload?.action?.action_message || payload.action_message || payload.message
   if (payload.action?.action_data?.modifiedFields || payload?.modifiedFields) {
     audit['modifiedFields'] = payload.action
       ? payload.action?.action_data?.modifiedFields
@@ -45,9 +44,10 @@ export const addAdditionalData = (audit, action, resource, payload) => {
       ? payload.action?.action_data?.performedOn
       : payload?.performedOn
   }
-
   delete payload.action?.action_data?.modifiedFields
   delete payload?.modifiedFields
+  delete payload.action_message
+  delete payload.tableData
 
   audit['payload'] = payload.action ? payload.action.action_data : payload || {}
   audit['date'] = new Date()
