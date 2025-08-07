@@ -162,6 +162,7 @@
   },
   "fields": {
     "asset_name": "Asset Name",
+    "resetLicense": "Redefinir licença",
     "tag": "Marcação",
     "upload": "Select a file to upload",
     "jansService": "Related Services",
@@ -839,6 +840,7 @@
     "jans_kc_link": "Link KC Jans",
     "export_csv": "Exportar CSV",
     "no_Cedar": "Você não tem nenhum componente autorizado para visualizar",
+    "cedar_Init": "Cedarling está tentando inicializar, por favor aguarde",
     "newPermission": "Nova Permissão",
     "addingNewApiPermission": "Adicionando nova permissão de API",
     "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!"

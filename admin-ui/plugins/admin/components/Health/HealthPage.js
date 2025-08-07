@@ -7,7 +7,7 @@ import getThemeColor from '@/context/theme/config'
 
 function HealthPage() {
   const { t } = useTranslation()
-  SetTitle(t('menus.services_health'))
+  SetTitle(t('titles.services_health'))
   const theme = useContext(ThemeContext)
   const themeColors = getThemeColor(theme.state.theme)
 

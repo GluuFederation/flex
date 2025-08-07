@@ -1,62 +1,32 @@
 ---
 tags:
-- administration
-- admin-ui
-- auth server
-- sessions
-- configuration
-- keys
-- logging
-- clients
-- scopes
+  - clients
+  - scopes
+  - keys
+  - auth server
+  - logging
+  - Authn
+  - admin-ui
+  - configuration
+  - sessions
 ---
 
-# Auth Server Menu
+# Auth Server
 
 The **Auth Server** menu covers the following important sub-menus to configure and manage Auth server.
 
-- Sessions
-- Server configuration
-- Keys
-- Logging
 - Clients
-- Scopes
+- Sessions
+- Keys
+- Server configuration
+- Logging
 - Enabled Acrs
 - Agama deployment
-
-## Sessions
-
-The Janssen Authentication Server stores user session data in persistence. This screen lists the active session 
-details and the administrator can revoke the sessions of the selected user.
-
-![image](../../assets/admin-ui/sessions.png)
-
-## Keys
-
-The JSON Web Key Sets (JWKS) is a set of public keys that should be used to verify any JSON Web Token (JWT) issued by 
-the authorization server.
-
-![image](../../assets/admin-ui/jwks.png)
-
-## Auth Server Configuration Properties
-
-The auth server [configuration properties](https://docs.jans.io/head/admin/reference/json/properties/janssenauthserver-properties/) can be updated using GUI.
-
-![image](../../assets/admin-ui/auth-server-configuration.png)
-
-## Logging
-
-Following AS configuration properties can be used to customize AS logging:
-
-- **Log level:** Specify the [log levels](https://docs.jans.io/head/admin/auth-server/logging/log-levels/) of loggers
-- **Log layout:** Logging layout used for Jans Authorization Server loggers
-- **Enable HTTP Logging:** Enable/disable the request/response logging filter. Disabled by default.
-- **Disable JDK Logger?:** Choose whether to disable JDK loggers
-- **Enable Oauth Audit Logging?:** enable OAuth Audit Logging
+- Scopes
 
 ## Clients
 
-The logged-in user with appropriate permissions can view, register, edit and delete OIDC clients on auth server using 
+The logged-in user with appropriate permissions can view, register, edit and delete OIDC clients on auth server using
 Gluu Flex Admin UI.
 
 ![image](../../assets/admin-ui/client.png)
@@ -64,7 +34,7 @@ Gluu Flex Admin UI.
 The Client details are as follows:
 
 | Client fields                                                                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                      |
-|--------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Client name                                                                    | Name of the Client to be presented to the End-User.                                                                                                                                                                                                                                                                                                                                                                              |
 | Client secret                                                                  | Client Secret. The same Client Secret value MUST NOT be assigned to multiple Clients.                                                                                                                                                                                                                                                                                                                                            |
 | Description                                                                    | Description of the client.                                                                                                                                                                                                                                                                                                                                                                                                       |
@@ -127,9 +97,9 @@ The Client details are as follows:
 
 ## Scopes
 
-The scope is a mechanism to limit an application's access to a user's account. An application can request one or 
-more scopes, this information is then presented to the user in the consent screen, and the access token issued to 
-the application will be limited to the scopes granted. Please check [here](https://docs.jans.io/v1.0.15/admin/auth-server/scopes/) for detail documentation on scopes.
+The scope is a mechanism to limit an application's access to a user's account. An application can request one or
+more scopes, this information is then presented to the user in the consent screen, and the access token issued to
+the application will be limited to the scopes granted. Please check [here](https://docs.jans.io/stable/janssen-server/auth-server/scopes/) for detail documentation on scopes.
 
 ### OAuth 2.0 scopes
 
@@ -143,32 +113,32 @@ Specify what access privileges are being requested for Access Tokens. The scopes
 
 ### Spontaneous scopes
 
-Spontaneous scopes are scopes with random part in it which are not known in advance. For e.g. transaction:4685456787, 
+Spontaneous scopes are scopes with random part in it which are not known in advance. For e.g. transaction:4685456787,
 pis-552fds where 4685456787 or 552fds are generated part of the scope.
 
-Spontaneous scopes are disabled by default and can be enabled per client. The admins cannot create a spontaneous 
+Spontaneous scopes are disabled by default and can be enabled per client. The admins cannot create a spontaneous
 scope. Creation only happens when an authorized client presents a spontaneous scope at the token endpoint. There are the
 following client properties available during dynamic registration of the client related to spontaneous scopes:
 
-- **allowSpontaneousScopes** OPTIONAL, boolean, false by default. Whether spontaneous scopes are allowed for the given 
-client.
+- **allowSpontaneousScopes** OPTIONAL, boolean, false by default. Whether spontaneous scopes are allowed for the given
+  client.
 - **spontaneousScopes** OPTIONAL, array of strings. Regular expressions which should match to scope. If matched scope is
- allowed. Example: ["^transaction:.+$"]. It matches transaction:245 but not transaction:.
+  allowed. Example: ["^transaction:.+$"]. It matches transaction:245 but not transaction:.
 
 ### UMA scopes
 
-UMA scope can either be created by the user or auto-created by the authentication server. UMA scope cannot be modified using 
+UMA scope can either be created by the user or auto-created by the authentication server. UMA scope cannot be modified using
 Gluu Flex Admin UI.
 
-- If the logged-in user creates UMA scope then the creator type will be `USER` and the creator Id will be logged-in 
-user's INUM.
+- If the logged-in user creates UMA scope then the creator type will be `USER` and the creator Id will be logged-in
+  user's INUM.
 - If auth server has auto-created a UMA scope then it will have the creator type as `AUTO` and no creator Id.
 
 ### Dynamic Scopes
 
-The dynamic scope custom script allows to generate a list of claims (and their values) on the fly, depending on 
-circumstances like the id of the client requesting it, logged user's session parameters, values of other user's 
-attributes, results of some calculations implementing specific business logic and/or requests to remote APIs or 
+The dynamic scope custom script allows to generate a list of claims (and their values) on the fly, depending on
+circumstances like the id of the client requesting it, logged user's session parameters, values of other user's
+attributes, results of some calculations implementing specific business logic and/or requests to remote APIs or
 databases. Claims are then returned the usual way in response to a call to the user info endpoint.
 
 In order to configure a dynamic scope the following steps are required:
@@ -178,27 +148,64 @@ In order to configure a dynamic scope the following steps are required:
 
 ![image](../../assets/admin-ui/dynamic-scope.png)
 
+## Keys
+
+The JSON Web Key Sets (JWKS) is a set of public keys that should be used to verify any JSON Web Token (JWT) issued by
+the authorization server.
+
+![image](../../assets/admin-ui/jwks.png)
+
+## Auth Server Properties
+
+The auth server [configuration properties](https://docs.jans.io/stable/janssen-server/reference/json/properties/janssenauthserver-properties/) can be updated using GUI.
+
+![image](../../assets/admin-ui/auth-server-configuration.png)
+
+## Logging
+
+Following AS configuration properties can be used to customize AS logging:
+
+- **Log level:** Specify the [log levels](https://docs.jans.io/stable/janssen-server/auth-server/logging/log-levels/) of loggers
+- **Log layout:** Logging layout used for Jans Authorization Server loggers
+- **Enable HTTP Logging:** Enable/disable the request/response logging filter. Disabled by default.
+- **Disable JDK Logger?:** Choose whether to disable JDK loggers
+- **Enable Oauth Audit Logging?:** enable OAuth Audit Logging
+
+## SSA
+
+The SSA is a signed token that contains trusted metadata used to securely register OAuth clients in the Janssen Server.
+You'll find instructions for creating, retrieving, deleting, and validating SSAs, along with required parameters, sample commands, and security considerations [here.](https://docs.jans.io/stable/janssen-server/config-guide/auth-server-config/ssa-config/)
+
 ## Authn
 
-Authentication Context Class Reference (ACR) enables applications to request and verify the level of authentication 
+Authentication Context Class Reference (ACR) enables applications to request and verify the level of authentication
 assurance or the context of the authentication process used for user authentication.
 
-This page allows the administrator to view all enabled ACRs and select the default ACR which refers to the predefined 
+This page allows the administrator to view all enabled ACRs and select the default ACR which refers to the predefined
 or default authentication assurance when no specific ACR value is requested or specified.
 
 ![image](../../assets/admin-ui/authn.png)
 
-## Agama
+## Config Api Properties
 
-This menu addresses deployment of [Agama](https://docs.jans.io/head/agama/introduction/) project packages (file with 
+Gluu Flex Admin UI uses Config API to manage and configure the Jans Auth server. Config API helps in configuring auth-server, users, fido2 and scim modules. The Config API application configuration properties can be updated using Admin UI.
+
+## Sessions
+
+The Janssen Authentication Server stores user session data in persistence. This screen lists the active session
+details and the administrator can revoke the sessions of the selected user.
+
+![image](../../assets/admin-ui/sessions.png)
+
+<!-- ## Agama
+
+This menu addresses deployment of [Agama](https://docs.jans.io/head/agama/introduction/) project packages (file with
 .gama extension). To make sure that package is untempered, the file containing sha256 checksum also need to be uploaded on UI.
 
 ![image](../../assets/admin-ui/agama-deployment.png)
 
-
-The project name, description, version, deployment start/end date-time and deployment error (if any) can be seen on details popup of the record. User can export sample and current configuration or import configuration. 
+The project name, description, version, deployment start/end date-time and deployment error (if any) can be seen on details popup of the record. User can export sample and current configuration or import configuration.
 
 ![image](../../assets/admin-ui/gama-details.png)
 
-![image](../../assets/admin-ui/export-gama-config.png)
-
+![image](../../assets/admin-ui/export-gama-config.png) -->

@@ -110,5 +110,3 @@ git commit -m "your commit message"
 ```
 
 **Note:** The pre-commit hook only checks staged files, ensuring fast commits while maintaining code quality.
-
-This project has been built on [Airframe React](https://github.com/0wczar/airframe-react).

@@ -67,6 +67,11 @@ class Upgrade:
 
         should_update = False
 
+        # jansAccessTknAsJwt is set to true since v5.9.0
+        if not as_boolean(entry.attrs["jansAccessTknAsJwt"]):
+            entry.attrs["jansAccessTknAsJwt"] = True
+            should_update = True
+
         if not self.backend.client.use_simple_json:
             scopes = entry.attrs["jansScope"]["v"]
             grant_types = entry.attrs["jansGrantTyp"]["v"]
