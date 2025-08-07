@@ -1100,6 +1100,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3_4_5">
@@ -1134,22 +1140,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/dashboard/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/home/" class="md-nav__link">
         Home
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/admin-menu/" class="md-nav__link">
-        Admin
       </a>
     </li>
   
@@ -1176,8 +1168,36 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/schema-menu/" class="md-nav__link">
-        Schema
+      <a href="../../../admin/admin-ui/user-management-menu/" class="md-nav__link">
+        Users
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/scripts/" class="md-nav__link">
+        Scripts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/user-claims/" class="md-nav__link">
+        User Claims
       </a>
     </li>
   
@@ -1204,20 +1224,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/fido-menu/" class="md-nav__link">
-        FIDO
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../../admin/admin-ui/smtp-menu/" class="md-nav__link">
         SMTP
       </a>
@@ -1232,8 +1238,50 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/userMgmt-menu/" class="md-nav__link">
-        Users
+      <a href="../../../admin/admin-ui/scim-menu/" class="md-nav__link">
+        SCIM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/fido-menu/" class="md-nav__link">
+        FIDO
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/saml-menu/" class="md-nav__link">
+        SAML
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/jans-lock-menu/" class="md-nav__link">
+        Jans Lock
       </a>
     </li>
   
@@ -1991,11 +2039,11 @@
 </table>
 <p>Releases of images are in style 1.0.0-beta.0, 1.0.0-0</p>
 <h2 id="installation-steps">Installation Steps<a class="headerlink" href="#installation-steps" title="Permanent link">#</a></h2>
-<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/nightly/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
+<p>Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</p>
 <p>Start a fresh Ubuntu <code>18.04</code>/<code>20.04</code>/<code>22.04</code> VM with ports <code>443</code> and <code>80</code> open. Then execute the following:</p>
 <p><div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>su<span class="w"> </span>-
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/nightly/automation/startflexdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>u+x<span class="w"> </span>startflexdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./startflexdemo.sh
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>u+x<span class="w"> </span>startflexdemo.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>./startflexdemo.sh
 </code></pre></div></p>
 <p>This will install Docker, Microk8s, Helm and Gluu with the default settings that can be found inside <a href="https://github.com/GluuFederation/flex/blob/main/charts/gluu/values.yaml">values.yaml</a>.  </p>
 <p>The installer will automatically add a record to your hosts record in the VM but if you want to access the endpoints outside the VM you must map the <code>ip</code> of the instance running Ubuntu to the FQDN you provided and then access the endpoints at your browser such in the example in the table below.</p>

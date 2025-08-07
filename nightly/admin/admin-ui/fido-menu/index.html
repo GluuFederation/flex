@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#fido-configuration" class="md-skip">
+        <a href="#fido" class="md-skip">
           Skip to content
         </a>
       
@@ -1047,6 +1047,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3_4_5">
@@ -1081,22 +1087,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../dashboard/" class="md-nav__link">
+      <a href="../home/" class="md-nav__link">
         Home
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../admin-menu/" class="md-nav__link">
-        Admin
       </a>
     </li>
   
@@ -1123,8 +1115,36 @@
   
   
     <li class="md-nav__item">
-      <a href="../schema-menu/" class="md-nav__link">
-        Schema
+      <a href="../user-management-menu/" class="md-nav__link">
+        Users
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scripts/" class="md-nav__link">
+        Scripts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-claims/" class="md-nav__link">
+        User Claims
       </a>
     </li>
   
@@ -1140,30 +1160,6 @@
       <a href="../services-menu/" class="md-nav__link">
         Services
       </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        FIDO
-      </a>
-      
     </li>
   
 
@@ -1189,8 +1185,91 @@
   
   
     <li class="md-nav__item">
-      <a href="../userMgmt-menu/" class="md-nav__link">
-        Users
+      <a href="../scim-menu/" class="md-nav__link">
+        SCIM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          FIDO
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        FIDO
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-fido2" class="md-nav__link">
+    Configuring FIDO2
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../saml-menu/" class="md-nav__link">
+        SAML
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jans-lock-menu/" class="md-nav__link">
+        Jans Lock
       </a>
     </li>
   
@@ -1758,6 +1837,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-fido2" class="md-nav__link">
+    Configuring FIDO2
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1788,6 +1882,11 @@
         <span class="md-tag">fido2</span>
       
     
+      
+      
+        <span class="md-tag">fido</span>
+      
+    
   </nav>
 
 
@@ -1798,17 +1897,18 @@
   </a>
 
 
-<h1 id="fido-configuration">FIDO Configuration<a class="headerlink" href="#fido-configuration" title="Permanent link">#</a></h1>
+<h1 id="fido">FIDO<a class="headerlink" href="#fido" title="Permanent link">#</a></h1>
+<h2 id="configuring-fido2">Configuring FIDO2<a class="headerlink" href="#configuring-fido2" title="Permanent link">#</a></h2>
 <p><a href="https://fidoalliance.org/">FIDO 2.0</a> (FIDO2) is an open authentication standard that enables people to leverage common devices to authenticate to online services in both mobile and desktop environments.</p>
 <p>FIDO2 comprises the W3C’s Web Authentication specification (WebAuthn) and FIDO’s corresponding Client-to-Authenticator Protocol (CTAP). WebAuthn defines a standard web API that can be built into browsers and related web platform infrastructure to enable online services to use FIDO Authentication. CTAP enables external devices such as mobile handsets or FIDO Security Keys to work with WebAuthn and serve as authenticators to desktop applications and web services.</p>
-<p>Gluu Flex Admin UI allows configuring parameters of Janssen's FIDO2 server. Check following <a href="https://docs.jans.io/v1.0.15/admin/fido/config/">documnetation</a> for details of FIDO2 configuration parameters.  </p>
+<p>Gluu Flex Admin UI allows configuring parameters of Janssen's FIDO2 server. Check following <a href="https://docs.jans.io/stable/janssen-server/fido/config/">documnetation</a> for details of FIDO2 configuration parameters.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-08-28T14:55:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-08-28</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-08-07T09:23:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-08-07</span>
       
         <br>
         Created:
@@ -1837,7 +1937,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../services-menu/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Services" rel="prev">
+        <a href="../scim-menu/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SCIM" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1846,20 +1946,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Services
+              SCIM
             </div>
           </div>
         </a>
       
       
         
-        <a href="../smtp-menu/" class="md-footer__link md-footer__link--next" aria-label="Next: SMTP" rel="next">
+        <a href="../saml-menu/" class="md-footer__link md-footer__link--next" aria-label="Next: SAML" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              SMTP
+              SAML
             </div>
           </div>
           <div class="md-footer__button md-icon">

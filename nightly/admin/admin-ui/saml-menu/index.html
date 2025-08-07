@@ -12,14 +12,14 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/nightly/admin/admin-ui/userMgmt-menu/">
+        <link rel="canonical" href="https://docs.gluu.org/nightly/admin/admin-ui/saml-menu/">
       
       <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
-        <title>Users - Gluu Flex Documentation</title>
+        <title>SAML - Gluu Flex Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#users" class="md-skip">
+        <a href="#saml" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Users
+              SAML
             
           </span>
         </div>
@@ -1047,6 +1047,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3_4_5">
@@ -1081,22 +1087,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../dashboard/" class="md-nav__link">
+      <a href="../home/" class="md-nav__link">
         Home
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../admin-menu/" class="md-nav__link">
-        Admin
       </a>
     </li>
   
@@ -1123,8 +1115,36 @@
   
   
     <li class="md-nav__item">
-      <a href="../schema-menu/" class="md-nav__link">
-        Schema
+      <a href="../user-management-menu/" class="md-nav__link">
+        Users
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scripts/" class="md-nav__link">
+        Scripts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-claims/" class="md-nav__link">
+        User Claims
       </a>
     </li>
   
@@ -1151,8 +1171,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../fido-menu/" class="md-nav__link">
-        FIDO
+      <a href="../smtp-menu/" class="md-nav__link">
+        SMTP
       </a>
     </li>
   
@@ -1165,8 +1185,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../smtp-menu/" class="md-nav__link">
-        SMTP
+      <a href="../scim-menu/" class="md-nav__link">
+        SCIM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fido-menu/" class="md-nav__link">
+        FIDO
       </a>
     </li>
   
@@ -1188,10 +1222,55 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SAML
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
-        Users
+        SAML
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    Description
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jans-lock-menu/" class="md-nav__link">
+        Jans Lock
+      </a>
     </li>
   
 
@@ -1758,6 +1837,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    Description
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1785,33 +1879,54 @@
     
       
       
-        <span class="md-tag">users</span>
+        <span class="md-tag">test</span>
+      
+    
+      
+      
+        <span class="md-tag">SAML</span>
+      
+    
+      
+      
+        <span class="md-tag">SSO</span>
+      
+    
+      
+      
+        <span class="md-tag">inbound</span>
+      
+    
+      
+      
+        <span class="md-tag">keycloak</span>
       
     
   </nav>
 
 
 
-  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/admin-ui/userMgmt-menu.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/admin-ui/saml-menu.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="users">Users<a class="headerlink" href="#users" title="Permanent link">#</a></h1>
-<p>This interface allows the administrator to create, edit, delete and search user records in Janssen persistence. The user creation/modification form has First Name, Middle Name, Last Name, Username, Display Name, Email, Status and Password fields populated by default on it. The administrator can select and add more user attributes to the form from the right <code>Available Claims</code> panel. To add a new user claim, please follow this <a href="https://docs.jans.io/nightly/admin/auth-server/openid-features/user-claims/custom-claims/">document</a>. Different <a href="../admin-menu/">Admin UI Roles</a> can be assigned to the user in the <code>jansAdminUIRole</code> attribute (to be selected from the <code>Available Claims</code> panel). </p>
-<p><img alt="image" src="../../../assets/admin-ui/user-mgmt.png" /></p>
+<h1 id="saml">SAML<a class="headerlink" href="#saml" title="Permanent link">#</a></h1>
+<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h2>
+<p>Security Assertion Markup Language (SAML) is a widely adopted protocol that enables Single Sign-On (SSO) capabilities between an Identity Provider (IDP) and a Service Provider (SP). Gluu Flex supports SAML-based SSO by integrating with external SPs through the Keycloak (KC) module. Through the Admin UI, administrators can add and manage SAML Service Providers by importing their metadata and configuring which user attributes to release. The Admin UI provides a user-friendly interface to simplify the setup and testing of SAML SSO connections with external service providers like IAMShowcase.</p>
+<p>For more information, click here to refer to the <a href="https://docs.jans.io/stable/janssen-server/keycloak/keycloak-saml-sso">official docs</a>.</p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-11-02T14:47:23+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-11-02</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-08-07T09:23:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-08-07</span>
       
         <br>
         Created:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-23T13:51:15+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-23</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-08-07T09:23:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-08-07</span>
       
     
   </small>
@@ -1836,7 +1951,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../smtp-menu/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SMTP" rel="prev">
+        <a href="../fido-menu/" class="md-footer__link md-footer__link--prev" aria-label="Previous: FIDO" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1845,20 +1960,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              SMTP
+              FIDO
             </div>
           </div>
         </a>
       
       
         
-        <a href="../faq/" class="md-footer__link md-footer__link--next" aria-label="Next: FAQ &amp; Troubleshooting" rel="next">
+        <a href="../jans-lock-menu/" class="md-footer__link md-footer__link--next" aria-label="Next: Jans Lock" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              FAQ & Troubleshooting
+              Jans Lock
             </div>
           </div>
           <div class="md-footer__button md-icon">

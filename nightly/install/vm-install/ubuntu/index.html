@@ -1189,6 +1189,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3_4_5">
@@ -1223,22 +1229,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/dashboard/" class="md-nav__link">
+      <a href="../../../admin/admin-ui/home/" class="md-nav__link">
         Home
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/admin-menu/" class="md-nav__link">
-        Admin
       </a>
     </li>
   
@@ -1265,8 +1257,36 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/schema-menu/" class="md-nav__link">
-        Schema
+      <a href="../../../admin/admin-ui/user-management-menu/" class="md-nav__link">
+        Users
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/scripts/" class="md-nav__link">
+        Scripts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/user-claims/" class="md-nav__link">
+        User Claims
       </a>
     </li>
   
@@ -1293,20 +1313,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/fido-menu/" class="md-nav__link">
-        FIDO
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../../admin/admin-ui/smtp-menu/" class="md-nav__link">
         SMTP
       </a>
@@ -1321,8 +1327,50 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../admin/admin-ui/userMgmt-menu/" class="md-nav__link">
-        Users
+      <a href="../../../admin/admin-ui/scim-menu/" class="md-nav__link">
+        SCIM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/fido-menu/" class="md-nav__link">
+        FIDO
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/saml-menu/" class="md-nav__link">
+        SAML
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../admin/admin-ui/jans-lock-menu/" class="md-nav__link">
+        Jans Lock
       </a>
     </li>
   
@@ -2080,13 +2128,13 @@
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>. Choose
 the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 24.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu24.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div></p>
 </li>
 <li>
@@ -2104,44 +2152,44 @@ wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/down
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the 
 package.  Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 24.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu24.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu22.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex_0.0.0-nightly.ubuntu20.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 Verify package integrity of the package that has been downloaded by checking hash.
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 Choose the correct command from below based on the OS version.
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 24.04</span>
 <span class="nb">cd</span><span class="w"> </span>/tmp
-sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu24.04_amd64.deb.sha256sum
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu24.04_amd64.deb.sha256sum
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
 <span class="nb">cd</span><span class="w"> </span>/tmp
-sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu22.04_amd64.deb.sha256sum
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu22.04_amd64.deb.sha256sum
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
 <span class="nb">cd</span><span class="w"> </span>/tmp
-sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_0.0.0-nightly.ubuntu20.04_amd64.deb.sha256sum
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex_replace-flex-version-stable.ubuntu20.04_amd64.deb.sha256sum
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex_0.0.0-nightly.ubuntu&lt;version&gt;_amd64.deb:<span class="w"> </span>ok
+<div class="highlight"><pre><span></span><code>flex_replace-flex-version-stable.ubuntu&lt;version&gt;_amd64.deb:<span class="w"> </span>ok
 </code></pre></div></p>
 </li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Choose the correct command from below based on the OS version.</p>
 <p><div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 24.04</span>
-apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu24.04_amd64.deb
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu24.04_amd64.deb
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 22.04</span>
-apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu22.04_amd64.deb
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu22.04_amd64.deb
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">#Ubuntu 20.04</span>
-apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_0.0.0-nightly.ubuntu20.04_amd64.deb
+apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/flex_replace-flex-version-stable.ubuntu20.04_amd64.deb
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <p>Execute the setup script with command below:
