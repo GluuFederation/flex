@@ -28,13 +28,9 @@ import customColors from '@/customColors'
 import styled from 'styled-components'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import type { JansAttribute, GetAttributesOptions } from 'Plugins/schema/types'
-import type { CedarPermissionsState } from '@/cedarling/types'
 import type { Dispatch } from '@reduxjs/toolkit'
 import type {
-  AttributeState,
   RootState,
-  ThemeState,
-  ThemeContextType,
   OptionsChangeEvent,
   StyledBadgeProps,
 } from '../types/AttributeListPage.types'
@@ -91,9 +87,6 @@ function AttributeListPage(): JSX.Element {
     makeOptions()
     dispatch(getAttributes({ options }))
   }, [])
-
-  const limitId = 'searchLimit'
-  const patternId = 'searchPattern'
   SetTitle(t('fields.attributes'))
 
   const navigate = useNavigate()
@@ -243,14 +236,6 @@ function AttributeListPage(): JSX.Element {
     [],
   )
 
-  function getBadgeTheme(status: string): string {
-    if (status === 'ACTIVE') {
-      return `primary-${selectedTheme}`
-    } else {
-      return 'warning'
-    }
-  }
-
   function onDeletionConfirmed(): void {
     dispatch(deleteAttribute({ inum: item.inum!, name: item?.name }))
     navigate('/attributes')
@@ -272,7 +257,10 @@ function AttributeListPage(): JSX.Element {
     [pageNumber, totalItems, limit],
   )
 
-  const PaperContainer = useCallback((props: any) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback(
+    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+    [],
+  )
 
   const columns: Column<JansAttribute>[] = [
     { title: `${t('fields.inum')}`, field: 'inum' },

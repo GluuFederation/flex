@@ -14,13 +14,7 @@ import AttributeApi from 'Plugins/schema/redux/api/AttributeApi'
 import { getClient } from 'Redux/api/base'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
-import {
-  RootState,
-  JansAttribute,
-  AttributePagedResult,
-  GetAttributesOptions,
-  SagaError,
-} from '../../types'
+import { RootState, JansAttribute, AttributePagedResult, SagaError } from '../../types'
 import {
   GetAttributesAction,
   SearchAttributesAction,
@@ -31,7 +25,7 @@ import {
 
 const PERSON_SCHEMA = 'person schema'
 
-const JansConfigApi = require('jans_config_api')
+import * as JansConfigApi from 'jans_config_api'
 
 function* newFunction() {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)

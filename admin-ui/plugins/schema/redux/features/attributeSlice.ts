@@ -16,9 +16,11 @@ const attributeSlice = createSlice({
   initialState,
   reducers: {
     getAttributes: (state, action: PayloadAction<{ options: GetAttributesOptions }>) => {
+      console.trace('getAttributes', action.payload.options)
       state.loading = true
     },
     searchAttributes: (state, action: PayloadAction<{ options: GetAttributesOptions }>) => {
+      console.trace('searchAttributes', action.payload.options)
       state.loading = true
     },
     getAttributesResponse: (state, action: PayloadAction<{ data?: AttributePagedResult }>) => {
@@ -35,6 +37,7 @@ const attributeSlice = createSlice({
       state,
       action: PayloadAction<{ action: { action_data: JansAttribute; action_message?: string } }>,
     ) => {
+      console.trace('addAttribute', action.payload.action.action_data)
       state.loading = true
     },
     addAttributeResponse: (state, action: PayloadAction<{ data?: JansAttribute }>) => {
@@ -49,12 +52,15 @@ const attributeSlice = createSlice({
       state,
       action: PayloadAction<{ action: { action_data: JansAttribute; action_message?: string } }>,
     ) => {
+      console.trace('editAttribute', action.payload.action.action_data)
       state.loading = true
     },
     editAttributeResponse: (state, action: PayloadAction<{ data?: JansAttribute }>) => {
+      console.trace('editAttributeResponse', action.payload.data?.inum)
       state.loading = false
     },
     deleteAttribute: (state, action: PayloadAction<{ inum: string; name?: string }>) => {
+      console.trace('deleteAttribute', action.payload.inum)
       state.loading = true
     },
     deleteAttributeResponse: (state, action: PayloadAction<{ inum?: string }>) => {

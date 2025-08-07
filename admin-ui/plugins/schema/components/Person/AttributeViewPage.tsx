@@ -25,7 +25,7 @@ function AttributeEditPage(): JSX.Element {
     }
   }
 
-  function customHandleSubmit(data: any): void {
+  function customHandleSubmit(data: { data: AttributeItem; userMessage?: string }): void {
     if (data) {
       dispatch(editAttribute({ action: { action_data: data as JansAttribute } }))
       navigate('/attributes')
