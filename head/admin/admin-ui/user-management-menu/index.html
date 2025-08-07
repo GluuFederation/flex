@@ -12,14 +12,14 @@
         <meta name="author" content="Gluu, Inc.">
       
       
-        <link rel="canonical" href="https://docs.gluu.org/head/admin/admin-ui/schema-menu/">
+        <link rel="canonical" href="https://docs.gluu.org/head/admin/admin-ui/user-management-menu/">
       
       <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
       
-        <title>Schema - Gluu Flex Documentation</title>
+        <title>Users - Gluu Flex Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#schema" class="md-skip">
+        <a href="#users" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Schema
+              Users
             
           </span>
         </div>
@@ -1047,6 +1047,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3_4_5">
@@ -1081,22 +1087,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../dashboard/" class="md-nav__link">
+      <a href="../home/" class="md-nav__link">
         Home
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../admin-menu/" class="md-nav__link">
-        Admin
       </a>
     </li>
   
@@ -1133,7 +1125,7 @@
       
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Schema
+        Users
       </a>
       
     </li>
@@ -1147,8 +1139,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../services-menu/" class="md-nav__link">
-        Services
+      <a href="../scripts/" class="md-nav__link">
+        Scripts
       </a>
     </li>
   
@@ -1161,8 +1153,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../fido-menu/" class="md-nav__link">
-        FIDO
+      <a href="../user-claims/" class="md-nav__link">
+        User Claims
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services-menu/" class="md-nav__link">
+        Services
       </a>
     </li>
   
@@ -1189,8 +1195,50 @@
   
   
     <li class="md-nav__item">
-      <a href="../userMgmt-menu/" class="md-nav__link">
-        Users
+      <a href="../scim-menu/" class="md-nav__link">
+        SCIM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fido-menu/" class="md-nav__link">
+        FIDO
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../saml-menu/" class="md-nav__link">
+        SAML
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jans-lock-menu/" class="md-nav__link">
+        Jans Lock
       </a>
     </li>
   
@@ -1785,71 +1833,34 @@
     
       
       
-        <span class="md-tag">schema</span>
+        <span class="md-tag">users</span>
       
     
       
       
-        <span class="md-tag">person</span>
-      
-    
-      
-      
-        <span class="md-tag">attributes</span>
+        <span class="md-tag">user-management</span>
       
     
   </nav>
 
 
 
-  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/admin-ui/schema-menu.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/GluuFederation/flex/edit/main/docs/admin/admin-ui/user-management-menu.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-<h1 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">#</a></h1>
-<p>Attributes are individual pieces of user data, like uid or email, that are required by applications in order to 
-identify a user and grant access to protected resources. The Person attributes that are available in your Janssen server
-can be found by navigating <code>Schema &gt; Person</code>.</p>
-<p><img alt="image" src="../../../assets/admin-ui/person.png" /></p>
-<p>The following fields are supported in the Person (attribute) creation form:</p>
-<ul>
-<li><strong>Name:</strong> This field defines the name of the Person attribute. The name must be unique in the Janssen Server 
-persistence tree.</li>
-<li><strong>Display Name:</strong> The display name can be anything that is human-readable.</li>
-<li><strong>Description:</strong> The description of the attribute.</li>
-<li><strong>Status:</strong> Used to mark the attribute as Active so that it can be used in your federation service or choose Inactive
-to create the attribute that can be activated at a later date.</li>
-<li><strong>Data Type:</strong> Select what type of attribute is being added in this field.</li>
-<li><strong>Edit Type:</strong> This field controls who can edit this attribute. If user is selected, this will enable each user to 
-edit this attribute in their Janssen server user profile.</li>
-<li><strong>View Type:</strong> This field controls which type of user is allowed to view the corresponding attribute on the web user 
-interface.</li>
-<li><strong>oxAuth claim name:</strong> If this attribute will be used as a 'claim' in your OpenID Connect service, add the name of 
-the claim here. Generally, the <code>name of the attribute</code> == <code>name of the claim</code>.</li>
-<li><strong>Multivalued?:</strong> If the attribute contains more than one value, set this field to True.</li>
-<li><strong>Hide On Discovery?:</strong> Boolean value indicating if the attribute should be shown on the discovery page.</li>
-<li><strong>Include In SCIM Extension?:</strong> Boolean value indicating if the attribute is a SCIM custom attribute.</li>
-<li><strong>Enable custom validation for this attribute?:</strong> If you plan to set minimum and maximum lengths or a regex pattern, 
-as described below, you will need to enable custom validation for this attribute. Otherwise, you can leave this disabled.</li>
-<li><strong>Regular expression:</strong> You can set a regex pattern to enforce the proper formatting of an attribute. For example, 
-you could set a regex expression for an email attribute like this: ^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$. This would
-make sure that a value is added for the attribute only if it follows standard email formatting.</li>
-<li><strong>Minimum length:</strong> This is the minimum length of a value associated with this attribute.</li>
-<li><strong>Maximum length:</strong>  This is the maximum length of a value associated with this attribute.</li>
-<li><strong>Saml1 URI:</strong>  This field can contain a SAML v1 supported nameformat for the new attribute. If this field is left 
-blank the Janssen Server will automatically populate a value.</li>
-<li><strong>Saml2 URI:</strong> This field can contain a SAML v2 supported nameformat for the new attribute. If this field is left 
-blank the Janssen Server will automatically populate a value.</li>
-</ul>
+<h1 id="users">Users<a class="headerlink" href="#users" title="Permanent link">#</a></h1>
+<p>This interface allows the administrator to create, edit, delete and search user records in Janssen persistence. The user creation/modification form has First Name, Middle Name, Last Name, Username, Display Name, Email, Status and Password fields populated by default on it. The administrator can select and add more user attributes to the form from the right <code>Available Claims</code> panel. To add a new user claim, please follow this <a href="https://docs.jans.io/stable/janssen-server/auth-server/openid-features/user-claims/">document</a>. Different <a href="../home/#admin-ui-roles">Admin UI Roles</a> can be assigned to the user in the <code>jansAdminUIRole</code> attribute (to be selected from the <code>Available Claims</code> panel).</p>
+<p><img alt="image" src="../../../assets/admin-ui/user-mgmt.png" /></p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-30T06:54:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-30</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-08-07T09:23:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-08-07</span>
       
         <br>
         Created:
@@ -1894,13 +1905,13 @@ blank the Janssen Server will automatically populate a value.</li>
       
       
         
-        <a href="../services-menu/" class="md-footer__link md-footer__link--next" aria-label="Next: Services" rel="next">
+        <a href="../scripts/" class="md-footer__link md-footer__link--next" aria-label="Next: Scripts" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Services
+              Scripts
             </div>
           </div>
           <div class="md-footer__button md-icon">
