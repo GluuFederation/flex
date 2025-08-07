@@ -15,12 +15,15 @@ const auditSlice = createSlice({
     },
     getAuditLogsResponse: (state, action) => {
       state.loading = false
-      console.log('Audit logs fetched successfully', action.payload)
       state.audits = action.payload?.data || []
+    },
+    failedAuditLogsResponse: (state) => {
+      state.loading = false
+      state.audits = []
     },
   },
 })
+reducerRegistry.register('auditReducer', auditSlice.reducer)
 
-export const { getAuditLogs, getAuditLogsResponse } = auditSlice.actions
-export const { actions, reducer, state } = auditSlice
-reducerRegistry.register('auditReducer', reducer)
+export const { getAuditLogs, getAuditLogsResponse, failedAuditLogsResponse } = auditSlice.actions
+export default auditSlice.reducer
