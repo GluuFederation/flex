@@ -95,6 +95,7 @@
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
+    "resetLicense": "Reset License",
     "asset_name": "Asset Name",
     "upload": "Select a file to upload",
     "jansService": "Related Services",

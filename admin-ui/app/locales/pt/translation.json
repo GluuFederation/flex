@@ -162,6 +162,7 @@
   },
   "fields": {
     "asset_name": "Asset Name",
+    "resetLicense": "Redefinir licença",
     "tag": "Marcação",
     "upload": "Select a file to upload",
     "jansService": "Related Services",
