@@ -188,6 +188,8 @@ or default authentication assurance when no specific ACR value is requested or s
 
 ## Config Api Properties
 
+Gluu Flex Admin UI uses Config API to manage and configure the Jans Auth server. Config API helps in configuring auth-server, users, fido2 and scim modules. The Config API application configuration properties can be updated using Admin UI.
+
 ## Sessions
 
 The Janssen Authentication Server stores user session data in persistence. This screen lists the active session

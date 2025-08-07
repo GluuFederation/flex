@@ -10,9 +10,7 @@ tags:
 
 # User Claims
 
-Attributes are individual pieces of user data, like uid or email, that are required by applications in order to
-identify a user and grant access to protected resources. The Person attributes that are available in your Janssen server
-can be found by navigating `Schema > Person`.
+[User Claims](https://docs.jans.io/stable/janssen-server/auth-server/openid-features/user-claims/) are individual pieces of user data, like uid, email, First Name etc that are required by applications in order to identify a user. Admin UI allows administrator to manage the user claims.
 
 ![image](../../assets/admin-ui/person.png)
 
