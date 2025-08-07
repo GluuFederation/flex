@@ -1,16 +1,27 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from 'Routes/Apps/Gluu/GluuRemovableSelectRow'
 import GluuRemovableTypeAhead from 'Routes/Apps/Gluu/GluuRemovableTypeAhead'
 import { countries } from 'Plugins/user-management/common/countries'
-import { useSelector } from 'react-redux'
+import { RootState } from '../types/UserApiTypes'
+import { Role } from '../types/CommonTypes'
+import { UserClaimEntryProps } from '../types/ComponentTypes'
 
-function UserClaimEntry({ data, entry, formik, handler, modifiedFields, setModifiedFields }: any) {
-  const doHandle = () => {
+function UserClaimEntry({
+  data,
+  entry,
+  formik,
+  handler,
+  modifiedFields,
+  setModifiedFields,
+}: UserClaimEntryProps) {
+  const doHandle = (): void => {
     handler(data.name)
   }
-  const roles = useSelector((state: any) => state.apiRoleReducer.items)
-  const rolesToBeShown = roles.map((data: any) => data.role)
+
+  const roles = useSelector((state: RootState) => state.apiRoleReducer.items)
+  const rolesToBeShown: string[] = roles.map((roleItem: Role) => roleItem.role)
 
   return (
     <div key={entry}>
