@@ -165,6 +165,7 @@
   },
   "fields": {
     "asset_name": "Asset Name",
+    "resetLicense": "Réinitialiser la licence",
     "tag": "Étiqueter",
     "issuer": "Émetteur",
     "upload": "Select a file to upload",
