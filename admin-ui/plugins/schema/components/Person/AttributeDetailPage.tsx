@@ -3,10 +3,14 @@ import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
+import type {
+  AttributeDetailPageProps,
+  DetailThemeContextType,
+} from '../types/AttributeListPage.types'
 
-const AttributeDetailPage = ({ row }) => {
+const AttributeDetailPage = ({ row }: AttributeDetailPageProps): JSX.Element => {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
+  const theme = useContext(ThemeContext) as DetailThemeContextType
   const selectedTheme = theme.state.theme
 
   return (
@@ -56,7 +60,7 @@ const AttributeDetailPage = ({ row }) => {
             <Label sm={12}>{t('fields.attribute_edit_type')}:</Label>
           </Col>
           <Col sm={3}>
-            {Array.from(row.editType).map((item, index) => (
+            {Array.from(row.editType || []).map((item: string) => (
               <Badge key={item} color={`primary-${selectedTheme}`}>
                 {item}
               </Badge>
@@ -66,7 +70,7 @@ const AttributeDetailPage = ({ row }) => {
             <Label sm={12}>{t('fields.attribute_view_type')}:</Label>
           </Col>
           <Col sm={3}>
-            {Array.from(row.viewType).map((item, index) => (
+            {Array.from(row.viewType || []).map((item: string) => (
               <Badge key={item} color={`primary-${selectedTheme}`}>
                 {item}
               </Badge>
@@ -77,4 +81,5 @@ const AttributeDetailPage = ({ row }) => {
     </React.Fragment>
   )
 }
+
 export default AttributeDetailPage

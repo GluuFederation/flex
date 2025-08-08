@@ -7,13 +7,19 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { editAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { cloneDeep } from 'lodash'
+import type { JansAttribute } from 'Plugins/schema/types'
+import type {
+  AttributeItem,
+  RootState,
+  SubmitData,
+} from 'Plugins/schema/components/types/AttributeListPage.types'
 
-function AttributeEditPage() {
-  const item = useSelector((state) => state.attributeReducer.item),
-    loading = useSelector((state) => state.attributeReducer.loading),
-    extensibleItems = cloneDeep(item),
-    dispatch = useDispatch(),
-    navigate = useNavigate()
+function AttributeEditPage(): JSX.Element {
+  const item = useSelector((state: RootState) => state.attributeReducer.item)
+  const loading = useSelector((state: RootState) => state.attributeReducer.loading)
+  const extensibleItems = cloneDeep(item) as JansAttribute
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   if (!extensibleItems.attributeValidation) {
     extensibleItems.attributeValidation = {
@@ -22,21 +28,29 @@ function AttributeEditPage() {
       minLength: null,
     }
   }
-  function customHandleSubmit({ data, userMessage }) {
+
+  function customHandleSubmit({ data, userMessage }: SubmitData): void {
     if (data) {
-      dispatch(editAttribute({ action: { action_data: data, action_message: userMessage } }))
+      dispatch(
+        editAttribute({
+          action: { action_data: data as JansAttribute, action_message: userMessage },
+        }),
+      )
       navigate('/attributes')
     }
   }
+
   return (
     <GluuLoader blocking={loading}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AttributeForm
-            item={{
-              ...extensibleItems,
-              attributeValidation: { ...extensibleItems.attributeValidation },
-            }}
+            item={
+              {
+                ...extensibleItems,
+                attributeValidation: { ...extensibleItems.attributeValidation },
+              } as AttributeItem
+            }
             customOnSubmit={customHandleSubmit}
           />
         </CardBody>
