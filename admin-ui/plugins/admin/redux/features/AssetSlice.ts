@@ -1,6 +1,6 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AssetState, AssetResponsePayload } from './types/asset'
+import { AssetState, AssetResponsePayload, DeleteAssetSagaPayload } from './types/asset'
 import {
   Document,
   DocumentPagedResult,
@@ -23,12 +23,17 @@ const initialState: AssetState = {
 }
 
 // Type guard to check if data is DocumentPagedResult
-const isDocumentPagedResult = (data: any): data is DocumentPagedResult => {
-  return data && typeof data === 'object' && 'entries' in data && Array.isArray(data.entries)
+const isDocumentPagedResult = (data: unknown): data is DocumentPagedResult => {
+  return (
+    data !== null &&
+    typeof data === 'object' &&
+    'entries' in data &&
+    Array.isArray((data as Record<string, unknown>).entries)
+  )
 }
 
 // Type guard to check if data is string array
-const isStringArray = (data: any): data is string[] => {
+const isStringArray = (data: unknown): data is string[] => {
   return Array.isArray(data) && (data.length === 0 || typeof data[0] === 'string')
 }
 
@@ -87,7 +92,8 @@ const assetSlice = createSlice({
         state.errorInSaveOperationFlag = true
       }
     },
-    deleteJansAsset: (state) => {
+    deleteJansAsset: (state, action: PayloadAction<DeleteAssetSagaPayload>) => {
+      console.trace('deleteJansAsset', action.payload)
       state.loading = true
     },
     deleteJansAssetResponse: (state) => {

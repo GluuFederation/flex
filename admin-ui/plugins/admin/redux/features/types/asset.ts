@@ -24,10 +24,10 @@ export interface AssetState {
 // Action payload interfaces
 export interface AssetActionPayload {
   action?: {
-    action_data?: any
-    [key: string]: any
+    action_data?: unknown
+    [key: string]: unknown
   }
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface AssetResponsePayload {
@@ -74,6 +74,7 @@ export interface UpdateAssetSagaPayload {
 
 export interface DeleteAssetSagaPayload {
   payload: {
+    action_message?: string
     action: {
       action_data: {
         inum: string

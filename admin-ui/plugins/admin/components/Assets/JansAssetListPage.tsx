@@ -42,7 +42,7 @@ const JansAssetListPage: React.FC = () => {
   )
 
   const [myActions, setMyActions] = useState<Action<Document>[]>([])
-  const options: Record<string, any> = {}
+  const options: Record<string, string | number | undefined> = {}
   const [limit, setLimit] = useState<number>(10)
   const [pattern, setPattern] = useState<string | undefined>(undefined)
   let memoLimit: number = limit
@@ -101,9 +101,9 @@ const JansAssetListPage: React.FC = () => {
   useEffect(() => {
     const actions: Action<Document>[] = []
 
-    const canRead = hasCedarPermission(ASSETS_READ)
-    const canWrite = hasCedarPermission(ASSETS_WRITE)
-    const canDelete = hasCedarPermission(ASSETS_DELETE)
+    const canRead = hasCedarPermission(ASSETS_READ) as boolean
+    const canWrite = hasCedarPermission(ASSETS_WRITE) as boolean
+    const canDelete = hasCedarPermission(ASSETS_DELETE) as boolean
 
     if (canRead) {
       actions.push({
@@ -148,7 +148,7 @@ const JansAssetListPage: React.FC = () => {
       actions.push({
         icon: 'edit',
         tooltip: `${t('messages.edit')}`,
-        onClick: (event: any, rowData: Document | Document[]) => {
+        onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
           if (!Array.isArray(rowData)) {
             navigateToEditPage(rowData)
           }
@@ -161,7 +161,7 @@ const JansAssetListPage: React.FC = () => {
       actions.push({
         icon: () => <DeleteOutlined />,
         tooltip: `${t('messages.delete')}`,
-        onClick: (event: any, rowData: Document | Document[]) => {
+        onClick: (event: React.MouseEvent, rowData: Document | Document[]) => {
           if (!Array.isArray(rowData)) {
             setDeleteData(rowData)
             toggle()
@@ -184,7 +184,10 @@ const JansAssetListPage: React.FC = () => {
     dispatch,
   ])
 
-  const PaperContainer = useCallback((props: any) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback(
+    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+    [],
+  )
   const theme = useContext(ThemeContext)
   const themeColors = getThemeColor(theme?.state?.theme || 'darkBlack')
   const bgThemeColor = { background: themeColors.background }
@@ -292,7 +295,9 @@ const JansAssetListPage: React.FC = () => {
                 selection: false,
                 pageSize: limit,
                 rowStyle: (rowData: Document) => ({
-                  backgroundColor: rowData.enabled ? customColors.logo : customColors.white,
+                  backgroundColor: rowData.enabled
+                    ? themeColors.lightBackground
+                    : customColors.white,
                 }),
                 headerStyle: {
                   ...applicationStyle.tableHeaderStyle,
