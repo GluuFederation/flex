@@ -1,29 +1,5 @@
 import { handleResponse } from 'Utils/ApiUtils'
-
-interface IApi {
-  getAttributes: (
-    opts: AttributeOptions,
-    callback: (error: Error | null, data?: AttributePagedResult) => void,
-  ) => void
-}
-
-interface AttributeOptions {
-  limit?: number
-  pattern?: string
-  status?: string
-  startIndex?: number
-  sortBy?: string
-  sortOrder?: 'ascending' | 'descending'
-  fieldValuePair?: string
-  [key: string]: unknown
-}
-
-interface AttributePagedResult {
-  start?: number
-  totalEntriesCount?: number
-  entriesCount?: number
-  entries?: unknown[]
-}
+import { IApi, AttributeOptions, AttributePagedResult } from './types/AttributeApi'
 
 export default class AttributeApi {
   private readonly api: IApi

@@ -30,7 +30,7 @@ import {
  * ```
  */
 export default class AttributeApi {
-  private api: IConfigurationAttributeApi
+  private readonly api: IConfigurationAttributeApi
 
   constructor(api: IConfigurationAttributeApi) {
     this.api = api
