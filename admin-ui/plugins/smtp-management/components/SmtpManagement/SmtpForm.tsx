@@ -15,30 +15,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { putConfigWorker } from 'Redux/features/authSlice'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { SmtpConfiguration, SmtpTestOptions } from '../../redux/types'
-
-type ConnectProtection = 'None' | 'StartTls' | 'SslTls' | ''
-
-interface SmtpFormValues {
-  host: string
-  port: number | ''
-  connect_protection: ConnectProtection
-  from_name: string
-  from_email_address: string
-  requires_authentication: boolean
-  smtp_authentication_account_username: string
-  smtp_authentication_account_password: string
-  trust_host: boolean
-  key_store: string
-  key_store_password: string
-  key_store_alias: string
-  signing_algorithm: string
-}
-
-interface SmtpFormProps {
-  item: SmtpConfiguration
-  handleSubmit: (values: SmtpConfiguration) => void
-  allowSmtpKeystoreEdit: boolean
-}
+import { ConnectProtection, SmtpFormValues, SmtpFormProps } from './types/SmtpForm.types'
 
 function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) {
   const { t } = useTranslation()
