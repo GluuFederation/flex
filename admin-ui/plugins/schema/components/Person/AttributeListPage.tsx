@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react'
-import MaterialTable from '@material-table/core'
+import MaterialTable, { Action, Column, Options } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { Paper, TablePagination } from '@mui/material'
@@ -27,20 +27,29 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import styled from 'styled-components'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
+import type { JansAttribute, GetAttributesOptions } from 'Plugins/schema/types'
+import type { Dispatch } from '@reduxjs/toolkit'
+import type {
+  RootState,
+  OptionsChangeEvent,
+  StyledBadgeProps,
+} from '../types/AttributeListPage.types'
 
-function AttributeListPage() {
+function AttributeListPage(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
-  const dispatch = useDispatch()
-  const attributes = useSelector((state) => state.attributeReducer.items)
-  const loading = useSelector((state) => state.attributeReducer.loading)
-  const { totalItems } = useSelector((state) => state.attributeReducer)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-  const [myActions, setMyActions] = useState([])
+  const dispatch = useDispatch<Dispatch>()
+  const attributes = useSelector((state: RootState) => state.attributeReducer.items)
+  const loading = useSelector((state: RootState) => state.attributeReducer.loading)
+  const { totalItems } = useSelector((state: RootState) => state.attributeReducer)
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootState) => state.cedarPermissions,
+  )
+  const [myActions, setMyActions] = useState<Action<JansAttribute>[]>([])
 
   // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async () => {
+    const authorizePermissions = async (): Promise<void> => {
       const permissions = [ATTRIBUTE_READ, ATTRIBUTE_WRITE, ATTRIBUTE_DELETE]
       try {
         for (const permission of permissions) {
@@ -52,22 +61,23 @@ function AttributeListPage() {
     }
 
     authorizePermissions()
-  }, [])
+  }, [authorize])
 
   useEffect(() => {}, [cedarPermissions])
 
-  const options = {}
+  const options: GetAttributesOptions = {}
   const pageSize = localStorage.getItem('paggingSize')
-    ? parseInt(localStorage.getItem('paggingSize'))
+    ? parseInt(localStorage.getItem('paggingSize')!)
     : 10
-  const [limit, setLimit] = useState(pageSize)
-  const [pageNumber, setPageNumber] = useState(0)
-  const [pattern, setPattern] = useState(null)
+  const [limit, setLimit] = useState<number>(pageSize)
+  const [pageNumber, setPageNumber] = useState<number>(0)
+  const [pattern, setPattern] = useState<string | null>(null)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'light'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const StyledBadge = styled(Badge)`
+
+  const StyledBadge = styled(Badge)<StyledBadgeProps>`
     background-color: ${(props) =>
       props.status === 'active' ? customColors.darkGray : customColors.paleYellow} !important;
     color: ${customColors.white} !important;
@@ -77,17 +87,16 @@ function AttributeListPage() {
     makeOptions()
     dispatch(getAttributes({ options }))
   }, [])
-  const limitId = 'searchLimit'
-  const patternId = 'searchPattern'
   SetTitle(t('fields.attributes'))
 
   const navigate = useNavigate()
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
-  function handleOptionsChange(event) {
+  const [item, setItem] = useState<JansAttribute>({})
+  const [modal, setModal] = useState<boolean>(false)
+  const toggle = (): void => setModal(!modal)
+
+  function handleOptionsChange(event: OptionsChangeEvent): void {
     if (event.target.name === 'limit') {
-      setLimit(event.target.value)
+      setLimit(parseInt(event.target.value))
     } else if (event.target.name === 'pattern') {
       setPattern(event.target.value)
       if (event.keyCode === 13) {
@@ -98,7 +107,7 @@ function AttributeListPage() {
     }
   }
 
-  const onPageChangeClick = (page) => {
+  const onPageChangeClick = (page: number): void => {
     makeOptions()
     const startCount = page * limit
     options['startIndex'] = startCount
@@ -106,7 +115,8 @@ function AttributeListPage() {
     setPageNumber(page)
     dispatch(getAttributes({ options }))
   }
-  const onRowCountChangeClick = (count) => {
+
+  const onRowCountChangeClick = (count: number): void => {
     makeOptions()
     options['startIndex'] = 0
     options['limit'] = count
@@ -115,7 +125,7 @@ function AttributeListPage() {
     dispatch(getAttributes({ options }))
   }
 
-  function makeOptions() {
+  function makeOptions(): void {
     options['limit'] = limit
     if (pattern) {
       options['pattern'] = pattern
@@ -123,40 +133,40 @@ function AttributeListPage() {
       delete options['pattern']
     }
   }
-  function handleGoToAttributeEditPage(row) {
+
+  function handleGoToAttributeEditPage(row: JansAttribute): void {
     dispatch(setCurrentItem({ item: row }))
-    return navigate(`/attribute/edit/:` + row.inum)
+    navigate(`/attribute/edit/:${row.inum}`)
   }
-  function handleGoToAttributeViewPage(row) {
+
+  function handleGoToAttributeViewPage(row: JansAttribute): void {
     dispatch(setCurrentItem({ item: row }))
-    return navigate(`/attribute/view/:` + row.inum)
+    navigate(`/attribute/view/:${row.inum}`)
   }
-  function handleAttribueDelete(row) {
+
+  function handleAttribueDelete(row: JansAttribute): void {
     setItem(row)
     toggle()
   }
-  function handleGoToAttributeAddPage() {
-    return navigate('/attribute/new')
+
+  function handleGoToAttributeAddPage(): void {
+    navigate('/attribute/new')
   }
 
   useEffect(() => {
-    const actions = []
+    const actions: Action<JansAttribute>[] = []
 
     const canRead = hasCedarPermission(ATTRIBUTE_READ)
     const canWrite = hasCedarPermission(ATTRIBUTE_WRITE)
     const canDelete = hasCedarPermission(ATTRIBUTE_DELETE)
 
     if (canRead) {
-      actions.push((rowData) => ({
+      actions.push({
         icon: 'visibility',
-        iconProps: {
-          id: 'viewAttribute' + rowData.inum,
-          style: { color: customColors.darkGray },
-        },
         tooltip: `${t('tooltips.view_attribute')}`,
-        onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
+        onClick: (event, rowData) => handleGoToAttributeViewPage(rowData as JansAttribute),
         disabled: false,
-      }))
+      })
       actions.push({
         icon: () => (
           <GluuAdvancedSearch
@@ -190,16 +200,12 @@ function AttributeListPage() {
     }
 
     if (canWrite) {
-      actions.push((rowData) => ({
+      actions.push({
         icon: 'edit',
-        iconProps: {
-          id: 'editAttribute' + rowData.inum,
-          style: { color: customColors.darkGray },
-        },
         tooltip: `${t('tooltips.edit_attribute')}`,
-        onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+        onClick: (event, rowData) => handleGoToAttributeEditPage(rowData as JansAttribute),
         disabled: !hasCedarPermission(ATTRIBUTE_WRITE),
-      }))
+      })
       actions.push({
         icon: 'add',
         tooltip: `${t('tooltips.add_attribute')}`,
@@ -213,32 +219,25 @@ function AttributeListPage() {
     }
 
     if (canDelete) {
-      actions.push((rowData) => ({
+      actions.push({
         icon: DeleteOutlinedIcon,
-        iconProps: {
-          style: { color: customColors.darkGray, id: 'deleteAttribute' + rowData.inum },
-        },
         tooltip: `${t('tooltips.delete_attribute')}`,
-        onClick: (event, rowData) => handleAttribueDelete(rowData),
+        onClick: (event, rowData) => handleAttribueDelete(rowData as JansAttribute),
         disabled: !hasCedarPermission(ATTRIBUTE_DELETE),
-      }))
+      })
     }
 
     setMyActions(actions)
-  }, [cedarPermissions, limit, pattern, t])
+  }, [cedarPermissions, limit, pattern, t, hasCedarPermission])
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-  const DetailsPanel = useCallback((rowData) => <AttributeDetailPage row={rowData.rowData} />, [])
+  const DetailsPanel = useCallback(
+    (rowData: { rowData: JansAttribute }) => <AttributeDetailPage row={rowData.rowData} />,
+    [],
+  )
 
-  function getBadgeTheme(status) {
-    if (status === 'ACTIVE') {
-      return `primary-${selectedTheme}`
-    } else {
-      return 'warning'
-    }
-  }
-  function onDeletionConfirmed() {
-    dispatch(deleteAttribute({ inum: item.inum, name: item?.name }))
+  function onDeletionConfirmed(): void {
+    dispatch(deleteAttribute({ inum: item.inum!, name: item?.name }))
     navigate('/attributes')
     toggle()
   }
@@ -252,13 +251,42 @@ function AttributeListPage() {
           onPageChangeClick(page)
         }}
         rowsPerPage={limit}
-        onRowsPerPageChange={(event) => onRowCountChangeClick(event.target.value)}
+        onRowsPerPageChange={(event) => onRowCountChangeClick(parseInt(event.target.value))}
       />
     ),
-    [pageNumber, totalItems, onPageChangeClick, limit, onRowCountChangeClick],
+    [pageNumber, totalItems, limit],
   )
 
-  const PaperContainer = useCallback((props) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback(
+    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+    [],
+  )
+
+  const columns: Column<JansAttribute>[] = [
+    { title: `${t('fields.inum')}`, field: 'inum' },
+    { title: `${t('fields.displayname')}`, field: 'displayName' },
+    {
+      title: `${t('fields.status')}`,
+      field: 'status',
+      type: 'boolean',
+      render: (rowData) => (
+        <StyledBadge status={rowData.status || 'inactive'}>{rowData.status}</StyledBadge>
+      ),
+    },
+  ]
+
+  const tableOptions: Options<JansAttribute> = {
+    search: false,
+    idSynonym: 'inum',
+    selection: false,
+    searchFieldAlignment: 'left',
+    pageSize: limit,
+    headerStyle: {
+      ...applicationStyle.tableHeaderStyle,
+      ...bgThemeColor,
+    } as React.CSSProperties,
+    actionsColumnIndex: -1,
+  }
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -270,34 +298,12 @@ function AttributeListPage() {
               Container: PaperContainer,
               Pagination: PaginationWrapper,
             }}
-            columns={[
-              { title: `${t('fields.inum')}`, field: 'inum' },
-              { title: `${t('fields.displayname')}`, field: 'displayName' },
-              {
-                title: `${t('fields.status')}`,
-                field: 'status',
-                type: 'boolean',
-                render: (rowData) => (
-                  <StyledBadge status={rowData.status}>{rowData.status}</StyledBadge>
-                ),
-              },
-            ]}
+            columns={columns}
             data={attributes}
             isLoading={loading}
             title=""
             actions={myActions}
-            options={{
-              search: false,
-              idSynonym: 'inum',
-              selection: false,
-              searchFieldAlignment: 'left',
-              pageSize: limit,
-              headerStyle: {
-                ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
-              },
-              actionsColumnIndex: -1,
-            }}
+            options={tableOptions}
             detailPanel={DetailsPanel}
           />
         </GluuViewWrapper>
