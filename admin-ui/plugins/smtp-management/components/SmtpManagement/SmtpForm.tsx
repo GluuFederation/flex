@@ -163,7 +163,8 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
       nextValue = value === 'true' ? true : value === 'false' ? false : value
     }
 
-    ;(temp as Record<string, unknown>)[name] = nextValue
+    const tempRecord = temp as Record<string, unknown>
+    tempRecord[name] = nextValue
 
     if (JSON.stringify(temp) !== JSON.stringify(item)) {
       setHideTestButton(true)

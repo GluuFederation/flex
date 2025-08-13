@@ -22,22 +22,8 @@ import {
   SmtpUpdatePayload,
   SmtpTestPayload,
   RootState,
-  SagaError,
   IConfigurationSMTPApi,
 } from '../types/SmtpApi.type'
-
-// Type guard function to check if error is SagaError
-function isSagaError(error: unknown): error is SagaError {
-  return typeof error === 'object' && error !== null && ('response' in error || 'message' in error)
-}
-
-// Helper function to safely extract error message
-function getErrorMessage(error: unknown): string {
-  if (isSagaError(error)) {
-    return error.message || 'Unknown error occurred'
-  }
-  return String(error)
-}
 
 function* newFunction(): SagaIterator<SmtpApi> {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
