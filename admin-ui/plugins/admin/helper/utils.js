@@ -18,7 +18,7 @@ export const isValidDate = (date) => dayjs(date).isValid()
 export const isStartAfterEnd = (startDate, endDate) =>
   startDate && endDate && dayjs(startDate).isAfter(dayjs(endDate))
 
-export const dateConverter = (date, datePattern = 'MM-DD-YYYY') => dayjs(date).format(datePattern)
+export const dateConverter = (date, datePattern = 'DD-MM-YYYY') => dayjs(date).format(datePattern)
 
 export const clearInputById = (id) => {
   const el = document.getElementById(id)
@@ -26,6 +26,8 @@ export const clearInputById = (id) => {
     el.value = ''
   }
 }
+
+export const auditListTimestampRegex = /^(\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3})\s+(.+)$/
 
 export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue) => {
   return enabledFeatureWebhooks.map((originalWebhook) => {

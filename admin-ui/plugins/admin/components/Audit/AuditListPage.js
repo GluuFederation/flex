@@ -1,14 +1,21 @@
-import React, { useState, useMemo, useContext, useCallback, useLayoutEffect } from 'react'
+import React, {
+  useState,
+  useMemo,
+  useContext,
+  useCallback,
+  useLayoutEffect,
+  useEffect,
+} from 'react'
 import { Badge } from 'reactstrap'
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import MaterialTable from '@material-table/core'
-import { Paper, Button } from '@mui/material'
+import { Paper, Button, TablePagination } from '@mui/material'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import { LIMIT_ID, AUDIT_PATTERN_ID } from 'Plugins/admin/common/Constants'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
@@ -16,24 +23,46 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SetTitle from 'Utils/SetTitle'
 import { buildPayload } from '@/utils/PermChecker'
-import { clearInputById } from 'Plugins/admin/helper/utils'
+import {
+  auditListTimestampRegex,
+  clearInputById,
+  dateConverter,
+  hasBothDates,
+  hasOnlyOneDate,
+  isStartAfterEnd,
+  isValidDate,
+} from 'Plugins/admin/helper/utils'
 
 const AuditListPage = () => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   SetTitle(t('menus.audit_logs'))
 
-  const pageSize = Number(localStorage.getItem('paggingSize')) || 10
+  // Get audit data from Redux
+  const auditData = useSelector((state) => state.auditReducer)
+  const totalItems = auditData?.totalEntriesCount || 0
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+
+  // Memoize theme calculations to prevent recalculation on every render
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const bgThemeColor = useMemo(
+    () => ({ background: themeColors.background }),
+    [themeColors.background],
+  )
+  const badgeColor = useMemo(() => `primary-${selectedTheme}`, [selectedTheme])
 
   const [limit, setLimit] = useState(10)
-  const [pattern] = useState('') // Keep this for now
-  const [, setStartIndex] = useState(0)
+  const [pattern, setPattern] = useState(null)
+  const [pageNumber, setPageNumber] = useState(0)
   const [startDate, setStartDate] = useState(dayjs().subtract(14, 'day'))
   const [endDate, setEndDate] = useState(dayjs())
+
+  // Helper function to get current pattern from DOM
+  const getCurrentPattern = useCallback(() => {
+    return document.getElementById(AUDIT_PATTERN_ID)?.value?.trim() || ''
+  }, [])
 
   const tableColumns = useMemo(
     () => [
@@ -55,42 +84,34 @@ const AuditListPage = () => {
         field: 'log',
         render: (rowData) => {
           const log = rowData.log || ''
-          const match = log.match(/^(\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (\w+) (.+)$/)
-          let date = '',
-            type = '',
-            content = log
+          const match = log.match(auditListTimestampRegex)
+
           if (match) {
-            date = match[1]
-            type = match[2]
-            content = match[3]
+            const timestamp = match[1]
+            const content = match[2]
+
+            // Extract only date portion from timestamp (DD-MM-YYYY)
+            const dateOnly = timestamp.split(' ')[0] || timestamp
+
+            return (
+              <div style={{ fontSize: 13, lineHeight: 1.4, display: 'flex', alignItems: 'center' }}>
+                <Badge
+                  color={badgeColor}
+                  pill
+                  style={{ marginRight: 8, fontSize: 11, fontWeight: 600 }}
+                >
+                  {dateOnly}
+                </Badge>
+                <span style={{ fontSize: 12 }}>{content}</span>
+              </div>
+            )
+          } else {
+            return <span style={{ fontSize: 13 }}>{log}</span>
           }
-          return (
-            <span>
-              {date ? (
-                <Badge
-                  color={`primary-${selectedTheme}`}
-                  pill
-                  style={{ marginRight: 8, fontSize: 13, fontWeight: 600 }}
-                >
-                  {date}
-                </Badge>
-              ) : null}
-              {type ? (
-                <Badge
-                  color="success"
-                  pill
-                  style={{ marginRight: 8, fontSize: 13, fontWeight: 600 }}
-                >
-                  {type}
-                </Badge>
-              ) : null}
-              <span style={{ fontSize: 13 }}>{content}</span>
-            </span>
-          )
         },
       },
     ],
-    [selectedTheme],
+    [badgeColor],
   )
 
   useLayoutEffect(() => {
@@ -103,36 +124,36 @@ const AuditListPage = () => {
 
   const handleOptionsChange = useCallback((event) => {
     if (event.target.name === 'limit') {
-      console.log('Limit changed to:', event.target.value)
       setLimit(Number(event.target.value))
-      setStartIndex(0)
-    } else if (event.target.name === 'pattern') {
-      console.log('Pattern changed to:', event.target.value)
     }
   }, [])
 
   const filters = useMemo(
     () => ({
       hasPattern: pattern && pattern.trim() !== '',
-      hasBothDates: startDate && endDate,
-      hasOnlyOneDate: (startDate && !endDate) || (!startDate && endDate),
-      isStartAfterEnd: startDate && endDate && startDate.isAfter(endDate),
-      startDateStr: startDate ? startDate.format('YYYY-MM-DD') : '',
-      endDateStr: endDate ? endDate.format('YYYY-MM-DD') : '',
+      hasBothDates: hasBothDates(startDate, endDate),
+      hasOnlyOneDate: hasOnlyOneDate(startDate, endDate),
+      isStartAfterEnd: isStartAfterEnd(startDate, endDate),
+      startDateStr: isValidDate(startDate) ? dateConverter(startDate) : '',
+      endDateStr: isValidDate(endDate) ? dateConverter(endDate) : '',
     }),
     [pattern, startDate, endDate],
   )
 
   const isViewDisabled = useMemo(() => {
-    if (startDate && !endDate) return true
-    if (filters.hasBothDates && filters.isStartAfterEnd) return true
-    return false
-  }, [startDate, endDate, filters])
+    // Disable if start date is after end date
+    if (filters.isStartAfterEnd) return true
+    if (filters.hasOnlyOneDate) return true
+    if (filters.hasPattern && !startDate && !endDate) return false
+    if (filters.hasBothDates) return false
+    return true
+  }, [filters, startDate, endDate])
 
   const handleViewClick = () => {
     if (isViewDisabled) return
-    setStartIndex(0)
-    const currentPattern = document.getElementById(AUDIT_PATTERN_ID)?.value?.trim() || ''
+    setPageNumber(0)
+    const currentPattern = getCurrentPattern()
+    setPattern(currentPattern)
     const params = { limit: Number(limit), startIndex: 0 }
     if (currentPattern !== '') params.pattern = currentPattern
     if (filters.hasBothDates) {
@@ -148,69 +169,84 @@ const AuditListPage = () => {
     dispatch({ type: 'audit/getAuditLogs', payload: opts })
   }
 
-  const dummyLogs = [
-    '24-06 11:54:14.291 INFO [gtp1487470647-23] jans.configapi.interceptor.AuditLogInterceptor.java:63- , ********** Audit Request Detail Start **********',
-    '24-06 11:54:14.292 INFO [gtp1487470647-23] jans.configapi.interceptor.AuditLogInterceptor.java:69- User fetched /scopes using client:null,',
-    '24-06 11:54:14.295 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:72- , ********** Audit Request Detail Start **********',
-    '24-06 11:54:14.295 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:77- endPoint: /scopes, beanClassName:org.jboss.weld.interceptor.proxy.NonTerminalAroundInvokeInvocationContext, method:getScopes, from:123.281.8.12, user:null',
-    '24-06 11:54:14.295 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:82- headerData: {user-inow=null}',
-    '24-06 11:54:14.296 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:type, clazz:class java.lang.String, clazz.isPrimitive():false',
-    '24-06 11:54:14.296 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.296 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:limit, clazz:int, clazz.isPrimitive():true',
-    '24-06 11:54:14.296 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:pattern, clazz:class java.lang.String, clazz.isPrimitive():false',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:startIndex, clazz:int, clazz.isPrimitive():true',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:sortBy, clazz:class java.lang.String, clazz.isPrimitive():false',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:sortOrder, clazz:class java.lang.String, clazz.isPrimitive():false',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:withAssociatedClients, clazz:boolean, clazz.isPrimitive():true',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:fieldValuePair, clazz:class java.lang.String, clazz.isPrimitive():false',
-    '24-06 11:54:14.297 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.298 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:82-  , ********** Audit Request Detail End **********',
-    '24-06 11:54:14.298 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:87- , ********** Audit Request Detail End **********',
-    '24-06 11:54:14.298 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:100- , ********** Audit Response Detail Start **********',
-    '24-06 11:54:14.298 INFO [gtp1487470647-23] jans.configapi.interceptor.AuditLogInterceptor.java:94- , ********** Audit Response Detail Start **********',
-    '24-06 11:54:14.298 INFO [gtp1487470647-23] jans.configapi.interceptor.AuditLogInterceptor.java:95- HTTP Status:200 OK',
-    '24-06 11:54:14.298 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:101- HTTP Status:200 OK',
-    '24-06 11:54:14.298 INFO [gtp1487470647-23] jans.configapi.interceptor.AuditLogInterceptor.java:96- API Call:getScopes',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:102- API Call:getScopes',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:125- RequestReaderInterceptor - Processing Data - paramCount:3 ,parameters:[java.lang.String searchPattern, int limit, boolean dn], clazzArray:[class java.lang.String, int, boolean]',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:searchPattern, clazz:class java.lang.String, clazz.isPrimitive():false',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:limit, clazz:int, clazz.isPrimitive():true',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:dn, clazz:boolean, clazz.isPrimitive():true',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.299 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:132-  Method call parameters:[], method:count',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:scope, clazz:interface io.jans.model.ldap.GluuLdapConfiguration, clazz.isPrimitive():false',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:searchPattern, clazz:class java.lang.String, clazz.isPrimitive():false',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:limit, clazz:int, clazz.isPrimitive():true',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:dn, clazz:boolean, clazz.isPrimitive():true',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:132-  Method call parameters:[java.lang.String, int, boolean], method:findScopes',
-    '24-06 11:54:14.300 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:totalCount, clazz:int, clazz.isPrimitive():true',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:start, clazz:int, clazz.isPrimitive():true',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:entriesCount, clazz:int, clazz.isPrimitive():true',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:111- propertyName:entries, clazz:class java.util.ArrayList, clazz.isPrimitive():false',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:117- RequestReaderInterceptor final - obj - , obj:',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:103- Response:org.jboss.resteasy.core.interception.ServerWriterInterceptorContext@5f5d6f6e',
-    '24-06 11:54:14.301 INFO [gtp1487470647-23] jans.configapi.interceptor.AuditLogInterceptor.java:97- Response:org.jboss.resteasy.core.interception.ServerWriterInterceptorContext@5f5d6f6e',
-    '24-06 11:54:14.302 INFO [gtp1487470647-23] jans.configapi.interceptor.AuditLogInterceptor.java:98- , ********** Audit Response Detail End **********',
-    '24-06 11:54:14.302 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:104- , ********** Audit Response Detail End **********',
-    '24-06 11:54:14.302 INFO [gtp1487470647-23] jans.configapi.interceptor.DataLogInterceptor.java:108- , ********** DataLogInterceptor - DONE **********',
-    '24-06 11:54:14.302 INFO [gtp1487470647-23] jans.configapi.interceptor.AuditLogInterceptor.java:102- , ********** AuditLogInterceptor - DONE **********',
-  ]
-  const dummyRows = dummyLogs.map((log, idx) => ({ serial: idx + 1, log }))
+  // Pagination handlers
+  const onPageChangeClick = useCallback(
+    (page) => {
+      const startCount = page * limit
+      const params = {
+        limit: Number(limit),
+        startIndex: startCount,
+      }
+      const currentPattern = getCurrentPattern()
+      if (currentPattern !== '') params.pattern = currentPattern
+      if (filters.hasBothDates) {
+        params.startDate = filters.startDateStr
+        params.endDate = filters.endDateStr
+      }
+
+      setPageNumber(page)
+      buildPayload(userAction, 'GET Audit Logs', params)
+      dispatch({ type: 'audit/getAuditLogs', payload: params })
+    },
+    [limit, filters, userAction, dispatch, getCurrentPattern],
+  )
+
+  const onRowCountChangeClick = useCallback(
+    (count) => {
+      const params = {
+        limit: Number(count),
+        startIndex: 0,
+      }
+
+      const currentPattern = getCurrentPattern()
+      if (currentPattern !== '') params.pattern = currentPattern
+      if (filters.hasBothDates) {
+        params.startDate = filters.startDateStr
+        params.endDate = filters.endDateStr
+      }
+
+      setPageNumber(0)
+      setLimit(count)
+      buildPayload(userAction, 'GET Audit Logs', params)
+      dispatch({ type: 'audit/getAuditLogs', payload: params })
+    },
+    [filters, userAction, dispatch, getCurrentPattern],
+  )
+
+  const auditRows = useMemo(() => {
+    let items = null
+    if (auditData?.entries) {
+      items = auditData.entries
+    } else if (auditData?.audits) {
+      items = auditData.audits
+    }
+
+    if (!items || !Array.isArray(items)) {
+      return []
+    }
+
+    const rows = items.map((auditString, idx) => {
+      return {
+        id: idx + 1,
+        serial: idx + 1,
+        log: auditString,
+      }
+    })
+
+    return rows
+  }, [auditData])
+
+  useEffect(() => {
+    const params = { limit: Number(limit), startIndex: 0 }
+
+    fetchAuditInfo(params)
+  }, [])
+
+  useEffect(() => {
+    if (auditData?.error) {
+      console.error(auditData?.error)
+    }
+  }, [auditData])
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -218,10 +254,23 @@ const AuditListPage = () => {
         <MaterialTable
           components={{
             Container: (props) => <Paper {...props} elevation={0} />,
+            Pagination: () => (
+              <TablePagination
+                count={totalItems}
+                page={pageNumber}
+                onPageChange={(event, page) => {
+                  onPageChangeClick(page)
+                }}
+                rowsPerPage={limit}
+                onRowsPerPageChange={(event) =>
+                  onRowCountChangeClick(parseInt(event.target.value, 10))
+                }
+              />
+            ),
           }}
           columns={tableColumns}
-          data={dummyRows}
-          isLoading={false}
+          data={auditRows}
+          isLoading={auditData?.loading || false}
           title=""
           actions={[
             {
@@ -240,13 +289,13 @@ const AuditListPage = () => {
                     limitId={LIMIT_ID}
                     patternId={AUDIT_PATTERN_ID}
                     limit={limit}
-                    pattern="" // Don't pass pattern state
+                    pattern={pattern}
                     handler={handleOptionsChange}
                     showLimit={false}
                   />
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
-                      format="MM/DD/YYYY"
+                      format="DD/MM/YYYY"
                       label={t('dashboard.start_date')}
                       value={startDate}
                       onChange={(date) => setStartDate(date)}
@@ -259,13 +308,12 @@ const AuditListPage = () => {
                         },
                       }}
                     />
-                  </LocalizationProvider>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
-                      format="MM/DD/YYYY"
+                      format="DD/MM/YYYY"
                       label={t('dashboard.end_date')}
                       value={endDate}
                       onChange={(date) => setEndDate(date)}
+                      maxDate={dayjs()}
                       slotProps={{
                         textField: {
                           sx: {
@@ -305,14 +353,14 @@ const AuditListPage = () => {
               search: false,
               searchFieldAlignment: 'left',
               selection: false,
-              pageSize: pageSize,
+              pageSize: limit,
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
                 ...bgThemeColor,
               },
               actionsColumnIndex: -1,
             }),
-            [pageSize, bgThemeColor],
+            [limit, bgThemeColor],
           )}
         />
       </CardBody>

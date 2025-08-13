@@ -179,3 +179,9 @@ The Custom Asset Upload feature enables users to upload various types of assets 
 - **Configuration Enhancements:** The feature supports uploading configuration-related files like .xml, .properties, or .json which may define behaviors, rules, or component settings for the server or its modules.
 
 ![image](../../assets/admin-ui/jans-assets.png)
+
+## Audit Logs
+
+The Audit Logs component displays a record of all activities and events that have taken place in the Janssen system. It helps administrators track actions, identify who performed them, and when they occurred. Each log entry includes details like the timestamp, user, action, and affected resources, making it useful for security monitoring, compliance, and troubleshooting.
+
+![image](../../assets/admin-ui/audit-log.png)

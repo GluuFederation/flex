@@ -3,6 +3,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   audits: [],
+  entries: [],
+  totalEntriesCount: 0,
+  entriesCount: 0,
+  start: 0,
   loading: false,
 }
 
@@ -15,11 +19,30 @@ const auditSlice = createSlice({
     },
     getAuditLogsResponse: (state, action) => {
       state.loading = false
-      state.audits = action.payload?.data || []
+      const responseData = action.payload?.data || {}
+
+      // Handle both data structures
+      if (responseData.entries) {
+        state.entries = responseData.entries
+        state.totalEntriesCount = responseData.totalEntriesCount || 0
+        state.entriesCount = responseData.entriesCount || 0
+        state.start = responseData.start || 0
+        state.audits = responseData.entries // Keep backward compatibility
+      } else if (Array.isArray(responseData)) {
+        state.audits = responseData
+        state.entries = responseData
+      } else {
+        state.audits = []
+        state.entries = []
+      }
     },
     failedAuditLogsResponse: (state) => {
       state.loading = false
       state.audits = []
+      state.entries = []
+      state.totalEntriesCount = 0
+      state.entriesCount = 0
+      state.start = 0
     },
   },
 })

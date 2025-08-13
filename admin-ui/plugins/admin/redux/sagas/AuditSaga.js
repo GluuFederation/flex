@@ -27,11 +27,9 @@ export function* getAuditLogs({ payload }) {
     const auditApi = yield* newFunction()
     const data = yield call(auditApi.getAuditLogs, payload)
 
-    const { totalEntriesCount } = data
-
     yield put(
       getAuditLogsResponse({
-        data: totalEntriesCount > 0 && data?.code !== 400 ? data?.entries : [],
+        data: data?.totalEntriesCount > 0 && data?.code !== 400 ? data : { entries: [] },
       }),
     )
     yield call(postUserAction, audit)
