@@ -202,8 +202,8 @@ const GluuCommitDialog = ({
                       }}
                     >
                       {userMessage.length < 10
-                        ? `${10 - userMessage.length} ${userMessage.length ? ' more' : ''} characters required (minimum 10)`
-                        : `${userMessage.length - 512} characters over limit (maximum 512)`}
+                        ? `${10 - userMessage.length} ${userMessage.length ? t('placeholders.more') : ''} ${t('placeholders.charLessThan10')}`
+                        : `${userMessage.length - 512} ${t('placeholders.charMoreThan512')}`}
                     </span>
                   )}
                 </Col>
@@ -216,7 +216,7 @@ const GluuCommitDialog = ({
                 <i className="fa fa-check-circle me-2"></i>
                 {t('actions.accept')}
               </Button>
-            )}{' '}
+            )}
             <Button onClick={closeModal}>
               <i className="fa fa-remove me-2"></i>
               {t('actions.no')}

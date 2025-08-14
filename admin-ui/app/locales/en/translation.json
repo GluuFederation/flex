@@ -858,7 +858,10 @@
     "iconUrl": "Icon URL",
     "level": "Level",
     "expires_after": "Expiration After Date",
-    "expires_before": "Expiration Before Date"
+    "expires_before": "Expiration Before Date",
+    "charMoreThan512": "characters over limit (maximum 512)",
+    "charLessThan10": "characters required (minimum 10)",
+    "more": " more"
   },
   "titles": {
     "activeTokens": "Active Tokens",
