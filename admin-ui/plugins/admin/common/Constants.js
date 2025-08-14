@@ -1,5 +1,7 @@
 export const LIMIT_ID = 'searchLimit'
 export const PATTERN_ID = 'searchPattern'
+export const AUDIT_PATTERN_ID = 'auditSearchPattern'
+
 export const TYPE_ID = 'typeId'
 export const LIMIT = 'limit'
 export const TYPE = 'type'

@@ -1,78 +1,252 @@
-import React, { useState, useEffect, useMemo, useContext, useCallback } from 'react'
-import moment from 'moment'
+import React, {
+  useState,
+  useMemo,
+  useContext,
+  useCallback,
+  useLayoutEffect,
+  useEffect,
+} from 'react'
+import { Badge } from 'reactstrap'
+import dayjs from 'dayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import MaterialTable from '@material-table/core'
-import { Paper } from '@mui/material'
+import { Paper, Button, TablePagination } from '@mui/material'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
-import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
+import { LIMIT_ID, AUDIT_PATTERN_ID } from 'Plugins/admin/common/Constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { getAuditLogs } from 'Plugins/admin/redux/features/auditSlice'
-import { fetchAuditLogs } from 'Redux/api/backend-api'
 import SetTitle from 'Utils/SetTitle'
+import { buildPayload } from '@/utils/PermChecker'
+import {
+  auditListTimestampRegex,
+  clearInputById,
+  dateConverter,
+  hasBothDates,
+  hasOnlyOneDate,
+  isStartAfterEnd,
+  isValidDate,
+} from 'Plugins/admin/helper/utils'
 
-function AuditListPage() {
-  const audits = useSelector((state) => state.auditReducer.audits)
-  const loading = useSelector((state) => state.auditReducer.loading)
+const AuditListPage = () => {
   const dispatch = useDispatch()
   const { t } = useTranslation()
-  const pageSize = Number(localStorage.getItem('paggingSize')) || 10
+  SetTitle(t('menus.audit_logs'))
+
+  // Get audit data from Redux
+  const auditData = useSelector((state) => state.auditReducer)
+  const totalItems = auditData?.totalEntriesCount || 0
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
-  const token = useSelector((state) => state.authReducer.token.access_token)
-  console.log('token', token)
 
-  SetTitle(t('menus.audit_logs'))
+  // Memoize theme calculations to prevent recalculation on every render
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const bgThemeColor = useMemo(
+    () => ({ background: themeColors.background }),
+    [themeColors.background],
+  )
+  const badgeColor = useMemo(() => `primary-${selectedTheme}`, [selectedTheme])
+
+  const [limit, setLimit] = useState(10)
+  const [pattern, setPattern] = useState(null)
+  const [pageNumber, setPageNumber] = useState(0)
+  const [startDate, setStartDate] = useState(dayjs().subtract(14, 'day'))
+  const [endDate, setEndDate] = useState(dayjs())
+
+  // Helper function to get current pattern from DOM
+  const getCurrentPattern = useCallback(() => {
+    return document.getElementById(AUDIT_PATTERN_ID)?.value?.trim() || ''
+  }, [])
 
   const tableColumns = useMemo(
     () => [
-      { title: `${t('fields.date')}`, field: 'date' },
       {
-        title: `${t('fields.info')}`,
-        field: 'info',
-        render: (rowData) => (
-          <span>{moment(rowData.timestamp).format('ddd, MMM DD, YYYY h:mm:ss A')}</span>
-        ),
+        title: 'Sr No.',
+        field: 'serial',
+        render: (rowData) => rowData.serial,
+        width: 60,
+        cellStyle: { width: 60, padding: '0 8px', textAlign: 'left' },
+        headerStyle: {
+          width: 120,
+          padding: '0 8px',
+          textAlign: 'left',
+          whiteSpace: 'nowrap',
+        },
       },
-      { title: `${t('fields.headers')}`, field: 'header' },
-    ],
-    [t],
-  )
-  const [updatedColumns, setUpdatedColumns] = useState(tableColumns)
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState('')
-  let memoLimit = limit
-  let memoPattern = pattern
+      {
+        title: 'Log',
+        field: 'log',
+        render: (rowData) => {
+          const log = rowData.log || ''
+          const match = log.match(auditListTimestampRegex)
 
-  // Handler for GluuAdvancedSearch
-  const handleOptionsChange = useCallback((event) => {
-    console.log('event.target.name', event.target.name)
-    if (event.target.name === 'limit') {
-      memoLimit = event.target.value
-      setLimit(event.target.value)
-    } else if (event.target.name === 'pattern') {
-      memoPattern = event.target.value
-      setPattern(event.target.value)
+          if (match) {
+            const timestamp = match[1]
+            const content = match[2]
+
+            // Extract only date portion from timestamp (DD-MM-YYYY)
+            const dateOnly = timestamp.split(' ')[0] || timestamp
+
+            return (
+              <div style={{ fontSize: 14, lineHeight: 1.4, display: 'flex', alignItems: 'center' }}>
+                <Badge
+                  color={badgeColor}
+                  pill
+                  style={{ marginRight: 8, fontSize: 14, fontWeight: 600 }}
+                >
+                  {dateOnly}
+                </Badge>
+                <span style={{ fontSize: 14 }}>{content}</span>
+              </div>
+            )
+          } else {
+            return <span style={{ fontSize: 14 }}>{log}</span>
+          }
+        },
+      },
+    ],
+    [badgeColor],
+  )
+
+  useLayoutEffect(() => {
+    return () => {
+      clearInputById(AUDIT_PATTERN_ID)
     }
   }, [])
 
-  useEffect(() => {
-    dispatch(getAuditLogs())
-    setUpdatedColumns(tableColumns)
+  const userAction = {}
 
-    fetchAuditLogs(token).then((data) => {
-      console.log('fetchAuditLogs result:', data)
+  const handleOptionsChange = useCallback((event) => {
+    if (event.target.name === 'limit') {
+      setLimit(Number(event.target.value))
+    }
+  }, [])
+
+  const filters = useMemo(
+    () => ({
+      hasPattern: pattern && pattern.trim() !== '',
+      hasBothDates: hasBothDates(startDate, endDate),
+      hasOnlyOneDate: hasOnlyOneDate(startDate, endDate),
+      isStartAfterEnd: isStartAfterEnd(startDate, endDate),
+      startDateStr: isValidDate(startDate) ? dateConverter(startDate) : '',
+      endDateStr: isValidDate(endDate) ? dateConverter(endDate) : '',
+    }),
+    [pattern, startDate, endDate],
+  )
+
+  const isViewDisabled = useMemo(() => {
+    // Disable if start date is after end date
+    if (filters.isStartAfterEnd) return true
+    if (filters.hasOnlyOneDate) return true
+    if (filters.hasPattern && !startDate && !endDate) return false
+    if (filters.hasBothDates) return false
+    return true
+  }, [filters, startDate, endDate])
+
+  const handleViewClick = () => {
+    if (isViewDisabled) return
+    setPageNumber(0)
+    const currentPattern = getCurrentPattern()
+    setPattern(currentPattern)
+    const params = { limit: Number(limit), startIndex: 0 }
+    if (currentPattern !== '') params.pattern = currentPattern
+    if (filters.hasBothDates) {
+      params.startDate = filters.startDateStr
+      params.endDate = filters.endDateStr
+    }
+
+    fetchAuditInfo(params)
+  }
+
+  const fetchAuditInfo = (opts) => {
+    buildPayload(userAction, 'GET Audit Logs', opts)
+    dispatch({ type: 'audit/getAuditLogs', payload: opts })
+  }
+
+  // Pagination handlers
+  const onPageChangeClick = useCallback(
+    (page) => {
+      const startCount = page * limit
+      const params = {
+        limit: Number(limit),
+        startIndex: startCount,
+      }
+      const currentPattern = getCurrentPattern()
+      if (currentPattern !== '') params.pattern = currentPattern
+      if (filters.hasBothDates) {
+        params.startDate = filters.startDateStr
+        params.endDate = filters.endDateStr
+      }
+
+      setPageNumber(page)
+      buildPayload(userAction, 'GET Audit Logs', params)
+      dispatch({ type: 'audit/getAuditLogs', payload: params })
+    },
+    [limit, filters, userAction, dispatch, getCurrentPattern],
+  )
+
+  const onRowCountChangeClick = useCallback(
+    (count) => {
+      const params = {
+        limit: Number(count),
+        startIndex: 0,
+      }
+
+      const currentPattern = getCurrentPattern()
+      if (currentPattern !== '') params.pattern = currentPattern
+      if (filters.hasBothDates) {
+        params.startDate = filters.startDateStr
+        params.endDate = filters.endDateStr
+      }
+
+      setPageNumber(0)
+      setLimit(count)
+      buildPayload(userAction, 'GET Audit Logs', params)
+      dispatch({ type: 'audit/getAuditLogs', payload: params })
+    },
+    [filters, userAction, dispatch, getCurrentPattern],
+  )
+
+  const auditRows = useMemo(() => {
+    let items = null
+    if (auditData?.entries) {
+      items = auditData.entries
+    } else if (auditData?.audits) {
+      items = auditData.audits
+    }
+
+    if (!items || !Array.isArray(items)) {
+      return []
+    }
+
+    const rows = items.map((auditString, idx) => {
+      return {
+        id: idx + 1,
+        serial: idx + 1,
+        log: auditString,
+      }
     })
-  }, [dispatch, tableColumns])
 
-  // const handleDetailPanel = useCallback((rowData) => {
-  //   return <AuditDetailPage row={rowData.rowData} />
-  // }, [])
+    return rows
+  }, [auditData])
+
+  useEffect(() => {
+    const params = { limit: Number(limit), startIndex: 0 }
+
+    fetchAuditInfo(params)
+  }, [])
+
+  useEffect(() => {
+    if (auditData?.error) {
+      console.error(auditData?.error)
+    }
+  }, [auditData])
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -80,47 +254,113 @@ function AuditListPage() {
         <MaterialTable
           components={{
             Container: (props) => <Paper {...props} elevation={0} />,
+            Pagination: () => (
+              <TablePagination
+                count={totalItems}
+                page={pageNumber}
+                onPageChange={(event, page) => {
+                  onPageChangeClick(page)
+                }}
+                rowsPerPage={limit}
+                onRowsPerPageChange={(event) =>
+                  onRowCountChangeClick(parseInt(event.target.value, 10))
+                }
+              />
+            ),
           }}
-          columns={updatedColumns}
-          data={audits.filter(
-            (row) =>
-              !pattern ||
-              Object.values(row).join(' ').toLowerCase().includes(pattern.toLowerCase()),
-          )}
-          isLoading={loading}
+          columns={tableColumns}
+          data={auditRows}
+          isLoading={auditData?.loading || false}
           title=""
           actions={[
             {
               icon: () => (
-                <GluuAdvancedSearch
-                  limitId={LIMIT_ID}
-                  patternId={PATTERN_ID}
-                  limit={limit}
-                  pattern={pattern}
-                  handler={handleOptionsChange}
-                  showLimit={false}
-                />
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '16px',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    background: 'transparent',
+                    pointerEvents: 'auto',
+                  }}
+                >
+                  <GluuAdvancedSearch
+                    limitId={LIMIT_ID}
+                    patternId={AUDIT_PATTERN_ID}
+                    limit={limit}
+                    pattern={pattern}
+                    handler={handleOptionsChange}
+                    showLimit={false}
+                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      format="DD/MM/YYYY"
+                      label={t('dashboard.start_date')}
+                      value={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      slotProps={{
+                        textField: {
+                          sx: {
+                            minWidth: 120,
+                            maxWidth: 180,
+                          },
+                        },
+                      }}
+                    />
+                    <DatePicker
+                      format="DD/MM/YYYY"
+                      label={t('dashboard.end_date')}
+                      value={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      maxDate={dayjs()}
+                      slotProps={{
+                        textField: {
+                          sx: {
+                            minWidth: 120,
+                            maxWidth: 180,
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      height: 52,
+                      minWidth: 90,
+                      fontSize: 16,
+                      fontWeight: 600,
+                      py: 1.5,
+                    }}
+                    onClick={handleViewClick}
+                    disabled={isViewDisabled}
+                  >
+                    <i className="fa fa-search" style={{ marginRight: 6 }}></i>
+                    {t('actions.view')}
+                  </Button>
+                </div>
               ),
-              tooltip: `${t('messages.advanced_search')}`,
+              tooltip: t('messages.advanced_search'),
               isFreeAction: true,
               onClick: () => {},
             },
           ]}
           options={useMemo(
             () => ({
-              idSynonym: 'username',
               columnsButton: false,
               search: false,
               searchFieldAlignment: 'left',
               selection: false,
-              pageSize: pageSize,
+              pageSize: limit,
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
                 ...bgThemeColor,
               },
               actionsColumnIndex: -1,
             }),
-            [pageSize, bgThemeColor],
+            [limit, bgThemeColor],
           )}
         />
       </CardBody>
