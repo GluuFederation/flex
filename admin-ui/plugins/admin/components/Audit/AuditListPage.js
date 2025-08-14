@@ -94,19 +94,19 @@ const AuditListPage = () => {
             const dateOnly = timestamp.split(' ')[0] || timestamp
 
             return (
-              <div style={{ fontSize: 13, lineHeight: 1.4, display: 'flex', alignItems: 'center' }}>
+              <div style={{ fontSize: 14, lineHeight: 1.4, display: 'flex', alignItems: 'center' }}>
                 <Badge
                   color={badgeColor}
                   pill
-                  style={{ marginRight: 8, fontSize: 11, fontWeight: 600 }}
+                  style={{ marginRight: 8, fontSize: 14, fontWeight: 600 }}
                 >
                   {dateOnly}
                 </Badge>
-                <span style={{ fontSize: 12 }}>{content}</span>
+                <span style={{ fontSize: 14 }}>{content}</span>
               </div>
             )
           } else {
-            return <span style={{ fontSize: 13 }}>{log}</span>
+            return <span style={{ fontSize: 14 }}>{log}</span>
           }
         },
       },
