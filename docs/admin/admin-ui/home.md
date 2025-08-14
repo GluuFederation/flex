@@ -179,3 +179,11 @@ The Custom Asset Upload feature enables users to upload various types of assets 
 - **Configuration Enhancements:** The feature supports uploading configuration-related files like .xml, .properties, or .json which may define behaviors, rules, or component settings for the server or its modules.
 
 ![image](../../assets/admin-ui/jans-assets.png)
+
+## Audit Logs
+
+Audit logs are records of write requests initiated from the Admin UI to the Jans Config API. In simpler terms, whenever an administrator makes a change — such as updating a client, modifying a script, or changing a configuration property — that action is recorded.
+
+The Audit Log Search page allows administrators to search and analyze recorded administrative activities. It provides date range and pattern-matching filters to help you quickly locate specific log entries which includes details like the timestamp, user, action, and affected resources, making it useful for security monitoring, compliance, and troubleshooting.
+
+![image](../../assets/admin-ui/audit-log.png)
