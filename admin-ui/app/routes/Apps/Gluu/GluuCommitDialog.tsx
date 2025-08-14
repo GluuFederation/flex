@@ -51,7 +51,7 @@ const GluuCommitDialog = ({
   })
 
   useEffect(() => {
-    if (userMessage.length >= 10) {
+    if (userMessage.length >= 10 && userMessage.length <= 512) {
       setActive(true)
     } else {
       setActive(false)
@@ -195,14 +195,15 @@ const GluuCommitDialog = ({
                     rows="4"
                     value={userMessage}
                   />
-                  {userMessage.length < 10 && (
+                  {(userMessage.length < 10 || userMessage.length > 512) && (
                     <span
                       style={{
                         color: customColors.accentRed,
                       }}
                     >
-                      {10 - userMessage.length} {userMessage.length ? ' more' : ''} characters
-                      required
+                      {userMessage.length < 10
+                        ? `${10 - userMessage.length} ${userMessage.length ? ' more' : ''} characters required (minimum 10)`
+                        : `${userMessage.length - 512} characters over limit (maximum 512)`}
                     </span>
                   )}
                 </Col>
