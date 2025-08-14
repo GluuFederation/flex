@@ -35,6 +35,7 @@ function GluuTypeAhead({
   isLoading = false,
   multiple = true,
   hideHelperMessage = false,
+  minLength = 0,
 }: any) {
   const { t } = useTranslation()
   return (
@@ -63,6 +64,7 @@ function GluuTypeAhead({
           emptyLabel=""
           labelKey={labelKey || name}
           isLoading={isLoading}
+          minLength={minLength}
           onChange={(selected) => {
             if (formik) {
               formik.setFieldValue(name, selected)

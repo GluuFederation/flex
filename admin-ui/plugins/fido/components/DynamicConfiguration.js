@@ -7,55 +7,46 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import * as Yup from 'yup'
+import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
+import { validationSchema } from '../helper'
 
-const dynamicConfigInitValues = (staticConfiguration) => {
+// Constants for the component
+const DOC_CATEGORY = 'fido'
+
+const dynamicConfigInitValues = (dynamicConfiguration) => {
   return {
-    issuer: staticConfiguration?.issuer || '',
-    baseEndpoint: staticConfiguration?.baseEndpoint || '',
-    cleanServiceInterval: staticConfiguration?.cleanServiceInterval || '',
-    cleanServiceBatchChunkSize: staticConfiguration?.cleanServiceBatchChunkSize || '',
-    useLocalCache: staticConfiguration?.useLocalCache || '',
-    disableJdkLogger: staticConfiguration?.disableJdkLogger || '',
-    loggingLevel: staticConfiguration?.loggingLevel || '',
-    loggingLayout: staticConfiguration?.loggingLayout || '',
-    externalLoggerConfiguration: staticConfiguration?.externalLoggerConfiguration || '',
-    metricReporterEnabled: staticConfiguration?.metricReporterEnabled,
-    metricReporterInterval: staticConfiguration?.metricReporterInterval || '',
-    metricReporterKeepDataDays: staticConfiguration?.metricReporterKeepDataDays || '',
-    personCustomObjectClassList: staticConfiguration?.personCustomObjectClassList || [],
-    superGluuEnabled: staticConfiguration?.superGluuEnabled,
+    issuer: dynamicConfiguration?.issuer || '',
+    baseEndpoint: dynamicConfiguration?.baseEndpoint || '',
+    cleanServiceInterval: dynamicConfiguration?.cleanServiceInterval || '',
+    cleanServiceBatchChunkSize: dynamicConfiguration?.cleanServiceBatchChunkSize || '',
+    useLocalCache: dynamicConfiguration?.useLocalCache || '',
+    disableJdkLogger: dynamicConfiguration?.disableJdkLogger || '',
+    loggingLevel: dynamicConfiguration?.loggingLevel || '',
+    loggingLayout: dynamicConfiguration?.loggingLayout || '',
+    externalLoggerConfiguration: dynamicConfiguration?.externalLoggerConfiguration || '',
+    metricReporterEnabled: dynamicConfiguration?.metricReporterEnabled,
+    metricReporterInterval: dynamicConfiguration?.metricReporterInterval || '',
+    metricReporterKeepDataDays: dynamicConfiguration?.metricReporterKeepDataDays || '',
+    personCustomObjectClassList: dynamicConfiguration?.personCustomObjectClassList || [],
+    // superGluuEnabled: dynamicConfiguration?.superGluuEnabled,
+    hints: dynamicConfiguration?.hints || dynamicConfiguration?.fido2Configuration?.hints || [],
   }
 }
 
-const dynamicConfigValidationSchema = Yup.object({
-  issuer: Yup.string().required('Issuer is required.'),
-  baseEndpoint: Yup.string().required('Base Endpoint is required.'),
-  cleanServiceInterval: Yup.string().required('Clean Service Interval is required.'),
-  cleanServiceBatchChunkSize: Yup.string().required('Clean Service Batch Chunk Size is required.'),
-  useLocalCache: Yup.boolean().required('Use Local Cache is required.'),
-  disableJdkLogger: Yup.boolean().required('Disable Jdk Logger is required.'),
-  loggingLevel: Yup.string().required('Logging Level is required.'),
-  loggingLayout: Yup.string().required('Logging Layout is required.'),
-  metricReporterEnabled: Yup.boolean().required('Metric Reporter Enabled is required.'),
-  metricReporterInterval: Yup.number().required('Metric Reporter Interval is required.'),
-  metricReporterKeepDataDays: Yup.number().required('Metric Reporter Keep Data Days is required.'),
-  superGluuEnabled: Yup.boolean().required('Enable Super Gluu is required.'),
-})
-
 function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
-  const staticConfiguration = fidoConfiguration.fido
+  const { fido } = fidoConfiguration
+
   const [modal, setModal] = useState(false)
   const toggle = () => {
     setModal(!modal)
   }
 
   const formik = useFormik({
-    initialValues: dynamicConfigInitValues(staticConfiguration),
+    initialValues: dynamicConfigInitValues(fido),
     onSubmit: () => {
       toggle()
     },
-    validationSchema: dynamicConfigValidationSchema,
+    validationSchema: validationSchema.dynamicConfigValidationSchema,
   })
 
   const submitForm = () => {
@@ -271,18 +262,40 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             </Col>
           </Row>
         </Col>
-        <Col sm={8} className="mt-2">
-          <GluuSelectRow
-            label="fields.enable_super_gluu"
-            name="superGluuEnabled"
-            value={formik.values.superGluuEnabled}
-            defaultValue={formik.values.superGluuEnabled}
-            values={['true', 'false']}
+
+        <Col sm={8} className="mt-4">
+          <GluuTypeAhead
+            name="hints"
+            label="Hints"
             formik={formik}
+            value={formik.values.hints || []}
+            onChange={(options) => {
+              // Convert objects to strings immediately
+              const values =
+                options?.map((item) => {
+                  if (typeof item === 'string') {
+                    return item
+                  }
+                  // Handle the object format from GluuTypeAhead
+                  if (item?.hints) {
+                    // Remove quotes if they exist
+                    return item.hints.replace(/^"|"$/g, '')
+                  }
+                  return item?.value || item?.label || item
+                }) || []
+              formik.setFieldValue('hints', values)
+            }}
+            options={[]}
+            doc_category={DOC_CATEGORY}
             lsize={4}
             rsize={8}
-            showError={formik.errors.superGluuEnabled && formik.touched.superGluuEnabled}
-            errorMessage={formik.errors.superGluuEnabled}
+            disabled={false}
+            allowNew={true}
+            minLength={1}
+            placeholder="Type a hint and press enter to add it..."
+            hideHelperMessage={true}
+            showError={formik.errors.hints && formik.touched.hints}
+            errorMessage={formik.errors.hints}
           />
         </Col>
       </FormGroup>

@@ -8,8 +8,8 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import { useTranslation } from 'react-i18next'
-import * as Yup from 'yup'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { validationSchema } from '../helper'
 
 const staticConfigInitValues = (staticConfiguration) => {
   return {
@@ -27,19 +27,6 @@ const staticConfigInitValues = (staticConfiguration) => {
   }
 }
 
-const staticConfigValidationSchema = Yup.object({
-  authenticatorCertsFolder: Yup.string().required('Authenicator Certificates Folder is required.'),
-  mdsCertsFolder: Yup.string().required('MDS TOC Certificates Folder is required.'),
-  mdsTocsFolder: Yup.string().required('MDS TOC Files Folder is required.'),
-  checkU2fAttestations: Yup.boolean().required('Check U2F Attestations is required.'),
-  unfinishedRequestExpiration: Yup.string().required('Unfinished Request Expiration is required.'),
-  authenticationHistoryExpiration: Yup.string().required(
-    'Authenication History Expiration  is required.',
-  ),
-  serverMetadataFolder: Yup.string().required('Server Metadata is required.'),
-  userAutoEnrollment: Yup.boolean().required('User Auto Enrollment is required.'),
-})
-
 function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido.fido2Configuration
 
@@ -54,7 +41,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
     onSubmit: () => {
       toggle()
     },
-    validationSchema: staticConfigValidationSchema,
+    validationSchema: validationSchema.staticConfigValidationSchema,
   })
 
   const submitForm = () => {
@@ -224,7 +211,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <Row className="mt-2">
-            <GluuLabel label="fields.requested_parties_name" size={4} />
+            <GluuLabel label="fields.requested_parties_id" size={4} />
             <Col sm={8}>
               <GluuProperties
                 compName="requestedParties"
@@ -251,7 +238,6 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
       <Row>
         <Col>
-          {' '}
           <GluuCommitFooter
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}

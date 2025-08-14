@@ -56,11 +56,11 @@ const fidoApiPayloadDynamicConfig = ({ fidoConfiguration, data }) => {
   payload.metricReporterEnabled = data.metricReporterEnabled
   payload.metricReporterInterval = data.metricReporterInterval
   payload.metricReporterKeepDataDays = data.metricReporterKeepDataDays
-  payload.personCustomObjectClassList = data.personCustomObjectClassList
-  payload.superGluuEnabled = data.superGluuEnabled
+  // payload.superGluuEnabled = data.superGluuEnabled
   payload.personCustomObjectClassList = data.personCustomObjectClassList.map((item) =>
     item?.value ? item?.value : item,
   )
+  payload.fido2Configuration.hints = data.hints || []
 
   const opts = {}
   const fiodData = JSON.stringify(payload)
