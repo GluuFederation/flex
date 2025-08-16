@@ -2119,7 +2119,7 @@
 <ul>
 <li>Download the release package from the Github Flex
   <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.el8.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>/tmp
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>/tmp
 </code></pre></div></li>
 <li>GPG key is used to ensure the authenticity of the downloaded package during the installation process. If the key is
   not found, the <a href="#install-the-release-package">installation step</a> would fail. Use the commands below to download and
@@ -2131,18 +2131,18 @@
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>rpm<span class="w"> </span>-import<span class="w"> </span>automation-flex-public-gpg.asc
 </code></pre></div></li>
 <li>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the package
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.el8.x86_64.rpm.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum<span class="w">  </span>-P<span class="w"> </span>/tmp
 </code></pre></div>
 Run the command below from the directory where the downloaded package and the <code>.sha256sum</code> files are located.
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/tmp<span class="p">;</span>
-sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-0.0.0-nightly.el8.x86_64.rpm.sha256sum<span class="p">;</span>
+sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-replace-flex-version-stable.el8.x86_64.rpm.sha256sum<span class="p">;</span>
 </code></pre></div>
 Output similar to below should confirm the integrity of the downloaded package.
-<div class="highlight"><pre><span></span><code>flex-0.0.0-nightly-el8.x86_64.rpm : ok
+<div class="highlight"><pre><span></span><code>flex-replace-flex-version-el8.x86_64.rpm : ok
 </code></pre></div></li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>./flex-0.0.0-nightly.el8.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>./flex-replace-flex-version-stable.el8.x86_64.rpm
 </code></pre></div>
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
 <p>Execute the setup script with command below:
