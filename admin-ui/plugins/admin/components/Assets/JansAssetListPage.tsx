@@ -27,6 +27,7 @@ import {
 import customColors from '../../../../app/customColors'
 import moment from 'moment'
 import { Document, RootState, SearchEvent } from './types'
+import { DeleteAssetSagaPayload } from 'Plugins/admin/redux/features/types'
 
 const JansAssetListPage: React.FC = () => {
   const dispatch = useDispatch()
@@ -196,7 +197,12 @@ const JansAssetListPage: React.FC = () => {
     (userMessage: string) => {
       toggle()
       if (deleteData?.inum) {
-        dispatch(deleteJansAsset())
+        dispatch(
+          deleteJansAsset({
+            action_message: userMessage,
+            action: { action_data: { inum: deleteData.inum } },
+          } as DeleteAssetSagaPayload),
+        )
       }
     },
     [deleteData, dispatch],
@@ -303,7 +309,6 @@ const JansAssetListPage: React.FC = () => {
                   ...applicationStyle.tableHeaderStyle,
                   ...bgThemeColor,
                 } as React.CSSProperties,
-
                 actionsColumnIndex: -1,
               }}
             />

@@ -21,34 +21,36 @@ import Toggle from 'react-toggle'
 import { ASSET } from 'Utils/ApiResources'
 import {
   AssetFormValues,
-  AssetSubmissionPayload,
   AcceptFileTypes,
   RootStateForAssetForm,
   RouteParams,
-  UserAction,
   FileDropHandler,
   FileClearHandler,
-  ValidationFunction,
   ToggleHandler,
   SubmitFormCallback,
 } from './types/FormTypes'
+import { AssetFormData } from './types/AssetApiTypes'
+import {
+  CreateAssetActionPayload,
+  UpdateAssetActionPayload,
+} from '../../redux/features/types/asset'
 
 const AssetForm: React.FC = () => {
   const { id } = useParams<RouteParams>()
-  const userAction: UserAction = {}
-  const { selectedAsset, services } = useSelector((state: RootStateForAssetForm) => state.assetReducer)
+  const userAction: Record<string, unknown> = {}
+  const { selectedAsset, services } = useSelector(
+    (state: RootStateForAssetForm) => state.assetReducer,
+  )
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const saveOperationFlag = useSelector((state: RootStateForAssetForm) => state.assetReducer.saveOperationFlag)
+  const saveOperationFlag = useSelector(
+    (state: RootStateForAssetForm) => state.assetReducer.saveOperationFlag,
+  )
   const errorInSaveOperationFlag = useSelector(
     (state: RootStateForAssetForm) => state.assetReducer.errorInSaveOperationFlag,
   )
   const dispatch = useDispatch()
   const [modal, setModal] = useState<boolean>(false)
-  
-  const validatePayload: ValidationFunction = (): boolean => {
-    return false
-  }
 
   const buildAcceptFileTypes = (): AcceptFileTypes => {
     return {
@@ -79,18 +81,16 @@ const AssetForm: React.FC = () => {
   const formik = useFormik<AssetFormValues>({
     initialValues: {
       creationDate: selectedAsset?.creationDate || '',
-      document: selectedAsset?.document || null,
+      document: selectedAsset?.document || '',
       fileName: selectedAsset?.fileName || '',
       enabled: selectedAsset?.enabled || false,
       description: selectedAsset?.description || '',
       service: selectedAsset?.service ? [selectedAsset?.service] : [],
     },
     onSubmit: (values: AssetFormValues) => {
-      const faulty = validatePayload(values)
-      if (faulty) {
-        return
+      if (values.fileName) {
+        toggle()
       }
-      toggle()
     },
     validationSchema: Yup.object().shape({
       fileName: Yup.string()
@@ -106,19 +106,20 @@ const AssetForm: React.FC = () => {
   const submitForm: SubmitFormCallback = useCallback(
     (userMessage: string): void => {
       toggle()
-      const payload: AssetSubmissionPayload = {
+      const payload: AssetFormData = {
         ...formik.values,
         service: formik.values.service[0],
+        document: formik.values.document || '',
       }
       if (id) {
         payload['inum'] = selectedAsset.inum
         payload['dn'] = selectedAsset.dn
         payload['baseDn'] = selectedAsset.baseDn
         buildPayload(userAction, userMessage, payload)
-        dispatch(updateJansAsset({ action: userAction }))
+        dispatch(updateJansAsset({ action: userAction } as UpdateAssetActionPayload))
       } else {
         buildPayload(userAction, userMessage, payload)
-        dispatch(createJansAsset({ action: userAction }))
+        dispatch(createJansAsset({ action: userAction } as CreateAssetActionPayload))
       }
     },
     [formik, id, selectedAsset, userAction, dispatch],

@@ -5,19 +5,14 @@ import { Document } from './AssetApiTypes'
 // Form values interface for Asset form
 export interface AssetFormValues {
   creationDate: string | Date
-  document: string | File | null
+  document: string | File | Blob | null
   fileName: string
   enabled: boolean
   description: string
   service: string[]
-}
-
-// Extended form values for submission (includes additional fields)
-export interface AssetSubmissionPayload extends AssetFormValues {
   inum?: string
   dn?: string
   baseDn?: string
-  service: string // Single service instead of array for submission
 }
 
 // File drop handler types
@@ -29,26 +24,11 @@ export type FileClearHandler = () => void
 export interface AcceptFileTypes {
   [mimeType: string]: string[]
 }
-
-// Form validation function type
-export type ValidationFunction = () => boolean
-
 // Toggle handler type
 export type ToggleHandler = () => void
 
 // Submit form callback type
 export type SubmitFormCallback = (userMessage: string) => void
-
-// User action object type (used in buildPayload)
-export interface UserAction {
-  action_data?: AssetSubmissionPayload
-  [key: string]: unknown
-}
-
-// Props for Asset form components
-export interface AssetFormProps {
-  // Add any props if needed in the future
-}
 
 // Redux state selector return types
 export interface AssetReducerState {
@@ -70,6 +50,7 @@ export type AssetFormikInstance = FormikProps<AssetFormValues>
 // Navigation and routing types
 export interface RouteParams {
   id?: string
+  [key: string]: string | undefined
 }
 
 // Modal state types

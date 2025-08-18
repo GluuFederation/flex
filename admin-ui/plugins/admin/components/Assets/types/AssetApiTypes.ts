@@ -68,18 +68,25 @@ export interface AssetFormData {
   inum?: string
   dn?: string
   baseDn?: string
+  [key: string]: unknown
 }
 
 // Asset create payload
-export interface CreateAssetPayload extends AssetFormData {
-  // Additional properties specific to creation
+export interface CreateAssetPayload {
+  payload: {
+    action: {
+      action_data: AssetFormData
+    }
+  }
 }
 
 // Asset update payload
-export interface UpdateAssetPayload extends AssetFormData {
-  inum: string
-  dn?: string
-  baseDn?: string
+export interface UpdateAssetPayload {
+  payload: {
+    action: {
+      action_data: AssetFormData
+    }
+  }
 }
 
 // Interface for the underlying JansAssetsApi

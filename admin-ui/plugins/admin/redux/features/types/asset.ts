@@ -57,6 +57,19 @@ export interface CreateAssetSagaPayload {
   }
 }
 
+// Action payload types (for Redux action creators)
+export interface CreateAssetActionPayload {
+  action: {
+    action_data: Document & {
+      fileName: string
+      description: string
+      document: string | File | Blob
+      service?: string
+      enabled: boolean
+    }
+  }
+}
+
 export interface UpdateAssetSagaPayload {
   payload: {
     action: {
@@ -72,13 +85,24 @@ export interface UpdateAssetSagaPayload {
   }
 }
 
+export interface UpdateAssetActionPayload {
+  action: {
+    action_data: Document & {
+      fileName: string
+      description: string
+      document: string | File | Blob
+      service?: string
+      enabled: boolean
+      inum: string
+    }
+  }
+}
+
 export interface DeleteAssetSagaPayload {
-  payload: {
-    action_message?: string
-    action: {
-      action_data: {
-        inum: string
-      }
+  action_message?: string
+  action: {
+    action_data: {
+      inum: string
     }
   }
 }

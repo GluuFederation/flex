@@ -1,6 +1,12 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AssetState, AssetResponsePayload, DeleteAssetSagaPayload } from './types/asset'
+import {
+  AssetState,
+  AssetResponsePayload,
+  DeleteAssetSagaPayload,
+  CreateAssetActionPayload,
+  UpdateAssetActionPayload,
+} from './types/asset'
 import {
   Document,
   DocumentPagedResult,
@@ -41,12 +47,10 @@ const assetSlice = createSlice({
   name: 'asset',
   initialState,
   reducers: {
-    fetchJansAssets: (state, action: PayloadAction<GetAllAssetsOptions>) => {
-      console.trace('fetchJansAssets', action.payload)
+    fetchJansAssets: (state, _action: PayloadAction<GetAllAssetsOptions>) => {
       state.loadingAssets = true
     },
-    getJansAssets: (state, action: PayloadAction<GetAllAssetsOptions>) => {
-      console.trace('getJansAssets', action.payload)
+    getJansAssets: (state, _action: PayloadAction<GetAllAssetsOptions>) => {
       state.loading = true
     },
     getJansAssetResponse: (state, action: PayloadAction<AssetResponsePayload>) => {
@@ -58,8 +62,7 @@ const assetSlice = createSlice({
         state.entriesCount = data.entriesCount || 0
       }
     },
-    getAssetServices: (state, action: PayloadAction<void>) => {
-      console.trace('getAssetServices', action.payload)
+    getAssetServices: (state, _action: PayloadAction<void>) => {
       state.loading = true
     },
     getAssetServicesResponse: (state, action: PayloadAction<AssetResponsePayload>) => {
@@ -68,8 +71,7 @@ const assetSlice = createSlice({
         state.services = action.payload.data
       }
     },
-    getAssetTypes: (state, action: PayloadAction<void>) => {
-      console.trace('getAssetTypes', action.payload)
+    getAssetTypes: (state, _action: PayloadAction<void>) => {
       state.loading = true
     },
     getAssetTypesResponse: (state, action: PayloadAction<AssetResponsePayload>) => {
@@ -78,7 +80,7 @@ const assetSlice = createSlice({
         state.fileTypes = action.payload.data
       }
     },
-    createJansAsset: (state) => {
+    createJansAsset: (state, _action: PayloadAction<CreateAssetActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
@@ -92,8 +94,7 @@ const assetSlice = createSlice({
         state.errorInSaveOperationFlag = true
       }
     },
-    deleteJansAsset: (state, action: PayloadAction<DeleteAssetSagaPayload>) => {
-      console.trace('deleteJansAsset', action.payload)
+    deleteJansAsset: (state, _action: PayloadAction<DeleteAssetSagaPayload>) => {
       state.loading = true
     },
     deleteJansAssetResponse: (state) => {
@@ -102,7 +103,7 @@ const assetSlice = createSlice({
     setSelectedAsset: (state, action: PayloadAction<Document | Record<string, never>>) => {
       state.selectedAsset = action.payload
     },
-    updateJansAsset: (state) => {
+    updateJansAsset: (state, _action: PayloadAction<UpdateAssetActionPayload>) => {
       state.loading = true
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false

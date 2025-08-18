@@ -140,7 +140,7 @@ export function* createJansAsset({
 
 export function* deleteJansAsset({
   payload,
-}: PayloadAction<DeleteAssetSagaPayload['payload']>): SagaIterator<void | unknown> {
+}: PayloadAction<DeleteAssetSagaPayload>): SagaIterator<void | unknown> {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, DELETION, 'asset', payload)
