@@ -1,16 +1,8 @@
 export const roles = [
   {
-    role: 'api-admin',
-    description:
-      'This role allows a user to access all list and search features available. Not possible for this role to perform edition nor deletion',
-    scopes: [
-      'https://jans.io/oauth/config/attributes.readonly',
-      'https://jans.io/oauth/config/acrs.readonly',
-    ],
-  },
-  {
     role: 'api-viewer',
-    description: 'This role allows a user to perform all possible actions on api objects',
+    description:
+      'Allows a user to view and search all available objects. No permissions to create, edit, or delete.',
     scopes: [
       'https://jans.io/oauth/config/attributes.readonly',
       'https://jans.io/oauth/config/acrs.readonly',
@@ -19,7 +11,7 @@ export const roles = [
   {
     role: 'api-editor',
     description:
-      'This role allow a user to list, search, add and edit on all available objects excepts the configuration object which is critical for a running server',
+      'Allows a user to view, search, add, and edit all objects except critical configuration objects, which can only be viewed.',
     scopes: [
       'https://jans.io/oauth/config/attributes.readonly',
       'https://jans.io/oauth/config/acrs.readonly',
@@ -28,7 +20,16 @@ export const roles = [
   {
     role: 'api-manager',
     description:
-      'This role allows a user to list, search, add, edit and delete all available objects include the configuration object(only in view mode). The user cannot edit nor delete the configuration object.',
+      'Allows a user to view, search, add, edit, and delete all objects, except that configuration objects can only be viewed, not modified.',
+    scopes: [
+      'https://jans.io/oauth/config/attributes.readonly',
+      'https://jans.io/oauth/config/acrs.readonly',
+    ],
+  },
+  {
+    role: 'api-admin',
+    description:
+      'Grants full administrative access, including viewing, creating, editing, and deleting all objects, including configuration objects.',
     scopes: [
       'https://jans.io/oauth/config/attributes.readonly',
       'https://jans.io/oauth/config/acrs.readonly',
