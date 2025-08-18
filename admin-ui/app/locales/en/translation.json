@@ -596,7 +596,8 @@
   "languages": {
     "french": "French",
     "english": "English",
-    "portuguese": "Portuguese"
+    "portuguese": "Portuguese",
+    "spanish": "Spanish"
   },
   "menus": {
     "assets": "Assets",
