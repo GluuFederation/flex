@@ -780,7 +780,10 @@
     "typeahead_holder_message": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après avoir saisi chaque élément.",
     "script_path": "Entrez le chemin du fichier de script",
     "expires_after": "Expiration après la date",
-    "expires_before": "Expiration avant la date"
+    "expires_before": "Expiration avant la date",
+    "charMoreThan512": "caractères acima do limite (maximum 512)",
+    "charLessThan10": "caractères nécessaires (minimum 10)",
+    "more": " plus"
   },
   "titles": {
     "acrs": "ACR",
