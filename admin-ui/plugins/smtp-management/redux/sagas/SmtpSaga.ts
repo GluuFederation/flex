@@ -1,17 +1,15 @@
 import { call, all, put, fork, takeLatest, select, takeEvery } from 'redux-saga/effects'
 import { SagaIterator } from 'redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { getAPIAccessToken } from '../../../../app/redux/features/authSlice'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
 import { getClient } from '../../../../app/redux/api/base'
 import * as JansConfigApi from 'jans_config_api'
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit, handleSagaError } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import SmtpApi from '../api/SmtpApi'
 import {
   getSmptResponse,
-  getSmpts,
+  getSmtps,
   testSmtpResponse,
   testSmtpResponseFails,
   updateSmptResponse,
@@ -23,9 +21,10 @@ import {
   SmtpTestPayload,
   RootState,
   IConfigurationSMTPApi,
+  SagaError,
 } from '../types/SmtpApi.type'
 
-function* newFunction(): SagaIterator<SmtpApi> {
+function* createSmtpApiClient(): SagaIterator<SmtpApi> {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
   const api: IConfigurationSMTPApi = new JansConfigApi.ConfigurationSMTPApi(
@@ -36,68 +35,61 @@ function* newFunction(): SagaIterator<SmtpApi> {
 
 export function* updateStmpSaga({
   payload,
-}: PayloadAction<SmtpUpdatePayload>): SagaIterator<SmtpConfiguration | unknown> {
+}: PayloadAction<SmtpUpdatePayload>): SagaIterator<SmtpConfiguration | SagaError> {
   const audit = yield* initAudit()
   try {
-    const stmpApi: SmtpApi = yield call(newFunction)
+    const stmpApi: SmtpApi = yield call(createSmtpApiClient)
     const data: SmtpConfiguration = yield call(stmpApi.updateSmtpConfig, {
       smtpConfiguration: payload.smtpConfiguration,
     })
     yield put(updateToast(true, 'success'))
     yield put(updateSmptResponse({ data }))
-    yield put(getSmpts())
+    yield put(getSmtps())
     yield call(postUserAction, audit)
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e: unknown) {
-    yield put(updateToast(true, 'error'))
-    yield put(updateSmptResponse({ data: undefined }))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
-    return e
+    return (yield* handleSagaError(e as SagaError, {
+      showToast: true,
+      clearDataAction: updateSmptResponse({ data: undefined }),
+    })) as SagaError
   }
 }
 
-export function* getSmtpsSaga(): SagaIterator<SmtpConfiguration | unknown> {
+export function* getSmtpsSaga(): SagaIterator<SmtpConfiguration | SagaError> {
   const audit = yield* initAudit()
   try {
-    const stmpApi: SmtpApi = yield call(newFunction)
+    const stmpApi: SmtpApi = yield call(createSmtpApiClient)
     const data: SmtpConfiguration = yield call(stmpApi.getSmtpConfig)
     yield put(getSmptResponse({ data }))
     yield call(postUserAction, audit)
     return data
   } catch (e: unknown) {
-    yield put(getSmptResponse({ data: undefined }))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
-    return e
+    return (yield* handleSagaError(e as SagaError, {
+      showToast: false,
+      clearDataAction: getSmptResponse({ data: undefined }),
+    })) as SagaError
   }
 }
 
 export function* testSmtp({ payload }: PayloadAction<SmtpTestPayload>): SagaIterator<void> {
   try {
-    const stmpApi: SmtpApi = yield call(newFunction)
+    const stmpApi: SmtpApi = yield call(createSmtpApiClient)
     const data: boolean = yield call(stmpApi.testSmtpConfig, payload.payload)
     yield put(testSmtpResponse({ data }))
   } catch (e: unknown) {
-    yield put(updateToast(true, 'error'))
-    yield put(testSmtpResponseFails())
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
+    yield* handleSagaError(e as SagaError, {
+      showToast: true,
+      clearDataAction: testSmtpResponseFails(),
+    })
   }
 }
 
-export function* watchGetUsers(): SagaIterator<void> {
-  yield takeEvery('smtps/getSmpts', getSmtpsSaga)
+export function* watchGetSmtps(): SagaIterator<void> {
+  yield takeEvery('smtps/getSmtps', getSmtpsSaga)
 }
 
-export function* watchUpdateUser(): SagaIterator<void> {
+export function* watchUpdateSmtp(): SagaIterator<void> {
   yield takeLatest('smtps/updateSmpt', updateStmpSaga)
 }
 
@@ -106,5 +98,5 @@ export function* watchTestSmtpConfig(): SagaIterator<void> {
 }
 
 export default function* rootSaga(): SagaIterator<void> {
-  yield all([fork(watchGetUsers), fork(watchUpdateUser), fork(watchTestSmtpConfig)])
+  yield all([fork(watchGetSmtps), fork(watchUpdateSmtp), fork(watchTestSmtpConfig)])
 }

@@ -20,7 +20,7 @@ const smtpSlice = createSlice({
   name: 'smtps',
   initialState,
   reducers: {
-    getSmpts: (state, action: PayloadAction<void>) => {
+    getSmtps: (state, action: PayloadAction<void>) => {
       console.trace('getSmpts', action)
       state.smtp = {}
       state.loading = true
@@ -64,7 +64,7 @@ const smtpSlice = createSlice({
 })
 
 export const {
-  getSmpts,
+  getSmtps,
   setSelectedSmptData,
   getSmptResponse,
   updateSmpt,

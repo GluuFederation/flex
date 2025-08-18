@@ -5,7 +5,7 @@ import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { clearSmtpConfig, getSmpts, updateSmpt } from '../../redux/features/smtpSlice'
+import { clearSmtpConfig, getSmtps, updateSmpt } from '../../redux/features/smtpSlice'
 import SmtpForm from './SmtpForm'
 import GluuInfo from '../../../../app/routes/Apps/Gluu/GluuInfo'
 import { RootState, SmtpConfiguration } from '../../redux/types'
@@ -25,7 +25,7 @@ function StmpEditPage() {
   )
   SetTitle(t('menus.stmp_management'))
   useEffect(() => {
-    dispatch(getSmpts())
+    dispatch(getSmtps())
   }, [dispatch])
 
   return (

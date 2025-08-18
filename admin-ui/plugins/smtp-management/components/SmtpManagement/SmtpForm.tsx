@@ -167,7 +167,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={Boolean(formik.errors.host) && Boolean(formik.touched.host)}
+            showError={formik.touched.host && !!formik.errors.host}
             errorMessage={formik.errors.host as string}
             handleChange={handleChange}
             required
@@ -181,7 +181,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={Boolean(formik.errors.port) && Boolean(formik.touched.port)}
+            showError={formik.touched.port && !!formik.errors.port}
             errorMessage={formik.errors.port as string}
             handleChange={handleChange}
             type="number"
@@ -197,10 +197,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              Boolean(formik.errors.connect_protection) &&
-              Boolean(formik.touched.connect_protection)
-            }
+            showError={formik.touched.connect_protection && !!formik.errors.connect_protection}
             errorMessage={formik.errors.connect_protection as string}
             handleChange={handleChange}
             required
@@ -215,7 +212,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={Boolean(formik.errors.from_name) && Boolean(formik.touched.from_name)}
+            showError={formik.touched.from_name && !!formik.errors.from_name}
             errorMessage={formik.errors.from_name as string}
             handleChange={handleChange}
             required
@@ -230,10 +227,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              Boolean(formik.errors.from_email_address) &&
-              Boolean(formik.touched.from_email_address)
-            }
+            showError={formik.touched.from_email_address && !!formik.errors.from_email_address}
             errorMessage={formik.errors.from_email_address as string}
             handleChange={handleChange}
             required
@@ -262,8 +256,8 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             lsize={3}
             rsize={9}
             showError={
-              Boolean(formik.errors.smtp_authentication_account_username) &&
-              Boolean(formik.touched.smtp_authentication_account_username)
+              formik.touched.smtp_authentication_account_username &&
+              !!formik.errors.smtp_authentication_account_username
             }
             errorMessage={formik.errors.smtp_authentication_account_username as string}
             handleChange={handleChange}
@@ -280,8 +274,8 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             lsize={3}
             rsize={9}
             showError={
-              Boolean(formik.errors.smtp_authentication_account_password) &&
-              Boolean(formik.touched.smtp_authentication_account_password)
+              formik.touched.smtp_authentication_account_password &&
+              !!formik.errors.smtp_authentication_account_password
             }
             errorMessage={formik.errors.smtp_authentication_account_password as string}
             handleChange={handleChange}
@@ -322,7 +316,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={Boolean(formik.errors.key_store) && Boolean(formik.touched.key_store)}
+            showError={formik.touched.key_store && !!formik.errors.key_store}
             errorMessage={formik.errors.key_store as string}
             handleChange={handleChange}
             disabled={!allowSmtpKeystoreEdit}
@@ -337,10 +331,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              Boolean(formik.errors.key_store_password) &&
-              Boolean(formik.touched.key_store_password)
-            }
+            showError={formik.touched.key_store_password && !!formik.errors.key_store_password}
             errorMessage={formik.errors.key_store_password as string}
             handleChange={handleChange}
             disabled={!allowSmtpKeystoreEdit}
@@ -355,9 +346,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              Boolean(formik.errors.key_store_alias) && Boolean(formik.touched.key_store_alias)
-            }
+            showError={formik.touched.key_store_alias && !!formik.errors.key_store_alias}
             errorMessage={formik.errors.key_store_alias as string}
             handleChange={handleChange}
             disabled={!allowSmtpKeystoreEdit}
@@ -372,9 +361,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={
-              Boolean(formik.errors.signing_algorithm) && Boolean(formik.touched.signing_algorithm)
-            }
+            showError={formik.touched.signing_algorithm && !!formik.errors.signing_algorithm}
             errorMessage={formik.errors.signing_algorithm as string}
             handleChange={handleChange}
             disabled={!allowSmtpKeystoreEdit}

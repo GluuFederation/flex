@@ -1,4 +1,4 @@
-import { handleResponse } from 'Utils/ApiUtils'
+import { handleTypedResponse } from 'Utils/ApiUtils'
 import {
   IConfigurationSMTPApi,
   SmtpConfiguration,
@@ -17,7 +17,7 @@ export default class SmtpApi {
   getSmtpConfig = (): Promise<SmtpConfiguration> => {
     return new Promise<SmtpConfiguration>((resolve, reject) => {
       this.api.getConfigSmtp((error: Error | null, data?: SmtpConfiguration) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse<SmtpConfiguration>(error, reject, resolve, data)
       })
     })
   }
@@ -26,7 +26,7 @@ export default class SmtpApi {
   updateSmtpConfig = (input: SmtpConfigurationOptions): Promise<SmtpConfiguration> => {
     return new Promise<SmtpConfiguration>((resolve, reject) => {
       this.api.putConfigSmtp(input, (error: Error | null, data?: SmtpConfiguration) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse<SmtpConfiguration>(error, reject, resolve, data)
       })
     })
   }
@@ -35,7 +35,7 @@ export default class SmtpApi {
   testSmtpConfig = (input: SmtpTestOptions): Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) => {
       this.api.testConfigSmtp(input, (error: Error | null, data?: boolean) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse<boolean>(error, reject, resolve, data)
       })
     })
   }
@@ -44,7 +44,7 @@ export default class SmtpApi {
   addSmtpConfig = (input: SmtpConfigurationOptions): Promise<SmtpConfiguration> => {
     return new Promise<SmtpConfiguration>((resolve, reject) => {
       this.api.postConfigSmtp(input, (error: Error | null, data?: SmtpConfiguration) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, data)
+        handleTypedResponse<SmtpConfiguration>(error, reject, resolve, data)
       })
     })
   }
@@ -53,7 +53,7 @@ export default class SmtpApi {
   deleteSmtpConfig = (): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
       this.api.deleteConfigSmtp((error: Error | null) => {
-        handleResponse(error, reject, resolve as (data: unknown) => void, undefined)
+        handleTypedResponse<void>(error, reject, resolve, undefined)
       })
     })
   }

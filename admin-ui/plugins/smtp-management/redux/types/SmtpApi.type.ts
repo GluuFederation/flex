@@ -1,8 +1,10 @@
+import { ConnectProtection } from 'Plugins/smtp-management/components/SmtpManagement/types/SmtpForm.types'
+
 // TypeScript definitions for SMTP Configuration API
 export interface SmtpConfiguration {
   host?: string
   port?: number
-  connect_protection?: string
+  connect_protection?: ConnectProtection
   from_name?: string
   from_email_address?: string
   requires_authentication?: boolean
