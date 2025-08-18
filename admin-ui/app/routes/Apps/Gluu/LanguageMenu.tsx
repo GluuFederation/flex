@@ -57,14 +57,17 @@ const LanguageMenu = ({ userInfo }: any) => {
         <span style={{ color: customColors.white }}>{lang}</span>
       </DropdownToggle>
       <DropdownMenu>
+        <DropdownItem onClick={() => changeLanguage('en')} data-testid="ENG">
+          {t('languages.english')}
+        </DropdownItem>
         <DropdownItem onClick={() => changeLanguage('fr')} data-testid="FRE">
           {t('languages.french')}
         </DropdownItem>
         <DropdownItem onClick={() => changeLanguage('pt')} data-testid="POR">
           {t('languages.portuguese')}
         </DropdownItem>
-        <DropdownItem onClick={() => changeLanguage('en')} data-testid="ENG">
-          {t('languages.english')}
+        <DropdownItem onClick={() => changeLanguage('es')} data-testid="ESP">
+          {t('languages.spanish')}
         </DropdownItem>
       </DropdownMenu>
     </ButtonDropdown>
