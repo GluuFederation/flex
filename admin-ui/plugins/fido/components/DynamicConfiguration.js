@@ -13,7 +13,14 @@ import { validationSchema } from '../helper'
 // Constants for the component
 const DOC_CATEGORY = 'fido'
 
+const filterEmptyHints = (hints) => {
+  if (!Array.isArray(hints)) return []
+  return hints.filter((hint) => hint && hint.toString().trim() !== '')
+}
+
 const dynamicConfigInitValues = (dynamicConfiguration) => {
+  const rawHints =
+    dynamicConfiguration?.hints || dynamicConfiguration?.fido2Configuration?.hints || []
   return {
     issuer: dynamicConfiguration?.issuer || '',
     baseEndpoint: dynamicConfiguration?.baseEndpoint || '',
@@ -29,7 +36,7 @@ const dynamicConfigInitValues = (dynamicConfiguration) => {
     metricReporterKeepDataDays: dynamicConfiguration?.metricReporterKeepDataDays || '',
     personCustomObjectClassList: dynamicConfiguration?.personCustomObjectClassList || [],
     // superGluuEnabled: dynamicConfiguration?.superGluuEnabled,
-    hints: dynamicConfiguration?.hints || dynamicConfiguration?.fido2Configuration?.hints || [],
+    hints: filterEmptyHints(rawHints),
   }
 }
 
