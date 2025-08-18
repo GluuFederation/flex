@@ -20,8 +20,7 @@ const smtpSlice = createSlice({
   name: 'smtps',
   initialState,
   reducers: {
-    getSmtps: (state, action: PayloadAction<void>) => {
-      console.trace('getSmpts', action)
+    getSmtps: (state) => {
       state.smtp = {}
       state.loading = true
     },
@@ -32,8 +31,7 @@ const smtpSlice = createSlice({
       state.loading = false
       state.smtp = action.payload?.data || {}
     },
-    updateSmpt: (state, action: PayloadAction<SmtpUpdatePayload>) => {
-      console.trace('updateSmpt', action.payload.smtpConfiguration.host)
+    updateSmpt: (state, _action: PayloadAction<SmtpUpdatePayload>) => {
       state.loading = true
     },
     updateSmptResponse: (state, action: PayloadAction<SmtpResponsePayload>) => {
@@ -42,8 +40,7 @@ const smtpSlice = createSlice({
         state.smtp = action.payload.data
       }
     },
-    testSmtp: (state, action: PayloadAction<SmtpTestPayload>) => {
-      console.trace('testSmtp', action.payload.payload.smtpTest?.message)
+    testSmtp: (state, _action: PayloadAction<SmtpTestPayload>) => {
       state.loading = true
     },
     testSmtpResponse: (state, action: PayloadAction<SmtpTestResponsePayload>) => {
@@ -51,8 +48,7 @@ const smtpSlice = createSlice({
       state.loading = false
       state.openModal = true
     },
-    testSmtpResponseFails: (state, action: PayloadAction<void>) => {
-      console.trace('testSmtpResponseFails', action)
+    testSmtpResponseFails: (state, _action: PayloadAction<void>) => {
       state.loading = false
       state.openModal = false
     },

@@ -33,6 +33,7 @@ export interface AuthState {
   token: {
     access_token: string
   }
+  userinfo_jwt: string | null
 }
 
 export interface RootState {
