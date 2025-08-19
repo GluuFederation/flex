@@ -1,5 +1,12 @@
-import React from 'react'
-import { Grid, FormControl, Select, MenuItem, FormHelperText } from '@mui/material'
+import React, { useMemo } from 'react'
+import {
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  FormHelperText,
+  SelectChangeEvent,
+} from '@mui/material'
 import GluuLabel from './GluuLabel'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
@@ -14,14 +21,18 @@ interface GluuSelectRowProps {
   name: string
   value: any
   formik: {
-    handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+    handleChange: (
+      event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
+    ) => void
   }
   values?: Array<string | SelectOption>
   lsize?: number
   rsize?: number
   doc_category?: string
   disabled?: boolean
-  handleChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+  handleChange?: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
+  ) => void
   required?: boolean
   showError?: boolean
   errorMessage?: string
@@ -46,7 +57,7 @@ function GluuSelectRow({
 }: GluuSelectRowProps) {
   const { t } = useTranslation()
 
-  function removeDuplicates(values: Array<string | SelectOption>): Array<string | SelectOption> {
+  const deduplicatedValues = useMemo(() => {
     const seen = new Set<string>()
     return values.filter((item) => {
       const val = typeof item === 'string' ? item : item.value
@@ -54,15 +65,11 @@ function GluuSelectRow({
       seen.add(val)
       return true
     })
-  }
-
-  // Calculate grid sizes based on Bootstrap column system (out of 12)
-  const labelGridSize = Math.round((lsize / 12) * 12)
-  const selectGridSize = Math.round((rsize / 12) * 12)
+  }, [values])
 
   return (
     <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-      <Grid item xs={labelGridSize}>
+      <Grid item xs={lsize}>
         <GluuLabel
           label={label}
           size={lsize}
@@ -71,7 +78,7 @@ function GluuSelectRow({
           required={required}
         />
       </Grid>
-      <Grid item xs={selectGridSize}>
+      <Grid item xs={rsize}>
         <FormControl fullWidth error={showError} disabled={disabled}>
           <Select
             labelId={`${name}-label`}
@@ -81,20 +88,9 @@ function GluuSelectRow({
             name={name}
             value={value || ''}
             onChange={(event) => {
-              const syntheticEvent = {
-                ...event,
-                target: {
-                  ...event.target,
-                  name: name,
-                  value: event.target.value,
-                },
-              } as React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-
+              formik.handleChange(event)
               if (handleChange) {
-                formik.handleChange(syntheticEvent)
-                handleChange(syntheticEvent)
-              } else {
-                formik.handleChange(syntheticEvent)
+                handleChange(event)
               }
             }}
             displayEmpty
@@ -105,7 +101,7 @@ function GluuSelectRow({
             <MenuItem value="">
               <em>{t('actions.choose')}...</em>
             </MenuItem>
-            {removeDuplicates(values).map((item) => {
+            {deduplicatedValues.map((item) => {
               const optionValue = typeof item === 'string' ? item : item.value
               const optionLabel = typeof item === 'string' ? item : item.label
               return (
