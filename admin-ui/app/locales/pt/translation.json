@@ -2,7 +2,8 @@
   "languages": {
     "french": "Français",
     "english": "English",
-    "portuguese": "Português"
+    "portuguese": "Português",
+    "spanish": "Espanhol"
   },
   "dashboard": {
     "summary_title": "Estatísticas de usuários ativos e token de acesso",

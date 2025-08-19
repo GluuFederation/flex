@@ -5,6 +5,7 @@ import type { InitOptions } from 'i18next'
 import translationEn from './locales/en/translation.json'
 import translationFr from './locales/fr/translation.json'
 import translationPt from './locales/pt/translation.json'
+import translationEs from './locales/es/translation.json'
 
 const i18nConfig: InitOptions = {
   resources: {
@@ -16,6 +17,9 @@ const i18nConfig: InitOptions = {
     },
     pt: {
       translation: translationPt,
+    },
+    es: {
+      translation: translationEs,
     },
   },
   fallbackLng: 'en',
