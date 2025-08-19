@@ -2,7 +2,8 @@
   "languages": {
     "french": "Français",
     "english": "English",
-    "portuguese": "Português"
+    "portuguese": "Português",
+    "spanish": "Espagnole"
   },
   "dashboard": {
     "summary_title": "Statistiques des utilisateurs actifs et des jetons d'accès",
