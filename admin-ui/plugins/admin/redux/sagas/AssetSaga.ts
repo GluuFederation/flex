@@ -24,14 +24,19 @@ import {
   DeleteAssetSagaPayload,
   GetAssetsSagaPayload,
 } from '../features/types/asset'
-import { DocumentPagedResult, Document } from '../../components/Assets/types/AssetApiTypes'
-import { AssetRootState, getErrorMessage } from './types/asset'
+import {
+  DocumentPagedResult,
+  Document,
+  AssetFormData,
+} from '../../components/Assets/types/AssetApiTypes'
+import { AssetRootState } from './types/asset'
+import { getErrorMessage } from './types/common'
 
 import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 
 // Helper function to create AssetApi instance
-function* newFunction(): Generator<SelectEffect, AssetApi, string> {
+function* createAssetApi(): Generator<SelectEffect, AssetApi, string> {
   const token: string = yield select(
     (state: AssetRootState) => state.authReducer.token.access_token,
   )
@@ -47,7 +52,7 @@ export function* getAllJansAssets({
   try {
     const finalPayload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'asset', finalPayload)
-    const assetApi: AssetApi = yield* newFunction()
+    const assetApi: AssetApi = yield* createAssetApi()
     const data: DocumentPagedResult = yield call(assetApi.getAllJansAssets, finalPayload.action)
     yield put(getJansAssetResponse({ data }))
     yield call(postUserAction, audit)
@@ -71,7 +76,7 @@ export function* getAssetServices({
   try {
     const finalPayload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'assetServices', finalPayload)
-    const assetApi: AssetApi = yield* newFunction()
+    const assetApi: AssetApi = yield* createAssetApi()
     const data: string[] = yield call(assetApi.getAssetServices)
     yield put(getAssetServicesResponse({ data }))
     yield call(postUserAction, audit)
@@ -95,7 +100,7 @@ export function* getAssetTypes({
   try {
     const finalPayload = payload || { action: {} }
     addAdditionalData(audit, FETCH, 'assetTypes', finalPayload)
-    const assetApi: AssetApi = yield* newFunction()
+    const assetApi: AssetApi = yield* createAssetApi()
     const data: string[] = yield call(assetApi.getAssetTypes)
     yield put(getAssetTypesResponse({ data }))
     yield call(postUserAction, audit)
@@ -121,8 +126,12 @@ export function* createJansAsset({
       (state: AssetRootState) => state.authReducer.token.access_token,
     )
     addAdditionalData(audit, CREATE, 'asset', payload)
-    const assetApi: AssetApi = yield* newFunction()
-    const data: Document = yield call(assetApi.createJansAsset, payload.action.action_data, token)
+    const assetApi: AssetApi = yield* createAssetApi()
+    const data: Document = yield call(
+      { context: assetApi, fn: assetApi.createJansAsset },
+      payload.action.action_data as AssetFormData,
+      token,
+    )
     yield put(createJansAssetResponse({ data }))
     yield call(postUserAction, audit)
     return data
@@ -144,7 +153,7 @@ export function* deleteJansAsset({
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, DELETION, 'asset', payload)
-    const assetApi: AssetApi = yield* newFunction()
+    const assetApi: AssetApi = yield* createAssetApi()
     yield call(assetApi.deleteJansAssetByInum, payload.action.action_data.inum)
     yield put(deleteJansAssetResponse())
     yield call(postUserAction, audit)
@@ -170,8 +179,12 @@ export function* updateJansAsset({
       (state: AssetRootState) => state.authReducer.token.access_token,
     )
     addAdditionalData(audit, UPDATE, 'asset', payload)
-    const assetApi: AssetApi = yield* newFunction()
-    const data: Document = yield call(assetApi.updateJansAsset, payload.action.action_data, token)
+    const assetApi: AssetApi = yield* createAssetApi()
+    const data: Document = yield call(
+      { context: assetApi, fn: assetApi.updateJansAsset },
+      payload.action.action_data as AssetFormData,
+      token,
+    )
     yield put(updateJansAssetResponse({ data }))
     yield call(postUserAction, audit)
     yield put(fetchJansAssets({}))
