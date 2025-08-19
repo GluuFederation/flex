@@ -621,7 +621,9 @@
     "platform": "Plateforme",
     "authType": "Type d'authentification",
     "showCedarLogs?": "Cedarling Log est-il activé?",
-    "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling."
+    "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling.",
+    "allAvailableHintsSelected": "Toutes les options d'indice disponibles sont sélectionnées.",
+    "noMatchingOptions": "Aucune option correspondante"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",

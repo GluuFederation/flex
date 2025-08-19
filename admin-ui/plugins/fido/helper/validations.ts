@@ -1,4 +1,5 @@
 import * as Yup from 'yup'
+import { PublicKeyCredentialHints } from '../types'
 
 const dynamicConfigValidationSchema = Yup.object({
   issuer: Yup.string().required('Issuer is required.'),
@@ -16,7 +17,7 @@ const dynamicConfigValidationSchema = Yup.object({
   personCustomObjectClassList: Yup.array().of(Yup.string()),
   // superGluuEnabled: Yup.boolean().required('Enable Super Gluu is required.'),
   hints: Yup.array()
-    .of(Yup.string())
+    .of(Yup.string().oneOf(Object.values(PublicKeyCredentialHints), 'Invalid hint value.'))
     .min(1, 'At least one hint is required.')
     .required('Hints are required.'),
 })

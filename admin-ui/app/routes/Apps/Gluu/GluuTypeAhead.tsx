@@ -36,6 +36,7 @@ function GluuTypeAhead({
   multiple = true,
   hideHelperMessage = false,
   minLength = 0,
+  emptyLabel = '',
 }: any) {
   const { t } = useTranslation()
   return (
@@ -61,7 +62,7 @@ function GluuTypeAhead({
           allowNew={allowNew}
           disabled={disabled}
           ref={forwardRef}
-          emptyLabel=""
+          emptyLabel={t(emptyLabel)}
           labelKey={labelKey || name}
           isLoading={isLoading}
           minLength={minLength}
