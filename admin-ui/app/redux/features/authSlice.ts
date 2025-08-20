@@ -96,7 +96,7 @@ const authSlice = createSlice({
       state.defaultToken = action.payload
       state.issuer = action.payload.issuer
     },
-    putConfigWorker: (state, action: PayloadAction<any>) => {
+    putConfigWorker: (state, _action: PayloadAction<any>) => {
       state.loadingConfig = true
     },
     putConfigWorkerResponse: (state) => {

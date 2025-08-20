@@ -71,7 +71,6 @@ export const {
   clearSmtpConfig,
 } = smtpSlice.actions
 
-// Export types for use in other files
 export type { SmtpState }
 
 export { initialState }

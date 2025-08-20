@@ -3,7 +3,7 @@ import { SagaIterator } from 'redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { getClient } from '../../../../app/redux/api/base'
 import * as JansConfigApi from 'jans_config_api'
-import { initAudit, handleSagaError } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit, handleResponseError } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import SmtpApi from '../api/SmtpApi'
@@ -49,7 +49,7 @@ export function* updateStmpSaga({
     yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e: unknown) {
-    return (yield* handleSagaError(e as SagaError, {
+    return (yield* handleResponseError(e as SagaError, {
       showToast: true,
       clearDataAction: updateSmptResponse({ data: undefined }),
     })) as SagaError
@@ -65,7 +65,7 @@ export function* getSmtpsSaga(): SagaIterator<SmtpConfiguration | SagaError> {
     yield call(postUserAction, audit)
     return data
   } catch (e: unknown) {
-    return (yield* handleSagaError(e as SagaError, {
+    return (yield* handleResponseError(e as SagaError, {
       showToast: false,
       clearDataAction: getSmptResponse({ data: undefined }),
     })) as SagaError
@@ -78,7 +78,7 @@ export function* testSmtp({ payload }: PayloadAction<SmtpTestPayload>): SagaIter
     const data: boolean = yield call(stmpApi.testSmtpConfig, payload.payload)
     yield put(testSmtpResponse({ data }))
   } catch (e: unknown) {
-    yield* handleSagaError(e as SagaError, {
+    yield* handleResponseError(e as SagaError, {
       showToast: true,
       clearDataAction: testSmtpResponseFails(),
     })
