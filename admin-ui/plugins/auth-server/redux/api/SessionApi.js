@@ -19,6 +19,14 @@ export default class SessionApi {
     })
   }
 
+  deleteSession = (sessionId) => {
+    return new Promise((resolve, reject) => {
+      this.api.deleteSession(sessionId, (error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+
   searchSession = (payload) => {
     return new Promise((resolve, reject) => {
       this.api.searchSession(payload.action, (error, data) => {
