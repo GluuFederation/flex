@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -85,17 +85,13 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-          <GluuSelectRow
+          <GluuToggleRow
             label={fidoConstants.LABELS.CHECK_U2F_ATTESTATIONS}
             name={fidoConstants.FORM_FIELDS.CHECK_U2F_ATTESTATIONS}
-            value={formik.values.checkU2fAttestations}
-            defaultValue={formik.values.checkU2fAttestations}
-            values={fidoConstants.BINARY_VALUES}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.checkU2fAttestations && formik.touched.checkU2fAttestations}
-            errorMessage={formik.errors.checkU2fAttestations}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
 
@@ -147,17 +143,13 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-          <GluuSelectRow
+          <GluuToggleRow
             label={fidoConstants.LABELS.USER_AUTO_ENROLLMENT}
             name={fidoConstants.FORM_FIELDS.USER_AUTO_ENROLLMENT}
-            value={formik.values.userAutoEnrollment}
-            defaultValue={formik.values.userAutoEnrollment}
-            values={fidoConstants.BINARY_VALUES}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.userAutoEnrollment && formik.touched.userAutoEnrollment}
-            errorMessage={formik.errors.userAutoEnrollment}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
 

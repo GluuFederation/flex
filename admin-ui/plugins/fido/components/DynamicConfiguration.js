@@ -3,6 +3,7 @@ import { useFormik } from 'formik'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -97,32 +98,24 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-          <GluuSelectRow
+          <GluuToggleRow
             label={fidoConstants.LABELS.USE_LOCAL_CACHE}
             name={fidoConstants.FORM_FIELDS.USE_LOCAL_CACHE}
-            value={formik.values.useLocalCache}
-            defaultValue={formik.values.useLocalCache}
-            values={fidoConstants.BINARY_VALUES}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.useLocalCache && formik.touched.useLocalCache}
-            errorMessage={formik.errors.useLocalCache}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
 
         <Col sm={8}>
-          <GluuSelectRow
+          <GluuToggleRow
             label={fidoConstants.LABELS.DISABLE_JDK_LOGGER}
             name={fidoConstants.FORM_FIELDS.DISABLE_JDK_LOGGER}
-            value={formik.values.disableJdkLogger}
-            defaultValue={formik.values.disableJdkLogger}
-            values={fidoConstants.BINARY_VALUES}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.disableJdkLogger && formik.touched.disableJdkLogger}
-            errorMessage={formik.errors.disableJdkLogger}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
 
@@ -203,17 +196,13 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-          <GluuSelectRow
+          <GluuToggleRow
             label={fidoConstants.LABELS.METRIC_REPORTER_ENABLED}
             name={fidoConstants.FORM_FIELDS.METRIC_REPORTER_ENABLED}
-            value={formik.values.metricReporterEnabled}
-            defaultValue={formik.values.metricReporterEnabled}
-            values={fidoConstants.BINARY_VALUES}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.metricReporterEnabled && formik.touched.metricReporterEnabled}
-            errorMessage={formik.errors.metricReporterEnabled}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
 

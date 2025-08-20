@@ -78,7 +78,7 @@ export const fidoConstants = {
     DYNAMIC_CONFIG: 'dynamicConfigValidationSchema',
   },
 
-  BINARY_VALUES: ['true', 'false'],
+  BINARY_VALUES: { TRUE: 'true', FALSE: 'false' },
 
   EMPTY_DROPDOWN_MESSAGE: {
     ALL_AVAILABLE_HINTS_SELECTED: 'fields.allAvailableHintsSelected',

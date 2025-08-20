@@ -20,17 +20,25 @@ const getEmptyDropdownMessage = (selectedHints: string[] = []): string => {
     : fidoConstants.EMPTY_DROPDOWN_MESSAGE.NO_MATCHING_OPTIONS
 }
 
-const transformToFormValues = (configuration?: any, type?: string) => {
+const toBooleanValue = (value: unknown): boolean => {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') {
+    return value.toLowerCase() === fidoConstants.BINARY_VALUES.TRUE
+  }
+  return Boolean(value)
+}
+
+const transformToFormValues = (configuration?: Record<string, unknown>, type?: string) => {
   return type === fidoConstants.STATIC
     ? {
         authenticatorCertsFolder: configuration?.authenticatorCertsFolder || '',
         mdsCertsFolder: configuration?.mdsCertsFolder || '',
         mdsTocsFolder: configuration?.mdsTocsFolder || '',
-        checkU2fAttestations: configuration?.checkU2fAttestations || false,
+        checkU2fAttestations: toBooleanValue(configuration?.checkU2fAttestations),
         unfinishedRequestExpiration: configuration?.unfinishedRequestExpiration || '',
         authenticationHistoryExpiration: configuration?.authenticationHistoryExpiration || '',
         serverMetadataFolder: configuration?.serverMetadataFolder || '',
-        userAutoEnrollment: configuration?.userAutoEnrollment,
+        userAutoEnrollment: toBooleanValue(configuration?.userAutoEnrollment),
         requestedCredentialTypes: configuration?.requestedCredentialTypes || [],
         requestedParties: configuration?.requestedParties || [],
       }
@@ -39,17 +47,17 @@ const transformToFormValues = (configuration?: any, type?: string) => {
         baseEndpoint: configuration?.baseEndpoint || '',
         cleanServiceInterval: configuration?.cleanServiceInterval || '',
         cleanServiceBatchChunkSize: configuration?.cleanServiceBatchChunkSize || '',
-        useLocalCache: configuration?.useLocalCache || '',
-        disableJdkLogger: configuration?.disableJdkLogger || '',
+        useLocalCache: toBooleanValue(configuration?.useLocalCache),
+        disableJdkLogger: toBooleanValue(configuration?.disableJdkLogger),
         loggingLevel: configuration?.loggingLevel || '',
         loggingLayout: configuration?.loggingLayout || '',
         externalLoggerConfiguration: configuration?.externalLoggerConfiguration || '',
-        metricReporterEnabled: configuration?.metricReporterEnabled,
+        metricReporterEnabled: toBooleanValue(configuration?.metricReporterEnabled),
         metricReporterInterval: configuration?.metricReporterInterval || '',
         metricReporterKeepDataDays: configuration?.metricReporterKeepDataDays || '',
         personCustomObjectClassList: configuration?.personCustomObjectClassList || [],
         hints: arrayValidationWithSchema(
-          configuration?.fido2Configuration?.hints,
+          (configuration as any)?.fido2Configuration?.hints,
           PublicKeyCredentialHints,
         ),
       }
@@ -112,4 +120,5 @@ export {
   createFidoConfigPayload,
   getAvailableHintOptions,
   getEmptyDropdownMessage,
+  toBooleanValue,
 }
