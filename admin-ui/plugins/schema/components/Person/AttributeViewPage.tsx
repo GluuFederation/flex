@@ -7,11 +7,13 @@ import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
 import { editAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { cloneDeep } from 'lodash'
+import { JansAttribute } from 'Plugins/schema/types'
+import { AttributeItem, RootState } from '../types/AttributeListPage.types'
 
-function AttributeEditPage() {
-  const item = useSelector((state) => state.attributeReducer.item),
-    loading = useSelector((state) => state.attributeReducer.loading),
-    extensibleItems = cloneDeep(item),
+function AttributeEditPage(): JSX.Element {
+  const item = useSelector((state: RootState) => state.attributeReducer.item),
+    loading = useSelector((state: RootState) => state.attributeReducer.loading),
+    extensibleItems = cloneDeep(item) as AttributeItem,
     dispatch = useDispatch(),
     navigate = useNavigate()
 
@@ -22,12 +24,14 @@ function AttributeEditPage() {
       minLength: null,
     }
   }
-  function customHandleSubmit(data) {
+
+  function customHandleSubmit(data: { data: AttributeItem; userMessage?: string }): void {
     if (data) {
-      dispatch(editAttribute({ data }))
+      dispatch(editAttribute({ action: { action_data: data as JansAttribute } }))
       navigate('/attributes')
     }
   }
+
   return (
     <GluuLoader blocking={loading}>
       <Card className="mb-3" style={applicationStyle.mainCard}>

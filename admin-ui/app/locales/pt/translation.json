@@ -2,7 +2,8 @@
   "languages": {
     "french": "Français",
     "english": "English",
-    "portuguese": "Português"
+    "portuguese": "Português",
+    "spanish": "Espanhol"
   },
   "dashboard": {
     "summary_title": "Estatísticas de usuários ativos e token de acesso",
@@ -775,7 +776,10 @@
     "typeahead_holder_message": "Insira vários itens selecionando na lista suspensa exibida após inserir cada item.",
     "script_path": "Digite o caminho do arquivo de script",
     "expires_after": "Expira após a data",
-    "expires_before": "Expira antes da data"
+    "expires_before": "Expira antes da data",
+    "charMoreThan512": "caracteres acima do limite (máximo 512)",
+    "charLessThan10": "caracteres necessários (mínimo 10)",
+    "more": " mais"
   },
   "titles": {
     "acrs": "ACRs",
