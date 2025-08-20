@@ -844,6 +844,11 @@ def main(uninstall):
         if argsp.gluu_passwurd_cert:
             installer_obj.generate_gluu_passwurd_api_keystore()
 
+        # Remove Gorn game for TUI
+        gorn_fn = os.path.join(jans_cli_installer.jans_cli_install_dir, 'defeat_gorn.py')
+        if os.path.exists(gorn_fn):
+            os.remove(gorn_fn)
+
     if not argsp.no_restart_services:
         restart_services()
 
