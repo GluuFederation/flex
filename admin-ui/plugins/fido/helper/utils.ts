@@ -24,7 +24,6 @@ const transformToFormValues = (configuration?: any, type?: string) => {
   return type === fidoConstants.STATIC
     ? {
         authenticatorCertsFolder: configuration?.authenticatorCertsFolder || '',
-        mdsAccessToken: configuration?.mdsAccessToken || '',
         mdsCertsFolder: configuration?.mdsCertsFolder || '',
         mdsTocsFolder: configuration?.mdsTocsFolder || '',
         checkU2fAttestations: configuration?.checkU2fAttestations || false,
@@ -61,7 +60,6 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
   if (type === fidoConstants.STATIC) {
     if (payload.fido2Configuration) {
       payload.fido2Configuration.authenticatorCertsFolder = data.authenticatorCertsFolder
-      payload.fido2Configuration.mdsAccessToken = data.mdsAccessToken
       payload.fido2Configuration.mdsCertsFolder = data.mdsCertsFolder
       payload.fido2Configuration.mdsTocsFolder = data.mdsTocsFolder
       payload.fido2Configuration.checkU2fAttestations = data.checkU2fAttestations

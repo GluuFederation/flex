@@ -1,17 +1,13 @@
 import React, { useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { Card, CardBody } from 'Components'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-
 import StaticConfiguration from './StaticConfiguration'
 import DynamicConfiguration from './DynamicConfiguration'
-
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-
 import { getFidoConfiguration, putFidoConfiguration } from '../redux/features/fidoSlice'
 import { fidoConstants, createFidoConfigPayload } from '../helper'
 

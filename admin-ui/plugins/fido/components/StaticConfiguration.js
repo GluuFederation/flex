@@ -61,18 +61,6 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
         <Col sm={8}>
           <GluuInputRow
-            label={fidoConstants.LABELS.MDS_ACCESS_TOKEN}
-            name={fidoConstants.FORM_FIELDS.MDS_ACCESS_TOKEN}
-            value={formik.values.mdsAccessToken || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            showError={formik.errors.mdsAccessToken && formik.touched.mdsAccessToken}
-            errorMessage={formik.errors.mdsAccessToken}
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuInputRow
             label="fields.mds_toc_certificates_folder"
             name="mdsCertsFolder"
             value={formik.values.mdsCertsFolder || ''}
