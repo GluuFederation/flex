@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import {
   Grid,
   FormControl,
@@ -67,6 +67,24 @@ function GluuSelectRow({
     })
   }, [values])
 
+  const selectStyle = useMemo(
+    () => ({
+      height: '35px',
+      minHeight: '35px',
+    }),
+    [],
+  )
+
+  const handleSelectChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent) => {
+      formik.handleChange(event)
+      if (handleChange) {
+        handleChange(event)
+      }
+    },
+    [formik.handleChange, handleChange],
+  )
+
   return (
     <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
       <Grid item xs={lsize}>
@@ -87,16 +105,9 @@ function GluuSelectRow({
             size="small"
             name={name}
             value={value || ''}
-            onChange={(event) => {
-              formik.handleChange(event)
-              if (handleChange) {
-                handleChange(event)
-              }
-            }}
+            onChange={handleSelectChange}
             displayEmpty
-            sx={{
-              minHeight: '40px',
-            }}
+            sx={selectStyle}
           >
             <MenuItem value="">
               <em>{t('actions.choose')}...</em>
