@@ -50,10 +50,13 @@ function SessionListPage() {
   const sessions = useSelector((state) => state.sessionReducer.items)
   const loading = useSelector((state) => state.sessionReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-
   const dispatch = useDispatch()
-
   const { t } = useTranslation()
+
+  const authenticatedSessions = useMemo(
+    () => sessions.filter((session) => session.state === 'authenticated'),
+    [sessions],
+  )
   const [myActions, setMyActions] = useState([])
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
@@ -65,7 +68,6 @@ function SessionListPage() {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  // Permission initialization
   useEffect(() => {
     const authorizePermissions = async () => {
       try {
@@ -76,8 +78,17 @@ function SessionListPage() {
     }
 
     authorizePermissions()
-  }, [])
+  }, [authorize])
+
   useEffect(() => {}, [cedarPermissions])
+
+  const handleDeleteSession = useCallback(
+    (rowData) => {
+      setItem(rowData)
+      setDeleteModal(true)
+    },
+    [setDeleteModal],
+  )
 
   useEffect(() => {
     const actions = []
@@ -103,8 +114,8 @@ function SessionListPage() {
   }, [hasCedarPermission, t, handleDeleteSession])
 
   const sessionUsername = useMemo(
-    () => sessions.map((session) => session.sessionAttributes.auth_user),
-    [sessions],
+    () => authenticatedSessions.map((session) => session.sessionAttributes.auth_user),
+    [authenticatedSessions],
   )
   const usernames = useMemo(() => [...new Set(sessionUsername)], [sessionUsername])
   const [revokeUsername, setRevokeUsername] = useState()
@@ -172,22 +183,16 @@ function SessionListPage() {
   }, [])
 
   const handleRevoke = useCallback(() => {
-    const row = !isEmpty(sessions)
-      ? sessions.find(({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername)
+    const row = !isEmpty(authenticatedSessions)
+      ? authenticatedSessions.find(
+          ({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername,
+        )
       : null
     if (row) {
       setItem(row)
       toggle()
     }
-  }, [sessions, revokeUsername])
-
-  const handleDeleteSession = useCallback(
-    (rowData) => {
-      setItem(rowData)
-      setDeleteModal(true)
-    },
-    [setDeleteModal],
-  )
+  }, [authenticatedSessions, revokeUsername])
 
   const onRevokeConfirmed = useCallback(
     (message) => {
@@ -209,7 +214,6 @@ function SessionListPage() {
     [item, dispatch],
   )
 
-  //export csv
   const convertToCSV = useCallback(
     (data) => {
       const keys = updatedColumns.map((item) => item.title)
@@ -236,9 +240,8 @@ function SessionListPage() {
     [updatedColumns, t],
   )
 
-  // Function to handle file download
   const downloadCSV = useCallback(() => {
-    const csv = convertToCSV(sessions)
+    const csv = convertToCSV(authenticatedSessions)
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
 
@@ -248,9 +251,8 @@ function SessionListPage() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }, [convertToCSV, sessions])
+  }, [convertToCSV, authenticatedSessions])
 
-  // Stable callback references to avoid dependency array size changes
   const handleUsernameChange = useCallback((_, value) => {
     setRevokeUsername(value)
   }, [])
@@ -500,7 +502,7 @@ function SessionListPage() {
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             columns={updatedColumns}
-            data={sessions}
+            data={authenticatedSessions}
             isLoading={loading}
             title=""
             actions={myActions}
