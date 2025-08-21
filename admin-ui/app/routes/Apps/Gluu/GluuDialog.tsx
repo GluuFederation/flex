@@ -65,7 +65,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
               style={{ color: customColors.accentRed }}
               className="fa fa-2x fa-warning fa-fw modal-icon mb-3"
             ></i>
-            {t('messages.action_deletion_for')} {subject} ({name}-{row.inum ? row.inum : row.id})
+            {`${t('messages.action_deletion_for')} ${subject} (${name}${row.inum || row.id ? `-${row.inum || row.id}` : ''})`}
           </ModalHeader>
           <ModalBody>{t('messages.action_deletion_question')}</ModalBody>
           <ModalBody>

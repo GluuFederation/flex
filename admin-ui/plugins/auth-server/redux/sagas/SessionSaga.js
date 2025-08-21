@@ -10,6 +10,7 @@ const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import {
   handleRevokeSession,
+  handleDeleteSession,
   handleUpdateSessionsResponse,
   toggleLoader,
 } from '../features/sessionSlice'
@@ -86,6 +87,26 @@ export function* revokeSessionByUserDn({ payload }) {
   }
 }
 
+export function* deleteSessionById({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    yield put(toggleLoader(true))
+    addAdditionalData(audit, DELETION, SESSION, payload)
+    const sessionApi = yield* newFunction()
+    yield call(sessionApi.deleteSession, payload.sessionId)
+    yield put(handleDeleteSession({ data: payload.sessionId }))
+    yield call(postUserAction, audit)
+  } catch (e) {
+    yield put(handleDeleteSession({ data: null }))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  } finally {
+    yield put(toggleLoader(false))
+  }
+}
+
 export function* getSessionsWatcher() {
   yield takeLatest('session/getSessions', getSessions)
 }
@@ -98,10 +119,15 @@ export function* deleteSessionByUserDnWatcher() {
   yield takeLatest('session/revokeSession', revokeSessionByUserDn)
 }
 
+export function* deleteSessionByIdWatcher() {
+  yield takeLatest('session/deleteSession', deleteSessionById)
+}
+
 export default function* rootSaga() {
   yield all([
     fork(getSessionsWatcher),
     fork(deleteSessionByUserDnWatcher),
+    fork(deleteSessionByIdWatcher),
     fork(searchSessionsWatcher),
   ])
 }
