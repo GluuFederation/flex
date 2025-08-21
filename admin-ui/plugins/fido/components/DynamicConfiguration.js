@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { useFormik } from 'formik'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -30,16 +30,35 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
   const submitForm = useCallback(() => {
     toggle()
     handleSubmit(formik.values)
-  }, [handleSubmit, toggle, formik.values])
+  }, [handleSubmit, toggle, formik])
+
+  const handleFormSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+      formik.handleSubmit()
+    },
+    [formik],
+  )
+
+  const availableHintOptions = useMemo(() => {
+    return getAvailableHintOptions(formik.values.hints)
+  }, [formik.values.hints])
+
+  const emptyDropdownMessage = useMemo(() => {
+    return getEmptyDropdownMessage(formik.values.hints)
+  }, [formik.values.hints])
+
+  const personCustomObjectClassOptions = useMemo(() => {
+    return formik?.values?.personCustomObjectClassList
+      ? formik.values.personCustomObjectClassList.map((item) => ({
+          key: '',
+          value: item,
+        }))
+      : []
+  }, [formik?.values?.personCustomObjectClassList])
 
   return (
-    <Form
-      onSubmit={(e) => {
-        e.preventDefault()
-        formik.handleSubmit()
-      }}
-      className="mt-3"
-    >
+    <Form onSubmit={handleFormSubmit} className="mt-3">
       <FormGroup row>
         <Col sm={8}>
           <GluuInputRow
@@ -214,14 +233,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
                 compName={fidoConstants.FORM_FIELDS.PERSON_CUSTOM_OBJECT_CLASS_LIST}
                 isInputLables={true}
                 formik={formik}
-                options={
-                  formik?.values?.personCustomObjectClassList
-                    ? formik?.values?.personCustomObjectClassList.map((item) => ({
-                        key: '',
-                        value: item,
-                      }))
-                    : []
-                }
+                options={personCustomObjectClassOptions}
                 isKeys={false}
                 buttonText={fidoConstants.BUTTON_TEXT.ADD_CLASSES}
               />
@@ -235,13 +247,13 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             label={fidoConstants.LABELS.HINTS}
             formik={formik}
             value={formik.values.hints || []}
-            options={getAvailableHintOptions(formik.values.hints)}
+            options={availableHintOptions}
             lsize={4}
             rsize={8}
             showError={formik.errors.hints && formik.touched.hints}
             errorMessage={formik.errors.hints}
             doc_category={fidoConstants.DOC_CATEGORY}
-            emptyLabel={getEmptyDropdownMessage(formik.values.hints)}
+            emptyLabel={emptyDropdownMessage}
             allowNew={false}
           />
         </Col>
@@ -259,4 +271,4 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
     </Form>
   )
 }
-export default DynamicConfiguration
+export default React.memo(DynamicConfiguration)

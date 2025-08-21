@@ -11,7 +11,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { getFidoConfiguration, putFidoConfiguration } from '../redux/features/fidoSlice'
 import { fidoConstants, createFidoConfigPayload } from '../helper'
 
-export default function Fido() {
+const Fido = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const fidoConfiguration = useSelector((state) => state.fidoReducer)
@@ -90,3 +90,5 @@ export default function Fido() {
     </React.Fragment>
   )
 }
+
+export default Fido

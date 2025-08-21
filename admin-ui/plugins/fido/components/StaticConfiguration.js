@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { useFormik } from 'formik'
 import { useTranslation } from 'react-i18next'
 
@@ -33,17 +33,38 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
   const submitForm = useCallback(() => {
     toggle()
+
     handleSubmit(formik.values)
-  }, [handleSubmit, toggle, formik.values])
+  }, [handleSubmit, toggle, formik])
+
+  const credentialTypesOptions = useMemo(() => {
+    return formik?.values?.requestedCredentialTypes
+      ? formik.values.requestedCredentialTypes.map((item) => ({
+          key: '',
+          value: item,
+        }))
+      : []
+  }, [formik?.values?.requestedCredentialTypes])
+
+  const requestedPartiesOptions = useMemo(() => {
+    return formik?.values?.requestedParties
+      ? formik.values.requestedParties.map((item) => ({
+          key: item?.name,
+          value: item?.domains?.toString(),
+        }))
+      : []
+  }, [formik?.values?.requestedParties])
+
+  const handleFormSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+      formik.handleSubmit()
+    },
+    [formik],
+  )
 
   return (
-    <Form
-      onSubmit={(e) => {
-        e.preventDefault()
-        formik.handleSubmit()
-      }}
-      className="mt-4"
-    >
+    <Form onSubmit={handleFormSubmit} className="mt-4">
       <FormGroup row>
         <Col sm={8}>
           <GluuInputRow
@@ -61,7 +82,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
         <Col sm={8}>
           <GluuInputRow
-            label="fields.mds_toc_certificates_folder"
+            label={fidoConstants.LABELS.MDS_TOC_CERTIFICATES_FOLDER}
             name="mdsCertsFolder"
             value={formik.values.mdsCertsFolder || ''}
             formik={formik}
@@ -73,7 +94,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
         <Col sm={8}>
           <GluuInputRow
-            label="fields.mds_toc_files_folder"
+            label={fidoConstants.LABELS.MDS_TOC_FILES_FOLDER}
             name="mdsTocsFolder"
             value={formik.values.mdsTocsFolder || ''}
             formik={formik}
@@ -97,7 +118,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label="fields.unfinished_request_expiration"
+            label={fidoConstants.LABELS.UNFINISHED_REQUEST_EXPIRATION}
             name="unfinishedRequestExpiration"
             type="number"
             value={formik.values.unfinishedRequestExpiration || ''}
@@ -114,7 +135,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label="fields.authentication_history_expiration"
+            label={fidoConstants.LABELS.AUTHENTICATION_HISTORY_EXPIRATION}
             name="authenticationHistoryExpiration"
             type="number"
             value={formik.values.authenticationHistoryExpiration || ''}
@@ -131,7 +152,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label="fields.server_metadata_folder"
+            label={fidoConstants.LABELS.SERVER_METADATA_FOLDER}
             name="serverMetadataFolder"
             value={formik.values.serverMetadataFolder || ''}
             formik={formik}
@@ -161,14 +182,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
                 compName={fidoConstants.FORM_FIELDS.REQUESTED_CREDENTIAL_TYPES}
                 isInputLables={true}
                 formik={formik}
-                options={
-                  formik?.values?.requestedCredentialTypes
-                    ? formik?.values?.requestedCredentialTypes.map((item) => ({
-                        key: '',
-                        value: item,
-                      }))
-                    : []
-                }
+                options={credentialTypesOptions}
                 isKeys={false}
                 buttonText={fidoConstants.BUTTON_TEXT.ADD_TYPES}
               />
@@ -186,14 +200,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
                 keyLabel={t('fields.name')}
                 valueLabel={t('fields.domain')}
                 formik={formik}
-                options={
-                  formik?.values?.requestedParties
-                    ? formik?.values?.requestedParties.map((item) => ({
-                        key: item?.name,
-                        value: item?.domains?.toString(),
-                      }))
-                    : []
-                }
+                options={requestedPartiesOptions}
                 keyPlaceholder={t('placeholders.name')}
                 valuePlaceholder={t('placeholders.value')}
                 buttonText={fidoConstants.BUTTON_TEXT.ADD_PARTY}
@@ -222,4 +229,5 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
     </Form>
   )
 }
-export default StaticConfiguration
+
+export default React.memo(StaticConfiguration)
