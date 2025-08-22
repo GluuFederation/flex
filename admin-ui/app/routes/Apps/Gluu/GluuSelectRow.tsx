@@ -1,6 +1,13 @@
-import React from 'react'
+import React, { useMemo, useCallback } from 'react'
+import {
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  FormHelperText,
+  SelectChangeEvent,
+} from '@mui/material'
 import GluuLabel from './GluuLabel'
-import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
 
@@ -14,14 +21,18 @@ interface GluuSelectRowProps {
   name: string
   value: any
   formik: {
-    handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+    handleChange: (
+      event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
+    ) => void
   }
   values?: Array<string | SelectOption>
   lsize?: number
   rsize?: number
   doc_category?: string
   disabled?: boolean
-  handleChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+  handleChange?: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
+  ) => void
   required?: boolean
   showError?: boolean
   errorMessage?: string
@@ -46,7 +57,7 @@ function GluuSelectRow({
 }: GluuSelectRowProps) {
   const { t } = useTranslation()
 
-  function removeDuplicates(values: Array<string | SelectOption>): Array<string | SelectOption> {
+  const deduplicatedValues = useMemo(() => {
     const seen = new Set<string>()
     return values.filter((item) => {
       const val = typeof item === 'string' ? item : item.value
@@ -54,50 +65,69 @@ function GluuSelectRow({
       seen.add(val)
       return true
     })
-  }
+  }, [values])
+
+  const selectStyle = useMemo(
+    () => ({
+      height: '35px',
+      minHeight: '35px',
+    }),
+    [],
+  )
+
+  const handleSelectChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent) => {
+      formik.handleChange(event)
+      if (handleChange) {
+        handleChange(event)
+      }
+    },
+    [formik.handleChange, handleChange],
+  )
 
   return (
-    <FormGroup row>
-      <GluuLabel
-        label={label}
-        size={lsize}
-        doc_category={doc_category}
-        doc_entry={doc_entry || name}
-        required={required}
-      />
-      <Col sm={rsize}>
-        <InputGroup>
-          <CustomInput
-            type="select"
+    <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+      <Grid item xs={lsize}>
+        <GluuLabel
+          label={label}
+          size={lsize}
+          doc_category={doc_category}
+          doc_entry={doc_entry || name}
+          required={required}
+        />
+      </Grid>
+      <Grid item xs={rsize}>
+        <FormControl fullWidth error={showError} disabled={disabled}>
+          <Select
+            labelId={`${name}-label`}
             id={name}
             data-testid={name}
+            size="small"
             name={name}
-            defaultValue={value}
-            onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-              if (handleChange) {
-                formik.handleChange(event)
-                handleChange(event)
-              } else {
-                formik.handleChange(event)
-              }
-            }}
-            disabled={disabled}
+            value={value || ''}
+            onChange={handleSelectChange}
+            displayEmpty
+            sx={selectStyle}
           >
-            <option value="">{t('actions.choose')}...</option>
-            {removeDuplicates(values).map((item) => {
-              const value = typeof item === 'string' ? item : item.value
-              const label = typeof item === 'string' ? item : item.label
+            <MenuItem value="">
+              <em>{t('actions.choose')}...</em>
+            </MenuItem>
+            {deduplicatedValues.map((item) => {
+              const optionValue = typeof item === 'string' ? item : item.value
+              const optionLabel = typeof item === 'string' ? item : item.label
               return (
-                <option key={value} value={value}>
-                  {label}
-                </option>
+                <MenuItem key={optionValue} value={optionValue}>
+                  {optionLabel}
+                </MenuItem>
               )
             })}
-          </CustomInput>
-        </InputGroup>
-        {showError ? <div style={{ color: customColors.accentRed }}>{errorMessage}</div> : null}
-      </Col>
-    </FormGroup>
+          </Select>
+          {showError && (
+            <FormHelperText sx={{ color: customColors.accentRed }}>{errorMessage}</FormHelperText>
+          )}
+        </FormControl>
+      </Grid>
+    </Grid>
   )
 }
 
