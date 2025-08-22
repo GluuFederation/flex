@@ -40,7 +40,7 @@ module.exports = {
     'no-var': 'error',
     'prefer-const': 'error',
     'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'default-param-last': 'off',
     //"no-use-before-define": "error",
     'react/jsx-uses-react': 'error',
