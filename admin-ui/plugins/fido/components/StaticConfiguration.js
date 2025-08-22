@@ -1,80 +1,75 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
+import { useFormik } from 'formik'
+import { useTranslation } from 'react-i18next'
+
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { useFormik } from 'formik'
+import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import { useTranslation } from 'react-i18next'
-import * as Yup from 'yup'
+
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
-const staticConfigInitValues = (staticConfiguration) => {
-  return {
-    authenticatorCertsFolder: staticConfiguration?.authenticatorCertsFolder || '',
-    mdsAccessToken: staticConfiguration?.mdsAccessToken || '',
-    mdsCertsFolder: staticConfiguration?.mdsCertsFolder || '',
-    mdsTocsFolder: staticConfiguration?.mdsTocsFolder || '',
-    checkU2fAttestations: staticConfiguration?.checkU2fAttestations || false,
-    unfinishedRequestExpiration: staticConfiguration?.unfinishedRequestExpiration || '',
-    authenticationHistoryExpiration: staticConfiguration?.authenticationHistoryExpiration || '',
-    serverMetadataFolder: staticConfiguration?.serverMetadataFolder || '',
-    userAutoEnrollment: staticConfiguration?.userAutoEnrollment,
-    requestedCredentialTypes: staticConfiguration?.requestedCredentialTypes || [],
-    requestedParties: staticConfiguration?.requestedParties || [],
-  }
-}
-
-const staticConfigValidationSchema = Yup.object({
-  authenticatorCertsFolder: Yup.string().required('Authenicator Certificates Folder is required.'),
-  mdsCertsFolder: Yup.string().required('MDS TOC Certificates Folder is required.'),
-  mdsTocsFolder: Yup.string().required('MDS TOC Files Folder is required.'),
-  checkU2fAttestations: Yup.boolean().required('Check U2F Attestations is required.'),
-  unfinishedRequestExpiration: Yup.string().required('Unfinished Request Expiration is required.'),
-  authenticationHistoryExpiration: Yup.string().required(
-    'Authenication History Expiration  is required.',
-  ),
-  serverMetadataFolder: Yup.string().required('Server Metadata is required.'),
-  userAutoEnrollment: Yup.boolean().required('User Auto Enrollment is required.'),
-})
+import { validationSchema, transformToFormValues, fidoConstants } from '../helper'
 
 function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
   const staticConfiguration = fidoConfiguration.fido.fido2Configuration
 
   const { t } = useTranslation()
+
   const [modal, setModal] = useState(false)
-  const toggle = () => {
-    setModal(!modal)
-  }
+
+  const toggle = useCallback(() => {
+    setModal((prev) => !prev)
+  }, [])
 
   const formik = useFormik({
-    initialValues: staticConfigInitValues(staticConfiguration),
-    onSubmit: () => {
-      toggle()
-    },
-    validationSchema: staticConfigValidationSchema,
+    initialValues: transformToFormValues(staticConfiguration, fidoConstants.STATIC),
+    onSubmit: toggle,
+    validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.STATIC_CONFIG],
   })
 
-  const submitForm = () => {
+  const submitForm = useCallback(() => {
     toggle()
+
     handleSubmit(formik.values)
-  }
+  }, [handleSubmit, toggle, formik])
+
+  const credentialTypesOptions = useMemo(() => {
+    return formik?.values?.requestedCredentialTypes
+      ? formik.values.requestedCredentialTypes.map((item) => ({
+          key: '',
+          value: item,
+        }))
+      : []
+  }, [formik?.values?.requestedCredentialTypes])
+
+  const requestedPartiesOptions = useMemo(() => {
+    return formik?.values?.requestedParties
+      ? formik.values.requestedParties.map((item) => ({
+          key: item?.name,
+          value: item?.domains?.toString(),
+        }))
+      : []
+  }, [formik?.values?.requestedParties])
+
+  const handleFormSubmit = useCallback(
+    (e) => {
+      e.preventDefault()
+      formik.handleSubmit()
+    },
+    [formik],
+  )
 
   return (
-    <Form
-      onSubmit={(e) => {
-        e.preventDefault()
-        formik.handleSubmit()
-      }}
-      className="mt-4"
-    >
+    <Form onSubmit={handleFormSubmit} className="mt-4">
       <FormGroup row>
         <Col sm={8}>
           <GluuInputRow
-            label="fields.authenticator_certificates_folder"
-            name="authenticatorCertsFolder"
+            label={fidoConstants.LABELS.AUTHENTICATOR_CERTIFICATES_FOLDER}
+            name={fidoConstants.FORM_FIELDS.AUTHENTICATOR_CERTS_FOLDER}
             value={formik.values.authenticatorCertsFolder || ''}
             formik={formik}
             lsize={4}
@@ -87,19 +82,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
         <Col sm={8}>
           <GluuInputRow
-            label="fields.mds_access_token"
-            name="mdsAccessToken"
-            value={formik.values.mdsAccessToken || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            showError={formik.errors.mdsAccessToken && formik.touched.mdsAccessToken}
-            errorMessage={formik.errors.mdsAccessToken}
-          />
-        </Col>
-        <Col sm={8}>
-          <GluuInputRow
-            label="fields.mds_toc_certificates_folder"
+            label={fidoConstants.LABELS.MDS_TOC_CERTIFICATES_FOLDER}
             name="mdsCertsFolder"
             value={formik.values.mdsCertsFolder || ''}
             formik={formik}
@@ -111,7 +94,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
         <Col sm={8}>
           <GluuInputRow
-            label="fields.mds_toc_files_folder"
+            label={fidoConstants.LABELS.MDS_TOC_FILES_FOLDER}
             name="mdsTocsFolder"
             value={formik.values.mdsTocsFolder || ''}
             formik={formik}
@@ -123,23 +106,19 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-          <GluuSelectRow
-            label="fields.check_u2f_attestations"
-            name="checkU2fAttestations"
-            value={formik.values.checkU2fAttestations}
-            defaultValue={formik.values.checkU2fAttestations}
-            values={['true', 'false']}
+          <GluuToggleRow
+            label={fidoConstants.LABELS.CHECK_U2F_ATTESTATIONS}
+            name={fidoConstants.FORM_FIELDS.CHECK_U2F_ATTESTATIONS}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.checkU2fAttestations && formik.touched.checkU2fAttestations}
-            errorMessage={formik.errors.checkU2fAttestations}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
 
         <Col sm={8}>
           <GluuInputRow
-            label="fields.unfinished_request_expiration"
+            label={fidoConstants.LABELS.UNFINISHED_REQUEST_EXPIRATION}
             name="unfinishedRequestExpiration"
             type="number"
             value={formik.values.unfinishedRequestExpiration || ''}
@@ -156,7 +135,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label="fields.authentication_history_expiration"
+            label={fidoConstants.LABELS.AUTHENTICATION_HISTORY_EXPIRATION}
             name="authenticationHistoryExpiration"
             type="number"
             value={formik.values.authenticationHistoryExpiration || ''}
@@ -173,7 +152,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label="fields.server_metadata_folder"
+            label={fidoConstants.LABELS.SERVER_METADATA_FOLDER}
             name="serverMetadataFolder"
             value={formik.values.serverMetadataFolder || ''}
             formik={formik}
@@ -185,65 +164,47 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-          <GluuSelectRow
-            label="fields.user_auto_enrollment"
-            name="userAutoEnrollment"
-            value={formik.values.userAutoEnrollment}
-            defaultValue={formik.values.userAutoEnrollment}
-            values={['true', 'false']}
+          <GluuToggleRow
+            label={fidoConstants.LABELS.USER_AUTO_ENROLLMENT}
+            name={fidoConstants.FORM_FIELDS.USER_AUTO_ENROLLMENT}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.userAutoEnrollment && formik.touched.userAutoEnrollment}
-            errorMessage={formik.errors.userAutoEnrollment}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
 
         <Col sm={8}>
           <Row>
-            <GluuLabel label="fields.requested_credential_types" size={4} />
+            <GluuLabel label={fidoConstants.LABELS.REQUESTED_CREDENTIAL_TYPES} size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName="requestedCredentialTypes"
+                compName={fidoConstants.FORM_FIELDS.REQUESTED_CREDENTIAL_TYPES}
                 isInputLables={true}
                 formik={formik}
-                options={
-                  formik?.values?.requestedCredentialTypes
-                    ? formik?.values?.requestedCredentialTypes.map((item) => ({
-                        key: '',
-                        value: item,
-                      }))
-                    : []
-                }
+                options={credentialTypesOptions}
                 isKeys={false}
-                buttonText="actions.add_types"
-              ></GluuProperties>
+                buttonText={fidoConstants.BUTTON_TEXT.ADD_TYPES}
+              />
             </Col>
           </Row>
         </Col>
 
         <Col sm={8}>
           <Row className="mt-2">
-            <GluuLabel label="fields.requested_parties_name" size={4} />
+            <GluuLabel label={fidoConstants.LABELS.REQUESTED_PARTIES_ID} size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName="requestedParties"
+                compName={fidoConstants.FORM_FIELDS.REQUESTED_PARTIES}
                 isInputLables={true}
                 keyLabel={t('fields.name')}
                 valueLabel={t('fields.domain')}
                 formik={formik}
-                options={
-                  formik?.values?.requestedParties
-                    ? formik?.values?.requestedParties.map((item) => ({
-                        key: item?.name,
-                        value: item?.domains?.toString(),
-                      }))
-                    : []
-                }
+                options={requestedPartiesOptions}
                 keyPlaceholder={t('placeholders.name')}
                 valuePlaceholder={t('placeholders.value')}
-                buttonText="actions.add_party"
-              ></GluuProperties>
+                buttonText={fidoConstants.BUTTON_TEXT.ADD_PARTY}
+              />
             </Col>
           </Row>
         </Col>
@@ -251,7 +212,6 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
       <Row>
         <Col>
-          {' '}
           <GluuCommitFooter
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}
@@ -269,4 +229,5 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
     </Form>
   )
 }
-export default StaticConfiguration
+
+export default React.memo(StaticConfiguration)
