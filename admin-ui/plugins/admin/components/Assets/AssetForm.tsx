@@ -19,25 +19,40 @@ import { useNavigate, useParams } from 'react-router'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import Toggle from 'react-toggle'
 import { ASSET } from 'Utils/ApiResources'
+import {
+  AssetFormValues,
+  AcceptFileTypes,
+  RootStateForAssetForm,
+  RouteParams,
+  FileDropHandler,
+  FileClearHandler,
+  ToggleHandler,
+  SubmitFormCallback,
+} from './types/FormTypes'
+import { AssetFormData } from './types/AssetApiTypes'
+import {
+  CreateAssetActionPayload,
+  UpdateAssetActionPayload,
+} from '../../redux/features/types/asset'
 
-const AssetForm = () => {
-  const { id } = useParams()
-  const [assetFile, setAssetFile] = useState(null)
-  const userAction = {}
-  const { selectedAsset, services } = useSelector((state) => state.assetReducer)
+const AssetForm: React.FC = () => {
+  const { id } = useParams<RouteParams>()
+  const userAction: Record<string, unknown> = {}
+  const { selectedAsset, services } = useSelector(
+    (state: RootStateForAssetForm) => state.assetReducer,
+  )
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const saveOperationFlag = useSelector((state) => state.assetReducer.saveOperationFlag)
+  const saveOperationFlag = useSelector(
+    (state: RootStateForAssetForm) => state.assetReducer.saveOperationFlag,
+  )
   const errorInSaveOperationFlag = useSelector(
-    (state) => state.assetReducer.errorInSaveOperationFlag,
+    (state: RootStateForAssetForm) => state.assetReducer.errorInSaveOperationFlag,
   )
   const dispatch = useDispatch()
-  const [modal, setModal] = useState(false)
-  const validatePayload = (values) => {
-    return false
-  }
+  const [modal, setModal] = useState<boolean>(false)
 
-  const buildAcceptFileTypes = () => {
+  const buildAcceptFileTypes = (): AcceptFileTypes => {
     return {
       'text/plain': ['.properties'],
       'text/css': ['.css'],
@@ -50,34 +65,32 @@ const AssetForm = () => {
     }
   }
 
-  const handleFileDrop = (files) => {
+  const handleFileDrop: FileDropHandler = (files: File[]): void => {
     const file = files[0]
     if (file) {
-      setAssetFile(file)
-      formik.setFieldValue('document', assetFile)
+      formik.setFieldValue('document', file)
       formik.setFieldValue('fileName', file?.name || '')
     }
   }
 
-  const handleClearFiles = () => {
-    setAssetFile(null)
+  const handleClearFiles: FileClearHandler = (): void => {
+    formik.setFieldValue('document', null)
+    formik.setFieldValue('fileName', '')
   }
 
-  const formik = useFormik({
+  const formik = useFormik<AssetFormValues>({
     initialValues: {
       creationDate: selectedAsset?.creationDate || '',
-      document: selectedAsset?.document || null,
+      document: selectedAsset?.document || '',
       fileName: selectedAsset?.fileName || '',
       enabled: selectedAsset?.enabled || false,
       description: selectedAsset?.description || '',
       service: selectedAsset?.service ? [selectedAsset?.service] : [],
     },
-    onSubmit: (values) => {
-      const faulty = validatePayload(values)
-      if (faulty) {
-        return
+    onSubmit: (values: AssetFormValues) => {
+      if (values.fileName) {
+        toggle()
       }
-      toggle()
     },
     validationSchema: Yup.object().shape({
       fileName: Yup.string()
@@ -86,29 +99,30 @@ const AssetForm = () => {
     }),
   })
 
-  const toggle = () => {
+  const toggle: ToggleHandler = (): void => {
     setModal(!modal)
   }
 
-  const submitForm = useCallback(
-    (userMessage) => {
+  const submitForm: SubmitFormCallback = useCallback(
+    (userMessage: string): void => {
       toggle()
-      const payload = {
+      const payload: AssetFormData = {
         ...formik.values,
         service: formik.values.service[0],
+        document: formik.values.document || '',
       }
       if (id) {
         payload['inum'] = selectedAsset.inum
         payload['dn'] = selectedAsset.dn
         payload['baseDn'] = selectedAsset.baseDn
         buildPayload(userAction, userMessage, payload)
-        dispatch(updateJansAsset({ action: userAction }))
+        dispatch(updateJansAsset({ action: userAction } as UpdateAssetActionPayload))
       } else {
         buildPayload(userAction, userMessage, payload)
-        dispatch(createJansAsset({ action: userAction }))
+        dispatch(createJansAsset({ action: userAction } as CreateAssetActionPayload))
       }
     },
-    [formik],
+    [formik, id, selectedAsset, userAction, dispatch],
   )
 
   useEffect(() => {
@@ -116,7 +130,7 @@ const AssetForm = () => {
     return function cleanup() {
       dispatch(resetFlags())
     }
-  }, [saveOperationFlag, errorInSaveOperationFlag])
+  }, [saveOperationFlag, errorInSaveOperationFlag, navigate, dispatch])
 
   return (
     <>

@@ -4,6 +4,7 @@ import type {
   CustomScriptItem,
   CustomScriptState,
   CustomScriptResponse,
+  CustomScriptItemResponse,
   ScriptType,
   ModuleProperty,
   ConfigurationProperty,
@@ -48,7 +49,7 @@ const customScriptSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    addCustomScriptResponse: (state, action: PayloadAction<CustomScriptResponse>) => {
+    addCustomScriptResponse: (state, action: PayloadAction<CustomScriptItemResponse>) => {
       state.loading = false
       state.errorInSaveOperationFlag = false
       if (action.payload?.data) {
@@ -62,7 +63,7 @@ const customScriptSlice = createSlice({
       state.saveOperationFlag = false
       state.errorInSaveOperationFlag = false
     },
-    editCustomScriptResponse: (state, action: PayloadAction<CustomScriptResponse>) => {
+    editCustomScriptResponse: (state, action: PayloadAction<CustomScriptItemResponse>) => {
       state.loading = false
       state.saveOperationFlag = true
       if (action.payload?.data) {
@@ -72,8 +73,7 @@ const customScriptSlice = createSlice({
         state.errorInSaveOperationFlag = true
       }
     },
-    // getCustomScriptByInum: () => {},
-    // getCustomScriptByInumResponse: () => {},
+
     getCustomScriptByType: (state) => {
       state.loading = true
       state.saveOperationFlag = false

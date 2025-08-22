@@ -1,4 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
+import type { PutEffect, SelectEffect } from 'redux-saga/effects'
+import { SagaIterator } from 'redux-saga'
+import { PayloadAction } from '@reduxjs/toolkit'
 import {
   getCustomScriptsResponse,
   addCustomScriptResponse,
@@ -10,134 +13,194 @@ import {
 import { SCRIPT } from '../audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { updateToast } from 'Redux/features/toastSlice'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
-import { CustomScript, ScriptType, UserAction, ActionPayload, AuditLog, RootState } from './types'
+import {
+  CustomScriptItem,
+  ScriptType,
+  CustomScriptListResponse,
+} from '../features/types/customScript'
+import {
+  CustomScriptRootState,
+  CreateCustomScriptSagaPayload,
+  UpdateCustomScriptSagaPayload,
+  DeleteCustomScriptSagaPayload,
+  GetCustomScriptsSagaPayload,
+  GetCustomScriptsByTypeSagaPayload,
+} from './types/customScript'
+import { getErrorMessage } from './types/common'
 
-const JansConfigApi = require('jans_config_api')
+import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
 
-function* newFunction(): any {
-  const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
-  const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
+// Helper function to create ScriptApi instance
+function* createScriptApi(): Generator<SelectEffect, ScriptApi, string> {
+  const token: string = yield select(
+    (state: CustomScriptRootState) => state.authReducer.token.access_token,
+  )
+  const issuer: string = yield select((state: CustomScriptRootState) => state.authReducer.issuer)
   const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
   return new ScriptApi(api)
 }
 
-export function* getCustomScripts({ payload }: { payload: ActionPayload }): any {
-  const audit: AuditLog = yield call(initAudit)
+export function* getCustomScripts({
+  payload,
+}: PayloadAction<GetCustomScriptsSagaPayload['payload']>): SagaIterator<
+  CustomScriptListResponse | unknown
+> {
+  const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, SCRIPT, payload)
-    const scriptApi: ScriptApi = yield call(newFunction)
-    const data: any = yield call(scriptApi.getAllCustomScript, payload.action)
-    yield put(getCustomScriptsResponse({ data }))
-    yield call(postUserAction, audit)
-  } catch (e: any) {
-    yield put(getCustomScriptsResponse({}))
-    if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
-  }
-}
-
-export function* getScriptsByType({ payload }: { payload: ActionPayload }): any {
-  const audit: AuditLog = yield call(initAudit)
-  try {
-    addAdditionalData(audit, FETCH, SCRIPT, payload)
-    const scriptApi: ScriptApi = yield call(newFunction)
-    const data: any = yield call(scriptApi.getScriptsByType, payload.action)
+    const finalPayload = payload || { action: {} }
+    addAdditionalData(audit, FETCH, SCRIPT, finalPayload)
+    const scriptApi: ScriptApi = yield* createScriptApi()
+    const data: CustomScriptListResponse = yield call(
+      scriptApi.getAllCustomScript,
+      finalPayload.action,
+    )
     yield put(getCustomScriptsResponse({ data }))
     yield call(postUserAction, audit)
     return data
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const errMsg = getErrorMessage(e)
+    yield* errorToast(errMsg)
     yield put(getCustomScriptsResponse({}))
     if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select(
+        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
+      )
       yield put(getAPIAccessToken(jwt))
     }
     return e
   }
 }
 
-export function* addScript({ payload }: { payload: ActionPayload }): any {
-  const audit: AuditLog = yield call(initAudit)
+export function* getScriptsByType({
+  payload,
+}: PayloadAction<GetCustomScriptsByTypeSagaPayload['payload']>): SagaIterator<
+  CustomScriptListResponse | unknown
+> {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, SCRIPT, payload)
+    const scriptApi: ScriptApi = yield* createScriptApi()
+    const data: CustomScriptListResponse = yield call(scriptApi.getScriptsByType, payload.action)
+    yield put(getCustomScriptsResponse({ data }))
+    yield call(postUserAction, audit)
+    return data
+  } catch (e: unknown) {
+    const errMsg = getErrorMessage(e)
+    yield* errorToast(errMsg)
+    yield put(getCustomScriptsResponse({}))
+    if (isFourZeroOneError(e)) {
+      const jwt: string = yield select(
+        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
+      )
+      yield put(getAPIAccessToken(jwt))
+    }
+    return e
+  }
+}
+
+export function* addScript({
+  payload,
+}: PayloadAction<CreateCustomScriptSagaPayload['payload']>): SagaIterator<
+  CustomScriptItem | unknown
+> {
+  const audit = yield* initAudit()
   try {
     addAdditionalData(audit, CREATE, SCRIPT, payload)
-    const scriptApi: ScriptApi = yield call(newFunction)
-    const data: any = yield call(scriptApi.addCustomScript, payload.action.action_data)
+    const scriptApi: ScriptApi = yield* createScriptApi()
+    const data: CustomScriptItem = yield call(
+      { context: scriptApi, fn: scriptApi.addCustomScript },
+      payload.action.action_data as Record<string, unknown>,
+    )
     yield call(triggerWebhook, { payload: { createdFeatureValue: data } })
     yield put(addCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
-    yield put(updateToast(true, 'success'))
+    yield* successToast()
     return data
-  } catch (e: any) {
-    console.log('error', e)
-    yield put(updateToast(true, 'error'))
+  } catch (e: unknown) {
+    const errMsg = getErrorMessage(e)
+    yield* errorToast(errMsg)
     yield put(addCustomScriptResponse({}))
     if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select(
+        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
+      )
       yield put(getAPIAccessToken(jwt))
     }
     return e
   }
 }
 
-export function* editScript({ payload }: { payload: ActionPayload }): any {
-  const audit: AuditLog = yield call(initAudit)
+export function* editScript({
+  payload,
+}: PayloadAction<UpdateCustomScriptSagaPayload['payload']>): SagaIterator<
+  CustomScriptItem | unknown
+> {
+  const audit = yield* initAudit()
   try {
     addAdditionalData(audit, UPDATE, SCRIPT, payload)
-    const scriptApi: ScriptApi = yield call(newFunction)
-    const data: any = yield call(scriptApi.editCustomScript, payload.action.action_data)
+    const scriptApi: ScriptApi = yield* createScriptApi()
+    const data: CustomScriptItem = yield call(
+      { context: scriptApi, fn: scriptApi.editCustomScript },
+      payload.action.action_data as Record<string, unknown>,
+    )
     yield put(editCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
-    yield put(updateToast(true, 'success'))
+    yield* successToast()
     yield call(triggerWebhook, { payload: { createdFeatureValue: data } })
     return data
-  } catch (e: any) {
-    console.log('error', e)
-    yield put(updateToast(true, 'error'))
+  } catch (e: unknown) {
+    const errMsg = getErrorMessage(e)
+    yield* errorToast(errMsg)
     yield put(editCustomScriptResponse({}))
     if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select(
+        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
+      )
       yield put(getAPIAccessToken(jwt))
     }
     return e
   }
 }
 
-export function* deleteScript({ payload }: { payload: ActionPayload }): any {
-  const audit: AuditLog = yield call(initAudit)
+export function* deleteScript({
+  payload,
+}: PayloadAction<DeleteCustomScriptSagaPayload>): SagaIterator<void | unknown> {
+  const audit = yield* initAudit()
   try {
     addAdditionalData(audit, DELETION, SCRIPT, payload)
-    const scriptApi: ScriptApi = yield call(newFunction)
-    const data: any = yield call(scriptApi.deleteCustomScript, payload.action.action_data)
-    yield put(updateToast(true, 'success'))
+    const scriptApi: ScriptApi = yield* createScriptApi()
+    yield call({ context: scriptApi, fn: scriptApi.deleteCustomScript }, payload.action.action_data)
+    yield* successToast()
     yield put(deleteCustomScriptResponse({ inum: payload.action.action_data }))
     yield call(triggerWebhook, {
       payload: { createdFeatureValue: { inum: payload.action.action_data } },
     })
     yield call(postUserAction, audit)
-    return data
-  } catch (e: any) {
-    yield put(updateToast(true, 'error'))
+  } catch (e: unknown) {
+    const errMsg = getErrorMessage(e)
+    yield* errorToast(errMsg)
     yield put(deleteCustomScriptResponse({}))
     if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select(
+        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
+      )
       yield put(getAPIAccessToken(jwt))
     }
     return e
   }
 }
 
-export function* getScriptTypes(): any {
+export function* getScriptTypes(): SagaIterator<ScriptType[] | unknown> {
   yield put(setIsScriptTypesLoading(true))
   try {
-    const scriptApi: ScriptApi = yield call(newFunction)
+    const scriptApi: ScriptApi = yield* createScriptApi()
     const data: string[] = yield call(scriptApi.getCustomScriptTypes)
 
     const types: ScriptType[] = data.map((type: string) => {
@@ -153,43 +216,58 @@ export function* getScriptTypes(): any {
       return { value: type, name: type?.charAt(0)?.toUpperCase() + type?.slice(1) }
     })
     yield put(setScriptTypes(types || []))
-  } catch (e: any) {
-    console.log('error in getting script-types: ', e)
+    return types
+  } catch (e: unknown) {
+    const errMsg = getErrorMessage(e)
+    console.log('error in getting script-types: ', errMsg)
     yield put(setScriptTypes([]))
     if (isFourZeroOneError(e)) {
-      const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
+      const jwt: string = yield select(
+        (state: CustomScriptRootState) => state.authReducer.userinfo_jwt,
+      )
       yield put(getAPIAccessToken(jwt))
     }
+    return e
   } finally {
     yield put(setIsScriptTypesLoading(false))
   }
 }
 
-export function* watchGetAllCustomScripts(): any {
-  yield takeLatest('customScript/getCustomScripts' as any, getCustomScripts)
+// Helper function to show success toast
+function* successToast(): Generator<PutEffect, void, void> {
+  yield put(updateToast(true, 'success'))
 }
 
-export function* watchAddScript(): any {
-  yield takeLatest('customScript/addCustomScript' as any, addScript)
+// Helper function to show error toast
+function* errorToast(errMsg: string): Generator<PutEffect, void, void> {
+  yield put(updateToast(true, 'error', errMsg))
 }
 
-export function* watchEditScript(): any {
-  yield takeLatest('customScript/editCustomScript' as any, editScript)
+export function* watchGetAllCustomScripts(): SagaIterator<void> {
+  yield takeLatest('customScript/getCustomScripts', getCustomScripts)
 }
 
-export function* watchDeleteScript(): any {
-  yield takeLatest('customScript/deleteCustomScript' as any, deleteScript)
+export function* watchAddScript(): SagaIterator<void> {
+  yield takeLatest('customScript/addCustomScript', addScript)
 }
 
-export function* watchScriptsByType(): any {
-  yield takeLatest('customScript/getCustomScriptByType' as any, getScriptsByType)
+export function* watchEditScript(): SagaIterator<void> {
+  yield takeLatest('customScript/editCustomScript', editScript)
 }
 
-export function* watchGetScriptTypes(): any {
-  yield takeLatest('customScript/getScriptTypes' as any, getScriptTypes)
+export function* watchDeleteScript(): SagaIterator<void> {
+  yield takeLatest('customScript/deleteCustomScript', deleteScript)
 }
 
-export default function* rootSaga(): any {
+export function* watchScriptsByType(): SagaIterator<void> {
+  yield takeLatest('customScript/getCustomScriptByType', getScriptsByType)
+}
+
+export function* watchGetScriptTypes(): SagaIterator<void> {
+  yield takeLatest('customScript/getScriptTypes', getScriptTypes)
+}
+
+export default function* rootSaga(): SagaIterator<void> {
   yield all([
     fork(watchGetAllCustomScripts),
     fork(watchAddScript),
