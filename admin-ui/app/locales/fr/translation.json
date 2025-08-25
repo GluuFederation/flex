@@ -623,7 +623,8 @@
     "showCedarLogs?": "Cedarling Log est-il activé?",
     "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling.",
     "allAvailableHintsSelected": "Toutes les options d'indice disponibles sont sélectionnées.",
-    "noMatchingOptions": "Aucune option correspondante"
+    "noMatchingOptions": "Aucune option correspondante",
+    "nothingToShowInTheList": "Rien à montrer dans la liste"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",

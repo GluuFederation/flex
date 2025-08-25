@@ -36,7 +36,7 @@ function GluuTypeAhead({
   multiple = true,
   hideHelperMessage = false,
   minLength = 0,
-  emptyLabel = '',
+  emptyLabel = 'fields.nothingToShowInTheList',
 }: any) {
   const { t } = useTranslation()
   return (
