@@ -594,7 +594,8 @@
     "showCedarLogs?": "Cedarling Log enabled?",
     "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes.",
     "allAvailableHintsSelected": "All available hint options are selected",
-    "noMatchingOptions": "No matching options"
+    "noMatchingOptions": "No matching options",
+    "nothingToShowInTheList": "Nothing to show in the list"
   },
   "languages": {
     "french": "French",
