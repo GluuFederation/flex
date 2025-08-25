@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { Card } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-
 import AgamaListPage from '../Agama/AgamaListPage'
 import AliasesListPage from '../Agama/AgamaAliasListPage'
+import ScriptsListPage from './ScriptsListPage'
+import LdapListingPage from './LdapListingPage'
 
 function AuthNPage() {
   const { t } = useTranslation()
@@ -25,6 +26,14 @@ function AuthNPage() {
       name: t('menus.agama_flows'),
       path: '',
     },
+    {
+      name: t('menus.scripts'),
+      path: '',
+    },
+    {
+      name: t('menus.ldap_servers'),
+      path: '',
+    },
   ]
 
   const tabToShow = (tabName) => {
@@ -37,6 +46,10 @@ function AuthNPage() {
         return <AliasesListPage />
       case t('menus.agama_flows'):
         return <AgamaListPage />
+      case t('menus.scripts'):
+        return <ScriptsListPage />
+      case t('menus.ldap_servers'):
+        return <LdapListingPage />
     }
   }
 
