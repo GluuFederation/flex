@@ -21,17 +21,20 @@ import { reducer as scopeReducer } from './redux/features/scopeSlice'
 import { reducer as jsonReducer } from './redux/features/jsonConfigSlice'
 import { reducer as jwksReducer } from './redux/features/jwksSlice'
 import { reducer as acrReducer } from './redux/features/acrSlice'
+import { reducer as scriptReducer } from './redux/features/scriptSlice'
 import { reducer as loggingReducer } from './redux/features/loggingSlice'
 import { reducer as umaResourceReducer } from './redux/features/umaResourceSlice'
 import { reducer as sessionReducer } from './redux/features/sessionSlice'
 import ssaReducer from './redux/features/SsaSlice'
 import messageReducer from './redux/features/MessageSlice'
+import authNLdapReducer from './redux/features/authNLdapSlice'
 
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
 import jwksSaga from './redux/sagas/JwksSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
+import scriptSaga from './redux/sagas/ScriptSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
@@ -40,6 +43,7 @@ import authnSaga from './redux/sagas/AuthnSaga'
 import ssaSaga from './redux/sagas/SsaSaga'
 import messageSaga from './redux/sagas/MessageSaga'
 import configApiSaga from './redux/sagas/configApiSaga'
+import authNLdapSaga from './redux/sagas/authNLdapSaga'
 
 import {
   ACR_READ,
@@ -58,13 +62,13 @@ import {
 } from 'Utils/PermChecker'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import configApiReducer from 'Plugins/auth-server/redux/features/configApiSlice'
-import AuthNListPage from './components/AuthN/AuthNListPage'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
 import SsaListPage from './components/Ssa/SsaListPage'
 import SsaAddPage from './components/Ssa/SsaAddPage'
 import LockPage from './components/Message/LockPage'
 import AuthNPage from './components/AuthN'
+import LdapAddPage from './components/AuthN/LdapAddPage'
 
 const AgamaListPage = lazy(() => import('./components/Agama/AgamaListPage'))
 function AgamaListPageWrapper() {
@@ -177,6 +181,11 @@ const pluginMetadata = {
       permission: SCOPE_READ,
     },
     {
+      component: LdapAddPage,
+      path: PLUGIN_BASE_APTH + '/authn/ldap/new',
+      permission: SCOPE_WRITE,
+    },
+    {
       component: ScopeAddPage,
       path: PLUGIN_BASE_APTH + '/scope/new',
       permission: SCOPE_WRITE,
@@ -238,6 +247,7 @@ const pluginMetadata = {
     { name: 'authPropertiesReducer', reducer: jsonReducer },
     { name: 'jwksReducer', reducer: jwksReducer },
     { name: 'acrReducer', reducer: acrReducer },
+    { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
@@ -246,6 +256,7 @@ const pluginMetadata = {
     { name: 'SsaReducer', reducer: ssaReducer },
     { name: 'messageReducer', reducer: messageReducer },
     { name: 'configApiReducer', reducer: configApiReducer },
+    { name: 'authNLdap', reducer: authNLdapReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -253,6 +264,7 @@ const pluginMetadata = {
     jsonSaga(),
     jwksSaga(),
     acrSaga(),
+    scriptSaga(),
     loggingSaga(),
     umaResourceSaga(),
     sessionSaga(),
@@ -261,6 +273,7 @@ const pluginMetadata = {
     ssaSaga(),
     messageSaga(),
     configApiSaga(),
+    authNLdapSaga(),
   ],
 }
 
