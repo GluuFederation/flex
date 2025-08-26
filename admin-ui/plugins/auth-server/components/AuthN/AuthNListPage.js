@@ -170,7 +170,7 @@ function AuthNListPage({ isBuiltIn = false }) {
         title=""
         actions={myActions}
         options={{
-          columnsButton: true,
+          columnsButton: false,
           search: false,
           idSynonym: 'inum',
           selection: false,

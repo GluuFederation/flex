@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -23,13 +23,38 @@ function LdapAddPage() {
     }
   }, [saveOperationFlag, errorInSaveOperationFlag])
 
-  function handleSubmit() {
-    // TODO: Dispatch add action here
-    // dispatch(addLdap({ action: data }))
+  const dispatch = useDispatch()
+  function handleSubmit({ data }) {
+    // Set payload as per request
+    console.log('data', data)
+    const { gluuLdapConfiguration } = data?.action_data || {}
+
+    const payload = {
+      gluuLdapConfiguration: {
+        configId: gluuLdapConfiguration?.configId || '',
+        bindDN: gluuLdapConfiguration?.bindDN || '',
+        bindPassword: gluuLdapConfiguration?.bindPassword || '',
+        servers: gluuLdapConfiguration?.servers || [''],
+        maxConnections: gluuLdapConfiguration?.maxConnections || 0,
+        useSSL: gluuLdapConfiguration?.useSSL ?? true,
+        baseDNs: gluuLdapConfiguration?.baseDNs || [''],
+        primaryKey: gluuLdapConfiguration?.primaryKey || 'uid',
+        localPrimaryKey: gluuLdapConfiguration?.localPrimaryKey || 'uid',
+        useAnonymousBind: gluuLdapConfiguration?.useAnonymousBind ?? false,
+        enabled: gluuLdapConfiguration?.enabled ?? false,
+        version: gluuLdapConfiguration?.version || 0,
+        level: gluuLdapConfiguration?.level || 0,
+      },
+    }
+    dispatch({ type: 'authNLdap/addLdap', payload })
   }
 
-  // Initial empty LDAP config
-  const ldapConfig = {
+  // Use item from Redux if present, otherwise use empty config
+  const item = useSelector((state) => state.authNLdap.item)
+
+  console.log('item', item)
+
+  const ldapConfig = item || {
     configId: '',
     bindDN: '',
     level: '',
@@ -39,7 +64,7 @@ function LdapAddPage() {
     localPrimaryKey: '',
     servers: '',
     baseDNs: '',
-    enabled: true,
+    enabled: false,
   }
 
   return (

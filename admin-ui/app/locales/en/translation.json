@@ -390,6 +390,8 @@
     "saml1_uri": "Saml1 URI",
     "saml2_uri": "Saml2 URI",
     "saml_acr": "SAML ACR",
+    "bindDN": " Bind DN",
+    "primaryKey": " Primary Key",
     "scope_type": "Scope type",
     "script_properties": "Script Properties",
     "umaAuthorizationPolicies": "Authorization Policies",
@@ -620,7 +622,7 @@
     "acrs": "ACRs",
     "aliases": "Aliases",
     "api_config": "Config API properties",
-    "builtIn": "Built-In",
+    "basic": "Basic",
     "securityDropdown": {
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",

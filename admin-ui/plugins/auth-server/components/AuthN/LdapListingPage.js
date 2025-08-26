@@ -6,7 +6,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { getLdapList } from '../../redux/features/authNLdapSlice'
+import { getLdapList, setCurrentItem } from '../../redux/features/authNLdapSlice'
 import { useNavigate } from 'react-router-dom'
 import customColors from '@/customColors'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
@@ -50,7 +50,29 @@ function LdapListingPage() {
       tooltip: `${t('tooltips.add_ldap')}`,
       isFreeAction: true,
       iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
-      onClick: () => navigate('/auth-server/authn/ldap/new'),
+      onClick: () => {
+        dispatch(setCurrentItem({ item: null }))
+        navigate('/auth-server/authn/ldap/new')
+      },
+    },
+    {
+      icon: 'edit',
+      tooltip: t('actions.edit'),
+      onClick: (event, rowData) => {
+        dispatch(setCurrentItem({ item: rowData }))
+        navigate('/auth-server/authn/ldap/new')
+      },
+    },
+    {
+      icon: 'delete',
+      tooltip: t('actions.delete'),
+      onClick: () => {
+        // Implement delete logic here, e.g., dispatch(deleteLdap(rowData.configId))
+        // For now, just show an alert
+        if (window.confirm(t('action_deletion_question'))) {
+          // dispatch(deleteLdap(rowData.configId))
+        }
+      },
     },
   ]
 
@@ -64,6 +86,9 @@ function LdapListingPage() {
         { title: `${t('fields.acr')}`, field: 'acrName' },
         { title: `${t('fields.saml_acr')}`, field: 'samlACR' },
         { title: `${t('fields.level')}`, field: 'level' },
+        { title: `${t('fields.bindDN')}`, field: 'bindDN' },
+        { title: `${t('fields.enabled')}`, field: 'enabled' },
+        { title: `${t('fields.primaryKey')}`, field: 'primaryKey' },
       ]}
       data={
         loading
@@ -79,8 +104,8 @@ function LdapListingPage() {
       title=""
       actions={actions}
       options={{
-        columnsButton: true,
-        search: true,
+        columnsButton: false,
+        search: false,
         pageSize: limit,
         headerStyle: {
           ...applicationStyle.tableHeaderStyle,

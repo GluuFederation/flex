@@ -56,7 +56,7 @@
     "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
     "api_config": "Configurer les propriétés de l'API",
-    "builtIn": "Intégré",
+    "basic": "Basique",
     "securityDropdown": {
       "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
       "capabilities": "Capacités",

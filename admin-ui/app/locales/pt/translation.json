@@ -56,7 +56,7 @@
     "default_acr": "ACR padrão",
     "acrs": "ACRs",
     "aliases": "Aliases",
-    "builtIn": "Integrado",
+    "basic": "Básico",
     "api_config": "Configurar propriedades da API",
     "securityDropdown": {
       "adminUiRoles": "Funções da interface do administrador",

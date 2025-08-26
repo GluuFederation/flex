@@ -14,10 +14,10 @@ function AuthNPage() {
 
   const tabNames = [
     {
-      name: t('menus.builtIn'),
+      name: t('menus.basic'),
       path: '',
     },
-    { name: t('menus.acrs'), path: '' },
+    { name: t('menus.default_acr'), path: '' },
     {
       name: t('menus.aliases'),
       path: '',
@@ -38,9 +38,9 @@ function AuthNPage() {
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case t('menus.builtIn'):
+      case t('menus.basic'):
         return <AuthNListPage isBuiltIn={true} />
-      case t('menus.acrs'):
+      case t('menus.default_acrs'):
         return <AuthNListPage />
       case t('menus.aliases'):
         return <AliasesListPage />

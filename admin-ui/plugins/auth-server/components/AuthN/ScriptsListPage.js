@@ -118,8 +118,8 @@ function ScriptsListPage() {
         title=""
         actions={myActions}
         options={{
-          columnsButton: true,
-          search: true,
+          columnsButton: false,
+          search: false,
           idSynonym: 'inum',
           selection: false,
           pageSize: limit,

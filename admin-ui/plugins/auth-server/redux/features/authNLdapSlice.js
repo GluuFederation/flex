@@ -20,8 +20,15 @@ const authNLdapSlice = createSlice({
       state.ldapList = []
       state.loading = false
     },
+    setCurrentItem: (state, action) => {
+      state.item = action.payload?.item || null
+    },
+    addLdap: (state) => {
+      state.loading = true
+    },
   },
 })
 
-export const { getLdapList, getLdapListSuccess, getLdapListFailure } = authNLdapSlice.actions
+export const { getLdapList, getLdapListSuccess, getLdapListFailure, setCurrentItem } =
+  authNLdapSlice.actions
 export default authNLdapSlice.reducer
