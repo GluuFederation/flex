@@ -553,6 +553,7 @@
     "user_auto_enrollment": "User Auto Enrollment",
     "requested_credential_types": "Requested Credential Types",
     "requested_parties_name": "Requested Parties Name",
+    "requested_parties_id": "Requested Parties Id",
     "domain": "Domain",
     "software_id": "Software ID",
     "expiration": "Expiration",
@@ -591,7 +592,9 @@
     "platform": "Platform",
     "authType": "Auth Type",
     "showCedarLogs?": "Cedarling Log enabled?",
-    "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes."
+    "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes.",
+    "allAvailableHintsSelected": "All available hint options are selected",
+    "noMatchingOptions": "No matching options"
   },
   "languages": {
     "french": "French",
