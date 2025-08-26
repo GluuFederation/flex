@@ -309,6 +309,7 @@
     "user_auto_enrollment": "Inscrição Automática de Usuário",
     "requested_credential_types": "Tipos de Credenciais Solicitadas",
     "requested_parties_name": "Nome das Partes Solicitadas",
+    "requested_parties_id": "Identificador das Partes Solicitadas",
     "access_token_signing_alg": "Algoritmo de assinatura de token de acesso",
     "defaultMaxAge": "Idade máxima de autenticação padrão",
     "accessTokenLifetime": "Tempo de vida do token de acesso",
@@ -615,7 +616,10 @@
     "platform": "Plataforma",
     "authType": "Tipo de autenticação",
     "showCedarLogs?": "O Cedarling Log está habilitado?",
-    "reloginToViewCedarlingChanges": "Por favor, faça login novamente para ver as alterações do cedarling."
+    "reloginToViewCedarlingChanges": "Por favor, faça login novamente para ver as alterações do cedarling.",
+    "allAvailableHintsSelected": "Todas as opções de dica disponíveis estão selecionadas",
+    "noMatchingOptions": "Nenhuma opção correspondente",
+    "nothingToShowInTheList": "Nada a mostrar na lista"
   },
   "messages": {
     "add_permission": "Adicionar permissão",

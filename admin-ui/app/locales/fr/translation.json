@@ -313,6 +313,7 @@
     "user_auto_enrollment": "Inscription Automatique de l'Utilisateur",
     "requested_credential_types": "Types de Credential Demandés",
     "requested_parties_name": "Nom des Parties Demandées",
+    "requested_parties_id": "Identifiant des Parties Demandées",
     "tls_client_auth_subject_dn": "Sujet DN de l'authentification client TLS",
     "run_introspection_script_before_accesstoken": "Exécuter le script d'introspection avant la création du jeton d'accès JWT",
     "keep_client_authorization": "Conserver l'autorisation client après expiration",
@@ -620,7 +621,10 @@
     "platform": "Plateforme",
     "authType": "Type d'authentification",
     "showCedarLogs?": "Cedarling Log est-il activé?",
-    "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling."
+    "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling.",
+    "allAvailableHintsSelected": "Toutes les options d'indice disponibles sont sélectionnées.",
+    "noMatchingOptions": "Aucune option correspondante",
+    "nothingToShowInTheList": "Rien à montrer dans la liste"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
