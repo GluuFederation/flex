@@ -189,7 +189,8 @@
     "saml_trust_relationship_dn": "DN de relación de confianza SAML",
     "clientId": "ID de cliente",
     "allAvailableHintsSelected": "Todas las opciones de sugerencia disponibles están seleccionadas",
-    "noMatchingOptions": "No hay opciones que coincidan"
+    "noMatchingOptions": "No hay opciones que coincidan",
+    "nothingToShowInTheList": "Nada que mostrar en la lista"
   },
   "languages": {
     "spanish": "Español",
