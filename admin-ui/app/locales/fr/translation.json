@@ -720,6 +720,9 @@
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
     "add_ldap": "Ajouter LDAP",
+    "add_user": "Ajouter un utilisateur",
+    "edit_user": "Modifier un utilisateur",
+    "delete_user": "Supprimer un utilisateur",
     "advanced_search_options": "Options de recherche avancées",
     "delete_attribute": "Supprimer l'attribut",
     "delete_record": "Supprimer l'enregistrement",
