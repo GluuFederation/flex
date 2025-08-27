@@ -785,6 +785,9 @@
   },
   "tooltips": {
     "add_attribute": "Add attribute",
+    "add_user": "Add User",
+    "edit_user": "Edit User",
+    "delete_user": "Delete User",
     "add_ldap": "Add LDAP",
     "advanced_search_options": "Advanced search options",
     "delete_attribute": "Delete attribute",
