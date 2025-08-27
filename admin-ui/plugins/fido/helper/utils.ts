@@ -1,4 +1,4 @@
-import { PublicKeyCredentialHints } from '../types'
+import { PublicKeyCredentialHints, AppConfiguration1, RequestedParty } from '../types'
 import { fidoConstants } from './constants'
 
 const arrayValidationWithSchema = (givenArray: string[], schema: Record<string, string>) =>
@@ -28,19 +28,44 @@ const toBooleanValue = (value: unknown): boolean => {
   return Boolean(value)
 }
 
-const transformToFormValues = (configuration?: Record<string, unknown>, type?: string) => {
+const transformToFormValues = (
+  configuration?: AppConfiguration1 | Record<string, unknown>,
+  type?: string,
+) => {
+  const fido2Config =
+    (configuration as AppConfiguration1)?.fido2Configuration ||
+    ((configuration as Record<string, unknown>)?.fido2Configuration as Record<string, unknown>) ||
+    ({} as Record<string, unknown>)
   return type === fidoConstants.STATIC
     ? {
-        authenticatorCertsFolder: configuration?.authenticatorCertsFolder || '',
-        mdsCertsFolder: configuration?.mdsCertsFolder || '',
-        mdsTocsFolder: configuration?.mdsTocsFolder || '',
-        checkU2fAttestations: toBooleanValue(configuration?.checkU2fAttestations),
-        unfinishedRequestExpiration: configuration?.unfinishedRequestExpiration || '',
-        authenticationHistoryExpiration: configuration?.authenticationHistoryExpiration || '',
-        serverMetadataFolder: configuration?.serverMetadataFolder || '',
-        userAutoEnrollment: toBooleanValue(configuration?.userAutoEnrollment),
-        requestedCredentialTypes: configuration?.requestedCredentialTypes || [],
-        requestedParties: configuration?.requestedParties || [],
+        authenticatorCertsFolder:
+          ((fido2Config as Record<string, unknown>)?.authenticatorCertsFolder as string) || '',
+        mdsCertsFolder: ((fido2Config as Record<string, unknown>)?.mdsCertsFolder as string) || '',
+        mdsTocsFolder: ((fido2Config as Record<string, unknown>)?.mdsTocsFolder as string) || '',
+        checkU2fAttestations: toBooleanValue(
+          (fido2Config as Record<string, unknown>)?.checkU2fAttestations,
+        ),
+        unfinishedRequestExpiration:
+          ((fido2Config as Record<string, unknown>)?.unfinishedRequestExpiration as
+            | string
+            | number) || '',
+        authenticationHistoryExpiration:
+          ((fido2Config as Record<string, unknown>)?.authenticationHistoryExpiration as
+            | string
+            | number) || '',
+        serverMetadataFolder:
+          ((fido2Config as Record<string, unknown>)?.serverMetadataFolder as string) || '',
+        userAutoEnrollment: toBooleanValue(
+          (fido2Config as Record<string, unknown>)?.userAutoEnrollment,
+        ),
+        requestedCredentialTypes:
+          ((fido2Config as Record<string, unknown>)?.requestedCredentialTypes as string[]) || [],
+        requestedParties: (
+          ((fido2Config as Record<string, unknown>)?.requestedParties as any[]) || []
+        ).map((party: any) => ({
+          name: party?.name || party?.id || '',
+          domains: party?.domains || party?.origins || [],
+        })),
       }
     : {
         issuer: configuration?.issuer || '',
@@ -57,13 +82,23 @@ const transformToFormValues = (configuration?: Record<string, unknown>, type?: s
         metricReporterKeepDataDays: configuration?.metricReporterKeepDataDays || '',
         personCustomObjectClassList: configuration?.personCustomObjectClassList || [],
         hints: arrayValidationWithSchema(
-          (configuration as any)?.fido2Configuration?.hints,
+          ((fido2Config as Record<string, unknown>)?.hints as string[]) || [],
           PublicKeyCredentialHints,
         ),
       }
 }
 
-const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
+interface CreateFidoConfigPayloadParams {
+  fidoConfiguration: { fido: AppConfiguration1 }
+  data: Record<string, unknown>
+  type: string
+}
+
+const createFidoConfigPayload = ({
+  fidoConfiguration,
+  data,
+  type,
+}: CreateFidoConfigPayloadParams) => {
   const payload = JSON.parse(JSON.stringify(fidoConfiguration.fido))
   if (type === fidoConstants.STATIC) {
     if (payload.fido2Configuration) {
@@ -76,10 +111,12 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
         data.authenticationHistoryExpiration
       payload.fido2Configuration.serverMetadataFolder = data.serverMetadataFolder
       payload.fido2Configuration.userAutoEnrollment = data.userAutoEnrollment
-      payload.fido2Configuration.requestedCredentialTypes = data.requestedCredentialTypes.map(
-        (item: any) => (item?.value ? item?.value : item),
-      )
-      payload.fido2Configuration.requestedParties = data.requestedParties.map((item: any) => {
+      payload.fido2Configuration.requestedCredentialTypes = (
+        data.requestedCredentialTypes as Array<{ value?: string } | string>
+      ).map((item) => (typeof item === 'object' && item?.value ? item.value : (item as string)))
+      payload.fido2Configuration.requestedParties = (
+        data.requestedParties as Array<{ key: string; value: string }>
+      ).map((item) => {
         return {
           name: item.key,
           domains: [item.value],
@@ -99,16 +136,16 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
     payload.metricReporterEnabled = data.metricReporterEnabled
     payload.metricReporterInterval = data.metricReporterInterval
     payload.metricReporterKeepDataDays = data.metricReporterKeepDataDays
-    payload.personCustomObjectClassList = data.personCustomObjectClassList.map((item: any) =>
-      item?.value ? item?.value : item,
-    )
+    payload.personCustomObjectClassList = (
+      data.personCustomObjectClassList as Array<{ value?: string } | string>
+    ).map((item) => (typeof item === 'object' && item?.value ? item.value : (item as string)))
 
     if (payload.fido2Configuration) {
       payload.fido2Configuration.hints = data.hints || []
     }
   }
 
-  const opts: Record<string, any> = {}
+  const opts: Record<string, unknown> = {}
   opts['appConfiguration1'] = payload
 
   return opts

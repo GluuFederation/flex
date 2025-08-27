@@ -1,7 +1,13 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppConfiguration1, DeleteFido2DeviceInput } from '../../types'
 
-const initialState = {
+interface FidoState {
+  fido: AppConfiguration1
+  loading: boolean
+}
+
+const initialState: FidoState = {
   fido: {},
   loading: false,
 }
@@ -13,17 +19,17 @@ const fidoSlice = createSlice({
     getFidoConfiguration: (state) => {
       state.loading = true
     },
-    putFidoConfiguration: (state, action) => {
+    putFidoConfiguration: (state, _action: PayloadAction<AppConfiguration1>) => {
       state.loading = true
     },
-    getFidoConfigurationResponse: (state, action) => {
+    getFidoConfigurationResponse: (state, action: PayloadAction<AppConfiguration1>) => {
       state.fido = action.payload ? action.payload : {}
       state.loading = false
     },
-    deleteFido2DeviceData: (state, action) => {
+    deleteFido2DeviceData: (state, _action: PayloadAction<DeleteFido2DeviceInput>) => {
       state.loading = true
     },
-    deleteFido2DeviceDataResponse: (state, action) => {
+    deleteFido2DeviceDataResponse: (state, _action: PayloadAction<void>) => {
       state.loading = false
     },
   },
