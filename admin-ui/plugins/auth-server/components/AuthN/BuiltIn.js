@@ -13,12 +13,10 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import AuthNDetailPage from './AuthNDetailPage'
-import { getLdapConfig } from 'Plugins/services/redux/features/ldapSlice'
-import { getCustomScriptByType } from 'Plugins/admin/redux/features/customScriptSlice'
-import { setCurrentItem } from '../../redux/features/authNSlice'
 import { getAcrsConfig } from 'Plugins/auth-server/redux/features/acrSlice'
+import { setCurrentItem } from '../../redux/features/authNSlice'
 
-function AuthNListPage({ isBuiltIn = false }) {
+function BuiltIn() {
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -30,18 +28,8 @@ function AuthNListPage({ isBuiltIn = false }) {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  const [list, setList] = useState({
-    ldap: [],
-    scripts: [],
-  })
-
   const authN = useSelector((state) => state.authNReducer.acrs)
-  const ldap = useSelector((state) => state.ldapReducer.ldap)
-  const scripts = useSelector((state) => state.customScriptReducer.items)
-  const scriptsLoading = useSelector((state) => state.customScriptReducer.loading)
-  const loading = useSelector((state) => state.ldapReducer.loading)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
-  const customScriptloading = useSelector((state) => state.customScriptReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   SetTitle(t('titles.authn'))
@@ -60,8 +48,6 @@ function AuthNListPage({ isBuiltIn = false }) {
     }
 
     authorizePermissions()
-    dispatch(getLdapConfig())
-    dispatch(getCustomScriptByType({ action: { type: 'person_authentication' } }))
     dispatch(getAcrsConfig())
 
     return () => {
@@ -90,37 +76,6 @@ function AuthNListPage({ isBuiltIn = false }) {
 
     setMyActions(newActions)
   }, [cedarPermissions, t, handleGoToAuthNEditPage])
-
-  useEffect(() => {
-    setList({ ...list, ldap: [] })
-
-    if (ldap.length > 0 && !loading) {
-      const getEnabledldap = ldap.filter((item) => item.enabled === true)
-      if (getEnabledldap?.length > 0) {
-        const updateLDAPItems = ldap.map((item) => ({
-          ...item,
-          name: 'default_ldap_password',
-          acrName: item.configId,
-        }))
-        setList({ ...list, ldap: updateLDAPItems })
-      }
-    }
-  }, [ldap, loading])
-
-  useEffect(() => {
-    setList({ ...list, scripts: [] })
-    if (scripts.length > 0 && !scriptsLoading) {
-      const getEnabledscripts = scripts.filter((item) => item.enabled === true)
-      if (getEnabledscripts?.length > 0) {
-        const updateScriptsItems = getEnabledscripts.map((item) => ({
-          ...item,
-          name: 'myAuthnScript',
-          acrName: item.name,
-        }))
-        setList({ ...list, scripts: updateScriptsItems })
-      }
-    }
-  }, [scripts])
 
   const handleGoToAuthNEditPage = useCallback(
     (row) => {
@@ -159,14 +114,8 @@ function AuthNListPage({ isBuiltIn = false }) {
             },
           },
         ]}
-        data={
-          loading || customScriptloading
-            ? []
-            : isBuiltIn
-              ? authN
-              : [...list.ldap, ...list.scripts].sort((item1, item2) => item1.level - item2.level)
-        }
-        isLoading={loading || customScriptloading}
+        data={authN}
+        isLoading={false}
         title=""
         actions={myActions}
         options={{
@@ -189,4 +138,4 @@ function AuthNListPage({ isBuiltIn = false }) {
   )
 }
 
-export default AuthNListPage
+export default BuiltIn

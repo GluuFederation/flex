@@ -1,6 +1,4 @@
 import React from 'react'
-import AuthNListPage from './AuthNListPage'
-import { useTranslation } from 'react-i18next'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { Card } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -8,47 +6,47 @@ import AgamaListPage from '../Agama/AgamaListPage'
 import AliasesListPage from '../Agama/AgamaAliasListPage'
 import ScriptsListPage from './ScriptsListPage'
 import LdapListingPage from './LdapListingPage'
+import BuiltIn from './BuiltIn'
+import DefaultAcr from './DefaultAcr'
 
 function AuthNPage() {
-  const { t } = useTranslation()
-
   const tabNames = [
     {
-      name: t('menus.basic'),
+      name: 'basic',
       path: '',
     },
-    { name: t('menus.default_acr'), path: '' },
+    { name: 'default acr', path: '' },
     {
-      name: t('menus.aliases'),
-      path: '',
-    },
-    {
-      name: t('menus.agama_flows'),
+      name: 'aliases',
       path: '',
     },
     {
-      name: t('menus.scripts'),
+      name: 'agama flows',
       path: '',
     },
     {
-      name: t('menus.ldap_servers'),
+      name: 'scripts',
+      path: '',
+    },
+    {
+      name: 'ldap servers',
       path: '',
     },
   ]
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case t('menus.basic'):
-        return <AuthNListPage isBuiltIn={true} />
-      case t('menus.default_acrs'):
-        return <AuthNListPage />
-      case t('menus.aliases'):
+      case 'basic':
+        return <BuiltIn />
+      case 'default acr':
+        return <DefaultAcr />
+      case 'aliases':
         return <AliasesListPage />
-      case t('menus.agama_flows'):
+      case 'agama flows':
         return <AgamaListPage />
-      case t('menus.scripts'):
+      case 'scripts':
         return <ScriptsListPage />
-      case t('menus.ldap_servers'):
+      case 'ldap servers':
         return <LdapListingPage />
     }
   }
