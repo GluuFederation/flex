@@ -1,4 +1,9 @@
-import { PublicKeyCredentialHints, AppConfiguration1, RequestedParty } from '../types'
+import {
+  PublicKeyCredentialHints,
+  AppConfiguration,
+  RequestedParty,
+  Fido2Configuration,
+} from '../types'
 import { fidoConstants } from './constants'
 
 const arrayValidationWithSchema = (givenArray: string[], schema: Record<string, string>) =>
@@ -28,41 +33,19 @@ const toBooleanValue = (value: unknown): boolean => {
   return Boolean(value)
 }
 
-const transformToFormValues = (
-  configuration?: AppConfiguration1 | Record<string, unknown>,
-  type?: string,
-) => {
-  const fido2Config =
-    (configuration as AppConfiguration1)?.fido2Configuration ||
-    ((configuration as Record<string, unknown>)?.fido2Configuration as Record<string, unknown>) ||
-    ({} as Record<string, unknown>)
+const transformToFormValues = (configuration?: AppConfiguration, type?: string) => {
+  const fido2Config: Fido2Configuration = configuration?.fido2Configuration || {}
   return type === fidoConstants.STATIC
     ? {
-        authenticatorCertsFolder:
-          ((fido2Config as Record<string, unknown>)?.authenticatorCertsFolder as string) || '',
-        mdsCertsFolder: ((fido2Config as Record<string, unknown>)?.mdsCertsFolder as string) || '',
-        mdsTocsFolder: ((fido2Config as Record<string, unknown>)?.mdsTocsFolder as string) || '',
-        checkU2fAttestations: toBooleanValue(
-          (fido2Config as Record<string, unknown>)?.checkU2fAttestations,
-        ),
-        unfinishedRequestExpiration:
-          ((fido2Config as Record<string, unknown>)?.unfinishedRequestExpiration as
-            | string
-            | number) || '',
-        authenticationHistoryExpiration:
-          ((fido2Config as Record<string, unknown>)?.authenticationHistoryExpiration as
-            | string
-            | number) || '',
-        serverMetadataFolder:
-          ((fido2Config as Record<string, unknown>)?.serverMetadataFolder as string) || '',
-        userAutoEnrollment: toBooleanValue(
-          (fido2Config as Record<string, unknown>)?.userAutoEnrollment,
-        ),
-        requestedCredentialTypes:
-          ((fido2Config as Record<string, unknown>)?.requestedCredentialTypes as string[]) || [],
-        requestedParties: (
-          ((fido2Config as Record<string, unknown>)?.requestedParties as any[]) || []
-        ).map((party: any) => ({
+        authenticatorCertsFolder: fido2Config?.authenticatorCertsFolder || '',
+        mdsCertsFolder: fido2Config?.mdsCertsFolder || '',
+        mdsTocsFolder: fido2Config?.mdsTocsFolder || '',
+        unfinishedRequestExpiration: fido2Config?.unfinishedRequestExpiration,
+        metadataRefreshInterval: fido2Config?.metadataRefreshInterval,
+        serverMetadataFolder: fido2Config?.serverMetadataFolder || '',
+        userAutoEnrollment: toBooleanValue(fido2Config?.userAutoEnrollment),
+        enabledFidoAlgorithms: fido2Config?.enabledFidoAlgorithms || [],
+        requestedParties: ((fido2Config?.rp as any[]) || []).map((party: any) => ({
           name: party?.name || party?.id || '',
           domains: party?.domains || party?.origins || [],
         })),
@@ -81,15 +64,12 @@ const transformToFormValues = (
         metricReporterInterval: configuration?.metricReporterInterval || '',
         metricReporterKeepDataDays: configuration?.metricReporterKeepDataDays || '',
         personCustomObjectClassList: configuration?.personCustomObjectClassList || [],
-        hints: arrayValidationWithSchema(
-          ((fido2Config as Record<string, unknown>)?.hints as string[]) || [],
-          PublicKeyCredentialHints,
-        ),
+        hints: arrayValidationWithSchema(fido2Config?.hints || [], PublicKeyCredentialHints),
       }
 }
 
 interface CreateFidoConfigPayloadParams {
-  fidoConfiguration: { fido: AppConfiguration1 }
+  fidoConfiguration: { fido: AppConfiguration }
   data: Record<string, unknown>
   type: string
 }

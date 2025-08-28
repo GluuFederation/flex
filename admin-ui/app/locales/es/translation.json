@@ -94,6 +94,8 @@
     "mau_clients": "Clientes de Jans Lock"
   },
   "fields": {
+    "enabled_fido_algorithms": "Algoritmos FIDO habilitados",
+    "metadata_refresh_interval": "Intervalo de actualización de metadatos",
     "access_token_signing_alg": "Algoritmo JWS para firma",
     "resetLicense": "Restablecer licencia",
     "asset_name": "Nombre del recurso",

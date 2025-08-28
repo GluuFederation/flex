@@ -30,7 +30,7 @@ export interface Fido2Configuration {
   rp?: RequestedParty[]
 }
 
-export interface AppConfiguration1 {
+export interface AppConfiguration {
   issuer?: string
   baseEndpoint?: string
   cleanServiceInterval?: number
@@ -50,7 +50,7 @@ export interface AppConfiguration1 {
 }
 
 export interface PutPropertiesFido2Options {
-  appConfiguration1?: AppConfiguration1
+  appConfiguration?: AppConfiguration
 }
 
 export interface SmtpTest {
@@ -77,10 +77,10 @@ export interface TestSmtpConfigInput {
 }
 
 export interface IFido2ConfigurationApi {
-  getPropertiesFido2(callback: ApiCallback<AppConfiguration1>): void
+  getPropertiesFido2(callback: ApiCallback<AppConfiguration>): void
   putPropertiesFido2(
-    opts: { appConfiguration1?: AppConfiguration1 },
-    callback: ApiCallback<AppConfiguration1>,
+    opts: { appConfiguration?: AppConfiguration },
+    callback: ApiCallback<AppConfiguration>,
   ): void
 }
 
@@ -90,10 +90,9 @@ export interface IFido2RegistrationApi {
 }
 
 export interface IFido2Api {
-  getPropertiesFido2(): ApiPromise<AppConfiguration1>
-  putPropertiesFido2(input: PutPropertiesFido2Options): ApiPromise<AppConfiguration1>
+  getPropertiesFido2(): ApiPromise<AppConfiguration>
+  putPropertiesFido2(input: PutPropertiesFido2Options): ApiPromise<AppConfiguration>
   deleteFido2DeviceData(input: DeleteFido2DeviceInput): ApiPromise<void>
-  testSmtpConfig(input: TestSmtpConfigInput): ApiPromise<any>
 }
 
 export type ApiCallback<T> = (error: Error | null, data?: T, response?: any) => void
@@ -111,7 +110,7 @@ export interface RootState {
 }
 export interface UpdateFidoAction {
   type: string
-  payload: AppConfiguration1
+  payload: AppConfiguration
 }
 
 export interface DeleteFido2DeviceAction {
@@ -132,9 +131,8 @@ export interface ErrorToastAction {
   error: ApiError
 }
 
-// Component-specific types
 export interface FidoState {
-  fido: AppConfiguration1
+  fido: AppConfiguration
   loading: boolean
 }
 

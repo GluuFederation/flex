@@ -3,7 +3,7 @@ export type {
   MetadataServer,
   RequestedParty,
   Fido2Configuration,
-  AppConfiguration1,
+  AppConfiguration,
   PutPropertiesFido2Options,
   SmtpTest,
   SearchFido2RegistrationOptions,

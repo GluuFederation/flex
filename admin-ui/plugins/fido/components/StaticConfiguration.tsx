@@ -19,31 +19,20 @@ import {
   CredentialTypeOption,
   RequestedPartyOption,
 } from './types/StaticConfiguration'
-import type { AppConfiguration1, FormData } from '../types'
+import type { AppConfiguration, FormData } from '../types'
 
 function StaticConfiguration({
   fidoConfiguration,
   handleSubmit,
 }: StaticConfigurationProps): JSX.Element {
-  const staticConfiguration = fidoConfiguration.fido.fido2Configuration
-  console.log('staticConfiguration', staticConfiguration)
-
-  const samples = transformToFormValues(
-    staticConfiguration as AppConfiguration1,
-    fidoConstants.STATIC,
-  )
-  console.log('samples', samples)
   const { t } = useTranslation()
-
   const [modal, setModal] = useState<boolean>(false)
-
   const toggle = useCallback((): void => {
     setModal((prev) => !prev)
   }, [])
-
   const formik = useFormik<StaticConfigurationFormValues>({
     initialValues: transformToFormValues(
-      staticConfiguration as AppConfiguration1,
+      fidoConfiguration.fido as AppConfiguration,
       fidoConstants.STATIC,
     ) as StaticConfigurationFormValues,
     onSubmit: toggle,
@@ -56,13 +45,13 @@ function StaticConfiguration({
   }, [handleSubmit, toggle, formik])
 
   const credentialTypesOptions = useMemo((): CredentialTypeOption[] => {
-    return formik?.values?.requestedCredentialTypes
-      ? formik.values.requestedCredentialTypes.map((item: string) => ({
-          key: '',
+    return formik?.values?.enabledFidoAlgorithms
+      ? formik.values.enabledFidoAlgorithms.map((item: string) => ({
+          key: item,
           value: item,
         }))
       : []
-  }, [formik?.values?.requestedCredentialTypes])
+  }, [formik?.values?.enabledFidoAlgorithms])
 
   const requestedPartiesOptions = useMemo((): RequestedPartyOption[] => {
     return formik?.values?.requestedParties
@@ -155,20 +144,17 @@ function StaticConfiguration({
 
         <Col sm={8}>
           <GluuInputRow
-            label={fidoConstants.LABELS.AUTHENTICATION_HISTORY_EXPIRATION}
-            name="authenticationHistoryExpiration"
+            label={fidoConstants.LABELS.METADATA_REFRESH_INTERVAL}
+            name="metadataRefreshInterval"
             type="number"
-            value={formik.values.authenticationHistoryExpiration || ''}
+            value={formik.values.metadataRefreshInterval || ''}
             formik={formik}
             lsize={4}
             rsize={8}
             showError={
-              !!(
-                formik.errors.authenticationHistoryExpiration &&
-                formik.touched.authenticationHistoryExpiration
-              )
+              !!(formik.errors.metadataRefreshInterval && formik.touched.metadataRefreshInterval)
             }
-            errorMessage={formik.errors.authenticationHistoryExpiration}
+            errorMessage={formik.errors.metadataRefreshInterval}
           />
         </Col>
 
@@ -200,10 +186,10 @@ function StaticConfiguration({
 
         <Col sm={8}>
           <Row>
-            <GluuLabel label={fidoConstants.LABELS.REQUESTED_CREDENTIAL_TYPES} size={4} />
+            <GluuLabel label={fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS} size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName={fidoConstants.FORM_FIELDS.REQUESTED_CREDENTIAL_TYPES}
+                compName={fidoConstants.FORM_FIELDS.ENABLED_FIDO_ALGORITHMS}
                 isInputLables={true}
                 formik={formik}
                 options={credentialTypesOptions}

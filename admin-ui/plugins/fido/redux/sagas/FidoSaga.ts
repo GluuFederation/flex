@@ -13,7 +13,7 @@ import {
   getFidoConfigurationResponse,
 } from '../features/fidoSlice'
 import type {
-  AppConfiguration1,
+  AppConfiguration,
   RootState,
   UpdateFidoAction,
   DeleteFido2DeviceAction,
@@ -46,12 +46,12 @@ function* errorToast({ error }: ErrorToastAction): SagaIterator<void> {
 
 export function* updateFidoSaga({
   payload,
-}: UpdateFidoAction): SagaIterator<AppConfiguration1 | ApiError> {
+}: UpdateFidoAction): SagaIterator<AppConfiguration | ApiError> {
   const audit: AuditLog = yield call(initAudit)
   try {
     const fidoApi: FidoApi = yield call(createFidoApi)
-    const data: AppConfiguration1 = yield call(fidoApi.putPropertiesFido2, {
-      appConfiguration1: payload,
+    const data: AppConfiguration = yield call(fidoApi.putPropertiesFido2, {
+      appConfiguration: payload,
     })
     yield put(updateToast(true, 'success'))
     yield put(getFidoConfiguration())
@@ -68,17 +68,17 @@ export function* updateFidoSaga({
   }
 }
 
-export function* getFidoSaga(): SagaIterator<AppConfiguration1 | ApiError> {
+export function* getFidoSaga(): SagaIterator<AppConfiguration | ApiError> {
   const audit: AuditLog = yield call(initAudit)
   try {
     const fidoApi: FidoApi = yield call(createFidoApi)
-    const data: AppConfiguration1 = yield call(fidoApi.getPropertiesFido2)
+    const data: AppConfiguration = yield call(fidoApi.getPropertiesFido2)
     yield put(getFidoConfigurationResponse(data))
     yield call(postUserAction, audit)
     return data
   } catch (e) {
     const error = e as ApiError
-    yield put(getFidoConfigurationResponse({} as AppConfiguration1))
+    yield put(getFidoConfigurationResponse({} as AppConfiguration))
     if (isFourZeroOneError(error)) {
       const jwt: string | null = yield select((state: RootState) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

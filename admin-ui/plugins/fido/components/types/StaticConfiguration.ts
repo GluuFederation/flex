@@ -1,5 +1,5 @@
 import { FormikProps } from 'formik'
-import { AppConfiguration1, KeyValuePair, FormData } from '../../types'
+import { AppConfiguration, FormData } from '../../types'
 
 export interface StaticConfigurationFormValues {
   authenticatorCertsFolder: string
@@ -7,10 +7,10 @@ export interface StaticConfigurationFormValues {
   mdsTocsFolder: string
   checkU2fAttestations: boolean
   unfinishedRequestExpiration: string | number
-  authenticationHistoryExpiration: string | number
+  metadataRefreshInterval: string | number
   serverMetadataFolder: string
   userAutoEnrollment: boolean
-  requestedCredentialTypes: string[]
+  enabledFidoAlgorithms: string[]
   requestedParties: RequestedPartyForm[]
 }
 
@@ -31,7 +31,7 @@ export interface RequestedPartyOption {
 
 export interface StaticConfigurationProps {
   fidoConfiguration: {
-    fido: AppConfiguration1
+    fido: AppConfiguration
   }
   handleSubmit: (values: FormData) => void
 }

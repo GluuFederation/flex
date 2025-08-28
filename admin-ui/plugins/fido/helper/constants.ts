@@ -35,10 +35,10 @@ export const fidoConstants = {
     MDS_TOCS_FOLDER: 'mdsTocsFolder',
     CHECK_U2F_ATTESTATIONS: 'checkU2fAttestations',
     UNFINISHED_REQUEST_EXPIRATION: 'unfinishedRequestExpiration',
-    AUTHENTICATION_HISTORY_EXPIRATION: 'authenticationHistoryExpiration',
+    METADATA_REFRESH_INTERVAL: 'metadataRefreshInterval',
     SERVER_METADATA_FOLDER: 'serverMetadataFolder',
     USER_AUTO_ENROLLMENT: 'userAutoEnrollment',
-    REQUESTED_CREDENTIAL_TYPES: 'requestedCredentialTypes',
+    ENABLED_FIDO_ALGORITHMS: 'enabledFidoAlgorithms',
     REQUESTED_PARTIES: 'requestedParties',
   },
 
@@ -71,6 +71,8 @@ export const fidoConstants = {
     USER_AUTO_ENROLLMENT: 'fields.user_auto_enrollment',
     REQUESTED_CREDENTIAL_TYPES: 'fields.requested_credential_types',
     REQUESTED_PARTIES_ID: 'fields.requested_parties_id',
+    ENABLED_FIDO_ALGORITHMS: 'fields.enabled_fido_algorithms',
+    METADATA_REFRESH_INTERVAL: 'fields.metadata_refresh_interval',
   },
 
   VALIDATION_SCHEMAS: {
