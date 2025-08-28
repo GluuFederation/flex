@@ -1,6 +1,7 @@
 import { useFormik, FormikProps } from 'formik'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import * as Yup from 'yup'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -15,6 +16,47 @@ import type {
   ScimConfigPatchRequest,
 } from './types'
 
+const scimValidationSchema = Yup.object({
+  baseDN: Yup.string().required('Base DN is required.'),
+  applicationUrl: Yup.string()
+    .url('Please enter a valid URL.')
+    .required('Application URL is required.'),
+  baseEndpoint: Yup.string()
+    .url('Please enter a valid endpoint URL.')
+    .required('Base Endpoint is required.'),
+  personCustomObjectClass: Yup.string(),
+  oxAuthIssuer: Yup.string()
+    .url('Please enter a valid issuer URL.')
+    .required('OxAuth Issuer is required.'),
+  maxCount: Yup.number()
+    .positive('Max Count must be a positive number.')
+    .integer('Max Count must be an integer.')
+    .required('Max Count is required.'),
+  bulkMaxOperations: Yup.number()
+    .positive('Bulk Max Operations must be a positive number.')
+    .integer('Bulk Max Operations must be an integer.')
+    .required('Bulk Max Operations is required.'),
+  bulkMaxPayloadSize: Yup.number()
+    .positive('Bulk Max Payload Size must be a positive number.')
+    .integer('Bulk Max Payload Size must be an integer.')
+    .required('Bulk Max Payload Size is required.'),
+  userExtensionSchemaURI: Yup.string(),
+  loggingLevel: Yup.string()
+    .oneOf(['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF'], 'Invalid logging level.')
+    .required('Logging Level is required.'),
+  loggingLayout: Yup.string(),
+  externalLoggerConfiguration: Yup.string(),
+  metricReporterInterval: Yup.number()
+    .positive('Metric Reporter Interval must be a positive number.')
+    .integer('Metric Reporter Interval must be an integer.'),
+  metricReporterKeepDataDays: Yup.number()
+    .positive('Metric Reporter Keep Data Days must be a positive number.')
+    .integer('Metric Reporter Keep Data Days must be an integer.'),
+  metricReporterEnabled: Yup.boolean(),
+  disableJdkLogger: Yup.boolean(),
+  useLocalCache: Yup.boolean(),
+})
+
 const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) => {
   const scimConfigs = useSelector((state: RootStateWithScim) => state.scimReducer.scim)
   const [modal, setModal] = useState<boolean>(false)
@@ -25,6 +67,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) =
 
   const formik: FormikProps<ScimFormValues> = useFormik<ScimFormValues>({
     initialValues: scimConfigs as ScimFormValues,
+    validationSchema: scimValidationSchema,
     onSubmit: () => {
       toggle()
     },
@@ -32,25 +75,22 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) =
 
   const submitForm = (userMessage: string): void => {
     const differences: ScimConfigPatchRequest[] = []
-    delete formik.values?.action_message
-
-    for (const key in formik.values) {
-      if (key === 'action_message') continue
-
-      const typedKey = key as keyof ScimFormValues
+    const { action_message, ...formValues } = formik.values
+    for (const key in formValues) {
+      const typedKey = key as keyof typeof formValues
       if (Object.prototype.hasOwnProperty.call(scimConfigs, key)) {
-        if (scimConfigs[typedKey as keyof typeof scimConfigs] !== formik.values[typedKey]) {
+        if (scimConfigs[typedKey as keyof typeof scimConfigs] !== formValues[typedKey]) {
           differences.push({
             op: 'replace',
             path: `/${key}`,
-            value: formik.values[typedKey],
+            value: formValues[typedKey],
           })
         }
-      } else if (formik.values[typedKey]) {
+      } else if (formValues[typedKey]) {
         differences.push({
           op: 'add',
           path: `/${key}`,
-          value: formik.values[typedKey],
+          value: formValues[typedKey],
         })
       }
     }

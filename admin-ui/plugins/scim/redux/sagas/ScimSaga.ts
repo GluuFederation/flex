@@ -17,7 +17,6 @@ import { SCIMConfig, ScimConfigPatchRequestBody } from '../types'
 import { ScimActionPayload } from '../types/ScimConfig.type'
 import * as JansConfigApi from 'jans_config_api'
 
-// Type guard function to check if error is an API error
 function isApiError(error: unknown): error is {
   response?: { body?: { description?: string; message?: string }; text?: string }
   message?: string
@@ -25,7 +24,6 @@ function isApiError(error: unknown): error is {
   return typeof error === 'object' && error !== null && ('response' in error || 'message' in error)
 }
 
-// Helper function to safely extract error message
 function getErrorMessage(error: unknown): string {
   if (isApiError(error)) {
     return (
@@ -42,7 +40,6 @@ function getErrorMessage(error: unknown): string {
 const UPDATE_SCIM_CONFIG = 'update_scim_config'
 const GET_SCIM_CONFIG = 'get_scim_config'
 
-// Helper function to create SCIMConfigApi instance
 function* createScimApi(): Generator<SelectEffect, SCIMConfigApi, string> {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
   const issuer: string = yield select((state: RootState) => state.authReducer.issuer)
@@ -71,7 +68,9 @@ export function* updateScimSaga({
     yield* errorToast(errMsg)
     if (isFourZeroOneError(e)) {
       const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      if (jwt) {
+        yield put(getAPIAccessToken(jwt))
+      }
     }
     return e
   }
@@ -92,13 +91,14 @@ export function* getScimSaga(): SagaIterator<SCIMConfig | unknown> {
     yield put(getScimConfigurationResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt: string = yield select((state: RootState) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
+      if (jwt) {
+        yield put(getAPIAccessToken(jwt))
+      }
     }
     return e
   }
 }
 
-// Helper function to show error toast
 function* errorToast(errMsg: string): Generator<PutEffect, void, void> {
   yield put(updateToast(true, 'error', errMsg))
 }

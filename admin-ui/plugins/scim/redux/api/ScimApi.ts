@@ -1,4 +1,4 @@
-import { handleResponseTyped } from 'Utils/ApiUtils'
+import { handleTypedResponse } from 'Utils/ApiUtils'
 import { SCIMConfig, ScimConfigPatchRequestBody } from '../types/ScimConfig.type'
 
 interface JansScimConfigApi {
@@ -19,7 +19,7 @@ export default class SCIMConfigApi {
   getScimConfig = (): Promise<SCIMConfig> => {
     return new Promise((resolve, reject) => {
       this.api.getScimConfig((error: Error | null, data: SCIMConfig) => {
-        handleResponseTyped<SCIMConfig>(error, reject, resolve, data)
+        handleTypedResponse<SCIMConfig>(error, reject, resolve, data)
       })
     })
   }
@@ -27,7 +27,7 @@ export default class SCIMConfigApi {
   patchScimConfig = (input: ScimConfigPatchRequestBody): Promise<SCIMConfig> => {
     return new Promise((resolve, reject) => {
       this.api.patchScimConfig({ requestBody: input }, (error: Error | null, data: SCIMConfig) => {
-        handleResponseTyped<SCIMConfig>(error, reject, resolve, data)
+        handleTypedResponse<SCIMConfig>(error, reject, resolve, data)
       })
     })
   }
