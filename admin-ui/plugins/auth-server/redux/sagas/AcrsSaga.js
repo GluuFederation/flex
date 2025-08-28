@@ -4,6 +4,7 @@ import { getAcrsResponse, editAcrsResponse } from '../features/acrSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import AcrApi from '../api/AcrApi'
 import { getClient } from 'Redux/api/base'
+import { updateToast } from '@/redux/features/toastSlice'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -33,9 +34,10 @@ export function* editAcrs({ payload }) {
   try {
     const api = yield* newFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(editAcrsResponse({ data }))
   } catch (e) {
-    yield put(editAcrsResponse(null))
+    yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

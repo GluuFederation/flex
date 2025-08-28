@@ -1,315 +1,207 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import { buildPayload } from 'Utils/PermChecker'
-import { Col, Form, FormGroup, Input } from 'Components'
+import { Form, FormGroup } from 'Components'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import { useTranslation } from 'react-i18next'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import { useDispatch } from 'react-redux'
+import { buildLdapPayload } from '../../helper'
+import { STRINGS, ACTIONS, FEATURES } from '../../helper/constants'
 
-function LdapForm({ ldapConfig, handleSubmit }) {
-  const { t } = useTranslation()
-  const validationSchema = Yup.object().shape({
-    configId: Yup.string().required(t('fields.acr') + ' is required!'),
-    bindDN: Yup.string().required(t('fields.bind_dn') + ' is required!'),
-    bindPassword: Yup.string().required(t('fields.bind_password') + ' is required!'),
-    servers: Yup.string().required(t('fields.remote_ldap_server') + ' is required!'),
-    maxConnections: Yup.number()
-      .typeError(t('fields.max_connections') + ' must be a number')
-      .required(t('fields.max_connections') + ' is required!'),
-    baseDNs: Yup.string().required(t('fields.base_dns') + ' is required!'),
-    primaryKey: Yup.string().required(t('fields.remote_primary_key') + ' is required!'),
-    localPrimaryKey: Yup.string().required(t('fields.local_primary_key') + ' is required!'),
-    level: Yup.number()
-      .typeError(t('fields.level') + ' must be a number')
-      .required(t('fields.level') + ' is required!'),
-    defaultAuthnMethod: Yup.string().required(t('fields.default_authn_method') + ' is required!'),
-  })
-
+function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
+  const [modal, setModal] = useState(false)
+  const [userMessage, setUserMessage] = useState('')
   const formik = useFormik({
-    initialValues: {
-      configId: ldapConfig.configId ?? '',
-      bindDN: ldapConfig.bindDN ?? '',
-      bindPassword: ldapConfig.bindPassword ?? '',
-      servers: Array.isArray(ldapConfig.servers)
-        ? ldapConfig.servers.join(', ')
-        : (ldapConfig.servers ?? ''),
-      maxConnections: ldapConfig.maxConnections ?? '',
-      useSSL: !!ldapConfig.useSSL,
-      baseDNs: Array.isArray(ldapConfig.baseDNs)
-        ? ldapConfig.baseDNs.join(', ')
-        : (ldapConfig.baseDNs ?? ''),
-      primaryKey: ldapConfig.primaryKey ?? '',
-      localPrimaryKey: ldapConfig.localPrimaryKey ?? '',
-      useAnonymousBind: !!ldapConfig.useAnonymousBind,
-      enabled: !!ldapConfig.enabled,
-      version: ldapConfig.version !== undefined ? ldapConfig.version : 0,
-      level: ldapConfig.level !== undefined ? ldapConfig.level : '',
-      defaultAuthnMethod: ldapConfig.defaultAuthnMethod ?? '',
-    },
-    validationSchema,
-    enableReinitialize: true,
-    onSubmit: (values) => {
-      const serversArr = values.servers
-        ? values.servers
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean)
-        : []
-      const baseDNsArr = values.baseDNs
-        ? values.baseDNs
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean)
-        : []
-      const userAction = {}
-      const payload = {
-        gluuLdapConfiguration: {
-          configId: values.configId,
-          bindDN: values.bindDN,
-          bindPassword: values.bindPassword,
-          servers: serversArr,
-          maxConnections: Number(values.maxConnections),
-          useSSL: !!values.useSSL,
-          baseDNs: baseDNsArr,
-          primaryKey: values.primaryKey || values.localPrimaryKey,
-          localPrimaryKey: values.localPrimaryKey,
-          useAnonymousBind: !!values.useAnonymousBind,
-          enabled: !!values.enabled,
-          version: values.version !== undefined ? Number(values.version) : 0,
-          level: values.level !== undefined ? Number(values.level) : 0,
-          defaultAuthnMethod: values.defaultAuthnMethod,
-        },
-      }
-
-      console.log('payload in ldap', payload)
-
-      if (window.buildPayload) {
-        window.buildPayload(userAction, '', payload)
-      } else if (typeof buildPayload === 'function') {
-        buildPayload(userAction, '', payload)
-      } else {
-        Object.assign(userAction, payload)
-      }
-      handleSubmit({ data: userAction })
+    initialValues,
+    onSubmit: (values, { setSubmitting }) => {
+      setModal(true)
+      setSubmitting(false)
     },
   })
+
+  const dispatch = useDispatch()
+  const handleDialogAccept = useCallback(() => {
+    const payload = buildLdapPayload(formik.values, userMessage)
+    dispatch({ type: isEdit ? ACTIONS.EDIT_LDAP : ACTIONS.ADD_LDAP, payload, onSuccessApply })
+    setModal(false)
+    setUserMessage('')
+  }, [formik.values, userMessage, isEdit, dispatch])
 
   return (
-    <Form onSubmit={formik.handleSubmit} autoComplete="off">
-      <FormGroup row>
-        <GluuLabel label="fields.acr" size={4} required />
-        <Col sm={8}>
-          <Input
-            name="configId"
-            value={formik.values.configId}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            placeholder={t('placeholders.acr')}
-            invalid={formik.touched.configId && !!formik.errors.configId}
-          />
-          {formik.touched.configId && formik.errors.configId && (
-            <div style={{ color: 'red' }}>{formik.errors.configId}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.level" size={4} required />
-        <Col sm={8}>
-          <Input
-            type="number"
-            name="level"
-            id="level"
-            value={formik.values.level}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            min={1}
-            step={1}
-            placeholder={t('placeholders.level')}
-            invalid={formik.touched.level && !!formik.errors.level}
-          />
-          {formik.touched.level && formik.errors.level && (
-            <div style={{ color: 'red' }}>{formik.errors.level}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.default_authn_method" size={4} required />
-        <Col sm={8}>
-          <Input
-            type="select"
-            name="defaultAuthnMethod"
-            id="defaultAuthnMethod"
-            value={formik.values.defaultAuthnMethod}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            invalid={formik.touched.defaultAuthnMethod && !!formik.errors.defaultAuthnMethod}
-          >
-            <option value="true">True</option>
-            <option value="false">False</option>
-          </Input>
-          {formik.touched.defaultAuthnMethod && formik.errors.defaultAuthnMethod && (
-            <div style={{ color: 'red' }}>{formik.errors.defaultAuthnMethod}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.bind_dn" size={4} required />
-        <Col sm={8}>
-          <Input
-            name="bindDN"
-            value={formik.values.bindDN}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            placeholder={t('placeholders.bind_dn')}
-            invalid={formik.touched.bindDN && !!formik.errors.bindDN}
-          />
-          {formik.touched.bindDN && formik.errors.bindDN && (
-            <div style={{ color: 'red' }}>{formik.errors.bindDN}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.max_connections" size={4} required />
-        <Col sm={8}>
-          <Input
-            name="maxConnections"
-            value={formik.values.maxConnections}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            placeholder={t('placeholders.max_connections')}
-            invalid={formik.touched.maxConnections && !!formik.errors.maxConnections}
-          />
-          {formik.touched.maxConnections && formik.errors.maxConnections && (
-            <div style={{ color: 'red' }}>{formik.errors.maxConnections}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.local_primary_key" size={4} required />
-        <Col sm={8}>
-          <Input
-            name="localPrimaryKey"
-            value={formik.values.localPrimaryKey}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            placeholder={t('placeholders.local_primary_key')}
-            invalid={formik.touched.localPrimaryKey && !!formik.errors.localPrimaryKey}
-          />
-          {formik.touched.localPrimaryKey && formik.errors.localPrimaryKey && (
-            <div style={{ color: 'red' }}>{formik.errors.localPrimaryKey}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.remote_primary_key" size={4} required />
-        <Col sm={8}>
-          <Input
-            name="primaryKey"
-            value={formik.values.primaryKey}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            placeholder={t('placeholders.remote_primary_key')}
-            invalid={formik.touched.primaryKey && !!formik.errors.primaryKey}
-          />
-          {formik.touched.primaryKey && formik.errors.primaryKey && (
-            <div style={{ color: 'red' }}>{formik.errors.primaryKey}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="Remote LDAP Server" size={4} required />
-        <Col sm={8}>
-          <Input
-            name="servers"
-            value={formik.values.servers}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            placeholder={t('placeholders.remote_ldap_server')}
-            invalid={formik.touched.servers && !!formik.errors.servers}
-          />
-          {formik.touched.servers && formik.errors.servers && (
-            <div style={{ color: 'red' }}>{formik.errors.servers}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.base_dns" size={4} required />
-        <Col sm={8}>
-          <Input
-            name="baseDNs"
-            value={formik.values.baseDNs}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            placeholder={t('placeholders.base_dns')}
-            invalid={formik.touched.baseDNs && !!formik.errors.baseDNs}
-          />
-          {formik.touched.baseDNs && formik.errors.baseDNs && (
-            <div style={{ color: 'red' }}>{formik.errors.baseDNs}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="Bind password" size={4} required />
-        <Col sm={8}>
-          <Input
-            name="bindPassword"
-            value={formik.values.bindPassword}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            required
-            style={{ width: '100%' }}
-            placeholder={t('placeholders.bind_password')}
-            invalid={formik.touched.bindPassword && !!formik.errors.bindPassword}
-          />
-          {formik.touched.bindPassword && formik.errors.bindPassword && (
-            <div style={{ color: 'red' }}>{formik.errors.bindPassword}</div>
-          )}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuToogleRow
-          label="Use SSL"
-          name="useSSL"
+    <>
+      <Form onSubmit={formik.handleSubmit} autoComplete="off">
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.acr}
+          name="configId"
+          value={formik.values.configId}
           formik={formik}
-          value={formik.values.useSSL}
-          handler={() => formik.setFieldValue('useSSL', !formik.values.useSSL)}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          required
+          disabled={isEdit}
+          placeholder={STRINGS.authn.ldap.placeholders.acr}
+          error={formik.touched.configId && formik.errors.configId}
         />
-      </FormGroup>
-      <FormGroup row>
-        <GluuToogleRow
-          label="Enabled"
-          name="enabled"
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.level}
+          name="level"
+          type="number"
+          value={formik.values.level}
           formik={formik}
-          value={formik.values.enabled}
-          handler={() => formik.setFieldValue('enabled', !formik.values.enabled)}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          required
+          min={1}
+          step={1}
+          placeholder={STRINGS.authn.ldap.placeholders.level}
+          error={formik.touched.level && formik.errors.level}
         />
-      </FormGroup>
-      <GluuCommitFooter
-        saveHandler={formik.handleSubmit}
-        hideButtons={{ save: true }}
-        type="submit"
+
+        <GluuToogleRow
+          label={STRINGS.authn.ldap.fields.default_authn_method}
+          name="defaultAuthnMethod"
+          formik={formik}
+          value={formik.values.defaultAuthnMethod}
+          handler={() =>
+            formik.setFieldValue('defaultAuthnMethod', !formik.values.defaultAuthnMethod)
+          }
+        />
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.bind_dn}
+          name="bindDN"
+          value={formik.values.bindDN}
+          formik={formik}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          required
+          placeholder={STRINGS.authn.ldap.placeholders.bind_dn}
+          error={formik.touched.bindDN && formik.errors.bindDN}
+        />
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.max_connections}
+          name="maxConnections"
+          value={formik.values.maxConnections}
+          formik={formik}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          required
+          placeholder={STRINGS.authn.ldap.placeholders.max_connections}
+          error={formik.touched.maxConnections && formik.errors.maxConnections}
+        />
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.local_primary_key}
+          name="localPrimaryKey"
+          value={formik.values.localPrimaryKey}
+          formik={formik}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          required
+          placeholder={STRINGS.authn.ldap.placeholders.local_primary_key}
+          error={formik.touched.localPrimaryKey && formik.errors.localPrimaryKey}
+        />
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.remote_primary_key}
+          name="primaryKey"
+          value={formik.values.primaryKey}
+          formik={formik}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          required
+          placeholder={STRINGS.authn.ldap.placeholders.remote_primary_key}
+          error={formik.touched.primaryKey && formik.errors.primaryKey}
+        />
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.remote_ldap_server}
+          name="servers"
+          value={formik.values?.servers}
+          formik={formik}
+          onChange={(e) => {
+            const arr = e.target.value
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean)
+            formik.setFieldValue('servers', arr.length ? arr : [''])
+          }}
+          onBlur={formik.handleBlur}
+          required
+          placeholder={STRINGS.authn.ldap.placeholders.remote_ldap_server}
+          error={
+            formik.touched.servers &&
+            (Array.isArray(formik.errors.servers)
+              ? formik.errors.servers.join(', ')
+              : formik.errors.servers)
+          }
+        />
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.base_dns}
+          name="baseDNs"
+          value={formik.values.baseDNs}
+          formik={formik}
+          onChange={(e) => {
+            const arr = e.target.value
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean)
+            formik.setFieldValue('baseDNs', arr.length ? arr : [''])
+          }}
+          onBlur={formik.handleBlur}
+          required
+          placeholder={STRINGS.authn.ldap.placeholders.base_dns}
+          error={
+            formik.touched.baseDNs &&
+            (Array.isArray(formik.errors.baseDNs)
+              ? formik.errors.baseDNs.join(', ')
+              : formik.errors.baseDNs)
+          }
+        />
+        <GluuInputRow
+          label={STRINGS.authn.ldap.fields.bind_password}
+          name="bindPassword"
+          value={formik.values.bindPassword}
+          formik={formik}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          required
+          placeholder={STRINGS.authn.ldap.placeholders.bind_password}
+          error={formik.touched.bindPassword && formik.errors.bindPassword}
+        />
+        <FormGroup row>
+          <GluuToogleRow
+            label="Use SSL"
+            name="useSSL"
+            formik={formik}
+            value={formik.values.useSSL}
+            handler={() => formik.setFieldValue('useSSL', !formik.values.useSSL)}
+          />
+        </FormGroup>
+        <FormGroup row>
+          <GluuToogleRow
+            label="Enabled"
+            name="enabled"
+            formik={formik}
+            value={formik.values.enabled}
+            handler={() => formik.setFieldValue('enabled', !formik.values.enabled)}
+          />
+        </FormGroup>
+        <GluuCommitFooter
+          saveHandler={formik.handleSubmit}
+          hideButtons={{ save: true }}
+          type="submit"
+        />
+      </Form>
+      <GluuCommitDialog
+        handler={() => setModal(false)}
+        modal={modal}
+        onAccept={handleDialogAccept}
+        formik={formik}
+        placeholderLabel={STRINGS.authn.ldap.placeholders.action_commit_message}
+        inputType="textarea"
+        feature={FEATURES.LDAP_EDIT}
+        operations={[]}
+        isLicenseLabel={false}
       />
-    </Form>
+    </>
   )
 }
 

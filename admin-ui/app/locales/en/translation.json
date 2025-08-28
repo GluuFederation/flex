@@ -597,7 +597,10 @@
     "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes.",
     "allAvailableHintsSelected": "All available hint options are selected",
     "noMatchingOptions": "No matching options",
-    "nothingToShowInTheList": "Nothing to show in the list"
+    "nothingToShowInTheList": "Nothing to show in the list",
+    "simple_password_auth": "Simple Password Authentication",
+    "basic_auth": "Basic Authentication",
+    "agama_auth": "Agama Authentication"
   },
   "languages": {
     "french": "French",

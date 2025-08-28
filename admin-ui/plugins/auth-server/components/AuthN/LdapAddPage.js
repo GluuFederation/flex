@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Card, CardBody } from 'Components'
@@ -6,66 +6,30 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import LdapForm from './LdapForm' // You may need to create this component for the form fields
+import LdapForm from './LdapForm'
+import { useLocation } from 'react-router-dom'
+import { lDapFormInitialState } from 'Plugins/auth-server/helper'
 
 function LdapAddPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const loading = useSelector((state) => state.authNLdap.loading)
-  const saveOperationFlag = useSelector((state) => state.authNLdap.saveOperationFlag)
-  const errorInSaveOperationFlag = useSelector((state) => state.authNLdap.errorInSaveOperationFlag)
-  const [modifiedFields, setModifiedFields] = useState({})
-
-  // Redirect on successful save
-  React.useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag) {
-      navigate('/auth-server/authn')
-    }
-  }, [saveOperationFlag, errorInSaveOperationFlag])
-
   const dispatch = useDispatch()
-  function handleSubmit({ data }) {
-    // Set payload as per request
-    console.log('data', data)
-    const { gluuLdapConfiguration } = data?.action_data || {}
+  const location = useLocation()
 
-    const payload = {
-      gluuLdapConfiguration: {
-        configId: gluuLdapConfiguration?.configId || '',
-        bindDN: gluuLdapConfiguration?.bindDN || '',
-        bindPassword: gluuLdapConfiguration?.bindPassword || '',
-        servers: gluuLdapConfiguration?.servers || [''],
-        maxConnections: gluuLdapConfiguration?.maxConnections || 0,
-        useSSL: gluuLdapConfiguration?.useSSL ?? true,
-        baseDNs: gluuLdapConfiguration?.baseDNs || [''],
-        primaryKey: gluuLdapConfiguration?.primaryKey || 'uid',
-        localPrimaryKey: gluuLdapConfiguration?.localPrimaryKey || 'uid',
-        useAnonymousBind: gluuLdapConfiguration?.useAnonymousBind ?? false,
-        enabled: gluuLdapConfiguration?.enabled ?? false,
-        version: gluuLdapConfiguration?.version || 0,
-        level: gluuLdapConfiguration?.level || 0,
-      },
-    }
-    dispatch({ type: 'authNLdap/addLdap', payload })
-  }
+  const loading = useSelector((state) => state.authNLdap.loading)
+  const errorInSaveOperationFlag = useSelector(
+    (state) => state.authNLdap.errorInSaveOperationFlag || false,
+  )
+  const authNLdap = useSelector((state) => state.authNLdap)
 
-  // Use item from Redux if present, otherwise use empty config
-  const item = useSelector((state) => state.authNLdap.item)
+  const isEdit = location.state?.isEdit
+  const { item } = authNLdap
+  const ldapConfig = React.useMemo(() => lDapFormInitialState(isEdit, item), [isEdit, item])
 
-  console.log('item', item)
-
-  const ldapConfig = item || {
-    configId: '',
-    bindDN: '',
-    level: '',
-    primaryKey: '',
-    samlACR: '',
-    maxConnections: '',
-    localPrimaryKey: '',
-    servers: '',
-    baseDNs: '',
-    enabled: false,
-  }
+  const handleSuccessApply = React.useCallback(() => {
+    dispatch({ type: 'authNLdap/getLdapList' })
+    navigate('/auth-server/authn')
+  }, [dispatch, navigate])
 
   return (
     <GluuLoader blocking={loading}>
@@ -76,12 +40,7 @@ function LdapAddPage() {
       />
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          <LdapForm
-            ldapConfig={ldapConfig}
-            handleSubmit={handleSubmit}
-            modifiedFields={modifiedFields}
-            setModifiedFields={setModifiedFields}
-          />
+          <LdapForm isEdit={isEdit} ldapConfig={ldapConfig} onSuccessApply={handleSuccessApply} />
         </CardBody>
       </Card>
     </GluuLoader>

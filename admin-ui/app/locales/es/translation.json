@@ -190,7 +190,10 @@
     "clientId": "ID de cliente",
     "allAvailableHintsSelected": "Todas las opciones de sugerencia disponibles están seleccionadas",
     "noMatchingOptions": "No hay opciones que coincidan",
-    "nothingToShowInTheList": "Nada que mostrar en la lista"
+    "nothingToShowInTheList": "Nada que mostrar en la lista",
+    "simple_password_auth": "Autenticación simple por contraseña",
+    "basic_auth": "Autenticación básica",
+    "agama_auth": "Autenticación Agama"
   },
   "languages": {
     "spanish": "Español",

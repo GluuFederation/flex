@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   acrs: {},
   scripts: [],
-  loading: true,
+  loading: false,
   acrReponse: {},
 }
 

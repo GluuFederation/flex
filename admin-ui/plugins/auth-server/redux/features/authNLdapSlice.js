@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   ldapList: [],
   loading: false,
+  saveOperationFlag: false,
+  errorInSaveOperationFlag: false,
 }
 
 const authNLdapSlice = createSlice({
@@ -25,10 +27,58 @@ const authNLdapSlice = createSlice({
     },
     addLdap: (state) => {
       state.loading = true
+      state.saveOperationFlag = false
+      state.errorInSaveOperationFlag = false
+    },
+    addLdapSuccess: (state) => {
+      state.loading = false
+      state.saveOperationFlag = true
+      state.errorInSaveOperationFlag = false
+    },
+    addLdapFailure: (state) => {
+      state.loading = false
+      state.saveOperationFlag = false
+      state.errorInSaveOperationFlag = true
+    },
+    editLdap: (state) => {
+      state.loading = true
+      state.saveOperationFlag = false
+      state.errorInSaveOperationFlag = false
+    },
+    editLdapSuccess: (state) => {
+      state.loading = false
+      state.saveOperationFlag = true
+      state.errorInSaveOperationFlag = false
+    },
+    editLdapFailure: (state) => {
+      state.loading = false
+      state.saveOperationFlag = false
+      state.errorInSaveOperationFlag = true
+    },
+    deleteLdap: (state) => {
+      state.loading = true
+    },
+    deleteLdapSuccess: (state) => {
+      state.loading = false
+    },
+    deleteLdapFailure: (state) => {
+      state.loading = false
     },
   },
 })
 
-export const { getLdapList, getLdapListSuccess, getLdapListFailure, setCurrentItem } =
-  authNLdapSlice.actions
+export const {
+  getLdapList,
+  getLdapListSuccess,
+  getLdapListFailure,
+  setCurrentItem,
+  addLdapSuccess,
+  addLdapFailure,
+  editLdap,
+  editLdapSuccess,
+  editLdapFailure,
+  deleteLdap,
+  deleteLdapSuccess,
+  deleteLdapFailure,
+} = authNLdapSlice.actions
 export default authNLdapSlice.reducer

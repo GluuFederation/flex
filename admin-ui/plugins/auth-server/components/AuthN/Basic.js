@@ -16,7 +16,7 @@ import AuthNDetailPage from './AuthNDetailPage'
 import { getAcrsConfig } from 'Plugins/auth-server/redux/features/acrSlice'
 import { setCurrentItem } from '../../redux/features/authNSlice'
 
-function BuiltIn() {
+function Basic() {
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -34,7 +34,6 @@ function BuiltIn() {
 
   SetTitle(t('titles.authn'))
 
-  // Permission initialization
   useEffect(() => {
     const authorizePermissions = async () => {
       const permissions = [SCOPE_READ, SCOPE_WRITE]
@@ -49,13 +48,8 @@ function BuiltIn() {
 
     authorizePermissions()
     dispatch(getAcrsConfig())
-
-    return () => {
-      // Cleanup if needed
-    }
   }, [dispatch])
 
-  // Actions as state that will rebuild when permissions change
   useEffect(() => {
     const newActions = []
 
@@ -93,25 +87,18 @@ function BuiltIn() {
           Container: (props) => <Paper {...props} elevation={0} />,
         }}
         columns={[
-          { title: `${t('fields.acr')}`, field: 'acrName' },
-          { title: `${t('fields.saml_acr')}`, field: 'samlACR' },
-          { title: `${t('fields.level')}`, field: 'level' },
+          { title: `acr`, field: 'acrName' },
+          { title: `saml acr`, field: 'samlACR' },
+          { title: `level`, field: 'level' },
           {
-            title: `${t('options.default')}`,
+            title: `default`,
             field: '',
-            render: (rowData) => {
-              return rowData.acrName === acrs.defaultAcr ? (
-                <i
-                  className="fa fa-check"
-                  style={{ color: customColors.logo, fontSize: '24px' }}
-                ></i>
-              ) : (
-                <i
-                  className="fa fa-close"
-                  style={{ color: customColors.accentRed, fontSize: '24px' }}
-                ></i>
-              )
-            },
+            render: (rowData) => (
+              <i
+                className={rowData.acrName === acrs.defaultAcr ? 'fa fa-check' : 'fa fa-close'}
+                style={{ color: customColors.logo, fontSize: '24px' }}
+              />
+            ),
           },
         ]}
         data={authN}
@@ -138,4 +125,4 @@ function BuiltIn() {
   )
 }
 
-export default BuiltIn
+export default Basic

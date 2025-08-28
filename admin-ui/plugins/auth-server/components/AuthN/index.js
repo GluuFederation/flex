@@ -6,7 +6,7 @@ import AgamaListPage from '../Agama/AgamaListPage'
 import AliasesListPage from '../Agama/AgamaAliasListPage'
 import ScriptsListPage from './ScriptsListPage'
 import LdapListingPage from './LdapListingPage'
-import BuiltIn from './BuiltIn'
+import Basic from './Basic'
 import DefaultAcr from './DefaultAcr'
 
 function AuthNPage() {
@@ -37,7 +37,7 @@ function AuthNPage() {
   const tabToShow = (tabName) => {
     switch (tabName) {
       case 'basic':
-        return <BuiltIn />
+        return <Basic />
       case 'default acr':
         return <DefaultAcr />
       case 'aliases':

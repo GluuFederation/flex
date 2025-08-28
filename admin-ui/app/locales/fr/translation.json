@@ -625,7 +625,10 @@
     "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling.",
     "allAvailableHintsSelected": "Toutes les options d'indice disponibles sont sélectionnées.",
     "noMatchingOptions": "Aucune option correspondante",
-    "nothingToShowInTheList": "Rien à montrer dans la liste"
+    "nothingToShowInTheList": "Rien à montrer dans la liste",
+    "simple_password_auth": "Authentification simple par mot de passe",
+    "basic_auth": "Authentification de base",
+    "agama_auth": "Authentification Agama"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
