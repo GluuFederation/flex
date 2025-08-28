@@ -5,7 +5,7 @@ import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import LoggingApi from '../api/LoggingApi'
 import { getClient } from 'Redux/api/base'
-import { DELETION } from '@/audit/UserActionType'
+import { UPDATE } from '@/audit/UserActionType'
 import { API_LOGGING } from 'Plugins/user-management/redux/audit/Resources'
 import { initAudit } from '@/redux/sagas/SagaUtils'
 import { postUserAction } from '@/redux/api/backend-api'
@@ -37,7 +37,7 @@ export function* getLogging() {
 export function* editLogging({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, DELETION, API_LOGGING, {})
+    addAdditionalData(audit, UPDATE, API_LOGGING, {})
     audit.message = payload?.data?.userMessage
     const api = yield* newFunction()
     const data = yield call(api.editLoggingConfig, payload.data)
