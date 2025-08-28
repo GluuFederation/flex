@@ -1,10 +1,14 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import { addAdditionalData, isFourZeroOneError } from 'Utils/TokenController'
 import { getLoggingResponse, editLoggingResponse } from '../features/loggingSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import LoggingApi from '../api/LoggingApi'
 import { getClient } from 'Redux/api/base'
+import { DELETION } from '@/audit/UserActionType'
+import { API_LOGGING } from 'Plugins/user-management/redux/audit/Resources'
+import { initAudit } from '@/redux/sagas/SagaUtils'
+import { postUserAction } from '@/redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -31,11 +35,15 @@ export function* getLogging() {
 }
 
 export function* editLogging({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, DELETION, API_LOGGING, {})
+    audit.message = payload?.data?.userMessage
     const api = yield* newFunction()
     const data = yield call(api.editLoggingConfig, payload.data)
     yield put(updateToast(true, 'success'))
     yield put(editLoggingResponse({ data }))
+    yield call(postUserAction, audit)
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))

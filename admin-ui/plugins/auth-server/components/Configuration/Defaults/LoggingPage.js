@@ -1,8 +1,9 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { Form, Button, FormGroup, Card, CardBody, Col, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { JSON_CONFIG } from 'Utils/ApiResources'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useDispatch, useSelector } from 'react-redux'
@@ -29,6 +30,8 @@ function LoggingPage() {
   const dispatch = useDispatch()
 
   const selectedTheme = theme.state.theme
+  const [showCommitDialog, setShowCommitDialog] = useState(false)
+  const [pendingValues, setPendingValues] = useState(null)
 
   useEffect(() => {
     const initPermissions = async () => {
@@ -76,9 +79,8 @@ function LoggingPage() {
                     ? values.enabledOAuthAuditLogging
                     : logging.enabledOAuthAuditLogging
 
-                const opts = {}
-                opts['logging'] = JSON.stringify(values)
-                dispatch(editLoggingConfig({ data: opts }))
+                setPendingValues(values)
+                setShowCommitDialog(true)
               }}
             >
               {(formik) => (
@@ -184,6 +186,21 @@ function LoggingPage() {
                 </Form>
               )}
             </Formik>
+            <GluuCommitDialog
+              handler={() => setShowCommitDialog(false)}
+              modal={showCommitDialog}
+              onAccept={(userMessage) => {
+                if (pendingValues) {
+                  const opts = {}
+                  opts['logging'] = JSON.stringify(pendingValues)
+                  opts['userMessage'] = userMessage
+                  dispatch(editLoggingConfig({ data: opts }))
+                  setShowCommitDialog(false)
+                  setPendingValues(null)
+                }
+              }}
+              isLicenseLabel={false}
+            />
           </GluuViewWrapper>
         </CardBody>
       </Card>
