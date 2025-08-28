@@ -1,4 +1,5 @@
-import { CustomScript, ScriptType } from './customScript'
+import { CustomScriptItem } from '../../features/types/customScript'
+import { ScriptType } from '../../features/types/customScript'
 import { Webhook } from './webhook'
 
 export interface RootState {
@@ -10,7 +11,7 @@ export interface RootState {
     userinfo_jwt: string
   }
   customScriptReducer: {
-    items: CustomScript[]
+    items: CustomScriptItem[]
     loading: boolean
     view: boolean
     saveOperationFlag: boolean
@@ -20,7 +21,7 @@ export interface RootState {
     scriptTypes: ScriptType[]
     hasFetchedScriptTypes: boolean
     loadingScriptTypes: boolean
-    item?: CustomScript
+    item?: CustomScriptItem
   }
   webhookReducer: {
     featureToTrigger: string
