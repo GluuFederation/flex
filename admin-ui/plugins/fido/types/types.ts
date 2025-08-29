@@ -11,6 +11,8 @@ export interface MetadataServer {
 
 export interface RequestedParty {
   id?: string
+  name?: string
+  domains?: string[]
   origins?: string[]
 }
 export interface Fido2Configuration {
@@ -86,7 +88,6 @@ export interface IFido2ConfigurationApi {
 
 export interface IFido2RegistrationApi {
   deleteFido2Data(jansId: string, callback: ApiCallback<void>): void
-  testConfigSmtp(smtpTest: SmtpTest, callback: ApiCallback<any>): void
 }
 
 export interface IFido2Api {
@@ -95,7 +96,7 @@ export interface IFido2Api {
   deleteFido2DeviceData(input: DeleteFido2DeviceInput): ApiPromise<void>
 }
 
-export type ApiCallback<T> = (error: Error | null, data?: T, response?: any) => void
+export type ApiCallback<T> = (error: Error | null, data?: T, response?: unknown) => void
 export type ApiPromise<T> = Promise<T>
 
 // Define local RootState interface for this fido saga

@@ -45,10 +45,12 @@ const transformToFormValues = (configuration?: AppConfiguration, type?: string) 
         serverMetadataFolder: fido2Config?.serverMetadataFolder || '',
         userAutoEnrollment: toBooleanValue(fido2Config?.userAutoEnrollment),
         enabledFidoAlgorithms: fido2Config?.enabledFidoAlgorithms || [],
-        requestedParties: ((fido2Config?.rp as any[]) || []).map((party: any) => ({
-          name: party?.name || party?.id || '',
-          domains: party?.domains || party?.origins || [],
-        })),
+        requestedParties: ((fido2Config?.rp as RequestedParty[]) || []).map(
+          (party: RequestedParty) => ({
+            name: party?.name || party?.id || '',
+            domains: party?.domains || party?.origins || [],
+          }),
+        ),
       }
     : {
         issuer: configuration?.issuer || '',

@@ -22,7 +22,7 @@ import type {
 } from '../../types'
 import type { AuditLog } from '../../../../app/redux/sagas/types/audit'
 
-const JansConfigApi = require('jans_config_api')
+import * as JansConfigApi from 'jans_config_api'
 
 function* createFidoApi(): SagaIterator<FidoApi> {
   const token: string = yield select((state: RootState) => state.authReducer.token.access_token)
@@ -96,6 +96,7 @@ export function* deleteFido2DeviceData({
     const data: void = yield call(fidoApi.deleteFido2DeviceData, payload)
     yield put(updateToast(true, 'success'))
     yield put(deleteFido2DeviceDataResponse())
+    yield call(postUserAction, audit)
     return data
   } catch (error) {
     yield call(errorToast, { error: error as ApiError })
