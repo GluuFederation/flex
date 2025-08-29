@@ -11,6 +11,7 @@ import { getLdapList, setCurrentItem } from '../../redux/features/authNLdapSlice
 import { useNavigate } from 'react-router-dom'
 import customColors from '@/customColors'
 import { LDAP_READ, LDAP_WRITE, LDAP_DELETE } from 'Utils/PermChecker'
+import { STRINGS } from '../../helper/constants'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { Container, Row, Col } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -25,6 +26,7 @@ function LdapListingPage() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
+  const backgroundStyle = { backgroundColor: '#f5f5f5', padding: '20px' }
   const bgThemeColor = { background: themeColors.background }
 
   const ldapListRaw = useSelector((state) => state.authNLdap.ldapList)
@@ -37,6 +39,21 @@ function LdapListingPage() {
   const [selectedRow, setSelectedRow] = useState(null)
   const toggle = useCallback(() => setModal(!modal), [modal])
   const { permissions } = useSelector((state) => state.cedarPermissions)
+
+  function LdapDetailRow({ label, value }) {
+    return (
+      <Row>
+        <Col sm={6}>
+          <GluuFormDetailRow label={label[0]} value={value[0]} />
+        </Col>
+        {label[1] && value[1] && (
+          <Col sm={6}>
+            <GluuFormDetailRow label={label[1]} value={value[1]} />
+          </Col>
+        )}
+      </Row>
+    )
+  }
 
   useEffect(() => {
     const initPermissions = async () => {
@@ -123,12 +140,11 @@ function LdapListingPage() {
             Container: (props) => <Paper {...props} elevation={0} />,
           }}
           columns={[
-            { title: `${t('fields.acr')}`, field: 'acrName' },
-            { title: `${t('fields.saml_acr')}`, field: 'samlACR' },
-            { title: `${t('fields.level')}`, field: 'level' },
-            { title: `${t('fields.bindDN')}`, field: 'bindDN' },
-            { title: `${t('fields.enabled')}`, field: 'enabled' },
-            { title: `${t('fields.primaryKey')}`, field: 'primaryKey' },
+            { title: `ACR`, field: 'acrName' },
+            { title: `Level`, field: 'level' },
+            { title: `Bind DN`, field: 'bindDN' },
+            { title: `Enabled`, field: 'enabled' },
+            { title: `Remote Primary Key`, field: 'primaryKey' },
           ]}
           data={
             loading
@@ -136,7 +152,6 @@ function LdapListingPage() {
               : ldapList.map((item) => ({
                   ...item,
                   acrName: item.configId,
-                  samlACR: item.configId,
                   level: item.level || 0,
                 }))
           }
@@ -156,59 +171,38 @@ function LdapListingPage() {
           detailPanel={(rowData) => {
             const row = rowData.rowData
             return (
-              <Container style={{ backgroundColor: '#f5f5f5', padding: '20px' }}>
-                <Row>
-                  <Col sm={6}>
-                    <GluuFormDetailRow label="fields.acr" value={row.acrName} />
-                  </Col>
-                  <Col sm={6}>
-                    <GluuFormDetailRow label="fields.level" value={row.level} />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm={6}>
-                    <GluuFormDetailRow label="fields.primary_key" value={row.primaryKey} />
-                  </Col>
-                  <Col sm={6}>
-                    <GluuFormDetailRow label="fields.saml_acr" value={row.samlACR} />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm={6}>
-                    <GluuFormDetailRow label="fields.bind_dn" value={row.bindDN} />
-                  </Col>
-                  <Col sm={6}>
-                    <GluuFormDetailRow label="fields.max_connections" value={row.maxConnections} />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm={6}>
-                    <GluuFormDetailRow
-                      label="fields.local_primary_key"
-                      value={row.localPrimaryKey}
-                    />
-                  </Col>
-                  <Col sm={6}>
-                    <GluuFormDetailRow
-                      label="fields.servers"
-                      value={row.servers && row.servers.join(', ')}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm={6}>
-                    <GluuFormDetailRow
-                      label="fields.base_dns"
-                      value={row.baseDNs && row.baseDNs.join(', ')}
-                    />
-                  </Col>
-                  <Col sm={6}>
-                    <GluuFormDetailRow
-                      label="fields.status"
-                      value={row.enabled ? t('fields.enable') : t('fields.disable')}
-                    />
-                  </Col>
-                </Row>
+              <Container style={backgroundStyle}>
+                <LdapDetailRow
+                  label={[STRINGS.authn.ldap.fields.acr, STRINGS.authn.ldap.fields.level]}
+                  value={[row.acrName, row.level]}
+                />
+                <LdapDetailRow
+                  label={[STRINGS.authn.ldap.fields.remote_primary_key]}
+                  value={[row.primaryKey]}
+                />
+                <LdapDetailRow
+                  label={[
+                    STRINGS.authn.ldap.fields.bind_dn,
+                    STRINGS.authn.ldap.fields.max_connections,
+                  ]}
+                  value={[row.bindDN, row.maxConnections]}
+                />
+                <LdapDetailRow
+                  label={[
+                    STRINGS.authn.ldap.fields.local_primary_key,
+                    STRINGS.authn.ldap.fields.servers,
+                  ]}
+                  value={[row.localPrimaryKey, row.servers && row.servers.join(', ')]}
+                />
+                <LdapDetailRow
+                  label={[STRINGS.authn.ldap.fields.base_dns, STRINGS.authn.ldap.fields.status]}
+                  value={[
+                    row.baseDNs && row.baseDNs.join(', '),
+                    row.enabled
+                      ? t(STRINGS.authn.ldap.fields.enable)
+                      : t(STRINGS.authn.ldap.fields.disable),
+                  ]}
+                />
               </Container>
             )
           }}
@@ -220,8 +214,11 @@ function LdapListingPage() {
         handler={toggle}
         modal={modal}
         subject="ldap"
-        onAccept={() => {
-          dispatch({ type: 'authNLdap/deleteLdap', payload: { configId: selectedRow?.configId } })
+        onAccept={(userMessage) => {
+          dispatch({
+            type: 'authNLdap/deleteLdap',
+            payload: { configId: selectedRow?.configId, userMessage },
+          })
           setModal(false)
         }}
         feature={'ldap_delete'}

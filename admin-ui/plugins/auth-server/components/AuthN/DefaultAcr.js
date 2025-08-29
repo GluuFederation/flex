@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -7,12 +7,12 @@ import { useTranslation } from 'react-i18next'
 import { ACR_READ, ACR_WRITE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
-import { Form } from 'Components'
+import { Button, Form } from 'Components'
 import { useFormik } from 'formik'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
+import { ThemeContext } from '@/context/theme/themeContext'
 
 function DefaultAcr({ acrData, isLoading }) {
   const { hasCedarPermission } = useCedarling()
@@ -22,13 +22,14 @@ function DefaultAcr({ acrData, isLoading }) {
 
   const [modal, setModal] = useState(false)
   const userAction = {}
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   SetTitle(t('titles.acr_management'))
 
   const acrOptions = [
     { value: 'basic', label: 'Basic Authentication' },
     { value: 'simple_password_auth', label: 'Simple Password Authentication' },
-    // { value: 'agama_io.jans.casa.authn.main', label: 'Agama Authentication' },
   ]
 
   const safeAcrData = acrData || {}
@@ -71,6 +72,7 @@ function DefaultAcr({ acrData, isLoading }) {
     if (!value) return
 
     const payload = {
+      userMessage: userMessage,
       authenticationMethod: {
         defaultAcr: value,
       },
@@ -83,7 +85,7 @@ function DefaultAcr({ acrData, isLoading }) {
   return (
     <Form onSubmit={handleSubmit}>
       <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
-      <div style={{ paddingBottom: '7vh', paddingTop: '3vh' }}>
+      <div style={{ padding: '3vh' }}>
         <GluuViewWrapper canShow={hasCedarPermission(ACR_READ)}>
           <GluuSelectRow
             name="defaultAcr"
@@ -98,9 +100,13 @@ function DefaultAcr({ acrData, isLoading }) {
             handleChange={handleAcrChange}
           />
         </GluuViewWrapper>
+        {hasCedarPermission(ACR_WRITE) && (
+          <Button color={`primary-${selectedTheme}`} onClick={handleSubmit}>
+            <i className="fa fa-check-circle me-2"></i>
+            {t('actions.save')}
+          </Button>
+        )}
       </div>
-
-      {hasCedarPermission(ACR_WRITE) && <GluuCommitFooter saveHandler={handleSubmit} />}
     </Form>
   )
 }

@@ -11,7 +11,6 @@ import { STRINGS, ACTIONS, FEATURES } from '../../helper/constants'
 
 function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
   const [modal, setModal] = useState(false)
-  const [userMessage, setUserMessage] = useState('')
   const formik = useFormik({
     initialValues,
     onSubmit: (values, { setSubmitting }) => {
@@ -21,12 +20,14 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
   })
 
   const dispatch = useDispatch()
-  const handleDialogAccept = useCallback(() => {
-    const payload = buildLdapPayload(formik.values, userMessage)
-    dispatch({ type: isEdit ? ACTIONS.EDIT_LDAP : ACTIONS.ADD_LDAP, payload, onSuccessApply })
-    setModal(false)
-    setUserMessage('')
-  }, [formik.values, userMessage, isEdit, dispatch])
+  const handleDialogAccept = useCallback(
+    (userMessage) => {
+      const payload = buildLdapPayload(formik.values, userMessage)
+      dispatch({ type: isEdit ? ACTIONS.EDIT_LDAP : ACTIONS.ADD_LDAP, payload, onSuccessApply })
+      setModal(false)
+    },
+    [formik.values, isEdit, dispatch],
+  )
 
   return (
     <>

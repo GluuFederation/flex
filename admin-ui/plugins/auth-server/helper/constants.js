@@ -18,7 +18,7 @@ export const STRINGS = {
   authn: {
     ldap: {
       fields: {
-        acr: 'Acr',
+        acr: 'fields.acr', // key for translation
         bind_dn: 'Bind DN',
         bind_password: 'Bind Password',
         remote_ldap_server: 'Remote LDAP Server',
@@ -26,6 +26,8 @@ export const STRINGS = {
         base_dns: 'Base DNs',
         remote_primary_key: 'Remote Primary Key',
         local_primary_key: 'Local Primary Key',
+        primary_key: 'Local Primary Key',
+        servers: 'Servers',
         level: 'Level',
         default_authn_method: 'Default Authn Method',
       },

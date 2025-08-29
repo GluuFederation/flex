@@ -8,6 +8,12 @@ import {
 import { addLdapSuccess, addLdapFailure, editLdapSuccess } from '../features/authNLdapSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { DatabaseLDAPConfigurationApi } from 'jans_config_api'
+import { initAudit } from '@/redux/sagas/SagaUtils'
+import { addAdditionalData } from '@/utils/TokenController'
+import { DELETION, FETCH, UPDATE } from '@/audit/UserActionType'
+import { postUserAction } from '@/redux/api/backend-api'
+import { LDAP } from '@/utils/ApiResources'
+
 function deleteLdapApi(configId) {
   const api = new DatabaseLDAPConfigurationApi()
   return new Promise((resolve, reject) => {
@@ -18,11 +24,16 @@ function deleteLdapApi(configId) {
   })
 }
 
-function* deleteLdapSaga(action) {
+function* deleteLdapSaga({ payload }) {
+  const audit = yield* initAudit()
+
   try {
-    yield call(deleteLdapApi, action.payload.configId)
+    addAdditionalData(audit, DELETION, LDAP, {})
+    audit.message = payload?.userMessage
+    yield call(deleteLdapApi, payload?.configId)
     yield put(updateToast(true, 'success', 'LDAP deleted successfully'))
     yield put(deleteLdapSuccess())
+    yield call(postUserAction, audit)
     yield put({ type: 'authNLdap/getLdapList' })
   } catch (e) {
     yield put(updateToast(true, 'error', 'Error deleting LDAP'))
@@ -40,12 +51,15 @@ function addLdapApi(payload) {
 }
 
 function* addLdapSaga(action) {
+  const audit = yield* initAudit()
   try {
-    console.log('LDAP ADD PAYLOAD TO API:', action.payload)
+    addAdditionalData(audit, FETCH, LDAP, {})
+    audit.message = action?.payload?.action_message
     yield call(addLdapApi, action.payload)
     yield put(updateToast(true, 'success', 'LDAP added successfully'))
-    yield put(editLdapSuccess())
-    action?.onSuccessApply?.()
+    yield put(addLdapSuccess())
+    yield call(postUserAction, audit)
+    action.onSuccessApply?.()
   } catch (e) {
     yield put(updateToast(true, 'error', 'Error adding LDAP'))
     yield put(addLdapFailure())
@@ -63,11 +77,15 @@ function editLdapApi(payload) {
 }
 
 function* editLdapSaga(action) {
+  const audit = yield* initAudit()
   try {
-    yield call(editLdapApi, action.payload)
+    addAdditionalData(audit, UPDATE, LDAP, {})
+    audit.message = action?.payload?.action_message
+    yield call(editLdapApi, action?.payload)
     yield put(updateToast(true, 'success', 'LDAP updated successfully'))
-    yield put(addLdapSuccess())
+    yield put(editLdapSuccess())
     action?.onSuccessApply?.()
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error', 'Error updating LDAP'))
     yield put(addLdapFailure())
