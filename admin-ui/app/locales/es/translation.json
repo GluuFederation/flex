@@ -382,6 +382,9 @@
     "role_already_exists": "El rol ya existe"
   },
   "tooltips": {
+    "add_user": "Agregar usuario",
+    "edit_user": "Editar usuario",
+    "delete_user": "Eliminar usuario",
     "access_token_signing_alg": "Algoritmo utilizado para firmar tokens de acceso",
     "add_base_dn": "Agrega una nueva base DN",
     "add_mapping": "Agrega un nuevo mapeo de atributos",
