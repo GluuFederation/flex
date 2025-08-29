@@ -10,8 +10,8 @@ export interface AuditLog {
   action?: string
   resource?: string
   message?: string
-  modifiedFields?: any
-  performedOn?: any
-  payload?: any
+  modifiedFields?: Record<string, unknown>
+  performedOn?: string | Date
+  payload?: Record<string, unknown>
   date?: Date
 }
