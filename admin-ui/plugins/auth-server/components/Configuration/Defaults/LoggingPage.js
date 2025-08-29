@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useMemo, useCallback } from 'react'
 import { Form, Button, FormGroup, Card, CardBody, Col, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import { getChangedFields, getMergedValues } from '@/helpers'
 
 function LoggingPage() {
   const { t } = useTranslation()
@@ -28,10 +29,11 @@ function LoggingPage() {
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
-
   const selectedTheme = theme.state.theme
+
   const [showCommitDialog, setShowCommitDialog] = useState(false)
   const [pendingValues, setPendingValues] = useState(null)
+  const [localLogging, setLocalLogging] = useState(null)
 
   useEffect(() => {
     const initPermissions = async () => {
@@ -41,52 +43,72 @@ function LoggingPage() {
       }
     }
     initPermissions()
-
     dispatch(getLoggingConfig())
-  }, [dispatch])
+  }, [dispatch, authorize])
+
+  useEffect(() => {
+    if (logging) {
+      setLocalLogging(logging)
+    }
+  }, [logging])
 
   useEffect(() => {}, [cedarPermissions])
 
-  const initialValues = {
-    loggingLevel: logging.loggingLevel,
-    loggingLayout: logging.loggingLayout,
-    httpLoggingEnabled: logging.httpLoggingEnabled,
-    disableJdkLogger: logging.disableJdkLogger,
-    enabledOAuthAuditLogging: logging.enabledOAuthAuditLogging,
-  }
-  const levels = ['TRACE', 'DEBUG', 'INFO', 'ERROR', 'WARN']
-  const logLayouts = ['text', 'json']
+  const initialValues = useMemo(
+    () => ({
+      loggingLevel: localLogging?.loggingLevel,
+      loggingLayout: localLogging?.loggingLayout,
+      httpLoggingEnabled: localLogging?.httpLoggingEnabled,
+      disableJdkLogger: localLogging?.disableJdkLogger,
+      enabledOAuthAuditLogging: localLogging?.enabledOAuthAuditLogging,
+    }),
+    [localLogging],
+  )
+
+  const levels = useMemo(() => ['TRACE', 'DEBUG', 'INFO', 'ERROR', 'WARN'], [])
+  const logLayouts = useMemo(() => ['text', 'json'], [])
   SetTitle('Logging')
+
+  const handleSubmit = useCallback(
+    (values) => {
+      const mergedValues = getMergedValues(localLogging, values)
+      const changedFields = getChangedFields(localLogging, mergedValues)
+
+      setPendingValues({ mergedValues, changedFields })
+      setShowCommitDialog(true)
+    },
+    [localLogging],
+  )
+
+  const handleAccept = useCallback(
+    (userMessage) => {
+      if (pendingValues) {
+        const { mergedValues, changedFields } = pendingValues
+
+        const opts = {}
+        opts['logging'] = JSON.stringify(mergedValues)
+
+        dispatch(
+          editLoggingConfig({
+            data: opts,
+            otherFields: { userMessage, changedFields },
+          }),
+        )
+        setShowCommitDialog(false)
+        setPendingValues(null)
+      }
+    },
+    [pendingValues, dispatch],
+  )
 
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
           <GluuViewWrapper canShow={hasCedarPermission(LOGGING_READ)}>
-            <Formik
-              initialValues={initialValues}
-              onSubmit={(values) => {
-                values.httpLoggingEnabled =
-                  values.httpLoggingEnabled != undefined
-                    ? values.httpLoggingEnabled
-                    : logging.httpLoggingEnabled
-                values.disableJdkLogger =
-                  values.disableJdkLogger != undefined
-                    ? values.disableJdkLogger
-                    : logging.disableJdkLogger
-                values.enabledOAuthAuditLogging =
-                  values.enabledOAuthAuditLogging != undefined
-                    ? values.enabledOAuthAuditLogging
-                    : logging.enabledOAuthAuditLogging
-
-                setPendingValues(values)
-                setShowCommitDialog(true)
-              }}
-            >
+            <Formik initialValues={initialValues} enableReinitialize onSubmit={handleSubmit}>
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit}>
-                  <FormGroup row></FormGroup>
-
                   <FormGroup row>
                     <GluuLabel
                       label="fields.log_level"
@@ -100,11 +122,8 @@ function LoggingPage() {
                         id="loggingLevel"
                         name="loggingLevel"
                         data-testid="loggingLevel"
-                        value={logging.loggingLevel}
-                        onChange={(e) => {
-                          logging.loggingLevel = e.target.value
-                          formik.setFieldValue('loggingLevel', e.target.value)
-                        }}
+                        value={formik.values.loggingLevel}
+                        onChange={(e) => formik.setFieldValue('loggingLevel', e.target.value)}
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {levels.map((item, key) => (
@@ -115,6 +134,7 @@ function LoggingPage() {
                       </CustomInput>
                     </Col>
                   </FormGroup>
+
                   <FormGroup row>
                     <GluuLabel
                       label="fields.log_layout"
@@ -128,11 +148,8 @@ function LoggingPage() {
                         id="loggingLayout"
                         name="loggingLayout"
                         data-testid="loggingLayout"
-                        value={logging.loggingLayout}
-                        onChange={(e) => {
-                          logging.loggingLayout = e.target.value
-                          formik.setFieldValue('loggingLayout', e.target.value)
-                        }}
+                        value={formik.values.loggingLayout}
+                        onChange={(e) => formik.setFieldValue('loggingLayout', e.target.value)}
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {logLayouts.map((item, key) => (
@@ -143,38 +160,35 @@ function LoggingPage() {
                       </CustomInput>
                     </Col>
                   </FormGroup>
+
                   <GluuToogleRow
                     label="fields.http_logging_enabled"
                     name="httpLoggingEnabled"
-                    handler={(e) => {
-                      formik.setFieldValue('httpLoggingEnabled', e.target.checked)
-                    }}
+                    handler={(e) => formik.setFieldValue('httpLoggingEnabled', e.target.checked)}
                     lsize={5}
                     rsize={7}
-                    value={logging.httpLoggingEnabled}
+                    value={formik.values.httpLoggingEnabled}
                     doc_category={JSON_CONFIG}
                   />
                   <GluuToogleRow
                     label="fields.disable_jdk_logger"
                     name="disableJdkLogger"
-                    handler={(e) => {
-                      formik.setFieldValue('disableJdkLogger', e.target.checked)
-                    }}
+                    handler={(e) => formik.setFieldValue('disableJdkLogger', e.target.checked)}
                     lsize={5}
                     rsize={7}
                     doc_category={JSON_CONFIG}
-                    value={logging.disableJdkLogger}
+                    value={formik.values.disableJdkLogger}
                   />
                   <GluuToogleRow
                     label="fields.enabled_oAuth_audit_logging"
                     name="enabledOAuthAuditLogging"
-                    handler={(e) => {
+                    handler={(e) =>
                       formik.setFieldValue('enabledOAuthAuditLogging', e.target.checked)
-                    }}
+                    }
                     lsize={5}
                     rsize={7}
                     doc_category={JSON_CONFIG}
-                    value={logging.enabledOAuthAuditLogging}
+                    value={formik.values.enabledOAuthAuditLogging}
                   />
 
                   {hasCedarPermission(LOGGING_WRITE) && (
@@ -186,19 +200,11 @@ function LoggingPage() {
                 </Form>
               )}
             </Formik>
+
             <GluuCommitDialog
               handler={() => setShowCommitDialog(false)}
               modal={showCommitDialog}
-              onAccept={(userMessage) => {
-                if (pendingValues) {
-                  const opts = {}
-                  opts['logging'] = JSON.stringify(pendingValues)
-                  opts['userMessage'] = userMessage
-                  dispatch(editLoggingConfig({ data: opts }))
-                  setShowCommitDialog(false)
-                  setPendingValues(null)
-                }
-              }}
+              onAccept={handleAccept}
               isLicenseLabel={false}
             />
           </GluuViewWrapper>

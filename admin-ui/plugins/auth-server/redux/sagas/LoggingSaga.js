@@ -38,12 +38,20 @@ export function* editLogging({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, UPDATE, API_LOGGING, {})
-    audit.message = payload?.data?.userMessage
+    audit.message = payload?.otherFields?.userMessage
+    audit.modifiedFields = payload?.otherFields?.changedFields
+    delete audit.payload
+
+    console.log(audit)
+    debugger
+
     const api = yield* newFunction()
     const data = yield call(api.editLoggingConfig, payload.data)
+
     yield put(updateToast(true, 'success'))
     yield put(editLoggingResponse({ data }))
     yield call(postUserAction, audit)
+
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
