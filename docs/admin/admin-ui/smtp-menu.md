@@ -8,7 +8,7 @@ tags:
 
 The SMTP configuration page allows administrators to set up and manage the settings for sending emails through the configured SMTP server. Below is a detailed explanation of each field in the SMTP configuration form:
 
-![image](../../assets/admin-ui/adminui-smtp.png)
+![image](../../assets/admin-ui/admin-ui-smtp.png)
 
 ## SMTP Settings
 
