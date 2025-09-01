@@ -30,11 +30,6 @@ The Static Configuration section holds the main server parameters and certificat
   * Example Path: /etc/jans/conf/fido2/authenticator_cert
   * This folder is critical for ensuring that only trusted authenticator devices are used to authenticate users.
 
-**MDS Access Token**
-   
-  * The MDS Access Token is used for secure communication with the Metadata Service (MDS). This token is necessary to access metadata about the authentication server, such as keys, server details, etc.
-  * Example Path: /etc/jans/conf/fido2/mds/cert
-  * It serves as an authorization key for the metadata service, which plays an important role in verifying FIDO2 authentication tokens.
 
 **MDS TOC Certificates Folder**
 
@@ -82,7 +77,7 @@ The Static Configuration section holds the main server parameters and certificat
   * This field allows administrators to specify which types of credentials the FIDO2 server will request during authentication.
   * By specifying the types of credentials, the organization can enforce more stringent authentication standards and ensure that the correct level of security is used.
 
-**Requested Parties Name**
+**Requested Parties ID**
 
   * This field is used to define the party or service requesting authentication. Multiple parties can be added by clicking the + Add Party button.
   * This is useful for scenarios where the FIDO2 authentication system needs to interact with multiple organizations or services, each with its own requirements.
@@ -134,6 +129,11 @@ The Dynamic Configuration section allows for adjustments to operational settings
 
   * Specifies the format of log entries (e.g., text or JSON format).
   * The layout defines how log entries are structured, making it easier for system administrators to read and parse logs.
+
+**External Logger Configuration**
+
+  * This field allows administrators to specify configuration details for an external logging system.
+  * Using an external logger helps centralize logs from the FIDO2 service into a unified monitoring system. This makes it easier to analyze, visualize, and correlate logs across multiple services for auditing, debugging, or compliance purposes.
 
 **Metric Reporter Interval**
 
