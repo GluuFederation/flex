@@ -11,7 +11,7 @@ import { SCOPE_READ } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { getScriptsByType } from '../../redux/features/scriptSlice'
+import { getScripts } from 'Redux/features/initSlice'
 
 function ScriptsListPage() {
   const { hasCedarPermission } = useCedarling()
@@ -25,11 +25,7 @@ function ScriptsListPage() {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  const [scriptsList, setScriptsList] = useState([])
-
-  const scripts = useSelector((state) => state.scriptReducer?.scripts || [])
-  const scriptsLoading = useSelector((state) => state.scriptReducer?.loading || false)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const { scripts, loading: scriptsLoading } = useSelector((state) => state.initReducer)
 
   SetTitle(t('titles.custom_scripts'))
 
@@ -47,14 +43,13 @@ function ScriptsListPage() {
     [navigate],
   )
 
-  // Fetch scripts data
   useEffect(() => {
     if (hasCedarPermission(SCOPE_READ)) {
-      dispatch(getScriptsByType({ action: 'PERSON_AUTHENTICATION' }))
+      const userAction = {}
+      dispatch(getScripts({ action: userAction }))
     }
-  }, [hasCedarPermission])
+  }, [hasCedarPermission, dispatch])
 
-  // Actions as state that will rebuild when permissions change
   useEffect(() => {
     const newActions = []
 
@@ -79,27 +74,18 @@ function ScriptsListPage() {
     }
 
     setMyActions(newActions)
-  }, [cedarPermissions, t, handleGoToScriptDetailPage, handleGoToScriptEditPage])
+  }, [hasCedarPermission, t, handleGoToScriptDetailPage, handleGoToScriptEditPage])
 
-  // Process scripts data
-  useEffect(() => {
-    if (scripts && scripts.length > 0 && !scriptsLoading) {
-      const authScripts = scripts
-        .filter(
-          (script) => script.scriptType === 'PERSON_AUTHENTICATION' && script.enabled === true,
-        )
-        .map((script) => ({
-          ...script,
-          acrName: script.name,
-          level: script.level || 0,
-          samlACR: script.name,
-        }))
+  const authScripts = scripts
+    .filter((script) => script.scriptType === 'person_authentication')
+    .map((script) => ({
+      ...script,
+      acrName: script.name,
+      level: script.level || 0,
+      samlACR: script.name,
+    }))
 
-      setScriptsList(authScripts)
-    } else {
-      setScriptsList([])
-    }
-  }, [scriptsLoading])
+  console.log('Auth scripts:', authScripts)
 
   return (
     <GluuViewWrapper canShow={hasCedarPermission(SCOPE_READ)}>
@@ -113,7 +99,7 @@ function ScriptsListPage() {
           { title: `${t('fields.saml_acr')}`, field: 'samlACR' },
           { title: `${t('fields.level')}`, field: 'level' },
         ]}
-        data={scriptsLoading ? [] : scriptsList}
+        data={scriptsLoading ? [] : authScripts}
         isLoading={scriptsLoading}
         title=""
         actions={myActions}
@@ -128,29 +114,6 @@ function ScriptsListPage() {
             ...bgThemeColor,
           },
           actionsColumnIndex: -1,
-        }}
-        detailPanel={(rowData) => {
-          return (
-            <div style={{ padding: '20px', backgroundColor: '#f5f5f5' }}>
-              <h6>{t('messages.details')}</h6>
-              <div>
-                <strong>{t('fields.name')}:</strong> {rowData.rowData.name}
-              </div>
-              <div>
-                <strong>{t('fields.description')}:</strong> {rowData.rowData.description || 'N/A'}
-              </div>
-              <div>
-                <strong>{t('fields.script_type')}:</strong> {rowData.rowData.scriptType}
-              </div>
-              <div>
-                <strong>{t('fields.programming_language')}:</strong>{' '}
-                {rowData.rowData.programmingLanguage}
-              </div>
-              <div>
-                <strong>{t('fields.enabled')}:</strong> {rowData.rowData.enabled ? 'Yes' : 'No'}
-              </div>
-            </div>
-          )
         }}
       />
     </GluuViewWrapper>

@@ -11,43 +11,30 @@ import DefaultAcr from './DefaultAcr'
 
 function AuthNPage() {
   const tabNames = [
-    {
-      name: 'basic',
-      path: '',
-    },
     { name: 'default acr', path: '' },
-    {
-      name: 'aliases',
-      path: '',
-    },
-    {
-      name: 'agama flows',
-      path: '',
-    },
-    {
-      name: 'scripts',
-      path: '',
-    },
-    {
-      name: 'ldap servers',
-      path: '',
-    },
+    { name: 'basic', path: '' },
+    { name: 'ldap servers', path: '' },
+    { name: 'scripts', path: '' },
+    { name: 'aliases', path: '' },
+    { name: 'agama flows', path: '' },
   ]
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case 'basic':
-        return <Basic />
       case 'default acr':
         return <DefaultAcr />
+      case 'basic':
+        return <Basic />
+      case 'ldap servers':
+        return <LdapListingPage />
+      case 'scripts':
+        return <ScriptsListPage />
       case 'aliases':
         return <AliasesListPage />
       case 'agama flows':
         return <AgamaListPage />
-      case 'scripts':
-        return <ScriptsListPage />
-      case 'ldap servers':
-        return <LdapListingPage />
+      default:
+        return <DefaultAcr />
     }
   }
 

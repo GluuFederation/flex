@@ -16,6 +16,7 @@ function DefaultAcrInput({
   handler,
   options,
   path,
+  showSaveButtons = true,
 }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -84,7 +85,7 @@ function DefaultAcrInput({
         </FormGroup>
       </Col>
       <Col sm={2}>
-        {show && (
+        {show && showSaveButtons && (
           <>
             <Button
               color={`primary-${selectedTheme}`}

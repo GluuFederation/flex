@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
 import { ACR_READ, ACR_WRITE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
@@ -10,76 +9,57 @@ import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrS
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
 import { Button, Form } from 'Components'
-import { useFormik } from 'formik'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from '@/context/theme/themeContext'
+import DefaultAcrInput from '../Configuration/DefaultAcrInput'
+import { getScripts } from 'Redux/features/initSlice'
+import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 
-function DefaultAcr({ acrData, isLoading }) {
+function DefaultAcr({ _acrData, _isLoading }) {
   const { hasCedarPermission } = useCedarling()
   const dispatch = useDispatch()
+  const acrs = useSelector((state) => state.acrReducer.acrReponse)
+  const { scripts } = useSelector((state) => state.initReducer)
 
   const { t } = useTranslation()
 
   const [modal, setModal] = useState(false)
+  const [put, setPut] = useState(null)
   const userAction = {}
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  SetTitle(t('titles.acr_management'))
+  SetTitle('ACR Management')
 
-  const acrOptions = [
-    { value: 'basic', label: 'Basic Authentication' },
-    { value: 'simple_password_auth', label: 'Simple Password Authentication' },
-  ]
+  // Build auth scripts list similar to ConfigPage
+  const authScripts = scripts
+    .filter((item) => item.scriptType === 'person_authentication')
+    .filter((item) => item.enabled)
+    .map((item) => item.name)
 
-  const safeAcrData = acrData || {}
-
-  const displayedOptions = useMemo(() => {
-    const selected = safeAcrData.defaultAcr
-    if (!selected) return acrOptions
-    const exists = acrOptions.some((opt) => opt.value === selected)
-    return exists ? acrOptions : [...acrOptions, { value: selected, label: selected }]
-  }, [acrOptions, safeAcrData.defaultAcr, t])
-
-  const initialValues = useMemo(
-    () => ({ defaultAcr: safeAcrData.defaultAcr ?? '' }),
-    [safeAcrData.defaultAcr],
-  )
-
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues,
-    onSubmit: () => {
-      setModal(true)
-    },
-  })
+  authScripts.push(SIMPLE_PASSWORD_AUTH)
 
   const toggle = () => {
     setModal(!modal)
   }
 
-  const handleAcrChange = (e) => {
-    formik.handleChange(e)
+  const putHandler = (putData) => {
+    setPut(putData)
   }
 
   const handleSubmit = () => {
-    formik.handleSubmit()
+    setModal(true)
   }
 
   const submitForm = (userMessage) => {
     toggle()
-    const value = formik.values.defaultAcr
-    if (!value) return
+    if (put) {
+      const opts = {}
+      opts['authenticationMethod'] = { defaultAcr: put.value || acrs.defaultAcr }
 
-    const payload = {
-      userMessage: userMessage,
-      authenticationMethod: {
-        defaultAcr: value,
-      },
+      buildPayload(userAction, userMessage, opts)
+      dispatch(editAcrs({ data: opts }))
     }
-
-    buildPayload(userAction, userMessage, payload)
-    dispatch(editAcrs({ data: payload }))
   }
 
   return (
@@ -87,17 +67,18 @@ function DefaultAcr({ acrData, isLoading }) {
       <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
       <div style={{ padding: '3vh' }}>
         <GluuViewWrapper canShow={hasCedarPermission(ACR_READ)}>
-          <GluuSelectRow
+          <DefaultAcrInput
+            id="defaultAcr"
             name="defaultAcr"
-            label="fields.default_acr"
-            formik={formik}
-            value={formik.values.defaultAcr}
-            values={displayedOptions}
-            lsize={4}
-            rsize={8}
-            required
-            isLoading={isLoading}
-            handleChange={handleAcrChange}
+            lsize={6}
+            rsize={6}
+            type="select"
+            label={t('fields.default_acr')}
+            handler={putHandler}
+            value={acrs?.defaultAcr}
+            options={authScripts}
+            path={'/ACR'}
+            showSaveButtons={false}
           />
         </GluuViewWrapper>
         {hasCedarPermission(ACR_WRITE) && (
@@ -115,6 +96,9 @@ const DefaultAcrComponent = () => {
   const { authorize } = useCedarling()
   const dispatch = useDispatch()
   const { acrReponse, loading } = useSelector((state) => state.acrReducer)
+  const { loading: scriptLoading } = useSelector((state) => state.initReducer)
+
+  const userAction = {}
 
   useEffect(() => {
     const initializeAcr = async () => {
@@ -126,10 +110,11 @@ const DefaultAcrComponent = () => {
     }
     initializeAcr()
     dispatch(getAcrsConfig())
+    dispatch(getScripts({ action: userAction }))
   }, [authorize, dispatch])
 
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={loading || scriptLoading}>
       <DefaultAcr acrData={acrReponse} isLoading={loading} />
     </GluuLoader>
   )
