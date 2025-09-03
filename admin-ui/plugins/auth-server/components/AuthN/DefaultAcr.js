@@ -31,7 +31,6 @@ function DefaultAcr({ _acrData, _isLoading }) {
 
   SetTitle('ACR Management')
 
-  // Build auth scripts list similar to ConfigPage
   const authScripts = scripts
     .filter((item) => item.scriptType === 'person_authentication')
     .filter((item) => item.enabled)
