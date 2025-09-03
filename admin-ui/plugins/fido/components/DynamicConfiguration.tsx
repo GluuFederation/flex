@@ -11,49 +11,61 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import { fidoConstants, validationSchema } from '../helper'
 import { transformToFormValues, getAvailableHintOptions, getEmptyDropdownMessage } from '../helper'
+import type {
+  DynamicConfigurationProps,
+  DynamicConfigFormValues,
+  DynamicConfigFormik,
+  DropdownOption,
+  FormData,
+} from './types/DynamicConfiguration'
 
-function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
+function DynamicConfiguration({
+  fidoConfiguration,
+  handleSubmit,
+}: DynamicConfigurationProps): JSX.Element {
   const { fido } = fidoConfiguration
 
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState<boolean>(false)
 
-  const toggle = useCallback(() => {
+  const toggle = useCallback((): void => {
     setModal((prev) => !prev)
   }, [])
 
-  const formik = useFormik({
-    initialValues: transformToFormValues(fido, fidoConstants.DYNAMIC),
+  const formik: DynamicConfigFormik = useFormik<DynamicConfigFormValues>({
+    initialValues: transformToFormValues(fido, fidoConstants.DYNAMIC) as DynamicConfigFormValues,
     onSubmit: toggle,
-    validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.DYNAMIC_CONFIG],
+    validationSchema: validationSchema.dynamicConfigValidationSchema,
   })
 
-  const submitForm = useCallback(() => {
+  const submitForm = useCallback((): void => {
     toggle()
-    handleSubmit(formik.values)
-  }, [handleSubmit, toggle, formik])
+    handleSubmit(formik.values as unknown as FormData)
+  }, [handleSubmit, toggle, formik.values])
 
   const handleFormSubmit = useCallback(
-    (e) => {
+    (e: React.FormEvent<HTMLFormElement>): void => {
       e.preventDefault()
       formik.handleSubmit()
     },
     [formik],
   )
 
-  const availableHintOptions = useMemo(() => {
+  const availableHintOptions = useMemo((): string[] => {
     return getAvailableHintOptions(formik.values.hints)
   }, [formik.values.hints])
 
-  const emptyDropdownMessage = useMemo(() => {
+  const emptyDropdownMessage = useMemo((): string => {
     return getEmptyDropdownMessage(formik.values.hints)
   }, [formik.values.hints])
 
-  const personCustomObjectClassOptions = useMemo(() => {
+  const personCustomObjectClassOptions = useMemo((): DropdownOption[] => {
     return formik?.values?.personCustomObjectClassList
-      ? formik.values.personCustomObjectClassList.map((item) => ({
-          key: '',
-          value: item,
-        }))
+      ? formik.values.personCustomObjectClassList.map(
+          (item: string): DropdownOption => ({
+            key: '',
+            value: item,
+          }),
+        )
       : []
   }, [formik?.values?.personCustomObjectClassList])
 
@@ -143,12 +155,11 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             label={fidoConstants.LABELS.LOGGING_LEVEL}
             name={fidoConstants.FORM_FIELDS.LOGGING_LEVEL}
             value={formik.values.loggingLevel}
-            defaultValue={formik.values.loggingLevel}
             values={fidoConstants.LOGGING_LEVELS}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.loggingLevel && formik.touched.loggingLevel}
+            showError={!!(formik.errors.loggingLevel && formik.touched.loggingLevel)}
             errorMessage={formik.errors.loggingLevel}
           />
         </Col>
@@ -271,4 +282,5 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
     </Form>
   )
 }
+
 export default React.memo(DynamicConfiguration)

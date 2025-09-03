@@ -1,4 +1,9 @@
-import { PublicKeyCredentialHints } from '../types'
+import {
+  PublicKeyCredentialHints,
+  AppConfiguration,
+  RequestedParty,
+  Fido2Configuration,
+} from '../types'
 import { fidoConstants } from './constants'
 
 const arrayValidationWithSchema = (givenArray: string[], schema: Record<string, string>) =>
@@ -28,19 +33,24 @@ const toBooleanValue = (value: unknown): boolean => {
   return Boolean(value)
 }
 
-const transformToFormValues = (configuration?: Record<string, unknown>, type?: string) => {
+const transformToFormValues = (configuration?: AppConfiguration, type?: string) => {
+  const fido2Config: Fido2Configuration = configuration?.fido2Configuration || {}
   return type === fidoConstants.STATIC
     ? {
-        authenticatorCertsFolder: configuration?.authenticatorCertsFolder || '',
-        mdsCertsFolder: configuration?.mdsCertsFolder || '',
-        mdsTocsFolder: configuration?.mdsTocsFolder || '',
-        checkU2fAttestations: toBooleanValue(configuration?.checkU2fAttestations),
-        unfinishedRequestExpiration: configuration?.unfinishedRequestExpiration || '',
-        authenticationHistoryExpiration: configuration?.authenticationHistoryExpiration || '',
-        serverMetadataFolder: configuration?.serverMetadataFolder || '',
-        userAutoEnrollment: toBooleanValue(configuration?.userAutoEnrollment),
-        requestedCredentialTypes: configuration?.requestedCredentialTypes || [],
-        requestedParties: configuration?.requestedParties || [],
+        authenticatorCertsFolder: fido2Config?.authenticatorCertsFolder || '',
+        mdsCertsFolder: fido2Config?.mdsCertsFolder || '',
+        mdsTocsFolder: fido2Config?.mdsTocsFolder || '',
+        unfinishedRequestExpiration: fido2Config?.unfinishedRequestExpiration,
+        metadataRefreshInterval: fido2Config?.metadataRefreshInterval,
+        serverMetadataFolder: fido2Config?.serverMetadataFolder || '',
+        userAutoEnrollment: toBooleanValue(fido2Config?.userAutoEnrollment),
+        enabledFidoAlgorithms: fido2Config?.enabledFidoAlgorithms || [],
+        requestedParties: ((fido2Config?.rp as RequestedParty[]) || []).map(
+          (party: RequestedParty) => ({
+            name: party?.name || party?.id || '',
+            domains: party?.domains || party?.origins || [],
+          }),
+        ),
       }
     : {
         issuer: configuration?.issuer || '',
@@ -56,14 +66,21 @@ const transformToFormValues = (configuration?: Record<string, unknown>, type?: s
         metricReporterInterval: configuration?.metricReporterInterval || '',
         metricReporterKeepDataDays: configuration?.metricReporterKeepDataDays || '',
         personCustomObjectClassList: configuration?.personCustomObjectClassList || [],
-        hints: arrayValidationWithSchema(
-          (configuration as any)?.fido2Configuration?.hints,
-          PublicKeyCredentialHints,
-        ),
+        hints: arrayValidationWithSchema(fido2Config?.hints || [], PublicKeyCredentialHints),
       }
 }
 
-const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
+interface CreateFidoConfigPayloadParams {
+  fidoConfiguration: { fido: AppConfiguration }
+  data: Record<string, unknown>
+  type: string
+}
+
+const createFidoConfigPayload = ({
+  fidoConfiguration,
+  data,
+  type,
+}: CreateFidoConfigPayloadParams) => {
   const payload = JSON.parse(JSON.stringify(fidoConfiguration.fido))
   if (type === fidoConstants.STATIC) {
     if (payload.fido2Configuration) {
@@ -76,10 +93,12 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
         data.authenticationHistoryExpiration
       payload.fido2Configuration.serverMetadataFolder = data.serverMetadataFolder
       payload.fido2Configuration.userAutoEnrollment = data.userAutoEnrollment
-      payload.fido2Configuration.requestedCredentialTypes = data.requestedCredentialTypes.map(
-        (item: any) => (item?.value ? item?.value : item),
-      )
-      payload.fido2Configuration.requestedParties = data.requestedParties.map((item: any) => {
+      payload.fido2Configuration.requestedCredentialTypes = (
+        data.requestedCredentialTypes as Array<{ value?: string } | string>
+      ).map((item) => (typeof item === 'object' && item?.value ? item.value : (item as string)))
+      payload.fido2Configuration.requestedParties = (
+        data.requestedParties as Array<{ key: string; value: string }>
+      ).map((item) => {
         return {
           name: item.key,
           domains: [item.value],
@@ -99,16 +118,16 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
     payload.metricReporterEnabled = data.metricReporterEnabled
     payload.metricReporterInterval = data.metricReporterInterval
     payload.metricReporterKeepDataDays = data.metricReporterKeepDataDays
-    payload.personCustomObjectClassList = data.personCustomObjectClassList.map((item: any) =>
-      item?.value ? item?.value : item,
-    )
+    payload.personCustomObjectClassList = (
+      data.personCustomObjectClassList as Array<{ value?: string } | string>
+    ).map((item) => (typeof item === 'object' && item?.value ? item.value : (item as string)))
 
     if (payload.fido2Configuration) {
       payload.fido2Configuration.hints = data.hints || []
     }
   }
 
-  const opts: Record<string, any> = {}
+  const opts: Record<string, unknown> = {}
   opts['appConfiguration1'] = payload
 
   return opts
