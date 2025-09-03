@@ -8,18 +8,27 @@ tags:
 
 # Users
 
-The User Management module in the Admin UI allows administrators to manage user accounts stored in Janssen persistence.
+The User Management module allows administrators to create, edit, delete, and 
+search user records in Janssen persistence. This module can be accessed via
+the `Users` link on the left navigation menu as shown in the image below. 
 
-## User
 
-* This interface allows administrators to create, edit, delete, and search user records in Janssen persistence. 
+![image](../../assets/admin-ui/admin-ui-left-nav-menu.png)
+
+## User List
+
+* `User` section lists all the available users in the Flex Server.
+
     ![image](../../assets/admin-ui/admin-ui-user-screen.png)
 
 
 ## Add User
 
-* The user creation form includes the following fields by default: First Name, Middle Name, Last Name, Username, Display Name, Email, and Status.. 
-* The administrator can select and add more user attributes to the form from the right `Available Claims` panel. Different [Admin UI Roles](./home.md#admin-ui-roles) can be assigned to the user in the `jansAdminUIRole` attribute (to be selected from the `Available Claims` panel).
+* To add a new user, use the edit action :material-pencil: on the user listing
+grid
+* The user creation form includes a number of user claims by default but the 
+administrator can add more user claims to the form using `Available Claims` 
+panel on the right side. Different [Admin UI Roles](./home.md#admin-ui-roles) can be assigned to the user in the `jansAdminUIRole` attribute (to be selected from the `Available Claims` panel).
 
      ![image](../../assets/admin-ui/admin-ui-add-user.png)
 
@@ -31,8 +40,7 @@ The User Management module in the Admin UI allows administrators to manage user 
 
 ### Change password    
 
- * The password can be changed from the Edit User screen. There is a button titled `Change Password` which, when clicked, opens a popup window where the password can be updated.
- * Both fields are mandatory for the password change process.
+ * The password can be changed from the Edit User screen. 
 
      ![image](../../assets/admin-ui/admin-ui-user-changepassword.png)
     
