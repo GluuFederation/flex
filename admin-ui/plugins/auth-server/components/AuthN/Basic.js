@@ -32,7 +32,7 @@ function Basic() {
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
-  SetTitle(t('titles.authn'))
+  SetTitle('Built In')
 
   useEffect(() => {
     const authorizePermissions = async () => {

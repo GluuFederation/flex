@@ -1,6 +1,6 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getAcrsResponse, editAcrsResponse } from '../features/acrSlice'
+import { getAcrsResponse, editAcrsResponse, editAcrsResponseFailed } from '../features/acrSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import AcrApi from '../api/AcrApi'
 import { getClient } from 'Redux/api/base'
@@ -38,8 +38,7 @@ export function* getCurrentAcrs() {
 export function* editAcrs({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, BASIC, {})
-    audit.message = payload?.data?.userMessage
+    addAdditionalData(audit, UPDATE, BASIC, { message: payload?.data?.userMessage })
     const api = yield* newFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
     yield put(updateToast(true, 'success'))
@@ -47,6 +46,7 @@ export function* editAcrs({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
+    yield put(editAcrsResponseFailed())
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

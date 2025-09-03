@@ -26,10 +26,9 @@ function deleteLdapApi(configId) {
 
 function* deleteLdapSaga({ payload }) {
   const audit = yield* initAudit()
-
+  console.log('action in delete ldap saga', payload)
   try {
-    addAdditionalData(audit, DELETION, LDAP, {})
-    audit.message = payload?.userMessage
+    addAdditionalData(audit, DELETION, LDAP, { message: payload?.userMessage })
     yield call(deleteLdapApi, payload?.configId)
     yield put(updateToast(true, 'success', 'LDAP deleted successfully'))
     yield put(deleteLdapSuccess())
@@ -53,8 +52,9 @@ function addLdapApi(payload) {
 function* addLdapSaga(action) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, LDAP, {})
-    audit.message = action?.payload?.action_message
+    console.log('action in add ldap saga', action)
+
+    addAdditionalData(audit, FETCH, LDAP, { message: action?.payload?.action_message })
     yield call(addLdapApi, action.payload)
     yield put(updateToast(true, 'success', 'LDAP added successfully'))
     yield put(addLdapSuccess())
@@ -79,8 +79,7 @@ function editLdapApi(payload) {
 function* editLdapSaga(action) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, LDAP, {})
-    audit.message = action?.payload?.action_message
+    addAdditionalData(audit, UPDATE, LDAP, { message: action?.payload?.action_message })
     yield call(editLdapApi, action?.payload)
     yield put(updateToast(true, 'success', 'LDAP updated successfully'))
     yield put(editLdapSuccess())

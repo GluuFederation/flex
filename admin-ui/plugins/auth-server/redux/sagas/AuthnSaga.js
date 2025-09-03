@@ -46,8 +46,9 @@ function* newScriptFunction() {
 export function* editSimpleAuthAcr({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, BASIC, {})
-    audit.message = payload?.data?.authenticationMethod?.userMessage
+    addAdditionalData(audit, UPDATE, BASIC, {
+      message: payload?.data?.authenticationMethod?.userMessage,
+    })
     const api = yield* newACRFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
     yield put(setSimpleAuthAcrResponse({ data }))

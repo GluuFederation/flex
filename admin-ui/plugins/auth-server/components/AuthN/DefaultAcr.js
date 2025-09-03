@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCedarling } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ACR_READ, ACR_WRITE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
+import { getAgama } from 'Plugins/auth-server/redux/features/agamaSlice'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
 import { Button, Form } from 'Components'
@@ -15,11 +16,13 @@ import DefaultAcrInput from '../Configuration/DefaultAcrInput'
 import { getScripts } from 'Redux/features/initSlice'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 
-function DefaultAcr({ _acrData, _isLoading }) {
-  const { hasCedarPermission } = useCedarling()
+function DefaultAcr() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
-  const acrs = useSelector((state) => state.acrReducer.acrReponse)
-  const { scripts } = useSelector((state) => state.initReducer)
+
+  const { acrReponse: acrs, loading: acrLoading } = useSelector((state) => state.acrReducer)
+  const { scripts, loading: scriptLoading } = useSelector((state) => state.initReducer)
+  const { agamaList, loading: agamaLoading } = useSelector((state) => state.agamaReducer)
 
   const { t } = useTranslation()
 
@@ -31,12 +34,39 @@ function DefaultAcr({ _acrData, _isLoading }) {
 
   SetTitle('ACR Management')
 
-  const authScripts = scripts
-    .filter((item) => item.scriptType === 'person_authentication')
-    .filter((item) => item.enabled)
-    .map((item) => item.name)
+  useEffect(() => {
+    const initializeAcr = async () => {
+      try {
+        await authorize([ACR_WRITE, ACR_READ])
+      } catch (error) {
+        console.error('Error authorizing ACR permissions:', error)
+      }
+    }
 
-  authScripts.push(SIMPLE_PASSWORD_AUTH)
+    initializeAcr()
+    dispatch(getScripts({ action: userAction }))
+    dispatch(getAgama())
+    dispatch(getAcrsConfig())
+  }, [authorize, dispatch])
+
+  const authScripts = useMemo(() => {
+    const filteredScripts = Array.isArray(scripts)
+      ? scripts
+          .filter((item) => item && item.scriptType === 'person_authentication' && item.enabled)
+          .map((item) => item.name)
+          .filter(Boolean)
+      : []
+
+    // const agamaFlows = Array.isArray(agamaList)
+    //   ? agamaList.map((flow) => flow?.details?.projectMetadata?.projectName).filter(Boolean)
+    //   : []
+    const agamaFlows = []
+
+    const result = [...filteredScripts, SIMPLE_PASSWORD_AUTH, ...agamaFlows]
+
+    console.log('Auth scripts with Agama flows:', result)
+    return result
+  }, [scripts, agamaList])
 
   const toggle = () => {
     setModal(!modal)
@@ -46,77 +76,59 @@ function DefaultAcr({ _acrData, _isLoading }) {
     setPut(putData)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setModal(true)
+  }
+
+  const handleSaveClick = () => {
     setModal(true)
   }
 
   const submitForm = (userMessage) => {
     toggle()
-    if (put) {
+
+    if (put?.value) {
       const opts = {}
-      opts['authenticationMethod'] = { defaultAcr: put.value || acrs.defaultAcr }
+      opts['authenticationMethod'] = { defaultAcr: put?.value }
 
       buildPayload(userAction, userMessage, opts)
-      dispatch(editAcrs({ data: opts }))
+      dispatch(editAcrs({ data: opts, action: userAction }))
+    } else {
+      console.error('No ACR value to save')
     }
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
-      <div style={{ padding: '3vh' }}>
-        <GluuViewWrapper canShow={hasCedarPermission(ACR_READ)}>
-          <DefaultAcrInput
-            id="defaultAcr"
-            name="defaultAcr"
-            lsize={6}
-            rsize={6}
-            type="select"
-            label={t('fields.default_acr')}
-            handler={putHandler}
-            value={acrs?.defaultAcr}
-            options={authScripts}
-            path={'/ACR'}
-            showSaveButtons={false}
-          />
-        </GluuViewWrapper>
-        {hasCedarPermission(ACR_WRITE) && (
-          <Button color={`primary-${selectedTheme}`} onClick={handleSubmit}>
-            <i className="fa fa-check-circle me-2"></i>
-            {t('actions.save')}
-          </Button>
-        )}
-      </div>
-    </Form>
-  )
-}
-
-const DefaultAcrComponent = () => {
-  const { authorize } = useCedarling()
-  const dispatch = useDispatch()
-  const { acrReponse, loading } = useSelector((state) => state.acrReducer)
-  const { loading: scriptLoading } = useSelector((state) => state.initReducer)
-
-  const userAction = {}
-
-  useEffect(() => {
-    const initializeAcr = async () => {
-      try {
-        await authorize([ACR_WRITE, ACR_READ])
-      } catch (error) {
-        console.error('Error initializing ACR configuration:', error)
-      }
-    }
-    initializeAcr()
-    dispatch(getAcrsConfig())
-    dispatch(getScripts({ action: userAction }))
-  }, [authorize, dispatch])
-
-  return (
-    <GluuLoader blocking={loading || scriptLoading}>
-      <DefaultAcr acrData={acrReponse} isLoading={loading} />
+    <GluuLoader blocking={acrLoading || scriptLoading || agamaLoading}>
+      <Form onSubmit={handleSubmit}>
+        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
+        <div style={{ padding: '3vh' }}>
+          <GluuViewWrapper canShow={hasCedarPermission(ACR_READ)}>
+            <DefaultAcrInput
+              id="defaultAcr"
+              name="defaultAcr"
+              lsize={6}
+              rsize={6}
+              type="select"
+              label={t('fields.default_acr')}
+              handler={putHandler}
+              value={acrs?.defaultAcr}
+              options={authScripts}
+              path={'/ACR'}
+              showSaveButtons={false}
+            />
+          </GluuViewWrapper>
+          {hasCedarPermission(ACR_WRITE) && (
+            <Button color={`primary-${selectedTheme}`} onClick={handleSaveClick}>
+              <i className="fa fa-check-circle me-2"></i>
+              {t('actions.save')}
+            </Button>
+          )}
+        </div>
+      </Form>
     </GluuLoader>
   )
 }
 
-export default DefaultAcrComponent
+export default DefaultAcr

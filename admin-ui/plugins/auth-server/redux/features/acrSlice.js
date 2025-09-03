@@ -30,10 +30,19 @@ const acrSlice = createSlice({
         state.acrReponse = action.payload.data
       }
     },
+    editAcrsResponseFailed: (state) => {
+      state.loading = false
+    },
   },
 })
 
-export const { getAcrsConfig, getAcrsResponse, editAcrs, editAcrsResponse } = acrSlice.actions
+export const {
+  getAcrsConfig,
+  getAcrsResponse,
+  editAcrs,
+  editAcrsResponse,
+  editAcrsResponseFailed,
+} = acrSlice.actions
 
 export const { actions, reducer, state } = acrSlice
 reducerRegistry.register('acrReducer', reducer)

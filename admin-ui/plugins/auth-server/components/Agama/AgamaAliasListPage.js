@@ -22,6 +22,7 @@ import customColors from '@/customColors'
 import { AGAMA_ALIAS_STRINGS } from './helper/constants'
 import { AgamaAliasDetailRow } from './helper/util'
 import GluuCommitDialog from '@/routes/Apps/Gluu/GluuCommitDialog'
+import SetTitle from '@/utils/SetTitle'
 
 function AliasesListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -39,8 +40,11 @@ function AliasesListPage() {
     mapping: '',
   })
 
+  SetTitle('Aliases')
+
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const [limit] = useState(10)
   const [listData, setListData] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [showCommitDialog, setShowCommitDialog] = useState(false)
@@ -208,131 +212,130 @@ function AliasesListPage() {
 
   return (
     <>
-      <>
-        <GluuViewWrapper canShow={hasCedarPermission(SCOPE_READ)}>
-          <MaterialTable
-            components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-              Pagination: () => (
-                <TablePagination
-                  count={listData?.length}
-                  page={pageNumber}
-                  onPageChange={() => {}}
-                  rowsPerPage={10}
-                  onRowsPerPageChange={() => {}}
-                />
-              ),
-              DetailPanel: (rowData) => (
-                <AgamaAliasDetailRow
-                  label={[AGAMA_ALIAS_STRINGS.fields.mapping, AGAMA_ALIAS_STRINGS.fields.source]}
-                  value={[rowData.mapping, rowData.source]}
-                />
-              ),
-            }}
-            columns={AGAMA_ALIAS_STRINGS.fields.columns}
-            data={listData}
-            isLoading={loading}
-            title=""
-            actions={myActions}
-            paging={false}
-            options={{
-              search: false,
-              pagination: false,
-              rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? customColors.lightGreen : customColors.white,
-              }),
-              headerStyle: {
-                ...applicationStyle.tableHeaderStyle,
-                ...bgThemeColor,
-              },
-              actionsColumnIndex: -1,
-            }}
-          />
-        </GluuViewWrapper>
-        <Modal isOpen={showAddModal}>
-          <GluuCommitDialog
-            handler={() => setShowCommitDialog(false)}
-            modal={showCommitDialog}
-            onAccept={handleCommitAccept}
-          />
-          <Form
-            onSubmit={(event) => {
-              event.preventDefault()
-              formik.handleSubmit(event)
-            }}
-            className="mt-4"
-          >
-            <ModalHeader>
-              {isEdit
-                ? t(AGAMA_ALIAS_STRINGS.titles.edit_alias)
-                : t(AGAMA_ALIAS_STRINGS.titles.add_alias)}
-            </ModalHeader>
-            <ModalBody>
-              <FormGroup row>
-                <Col sm={10}>
-                  <GluuInputRow
-                    label={AGAMA_ALIAS_STRINGS.fields.mapping}
-                    name="mapping"
-                    value={formik.values.mapping}
-                    formik={formik}
-                    lsize={4}
-                    rsize={8}
-                    showError={formik.errors.mapping && formik.touched.mapping}
-                    errorMessage={formik.errors.mapping}
-                    required={true}
-                  />
-                </Col>
-                <Col sm={10}>
-                  <GluuInputRow
-                    label={AGAMA_ALIAS_STRINGS.fields.source}
-                    name="source"
-                    value={formik.values.source}
-                    formik={formik}
-                    lsize={4}
-                    rsize={8}
-                    showError={formik.errors.source && formik.touched.source}
-                    errorMessage={formik.errors.source}
-                    required={true}
-                  />
-                </Col>
-              </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                color={`primary-${selectedTheme}`}
-                style={applicationStyle.buttonStyle}
-                type="submit"
-              >
-                {loading ? (
-                  <>
-                    <CircularProgress size={12} /> &nbsp;
-                  </>
-                ) : null}
-                {isEdit ? t(AGAMA_ALIAS_STRINGS.actions.edit) : t(AGAMA_ALIAS_STRINGS.actions.add)}
-              </Button>
-              &nbsp;
-              <Button
-                color={`primary-${selectedTheme}`}
-                style={applicationStyle.buttonStyle}
-                onClick={() => setShowAddModal(false)}
-              >
-                {t(AGAMA_ALIAS_STRINGS.actions.cancel)}
-              </Button>
-            </ModalFooter>
-          </Form>
-        </Modal>
-        <GluuDialog
-          row={rowToDelete}
-          name={rowToDelete?.mapping}
-          handler={() => setShowDeleteDialog(false)}
-          modal={showDeleteDialog}
-          subject="agama-alias"
-          onAccept={(userMessage) => {
-            handleDeleteAccept(userMessage)
+      <GluuViewWrapper canShow={hasCedarPermission(SCOPE_READ)}>
+        <MaterialTable
+          key={limit ? limit : 0}
+          components={{
+            Container: (props) => <Paper {...props} elevation={0} />,
+            Pagination: () => (
+              <TablePagination
+                count={listData?.length}
+                page={pageNumber}
+                onPageChange={() => {}}
+                rowsPerPage={10}
+                onRowsPerPageChange={() => {}}
+              />
+            ),
+            DetailPanel: (rowData) => (
+              <AgamaAliasDetailRow
+                label={[AGAMA_ALIAS_STRINGS.fields.mapping, AGAMA_ALIAS_STRINGS.fields.source]}
+                value={[rowData.mapping, rowData.source]}
+              />
+            ),
           }}
-          feature={'agama_alias_delete'}
+          columns={AGAMA_ALIAS_STRINGS.fields.columns}
+          data={listData}
+          isLoading={loading}
+          title=""
+          actions={myActions}
+          options={{
+            columnsButton: false,
+            search: false,
+            pageSize: limit,
+            rowStyle: (rowData) => ({
+              backgroundColor: rowData.enabled ? customColors.lightGreen : customColors.white,
+            }),
+            headerStyle: {
+              ...applicationStyle.tableHeaderStyle,
+              ...bgThemeColor,
+            },
+            actionsColumnIndex: -1,
+          }}
         />
-      </>
+      </GluuViewWrapper>
+      <Modal isOpen={showAddModal}>
+        <GluuCommitDialog
+          handler={() => setShowCommitDialog(false)}
+          modal={showCommitDialog}
+          onAccept={handleCommitAccept}
+        />
+        <Form
+          onSubmit={(event) => {
+            event.preventDefault()
+            formik.handleSubmit(event)
+          }}
+          className="mt-4"
+        >
+          <ModalHeader>
+            {isEdit
+              ? t(AGAMA_ALIAS_STRINGS.titles.edit_alias)
+              : t(AGAMA_ALIAS_STRINGS.titles.add_alias)}
+          </ModalHeader>
+          <ModalBody>
+            <FormGroup row>
+              <Col sm={10}>
+                <GluuInputRow
+                  label={AGAMA_ALIAS_STRINGS.fields.mapping}
+                  name="mapping"
+                  value={formik.values.mapping}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={formik.errors.mapping && formik.touched.mapping}
+                  errorMessage={formik.errors.mapping}
+                  required={true}
+                />
+              </Col>
+              <Col sm={10}>
+                <GluuInputRow
+                  label={AGAMA_ALIAS_STRINGS.fields.source}
+                  name="source"
+                  value={formik.values.source}
+                  formik={formik}
+                  lsize={4}
+                  rsize={8}
+                  showError={formik.errors.source && formik.touched.source}
+                  errorMessage={formik.errors.source}
+                  required={true}
+                />
+              </Col>
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color={`primary-${selectedTheme}`}
+              style={applicationStyle.buttonStyle}
+              type="submit"
+            >
+              {loading ? (
+                <>
+                  <CircularProgress size={12} /> &nbsp;
+                </>
+              ) : null}
+              {isEdit ? t(AGAMA_ALIAS_STRINGS.actions.edit) : t(AGAMA_ALIAS_STRINGS.actions.add)}
+            </Button>
+            &nbsp;
+            <Button
+              color={`primary-${selectedTheme}`}
+              style={applicationStyle.buttonStyle}
+              onClick={() => setShowAddModal(false)}
+            >
+              {t(AGAMA_ALIAS_STRINGS.actions.cancel)}
+            </Button>
+          </ModalFooter>
+        </Form>
+      </Modal>
+      <GluuDialog
+        row={rowToDelete}
+        name={rowToDelete?.mapping}
+        handler={() => setShowDeleteDialog(false)}
+        modal={showDeleteDialog}
+        subject="agama-alias"
+        onAccept={(userMessage) => {
+          handleDeleteAccept(userMessage)
+        }}
+        feature={'agama_alias_delete'}
+      />
     </>
   )
 }

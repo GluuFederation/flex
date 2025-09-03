@@ -34,6 +34,19 @@ function DefaultAcrInput({
   const onValueChanged = (data) => {
     setShow(true)
     setData(data)
+
+    if (!showSaveButtons && data) {
+      const put = {}
+      put[PATH] = path
+      if (isArray) {
+        put[VALUE] = correctValue
+      } else {
+        put[VALUE] = data
+      }
+      put['op'] = 'replace'
+      handler(put)
+      setShow(false)
+    }
   }
   const onAccept = () => {
     const put = {}

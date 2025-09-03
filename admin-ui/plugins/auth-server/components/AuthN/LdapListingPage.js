@@ -16,6 +16,7 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { Container, Row, Col } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import SetTitle from '@/utils/SetTitle'
 
 function LdapListingPage() {
   const dispatch = useDispatch()
@@ -39,6 +40,8 @@ function LdapListingPage() {
   const [selectedRow, setSelectedRow] = useState(null)
   const toggle = useCallback(() => setModal(!modal), [modal])
   const { permissions } = useSelector((state) => state.cedarPermissions)
+
+  SetTitle('LDAP Server')
 
   function LdapDetailRow({ label, value }) {
     return (
