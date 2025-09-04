@@ -92,6 +92,9 @@ markdown_extensions:
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
 - pymdownx.tabbed
+- pymdownx.emoji:
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
 
 extra:
   generator: false

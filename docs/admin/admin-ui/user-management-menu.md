@@ -8,6 +8,44 @@ tags:
 
 # Users
 
-This interface allows the administrator to create, edit, delete and search user records in Janssen persistence. The user creation/modification form has First Name, Middle Name, Last Name, Username, Display Name, Email, Status and Password fields populated by default on it. The administrator can select and add more user attributes to the form from the right `Available Claims` panel. To add a new user claim, please follow this [document](https://docs.jans.io/stable/janssen-server/auth-server/openid-features/user-claims/). Different [Admin UI Roles](./home.md#admin-ui-roles) can be assigned to the user in the `jansAdminUIRole` attribute (to be selected from the `Available Claims` panel).
+The User Management module allows administrators to create, edit, delete, and 
+search user records in Janssen persistence. This module can be accessed via
+the `Users` link on the left navigation menu as shown in the image below. 
 
-![image](../../assets/admin-ui/user-mgmt.png)
+
+![image](../../assets/admin-ui/admin-ui-left-nav-menu.png)
+
+## User List
+
+* `User` section lists all the available users in the Flex Server.
+
+    ![image](../../assets/admin-ui/admin-ui-user-screen.png)
+
+
+## Add User
+
+* To add a new user, use the edit action :material-pencil: on the user listing
+grid
+* The user creation form includes a number of user claims by default but the 
+administrator can add more user claims to the form using `Available Claims` 
+panel on the right side. Different [Admin UI Roles](./home.md#admin-ui-roles) can be assigned to the user in the `jansAdminUIRole` attribute (to be selected from the `Available Claims` panel).
+
+     ![image](../../assets/admin-ui/admin-ui-add-user.png)
+
+
+## Edit User
+
+ * Modify existing user details, manage assigned claims, and update attributes.
+    ![image](../../assets/admin-ui/admin-ui-update-user.png)
+
+### Change password    
+
+ * The password can be changed from the Edit User screen. 
+
+     ![image](../../assets/admin-ui/admin-ui-user-changepassword.png)
+    
+
+
+
+
+
