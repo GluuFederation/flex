@@ -27,97 +27,113 @@ For detailed information, please refer to the official documentation [here](http
 
 ## SCIM Configuration 
 
-The SCIM configuration page in the Admin UI allows administrators to manage and customize how SCIM services operate within the Janssen platform. These settings control endpoints, logging, caching, performance limits, and schema extensions. Proper configuration ensures secure, efficient, and scalable user and group management through the SCIM API.  
+The SCIM configuration page in the Admin UI allows administrators to manage and customize how SCIM services operate within the Janssen platform. These settings control endpoints, logging, caching, performance limits, and schema extensions. Proper configuration ensures secure, efficient, and scalable user and group management through the SCIM API.
 
 ![image](../../assets/admin-ui/admin-ui-scim.png)
 
 **Base DN**
 
-  * Defines the root distinguished name (DN) in the directory where all SCIM-managed resources such as users, groups, and custom entities will be created or stored. It serves as the anchor point for SCIM operations within the LDAP tree.
-  * By setting the base DN, administrators ensure that SCIM-related objects are isolated under a well-defined hierarchy. This prevents conflicts with other directory data, enforces proper organization, and simplifies data management.
+  * The Base DN specifies the root distinguished name in the LDAP directory where SCIM operations begin. It restricts SCIM searches, modifications, and provisioning to users and groups within this subtree, helping maintain organizational boundaries and improving directory performance. 
+  * This setting ensures that identity operations are scoped and controlled for security, compliance, and clarity within large organizations.
 
 **Application URL**
 
-  * The base URL through which the SCIM service application is accessed. This URL is usually the address of the Janssen Admin UI or API gateway.
-  * The application URL provides a clear entry point for applications and administrators to locate the SCIM service. It also acts as an identifier in integrations, ensuring that clients always know the correct location of the service.
+  * The Application URL is the fully qualified address for accessing the Janssen instance. It is crucial for integrations, allowing external systems to locate and communicate with the specific application for SCIM provisioning, authentication, or callbacks. 
+  * Defines the endpoint for external services and identity clients, enabling smooth interoperability and accurate provisioning workflows.
 
 **Base Endpoint**
 
-  * Specifies the root REST API endpoint for SCIM operations. All SCIM-compliant requests (such as create, read, update, delete) are sent to this endpoint.
-  * The endpoint allows external systems—like HR systems, identity providers, or provisioning tools—to interact with SCIM in a standardized way. This makes user lifecycle management interoperable and easier to integrate.
+  * Base Endpoint defines the path segment where SCIM API requests are received, such as `/jans-scim/restv1`. This groups all SCIM user/group management operations under one URL for standardized API access.
+  * By clearly defining the API base path, this configuration removes ambiguity for developers and integrators, simplifying integration processes and reducing support burden when troubleshooting connectivity issues.
+
 
 **Person Custom Object Class**
 
-  * Defines the LDAP object class used to extend the default schema for user entries. This allows custom attributes to be added to user profiles beyond the standard SCIM schema.
-  * By using a custom object class, organizations can capture additional information (such as employee ID, department code, or role metadata). This makes user records more flexible and aligned with specific business needs.
+  * This field denotes the LDAP objectClass or objectClass list that SCIM uses when creating or provisioning person objects in the directory. It enables extended user schemas and custom attributes, supporting unique enterprise identity models. No default value is set.
+
+  * Allows organizations to adapt SCIM provisioning for custom business requirements and compatibility with legacy or specialized systems.
+
 
 **Auth Issuer**
 
-  * The URL of the authorization server that issues access tokens for securing SCIM API requests. It typically points to the Janssen authorization server.
-  * This ensures that all incoming SCIM requests are authenticated and validated against a trusted issuer. It prevents unauthorized access to sensitive user data and maintains compliance with security standards.
+
+  * The Auth Issuer field sets the URI for the OAuth 2.0 or OpenID Connect provider used to validate SCIM API requests. All issued access tokens are matched against this trusted issuer to enforce secure authentication.
+
+  * Ensures SCIM operations are securely authenticated, protecting against unauthorized or forged requests
 
 **Max Count**
 
-  * The maximum number of records that a SCIM search or query operation can return in a single response.
-  * Limiting the result size helps control server performance, prevents accidental data dumps, and ensures clients receive manageable responses instead of overwhelming amounts of data.
+  * Max Count controls the maximum number of directory entries (such as users or groups) returned per SCIM search or listing request. The default value is `200`.
+
+  * Prevents oversized responses, improves performance, and enables efficient pagination for applications accessing large directories.
 
 
 **Bulk Max Operations**
 
-  * Specifies the maximum number of operations (create, update, delete) that can be included in a single bulk request.
-  * This prevents excessive strain on the server by limiting batch sizes. It ensures bulk requests are processed efficiently while maintaining fair resource usage across all clients.
+  * Bulk Max Operations establishes the limit on how many create, update, or delete actions are accepted in a single SCIM bulk request. The default value is `30`.
+  * Protects the identity platform from resource exhaustion and runaway automation, maintaining operational stability during batch provisioning.
+
 
 **Bulk Max Payload Size**
   
-  * The maximum payload size (in bytes) allowed for SCIM bulk requests. Any request exceeding this limit will be rejected.
-  * By restricting payload size, the system prevents abuse through oversized requests and ensures stability. It also helps maintain predictable performance and avoids memory exhaustion.
+  * This is the maximum byte size allowed for bulk SCIM requests. Any batch exceeding this size will be rejected. The default value is 3072000 bytes (around 3 MB).
+  * Guards against excessively large requests, securing system resources and preventing denial-of-service situations.
+
 
 **User Extension Schema URI**
 
-  * Defines the URI that points to custom schema extensions for SCIM user resources. This allows administrators to extend the base SCIM user schema.
-  * This gives organizations flexibility to define and manage custom attributes within SCIM. For example, fields like “employeeNumber” or “managerId” can be added and still conform to SCIM standards.
+  * This field identifies the SCIM schema URI used for custom user attributes. The default value provided is `urn:ietf:params:scim:schemas:extension:gluu:2.0:User`.
+
+  * Supports extended identity models, allowing organizations to provision, synchronize, and store tailored user attributes needed for compliance and business needs.
+
 
 **Logging Level**
 
-  * Controls the level of detail included in SCIM logs. Higher levels (like DEBUG or TRACE) capture detailed system behavior, while lower levels (like ERROR or WARN) capture only critical issues.
-  * Options:TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
-  * Adjusting the logging level helps administrators troubleshoot issues effectively. During development or debugging, higher verbosity is useful, while in production, a reduced level prevents log overload.
+  * Logging Level sets the verbosity of SCIM logs, with possible values such as TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF. The default level is `INFO`
+  * Tuning the log level aids in troubleshooting, monitoring, and compliance by controlling how much detail is recorded about service operations.
+
 
 **Logging Layout**
 
-  * Specifies the format in which log entries are recorded. Common formats include plain text or structured formats like JSON.
-  * The layout ensures logs are easy to read and compatible with external tools. For instance, JSON logs integrate smoothly with modern logging pipelines (like ELK), while text logs are simple to inspect manually.
+  * This field establishes the format for log messages, which could be plain text, structured (e.g., JSON), or formatted for integration with external systems.
+  * Ensures log compatibility with enterprise monitoring tools, supporting easier parsing, correlation, and alerting.
 
 **External Logger Configuration**
 
-  * Allows integration with external logging frameworks or platforms. Administrators can provide specific configuration strings or JSON settings for third-party log collectors.
-  * This makes it possible to centralize SCIM logs into enterprise-level logging platforms such as Splunk, Graylog, or ELK. It improves observability and supports auditing, compliance, and advanced analytics.
+  * Specifies the file or path for integrating an external logger configuration (such as Log4j2).
+  * Centralizes event auditing and monitoring by sending SCIM logs to enterprise-wide logging systems.
+
 
 **Metric Reporter Interval**
 
-  * Specifies how often (in seconds) the SCIM service reports metrics about its operations, such as performance, request counts, or error rates.
-  * Frequent reporting ensures administrators always have up-to-date visibility into the service’s health. Metrics help spot issues early and optimize performance tuning.
+  * Defines the frequency in seconds with which SCIM gathers and reports operational performance metrics.
+
+  * Gives operations and support teams regular insights into service performance and activity, enabling proactive response to incidents.
+
 
 **Metric Reporter Keep Data Days**
 
-  * Defines the number of days metric data is stored before it is purged.
-  * This prevents excessive disk usage from retaining old metrics indefinitely. At the same time, it ensures that enough history is available to analyze trends and troubleshoot problems.
+* Controls the retention duration, in days, for storing metric data and operational statistics.
+* Facilitates compliance, troubleshooting, and trend analysis through configurable historical data retention.
+
 
 **Metric Reporter Enabled**
 
-  * Enables or disables the collection and reporting of SCIM metrics.
-  * Metric reporting is crucial for monitoring system health, identifying bottlenecks, and ensuring SLAs are met. Disabling it may reduce overhead but removes visibility into performance.
+  * A boolean toggle to activate SCIM service metrics collection and reporting. 
+
+  * Allows organizations to monitor health, usage, and trends, supporting proactive maintenance and decision-making.
 
 **Disable JDK Logger**
 
-  * Determines whether native Java Development Kit (JDK) logging should be disabled.
-  * This prevents duplicate log entries when using other logging systems. It helps streamline logs and ensures administrators don’t waste storage on redundant messages.
+* A boolean switch for disabling native Java (JDK) logging if another logger is configured.
+* Prevents redundant and duplicate log entries, maintaining log clarity and reducing resource overhead.
+
 
 
 **Use Local Cache**
 
-  * Controls whether the SCIM service uses a local cache to store frequently accessed data.
-  * Caching improves performance by reducing the number of repeated queries to the backend directory. It also minimizes latency for frequent operations, especially in high-traffic environments.
+  * This field enables or disables local in-memory caching for SCIM operations, improving query response times and lowering directory backend load.
+  * Optimizes repeated read operations in high-traffic scenarios, boosting efficiency and scalability of SCIM provisioning.
 
 
 Once all parameters are set, click the Apply button at the bottom of the page to save the configuration changes.
