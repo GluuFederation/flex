@@ -20,7 +20,6 @@ const JansLockConfiguration = () => {
   const { hasCedarPermission, authorize } = useCedarling()
   const lockConfigs = useSelector((state) => state.jansLockReducer.configuration)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-
   const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
   const [modal, setModal] = useState(false)
 
@@ -94,7 +93,7 @@ const JansLockConfiguration = () => {
       className="mt-4"
     >
       <FormGroup row>
-        <Col sm={12}>
+        {/* <Col sm={12}>
           <GluuInputRow
             label="fields.base_dn"
             name="baseDN"
@@ -107,7 +106,7 @@ const JansLockConfiguration = () => {
             disabled={viewOnly}
             doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </Col> */}
 
         <Col sm={12}>
           <GluuTypeAhead
@@ -265,6 +264,22 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
+            label="fields.clean_batch_chunk_size"
+            name="cleanBatchChunkSize"
+            value={formik.values.cleanBatchChunkSize || ''}
+            formik={formik}
+            doc_category={DOC_CATEGORY}
+            lsize={3}
+            rsize={9}
+            showError={formik.errors.cleanBatchChunkSize && formik.touched.cleanBatchChunkSize}
+            disabled={viewOnly}
+            errorMessage={formik.errors.cleanBatchChunkSize}
+            type="number"
+          />
+        </Col>
+
+        <Col sm={12}>
+          <GluuInputRow
             label="fields.metric_channel"
             name="metricChannel"
             value={formik.values.metricChannel || ''}
@@ -293,7 +308,7 @@ const JansLockConfiguration = () => {
           />
         </Col>
 
-        {/* OPA Configuration Starts */}
+        {/**
         <Col sm={12}>
           <Accordion className="mb-2 b-primary" initialOpen>
             <Accordion.Header className="text-primary">
@@ -329,8 +344,7 @@ const JansLockConfiguration = () => {
             </Accordion.Body>
           </Accordion>
         </Col>
-
-        {/* OPA Configuration Ends */}
+        */}
 
         <Col sm={12}>
           <GluuInputRow
