@@ -26,61 +26,61 @@ The Static Configuration section holds the main server parameters and certificat
 
 **Authenticator Certificates Folder**
 
-  * This field specifies the path to the folder where FIDO2 authenticator certificates are stored. These certificates are used to validate the authenticity of the authentication devices (such as security keys) during the authentication process.
-  * Example Path: /etc/jans/conf/fido2/authenticator_cert
-  * This folder is critical for ensuring that only trusted authenticator devices are used to authenticate users.
-
+  * The path to the folder where authenticator certificates are stored. These certificates are used to validate the authenticity of FIDO2 authenticators.
+  * This field helps to point to the location of authenticator certificates, which are critical in verifying the authenticity of a device during registration or authentication in a FIDO2 process.
 
 **MDS TOC Certificates Folder**
 
-  * This field specifies the location where Metadata Service Token Operation Control (MDS TOC) certificates are stored. These certificates are necessary to securely interact with the MDS TOC.
-  * Example Path: /etc/jans/conf/fido2/mds/cert
-  * These certificates ensure that the metadata being used during authentication is valid and secure, preventing any tampering or unauthorized access.
+* This field specifies the path to the folder containing the MDS (Metadata Service) TOC (Table of Contents) certificates.
+* It helps in specifying the location of the certificates used to validate metadata for FIDO2 devices.
 
 **MDS TOC Files Folder**
-  
-  * This folder contains the MDS TOC files, which are used to manage metadata related to authentication processes in FIDO2. The TOC files ensure proper token management and compliance with security protocols.
-  * Example Path: /etc/jans/conf/fido2/mds/toc
-  * The TOC files store key operational data that helps in maintaining the security and validity of authentication tokens.
 
+* This field defines the folder path that contains the MDS TOC files.
+* The TOC files provide metadata related to FIDO2 authenticators and are necessary for validation during the authentication process.
+  
 
 **Check U2F Attestations**
 
-  * U2F (Universal 2nd Factor) attestations help verify whether a device has been properly registered and is trustworthy. This setting controls whether the system checks U2F attestations during the authentication process.
-  * Enabling this check ensures that only properly authenticated and registered devices can be used for authentication, adding an additional layer of security.
+* A toggle to enable or disable U2F (Universal 2nd Factor) attestation checking.
+* This option determines whether the system should validate U2F devices' attestations during registration. U2F was an earlier version of FIDO, and some devices may still use it.
+
 
 **Unfinished Request Expiration**
 
-  * This field defines how long (in minutes) the system should wait for an authentication request to be completed before it expires. If the request isn't finished within the defined time, it will be discarded.
-  * This helps prevent old or incomplete requests from lingering in the system and potentially being exploited by attackers.
+* Defines the time in seconds for which an unfinished authentication request is considered valid.
+* This setting ensures that incomplete or pending authentication requests are discarded after a specified period, preventing the system from being overloaded with stale requests.
 
 **Authentication History Expiration**
 
   * This parameter defines how long (in minutes) the system should retain authentication history logs. After this period, authentication logs will be deleted automatically.
-  * This helps to clear old data that is no longer needed, optimizing storage and ensuring that sensitive information isn't retained longer than necessary.
+
+  * This helps manage storage space by ensuring that only relevant authentication history data is retained, with older data being automatically cleaned up.
 
 **Server Metadata Folder**
 
-  * This field specifies the folder where the server's metadata is stored. The metadata contains configuration data and other important information for the FIDO2 server's operations.
-  * The metadata is essential for proper operation of the FIDO2 server and ensures that the server is up-to-date with its configuration.
+  * The path to the server metadata folder, where FIDO2 metadata is stored.
+  * This folder contains critical information about the server’s capabilities, such as supported features, certificates, and public keys, needed for the authentication process.
 
 **User Auto Enrollment**
 
-  * When enabled, this setting automatically enrolls new users into the FIDO2 authentication system when they create an account. This helps streamline the enrollment process.
-  * Options:
-    * true: Automatically enrolls users.
-    * false: Requires manual user enrollment.
-  * This is useful for ensuring that all users can take advantage of FIDO2 authentication without requiring administrators to manually register them.
+* A toggle that enables or disables automatic enrollment of users in the FIDO2 authentication process.
+* When enabled, new users are automatically enrolled into the FIDO2 authentication system during their first sign-in. This helps to streamline the user experience and speed up registration.
+
 
 **Requested Credential Types**
 
-  * This field allows administrators to specify which types of credentials the FIDO2 server will request during authentication.
-  * By specifying the types of credentials, the organization can enforce more stringent authentication standards and ensure that the correct level of security is used.
+  * Defines the types of credentials that are requested for authentication, such as public key credentials or biometric factors.
+
+  * It restricts or specifies the type of credentials that the system should request during the authentication process. This allows for more granular control over the types of authenticators that can be used.
+
+
 
 **Requested Parties ID**
 
   * This field is used to define the party or service requesting authentication. Multiple parties can be added by clicking the + Add Party button.
-  * This is useful for scenarios where the FIDO2 authentication system needs to interact with multiple organizations or services, each with its own requirements.
+  
+  * This setting is used to limit authentication to certain parties or domains. It ensures that only specific parties can authenticate the user, adding an additional layer of security.
 
 Once all parameters are set, click the Apply button at the bottom of the page to save the configuration changes.
 
@@ -93,72 +93,75 @@ The Dynamic Configuration section allows for adjustments to operational settings
 **Issuer**
 
   * This is the identifier (usually a URL) of the FIDO2 service. It identifies the entity that is responsible for issuing the authentication tokens.
-  * The issuer is essential for identifying the source of the authentication request and ensuring the integrity of the token being used.
+  
+  * It identifies the authentication provider to ensure that the server’s identity is verified during communication with other systems or services.
 
 **Base Endpoint**
 
-  * This is the base URL endpoint for interacting with the FIDO2 service, including operations like authentication and token management.
-  * This endpoint is where clients will make API calls for authentication and related services.
+  * The base endpoint URL for the FIDO2 RESTful API.
+  * It determines the entry point for all communication with the FIDO2 system, ensuring that API requests are correctly routed to the server.
 
 **Clean Service Interval**
 
   * This setting specifies the time interval (in seconds) at which the service will clean up expired or unnecessary data.
-  * This helps ensure that outdated data does not accumulate and negatively affect the system's performance.
+  * This setting ensures that data management tasks, such as removing expired sessions, occur at a regular interval to prevent data buildup and keep the system efficient.
 
 **Clean Service Batch Chunk**
 
   * Defines the batch size for cleanup processes. The service will clean up data in chunks of this size.
-  * By cleaning data in batches, the system can efficiently manage large volumes of data without overloading the server.
+  * It allows the cleanup process to be optimized by controlling the number of records that are processed at once, preventing system overload during large cleanup tasks.
 
 **Use Local Cache**
 
-  * This setting determines whether the server should use a local cache to store frequently accessed data.
-  * Enabling caching improves system performance by reducing the need to retrieve data from the server on each request.
+  * A toggle to enable or disable the use of local caching for temporary data storage.
+  * This setting helps reduce the load on external systems by storing frequently accessed data locally, improving performance by allowing faster access to that data.
 
 **Disable JDK Logger**
 
   * This option controls whether Java Development Kit (JDK) logging is disabled.
-  * Disabling JDK logging can reduce unnecessary log entries and streamline the logging system.
+  * Disabling the JDK logger helps reduce unnecessary log data, which can be especially useful in production environments where minimal logging is preferred for performance.
 
 **Logging Level**
 
-  * Defines the verbosity of logs produced by the FIDO2 service. This helps control the amount of information logged.
-  * Selecting an appropriate logging level helps administrators monitor the system more effectively. Lower verbosity (e.g., ERROR) reduces log clutter, while higher verbosity (e.g., TRACE) provides more detailed logs for troubleshooting.
+  * Specifies the level of logging information to capture. Options include DEBUG, INFO, WARN, FATAL, OFF, TRACE and ERROR.
+
+  * This setting controls the verbosity of log messages, allowing the system to capture only necessary information based on the severity level.
 
 **Logging Layout**
 
-  * Specifies the format of log entries (e.g., text or JSON format).
-  * The layout defines how log entries are structured, making it easier for system administrators to read and parse logs.
+  * Defines the format in which log entries are recorded. Common formats include plain text or JSON.
 
+  * It allows for easy reading and processing of logs depending on the desired format, making it easier for administrators to monitor system activity.
+  
 **External Logger Configuration**
 
-  * This field allows administrators to specify configuration details for an external logging system.
-  * Using an external logger helps centralize logs from the FIDO2 service into a unified monitoring system. This makes it easier to analyze, visualize, and correlate logs across multiple services for auditing, debugging, or compliance purposes.
+  * Provides the ability to configure an external logging system for centralized logging.
+  * It helps integrate the system with external logging solutions for better log management, analysis, and monitoring, which is particularly useful in large-scale environments.
 
 **Metric Reporter Interval**
 
-  * Specifies the interval (in seconds) at which the FIDO2 server should report metrics (such as usage, errors, or performance).
-  * This allows administrators to monitor the health and performance of the server in real time.
+  * Specifies the interval (in seconds) at which the FIDO2 server should report metrics.
+  * This helps track the system's performance over time and ensures regular reporting of metrics to assist with monitoring and troubleshooting.
 
 **Metric Reporter Keep Data Days**
 
   * Defines the number of days for which metric data should be kept before it is discarded.
-  * This ensures that only relevant metric data is retained, preventing excessive storage use.
+  * It helps manage data retention for performance monitoring, ensuring that only the necessary amount of data is stored and preventing storage overload.
 
 **Metric Reporter Enabled**
 
   * This option enables or disables metric reporting for the FIDO2 service.
-  * Metric reporting is important for performance analysis and troubleshooting, so enabling it helps keep track of system health.
+  * Enabling this option ensures that system metrics are reported and monitored, allowing for better tracking and diagnostics of system health.
 
 **Person Custom Object Classes**
 
-  * This setting allows administrators to add custom object classes for the person schema in the directory. Custom object classes can store additional data specific to your organization's needs.
-  * Custom object classes provide flexibility for organizations to store user data that is specific to their authentication setup.
+  * Defines custom object classes that extend the person model.
+  * This allows the system to store additional user data beyond the default attributes provided by the base person model, enabling greater flexibility in managing user information.
 
 **Hints**
 
-  * This field allows administrators to define one or more hint values (keywords or identifiers) that can be used by the FIDO2 service to optimize or guide authentication flows. Hints can help the system recognize and process specific devices, credentials, or configurations.
-  * By using hints, administrators can provide contextual information to the FIDO2 server. This improves flexibility in handling different authentication scenarios, such as directing certain requests to specific devices or tailoring the authentication experience for particular clients.
+  * A field that provides suggestions or predefined values to assist in configuration.
+  * It guides the user in providing the correct configuration options or values by offering helpful hints or pre-configured suggestions, such as common object classes or device types.
   
 Once all parameters are set, click the Apply button at the bottom of the page to save the configuration changes.
 
