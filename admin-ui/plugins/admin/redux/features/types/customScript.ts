@@ -46,11 +46,17 @@ export interface CustomScriptItem {
 }
 
 export interface CustomScriptResponse {
-  data?: {
-    entries?: CustomScriptItem[]
-    totalEntriesCount?: number
-    entriesCount?: number
-  }
+  data?: CustomScriptListResponse | null
+}
+
+export interface CustomScriptItemResponse {
+  data?: CustomScriptItem | null
+}
+
+export interface CustomScriptListResponse {
+  entries?: CustomScriptItem[]
+  totalEntriesCount?: number
+  entriesCount?: number
 }
 
 export interface CustomScriptState {
