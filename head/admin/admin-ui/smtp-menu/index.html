@@ -1180,9 +1180,61 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          SMTP
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         SMTP
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#smtp-settings" class="md-nav__link">
+    SMTP Settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sender-information" class="md-nav__link">
+    Sender Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-and-security" class="md-nav__link">
+    Authentication and Security
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keystore-and-encryption" class="md-nav__link">
+    Keystore and Encryption
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1806,6 +1858,42 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#smtp-settings" class="md-nav__link">
+    SMTP Settings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sender-information" class="md-nav__link">
+    Sender Information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-and-security" class="md-nav__link">
+    Authentication and Security
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#keystore-and-encryption" class="md-nav__link">
+    Keystore and Encryption
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1847,64 +1935,82 @@
 
 
 <h1 id="smtp-configuration">SMTP Configuration<a class="headerlink" href="#smtp-configuration" title="Permanent link">#</a></h1>
-<p>The description of all the fields in SMTP configuration form:</p>
-<table>
-<thead>
-<tr>
-<th>Fields</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SMTP Host</td>
-<td>Hostname of the SMTP server</td>
-</tr>
-<tr>
-<td>Connect Protection</td>
-<td>Protocol to protect connection</td>
-</tr>
-<tr>
-<td>From Name</td>
-<td>Name of the sender</td>
-</tr>
-<tr>
-<td>From Email Address</td>
-<td>Email Address of the Sender</td>
-</tr>
-<tr>
-<td>Requires Authentication</td>
-<td>This checkbox enables sender authentication</td>
-</tr>
-<tr>
-<td>SMTP User Name</td>
-<td>Username of the SMTP</td>
-</tr>
-<tr>
-<td>SMTP User Password</td>
-<td>Password for the SMTP</td>
-</tr>
-<tr>
-<td>Requires SSL</td>
-<td>This checkbox enables the SSL</td>
-</tr>
-<tr>
-<td>SMTP Port</td>
-<td>Port number of the SMTP server</td>
-</tr>
-<tr>
-<td>Keystore</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<p>The SMTP configuration page allows administrators to set up and manage the settings for sending emails through the configured SMTP server. Below is a detailed explanation of each field in the SMTP configuration form:</p>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-smtp.png" /></p>
+<h2 id="smtp-settings">SMTP Settings<a class="headerlink" href="#smtp-settings" title="Permanent link">#</a></h2>
+<p><strong>SMTP Host</strong></p>
+<ul>
+<li>This is the hostname or IP address of the SMTP server (e.g. smtp.mailserver.com).</li>
+</ul>
+<p><strong>SMTP Port</strong></p>
+<ul>
+<li>The port number used to connect to the SMTP server.</li>
+<li>Common values:<ul>
+<li>25: Default SMTP port (unencrypted).</li>
+<li>465: SMTP over SSL.</li>
+<li>587: SMTP with TLS encryption.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Connect Protection</strong></p>
+<ul>
+<li>This option defines the type of protection for the connection. It can be set to:<ul>
+<li>None: No encryption is used.</li>
+<li>SslTls: Refined to include both SSL and TLS since they're often mentioned together as the encryption standard.</li>
+<li>StartTls: Corrected capitalization and clarified that it's used to upgrade an unencrypted connection to an encrypted one.</li>
+</ul>
+</li>
+</ul>
+<h2 id="sender-information">Sender Information<a class="headerlink" href="#sender-information" title="Permanent link">#</a></h2>
+<p><strong>From Name</strong></p>
+<ul>
+<li>The name that will appear in the <code>From</code> field of sent emails.</li>
+</ul>
+<p><strong>From Email Address</strong></p>
+<ul>
+<li>The email address that will appear in the <code>From</code> field of sent emails.</li>
+</ul>
+<h2 id="authentication-and-security">Authentication and Security<a class="headerlink" href="#authentication-and-security" title="Permanent link">#</a></h2>
+<p><strong>Requires Authentication</strong></p>
+<ul>
+<li>A toggle button to enable or disable authentication for the SMTP server. If enabled, the SMTP server will require a valid username and password for sending emails.</li>
+</ul>
+<p><strong>SMTP User Name</strong></p>
+<ul>
+<li>The username used to authenticate with the SMTP server. This is typically your email address or a specific SMTP username provided by your email service.</li>
+</ul>
+<p><strong>SMTP User Password</strong></p>
+<ul>
+<li>The password associated with the SMTP user for authentication. This password is necessary if the <code>Requires Authentication</code> toggle button is Enabled.</li>
+</ul>
+<p><strong>Trust Server</strong></p>
+<ul>
+<li>A toggle button to enable or disable the option to trust the SMTP server. If enabled, the server's identity will be verified during the connection to ensure it's safe to communicate with.</li>
+</ul>
+<h2 id="keystore-and-encryption">Keystore and Encryption<a class="headerlink" href="#keystore-and-encryption" title="Permanent link">#</a></h2>
+<p><strong>Keystore</strong></p>
+<ul>
+<li>The file path to the keystore containing SSL certificates necessary for encrypted communication. For example, /etc/certs/smtp-keys.pkcs12. The keystore is essential for securely sending emails over SSL/TLS.</li>
+</ul>
+<p><strong>Keystore Password</strong></p>
+<ul>
+<li>The password used to access the keystore. This is required if the keystore is password-protected.</li>
+</ul>
+<p><strong>Keystore Alias</strong></p>
+<ul>
+<li>The alias associated with the certificate stored in the keystore. The alias is used to identify the specific certificate for signing or encryption purposes.</li>
+</ul>
+<p><strong>Keystore Signing Algorithm</strong></p>
+<ul>
+<li>The cryptographic algorithm used for signing the emails. An example of this might be <code>SHA256withECDSA</code>, which refers to a strong algorithm for securely signing messages.</li>
+</ul>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-08-28T14:55:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-08-28</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2025-09-08T09:34:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2025-09-08</span>
       
         <br>
         Created:
