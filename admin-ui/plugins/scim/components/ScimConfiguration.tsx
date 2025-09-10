@@ -1,7 +1,6 @@
 import { useFormik, FormikProps } from 'formik'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import * as Yup from 'yup'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
@@ -9,53 +8,13 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { scimConfigurationValidationSchema, LOGGING_LEVELS } from '../validation'
 import type {
   ScimConfigurationProps,
   RootStateWithScim,
   ScimFormValues,
   ScimConfigPatchRequest,
 } from './types'
-
-const scimValidationSchema = Yup.object({
-  baseDN: Yup.string().required('Base DN is required.'),
-  applicationUrl: Yup.string()
-    .url('Please enter a valid URL.')
-    .required('Application URL is required.'),
-  baseEndpoint: Yup.string()
-    .url('Please enter a valid endpoint URL.')
-    .required('Base Endpoint is required.'),
-  personCustomObjectClass: Yup.string(),
-  oxAuthIssuer: Yup.string()
-    .url('Please enter a valid issuer URL.')
-    .required('OxAuth Issuer is required.'),
-  maxCount: Yup.number()
-    .positive('Max Count must be a positive number.')
-    .integer('Max Count must be an integer.')
-    .required('Max Count is required.'),
-  bulkMaxOperations: Yup.number()
-    .positive('Bulk Max Operations must be a positive number.')
-    .integer('Bulk Max Operations must be an integer.')
-    .required('Bulk Max Operations is required.'),
-  bulkMaxPayloadSize: Yup.number()
-    .positive('Bulk Max Payload Size must be a positive number.')
-    .integer('Bulk Max Payload Size must be an integer.')
-    .required('Bulk Max Payload Size is required.'),
-  userExtensionSchemaURI: Yup.string(),
-  loggingLevel: Yup.string()
-    .oneOf(['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF'], 'Invalid logging level.')
-    .required('Logging Level is required.'),
-  loggingLayout: Yup.string(),
-  externalLoggerConfiguration: Yup.string(),
-  metricReporterInterval: Yup.number()
-    .positive('Metric Reporter Interval must be a positive number.')
-    .integer('Metric Reporter Interval must be an integer.'),
-  metricReporterKeepDataDays: Yup.number()
-    .positive('Metric Reporter Keep Data Days must be a positive number.')
-    .integer('Metric Reporter Keep Data Days must be an integer.'),
-  metricReporterEnabled: Yup.boolean(),
-  disableJdkLogger: Yup.boolean(),
-  useLocalCache: Yup.boolean(),
-})
 
 const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) => {
   const scimConfigs = useSelector((state: RootStateWithScim) => state.scimReducer.scim)
@@ -67,7 +26,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) =
 
   const formik: FormikProps<ScimFormValues> = useFormik<ScimFormValues>({
     initialValues: scimConfigs as ScimFormValues,
-    validationSchema: scimValidationSchema,
+    validationSchema: scimConfigurationValidationSchema,
     onSubmit: () => {
       toggle()
     },
@@ -237,7 +196,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) =
             label="fields.logging_level"
             name="loggingLevel"
             value={formik.values.loggingLevel}
-            values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
+            values={LOGGING_LEVELS}
             formik={formik}
             lsize={3}
             rsize={9}
