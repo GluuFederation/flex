@@ -108,8 +108,8 @@ function GluuInlineInput({
                 labelKey={name}
                 onChange={handleTypeAheadChange}
                 multiple={true}
-                defaultSelected={value}
-                options={options || []}
+                defaultSelected={Array.isArray(value) ? value.filter((item) => item != null) : []}
+                options={Array.isArray(options) ? options.filter((item) => item != null) : []}
               />
             )}
           </Col>
