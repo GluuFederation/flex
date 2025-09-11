@@ -47,7 +47,7 @@ function DashboardPage() {
   const loading = useSelector((state) => state.mauReducer.loading)
   const clients = useSelector((state) => state.initReducer.clients)
   const lock = useSelector((state) => state.lockReducer.lockDetail)
-
+  const { hasFetchUserInformation } = useSelector((state) => state.authReducer)
   const totalClientsEntries = useSelector((state) => state.initReducer.totalClientsEntries)
   const license = useSelector((state) => state.licenseDetailsReducer.item)
   const serverStatus = useSelector((state) => state.healthReducer.serverStatus)
@@ -310,15 +310,24 @@ function DashboardPage() {
       )
     } else navigate('/logout')
   }
+  const showModal = () => {
+    if (!hasFetchUserInformation) {
+      if (!access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
+        return (
+          <GluuPermissionModal
+            handler={() => {
+              handleLogout()
+            }}
+            isOpen={true}
+          />
+        )
+      }
+    }
+  }
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuPermissionModal
-        handler={() => {
-          handleLogout()
-        }}
-        isOpen={!access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
-      />
+      {showModal()}
       <GluuViewWrapper canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}>
         <div className={classes.root}>
           <Grid container className="px-40 h-100" spacing={2}>
