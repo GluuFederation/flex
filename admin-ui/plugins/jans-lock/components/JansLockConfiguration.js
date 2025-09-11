@@ -3,15 +3,13 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import { Row, Col, Form, FormGroup, Accordion } from 'Components'
+import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { putJansLockConfiguration } from 'Plugins/jans-lock/redux/features/JansLockSlice'
-import customColors from '@/customColors'
 
 const DOC_CATEGORY = 'jans_lock'
 
@@ -23,7 +21,6 @@ const JansLockConfiguration = () => {
   const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
   const [modal, setModal] = useState(false)
 
-  // Permission initialization
   useEffect(() => {
     const authorizePermissions = async () => {
       try {
@@ -265,15 +262,17 @@ const JansLockConfiguration = () => {
         <Col sm={12}>
           <GluuInputRow
             label="fields.clean_batch_chunk_size"
-            name="cleanBatchChunkSize"
-            value={formik.values.cleanBatchChunkSize || ''}
+            name="cleanServiceBatchChunkSize"
+            value={formik.values.cleanServiceBatchChunkSize || ''}
             formik={formik}
             doc_category={DOC_CATEGORY}
             lsize={3}
             rsize={9}
-            showError={formik.errors.cleanBatchChunkSize && formik.touched.cleanBatchChunkSize}
+            showError={
+              formik.errors.cleanServiceBatchChunkSize && formik.touched.cleanServiceBatchChunkSize
+            }
             disabled={viewOnly}
-            errorMessage={formik.errors.cleanBatchChunkSize}
+            errorMessage={formik.errors.cleanServiceBatchChunkSize}
             type="number"
           />
         </Col>
@@ -308,8 +307,8 @@ const JansLockConfiguration = () => {
           />
         </Col>
 
-        {/**
-        <Col sm={12}>
+        {/* OPA Configuration Starts */}
+        {/* <Col sm={12}>
           <Accordion className="mb-2 b-primary" initialOpen>
             <Accordion.Header className="text-primary">
               <GluuLabel
@@ -343,8 +342,9 @@ const JansLockConfiguration = () => {
               />
             </Accordion.Body>
           </Accordion>
-        </Col>
-        */}
+        </Col> */}
+
+        {/* OPA Configuration Ends */}
 
         <Col sm={12}>
           <GluuInputRow
