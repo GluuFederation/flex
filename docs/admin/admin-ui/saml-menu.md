@@ -36,6 +36,9 @@ For more information, click here to refer to the [official docs](https://docs.ja
     * A toggle to skip certain validation checks (e.g. certificate validation, metadata validity).
     * Useful for testing or when metadata is temporarily invalid; not recommended for production because it weakens security.
 
+Once all parameters are set, click the Apply button at the bottom of the page to save the configuration changes.
+
+
 ## Create Identity Provider (IDP) Form
 
 ![image](../../assets/admin-ui/admin-ui-create-idp-1.png)
@@ -73,35 +76,39 @@ For more information, click here to refer to the [official docs](https://docs.ja
     * It ensures that the correct IDP is used for authentication during SSO processes. The value must exactly match the IDP’s configured entity ID from its metadata.
 
 
-6. NameID Policy Format
+7. NameID Policy Format
 
     * This field specifies the format of the `NameID` element in the SAML assertion, which identifies the user being authenticated. It determines how the subject (user) identity is structured and communicated to the Service Provider.
     * It allows the administrator to control the type of identifier used for the user, ensuring compatibility with the expectations of the Service Provider (SP). 
 
-6. Single SignOn Service URL
+8. Single SignOn Service URL
     * URL endpoint on the IdP where authentication requests (AuthnRequest) are sent.
     * Jans will send SAML AuthnRequests to this URL to initiate login.
 
-7. Single Logout Service URL
+9. Single Logout Service URL
     * URL endpoint on the IdP for Single‑Logout (SLO), if supported.
     * For logout flows: to tell IdP when SP wants to log the user out globally.
 
-6. Signing Certificate
+10. Signing Certificate
     * Public key certificate of the IdP used to verify signatures on SAML responses/assertions.
     * To ensure responses are really from the IdP and not tampered with — signature verification.
 
-7. Encryption Certificate
+11. Encryption Certificate
     * Public key certificate used (if used) to decrypt encrypted parts of SAML assertion.
     * If assertions are encrypted, SP (Jans) needs a certificate to decrypt; this field provides that.
 
-8. Principal Attribute
+12. Principal Attribute
     * The attribute in the SAML assertion that will be used as the principal / username (or user identifier).
     * To map SAML attributes to local user accounts; i.e. which SAML attribute identifies the user.
 
-9. Principal Type
+13. Principal Type
 
     * The type of principal (for example, “User”, “Group”, etc.) or possibly the format (email / username).
     * Defines how the principal attribute is interpreted; how user identity is resolved locally.
+
+
+Once all parameters are set, click the Apply button at the bottom of the page to save the configuration changes.
+
 
 ## Create Service Provider (SP) Form
 
@@ -162,4 +169,8 @@ For more information, click here to refer to the [official docs](https://docs.ja
       5. Jans Assertion Consumer Service POST URL
           * ACS endpoint using the HTTP POST binding. This is where the IdP sends SAML responses.
           * Ensures the IdP sends authentication assertions via HTTP POST binding, commonly used for SAML SSO.
+
+Once all parameters are set, click the Apply button at the bottom of the page to save the configuration changes.
+
+
       
