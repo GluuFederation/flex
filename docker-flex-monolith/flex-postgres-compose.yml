@@ -14,7 +14,7 @@ services:
       POSTGRES_PASSWORD: 1t5Fin3#security
       POSTGRES_DB: gluu
   flex:
-    image: ${FLEX_IMAGE:-ghcr.io/gluufederation/flex/monolith:0.0.0-nightly}
+    image: ${FLEX_IMAGE:-ghcr.io/gluufederation/flex/monolith:5.11.0-1}
     restart: always
     ports:
       - "443:443"
