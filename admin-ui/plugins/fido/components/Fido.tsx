@@ -10,12 +10,12 @@ import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { getFidoConfiguration, putFidoConfiguration } from '../redux/features/fidoSlice'
 import { fidoConstants, createFidoConfigPayload } from '../helper'
+import type { FidoRootState, TabName, FormData } from './types/types'
 
-const Fido = () => {
+const Fido: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const fidoConfiguration = useSelector((state) => state.fidoReducer)
-
+  const fidoConfiguration = useSelector((state: FidoRootState) => state.fidoReducer)
   SetTitle(t('titles.fido_management'))
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Fido = () => {
   }, [dispatch])
 
   const handleDynamicConfigurationSubmit = useCallback(
-    (data) => {
+    (data: FormData) => {
       const apiPayload = createFidoConfigPayload({
         fidoConfiguration,
         data,
@@ -35,25 +35,24 @@ const Fido = () => {
   )
 
   const handleStaticConfigurationSubmit = useCallback(
-    (data) => {
+    (data: FormData) => {
       const apiPayload = createFidoConfigPayload({
         fidoConfiguration,
         data,
         type: fidoConstants.STATIC,
       })
-
       dispatch(putFidoConfiguration(apiPayload))
     },
     [dispatch, fidoConfiguration],
   )
 
-  const tabNames = [
+  const tabNames: TabName[] = [
     { name: t('menus.static_configuration'), path: '/fido/fidomanagement/static-configuration' },
     { name: t('menus.dynamic_configuration'), path: '/fido/fidomanagement/dynamic-configuration' },
   ]
 
   const tabToShow = useCallback(
-    (tabName) => {
+    (tabName: string) => {
       switch (tabName) {
         case t('menus.static_configuration'):
           return (

@@ -94,6 +94,8 @@
     "mau_clients": "Jan lock clients"
   },
   "fields": {
+    "enabled_fido_algorithms": "Enabled Fido Algorithms",
+    "metadata_refresh_interval": "Metadata Refresh Interval",
     "access_token_signing_alg": "JWS alg for signing",
     "resetLicense": "Reset License",
     "asset_name": "Asset Name",

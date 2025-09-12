@@ -13,50 +13,57 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 import { validationSchema, transformToFormValues, fidoConstants } from '../helper'
+import {
+  StaticConfigurationProps,
+  StaticConfigurationFormValues,
+  CredentialTypeOption,
+  RequestedPartyOption,
+} from './types/StaticConfiguration'
+import type { AppConfiguration, FormData } from '../types'
 
-function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
-  const staticConfiguration = fidoConfiguration.fido.fido2Configuration
-
+function StaticConfiguration({
+  fidoConfiguration,
+  handleSubmit,
+}: StaticConfigurationProps): JSX.Element {
   const { t } = useTranslation()
-
-  const [modal, setModal] = useState(false)
-
-  const toggle = useCallback(() => {
+  const [modal, setModal] = useState<boolean>(false)
+  const toggle = useCallback((): void => {
     setModal((prev) => !prev)
   }, [])
-
-  const formik = useFormik({
-    initialValues: transformToFormValues(staticConfiguration, fidoConstants.STATIC),
+  const formik = useFormik<StaticConfigurationFormValues>({
+    initialValues: transformToFormValues(
+      fidoConfiguration.fido as AppConfiguration,
+      fidoConstants.STATIC,
+    ) as StaticConfigurationFormValues,
     onSubmit: toggle,
-    validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.STATIC_CONFIG],
+    validationSchema: validationSchema.staticConfigValidationSchema,
   })
 
-  const submitForm = useCallback(() => {
+  const submitForm = useCallback((): void => {
     toggle()
-
-    handleSubmit(formik.values)
+    handleSubmit(formik.values as unknown as FormData)
   }, [handleSubmit, toggle, formik])
 
-  const credentialTypesOptions = useMemo(() => {
-    return formik?.values?.requestedCredentialTypes
-      ? formik.values.requestedCredentialTypes.map((item) => ({
-          key: '',
+  const credentialTypesOptions = useMemo((): CredentialTypeOption[] => {
+    return formik?.values?.enabledFidoAlgorithms
+      ? formik.values.enabledFidoAlgorithms.map((item: string) => ({
+          key: item,
           value: item,
         }))
       : []
-  }, [formik?.values?.requestedCredentialTypes])
+  }, [formik?.values?.enabledFidoAlgorithms])
 
-  const requestedPartiesOptions = useMemo(() => {
+  const requestedPartiesOptions = useMemo((): RequestedPartyOption[] => {
     return formik?.values?.requestedParties
       ? formik.values.requestedParties.map((item) => ({
-          key: item?.name,
-          value: item?.domains?.toString(),
+          key: item?.name || '',
+          value: item?.domains?.toString() || '',
         }))
       : []
   }, [formik?.values?.requestedParties])
 
   const handleFormSubmit = useCallback(
-    (e) => {
+    (e: React.FormEvent<HTMLFormElement>): void => {
       e.preventDefault()
       formik.handleSubmit()
     },
@@ -75,7 +82,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.authenticatorCertsFolder && formik.touched.authenticatorCertsFolder
+              !!(formik.errors.authenticatorCertsFolder && formik.touched.authenticatorCertsFolder)
             }
             errorMessage={formik.errors.authenticatorCertsFolder}
           />
@@ -88,7 +95,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.mdsCertsFolder && formik.touched.mdsCertsFolder}
+            showError={!!(formik.errors.mdsCertsFolder && formik.touched.mdsCertsFolder)}
             errorMessage={formik.errors.mdsCertsFolder}
           />
         </Col>
@@ -100,7 +107,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.mdsTocsFolder && formik.touched.mdsTocsFolder}
+            showError={!!(formik.errors.mdsTocsFolder && formik.touched.mdsTocsFolder)}
             errorMessage={formik.errors.mdsTocsFolder}
           />
         </Col>
@@ -126,8 +133,10 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.unfinishedRequestExpiration &&
-              formik.touched.unfinishedRequestExpiration
+              !!(
+                formik.errors.unfinishedRequestExpiration &&
+                formik.touched.unfinishedRequestExpiration
+              )
             }
             errorMessage={formik.errors.unfinishedRequestExpiration}
           />
@@ -135,18 +144,17 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <GluuInputRow
-            label={fidoConstants.LABELS.AUTHENTICATION_HISTORY_EXPIRATION}
-            name="authenticationHistoryExpiration"
+            label={fidoConstants.LABELS.METADATA_REFRESH_INTERVAL}
+            name="metadataRefreshInterval"
             type="number"
-            value={formik.values.authenticationHistoryExpiration || ''}
+            value={formik.values.metadataRefreshInterval || ''}
             formik={formik}
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.authenticationHistoryExpiration &&
-              formik.touched.authenticationHistoryExpiration
+              !!(formik.errors.metadataRefreshInterval && formik.touched.metadataRefreshInterval)
             }
-            errorMessage={formik.errors.authenticationHistoryExpiration}
+            errorMessage={formik.errors.metadataRefreshInterval}
           />
         </Col>
 
@@ -158,7 +166,9 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.serverMetadataFolder && formik.touched.serverMetadataFolder}
+            showError={
+              !!(formik.errors.serverMetadataFolder && formik.touched.serverMetadataFolder)
+            }
             errorMessage={formik.errors.serverMetadataFolder}
           />
         </Col>
@@ -176,10 +186,10 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
 
         <Col sm={8}>
           <Row>
-            <GluuLabel label={fidoConstants.LABELS.REQUESTED_CREDENTIAL_TYPES} size={4} />
+            <GluuLabel label={fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS} size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName={fidoConstants.FORM_FIELDS.REQUESTED_CREDENTIAL_TYPES}
+                compName={fidoConstants.FORM_FIELDS.ENABLED_FIDO_ALGORITHMS}
                 isInputLables={true}
                 formik={formik}
                 options={credentialTypesOptions}
