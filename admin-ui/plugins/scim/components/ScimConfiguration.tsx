@@ -1,4 +1,4 @@
-import { useFormik } from 'formik'
+import { useFormik, FormikProps } from 'formik'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Row, Col, Form, FormGroup } from 'Components'
@@ -7,53 +7,69 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import PropTypes from 'prop-types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { scimConfigurationValidationSchema, LOGGING_LEVELS } from '../validation'
+import type {
+  ScimConfigurationProps,
+  RootStateWithScim,
+  ScimFormValues,
+  ScimConfigPatchRequest,
+} from './types'
 
-const ScimConfiguration = ({ handleSubmit }) => {
-  const scimConfigs = useSelector((state) => state.scimReducer.scim)
-  const [modal, setModal] = useState(false)
-  const toggle = () => {
+const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) => {
+  const scimConfigs = useSelector((state: RootStateWithScim) => state.scimReducer.scim)
+  const [modal, setModal] = useState<boolean>(false)
+
+  const toggle = (): void => {
     setModal(!modal)
   }
 
-  const formik = useFormik({
-    initialValues: scimConfigs,
+  const formik: FormikProps<ScimFormValues> = useFormik<ScimFormValues>({
+    initialValues: scimConfigs as ScimFormValues,
+    validationSchema: scimConfigurationValidationSchema,
     onSubmit: () => {
       toggle()
     },
   })
 
-  const submitForm = (userMessage) => {
-    const differences = []
-    delete formik.values?.action_message
-
-    for (const key in formik.values) {
-      if (scimConfigs.hasOwnProperty(key)) {
-        if (scimConfigs[key] !== formik.values[key]) {
+  const submitForm = (userMessage: string): void => {
+    const differences: ScimConfigPatchRequest[] = []
+    const { action_message, ...formValues } = formik.values
+    for (const key in formValues) {
+      const typedKey = key as keyof typeof formValues
+      if (Object.prototype.hasOwnProperty.call(scimConfigs, key)) {
+        if (scimConfigs[typedKey as keyof typeof scimConfigs] !== formValues[typedKey]) {
           differences.push({
             op: 'replace',
             path: `/${key}`,
-            value: formik.values[key],
+            value: formValues[typedKey],
           })
         }
-      } else if (formik.values[key]) {
+      } else if (formValues[typedKey]) {
         differences.push({
           op: 'add',
           path: `/${key}`,
-          value: formik.values[key],
+          value: formValues[typedKey],
         })
       }
     }
 
     toggle()
 
-    differences.length && handleSubmit(differences, userMessage)
+    if (differences.length > 0) {
+      handleSubmit(differences, userMessage)
+    }
   }
+
+  const handleToggleChange =
+    (fieldName: keyof ScimFormValues) =>
+    (e: React.ChangeEvent<HTMLInputElement>): void => {
+      formik.setFieldValue(fieldName, e.target.checked)
+    }
 
   return (
     <Form
-      onSubmit={(e) => {
+      onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         formik.handleSubmit()
       }}
@@ -68,8 +84,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.baseDN && formik.touched.baseDN}
-            errorMessage={formik.errors.baseDN}
+            showError={!!(formik.errors.baseDN && formik.touched.baseDN)}
+            errorMessage={formik.errors.baseDN as string}
           />
         </Col>
         <Col sm={12}>
@@ -80,8 +96,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.applicationUrl && formik.touched.applicationUrl}
-            errorMessage={formik.errors.applicationUrl}
+            showError={!!(formik.errors.applicationUrl && formik.touched.applicationUrl)}
+            errorMessage={formik.errors.applicationUrl as string}
           />
         </Col>
         <Col sm={12}>
@@ -92,8 +108,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.baseEndpoint && formik.touched.baseEndpoint}
-            errorMessage={formik.errors.baseEndpoint}
+            showError={!!(formik.errors.baseEndpoint && formik.touched.baseEndpoint)}
+            errorMessage={formik.errors.baseEndpoint as string}
           />
         </Col>
         <Col sm={12}>
@@ -105,9 +121,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.personCustomObjectClass && formik.touched.personCustomObjectClass
+              !!(formik.errors.personCustomObjectClass && formik.touched.personCustomObjectClass)
             }
-            errorMessage={formik.errors.personCustomObjectClass}
+            errorMessage={formik.errors.personCustomObjectClass as string}
           />
         </Col>
         <Col sm={12}>
@@ -118,8 +134,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.oxAuthIssuer && formik.touched.oxAuthIssuer}
-            errorMessage={formik.errors.oxAuthIssuer}
+            showError={!!(formik.errors.oxAuthIssuer && formik.touched.oxAuthIssuer)}
+            errorMessage={formik.errors.oxAuthIssuer as string}
           />
         </Col>
         <Col sm={12}>
@@ -127,12 +143,12 @@ const ScimConfiguration = ({ handleSubmit }) => {
             label="fields.max_count"
             name="maxCount"
             type="number"
-            value={formik.values.maxCount || ''}
+            value={formik.values.maxCount?.toString() || ''}
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.maxCount && formik.touched.maxCount}
-            errorMessage={formik.errors.maxCount}
+            showError={!!(formik.errors.maxCount && formik.touched.maxCount)}
+            errorMessage={formik.errors.maxCount as string}
           />
         </Col>
         <Col sm={12}>
@@ -140,12 +156,12 @@ const ScimConfiguration = ({ handleSubmit }) => {
             label="fields.bulk_max_operations"
             name="bulkMaxOperations"
             type="number"
-            value={formik.values.bulkMaxOperations || ''}
+            value={formik.values.bulkMaxOperations?.toString() || ''}
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.bulkMaxOperations && formik.touched.bulkMaxOperations}
-            errorMessage={formik.errors.bulkMaxOperations}
+            showError={!!(formik.errors.bulkMaxOperations && formik.touched.bulkMaxOperations)}
+            errorMessage={formik.errors.bulkMaxOperations as string}
           />
         </Col>
         <Col sm={12}>
@@ -153,12 +169,12 @@ const ScimConfiguration = ({ handleSubmit }) => {
             label="fields.bulk_max_payload_size"
             name="bulkMaxPayloadSize"
             type="number"
-            value={formik.values.bulkMaxPayloadSize || ''}
+            value={formik.values.bulkMaxPayloadSize?.toString() || ''}
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.bulkMaxPayloadSize && formik.touched.bulkMaxPayloadSize}
-            errorMessage={formik.errors.bulkMaxPayloadSize}
+            showError={!!(formik.errors.bulkMaxPayloadSize && formik.touched.bulkMaxPayloadSize)}
+            errorMessage={formik.errors.bulkMaxPayloadSize as string}
           />
         </Col>
         <Col sm={12}>
@@ -170,9 +186,9 @@ const ScimConfiguration = ({ handleSubmit }) => {
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.userExtensionSchemaURI && formik.touched.userExtensionSchemaURI
+              !!(formik.errors.userExtensionSchemaURI && formik.touched.userExtensionSchemaURI)
             }
-            errorMessage={formik.errors.userExtensionSchemaURI}
+            errorMessage={formik.errors.userExtensionSchemaURI as string}
           />
         </Col>
         <Col sm={12}>
@@ -180,8 +196,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             label="fields.logging_level"
             name="loggingLevel"
             value={formik.values.loggingLevel}
-            defaultValue={formik.values.loggingLevel}
-            values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
+            values={LOGGING_LEVELS}
             formik={formik}
             lsize={3}
             rsize={9}
@@ -195,8 +210,8 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
-            errorMessage={formik.errors.loggingLayout}
+            showError={!!(formik.errors.loggingLayout && formik.touched.loggingLayout)}
+            errorMessage={formik.errors.loggingLayout as string}
           />
         </Col>
         <Col sm={12}>
@@ -208,10 +223,12 @@ const ScimConfiguration = ({ handleSubmit }) => {
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.externalLoggerConfiguration &&
-              formik.touched.externalLoggerConfiguration
+              !!(
+                formik.errors.externalLoggerConfiguration &&
+                formik.touched.externalLoggerConfiguration
+              )
             }
-            errorMessage={formik.errors.externalLoggerConfiguration}
+            errorMessage={formik.errors.externalLoggerConfiguration as string}
           />
         </Col>
         <Col sm={12}>
@@ -219,14 +236,14 @@ const ScimConfiguration = ({ handleSubmit }) => {
             label="fields.metric_reporter_interval"
             name="metricReporterInterval"
             type="number"
-            value={formik.values.metricReporterInterval || ''}
+            value={formik.values.metricReporterInterval?.toString() || ''}
             formik={formik}
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.metricReporterInterval && formik.touched.metricReporterInterval
+              !!(formik.errors.metricReporterInterval && formik.touched.metricReporterInterval)
             }
-            errorMessage={formik.errors.metricReporterInterval}
+            errorMessage={formik.errors.metricReporterInterval as string}
           />
         </Col>
         <Col sm={12}>
@@ -234,23 +251,24 @@ const ScimConfiguration = ({ handleSubmit }) => {
             label="fields.metric_reporter_keep_data_days"
             name="metricReporterKeepDataDays"
             type="number"
-            value={formik.values.metricReporterKeepDataDays || ''}
+            value={formik.values.metricReporterKeepDataDays?.toString() || ''}
             formik={formik}
             lsize={3}
             rsize={9}
             showError={
-              formik.errors.metricReporterKeepDataDays && formik.touched.metricReporterKeepDataDays
+              !!(
+                formik.errors.metricReporterKeepDataDays &&
+                formik.touched.metricReporterKeepDataDays
+              )
             }
-            errorMessage={formik.errors.metricReporterKeepDataDays}
+            errorMessage={formik.errors.metricReporterKeepDataDays as string}
           />
         </Col>
         <Col sm={12}>
           <GluuToogleRow
             label="fields.metric_reporter_enabled"
             name="metricReporterEnabled"
-            handler={(e) => {
-              formik.setFieldValue('metricReporterEnabled', e.target.checked)
-            }}
+            handler={handleToggleChange('metricReporterEnabled')}
             lsize={3}
             rsize={9}
             value={formik.values.metricReporterEnabled}
@@ -260,9 +278,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuToogleRow
             label="fields.disable_jdk_logger"
             name="disableJdkLogger"
-            handler={(e) => {
-              formik.setFieldValue('disableJdkLogger', e.target.checked)
-            }}
+            handler={handleToggleChange('disableJdkLogger')}
             lsize={3}
             rsize={9}
             value={formik.values.disableJdkLogger}
@@ -272,9 +288,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
           <GluuToogleRow
             label="fields.use_local_cache"
             name="useLocalCache"
-            handler={(e) => {
-              formik.setFieldValue('useLocalCache', e.target.checked)
-            }}
+            handler={handleToggleChange('useLocalCache')}
             lsize={3}
             rsize={9}
             value={formik.values.useLocalCache}
@@ -300,10 +314,6 @@ const ScimConfiguration = ({ handleSubmit }) => {
       />
     </Form>
   )
-}
-
-ScimConfiguration.propTypes = {
-  handleSubmit: PropTypes.func,
 }
 
 export default ScimConfiguration
