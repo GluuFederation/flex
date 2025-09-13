@@ -2731,7 +2731,7 @@ The requested page was not found on this server.
 <div class="highlight"><pre><span></span><code>Error Code: 503
 Gluu Flex Admin UI is not getting any response from the backend (Jans Config Api).
 </code></pre></div>
-<p>Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, <a href="https://docs.jans.io/vreplace-janssen-version/contribute/implementation-design/jans-config-api/">Jans Config API</a>. This error prompts administrators to perform a series of troubleshooting steps.</p>
+<p>Gluu Flex Admin UI facilitates interaction with the Jans Auth Server through a REST API layer, <a href="https://docs.jans.io/v5.11.0/contribute/implementation-design/jans-config-api/">Jans Config API</a>. This error prompts administrators to perform a series of troubleshooting steps.</p>
 <ol>
 <li>Verify the status of the Jans Config API service by using the command <code>systemctl status jans-config-api.service</code>. In the majority of cases, this error is displayed when the Jans Config API is not running. </li>
 <li>It is essential to verify the server's network connectivity, including firewall rules, ports, and routing, to ensure that there are no network-related impediments preventing communication with the Jans Config API. Jans Config API runs at port <code>8074</code> for Janssen vm installation.</li>
