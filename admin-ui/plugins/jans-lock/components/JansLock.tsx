@@ -7,17 +7,19 @@ import JansLockConfiguration from './JansLockConfiguration'
 import { getJansLockConfiguration } from 'Plugins/jans-lock/redux/features/JansLockSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
+import { RootState } from '../types/JansLockApiTypes'
+import { Dispatch } from '@reduxjs/toolkit'
 
-const JansLock = () => {
-  const dispatch = useDispatch()
-  const loading = useSelector((state) => state.jansLockReducer.loading)
+const JansLock: React.FC = () => {
+  const dispatch = useDispatch<Dispatch>()
+  const loading = useSelector((state: RootState) => state.jansLockReducer.loading)
   const { t } = useTranslation()
 
   SetTitle(t('titles.jans_lock'))
 
   useEffect(() => {
     dispatch(getJansLockConfiguration())
-  }, [])
+  }, [dispatch])
 
   return (
     <GluuLoader blocking={loading}>

@@ -1,9 +1,10 @@
-import { useFormik } from 'formik'
 import React, { useState, useEffect } from 'react'
+import { FormikProps, useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { Row, Col, Form, FormGroup, Accordion } from 'Components'
+import { AccordionHeader, AccordionBody } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
@@ -12,21 +13,30 @@ import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { putJansLockConfiguration } from 'Plugins/jans-lock/redux/features/JansLockSlice'
 import customColors from '@/customColors'
+import {
+  ExtendedJansLockConfiguration,
+  UserAction,
+  PatchOperation,
+  TypeAheadOption,
+} from '../types/JansLockConfigurationTypes'
+import { RootState } from '../types'
 
 const DOC_CATEGORY = 'jans_lock'
 
-const JansLockConfiguration = () => {
+const JansLockConfiguration: React.FC = () => {
   const dispatch = useDispatch()
   const { hasCedarPermission, authorize } = useCedarling()
-  const lockConfigs = useSelector((state) => state.jansLockReducer.configuration)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const lockConfigs = useSelector((state: RootState) => state.jansLockReducer.configuration)
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootState) => state.cedarPermissions,
+  )
 
   const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState<boolean>(false)
 
   // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async () => {
+    const authorizePermissions = async (): Promise<void> => {
       try {
         await authorize([JANS_LOCK_WRITE])
       } catch (error) {
@@ -35,23 +45,24 @@ const JansLockConfiguration = () => {
     }
 
     authorizePermissions()
-  }, [])
+  }, [authorize])
 
   useEffect(() => {}, [cedarPermissions])
 
-  const toggle = () => {
+  const toggle = (): void => {
     setModal(!modal)
   }
 
-  const formik = useFormik({
-    initialValues: lockConfigs,
-    onSubmit: () => {
-      toggle()
-    },
-  })
+  const formik: FormikProps<ExtendedJansLockConfiguration> =
+    useFormik<ExtendedJansLockConfiguration>({
+      initialValues: lockConfigs,
+      onSubmit: () => {
+        toggle()
+      },
+    })
 
-  const submitForm = (userMessage) => {
-    const differences = []
+  const submitForm = (userMessage: string): void => {
+    const differences: PatchOperation[] = []
     delete formik.values?.action_message
 
     for (const key in formik.values) {
@@ -74,20 +85,50 @@ const JansLockConfiguration = () => {
 
     toggle()
 
-    differences.length && handleSubmit(differences, userMessage)
+    if (differences.length) {
+      handleSubmit(differences, userMessage)
+    }
   }
 
-  const handleSubmit = (data, userMessage) => {
-    const userAction = {}
+  const handleSubmit = (data: PatchOperation[], userMessage: string): void => {
+    const userAction: UserAction = {
+      action_message: userMessage,
+      action_data: data,
+    }
     buildPayload(userAction, userMessage, {})
-    userAction.action_message = userMessage
-    userAction.action_data = data
     dispatch(putJansLockConfiguration({ action: userAction }))
+  }
+
+  const handleTokenChannelsChange = (options: (string | TypeAheadOption)[]): void => {
+    const getLabel = (item: string | TypeAheadOption): string => {
+      if (typeof item === 'string') return item
+      return item?.customOption && item?.tokenChannels ? item.tokenChannels : ''
+    }
+    const values = options?.map((item) => getLabel(item)).filter(Boolean)
+    formik.setFieldValue('tokenChannels', values)
+  }
+
+  const handlePoliciesJsonUrisChange = (options: (string | TypeAheadOption)[]): void => {
+    const getLabel = (item: string | TypeAheadOption): string => {
+      if (typeof item === 'string') return item
+      return item?.customOption && item?.policiesJsonUris ? item.policiesJsonUris : ''
+    }
+    const values = options?.map((item) => getLabel(item)).filter(Boolean)
+    formik.setFieldValue('policiesJsonUris', values)
+  }
+
+  const handlePoliciesZipUrisChange = (options: (string | TypeAheadOption)[]): void => {
+    const getLabel = (item: string | TypeAheadOption): string => {
+      if (typeof item === 'string') return item
+      return item?.customOption && item?.policiesZipUris ? item.policiesZipUris : ''
+    }
+    const values = options?.map((item) => getLabel(item)).filter(Boolean)
+    formik.setFieldValue('policiesZipUris', values)
   }
 
   return (
     <Form
-      onSubmit={(e) => {
+      onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         formik.handleSubmit()
       }}
@@ -114,13 +155,7 @@ const JansLockConfiguration = () => {
             name="tokenChannels"
             label="fields.token_channels"
             value={formik.values.tokenChannels}
-            onChange={(options) => {
-              const getLabel = (item) => item?.customOption && item?.tokenChannels
-              const values = options?.map((item) =>
-                typeof item == 'string' ? item : getLabel(item),
-              )
-              formik.setFieldValue('tokenChannels', values)
-            }}
+            onChange={handleTokenChannelsChange}
             options={lockConfigs?.tokenChannels || []}
             doc_category={DOC_CATEGORY}
             lsize={3}
@@ -134,12 +169,11 @@ const JansLockConfiguration = () => {
             label="fields.disable_jdk_logger"
             name="disableJdkLogger"
             value={formik.values.disableJdkLogger}
-            defaultValue={formik.values.disableJdkLogger}
             values={['true', 'false']}
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.disableJdkLogger && formik.touched.disableJdkLogger}
+            showError={Boolean(formik.errors.disableJdkLogger && formik.touched.disableJdkLogger)}
             disabled={viewOnly}
             doc_category={DOC_CATEGORY}
             errorMessage={formik.errors.disableJdkLogger}
@@ -151,7 +185,6 @@ const JansLockConfiguration = () => {
             label="fields.logging_level"
             name="loggingLevel"
             value={formik.values.loggingLevel}
-            defaultValue={formik.values.loggingLevel}
             values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
             formik={formik}
             lsize={3}
@@ -199,13 +232,14 @@ const JansLockConfiguration = () => {
             label="fields.metric_reporter_enabled"
             name="metricReporterEnabled"
             value={formik.values.metricReporterEnabled}
-            defaultValue={formik.values.metricReporterEnabled}
             values={['true', 'false']}
             formik={formik}
             lsize={3}
             rsize={9}
             doc_category={DOC_CATEGORY}
-            showError={formik.errors.metricReporterEnabled && formik.touched.metricReporterEnabled}
+            showError={Boolean(
+              formik.errors.metricReporterEnabled && formik.touched.metricReporterEnabled,
+            )}
             disabled={viewOnly}
             errorMessage={formik.errors.metricReporterEnabled}
           />
@@ -296,7 +330,7 @@ const JansLockConfiguration = () => {
         {/* OPA Configuration Starts */}
         <Col sm={12}>
           <Accordion className="mb-2 b-primary" initialOpen>
-            <Accordion.Header className="text-primary">
+            <AccordionHeader className="text-primary">
               <GluuLabel
                 style={{
                   color: customColors.lightBlue,
@@ -304,8 +338,8 @@ const JansLockConfiguration = () => {
                 label={'fields.opa_configuration'}
                 required={false}
               />
-            </Accordion.Header>
-            <Accordion.Body>
+            </AccordionHeader>
+            <AccordionBody>
               <GluuInputRow
                 label="fields.base_url"
                 name="opaConfiguration.baseUrl"
@@ -326,7 +360,7 @@ const JansLockConfiguration = () => {
                 rsize={9}
                 disabled={viewOnly}
               />
-            </Accordion.Body>
+            </AccordionBody>
           </Accordion>
         </Col>
 
@@ -352,13 +386,7 @@ const JansLockConfiguration = () => {
             value={formik.values.policiesJsonUris}
             options={lockConfigs?.policiesJsonUris || []}
             doc_category={DOC_CATEGORY}
-            onChange={(options) => {
-              const getLabel = (item) => item?.customOption && item?.policiesJsonUris
-              const values = options?.map((item) =>
-                typeof item == 'string' ? item : getLabel(item),
-              )
-              formik.setFieldValue('policiesJsonUris', values)
-            }}
+            onChange={handlePoliciesJsonUrisChange}
             lsize={3}
             rsize={9}
             disabled={viewOnly}
@@ -385,13 +413,7 @@ const JansLockConfiguration = () => {
             value={formik.values.policiesZipUris}
             options={lockConfigs?.policiesZipUris || []}
             doc_category={DOC_CATEGORY}
-            onChange={(options) => {
-              const getLabel = (item) => item?.customOption && item?.policiesZipUris
-              const values = options?.map((item) =>
-                typeof item == 'string' ? item : getLabel(item),
-              )
-              formik.setFieldValue('policiesZipUris', values)
-            }}
+            onChange={handlePoliciesZipUrisChange}
             lsize={3}
             rsize={9}
             disabled={viewOnly}
