@@ -1744,6 +1744,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-identity-provider-idp-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create Identity Provider (IDP) Form
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-service-provider-sp-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create Service Provider (SP) Form
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2601,6 +2628,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-identity-provider-idp-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create Identity Provider (IDP) Form
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-service-provider-sp-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create Service Provider (SP) Form
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2668,8 +2722,150 @@
 
 <h1 id="saml">SAML<a class="headerlink" href="#saml" title="Permanent link">#</a></h1>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">#</a></h2>
-<p>Security Assertion Markup Language (SAML) is a widely adopted protocol that enables Single Sign-On (SSO) capabilities between an Identity Provider (IDP) and a Service Provider (SP). Gluu Flex supports SAML-based SSO by integrating with external SPs through the Keycloak (KC) module. Through the Admin UI, administrators can add and manage SAML Service Providers by importing their metadata and configuring which user attributes to release. The Admin UI provides a user-friendly interface to simplify the setup and testing of SAML SSO connections with external service providers like IAMShowcase.</p>
+<p>Gluu Flex supports SAML-based SSO by integrating with external SPs through the Keycloak (KC) module. Through the Admin UI, administrators can add and manage SAML Service Providers by importing their metadata and configuring which user attributes to release. The Admin UI provides a user-friendly interface to simplify the setup and testing of SAML SSO connections with external service providers.</p>
 <p>For more information, click here to refer to the <a href="https://docs.jans.io/stable/janssen-server/keycloak/keycloak-saml-sso">official docs</a>.</p>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h2>
+<p><img alt="image" src="../../../assets/admin-ui/saml-configuration.png" /></p>
+<ol>
+<li>
+<p>Selected IDP</p>
+<ul>
+<li>Choose which Identity Provider (IdP) configuration to use from the available
+configurations.</li>
+</ul>
+</li>
+<li>
+<p>Ignore Validation</p>
+<ul>
+<li>A toggle to skip validation checks useful for testing or when metadata is temporarily invalid; not recommended for production because it weakens security.</li>
+</ul>
+</li>
+</ol>
+<h2 id="create-identity-provider-idp-form">Create Identity Provider (IDP) Form<a class="headerlink" href="#create-identity-provider-idp-form" title="Permanent link">#</a></h2>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-create-idp-1.png" />
+<img alt="image" src="../../../assets/admin-ui/admin-ui-create-idp-2.png" /></p>
+<ol>
+<li>
+<p>Upload Metadata file</p>
+<ul>
+<li>This toggle enables uploading an .xml or .json metadata file from the Identity Provider (IDP) instead of manually entering configuration fields.</li>
+</ul>
+</li>
+<li>
+<p>Entity ID</p>
+<ul>
+<li>The Entity ID is a globally unique identifier (URI or URL) for the Identity Provider (IDP). It is used by the Service Provider (SP) to identify the IDP in SAML communications.</li>
+<li>It ensures that the correct IDP is used for authentication during SSO processes. The value must exactly match the IDP’s configured entity ID from its metadata.</li>
+</ul>
+</li>
+<li>
+<p>NameID Policy Format</p>
+<ul>
+<li>This field specifies the format of the <code>NameID</code> element in the SAML assertion, which identifies the user being authenticated. It determines how the subject (user) identity is structured and communicated to the Service Provider.</li>
+<li>It allows the administrator to control the type of identifier used for the user, ensuring compatibility with the expectations of the Service Provider (SP). </li>
+</ul>
+</li>
+<li>
+<p>Single SignOn Service URL</p>
+<ul>
+<li>URL endpoint on the IdP where authentication requests (AuthnRequest) are sent.</li>
+<li>Gluu Flex will send SAML AuthnRequests to this URL to initiate login.</li>
+</ul>
+</li>
+<li>
+<p>Single Logout Service URL</p>
+<ul>
+<li>URL endpoint on the IdP for Single‑Logout (SLO), if supported.</li>
+<li>For logout flows: to tell IdP when SP wants to log the user out globally.</li>
+</ul>
+</li>
+<li>
+<p>Signing Certificate</p>
+<ul>
+<li>Public key certificate of the IdP used to verify signatures on SAML responses/assertions.</li>
+</ul>
+</li>
+<li>
+<p>Encryption Certificate</p>
+<ul>
+<li>Public key certificate used (if used) to decrypt encrypted parts of SAML assertion.</li>
+</ul>
+</li>
+<li>
+<p>Principal Attribute</p>
+<ul>
+<li>The attribute in the SAML assertion that will be used as the principal / username (or user identifier).</li>
+</ul>
+</li>
+<li>
+<p>Principal Type</p>
+<ul>
+<li>The type of principal (for example, “User”, “Group”, etc.) or possibly the format (email / username).</li>
+</ul>
+</li>
+</ol>
+<h2 id="create-service-provider-sp-form">Create Service Provider (SP) Form<a class="headerlink" href="#create-service-provider-sp-form" title="Permanent link">#</a></h2>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-create-service-provider.png" /></p>
+<ol>
+<li>
+<p>Name</p>
+<ul>
+<li>Internal unique identifier for the Service Provider.</li>
+</ul>
+</li>
+<li>
+<p>Enable TR</p>
+<ul>
+<li>Toggle to enable a feature called “TR” (Trust Relationship).</li>
+<li>Activate or deactivate the SP; you can disable SP if you don’t want to accept assertions from it temporarily.</li>
+</ul>
+</li>
+<li>
+<p>Service Provider Logout URL</p>
+<ul>
+<li>The URL endpoint where the SP expects logout notifications or post‑logout redirect.</li>
+<li>Facilitates Single Logout functionality, so user sessions are cleaned up properly across systems.</li>
+</ul>
+</li>
+<li>
+<p>Released Attributes</p>
+<ul>
+<li>List of user attributes that will be included in SAML assertions for this SP.</li>
+</ul>
+</li>
+<li>
+<p>Metadata Location</p>
+<ul>
+<li>
+<p>Whether SP metadata is provided via file upload, URL, etc.</p>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-create-service-provider-1.png" /></p>
+</li>
+<li>
+<p>Single Logout Service URL</p>
+<ul>
+<li>The endpoint where logout requests or responses are sent during SAML Single Logout.</li>
+<li>Enables session termination on the SP side after IdP-initiated logout, ensuring consistent session cleanup.</li>
+</ul>
+</li>
+<li>Entity ID<ul>
+<li>Unique identifier for the SP, typically a URL or URN.</li>
+</ul>
+</li>
+<li>Name ID Format<ul>
+<li>Specifies the format of the NameID used in assertions (e.g. email, persistent).</li>
+</ul>
+</li>
+<li>Jans Assertion Consumer Service GET URL<ul>
+<li>ACS endpoint using the HTTP GET binding. The SP receives assertions at this URL.</li>
+</ul>
+</li>
+<li>Jans Assertion Consumer Service POST URL<ul>
+<li>ACS endpoint using the HTTP POST binding. This is where the IdP sends SAML responses.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
 
 
 
@@ -2692,7 +2888,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 7, 2025 09:23:27 UTC"><span class="timeago" datetime="2025-08-07T09:23:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 7, 2025 09:23:27 UTC">2025-08-07</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 15, 2025 16:45:16 UTC"><span class="timeago" datetime="2025-09-15T16:45:16+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 15, 2025 16:45:16 UTC">2025-09-15</span>
   </span>
 
     
