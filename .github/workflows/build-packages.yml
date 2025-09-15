@@ -114,7 +114,7 @@ jobs:
       id: run_build
       run: |
          cd flex/
-         sudo python${{ matrix.python_version }} flex_setup.py --jans-branch="v1.11.0" --jans-setup-branch="v1.11.0" -download-exit -yes --keep-downloads --keep-setup -force-download
+         sudo python${{ matrix.python_version }} flex_setup.py --jans-branch="main" --jans-setup-branch="main" -download-exit -yes --keep-downloads --keep-setup -force-download
          cp -r /opt/dist flex-src/opt/
          cp -r /opt/jans flex-src/opt/
          touch flex-src/opt/jans/jans-setup/package
