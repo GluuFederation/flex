@@ -1690,11 +1690,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scim-use-cases" class="md-nav__link">
+  <a href="#scim-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      SCIM Use Cases
+      SCIM Configuration
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="SCIM Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#more-details-about-important-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      More details about important properties
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2593,11 +2608,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scim-use-cases" class="md-nav__link">
+  <a href="#scim-configuration" class="md-nav__link">
     <span class="md-ellipsis">
-      SCIM Use Cases
+      SCIM Configuration
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="SCIM Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#more-details-about-important-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      More details about important properties
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2643,18 +2673,61 @@
 
 
 <h1 id="scim-admin-guide">SCIM Admin Guide<a class="headerlink" href="#scim-admin-guide" title="Permanent link">#</a></h1>
-<p>System for Cross-domain Identity Management, in short SCIM, is a specification that simplifies the exchange of user identity information across different domains. The Janssen Server provides an implementation for the <a href="https://docs.jans.io/stable/janssen-server/scim/">SCIM specification</a>.</p>
-<p>Gluu Flex Admin UI allows administrators to view and manage the <a href="https://docs.jans.io/stable/janssen-server/scim/config/">configuration</a> of the Janssen SCIM server.</p>
-<h2 id="scim-use-cases">SCIM Use Cases<a class="headerlink" href="#scim-use-cases" title="Permanent link">#</a></h2>
-<p>Some common use cases for SCIM in enterprise environments include:</p>
+<p>System for Cross-domain Identity Management, in short SCIM, is a protocol that 
+simplifies the exchange of user identity information across different domains. 
+The Flex server provides an implementation for the 
+<a href="https://datatracker.ietf.org/doc/html/rfc7644">SCIM protocol</a>.</p>
+<p>Gluu Flex Admin UI allows administrators to view and manage the 
+<a href="https://docs.jans.io/stable/janssen-server/scim/config/">configuration</a> of the Gluu Flex SCIM server.</p>
+<h2 id="scim-configuration">SCIM Configuration<a class="headerlink" href="#scim-configuration" title="Permanent link">#</a></h2>
+<p>The SCIM configuration page in the Admin UI allows administrators to manage and 
+customize SCIM services. These settings control endpoints, logging, caching, 
+performance limits, and schema extensions. Proper configuration ensures secure, 
+efficient, and scalable user and group management through the SCIM API.</p>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-scim.png" /></p>
+<h3 id="more-details-about-important-properties">More details about important properties<a class="headerlink" href="#more-details-about-important-properties" title="Permanent link">#</a></h3>
+<p><strong>Base Endpoint</strong></p>
 <ul>
-<li><strong>User Provisioning</strong>: Automatically creating and updating user accounts from identity sources like HR systems.</li>
-<li><strong>Group Synchronization</strong>: Managing group memberships across services to control access.</li>
-<li><strong>Self-Service Portals</strong>: Enabling users to update their own profile attributes.</li>
-<li><strong>Single Sign-On (SSO) Integration</strong>: Aligning SCIM data with identity federation protocols.</li>
+<li>Base Endpoint defines the path segment where SCIM API requests are received,
+   such as <code>/jans-scim/restv1</code>. This groups all SCIM management 
+   operations under one URL for standardized API access.</li>
 </ul>
-<p>To build a production-grade integration with SCIM, it's critical to understand both the specification (RFC 7642–7644) and Janssen's implementation specifics.</p>
-<p>For more information, click here to refer to the <a href="https://docs.jans.io/stable/janssen-server/scim/">official docs</a>.</p>
+<p><strong>Max Count</strong></p>
+<ul>
+<li>Max Count controls the maximum number of SCIM resources 
+  (e.g. users) returned per search request. 
+  The default value is <code>200</code>.</li>
+</ul>
+<p><strong>Bulk Max Operations</strong></p>
+<ul>
+<li>Bulk Max Operations establishes the limit on how many create, update, or 
+  delete actions are accepted in a single SCIM bulk request. The default value 
+  is <code>30</code>.</li>
+</ul>
+<p><strong>Bulk Max Payload Size</strong></p>
+<ul>
+<li>This is the maximum byte size allowed for bulk SCIM requests. Any batch 
+  exceeding this size will be rejected. The default value is 3072000 bytes 
+  (around 3 MB).</li>
+</ul>
+<p><strong>User Extension Schema URI</strong></p>
+<ul>
+<li>This field identifies the SCIM schema URI used for custom user attributes. 
+  The default value provided is <code>urn:ietf:params:scim:schemas:extension:gluu:2.0:User</code>.</li>
+</ul>
+<p><strong>Logging Level</strong></p>
+<ul>
+<li>Logging Level sets the verbosity of SCIM logs, with possible values such 
+  as TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF. The default level is <code>INFO</code>.</li>
+</ul>
+<p><strong>skipDefinedPasswordValidation</strong></p>
+<ul>
+<li>This property determines if password validation is skipped when creating or updating users.
+  Validation makes use of the regular expression defined over the <code>password</code> database attribute as 
+  well as the minimum and maximum length defined.</li>
+</ul>
+<p>Once all parameters are set, click the Apply button at the bottom of the page 
+to save the configuration changes.</p>
 
 
 
@@ -2677,7 +2750,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 7, 2025 09:23:27 UTC"><span class="timeago" datetime="2025-08-07T09:23:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 7, 2025 09:23:27 UTC">2025-08-07</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 15, 2025 19:03:18 UTC"><span class="timeago" datetime="2025-09-15T19:03:18+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 15, 2025 19:03:18 UTC">2025-09-15</span>
   </span>
 
     
