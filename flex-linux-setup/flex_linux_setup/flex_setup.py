@@ -28,8 +28,8 @@ installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
 app_versions = {
-    "JANS_APP_VERSION": "1.11.0",
-    "JANS_BUILD": "",
+    "JANS_APP_VERSION": "0.0.0",
+    "JANS_BUILD": "-nightly",
     "NODE_VERSION": "v18.16.0"
 }
 
