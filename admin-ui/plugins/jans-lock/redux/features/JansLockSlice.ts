@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
-import {
-  JansLockConfiguration,
-  JansLockState,
-} from '../../types/JansLockApiTypes'
+import { JansLockConfiguration, JansLockState } from '../../types/JansLockApiTypes'
 
 const initialState: JansLockState = {
   configuration: {},
@@ -21,7 +18,7 @@ const jansLockSlice = createSlice({
       state.configuration = action.payload ? action.payload : {}
       state.loading = false
     },
-    putJansLockConfiguration: (state, action: PayloadAction<{ action: unknown }>) => {
+    putJansLockConfiguration: (state, _action: PayloadAction<{ action: unknown }>) => {
       state.loading = true
     },
   },

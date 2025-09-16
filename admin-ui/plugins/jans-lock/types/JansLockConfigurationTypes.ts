@@ -1,5 +1,3 @@
-import { JansLockState } from './JansLockApiTypes'
-
 export interface OpaConfiguration {
   baseUrl?: string
   accessToken?: string
