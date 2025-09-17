@@ -147,7 +147,15 @@ export default function AppAuthProvider(props) {
           })
           .then((ujwt) => {
             if (!userinfo) {
-              dispatch(getUserInfoResponse({ userinfo: jwtDecode(ujwt), ujwt, idToken, JwtToken }))
+              dispatch(
+                getUserInfoResponse({
+                  userinfo: jwtDecode(ujwt),
+                  ujwt,
+                  idToken,
+                  JwtToken,
+                  hasFetchUserInformation: true,
+                }),
+              )
               dispatch(getAPIAccessToken(ujwt))
               setShowAdminUI(true)
             } else {

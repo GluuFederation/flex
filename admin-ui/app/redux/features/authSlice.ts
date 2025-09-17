@@ -24,6 +24,7 @@ const initialState: AuthState = {
   idToken: null,
   JwtToken: null,
   userInum: null,
+  hasFetchUserInformation: false,
 }
 
 const authSlice = createSlice({
@@ -58,6 +59,7 @@ const authSlice = createSlice({
         userinfo?: UserInfo
         idToken?: string
         JwtToken?: string
+        hasFetchUserInformation?: boolean
       }>,
     ) => {
       if (action.payload?.ujwt) {
@@ -65,6 +67,7 @@ const authSlice = createSlice({
         state.userinfo = action.payload.userinfo ?? null
         state.userinfo_jwt = action.payload.ujwt
         state.idToken = action.payload.idToken ?? null
+        state.hasFetchUserInformation = action.payload.hasFetchUserInformation ?? false
         state.isAuthenticated = true
         state.userInum = action.payload?.userinfo?.inum ?? null
       } else {

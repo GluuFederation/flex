@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, lazy, Suspense } from 'react'
+import React, { useState, useEffect, useContext, lazy, Suspense, useMemo } from 'react'
 import moment from 'moment'
 import Grid from '@mui/material/Grid'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -9,13 +9,14 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getMau } from 'Plugins/admin/redux/features/mauSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { Button, Card, CardFooter, CardBody, FormGroup, Col, Row } from 'Components'
-import { hasBoth, buildPayload, STAT_READ, STAT_JANS_READ } from 'Utils/PermChecker'
+import { buildPayload, STAT_READ, STAT_JANS_READ } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import dayjs from 'dayjs'
+import { useCedarling } from '@/cedarling'
 
 const ActiveUsersGraph = lazy(() => import('Routes/Dashboards/Grapths/ActiveUsersGraph'))
 
@@ -23,20 +24,33 @@ function MauGraph() {
   const dispatch = useDispatch()
   const statData = useSelector((state) => state.mauReducer.stat)
   const loading = useSelector((state) => state.mauReducer.loading)
-  const permissions = useSelector((state) => state.authReducer.permissions)
+  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [startDate, setStartDate] = useState(dayjs().subtract(3, 'months'))
   const [endDate, setEndDate] = useState(dayjs())
+  const { hasCedarPermission, authorize } = useCedarling()
   const userAction = {}
   const options = {}
+  const initPermissions = async () => {
+    const permissions = [STAT_READ, STAT_JANS_READ]
+    for (const permission of permissions) {
+      await authorize([permission])
+    }
+  }
 
   useEffect(() => {
     if (statData.length === 0 || !statData) {
       search()
     }
+    initPermissions()
   }, [])
+
+  const hasViewPermissions = useMemo(
+    () => hasCedarPermission(STAT_READ) && hasCedarPermission(STAT_JANS_READ),
+    [cedarPermissions],
+  )
 
   SetTitle(t('fields.monthly_active_users'))
 
@@ -94,7 +108,7 @@ function MauGraph() {
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuViewWrapper canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}>
+      <GluuViewWrapper canShow={hasViewPermissions}>
         <Card style={applicationStyle.mainCard}>
           <CardBody>
             <Row>
