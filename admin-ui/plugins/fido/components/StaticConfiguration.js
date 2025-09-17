@@ -105,6 +105,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
           />
         </Col>
 
+        {/*
         <Col sm={8}>
           <GluuToggleRow
             label={fidoConstants.LABELS.CHECK_U2F_ATTESTATIONS}
@@ -115,6 +116,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
             doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
+        */}
 
         <Col sm={8}>
           <GluuInputRow
