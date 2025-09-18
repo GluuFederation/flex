@@ -82,3 +82,24 @@ Password| Redis server password |
 |Default Put Expiration| Default expiration time for objects put into cache in seconds| 
 |Default Cleanup Batch Size| Default number of entries to clean-up in one iteration when removing expired entries.|
 |Delete Expired OnGetRequest| Boolean flag: whether to delete expired entries when a GET request is made|
+
+
+
+
+## Persistence
+
+These settings define how the authentication system interacts with the underlying database, including the database type, version, and JDBC driver details.
+
+
+![image](../../assets/admin-ui/admin-ui-persistence.png)
+
+| Field Name          | Description                                | 
+| ------------------- | ------------------------------------------ |
+| **Database Name**   | The current catalog name of the database   |
+| **Schema Name**     | The current schema name of the database    |
+| **Product Name**    | The name of the database product           |
+| **Product Version** | The version number of the database product |
+| **Driver Name**     | The name of the JDBC driver                |
+| **Driver Version**  | The version number of the JDBC driver      |
+
+
