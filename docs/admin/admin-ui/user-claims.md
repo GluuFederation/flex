@@ -12,7 +12,8 @@ tags:
 
 [User Claims](https://docs.jans.io/stable/janssen-server/auth-server/openid-features/user-claims/) are individual pieces of user data, like uid, email, firstName, etc., that are required by applications in order to identify a user. The Admin UI allows administrators to manage these user claims effectively.
 
-![image](../../assets/admin-ui/admin-ui-user-claim.png)
+![image](../../assets/admin-ui/admin-ui-user-claims-1.png)
+![image](../../assets/admin-ui/admin-ui-user-claims-2.png)
 
 The following fields are supported in the Person (attribute) creation form:
  
