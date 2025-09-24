@@ -62,22 +62,19 @@ export default class SsaApi {
     })
   }
 
-  deleteSsa = ({ jti, token, authServerHost }) => {
+  removeSsa = (opts) => {
     return new Promise((resolve, reject) => {
-      fetch(`${authServerHost}/jans-auth/restv1/ssa?jti=${jti}`, {
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
+      this.api.revokeSsa(opts, (error, data) => {
+        this.handleResponse(error, reject, resolve, data)
       })
-        .then((response) => response.json())
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((error) => {
-          reject(error)
-        })
     })
+  }
+
+  handleResponse(error, reject, resolve, data) {
+    if (error) {
+      reject(error)
+    } else {
+      resolve(data)
+    }
   }
 }

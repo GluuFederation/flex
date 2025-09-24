@@ -18,6 +18,7 @@ import { DeleteOutlined, DownloadOutlined, VisibilityOutlined } from '@mui/icons
 import SsaDetailPage from './SsaDetailPage'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
 import customColors from '@/customColors'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SSAListPage = () => {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -32,7 +33,6 @@ const SSAListPage = () => {
   const toggle = () => setModal(!modal)
   const { items, loading } = useSelector((state) => state.ssaReducer)
   const jwtData = useSelector((state) => state.ssaReducer.jwt)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const [downloadRequested, setDownloadRequested] = useState(false)
   const [viewRequested, setViewRequested] = useState(false)
   const theme = useContext(ThemeContext)
@@ -244,6 +244,7 @@ const SSAListPage = () => {
             modal={modal}
             subject="ssa configuration"
             onAccept={onDeletionConfirmed}
+            feature={adminUiFeatures.ssa_delete}
           />
         )}
         {ssaDataRef.current && ssaDialogOpen && (

@@ -40,6 +40,7 @@ export const SCOPE_DELETE = BASE_URL + '/config/scopes.delete'
 
 export const SSA_PORTAL = 'https://jans.io/auth/ssa.portal'
 export const SSA_ADMIN = 'https://jans.io/auth/ssa.admin'
+export const SSA_DELETE = 'https://jans.io/oauth/config/ssa.delete'
 export const SSA_DEVELOPER = 'https://jans.io/auth/ssa.developer'
 
 export const REVOKE_SESSION = 'revoke_session'

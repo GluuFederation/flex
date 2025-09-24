@@ -12,6 +12,18 @@ import {
 import { CREATE, DELETION } from '../../../../app/audit/UserActionType'
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/features/toastSlice'
+import { getClient } from '@/redux/api/base'
+import { postUserAction } from 'Redux/api/backend-api'
+const JansConfigApi = require('jans_config_api')
+
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.SoftwareStatementAssertionSSAApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new SsaApi(api)
+}
 
 export function* getSsa() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -84,14 +96,15 @@ export function* removeSsaConfig({ payload }) {
   const audit = yield* initAudit()
   addAdditionalData(audit, DELETION, 'delete-ssa', payload)
   const token = yield select((state) => state.authReducer.token.access_token)
-  const { authServerHost } = yield select((state) => state.authReducer.config)
   try {
-    const data = yield call(new SsaApi().deleteSsa, {
+    const ssaApi = yield* newFunction()
+    const data = yield call(ssaApi.removeSsa, {
       jti: payload.action.action_data,
-      token,
-      authServerHost,
+      authorization: 'Bearer ' + token,
     })
+    yield put(updateToast(true, 'success'))
     yield put(getSsaConfig())
+    yield call(postUserAction, audit)
     return data
   } catch (e) {
     yield put(updateToast(true, 'error'))
