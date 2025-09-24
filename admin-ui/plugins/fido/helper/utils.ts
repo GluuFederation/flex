@@ -60,7 +60,6 @@ const transformToFormValues = (configuration?: Record<string, unknown>, type?: s
         disableJdkLogger: toBooleanValue(configuration?.disableJdkLogger),
         loggingLevel: configuration?.loggingLevel || '',
         loggingLayout: configuration?.loggingLayout || '',
-        externalLoggerConfiguration: configuration?.externalLoggerConfiguration || '',
         metricReporterEnabled: toBooleanValue(configuration?.metricReporterEnabled),
         metricReporterInterval: configuration?.metricReporterInterval || '',
         metricReporterKeepDataDays: configuration?.metricReporterKeepDataDays || '',
@@ -103,7 +102,6 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
     payload.disableJdkLogger = data.disableJdkLogger
     payload.loggingLevel = data.loggingLevel
     payload.loggingLayout = data.loggingLayout
-    payload.externalLoggerConfiguration = data.externalLoggerConfiguration
     payload.metricReporterEnabled = data.metricReporterEnabled
     payload.metricReporterInterval = data.metricReporterInterval
     payload.metricReporterKeepDataDays = data.metricReporterKeepDataDays

@@ -105,19 +105,6 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
           />
         </Col>
 
-        {/*
-        <Col sm={8}>
-          <GluuToggleRow
-            label={fidoConstants.LABELS.CHECK_U2F_ATTESTATIONS}
-            name={fidoConstants.FORM_FIELDS.CHECK_U2F_ATTESTATIONS}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            doc_category={fidoConstants.DOC_CATEGORY}
-          />
-        </Col>
-        */}
-
         <Col sm={8}>
           <GluuInputRow
             label={fidoConstants.LABELS.UNFINISHED_REQUEST_EXPIRATION}
