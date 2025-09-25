@@ -6,16 +6,15 @@ export default defineConfig({
       target: './configApiSpecs.yaml',
     },
     output: {
-      mode: 'split',
-      target: './jans_config_api_orval/src/index.ts',
-      schemas: './jans_config_api_orval/src/model',
+      mode: 'single',
+      target: './jans_config_api_orval/src/JansConfigApi.ts',
       client: 'axios',
       httpClient: 'axios',
       mock: false,
       prettier: true,
       override: {
         mutator: {
-          path: './jans_config_api_orval/src/api-client.ts',
+          path: './api-client.ts',
           name: 'customInstance',
         },
       },
