@@ -19,30 +19,27 @@ import {
   CredentialTypeOption,
   RequestedPartyOption,
 } from './types/StaticConfiguration'
-import type { AppConfiguration, FormData } from '../types'
 
 function StaticConfiguration({
   fidoConfiguration,
   handleSubmit,
-}: StaticConfigurationProps): JSX.Element {
+}: Readonly<StaticConfigurationProps>): JSX.Element {
   const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
   const toggle = useCallback((): void => {
     setModal((prev) => !prev)
   }, [])
   const formik = useFormik<StaticConfigurationFormValues>({
-    initialValues: transformToFormValues(
-      fidoConfiguration.fido as AppConfiguration,
-      fidoConstants.STATIC,
-    ) as StaticConfigurationFormValues,
+    initialValues: transformToFormValues(fidoConfiguration.fido, fidoConstants.STATIC),
+    enableReinitialize: true,
     onSubmit: toggle,
     validationSchema: validationSchema.staticConfigValidationSchema,
   })
 
   const submitForm = useCallback((): void => {
     toggle()
-    handleSubmit(formik.values as unknown as FormData)
-  }, [handleSubmit, toggle, formik])
+    handleSubmit(formik.values)
+  }, [handleSubmit, toggle, formik.values])
 
   const credentialTypesOptions = useMemo((): CredentialTypeOption[] => {
     return formik?.values?.enabledFidoAlgorithms
@@ -54,13 +51,13 @@ function StaticConfiguration({
   }, [formik?.values?.enabledFidoAlgorithms])
 
   const requestedPartiesOptions = useMemo((): RequestedPartyOption[] => {
-    return formik?.values?.requestedParties
-      ? formik.values.requestedParties.map((item) => ({
+    return formik?.values?.rp
+      ? formik.values.rp.map((item) => ({
           key: item?.name || '',
-          value: item?.domains?.toString() || '',
+          value: (item?.domains ?? []).join(','),
         }))
       : []
-  }, [formik?.values?.requestedParties])
+  }, [formik?.values?.rp])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>): void => {
@@ -190,7 +187,7 @@ function StaticConfiguration({
             <Col sm={8}>
               <GluuProperties
                 compName={fidoConstants.FORM_FIELDS.ENABLED_FIDO_ALGORITHMS}
-                isInputLables={true}
+                isInputLabels={true}
                 formik={formik}
                 options={credentialTypesOptions}
                 isKeys={false}
@@ -202,11 +199,11 @@ function StaticConfiguration({
 
         <Col sm={8}>
           <Row className="mt-2">
-            <GluuLabel label={fidoConstants.LABELS.REQUESTED_PARTIES_ID} size={4} />
+            <GluuLabel label={fidoConstants.LABELS.RP_ID} size={4} />
             <Col sm={8}>
               <GluuProperties
-                compName={fidoConstants.FORM_FIELDS.REQUESTED_PARTIES}
-                isInputLables={true}
+                compName={fidoConstants.FORM_FIELDS.RP}
+                isInputLabels={true}
                 keyLabel={t('fields.name')}
                 valueLabel={t('fields.domain')}
                 formik={formik}

@@ -259,7 +259,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   formik={formik}
                   lsize={4}
                   rsize={8}
-                  showError={formik.errors.name && formik.touched.name}
+                  showError={!!(formik.errors.name && formik.touched.name)}
                   errorMessage={formik.errors.name}
                   disabled={viewOnly}
                   required
@@ -274,7 +274,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   formik={formik}
                   lsize={4}
                   rsize={8}
-                  showError={formik.errors.displayName && formik.touched.displayName}
+                  showError={!!(formik.errors.displayName && formik.touched.displayName)}
                   errorMessage={formik.errors.displayName}
                   disabled={viewOnly}
                   required

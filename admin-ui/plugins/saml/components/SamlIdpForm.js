@@ -195,7 +195,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   lsize={4}
                   required
                   rsize={8}
-                  showError={formik.errors.name && formik.touched.name}
+                  showError={!!(formik.errors.name && formik.touched.name)}
                   errorMessage={formik.errors.name}
                   disabled={viewOnly}
                   doc_category={DOC_SECTION}
@@ -210,7 +210,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   lsize={4}
                   rsize={8}
                   required
-                  showError={formik.errors.displayName && formik.touched.displayName}
+                  showError={!!(formik.errors.displayName && formik.touched.displayName)}
                   errorMessage={formik.errors.displayName}
                   disabled={viewOnly}
                   doc_category={DOC_SECTION}
@@ -224,7 +224,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                   formik={formik}
                   lsize={4}
                   rsize={8}
-                  showError={formik.errors.description && formik.touched.description}
+                  showError={!!(formik.errors.description && formik.touched.description)}
                   errorMessage={formik.errors.description}
                   disabled={viewOnly}
                   doc_category={DOC_SECTION}
@@ -296,7 +296,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       required
                       lsize={4}
                       rsize={8}
-                      showError={formik.errors.idpEntityId && formik.touched.idpEntityId}
+                      showError={!!(formik.errors.idpEntityId && formik.touched.idpEntityId)}
                       errorMessage={formik.errors.idpEntityId}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}
@@ -418,7 +418,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                       formik={formik}
                       lsize={4}
                       rsize={8}
-                      showError={formik.errors.principalType && formik.touched.principalType}
+                      showError={!!(formik.errors.principalType && formik.touched.principalType)}
                       errorMessage={formik.errors.principalType}
                       disabled={viewOnly}
                       doc_category={DOC_SECTION}

@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useCallback } from 'react'
 import { Container, Row, Col, Card, CardBody, Button, Badge, AvatarImage } from 'Components'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
-import { useDispatch, useSelector } from 'react-redux'
-import type { AnyAction } from '@reduxjs/toolkit'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from '../../../context/theme/themeContext'
 import SetTitle from 'Utils/SetTitle'
@@ -17,6 +15,7 @@ import { USER_WRITE } from 'Utils/PermChecker'
 import getThemeColor from '../../../context/theme/config'
 import { useCedarling } from '@/cedarling'
 import type { RootState as RootStateOfRedux } from '@/cedarling/types'
+import { useAppDispatch, useAppSelector } from 'Redux/hooks'
 
 // --- TypeScript interfaces ---
 interface CustomAttribute {
@@ -50,12 +49,6 @@ interface AuthState {
   permissions?: string[]
 }
 
-interface RootState {
-  profileDetailsReducer: ProfileDetailsState
-  authReducer: AuthState
-  token?: { scopes?: string[] }
-}
-
 interface ThemeContextType {
   state: { theme: string }
   dispatch: React.Dispatch<React.SetStateAction<unknown>>
@@ -76,20 +69,17 @@ interface ThemeColors {
   [key: string]: unknown
 }
 
-// Redux dispatch type
-type AppDispatch = (action: AnyAction) => void
-
 // Component props type
 interface ProfileDetailsProps {}
 // --- End TypeScript interfaces ---
 
 const ProfileDetails: React.FC<ProfileDetailsProps> = () => {
   const { t } = useTranslation()
-  const { loading, profileDetails } = useSelector((state: RootState) => state.profileDetailsReducer)
+  const { loading, profileDetails } = useAppSelector((state) => state.profileDetailsReducer)
   const { permissions: cedarPermissions } = useSelector(
     (state: RootStateOfRedux) => state.cedarPermissions,
   )
-  const { userinfo } = useSelector((state: RootState) => state.authReducer)
+  const { userinfo } = useAppSelector((state) => state.authReducer)
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
   const themeColors: ThemeColors = getThemeColor(theme.state.theme)
@@ -99,7 +89,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = () => {
   // Set page title
   SetTitle(t('titles.profile_detail'))
 
-  const dispatch = useDispatch() as AppDispatch
+  const dispatch = useAppDispatch()
 
   const { hasCedarPermission, authorize } = useCedarling()
 

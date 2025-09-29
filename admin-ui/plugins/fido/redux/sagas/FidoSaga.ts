@@ -1,4 +1,4 @@
-import { call, all, put, fork, takeLatest, select, takeEvery } from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { SagaIterator } from 'redux-saga'
 import { getAPIAccessToken } from '../../../../app/redux/features/authSlice'
 import { isFourZeroOneError } from '../../../../app/utils/TokenController'
@@ -9,8 +9,11 @@ import { postUserAction } from '../../../../app/redux/api/backend-api'
 import FidoApi from '../api/FidoApi'
 import {
   deleteFido2DeviceDataResponse,
+  deleteFido2DeviceDataFailed,
   getFidoConfiguration,
   getFidoConfigurationResponse,
+  getFidoConfigurationFailed,
+  putFidoConfigurationFailed,
 } from '../features/fidoSlice'
 import type {
   AppConfiguration,
@@ -59,7 +62,8 @@ export function* updateFidoSaga({
     return data
   } catch (e) {
     const error = e as ApiError
-    yield put(updateToast(true, 'error'))
+    yield put(putFidoConfigurationFailed(error))
+    yield call(errorToast, { error })
     if (isFourZeroOneError(error)) {
       const jwt: string | null = yield select((state: RootState) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -78,7 +82,8 @@ export function* getFidoSaga(): SagaIterator<AppConfiguration | ApiError> {
     return data
   } catch (e) {
     const error = e as ApiError
-    yield put(getFidoConfigurationResponse({} as AppConfiguration))
+    yield put(getFidoConfigurationFailed(error))
+    yield call(errorToast, { error })
     if (isFourZeroOneError(error)) {
       const jwt: string | null = yield select((state: RootState) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -99,14 +104,15 @@ export function* deleteFido2DeviceData({
     yield call(postUserAction, audit)
     return data
   } catch (error) {
-    yield call(errorToast, { error: error as ApiError })
-    yield put(deleteFido2DeviceDataResponse())
-    return error as ApiError
+    const apiError = error as ApiError
+    yield put(deleteFido2DeviceDataFailed(apiError))
+    yield call(errorToast, { error: apiError })
+    return apiError
   }
 }
 
 export function* watchGetFido(): SagaIterator<void> {
-  yield takeEvery('fido2/getFidoConfiguration', getFidoSaga)
+  yield takeLatest('fido2/getFidoConfiguration', getFidoSaga)
 }
 
 export function* watchUpdateFido(): SagaIterator<void> {

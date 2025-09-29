@@ -16,7 +16,7 @@ function GluuProperties({
   options,
   disabled = false,
   buttonText = null,
-  isInputLables = false,
+  isInputLabels = false,
   keyLabel = '',
   valueLabel = '',
   isAddButton = true,
@@ -125,7 +125,7 @@ function GluuProperties({
                     multiProperties={multiProperties}
                     onPropertyChange={changeProperty}
                     onPropertyRemove={removeProperty}
-                    isInputLables={isInputLables}
+                    isInputLabels={isInputLabels}
                     keyLabel={keyLabel}
                     valueLabel={valueLabel}
                     sm={inputSm}

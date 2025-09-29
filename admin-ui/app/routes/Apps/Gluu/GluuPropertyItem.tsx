@@ -11,7 +11,7 @@ function GluuPropertyItem({
   onPropertyChange,
   onPropertyRemove,
   disabled = false,
-  isInputLables = false,
+  isInputLabels = false,
   keyLabel = '',
   valueLabel = '',
   isRemoveButton,
@@ -26,7 +26,7 @@ function GluuPropertyItem({
     <FormGroup row>
       {isKeys && (
         <Col sm={4}>
-          {isInputLables && <label>{keyLabel}</label>}
+          {isInputLabels && <label>{keyLabel}</label>}
           <Input
             name={'key'}
             value={property.key}
@@ -37,7 +37,7 @@ function GluuPropertyItem({
         </Col>
       )}
       <Col sm={sm}>
-        {isInputLables && <label>{valueLabel}</label>}
+        {isInputLabels && <label>{valueLabel}</label>}
         {!multiProperties ? (
           <Input
             name={'value'}

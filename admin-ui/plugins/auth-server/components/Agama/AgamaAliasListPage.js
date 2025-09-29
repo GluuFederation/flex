@@ -251,7 +251,7 @@ function AliasesListPage() {
                     formik={formik}
                     lsize={4}
                     rsize={8}
-                    showError={formik.errors.mapping && formik.touched.mapping}
+                    showError={!!(formik.errors.mapping && formik.touched.mapping)}
                     errorMessage={formik.errors.mapping}
                     required={true}
                   />
@@ -264,7 +264,7 @@ function AliasesListPage() {
                     formik={formik}
                     lsize={4}
                     rsize={8}
-                    showError={formik.errors.source && formik.touched.source}
+                    showError={!!(formik.errors.source && formik.touched.source)}
                     errorMessage={formik.errors.source}
                     required={true}
                   />

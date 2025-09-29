@@ -135,6 +135,7 @@ export interface ErrorToastAction {
 export interface FidoState {
   fido: AppConfiguration
   loading: boolean
+  error: ApiError | null
 }
 
 export interface FidoRootState {

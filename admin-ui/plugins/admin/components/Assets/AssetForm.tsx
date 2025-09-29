@@ -172,7 +172,7 @@ const AssetForm: React.FC = () => {
             name="fileName"
             doc_category={ASSET}
             errorMessage={formik.errors.fileName}
-            showError={formik.errors.fileName && formik.touched.fileName}
+            showError={!!(formik.errors.fileName && formik.touched.fileName)}
           />
           <GluuInputRow
             label="fields.description"

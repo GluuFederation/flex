@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody } from 'Components'
@@ -10,7 +10,9 @@ import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { getFidoConfiguration, putFidoConfiguration } from '../redux/features/fidoSlice'
 import { fidoConstants, createFidoConfigPayload } from '../helper'
-import type { FidoRootState, TabName, FormData } from './types/types'
+import type { FidoRootState, TabName } from '../types'
+import type { DynamicConfigFormValues } from './types/DynamicConfiguration'
+import type { StaticConfigurationFormValues } from './types/StaticConfiguration'
 
 const Fido: React.FC = () => {
   const { t } = useTranslation()
@@ -23,7 +25,7 @@ const Fido: React.FC = () => {
   }, [dispatch])
 
   const handleDynamicConfigurationSubmit = useCallback(
-    (data: FormData) => {
+    (data: DynamicConfigFormValues) => {
       const apiPayload = createFidoConfigPayload({
         fidoConfiguration,
         data,
@@ -35,7 +37,7 @@ const Fido: React.FC = () => {
   )
 
   const handleStaticConfigurationSubmit = useCallback(
-    (data: FormData) => {
+    (data: StaticConfigurationFormValues) => {
       const apiPayload = createFidoConfigPayload({
         fidoConfiguration,
         data,
@@ -46,13 +48,19 @@ const Fido: React.FC = () => {
     [dispatch, fidoConfiguration],
   )
 
-  const tabNames: TabName[] = [
-    { name: t('menus.static_configuration'), path: '/fido/fidomanagement/static-configuration' },
-    { name: t('menus.dynamic_configuration'), path: '/fido/fidomanagement/dynamic-configuration' },
-  ]
+  const tabNames: TabName[] = useMemo(
+    () => [
+      { name: t('menus.static_configuration'), path: '/fido/fidomanagement/static-configuration' },
+      {
+        name: t('menus.dynamic_configuration'),
+        path: '/fido/fidomanagement/dynamic-configuration',
+      },
+    ],
+    [t],
+  )
 
   const tabToShow = useCallback(
-    (tabName: string) => {
+    (tabName: TabName['name']) => {
       switch (tabName) {
         case t('menus.static_configuration'):
           return (
@@ -76,17 +84,15 @@ const Fido: React.FC = () => {
   )
 
   return (
-    <React.Fragment>
-      <GluuLoader blocking={fidoConfiguration?.loading}>
-        <Card className="mb-3" style={applicationStyle.mainCard}>
-          <CardBody>
-            {!fidoConfiguration?.loading && (
-              <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
-            )}
-          </CardBody>
-        </Card>
-      </GluuLoader>
-    </React.Fragment>
+    <GluuLoader blocking={fidoConfiguration?.loading}>
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>
+          {!fidoConfiguration?.loading && (
+            <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
+          )}
+        </CardBody>
+      </Card>
+    </GluuLoader>
   )
 }
 

@@ -601,7 +601,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
               value={formik.values.script}
               readOnly={viewOnly}
               errorMessage={formik.errors.script}
-              showError={formik.errors.script && formik.touched.script}
+              showError={!!(formik.errors.script && formik.touched.script)}
               required
             />
           </Suspense>

@@ -90,7 +90,7 @@ function AuthNForm({ item, handleSubmit }) {
               lsize={4}
               rsize={8}
               disabled={true}
-              showError={formik.errors.acr && formik.touched.acr}
+              showError={!!(formik.errors.acr && formik.touched.acr)}
               errorMessage={formik.errors.acr}
               required={true}
             />
@@ -108,7 +108,7 @@ function AuthNForm({ item, handleSubmit }) {
               rsize={8}
               type="number"
               disabled={item.name === 'simple_password_auth' ? true : false}
-              showError={formik.errors.level && formik.touched.level}
+              showError={!!(formik.errors.level && formik.touched.level)}
               errorMessage={formik.errors.level}
               required={true}
             />

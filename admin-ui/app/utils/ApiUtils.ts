@@ -35,7 +35,10 @@ export function handleTypedResponse<T>(
   } else if (data !== undefined) {
     resolve(data)
   } else {
-    reject(new Error('No data received from API'))
+    // For void responses, undefined data is valid and should resolve successfully
+    // We can check this by attempting to resolve with undefined cast as T
+    // This works because for void types, undefined is a valid value
+    resolve(undefined as T)
   }
 }
 

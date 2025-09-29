@@ -102,7 +102,7 @@ const JansLockConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.baseDN && formik.touched.baseDN}
+            showError={!!(formik.errors.baseDN && formik.touched.baseDN)}
             errorMessage={formik.errors.baseDN}
             disabled={viewOnly}
             doc_category={DOC_CATEGORY}
@@ -139,7 +139,7 @@ const JansLockConfiguration = () => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.disableJdkLogger && formik.touched.disableJdkLogger}
+            showError={!!(formik.errors.disableJdkLogger && formik.touched.disableJdkLogger)}
             disabled={viewOnly}
             doc_category={DOC_CATEGORY}
             errorMessage={formik.errors.disableJdkLogger}
@@ -170,7 +170,7 @@ const JansLockConfiguration = () => {
             lsize={3}
             rsize={9}
             doc_category={DOC_CATEGORY}
-            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
+            showError={!!(formik.errors.loggingLayout && formik.touched.loggingLayout)}
             errorMessage={formik.errors.loggingLayout}
             disabled={viewOnly}
           />
@@ -205,7 +205,9 @@ const JansLockConfiguration = () => {
             lsize={3}
             rsize={9}
             doc_category={DOC_CATEGORY}
-            showError={formik.errors.metricReporterEnabled && formik.touched.metricReporterEnabled}
+            showError={
+              !!(formik.errors.metricReporterEnabled && formik.touched.metricReporterEnabled)
+            }
             disabled={viewOnly}
             errorMessage={formik.errors.metricReporterEnabled}
           />
@@ -256,7 +258,9 @@ const JansLockConfiguration = () => {
             doc_category={DOC_CATEGORY}
             lsize={3}
             rsize={9}
-            showError={formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval}
+            showError={
+              !!(formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval)
+            }
             disabled={viewOnly}
             errorMessage={formik.errors.cleanServiceInterval}
             type="number"
@@ -272,7 +276,7 @@ const JansLockConfiguration = () => {
             doc_category={DOC_CATEGORY}
             lsize={3}
             rsize={9}
-            showError={formik.errors.metricChannel && formik.touched.metricChannel}
+            showError={!!(formik.errors.metricChannel && formik.touched.metricChannel)}
             disabled={viewOnly}
             errorMessage={formik.errors.metricChannel}
           />
@@ -287,7 +291,7 @@ const JansLockConfiguration = () => {
             doc_category={DOC_CATEGORY}
             lsize={3}
             rsize={9}
-            showError={formik.errors.pdpType && formik.touched.pdpType}
+            showError={!!(formik.errors.pdpType && formik.touched.pdpType)}
             errorMessage={formik.errors.pdpType}
             disabled={viewOnly}
           />

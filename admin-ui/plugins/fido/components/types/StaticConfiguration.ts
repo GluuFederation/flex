@@ -1,5 +1,5 @@
 import { FormikProps } from 'formik'
-import { AppConfiguration, FormData } from '../../types'
+import { AppConfiguration } from '../../types'
 
 export interface StaticConfigurationFormValues {
   authenticatorCertsFolder: string
@@ -11,7 +11,7 @@ export interface StaticConfigurationFormValues {
   serverMetadataFolder: string
   userAutoEnrollment: boolean
   enabledFidoAlgorithms: string[]
-  requestedParties: RequestedPartyForm[]
+  rp: RequestedPartyForm[]
 }
 
 export interface RequestedPartyForm {
@@ -33,7 +33,7 @@ export interface StaticConfigurationProps {
   fidoConfiguration: {
     fido: AppConfiguration
   }
-  handleSubmit: (values: FormData) => void
+  handleSubmit: (values: StaticConfigurationFormValues) => void
 }
 
 // Formik types
@@ -65,7 +65,7 @@ export interface GluuToggleRowProps {
 // GluuProperties component props
 export interface GluuPropertiesProps {
   compName: string
-  isInputLables: boolean
+  isInputLabels: boolean
   formik: StaticConfigurationFormik
   options: CredentialTypeOption[] | RequestedPartyOption[]
   isKeys?: boolean

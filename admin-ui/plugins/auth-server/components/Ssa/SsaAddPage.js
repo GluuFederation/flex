@@ -154,7 +154,7 @@ const SsaAddPage = () => {
                   rsize={10}
                   value={formik.values.software_id}
                   errorMessage={formik.errors.software_id}
-                  showError={formik.errors.software_id && formik.touched.software_id}
+                  showError={!!(formik.errors.software_id && formik.touched.software_id)}
                   doc_category={SSA}
                 />
 
@@ -166,7 +166,7 @@ const SsaAddPage = () => {
                   rsize={10}
                   value={formik.values.org_id}
                   errorMessage={formik.errors.org_id}
-                  showError={formik.errors.org_id && formik.touched.org_id}
+                  showError={!!(formik.errors.org_id && formik.touched.org_id)}
                   doc_category={SSA}
                 />
 
@@ -178,7 +178,7 @@ const SsaAddPage = () => {
                   rsize={10}
                   value={formik.values.description}
                   errorMessage={formik.errors.description}
-                  showError={formik.errors.description && formik.touched.description}
+                  showError={!!(formik.errors.description && formik.touched.description)}
                   doc_category={SSA}
                 />
 
@@ -191,7 +191,7 @@ const SsaAddPage = () => {
                   options={[]}
                   value={formik.values.software_roles}
                   errorMessage={formik.errors.software_roles}
-                  showError={formik.errors.software_roles && formik.touched.software_roles}
+                  showError={!!(formik.errors.software_roles && formik.touched.software_roles)}
                   doc_category={SSA}
                 />
 
@@ -203,7 +203,7 @@ const SsaAddPage = () => {
                   rsize={10}
                   value={formik.values.grant_types}
                   errorMessage={formik.errors.grant_types}
-                  showError={formik.errors.grant_types && formik.touched.grant_types}
+                  showError={!!(formik.errors.grant_types && formik.touched.grant_types)}
                   options={GRANT_TYPES}
                   doc_category={SSA}
                 />
@@ -216,7 +216,7 @@ const SsaAddPage = () => {
                   rsize={10}
                   value={formik.values.one_time_use}
                   errorMessage={formik.errors.one_time_use}
-                  showError={formik.errors.one_time_use && formik.touched.one_time_use}
+                  showError={!!(formik.errors.one_time_use && formik.touched.one_time_use)}
                   doc_category={SSA}
                 />
 
@@ -228,7 +228,7 @@ const SsaAddPage = () => {
                   rsize={10}
                   value={formik.values.rotate_ssa}
                   errorMessage={formik.errors.rotate_ssa}
-                  showError={formik.errors.rotate_ssa && formik.touched.rotate_ssa}
+                  showError={!!(formik.errors.rotate_ssa && formik.touched.rotate_ssa)}
                   doc_category={SSA}
                 />
 
@@ -242,7 +242,7 @@ const SsaAddPage = () => {
                       value={isExpirable}
                       handler={() => setIsExpirable(!isExpirable)}
                       errorMessage={formik.errors.expiration}
-                      showError={formik.errors.expiration && formik.touched.expiration}
+                      showError={!!(formik.errors.expiration && formik.touched.expiration)}
                       doc_category={SSA}
                     />
                   </Col>

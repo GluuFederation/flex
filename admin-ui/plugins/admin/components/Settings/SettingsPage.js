@@ -184,7 +184,7 @@ function SettingsForm() {
         doc_category={SETTINGS}
         doc_entry="sessionTimeoutInMins"
         errorMessage={formik.errors.sessionTimeoutInMins}
-        showError={formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins}
+        showError={!!(formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins)}
       />
 
       <FormGroup row>

@@ -114,7 +114,7 @@ const MessageForm = () => {
             rsize={8}
             name="messageProviderType"
             disabled={isDisabled}
-            showError={formik.errors.messageProviderType && formik.touched.messageProviderType}
+            showError={!!(formik.errors.messageProviderType && formik.touched.messageProviderType)}
             errorMessage={formik.errors.messageProviderType}
           />
         </Col>

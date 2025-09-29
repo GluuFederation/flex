@@ -68,7 +68,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.baseDN && formik.touched.baseDN}
+            showError={!!(formik.errors.baseDN && formik.touched.baseDN)}
             errorMessage={formik.errors.baseDN}
           />
         </Col>
@@ -80,7 +80,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.applicationUrl && formik.touched.applicationUrl}
+            showError={!!(formik.errors.applicationUrl && formik.touched.applicationUrl)}
             errorMessage={formik.errors.applicationUrl}
           />
         </Col>
@@ -92,7 +92,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.baseEndpoint && formik.touched.baseEndpoint}
+            showError={!!(formik.errors.baseEndpoint && formik.touched.baseEndpoint)}
             errorMessage={formik.errors.baseEndpoint}
           />
         </Col>
@@ -118,7 +118,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.oxAuthIssuer && formik.touched.oxAuthIssuer}
+            showError={!!(formik.errors.oxAuthIssuer && formik.touched.oxAuthIssuer)}
             errorMessage={formik.errors.oxAuthIssuer}
           />
         </Col>
@@ -131,7 +131,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.maxCount && formik.touched.maxCount}
+            showError={!!(formik.errors.maxCount && formik.touched.maxCount)}
             errorMessage={formik.errors.maxCount}
           />
         </Col>
@@ -144,7 +144,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.bulkMaxOperations && formik.touched.bulkMaxOperations}
+            showError={!!(formik.errors.bulkMaxOperations && formik.touched.bulkMaxOperations)}
             errorMessage={formik.errors.bulkMaxOperations}
           />
         </Col>
@@ -157,7 +157,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.bulkMaxPayloadSize && formik.touched.bulkMaxPayloadSize}
+            showError={!!(formik.errors.bulkMaxPayloadSize && formik.touched.bulkMaxPayloadSize)}
             errorMessage={formik.errors.bulkMaxPayloadSize}
           />
         </Col>
@@ -195,7 +195,7 @@ const ScimConfiguration = ({ handleSubmit }) => {
             formik={formik}
             lsize={3}
             rsize={9}
-            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
+            showError={!!(formik.errors.loggingLayout && formik.touched.loggingLayout)}
             errorMessage={formik.errors.loggingLayout}
           />
         </Col>

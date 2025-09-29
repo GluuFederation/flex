@@ -328,7 +328,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.givenName && formik.touched.givenName}
+              showError={!!(formik.errors.givenName && formik.touched.givenName)}
               errorMessage={formik.errors.givenName}
               handleChange={handleChange}
             />
@@ -340,7 +340,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.middleName && formik.touched.middleName}
+              showError={!!(formik.errors.middleName && formik.touched.middleName)}
               errorMessage={formik.errors.middleName}
               handleChange={handleChange}
             />
@@ -354,7 +354,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.sn && formik.touched.sn}
+              showError={!!(formik.errors.sn && formik.touched.sn)}
               errorMessage={formik.errors.sn}
               handleChange={handleChange}
             />
@@ -367,7 +367,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.userId && formik.touched.userId}
+              showError={!!(formik.errors.userId && formik.touched.userId)}
               errorMessage={formik.errors.userId}
               handleChange={handleChange}
             />
@@ -380,7 +380,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.displayName && formik.touched.displayName}
+              showError={!!(formik.errors.displayName && formik.touched.displayName)}
               errorMessage={formik.errors.displayName}
               handleChange={handleChange}
             />
@@ -394,7 +394,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
               formik={formik}
               lsize={3}
               rsize={9}
-              showError={formik.errors.mail && formik.touched.mail}
+              showError={!!(formik.errors.mail && formik.touched.mail)}
               errorMessage={formik.errors.mail}
               handleChange={handleChange}
             />
@@ -422,7 +422,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
                 formik={formik}
                 lsize={3}
                 rsize={9}
-                showError={formik.errors.userPassword && formik.touched.userPassword}
+                showError={!!(formik.errors.userPassword && formik.touched.userPassword)}
                 errorMessage={formik.errors.userPassword}
                 handleChange={handleChange}
               />
@@ -438,7 +438,9 @@ function UserForm({ onSubmitData }: UserFormProps) {
                 formik={formik}
                 lsize={3}
                 rsize={9}
-                showError={formik.errors.userConfirmPassword && formik.touched.userConfirmPassword}
+                showError={
+                  !!(formik.errors.userConfirmPassword && formik.touched.userConfirmPassword)
+                }
                 errorMessage={formik.errors.userConfirmPassword}
                 handleChange={handleChange}
               />

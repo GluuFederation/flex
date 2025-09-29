@@ -1,5 +1,5 @@
 import { FormikProps } from 'formik'
-import { AppConfiguration1, FormData } from '../../types'
+import { AppConfiguration } from '../../types'
 
 export interface DynamicConfigFormValues {
   issuer: string
@@ -20,9 +20,9 @@ export interface DynamicConfigFormValues {
 
 export interface DynamicConfigurationProps {
   fidoConfiguration: {
-    fido: AppConfiguration1
+    fido: AppConfiguration
   }
-  handleSubmit: (values: FormData) => void
+  handleSubmit: (values: DynamicConfigFormValues) => void
 }
 
 export interface DropdownOption {
@@ -31,6 +31,3 @@ export interface DropdownOption {
 }
 
 export type DynamicConfigFormik = FormikProps<DynamicConfigFormValues>
-
-// Export FormData type for local use
-export type { FormData }

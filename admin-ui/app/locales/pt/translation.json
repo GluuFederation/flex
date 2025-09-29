@@ -163,7 +163,7 @@
   },
   "fields": {
     "enabled_fido_algorithms": "Algoritmos FIDO habilitados",
-    "metadata_refresh_interval": "Intervalo de actualização de metadatos",
+    "metadata_refresh_interval": "Intervalo de atualização de metadados",
     "asset_name": "Asset Name",
     "resetLicense": "Redefinir licença",
     "tag": "Marcação",

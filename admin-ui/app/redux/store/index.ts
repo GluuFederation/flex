@@ -56,4 +56,6 @@ export function configStore() {
   return { store, persistor }
 }
 
+// Export the store for type inference
+export { store }
 export default store

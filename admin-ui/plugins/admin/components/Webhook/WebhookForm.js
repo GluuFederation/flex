@@ -218,7 +218,7 @@ const WebhookForm = () => {
             name="displayName"
             doc_category={WEBHOOK}
             errorMessage={formik.errors.displayName}
-            showError={formik.errors.displayName && formik.touched.displayName}
+            showError={!!(formik.errors.displayName && formik.touched.displayName)}
           />
           <GluuTypeAhead
             name="auiFeatureIds"
@@ -265,7 +265,7 @@ const WebhookForm = () => {
             doc_entry="url"
             name="url"
             errorMessage={formik.errors.url}
-            showError={formik.errors.url && formik.touched.url}
+            showError={!!(formik.errors.url && formik.touched.url)}
             shortcode={
               <ShortcodePopover
                 codes={featureShortcodes}
@@ -291,7 +291,7 @@ const WebhookForm = () => {
             rsize={8}
             required
             errorMessage={formik.errors.httpMethod}
-            showError={formik.errors.httpMethod && formik.touched.httpMethod}
+            showError={!!(formik.errors.httpMethod && formik.touched.httpMethod)}
             name="httpMethod"
           />
 
@@ -315,7 +315,7 @@ const WebhookForm = () => {
             <Col sm={8}>
               <GluuProperties
                 compName="httpHeaders"
-                isInputLables={true}
+                isInputLabels={true}
                 formik={formik}
                 multiProperties
                 inputSm={10}
@@ -324,7 +324,7 @@ const WebhookForm = () => {
                 options={getPropertiesConfig(selectedWebhook, 'httpHeaders')}
                 isKeys={false}
                 buttonText="actions.add_header"
-                showError={formik.errors.httpHeaders && formik.touched.httpHeaders}
+                showError={!!(formik.errors.httpHeaders && formik.touched.httpHeaders)}
                 errorMessage={formik.errors.httpHeaders}
               />
             </Col>
@@ -362,7 +362,7 @@ const WebhookForm = () => {
                   formik={formik}
                   value={formik.values?.httpRequestBody}
                   errorMessage={formik.errors.httpRequestBody}
-                  showError={formik.errors.httpRequestBody && formik.touched.httpRequestBody}
+                  showError={!!(formik.errors.httpRequestBody && formik.touched.httpRequestBody)}
                   placeholder=""
                   shortcode={
                     <ShortcodePopover

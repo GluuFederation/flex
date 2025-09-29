@@ -23,6 +23,6 @@ export type {
   FidoRootState,
   TabName,
   FidoConfigurationProps,
-  FormData,
   KeyValuePair,
 } from './types'
+export type { FormData as FidoFormData } from './types'

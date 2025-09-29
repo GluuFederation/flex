@@ -9,20 +9,24 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
-import { fidoConstants, validationSchema } from '../helper'
-import { transformToFormValues, getAvailableHintOptions, getEmptyDropdownMessage } from '../helper'
+import {
+  fidoConstants,
+  validationSchema,
+  transformToFormValues,
+  getAvailableHintOptions,
+  getEmptyDropdownMessage,
+} from '../helper'
 import type {
   DynamicConfigurationProps,
   DynamicConfigFormValues,
   DynamicConfigFormik,
   DropdownOption,
-  FormData,
 } from './types/DynamicConfiguration'
 
 function DynamicConfiguration({
   fidoConfiguration,
   handleSubmit,
-}: DynamicConfigurationProps): JSX.Element {
+}: Readonly<DynamicConfigurationProps>): JSX.Element {
   const { fido } = fidoConfiguration
 
   const [modal, setModal] = useState<boolean>(false)
@@ -32,14 +36,18 @@ function DynamicConfiguration({
   }, [])
 
   const formik: DynamicConfigFormik = useFormik<DynamicConfigFormValues>({
-    initialValues: transformToFormValues(fido, fidoConstants.DYNAMIC) as DynamicConfigFormValues,
+    initialValues: transformToFormValues(
+      fido,
+      fidoConstants.DYNAMIC,
+    ) as unknown as DynamicConfigFormValues,
+    enableReinitialize: true,
     onSubmit: toggle,
     validationSchema: validationSchema.dynamicConfigValidationSchema,
   })
 
   const submitForm = useCallback((): void => {
     toggle()
-    handleSubmit(formik.values as unknown as FormData)
+    handleSubmit(formik.values)
   }, [handleSubmit, toggle, formik.values])
 
   const handleFormSubmit = useCallback(
@@ -62,7 +70,7 @@ function DynamicConfiguration({
     return formik?.values?.personCustomObjectClassList
       ? formik.values.personCustomObjectClassList.map(
           (item: string): DropdownOption => ({
-            key: '',
+            key: item,
             value: item,
           }),
         )
@@ -80,7 +88,7 @@ function DynamicConfiguration({
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.issuer && formik.touched.issuer}
+            showError={!!(formik.errors.issuer && formik.touched.issuer)}
             errorMessage={formik.errors.issuer}
           />
         </Col>
@@ -93,7 +101,7 @@ function DynamicConfiguration({
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.baseEndpoint && formik.touched.baseEndpoint}
+            showError={!!(formik.errors.baseEndpoint && formik.touched.baseEndpoint)}
             errorMessage={formik.errors.baseEndpoint}
           />
         </Col>
@@ -106,7 +114,9 @@ function DynamicConfiguration({
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval}
+            showError={
+              !!(formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval)
+            }
             errorMessage={formik.errors.cleanServiceInterval}
             type="number"
           />
@@ -121,7 +131,10 @@ function DynamicConfiguration({
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.cleanServiceBatchChunkSize && formik.touched.cleanServiceBatchChunkSize
+              !!(
+                formik.errors.cleanServiceBatchChunkSize &&
+                formik.touched.cleanServiceBatchChunkSize
+              )
             }
             errorMessage={formik.errors.cleanServiceBatchChunkSize}
             type="number"
@@ -172,7 +185,7 @@ function DynamicConfiguration({
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
+            showError={!!(formik.errors.loggingLayout && formik.touched.loggingLayout)}
             errorMessage={formik.errors.loggingLayout}
           />
         </Col>
@@ -186,8 +199,10 @@ function DynamicConfiguration({
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.externalLoggerConfiguration &&
-              formik.touched.externalLoggerConfiguration
+              !!(
+                formik.errors.externalLoggerConfiguration &&
+                formik.touched.externalLoggerConfiguration
+              )
             }
             errorMessage={formik.errors.externalLoggerConfiguration}
           />
@@ -203,7 +218,7 @@ function DynamicConfiguration({
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.metricReporterInterval && formik.touched.metricReporterInterval
+              !!(formik.errors.metricReporterInterval && formik.touched.metricReporterInterval)
             }
             errorMessage={formik.errors.metricReporterInterval}
           />
@@ -219,7 +234,10 @@ function DynamicConfiguration({
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.metricReporterKeepDataDays && formik.touched.metricReporterKeepDataDays
+              !!(
+                formik.errors.metricReporterKeepDataDays &&
+                formik.touched.metricReporterKeepDataDays
+              )
             }
             errorMessage={formik.errors.metricReporterKeepDataDays}
           />
@@ -242,7 +260,7 @@ function DynamicConfiguration({
             <Col sm={8}>
               <GluuProperties
                 compName={fidoConstants.FORM_FIELDS.PERSON_CUSTOM_OBJECT_CLASS_LIST}
-                isInputLables={true}
+                isInputLabels={true}
                 formik={formik}
                 options={personCustomObjectClassOptions}
                 isKeys={false}
@@ -261,7 +279,7 @@ function DynamicConfiguration({
             options={availableHintOptions}
             lsize={4}
             rsize={8}
-            showError={formik.errors.hints && formik.touched.hints}
+            showError={!!(formik.errors.hints && formik.touched.hints)}
             errorMessage={formik.errors.hints}
             doc_category={fidoConstants.DOC_CATEGORY}
             emptyLabel={emptyDropdownMessage}

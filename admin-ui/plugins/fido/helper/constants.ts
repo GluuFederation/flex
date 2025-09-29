@@ -39,7 +39,7 @@ export const fidoConstants = {
     SERVER_METADATA_FOLDER: 'serverMetadataFolder',
     USER_AUTO_ENROLLMENT: 'userAutoEnrollment',
     ENABLED_FIDO_ALGORITHMS: 'enabledFidoAlgorithms',
-    REQUESTED_PARTIES: 'requestedParties',
+    RP: 'rp',
   },
 
   LABELS: {
@@ -70,7 +70,7 @@ export const fidoConstants = {
     SERVER_METADATA_FOLDER: 'fields.server_metadata_folder',
     USER_AUTO_ENROLLMENT: 'fields.user_auto_enrollment',
     REQUESTED_CREDENTIAL_TYPES: 'fields.requested_credential_types',
-    REQUESTED_PARTIES_ID: 'fields.requested_parties_id',
+    RP_ID: 'fields.requested_parties_id',
     ENABLED_FIDO_ALGORITHMS: 'fields.enabled_fido_algorithms',
     METADATA_REFRESH_INTERVAL: 'fields.metadata_refresh_interval',
   },
