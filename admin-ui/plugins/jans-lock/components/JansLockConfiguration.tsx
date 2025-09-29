@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { FormikProps, useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import { Row, Col, Form, FormGroup, Accordion } from 'Components'
-import { AccordionHeader, AccordionBody } from 'Components'
+import { Row, Col, Form, FormGroup, Accordion, AccordionHeader, AccordionBody } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
@@ -21,14 +20,30 @@ import {
 } from '../types/JansLockConfigurationTypes'
 import { RootState } from '../types'
 
-const DOC_CATEGORY = 'jans_lock'
-
 const JansLockConfiguration: React.FC = () => {
   const dispatch = useDispatch()
   const { hasCedarPermission, authorize } = useCedarling()
   const lockConfigs = useSelector((state: RootState) => state.jansLockReducer.configuration)
   const { permissions: cedarPermissions } = useSelector(
     (state: RootState) => state.cedarPermissions,
+  )
+
+  const CONSTANTS = useMemo(
+    () => ({
+      DOC_CATEGORY: 'jans_lock',
+      FORM_LAYOUT: {
+        COLUMN_SIZE: 12,
+        LABEL_SIZE: 3,
+        INPUT_SIZE: 9,
+      },
+      BOOLEAN_OPTIONS: ['true', 'false'],
+      LOGGING_LEVELS: ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF'],
+      FORM_FIELD_TYPES: {
+        NUMBER: 'number',
+        SUBMIT: 'submit',
+      },
+    }),
+    [],
   )
 
   const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
@@ -49,9 +64,9 @@ const JansLockConfiguration: React.FC = () => {
 
   useEffect(() => {}, [cedarPermissions])
 
-  const toggle = (): void => {
+  const toggle = useCallback((): void => {
     setModal(!modal)
-  }
+  }, [modal])
 
   const formik: FormikProps<ExtendedJansLockConfiguration> =
     useFormik<ExtendedJansLockConfiguration>({
@@ -61,70 +76,85 @@ const JansLockConfiguration: React.FC = () => {
       },
     })
 
-  const submitForm = (userMessage: string): void => {
-    const differences: PatchOperation[] = []
-    delete formik.values?.action_message
+  const handleSubmit = useCallback(
+    (data: PatchOperation[], userMessage: string): void => {
+      const userAction: UserAction = {
+        action_message: userMessage,
+        action_data: data,
+      }
+      buildPayload(userAction, userMessage, {})
+      dispatch(putJansLockConfiguration({ action: userAction }))
+    },
+    [dispatch],
+  )
 
-    for (const key in formik.values) {
-      if (Object.prototype.hasOwnProperty.call(lockConfigs, key)) {
-        if (JSON.stringify(lockConfigs[key]) !== JSON.stringify(formik.values[key])) {
+  const submitForm = useCallback(
+    (userMessage: string): void => {
+      const differences: PatchOperation[] = []
+      delete formik.values?.action_message
+
+      for (const key in formik.values) {
+        if (Object.prototype.hasOwnProperty.call(lockConfigs, key)) {
+          if (JSON.stringify(lockConfigs[key]) !== JSON.stringify(formik.values[key])) {
+            differences.push({
+              op: 'replace',
+              path: `/${key}`,
+              value: formik.values[key],
+            })
+          }
+        } else if (formik.values[key]) {
           differences.push({
-            op: 'replace',
+            op: 'add',
             path: `/${key}`,
             value: formik.values[key],
           })
         }
-      } else if (formik.values[key]) {
-        differences.push({
-          op: 'add',
-          path: `/${key}`,
-          value: formik.values[key],
-        })
       }
-    }
 
-    toggle()
+      toggle()
 
-    if (differences.length) {
-      handleSubmit(differences, userMessage)
-    }
-  }
+      if (differences.length) {
+        handleSubmit(differences, userMessage)
+      }
+    },
+    [formik.values, lockConfigs, toggle, handleSubmit],
+  )
 
-  const handleSubmit = (data: PatchOperation[], userMessage: string): void => {
-    const userAction: UserAction = {
-      action_message: userMessage,
-      action_data: data,
-    }
-    buildPayload(userAction, userMessage, {})
-    dispatch(putJansLockConfiguration({ action: userAction }))
-  }
+  const handleTokenChannelsChange = useCallback(
+    (options: (string | TypeAheadOption)[]): void => {
+      const getLabel = (item: string | TypeAheadOption): string => {
+        if (typeof item === 'string') return item
+        return item?.customOption && item?.tokenChannels ? item.tokenChannels : ''
+      }
+      const values = options?.map((item) => getLabel(item)).filter(Boolean)
+      formik.setFieldValue('tokenChannels', values)
+    },
+    [formik],
+  )
 
-  const handleTokenChannelsChange = (options: (string | TypeAheadOption)[]): void => {
-    const getLabel = (item: string | TypeAheadOption): string => {
-      if (typeof item === 'string') return item
-      return item?.customOption && item?.tokenChannels ? item.tokenChannels : ''
-    }
-    const values = options?.map((item) => getLabel(item)).filter(Boolean)
-    formik.setFieldValue('tokenChannels', values)
-  }
+  const handlePoliciesJsonUrisChange = useCallback(
+    (options: (string | TypeAheadOption)[]): void => {
+      const getLabel = (item: string | TypeAheadOption): string => {
+        if (typeof item === 'string') return item
+        return item?.customOption && item?.policiesJsonUris ? item.policiesJsonUris : ''
+      }
+      const values = options?.map((item) => getLabel(item)).filter(Boolean)
+      formik.setFieldValue('policiesJsonUris', values)
+    },
+    [formik],
+  )
 
-  const handlePoliciesJsonUrisChange = (options: (string | TypeAheadOption)[]): void => {
-    const getLabel = (item: string | TypeAheadOption): string => {
-      if (typeof item === 'string') return item
-      return item?.customOption && item?.policiesJsonUris ? item.policiesJsonUris : ''
-    }
-    const values = options?.map((item) => getLabel(item)).filter(Boolean)
-    formik.setFieldValue('policiesJsonUris', values)
-  }
-
-  const handlePoliciesZipUrisChange = (options: (string | TypeAheadOption)[]): void => {
-    const getLabel = (item: string | TypeAheadOption): string => {
-      if (typeof item === 'string') return item
-      return item?.customOption && item?.policiesZipUris ? item.policiesZipUris : ''
-    }
-    const values = options?.map((item) => getLabel(item)).filter(Boolean)
-    formik.setFieldValue('policiesZipUris', values)
-  }
+  const handlePoliciesZipUrisChange = useCallback(
+    (options: (string | TypeAheadOption)[]): void => {
+      const getLabel = (item: string | TypeAheadOption): string => {
+        if (typeof item === 'string') return item
+        return item?.customOption && item?.policiesZipUris ? item.policiesZipUris : ''
+      }
+      const values = options?.map((item) => getLabel(item)).filter(Boolean)
+      formik.setFieldValue('policiesZipUris', values)
+    },
+    [formik],
+  )
 
   return (
     <Form
@@ -135,89 +165,89 @@ const JansLockConfiguration: React.FC = () => {
       className="mt-4"
     >
       <FormGroup row>
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.base_dn"
             name="baseDN"
             value={formik.values.baseDN || ''}
             formik={formik}
-            lsize={3}
-            rsize={9}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             showError={formik.errors.baseDN && formik.touched.baseDN}
             errorMessage={formik.errors.baseDN}
             disabled={viewOnly}
-            doc_category={DOC_CATEGORY}
+            doc_category={CONSTANTS.DOC_CATEGORY}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuTypeAhead
             name="tokenChannels"
             label="fields.token_channels"
             value={formik.values.tokenChannels}
             onChange={handleTokenChannelsChange}
             options={lockConfigs?.tokenChannels || []}
-            doc_category={DOC_CATEGORY}
-            lsize={3}
-            rsize={9}
+            doc_category={CONSTANTS.DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             disabled={viewOnly}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuSelectRow
             label="fields.disable_jdk_logger"
             name="disableJdkLogger"
             value={formik.values.disableJdkLogger}
-            values={['true', 'false']}
+            values={CONSTANTS.BOOLEAN_OPTIONS}
             formik={formik}
-            lsize={3}
-            rsize={9}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             showError={Boolean(formik.errors.disableJdkLogger && formik.touched.disableJdkLogger)}
             disabled={viewOnly}
-            doc_category={DOC_CATEGORY}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             errorMessage={formik.errors.disableJdkLogger}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuSelectRow
             label="fields.logging_level"
             name="loggingLevel"
             value={formik.values.loggingLevel}
-            values={['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'OFF']}
+            values={CONSTANTS.LOGGING_LEVELS}
             formik={formik}
-            lsize={3}
-            rsize={9}
-            doc_category={DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             disabled={viewOnly}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.logging_layout"
             name="loggingLayout"
             value={formik.values.loggingLayout || ''}
             formik={formik}
-            lsize={3}
-            rsize={9}
-            doc_category={DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
             errorMessage={formik.errors.loggingLayout}
             disabled={viewOnly}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.external_logger_configuration"
             name="externalLoggerConfiguration"
             value={formik.values.externalLoggerConfiguration || ''}
             formik={formik}
-            lsize={3}
-            rsize={9}
-            doc_category={DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             showError={
               formik.errors.externalLoggerConfiguration &&
               formik.touched.externalLoggerConfiguration
@@ -227,16 +257,16 @@ const JansLockConfiguration: React.FC = () => {
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuSelectRow
             label="fields.metric_reporter_enabled"
             name="metricReporterEnabled"
             value={formik.values.metricReporterEnabled}
-            values={['true', 'false']}
+            values={CONSTANTS.BOOLEAN_OPTIONS}
             formik={formik}
-            lsize={3}
-            rsize={9}
-            doc_category={DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             showError={Boolean(
               formik.errors.metricReporterEnabled && formik.touched.metricReporterEnabled,
             )}
@@ -245,16 +275,16 @@ const JansLockConfiguration: React.FC = () => {
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.metric_reporter_interval"
             name="metricReporterInterval"
-            type="number"
+            type={CONSTANTS.FORM_FIELD_TYPES.NUMBER}
             value={formik.values.metricReporterInterval || ''}
             formik={formik}
-            lsize={3}
-            rsize={9}
-            doc_category={DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             showError={
               formik.errors.metricReporterInterval && formik.touched.metricReporterInterval
             }
@@ -263,16 +293,16 @@ const JansLockConfiguration: React.FC = () => {
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.metric_reporter_keep_data_days"
             name="metricReporterKeepDataDays"
-            type="number"
-            doc_category={DOC_CATEGORY}
+            type={CONSTANTS.FORM_FIELD_TYPES.NUMBER}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             value={formik.values.metricReporterKeepDataDays || ''}
             formik={formik}
-            lsize={3}
-            rsize={9}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             showError={
               formik.errors.metricReporterKeepDataDays && formik.touched.metricReporterKeepDataDays
             }
@@ -281,46 +311,46 @@ const JansLockConfiguration: React.FC = () => {
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.clean_service_interval"
             name="cleanServiceInterval"
             value={formik.values.cleanServiceInterval || ''}
             formik={formik}
-            doc_category={DOC_CATEGORY}
-            lsize={3}
-            rsize={9}
+            doc_category={CONSTANTS.DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             showError={formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval}
             disabled={viewOnly}
             errorMessage={formik.errors.cleanServiceInterval}
-            type="number"
+            type={CONSTANTS.FORM_FIELD_TYPES.NUMBER}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.metric_channel"
             name="metricChannel"
             value={formik.values.metricChannel || ''}
             formik={formik}
-            doc_category={DOC_CATEGORY}
-            lsize={3}
-            rsize={9}
+            doc_category={CONSTANTS.DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             showError={formik.errors.metricChannel && formik.touched.metricChannel}
             disabled={viewOnly}
             errorMessage={formik.errors.metricChannel}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.pdp_type"
             name="pdpType"
             value={formik.values.pdpType || ''}
             formik={formik}
-            doc_category={DOC_CATEGORY}
-            lsize={3}
-            rsize={9}
+            doc_category={CONSTANTS.DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             showError={formik.errors.pdpType && formik.touched.pdpType}
             errorMessage={formik.errors.pdpType}
             disabled={viewOnly}
@@ -328,7 +358,7 @@ const JansLockConfiguration: React.FC = () => {
         </Col>
 
         {/* OPA Configuration Starts */}
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <Accordion className="mb-2 b-primary" initialOpen>
             <AccordionHeader className="text-primary">
               <GluuLabel
@@ -345,9 +375,9 @@ const JansLockConfiguration: React.FC = () => {
                 name="opaConfiguration.baseUrl"
                 value={formik.values.opaConfiguration?.baseUrl || ''}
                 formik={formik}
-                doc_category={DOC_CATEGORY}
-                lsize={3}
-                rsize={9}
+                doc_category={CONSTANTS.DOC_CATEGORY}
+                lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+                rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
                 disabled={viewOnly}
               />
               <GluuInputRow
@@ -355,9 +385,9 @@ const JansLockConfiguration: React.FC = () => {
                 name="opaConfiguration.accessToken"
                 value={formik.values.opaConfiguration?.accessToken || ''}
                 formik={formik}
-                doc_category={DOC_CATEGORY}
-                lsize={3}
-                rsize={9}
+                doc_category={CONSTANTS.DOC_CATEGORY}
+                lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+                rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
                 disabled={viewOnly}
               />
             </AccordionBody>
@@ -366,56 +396,56 @@ const JansLockConfiguration: React.FC = () => {
 
         {/* OPA Configuration Ends */}
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.policies_json_uris_authorization_token"
             name="policiesJsonUrisAuthorizationToken"
             value={formik.values.policiesJsonUrisAuthorizationToken || ''}
             formik={formik}
-            lsize={3}
-            rsize={9}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             disabled={viewOnly}
-            doc_category={DOC_CATEGORY}
+            doc_category={CONSTANTS.DOC_CATEGORY}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuTypeAhead
             name="policiesJsonUris"
             label="fields.policies_json_uris"
             value={formik.values.policiesJsonUris}
             options={lockConfigs?.policiesJsonUris || []}
-            doc_category={DOC_CATEGORY}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             onChange={handlePoliciesJsonUrisChange}
-            lsize={3}
-            rsize={9}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             disabled={viewOnly}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuInputRow
             label="fields.policies_zip_uris_authorization_token"
             name="policiesZipUrisAuthorizationToken"
             value={formik.values.policiesZipUrisAuthorizationToken || ''}
             formik={formik}
-            lsize={3}
-            rsize={9}
-            doc_category={DOC_CATEGORY}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             disabled={viewOnly}
           />
         </Col>
 
-        <Col sm={12}>
+        <Col sm={CONSTANTS.FORM_LAYOUT.COLUMN_SIZE}>
           <GluuTypeAhead
             name="policiesZipUris"
             label="fields.policies_zip_uris"
             value={formik.values.policiesZipUris}
             options={lockConfigs?.policiesZipUris || []}
-            doc_category={DOC_CATEGORY}
+            doc_category={CONSTANTS.DOC_CATEGORY}
             onChange={handlePoliciesZipUrisChange}
-            lsize={3}
-            rsize={9}
+            lsize={CONSTANTS.FORM_LAYOUT.LABEL_SIZE}
+            rsize={CONSTANTS.FORM_LAYOUT.INPUT_SIZE}
             disabled={viewOnly}
           />
         </Col>
@@ -428,7 +458,7 @@ const JansLockConfiguration: React.FC = () => {
               <GluuCommitFooter
                 saveHandler={toggle}
                 hideButtons={{ save: true, back: false }}
-                type="submit"
+                type={CONSTANTS.FORM_FIELD_TYPES.SUBMIT}
               />
             </Col>
           </Row>
@@ -439,4 +469,4 @@ const JansLockConfiguration: React.FC = () => {
   )
 }
 
-export default JansLockConfiguration
+export default React.memo(JansLockConfiguration)
