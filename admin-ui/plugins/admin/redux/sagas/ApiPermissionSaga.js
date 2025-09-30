@@ -16,6 +16,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
+import { buildPermissionDeleteErrorMessage } from 'Utils/PermissionMappingUtils'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -121,7 +122,17 @@ export function* deletePermission({ payload }) {
     })
     return data
   } catch (e) {
-    yield put(updateToast(true, 'error'))
+    const actionData = payload?.action?.action_data
+    const apiPermissions = yield select((state) => state.apiPermissionReducer.items || [])
+    const rolePermissionMapping = yield select((state) => state.mappingReducer.items || [])
+    const finalMessage = buildPermissionDeleteErrorMessage(
+      e,
+      actionData,
+      apiPermissions,
+      rolePermissionMapping,
+    )
+
+    yield put(updateToast(true, 'error', finalMessage))
     yield put(deletePermissionResponse({ inum: null }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

@@ -43,7 +43,6 @@ export function* editLogging({ payload }) {
     delete audit.payload
 
     console.log(audit)
-    debugger
 
     const api = yield* newFunction()
     const data = yield call(api.editLoggingConfig, payload.data)
