@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs')
 const path = require('path')
-const filePath = './jans_config_api_orval/src/JansConfigApi.ts'
+const filePath = path.join(__dirname, 'jans_config_api_orval', 'src', 'JansConfigApi.ts')
 
 if (!fs.existsSync(filePath)) {
   console.log('JansConfigApi.ts not found, skipping enum fixes')

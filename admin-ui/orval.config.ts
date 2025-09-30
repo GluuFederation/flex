@@ -8,7 +8,7 @@ export default defineConfig({
     output: {
       mode: 'single',
       target: './jans_config_api_orval/src/JansConfigApi.ts',
-      client: 'axios',
+      client: 'react-query',
       httpClient: 'axios',
       mock: false,
       prettier: true,
@@ -16,6 +16,12 @@ export default defineConfig({
         mutator: {
           path: './api-client.ts',
           name: 'customInstance',
+        },
+        query: {
+          useQuery: true,
+          useMutation: true,
+          useInfinite: true,
+          version: 5,
         },
       },
     },
