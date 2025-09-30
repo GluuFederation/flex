@@ -13,16 +13,18 @@ tags:
 
 # Auth Server
 
-The **Auth Server** menu covers the following important submenus to configure and manage the Auth server.
+The **Auth Server** menu covers the following important submenus to configure 
+and manage the Auth server.
 
 - Clients
-- Sessions
-- Keys
-- Server configuration
-- Logging
-- Enabled Acrs
-- Agama deployment
 - Scopes
+- Keys
+- Auth server properties
+- Logging
+- SSA
+- Authentication
+- Config API properties
+- Sessions
 
 ## Clients
 
@@ -105,7 +107,7 @@ Gluu Flex Admin UI.
 | UMA: Claims redirect URI                                                       | Array of The Claims Redirect URIs to which the client wishes the authorization server to direct the requesting party's user agent after completing its interaction.                                                                                                                                                                                                                                                              |
 | UMA: RPT Modification Script                                                   | List of Requesting Party Token (RPT) claims scripts.                                                                                                                                                                                                                                                                                                                                                                             |
 
-### Encription / Signing
+### Encryption / Signing
 
 
 | Client fields                                                                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -227,7 +229,7 @@ You'll find instructions for creating, retrieving, deleting, and validating SSAs
 
 ![image](../../assets/admin-ui/admin-ui-ssa.png)
 
-## Authn
+## Authentication
 
 Authentication Context Class Reference (ACR) enables applications to request and verify the level of authentication
 assurance or the context of the authentication process used for user authentication.
