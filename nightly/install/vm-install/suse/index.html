@@ -2870,7 +2870,7 @@ of Gluu Flex on SUSE Linux distributions</p>
 <ul>
 <li>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>~/
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>~/
 </code></pre></div></p>
 </li>
 <li>
@@ -2886,21 +2886,21 @@ of Gluu Flex on SUSE Linux distributions</p>
 </li>
 <li>
 <p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the package
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.suse15.x86_64.rpm.sha256sum  -P ~/
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum  -P ~/
 </code></pre></div></p>
 </li>
 <li>
 <p>Verify package integrity
-<div class="highlight"><pre><span></span><code>sha256sum -c flex-0.0.0-nightly.suse15.x86_64.rpm.sha256sum
+<div class="highlight"><pre><span></span><code>sha256sum -c flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum
 </code></pre></div>
 You should see:
-<div class="highlight"><pre><span></span><code>flex-0.0.0-nightly-suse15.x86_64.rpm: ok
+<div class="highlight"><pre><span></span><code>flex-replace-flex-version-suse15.x86_64.rpm: ok
 </code></pre></div></p>
 </li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Use SUSE <code>zypper</code> to install
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-0.0.0-nightly.suse15.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-replace-flex-version-stable.suse15.x86_64.rpm
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <ul>
