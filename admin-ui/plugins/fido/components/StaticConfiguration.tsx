@@ -18,7 +18,6 @@ import { StaticConfigurationProps, StaticConfigFormValues } from '../types/fido-
 const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   fidoConfiguration,
   handleSubmit,
-  loading,
   isSubmitting,
 }) => {
   const staticConfiguration = fidoConfiguration?.fido2Configuration

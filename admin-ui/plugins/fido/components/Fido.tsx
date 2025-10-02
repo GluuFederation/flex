@@ -76,7 +76,6 @@ const Fido: React.FC = () => {
             <StaticConfiguration
               handleSubmit={(data) => handleConfigSubmit(data, fidoConstants.STATIC)}
               fidoConfiguration={fidoConfiguration}
-              loading={isLoading}
               isSubmitting={isSubmitting}
             />
           )
@@ -85,7 +84,6 @@ const Fido: React.FC = () => {
             <DynamicConfiguration
               handleSubmit={(data) => handleConfigSubmit(data, fidoConstants.DYNAMIC)}
               fidoConfiguration={fidoConfiguration}
-              loading={isLoading}
               isSubmitting={isSubmitting}
             />
           )

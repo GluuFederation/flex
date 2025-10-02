@@ -1,4 +1,4 @@
-import { AppConfiguration1, Fido2Configuration } from 'JansConfigApi'
+import { AppConfiguration1 } from 'JansConfigApi'
 
 // Form values for Dynamic Configuration
 export interface DynamicConfigFormValues {
@@ -34,14 +34,12 @@ export interface StaticConfigFormValues {
 export interface DynamicConfigurationProps {
   fidoConfiguration: AppConfiguration1 | undefined
   handleSubmit: (data: DynamicConfigFormValues) => void
-  loading: boolean
   isSubmitting: boolean
 }
 
 export interface StaticConfigurationProps {
   fidoConfiguration: AppConfiguration1 | undefined
   handleSubmit: (data: StaticConfigFormValues) => void
-  loading: boolean
   isSubmitting: boolean
 }
 

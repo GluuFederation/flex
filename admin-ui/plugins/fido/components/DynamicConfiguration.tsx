@@ -21,7 +21,6 @@ import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fid
 const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   fidoConfiguration,
   handleSubmit,
-  loading,
   isSubmitting,
 }) => {
   const [modal, setModal] = useState(false)
