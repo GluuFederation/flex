@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class SsaApi {
   constructor(api) {
     this.api = api
@@ -15,10 +17,10 @@ export default class SsaApi {
       })
         .then((response) => response.json())
         .then((data) => {
-          resolve(data)
+          handleResponse(null, reject, resolve, data)
         })
         .catch((error) => {
-          reject(error)
+          handleResponse(error, reject, resolve, null)
         })
     })
   }
@@ -35,10 +37,10 @@ export default class SsaApi {
       })
         .then((response) => response.json())
         .then((data) => {
-          resolve(data)
+          handleResponse(null, reject, resolve, data)
         })
         .catch((error) => {
-          reject(error)
+          handleResponse(error, reject, resolve, null)
         })
     })
   }
@@ -54,27 +56,19 @@ export default class SsaApi {
       })
         .then((response) => response.json())
         .then((data) => {
-          resolve(data)
+          handleResponse(null, reject, resolve, data)
         })
         .catch((error) => {
-          reject(error)
+          handleResponse(error, reject, resolve, null)
         })
     })
   }
 
-  removeSsa = (opts) => {
+  removeSsa = ({ jti }) => {
     return new Promise((resolve, reject) => {
-      this.api.revokeSsa(opts, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+      this.api.revokeSsa({ jti }, (error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

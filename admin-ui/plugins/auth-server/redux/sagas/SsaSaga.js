@@ -16,7 +16,7 @@ import { getClient } from '@/redux/api/base'
 import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
 
-function* newFunction() {
+function* createSsaApi() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.SoftwareStatementAssertionSSAApi(
@@ -97,7 +97,7 @@ export function* removeSsaConfig({ payload }) {
   addAdditionalData(audit, DELETION, 'delete-ssa', payload)
   const token = yield select((state) => state.authReducer.token.access_token)
   try {
-    const ssaApi = yield* newFunction()
+    const ssaApi = yield* createSsaApi()
     const data = yield call(ssaApi.removeSsa, {
       jti: payload.action.action_data,
       authorization: 'Bearer ' + token,
