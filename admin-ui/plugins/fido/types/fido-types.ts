@@ -15,7 +15,13 @@ export interface DynamicConfigFormValues {
   metricReporterInterval: number | string
   metricReporterKeepDataDays: number | string
   personCustomObjectClassList: string[]
-  hints: string[]
+  fido2MetricsEnabled: boolean
+  fido2MetricsRetentionDays: number | string
+  fido2DeviceInfoCollection: boolean
+  fido2ErrorCategorization: boolean
+  fido2PerformanceMetrics: boolean
+  sessionIdPersistInCache: boolean
+  errorReasonEnabled: boolean
 }
 
 export interface StaticConfigFormValues {
@@ -26,8 +32,14 @@ export interface StaticConfigFormValues {
   authenticationHistoryExpiration: number | string
   serverMetadataFolder: string
   userAutoEnrollment: boolean
-  requestedCredentialTypes: string[]
   requestedParties: Array<{ key: string; value: string }>
+  metadataRefreshInterval: number | string
+  enabledFidoAlgorithms: string[]
+  metadataServers: Array<{ url: string; rootCert: string }>
+  disableMetadataService: boolean
+  hints: string[]
+  enterpriseAttestation: boolean
+  attestationMode: string
 }
 
 export interface DynamicConfigurationProps {

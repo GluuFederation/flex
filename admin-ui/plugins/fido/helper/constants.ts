@@ -9,6 +9,8 @@ export const fidoConstants = {
     ADD_CLASSES: 'actions.add_classes',
     ADD_TYPES: 'actions.add_types',
     ADD_PARTY: 'actions.add_party',
+    ADD_ALGORITHM: 'actions.add_algorithm',
+    ADD_METADATA_SERVER: 'actions.add_metadata_server',
   } as const,
 
   FORM_FIELDS: {
@@ -26,7 +28,13 @@ export const fidoConstants = {
     METRIC_REPORTER_KEEP_DATA_DAYS: 'metricReporterKeepDataDays',
     METRIC_REPORTER_ENABLED: 'metricReporterEnabled',
     PERSON_CUSTOM_OBJECT_CLASS_LIST: 'personCustomObjectClassList',
-    HINTS: 'hints',
+    FIDO2_METRICS_ENABLED: 'fido2MetricsEnabled',
+    FIDO2_METRICS_RETENTION_DAYS: 'fido2MetricsRetentionDays',
+    FIDO2_DEVICE_INFO_COLLECTION: 'fido2DeviceInfoCollection',
+    FIDO2_ERROR_CATEGORIZATION: 'fido2ErrorCategorization',
+    FIDO2_PERFORMANCE_METRICS: 'fido2PerformanceMetrics',
+    SESSION_ID_PERSIST_IN_CACHE: 'sessionIdPersistInCache',
+    ERROR_REASON_ENABLED: 'errorReasonEnabled',
 
     // Static Configuration Fields
     AUTHENTICATOR_CERTS_FOLDER: 'authenticatorCertsFolder',
@@ -36,8 +44,14 @@ export const fidoConstants = {
     AUTHENTICATION_HISTORY_EXPIRATION: 'authenticationHistoryExpiration',
     SERVER_METADATA_FOLDER: 'serverMetadataFolder',
     USER_AUTO_ENROLLMENT: 'userAutoEnrollment',
-    REQUESTED_CREDENTIAL_TYPES: 'requestedCredentialTypes',
     REQUESTED_PARTIES: 'requestedParties',
+    METADATA_REFRESH_INTERVAL: 'metadataRefreshInterval',
+    ENABLED_FIDO_ALGORITHMS: 'enabledFidoAlgorithms',
+    METADATA_SERVERS: 'metadataServers',
+    DISABLE_METADATA_SERVICE: 'disableMetadataService',
+    HINTS: 'hints',
+    ENTERPRISE_ATTESTATION: 'enterpriseAttestation',
+    ATTESTATION_MODE: 'attestationMode',
   } as const,
 
   LABELS: {
@@ -55,7 +69,13 @@ export const fidoConstants = {
     METRIC_REPORTER_KEEP_DATA_DAYS: 'fields.metric_reporter_keep_data_days',
     METRIC_REPORTER_ENABLED: 'fields.metric_reporter_enabled',
     PERSON_CUSTOM_OBJECT_CLASSES: 'fields.person_custom_object_classes',
-    HINTS: 'Hints',
+    FIDO2_METRICS_ENABLED: 'fields.fido2_metrics_enabled',
+    FIDO2_METRICS_RETENTION_DAYS: 'fields.fido2_metrics_retention_days',
+    FIDO2_DEVICE_INFO_COLLECTION: 'fields.fido2_device_info_collection',
+    FIDO2_ERROR_CATEGORIZATION: 'fields.fido2_error_categorization',
+    FIDO2_PERFORMANCE_METRICS: 'fields.fido2_performance_metrics',
+    SESSION_ID_PERSIST_IN_CACHE: 'fields.session_id_persist_in_cache',
+    ERROR_REASON_ENABLED: 'fields.error_reason_enabled',
 
     // Static Configuration Labels
     AUTHENTICATOR_CERTIFICATES_FOLDER: 'fields.authenticator_certificates_folder',
@@ -65,8 +85,14 @@ export const fidoConstants = {
     AUTHENTICATION_HISTORY_EXPIRATION: 'fields.authentication_history_expiration',
     SERVER_METADATA_FOLDER: 'fields.server_metadata_folder',
     USER_AUTO_ENROLLMENT: 'fields.user_auto_enrollment',
-    REQUESTED_CREDENTIAL_TYPES: 'fields.requested_credential_types',
     REQUESTED_PARTIES_ID: 'fields.requested_parties_id',
+    METADATA_REFRESH_INTERVAL: 'fields.metadata_refresh_interval',
+    ENABLED_FIDO_ALGORITHMS: 'fields.enabled_fido_algorithms',
+    METADATA_SERVERS: 'fields.metadata_servers',
+    DISABLE_METADATA_SERVICE: 'fields.disable_metadata_service',
+    HINTS: 'Hints',
+    ENTERPRISE_ATTESTATION: 'fields.enterprise_attestation',
+    ATTESTATION_MODE: 'fields.attestation_mode',
   } as const,
 
   VALIDATION_SCHEMAS: {

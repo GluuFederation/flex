@@ -8,14 +8,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
-import {
-  fidoConstants,
-  validationSchema,
-  transformToFormValues,
-  getAvailableHintOptions,
-  getEmptyDropdownMessage,
-} from '../helper'
+import { fidoConstants, validationSchema, transformToFormValues } from '../helper'
 import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido-types'
 
 const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
@@ -51,14 +44,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     },
     [formik],
   )
-
-  const availableHintOptions = useMemo(() => {
-    return getAvailableHintOptions(formik.values.hints)
-  }, [formik.values.hints])
-
-  const emptyDropdownMessage = useMemo(() => {
-    return getEmptyDropdownMessage(formik.values.hints)
-  }, [formik.values.hints])
 
   const personCustomObjectClassOptions = useMemo(() => {
     return (formik.values.personCustomObjectClassList || []).map((item) => ({
@@ -261,19 +246,86 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
         </Col>
 
         <Col sm={8}>
-          <GluuTypeAhead
-            name={fidoConstants.FORM_FIELDS.HINTS}
-            label={fidoConstants.LABELS.HINTS}
+          <GluuToggleRow
+            label={fidoConstants.LABELS.FIDO2_METRICS_ENABLED}
+            name={fidoConstants.FORM_FIELDS.FIDO2_METRICS_ENABLED}
             formik={formik}
-            value={formik.values.hints || []}
-            options={availableHintOptions}
             lsize={4}
             rsize={8}
-            showError={!!(formik.errors.hints && formik.touched.hints)}
-            errorMessage={formik.errors.hints}
             doc_category={fidoConstants.DOC_CATEGORY}
-            emptyLabel={emptyDropdownMessage}
-            allowNew={false}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuInputRow
+            label={fidoConstants.LABELS.FIDO2_METRICS_RETENTION_DAYS}
+            name={fidoConstants.FORM_FIELDS.FIDO2_METRICS_RETENTION_DAYS}
+            type="number"
+            value={formik.values.fido2MetricsRetentionDays || ''}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            showError={
+              !!(
+                formik.errors.fido2MetricsRetentionDays && formik.touched.fido2MetricsRetentionDays
+              )
+            }
+            errorMessage={formik.errors.fido2MetricsRetentionDays}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.FIDO2_DEVICE_INFO_COLLECTION}
+            name={fidoConstants.FORM_FIELDS.FIDO2_DEVICE_INFO_COLLECTION}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.FIDO2_ERROR_CATEGORIZATION}
+            name={fidoConstants.FORM_FIELDS.FIDO2_ERROR_CATEGORIZATION}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.FIDO2_PERFORMANCE_METRICS}
+            name={fidoConstants.FORM_FIELDS.FIDO2_PERFORMANCE_METRICS}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.SESSION_ID_PERSIST_IN_CACHE}
+            name={fidoConstants.FORM_FIELDS.SESSION_ID_PERSIST_IN_CACHE}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.ERROR_REASON_ENABLED}
+            name={fidoConstants.FORM_FIELDS.ERROR_REASON_ENABLED}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
       </FormGroup>

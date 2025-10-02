@@ -23,10 +23,15 @@ const dynamicConfigValidationSchema = Yup.object({
     .typeError('Metric Reporter Keep Data Days must be a number.')
     .required('Metric Reporter Keep Data Days is required.'),
   personCustomObjectClassList: Yup.array().of(Yup.string()),
-  hints: Yup.array()
-    .of(Yup.string().oneOf(Object.values(PublicKeyCredentialHints), 'Invalid hint value.'))
-    .min(1, 'At least one hint is required.')
-    .required('Hints are required.'),
+  fido2MetricsEnabled: Yup.boolean().required('FIDO2 Metrics Enabled is required.'),
+  fido2MetricsRetentionDays: Yup.number()
+    .typeError('FIDO2 Metrics Retention Days must be a number.')
+    .required('FIDO2 Metrics Retention Days is required.'),
+  fido2DeviceInfoCollection: Yup.boolean().required('FIDO2 Device Info Collection is required.'),
+  fido2ErrorCategorization: Yup.boolean().required('FIDO2 Error Categorization is required.'),
+  fido2PerformanceMetrics: Yup.boolean().required('FIDO2 Performance Metrics is required.'),
+  sessionIdPersistInCache: Yup.boolean().required('Session ID Persist In Cache is required.'),
+  errorReasonEnabled: Yup.boolean().required('Error Reason Enabled is required.'),
 })
 
 const staticConfigValidationSchema = Yup.object({
@@ -41,6 +46,23 @@ const staticConfigValidationSchema = Yup.object({
     .required('Authentication History Expiration is required.'),
   serverMetadataFolder: Yup.string().required('Server Metadata is required.'),
   userAutoEnrollment: Yup.boolean().required('User Auto Enrollment is required.'),
+  metadataRefreshInterval: Yup.number()
+    .typeError('Metadata Refresh Interval must be a number.')
+    .required('Metadata Refresh Interval is required.'),
+  enabledFidoAlgorithms: Yup.array().of(Yup.string()),
+  metadataServers: Yup.array().of(
+    Yup.object({
+      url: Yup.string().required('Metadata Server URL is required.'),
+      rootCert: Yup.string().required('Root Certificate is required.'),
+    }),
+  ),
+  disableMetadataService: Yup.boolean().required('Disable Metadata Service is required.'),
+  hints: Yup.array()
+    .of(Yup.string().oneOf(Object.values(PublicKeyCredentialHints), 'Invalid hint value.'))
+    .min(1, 'At least one hint is required.')
+    .required('Hints are required.'),
+  enterpriseAttestation: Yup.boolean().required('Enterprise Attestation is required.'),
+  attestationMode: Yup.string().required('Attestation Mode is required.'),
 })
 
 export const validationSchema: Record<

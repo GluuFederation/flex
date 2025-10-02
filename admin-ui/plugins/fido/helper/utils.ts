@@ -56,11 +56,20 @@ const transformStaticConfigToFormValues = (
     authenticationHistoryExpiration: config?.authenticationHistoryExpiration || '',
     serverMetadataFolder: config?.serverMetadataFolder || '',
     userAutoEnrollment: toBooleanValue(config?.userAutoEnrollment),
-    requestedCredentialTypes: [],
     requestedParties: (config?.rp || []).map((party) => ({
       key: party.id || '',
       value: (party.origins || []).join(','),
     })),
+    metadataRefreshInterval: config?.metadataRefreshInterval || '',
+    enabledFidoAlgorithms: config?.enabledFidoAlgorithms || [],
+    metadataServers: (config?.metadataServers || []).map((server) => ({
+      url: server.url || '',
+      rootCert: server.rootCert || '',
+    })),
+    disableMetadataService: toBooleanValue(config?.disableMetadataService),
+    hints: arrayValidationWithSchema(config?.hints || [], PublicKeyCredentialHints),
+    enterpriseAttestation: toBooleanValue(config?.enterpriseAttestation),
+    attestationMode: config?.attestationMode || '',
   }
 }
 
@@ -83,10 +92,13 @@ const transformDynamicConfigToFormValues = (
     personCustomObjectClassList: (config?.personCustomObjectClassList || []).map((item) =>
       typeof item === 'string' ? item : item,
     ),
-    hints: arrayValidationWithSchema(
-      config?.fido2Configuration?.hints || [],
-      PublicKeyCredentialHints,
-    ),
+    fido2MetricsEnabled: toBooleanValue(config?.fido2MetricsEnabled),
+    fido2MetricsRetentionDays: config?.fido2MetricsRetentionDays || '',
+    fido2DeviceInfoCollection: toBooleanValue(config?.fido2DeviceInfoCollection),
+    fido2ErrorCategorization: toBooleanValue(config?.fido2ErrorCategorization),
+    fido2PerformanceMetrics: toBooleanValue(config?.fido2PerformanceMetrics),
+    sessionIdPersistInCache: toBooleanValue(config?.sessionIdPersistInCache),
+    errorReasonEnabled: toBooleanValue(config?.errorReasonEnabled),
   }
 }
 
@@ -129,6 +141,16 @@ const applyStaticConfigChanges = (
     id: item.key,
     origins: [item.value],
   }))
+  payload.fido2Configuration.metadataRefreshInterval = Number(staticData.metadataRefreshInterval)
+  payload.fido2Configuration.enabledFidoAlgorithms = staticData.enabledFidoAlgorithms
+  payload.fido2Configuration.metadataServers = staticData.metadataServers.map((server) => ({
+    url: server.url,
+    rootCert: server.rootCert,
+  }))
+  payload.fido2Configuration.disableMetadataService = staticData.disableMetadataService
+  payload.fido2Configuration.hints = staticData.hints || []
+  payload.fido2Configuration.enterpriseAttestation = staticData.enterpriseAttestation
+  payload.fido2Configuration.attestationMode = staticData.attestationMode
 }
 
 const applyDynamicConfigChanges = (
@@ -148,11 +170,13 @@ const applyDynamicConfigChanges = (
   payload.metricReporterInterval = Number(dynamicData.metricReporterInterval)
   payload.metricReporterKeepDataDays = Number(dynamicData.metricReporterKeepDataDays)
   payload.personCustomObjectClassList = dynamicData.personCustomObjectClassList
-
-  if (!payload.fido2Configuration) {
-    payload.fido2Configuration = {}
-  }
-  payload.fido2Configuration.hints = dynamicData.hints || []
+  payload.fido2MetricsEnabled = dynamicData.fido2MetricsEnabled
+  payload.fido2MetricsRetentionDays = Number(dynamicData.fido2MetricsRetentionDays)
+  payload.fido2DeviceInfoCollection = dynamicData.fido2DeviceInfoCollection
+  payload.fido2ErrorCategorization = dynamicData.fido2ErrorCategorization
+  payload.fido2PerformanceMetrics = dynamicData.fido2PerformanceMetrics
+  payload.sessionIdPersistInCache = dynamicData.sessionIdPersistInCache
+  payload.errorReasonEnabled = dynamicData.errorReasonEnabled
 }
 
 const createFidoConfigPayload = ({
