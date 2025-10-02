@@ -11,29 +11,36 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import { fidoConstants, validationSchema } from '../helper'
 import { transformToFormValues, getAvailableHintOptions, getEmptyDropdownMessage } from '../helper'
+import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido-types'
 
-function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
-  const { fido } = fidoConfiguration
-
+const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
+  fidoConfiguration,
+  handleSubmit,
+  loading,
+}) => {
   const [modal, setModal] = useState(false)
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
   }, [])
 
-  const formik = useFormik({
-    initialValues: transformToFormValues(fido, fidoConstants.DYNAMIC),
+  const formik = useFormik<DynamicConfigFormValues>({
+    initialValues: transformToFormValues(
+      fidoConfiguration,
+      fidoConstants.DYNAMIC,
+    ) as DynamicConfigFormValues,
     onSubmit: toggle,
     validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.DYNAMIC_CONFIG],
+    enableReinitialize: true,
   })
 
   const submitForm = useCallback(() => {
     toggle()
     handleSubmit(formik.values)
-  }, [handleSubmit, toggle, formik])
+  }, [handleSubmit, toggle, formik.values])
 
   const handleFormSubmit = useCallback(
-    (e) => {
+    (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       formik.handleSubmit()
     },
@@ -49,13 +56,13 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
   }, [formik.values.hints])
 
   const personCustomObjectClassOptions = useMemo(() => {
-    return formik?.values?.personCustomObjectClassList
+    return formik.values.personCustomObjectClassList
       ? formik.values.personCustomObjectClassList.map((item) => ({
           key: '',
-          value: item,
+          value: typeof item === 'string' ? item : item.value,
         }))
       : []
-  }, [formik?.values?.personCustomObjectClassList])
+  }, [formik.values.personCustomObjectClassList])
 
   return (
     <Form onSubmit={handleFormSubmit} className="mt-3">
@@ -68,7 +75,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.issuer && formik.touched.issuer}
+            showError={!!(formik.errors.issuer && formik.touched.issuer)}
             errorMessage={formik.errors.issuer}
           />
         </Col>
@@ -81,7 +88,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.baseEndpoint && formik.touched.baseEndpoint}
+            showError={!!(formik.errors.baseEndpoint && formik.touched.baseEndpoint)}
             errorMessage={formik.errors.baseEndpoint}
           />
         </Col>
@@ -94,7 +101,9 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval}
+            showError={
+              !!(formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval)
+            }
             errorMessage={formik.errors.cleanServiceInterval}
             type="number"
           />
@@ -109,7 +118,10 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.cleanServiceBatchChunkSize && formik.touched.cleanServiceBatchChunkSize
+              !!(
+                formik.errors.cleanServiceBatchChunkSize &&
+                formik.touched.cleanServiceBatchChunkSize
+              )
             }
             errorMessage={formik.errors.cleanServiceBatchChunkSize}
             type="number"
@@ -148,7 +160,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.loggingLevel && formik.touched.loggingLevel}
+            showError={!!(formik.errors.loggingLevel && formik.touched.loggingLevel)}
             errorMessage={formik.errors.loggingLevel}
           />
         </Col>
@@ -161,7 +173,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
+            showError={!!(formik.errors.loggingLayout && formik.touched.loggingLayout)}
             errorMessage={formik.errors.loggingLayout}
           />
         </Col>
@@ -175,8 +187,10 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.externalLoggerConfiguration &&
-              formik.touched.externalLoggerConfiguration
+              !!(
+                formik.errors.externalLoggerConfiguration &&
+                formik.touched.externalLoggerConfiguration
+              )
             }
             errorMessage={formik.errors.externalLoggerConfiguration}
           />
@@ -192,7 +206,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.metricReporterInterval && formik.touched.metricReporterInterval
+              !!(formik.errors.metricReporterInterval && formik.touched.metricReporterInterval)
             }
             errorMessage={formik.errors.metricReporterInterval}
           />
@@ -208,7 +222,10 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.metricReporterKeepDataDays && formik.touched.metricReporterKeepDataDays
+              !!(
+                formik.errors.metricReporterKeepDataDays &&
+                formik.touched.metricReporterKeepDataDays
+              )
             }
             errorMessage={formik.errors.metricReporterKeepDataDays}
           />
@@ -250,7 +267,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             options={availableHintOptions}
             lsize={4}
             rsize={8}
-            showError={formik.errors.hints && formik.touched.hints}
+            showError={!!(formik.errors.hints && formik.touched.hints)}
             errorMessage={formik.errors.hints}
             doc_category={fidoConstants.DOC_CATEGORY}
             emptyLabel={emptyDropdownMessage}
@@ -271,4 +288,5 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
     </Form>
   )
 }
+
 export default React.memo(DynamicConfiguration)

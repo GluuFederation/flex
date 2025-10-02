@@ -33,7 +33,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import GluuViewDetailModal from '../../../app/routes/Apps/Gluu/GluuViewDetailsModal'
 import customColors from '@/customColors'
 import moment from 'moment'
-import { deleteFido2DeviceData } from '../../fido/redux/features/fidoSlice'
+import { useDeleteFido2Data } from '../../../jans_config_api_orval/src/JansConfigApi'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
   CustomAttribute,
@@ -51,6 +51,7 @@ import {
 function UserList(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
+  const deleteFido2Mutation = useDeleteFido2Data()
   const renders = useRef(0)
   const opt: SearchOptions = {}
 
@@ -312,7 +313,7 @@ function UserList(): JSX.Element {
 
   const handleRemove2Fa = (row: DeviceData): void => {
     if (row.type === 'FIDO2' || row.type === 'SUPER GLUU') {
-      dispatch(deleteFido2DeviceData(row.id || ''))
+      deleteFido2Mutation.mutate({ id: row.id || '' })
     } else if (row.type === 'OTP') {
       const getOTPDevices =
         userDetails?.customAttributes?.filter(
