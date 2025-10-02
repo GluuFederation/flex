@@ -38,9 +38,13 @@ export function* editLogging({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, UPDATE, API_LOGGING, {
-      message: payload?.otherFields?.userMessage,
-      modifiedFields: payload?.otherFields?.changedFields,
-      performedOn: 'logging-config',
+      action: {
+        action_message: payload?.otherFields?.userMessage,
+        action_data: {
+          modifiedFields: payload?.otherFields?.changedFields,
+          performedOn: 'logging-config',
+        },
+      },
     })
     const api = yield* newFunction()
     const data = yield call(api.editLoggingConfig, payload.data)
