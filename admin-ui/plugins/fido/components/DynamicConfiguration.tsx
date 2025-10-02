@@ -60,15 +60,12 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     return getEmptyDropdownMessage(formik.values.hints)
   }, [formik.values.hints])
 
-  const personCustomObjectClassList = formik.values.personCustomObjectClassList
   const personCustomObjectClassOptions = useMemo(() => {
-    return personCustomObjectClassList
-      ? personCustomObjectClassList.map((item) => ({
-          key: '',
-          value: typeof item === 'string' ? item : item.value,
-        }))
-      : []
-  }, [personCustomObjectClassList])
+    return (formik.values.personCustomObjectClassList || []).map((item) => ({
+      key: '',
+      value: item,
+    }))
+  }, [formik.values.personCustomObjectClassList])
 
   return (
     <Form onSubmit={handleFormSubmit} className="mt-3">
@@ -161,7 +158,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
             label={fidoConstants.LABELS.LOGGING_LEVEL}
             name={fidoConstants.FORM_FIELDS.LOGGING_LEVEL}
             value={formik.values.loggingLevel}
-            values={fidoConstants.LOGGING_LEVELS}
+            values={[...fidoConstants.LOGGING_LEVELS]}
             formik={formik}
             lsize={4}
             rsize={8}

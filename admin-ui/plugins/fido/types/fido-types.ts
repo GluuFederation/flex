@@ -14,7 +14,7 @@ export interface DynamicConfigFormValues {
   metricReporterEnabled: boolean
   metricReporterInterval: number | string
   metricReporterKeepDataDays: number | string
-  personCustomObjectClassList: Array<{ value: string } | string>
+  personCustomObjectClassList: string[]
   hints: string[]
 }
 
@@ -22,12 +22,11 @@ export interface StaticConfigFormValues {
   authenticatorCertsFolder: string
   mdsCertsFolder: string
   mdsTocsFolder: string
-  checkU2fAttestations: boolean
   unfinishedRequestExpiration: number | string
   authenticationHistoryExpiration: number | string
   serverMetadataFolder: string
   userAutoEnrollment: boolean
-  requestedCredentialTypes: Array<{ value: string } | string>
+  requestedCredentialTypes: string[]
   requestedParties: Array<{ key: string; value: string }>
 }
 

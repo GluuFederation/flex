@@ -9,7 +9,7 @@ export const fidoConstants = {
     ADD_CLASSES: 'actions.add_classes',
     ADD_TYPES: 'actions.add_types',
     ADD_PARTY: 'actions.add_party',
-  },
+  } as const,
 
   FORM_FIELDS: {
     // Dynamic Configuration Fields
@@ -30,17 +30,15 @@ export const fidoConstants = {
 
     // Static Configuration Fields
     AUTHENTICATOR_CERTS_FOLDER: 'authenticatorCertsFolder',
-    MDS_ACCESS_TOKEN: 'mdsAccessToken',
     MDS_CERTS_FOLDER: 'mdsCertsFolder',
     MDS_TOCS_FOLDER: 'mdsTocsFolder',
-    CHECK_U2F_ATTESTATIONS: 'checkU2fAttestations',
     UNFINISHED_REQUEST_EXPIRATION: 'unfinishedRequestExpiration',
     AUTHENTICATION_HISTORY_EXPIRATION: 'authenticationHistoryExpiration',
     SERVER_METADATA_FOLDER: 'serverMetadataFolder',
     USER_AUTO_ENROLLMENT: 'userAutoEnrollment',
     REQUESTED_CREDENTIAL_TYPES: 'requestedCredentialTypes',
     REQUESTED_PARTIES: 'requestedParties',
-  },
+  } as const,
 
   LABELS: {
     // Dynamic Configuration Labels
@@ -61,27 +59,25 @@ export const fidoConstants = {
 
     // Static Configuration Labels
     AUTHENTICATOR_CERTIFICATES_FOLDER: 'fields.authenticator_certificates_folder',
-    MDS_ACCESS_TOKEN: 'fields.mds_access_token',
     MDS_TOC_CERTIFICATES_FOLDER: 'fields.mds_toc_certificates_folder',
     MDS_TOC_FILES_FOLDER: 'fields.mds_toc_files_folder',
-    CHECK_U2F_ATTESTATIONS: 'fields.check_u2f_attestations',
     UNFINISHED_REQUEST_EXPIRATION: 'fields.unfinished_request_expiration',
     AUTHENTICATION_HISTORY_EXPIRATION: 'fields.authentication_history_expiration',
     SERVER_METADATA_FOLDER: 'fields.server_metadata_folder',
     USER_AUTO_ENROLLMENT: 'fields.user_auto_enrollment',
     REQUESTED_CREDENTIAL_TYPES: 'fields.requested_credential_types',
     REQUESTED_PARTIES_ID: 'fields.requested_parties_id',
-  },
+  } as const,
 
   VALIDATION_SCHEMAS: {
     STATIC_CONFIG: 'staticConfigValidationSchema',
     DYNAMIC_CONFIG: 'dynamicConfigValidationSchema',
-  },
+  } as const,
 
-  BINARY_VALUES: { TRUE: 'true', FALSE: 'false' },
+  BINARY_VALUES: { TRUE: 'true', FALSE: 'false' } as const,
 
   EMPTY_DROPDOWN_MESSAGE: {
     ALL_AVAILABLE_HINTS_SELECTED: 'fields.allAvailableHintsSelected',
     NO_MATCHING_OPTIONS: 'fields.noMatchingOptions',
-  },
-}
+  } as const,
+} as const

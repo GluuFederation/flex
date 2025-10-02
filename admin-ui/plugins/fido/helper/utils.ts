@@ -52,7 +52,6 @@ const transformStaticConfigToFormValues = (
     authenticatorCertsFolder: config?.authenticatorCertsFolder || '',
     mdsCertsFolder: config?.mdsCertsFolder || '',
     mdsTocsFolder: config?.mdsTocsFolder || '',
-    checkU2fAttestations: false, // Property no longer exists in API, keeping for backward compatibility
     unfinishedRequestExpiration: config?.unfinishedRequestExpiration || '',
     authenticationHistoryExpiration: config?.authenticationHistoryExpiration || '',
     serverMetadataFolder: config?.serverMetadataFolder || '',
@@ -81,7 +80,9 @@ const transformDynamicConfigToFormValues = (
     metricReporterEnabled: toBooleanValue(config?.metricReporterEnabled),
     metricReporterInterval: config?.metricReporterInterval || '',
     metricReporterKeepDataDays: config?.metricReporterKeepDataDays || '',
-    personCustomObjectClassList: config?.personCustomObjectClassList || [],
+    personCustomObjectClassList: (config?.personCustomObjectClassList || []).map((item) =>
+      typeof item === 'string' ? item : item,
+    ),
     hints: arrayValidationWithSchema(
       config?.fido2Configuration?.hints || [],
       PublicKeyCredentialHints,
@@ -146,9 +147,7 @@ const applyDynamicConfigChanges = (
   payload.metricReporterEnabled = dynamicData.metricReporterEnabled
   payload.metricReporterInterval = Number(dynamicData.metricReporterInterval)
   payload.metricReporterKeepDataDays = Number(dynamicData.metricReporterKeepDataDays)
-  payload.personCustomObjectClassList = dynamicData.personCustomObjectClassList.map((item) =>
-    typeof item === 'string' ? item : item.value,
-  )
+  payload.personCustomObjectClassList = dynamicData.personCustomObjectClassList
 
   if (!payload.fido2Configuration) {
     payload.fido2Configuration = {}

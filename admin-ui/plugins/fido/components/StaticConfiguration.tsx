@@ -45,25 +45,19 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     handleSubmit(formik.values)
   }, [handleSubmit, toggle, formik.values])
 
-  const requestedCredentialTypes = formik.values.requestedCredentialTypes
   const credentialTypesOptions = useMemo(() => {
-    return requestedCredentialTypes
-      ? requestedCredentialTypes.map((item) => ({
-          key: '',
-          value: typeof item === 'string' ? item : item.value,
-        }))
-      : []
-  }, [requestedCredentialTypes])
+    return (formik.values.requestedCredentialTypes || []).map((item) => ({
+      key: '',
+      value: item,
+    }))
+  }, [formik.values.requestedCredentialTypes])
 
-  const requestedParties = formik.values.requestedParties
   const requestedPartiesOptions = useMemo(() => {
-    return requestedParties
-      ? requestedParties.map((item) => ({
-          key: item.key,
-          value: item.value,
-        }))
-      : []
-  }, [requestedParties])
+    return (formik.values.requestedParties || []).map((item) => ({
+      key: item.key,
+      value: item.value,
+    }))
+  }, [formik.values.requestedParties])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -112,17 +106,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             rsize={8}
             showError={!!(formik.errors.mdsTocsFolder && formik.touched.mdsTocsFolder)}
             errorMessage={formik.errors.mdsTocsFolder}
-          />
-        </Col>
-
-        <Col sm={8}>
-          <GluuToggleRow
-            label={fidoConstants.LABELS.CHECK_U2F_ATTESTATIONS}
-            name={fidoConstants.FORM_FIELDS.CHECK_U2F_ATTESTATIONS}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
 
