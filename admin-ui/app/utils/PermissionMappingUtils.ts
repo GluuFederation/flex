@@ -58,13 +58,20 @@ export function buildMappingGuidanceMessage(
   permissionKey: string | undefined,
   mappedRoles: string[] | undefined,
 ): string {
-  const rolesList = mappedRoles ? mappedRoles.join(', ') : ''
-  const rolesWord = mappedRoles ? (mappedRoles.length > 1 ? 'roles' : 'role') : ''
-  return ` This permission is mapped to ${rolesWord}: ${rolesList}. Please remove it from mapping menu.`
+  if (!permissionKey) {
+    return 'Unable to delete permission. Permission identifier not found.'
+  }
+
+  if (!mappedRoles || mappedRoles.length === 0) {
+    return `Unable to delete permission "${permissionKey}". Please check if it's still in use.`
+  }
+
+  const rolesList = mappedRoles.join(', ')
+  const rolesWord = mappedRoles.length > 1 ? 'roles' : 'role'
+  return `Unable to delete permission "${permissionKey}". It is currently mapped to ${rolesWord}: ${rolesList}. Please remove it from the role mapping menu first.`
 }
 
 export function buildPermissionDeleteErrorMessage(
-  error: unknown,
   actionData: ActionData,
   apiPermissions: ApiPermissionItem[] | undefined,
   rolePermissionMapping: RolePermissionMappingEntry[] | undefined,

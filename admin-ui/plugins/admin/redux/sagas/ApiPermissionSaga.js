@@ -125,13 +125,18 @@ export function* deletePermission({ payload }) {
     const actionData = payload?.action?.action_data
     const apiPermissions = yield select((state) => state.apiPermissionReducer.items || [])
     const rolePermissionMapping = yield select((state) => state.mappingReducer.items || [])
-    const finalMessage = buildPermissionDeleteErrorMessage(
-      e,
-      actionData,
-      apiPermissions,
-      rolePermissionMapping,
-    )
-
+    let finalMessage
+    try {
+      finalMessage = buildPermissionDeleteErrorMessage(
+        actionData,
+        apiPermissions,
+        rolePermissionMapping,
+      )
+    } catch (msgError) {
+      console.error('Error building permission delete message:', msgError)
+      finalMessage =
+        e?.response?.body?.responseMessage || e.message || 'Failed to delete permission'
+    }
     yield put(updateToast(true, 'error', finalMessage))
     yield put(deletePermissionResponse({ inum: null }))
     if (isFourZeroOneError(e)) {
