@@ -1,10 +1,6 @@
 import { PublicKeyCredentialHints } from '../types'
 import { fidoConstants } from './constants'
-
-export interface FidoRequestedParty {
-  id: string
-  origins: string[]
-}
+import { FidoRequestedParty } from 'Utils/types'
 
 const arrayValidationWithSchema = (givenArray: string[], schema: Record<string, string>) =>
   Array.isArray(givenArray)
@@ -83,15 +79,31 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
         data.authenticationHistoryExpiration
       payload.fido2Configuration.serverMetadataFolder = data.serverMetadataFolder
       payload.fido2Configuration.userAutoEnrollment = data.userAutoEnrollment
-      payload.fido2Configuration.enabledFidoAlgorithms = data.requestedCredentialTypes.map(
-        (item: any) => (item?.value ? item?.value : item),
+      payload.fido2Configuration.enabledFidoAlgorithms = Array.isArray(
+        data.requestedCredentialTypes,
       )
-      payload.fido2Configuration.rp = data.requestedParties.map((item: any) => {
-        return {
-          id: item.key,
-          origins: [item.value],
-        }
-      })
+        ? data.requestedCredentialTypes.map((item: any) => (item?.value ? item?.value : item))
+        : []
+      payload.fido2Configuration.rp = (() => {
+        const parties = Array.isArray(data.requestedParties) ? data.requestedParties : []
+        const byId: Record<string, { id: string; origins: string[] }> = {}
+        parties.forEach((item: any) => {
+          const id = item?.id ?? item?.key ?? item?.name
+          const origins: string[] = Array.isArray(item?.origins)
+            ? item.origins
+            : Array.isArray(item?.domains)
+              ? item.domains
+              : item?.value
+                ? [item.value]
+                : []
+          if (!id) return
+          if (!byId[id]) byId[id] = { id, origins: [] }
+          origins.forEach((o) => {
+            if (o && !byId[id].origins.includes(o)) byId[id].origins.push(o)
+          })
+        })
+        return Object.values(byId)
+      })()
     }
   } else {
     payload.issuer = data.issuer
