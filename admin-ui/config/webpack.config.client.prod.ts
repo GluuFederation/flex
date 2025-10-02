@@ -73,6 +73,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       'Components': path.resolve(__dirname, '../app/components'),
       'Context': path.resolve(__dirname, '../app/context'),
       'Images': path.resolve(__dirname, '../app/images'),
+      'JansConfigApi': path.resolve(__dirname, '../jans_config_api_orval/src/JansConfigApi.ts'),
       'Plugins': path.resolve(__dirname, '../plugins'),
       'Redux': path.resolve(__dirname, '../app/redux'),
       'Routes': path.resolve(__dirname, '../app/routes'),

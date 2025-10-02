@@ -9,14 +9,20 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
-import { fidoConstants, validationSchema } from '../helper'
-import { transformToFormValues, getAvailableHintOptions, getEmptyDropdownMessage } from '../helper'
+import {
+  fidoConstants,
+  validationSchema,
+  transformToFormValues,
+  getAvailableHintOptions,
+  getEmptyDropdownMessage,
+} from '../helper'
 import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido-types'
 
 const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   fidoConfiguration,
   handleSubmit,
   loading,
+  isSubmitting,
 }) => {
   const [modal, setModal] = useState(false)
 
@@ -55,14 +61,16 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     return getEmptyDropdownMessage(formik.values.hints)
   }, [formik.values.hints])
 
+  // Extract stable reference for useMemo dependency
+  const personCustomObjectClassList = formik.values.personCustomObjectClassList
   const personCustomObjectClassOptions = useMemo(() => {
-    return formik.values.personCustomObjectClassList
-      ? formik.values.personCustomObjectClassList.map((item) => ({
+    return personCustomObjectClassList
+      ? personCustomObjectClassList.map((item) => ({
           key: '',
           value: typeof item === 'string' ? item : item.value,
         }))
       : []
-  }, [formik.values.personCustomObjectClassList])
+  }, [personCustomObjectClassList])
 
   return (
     <Form onSubmit={handleFormSubmit} className="mt-3">
@@ -281,10 +289,17 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}
             type="submit"
+            disabled={isSubmitting}
           />
         </Col>
       </Row>
-      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
+      <GluuCommitDialog
+        handler={toggle}
+        modal={modal}
+        onAccept={submitForm}
+        formik={formik}
+        disabled={isSubmitting}
+      />
     </Form>
   )
 }

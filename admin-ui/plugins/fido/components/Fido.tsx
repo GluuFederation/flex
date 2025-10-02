@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
 import { Card, CardBody } from 'Components'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -11,7 +12,8 @@ import { fidoConstants, createFidoConfigPayload } from '../helper'
 import {
   useGetPropertiesFido2,
   usePutPropertiesFido2,
-} from '../../../jans_config_api_orval/src/JansConfigApi'
+  getGetPropertiesFido2QueryKey,
+} from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useDispatch } from 'react-redux'
 import { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido-types'
@@ -19,57 +21,44 @@ import { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido-t
 const Fido: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const queryClient = useQueryClient()
 
   // React Query hooks
-  const { data: fidoConfiguration, isLoading, refetch } = useGetPropertiesFido2()
-  const putFidoMutation = usePutPropertiesFido2()
+  const { data: fidoConfiguration, isLoading } = useGetPropertiesFido2()
+  const putFidoMutation = usePutPropertiesFido2({
+    mutation: {
+      onSuccess: () => {
+        dispatch(updateToast(true, 'success', t('messages.fido_config_updated_successfully')))
+        // Invalidate cache to trigger automatic refetch
+        queryClient.invalidateQueries({ queryKey: getGetPropertiesFido2QueryKey() })
+      },
+      onError: (error) => {
+        const errorMessage =
+          error?.response?.data?.message || t('messages.fido_config_update_failed')
+        dispatch(updateToast(true, 'error', errorMessage))
+      },
+    },
+  })
 
   SetTitle(t('titles.fido_management'))
 
-  const handleDynamicConfigurationSubmit = useCallback(
-    (data: DynamicConfigFormValues) => {
-      if (!fidoConfiguration) return
+  // Single unified submit handler for both configurations
+  const handleConfigSubmit = useCallback(
+    (data: DynamicConfigFormValues | StaticConfigFormValues, type: string) => {
+      if (!fidoConfiguration) {
+        dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
+        return
+      }
 
       const apiPayload = createFidoConfigPayload({
         fidoConfiguration,
         data,
-        type: fidoConstants.DYNAMIC,
+        type,
       })
 
-      putFidoMutation.mutate(apiPayload, {
-        onSuccess: () => {
-          dispatch(updateToast(true, 'success'))
-          refetch()
-        },
-        onError: () => {
-          dispatch(updateToast(true, 'error'))
-        },
-      })
+      putFidoMutation.mutate(apiPayload)
     },
-    [fidoConfiguration, putFidoMutation, dispatch, refetch],
-  )
-
-  const handleStaticConfigurationSubmit = useCallback(
-    (data: StaticConfigFormValues) => {
-      if (!fidoConfiguration) return
-
-      const apiPayload = createFidoConfigPayload({
-        fidoConfiguration,
-        data,
-        type: fidoConstants.STATIC,
-      })
-
-      putFidoMutation.mutate(apiPayload, {
-        onSuccess: () => {
-          dispatch(updateToast(true, 'success'))
-          refetch()
-        },
-        onError: () => {
-          dispatch(updateToast(true, 'error'))
-        },
-      })
-    },
-    [fidoConfiguration, putFidoMutation, dispatch, refetch],
+    [fidoConfiguration, putFidoMutation, dispatch, t],
   )
 
   const tabNames = [
@@ -79,35 +68,32 @@ const Fido: React.FC = () => {
 
   const tabToShow = useCallback(
     (tabName: string) => {
+      const isSubmitting = putFidoMutation.isPending
+
       switch (tabName) {
         case t('menus.static_configuration'):
           return (
             <StaticConfiguration
-              handleSubmit={handleStaticConfigurationSubmit}
+              handleSubmit={(data) => handleConfigSubmit(data, fidoConstants.STATIC)}
               fidoConfiguration={fidoConfiguration}
-              loading={isLoading || putFidoMutation.isPending}
+              loading={isLoading}
+              isSubmitting={isSubmitting}
             />
           )
         case t('menus.dynamic_configuration'):
           return (
             <DynamicConfiguration
-              handleSubmit={handleDynamicConfigurationSubmit}
+              handleSubmit={(data) => handleConfigSubmit(data, fidoConstants.DYNAMIC)}
               fidoConfiguration={fidoConfiguration}
-              loading={isLoading || putFidoMutation.isPending}
+              loading={isLoading}
+              isSubmitting={isSubmitting}
             />
           )
         default:
           return null
       }
     },
-    [
-      t,
-      handleStaticConfigurationSubmit,
-      handleDynamicConfigurationSubmit,
-      fidoConfiguration,
-      isLoading,
-      putFidoMutation.isPending,
-    ],
+    [t, handleConfigSubmit, fidoConfiguration, isLoading, putFidoMutation.isPending],
   )
 
   return (

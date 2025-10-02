@@ -19,6 +19,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   fidoConfiguration,
   handleSubmit,
   loading,
+  isSubmitting,
 }) => {
   const staticConfiguration = fidoConfiguration?.fido2Configuration
 
@@ -45,23 +46,26 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     handleSubmit(formik.values)
   }, [handleSubmit, toggle, formik.values])
 
+  // Extract stable references for useMemo dependencies
+  const requestedCredentialTypes = formik.values.requestedCredentialTypes
   const credentialTypesOptions = useMemo(() => {
-    return formik.values.requestedCredentialTypes
-      ? formik.values.requestedCredentialTypes.map((item) => ({
+    return requestedCredentialTypes
+      ? requestedCredentialTypes.map((item) => ({
           key: '',
           value: typeof item === 'string' ? item : item.value,
         }))
       : []
-  }, [formik.values.requestedCredentialTypes])
+  }, [requestedCredentialTypes])
 
+  const requestedParties = formik.values.requestedParties
   const requestedPartiesOptions = useMemo(() => {
-    return formik.values.requestedParties
-      ? formik.values.requestedParties.map((item) => ({
+    return requestedParties
+      ? requestedParties.map((item) => ({
           key: item.key,
           value: item.value,
         }))
       : []
-  }, [formik.values.requestedParties])
+  }, [requestedParties])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -230,6 +234,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}
             type="submit"
+            disabled={isSubmitting}
           />
         </Col>
       </Row>
@@ -239,6 +244,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         feature={adminUiFeatures.fido_configuration_write}
         onAccept={submitForm}
         formik={formik}
+        disabled={isSubmitting}
       />
     </Form>
   )

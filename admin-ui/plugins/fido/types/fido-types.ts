@@ -1,8 +1,4 @@
-import { FormikProps } from 'formik'
-import {
-  AppConfiguration1,
-  Fido2Configuration,
-} from '../../../jans_config_api_orval/src/JansConfigApi'
+import { AppConfiguration1, Fido2Configuration } from 'JansConfigApi'
 
 // Form values for Dynamic Configuration
 export interface DynamicConfigFormValues {
@@ -22,7 +18,6 @@ export interface DynamicConfigFormValues {
   hints: string[]
 }
 
-// Form values for Static Configuration
 export interface StaticConfigFormValues {
   authenticatorCertsFolder: string
   mdsCertsFolder: string
@@ -36,34 +31,20 @@ export interface StaticConfigFormValues {
   requestedParties: Array<{ key: string; value: string }>
 }
 
-// FIDO Configuration response structure
-export interface FidoConfigurationData {
-  fido: AppConfiguration1
-  loading: boolean
-}
-
-// Component Props
-export interface FidoProps {}
-
 export interface DynamicConfigurationProps {
   fidoConfiguration: AppConfiguration1 | undefined
   handleSubmit: (data: DynamicConfigFormValues) => void
   loading: boolean
+  isSubmitting: boolean
 }
 
 export interface StaticConfigurationProps {
   fidoConfiguration: AppConfiguration1 | undefined
   handleSubmit: (data: StaticConfigFormValues) => void
   loading: boolean
+  isSubmitting: boolean
 }
 
-// RequestedParty structure for form mapping
-export interface RequestedPartyForm {
-  name: string
-  domains: string[]
-}
-
-// Utility types for helper functions
 export interface CreateFidoConfigPayloadParams {
   fidoConfiguration: AppConfiguration1
   data: DynamicConfigFormValues | StaticConfigFormValues

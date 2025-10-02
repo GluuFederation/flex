@@ -33,7 +33,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import GluuViewDetailModal from '../../../app/routes/Apps/Gluu/GluuViewDetailsModal'
 import customColors from '@/customColors'
 import moment from 'moment'
-import { useDeleteFido2Data } from '../../../jans_config_api_orval/src/JansConfigApi'
+import { useDeleteFido2Data } from 'JansConfigApi'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
   CustomAttribute,
