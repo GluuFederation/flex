@@ -1,4 +1,5 @@
 import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
@@ -41,29 +42,49 @@ const JansLockConfiguration = () => {
 
   const formik = useFormik({
     initialValues: lockConfigs,
-    onSubmit: () => {
-      toggle()
-    },
+    onSubmit: () => toggle(),
+    validationSchema: Yup.object({
+      cleanServiceBatchChunkSize: Yup.number().integer().min(1).required('Required field'),
+      cleanServiceInterval: Yup.number().integer().min(1).required('Required field'),
+      metricReporterInterval: Yup.number().integer().min(1).typeError('Must be a number'),
+      metricReporterKeepDataDays: Yup.number().integer().min(0).typeError('Must be a number'),
+    }),
   })
-
   const submitForm = (userMessage) => {
     const differences = []
-    delete formik.values?.action_message
+    // Work on a cloned, type-normalized copy
+    const diffSource = { ...formik.values }
+    // Normalize booleans expected by backend
+    const boolKeys = ['metricReporterEnabled', 'disableJdkLogger']
+    boolKeys.forEach((k) => {
+      if (k in diffSource) diffSource[k] = String(diffSource[k]) === 'true'
+    })
+    // Normalize numeric fields
+    const numKeys = [
+      'metricReporterInterval',
+      'metricReporterKeepDataDays',
+      'cleanServiceInterval',
+      'cleanServiceBatchChunkSize',
+    ]
+    numKeys.forEach((k) => {
+      if (diffSource[k] !== undefined && diffSource[k] !== '') diffSource[k] = Number(diffSource[k])
+    })
+    delete diffSource?.action_message
 
-    for (const key in formik.values) {
+    for (const key in diffSource) {
       if (Object.prototype.hasOwnProperty.call(lockConfigs, key)) {
-        if (JSON.stringify(lockConfigs[key]) !== JSON.stringify(formik.values[key])) {
+        if (JSON.stringify(lockConfigs[key]) !== JSON.stringify(diffSource[key])) {
           differences.push({
             op: 'replace',
             path: `/${key}`,
-            value: formik.values[key],
+            value: diffSource[key],
           })
         }
-      } else if (formik.values[key]) {
+      } else if (diffSource[key]) {
         differences.push({
           op: 'add',
           path: `/${key}`,
-          value: formik.values[key],
+          value: diffSource[key],
         })
       }
     }
@@ -274,6 +295,8 @@ const JansLockConfiguration = () => {
             disabled={viewOnly}
             errorMessage={formik.errors.cleanServiceBatchChunkSize}
             type="number"
+            min={1}
+            step={1}
           />
         </Col>
 

@@ -540,7 +540,7 @@
     "external_logger_configuration": "External Logger Configuration",
     "metric_reporter_interval": "Metric Reporter Interval",
     "metric_reporter_keep_data_days": "Metric Reporter Keep Data Days",
-    "metric_reporter_enabled": "Enabled Metric Reporter",
+    "metric_reporter_enabled": "Enable Metric Reporter",
     "person_custom_object_classes": "Person Custom Object Classes",
     "enable_super_gluu": "Enable Super Gluu",
     "authenticator_certificates_folder": "Authenticator Certificates Folder",
