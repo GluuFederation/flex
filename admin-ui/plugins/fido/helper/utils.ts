@@ -8,13 +8,10 @@ import {
   PutPropertiesFido2Params,
 } from '../types/fido-types'
 
-// Type guard for static configuration
-const isStaticConfigType = (type: string): type is typeof fidoConstants.STATIC => {
+const isStaticConfigType = (type?: string): type is typeof fidoConstants.STATIC => {
   return type === fidoConstants.STATIC
 }
-
-// Type guard for dynamic configuration
-const isDynamicConfigType = (type: string): type is typeof fidoConstants.DYNAMIC => {
+const isDynamicConfigType = (type?: string): type is typeof fidoConstants.DYNAMIC => {
   return type === fidoConstants.DYNAMIC
 }
 
@@ -48,7 +45,6 @@ const toBooleanValue = (value: unknown): boolean => {
   return Boolean(value)
 }
 
-// Transform static configuration to form values
 const transformStaticConfigToFormValues = (
   config: Fido2Configuration | undefined,
 ): StaticConfigFormValues => {
@@ -56,7 +52,7 @@ const transformStaticConfigToFormValues = (
     authenticatorCertsFolder: config?.authenticatorCertsFolder || '',
     mdsCertsFolder: config?.mdsCertsFolder || '',
     mdsTocsFolder: config?.mdsTocsFolder || '',
-    checkU2fAttestations: toBooleanValue(config?.checkU2fAttestations),
+    checkU2fAttestations: false, // Property no longer exists in API, keeping for backward compatibility
     unfinishedRequestExpiration: config?.unfinishedRequestExpiration || '',
     authenticationHistoryExpiration: config?.authenticationHistoryExpiration || '',
     serverMetadataFolder: config?.serverMetadataFolder || '',
@@ -69,7 +65,6 @@ const transformStaticConfigToFormValues = (
   }
 }
 
-// Transform dynamic configuration to form values
 const transformDynamicConfigToFormValues = (
   config: AppConfiguration1 | undefined,
 ): DynamicConfigFormValues => {
@@ -94,7 +89,6 @@ const transformDynamicConfigToFormValues = (
   }
 }
 
-// Main transform function with type guards
 const transformToFormValues = (
   configuration: AppConfiguration1 | Fido2Configuration | undefined,
   type?: string,
@@ -111,7 +105,6 @@ const transformToFormValues = (
   return transformDynamicConfigToFormValues(configuration as AppConfiguration1 | undefined)
 }
 
-// Apply static configuration changes to payload
 const applyStaticConfigChanges = (
   payload: AppConfiguration1,
   staticData: StaticConfigFormValues,
@@ -123,7 +116,6 @@ const applyStaticConfigChanges = (
   payload.fido2Configuration.authenticatorCertsFolder = staticData.authenticatorCertsFolder
   payload.fido2Configuration.mdsCertsFolder = staticData.mdsCertsFolder
   payload.fido2Configuration.mdsTocsFolder = staticData.mdsTocsFolder
-  payload.fido2Configuration.checkU2fAttestations = staticData.checkU2fAttestations
   payload.fido2Configuration.unfinishedRequestExpiration = Number(
     staticData.unfinishedRequestExpiration,
   )
@@ -138,7 +130,6 @@ const applyStaticConfigChanges = (
   }))
 }
 
-// Apply dynamic configuration changes to payload
 const applyDynamicConfigChanges = (
   payload: AppConfiguration1,
   dynamicData: DynamicConfigFormValues,
@@ -170,7 +161,6 @@ const createFidoConfigPayload = ({
   data,
   type,
 }: CreateFidoConfigPayloadParams): PutPropertiesFido2Params => {
-  // Use structuredClone (modern browsers) or fallback to spread operator
   const payload: AppConfiguration1 =
     typeof structuredClone === 'function'
       ? structuredClone(fidoConfiguration)
@@ -183,7 +173,7 @@ const createFidoConfigPayload = ({
   }
 
   return {
-    appConfiguration1: payload,
+    data: payload,
   }
 }
 

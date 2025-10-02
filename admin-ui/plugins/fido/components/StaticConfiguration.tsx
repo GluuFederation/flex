@@ -45,7 +45,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     handleSubmit(formik.values)
   }, [handleSubmit, toggle, formik.values])
 
-  // Extract stable references for useMemo dependencies
   const requestedCredentialTypes = formik.values.requestedCredentialTypes
   const credentialTypesOptions = useMemo(() => {
     return requestedCredentialTypes
@@ -243,7 +242,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         feature={adminUiFeatures.fido_configuration_write}
         onAccept={submitForm}
         formik={formik}
-        disabled={isSubmitting}
       />
     </Form>
   )

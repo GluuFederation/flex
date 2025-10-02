@@ -23,18 +23,16 @@ const Fido: React.FC = () => {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
 
-  // React Query hooks
   const { data: fidoConfiguration, isLoading } = useGetPropertiesFido2()
   const putFidoMutation = usePutPropertiesFido2({
     mutation: {
       onSuccess: () => {
         dispatch(updateToast(true, 'success', t('messages.fido_config_updated_successfully')))
-        // Invalidate cache to trigger automatic refetch
         queryClient.invalidateQueries({ queryKey: getGetPropertiesFido2QueryKey() })
       },
-      onError: (error) => {
-        const errorMessage =
-          error?.response?.data?.message || t('messages.fido_config_update_failed')
+      onError: (error: unknown) => {
+        const err = error as { response?: { data?: { message?: string } } }
+        const errorMessage = err?.response?.data?.message || t('messages.fido_config_update_failed')
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
@@ -42,20 +40,17 @@ const Fido: React.FC = () => {
 
   SetTitle(t('titles.fido_management'))
 
-  // Single unified submit handler for both configurations
   const handleConfigSubmit = useCallback(
     (data: DynamicConfigFormValues | StaticConfigFormValues, type: string) => {
       if (!fidoConfiguration) {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
       }
-
       const apiPayload = createFidoConfigPayload({
         fidoConfiguration,
         data,
         type,
       })
-
       putFidoMutation.mutate(apiPayload)
     },
     [fidoConfiguration, putFidoMutation, dispatch, t],
@@ -69,7 +64,6 @@ const Fido: React.FC = () => {
   const tabToShow = useCallback(
     (tabName: string) => {
       const isSubmitting = putFidoMutation.isPending
-
       switch (tabName) {
         case t('menus.static_configuration'):
           return (

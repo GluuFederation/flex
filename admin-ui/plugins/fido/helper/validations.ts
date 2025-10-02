@@ -34,7 +34,10 @@ const staticConfigValidationSchema = Yup.object({
   userAutoEnrollment: Yup.boolean().required('User Auto Enrollment is required.'),
 })
 
-export const validationSchema = {
+export const validationSchema: Record<
+  string,
+  typeof dynamicConfigValidationSchema | typeof staticConfigValidationSchema
+> = {
   dynamicConfigValidationSchema,
   staticConfigValidationSchema,
 }

@@ -50,5 +50,5 @@ export interface CreateFidoConfigPayloadParams {
 }
 
 export interface PutPropertiesFido2Params {
-  appConfiguration1: AppConfiguration1
+  data: AppConfiguration1
 }

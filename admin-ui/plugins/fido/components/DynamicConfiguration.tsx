@@ -60,7 +60,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     return getEmptyDropdownMessage(formik.values.hints)
   }, [formik.values.hints])
 
-  // Extract stable reference for useMemo dependency
   const personCustomObjectClassList = formik.values.personCustomObjectClassList
   const personCustomObjectClassOptions = useMemo(() => {
     return personCustomObjectClassList
@@ -162,7 +161,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
             label={fidoConstants.LABELS.LOGGING_LEVEL}
             name={fidoConstants.FORM_FIELDS.LOGGING_LEVEL}
             value={formik.values.loggingLevel}
-            defaultValue={formik.values.loggingLevel}
             values={fidoConstants.LOGGING_LEVELS}
             formik={formik}
             lsize={4}
@@ -292,13 +290,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
           />
         </Col>
       </Row>
-      <GluuCommitDialog
-        handler={toggle}
-        modal={modal}
-        onAccept={submitForm}
-        formik={formik}
-        disabled={isSubmitting}
-      />
+      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
     </Form>
   )
 }

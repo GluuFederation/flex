@@ -109,6 +109,12 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     rules: [
       {
         test: /\.(ts|tsx)$/,
+        include: [
+          config.srcDir,
+          config.pluginsDir,
+          path.resolve(__dirname, '../jans_config_api_orval'),
+          path.resolve(__dirname, '..'), // Include root directory for api-client.ts
+        ],
         exclude: /node_modules/,
         use: 'babel-loader',
       },
