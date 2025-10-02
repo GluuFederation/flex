@@ -3457,7 +3457,7 @@ helm install nginx ingress-nginx/ingress-nginx
 <li>Click on <code>Install</code> on the right side of the window. </li>
 <li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.</li>
 <li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
-<li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/vreplace-flex-version/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
+<li>Add <code>License SSA</code>. Before initiating the setup, please obtain an <a href="https://docs.gluu.org/v5.12.0/install/agama/prerequisites/#obtaining-an-ssa">SSA</a> for Flex trial, after which you will issued a JWT.</li>
 <li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.postgres.svc.cluster.local</code> in the case of <code>PostgreSQL</code> or <code>my-release-mysql.gluu.svc.cluster.local</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
 <li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. You can also enable different services like <code>Client API</code> and <code>Jackrabbit</code>.</li>
 <li>Click on the  section named <code>Ingress</code> and enable all the endpoints. You might add LB IP or address if you don't have <code>FQDN</code> for <code>Gluu</code>. </li>
