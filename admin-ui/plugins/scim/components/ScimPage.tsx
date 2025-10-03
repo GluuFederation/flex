@@ -8,18 +8,20 @@ import { Card, CardBody } from 'Components'
 import ScimConfiguration from './ScimConfiguration'
 import { getScimConfiguration, putScimConfiguration } from '../redux/features/ScimSlice'
 import { buildPayload } from 'Utils/PermChecker'
+import type { RootStateWithScim, ScimConfigPatchRequestBody, UserAction } from './types'
 
-const ScimPage = () => {
+const ScimPage: React.FC<void> = () => {
   const { t } = useTranslation()
   SetTitle(t('titles.scim_management'))
-  const scimConfiguration = useSelector((state) => state.scimReducer)
+  const scimConfiguration = useSelector((state: RootStateWithScim) => state.scimReducer)
   const dispatch = useDispatch()
-  const userAction = {}
+  const userAction: UserAction = {}
+
   useEffect(() => {
     dispatch(getScimConfiguration())
-  }, [])
+  }, [dispatch])
 
-  const handleSubmit = (data, userMessage) => {
+  const handleSubmit = (data: ScimConfigPatchRequestBody, userMessage: string): void => {
     buildPayload(userAction, userMessage, {})
     userAction.action_message = userMessage
     userAction.action_data = data
