@@ -10,7 +10,6 @@ const dynamicConfigValidationSchema = Yup.object({
   disableJdkLogger: Yup.boolean().required('Disable Jdk Logger is required.'),
   loggingLevel: Yup.string().required('Logging Level is required.'),
   loggingLayout: Yup.string().required('Logging Layout is required.'),
-  externalLoggerConfiguration: Yup.string(),
   metricReporterEnabled: Yup.boolean().required('Metric Reporter Enabled is required.'),
   metricReporterInterval: Yup.number().required('Metric Reporter Interval is required.'),
   metricReporterKeepDataDays: Yup.number().required('Metric Reporter Keep Data Days is required.'),
@@ -25,7 +24,6 @@ const staticConfigValidationSchema = Yup.object({
   authenticatorCertsFolder: Yup.string().required('Authenicator Certificates Folder is required.'),
   mdsCertsFolder: Yup.string().required('MDS TOC Certificates Folder is required.'),
   mdsTocsFolder: Yup.string().required('MDS TOC Files Folder is required.'),
-  checkU2fAttestations: Yup.boolean().required('Check U2F Attestations is required.'),
   unfinishedRequestExpiration: Yup.string().required('Unfinished Request Expiration is required.'),
   authenticationHistoryExpiration: Yup.string().required(
     'Authenication History Expiration  is required.',

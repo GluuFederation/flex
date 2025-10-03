@@ -1,5 +1,6 @@
 import { PublicKeyCredentialHints } from '../types'
 import { fidoConstants } from './constants'
+import { FidoRequestedParty } from 'Utils/types'
 
 const arrayValidationWithSchema = (givenArray: string[], schema: Record<string, string>) =>
   Array.isArray(givenArray)
@@ -34,13 +35,17 @@ const transformToFormValues = (configuration?: Record<string, unknown>, type?: s
         authenticatorCertsFolder: configuration?.authenticatorCertsFolder || '',
         mdsCertsFolder: configuration?.mdsCertsFolder || '',
         mdsTocsFolder: configuration?.mdsTocsFolder || '',
-        checkU2fAttestations: toBooleanValue(configuration?.checkU2fAttestations),
         unfinishedRequestExpiration: configuration?.unfinishedRequestExpiration || '',
         authenticationHistoryExpiration: configuration?.authenticationHistoryExpiration || '',
         serverMetadataFolder: configuration?.serverMetadataFolder || '',
         userAutoEnrollment: toBooleanValue(configuration?.userAutoEnrollment),
-        requestedCredentialTypes: configuration?.requestedCredentialTypes || [],
-        requestedParties: configuration?.requestedParties || [],
+        requestedCredentialTypes: configuration?.enabledFidoAlgorithms || [],
+        requestedParties: Array.isArray(configuration?.rp)
+          ? (configuration.rp as FidoRequestedParty[]).map((item: FidoRequestedParty) => ({
+              name: item.id,
+              domains: item.origins,
+            }))
+          : [],
       }
     : {
         issuer: configuration?.issuer || '',
@@ -51,7 +56,6 @@ const transformToFormValues = (configuration?: Record<string, unknown>, type?: s
         disableJdkLogger: toBooleanValue(configuration?.disableJdkLogger),
         loggingLevel: configuration?.loggingLevel || '',
         loggingLayout: configuration?.loggingLayout || '',
-        externalLoggerConfiguration: configuration?.externalLoggerConfiguration || '',
         metricReporterEnabled: toBooleanValue(configuration?.metricReporterEnabled),
         metricReporterInterval: configuration?.metricReporterInterval || '',
         metricReporterKeepDataDays: configuration?.metricReporterKeepDataDays || '',
@@ -70,21 +74,36 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
       payload.fido2Configuration.authenticatorCertsFolder = data.authenticatorCertsFolder
       payload.fido2Configuration.mdsCertsFolder = data.mdsCertsFolder
       payload.fido2Configuration.mdsTocsFolder = data.mdsTocsFolder
-      payload.fido2Configuration.checkU2fAttestations = data.checkU2fAttestations
       payload.fido2Configuration.unfinishedRequestExpiration = data.unfinishedRequestExpiration
       payload.fido2Configuration.authenticationHistoryExpiration =
         data.authenticationHistoryExpiration
       payload.fido2Configuration.serverMetadataFolder = data.serverMetadataFolder
       payload.fido2Configuration.userAutoEnrollment = data.userAutoEnrollment
-      payload.fido2Configuration.requestedCredentialTypes = data.requestedCredentialTypes.map(
-        (item: any) => (item?.value ? item?.value : item),
+      payload.fido2Configuration.enabledFidoAlgorithms = Array.isArray(
+        data.requestedCredentialTypes,
       )
-      payload.fido2Configuration.requestedParties = data.requestedParties.map((item: any) => {
-        return {
-          name: item.key,
-          domains: [item.value],
-        }
-      })
+        ? data.requestedCredentialTypes.map((item: any) => (item?.value ? item?.value : item))
+        : []
+      payload.fido2Configuration.rp = (() => {
+        const parties = Array.isArray(data.requestedParties) ? data.requestedParties : []
+        const byId: Record<string, { id: string; origins: string[] }> = {}
+        parties.forEach((item: any) => {
+          const id = item?.id ?? item?.key ?? item?.name
+          const origins: string[] = Array.isArray(item?.origins)
+            ? item.origins
+            : Array.isArray(item?.domains)
+              ? item.domains
+              : item?.value
+                ? [item.value]
+                : []
+          if (!id) return
+          if (!byId[id]) byId[id] = { id, origins: [] }
+          origins.forEach((o) => {
+            if (o && !byId[id].origins.includes(o)) byId[id].origins.push(o)
+          })
+        })
+        return Object.values(byId)
+      })()
     }
   } else {
     payload.issuer = data.issuer
@@ -95,7 +114,6 @@ const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
     payload.disableJdkLogger = data.disableJdkLogger
     payload.loggingLevel = data.loggingLevel
     payload.loggingLayout = data.loggingLayout
-    payload.externalLoggerConfiguration = data.externalLoggerConfiguration
     payload.metricReporterEnabled = data.metricReporterEnabled
     payload.metricReporterInterval = data.metricReporterInterval
     payload.metricReporterKeepDataDays = data.metricReporterKeepDataDays

@@ -33,3 +33,9 @@ export interface ReduxState {
   error: ApiError | null
   data: any
 }
+
+// Fido Configuration Types
+export interface FidoRequestedParty {
+  readonly id: string
+  readonly origins: readonly string[]
+}
