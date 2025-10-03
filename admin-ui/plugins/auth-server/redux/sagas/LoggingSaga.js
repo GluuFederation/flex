@@ -42,9 +42,6 @@ export function* editLogging({ payload }) {
     audit.modifiedFields = payload?.otherFields?.changedFields
     delete audit.payload
 
-    console.log(audit)
-    debugger
-
     const api = yield* newFunction()
     const data = yield call(api.editLoggingConfig, payload.data)
 
