@@ -41,4 +41,5 @@ export interface AuthState {
   loadingConfig: boolean
   authState?: any
   userInum?: string | null
+  isUserInfoFetched: boolean
 }
