@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -30,233 +29,294 @@ import { useNavigate } from 'react-router'
 import { getLockStatus } from 'Redux/features/lockSlice'
 import moment from 'moment'
 import customColors from '@/customColors'
+import { useCedarling } from '@/cedarling'
+
+// Constants moved outside component for better performance
+const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
 function DashboardPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const userAction = useMemo(() => ({}), [])
   const options = useMemo(() => ({}), [])
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const { classes } = styles()
-  const FETCHING_LICENSE_DETAILS = 'Fetch license details'
   const [mauCount, setMauCount] = useState(null)
   const [tokenCount, setTokenCount] = useState(null)
 
-  const statData = useSelector((state) => state.mauReducer.stat)
-  const loading = useSelector((state) => state.mauReducer.loading)
-  const clients = useSelector((state) => state.initReducer.clients)
-  const lock = useSelector((state) => state.lockReducer.lockDetail)
-  const { hasFetchUserInformation } = useSelector((state) => state.authReducer)
-  const totalClientsEntries = useSelector((state) => state.initReducer.totalClientsEntries)
-  const license = useSelector((state) => state.licenseDetailsReducer.item)
-  const serverStatus = useSelector((state) => state.healthReducer.serverStatus)
-  const serverHealth = useSelector((state) => state.healthReducer.health)
-  const dbStatus = useSelector((state) => state.healthReducer.dbStatus)
-  const access_token = useSelector((state) => state.authReducer.token?.access_token)
-  const permissions = useSelector((state) => state.authReducer.permissions)
-  const dispatch = useDispatch()
+  const [requestStates, setRequestStates] = useState({
+    licenseRequested: false,
+    clientsRequested: false,
+    serverStatusRequested: false,
+  })
+  const statData = useSelector((state: any) => state.mauReducer.stat)
+  const loading = useSelector((state: any) => state.mauReducer.loading)
+  const clients = useSelector((state: any) => state.initReducer.clients)
+  const lock = useSelector((state: any) => state.lockReducer.lockDetail)
+  const { isUserInfoFetched } = useSelector((state: any) => state.authReducer)
+  const totalClientsEntries = useSelector((state: any) => state.initReducer.totalClientsEntries)
+  const license = useSelector((state: any) => state.licenseDetailsReducer.item)
+  const serverStatus = useSelector((state: any) => state.healthReducer.serverStatus)
+  const serverHealth = useSelector((state: any) => state.healthReducer.health)
+  const dbStatus = useSelector((state: any) => state.healthReducer.dbStatus)
+  const access_token = useSelector((state: any) => state.authReducer.token?.access_token)
+  const permissions = useSelector((state: any) => state.authReducer.permissions)
+
+  const { hasCedarPermission, authorize } = useCedarling()
+  const cedarInitialized = useSelector((state: any) => state.cedarPermissions?.initialized)
+  const cedarIsInitializing = useSelector((state: any) => state.cedarPermissions?.isInitializing)
+  const hasViewPermissions = useMemo(() => {
+    if (cedarInitialized && !cedarIsInitializing) {
+      const hasStatRead = hasCedarPermission(STAT_READ)
+      const hasStatJansRead = hasCedarPermission(STAT_JANS_READ)
+      return hasStatRead === true && hasStatJansRead === true
+    }
+    return hasBoth(permissions, STAT_READ, STAT_JANS_READ)
+  }, [cedarInitialized, cedarIsInitializing, hasCedarPermission, permissions])
 
   SetTitle(t('menus.dashboard'))
 
+  const initPermissions = useCallback(async () => {
+    if (!access_token || !cedarInitialized) return
+
+    await Promise.allSettled([authorize([STAT_READ]), authorize([STAT_JANS_READ])])
+  }, [access_token, cedarInitialized, authorize])
+
   useEffect(() => {
+    if (access_token && cedarInitialized && !cedarIsInitializing) {
+      initPermissions()
+    }
+  }, [access_token, cedarInitialized, cedarIsInitializing, initPermissions])
+
+  const processedStats = useMemo(() => {
+    if (!statData || statData.length === 0) return { mauCount: null, tokenCount: null }
+
     const date = new Date()
     const currentYear = date.getFullYear()
     const currentMonth = date.getMonth() + 1
-    const formattedMonth = currentMonth > 9 ? currentMonth : `0${currentMonth}`
-    const yearMonth = `${currentYear}${formattedMonth}`
-    const currentMonthData = statData.find(({ month }) => month.toString() === yearMonth)
+    const formattedMonth =
+      currentMonth > 9 ? currentMonth.toString() : '0' + currentMonth.toString()
+    const yearMonth = currentYear.toString() + formattedMonth
+    const currentMonthData = statData.find(({ month }: any) => month.toString() === yearMonth)
 
     const mau = currentMonthData?.mau
     const token =
-      currentMonthData?.authz_code_access_token_count +
-      currentMonthData?.client_credentials_access_token_count
-    if (mau) {
-      setMauCount(mau)
-    }
-    if (token) {
-      setTokenCount(token)
-    }
+      (currentMonthData?.authz_code_access_token_count || 0) +
+      (currentMonthData?.client_credentials_access_token_count || 0)
+
+    return { mauCount: mau || null, tokenCount: token || null }
   }, [statData])
 
   useEffect(() => {
+    setMauCount(processedStats.mauCount)
+    setTokenCount(processedStats.tokenCount)
+  }, [processedStats])
+
+  useEffect(() => {
     if (
-      Object.keys(license).length === 0 &&
       access_token &&
-      hasBoth(permissions, STAT_READ, STAT_JANS_READ) &&
-      !loading
+      hasViewPermissions &&
+      Object.keys(license).length === 0 &&
+      !loading &&
+      !requestStates.licenseRequested
     ) {
-      getLicense()
+      setRequestStates((prev) => ({ ...prev, licenseRequested: true }))
+      buildPayload(userAction as any, FETCHING_LICENSE_DETAILS, options as any)
+      dispatch(getLicenseDetails({} as any))
     }
-  }, [access_token, license, permissions, loading])
+  }, [
+    access_token,
+    hasViewPermissions,
+    license,
+    loading,
+    requestStates.licenseRequested,
+    dispatch,
+    userAction,
+    options,
+    FETCHING_LICENSE_DETAILS,
+  ])
 
   useEffect(() => {
-    if (clients.length === 0 && access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
-      buildPayload(userAction, 'Fetch openid connect clients', {})
-      dispatch(getClients({ action: userAction }))
+    if (
+      access_token &&
+      hasViewPermissions &&
+      clients.length === 0 &&
+      !requestStates.clientsRequested
+    ) {
+      setRequestStates((prev) => ({ ...prev, clientsRequested: true }))
+      buildPayload(userAction as any, 'Fetch openid connect clients', {} as any)
+      dispatch(getClients({ action: userAction } as any))
     }
-  }, [access_token, clients, permissions])
+  }, [
+    access_token,
+    hasViewPermissions,
+    clients,
+    requestStates.clientsRequested,
+    dispatch,
+    userAction,
+  ])
 
   useEffect(() => {
-    if (access_token && hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
-      getServerStatus()
-      getJansLockDetails()
-      buildPayload(userAction, 'GET Health Status', { service: 'all' })
-      dispatch(getHealthServerStatus({ action: userAction }))
+    if (access_token && hasViewPermissions && !requestStates.serverStatusRequested) {
+      setRequestStates((prev) => ({ ...prev, serverStatusRequested: true }))
+      buildPayload(userAction as any, 'GET Health Status', options as any)
+      dispatch(getHealthStatus({ action: userAction } as any))
+
+      const months = []
+      for (let i = 0; i < 12; i++) {
+        months.push(moment().subtract(i, 'months').format('YYYYMM'))
+      }
+      const startMonth = months[months.length - 1]
+      const endMonth = months[0]
+      dispatch(getLockStatus({ startMonth, endMonth } as any))
+      buildPayload(userAction as any, 'GET Health Status', { service: 'all' } as any)
+      dispatch(getHealthServerStatus({ action: userAction } as any))
     }
-  }, [access_token])
+  }, [
+    access_token,
+    hasViewPermissions,
+    requestStates.serverStatusRequested,
+    dispatch,
+    userAction,
+    options,
+  ])
 
-  const getLicense = useCallback(() => {
-    buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
-    dispatch(getLicenseDetails({}))
-  }, [userAction, options])
+  const isUp = useCallback((status: any) => {
+    if (!status) return false
+    return status.toUpperCase() === 'ONLINE' || status.toUpperCase() === 'RUNNING'
+  }, [])
 
-  const getServerStatus = useCallback(() => {
-    buildPayload(userAction, 'GET Health Status', options)
-    dispatch(getHealthStatus({ action: userAction }))
-  }, [userAction, options])
+  const summaryData = useMemo(() => {
+    const baseData = [
+      {
+        text: t('dashboard.oidc_clients_count'),
+        value: totalClientsEntries,
+        icon: <Administrator className={classes.summaryIcon} style={{ top: '8px' }} />,
+      },
+      {
+        text: t('dashboard.active_users_count'),
+        value: mauCount ?? 0,
+        icon: <UsersIcon className={classes.summaryIcon} style={{ top: '4px' }} />,
+      },
+      {
+        text: t('dashboard.token_issued_count'),
+        value: tokenCount ?? 0,
+        icon: <OAuthIcon className={classes.summaryIcon} style={{ top: '8px' }} />,
+      },
+    ]
 
-  function isUp(status) {
-    if (status) {
-      return (
-        status.toUpperCase() === 'ONLINE'.toUpperCase() ||
-        status.toUpperCase() === 'RUNNING'.toUpperCase()
+    if (lock && lock.length > 0) {
+      baseData.push(
+        {
+          text: t('dashboard.mau_users'),
+          value: lock[0]?.monthly_active_users ?? 0,
+          icon: <JansLockUsers className={classes.summaryIcon} style={{ top: '8px' }} />,
+        },
+        {
+          text: t('dashboard.mau_clients'),
+          value: lock[0]?.monthly_active_clients ?? 0,
+          icon: <JansLockClients className={classes.summaryIcon} style={{ top: '8px' }} />,
+        },
       )
     }
-    return false
-  }
 
-  function getJansLockDetails() {
-    const months = []
-    for (let i = 0; i < 12; i++) {
-      months.push(moment().subtract(i, 'months').format('YYYYMM'))
-    }
-    const startMonth = months[months.length - 1]
-    const endMonth = months[0]
+    return baseData
+  }, [t, totalClientsEntries, mauCount, tokenCount, lock, classes.summaryIcon])
 
-    dispatch(
-      getLockStatus({
-        startMonth,
-        endMonth,
-      }),
-    )
-  }
-
-  const summaryData = [
-    {
-      text: t('dashboard.oidc_clients_count'),
-      value: totalClientsEntries,
-      icon: <Administrator className={classes.summaryIcon} style={{ top: '8px' }} />,
-    },
-    {
-      text: t('dashboard.active_users_count'),
-      value: mauCount ?? 0,
-      icon: <UsersIcon className={classes.summaryIcon} style={{ top: '4px' }} />,
-    },
-    {
-      text: t('dashboard.token_issued_count'),
-      value: tokenCount ?? 0,
-      icon: <OAuthIcon className={classes.summaryIcon} style={{ top: '8px' }} />,
-    },
-  ]
-
-  if (lock && lock.length > 0) {
-    summaryData.push(
+  const userInfo = useMemo(
+    () => [
       {
-        text: t('dashboard.mau_users'),
-        value: lock[0]?.monthly_active_users ?? 0,
-        icon: <JansLockUsers className={classes.summaryIcon} style={{ top: '8px' }} />,
+        text: t('dashboard.product_name'),
+        value: license?.productName,
       },
       {
-        text: t('dashboard.mau_clients'),
-        value: lock[0]?.monthly_active_clients ?? 0,
-        icon: <JansLockClients className={classes.summaryIcon} style={{ top: '8px' }} />,
+        text: t('dashboard.license_type'),
+        value: license?.licenseType,
       },
-    )
-  }
+      {
+        text: t('dashboard.customer_email'),
+        value: license?.customerEmail,
+      },
+      {
+        text: t('dashboard.customer_name'),
+        value:
+          String(license?.customerFirstName || '') + ' ' + String(license?.customerLastName || ''),
+      },
+      {
+        text: t('fields.validityPeriod'),
+        value: formatDate(license.validityPeriod),
+        key: 'License Validity Period',
+      },
+      {
+        text: t('dashboard.license_status'),
+        value: license?.licenseActive ? 'active' : 'inactive',
+        key: 'License Status',
+      },
+    ],
+    [t, license],
+  )
 
-  const userInfo = [
-    {
-      text: t('dashboard.product_name'),
-      value: license?.productName,
-    },
-    {
-      text: t('dashboard.license_type'),
-      value: license?.licenseType,
-    },
-    {
-      text: t('dashboard.customer_email'),
-      value: license?.customerEmail,
-    },
-    {
-      text: t('dashboard.customer_name'),
-      value: `${license?.customerFirstName || ''} ${license?.customerLastName || ''}`,
-    },
-    {
-      text: t('fields.validityPeriod'),
-      value: formatDate(license.validityPeriod),
-      key: 'License Validity Period',
-    },
-    {
-      text: t('dashboard.license_status'),
-      value: license?.licenseActive ? 'active' : 'inactive',
-      key: 'License Status',
-    },
-  ]
+  const statusDetails = useMemo(
+    () => [
+      {
+        label: 'menus.oauthserver',
+        status: serverStatus,
+        key: 'status',
+      },
+      {
+        label: 'dashboard.config_api',
+        status: serverStatus,
+        key: 'jans-config-api',
+      },
+      { label: 'dashboard.database_status', status: dbStatus, key: 'db_status' },
+      { label: 'FIDO', status: serverStatus, key: 'jans-fido2' },
+      { label: 'CASA', status: serverStatus, key: 'jans-casa' },
+      { label: 'dashboard.key_cloak', status: serverStatus, key: 'keycloak' },
+      { label: 'SCIM', status: false, key: 'jans-scim' },
+      { label: 'dashboard.jans_lock', status: serverStatus, key: 'jans-lock' },
+    ],
+    [serverStatus, dbStatus],
+  )
 
-  const statusDetails = [
-    {
-      label: 'menus.oauthserver',
-      status: serverStatus,
-      key: 'status',
-    },
-    {
-      label: 'dashboard.config_api',
-      status: serverStatus,
-      key: 'jans-config-api',
-    },
-    { label: 'dashboard.database_status', status: dbStatus, key: 'db_status' },
-    { label: 'FIDO', status: serverStatus, key: 'jans-fido2' },
-    { label: 'CASA', status: serverStatus, key: 'jans-casa' },
-    { label: 'dashboard.key_cloak', status: serverStatus, key: 'keycloak' },
-    { label: 'SCIM', status: false, key: 'jans-scim' },
-    { label: 'dashboard.jans_lock', status: serverStatus, key: 'jans-lock' },
-  ]
-
-  // Helper function to get the status value
-  const getStatusValue = (key) => {
-    if (key !== 'db_status' && key !== 'status') {
+  const getStatusValue = useCallback(
+    (key: string) => {
+      if (key === 'db_status') return dbStatus
+      if (key === 'status') return serverStatus
       return serverHealth[key]
-    } else if (key === 'db_status') {
-      return dbStatus
-    } else {
-      return serverStatus
-    }
-  }
+    },
+    [serverHealth, dbStatus, serverStatus],
+  )
 
-  // Helper function to determine the class name
-  const getClassName = (key) => {
-    const value = getStatusValue(key)
-    return isUp(value) ? classes.checkText : classes.crossText
-  }
+  const getClassName = useCallback(
+    (key: string) => {
+      const value = getStatusValue(key)
+      return isUp(value) ? classes.checkText : classes.crossText
+    },
+    [getStatusValue, isUp, classes.checkText, classes.crossText],
+  )
 
-  // Helper function to get the status text
-  const getStatusText = (key) => {
-    const value = getStatusValue(key)
-    return isUp(value) ? 'Running' : 'Down'
-  }
+  const getStatusText = useCallback(
+    (key: string) => {
+      const value = getStatusValue(key)
+      return isUp(value) ? 'Running' : 'Down'
+    },
+    [getStatusValue, isUp],
+  )
 
-  // Helper function to get the icon
-  const getStatusIcon = (key) => {
-    const value = getStatusValue(key)
-    return isUp(value) ? CheckIcon : CrossIcon
-  }
+  const getStatusIcon = useCallback(
+    (key: string) => {
+      const value = getStatusValue(key)
+      return isUp(value) ? CheckIcon : CrossIcon
+    },
+    [getStatusValue, isUp],
+  )
 
-  // Refactored StatusCard component
-  const StatusCard = useMemo(() => {
-    return (
+  const StatusCard = useMemo(
+    () => (
       <Grid item xs={12}>
-        <div className={`${classes.statusContainer}`}>
+        <div className={classes.statusContainer}>
           <div
             className={classes.userInfoTitle}
             style={{
@@ -279,7 +339,7 @@ function DashboardPage() {
                   className="d-flex justify-content-between"
                   style={{
                     width: '100%',
-                    borderLeft: `4px solid ${customColors.orange}`,
+                    borderLeft: '4px solid ' + customColors.orange,
                     paddingLeft: '10px',
                   }}
                 >
@@ -298,37 +358,40 @@ function DashboardPage() {
           </div>
         </div>
       </Grid>
-    )
-  }, [serverStatus, serverHealth, dbStatus, t, statusDetails, classes])
+    ),
+    [t, statusDetails, classes, getClassName, getStatusText, getStatusIcon],
+  )
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     if (access_token) {
       dispatch(
         auditLogoutLogs({
           message: 'Logging out due to insufficient permissions for Admin UI access.',
-        }),
+        } as any),
       )
-    } else navigate('/logout')
-  }
-  const showModal = () => {
-    if (!hasFetchUserInformation) {
-      if (!access_token || !hasBoth(permissions, STAT_READ, STAT_JANS_READ)) {
-        return (
-          <GluuPermissionModal
-            handler={() => {
-              handleLogout()
-            }}
-            isOpen={true}
-          />
-        )
-      }
+    } else {
+      navigate('/logout')
     }
-  }
+  }, [access_token, dispatch, navigate])
+
+  const showModal = useMemo(() => {
+    const shouldShowModal = !isUserInfoFetched && (!access_token || !hasViewPermissions)
+
+    if (shouldShowModal) {
+      return <GluuPermissionModal handler={handleLogout} isOpen={true} />
+    }
+
+    return null
+  }, [isUserInfoFetched, access_token, hasViewPermissions, handleLogout])
+
+  const isBlocking = useMemo(() => {
+    return loading || cedarIsInitializing || (!cedarInitialized && !permissions)
+  }, [loading, cedarIsInitializing, cedarInitialized, permissions])
 
   return (
-    <GluuLoader blocking={loading}>
-      {showModal()}
-      <GluuViewWrapper canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}>
+    <GluuLoader blocking={isBlocking}>
+      {showModal}
+      <GluuViewWrapper canShow={hasViewPermissions}>
         <div className={classes.root}>
           <Grid container className="px-40 h-100" spacing={2}>
             <Grid item lg={3} md={12} xs={12} height="auto">
@@ -369,9 +432,8 @@ function DashboardPage() {
 
             <Grid item lg={4} md={12} xs={12}>
               <Paper
-                className={`${classes.dashboardCard} top-minus-40 d-flex justify-content-center`}
+                className={classes.dashboardCard + ' top-minus-40 d-flex justify-content-center'}
                 elevation={0}
-                spacing={2}
               >
                 <Grid className={classes.flex} container>
                   <Grid item xs={12} className={isMobile ? 'mt-20' : ''}>
@@ -419,11 +481,11 @@ function DashboardPage() {
             </Grid>
           </Grid>
 
-          <Grid container className={`px-40`} sx={{ marginTop: '20px' }}>
+          <Grid container className="px-40" sx={{ marginTop: '20px' }}>
             <Grid lg={12} xs={12} item>
               <h3 className="text-white">{t('dashboard.access_tokens_graph')}</h3>
               {isTabletOrMobile ? (
-                <Grid container className={`${classes.whiteBg}`}>
+                <Grid container className={classes.whiteBg}>
                   <Grid
                     xs={12}
                     item
@@ -439,7 +501,7 @@ function DashboardPage() {
                   </Grid>
                 </Grid>
               ) : (
-                <Grid container className={`${classes.whiteBg} ${classes.flex}`}>
+                <Grid container className={classes.whiteBg + ' ' + classes.flex}>
                   <Grid md={9} xs={12} item className={classes.desktopChartStyle}>
                     <DashboardChart />
                   </Grid>
@@ -452,9 +514,9 @@ function DashboardPage() {
             </Grid>
           </Grid>
 
-          <Grid container className={`${classes.flex} px-40`}>
+          <Grid container className={classes.flex + ' px-40'}>
             <Grid xs={12} item>
-              <Grid xs={12} item className={`${isMobile ? classes.block : classes.flex} mt-20`}>
+              <Grid xs={12} item className={(isMobile ? classes.block : classes.flex) + ' mt-20'}>
                 <ul className="me-40">
                   <li className={classes.orange}>
                     {t('dashboard.client_credentials_access_token')}

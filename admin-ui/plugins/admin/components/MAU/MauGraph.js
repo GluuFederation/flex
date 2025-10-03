@@ -34,14 +34,11 @@ function MauGraph() {
   const userAction = {}
   const options = {}
   const initPermissions = async () => {
-    const permissions = [STAT_READ, STAT_JANS_READ]
-    for (const permission of permissions) {
-      await authorize([permission])
-    }
+    await Promise.allSettled([authorize([STAT_READ]), authorize([STAT_JANS_READ])])
   }
 
   useEffect(() => {
-    if (statData.length === 0 || !statData) {
+    if (!statData || statData.length === 0) {
       search()
     }
     initPermissions()
@@ -49,7 +46,7 @@ function MauGraph() {
 
   const hasViewPermissions = useMemo(
     () => hasCedarPermission(STAT_READ) && hasCedarPermission(STAT_JANS_READ),
-    [cedarPermissions],
+    [cedarPermissions, hasCedarPermission],
   )
 
   SetTitle(t('fields.monthly_active_users'))

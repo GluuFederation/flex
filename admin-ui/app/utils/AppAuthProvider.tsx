@@ -153,7 +153,7 @@ export default function AppAuthProvider(props) {
                   ujwt,
                   idToken,
                   JwtToken,
-                  hasFetchUserInformation: true,
+                  isUserInfoFetched: true,
                 }),
               )
               dispatch(getAPIAccessToken(ujwt))
