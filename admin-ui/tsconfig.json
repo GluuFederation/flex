@@ -26,7 +26,8 @@
       "Redux/*": ["app/redux/*"],
       "Images/*": ["app/images/*"],
       "Contexts/*": ["app/contexts/*"],
-      "SVG/*": ["app/components/SVG/*"]
+      "SVG/*": ["app/components/SVG/*"],
+      "JansConfigApi": ["jans_config_api_orval/src/JansConfigApi.ts"]
     },
     "plugins": [
       {
