@@ -41,6 +41,8 @@
     "plugin:add": "node ./build/plugin-cli.js --addPlugin",
     "plugin:remove": "node ./build/plugin-cli.js --removePlugin",
     "plugin:clean": "node ./build/plugin-cli.js --cleanExceptDefault admin,auth-server --resetPluginConfig",
+    "analyze": "ANALYZE=true npm run build:prod && node scripts/analyze-bundle.js",
+    "analyze:dev": "ANALYZE=true npm run build:dev",
     "prepare": "cd .. && npx husky install && git config core.hooksPath admin-ui/.husky"
   },
   "author": "gluu inc.",
