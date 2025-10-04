@@ -1,5 +1,3 @@
-import { reducer as fidoReducer } from './redux/features/fidoSlice'
-import fidoSaga from './redux/sagas/FidoSaga'
 import { FIDO_READ, FIDO_WRITE } from 'Utils/PermChecker'
 import Fido from './components/Fido'
 
@@ -31,8 +29,8 @@ const pluginMetadata = {
       permission: FIDO_WRITE,
     },
   ],
-  reducers: [{ name: 'fidoReducer', reducer: fidoReducer }],
-  sagas: [fidoSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata
