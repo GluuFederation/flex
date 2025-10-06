@@ -6,7 +6,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { SSA_PORTAL, SSA_ADMIN, buildPayload } from 'Utils/PermChecker'
+import { SSA_PORTAL, SSA_ADMIN, SSA_DELETE, buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -18,6 +18,7 @@ import { DeleteOutlined, DownloadOutlined, VisibilityOutlined } from '@mui/icons
 import SsaDetailPage from './SsaDetailPage'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
 import customColors from '@/customColors'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const SSAListPage = () => {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -32,7 +33,6 @@ const SSAListPage = () => {
   const toggle = () => setModal(!modal)
   const { items, loading } = useSelector((state) => state.ssaReducer)
   const jwtData = useSelector((state) => state.ssaReducer.jwt)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const [downloadRequested, setDownloadRequested] = useState(false)
   const [viewRequested, setViewRequested] = useState(false)
   const theme = useContext(ThemeContext)
@@ -46,7 +46,7 @@ const SSAListPage = () => {
   // Permission initialization
   useEffect(() => {
     const authorizePermissions = async () => {
-      const permissions = [SSA_PORTAL, SSA_ADMIN]
+      const permissions = [SSA_PORTAL, SSA_ADMIN, SSA_DELETE]
       try {
         for (const permission of permissions) {
           await authorize([permission])
@@ -148,6 +148,9 @@ const SSAListPage = () => {
       onClick: () => handleGoToSsaAddPage(),
       disabled: !hasCedarPermission(SSA_ADMIN),
     })
+  }
+
+  if (hasCedarPermission(SSA_ADMIN) || hasCedarPermission(SSA_DELETE)) {
     myActions.push((rowData) => ({
       icon: DeleteIcon,
       iconProps: {
@@ -155,7 +158,7 @@ const SSAListPage = () => {
         id: rowData.org_id,
       },
       onClick: (event, rowData) => handleSsaDelete(rowData),
-      disabled: false,
+      disabled: !hasCedarPermission(SSA_ADMIN) && !hasCedarPermission(SSA_DELETE),
     }))
   }
 
@@ -236,7 +239,7 @@ const SSAListPage = () => {
             }}
           />
         </GluuViewWrapper>
-        {hasCedarPermission(SSA_ADMIN) && (
+        {(hasCedarPermission(SSA_ADMIN) || hasCedarPermission(SSA_DELETE)) && (
           <GluuDialog
             row={item}
             name={item?.ssa?.org_id || ''}
@@ -244,6 +247,7 @@ const SSAListPage = () => {
             modal={modal}
             subject="ssa configuration"
             onAccept={onDeletionConfirmed}
+            feature={adminUiFeatures.ssa_delete}
           />
         )}
         {ssaDataRef.current && ssaDialogOpen && (
