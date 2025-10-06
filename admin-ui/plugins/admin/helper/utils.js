@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import cloneDeep from 'lodash/cloneDeep'
 
 // Helper function to get nested object values
@@ -5,16 +6,39 @@ const getNestedValue = (obj, path) => {
   return path.split('.').reduce((acc, part) => acc && acc[part], obj)
 }
 
+export const hasValue = (value) => !!value
+
+export const hasBothDates = (startDate, endDate) => !!startDate && !!endDate
+
+export const hasOnlyOneDate = (startDate, endDate) =>
+  (!!startDate && !endDate) || (!startDate && !!endDate)
+
+export const isValidDate = (date) => dayjs(date).isValid()
+
+export const isStartAfterEnd = (startDate, endDate) =>
+  startDate && endDate && dayjs(startDate).isAfter(dayjs(endDate))
+
+export const dateConverter = (date, datePattern = 'DD-MM-YYYY') => dayjs(date).format(datePattern)
+
+export const clearInputById = (id) => {
+  const el = document.getElementById(id)
+  if (el) {
+    el.value = ''
+  }
+}
+
+export const auditListTimestampRegex = /^(\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}\.\d{3})\s+(.+)$/
+
 export const webhookOutputObject = (enabledFeatureWebhooks, createdFeatureValue) => {
   return enabledFeatureWebhooks.map((originalWebhook) => {
     const webhook = cloneDeep(originalWebhook) // Create a deep copy of the webhook
-    let url = webhook.url
+    const url = webhook.url
     const shortcodeValueMap = {}
 
     // Replace placeholders in the URL
     url.match(/\{([^{}]+?)\}/g)?.forEach((placeholder) => {
       const key = placeholder.slice(1, -1)
-      let value = key?.includes('.')
+      const value = key?.includes('.')
         ? getNestedProperty(createdFeatureValue, key)
         : createdFeatureValue[key]
 
@@ -57,7 +81,7 @@ function getNestedProperty(obj, path) {
   const keys = path.split('.')
   let current = obj
 
-  for (let key of keys) {
+  for (const key of keys) {
     if (current[key] === undefined) {
       return undefined
     }
@@ -74,6 +98,8 @@ export const adminUiFeatures = {
   oidc_clients_write: 'oidc_clients_write',
   scopes_write: 'scopes_write',
   scopes_delete: 'scopes_delete',
+  ssa_write: 'ssa_write',
+  ssa_delete: 'ssa_delete',
   fido_configuration_write: 'fido_configuration_write',
   jans_keycloak_link_write: 'jans_keycloak_link_write',
   jans_link_write: 'jans_link_write',

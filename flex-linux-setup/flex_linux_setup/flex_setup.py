@@ -28,8 +28,8 @@ installed_components = {'admin_ui': False, 'casa': False}
 jans_config_properties = '/etc/jans/conf/jans.properties'
 
 app_versions = {
-    "JANS_APP_VERSION": "1.9.0",
-    "JANS_BUILD": "",
+    "JANS_APP_VERSION": "0.0.0",
+    "JANS_BUILD": "-nightly",
     "NODE_VERSION": "v18.16.0"
 }
 
@@ -501,12 +501,14 @@ class flex_installer(JettyInstaller):
                 scopes=admin_ui_client_scopes,
                 redirect_uri=[f'https://{Config.hostname}/admin', 'http://localhost:4100'],
                 display_name='Admin UI Web Client',
+                grant_types=['authorization_code', 'refresh_token'],
                 authorization_methods=['none'],
                 other_props={'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":[],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}'],
                              'jansAccessTknAsJwt': ['TRUE'],
                              'jansSignedRespAlg': ['RS256'],
                              'jansPostLogoutRedirectURI': [f'https://{Config.hostname}/admin', 'http://localhost:4100'],
                              'jansLogoutURI': [f'http://{Config.hostname}:4100/logout', f'https://{Config.hostname}/admin/logout'],
+                             'jansAccessTknLife':['2592000']
                              }
                 )
 
@@ -537,7 +539,10 @@ class flex_installer(JettyInstaller):
                 scopes=admin_ui_backend_client_scopes,
                 authorization_methods=['client_secret_basic'],
                 trusted_client='FALSE',
-                other_props={'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":["inum=2D3E.5A04,ou=scripts,o=jans"],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}']},
+                other_props={
+                    'jansAttrs': ['{"tlsClientAuthSubjectDn":"","runIntrospectionScriptBeforeJwtCreation":false,"keepClientAuthorizationAfterExpiration":false,"allowSpontaneousScopes":false,"spontaneousScopes":[],"spontaneousScopeScriptDns":[],"updateTokenScriptDns":["inum=2D3E.5A04,ou=scripts,o=jans"],"backchannelLogoutUri":[],"backchannelLogoutSessionRequired":false,"additionalAudience":[],"postAuthnScripts":[],"consentGatheringScripts":[],"introspectionScripts":[],"rptClaimsScripts":[],"parLifetime":600,"requirePar":false,"jansAuthSignedRespAlg":null,"jansAuthEncRespAlg":null,"jansAuthEncRespEnc":null}'],
+                    'jansAccessTknLife':['3600'],
+                    },
                 unset_props=('jansLogoutURI', 'jansPostLogoutRedirectURI', 'jansRedirectURI', 'jansSignedRespAlg')
             )
 
@@ -838,6 +843,11 @@ def main(uninstall):
             installer_obj.save_properties()
         if argsp.gluu_passwurd_cert:
             installer_obj.generate_gluu_passwurd_api_keystore()
+
+        # Remove Gorn game for TUI
+        gorn_fn = os.path.join(jans_cli_installer.jans_cli_install_dir, 'defeat_gorn.py')
+        if os.path.exists(gorn_fn):
+            os.remove(gorn_fn)
 
     if not argsp.no_restart_services:
         restart_services()

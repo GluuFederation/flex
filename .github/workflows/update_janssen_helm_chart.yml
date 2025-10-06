@@ -71,5 +71,5 @@ jobs:
           LABELS="area-CI,comp-charts-jans"
           echo "${{ secrets.MOAUTO4_WORKFLOW_TOKEN }}" > token.txt
           gh auth login --with-token < token.txt
-          PR=$(gh pr create --assignee "${ASSIGNEES}" --base "main" --body "${BODY}" --label "${LABELS}" --reviewer "${ASSIGNEES}" --title "${MESSAGE}")        
+          PR=$(gh pr create --assignee "${ASSIGNEES}" --base "v0.0.0-nightly" --body "${BODY}" --label "${LABELS}" --reviewer "${ASSIGNEES}" --title "${MESSAGE}")        
           gh pr merge --squash --auto "${PR}"

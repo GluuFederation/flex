@@ -5,7 +5,7 @@ site_author: Gluu, Inc.
 site_url: https://docs.gluu.org
 
 # Copyright
-copyright: Copyright &copy; 2024, Gluu Flex
+copyright: Copyright &copy; 2025, Gluu Flex
 
 # Repository
 docs_dir: ./docs
@@ -88,10 +88,14 @@ markdown_extensions:
 - codehilite
 - pymdownx.superfences:
     custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-- pymdownx.tabbed
+    - class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
+      name: mermaid
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.emoji:
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
 
 extra:
   generator: false
@@ -141,14 +145,17 @@ nav:
         - 'Logs': 'admin/admin-ui/logs.md'
         - 'Left Navigation Menu':
           - 'admin/admin-ui/left-nav-menu.md'
-          - 'Home': 'admin/admin-ui/dashboard.md'
-          - 'Admin': 'admin/admin-ui/admin-menu.md'
+          - 'Home': 'admin/admin-ui/home.md'
           - 'Auth server': 'admin/admin-ui/auth-server-menu.md'
-          - 'Schema': 'admin/admin-ui/schema-menu.md'
+          - 'Users': 'admin/admin-ui/user-management-menu.md'
+          - 'Scripts': 'admin/admin-ui/scripts.md'
+          - 'User Claims': 'admin/admin-ui/user-claims.md'
           - 'Services': 'admin/admin-ui/services-menu.md'
-          - 'FIDO': 'admin/admin-ui/fido-menu.md'
           - 'SMTP': 'admin/admin-ui/smtp-menu.md'
-          - 'Users': 'admin/admin-ui/userMgmt-menu.md'
+          - 'SCIM': 'admin/admin-ui/scim-menu.md'
+          - 'FIDO': 'admin/admin-ui/fido-menu.md'
+          - 'SAML': 'admin/admin-ui/saml-menu.md'
+          - 'Jans Lock': 'admin/admin-ui/jans-lock-menu.md'
         - 'FAQ & Troubleshooting': 'admin/admin-ui/faq.md'
     - 'Flex Recipes':
         - 'admin/recipes/README.md'

@@ -154,7 +154,7 @@ function LicenseDetailsPage() {
                           onClick={toggle}
                         >
                           <i className="fa fa-undo-alt me-2"></i>
-                          {t('actions.reset')}
+                          {t('fields.resetLicense')}
                         </Button>
                       </div>
                     </Col>

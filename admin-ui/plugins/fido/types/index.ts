@@ -1,0 +1,1 @@
+export { PublicKeyCredentialHints } from './types'

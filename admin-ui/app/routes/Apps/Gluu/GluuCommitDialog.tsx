@@ -51,7 +51,7 @@ const GluuCommitDialog = ({
   })
 
   useEffect(() => {
-    if (userMessage.length >= 10) {
+    if (userMessage.length >= 10 && userMessage.length <= 512) {
       setActive(true)
     } else {
       setActive(false)
@@ -195,14 +195,15 @@ const GluuCommitDialog = ({
                     rows="4"
                     value={userMessage}
                   />
-                  {userMessage.length < 10 && (
+                  {(userMessage.length < 10 || userMessage.length > 512) && (
                     <span
                       style={{
                         color: customColors.accentRed,
                       }}
                     >
-                      {10 - userMessage.length} {userMessage.length ? ' more' : ''} characters
-                      required
+                      {userMessage.length < 10
+                        ? `${10 - userMessage.length} ${userMessage.length ? t('placeholders.more') : ''} ${t('placeholders.charLessThan10')}`
+                        : `${userMessage.length - 512} ${t('placeholders.charMoreThan512')}`}
                     </span>
                   )}
                 </Col>
@@ -215,7 +216,7 @@ const GluuCommitDialog = ({
                 <i className="fa fa-check-circle me-2"></i>
                 {t('actions.accept')}
               </Button>
-            )}{' '}
+            )}
             <Button onClick={closeModal}>
               <i className="fa fa-remove me-2"></i>
               {t('actions.no')}

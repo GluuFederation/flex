@@ -2,7 +2,8 @@
   "languages": {
     "french": "Français",
     "english": "English",
-    "portuguese": "Português"
+    "portuguese": "Português",
+    "spanish": "Espagnole"
   },
   "dashboard": {
     "summary_title": "Statistiques des utilisateurs actifs et des jetons d'accès",
@@ -165,6 +166,7 @@
   },
   "fields": {
     "asset_name": "Asset Name",
+    "resetLicense": "Réinitialiser la licence",
     "tag": "Étiqueter",
     "issuer": "Émetteur",
     "upload": "Select a file to upload",
@@ -311,6 +313,7 @@
     "user_auto_enrollment": "Inscription Automatique de l'Utilisateur",
     "requested_credential_types": "Types de Credential Demandés",
     "requested_parties_name": "Nom des Parties Demandées",
+    "requested_parties_id": "Identifiant des Parties Demandées",
     "tls_client_auth_subject_dn": "Sujet DN de l'authentification client TLS",
     "run_introspection_script_before_accesstoken": "Exécuter le script d'introspection avant la création du jeton d'accès JWT",
     "keep_client_authorization": "Conserver l'autorisation client après expiration",
@@ -618,7 +621,10 @@
     "platform": "Plateforme",
     "authType": "Type d'authentification",
     "showCedarLogs?": "Cedarling Log est-il activé?",
-    "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling."
+    "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling.",
+    "allAvailableHintsSelected": "Toutes les options d'indice disponibles sont sélectionnées.",
+    "noMatchingOptions": "Aucune option correspondante",
+    "nothingToShowInTheList": "Rien à montrer dans la liste"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
@@ -714,6 +720,9 @@
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
     "add_ldap": "Ajouter LDAP",
+    "add_user": "Ajouter un utilisateur",
+    "edit_user": "Modifier un utilisateur",
+    "delete_user": "Supprimer un utilisateur",
     "advanced_search_options": "Options de recherche avancées",
     "delete_attribute": "Supprimer l'attribut",
     "delete_record": "Supprimer l'enregistrement",
@@ -778,7 +787,10 @@
     "typeahead_holder_message": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après avoir saisi chaque élément.",
     "script_path": "Entrez le chemin du fichier de script",
     "expires_after": "Expiration après la date",
-    "expires_before": "Expiration avant la date"
+    "expires_before": "Expiration avant la date",
+    "charMoreThan512": "caractères acima do limite (maximum 512)",
+    "charLessThan10": "caractères nécessaires (minimum 10)",
+    "more": " plus"
   },
   "titles": {
     "acrs": "ACR",

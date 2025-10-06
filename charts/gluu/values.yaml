@@ -87,7 +87,7 @@ admin-ui:
     # -- Image  to use for deploying.
     repository: ghcr.io/gluufederation/flex/admin-ui
     # -- Image  tag to use for deploying.
-    tag: 5.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -194,7 +194,7 @@ auth-server:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/auth-server
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -277,7 +277,7 @@ auth-server-key-rotation:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/cloudtools
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Auth server key rotation job schedule. It accepts any Cron syntax supported by Kubernetes. If empty, the schedule will run based on keysLife value.
@@ -363,6 +363,16 @@ config:
     cnSqlDbTimezone: UTC
     # -- SQL password  injected the secrets .
     cnSqldbUserPassword: Test1234#
+    # -- Enable SSL connection to SQL database.
+    cnSqlSslEnabled: false
+    # -- Mode used to connect to SQL database using SSL if cnSqlSslEnabled is set to true. If using MySQL, choose one of `PREFERRED`, `REQUIRED`, `VERIFY_CA`, or `VERIFY_IDENTITY`. If using PostgreSQL, choose one of `allow`, `prefer`, `require`, `verify-ca`, or `verify-full`.
+    cnSqlSslMode: ""
+    # -- Base64-encoded string of CA certificate used to sign client/server certificate of MySQL/PostgreSQL server. Required if using client cert authentication.
+    cnSqlSslCaCert: ""
+    # -- Base64-encoded string of client certificate signed by CA. Required if using client cert authentication.
+    cnSqlSslClientCert: ""
+    # -- Base64-encoded client private key corresponding to the client certificate. Required if using client cert authentication. We advise to not commit real private keys in values.yaml.
+    cnSqlSslClientKey: ""
     # -- Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` .
     cnCacheType: NATIVE_PERSISTENCE
     # -- The name of the Kubernetes ConfigMap that will hold the configuration layer
@@ -481,7 +491,7 @@ config:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/configurator
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Organization name. Used for certificate creation.
@@ -590,7 +600,7 @@ config-api:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/config-api
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -699,7 +709,7 @@ fido2:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/fido2
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -813,7 +823,7 @@ casa:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/casa
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -903,7 +913,7 @@ global:
     adminUiServiceName: admin-ui
     ingress:
       # -- Enable Admin UI endpoints in either istio or nginx ingress depending on users choice
-      adminUiEnabled: false
+      adminUiEnabled: true
       # -- Admin UI ingress resource labels. key app is taken.
       adminUiLabels: { }
       # -- Admin UI ingress resource additional annotations.
@@ -1474,7 +1484,7 @@ persistence:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/persistence-loader
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.
@@ -1564,7 +1574,7 @@ scim:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/scim
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1678,7 +1688,7 @@ saml:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/saml
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1764,7 +1774,7 @@ kc-scheduler:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/cloudtools
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.
@@ -1827,7 +1837,7 @@ cleanup:
     # -- Image  to use for deploying.
     repository: ghcr.io/janssenproject/jans/cloudtools
     # -- Image  tag to use for deploying.
-    tag: 1.9.0-1
+    tag: 0.0.0-nightly
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.

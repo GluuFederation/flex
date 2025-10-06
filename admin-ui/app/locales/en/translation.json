@@ -95,6 +95,7 @@
   },
   "fields": {
     "access_token_signing_alg": "JWS alg for signing",
+    "resetLicense": "Reset License",
     "asset_name": "Asset Name",
     "upload": "Select a file to upload",
     "jansService": "Related Services",
@@ -552,6 +553,7 @@
     "user_auto_enrollment": "User Auto Enrollment",
     "requested_credential_types": "Requested Credential Types",
     "requested_parties_name": "Requested Parties Name",
+    "requested_parties_id": "Requested Parties Id",
     "domain": "Domain",
     "software_id": "Software ID",
     "expiration": "Expiration",
@@ -590,12 +592,16 @@
     "platform": "Platform",
     "authType": "Auth Type",
     "showCedarLogs?": "Cedarling Log enabled?",
-    "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes."
+    "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes.",
+    "allAvailableHintsSelected": "All available hint options are selected",
+    "noMatchingOptions": "No matching options",
+    "nothingToShowInTheList": "Nothing to show in the list"
   },
   "languages": {
     "french": "French",
     "english": "English",
-    "portuguese": "Portuguese"
+    "portuguese": "Portuguese",
+    "spanish": "Spanish"
   },
   "menus": {
     "assets": "Assets",
@@ -779,6 +785,9 @@
   },
   "tooltips": {
     "add_attribute": "Add attribute",
+    "add_user": "Add User",
+    "edit_user": "Edit User",
+    "delete_user": "Delete User",
     "add_ldap": "Add LDAP",
     "advanced_search_options": "Advanced search options",
     "delete_attribute": "Delete attribute",
@@ -857,7 +866,10 @@
     "iconUrl": "Icon URL",
     "level": "Level",
     "expires_after": "Expiration After Date",
-    "expires_before": "Expiration Before Date"
+    "expires_before": "Expiration Before Date",
+    "charMoreThan512": "characters over limit (maximum 512)",
+    "charLessThan10": "characters required (minimum 10)",
+    "more": " more"
   },
   "titles": {
     "activeTokens": "Active Tokens",
