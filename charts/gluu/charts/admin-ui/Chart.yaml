@@ -1,6 +1,6 @@
 apiVersion: v2
 name: admin-ui
-version: 5.12.0
+version: 0.0.0-nightly
 kubeVersion: ">=v1.21.0-0"
 description: Admin GUI. Requires license.
 type: application
@@ -17,4 +17,4 @@ maintainers:
     email: team@gluu.org
     url: https://github.com/moabu
 icon: https://gluu.org/docs/gluu-server/favicon.ico
-appVersion: "5.12.0"
+appVersion: "0.0.0-nightly"
