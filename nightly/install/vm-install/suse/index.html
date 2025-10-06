@@ -2870,7 +2870,7 @@ of Gluu Flex on SUSE Linux distributions</p>
 <ul>
 <li>
 <p>Download the release package from the GitHub FLEX <a href="https://github.com/gluufederation/flex/releases">Releases</a>
-<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>~/
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm<span class="w"> </span>-P<span class="w"> </span>~/
 </code></pre></div></p>
 </li>
 <li>
@@ -2884,23 +2884,20 @@ of Gluu Flex on SUSE Linux distributions</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>rpm<span class="w"> </span>-import<span class="w"> </span>automation-flex-public-gpg.asc
 </code></pre></div></p>
 </li>
-<li>
-<p>Verify the integrity of the downloaded package using published <code>sha256sum</code>. Download the <code>sha256sum</code> file for the package
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/nightly/flex-0.0.0-nightly.suse15.x86_64.rpm.sha256sum  -P ~/
-</code></pre></div></p>
-</li>
-<li>
-<p>Verify package integrity
-<div class="highlight"><pre><span></span><code>sha256sum -c flex-0.0.0-nightly.suse15.x86_64.rpm.sha256sum
-</code></pre></div>
-You should see:
-<div class="highlight"><pre><span></span><code>flex-0.0.0-nightly-suse15.x86_64.rpm: ok
-</code></pre></div></p>
-</li>
+</ul>
+<p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.  </p>
+<ul>
+<li>Go to the <a href="https://github.com/gluufederation/flex/releases">Flex Project Releases page</a> and copy the <code>sha256sum</code> value for the <code>flex-replace-flex-version-stable.suse15.x86_64.rpm</code> file:</li>
+<li>Replace <code>paste-release-sha256sum</code> in the command below with the actual checksum you copied from the release page, and run the following command:
+      <div class="highlight"><span class="filename">Command</span><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;paste-release-sha256sum flex-replace-flex-version-stable.suse15.x86_64.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span><span class="s1">&#39;s/^sha256://&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sha256sum<span class="w"> </span>-c<span class="w"> </span>flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum
+</code></pre></div></li>
+<li>Output similar to below should confirm the integrity of the downloaded package.
+    <div class="highlight"><span class="filename">Command</span><pre><span></span><code>flex-replace-flex-version-stable.suse15.x86_64.rpm:<span class="w"> </span>OK
+</code></pre></div></li>
 </ul>
 <h3 id="install-the-release-package">Install the Release Package<a class="headerlink" href="#install-the-release-package" title="Permanent link">#</a></h3>
 <p>Use SUSE <code>zypper</code> to install
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-0.0.0-nightly.suse15.x86_64.rpm
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>~/flex-replace-flex-version-stable.suse15.x86_64.rpm
 </code></pre></div></p>
 <h3 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h3>
 <ul>
@@ -3085,7 +3082,7 @@ Removing<span class="w"> </span>/etc/apache2/vhosts.d/_https_jans.conf
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 11, 2025 10:28:57 UTC"><span class="timeago" datetime="2025-07-11T10:28:57+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 11, 2025 10:28:57 UTC">2025-07-11</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="October 6, 2025 08:29:03 UTC"><span class="timeago" datetime="2025-10-06T08:29:03+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="October 6, 2025 08:29:03 UTC">2025-10-06</span>
   </span>
 
     
