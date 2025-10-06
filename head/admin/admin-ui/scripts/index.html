@@ -1598,9 +1598,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#custom-scripts-fields-descriptions" class="md-nav__link">
+  <a href="#script-properties" class="md-nav__link">
     <span class="md-ellipsis">
-      Custom Scripts fields descriptions
+      Script properties
     </span>
   </a>
   
@@ -2593,9 +2593,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#custom-scripts-fields-descriptions" class="md-nav__link">
+  <a href="#script-properties" class="md-nav__link">
     <span class="md-ellipsis">
-      Custom Scripts fields descriptions
+      Script properties
     </span>
   </a>
   
@@ -2667,24 +2667,17 @@
 
 
 <h1 id="custom-scripts">Custom Scripts<a class="headerlink" href="#custom-scripts" title="Permanent link">#</a></h1>
-<p><a href="https://docs.jans.io/stable/janssen-server/developer/scripts/">Custom Scripts</a> are used to implement custom business logic for authentication, authorization, client registration, cache refresh, scopes, token revocation etc.</p>
-<p>The Janssen Authentication Server leverages Custom Scripts when implemented can facilitate complex business workflows without
-changing the server code. Gluu Flex Admin UI provides the interface to add/edit/delete custom scripts.</p>
-<p><img alt="image" src="../../../assets/admin-ui/custom-scripts.png" /></p>
-<h2 id="custom-scripts-fields-descriptions">Custom Scripts fields descriptions<a class="headerlink" href="#custom-scripts-fields-descriptions" title="Permanent link">#</a></h2>
-<ul>
-<li><strong>INUM:</strong> Unique id identifying the script.</li>
-<li><strong>Name:</strong> Name of the custom script. Only letters, digits and underscores are allowed.</li>
-<li><strong>Description:</strong> Description of the script.</li>
-<li><strong>Select SAML ACRS:</strong> The SAML parameter Authentication Context Requests (ACRS).</li>
-<li><strong>Script Type:</strong> The type of the script (e.g. PERSON_AUTHENTICATION, INTROSPECTION, APPLICATION_SESSION, CLIENT_REGISTRATION etc).</li>
-<li><strong>Programming Language:</strong> Programming language of the custom script (e.g. Java and Jython).</li>
-<li><strong>Location Type:</strong> The location of the script, either database or file.</li>
-<li><strong>Level:</strong> The level describes how secure and reliable the script is.</li>
-<li><strong>Custom properties (key/value):</strong> Custom properties that can be used in the script.</li>
-<li><strong>Script:</strong> Script content.</li>
-<li><strong>Enable:</strong> Field set to enable or disable the script.</li>
-</ul>
+<p>The Custom Scripts page provides a list of scripts. Easily add, update, and delete scripts to control and modify various authentication methods.</p>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-custom-script.png" /></p>
+<p><a href="https://docs.jans.io/stable/janssen-server/developer/scripts/">Custom Scripts</a> are used to implement custom business logic for authentication, authorization, client registration, cache refresh, scopes, token revocation, etc.</p>
+<p>The Janssen Authentication Server leverages custom scripts, which, when implemented, can facilitate complex business workflows without changing the server code. Gluu Flex Admin UI provides the interface to add/edit/delete custom scripts.</p>
+<p><img alt="image" src="../../../assets/admin-ui/admin-ui-custom-script-1.png" />
+<img alt="image" src="../../../assets/admin-ui/admin-ui-custom-script-2.png" /></p>
+<h2 id="script-properties">Script properties<a class="headerlink" href="#script-properties" title="Permanent link">#</a></h2>
+<p>Each script presents a few default properties where values can be set 
+according to the requirement. Details can be found <a href="https://docs.jans.io/stable/janssen-server/developer/scripts/#configurable-properties-of-a-custom-script">here</a>.</p>
+<p>In addition to the default properties, custom properties can be supplied to 
+the script using the <code>Custom properties</code> section. </p>
 
 
 
@@ -2707,7 +2700,7 @@ changing the server code. Gluu Flex Admin UI provides the interface to add/edit/
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 7, 2025 09:23:27 UTC"><span class="timeago" datetime="2025-08-07T09:23:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 7, 2025 09:23:27 UTC">2025-08-07</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="October 6, 2025 08:30:30 UTC"><span class="timeago" datetime="2025-10-06T08:30:30+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="October 6, 2025 08:30:30 UTC">2025-10-06</span>
   </span>
 
     
