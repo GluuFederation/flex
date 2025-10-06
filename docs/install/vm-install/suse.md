@@ -56,19 +56,18 @@ unzip automation-flex-public-gpg.zip
 sudo rpm -import automation-flex-public-gpg.asc
 ```
 
-- Verify the integrity of the downloaded package using published `sha256sum`. Download the `sha256sum` file for the package
-```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum  -P ~/
-```
+Verify integrity of the downloaded package by verifying published `sha256sum`.  
+    
+  * Go to the [Flex Project Releases page](https://github.com/gluufederation/flex/releases) and copy the `sha256sum` value for the `flex-replace-flex-version-stable.suse15.x86_64.rpm` file:
+  * Replace `paste-release-sha256sum` in the command below with the actual checksum you copied from the release page, and run the following command:
+      ```bash title="Command"
+      echo 'paste-release-sha256sum flex-replace-flex-version-stable.suse15.x86_64.rpm' | sed 's/^sha256://' > flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum && sha256sum -c flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum
+      ```
+  * Output similar to below should confirm the integrity of the downloaded package.
+    ```bash title="Command"
+    flex-replace-flex-version-stable.suse15.x86_64.rpm: OK
+    ```
 
-- Verify package integrity
-```
-sha256sum -c flex-replace-flex-version-stable.suse15.x86_64.rpm.sha256sum
-```
-You should see:
-```
-flex-replace-flex-version-suse15.x86_64.rpm: ok
-```
 
 ### Install the Release Package
 

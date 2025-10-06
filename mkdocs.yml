@@ -5,7 +5,7 @@ site_author: Gluu, Inc.
 site_url: https://docs.gluu.org
 
 # Copyright
-copyright: Copyright &copy; 2024, Gluu Flex
+copyright: Copyright &copy; 2025, Gluu Flex
 
 # Repository
 docs_dir: ./docs
@@ -88,10 +88,14 @@ markdown_extensions:
 - codehilite
 - pymdownx.superfences:
     custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-- pymdownx.tabbed
+    - class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
+      name: mermaid
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.emoji:
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
 
 extra:
   generator: false
