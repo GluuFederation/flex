@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class SsaApi {
   constructor(api) {
     this.api = api
@@ -15,10 +17,10 @@ export default class SsaApi {
       })
         .then((response) => response.json())
         .then((data) => {
-          resolve(data)
+          handleResponse(null, reject, resolve, data)
         })
         .catch((error) => {
-          reject(error)
+          handleResponse(error, reject, resolve, null)
         })
     })
   }
@@ -35,10 +37,10 @@ export default class SsaApi {
       })
         .then((response) => response.json())
         .then((data) => {
-          resolve(data)
+          handleResponse(null, reject, resolve, data)
         })
         .catch((error) => {
-          reject(error)
+          handleResponse(error, reject, resolve, null)
         })
     })
   }
@@ -54,30 +56,19 @@ export default class SsaApi {
       })
         .then((response) => response.json())
         .then((data) => {
-          resolve(data)
+          handleResponse(null, reject, resolve, data)
         })
         .catch((error) => {
-          reject(error)
+          handleResponse(error, reject, resolve, null)
         })
     })
   }
 
-  deleteSsa = ({ jti, token, authServerHost }) => {
+  removeSsa = ({ jti }) => {
     return new Promise((resolve, reject) => {
-      fetch(`${authServerHost}/jans-auth/restv1/ssa?jti=${jti}`, {
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
+      this.api.revokeSsa({ jti }, (error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
-        .then((response) => response.json())
-        .then((data) => {
-          resolve(data)
-        })
-        .catch((error) => {
-          reject(error)
-        })
     })
   }
 }
