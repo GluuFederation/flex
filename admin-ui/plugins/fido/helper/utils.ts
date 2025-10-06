@@ -85,13 +85,10 @@ const transformDynamicConfigToFormValues = (
     disableJdkLogger: toBooleanValue(config?.disableJdkLogger),
     loggingLevel: config?.loggingLevel || '',
     loggingLayout: config?.loggingLayout || '',
-    externalLoggerConfiguration: config?.externalLoggerConfiguration || '',
     metricReporterEnabled: toBooleanValue(config?.metricReporterEnabled),
     metricReporterInterval: config?.metricReporterInterval || '',
     metricReporterKeepDataDays: config?.metricReporterKeepDataDays || '',
-    personCustomObjectClassList: (config?.personCustomObjectClassList || []).map((item) =>
-      typeof item === 'string' ? item : item,
-    ),
+    personCustomObjectClassList: config?.personCustomObjectClassList || [],
     fido2MetricsEnabled: toBooleanValue(config?.fido2MetricsEnabled),
     fido2MetricsRetentionDays: config?.fido2MetricsRetentionDays || '',
     fido2DeviceInfoCollection: toBooleanValue(config?.fido2DeviceInfoCollection),
@@ -122,9 +119,7 @@ const applyStaticConfigChanges = (
   payload: AppConfiguration1,
   staticData: StaticConfigFormValues,
 ): void => {
-  if (!payload.fido2Configuration) {
-    payload.fido2Configuration = {}
-  }
+  payload.fido2Configuration ??= {}
 
   payload.fido2Configuration.authenticatorCertsFolder = staticData.authenticatorCertsFolder
   payload.fido2Configuration.mdsCertsFolder = staticData.mdsCertsFolder
@@ -139,7 +134,10 @@ const applyStaticConfigChanges = (
   payload.fido2Configuration.userAutoEnrollment = staticData.userAutoEnrollment
   payload.fido2Configuration.rp = staticData.requestedParties.map((item) => ({
     id: item.key,
-    origins: [item.value],
+    origins: item.value
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter((origin) => origin.length > 0),
   }))
   payload.fido2Configuration.metadataRefreshInterval = Number(staticData.metadataRefreshInterval)
   payload.fido2Configuration.enabledFidoAlgorithms = staticData.enabledFidoAlgorithms
@@ -165,7 +163,6 @@ const applyDynamicConfigChanges = (
   payload.disableJdkLogger = dynamicData.disableJdkLogger
   payload.loggingLevel = dynamicData.loggingLevel
   payload.loggingLayout = dynamicData.loggingLayout
-  payload.externalLoggerConfiguration = dynamicData.externalLoggerConfiguration
   payload.metricReporterEnabled = dynamicData.metricReporterEnabled
   payload.metricReporterInterval = Number(dynamicData.metricReporterInterval)
   payload.metricReporterKeepDataDays = Number(dynamicData.metricReporterKeepDataDays)

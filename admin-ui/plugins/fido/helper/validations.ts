@@ -14,7 +14,6 @@ const dynamicConfigValidationSchema = Yup.object({
   disableJdkLogger: Yup.boolean().required('Disable JDK Logger is required.'),
   loggingLevel: Yup.string().required('Logging Level is required.'),
   loggingLayout: Yup.string().required('Logging Layout is required.'),
-  externalLoggerConfiguration: Yup.string(),
   metricReporterEnabled: Yup.boolean().required('Metric Reporter Enabled is required.'),
   metricReporterInterval: Yup.number()
     .typeError('Metric Reporter Interval must be a number.')

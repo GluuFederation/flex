@@ -10,7 +10,6 @@ export interface DynamicConfigFormValues {
   disableJdkLogger: boolean
   loggingLevel: string
   loggingLayout: string
-  externalLoggerConfiguration: string
   metricReporterEnabled: boolean
   metricReporterInterval: number | string
   metricReporterKeepDataDays: number | string

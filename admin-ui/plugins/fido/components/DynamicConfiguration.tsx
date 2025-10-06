@@ -167,24 +167,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
 
         <Col sm={8}>
           <GluuInputRow
-            label={fidoConstants.LABELS.EXTERNAL_LOGGER_CONFIGURATION}
-            name={fidoConstants.FORM_FIELDS.EXTERNAL_LOGGER_CONFIGURATION}
-            value={formik.values.externalLoggerConfiguration || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            showError={
-              !!(
-                formik.errors.externalLoggerConfiguration &&
-                formik.touched.externalLoggerConfiguration
-              )
-            }
-            errorMessage={formik.errors.externalLoggerConfiguration}
-          />
-        </Col>
-
-        <Col sm={8}>
-          <GluuInputRow
             label={fidoConstants.LABELS.METRIC_REPORTER_INTERVAL}
             name={fidoConstants.FORM_FIELDS.METRIC_REPORTER_INTERVAL}
             type="number"
