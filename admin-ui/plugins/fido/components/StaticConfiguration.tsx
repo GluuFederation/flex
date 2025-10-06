@@ -54,8 +54,8 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
 
   const requestedPartiesOptions = useMemo(() => {
     return (formik.values.requestedParties || []).map((item) => ({
-      key: item.key,
-      value: item.value,
+      key: item.key || '',
+      value: item.value || '',
     }))
   }, [formik.values.requestedParties])
 
@@ -68,10 +68,31 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
 
   const metadataServersOptions = useMemo(() => {
     return (formik.values.metadataServers || []).map((server) => ({
-      key: server.url,
-      value: server.rootCert,
+      key: server.url || '',
+      value: server.rootCert || '',
     }))
   }, [formik.values.metadataServers])
+
+  // Create a wrapper formik that transforms metadata servers between key/value and url/rootCert
+  const metadataServersFormik = useMemo(() => {
+    const setFieldValueWrapper = (name: string, value: any) => {
+      if (name === fidoConstants.FORM_FIELDS.METADATA_SERVERS) {
+        // Transform {key, value} back to {url, rootCert}
+        const transformedValue = value.map((item: any) => ({
+          url: item.key || '',
+          rootCert: item.value || '',
+        }))
+        formik.setFieldValue(name, transformedValue)
+      } else {
+        formik.setFieldValue(name, value)
+      }
+    }
+
+    return {
+      ...formik,
+      setFieldValue: setFieldValueWrapper,
+    }
+  }, [formik.values, formik.errors, formik.touched])
 
   const availableHintOptions = useMemo(() => {
     return getAvailableHintOptions(formik.values.hints)
@@ -255,7 +276,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
                 isInputLables={true}
                 keyLabel="URL"
                 valueLabel="Root Certificate"
-                formik={formik}
+                formik={metadataServersFormik}
                 options={metadataServersOptions}
                 keyPlaceholder="Enter URL"
                 valuePlaceholder="Enter Root Certificate"
