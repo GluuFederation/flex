@@ -1,1 +1,1 @@
-export { PublicKeyCredentialHints } from './types'
+export { PublicKeyCredentialHints, AttestationMode } from './types'
