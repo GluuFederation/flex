@@ -1,5 +1,44 @@
 # Changelog
 
+## [5.10.0](https://github.com/GluuFederation/flex/compare/v5.9.0...v5.10.0) (2025-09-12)
+
+
+### Features
+
+* admin ui traductions to spanish ([#2258](https://github.com/GluuFederation/flex/issues/2258)) ([b429918](https://github.com/GluuFederation/flex/commit/b4299187198fda15f9ce36d83330a11871db49d8))
+* **admin-ui:** add audit log entries for Logging page of Admin UI ([#2256](https://github.com/GluuFederation/flex/issues/2256)) ([4bacfba](https://github.com/GluuFederation/flex/commit/4bacfba992f2af1518899fb3652b9f6cc9237500))
+* **admin-ui:** add feature to delete selected session record ([#2245](https://github.com/GluuFederation/flex/issues/2245)) ([402903e](https://github.com/GluuFederation/flex/commit/402903e58dc253b90e25a5a45ccc166d0e39b80f))
+* **admin-ui:** add jans-client header for auditing on server [#2116](https://github.com/GluuFederation/flex/issues/2116) ([#2191](https://github.com/GluuFederation/flex/issues/2191)) ([d0914a7](https://github.com/GluuFederation/flex/commit/d0914a7c933b31972c0b01a591109f930951aaee))
+* **admin-ui:** limit audit comment length to 512 characters ([#2231](https://github.com/GluuFederation/flex/issues/2231)) ([8ff6cd1](https://github.com/GluuFederation/flex/commit/8ff6cd1ee305260753a0d0288edb194dc3286624))
+* **admin-ui:** sync FIDO configuration page with TUI ([#2242](https://github.com/GluuFederation/flex/issues/2242)) ([ee56c97](https://github.com/GluuFederation/flex/commit/ee56c9764eb3407388e7f2c07c0a63dd130e94a0))
+* **admin-ui:** synchronize Admin UI sidebar with documentation ([#2219](https://github.com/GluuFederation/flex/issues/2219)) ([fa81550](https://github.com/GluuFederation/flex/commit/fa81550e76a64c63bc985deeb7d1ae0d9dae63c7))
+* **admin-ui:** traductions to Spanish in admin-ui ([#2238](https://github.com/GluuFederation/flex/issues/2238)) ([2ce8bdc](https://github.com/GluuFederation/flex/commit/2ce8bdc76d6f2394e3e5d2956d9a8a218fad9652))
+* **admin-ui:** upgrade cedarling_wasm dependency in Admin UI ([#2227](https://github.com/GluuFederation/flex/issues/2227)) ([6f3ae41](https://github.com/GluuFederation/flex/commit/6f3ae41bd82f560b2e3b5d05b021a4bab9bc5676))
+* **admin-ui:** upgrade cedarling_wasm dependency in Admin UI [#2208](https://github.com/GluuFederation/flex/issues/2208) ([6f3ae41](https://github.com/GluuFederation/flex/commit/6f3ae41bd82f560b2e3b5d05b021a4bab9bc5676))
+* **flex-linux-setup:** remove gorn for TUI ([#2248](https://github.com/GluuFederation/flex/issues/2248)) ([9dc4277](https://github.com/GluuFederation/flex/commit/9dc4277b41d0b08db8d65e8f843dbf7a46790e4c))
+
+
+### Bug Fixes
+
+* **admin-ui:** Add full typescript type system for Asset management ([#2239](https://github.com/GluuFederation/flex/issues/2239)) ([cf0afb4](https://github.com/GluuFederation/flex/commit/cf0afb40406b4c7646a0bf5d0c31e8cd665ec8df))
+* **admin-ui:** Add full typescript type system for the Schema plugin ([#2225](https://github.com/GluuFederation/flex/issues/2225)) ([a8ff44c](https://github.com/GluuFederation/flex/commit/a8ff44cf23f483fc5d78a87265784764381c908c))
+* **admin-ui:** Add full typescript type system for the SMTP plugin ([#2230](https://github.com/GluuFederation/flex/issues/2230)) ([a373f8d](https://github.com/GluuFederation/flex/commit/a373f8dafa3e0839c7b2c6f154cae757c1897738))
+* **admin-ui:** Add full typescript type system for the USERS plugin ([#2215](https://github.com/GluuFederation/flex/issues/2215)) ([efdc2bf](https://github.com/GluuFederation/flex/commit/efdc2bf5e451a5327a0f2af134c129eee96df915))
+* **admin-ui:** add null check validation in Auth Server Configuration page ([#2261](https://github.com/GluuFederation/flex/issues/2261)) ([3d0ba8b](https://github.com/GluuFederation/flex/commit/3d0ba8bacb56e26cafa8f839cda0004b38dbcaae))
+* **admin-ui:** add null check validation in Auth Server Configuration page [#2259](https://github.com/GluuFederation/flex/issues/2259) ([3d0ba8b](https://github.com/GluuFederation/flex/commit/3d0ba8bacb56e26cafa8f839cda0004b38dbcaae))
+* **admin-ui:** adminui feature in webhook not working ([#2252](https://github.com/GluuFederation/flex/issues/2252)) ([2681a08](https://github.com/GluuFederation/flex/commit/2681a080a7987c2be6f8b2b6c3e4169d14169469))
+* **admin-ui:** correct i18n key for Health section title under Home menu ([#2218](https://github.com/GluuFederation/flex/issues/2218)) ([78fce7b](https://github.com/GluuFederation/flex/commit/78fce7b054615ffce072373b932b0ed8541d7d0a))
+* **admin-ui:** correct i18n key for Health section title under Home menu (#&lt;issue_number&gt;) ([78fce7b](https://github.com/GluuFederation/flex/commit/78fce7b054615ffce072373b932b0ed8541d7d0a))
+* **admin-ui:** fix incorrect  tooltips text in Users screen ([#2254](https://github.com/GluuFederation/flex/issues/2254)) ([8b80e80](https://github.com/GluuFederation/flex/commit/8b80e808634b0ab57f6dd9587080db377cdf3f64))
+* **admin-ui:** fix incorrect  tooltips text in Users screen [#2253](https://github.com/GluuFederation/flex/issues/2253) ([8b80e80](https://github.com/GluuFederation/flex/commit/8b80e808634b0ab57f6dd9587080db377cdf3f64))
+* **admin-ui:** resolve search issues in Custom Scripts screen ([#2200](https://github.com/GluuFederation/flex/issues/2200)) ([c967724](https://github.com/GluuFederation/flex/commit/c967724c78304b16292bd0099e2b52bfd445d91b))
+* **admin-ui:** resolve search issues in Custom Scripts screen ([#2213](https://github.com/GluuFederation/flex/issues/2213)) ([c967724](https://github.com/GluuFederation/flex/commit/c967724c78304b16292bd0099e2b52bfd445d91b))
+* **admin-ui:** The select box all over the UI is broken ([#2241](https://github.com/GluuFederation/flex/issues/2241)) ([6cf5728](https://github.com/GluuFederation/flex/commit/6cf5728310536b1ad6c42b3d7ab56cb1c7309657))
+* **cloud-native:** invalid pathType when nginx ingress controller uses strict-validate-path-type config ([#2221](https://github.com/GluuFederation/flex/issues/2221)) ([e105427](https://github.com/GluuFederation/flex/commit/e1054275039ee0533b8b629d2afaf70ec3486600))
+* **docs:** update documentation for Fido screen on Admin-UI ([#2272](https://github.com/GluuFederation/flex/issues/2272)) ([18574e2](https://github.com/GluuFederation/flex/commit/18574e2128eb867e0a8dff4513e3dae93d7d40c9))
+* **flex-linux-setup:** add jansAccessTknLife for adminui clients ([#2212](https://github.com/GluuFederation/flex/issues/2212)) ([3ffc0d9](https://github.com/GluuFederation/flex/commit/3ffc0d9b0c2e5bfd934386f95f627b5d7e6da140))
+* **flex-linux-setup:** changes required in Admin UI Web Client ([#2243](https://github.com/GluuFederation/flex/issues/2243)) ([92b2c1e](https://github.com/GluuFederation/flex/commit/92b2c1e01baa15e272d4106a63caca5dde1347ce))
+
 ## [5.9.0](https://github.com/GluuFederation/flex/compare/v5.8.0...v5.9.0) (2025-07-24)
 
 

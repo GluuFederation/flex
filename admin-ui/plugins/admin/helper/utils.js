@@ -98,6 +98,8 @@ export const adminUiFeatures = {
   oidc_clients_write: 'oidc_clients_write',
   scopes_write: 'scopes_write',
   scopes_delete: 'scopes_delete',
+  ssa_write: 'ssa_write',
+  ssa_delete: 'ssa_delete',
   fido_configuration_write: 'fido_configuration_write',
   jans_keycloak_link_write: 'jans_keycloak_link_write',
   jans_link_write: 'jans_link_write',

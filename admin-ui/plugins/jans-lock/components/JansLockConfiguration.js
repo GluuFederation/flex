@@ -1,17 +1,16 @@
 import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import { Row, Col, Form, FormGroup, Accordion } from 'Components'
+import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { putJansLockConfiguration } from 'Plugins/jans-lock/redux/features/JansLockSlice'
-import customColors from '@/customColors'
 
 const DOC_CATEGORY = 'jans_lock'
 
@@ -20,11 +19,9 @@ const JansLockConfiguration = () => {
   const { hasCedarPermission, authorize } = useCedarling()
   const lockConfigs = useSelector((state) => state.jansLockReducer.configuration)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-
   const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
   const [modal, setModal] = useState(false)
 
-  // Permission initialization
   useEffect(() => {
     const authorizePermissions = async () => {
       try {
@@ -45,29 +42,49 @@ const JansLockConfiguration = () => {
 
   const formik = useFormik({
     initialValues: lockConfigs,
-    onSubmit: () => {
-      toggle()
-    },
+    onSubmit: () => toggle(),
+    validationSchema: Yup.object({
+      cleanServiceBatchChunkSize: Yup.number().integer().min(1).required('Required field'),
+      cleanServiceInterval: Yup.number().integer().min(1).required('Required field'),
+      metricReporterInterval: Yup.number().integer().min(1).typeError('Must be a number'),
+      metricReporterKeepDataDays: Yup.number().integer().min(0).typeError('Must be a number'),
+    }),
   })
-
   const submitForm = (userMessage) => {
     const differences = []
-    delete formik.values?.action_message
+    // Work on a cloned, type-normalized copy
+    const diffSource = { ...formik.values }
+    // Normalize booleans expected by backend
+    const boolKeys = ['metricReporterEnabled', 'disableJdkLogger']
+    boolKeys.forEach((k) => {
+      if (k in diffSource) diffSource[k] = String(diffSource[k]) === 'true'
+    })
+    // Normalize numeric fields
+    const numKeys = [
+      'metricReporterInterval',
+      'metricReporterKeepDataDays',
+      'cleanServiceInterval',
+      'cleanServiceBatchChunkSize',
+    ]
+    numKeys.forEach((k) => {
+      if (diffSource[k] !== undefined && diffSource[k] !== '') diffSource[k] = Number(diffSource[k])
+    })
+    delete diffSource?.action_message
 
-    for (const key in formik.values) {
+    for (const key in diffSource) {
       if (Object.prototype.hasOwnProperty.call(lockConfigs, key)) {
-        if (JSON.stringify(lockConfigs[key]) !== JSON.stringify(formik.values[key])) {
+        if (JSON.stringify(lockConfigs[key]) !== JSON.stringify(diffSource[key])) {
           differences.push({
             op: 'replace',
             path: `/${key}`,
-            value: formik.values[key],
+            value: diffSource[key],
           })
         }
-      } else if (formik.values[key]) {
+      } else if (diffSource[key]) {
         differences.push({
           op: 'add',
           path: `/${key}`,
-          value: formik.values[key],
+          value: diffSource[key],
         })
       }
     }
@@ -94,7 +111,7 @@ const JansLockConfiguration = () => {
       className="mt-4"
     >
       <FormGroup row>
-        <Col sm={12}>
+        {/* <Col sm={12}>
           <GluuInputRow
             label="fields.base_dn"
             name="baseDN"
@@ -107,7 +124,7 @@ const JansLockConfiguration = () => {
             disabled={viewOnly}
             doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </Col> */}
 
         <Col sm={12}>
           <GluuTypeAhead
@@ -265,6 +282,26 @@ const JansLockConfiguration = () => {
 
         <Col sm={12}>
           <GluuInputRow
+            label="fields.clean_batch_chunk_size"
+            name="cleanServiceBatchChunkSize"
+            value={formik.values.cleanServiceBatchChunkSize || ''}
+            formik={formik}
+            doc_category={DOC_CATEGORY}
+            lsize={3}
+            rsize={9}
+            showError={
+              formik.errors.cleanServiceBatchChunkSize && formik.touched.cleanServiceBatchChunkSize
+            }
+            disabled={viewOnly}
+            errorMessage={formik.errors.cleanServiceBatchChunkSize}
+            type="number"
+            min={1}
+            step={1}
+          />
+        </Col>
+
+        <Col sm={12}>
+          <GluuInputRow
             label="fields.metric_channel"
             name="metricChannel"
             value={formik.values.metricChannel || ''}
@@ -294,7 +331,7 @@ const JansLockConfiguration = () => {
         </Col>
 
         {/* OPA Configuration Starts */}
-        <Col sm={12}>
+        {/* <Col sm={12}>
           <Accordion className="mb-2 b-primary" initialOpen>
             <Accordion.Header className="text-primary">
               <GluuLabel
@@ -328,7 +365,7 @@ const JansLockConfiguration = () => {
               />
             </Accordion.Body>
           </Accordion>
-        </Col>
+        </Col> */}
 
         {/* OPA Configuration Ends */}
 
