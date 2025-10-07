@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import LdapForm from './LdapForm'
 import { useLocation } from 'react-router-dom'
-import { lDapFormInitialState } from 'Plugins/auth-server/helper'
+import { ldapFormInitialState } from 'Plugins/auth-server/helper/utils'
 
 function LdapAddPage() {
   const { t } = useTranslation()
@@ -16,15 +16,10 @@ function LdapAddPage() {
   const dispatch = useDispatch()
   const location = useLocation()
 
-  const loading = useSelector((state) => state.authNLdap.loading)
-  const errorInSaveOperationFlag = useSelector(
-    (state) => state.authNLdap.errorInSaveOperationFlag || false,
-  )
-  const authNLdap = useSelector((state) => state.authNLdap)
+  const { loading, saveStatus = 'idle', item } = useSelector((state) => state.authNLdap)
+  const isEdit = Boolean(location.state?.isEdit)
 
-  const isEdit = location.state?.isEdit
-  const { item } = authNLdap
-  const ldapConfig = React.useMemo(() => lDapFormInitialState(isEdit, item), [isEdit, item])
+  const ldapConfig = React.useMemo(() => ldapFormInitialState(isEdit, item), [isEdit, item])
 
   const handleSuccessApply = React.useCallback(() => {
     dispatch({ type: 'authNLdap/getLdapList' })
@@ -34,9 +29,9 @@ function LdapAddPage() {
   return (
     <GluuLoader blocking={loading}>
       <GluuAlert
-        severity={t('titles.error')}
+        severity="error"
         message={t('messages.error_in_saving')}
-        show={errorInSaveOperationFlag}
+        show={saveStatus === 'failed'}
       />
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>

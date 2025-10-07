@@ -57,7 +57,14 @@ function AuthNForm({ item, handleSubmit }) {
 
   const submitForm = (userMessage) => {
     toggle()
-    handleSubmit(formik.values, userMessage)
+    const values = {
+      ...formik.values,
+      defaultAuthNMethod:
+        formik.values.defaultAuthNMethod === true ||
+        String(formik.values.defaultAuthNMethod).toLowerCase() === 'true',
+      userMessage: userMessage,
+    }
+    handleSubmit(values)
   }
 
   const getPropertiesConfig = (entry) => {

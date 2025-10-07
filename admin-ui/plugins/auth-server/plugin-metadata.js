@@ -59,6 +59,7 @@ import {
   SSA_PORTAL,
   MESSAGE_READ,
   API_CONFIG_READ,
+  LDAP_WRITE,
 } from 'Utils/PermChecker'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import configApiReducer from 'Plugins/auth-server/redux/features/configApiSlice'
@@ -183,7 +184,7 @@ const pluginMetadata = {
     {
       component: LdapAddPage,
       path: PLUGIN_BASE_APTH + '/authn/ldap/new',
-      permission: SCOPE_WRITE,
+      permission: LDAP_WRITE,
     },
     {
       component: ScopeAddPage,

@@ -24,7 +24,7 @@ export const AGAMA_ALIAS_STRINGS = {
   },
   messages: {
     delete_confirm: 'Are you sure you want to delete this alias?',
-    edit_acr: 'Edit Alias',
+    edit_alias: 'Edit Alias',
   },
   feature: {
     delete: 'agama_alias_delete',

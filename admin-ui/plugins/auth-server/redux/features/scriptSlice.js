@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   scripts: [],
   script: {},
-  loading: true,
+  loading: false,
   scriptTypes: [],
 }
 
@@ -41,6 +41,8 @@ const scriptSlice = createSlice({
       state.loading = false
       if (action.payload?.data) {
         state.script = action.payload.data
+      } else {
+        state.script = {}
       }
     },
   },
@@ -55,5 +57,5 @@ export const {
   getScriptResponse,
 } = scriptSlice.actions
 
-export const { actions, reducer, state } = scriptSlice
+export const { actions, reducer } = scriptSlice
 reducerRegistry.register('scriptReducer', reducer)

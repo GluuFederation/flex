@@ -53,6 +53,7 @@
     "agama_flows": "Flux Agama",
     "default_acr": "ACR par défaut",
     "acrs": "ACRs",
+    "acr_management": "Gestion des ACR",
     "aliases": "Aliases",
     "trust_relationships": "Relations de confiance",
     "api_config": "Configurer les propriétés de l'API",
@@ -732,6 +733,60 @@
     "delete_record": "Supprimer l'enregistrement",
     "edit_ldap": "Modifier LDAP",
     "edit_attribute": "Modifier l'attribut",
+    "authn": {
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "DN de liaison",
+          "bind_password": "Mot de passe de liaison",
+          "remote_ldap_server": "Serveur LDAP distant",
+          "max_connections": "Connexions maximales",
+          "base_dns": "DN de base",
+          "remote_primary_key": "Clé primaire distante",
+          "local_primary_key": "Clé primaire locale",
+          "servers": "Serveurs",
+          "level": "Niveau",
+          "default_authn_method": "Méthode d'authentification par défaut",
+          "use_ssl": "Utiliser SSL",
+          "enabled": "Activé",
+          "enable": "Activé",
+          "disable": "Désactivé",
+          "status": "Statut"
+        },
+        "placeholders": {
+          "acr": "Entrez ACR",
+          "bind_dn": "Entrez DN de liaison",
+          "bind_password": "Entrez le mot de passe de liaison",
+          "remote_ldap_server": "Entrez le serveur LDAP distant",
+          "max_connections": "Entrez les connexions maximales",
+          "base_dns": "Entrez les DN de base",
+          "remote_primary_key": "Entrez la clé primaire distante",
+          "local_primary_key": "Entrez la clé primaire locale",
+          "level": "Entrez le niveau",
+          "default_authn_method": "Entrez la méthode d'authentification par défaut",
+          "action_commit_message": "Entrez la raison du changement"
+        },
+        "errors": {
+          "acr_required": "ACR est requis!",
+          "bind_dn_required": "DN de liaison est requis!",
+          "bind_password_required": "Mot de passe de liaison est requis!",
+          "remote_ldap_server_required": "Serveur LDAP distant est requis!",
+          "remote_ldap_server_invalid": "Le serveur doit être une URL LDAP valide (ldap:// ou ldaps://)",
+          "max_connections_required": "Connexions maximales sont requises!",
+          "max_connections_type": "Les connexions maximales doivent être un nombre",
+          "max_connections_positive": "Les connexions maximales doivent être un nombre positif",
+          "max_connections_integer": "Les connexions maximales doivent être un nombre entier",
+          "base_dns_required": "DN de base sont requis!",
+          "remote_primary_key_required": "Clé primaire distante est requise!",
+          "local_primary_key_required": "Clé primaire locale est requise!",
+          "level_required": "Niveau est requis!",
+          "level_type": "Le niveau doit être un nombre",
+          "level_min": "Le niveau doit être au moins 1",
+          "level_integer": "Le niveau doit être un nombre entier",
+          "default_authn_method_required": "Méthode d'authentification par défaut est requise!"
+        }
+      }
+    },
     "refresh_data": "Actualiser les données",
     "view_attribute": "Afficher l'attribut",
     "client_credentials_access_token_count": "Nombre de jetons d'accès aux informations d'identification du client",
@@ -1444,7 +1499,59 @@
       "status": "Statut du SSA (ACTIF, UTILISÉ, EXPIRÉ ou RÉVOQUÉ)"
     },
     "authn": {
-      "acr": "Référence de classe de contexte d'authentification"
+      "acr": "Référence de classe de contexte d'authentification",
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "DN de liaison",
+          "bind_password": "Mot de passe de liaison",
+          "remote_ldap_server": "Serveur LDAP distant",
+          "max_connections": "Connexions maximales",
+          "base_dns": "DN de base",
+          "remote_primary_key": "Clé primaire distante",
+          "local_primary_key": "Clé primaire locale",
+          "servers": "Serveurs",
+          "level": "Niveau",
+          "default_authn_method": "Méthode d'authentification par défaut",
+          "use_ssl": "Utiliser SSL",
+          "enabled": "Activé",
+          "enable": "Activé",
+          "disable": "Désactivé",
+          "status": "Statut"
+        },
+        "placeholders": {
+          "acr": "Entrez ACR",
+          "bind_dn": "Entrez DN de liaison",
+          "bind_password": "Entrez le mot de passe de liaison",
+          "remote_ldap_server": "Entrez le serveur LDAP distant",
+          "max_connections": "Entrez les connexions maximales",
+          "base_dns": "Entrez les DN de base",
+          "remote_primary_key": "Entrez la clé primaire distante",
+          "local_primary_key": "Entrez la clé primaire locale",
+          "level": "Entrez le niveau",
+          "default_authn_method": "Entrez la méthode d'authentification par défaut",
+          "action_commit_message": "Entrez la raison du changement"
+        },
+        "errors": {
+          "acr_required": "ACR est requis!",
+          "bind_dn_required": "DN de liaison est requis!",
+          "bind_password_required": "Mot de passe de liaison est requis!",
+          "remote_ldap_server_required": "Serveur LDAP distant est requis!",
+          "remote_ldap_server_invalid": "Le serveur doit être une URL LDAP valide (ldap:// ou ldaps://)",
+          "max_connections_required": "Connexions maximales sont requises!",
+          "max_connections_type": "Les connexions maximales doivent être un nombre",
+          "max_connections_positive": "Les connexions maximales doivent être un nombre positif",
+          "max_connections_integer": "Les connexions maximales doivent être un nombre entier",
+          "base_dns_required": "DN de base sont requis!",
+          "remote_primary_key_required": "Clé primaire distante est requise!",
+          "local_primary_key_required": "Clé primaire locale est requise!",
+          "level_required": "Niveau est requis!",
+          "level_type": "Le niveau doit être un nombre",
+          "level_min": "Le niveau doit être au moins 1",
+          "level_integer": "Le niveau doit être un nombre entier",
+          "default_authn_method_required": "Méthode d'authentification par défaut est requise!"
+        }
+      }
     },
     "openid_client": {
       "displayName": "Nom du client à présenter à l'utilisateur final.",

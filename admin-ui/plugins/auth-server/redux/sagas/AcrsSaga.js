@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from 'Utils/TokenController'
+import { isFourZeroOneError } from '@/utils/TokenController'
 import { getAcrsResponse, editAcrsResponse, editAcrsResponseFailed } from '../features/acrSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import AcrApi from '../api/AcrApi'
@@ -7,7 +7,7 @@ import { getClient } from 'Redux/api/base'
 import { updateToast } from '@/redux/features/toastSlice'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from '@/redux/sagas/SagaUtils'
-import { addAdditionalData } from '@/utils/TokenController'
+import { addAdditionalData } from 'Utils/TokenController'
 import { UPDATE } from '@/audit/UserActionType'
 import { postUserAction } from '@/redux/api/backend-api'
 import { BASIC } from '@/utils/ApiResources'
@@ -45,8 +45,13 @@ export function* editAcrs({ payload }) {
     yield put(editAcrsResponse({ data }))
     yield call(postUserAction, audit)
   } catch (e) {
+    audit.status = 'failure'
+    addAdditionalData(audit, UPDATE, BASIC, {
+      message: e?.response?.data?.error_description || e?.message,
+    })
     yield put(updateToast(true, 'error'))
     yield put(editAcrsResponseFailed())
+    yield call(postUserAction, audit)
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

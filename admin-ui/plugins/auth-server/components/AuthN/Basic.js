@@ -32,7 +32,7 @@ function Basic() {
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
-  SetTitle('Built In')
+  SetTitle(t('menus.built_in'))
 
   useEffect(() => {
     const authorizePermissions = async () => {
@@ -87,11 +87,11 @@ function Basic() {
           Container: (props) => <Paper {...props} elevation={0} />,
         }}
         columns={[
-          { title: `acr`, field: 'acrName' },
-          { title: `saml acr`, field: 'samlACR' },
-          { title: `level`, field: 'level' },
+          { title: t('fields.acr'), field: 'acrName' },
+          { title: t('fields.saml_acr'), field: 'samlACR' },
+          { title: t('fields.level'), field: 'level' },
           {
-            title: `default`,
+            title: t('fields.default'),
             field: '',
             render: (rowData) => (
               <i

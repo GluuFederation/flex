@@ -5,61 +5,56 @@ export default class ScriptApi {
     this.api = api
   }
 
-  // Get all scripts
   getAllScripts = (options = {}) => {
     return new Promise((resolve, reject) => {
-      this.api.getConfigScripts(options, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getConfigScripts(options, (error, data, response) => {
+        handleResponse(error, reject, resolve, data, response)
       })
     })
   }
 
-  // Get scripts by type
   getScriptsByType = (scriptType, options = {}) => {
     return new Promise((resolve, reject) => {
-      // Use fieldValuePair to filter by scriptType
       const searchOptions = {
         ...options,
-        fieldValuePair: `scriptType:${scriptType}`,
+        ...(scriptType
+          ? { fieldValuePair: options.fieldValuePair || `scriptType:${scriptType}` }
+          : {}),
       }
-      this.api.getConfigScripts(searchOptions, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getConfigScripts(searchOptions, (error, data, response) => {
+        handleResponse(error, reject, resolve, data, response)
       })
     })
   }
 
-  // Get script by inum
   getScript = (inum) => {
     return new Promise((resolve, reject) => {
-      this.api.getConfigScriptsByInum(inum, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.getConfigScriptsByInum(inum, (error, data, response) => {
+        handleResponse(error, reject, resolve, data, response)
       })
     })
   }
 
-  // Add new script
   addScript = (data) => {
     return new Promise((resolve, reject) => {
-      this.api.postConfigScripts({ customScript: data }, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.postConfigScripts({ customScript: data }, (error, data, response) => {
+        handleResponse(error, reject, resolve, data, response)
       })
     })
   }
 
-  // Update script
   updateScript = (data) => {
     return new Promise((resolve, reject) => {
-      this.api.putConfigScripts({ customScript: data }, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.putConfigScripts({ customScript: data }, (error, data, response) => {
+        handleResponse(error, reject, resolve, data, response)
       })
     })
   }
 
-  // Delete script
   deleteScript = (inum) => {
     return new Promise((resolve, reject) => {
-      this.api.deleteConfigScriptsByInum(inum, (error, data) => {
-        handleResponse(error, reject, resolve, data)
+      this.api.deleteConfigScriptsByInum(inum, (error, data, response) => {
+        handleResponse(error, reject, resolve, data, response)
       })
     })
   }

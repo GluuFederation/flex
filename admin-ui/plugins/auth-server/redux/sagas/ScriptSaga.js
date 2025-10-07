@@ -10,7 +10,7 @@ import ScriptApi from '../api/ScriptApi'
 import { getClient } from 'Redux/api/base'
 import * as JansConfigApi from 'jans_config_api'
 
-function* newFunction() {
+function* getScriptApi() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.CustomScriptsApi(getClient(JansConfigApi, token, issuer))
@@ -19,8 +19,9 @@ function* newFunction() {
 
 export function* getScripts({ payload }) {
   try {
-    const api = yield* newFunction()
-    const data = yield call(api.getAllScripts, payload.action || {})
+    const api = yield* getScriptApi()
+    const options = payload?.action || {}
+    const data = yield call(api.getAllScripts, options)
     yield put(getScriptsResponse({ data }))
   } catch (e) {
     yield put(getScriptsResponse(null))
@@ -33,9 +34,12 @@ export function* getScripts({ payload }) {
 
 export function* getScriptsByType({ payload }) {
   try {
-    const api = yield* newFunction()
-    const scriptType = payload.action?.type || payload.action || 'PERSON_AUTHENTICATION'
-    const data = yield call(api.getScriptsByType, scriptType, payload.action || {})
+    const api = yield* getScriptApi()
+    const isString = typeof payload?.action === 'string'
+    const scriptType =
+      payload?.action?.type || (isString ? payload.action : 'PERSON_AUTHENTICATION')
+    const options = !isString && typeof payload?.action === 'object' ? payload.action : {}
+    const data = yield call(api.getScriptsByType, scriptType, options)
     yield put(getScriptsByTypeResponse({ data }))
   } catch (e) {
     yield put(getScriptsByTypeResponse(null))
@@ -48,7 +52,7 @@ export function* getScriptsByType({ payload }) {
 
 export function* getScript({ payload }) {
   try {
-    const api = yield* newFunction()
+    const api = yield* getScriptApi()
     const data = yield call(api.getScript, payload.inum)
     yield put(getScriptResponse({ data }))
   } catch (e) {

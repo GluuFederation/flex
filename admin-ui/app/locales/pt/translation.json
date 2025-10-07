@@ -349,6 +349,7 @@
     "base_dns": "DNs de base",
     "bind_dn": "Vincular DN",
     "base_dn": "DN Base",
+    "ldap_servers": "Servidores LDAP",
     "application_url": "URL da aplicação",
     "ox_auth_issuer": "Emissor de autenticação",
     "max_count": "Contagem máxima",
@@ -508,7 +509,6 @@
     "scope_type": "Tipo de Escopo",
     "scopes:": "Scopes",
     "scripts": "Scripts",
-    "ldap_servers": "Servidores LDAP",
     "script_type": "Tipo de Script",
     "sector_uri": "URI de identificador de setor",
     "sender_email": "Email do Remetente",
@@ -722,6 +722,60 @@
     "edit_user": "Editar usuário",
     "delete_user": "Excluir usuário",
     "add_ldap": "Adicionar LDAP",
+    "authn": {
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "DN de Ligação",
+          "bind_password": "Senha de Ligação",
+          "remote_ldap_server": "Servidor LDAP Remoto",
+          "max_connections": "Conexões Máximas",
+          "base_dns": "DNs Base",
+          "remote_primary_key": "Chave Primária Remota",
+          "local_primary_key": "Chave Primária Local",
+          "servers": "Servidores",
+          "level": "Nível",
+          "default_authn_method": "Método de Autenticação Padrão",
+          "use_ssl": "Usar SSL",
+          "enabled": "Ativado",
+          "enable": "Ativado",
+          "disable": "Desativado",
+          "status": "Status"
+        },
+        "placeholders": {
+          "acr": "Insira ACR",
+          "bind_dn": "Insira DN de Ligação",
+          "bind_password": "Insira Senha de Ligação",
+          "remote_ldap_server": "Insira Servidor LDAP Remoto",
+          "max_connections": "Insira Conexões Máximas",
+          "base_dns": "Insira DNs Base",
+          "remote_primary_key": "Insira Chave Primária Remota",
+          "local_primary_key": "Insira Chave Primária Local",
+          "level": "Insira Nível",
+          "default_authn_method": "Insira Método de Autenticação Padrão",
+          "action_commit_message": "Insira o motivo da mudança"
+        },
+        "errors": {
+          "acr_required": "ACR é obrigatório!",
+          "bind_dn_required": "DN de Ligação é obrigatório!",
+          "bind_password_required": "Senha de Ligação é obrigatória!",
+          "remote_ldap_server_required": "Servidor LDAP Remoto é obrigatório!",
+          "remote_ldap_server_invalid": "O servidor deve ser uma URL LDAP válida (ldap:// ou ldaps://)",
+          "max_connections_required": "Conexões Máximas são obrigatórias!",
+          "max_connections_type": "Conexões Máximas devem ser um número",
+          "max_connections_positive": "As conexões máximas devem ser um número positivo",
+          "max_connections_integer": "As conexões máximas devem ser um número inteiro",
+          "base_dns_required": "DNs Base são obrigatórios!",
+          "remote_primary_key_required": "Chave Primária Remota é obrigatória!",
+          "local_primary_key_required": "Chave Primária Local é obrigatória!",
+          "level_required": "Nível é obrigatório!",
+          "level_type": "O Nível deve ser um número",
+          "level_min": "O nível deve ser pelo menos 1",
+          "level_integer": "O nível deve ser um número inteiro",
+          "default_authn_method_required": "Método de Autenticação Padrão é obrigatório!"
+        }
+      }
+    },
     "advanced_search_options": "Opções de pesquisa avançada",
     "delete_attribute": "Apagar atributo",
     "delete_record": "Apagar registro",
@@ -805,6 +859,7 @@
   },
   "titles": {
     "acrs": "ACRs",
+    "acr_management": "Gerenciamento de ACR",
     "assets": "Jans Assets",
     "asset_add": "Adding new Jans Asset",
     "asset_edit": "Editing new Jans Asset",
@@ -1538,7 +1593,59 @@
       "status": "Status do SSA (ATIVO, USADO, EXPIRADO ou REVOGADO)"
     },
     "authn": {
-      "acr": "Référence de classe de contexte d'authentification"
+      "acr": "Référence de classe de contexte d'authentification",
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "DN de Ligação",
+          "bind_password": "Senha de Ligação",
+          "remote_ldap_server": "Servidor LDAP Remoto",
+          "max_connections": "Conexões Máximas",
+          "base_dns": "DNs Base",
+          "remote_primary_key": "Chave Primária Remota",
+          "local_primary_key": "Chave Primária Local",
+          "servers": "Servidores",
+          "level": "Nível",
+          "default_authn_method": "Método de Autenticação Padrão",
+          "use_ssl": "Usar SSL",
+          "enabled": "Ativado",
+          "enable": "Ativado",
+          "disable": "Desativado",
+          "status": "Status"
+        },
+        "placeholders": {
+          "acr": "Insira ACR",
+          "bind_dn": "Insira DN de Ligação",
+          "bind_password": "Insira Senha de Ligação",
+          "remote_ldap_server": "Insira Servidor LDAP Remoto",
+          "max_connections": "Insira Conexões Máximas",
+          "base_dns": "Insira DNs Base",
+          "remote_primary_key": "Insira Chave Primária Remota",
+          "local_primary_key": "Insira Chave Primária Local",
+          "level": "Insira Nível",
+          "default_authn_method": "Insira Método de Autenticação Padrão",
+          "action_commit_message": "Insira o motivo da mudança"
+        },
+        "errors": {
+          "acr_required": "ACR é obrigatório!",
+          "bind_dn_required": "DN de Ligação é obrigatório!",
+          "bind_password_required": "Senha de Ligação é obrigatória!",
+          "remote_ldap_server_required": "Servidor LDAP Remoto é obrigatório!",
+          "remote_ldap_server_invalid": "O servidor deve ser uma URL LDAP válida (ldap:// ou ldaps://)",
+          "max_connections_required": "Conexões Máximas são obrigatórias!",
+          "max_connections_type": "Conexões Máximas devem ser um número",
+          "max_connections_positive": "As conexões máximas devem ser um número positivo",
+          "max_connections_integer": "As conexões máximas devem ser um número inteiro",
+          "base_dns_required": "DNs Base são obrigatórios!",
+          "remote_primary_key_required": "Chave Primária Remota é obrigatória!",
+          "local_primary_key_required": "Chave Primária Local é obrigatória!",
+          "level_required": "Nível é obrigatório!",
+          "level_type": "O Nível deve ser um número",
+          "level_min": "O nível deve ser pelo menos 1",
+          "level_integer": "O nível deve ser um número inteiro",
+          "default_authn_method_required": "Método de Autenticação Padrão é obrigatório!"
+        }
+      }
     }
   },
   "script": {

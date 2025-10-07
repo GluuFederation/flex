@@ -26,6 +26,7 @@ export function* getAgamas() {
     yield put(getAgamaResponse(data))
     return data
   } catch (e) {
+    yield put(getAgamaResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

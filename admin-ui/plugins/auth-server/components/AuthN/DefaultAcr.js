@@ -13,15 +13,15 @@ import { Button, Form } from 'Components'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from '@/context/theme/themeContext'
 import DefaultAcrInput from '../Configuration/DefaultAcrInput'
-import { getScripts } from 'Redux/features/initSlice'
+import { getScriptsByType } from 'Plugins/auth-server/redux/features/scriptSlice'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 
 function DefaultAcr() {
   const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
 
-  const { acrReponse: acrs, loading: acrLoading } = useSelector((state) => state.acrReducer)
-  const { scripts, loading: scriptLoading } = useSelector((state) => state.initReducer)
+  const { acrReponse: acrs } = useSelector((state) => state.acrReducer)
+  const { scripts } = useSelector((state) => state.scriptReducer)
   const { agamaList, loading: agamaLoading } = useSelector((state) => state.agamaReducer)
 
   const { t } = useTranslation()
@@ -32,7 +32,7 @@ function DefaultAcr() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  SetTitle('ACR Management')
+  SetTitle(t('titles.acr_management'))
 
   useEffect(() => {
     const initializeAcr = async () => {
@@ -44,7 +44,7 @@ function DefaultAcr() {
     }
 
     initializeAcr()
-    dispatch(getScripts({ action: userAction }))
+    dispatch(getScriptsByType({ action: { type: 'PERSON_AUTHENTICATION' } }))
     dispatch(getAgama())
     dispatch(getAcrsConfig())
   }, [authorize, dispatch])
@@ -52,7 +52,10 @@ function DefaultAcr() {
   const authScripts = useMemo(() => {
     const filteredScripts = Array.isArray(scripts)
       ? scripts
-          .filter((item) => item && item.scriptType === 'person_authentication' && item.enabled)
+          .filter(
+            (item) =>
+              item && item.scriptType?.toUpperCase() === 'PERSON_AUTHENTICATION' && item.enabled,
+          )
           .map((item) => item.name)
           .filter(Boolean)
       : []
@@ -62,9 +65,9 @@ function DefaultAcr() {
     //   : []
     const agamaFlows = []
 
-    const result = [...filteredScripts, SIMPLE_PASSWORD_AUTH, ...agamaFlows]
-
-    console.log('Auth scripts with Agama flows:', result)
+    const result = Array.from(
+      new Set([...filteredScripts, SIMPLE_PASSWORD_AUTH, ...agamaFlows]),
+    ).sort()
     return result
   }, [scripts, agamaList])
 
@@ -100,7 +103,7 @@ function DefaultAcr() {
   }
 
   return (
-    <GluuLoader blocking={acrLoading || scriptLoading || agamaLoading}>
+    <GluuLoader blocking={agamaLoading}>
       <Form onSubmit={handleSubmit}>
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
         <div style={{ padding: '3vh' }}>
@@ -120,7 +123,11 @@ function DefaultAcr() {
             />
           </GluuViewWrapper>
           {hasCedarPermission(ACR_WRITE) && (
-            <Button color={`primary-${selectedTheme}`} onClick={handleSaveClick}>
+            <Button
+              color={`primary-${selectedTheme}`}
+              onClick={handleSaveClick}
+              disabled={!put?.value || put?.value === acrs?.defaultAcr}
+            >
               <i className="fa fa-check-circle me-2"></i>
               {t('actions.save')}
             </Button>

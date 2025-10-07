@@ -390,8 +390,6 @@
     "saml1_uri": "Saml1 URI",
     "saml2_uri": "Saml2 URI",
     "saml_acr": "SAML ACR",
-    "bindDN": " Bind DN",
-    "primaryKey": " Primary Key",
     "scope_type": "Scope type",
     "script_properties": "Script Properties",
     "umaAuthorizationPolicies": "Authorization Policies",
@@ -623,6 +621,7 @@
     "config-api": "Config-API",
     "security": "Security",
     "authn": "Authn",
+
     "webhooks": "Webhooks",
     "agama_flows": "Agama Flows",
     "default_acr": "Default ACR",
@@ -630,6 +629,7 @@
     "aliases": "Aliases",
     "api_config": "Config API properties",
     "basic": "Basic",
+    "built_in": "Built In",
     "securityDropdown": {
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",
@@ -813,7 +813,61 @@
     "product_version": "Version number of this database product",
     "driver_name": "Name of this JDBC driver",
     "driver_version": "Version number of this JDBC driver",
-    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI."
+    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI.",
+    "authn": {
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "Bind DN",
+          "bind_password": "Bind Password",
+          "remote_ldap_server": "Remote LDAP Server",
+          "max_connections": "Max Connections",
+          "base_dns": "Base DNs",
+          "remote_primary_key": "Remote Primary Key",
+          "local_primary_key": "Local Primary Key",
+          "servers": "Servers",
+          "level": "Level",
+          "default_authn_method": "Default Authn Method",
+          "use_ssl": "Use SSL",
+          "enabled": "Enabled",
+          "enable": "Enabled",
+          "disable": "Disabled",
+          "status": "Status"
+        },
+        "placeholders": {
+          "acr": "Enter ACR",
+          "bind_dn": "Enter Bind DN",
+          "bind_password": "Enter Bind Password",
+          "remote_ldap_server": "Enter Remote LDAP Server",
+          "max_connections": "Enter Max Connections",
+          "base_dns": "Enter Base DNs",
+          "remote_primary_key": "Enter Remote Primary Key",
+          "local_primary_key": "Enter Local Primary Key",
+          "level": "Enter Level",
+          "default_authn_method": "Enter Default Authn Method",
+          "action_commit_message": "Enter reason for change"
+        },
+        "errors": {
+          "acr_required": "ACR is required!",
+          "bind_dn_required": "Bind DN is required!",
+          "bind_password_required": "Bind Password is required!",
+          "remote_ldap_server_required": "Remote LDAP Server is required!",
+          "remote_ldap_server_invalid": "Server must be a valid LDAP URL (http:// or https://)",
+          "max_connections_required": "Max Connections is required!",
+          "max_connections_type": "Max Connections must be a number",
+          "max_connections_positive": "Max connections must be a positive number",
+          "max_connections_integer": "Max connections must be an integer",
+          "base_dns_required": "Base DNs is required!",
+          "remote_primary_key_required": "Remote Primary Key is required!",
+          "local_primary_key_required": "Local Primary Key is required!",
+          "level_required": "Level is required!",
+          "level_type": "Level must be a number",
+          "level_min": "Level must be at least 1",
+          "level_integer": "Level must be an integer",
+          "default_authn_method_required": "Default Authn Method is required!"
+        }
+      }
+    }
   },
   "placeholders": {
     "acr": "Enter ACR",
@@ -890,6 +944,7 @@
   "titles": {
     "activeTokens": "Active Tokens",
     "acrs": "ACRs",
+    "acr_management": "ACR Management",
     "active_users": "Actives Users && Access Token Stats",
     "assets": "Jans Assets",
     "asset_add": "Adding new Jans Asset",
@@ -1059,7 +1114,59 @@
       "hash_algorithm": "Hash Algorithim",
       "saml_acr": "The SAML parameter Authentication Context Requests",
       "primary_key": "Primary Key",
-      "description": "Description"
+      "description": "Description",
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "Bind DN",
+          "bind_password": "Bind Password",
+          "remote_ldap_server": "Remote LDAP Server",
+          "max_connections": "Max Connections",
+          "base_dns": "Base DNs",
+          "remote_primary_key": "Remote Primary Key",
+          "local_primary_key": "Local Primary Key",
+          "servers": "Servers",
+          "level": "Level",
+          "default_authn_method": "Default Authn Method",
+          "use_ssl": "Use SSL",
+          "enabled": "Enabled",
+          "enable": "Enabled",
+          "disable": "Disabled",
+          "status": "Status"
+        },
+        "placeholders": {
+          "acr": "Enter ACR",
+          "bind_dn": "Enter Bind DN",
+          "bind_password": "Enter Bind Password",
+          "remote_ldap_server": "Enter Remote LDAP Server",
+          "max_connections": "Enter Max Connections",
+          "base_dns": "Enter Base DNs",
+          "remote_primary_key": "Enter Remote Primary Key",
+          "local_primary_key": "Enter Local Primary Key",
+          "level": "Enter Level",
+          "default_authn_method": "Enter Default Authn Method",
+          "action_commit_message": "Enter reason for change"
+        },
+        "errors": {
+          "acr_required": "ACR is required!",
+          "bind_dn_required": "Bind DN is required!",
+          "bind_password_required": "Bind Password is required!",
+          "remote_ldap_server_required": "Remote LDAP Server is required!",
+          "remote_ldap_server_invalid": "Server must be a valid LDAP URL (http:// or https://)",
+          "max_connections_required": "Max Connections is required!",
+          "max_connections_type": "Max Connections must be a number",
+          "max_connections_positive": "Max connections must be a positive number",
+          "max_connections_integer": "Max connections must be an integer",
+          "base_dns_required": "Base DNs is required!",
+          "remote_primary_key_required": "Remote Primary Key is required!",
+          "local_primary_key_required": "Local Primary Key is required!",
+          "level_required": "Level is required!",
+          "level_type": "Level must be a number",
+          "level_min": "Level must be at least 1",
+          "level_integer": "Level must be an integer",
+          "default_authn_method_required": "Default Authn Method is required!"
+        }
+      }
     },
     "roles": {
       "name": "Role name",

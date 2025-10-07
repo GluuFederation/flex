@@ -56,12 +56,12 @@ function ScriptsListPage() {
   }, [hasCedarPermission, dispatch])
 
   const authScripts = scripts
-    .filter((script) => script.scriptType === 'person_authentication' && script.enabled)
+    .filter((script) => script?.scriptType === 'person_authentication' && script?.enabled)
     .map((script) => ({
       ...script,
-      acrName: script.name,
+      acrName: script?.name || 'N/A',
       level: script.level || 0,
-      samlACR: script.name,
+      samlACR: script?.name || 'N/A',
     }))
 
   console.log('Auth scripts:', authScripts)

@@ -222,7 +222,7 @@
     "acrs": "ACRs",
     "aliases": "Alias",
     "api_config": "Propiedades de la API de configuración",
-    "builtIn": "Integrado",
+    "basic": "Integrado",
     "securityDropdown": {
       "adminUiRoles": "Roles de la interfaz de administración",
       "capabilities": "Capacidades",
@@ -412,7 +412,61 @@
     "show_error": "Muestra los detalles del error",
     "ok": "Confirma el mensaje",
     "copy_to_clipboard": "Copia el valor al portapapeles",
-    "export_csv": "Exporta los datos en formato CSV"
+    "export_csv": "Exporta los datos en formato CSV",
+    "authn": {
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "DN de Vinculación",
+          "bind_password": "Contraseña de Vinculación",
+          "remote_ldap_server": "Servidor LDAP Remoto",
+          "max_connections": "Conexiones Máximas",
+          "base_dns": "DNs Base",
+          "remote_primary_key": "Clave Primaria Remota",
+          "local_primary_key": "Clave Primaria Local",
+          "servers": "Servidores",
+          "level": "Nivel",
+          "default_authn_method": "Método de Autenticación Predeterminado",
+          "use_ssl": "Usar SSL",
+          "enabled": "Habilitado",
+          "enable": "Habilitado",
+          "disable": "Deshabilitado",
+          "status": "Estado"
+        },
+        "placeholders": {
+          "acr": "Introducir ACR",
+          "bind_dn": "Introducir DN de Vinculación",
+          "bind_password": "Introducir Contraseña de Vinculación",
+          "remote_ldap_server": "Introducir Servidor LDAP Remoto",
+          "max_connections": "Introducir Conexiones Máximas",
+          "base_dns": "Introducir DNs Base",
+          "remote_primary_key": "Introducir Clave Primaria Remota",
+          "local_primary_key": "Introducir Clave Primaria Local",
+          "level": "Introducir Nivel",
+          "default_authn_method": "Introducir Método de Autenticación Predeterminado",
+          "action_commit_message": "Introducir motivo del cambio"
+        },
+        "errors": {
+          "acr_required": "¡Se requiere ACR!",
+          "bind_dn_required": "¡Se requiere DN de Vinculación!",
+          "bind_password_required": "¡Se requiere Contraseña de Vinculación!",
+          "remote_ldap_server_required": "¡Se requiere Servidor LDAP Remoto!",
+          "remote_ldap_server_invalid": "El servidor debe ser una URL LDAP válida (ldap:// o ldaps://)",
+          "max_connections_required": "¡Se requieren Conexiones Máximas!",
+          "max_connections_type": "Las Conexiones Máximas deben ser un número",
+          "max_connections_positive": "Las conexiones máximas deben ser un número positivo",
+          "max_connections_integer": "Las conexiones máximas deben ser un número entero",
+          "base_dns_required": "¡Se requieren DNs Base!",
+          "remote_primary_key_required": "¡Se requiere Clave Primaria Remota!",
+          "local_primary_key_required": "¡Se requiere Clave Primaria Local!",
+          "level_required": "¡Se requiere Nivel!",
+          "level_type": "El Nivel debe ser un número",
+          "level_min": "El nivel debe ser al menos 1",
+          "level_integer": "El nivel debe ser un número entero",
+          "default_authn_method_required": "¡Se requiere Método de Autenticación Predeterminado!"
+        }
+      }
+    }
   },
   "placeholders": {
     "id": "Introducir ID",
@@ -476,6 +530,7 @@
   "titles": {
     "activeTokens": "Tokens Activos",
     "acrs": "ACRs",
+    "acr_management": "Gestión de ACR",
     "active_users": "Estádisticas de Usuarios Activos & Token de accesos",
     "assets": "Activos Jans",
     "asset_add": "Añadir un Nuevo Activo Jans",
@@ -645,7 +700,59 @@
       "hash_algorithm": "Hash del Algoritmo",
       "saml_acr": "El Parametro de SAML en Contexto de Solicitud de Antenticación",
       "primary_key": "Llave Primaria",
-      "description": "Descripción"
+      "description": "Descripción",
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "DN de Vinculación",
+          "bind_password": "Contraseña de Vinculación",
+          "remote_ldap_server": "Servidor LDAP Remoto",
+          "max_connections": "Conexiones Máximas",
+          "base_dns": "DNs Base",
+          "remote_primary_key": "Clave Primaria Remota",
+          "local_primary_key": "Clave Primaria Local",
+          "servers": "Servidores",
+          "level": "Nivel",
+          "default_authn_method": "Método de Autenticación Predeterminado",
+          "use_ssl": "Usar SSL",
+          "enabled": "Habilitado",
+          "enable": "Habilitado",
+          "disable": "Deshabilitado",
+          "status": "Estado"
+        },
+        "placeholders": {
+          "acr": "Introducir ACR",
+          "bind_dn": "Introducir DN de Vinculación",
+          "bind_password": "Introducir Contraseña de Vinculación",
+          "remote_ldap_server": "Introducir Servidor LDAP Remoto",
+          "max_connections": "Introducir Conexiones Máximas",
+          "base_dns": "Introducir DNs Base",
+          "remote_primary_key": "Introducir Clave Primaria Remota",
+          "local_primary_key": "Introducir Clave Primaria Local",
+          "level": "Introducir Nivel",
+          "default_authn_method": "Introducir Método de Autenticación Predeterminado",
+          "action_commit_message": "Introducir motivo del cambio"
+        },
+        "errors": {
+          "acr_required": "¡Se requiere ACR!",
+          "bind_dn_required": "¡Se requiere DN de Vinculación!",
+          "bind_password_required": "¡Se requiere Contraseña de Vinculación!",
+          "remote_ldap_server_required": "¡Se requiere Servidor LDAP Remoto!",
+          "remote_ldap_server_invalid": "El servidor debe ser una URL LDAP válida (ldap:// o ldaps://)",
+          "max_connections_required": "¡Se requieren Conexiones Máximas!",
+          "max_connections_type": "Las Conexiones Máximas deben ser un número",
+          "max_connections_positive": "Las conexiones máximas deben ser un número positivo",
+          "max_connections_integer": "Las conexiones máximas deben ser un número entero",
+          "base_dns_required": "¡Se requieren DNs Base!",
+          "remote_primary_key_required": "¡Se requiere Clave Primaria Remota!",
+          "local_primary_key_required": "¡Se requiere Clave Primaria Local!",
+          "level_required": "¡Se requiere Nivel!",
+          "level_type": "El Nivel debe ser un número",
+          "level_min": "El nivel debe ser al menos 1",
+          "level_integer": "El nivel debe ser un número entero",
+          "default_authn_method_required": "¡Se requiere Método de Autenticación Predeterminado!"
+        }
+      }
     },
     "roles": {
       "name": "Nombre del Role",

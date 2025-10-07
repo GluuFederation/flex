@@ -56,8 +56,8 @@ function AuthNEditPage() {
       ldapPayload.enabled = data.enabled
 
       if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
-        payload.authenticationMethod = { defaultAcr: data.configId }
-        dispatch(editSimpleAuthAcr({ data: payload, userMessage: userMessage }))
+        payload.authenticationMethod = { defaultAcr: data.configId, userMessage: userMessage }
+        dispatch(editSimpleAuthAcr({ data: payload }))
       }
       dispatch(editLDAPAuthAcr({ data: ldapPayload }))
     } else {

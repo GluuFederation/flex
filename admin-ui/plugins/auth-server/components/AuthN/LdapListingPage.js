@@ -5,9 +5,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { useCedarling } from '@/cedarling'
-import { ThemeContext } from 'Context/theme/themeContext'
-import getThemeColor from 'Context/theme/config'
-import { getLdapList, setCurrentItem } from '../../redux/features/authNLdapSlice'
+import { ThemeContext } from '@/context/theme/themeContext'
+import getThemeColor from '@/context/theme/config'
+import { getLdapList, setCurrentItem, deleteLdap } from '../../redux/features/authNLdapSlice'
 import { useNavigate } from 'react-router-dom'
 import customColors from '@/customColors'
 import { LDAP_READ, LDAP_WRITE, LDAP_DELETE } from 'Utils/PermChecker'
@@ -38,8 +38,7 @@ function LdapListingPage() {
 
   const [modal, setModal] = useState(false)
   const [selectedRow, setSelectedRow] = useState(null)
-  const toggle = useCallback(() => setModal(!modal), [modal])
-  const { permissions } = useSelector((state) => state.cedarPermissions)
+  const toggle = useCallback(() => setModal((m) => !m), [])
 
   SetTitle('LDAP Server')
 
@@ -60,16 +59,14 @@ function LdapListingPage() {
 
   useEffect(() => {
     const initPermissions = async () => {
-      const permissions = [LDAP_READ, LDAP_WRITE, LDAP_DELETE]
-      for (const permission of permissions) {
+      const ldapPerms = [LDAP_READ, LDAP_WRITE, LDAP_DELETE]
+      for (const permission of ldapPerms) {
         await authorize([permission])
       }
     }
     initPermissions()
     dispatch(getLdapList())
   }, [dispatch])
-
-  useEffect(() => {}, [permissions])
 
   useEffect(() => {
     const actions = []
@@ -138,7 +135,6 @@ function LdapListingPage() {
     <>
       <GluuViewWrapper canShow={hasCedarPermission(LDAP_READ)}>
         <MaterialTable
-          key={limit ? limit : 0}
           components={{
             Container: (props) => <Paper {...props} elevation={0} />,
           }}
@@ -218,10 +214,7 @@ function LdapListingPage() {
         modal={modal}
         subject="ldap"
         onAccept={(userMessage) => {
-          dispatch({
-            type: 'authNLdap/deleteLdap',
-            payload: { configId: selectedRow?.configId, userMessage },
-          })
+          dispatch(deleteLdap({ configId: selectedRow?.configId, userMessage }))
           setModal(false)
         }}
         feature={'ldap_delete'}

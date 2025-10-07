@@ -6,6 +6,7 @@ const initialState = {
   scripts: [],
   loading: false,
   acrReponse: {},
+  error: null,
 }
 
 const acrSlice = createSlice({
@@ -14,24 +15,33 @@ const acrSlice = createSlice({
   reducers: {
     getAcrsConfig: (state) => {
       state.loading = true
+      state.error = null
     },
     getAcrsResponse: (state, action) => {
       state.loading = false
+      state.error = null
       if (action.payload?.data) {
         state.acrReponse = action.payload.data
       }
+    },
+    getAcrsResponseFailed: (state, action) => {
+      state.loading = false
+      state.error = action?.payload?.error || action?.error || 'Failed to load ACRs configuration'
     },
     editAcrs: (state) => {
       state.loading = true
+      state.error = null
     },
     editAcrsResponse: (state, action) => {
       state.loading = false
+      state.error = null
       if (action.payload?.data) {
         state.acrReponse = action.payload.data
       }
     },
-    editAcrsResponseFailed: (state) => {
+    editAcrsResponseFailed: (state, action) => {
       state.loading = false
+      state.error = action?.payload?.error || action?.error || 'Failed to edit ACRs configuration'
     },
   },
 })
@@ -39,6 +49,7 @@ const acrSlice = createSlice({
 export const {
   getAcrsConfig,
   getAcrsResponse,
+  getAcrsResponseFailed,
   editAcrs,
   editAcrsResponse,
   editAcrsResponseFailed,

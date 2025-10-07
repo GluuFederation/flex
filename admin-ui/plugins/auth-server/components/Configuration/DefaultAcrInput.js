@@ -38,11 +38,7 @@ function DefaultAcrInput({
     if (!showSaveButtons && data) {
       const put = {}
       put[PATH] = path
-      if (isArray) {
-        put[VALUE] = correctValue
-      } else {
-        put[VALUE] = data
-      }
+      put[VALUE] = isArray ? (Array.isArray(data) ? data : [data]) : data
       put['op'] = 'replace'
       handler(put)
       setShow(false)
@@ -90,7 +86,9 @@ function DefaultAcrInput({
               >
                 <option value="">{t('actions.choose')}...</option>
                 {options.map((item, key) => (
-                  <option key={key}>{item}</option>
+                  <option key={key} value={item}>
+                    {item}
+                  </option>
                 ))}
               </CustomInput>
             </InputGroup>

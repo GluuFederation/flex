@@ -71,8 +71,18 @@ function AliasesListPage() {
     dispatch(getJsonConfig({ action: {} }))
   }, [dispatch])
 
+  const handleEdit = useCallback(
+    (rowData) => {
+      setIsEdit(true)
+      formik.setFieldValue('source', rowData.source)
+      formik.setFieldValue('mapping', rowData.mapping)
+      setSelectedRow(rowData)
+      setShowAddModal(true)
+    },
+    [formik],
+  )
+
   useEffect(() => {
-    const t = (s) => s
     const actions = []
 
     if (hasCedarPermission(SCOPE_WRITE)) {
@@ -101,7 +111,7 @@ function AliasesListPage() {
         tooltip: t(AGAMA_ALIAS_STRINGS.actions.delete),
         onClick: (event, rowData) => {
           if (!hasCedarPermission(SCOPE_WRITE)) return
-          setRowToDelete({ ...rowData, resolve: () => {}, reject: () => {} })
+          setRowToDelete(rowData)
           setShowDeleteDialog(true)
         },
       }))
@@ -154,7 +164,6 @@ function AliasesListPage() {
     ]
     buildPayload(userAction, userMessage, postBody)
     dispatch(patchJsonConfig({ action: userAction }))
-    if (rowToDelete.resolve) rowToDelete.resolve(true)
     setShowDeleteDialog(false)
     setRowToDelete(null)
   }
@@ -163,7 +172,7 @@ function AliasesListPage() {
     (userMessage) => {
       const userAction = {}
       const postBody = {}
-      let value = configuration.acrMappings
+      let value = { ...configuration.acrMappings }
 
       if (isEdit) {
         delete value[selectedRow.mapping]
@@ -183,17 +192,6 @@ function AliasesListPage() {
       setShowCommitDialog(false)
     },
     [configuration, isEdit, selectedRow, dispatch, formik.values],
-  )
-
-  const handleEdit = useCallback(
-    (rowData) => {
-      setIsEdit(true)
-      formik.setFieldValue('source', rowData.source)
-      formik.setFieldValue('mapping', rowData.mapping)
-      setSelectedRow(rowData)
-      setShowAddModal(true)
-    },
-    [formik],
   )
 
   useEffect(() => {

@@ -13,7 +13,7 @@ export function formatBaseDNs(baseDNs) {
   return baseDNs
 }
 
-export const lDapFormInitialState = (isEdit, item) =>
+export const ldapFormInitialState = (isEdit, item) =>
   isEdit && item
     ? item
     : {
@@ -34,18 +34,22 @@ export const lDapFormInitialState = (isEdit, item) =>
       }
 
 export function buildLdapPayload(values, userMessage) {
-  const serversArr = values.servers
-    ? String(values.servers)
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
-    : []
-  const baseDNsArr = values.baseDNs
-    ? String(values.baseDNs)
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
-    : []
+  const serversArr = Array.isArray(values.servers)
+    ? values.servers.map((s) => String(s).trim()).filter(Boolean)
+    : values.servers
+      ? String(values.servers)
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : []
+  const baseDNsArr = Array.isArray(values.baseDNs)
+    ? values.baseDNs.map((s) => String(s).trim()).filter(Boolean)
+    : values.baseDNs
+      ? String(values.baseDNs)
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : []
   return {
     gluuLdapConfiguration: {
       configId: values.configId,
@@ -61,7 +65,9 @@ export function buildLdapPayload(values, userMessage) {
       enabled: !!values.enabled,
       version: values.version !== undefined ? Number(values.version) : 0,
       level: values.level !== undefined ? Number(values.level) : 0,
-      defaultAuthnMethod: values.defaultAuthnMethod,
+      defaultAuthnMethod:
+        values.defaultAuthnMethod === true ||
+        String(values.defaultAuthnMethod).toLowerCase() === 'true',
     },
     action_message: userMessage,
   }

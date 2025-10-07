@@ -6,14 +6,18 @@ import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { buildLdapPayload } from '../../helper'
+import { getLdapValidationSchema } from '../../helper/validations'
 import { STRINGS, ACTIONS, FEATURES } from '../../helper/constants'
 
 function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
   const [modal, setModal] = useState(false)
+  const { t } = useTranslation()
   const formik = useFormik({
     initialValues,
-    onSubmit: (values, { setSubmitting }) => {
+    validationSchema: getLdapValidationSchema(t),
+    onSubmit: ({ setSubmitting }) => {
       setModal(true)
       setSubmitting(false)
     },
@@ -26,7 +30,7 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
       dispatch({ type: isEdit ? ACTIONS.EDIT_LDAP : ACTIONS.ADD_LDAP, payload, onSuccessApply })
       setModal(false)
     },
-    [formik.values, isEdit, dispatch],
+    [formik.values, isEdit, dispatch, onSuccessApply],
   )
 
   return (
@@ -37,12 +41,13 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
           name="configId"
           value={formik.values.configId}
           formik={formik}
-          onChange={formik.handleChange}
+          handleChange={formik.handleChange}
           onBlur={formik.handleBlur}
           required
           disabled={isEdit}
           placeholder={STRINGS.authn.ldap.placeholders.acr}
-          error={formik.touched.configId && formik.errors.configId}
+          showError={Boolean(formik.touched.configId && formik.errors.configId)}
+          errorMessage={formik.errors.configId}
         />
         <GluuInputRow
           label={STRINGS.authn.ldap.fields.level}
@@ -50,13 +55,14 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
           type="number"
           value={formik.values.level}
           formik={formik}
-          onChange={formik.handleChange}
+          handleChange={formik.handleChange}
           onBlur={formik.handleBlur}
           required
           min={1}
           step={1}
           placeholder={STRINGS.authn.ldap.placeholders.level}
-          error={formik.touched.level && formik.errors.level}
+          showError={Boolean(formik.touched.level && formik.errors.level)}
+          errorMessage={formik.errors.level}
         />
 
         <GluuToogleRow
@@ -73,51 +79,56 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
           name="bindDN"
           value={formik.values.bindDN}
           formik={formik}
-          onChange={formik.handleChange}
+          handleChange={formik.handleChange}
           onBlur={formik.handleBlur}
           required
           placeholder={STRINGS.authn.ldap.placeholders.bind_dn}
-          error={formik.touched.bindDN && formik.errors.bindDN}
+          showError={Boolean(formik.touched.bindDN && formik.errors.bindDN)}
+          errorMessage={formik.errors.bindDN}
         />
         <GluuInputRow
           label={STRINGS.authn.ldap.fields.max_connections}
           name="maxConnections"
           value={formik.values.maxConnections}
           formik={formik}
-          onChange={formik.handleChange}
+          type="number"
+          handleChange={formik.handleChange}
           onBlur={formik.handleBlur}
           required
           placeholder={STRINGS.authn.ldap.placeholders.max_connections}
-          error={formik.touched.maxConnections && formik.errors.maxConnections}
+          showError={Boolean(formik.touched.maxConnections && formik.errors.maxConnections)}
+          errorMessage={formik.errors.maxConnections}
         />
         <GluuInputRow
           label={STRINGS.authn.ldap.fields.local_primary_key}
           name="localPrimaryKey"
           value={formik.values.localPrimaryKey}
           formik={formik}
-          onChange={formik.handleChange}
+          handleChange={formik.handleChange}
           onBlur={formik.handleBlur}
           required
           placeholder={STRINGS.authn.ldap.placeholders.local_primary_key}
-          error={formik.touched.localPrimaryKey && formik.errors.localPrimaryKey}
+          showError={Boolean(formik.touched.localPrimaryKey && formik.errors.localPrimaryKey)}
+          errorMessage={formik.errors.localPrimaryKey}
         />
         <GluuInputRow
           label={STRINGS.authn.ldap.fields.remote_primary_key}
           name="primaryKey"
           value={formik.values.primaryKey}
           formik={formik}
-          onChange={formik.handleChange}
+          handleChange={formik.handleChange}
           onBlur={formik.handleBlur}
           required
           placeholder={STRINGS.authn.ldap.placeholders.remote_primary_key}
-          error={formik.touched.primaryKey && formik.errors.primaryKey}
+          showError={Boolean(formik.touched.primaryKey && formik.errors.primaryKey)}
+          errorMessage={formik.errors.primaryKey}
         />
         <GluuInputRow
           label={STRINGS.authn.ldap.fields.remote_ldap_server}
           name="servers"
-          value={formik.values?.servers}
+          value={Array.isArray(formik.values?.servers) ? formik.values.servers.join(', ') : ''}
           formik={formik}
-          onChange={(e) => {
+          handleChange={(e) => {
             const arr = e.target.value
               .split(',')
               .map((s) => s.trim())
@@ -127,19 +138,19 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
           onBlur={formik.handleBlur}
           required
           placeholder={STRINGS.authn.ldap.placeholders.remote_ldap_server}
-          error={
-            formik.touched.servers &&
-            (Array.isArray(formik.errors.servers)
+          showError={Boolean(formik.touched.servers && formik.errors.servers)}
+          errorMessage={
+            Array.isArray(formik.errors.servers)
               ? formik.errors.servers.join(', ')
-              : formik.errors.servers)
+              : formik.errors.servers
           }
         />
         <GluuInputRow
           label={STRINGS.authn.ldap.fields.base_dns}
           name="baseDNs"
-          value={formik.values.baseDNs}
+          value={Array.isArray(formik.values.baseDNs) ? formik.values.baseDNs.join(', ') : ''}
           formik={formik}
-          onChange={(e) => {
+          handleChange={(e) => {
             const arr = e.target.value
               .split(',')
               .map((s) => s.trim())
@@ -149,11 +160,11 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
           onBlur={formik.handleBlur}
           required
           placeholder={STRINGS.authn.ldap.placeholders.base_dns}
-          error={
-            formik.touched.baseDNs &&
-            (Array.isArray(formik.errors.baseDNs)
+          showError={Boolean(formik.touched.baseDNs && formik.errors.baseDNs)}
+          errorMessage={
+            Array.isArray(formik.errors.baseDNs)
               ? formik.errors.baseDNs.join(', ')
-              : formik.errors.baseDNs)
+              : formik.errors.baseDNs
           }
         />
         <GluuInputRow
@@ -161,15 +172,17 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
           name="bindPassword"
           value={formik.values.bindPassword}
           formik={formik}
-          onChange={formik.handleChange}
+          type="password"
+          handleChange={formik.handleChange}
           onBlur={formik.handleBlur}
           required
           placeholder={STRINGS.authn.ldap.placeholders.bind_password}
-          error={formik.touched.bindPassword && formik.errors.bindPassword}
+          showError={Boolean(formik.touched.bindPassword && formik.errors.bindPassword)}
+          errorMessage={formik.errors.bindPassword}
         />
         <FormGroup row>
           <GluuToogleRow
-            label="Use SSL"
+            label={STRINGS.authn.ldap.fields.use_ssl || 'Use SSL'}
             name="useSSL"
             formik={formik}
             value={formik.values.useSSL}
@@ -178,7 +191,7 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
         </FormGroup>
         <FormGroup row>
           <GluuToogleRow
-            label="Enabled"
+            label={STRINGS.authn.ldap.fields.enabled || 'Enabled'}
             name="enabled"
             formik={formik}
             value={formik.values.enabled}
@@ -196,7 +209,7 @@ function LdapForm({ ldapConfig: initialValues, isEdit, onSuccessApply }) {
         modal={modal}
         onAccept={handleDialogAccept}
         formik={formik}
-        placeholderLabel={STRINGS.authn.ldap.placeholders.action_commit_message}
+        placeholderLabel={t(STRINGS.authn.ldap.placeholders.action_commit_message)}
         inputType="textarea"
         feature={FEATURES.LDAP_EDIT}
         operations={[]}
