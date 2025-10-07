@@ -68,11 +68,13 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         plugins: {
           test: /[\\/]plugins[\\/]/,
           name: (module: any) => {
-            const pluginName = module.context.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)?.[1]
-            return pluginName ? `plugin-${pluginName}` : 'plugin-common'
+            const context = (module && module.context) || ''
+            const match = context && context.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)
+            return match && match[1] ? `plugin-${match[1]}` : 'plugin-common'
           },
           chunks: 'all',
           priority: 15,
+          reuseExistingChunk: true,
         },
         // Common vendor libraries
         vendor: {

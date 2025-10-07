@@ -5,11 +5,14 @@ import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 export const createLazyRoute = (importFn: () => Promise<{ default: ComponentType<any> }>) => {
   const LazyComponent = lazy(importFn)
 
-  return (props: any) => (
+  const Wrapper: any = (props: any) => (
     <Suspense fallback={<GluuSuspenseLoader />}>
       <LazyComponent {...props} />
     </Suspense>
   )
+  // Allow preloading the chunk ahead of time
+  Wrapper.preload = importFn
+  return Wrapper
 }
 
 // Pre-defined lazy routes for better code splitting
@@ -40,12 +43,21 @@ export const LazyRoutes = {
 export const loadPluginRoute = (pluginName: string, routePath?: string) => {
   const componentPath = routePath || `${pluginName.charAt(0).toUpperCase() + pluginName.slice(1)}`
 
-  return createLazyRoute(() =>
-    import(`../../plugins/${pluginName}/components/${componentPath}`).catch(() => {
-      // Fallback to index component
-      return import(`../../plugins/${pluginName}/components/index`)
-    }),
-  )
+    return createLazyRoute(() =>
+        import(
+          /* webpackChunkName: "plugin-[request]" */
+          /* webpackMode: "lazy" */
+          /* webpackInclude: /^[^/]+\/components\/[^/]+$/ */
+          `../../plugins/${pluginName}/components/${componentPath}`
+        ).catch(() =>
+          import(
+            /* webpackChunkName: "plugin-[request]" */
+            /* webpackMode: "lazy" */
+            /* webpackInclude: /^[^/]+\/components\/index(\.(t|j)sx?)?$/ */
+            `../../plugins/${pluginName}/components/index`
+          ),
+        )
+      )
 }
 
 // Route preloading utility

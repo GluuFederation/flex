@@ -15,20 +15,16 @@ import { LazyRoutes } from 'Utils/RouteLoader'
 
 export const RoutedContent = () => {
   const [pluginMenus, setPluginMenus] = useState<Array<any>>([])
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadPlugins = async () => {
       try {
-        setLoading(true)
         const routes = await processRoutes()
         setPluginMenus(routes)
       } catch (error) {
         console.error('Failed to load plugins:', error)
         // Fallback to sync loading
         setPluginMenus(processRoutesSync())
-      } finally {
-        setLoading(false)
       }
     }
 

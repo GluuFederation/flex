@@ -72,7 +72,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         plugins: {
           test: /[\\/]plugins[\\/]/,
           name: (module: any) => {
-            const pluginName = module.context.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)?.[1]
+          const pluginName = module?.context?.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)?.[1]
             return pluginName ? `plugin-${pluginName}` : 'plugin-common'
           },
           chunks: 'all',

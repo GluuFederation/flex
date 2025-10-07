@@ -4,10 +4,32 @@ import plugins from '../plugins.config.json'
 export async function processMenus() {
   let pluginMenus = []
 
+  // const pluginPromises = plugins.map(async (item) => {
+  //   try {
+  //     const metadata = await import(`${item.metadataFile}`)
+  //     return metadata.default.menus || []
+  //   } catch (error) {
+  //     console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
+  //     return []
+  //   }
+  // })
+
   const pluginPromises = plugins.map(async (item) => {
     try {
-      const metadata = await import(`${item.metadataFile}`)
-      return metadata.default.menus || []
+      const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
+      console.log('pluginName', pluginName)
+      console.log('pluginName',  `./${pluginName}/plugin-metadata`)
+      if (pluginName) {
+        const metadata = await import(
+          /* webpackChunkName: "plugin-[request]" */
+          /* webpackMode: "lazy" */
+          `./${pluginName}/plugin-metadata`
+        )
+        return metadata.default.menus || []
+      }
+      // Fallback if path doesn't match expected pattern
+      const metadata = await import(/* webpackIgnore: true */ `${item.metadataFile}`)
+      return metadata.default?.menus || []
     } catch (error) {
       console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
       return []
