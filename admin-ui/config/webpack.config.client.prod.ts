@@ -73,6 +73,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       'Components': path.resolve(__dirname, '../app/components'),
       'Context': path.resolve(__dirname, '../app/context'),
       'Images': path.resolve(__dirname, '../app/images'),
+      'JansConfigApi': path.resolve(__dirname, '../jans_config_api_orval/src/JansConfigApi.ts'),
       'Plugins': path.resolve(__dirname, '../plugins'),
       'Redux': path.resolve(__dirname, '../app/redux'),
       'Routes': path.resolve(__dirname, '../app/routes'),
@@ -122,7 +123,12 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        include: [config.srcDir, config.pluginsDir],
+        include: [
+          config.srcDir,
+          config.pluginsDir,
+          path.resolve(__dirname, '../jans_config_api_orval'),
+          path.resolve(__dirname, '..'), // Include root directory for api-client.ts
+        ],
         exclude: /(node_modules|\.test\.(ts|tsx)$)/,
         use: 'babel-loader',
         sideEffects: false,

@@ -39,6 +39,9 @@ function GluuProperties({
     let item
     if (multiProperties) {
       item = { source: '', destination: '' }
+    } else if (!isKeys) {
+      // When isKeys is false, we only need a value (string), not an object
+      item = { key: '', value: '' }
     } else {
       item = { key: '', value: '' }
     }
@@ -49,17 +52,31 @@ function GluuProperties({
     const newDataArr = [...properties]
     newDataArr[position] = { ...newDataArr[position], [name]: value }
     setProperties(newDataArr)
-    formik.setFieldValue(compName, newDataArr)
+
+    // When isKeys is false and not using multiProperties, extract only the values as strings for formik
+    if (!isKeys && !multiProperties) {
+      const valuesOnly = newDataArr.map((item: any) => item.value)
+      formik.setFieldValue(compName, valuesOnly)
+    } else {
+      formik.setFieldValue(compName, newDataArr)
+    }
   }
   const removeProperty = (position: any) => {
     let data = [...properties]
     delete data[position]
     data = data.filter((element: any) => element != null)
     setProperties(data)
-    formik.setFieldValue(
-      compName,
-      data.filter((element) => element != null),
-    )
+
+    // When isKeys is false and not using multiProperties, extract only the values as strings for formik
+    if (!isKeys && !multiProperties) {
+      const valuesOnly = data.filter((element) => element != null).map((item: any) => item.value)
+      formik.setFieldValue(compName, valuesOnly)
+    } else {
+      formik.setFieldValue(
+        compName,
+        data.filter((element) => element != null),
+      )
+    }
   }
 
   function TooltipHeader() {

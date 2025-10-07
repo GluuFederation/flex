@@ -1,7 +1,24 @@
 import { PublicKeyCredentialHints } from '../types'
 import { fidoConstants } from './constants'
+import { AppConfiguration1, Fido2Configuration } from 'JansConfigApi'
+import {
+  DynamicConfigFormValues,
+  StaticConfigFormValues,
+  CreateFidoConfigPayloadParams,
+  PutPropertiesFido2Params,
+} from '../types/fido-types'
 
-const arrayValidationWithSchema = (givenArray: string[], schema: Record<string, string>) =>
+const isStaticConfigType = (type?: string): type is typeof fidoConstants.STATIC => {
+  return type === fidoConstants.STATIC
+}
+const isDynamicConfigType = (type?: string): type is typeof fidoConstants.DYNAMIC => {
+  return type === fidoConstants.DYNAMIC
+}
+
+const arrayValidationWithSchema = (
+  givenArray: string[],
+  schema: Record<string, string>,
+): string[] =>
   Array.isArray(givenArray)
     ? givenArray.filter((value) => Object.values(schema).includes(value))
     : []
@@ -28,90 +45,181 @@ const toBooleanValue = (value: unknown): boolean => {
   return Boolean(value)
 }
 
-const transformToFormValues = (configuration?: Record<string, unknown>, type?: string) => {
-  return type === fidoConstants.STATIC
-    ? {
-        authenticatorCertsFolder: configuration?.authenticatorCertsFolder || '',
-        mdsCertsFolder: configuration?.mdsCertsFolder || '',
-        mdsTocsFolder: configuration?.mdsTocsFolder || '',
-        checkU2fAttestations: toBooleanValue(configuration?.checkU2fAttestations),
-        unfinishedRequestExpiration: configuration?.unfinishedRequestExpiration || '',
-        authenticationHistoryExpiration: configuration?.authenticationHistoryExpiration || '',
-        serverMetadataFolder: configuration?.serverMetadataFolder || '',
-        userAutoEnrollment: toBooleanValue(configuration?.userAutoEnrollment),
-        requestedCredentialTypes: configuration?.requestedCredentialTypes || [],
-        requestedParties: configuration?.requestedParties || [],
-      }
-    : {
-        issuer: configuration?.issuer || '',
-        baseEndpoint: configuration?.baseEndpoint || '',
-        cleanServiceInterval: configuration?.cleanServiceInterval || '',
-        cleanServiceBatchChunkSize: configuration?.cleanServiceBatchChunkSize || '',
-        useLocalCache: toBooleanValue(configuration?.useLocalCache),
-        disableJdkLogger: toBooleanValue(configuration?.disableJdkLogger),
-        loggingLevel: configuration?.loggingLevel || '',
-        loggingLayout: configuration?.loggingLayout || '',
-        externalLoggerConfiguration: configuration?.externalLoggerConfiguration || '',
-        metricReporterEnabled: toBooleanValue(configuration?.metricReporterEnabled),
-        metricReporterInterval: configuration?.metricReporterInterval || '',
-        metricReporterKeepDataDays: configuration?.metricReporterKeepDataDays || '',
-        personCustomObjectClassList: configuration?.personCustomObjectClassList || [],
-        hints: arrayValidationWithSchema(
-          (configuration as any)?.fido2Configuration?.hints,
-          PublicKeyCredentialHints,
-        ),
-      }
+const transformStaticConfigToFormValues = (
+  config: Fido2Configuration | undefined,
+): StaticConfigFormValues => {
+  return {
+    authenticatorCertsFolder: config?.authenticatorCertsFolder || '',
+    mdsCertsFolder: config?.mdsCertsFolder || '',
+    mdsTocsFolder: config?.mdsTocsFolder || '',
+    unfinishedRequestExpiration: config?.unfinishedRequestExpiration ?? '',
+    authenticationHistoryExpiration: config?.authenticationHistoryExpiration ?? '',
+    serverMetadataFolder: config?.serverMetadataFolder || '',
+    userAutoEnrollment: toBooleanValue(config?.userAutoEnrollment),
+    requestedParties: (config?.rp || []).map((party) => ({
+      key: party.id || '',
+      value: (party.origins || []).join(','),
+    })),
+    metadataRefreshInterval: config?.metadataRefreshInterval ?? '',
+    enabledFidoAlgorithms: config?.enabledFidoAlgorithms || [],
+    metadataServers: (config?.metadataServers || []).map((server) => ({
+      url: server.url || '',
+      rootCert: server.rootCert || '',
+    })),
+    disableMetadataService: toBooleanValue(config?.disableMetadataService),
+    hints: arrayValidationWithSchema(config?.hints || [], PublicKeyCredentialHints),
+    enterpriseAttestation: toBooleanValue(config?.enterpriseAttestation),
+    attestationMode: config?.attestationMode || '',
+  }
 }
 
-const createFidoConfigPayload = ({ fidoConfiguration, data, type }: any) => {
-  const payload = JSON.parse(JSON.stringify(fidoConfiguration.fido))
-  if (type === fidoConstants.STATIC) {
-    if (payload.fido2Configuration) {
-      payload.fido2Configuration.authenticatorCertsFolder = data.authenticatorCertsFolder
-      payload.fido2Configuration.mdsCertsFolder = data.mdsCertsFolder
-      payload.fido2Configuration.mdsTocsFolder = data.mdsTocsFolder
-      payload.fido2Configuration.checkU2fAttestations = data.checkU2fAttestations
-      payload.fido2Configuration.unfinishedRequestExpiration = data.unfinishedRequestExpiration
-      payload.fido2Configuration.authenticationHistoryExpiration =
-        data.authenticationHistoryExpiration
-      payload.fido2Configuration.serverMetadataFolder = data.serverMetadataFolder
-      payload.fido2Configuration.userAutoEnrollment = data.userAutoEnrollment
-      payload.fido2Configuration.requestedCredentialTypes = data.requestedCredentialTypes.map(
-        (item: any) => (item?.value ? item?.value : item),
-      )
-      payload.fido2Configuration.requestedParties = data.requestedParties.map((item: any) => {
-        return {
-          name: item.key,
-          domains: [item.value],
-        }
-      })
-    }
-  } else {
-    payload.issuer = data.issuer
-    payload.baseEndpoint = data.baseEndpoint
-    payload.cleanServiceInterval = data.cleanServiceInterval
-    payload.cleanServiceBatchChunkSize = data.cleanServiceBatchChunkSize
-    payload.useLocalCache = data.useLocalCache
-    payload.disableJdkLogger = data.disableJdkLogger
-    payload.loggingLevel = data.loggingLevel
-    payload.loggingLayout = data.loggingLayout
-    payload.externalLoggerConfiguration = data.externalLoggerConfiguration
-    payload.metricReporterEnabled = data.metricReporterEnabled
-    payload.metricReporterInterval = data.metricReporterInterval
-    payload.metricReporterKeepDataDays = data.metricReporterKeepDataDays
-    payload.personCustomObjectClassList = data.personCustomObjectClassList.map((item: any) =>
-      item?.value ? item?.value : item,
-    )
+const transformDynamicConfigToFormValues = (
+  config: AppConfiguration1 | undefined,
+): DynamicConfigFormValues => {
+  return {
+    issuer: config?.issuer || '',
+    baseEndpoint: config?.baseEndpoint || '',
+    cleanServiceInterval: config?.cleanServiceInterval ?? '',
+    cleanServiceBatchChunkSize: config?.cleanServiceBatchChunkSize ?? '',
+    useLocalCache: toBooleanValue(config?.useLocalCache),
+    disableJdkLogger: toBooleanValue(config?.disableJdkLogger),
+    loggingLevel: config?.loggingLevel || '',
+    loggingLayout: config?.loggingLayout || '',
+    metricReporterEnabled: toBooleanValue(config?.metricReporterEnabled),
+    metricReporterInterval: config?.metricReporterInterval ?? '',
+    metricReporterKeepDataDays: config?.metricReporterKeepDataDays ?? '',
+    personCustomObjectClassList: config?.personCustomObjectClassList || [],
+    fido2MetricsEnabled: toBooleanValue(config?.fido2MetricsEnabled),
+    fido2MetricsRetentionDays: config?.fido2MetricsRetentionDays ?? '',
+    fido2DeviceInfoCollection: toBooleanValue(config?.fido2DeviceInfoCollection),
+    fido2ErrorCategorization: toBooleanValue(config?.fido2ErrorCategorization),
+    fido2PerformanceMetrics: toBooleanValue(config?.fido2PerformanceMetrics),
+    sessionIdPersistInCache: toBooleanValue(config?.sessionIdPersistInCache),
+    errorReasonEnabled: toBooleanValue(config?.errorReasonEnabled),
+  }
+}
 
-    if (payload.fido2Configuration) {
-      payload.fido2Configuration.hints = data.hints || []
-    }
+const transformToFormValues = (
+  configuration: AppConfiguration1 | Fido2Configuration | undefined,
+  type?: string,
+): DynamicConfigFormValues | StaticConfigFormValues => {
+  if (isStaticConfigType(type)) {
+    return transformStaticConfigToFormValues(configuration as Fido2Configuration | undefined)
+  }
+  if (isDynamicConfigType(type)) {
+    return transformDynamicConfigToFormValues(configuration as AppConfiguration1 | undefined)
+  }
+  return transformDynamicConfigToFormValues(configuration as AppConfiguration1 | undefined)
+}
+
+const applyStaticConfigChanges = (
+  payload: AppConfiguration1,
+  staticData: StaticConfigFormValues,
+): void => {
+  payload.fido2Configuration ??= {}
+
+  payload.fido2Configuration.authenticatorCertsFolder = staticData.authenticatorCertsFolder
+  payload.fido2Configuration.mdsCertsFolder = staticData.mdsCertsFolder
+  payload.fido2Configuration.mdsTocsFolder = staticData.mdsTocsFolder
+  payload.fido2Configuration.unfinishedRequestExpiration =
+    typeof staticData.unfinishedRequestExpiration === 'string' &&
+    staticData.unfinishedRequestExpiration.trim() === ''
+      ? undefined
+      : Number(staticData.unfinishedRequestExpiration)
+  payload.fido2Configuration.authenticationHistoryExpiration =
+    typeof staticData.authenticationHistoryExpiration === 'string' &&
+    staticData.authenticationHistoryExpiration.trim() === ''
+      ? undefined
+      : Number(staticData.authenticationHistoryExpiration)
+  payload.fido2Configuration.serverMetadataFolder = staticData.serverMetadataFolder
+  payload.fido2Configuration.userAutoEnrollment = staticData.userAutoEnrollment
+  payload.fido2Configuration.rp = staticData.requestedParties.map((item) => ({
+    id: item.key,
+    origins: item.value
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter((origin) => origin.length > 0),
+  }))
+  payload.fido2Configuration.metadataRefreshInterval =
+    typeof staticData.metadataRefreshInterval === 'string' &&
+    staticData.metadataRefreshInterval.trim() === ''
+      ? undefined
+      : Number(staticData.metadataRefreshInterval)
+  payload.fido2Configuration.enabledFidoAlgorithms = staticData.enabledFidoAlgorithms
+  payload.fido2Configuration.metadataServers = staticData.metadataServers.map((server) => ({
+    url: server.url,
+    rootCert: server.rootCert,
+  }))
+  payload.fido2Configuration.disableMetadataService = staticData.disableMetadataService
+  payload.fido2Configuration.hints = staticData.hints || []
+  payload.fido2Configuration.enterpriseAttestation = staticData.enterpriseAttestation
+  payload.fido2Configuration.attestationMode = staticData.attestationMode
+}
+
+const applyDynamicConfigChanges = (
+  payload: AppConfiguration1,
+  dynamicData: DynamicConfigFormValues,
+): void => {
+  payload.issuer = dynamicData.issuer
+  payload.baseEndpoint = dynamicData.baseEndpoint
+  payload.cleanServiceInterval =
+    typeof dynamicData.cleanServiceInterval === 'string' &&
+    dynamicData.cleanServiceInterval.trim() === ''
+      ? undefined
+      : Number(dynamicData.cleanServiceInterval)
+  payload.cleanServiceBatchChunkSize =
+    typeof dynamicData.cleanServiceBatchChunkSize === 'string' &&
+    dynamicData.cleanServiceBatchChunkSize.trim() === ''
+      ? undefined
+      : Number(dynamicData.cleanServiceBatchChunkSize)
+  payload.useLocalCache = dynamicData.useLocalCache
+  payload.disableJdkLogger = dynamicData.disableJdkLogger
+  payload.loggingLevel = dynamicData.loggingLevel
+  payload.loggingLayout = dynamicData.loggingLayout
+  payload.metricReporterEnabled = dynamicData.metricReporterEnabled
+  payload.metricReporterInterval =
+    typeof dynamicData.metricReporterInterval === 'string' &&
+    dynamicData.metricReporterInterval.trim() === ''
+      ? undefined
+      : Number(dynamicData.metricReporterInterval)
+  payload.metricReporterKeepDataDays =
+    typeof dynamicData.metricReporterKeepDataDays === 'string' &&
+    dynamicData.metricReporterKeepDataDays.trim() === ''
+      ? undefined
+      : Number(dynamicData.metricReporterKeepDataDays)
+  payload.personCustomObjectClassList = dynamicData.personCustomObjectClassList
+  payload.fido2MetricsEnabled = dynamicData.fido2MetricsEnabled
+  payload.fido2MetricsRetentionDays =
+    typeof dynamicData.fido2MetricsRetentionDays === 'string' &&
+    dynamicData.fido2MetricsRetentionDays.trim() === ''
+      ? undefined
+      : Number(dynamicData.fido2MetricsRetentionDays)
+  payload.fido2DeviceInfoCollection = dynamicData.fido2DeviceInfoCollection
+  payload.fido2ErrorCategorization = dynamicData.fido2ErrorCategorization
+  payload.fido2PerformanceMetrics = dynamicData.fido2PerformanceMetrics
+  payload.sessionIdPersistInCache = dynamicData.sessionIdPersistInCache
+  payload.errorReasonEnabled = dynamicData.errorReasonEnabled
+}
+
+const createFidoConfigPayload = ({
+  fidoConfiguration,
+  data,
+  type,
+}: CreateFidoConfigPayloadParams): PutPropertiesFido2Params => {
+  const payload: AppConfiguration1 =
+    typeof structuredClone === 'function'
+      ? structuredClone(fidoConfiguration)
+      : { ...fidoConfiguration, fido2Configuration: { ...fidoConfiguration.fido2Configuration } }
+
+  if (isStaticConfigType(type)) {
+    applyStaticConfigChanges(payload, data as StaticConfigFormValues)
+  } else if (isDynamicConfigType(type)) {
+    applyDynamicConfigChanges(payload, data as DynamicConfigFormValues)
   }
 
-  const opts: Record<string, any> = {}
-  opts['appConfiguration1'] = payload
-
-  return opts
+  return {
+    data: payload,
+  }
 }
 
 export {
