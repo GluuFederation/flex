@@ -3,3 +3,10 @@ export enum PublicKeyCredentialHints {
   CLIENT_DEVICE = 'client-device',
   HYBRID = 'hybrid',
 }
+
+export enum AttestationMode {
+  NONE = 'none',
+  INDIRECT = 'indirect',
+  DIRECT = 'direct',
+  ENTERPRISE = 'enterprise',
+}

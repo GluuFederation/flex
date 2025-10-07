@@ -106,12 +106,9 @@ const transformToFormValues = (
   if (isStaticConfigType(type)) {
     return transformStaticConfigToFormValues(configuration as Fido2Configuration | undefined)
   }
-
   if (isDynamicConfigType(type)) {
     return transformDynamicConfigToFormValues(configuration as AppConfiguration1 | undefined)
   }
-
-  // Default to dynamic config
   return transformDynamicConfigToFormValues(configuration as AppConfiguration1 | undefined)
 }
 
@@ -124,12 +121,16 @@ const applyStaticConfigChanges = (
   payload.fido2Configuration.authenticatorCertsFolder = staticData.authenticatorCertsFolder
   payload.fido2Configuration.mdsCertsFolder = staticData.mdsCertsFolder
   payload.fido2Configuration.mdsTocsFolder = staticData.mdsTocsFolder
-  payload.fido2Configuration.unfinishedRequestExpiration = Number(
-    staticData.unfinishedRequestExpiration,
-  )
-  payload.fido2Configuration.authenticationHistoryExpiration = Number(
-    staticData.authenticationHistoryExpiration,
-  )
+  payload.fido2Configuration.unfinishedRequestExpiration =
+    typeof staticData.unfinishedRequestExpiration === 'string' &&
+    staticData.unfinishedRequestExpiration.trim() === ''
+      ? undefined
+      : Number(staticData.unfinishedRequestExpiration)
+  payload.fido2Configuration.authenticationHistoryExpiration =
+    typeof staticData.authenticationHistoryExpiration === 'string' &&
+    staticData.authenticationHistoryExpiration.trim() === ''
+      ? undefined
+      : Number(staticData.authenticationHistoryExpiration)
   payload.fido2Configuration.serverMetadataFolder = staticData.serverMetadataFolder
   payload.fido2Configuration.userAutoEnrollment = staticData.userAutoEnrollment
   payload.fido2Configuration.rp = staticData.requestedParties.map((item) => ({
@@ -139,7 +140,11 @@ const applyStaticConfigChanges = (
       .map((origin) => origin.trim())
       .filter((origin) => origin.length > 0),
   }))
-  payload.fido2Configuration.metadataRefreshInterval = Number(staticData.metadataRefreshInterval)
+  payload.fido2Configuration.metadataRefreshInterval =
+    typeof staticData.metadataRefreshInterval === 'string' &&
+    staticData.metadataRefreshInterval.trim() === ''
+      ? undefined
+      : Number(staticData.metadataRefreshInterval)
   payload.fido2Configuration.enabledFidoAlgorithms = staticData.enabledFidoAlgorithms
   payload.fido2Configuration.metadataServers = staticData.metadataServers.map((server) => ({
     url: server.url,
@@ -157,18 +162,38 @@ const applyDynamicConfigChanges = (
 ): void => {
   payload.issuer = dynamicData.issuer
   payload.baseEndpoint = dynamicData.baseEndpoint
-  payload.cleanServiceInterval = Number(dynamicData.cleanServiceInterval)
-  payload.cleanServiceBatchChunkSize = Number(dynamicData.cleanServiceBatchChunkSize)
+  payload.cleanServiceInterval =
+    typeof dynamicData.cleanServiceInterval === 'string' &&
+    dynamicData.cleanServiceInterval.trim() === ''
+      ? undefined
+      : Number(dynamicData.cleanServiceInterval)
+  payload.cleanServiceBatchChunkSize =
+    typeof dynamicData.cleanServiceBatchChunkSize === 'string' &&
+    dynamicData.cleanServiceBatchChunkSize.trim() === ''
+      ? undefined
+      : Number(dynamicData.cleanServiceBatchChunkSize)
   payload.useLocalCache = dynamicData.useLocalCache
   payload.disableJdkLogger = dynamicData.disableJdkLogger
   payload.loggingLevel = dynamicData.loggingLevel
   payload.loggingLayout = dynamicData.loggingLayout
   payload.metricReporterEnabled = dynamicData.metricReporterEnabled
-  payload.metricReporterInterval = Number(dynamicData.metricReporterInterval)
-  payload.metricReporterKeepDataDays = Number(dynamicData.metricReporterKeepDataDays)
+  payload.metricReporterInterval =
+    typeof dynamicData.metricReporterInterval === 'string' &&
+    dynamicData.metricReporterInterval.trim() === ''
+      ? undefined
+      : Number(dynamicData.metricReporterInterval)
+  payload.metricReporterKeepDataDays =
+    typeof dynamicData.metricReporterKeepDataDays === 'string' &&
+    dynamicData.metricReporterKeepDataDays.trim() === ''
+      ? undefined
+      : Number(dynamicData.metricReporterKeepDataDays)
   payload.personCustomObjectClassList = dynamicData.personCustomObjectClassList
   payload.fido2MetricsEnabled = dynamicData.fido2MetricsEnabled
-  payload.fido2MetricsRetentionDays = Number(dynamicData.fido2MetricsRetentionDays)
+  payload.fido2MetricsRetentionDays =
+    typeof dynamicData.fido2MetricsRetentionDays === 'string' &&
+    dynamicData.fido2MetricsRetentionDays.trim() === ''
+      ? undefined
+      : Number(dynamicData.fido2MetricsRetentionDays)
   payload.fido2DeviceInfoCollection = dynamicData.fido2DeviceInfoCollection
   payload.fido2ErrorCategorization = dynamicData.fido2ErrorCategorization
   payload.fido2PerformanceMetrics = dynamicData.fido2PerformanceMetrics

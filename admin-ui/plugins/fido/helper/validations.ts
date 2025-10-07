@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { PublicKeyCredentialHints } from '../types'
+import { PublicKeyCredentialHints, AttestationMode } from '../types'
 
 const dynamicConfigValidationSchema = Yup.object({
   issuer: Yup.string().required('Issuer is required.'),
@@ -61,13 +61,15 @@ const staticConfigValidationSchema = Yup.object({
     .min(1, 'At least one hint is required.')
     .required('Hints are required.'),
   enterpriseAttestation: Yup.boolean().required('Enterprise Attestation is required.'),
-  attestationMode: Yup.string().required('Attestation Mode is required.'),
+  attestationMode: Yup.string()
+    .oneOf(Object.values(AttestationMode), 'Invalid attestation mode.')
+    .required('Attestation Mode is required.'),
 })
 
-export const validationSchema: Record<
-  string,
-  typeof dynamicConfigValidationSchema | typeof staticConfigValidationSchema
-> = {
+export const validationSchema: {
+  dynamicConfigValidationSchema: typeof dynamicConfigValidationSchema
+  staticConfigValidationSchema: typeof staticConfigValidationSchema
+} = {
   dynamicConfigValidationSchema,
   staticConfigValidationSchema,
 }
