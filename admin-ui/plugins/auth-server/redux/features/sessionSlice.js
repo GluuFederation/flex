@@ -22,6 +22,12 @@ const sessionSlice = createSlice({
       state.loading = false
       state.items = state.items.filter(({ userDn }) => userDn !== action.payload.data)
     },
+    handleDeleteSession: (state, action) => {
+      state.loading = false
+      state.items = state.items.filter(
+        ({ sessionAttributes }) => sessionAttributes?.sid !== action.payload.data,
+      )
+    },
     getSessions: (state) => {
       state.loading = true
     },
@@ -32,6 +38,9 @@ const sessionSlice = createSlice({
     revokeSession: (state) => {
       state.loading = true
     },
+    deleteSession: (state) => {
+      state.loading = true
+    },
   },
 })
 
@@ -39,8 +48,10 @@ export const {
   handleUpdateSessionsResponse,
   toggleLoader,
   handleRevokeSession,
+  handleDeleteSession,
   getSessions,
   revokeSession,
+  deleteSession,
   searchSessions,
 } = sessionSlice.actions
 

@@ -217,13 +217,14 @@ function UserList(): JSX.Element {
   if (hasCedarPermission(USER_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t('messages.add_role')}`,
+      tooltip: `${t('tooltips.add_user')}`,
       iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       isFreeAction: true,
       onClick: () => handleGoToUserAddPage(),
     })
     myActions.push((rowData: UserTableRowData) => ({
       icon: 'edit',
+      tooltip: `${t('tooltips.edit_user')}`,
       iconProps: {
         id: 'editScope' + (rowData.inum || ''),
         style: { color: customColors.darkGray },
@@ -258,6 +259,7 @@ function UserList(): JSX.Element {
   if (hasCedarPermission(USER_DELETE)) {
     myActions.push((rowData: UserTableRowData) => ({
       icon: DeleteOutlinedIcon,
+      tooltip: `${t('tooltips.delete_user')}`,
       iconProps: {
         color: 'secondary',
         id: 'deleteClient' + (rowData.inum || ''),

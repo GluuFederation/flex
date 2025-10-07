@@ -1,6 +1,6 @@
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import type { BackendStatus, Token, UserInfo, Config, Location, AuthState } from './types/authTypes'
+import type { BackendStatus, UserInfo, Config, Location, AuthState } from './types/authTypes'
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -24,6 +24,7 @@ const initialState: AuthState = {
   idToken: null,
   JwtToken: null,
   userInum: null,
+  isUserInfoFetched: false,
 }
 
 const authSlice = createSlice({
@@ -58,6 +59,7 @@ const authSlice = createSlice({
         userinfo?: UserInfo
         idToken?: string
         JwtToken?: string
+        isUserInfoFetched?: boolean
       }>,
     ) => {
       if (action.payload?.ujwt) {
@@ -65,6 +67,7 @@ const authSlice = createSlice({
         state.userinfo = action.payload.userinfo ?? null
         state.userinfo_jwt = action.payload.ujwt
         state.idToken = action.payload.idToken ?? null
+        state.isUserInfoFetched = action.payload.isUserInfoFetched ?? false
         state.isAuthenticated = true
         state.userInum = action.payload?.userinfo?.inum ?? null
       } else {
@@ -96,7 +99,7 @@ const authSlice = createSlice({
       state.defaultToken = action.payload
       state.issuer = action.payload.issuer
     },
-    putConfigWorker: (state) => {
+    putConfigWorker: (state, _action: PayloadAction<any>) => {
       state.loadingConfig = true
     },
     putConfigWorkerResponse: (state) => {

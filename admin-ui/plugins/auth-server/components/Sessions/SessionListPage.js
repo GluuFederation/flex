@@ -24,7 +24,11 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { useTranslation } from 'react-i18next'
-import { getSessions, revokeSession } from 'Plugins/auth-server/redux/features/sessionSlice'
+import {
+  getSessions,
+  deleteSession,
+  revokeSession,
+} from 'Plugins/auth-server/redux/features/sessionSlice'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
@@ -37,6 +41,7 @@ import { Button as MaterialButton } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import GetAppIcon from '@mui/icons-material/GetApp'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
+import { DeleteOutlined } from '@mui/icons-material'
 import PropTypes from 'prop-types'
 import customColors from '@/customColors'
 
@@ -45,13 +50,17 @@ function SessionListPage() {
   const sessions = useSelector((state) => state.sessionReducer.items)
   const loading = useSelector((state) => state.sessionReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-
   const dispatch = useDispatch()
-
   const { t } = useTranslation()
-  const myActions = []
+
+  const authenticatedSessions = useMemo(
+    () => sessions.filter((session) => session.state === 'authenticated'),
+    [sessions],
+  )
+  const [myActions, setMyActions] = useState([])
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
+  const [deleteModal, setDeleteModal] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
@@ -59,7 +68,6 @@ function SessionListPage() {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  // Permission initialization
   useEffect(() => {
     const authorizePermissions = async () => {
       try {
@@ -70,12 +78,44 @@ function SessionListPage() {
     }
 
     authorizePermissions()
-  }, [])
+  }, [authorize])
+
   useEffect(() => {}, [cedarPermissions])
 
+  const handleDeleteSession = useCallback(
+    (rowData) => {
+      setItem(rowData)
+      setDeleteModal(true)
+    },
+    [setDeleteModal],
+  )
+
+  useEffect(() => {
+    const actions = []
+
+    if (hasCedarPermission(SESSION_DELETE)) {
+      actions.push((rowData) => ({
+        icon: () => (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <DeleteOutlined />
+          </div>
+        ),
+        iconProps: {
+          color: 'secondary',
+          id: 'deleteSession' + rowData.sessionAttributes?.auth_user,
+        },
+        tooltip: `${t('actions.delete')}`,
+        onClick: (event, rowData) => handleDeleteSession(rowData),
+        disabled: !hasCedarPermission(SESSION_DELETE),
+      }))
+    }
+
+    setMyActions(actions)
+  }, [hasCedarPermission, t, handleDeleteSession])
+
   const sessionUsername = useMemo(
-    () => sessions.map((session) => session.sessionAttributes.auth_user),
-    [sessions],
+    () => authenticatedSessions.map((session) => session.sessionAttributes.auth_user),
+    [authenticatedSessions],
   )
   const usernames = useMemo(() => [...new Set(sessionUsername)], [sessionUsername])
   const [revokeUsername, setRevokeUsername] = useState()
@@ -116,7 +156,7 @@ function SessionListPage() {
       },
       { title: `${t('fields.state')}`, field: 'state' },
     ],
-    [t],
+    [t, hasCedarPermission],
   )
 
   const handleCheckboxChange = useCallback(
@@ -143,14 +183,16 @@ function SessionListPage() {
   }, [])
 
   const handleRevoke = useCallback(() => {
-    const row = !isEmpty(sessions)
-      ? sessions.find(({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername)
+    const row = !isEmpty(authenticatedSessions)
+      ? authenticatedSessions.find(
+          ({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername,
+        )
       : null
     if (row) {
       setItem(row)
       toggle()
     }
-  }, [sessions, revokeUsername])
+  }, [authenticatedSessions, revokeUsername])
 
   const onRevokeConfirmed = useCallback(
     (message) => {
@@ -159,10 +201,19 @@ function SessionListPage() {
       dispatch(revokeSession(params))
       toggle()
     },
+    [item, dispatch, toggle],
+  )
+
+  const onDeleteConfirmed = useCallback(
+    (message) => {
+      const sessionId = item.id || item.sessionAttributes?.sid
+      const params = { sessionId, action_message: message }
+      dispatch(deleteSession(params))
+      setDeleteModal(false)
+    },
     [item, dispatch],
   )
 
-  //export csv
   const convertToCSV = useCallback(
     (data) => {
       const keys = updatedColumns.map((item) => item.title)
@@ -189,9 +240,8 @@ function SessionListPage() {
     [updatedColumns, t],
   )
 
-  // Function to handle file download
   const downloadCSV = useCallback(() => {
-    const csv = convertToCSV(sessions)
+    const csv = convertToCSV(authenticatedSessions)
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
 
@@ -201,9 +251,8 @@ function SessionListPage() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }, [convertToCSV, sessions])
+  }, [convertToCSV, authenticatedSessions])
 
-  // Stable callback references to avoid dependency array size changes
   const handleUsernameChange = useCallback((_, value) => {
     setRevokeUsername(value)
   }, [])
@@ -453,7 +502,7 @@ function SessionListPage() {
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             columns={updatedColumns}
-            data={sessions}
+            data={authenticatedSessions}
             isLoading={loading}
             title=""
             actions={myActions}
@@ -476,14 +525,25 @@ function SessionListPage() {
             detailPanel={handleDetailPanel}
           />
         </GluuViewWrapper>
-        {!isEmpty(item) && (
+        {!isEmpty(item) && modal && (
           <GluuDialog
             row={item}
-            name={item.sessionAttributes.auth_user}
+            name={item.sessionAttributes?.auth_user}
             handler={toggle}
             modal={modal}
             subject="user session revoke"
             onAccept={onRevokeConfirmed}
+            style={{ marginRight: '0px' }}
+          />
+        )}
+        {!isEmpty(item) && deleteModal && (
+          <GluuDialog
+            row={item}
+            name={`${item.sessionAttributes?.auth_user} (${item.id || item.sessionAttributes?.sid})`}
+            handler={() => setDeleteModal(false)}
+            modal={deleteModal}
+            subject="session delete"
+            onAccept={onDeleteConfirmed}
             style={{ marginRight: '0px' }}
           />
         )}

@@ -292,6 +292,7 @@
     "base_endpoint": "Point d'Accès de Base",
     "use_search_limit": "Charger les données sources avec une recherche limitée",
     "clean_service_interval": "Intervalle de Nettoyage du Service",
+    "clean_batch_chunk_size": "Taille du Lot de Nettoyage",
     "clean_service_batch_chunk": "Lot de Nettoyage du Service",
     "use_local_cache": "Utiliser le Cache Local",
     "logging_level": "Niveau de Journalisation",
@@ -299,7 +300,7 @@
     "external_logger_configuration": "Configuration du Journal Externe",
     "metric_reporter_interval": "Intervalle du Rapporteur de Métriques",
     "metric_reporter_keep_data_days": "Durée de Conservation des Données du Rapporteur de Métriques",
-    "metric_reporter_enabled": "Rapporteur de Métriques Activé",
+    "metric_reporter_enabled": "Activer le Rapporteur de Métriques",
     "person_custom_object_classes": "Classes d'Objets Personnalisés",
     "enable_super_gluu": "Activer Super Gluu",
     "authenticator_certificates_folder": "Dossier des Certificats de l'Authentificateur",
@@ -313,6 +314,7 @@
     "user_auto_enrollment": "Inscription Automatique de l'Utilisateur",
     "requested_credential_types": "Types de Credential Demandés",
     "requested_parties_name": "Nom des Parties Demandées",
+    "requested_parties_id": "Identifiant des Parties Demandées",
     "tls_client_auth_subject_dn": "Sujet DN de l'authentification client TLS",
     "run_introspection_script_before_accesstoken": "Exécuter le script d'introspection avant la création du jeton d'accès JWT",
     "keep_client_authorization": "Conserver l'autorisation client après expiration",
@@ -620,7 +622,10 @@
     "platform": "Plateforme",
     "authType": "Type d'authentification",
     "showCedarLogs?": "Cedarling Log est-il activé?",
-    "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling."
+    "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling.",
+    "allAvailableHintsSelected": "Toutes les options d'indice disponibles sont sélectionnées.",
+    "noMatchingOptions": "Aucune option correspondante",
+    "nothingToShowInTheList": "Rien à montrer dans la liste"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
@@ -716,6 +721,9 @@
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
     "add_ldap": "Ajouter LDAP",
+    "add_user": "Ajouter un utilisateur",
+    "edit_user": "Modifier un utilisateur",
+    "delete_user": "Supprimer un utilisateur",
     "advanced_search_options": "Options de recherche avancées",
     "delete_attribute": "Supprimer l'attribut",
     "delete_record": "Supprimer l'enregistrement",
