@@ -108,11 +108,6 @@
         "description": "documentation.fido_configuration.loggingLayout"
       },
       {
-        "key": "externalLoggerConfiguration",
-        "label": "fields.external_logger_configuration",
-        "description": "documentation.fido_configuration.externalLoggerConfiguration"
-      },
-      {
         "key": "metricReporterInterval",
         "label": "fields.metric_reporter_interval",
         "description": "documentation.fido_configuration.metricReporterInterval"
@@ -133,19 +128,9 @@
         "description": "documentation.fido_configuration.personCustomObjectClassList"
       },
       {
-        "key": "superGluuEnabled",
-        "label": "fields.enable_super_gluu",
-        "description": "documentation.fido_configuration.superGluuEnabled"
-      },
-      {
         "key": "authenticatorCertsFolder",
         "label": "fields.authenticator_certificates_folder",
         "description": "documentation.fido_configuration.authenticatorCertsFolder"
-      },
-      {
-        "key": "mdsAccessToken",
-        "label": "fields.mds_access_token",
-        "description": "documentation.fido_configuration.mdsAccessToken"
       },
       {
         "key": "fido2Configuration.mdsCertsFolder",
@@ -156,11 +141,6 @@
         "key": "fido2Configuration.mdsTocsFolder",
         "label": "fields.mds_toc_files_folder",
         "description": "documentation.fido_configuration.mdsTocsFolder"
-      },
-      {
-        "key": "fido2Configuration.checkU2fAttestations",
-        "label": "fields.check_u2f_attestations",
-        "description": "documentation.fido_configuration.checkU2fAttestations"
       },
       {
         "key": "fido2Configuration.unfinishedRequestExpiration",
@@ -181,11 +161,6 @@
         "key": "fido2Configuration.userAutoEnrollment",
         "label": "fields.user_auto_enrollment",
         "description": "documentation.fido_configuration.userAutoEnrollment"
-      },
-      {
-        "key": "fido2Configuration.requestedCredentialTypes",
-        "label": "fields.requested_credential_types",
-        "description": "documentation.fido_configuration.requestedCredentialTypes"
       },
       {
         "key": "fido2Configuration.requestedParties",
