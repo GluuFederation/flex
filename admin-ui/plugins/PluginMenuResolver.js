@@ -11,7 +11,7 @@ export async function processMenus() {
         const metadata = await import(
           /* webpackChunkName: "plugin-[request]" */
           /* webpackMode: "lazy" */
-           /* webpackInclude: /^\.\/[^/]+\/plugin-metadata(\.(t|j)sx?)?$/ */
+          /* webpackInclude: /^\.\/[^/]+\/plugin-metadata(\.(t|j)sx?)?$/ */
           `./${pluginName}/plugin-metadata`
         )
         return metadata.default.menus || []
@@ -41,7 +41,7 @@ export async function processRoutes() {
 
   const pluginPromises = plugins.map(async (item) => {
     try {
-       const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
+      const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
       if (pluginName) {
         const metadata = await import(
           /* webpackChunkName: "plugin-[request]" */
