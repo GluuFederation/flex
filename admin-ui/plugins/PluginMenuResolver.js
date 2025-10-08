@@ -4,25 +4,14 @@ import plugins from '../plugins.config.json'
 export async function processMenus() {
   let pluginMenus = []
 
-  // const pluginPromises = plugins.map(async (item) => {
-  //   try {
-  //     const metadata = await import(`${item.metadataFile}`)
-  //     return metadata.default.menus || []
-  //   } catch (error) {
-  //     console.warn(`Failed to load plugin menus: ${item.metadataFile}`, error)
-  //     return []
-  //   }
-  // })
-
   const pluginPromises = plugins.map(async (item) => {
     try {
       const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
-      console.log('pluginName', pluginName)
-      console.log('pluginName',  `./${pluginName}/plugin-metadata`)
       if (pluginName) {
         const metadata = await import(
           /* webpackChunkName: "plugin-[request]" */
           /* webpackMode: "lazy" */
+           /* webpackInclude: /^\.\/[^/]+\/plugin-metadata(\.(t|j)sx?)?$/ */
           `./${pluginName}/plugin-metadata`
         )
         return metadata.default.menus || []
@@ -52,8 +41,17 @@ export async function processRoutes() {
 
   const pluginPromises = plugins.map(async (item) => {
     try {
-      const metadata = await import(`${item.metadataFile}`)
-      return metadata.default.routes || []
+       const pluginName = item.metadataFile?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
+      if (pluginName) {
+        const metadata = await import(
+          /* webpackChunkName: "plugin-[request]" */
+          /* webpackMode: "lazy" */
+          `./${pluginName}/metadata`
+        )
+        return metadata.default.routes || []
+      }
+      const metadata = await import(/* webpackIgnore: true */ `${item.metadataFile}`)
+      return metadata.default?.routes || []
     } catch (error) {
       console.warn(`Failed to load plugin routes: ${item.metadataFile}`, error)
       return []
