@@ -135,8 +135,8 @@ function GluuAppSidebar(): JSX.Element {
     [hasChildren],
   )
 
-  const memoizedFilteredMenus = useMemo((): PluginMenu[] => {
-    const menus: PluginMenu[] = processMenus()
+  const memoizedFilteredMenus = useMemo(async (): Promise<PluginMenu[]> => {
+    const menus: PluginMenu[] = await processMenus()
 
     if (!fetchedServersLength) {
       return []
@@ -150,7 +150,7 @@ function GluuAppSidebar(): JSX.Element {
 
   const loadMenus = async () => {
     try {
-      const filteredMenus = await filterMenuItems(memoizedFilteredMenus)
+      const filteredMenus = await filterMenuItems(await memoizedFilteredMenus)
       setPluginMenus(filteredMenus)
     } finally {
       !loading && setLoading(true)

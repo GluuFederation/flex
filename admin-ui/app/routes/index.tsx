@@ -1,33 +1,34 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-import NavbarOnly from './Layouts/NavbarOnly'
-import SidebarDefault from './Layouts/SidebarDefault'
-import SidebarA from './Layouts/SidebarA'
-import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
-
 // ----------- Layout Imports ---------------
-import { processRoutes } from 'Plugins/PluginMenuResolver'
+import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
 
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
 import { uuidv4 } from 'Utils/Util'
 import ProtectedRoute from './Pages/ProtectRoutes'
-
-const DashboardPage = lazy(() => import('./Dashboards/DashboardPage'))
-const ProfilePage = lazy(() => import('./Apps/Profile/ProfilePage'))
-const Gluu404Error = lazy(() => import('./Apps/Gluu/Gluu404Error'))
-const ByeBye = lazy(() => import('./Pages/ByeBye'))
-const GluuNavBar = lazy(() => import('./Apps/Gluu/GluuNavBar'))
-const DefaultSidebar = lazy(() => import('./../layout/components/DefaultSidebar'))
+import { LazyRoutes } from 'Utils/RouteLoader'
 
 //------ Route Definitions --------
 
 export const RoutedContent = () => {
   const [pluginMenus, setPluginMenus] = useState<Array<any>>([])
+
   useEffect(() => {
-    setPluginMenus(processRoutes())
+    const loadPlugins = async () => {
+      try {
+        const routes = await processRoutes()
+        setPluginMenus(routes)
+      } catch (error) {
+        console.error('Failed to load plugins:', error)
+        // Fallback to sync loading
+        setPluginMenus(processRoutesSync())
+      }
+    }
+
+    loadPlugins()
   }, [])
 
   const { userinfo, config } = useSelector((state: any) => state.authReducer)
@@ -46,19 +47,17 @@ export const RoutedContent = () => {
         path="/home/dashboard"
         element={
           <ProtectedRoute>
-            <Suspense fallback={<GluuSuspenseLoader />}>
-              <DashboardPage />
-            </Suspense>
+            <LazyRoutes.DashboardPage />
           </ProtectedRoute>
         }
       />
       <Route path="/" element={<Navigate to="/home/dashboard" />} />
 
       {/*    Layouts     */}
-      <Route path="/layouts/navbar" element={<NavbarOnly />} />
-      <Route path="/layouts/sidebar" element={<SidebarDefault />} />
-      <Route path="/layouts/sidebar-a" element={<SidebarA />} />
-      <Route path="/layouts/sidebar-with-navbar" element={<SidebarWithNavbar />} />
+      <Route path="/layouts/navbar" element={<LazyRoutes.NavbarOnly />} />
+      <Route path="/layouts/sidebar" element={<LazyRoutes.SidebarDefault />} />
+      <Route path="/layouts/sidebar-a" element={<LazyRoutes.SidebarA />} />
+      <Route path="/layouts/sidebar-with-navbar" element={<LazyRoutes.SidebarWithNavbar />} />
 
       {/* -------- Plugins ---------*/}
       {pluginMenus.map((item, key) => (
@@ -66,33 +65,17 @@ export const RoutedContent = () => {
       ))}
 
       {/*    Pages Routes    */}
-      <Route
-        element={
-          <Suspense fallback={<GluuSuspenseLoader />}>
-            <ProfilePage />
-          </Suspense>
-        }
-        path="/profile"
-      />
+      <Route element={<LazyRoutes.ProfilePage />} path="/profile" />
 
       <Route
         path="/logout"
         element={
           <ProtectedRoute>
-            <Suspense fallback={<GluuSuspenseLoader />}>
-              <ByeBye />
-            </Suspense>
+            <LazyRoutes.ByeBye />
           </ProtectedRoute>
         }
       />
-      <Route
-        element={
-          <Suspense fallback={<GluuSuspenseLoader />}>
-            <Gluu404Error />
-          </Suspense>
-        }
-        path="/error-404"
-      />
+      <Route element={<LazyRoutes.Gluu404Error />} path="/error-404" />
 
       {/*    404    */}
       <Route path="*" element={<Navigate to="/error-404" />} />
@@ -103,26 +86,12 @@ export const RoutedContent = () => {
 //------ Custom Layout Parts --------
 export const RoutedNavbars = () => (
   <Routes>
-    <Route
-      path="/*"
-      element={
-        <Suspense fallback={<GluuSuspenseLoader />}>
-          <GluuNavBar />
-        </Suspense>
-      }
-    />
+    <Route path="/*" element={<LazyRoutes.GluuNavBar />} />
   </Routes>
 )
 
 export const RoutedSidebars = () => (
   <Routes>
-    <Route
-      path="/*"
-      element={
-        <Suspense fallback={<GluuSuspenseLoader />}>
-          <DefaultSidebar />
-        </Suspense>
-      }
-    />
+    <Route path="/*" element={<LazyRoutes.DefaultSidebar />} />
   </Routes>
 )
