@@ -2,286 +2,286 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://docs.gluu.org/head/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/CHANGELOG/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/config/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/gluu-migration/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/admin-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/auth-server-interaction/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/auth-server-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/configuration/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/faq/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/fido-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/home/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/introduction/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/jans-lock-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/left-nav-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/logs/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/properties/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/saml-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/scim-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/scripts/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/services-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/smtp-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/user-claims/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/user-management-menu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/admin-ui/webhooks/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/kubernetes-ops/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/kubernetes-ops/admin-ui-private/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/kubernetes-ops/upgrade/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/recipes/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/recipes/add-claims-to-token/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/recipes/getting-started-rancher/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/recipes/testing-flex-saml-sso-sptest/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/saml/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/saml/idp/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/admin/saml/proxy/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/includes/cn-system-requirements/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/agama/prerequisites/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/docker-install/compose/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/docker-install/quick-start/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/helm-install/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/helm-install/amazon-eks/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/helm-install/google-gke/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/helm-install/local/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/helm-install/microsoft-azure/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/helm-install/rancher/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/vm-install/rhel/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/vm-install/suse/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/vm-install/ubuntu/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/vm-install/vm-requirements/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/openbanking/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/openbanking/configuration-instructions/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/openbanking/curl/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/openbanking/install-cn/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/openbanking/install-vm/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/openbanking/jans-cli/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/openbanking/par-jarm/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/json-config/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/json-config/properties/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/json-config/properties/casa-properties/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/json-config/properties/casaconfig-properties/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/kubernetes/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/kubernetes/docker-admin-ui/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/kubernetes/docker-flex-monolith/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/reference/kubernetes/helm-chart/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/solo/cloud-setup/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/solo/solo-administration-guide/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/solo/solo-getting-started/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/solo/solo-subscription/</loc>
-         <lastmod>2025-10-06</lastmod>
+         <lastmod>2025-10-09</lastmod>
     </url>
 </urlset>
