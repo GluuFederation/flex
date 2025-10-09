@@ -18,7 +18,7 @@ Gluu Access and Identity Management
 
 ## Requirements
 
-Kubernetes: `>=v1.21.0-0`
+Kubernetes: `>=v1.23.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
