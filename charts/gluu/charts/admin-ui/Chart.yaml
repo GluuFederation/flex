@@ -1,7 +1,7 @@
 apiVersion: v2
 name: admin-ui
 version: 0.0.0-nightly
-kubeVersion: ">=v1.21.0-0"
+kubeVersion: ">=v1.23.0-0"
 description: Admin GUI. Requires license.
 type: application
 keywords:

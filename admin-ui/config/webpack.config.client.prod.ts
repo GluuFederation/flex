@@ -4,7 +4,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CircularDependencyPlugin from 'circular-dependency-plugin'
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+//import bundleAnalyzerConfig from './bundle-analyzer.config.js'
 import type { PolicyStoreConfig } from './types/policy-store'
 import config from './../config.js'
 import dotenv from 'dotenv'
@@ -36,6 +36,63 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   optimization: {
     splitChunks: {
       chunks: 'all',
+      cacheGroups: {
+        // Vendor libraries - split by framework/library type
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom)[\\/]/,
+          name: 'react-vendor',
+          chunks: 'all',
+          priority: 20,
+        },
+        mui: {
+          test: /[\\/]node_modules[\\/](@mui|@emotion)[\\/]/,
+          name: 'mui-vendor',
+          chunks: 'all',
+          priority: 19,
+        },
+        redux: {
+          test: /[\\/]node_modules[\\/](@reduxjs|redux|redux-saga|redux-persist)[\\/]/,
+          name: 'redux-vendor',
+          chunks: 'all',
+          priority: 18,
+        },
+        charts: {
+          test: /[\\/]node_modules[\\/](recharts|react-ace|ace-builds)[\\/]/,
+          name: 'charts-vendor',
+          chunks: 'all',
+          priority: 17,
+        },
+        utils: {
+          test: /[\\/]node_modules[\\/](lodash|moment|dayjs|axios|formik|yup)[\\/]/,
+          name: 'utils-vendor',
+          chunks: 'all',
+          priority: 16,
+        },
+        // Plugin chunks - each plugin gets its own chunk
+        plugins: {
+          test: /[\\/]plugins[\\/]/,
+          name: (module: any) => {
+          const pluginName = module?.context?.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)?.[1]
+            return pluginName ? `plugin-${pluginName}` : 'plugin-common'
+          },
+          chunks: 'all',
+          priority: 15,
+        },
+        // Common vendor libraries
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all',
+          priority: 10,
+        },
+        // Common application code
+        common: {
+          name: 'common',
+          minChunks: 2,
+          chunks: 'all',
+          priority: 5,
+        },
+      },
     },
     minimizer: [
       `...`,
@@ -117,7 +174,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         POLICY_STORE_CONFIG: JSON.stringify(prodPolicyStoreJson),
       },
     }),
-    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }),
+    //...bundleAnalyzerConfig.plugins,
   ],
   module: {
     rules: [
