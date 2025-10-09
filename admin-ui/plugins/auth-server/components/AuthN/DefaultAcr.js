@@ -13,7 +13,7 @@ import { Button, Form } from 'Components'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from '@/context/theme/themeContext'
 import DefaultAcrInput from '../Configuration/DefaultAcrInput'
-import { getScriptsByType } from 'Plugins/auth-server/redux/features/scriptSlice'
+import { getScripts } from 'Redux/features/initSlice'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 
 function DefaultAcr() {
@@ -21,7 +21,8 @@ function DefaultAcr() {
   const dispatch = useDispatch()
 
   const { acrReponse: acrs } = useSelector((state) => state.acrReducer)
-  const { scripts } = useSelector((state) => state.scriptReducer)
+  const scripts = useSelector((state) => state.initReducer.scripts)
+  const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
   const { agamaList, loading: agamaLoading } = useSelector((state) => state.agamaReducer)
 
   const { t } = useTranslation()
@@ -44,30 +45,25 @@ function DefaultAcr() {
     }
 
     initializeAcr()
-    dispatch(getScriptsByType({ action: { type: 'PERSON_AUTHENTICATION' } }))
+    const userAction = {}
+    dispatch(getScripts({ action: userAction }))
     dispatch(getAgama())
     dispatch(getAcrsConfig())
   }, [authorize, dispatch])
 
   const authScripts = useMemo(() => {
-    const filteredScripts = Array.isArray(scripts)
-      ? scripts
-          .filter(
-            (item) =>
-              item && item.scriptType?.toUpperCase() === 'PERSON_AUTHENTICATION' && item.enabled,
-          )
-          .map((item) => item.name)
-          .filter(Boolean)
+    const filteredScripts = scripts
+      .filter((item) => item.scriptType == 'person_authentication')
+      .filter((item) => item.enabled)
+      .map((item) => item.name)
+
+    const agamaFlows = Array.isArray(agamaList)
+      ? agamaList.map((flow) => flow?.details?.projectMetadata?.projectName).filter(Boolean)
       : []
 
-    // const agamaFlows = Array.isArray(agamaList)
-    //   ? agamaList.map((flow) => flow?.details?.projectMetadata?.projectName).filter(Boolean)
-    //   : []
-    const agamaFlows = []
+    filteredScripts.push(SIMPLE_PASSWORD_AUTH)
+    const result = Array.from(new Set([...filteredScripts, ...agamaFlows])).sort()
 
-    const result = Array.from(
-      new Set([...filteredScripts, SIMPLE_PASSWORD_AUTH, ...agamaFlows]),
-    ).sort()
     return result
   }, [scripts, agamaList])
 
@@ -103,7 +99,7 @@ function DefaultAcr() {
   }
 
   return (
-    <GluuLoader blocking={agamaLoading}>
+    <GluuLoader blocking={loadingScripts || agamaLoading}>
       <Form onSubmit={handleSubmit}>
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
         <div style={{ padding: '3vh' }}>
