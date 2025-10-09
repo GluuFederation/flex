@@ -11,7 +11,7 @@ import {
 } from '../features/ldapSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { LDAP } from '../audit/Resources'
+import { API_LDAP } from 'Plugins/user-management/redux/audit/Resources'
 import { CREATE, UPDATE, DELETION, FETCH } from '../../../../app/audit/UserActionType'
 import LdapApi from '../api/LdapApi'
 import { getClient } from 'Redux/api/base'
@@ -30,7 +30,7 @@ function* newFunction() {
 export function* getLdap(payload) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, LDAP, payload)
+    addAdditionalData(audit, FETCH, API_LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.getLdapConfig)
     yield put(getLdapResponse({ data }))
@@ -47,7 +47,7 @@ export function* getLdap(payload) {
 export function* addLdap({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, CREATE, LDAP, payload)
+    addAdditionalData(audit, CREATE, API_LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.addLdapConfig, payload.data.action_data)
     yield put(updateToast(true, 'success'))
@@ -70,7 +70,7 @@ export function* addLdap({ payload }) {
 export function* editLdap({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, LDAP, payload)
+    addAdditionalData(audit, UPDATE, API_LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.updateLdapConfig, payload.data.action_data)
     yield put(updateToast(true, 'success'))
@@ -95,7 +95,7 @@ export function* editLdap({ payload }) {
 export function* deleteLdap({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, DELETION, LDAP, payload)
+    addAdditionalData(audit, DELETION, API_LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.deleteLdapConfig, payload.configId)
     yield put(updateToast(true, 'success'))

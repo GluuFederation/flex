@@ -31,12 +31,15 @@ function AuthNEditPage() {
     }
   }, [success])
 
-  function handleSubmit(data) {
+  function handleSubmit(data, userMessage) {
     const payload = {}
 
     if (item.name === 'simple_password_auth') {
       if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
-        payload.authenticationMethod = { defaultAcr: 'simple_password_auth' }
+        payload.authenticationMethod = {
+          defaultAcr: 'simple_password_auth',
+          userMessage: userMessage,
+        }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }
     } else if (item.name === 'default_ldap_password') {
@@ -53,7 +56,7 @@ function AuthNEditPage() {
       ldapPayload.enabled = data.enabled
 
       if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
-        payload.authenticationMethod = { defaultAcr: data.configId }
+        payload.authenticationMethod = { defaultAcr: data.configId, userMessage: userMessage }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }
       dispatch(editLDAPAuthAcr({ data: ldapPayload }))
@@ -76,7 +79,7 @@ function AuthNEditPage() {
           }))
       }
       if (data.defaultAuthNMethod === 'true' || data.defaultAuthNMethod === true) {
-        payload.authenticationMethod = { defaultAcr: item.acrName }
+        payload.authenticationMethod = { defaultAcr: item.acrName, userMessage: userMessage }
         dispatch(editSimpleAuthAcr({ data: payload }))
       }
 
