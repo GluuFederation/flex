@@ -1,0 +1,45 @@
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+
+module.exports = {
+  // Enable bundle analyzer in production builds
+  plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: process.env.ANALYZE ? 'server' : 'disabled',
+      analyzerHost: 'localhost',
+      analyzerPort: 8888,
+      openAnalyzer: true,
+      generateStatsFile: true,
+      statsFilename: 'bundle-stats.json',
+      statsOptions: {
+        source: false,
+        modules: false,
+        chunks: true,
+        chunkModules: true,
+        chunkOrigins: true,
+        reasons: true,
+        usedExports: true,
+        providedExports: true,
+        optimizationBailout: true,
+        errorDetails: true,
+        publicPath: true,
+        timings: true,
+        builtAt: true,
+        assets: true,
+        entrypoints: true,
+        chunkGroups: true,
+        modulesSpace: 0,
+        chunksSpace: 0,
+        assetsSpace: 0,
+        reasonsSpace: 0,
+        providedExportsSpace: 0,
+        usedExportsSpace: 0,
+        optimizationBailoutSpace: 0,
+        errorDetailsSpace: 0,
+        timingsSpace: 0,
+        builtAtSpace: 0,
+        entrypointsSpace: 0,
+        chunkGroupsSpace: 0,
+      },
+    }),
+  ],
+}
