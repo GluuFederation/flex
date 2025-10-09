@@ -45,7 +45,7 @@ export async function processRoutes() {
         const metadata = await import(
           /* webpackChunkName: "plugin-[request]" */
           /* webpackMode: "lazy" */
-          `./${pluginName}/metadata`
+          `./${pluginName}/plugin-metadata`
         )
         return metadata.default.routes || []
       }
