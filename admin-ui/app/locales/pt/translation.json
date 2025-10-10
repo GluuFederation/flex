@@ -644,7 +644,9 @@
     "reloginToViewCedarlingChanges": "Por favor, faça login novamente para ver as alterações do cedarling.",
     "allAvailableHintsSelected": "Todas as opções de dica disponíveis estão selecionadas",
     "noMatchingOptions": "Nenhuma opção correspondente",
-    "nothingToShowInTheList": "Nada a mostrar na lista"
+    "nothingToShowInTheList": "Nada a mostrar na lista",
+    "disable_logger_timer": "Desativar Temporizador de Logs",
+    "skip_defined_password_validation": "Pular Validação de Senha Definida"
   },
   "messages": {
     "add_permission": "Adicionar permissão",

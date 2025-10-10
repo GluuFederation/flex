@@ -649,7 +649,9 @@
     "reloginToViewCedarlingChanges": "Veuillez vous reconnecter pour voir les modifications de cedarling.",
     "allAvailableHintsSelected": "Toutes les options d'indice disponibles sont sélectionnées.",
     "noMatchingOptions": "Aucune option correspondante",
-    "nothingToShowInTheList": "Rien à montrer dans la liste"
+    "nothingToShowInTheList": "Rien à montrer dans la liste",
+    "disable_logger_timer": "Désactiver le Minuteur du Journal",
+    "skip_defined_password_validation": "Ignorer la Validation du Mot de Passe Défini"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",
