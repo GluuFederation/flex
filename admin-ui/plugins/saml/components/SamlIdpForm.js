@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, CardBody, Form, FormGroup, Col, Row } from 'Components'
+import { Card, CardBody, Form, FormGroup, Col } from 'Components'
 import { useFormik } from 'formik'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -427,17 +427,13 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                 </>
               )}
             </FormGroup>
-            {!viewOnly && (
-              <Row>
-                <Col>
-                  <GluuCommitFooter
-                    saveHandler={toggle}
-                    hideButtons={{ save: true, back: false }}
-                    type="submit"
-                  />
-                </Col>
-              </Row>
-            )}
+            <GluuCommitFooter
+              saveHandler={toggle}
+              hideButtons={{ save: true, back: false }}
+              type="submit"
+              viewOnly={viewOnly}
+              onCancel={() => navigate('/saml/identity-providers')}
+            />
             <GluuCommitDialog
               handler={toggle}
               modal={modal}

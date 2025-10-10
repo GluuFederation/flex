@@ -11,19 +11,32 @@ function GluuCommitFooter({
   extraLabel,
   hideButtons,
   type = 'button',
+  viewOnly = false,
+  onCancel,
 }: any) {
   const { t } = useTranslation()
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
   function goBack() {
-    window.history.back()
+    if (onCancel) {
+      onCancel()
+    } else {
+      window.history.back()
+    }
   }
+
   return (
     <>
       <Divider></Divider>
-      <Box display="flex" my={2} justifyContent="space-between" alignItems="center" gap={1}>
-        {!hideButtons || !hideButtons['back'] ? (
+      <Box
+        display="flex"
+        my={2}
+        justifyContent={viewOnly ? 'flex-start' : 'space-between'}
+        alignItems="center"
+        gap={1}
+      >
+        {(!hideButtons || !hideButtons['back']) && (
           <Button
             color={`primary-${selectedTheme}`}
             style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
@@ -34,50 +47,62 @@ function GluuCommitFooter({
             <i className="fa fa-arrow-circle-left me-2"></i>
             {t('actions.cancel')}
           </Button>
-        ) : null}
-        {extraLabel && extraOnClick && (
-          <Button
-            color={`primary-${selectedTheme}`}
-            type="button"
-            style={applicationStyle.buttonStyle}
-            onClick={extraOnClick}
-          >
-            {extraLabel}
-          </Button>
-        )}
-        <Button
-          type="submit"
-          color={`primary-${selectedTheme}`}
-          className="UserActionSubmitButton"
-          style={{ visibility: 'hidden' }}
-        >
-          {t('actions.submit')}
-        </Button>
-
-        {type === 'submit' && (
-          <Button
-            type="submit"
-            color={`primary-${selectedTheme}`}
-            style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
-            className="ms-auto px-4"
-          >
-            <i className="fa fa-check-circle me-2"></i>
-            {t('actions.apply')}
-          </Button>
         )}
 
-        {!hideButtons || !hideButtons['save'] ? (
-          <Button
-            type="button"
-            color={`primary-${selectedTheme}`}
-            style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
-            className="ms-auto px-4"
-            onClick={saveHandler}
-          >
-            <i className="fa fa-check-circle me-2"></i>
-            {t('actions.apply')}
-          </Button>
-        ) : null}
+        {!viewOnly && (
+          <>
+            {extraLabel && extraOnClick && (
+              <Button
+                color={`primary-${selectedTheme}`}
+                type="button"
+                style={applicationStyle.buttonStyle}
+                onClick={extraOnClick}
+              >
+                {extraLabel}
+              </Button>
+            )}
+
+            <Button
+              type="submit"
+              color={`primary-${selectedTheme}`}
+              className="UserActionSubmitButton"
+              style={{ visibility: 'hidden' }}
+            >
+              {t('actions.submit')}
+            </Button>
+
+            {type === 'submit' && (
+              <Button
+                type="submit"
+                color={`primary-${selectedTheme}`}
+                style={{
+                  ...applicationStyle.buttonStyle,
+                  ...applicationStyle.buttonFlexIconStyles,
+                }}
+                className="ms-auto px-4"
+              >
+                <i className="fa fa-check-circle me-2"></i>
+                {t('actions.apply')}
+              </Button>
+            )}
+
+            {(!hideButtons || !hideButtons['save']) && (
+              <Button
+                type="button"
+                color={`primary-${selectedTheme}`}
+                style={{
+                  ...applicationStyle.buttonStyle,
+                  ...applicationStyle.buttonFlexIconStyles,
+                }}
+                className="ms-auto px-4"
+                onClick={saveHandler}
+              >
+                <i className="fa fa-check-circle me-2"></i>
+                {t('actions.apply')}
+              </Button>
+            )}
+          </>
+        )}
       </Box>
     </>
   )
