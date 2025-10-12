@@ -2,88 +2,45 @@ import React, { useState, useContext } from 'react'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import { SelectChangeEvent } from '@mui/material'
 import { useFormik } from 'formik'
-import * as Yup from 'yup'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
-import { testSmtp } from 'Plugins/smtp-management/redux/features/smtpSlice'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { putConfigWorker } from 'Redux/features/authSlice'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import { SmtpConfiguration, SmtpTestOptions } from '../../redux/types'
-import { ConnectProtection, SmtpFormValues, SmtpFormProps } from './types/SmtpForm.types'
+import { SmtpFormValues, SmtpFormProps } from '../../types'
+import {
+  toSmtpConfiguration,
+  transformToFormValues,
+  validationSchema,
+  smtpConstants,
+} from '../../helper'
 
-function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) {
+function SmtpForm(props: Readonly<SmtpFormProps>) {
+  const { item, handleSubmit, allowSmtpKeystoreEdit, onTestSmtp } = props
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state.theme || 'darkBlack'
   const [modal, setModal] = useState(false)
-  const [hideTestButton, setHideTestButton] = useState(false)
-  const [tempItems, setTempItems] = useState<SmtpConfiguration>(item)
   const toggle = () => {
     setModal(!modal)
   }
 
-  const initialValues: SmtpFormValues = {
-    host: item?.host || '',
-    port: typeof item?.port === 'number' ? item.port : '',
-    connect_protection: (item?.connect_protection as ConnectProtection) || 'None',
-    from_name: item?.from_name || '',
-    from_email_address: item?.from_email_address || '',
-    requires_authentication: item?.requires_authentication || false,
-    smtp_authentication_account_username: item?.smtp_authentication_account_username || '',
-    smtp_authentication_account_password: item?.smtp_authentication_account_password || '',
-    trust_host: item?.trust_host || false,
-    key_store: item?.key_store || '',
-    key_store_password: item?.key_store_password || '',
-    key_store_alias: item?.key_store_alias || '',
-    signing_algorithm: item?.signing_algorithm || '',
-  }
+  const initialValues: SmtpFormValues = transformToFormValues(item)
 
   const formik = useFormik<SmtpFormValues>({
     initialValues,
     onSubmit: () => {
       toggle()
     },
-    validationSchema: Yup.object({
-      host: Yup.string().required('Host name is required.'),
-      port: Yup.number().required('Port number is required.'),
-      connect_protection: Yup.string()
-        .min(2, 'Connection Protection is required.')
-        .required('Connection Protection is required.'),
-      from_name: Yup.string().required('From name is required.'),
-      from_email_address: Yup.string()
-        .email('Please add a valid email address.')
-        .required('From email address is required.'),
-      smtp_authentication_account_username: Yup.string().required('SMTP user name is required.'),
-      smtp_authentication_account_password: Yup.string().required(
-        'SMTP user password is required.',
-      ),
-    }),
+    validationSchema,
   })
-
-  const toSmtpConfiguration = (values: SmtpFormValues): SmtpConfiguration => {
-    return {
-      host: values.host,
-      port: typeof values.port === 'string' ? parseInt(values.port, 10) : values.port,
-      connect_protection: values.connect_protection || undefined,
-      from_name: values.from_name,
-      from_email_address: values.from_email_address,
-      requires_authentication: values.requires_authentication,
-      smtp_authentication_account_username: values.smtp_authentication_account_username,
-      smtp_authentication_account_password: values.smtp_authentication_account_password,
-      trust_host: values.trust_host,
-      key_store: values.key_store || undefined,
-      key_store_password: values.key_store_password || undefined,
-      key_store_alias: values.key_store_alias || undefined,
-      signing_algorithm: values.signing_algorithm || undefined,
-    }
-  }
 
   const submitForm = () => {
     toggle()
@@ -91,64 +48,21 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
   }
 
   const testSmtpConfig = () => {
-    const isValidate = checkValue()
-    if (isValidate) {
-      const opts: SmtpTestOptions = {
-        smtpTest: {
-          sign: true,
-          subject: 'Testing Email',
-          message: 'Testing',
-        },
-      }
-      dispatch(testSmtp({ payload: opts }))
+    if (formik.isValid) {
+      onTestSmtp({
+        sign: true,
+        subject: t('messages.smtp_test_subject'),
+        message: t('messages.smtp_test_message'),
+      })
     } else {
       toast.error(t('messages.mandatory_fields_required'))
     }
   }
 
-  const checkValue = (): boolean => {
-    const optionalKeys: Array<keyof SmtpFormValues> = [
-      'key_store',
-      'key_store_password',
-      'key_store_alias',
-      'signing_algorithm',
-    ]
-    for (const key in formik.values) {
-      const k = key as keyof SmtpFormValues
-      const value = formik.values[k]
-      if ((value === null || value === '') && !optionalKeys.includes(k)) return false
-    }
-    return true
-  }
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
-    const temp: SmtpConfiguration = { ...tempItems }
-    const target = event.target
-
-    let name: string
-    let nextValue: string | number | boolean
-
-    if (target instanceof HTMLInputElement) {
-      const { type, value, checked } = target
-      name = target.name
-      nextValue =
-        type === 'number' ? parseInt(value, 10) : type === 'checkbox' ? Boolean(checked) : value
-    } else {
-      const select = target as HTMLSelectElement
-      name = select.name
-      const value = select.value
-      nextValue = value === 'true' ? true : value === 'false' ? false : value
-    }
-
-    const tempRecord = temp as Record<string, unknown>
-    tempRecord[name] = nextValue
-
-    if (JSON.stringify(temp) !== JSON.stringify(item)) {
-      setHideTestButton(true)
-    } else {
-      setHideTestButton(false)
-    }
-    setTempItems({ ...tempItems, [name]: nextValue } as SmtpConfiguration)
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
+  ): void => {
+    formik.handleChange(event)
   }
 
   return (
@@ -193,7 +107,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             label="fields.connect_protection"
             name="connect_protection"
             value={formik.values.connect_protection || ''}
-            values={['None', 'StartTls', 'SslTls']}
+            values={Object.values(smtpConstants.CONNECT_PROTECTION)}
             formik={formik}
             lsize={3}
             rsize={9}
@@ -261,7 +175,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             }
             errorMessage={formik.errors.smtp_authentication_account_username as string}
             handleChange={handleChange}
-            required
+            required={formik.values.requires_authentication}
           />
         </Col>
 
@@ -279,7 +193,8 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             }
             errorMessage={formik.errors.smtp_authentication_account_password as string}
             handleChange={handleChange}
-            required
+            type="password"
+            required={formik.values.requires_authentication}
           />
         </Col>
         <Col sm={8}>
@@ -334,6 +249,7 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
             showError={formik.touched.key_store_password && !!formik.errors.key_store_password}
             errorMessage={formik.errors.key_store_password as string}
             handleChange={handleChange}
+            type="password"
             disabled={!allowSmtpKeystoreEdit}
           />
         </Col>
@@ -369,19 +285,16 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
         </Col>
       </FormGroup>
       <Row>
-        {!hideTestButton && (
-          <Col>
-            <button
-              type="button"
-              className={`btn btn-primary-${selectedTheme} text-center`}
-              onClick={testSmtpConfig}
-            >
-              {t('fields.test')}
-            </button>
-          </Col>
-        )}
         <Col>
-          {' '}
+          <button
+            type="button"
+            className={`btn btn-primary-${selectedTheme} text-center`}
+            onClick={testSmtpConfig}
+          >
+            {t('fields.test')}
+          </button>
+        </Col>
+        <Col>
           <GluuCommitFooter
             saveHandler={toggle}
             hideButtons={{ save: true, back: true }}

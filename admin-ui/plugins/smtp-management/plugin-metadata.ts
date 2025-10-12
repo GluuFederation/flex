@@ -1,6 +1,4 @@
-import SmtpEditPage from './components/SmtpManagement/StmpEditPage'
-import smtpReducer from './redux/features/smtpSlice'
-import smtpSaga from './redux/sagas/SmtpSaga'
+import SmtpEditPage from './components/SmtpManagement/SmtpEditPage'
 import { SMTP_READ, SMTP_WRITE } from '../../app/utils/PermChecker'
 
 const PLUGIN_BASE_PATH = '/smtp'
@@ -21,8 +19,8 @@ const pluginMetadata = {
       permission: SMTP_WRITE,
     },
   ],
-  reducers: [{ name: 'stmpReducer', reducer: smtpReducer }],
-  sagas: [smtpSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata
