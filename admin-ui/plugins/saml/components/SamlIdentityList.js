@@ -180,7 +180,7 @@ const SamlIdentityList = () => {
             {
               icon: 'edit',
               tooltip: `${t('messages.edit_identity_provider')}`,
-              iconProps: { color: 'primary', style: { color: customColors.darkGray } },
+              iconProps: { style: { color: customColors.darkGray } },
               onClick: (event, rowData) => {
                 const data = { ...rowData }
                 delete data.tableData
