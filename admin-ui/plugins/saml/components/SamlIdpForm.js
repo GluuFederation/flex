@@ -427,13 +427,9 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
                 </>
               )}
             </FormGroup>
-            <GluuCommitFooter
-              saveHandler={toggle}
-              hideButtons={{ save: true, back: false }}
-              type="submit"
-              viewOnly={viewOnly}
-              onCancel={() => navigate('/saml/identity-providers')}
-            />
+
+            <GluuCommitFooter saveHandler={toggle} hideButtons={{ save: viewOnly, back: false }} />
+
             <GluuCommitDialog
               handler={toggle}
               modal={modal}

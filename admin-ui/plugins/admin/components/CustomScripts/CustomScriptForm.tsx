@@ -10,7 +10,6 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 import { Alert, Button } from 'reactstrap'
 import ErrorIcon from '@mui/icons-material/Error'
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
@@ -37,7 +36,6 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     (state: RootState) => state.customScriptReducer,
   )
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const [init, setInit] = useState<boolean>(false)
   const [modal, setModal] = useState<boolean>(false)
   const [scriptTypeState, setScriptTypeState] = useState<string | undefined>(item.scriptType)
@@ -621,11 +619,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
             />
           </Col>
         </FormGroup>
-        <GluuCommitFooter
-          saveHandler={toggle}
-          viewOnly={viewOnly}
-          onCancel={() => navigate('/adm/scripts')}
-        />
+        <GluuCommitFooter saveHandler={toggle} hideButtons={{ save: viewOnly, back: false }} />
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
