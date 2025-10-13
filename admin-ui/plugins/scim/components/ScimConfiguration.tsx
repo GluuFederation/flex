@@ -32,6 +32,10 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) =
     },
   })
 
+  const handleCancel = () => {
+    formik.resetForm()
+  }
+
   const submitForm = (userMessage: string): void => {
     const differences: ScimConfigPatchRequest[] = []
     const { action_message, ...formValues } = formik.values
@@ -300,7 +304,9 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({ handleSubmit }) =
         <Col>
           <GluuCommitFooter
             saveHandler={toggle}
-            hideButtons={{ save: true, back: false }}
+            hideButtons={{ save: true, back: true }}
+            extraLabel="Cancel"
+            extraOnClick={handleCancel}
             type="submit"
           />
         </Col>

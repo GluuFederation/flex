@@ -8,54 +8,49 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
-import { fidoConstants, validationSchema } from '../helper'
-import { transformToFormValues, getAvailableHintOptions, getEmptyDropdownMessage } from '../helper'
+import { fidoConstants, validationSchema, transformToFormValues } from '../helper'
+import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido-types'
 
-function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
-  const { fido } = fidoConfiguration
-
+const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
+  fidoConfiguration,
+  handleSubmit,
+  isSubmitting,
+}) => {
   const [modal, setModal] = useState(false)
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
   }, [])
 
-  const formik = useFormik({
-    initialValues: transformToFormValues(fido, fidoConstants.DYNAMIC),
+  const formik = useFormik<DynamicConfigFormValues>({
+    initialValues: transformToFormValues(
+      fidoConfiguration,
+      fidoConstants.DYNAMIC,
+    ) as DynamicConfigFormValues,
     onSubmit: toggle,
     validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.DYNAMIC_CONFIG],
+    enableReinitialize: true,
   })
 
   const submitForm = useCallback(() => {
     toggle()
     handleSubmit(formik.values)
-  }, [handleSubmit, toggle, formik])
+  }, [handleSubmit, toggle, formik.values])
 
   const handleFormSubmit = useCallback(
-    (e) => {
+    (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       formik.handleSubmit()
     },
     [formik],
   )
 
-  const availableHintOptions = useMemo(() => {
-    return getAvailableHintOptions(formik.values.hints)
-  }, [formik.values.hints])
-
-  const emptyDropdownMessage = useMemo(() => {
-    return getEmptyDropdownMessage(formik.values.hints)
-  }, [formik.values.hints])
-
   const personCustomObjectClassOptions = useMemo(() => {
-    return formik?.values?.personCustomObjectClassList
-      ? formik.values.personCustomObjectClassList.map((item) => ({
-          key: '',
-          value: item,
-        }))
-      : []
-  }, [formik?.values?.personCustomObjectClassList])
+    return (formik.values.personCustomObjectClassList || []).map((item) => ({
+      key: '',
+      value: item,
+    }))
+  }, [formik.values.personCustomObjectClassList])
 
   return (
     <Form onSubmit={handleFormSubmit} className="mt-3">
@@ -68,7 +63,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.issuer && formik.touched.issuer}
+            showError={!!(formik.errors.issuer && formik.touched.issuer)}
             errorMessage={formik.errors.issuer}
           />
         </Col>
@@ -81,7 +76,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.baseEndpoint && formik.touched.baseEndpoint}
+            showError={!!(formik.errors.baseEndpoint && formik.touched.baseEndpoint)}
             errorMessage={formik.errors.baseEndpoint}
           />
         </Col>
@@ -90,11 +85,13 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
           <GluuInputRow
             label={fidoConstants.LABELS.CLEAN_SERVICE_INTERVAL}
             name={fidoConstants.FORM_FIELDS.CLEAN_SERVICE_INTERVAL}
-            value={formik.values.cleanServiceInterval || ''}
+            value={formik.values.cleanServiceInterval ?? ''}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval}
+            showError={
+              !!(formik.errors.cleanServiceInterval && formik.touched.cleanServiceInterval)
+            }
             errorMessage={formik.errors.cleanServiceInterval}
             type="number"
           />
@@ -104,12 +101,15 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
           <GluuInputRow
             label={fidoConstants.LABELS.CLEAN_SERVICE_BATCH_CHUNK}
             name={fidoConstants.FORM_FIELDS.CLEAN_SERVICE_BATCH_CHUNK_SIZE}
-            value={formik.values.cleanServiceBatchChunkSize || ''}
+            value={formik.values.cleanServiceBatchChunkSize ?? ''}
             formik={formik}
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.cleanServiceBatchChunkSize && formik.touched.cleanServiceBatchChunkSize
+              !!(
+                formik.errors.cleanServiceBatchChunkSize &&
+                formik.touched.cleanServiceBatchChunkSize
+              )
             }
             errorMessage={formik.errors.cleanServiceBatchChunkSize}
             type="number"
@@ -143,12 +143,11 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             label={fidoConstants.LABELS.LOGGING_LEVEL}
             name={fidoConstants.FORM_FIELDS.LOGGING_LEVEL}
             value={formik.values.loggingLevel}
-            defaultValue={formik.values.loggingLevel}
-            values={fidoConstants.LOGGING_LEVELS}
+            values={[...fidoConstants.LOGGING_LEVELS]}
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.loggingLevel && formik.touched.loggingLevel}
+            showError={!!(formik.errors.loggingLevel && formik.touched.loggingLevel)}
             errorMessage={formik.errors.loggingLevel}
           />
         </Col>
@@ -161,24 +160,8 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             formik={formik}
             lsize={4}
             rsize={8}
-            showError={formik.errors.loggingLayout && formik.touched.loggingLayout}
+            showError={!!(formik.errors.loggingLayout && formik.touched.loggingLayout)}
             errorMessage={formik.errors.loggingLayout}
-          />
-        </Col>
-
-        <Col sm={8}>
-          <GluuInputRow
-            label={fidoConstants.LABELS.EXTERNAL_LOGGER_CONFIGURATION}
-            name={fidoConstants.FORM_FIELDS.EXTERNAL_LOGGER_CONFIGURATION}
-            value={formik.values.externalLoggerConfiguration || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            showError={
-              formik.errors.externalLoggerConfiguration &&
-              formik.touched.externalLoggerConfiguration
-            }
-            errorMessage={formik.errors.externalLoggerConfiguration}
           />
         </Col>
 
@@ -187,12 +170,12 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             label={fidoConstants.LABELS.METRIC_REPORTER_INTERVAL}
             name={fidoConstants.FORM_FIELDS.METRIC_REPORTER_INTERVAL}
             type="number"
-            value={formik.values.metricReporterInterval || ''}
+            value={formik.values.metricReporterInterval ?? ''}
             formik={formik}
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.metricReporterInterval && formik.touched.metricReporterInterval
+              !!(formik.errors.metricReporterInterval && formik.touched.metricReporterInterval)
             }
             errorMessage={formik.errors.metricReporterInterval}
           />
@@ -203,12 +186,15 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             label={fidoConstants.LABELS.METRIC_REPORTER_KEEP_DATA_DAYS}
             name={fidoConstants.FORM_FIELDS.METRIC_REPORTER_KEEP_DATA_DAYS}
             type="number"
-            value={formik.values.metricReporterKeepDataDays || ''}
+            value={formik.values.metricReporterKeepDataDays ?? ''}
             formik={formik}
             lsize={4}
             rsize={8}
             showError={
-              formik.errors.metricReporterKeepDataDays && formik.touched.metricReporterKeepDataDays
+              !!(
+                formik.errors.metricReporterKeepDataDays &&
+                formik.touched.metricReporterKeepDataDays
+              )
             }
             errorMessage={formik.errors.metricReporterKeepDataDays}
           />
@@ -242,19 +228,86 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-          <GluuTypeAhead
-            name={fidoConstants.FORM_FIELDS.HINTS}
-            label={fidoConstants.LABELS.HINTS}
+          <GluuToggleRow
+            label={fidoConstants.LABELS.FIDO2_METRICS_ENABLED}
+            name={fidoConstants.FORM_FIELDS.FIDO2_METRICS_ENABLED}
             formik={formik}
-            value={formik.values.hints || []}
-            options={availableHintOptions}
             lsize={4}
             rsize={8}
-            showError={formik.errors.hints && formik.touched.hints}
-            errorMessage={formik.errors.hints}
             doc_category={fidoConstants.DOC_CATEGORY}
-            emptyLabel={emptyDropdownMessage}
-            allowNew={false}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuInputRow
+            label={fidoConstants.LABELS.FIDO2_METRICS_RETENTION_DAYS}
+            name={fidoConstants.FORM_FIELDS.FIDO2_METRICS_RETENTION_DAYS}
+            type="number"
+            value={formik.values.fido2MetricsRetentionDays ?? ''}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            showError={
+              !!(
+                formik.errors.fido2MetricsRetentionDays && formik.touched.fido2MetricsRetentionDays
+              )
+            }
+            errorMessage={formik.errors.fido2MetricsRetentionDays}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.FIDO2_DEVICE_INFO_COLLECTION}
+            name={fidoConstants.FORM_FIELDS.FIDO2_DEVICE_INFO_COLLECTION}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.FIDO2_ERROR_CATEGORIZATION}
+            name={fidoConstants.FORM_FIELDS.FIDO2_ERROR_CATEGORIZATION}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.FIDO2_PERFORMANCE_METRICS}
+            name={fidoConstants.FORM_FIELDS.FIDO2_PERFORMANCE_METRICS}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.SESSION_ID_PERSIST_IN_CACHE}
+            name={fidoConstants.FORM_FIELDS.SESSION_ID_PERSIST_IN_CACHE}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
+          />
+        </Col>
+
+        <Col sm={8}>
+          <GluuToggleRow
+            label={fidoConstants.LABELS.ERROR_REASON_ENABLED}
+            name={fidoConstants.FORM_FIELDS.ERROR_REASON_ENABLED}
+            formik={formik}
+            lsize={4}
+            rsize={8}
+            doc_category={fidoConstants.DOC_CATEGORY}
           />
         </Col>
       </FormGroup>
@@ -264,6 +317,7 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}
             type="submit"
+            disabled={isSubmitting}
           />
         </Col>
       </Row>
@@ -271,4 +325,5 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
     </Form>
   )
 }
+
 export default React.memo(DynamicConfiguration)

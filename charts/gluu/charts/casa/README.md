@@ -19,7 +19,7 @@ Jans Casa ("Casa") is a self-service web portal for end-users to manage authenti
 
 ## Requirements
 
-Kubernetes: `>=v1.21.0-0`
+Kubernetes: `>=v1.23.0-0`
 
 ## Values
 
