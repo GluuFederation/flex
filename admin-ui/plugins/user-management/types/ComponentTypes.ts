@@ -24,6 +24,7 @@ export interface UserFormProps {
     modifiedFields: Record<string, string | string[]>,
     usermessage: string,
   ) => void
+  userDetails?: CustomUser | null
 }
 
 export interface UserEditPageState {

@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import customColors from '@/customColors'
-import { UserDeviceDetailViewPageProps, DeviceData } from '../../types/ComponentTypes'
+import { UserDeviceDetailViewPageProps, DeviceData } from '../types/ComponentTypes'
 
 const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const { rowData } = row

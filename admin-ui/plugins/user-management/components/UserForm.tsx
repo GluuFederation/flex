@@ -8,9 +8,17 @@ import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { changeUserPassword } from '../redux/features/userSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
+import {
+  usePatchUserByInum,
+  getGetUserQueryKey,
+  UserPatchRequest,
+} from '../../../jans_config_api_orval/src/JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
+import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
+import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { debounce } from 'lodash'
@@ -23,10 +31,11 @@ import {
   UserEditFormValues,
 } from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
-import { PersonAttribute, ChangeUserPasswordPayload, GetUserOptions } from '../types/UserApiTypes'
+import { PersonAttribute, GetUserOptions } from '../types/UserApiTypes'
 
-function UserForm({ onSubmitData }: UserFormProps) {
+function UserForm({ onSubmitData, userDetails }: UserFormProps) {
   const dispatch = useDispatch()
+  const queryClient = useQueryClient()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
@@ -39,12 +48,27 @@ function UserForm({ onSubmitData }: UserFormProps) {
   const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
 
-  const userDetails = useSelector((state: UserFormState) => state.userReducer.selectedUserData)
   const personAttributes = useSelector((state: UserFormState) => state.attributesReducerRoot.items)
 
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
   const options: GetUserOptions = {}
+
+  // React Query mutation for password change
+  const changePasswordMutation = usePatchUserByInum({
+    mutation: {
+      onSuccess: async (data, variables) => {
+        dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
+        await logPasswordChange(variables.inum, variables.data)
+        await triggerUserWebhook(data)
+        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
+      },
+      onError: (error) => {
+        const errorMessage = getErrorMessage(error)
+        dispatch(updateToast(true, 'error', errorMessage))
+      },
+    },
+  })
 
   const initialValues: UserEditFormValues = {
     displayName: userDetails?.displayName || '',
@@ -103,26 +127,23 @@ function UserForm({ onSubmitData }: UserFormProps) {
   const submitChangePassword = (usermessage: string) => {
     if (!userDetails?.inum || !formik.values.userPassword) return
 
-    const submitableValue: ChangeUserPasswordPayload = {
-      inum: userDetails.inum,
-      jsonPatchString: '[]',
+    const submitableValue: UserPatchRequest = {
       customAttributes: [
         {
           name: 'userPassword',
           multiValued: false,
-          values: [formik.values.userPassword as string],
+          values: [
+            formik.values.userPassword as string,
+          ] as unknown as typeof submitableValue.customAttributes,
         },
-      ],
+      ] as unknown as typeof submitableValue.customAttributes,
     }
-    submitableValue.performedOn = {
-      user_inum: userDetails.inum,
-      userId: userDetails.displayName as string,
-    }
-    // Set action_message for audit logging
-    if (usermessage) {
-      submitableValue.action_message = usermessage
-    }
-    dispatch(changeUserPassword(submitableValue))
+
+    changePasswordMutation.mutate({
+      inum: userDetails.inum,
+      data: submitableValue,
+    })
+
     setPasswordModal(!passwordmodal)
     toggleChangePasswordModal()
   }
@@ -130,7 +151,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
     toggle()
     onSubmitData(formik.values, modifiedFields, usermessage)
   }
-  const loading = useSelector((state: UserFormState) => state.userReducer.loading)
+  const loading = false // No longer using Redux for loading state
   const setSelectedClaimsToState = (data: PersonAttribute) => {
     const tempList = [...selectedClaims]
     tempList.push(data)
@@ -224,10 +245,14 @@ function UserForm({ onSubmitData }: UserFormProps) {
     setShowButtons(true)
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+      | { target: { name: string; value: unknown } },
+  ) => {
     setModifiedFields({
       ...modifiedFields,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value as string | string[],
     })
   }
 

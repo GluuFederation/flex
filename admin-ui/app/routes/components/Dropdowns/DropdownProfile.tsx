@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { DropdownMenu, DropdownItem } from 'Components'
 import { useTranslation } from 'react-i18next'
-import { auditLogoutLogs } from '../../../../plugins/user-management/redux/features/userSlice'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 
 const DropdownProfile = ({ position = '', end, userinfo }: any) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { isUserLogout } = useSelector((state: any) => state.userReducer)
+  const { isUserLogout } = useSelector((state: any) => state.sessionReducer)
   const navigate = useNavigate()
 
   const handleLogout = () => {

@@ -1,8 +1,6 @@
 import UserList from './components/UserList'
 import UserAddPage from './components/UserAddPage'
 import UserEditPage from './components/UserEditPage'
-import userSaga from './redux/sagas/UserSaga'
-import userReducer from './redux/features/userSlice'
 import { USER_READ, USER_WRITE } from 'Utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/user'
@@ -33,8 +31,8 @@ const pluginMetadata = {
       permission: USER_WRITE,
     },
   ],
-  reducers: [{ name: 'userReducer', reducer: userReducer }],
-  sagas: [userSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata

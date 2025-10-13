@@ -54,7 +54,7 @@ export interface SidebarRootState {
   healthReducer: {
     health: Record<string, string>
   }
-  userReducer: {
+  sessionReducer: {
     isUserLogout: boolean
   }
 }

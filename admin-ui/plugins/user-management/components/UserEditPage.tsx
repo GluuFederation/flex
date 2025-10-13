@@ -1,32 +1,41 @@
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import UserForm from './UserForm'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
-import { updateUser } from 'Plugins/user-management/redux/features/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import moment from 'moment'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
-import {
-  UserEditPageState,
-  SubmitableUserValues,
-  UserEditFormValues,
-} from '../../types/ComponentTypes'
-import { PersonAttribute, GetUserOptions, CustomAttribute } from '../../types/UserApiTypes'
+import { UserEditPageState, UserEditFormValues } from '../types/ComponentTypes'
+import { PersonAttribute, GetUserOptions, CustomAttribute } from '../types/UserApiTypes'
+import { usePutUser, getGetUserQueryKey } from 'JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
+import { updateToast } from 'Redux/features/toastSlice'
+import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
+import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 
 function UserEditPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const location = useLocation()
+  const queryClient = useQueryClient()
   const { t } = useTranslation()
-  const userDetails = useSelector((state: UserEditPageState) => state.userReducer.selectedUserData)
+
+  // Get selectedUserData from location state
+  const [userDetails] = useState(location.state?.selectedUser)
+
+  // Redirect if no user data is available
+  useEffect(() => {
+    if (!userDetails) {
+      navigate('/user/usersmanagement')
+    }
+  }, [userDetails, navigate])
+
   const personAttributes = useSelector(
     (state: UserEditPageState) => state.attributesReducerRoot.items,
-  )
-  const redirectToUserListPage = useSelector(
-    (state: UserEditPageState) => state.userReducer.redirectToUserListPage,
   )
   const loadingAttributes = useSelector(
     (state: UserEditPageState) => state.attributesReducerRoot.initLoading,
@@ -35,17 +44,28 @@ function UserEditPage() {
   const options: GetUserOptions = {}
   useEffect(() => {
     dispatch(getPersistenceType())
-  }, [])
+  }, [dispatch])
 
   const persistenceType = useSelector(
     (state: UserEditPageState) => state.persistenceTypeReducer.type,
   )
 
-  useEffect(() => {
-    if (redirectToUserListPage) {
-      navigate('/user/usersmanagement')
-    }
-  }, [redirectToUserListPage])
+  // React Query mutation for updating user
+  const updateUserMutation = usePutUser({
+    mutation: {
+      onSuccess: async (data, variables) => {
+        dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
+        await logUserUpdate(data, variables.data)
+        await triggerUserWebhook(data)
+        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
+        navigate('/user/usersmanagement')
+      },
+      onError: (error: unknown) => {
+        const errMsg = getErrorMessage(error)
+        dispatch(updateToast(true, 'error', errMsg))
+      },
+    },
+  })
 
   const createCustomAttributes = (values: UserEditFormValues) => {
     const customAttributes = []
@@ -99,7 +119,7 @@ function UserEditPage() {
     const customAttributes = createCustomAttributes(values)
     const inum = userDetails?.inum
 
-    const submitableValues: SubmitableUserValues = {
+    const submitableValues: any = {
       inum: inum,
       userId: Array.isArray(values.userId) ? values.userId[0] : values.userId || '',
       mail: Array.isArray(values.mail) ? values.mail[0] : values.mail,
@@ -127,7 +147,7 @@ function UserEditPage() {
     }
     submitableValues['action_message'] = usermessage
 
-    dispatch(updateUser(submitableValues))
+    updateUserMutation.mutate({ data: submitableValues })
   }
 
   useEffect(() => {
@@ -135,7 +155,7 @@ function UserEditPage() {
       options['limit'] = 100
       dispatch(getAttributesRoot({ options, init: true }))
     }
-  }, [])
+  }, [personAttributes, dispatch])
 
   return (
     <React.Fragment>
@@ -150,7 +170,7 @@ function UserEditPage() {
             {loadingAttributes ? (
               <GluuLoader blocking={loadingAttributes} />
             ) : (
-              <UserForm onSubmitData={submitData} />
+              <UserForm onSubmitData={submitData} userDetails={userDetails} />
             )}
           </CardBody>
         </Card>
