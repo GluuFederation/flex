@@ -32,12 +32,12 @@ import {
   usePutUser,
   useGetRegistrationEntriesFido2,
   getGetUserQueryKey,
+  GetAttributesParams,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
   CustomAttribute,
-  SearchOptions,
   DeviceData,
   UserTableRowData,
   OTPDevicesData,
@@ -167,7 +167,7 @@ function UserList(): JSX.Element {
     | Action<UserTableRowData>
     | ((rowData: UserTableRowData) => Action<UserTableRowData>)
   )[] = []
-  const options: SearchOptions = {}
+  const options: Partial<GetAttributesParams> = {}
   const navigate = useNavigate()
 
   function handleGoToUserAddPage(): void {

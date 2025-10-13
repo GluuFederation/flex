@@ -14,6 +14,7 @@ import {
   usePatchUserByInum,
   getGetUserQueryKey,
   UserPatchRequest,
+  GetAttributesParams,
 } from '../../../jans_config_api_orval/src/JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
@@ -31,7 +32,7 @@ import {
   UserEditFormValues,
 } from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
-import { PersonAttribute, GetUserOptions } from '../types/UserApiTypes'
+import { PersonAttribute } from '../types/UserApiTypes'
 
 function UserForm({ onSubmitData, userDetails }: UserFormProps) {
   const dispatch = useDispatch()
@@ -52,7 +53,7 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
 
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
-  const options: GetUserOptions = {}
+  const options: Partial<GetAttributesParams> = {}
 
   // React Query mutation for password change
   const changePasswordMutation = usePatchUserByInum({

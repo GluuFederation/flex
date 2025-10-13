@@ -10,8 +10,8 @@ import moment from 'moment'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
 import { UserEditPageState, UserEditFormValues } from '../types/ComponentTypes'
-import { PersonAttribute, GetUserOptions, CustomAttribute } from '../types/UserApiTypes'
-import { usePutUser, getGetUserQueryKey } from 'JansConfigApi'
+import { PersonAttribute, CustomAttribute } from '../types/UserApiTypes'
+import { usePutUser, getGetUserQueryKey, GetAttributesParams } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
@@ -41,7 +41,7 @@ function UserEditPage() {
     (state: UserEditPageState) => state.attributesReducerRoot.initLoading,
   )
 
-  const options: GetUserOptions = {}
+  const options: Partial<GetAttributesParams> = {}
   useEffect(() => {
     dispatch(getPersistenceType())
   }, [dispatch])

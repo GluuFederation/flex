@@ -48,18 +48,15 @@ export interface AuthState {
 export function initAudit(): AuditLog {
   const state = store.getState() as any
   const authReducer: AuthState = state.authReducer
-
   const auditlog: AuditLog = {
     headers: {},
   }
-
   const client_id = authReducer.config?.clientId || ''
   const ip_address = authReducer.location?.IPv4 || ''
   const userinfo = authReducer.userinfo
   const author = userinfo ? userinfo.name : '-'
   const inum = userinfo ? userinfo.inum : '-'
   const token = authReducer.token?.access_token || ''
-
   auditlog.client_id = client_id
   auditlog.ip_address = ip_address
   auditlog.status = 'success'
@@ -69,9 +66,6 @@ export function initAudit(): AuditLog {
   return auditlog
 }
 
-/**
- * Log user creation action
- */
 export async function logUserCreation(data: any, payload: any): Promise<void> {
   try {
     const audit = initAudit()
@@ -84,9 +78,6 @@ export async function logUserCreation(data: any, payload: any): Promise<void> {
   }
 }
 
-/**
- * Log user update action
- */
 export async function logUserUpdate(data: any, payload: any): Promise<void> {
   try {
     const audit = initAudit()
@@ -101,9 +92,6 @@ export async function logUserUpdate(data: any, payload: any): Promise<void> {
   }
 }
 
-/**
- * Log user deletion action
- */
 export async function logUserDeletion(inum: string, userData?: any): Promise<void> {
   try {
     const audit = initAudit()
@@ -115,9 +103,6 @@ export async function logUserDeletion(inum: string, userData?: any): Promise<voi
   }
 }
 
-/**
- * Log user fetch action
- */
 export async function logUserFetch(payload: any): Promise<void> {
   try {
     const audit = initAudit()
@@ -129,9 +114,6 @@ export async function logUserFetch(payload: any): Promise<void> {
   }
 }
 
-/**
- * Log password change action
- */
 export async function logPasswordChange(inum: string, payload: any): Promise<void> {
   try {
     const audit = initAudit()
@@ -146,9 +128,6 @@ export async function logPasswordChange(inum: string, payload: any): Promise<voi
   }
 }
 
-/**
- * Extract error message from various error formats
- */
 export function getErrorMessage(error: unknown): string {
   if (typeof error === 'object' && error !== null) {
     const err = error as any

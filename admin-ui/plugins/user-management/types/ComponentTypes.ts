@@ -1,12 +1,6 @@
 // Component-specific type definitions
 import { FormikProps } from 'formik'
-import {
-  CustomUser,
-  GetUserOptions,
-  PersonAttribute,
-  UserState,
-  CustomAttribute,
-} from './UserApiTypes'
+import { CustomUser, PersonAttribute, UserState, CustomAttribute } from './UserApiTypes'
 import { UserFormValues } from './CommonTypes'
 
 export interface UserClaimEntryProps {
@@ -67,24 +61,6 @@ export interface FormOperation {
   path: string
   value: string | string[]
   op: 'add' | 'remove' | 'replace'
-}
-
-export interface SubmitableUserValues {
-  inum?: string
-  userId?: string
-  mail?: string
-  displayName?: string
-  status?: string
-  givenName?: string
-  customAttributes?: CustomAttribute[]
-  dn?: string
-  customObjectClasses?: string[]
-  modifiedFields?: Array<Record<string, string | string[]>>
-  performedOn?: {
-    user_inum?: string
-    useId?: string
-  }
-  action_message?: string
 }
 
 export interface UserDeviceDetailViewPageProps {
@@ -168,12 +144,4 @@ export interface OTPDevice {
 
 export interface OTPDevicesData {
   devices: OTPDevice[]
-}
-
-export interface UserActionData extends CustomUser {
-  action_message?: string
-}
-
-export interface SearchOptions extends GetUserOptions {
-  startIndex?: number
 }
