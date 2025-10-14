@@ -619,7 +619,7 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
             />
           </Col>
         </FormGroup>
-        {!viewOnly && <GluuCommitFooter saveHandler={toggle} />}
+        <GluuCommitFooter saveHandler={toggle} hideButtons={{ save: viewOnly, back: false }} />
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
