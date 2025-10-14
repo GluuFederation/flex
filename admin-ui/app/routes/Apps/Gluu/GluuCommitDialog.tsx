@@ -217,7 +217,7 @@ const GluuCommitDialog = ({
                 {t('actions.accept')}
               </Button>
             )}
-            <Button onClick={closeModal}>
+            <Button color={`primary-${selectedTheme}`} onClick={closeModal}>
               <i className="fa fa-remove me-2"></i>
               {t('actions.no')}
             </Button>
