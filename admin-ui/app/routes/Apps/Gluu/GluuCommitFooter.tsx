@@ -19,11 +19,12 @@ function GluuCommitFooter({
   function goBack() {
     window.history.back()
   }
+
   return (
     <>
       <Divider></Divider>
       <Box display="flex" my={2} justifyContent="space-between" alignItems="center" gap={1}>
-        {!hideButtons || !hideButtons['back'] ? (
+        {(!hideButtons || !hideButtons['back']) && (
           <Button
             color={`primary-${selectedTheme}`}
             style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
@@ -34,7 +35,7 @@ function GluuCommitFooter({
             <i className="fa fa-arrow-circle-left me-2"></i>
             {t('actions.cancel')}
           </Button>
-        ) : null}
+        )}
         {extraLabel && extraOnClick && (
           <Button
             color={`primary-${selectedTheme}`}
