@@ -32,7 +32,6 @@ export interface StaticConfigFormValues {
   serverMetadataFolder: string
   userAutoEnrollment: boolean
   requestedParties: Array<{ key: string; value: string }>
-  metadataRefreshInterval: number | string
   enabledFidoAlgorithms: string[]
   metadataServers: Array<{ url: string; rootCert: string }>
   disableMetadataService: boolean

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
@@ -21,6 +22,7 @@ import {
   getEmptyDropdownMessage,
 } from '../helper'
 import { StaticConfigurationProps, StaticConfigFormValues } from '../types/fido-types'
+import { AttestationMode } from '../types'
 
 const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   fidoConfiguration,
@@ -236,22 +238,6 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         </Col>
 
         <Col sm={8}>
-          <GluuInputRow
-            label={fidoConstants.LABELS.METADATA_REFRESH_INTERVAL}
-            name={fidoConstants.FORM_FIELDS.METADATA_REFRESH_INTERVAL}
-            type="number"
-            value={formik.values.metadataRefreshInterval ?? ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            showError={
-              !!(formik.errors.metadataRefreshInterval && formik.touched.metadataRefreshInterval)
-            }
-            errorMessage={formik.errors.metadataRefreshInterval}
-          />
-        </Col>
-
-        <Col sm={8}>
           <Row>
             <GluuLabel label={fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS} size={4} />
             <Col sm={8}>
@@ -326,15 +312,20 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         </Col>
 
         <Col sm={8}>
-          <GluuInputRow
+          <GluuSelectRow
             label={fidoConstants.LABELS.ATTESTATION_MODE}
             name={fidoConstants.FORM_FIELDS.ATTESTATION_MODE}
             value={formik.values.attestationMode || ''}
             formik={formik}
+            values={Object.values(AttestationMode).map((mode) => ({ label: mode, value: mode }))}
             lsize={4}
             rsize={8}
+            required={true}
             showError={!!(formik.errors.attestationMode && formik.touched.attestationMode)}
             errorMessage={formik.errors.attestationMode}
+            handleChange={(_e) => {
+              formik.setFieldTouched(fidoConstants.FORM_FIELDS.ATTESTATION_MODE, true)
+            }}
           />
         </Col>
       </FormGroup>

@@ -45,9 +45,6 @@ const staticConfigValidationSchema = Yup.object({
     .required('Authentication History Expiration is required.'),
   serverMetadataFolder: Yup.string().required('Server Metadata is required.'),
   userAutoEnrollment: Yup.boolean().required('User Auto Enrollment is required.'),
-  metadataRefreshInterval: Yup.number()
-    .typeError('Metadata Refresh Interval must be a number.')
-    .required('Metadata Refresh Interval is required.'),
   enabledFidoAlgorithms: Yup.array().of(Yup.string()),
   metadataServers: Yup.array().of(
     Yup.object({

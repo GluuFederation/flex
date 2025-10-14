@@ -60,7 +60,6 @@ const transformStaticConfigToFormValues = (
       key: party.id || '',
       value: (party.origins || []).join(','),
     })),
-    metadataRefreshInterval: config?.metadataRefreshInterval ?? '',
     enabledFidoAlgorithms: config?.enabledFidoAlgorithms || [],
     metadataServers: (config?.metadataServers || []).map((server) => ({
       url: server.url || '',
@@ -140,11 +139,6 @@ const applyStaticConfigChanges = (
       .map((origin) => origin.trim())
       .filter((origin) => origin.length > 0),
   }))
-  payload.fido2Configuration.metadataRefreshInterval =
-    typeof staticData.metadataRefreshInterval === 'string' &&
-    staticData.metadataRefreshInterval.trim() === ''
-      ? undefined
-      : Number(staticData.metadataRefreshInterval)
   payload.fido2Configuration.enabledFidoAlgorithms = staticData.enabledFidoAlgorithms
   payload.fido2Configuration.metadataServers = staticData.metadataServers.map((server) => ({
     url: server.url,
