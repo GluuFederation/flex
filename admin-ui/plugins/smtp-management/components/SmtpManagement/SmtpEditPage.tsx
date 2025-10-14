@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useRef } from 'react'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { CardBody, Card } from 'Components'
 import SetTitle from 'Utils/SetTitle'
@@ -17,6 +17,12 @@ import {
   SmtpTest,
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
+import { postUserAction } from 'Redux/api/backend-api'
+import { addAdditionalData } from 'Utils/TokenController'
+import { UPDATE } from '@/audit/UserActionType'
+import store from 'Redux/store'
+
+const API_SMTP = 'api-smtp-configuration'
 
 interface ApiError {
   response?: {
@@ -31,6 +37,17 @@ interface RootState {
     config?: {
       allowSmtpKeystoreEdit?: boolean
     }
+    token?: {
+      access_token?: string
+    }
+    userinfo?: {
+      name?: string
+      inum?: string
+    }
+    issuer?: string
+    location?: {
+      IPv4?: string
+    }
   }
 }
 
@@ -40,6 +57,7 @@ function SmtpEditPage() {
   const queryClient = useQueryClient()
   const [testStatus, setTestStatus] = useState<boolean | null>(null)
   const [showTestModal, setShowTestModal] = useState(false)
+  const formikRef = useRef<any>(null)
 
   const { data: smtpConfiguration, isLoading } = useGetConfigSmtp()
 
@@ -48,6 +66,10 @@ function SmtpEditPage() {
       onSuccess: () => {
         dispatch(updateToast(true, 'success', t('messages.smtp_config_updated_successfully')))
         queryClient.invalidateQueries({ queryKey: getGetConfigSmtpQueryKey() })
+        // Reset formik dirty state after successful save
+        if (formikRef.current) {
+          formikRef.current.resetForm({ values: formikRef.current.values })
+        }
       },
       onError: (error: unknown) => {
         const err = error as ApiError
@@ -59,7 +81,7 @@ function SmtpEditPage() {
 
   const testSmtpMutation = useTestConfigSmtp({
     mutation: {
-      onSuccess: (data) => {
+      onSuccess: (data: boolean) => {
         setTestStatus(data)
         setShowTestModal(true)
         const message = data ? t('messages.smtp_test_success') : t('messages.smtp_test_failed')
@@ -82,8 +104,28 @@ function SmtpEditPage() {
   SetTitle(t('menus.stmp_management'))
 
   const handleSubmit = useCallback(
-    (data: SmtpConfiguration) => {
-      putSmtpMutation.mutate({ data })
+    async (data: SmtpConfiguration, userMessage: string) => {
+      const state = store.getState() as unknown as RootState
+      const auditLog: any = {
+        headers: {},
+        ip_address: state.authReducer?.location?.IPv4,
+        status: 'success',
+        performedBy: {
+          user_inum: state.authReducer?.userinfo?.inum || '-',
+          userId: state.authReducer?.userinfo?.name || '-',
+        },
+      }
+      addAdditionalData(auditLog, UPDATE, API_SMTP, { action_message: userMessage })
+      putSmtpMutation.mutate(
+        { data },
+        {
+          onSuccess: () => {
+            postUserAction(auditLog).catch((error) => {
+              console.error('Failed to log audit action:', error)
+            })
+          },
+        },
+      )
     },
     [putSmtpMutation],
   )
@@ -113,6 +155,7 @@ function SmtpEditPage() {
               allowSmtpKeystoreEdit={allowSmtpKeystoreEdit}
               handleSubmit={handleSubmit}
               onTestSmtp={handleTestSmtp}
+              formikRef={formikRef}
             />
           )}
         </CardBody>

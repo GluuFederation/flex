@@ -760,6 +760,7 @@
     "smtp_test_failed": "SMTP test failed",
     "smtp_test_subject": "SMTP Configuration Test",
     "smtp_test_message": "This is a test email to verify your SMTP configuration is working correctly.",
+    "save_before_test": "Please save the configuration before testing",
     "no_configuration_loaded": "No configuration loaded",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
     "licenseAuditLog": "Do you really want to reset the existing license?",

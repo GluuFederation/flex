@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -22,7 +22,7 @@ import {
 } from '../../helper'
 
 function SmtpForm(props: Readonly<SmtpFormProps>) {
-  const { item, handleSubmit, allowSmtpKeystoreEdit, onTestSmtp } = props
+  const { item, handleSubmit, allowSmtpKeystoreEdit, onTestSmtp, formikRef } = props
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
@@ -42,9 +42,16 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
     validationSchema,
   })
 
-  const submitForm = () => {
+  // Assign formik instance to ref for parent access
+  useEffect(() => {
+    if (formikRef) {
+      formikRef.current = formik
+    }
+  }, [formik, formikRef])
+
+  const submitForm = (userMessage: string) => {
     toggle()
-    handleSubmit(toSmtpConfiguration(formik.values))
+    handleSubmit(toSmtpConfiguration(formik.values), userMessage)
   }
 
   const testSmtpConfig = () => {
@@ -290,6 +297,8 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
             type="button"
             className={`btn btn-primary-${selectedTheme} text-center`}
             onClick={testSmtpConfig}
+            disabled={formik.dirty}
+            title={formik.dirty ? t('messages.save_before_test') : ''}
           >
             {t('fields.test')}
           </button>

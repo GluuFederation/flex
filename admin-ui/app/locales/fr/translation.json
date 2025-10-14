@@ -698,6 +698,7 @@
     "smtp_test_failed": "Test SMTP échoué",
     "smtp_test_subject": "Test de configuration SMTP",
     "smtp_test_message": "Ceci est un e-mail de test pour vérifier que votre configuration SMTP fonctionne correctement.",
+    "save_before_test": "Veuillez enregistrer la configuration avant de tester",
     "no_configuration_loaded": "Aucune configuration chargée",
     "http_method_error": "Veuillez sélectionner une méthode HTTP.",
     "display_name_error": "Veuillez entrer un nom d'affichage.",

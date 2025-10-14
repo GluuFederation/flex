@@ -22,7 +22,8 @@ export interface SmtpFormValues {
 // Props for SmtpForm component
 export interface SmtpFormProps {
   item: SmtpConfiguration
-  handleSubmit: (data: SmtpConfiguration) => void
+  handleSubmit: (data: SmtpConfiguration, userMessage: string) => void
   allowSmtpKeystoreEdit: boolean
   onTestSmtp: (testData: SmtpTest) => void
+  formikRef?: React.MutableRefObject<any>
 }

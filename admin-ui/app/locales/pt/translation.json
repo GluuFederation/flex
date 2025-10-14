@@ -697,6 +697,7 @@
     "smtp_test_failed": "Teste SMTP falhou",
     "smtp_test_subject": "Teste de configuração SMTP",
     "smtp_test_message": "Este é um e-mail de teste para verificar se sua configuração SMTP está funcionando corretamente.",
+    "save_before_test": "Por favor, salve a configuração antes de testar",
     "no_configuration_loaded": "Nenhuma configuração carregada",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
     "licenseAuditLog": "Você realmente deseja redefinir a licença existente?",
