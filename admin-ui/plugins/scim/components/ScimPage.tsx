@@ -11,10 +11,8 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useGetScimConfig, usePatchScimConfig, getGetScimConfigQueryKey } from 'JansConfigApi'
 import { createJsonPatchFromDifferences } from '../helper'
 import type { ScimFormValues } from '../types'
-import { addAdditionalData } from 'Utils/TokenController'
-import { UPDATE } from '@/audit/UserActionType'
-import { postUserAction } from 'Redux/api/backend-api'
-import { AuditLog } from 'Plugins/admin/redux/sagas/types'
+import { logAudit } from 'Utils/AuditLogger'
+import { PATCH } from '@/audit/UserActionType'
 import type { RootState } from '@/redux/sagas/types/audit'
 
 interface ScimJsonPatch {
@@ -56,13 +54,14 @@ const ScimPage: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
-
-  // Select auth data needed for audit logging
   const token: string | undefined = useSelector(
     (state: RootState) => state.authReducer?.token?.access_token,
   )
   const userinfo: RootState['authReducer']['userinfo'] | undefined = useSelector(
     (state: RootState) => state.authReducer?.userinfo,
+  )
+  const client_id: string | undefined = useSelector(
+    (state: RootState) => state.authReducer?.config?.clientId,
   )
 
   SetTitle(t('titles.scim_management'))
@@ -94,28 +93,16 @@ const ScimPage: React.FC = () => {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetScimConfigQueryKey() })
         try {
-          const audit: AuditLog = {
-            headers: { Authorization: token ? `Bearer ${token}` : '' },
-            status: 'success',
-            performedBy: {
-              user_inum: userinfo?.inum ?? '-',
-              userId: userinfo?.name ?? '-',
-            },
-          }
-          const modifiedFields: Record<string, unknown> = {}
           const userMessage: string = variables?.userMessage || 'SCIM configuration updated'
-          addAdditionalData(audit, UPDATE, 'scim-configuration', {
-            action: {
-              action_message: userMessage,
-              action_data: {
-                modifiedFields,
-                performedOn: 'scim-config',
-              },
-            },
+          await logAudit({
+            token: token ?? undefined,
+            userinfo: userinfo ?? undefined,
+            action: PATCH,
+            resource: 'update_scim_config',
+            message: userMessage,
+            client_id: client_id,
+            payload: variables?.data,
           })
-          if (audit?.headers?.Authorization) {
-            await postUserAction(audit)
-          }
         } catch (e: unknown) {
           console.warn('Audit logging failed for SCIM configuration update', e)
         }
