@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -11,10 +11,23 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { useGetScimConfig, usePatchScimConfig, getGetScimConfigQueryKey } from 'JansConfigApi'
 import { createJsonPatchFromDifferences } from '../helper'
 import type { ScimFormValues } from '../types'
+import { addAdditionalData } from 'Utils/TokenController'
+import { UPDATE } from '@/audit/UserActionType'
+import { postUserAction } from 'Redux/api/backend-api'
+import { AuditLog } from 'Plugins/admin/redux/sagas/types'
+import type { RootState } from '@/redux/sagas/types/audit'
 
-/**
- * Type guard to check if error has response structure
- */
+interface ScimJsonPatch {
+  op: string
+  path: string
+  value: unknown
+}
+
+interface ScimMutationVariables {
+  data: ScimJsonPatch[]
+  userMessage?: string
+}
+
 interface ApiErrorResponse {
   response?: {
     data?: {
@@ -32,9 +45,6 @@ const isApiError = (error: unknown): error is ApiErrorResponse => {
   )
 }
 
-/**
- * Safely extracts error message from API error response
- */
 const getErrorMessage = (error: unknown, fallback: string): string => {
   if (isApiError(error) && error.response?.data?.message) {
     return error.response.data.message
@@ -47,29 +57,30 @@ const ScimPage: React.FC = () => {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
 
+  // Select auth data needed for audit logging
+  const token: string | undefined = useSelector(
+    (state: RootState) => state.authReducer?.token?.access_token,
+  )
+  const userinfo: RootState['authReducer']['userinfo'] | undefined = useSelector(
+    (state: RootState) => state.authReducer?.userinfo,
+  )
+
   SetTitle(t('titles.scim_management'))
 
   const { data: scimConfiguration, isLoading } = useGetScimConfig()
 
   const patchScimMutation = usePatchScimConfig({
     mutation: {
-      onMutate: async (variables) => {
-        // Cancel any outgoing refetches to avoid optimistic update being overwritten
+      onMutate: async (variables: ScimMutationVariables) => {
         await queryClient.cancelQueries({ queryKey: getGetScimConfigQueryKey() })
-
-        // Snapshot the previous value
         const previousConfig = queryClient.getQueryData(getGetScimConfigQueryKey())
-
-        // Optimistically update to the new value
         if (previousConfig && scimConfiguration) {
           queryClient.setQueryData(getGetScimConfigQueryKey(), () => {
-            // Apply patches to create optimistic data
             const optimisticData = { ...scimConfiguration }
-            variables.data.forEach((patch) => {
+            variables.data.forEach((patch: ScimJsonPatch) => {
               if (typeof patch.path === 'string') {
                 const key = patch.path.slice(1) as keyof typeof optimisticData
                 if (patch.op === 'replace' || patch.op === 'add') {
-                  // @ts-expect-error - Dynamic key assignment
                   optimisticData[key] = patch.value
                 }
               }
@@ -77,25 +88,50 @@ const ScimPage: React.FC = () => {
             return optimisticData
           })
         }
-
-        // Return a context object with the snapshotted value
         return { previousConfig }
       },
-      onSuccess: () => {
+      onSuccess: async (_data: unknown, variables: ScimMutationVariables) => {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetScimConfigQueryKey() })
+        try {
+          const audit: AuditLog = {
+            headers: { Authorization: token ? `Bearer ${token}` : '' },
+            status: 'success',
+            performedBy: {
+              user_inum: userinfo?.inum ?? '-',
+              userId: userinfo?.name ?? '-',
+            },
+          }
+          const modifiedFields: Record<string, unknown> = {}
+          const userMessage: string = variables?.userMessage || 'SCIM configuration updated'
+          addAdditionalData(audit, UPDATE, 'scim-configuration', {
+            action: {
+              action_message: userMessage,
+              action_data: {
+                modifiedFields,
+                performedOn: 'scim-config',
+              },
+            },
+          })
+          if (audit?.headers?.Authorization) {
+            await postUserAction(audit)
+          }
+        } catch (e: unknown) {
+          console.warn('Audit logging failed for SCIM configuration update', e)
+        }
       },
-      onError: (error: unknown, _variables, context) => {
+      onError: (
+        error: unknown,
+        _variables: unknown,
+        context: { previousConfig?: unknown } | undefined,
+      ) => {
         const errorMessage = getErrorMessage(error, t('messages.error_in_saving'))
         dispatch(updateToast(true, 'error', errorMessage))
-
-        // Rollback to the previous value on error
         if (context?.previousConfig) {
           queryClient.setQueryData(getGetScimConfigQueryKey(), context.previousConfig)
         }
       },
       onSettled: () => {
-        // Always refetch after error or success to ensure we have correct data
         queryClient.invalidateQueries({ queryKey: getGetScimConfigQueryKey() })
       },
     },
@@ -107,15 +143,13 @@ const ScimPage: React.FC = () => {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
       }
-
-      const patches = createJsonPatchFromDifferences(scimConfiguration, formValues)
-
+      const { action_message, ...valuesWithoutAction } = formValues
+      const patches = createJsonPatchFromDifferences(scimConfiguration, valuesWithoutAction)
       if (patches.length === 0) {
         dispatch(updateToast(true, 'info', t('messages.no_changes_detected')))
         return
       }
-
-      patchScimMutation.mutate({ data: patches })
+      patchScimMutation.mutate({ data: patches, userMessage: action_message })
     },
     [scimConfiguration, patchScimMutation, dispatch, t],
   )

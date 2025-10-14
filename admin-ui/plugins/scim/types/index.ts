@@ -20,6 +20,7 @@ export interface ScimFormValues {
   disableLoggerTimer: boolean
   useLocalCache: boolean
   skipDefinedPasswordValidation: boolean
+  action_message?: string
 }
 
 export interface ScimConfigurationProps {
