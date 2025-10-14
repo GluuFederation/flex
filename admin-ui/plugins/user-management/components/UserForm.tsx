@@ -15,7 +15,7 @@ import {
   getGetUserQueryKey,
   UserPatchRequest,
   GetAttributesParams,
-} from '../../../jans_config_api_orval/src/JansConfigApi'
+} from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
@@ -128,16 +128,17 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
   const submitChangePassword = (usermessage: string) => {
     if (!userDetails?.inum || !formik.values.userPassword) return
 
+    // Use jsonPatchString for password change as per Orval's UserPatchRequest structure
+    const patchOperations = [
+      {
+        op: 'replace',
+        path: '/userPassword',
+        value: formik.values.userPassword,
+      },
+    ]
+
     const submitableValue: UserPatchRequest = {
-      customAttributes: [
-        {
-          name: 'userPassword',
-          multiValued: false,
-          values: [
-            formik.values.userPassword as string,
-          ] as unknown as typeof submitableValue.customAttributes,
-        },
-      ] as unknown as typeof submitableValue.customAttributes,
+      jsonPatchString: JSON.stringify(patchOperations),
     }
 
     changePasswordMutation.mutate({
