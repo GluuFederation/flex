@@ -7,6 +7,7 @@ import { scimConfigurationValidationSchema } from '../helper/validations'
 import { transformToFormValues } from '../helper'
 import ScimFieldRenderer from './ScimFieldRenderer'
 import { SCIM_FIELD_CONFIGS } from './fieldConfigurations'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import type { ScimConfigurationProps, ScimFormValues } from '../types'
 
 const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
@@ -26,6 +27,10 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
     onSubmit: toggle,
     enableReinitialize: true,
   })
+
+  const handleCancel = () => {
+    formik.resetForm()
+  }
 
   const submitForm = useCallback((): void => {
     toggle()
@@ -52,13 +57,21 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
         <Col>
           <GluuCommitFooter
             saveHandler={toggle}
-            hideButtons={{ save: true, back: false }}
+            hideButtons={{ save: true, back: true }}
+            extraLabel="Cancel"
+            extraOnClick={handleCancel}
             type="submit"
             disabled={isSubmitting}
           />
         </Col>
       </Row>
-      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
+      <GluuCommitDialog
+        handler={toggle}
+        modal={modal}
+        onAccept={submitForm}
+        feature={adminUiFeatures.scim_configuration_edit}
+        formik={formik}
+      />
     </Form>
   )
 }

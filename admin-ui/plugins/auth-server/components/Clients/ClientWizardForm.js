@@ -8,6 +8,7 @@ import ClientActiveTokens from './ClientActiveTokens'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { CLIENT_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -54,6 +55,7 @@ function ClientWizardForm({
   const { hasCedarPermission, authorize } = useCedarling()
   const formRef = useRef()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
@@ -475,6 +477,21 @@ function ClientWizardForm({
                 <CardFooter className="p-4 bt-0">
                   <div className="d-flex">
                     <div style={{ flex: 1 }}>
+                      {(!isEdit || viewOnly) && currentStep === sequence[0] && (
+                        <Button
+                          type="button"
+                          color={`primary-${selectedTheme}`}
+                          onClick={() => navigate('/auth-server/clients')}
+                          style={{
+                            ...applicationStyle.buttonStyle,
+                            ...applicationStyle.buttonFlexIconStyles,
+                          }}
+                          className="me-3"
+                        >
+                          <i className="fa fa-arrow-circle-left me-2"></i>
+                          {t('actions.cancel')}
+                        </Button>
+                      )}
                       {currentStep !== sequence[0] && (
                         <Button
                           type="button"
