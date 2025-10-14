@@ -37,6 +37,10 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     handleSubmit(formik.values)
   }, [handleSubmit, toggle, formik.values])
 
+  const handleCancel = useCallback(() => {
+    formik.resetForm()
+  }, [formik])
+
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
@@ -315,7 +319,9 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
         <Col>
           <GluuCommitFooter
             saveHandler={toggle}
-            hideButtons={{ save: true, back: false }}
+            hideButtons={{ save: true, back: true }}
+            extraLabel="Cancel"
+            extraOnClick={handleCancel}
             type="submit"
             disabled={isSubmitting}
           />
