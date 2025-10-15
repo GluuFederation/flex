@@ -17,9 +17,8 @@ import {
   SmtpTest,
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
-import { postUserAction } from 'Redux/api/backend-api'
-import { addAdditionalData } from 'Utils/TokenController'
 import { UPDATE } from '@/audit/UserActionType'
+import { logAuditUserAction } from '@/utils/AuditLogger'
 import store from 'Redux/store'
 
 const API_SMTP = 'api-smtp-configuration'
@@ -36,6 +35,7 @@ interface RootState {
   authReducer: {
     config?: {
       allowSmtpKeystoreEdit?: boolean
+      clientId?: string
     }
     token?: {
       access_token?: string
@@ -51,6 +51,31 @@ interface RootState {
   }
 }
 
+type PatchOp = { op: 'add' | 'remove' | 'replace'; path: string; value?: unknown }
+
+function buildPatches(
+  originalConfig: Partial<SmtpConfiguration> | undefined,
+  updated: SmtpConfiguration,
+): PatchOp[] {
+  const patches: PatchOp[] = []
+  const original = originalConfig || {}
+  const keys = new Set<string>([...Object.keys(original), ...Object.keys(updated)])
+  keys.forEach((key) => {
+    const origVal = (original as Record<string, unknown>)[key]
+    const newVal = (updated as Record<string, unknown>)[key]
+    if (JSON.stringify(origVal) !== JSON.stringify(newVal)) {
+      if (newVal === undefined) {
+        patches.push({ op: 'remove', path: `/${key}` })
+      } else if (origVal === undefined) {
+        patches.push({ op: 'add', path: `/${key}`, value: newVal })
+      } else {
+        patches.push({ op: 'replace', path: `/${key}`, value: newVal })
+      }
+    }
+  })
+  return patches
+}
+
 function SmtpEditPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -58,15 +83,12 @@ function SmtpEditPage() {
   const [testStatus, setTestStatus] = useState<boolean | null>(null)
   const [showTestModal, setShowTestModal] = useState(false)
   const formikRef = useRef<any>(null)
-
   const { data: smtpConfiguration, isLoading } = useGetConfigSmtp()
-
   const putSmtpMutation = usePutConfigSmtp({
     mutation: {
       onSuccess: () => {
         dispatch(updateToast(true, 'success', t('messages.smtp_config_updated_successfully')))
         queryClient.invalidateQueries({ queryKey: getGetConfigSmtpQueryKey() })
-        // Reset formik dirty state after successful save
         if (formikRef.current) {
           formikRef.current.resetForm({ values: formikRef.current.values })
         }
@@ -100,34 +122,37 @@ function SmtpEditPage() {
   const allowSmtpKeystoreEdit = useSelector(
     (state: RootState) => state.authReducer?.config?.allowSmtpKeystoreEdit as boolean,
   )
-
   SetTitle(t('menus.stmp_management'))
 
   const handleSubmit = useCallback(
     async (data: SmtpConfiguration, userMessage: string) => {
       const state = store.getState() as unknown as RootState
-      const auditLog: any = {
-        headers: {},
-        ip_address: state.authReducer?.location?.IPv4,
-        status: 'success',
-        performedBy: {
-          user_inum: state.authReducer?.userinfo?.inum || '-',
-          userId: state.authReducer?.userinfo?.name || '-',
-        },
-      }
-      addAdditionalData(auditLog, UPDATE, API_SMTP, { action_message: userMessage })
       putSmtpMutation.mutate(
         { data },
         {
           onSuccess: () => {
-            postUserAction(auditLog).catch((error) => {
+            const token = state.authReducer?.token?.access_token
+            const userinfo = state.authReducer?.userinfo
+            const clientId = state.authReducer?.config?.clientId
+            const ipAddress = state.authReducer?.location?.IPv4
+            const patches = buildPatches(smtpConfiguration, data)
+            logAuditUserAction({
+              token: token ?? undefined,
+              userinfo: userinfo ?? undefined,
+              action: UPDATE,
+              resource: API_SMTP,
+              message: userMessage,
+              extra: ipAddress ? { ip_address: ipAddress } : {},
+              client_id: clientId,
+              payload: patches,
+            }).catch((error) => {
               console.error('Failed to log audit action:', error)
             })
           },
         },
       )
     },
-    [putSmtpMutation],
+    [putSmtpMutation, smtpConfiguration],
   )
 
   const handleTestSmtp = useCallback(

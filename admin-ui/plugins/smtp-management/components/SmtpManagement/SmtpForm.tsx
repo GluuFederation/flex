@@ -42,7 +42,6 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
     validationSchema,
   })
 
-  // Assign formik instance to ref for parent access
   useEffect(() => {
     if (formikRef) {
       formikRef.current = formik
