@@ -216,6 +216,29 @@ const createFidoConfigPayload = ({
   }
 }
 
+const getModifiedFields = (
+  newData: DynamicConfigFormValues | StaticConfigFormValues,
+  originalConfiguration: AppConfiguration1 | Fido2Configuration | undefined,
+  type: string,
+): Record<string, unknown> => {
+  const modifiedFields: Record<string, unknown> = {}
+  const originalData =
+    type === fidoConstants.STATIC
+      ? transformStaticConfigToFormValues(originalConfiguration as Fido2Configuration | undefined)
+      : transformDynamicConfigToFormValues(originalConfiguration as AppConfiguration1 | undefined)
+
+  Object.keys(newData).forEach((key) => {
+    const newValue = (newData as unknown as Record<string, unknown>)[key]
+    const oldValue = (originalData as unknown as Record<string, unknown>)[key]
+
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      modifiedFields[key] = newValue
+    }
+  })
+
+  return modifiedFields
+}
+
 export {
   arrayValidationWithSchema,
   transformToFormValues,
@@ -223,4 +246,5 @@ export {
   getAvailableHintOptions,
   getEmptyDropdownMessage,
   toBooleanValue,
+  getModifiedFields,
 }

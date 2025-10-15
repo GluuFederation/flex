@@ -42,13 +42,13 @@ export interface StaticConfigFormValues {
 
 export interface DynamicConfigurationProps {
   fidoConfiguration: AppConfiguration1 | undefined
-  handleSubmit: (data: DynamicConfigFormValues) => void
+  handleSubmit: (data: DynamicConfigFormValues, userMessage?: string) => void
   isSubmitting: boolean
 }
 
 export interface StaticConfigurationProps {
   fidoConfiguration: AppConfiguration1 | undefined
-  handleSubmit: (data: StaticConfigFormValues) => void
+  handleSubmit: (data: StaticConfigFormValues, userMessage?: string) => void
   isSubmitting: boolean
 }
 

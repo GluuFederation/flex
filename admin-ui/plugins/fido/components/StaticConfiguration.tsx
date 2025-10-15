@@ -11,7 +11,6 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
-
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 import {
@@ -49,10 +48,13 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     enableReinitialize: true,
   })
 
-  const submitForm = useCallback(() => {
-    toggle()
-    handleSubmit(formik.values)
-  }, [handleSubmit, toggle, formik.values])
+  const submitForm = useCallback(
+    (userMessage: string) => {
+      toggle()
+      handleSubmit(formik.values, userMessage)
+    },
+    [handleSubmit, toggle, formik.values],
+  )
 
   const requestedPartiesOptions = useMemo(() => {
     return (formik.values.requestedParties || []).map((item) => ({
