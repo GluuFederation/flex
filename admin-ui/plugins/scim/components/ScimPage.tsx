@@ -14,17 +14,7 @@ import type { ScimFormValues } from '../types'
 import { logAudit } from 'Utils/AuditLogger'
 import { PATCH } from '@/audit/UserActionType'
 import type { RootState } from '@/redux/sagas/types/audit'
-
-interface ScimJsonPatch {
-  op: string
-  path: string
-  value: unknown
-}
-
-interface ScimMutationVariables {
-  data: ScimJsonPatch[]
-  userMessage?: string
-}
+import type { JsonPatch } from 'JansConfigApi'
 
 interface ApiErrorResponse {
   response?: {
@@ -63,37 +53,46 @@ const ScimPage: React.FC = () => {
   const client_id: string | undefined = useSelector(
     (state: RootState) => state.authReducer?.config?.clientId,
   )
-
   SetTitle(t('titles.scim_management'))
-
   const { data: scimConfiguration, isLoading } = useGetScimConfig()
+  const userMessageRef = React.useRef<string>('')
 
   const patchScimMutation = usePatchScimConfig({
     mutation: {
-      onMutate: async (variables: ScimMutationVariables) => {
+      onMutate: async (variables: { data: JsonPatch[] }) => {
         await queryClient.cancelQueries({ queryKey: getGetScimConfigQueryKey() })
         const previousConfig = queryClient.getQueryData(getGetScimConfigQueryKey())
         if (previousConfig && scimConfiguration) {
           queryClient.setQueryData(getGetScimConfigQueryKey(), () => {
-            const optimisticData = { ...scimConfiguration }
-            variables.data.forEach((patch: ScimJsonPatch) => {
-              if (typeof patch.path === 'string') {
-                const key = patch.path.slice(1) as keyof typeof optimisticData
-                if (patch.op === 'replace' || patch.op === 'add') {
-                  optimisticData[key] = patch.value
+            return variables.data.reduce(
+              (updated, patch: JsonPatch) => {
+                if (typeof patch.path !== 'string' || !patch.path.startsWith('/')) {
+                  return updated
                 }
-              }
-            })
-            return optimisticData
+                const key = patch.path.substring(1)
+                switch (patch.op) {
+                  case 'replace':
+                  case 'add':
+                    return { ...updated, [key]: patch.value }
+                  case 'remove': {
+                    const { [key]: _removed, ...rest } = updated
+                    return rest
+                  }
+                  default:
+                    return updated
+                }
+              },
+              { ...scimConfiguration },
+            )
           })
         }
         return { previousConfig }
       },
-      onSuccess: async (_data: unknown, variables: ScimMutationVariables) => {
+      onSuccess: async (_data: unknown, variables: { data: JsonPatch[] }) => {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetScimConfigQueryKey() })
         try {
-          const userMessage: string = variables?.userMessage || 'SCIM configuration updated'
+          const userMessage: string = userMessageRef.current || 'SCIM configuration updated'
           await logAudit({
             token: token ?? undefined,
             userinfo: userinfo ?? undefined,
@@ -136,7 +135,8 @@ const ScimPage: React.FC = () => {
         dispatch(updateToast(true, 'info', t('messages.no_changes_detected')))
         return
       }
-      patchScimMutation.mutate({ data: patches, userMessage: action_message })
+      userMessageRef.current = action_message || ''
+      patchScimMutation.mutate({ data: patches })
     },
     [scimConfiguration, patchScimMutation, dispatch, t],
   )
