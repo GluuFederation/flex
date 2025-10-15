@@ -137,15 +137,31 @@ jobs:
         fi
         echo "PACKAGE_PREFIX=flex" >> ${GITHUB_ENV}
 
+    - name: Set Branch Parameters
+      id: set_branches
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          echo "Using manual inputs for branches"
+          echo "JANS_BRANCH=${{ inputs.jans_branch }}" >> $GITHUB_ENV
+          echo "JANS_SETUP_BRANCH=${{ inputs.jans_setup_branch }}" >> $GITHUB_ENV
+        else
+          echo "Using release tag for branches"
+          TAG_NAME=$(echo "${{ github.event.ref }}" | cut -d '/' -f 3)
+          echo "JANS_BRANCH=${TAG_NAME}" >> $GITHUB_ENV
+          echo "JANS_SETUP_BRANCH=${TAG_NAME}" >> $GITHUB_ENV
+        fi
+
     - name: Print Version and tag
       run: |
         echo "Version: ${{ steps.previoustag.outputs.version }}"
         echo "Tag: ${{ steps.previoustag.outputs.tag }}"
+        echo "Jans Branch: ${{ env.JANS_BRANCH }}"
+        echo "Jans Setup Branch: ${{ env.JANS_SETUP_BRANCH }}"
     - name: Running install and build
       id: run_build
       run: |
         cd flex/
-        sudo python${{ matrix.python_version }} flex_setup.py --jans-branch="${{ inputs.jans_branch }}" --jans-setup-branch="${{ inputs.jans_setup_branch }}" -download-exit -yes --keep-downloads --keep-setup -force-download
+        sudo python${{ matrix.python_version }} flex_setup.py --jans-branch="${{ env.JANS_BRANCH }}" --jans-setup-branch="${{ env.JANS_SETUP_BRANCH }}" -download-exit -yes --keep-downloads --keep-setup -force-download
         cp -r /opt/dist flex-src/opt/
         cp -r /opt/jans flex-src/opt/
         touch flex-src/opt/jans/jans-setup/package
@@ -176,30 +192,12 @@ jobs:
         sudo ./checksum.sh
         ls ${{github.workspace}}/${{ matrix.asset_path }}
 
-    - name: Upload binaries to release
-      id: upload_binaries
-      uses: svenstaro/upload-release-action@1beeb57c19a9242f46336ab88eb53be808477a3936bae11 # v4.1.1
-      with:
-        repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
-        file: ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}
-        asset_name: ${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}
-        tag: ${{ steps.previoustag.outputs.tag }}
-        overwrite: true
-    - name: Upload checksum to release
-      id: upload_shas
-      uses: svenstaro/upload-release-action@1beeb572c19a9242f46336ab88eb53be808477a3936bae11 # v4.1.1
-      with:
-        repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
-        file: ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sha256sum
-        asset_name: ${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sha256sum
-        tag: ${{ steps.previoustag.outputs.tag }}
-        overwrite: true
-    - name: Upload sig to release
-      id: upload_sigs
-      uses: svenstaro/upload-release-action@1beeb57c19a9242f46336ab88eb53be808477a3936bae11 # v4.1.1
-      with:
-        repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
-        file: ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.asc
-        asset_name: ${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.asc
-        tag: ${{ steps.previoustag.outputs.tag }}
-        overwrite: true
+    - name: Upload assets to release
+      env:
+        GH_TOKEN: ${{ secrets.MOWORKFLOWTOKEN }}
+      run: |
+        gh release upload ${{ steps.previoustag.outputs.tag }} \
+          ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }} \
+          ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sha256sum \
+          ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.asc \
+          --clobber
