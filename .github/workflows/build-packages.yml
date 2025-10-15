@@ -145,10 +145,30 @@ jobs:
           echo "JANS_BRANCH=${{ inputs.jans_branch }}" >> $GITHUB_ENV
           echo "JANS_SETUP_BRANCH=${{ inputs.jans_setup_branch }}" >> $GITHUB_ENV
         else
-          echo "Using release tag for branches"
+          echo "Deriving branches from release tag"
           TAG_NAME=$(echo "${{ github.event.ref }}" | cut -d '/' -f 3)
-          echo "JANS_BRANCH=${TAG_NAME}" >> $GITHUB_ENV
-          echo "JANS_SETUP_BRANCH=${TAG_NAME}" >> $GITHUB_ENV
+
+          if [[ "${TAG_NAME}" == "nightly" ]]; then
+            JANS_BRANCH="nightly"
+            JANS_SETUP_BRANCH="nightly"
+          else
+            VERSION_ONLY=$(echo "${TAG_NAME}" | sed 's/^v//')
+            MAJOR=$(echo "${VERSION_ONLY}" | cut -d '.' -f 1)
+            REST_OF_VERSION=$(echo "${VERSION_ONLY}" | cut -d '.' -f 2-)
+            
+            if [[ "$MAJOR" =~ ^[0-9]+$ ]]; then
+              NEW_MAJOR=$((MAJOR - 4))
+              NEW_TAG="v${NEW_MAJOR}.${REST_OF_VERSION}"
+              JANS_BRANCH="${NEW_TAG}"
+              JANS_SETUP_BRANCH="${NEW_TAG}"
+            else
+              # Fallback in case tag is not in the expected format
+              JANS_BRANCH="${TAG_NAME}"
+              JANS_SETUP_BRANCH="${TAG_NAME}"
+            fi
+          fi
+          echo "JANS_BRANCH=${JANS_BRANCH}" >> $GITHUB_ENV
+          echo "JANS_SETUP_BRANCH=${JANS_SETUP_BRANCH}" >> $GITHUB_ENV
         fi
 
     - name: Print Version and tag
@@ -200,4 +220,5 @@ jobs:
           ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }} \
           ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sha256sum \
           ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.asc \
+          --repo ${{ github.repository }} \
           --clobber
