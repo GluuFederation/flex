@@ -5,7 +5,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { Paper, TablePagination } from '@mui/material'
 import UserDetailViewPage from './UserDetailViewPage'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Card, CardBody } from '../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -32,7 +32,6 @@ import {
   usePutUser,
   useGetRegistrationEntriesFido2,
   getGetUserQueryKey,
-  GetAttributesParams,
 } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
@@ -57,12 +56,12 @@ function UserList(): JSX.Element {
 
   const { t } = useTranslation()
   const [modal, setModal] = useState<boolean>(false)
-  const [isViewDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false)
+  const [isViewDetailModalOpen, setIsViewDetailModalOpen] = useState<boolean>(false)
   const [faDetails, setFADetails] = useState<DeviceData[]>([])
   const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
   const [userDetails, setUserDetails] = useState<UserTableRowData | null>(null)
   const [deleteData, setDeleteData] = useState<UserTableRowData | null>(null)
-  const [selectedUser, setSelectedUser] = useState<CustomUser | null>(null)
+
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [limit, setLimit] = useState<number>(10)
   const [pattern, setPattern] = useState<string | undefined>(undefined)
@@ -85,7 +84,7 @@ function UserList(): JSX.Element {
     },
   )
 
-  const usersList = (usersData?.entries as UserTableRowData[]) || []
+  const usersList: UserTableRowData[] = (usersData?.entries as UserTableRowData[]) ?? []
   const totalItems = usersData?.totalEntriesCount || 0
   const loading = loadingUsers
 
@@ -153,7 +152,7 @@ function UserList(): JSX.Element {
   const toggle = (): void => setModal(!modal)
   const submitForm = (message: string): void => {
     toggle()
-    if (deleteData && deleteData.inum) {
+    if (deleteData?.inum) {
       deleteData.action_message = message
       deleteUserMutation.mutate({ inum: deleteData.inum })
     }
@@ -167,11 +166,10 @@ function UserList(): JSX.Element {
     | Action<UserTableRowData>
     | ((rowData: UserTableRowData) => Action<UserTableRowData>)
   )[] = []
-  const options: Partial<GetAttributesParams> = {}
+
   const navigate = useNavigate()
 
   function handleGoToUserAddPage(): void {
-    setSelectedUser(null)
     navigate('/user/usermanagement/add')
   }
 
@@ -204,12 +202,11 @@ function UserList(): JSX.Element {
     if (row.givenName) {
       await refetchFido2Details()
     }
-    setIsDetailModalOpen(!isViewDetailModalOpen)
+    setIsViewDetailModalOpen(!isViewDetailModalOpen)
   }
 
   function handleGoToUserEditPage(row: UserTableRowData): void {
     const userData = row as unknown as CustomUser
-    setSelectedUser(userData)
     navigate(`/user/usermanagement/edit/:${row.tableData?.uuid || ''}`, {
       state: { selectedUser: userData },
     })
@@ -252,6 +249,9 @@ function UserList(): JSX.Element {
       />
     )
   }, [limit, pattern, handleOptionsChange])
+
+  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
+  const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
 
   if (hasCedarPermission(USER_READ)) {
     myActions.push({
@@ -391,26 +391,20 @@ function UserList(): JSX.Element {
   }
 
   useEffect(() => {
-    const usedAttributes: string[] = []
-    if (usersList?.length && renders.current < 1) {
-      renders.current = 1
-      for (const user of usersList) {
-        if (user.customAttributes) {
-          for (const attribute of user.customAttributes) {
-            const val = attribute.name
-            if (!usedAttributes.includes(val)) {
-              usedAttributes.push(val)
-            }
-          }
-        }
-      }
-      if (usedAttributes.length) {
-        dispatch(
-          getAttributesRoot({
-            options: { pattern: usedAttributes.toString(), limit: 100 },
-          }),
-        )
-      }
+    if (!usersList?.length || renders.current >= 1) return
+    renders.current = 1
+
+    const usedAttributes = new Set<string>()
+    for (const user of usersList) {
+      user.customAttributes?.forEach((attribute) => usedAttributes.add(attribute.name))
+    }
+
+    if (usedAttributes.size > 0) {
+      dispatch(
+        getAttributesRoot({
+          options: { pattern: Array.from(usedAttributes).toString(), limit: 100 },
+        }),
+      )
     }
   }, [usersList, dispatch])
 
@@ -449,9 +443,6 @@ function UserList(): JSX.Element {
     return <UserDeviceDetailViewPage row={rowData} />
   }, [])
 
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-  const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
-
   const PaginationWrapper = useCallback(
     () => (
       <TablePagination
@@ -472,7 +463,7 @@ function UserList(): JSX.Element {
     <GluuLoader blocking={loading}>
       <GluuViewDetailModal
         isOpen={isViewDetailModalOpen}
-        handleClose={() => setIsDetailModalOpen(!isViewDetailModalOpen)}
+        handleClose={() => setIsViewDetailModalOpen(!isViewDetailModalOpen)}
       >
         <MaterialTable<DeviceData>
           key={limit}
@@ -530,7 +521,7 @@ function UserList(): JSX.Element {
                 { title: `${t('fields.userName')}`, field: 'userId' },
                 { title: `${t('fields.email')}`, field: 'mail' },
               ]}
-              data={usersList as UserTableRowData[]}
+              data={usersList}
               isLoading={loading}
               title=""
               actions={myActions}

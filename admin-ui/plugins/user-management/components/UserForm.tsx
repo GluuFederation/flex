@@ -34,7 +34,8 @@ import {
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
 import { PersonAttribute } from '../types/UserApiTypes'
 
-function UserForm({ onSubmitData, userDetails }: UserFormProps) {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -44,7 +45,7 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
   const [passwordError, setPasswordError] = useState('')
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
-  const [passwordmodal, setPasswordModal] = useState(false)
+  const [passwordModal, setPasswordModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
@@ -54,8 +55,6 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
   const options: Partial<GetAttributesParams> = {}
-
-  // React Query mutation for password change
   const changePasswordMutation = usePatchUserByInum({
     mutation: {
       onSuccess: async (data, variables) => {
@@ -81,22 +80,29 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
     status: (userDetails?.jansStatus as string) || userDetails?.status || '',
   }
 
-  if (userDetails && userDetails.customAttributes) {
-    for (let i = 0; i < userDetails.customAttributes.length; i++) {
-      const customAttr = userDetails.customAttributes[i]
-      if (customAttr.values && customAttr.values.length > 0) {
-        const customAttribute = personAttributes.filter(
-          (e: PersonAttribute) => e.name === customAttr.name,
-        )
-        if (customAttr.name === 'birthdate') {
-          initialValues[customAttr.name] = moment(customAttr.values[0]).format('YYYY-MM-DD')
-        } else {
-          if (customAttribute[0]?.oxMultiValuedAttribute) {
-            initialValues[customAttr.name] = customAttr.values
-          } else {
-            initialValues[customAttr.name] = customAttr.values[0]
-          }
+  if (userDetails?.customAttributes) {
+    for (const customAttr of userDetails.customAttributes) {
+      const attrValues = customAttr.values ?? []
+      const attrSingleValue = (customAttr as { value?: string }).value
+      const attributeDef = personAttributes.find((e: PersonAttribute) => e.name === customAttr.name)
+      if (customAttr.name === 'birthdate') {
+        const dateSource = attrValues.length > 0 ? attrValues[0] : attrSingleValue
+        if (dateSource) {
+          initialValues[customAttr.name] = moment(dateSource).format('YYYY-MM-DD')
         }
+        continue
+      }
+
+      if (attributeDef?.oxMultiValuedAttribute) {
+        if (attrValues.length > 0) {
+          initialValues[customAttr.name] = attrValues
+        } else if (attrSingleValue) {
+          initialValues[customAttr.name] = [attrSingleValue]
+        }
+      } else if (attrValues.length > 0) {
+        initialValues[customAttr.name] = attrValues[0]
+      } else if (attrSingleValue) {
+        initialValues[customAttr.name] = attrSingleValue
       }
     }
   }
@@ -127,8 +133,6 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
 
   const submitChangePassword = (usermessage: string) => {
     if (!userDetails?.inum || !formik.values.userPassword) return
-
-    // Use jsonPatchString for password change as per Orval's UserPatchRequest structure
     const patchOperations = [
       {
         op: 'replace',
@@ -136,24 +140,21 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
         value: formik.values.userPassword,
       },
     ]
-
     const submitableValue: UserPatchRequest = {
       jsonPatchString: JSON.stringify(patchOperations),
     }
-
     changePasswordMutation.mutate({
       inum: userDetails.inum,
       data: submitableValue,
     })
-
-    setPasswordModal(!passwordmodal)
+    setPasswordModal(!passwordModal)
     toggleChangePasswordModal()
   }
   const submitForm = (usermessage: string) => {
     toggle()
     onSubmitData(formik.values, modifiedFields, usermessage)
   }
-  const loading = false // No longer using Redux for loading state
+  const loading = false
   const setSelectedClaimsToState = (data: PersonAttribute) => {
     const tempList = [...selectedClaims]
     tempList.push(data)
@@ -185,21 +186,15 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
     'sn',
   ]
   const getCustomAttributeById = (id: string) => {
-    let claimData = null
-    for (const i in personAttributes) {
-      if (personAttributes[i].name == id) {
-        claimData = personAttributes[i]
-      }
-    }
-    return claimData
+    const match = personAttributes.find((attr) => attr.name == id)
+    return match || null
   }
 
   const setAttributes = () => {
     if (!userDetails?.customAttributes) return
 
     const tempList = [...selectedClaims]
-    for (let i = 0; i < userDetails.customAttributes.length; i++) {
-      const customAttr = userDetails.customAttributes[i]
+    for (const customAttr of userDetails.customAttributes) {
       if (customAttr.values && customAttr.values.length > 0) {
         const attributeData = getCustomAttributeById(customAttr.name)
         if (attributeData && !usedClaimes.includes(customAttr.name)) {
@@ -217,21 +212,16 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
       setShowButtons(true)
     } else {
       setSelectedClaims([])
-      setShowButtons(true) // Enable buttons when adding new user
+      setShowButtons(true)
     }
   }, [userDetails])
 
   const removeSelectedClaimsFromState = (id: string) => {
     const tempList = [...selectedClaims]
-    if (userDetails) {
-      formik.setFieldValue(id, '')
-    } else {
-      formik.setFieldValue(id, '')
-    }
+    formik.setFieldValue(id, '')
     const newModifiedFields = { ...modifiedFields }
     delete newModifiedFields[id]
     setModifiedFields(newModifiedFields)
-
     const newList = tempList.filter((data) => data.name !== id)
     setSelectedClaims(newList)
   }
@@ -261,8 +251,8 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
   return (
     <GluuLoader blocking={loading}>
       <GluuCommitDialog
-        handler={() => setPasswordModal(!passwordmodal)}
-        modal={passwordmodal}
+        handler={() => setPasswordModal(!passwordModal)}
+        modal={passwordModal}
         onAccept={submitChangePassword}
       />
 
@@ -307,7 +297,7 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
               <Button
                 color={`primary-${selectedTheme}`}
                 type="button"
-                onClick={() => setPasswordModal(!passwordmodal)}
+                onClick={() => setPasswordModal(!passwordModal)}
               >
                 {t('actions.change_password')}
               </Button>
@@ -473,10 +463,10 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
             {passwordError != '' && !changePasswordModal && (
               <span className="text-danger">{passwordError}</span>
             )}
-            {selectedClaims.map((data, key) => (
+            {selectedClaims.map((data, index) => (
               <UserClaimEntry
-                key={key}
-                entry={key}
+                key={data.name}
+                entry={index}
                 data={data}
                 formik={formik}
                 handler={removeSelectedClaimsFromState}
@@ -502,9 +492,7 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
                     <i className="fa fa-arrow-circle-left me-2"></i>
                     {t('actions.cancel')}
                   </Button>
-                  {/* For Space in buttons */}
                   &nbsp; &nbsp; &nbsp;
-                  {/* For Space in buttons */}
                   <Button color={`primary-${selectedTheme}`} type="submit">
                     <i className="fa fa-check-circle me-2"></i>
                     {t('actions.save')}
@@ -551,12 +539,13 @@ function UserForm({ onSubmitData, userDetails }: UserFormProps) {
                           key={'list' + key}
                           title="Click to add to the form"
                         >
-                          <a
+                          <button
+                            type="button"
+                            className="btn btn-link p-0 text-start"
                             onClick={() => setSelectedClaimsToState(data)}
-                            style={{ cursor: 'pointer' }}
                           >
                             {data.displayName}
-                          </a>
+                          </button>
                         </li>
                       )
                     }

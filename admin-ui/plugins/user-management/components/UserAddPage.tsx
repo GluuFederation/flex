@@ -25,8 +25,6 @@ function UserAddPage() {
   const personAttributes = useSelector(
     (state: UserManagementRootState) => state.attributesReducerRoot.items,
   )
-
-  // React Query mutation for creating user
   const createUserMutation = usePostUser({
     mutation: {
       onSuccess: async (data, variables) => {
@@ -48,55 +46,49 @@ function UserAddPage() {
       return customAttributes
     }
 
-    for (const key in values) {
-      const customAttribute = personAttributes.filter((e: PersonAttribute) => e.name == key)
-      if (personAttributes.some((e: PersonAttribute) => e.name == key)) {
-        let obj: CustomObjectAttribute
-        if (!customAttribute[0]?.oxMultiValuedAttribute) {
-          const val: string[] = []
-          if (key != 'birthdate') {
-            if (typeof values[key] === 'string') {
-              val.push(values[key] as string)
-            } else if (Array.isArray(values[key])) {
-              val.push(...(values[key] as string[]))
-            }
-          } else {
-            const dateValue = values[key] as string
-            const formattedDate = moment(dateValue, 'YYYY-MM-DD').format('YYYY-MM-DD')
-            val.push(formattedDate)
-          }
-          obj = {
-            name: key,
-            multiValued: false,
-            values: val as unknown as typeof obj.values,
-          }
-        } else {
-          const valE: string[] = []
-          const fieldValue = values[key]
-          if (Array.isArray(fieldValue)) {
-            for (const i in fieldValue) {
-              const item = fieldValue[i]
-              if (typeof item === 'object' && item !== null) {
-                // Handle object case - extract the key value
-                const objectItem = item as Record<string, string>
-                if (objectItem[key]) {
-                  valE.push(objectItem[key])
-                }
-              } else if (typeof item === 'string') {
-                valE.push(item)
-              }
-            }
-          } else if (typeof fieldValue === 'string') {
-            valE.push(fieldValue)
-          }
-          obj = {
-            name: key,
-            multiValued: true,
-            values: valE as unknown as typeof obj.values,
-          }
-        }
-        customAttributes.push(obj)
+    const attributeByName = new Map(
+      personAttributes.map((attr: PersonAttribute) => [attr.name, attr]),
+    )
+    const toStringValue = (key: string, value: unknown): string | undefined => {
+      if (typeof value === 'string') {
+        return value
       }
+      if (value && typeof value === 'object') {
+        const obj = value as Record<string, unknown>
+        if (typeof obj[key] === 'string') return obj[key]
+        if (typeof obj.value === 'string') return obj.value
+        if (typeof obj.label === 'string') return obj.label
+      }
+      return undefined
+    }
+
+    const normalizeValues = (key: string, rawValue: unknown, multiValued: boolean): string[] => {
+      if (!multiValued && key === 'birthdate' && typeof rawValue === 'string') {
+        const formattedDate = moment(rawValue, 'YYYY-MM-DD').format('YYYY-MM-DD')
+        return [formattedDate]
+      }
+      const items = Array.isArray(rawValue) ? rawValue : [rawValue]
+      const result: string[] = []
+      for (const item of items) {
+        const str = toStringValue(key, item)
+        if (typeof str === 'string' && str.length > 0) {
+          result.push(str)
+        }
+      }
+      return result
+    }
+
+    for (const [key, raw] of Object.entries(values)) {
+      const attr = attributeByName.get(key)
+      if (!attr) continue
+      const multiValued = !!attr.oxMultiValuedAttribute
+      const valuesArray = normalizeValues(key, raw, multiValued)
+      const obj: CustomObjectAttribute = {
+        name: key,
+        multiValued,
+        values: valuesArray as unknown as CustomObjectAttribute['values'],
+      }
+      customAttributes.push(obj)
     }
     return customAttributes
   }
@@ -114,7 +106,7 @@ function UserAddPage() {
       status: values.status as 'active' | 'inactive' | 'expired' | 'register' | undefined,
       userPassword: values.userPassword as string | undefined,
       givenName: values.givenName || '',
-      customAttributes: customAttributes as CustomObjectAttribute[],
+      customAttributes: customAttributes,
     }
     createUserMutation.mutate({ data: submitableValues })
   }

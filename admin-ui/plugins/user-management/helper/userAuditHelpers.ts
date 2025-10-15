@@ -1,15 +1,8 @@
-/**
- * Helper functions for user management audit logging and webhooks
- * These functions replace the saga-based audit logging with React Query mutation callbacks
- */
-
 import store from 'Redux/store'
-import { addAdditionalData } from 'Utils/TokenController'
-import { postUserAction } from 'Redux/api/backend-api'
+import { logAuditUserAction } from 'Utils/AuditLogger'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
 
-// Types
 export interface AuditLog {
   headers: {
     Authorization?: string
@@ -68,11 +61,38 @@ export function initAudit(): AuditLog {
 
 export async function logUserCreation(data: any, payload: any): Promise<void> {
   try {
-    const audit = initAudit()
+    const state = store.getState() as any
+    const authReducer: AuthState = state.authReducer
+    const token = authReducer.token?.access_token || ''
+    const client_id = authReducer.config?.clientId || ''
+    const userinfo = authReducer.userinfo
+
     const auditPayload = { ...payload }
     delete auditPayload.userPassword // Don't log passwords
-    addAdditionalData(audit, CREATE, API_USERS, auditPayload)
-    await postUserAction(audit)
+
+    // Ensure modifiedFields/performedOn are inside payload so they are hoisted
+    if (payload?.modifiedFields && !auditPayload.modifiedFields) {
+      auditPayload.modifiedFields = payload.modifiedFields
+    }
+    if (payload?.performedOn && !auditPayload.performedOn) {
+      auditPayload.performedOn = payload.performedOn
+    }
+
+    const message =
+      payload?.action?.action_message ||
+      payload?.action_message ||
+      payload?.message ||
+      'Created user'
+
+    await logAuditUserAction({
+      token,
+      userinfo,
+      action: CREATE,
+      resource: API_USERS,
+      message,
+      client_id,
+      payload: auditPayload,
+    })
   } catch (error) {
     console.error('Failed to log user creation:', error)
   }
@@ -80,13 +100,35 @@ export async function logUserCreation(data: any, payload: any): Promise<void> {
 
 export async function logUserUpdate(data: any, payload: any): Promise<void> {
   try {
-    const audit = initAudit()
+    const state = store.getState() as any
+    const authReducer: AuthState = state.authReducer
+    const token = authReducer.token?.access_token || ''
+    const client_id = authReducer.config?.clientId || ''
+    const userinfo = authReducer.userinfo
     const auditPayload = { ...payload }
     if (auditPayload.customAttributes && auditPayload.customAttributes[0]) {
       delete auditPayload.customAttributes[0].values
     }
-    addAdditionalData(audit, UPDATE, API_USERS, auditPayload)
-    await postUserAction(audit)
+    if (payload?.modifiedFields && !auditPayload.modifiedFields) {
+      auditPayload.modifiedFields = payload.modifiedFields
+    }
+    if (payload?.performedOn && !auditPayload.performedOn) {
+      auditPayload.performedOn = payload.performedOn
+    }
+    const message =
+      payload?.action?.action_message ||
+      payload?.action_message ||
+      payload?.message ||
+      'Updated user'
+    await logAuditUserAction({
+      token,
+      userinfo,
+      action: UPDATE,
+      resource: API_USERS,
+      message,
+      client_id,
+      payload: auditPayload,
+    })
   } catch (error) {
     console.error('Failed to log user update:', error)
   }
@@ -94,10 +136,23 @@ export async function logUserUpdate(data: any, payload: any): Promise<void> {
 
 export async function logUserDeletion(inum: string, userData?: any): Promise<void> {
   try {
-    const audit = initAudit()
+    const state = store.getState() as any
+    const authReducer: AuthState = state.authReducer
+    const token = authReducer.token?.access_token || ''
+    const client_id = authReducer.config?.clientId || ''
+    const userinfo = authReducer.userinfo
+
     const payload = userData || { inum }
-    addAdditionalData(audit, DELETION, API_USERS, payload)
-    await postUserAction(audit)
+
+    await logAuditUserAction({
+      token,
+      userinfo,
+      action: DELETION,
+      resource: API_USERS,
+      message: 'Deleted user',
+      client_id,
+      payload,
+    })
   } catch (error) {
     console.error('Failed to log user deletion:', error)
   }
@@ -105,10 +160,21 @@ export async function logUserDeletion(inum: string, userData?: any): Promise<voi
 
 export async function logUserFetch(payload: any): Promise<void> {
   try {
-    const audit = initAudit()
-    addAdditionalData(audit, FETCH, API_USERS, payload)
-    audit.message = 'Fetched users'
-    await postUserAction(audit)
+    const state = store.getState() as any
+    const authReducer: AuthState = state.authReducer
+    const token = authReducer.token?.access_token || ''
+    const client_id = authReducer.config?.clientId || ''
+    const userinfo = authReducer.userinfo
+
+    await logAuditUserAction({
+      token,
+      userinfo,
+      action: FETCH,
+      resource: API_USERS,
+      message: 'Fetched users',
+      client_id,
+      payload,
+    })
   } catch (error) {
     console.error('Failed to log user fetch:', error)
   }
@@ -116,13 +182,32 @@ export async function logUserFetch(payload: any): Promise<void> {
 
 export async function logPasswordChange(inum: string, payload: any): Promise<void> {
   try {
-    const audit = initAudit()
+    const state = store.getState() as any
+    const authReducer: AuthState = state.authReducer
+    const token = authReducer.token?.access_token || ''
+    const client_id = authReducer.config?.clientId || ''
+    const userinfo = authReducer.userinfo
+
     const auditPayload = { ...payload }
     if (auditPayload.customAttributes && auditPayload.customAttributes[0]) {
       delete auditPayload.customAttributes[0].values
     }
-    addAdditionalData(audit, UPDATE, API_USERS, auditPayload)
-    await postUserAction(audit)
+    if (payload?.modifiedFields && !auditPayload.modifiedFields) {
+      auditPayload.modifiedFields = payload.modifiedFields
+    }
+    if (payload?.performedOn && !auditPayload.performedOn) {
+      auditPayload.performedOn = payload.performedOn
+    }
+
+    await logAuditUserAction({
+      token,
+      userinfo,
+      action: UPDATE,
+      resource: API_USERS,
+      message: 'Password changed',
+      client_id,
+      payload: auditPayload,
+    })
   } catch (error) {
     console.error('Failed to log password change:', error)
   }

@@ -24,10 +24,7 @@ function UserEditPage() {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  // Get selectedUserData from location state
   const [userDetails] = useState(location.state?.selectedUser)
-
-  // Redirect if no user data is available
   useEffect(() => {
     if (!userDetails) {
       navigate('/user/usersmanagement')
@@ -50,7 +47,6 @@ function UserEditPage() {
     (state: UserEditPageState) => state.persistenceTypeReducer.type,
   )
 
-  // React Query mutation for updating user
   const updateUserMutation = usePutUser({
     mutation: {
       onSuccess: async (data, variables) => {
@@ -67,60 +63,84 @@ function UserEditPage() {
     },
   })
 
-  const createCustomAttributes = (values: UserEditFormValues) => {
-    const customAttributes = []
-    if (values) {
-      for (const key in values) {
-        const customAttribute = personAttributes.filter((e: PersonAttribute) => e.name == key)
-        if (personAttributes.some((e: PersonAttribute) => e.name == key)) {
-          let obj = {}
-          if (!customAttribute[0]?.oxMultiValuedAttribute) {
-            const val = []
-            if (key != 'birthdate') {
-              val.push(values[key])
-            } else {
-              values[key] ? val.push(moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')) : null
-            }
-            obj = {
-              name: key,
-              multiValued: false,
-              values: val,
-            }
-          } else {
-            const valE = []
-            if (values[key] && Array.isArray(values[key])) {
-              for (const i in values[key] as string[]) {
-                const currentValue = (values[key] as string[])[i]
-                if (typeof currentValue == 'object') {
-                  valE.push(currentValue[key])
-                } else {
-                  valE.push(currentValue)
-                }
-              }
-            }
-            obj = {
-              name: key,
-              multiValued: true,
-              values: valE,
-            }
-          }
-          customAttributes.push(obj)
-        }
-      }
-      return customAttributes
+  const createCustomAttributes = (values: UserEditFormValues): CustomAttribute[] => {
+    if (!values) {
+      return []
     }
+
+    const result: CustomAttribute[] = []
+
+    Object.keys(values).forEach((attributeName) => {
+      const attributeDefinition = personAttributes.find(
+        (attribute: PersonAttribute) => attribute.name === attributeName,
+      )
+
+      if (!attributeDefinition) {
+        return
+      }
+
+      const isMultiValued = Boolean(attributeDefinition.oxMultiValuedAttribute)
+      const rawValue = values[attributeName]
+
+      if (!isMultiValued) {
+        let normalized: string | null = null
+        if (typeof rawValue === 'string') {
+          normalized = rawValue
+        } else if (Array.isArray(rawValue)) {
+          normalized = (rawValue[0] as string | undefined) ?? null
+        }
+
+        const singleValue =
+          attributeName === 'birthdate' && normalized
+            ? moment(normalized, 'YYYY-MM-DD').format('YYYY-MM-DD')
+            : (normalized ?? '')
+
+        const customAttribute: CustomAttribute = {
+          name: attributeName,
+          multiValued: false,
+          values: singleValue ? [singleValue] : [],
+        }
+        result.push(customAttribute)
+      } else {
+        let multiValues: string[] = []
+        if (Array.isArray(rawValue)) {
+          multiValues = (rawValue as unknown[])
+            .map((entry) => {
+              if (typeof entry === 'string') {
+                return entry
+              }
+              if (entry && typeof entry === 'object') {
+                const record = entry as Record<string, unknown>
+                const maybe = record.value ?? record[attributeName]
+                return typeof maybe === 'string' ? maybe : ''
+              }
+              return ''
+            })
+            .filter((v): v is string => Boolean(v))
+        }
+
+        const customAttribute: CustomAttribute = {
+          name: attributeName,
+          multiValued: true,
+          values: multiValues,
+        }
+        result.push(customAttribute)
+      }
+    })
+
+    return result
   }
 
   const submitData = (
     values: UserEditFormValues,
     modifiedFields: Record<string, unknown>,
-    usermessage: string,
+    userMessage: string,
   ) => {
     const customAttributes = createCustomAttributes(values)
-    const inum = userDetails?.inum
+    const userInum = userDetails?.inum
 
-    const submitableValues: any = {
-      inum: inum,
+    const submittableValues: any = {
+      inum: userInum,
       userId: Array.isArray(values.userId) ? values.userId[0] : values.userId || '',
       mail: Array.isArray(values.mail) ? values.mail[0] : values.mail,
       displayName: Array.isArray(values.displayName)
@@ -128,11 +148,11 @@ function UserEditPage() {
         : values.displayName || '',
       status: Array.isArray(values.status) ? values.status[0] : values.status || '',
       givenName: Array.isArray(values.givenName) ? values.givenName[0] : values.givenName || '',
-      customAttributes: customAttributes as CustomAttribute[],
+      customAttributes,
       dn: userDetails?.dn || '',
     }
-    if (persistenceType == 'ldap') {
-      submitableValues['customObjectClasses'] = ['top', 'jansPerson', 'jansCustomPerson']
+    if (persistenceType === 'ldap') {
+      submittableValues['customObjectClasses'] = ['top', 'jansPerson', 'jansCustomPerson']
     }
 
     const postValue = Object.keys(modifiedFields).map((key) => {
@@ -140,14 +160,14 @@ function UserEditPage() {
         [key]: modifiedFields[key],
       }
     })
-    submitableValues['modifiedFields'] = postValue as Record<string, string | string[]>[]
-    submitableValues['performedOn'] = {
+    submittableValues['modifiedFields'] = postValue
+    submittableValues['performedOn'] = {
       user_inum: userDetails?.inum,
       useId: userDetails?.displayName,
     }
-    submitableValues['action_message'] = usermessage
+    submittableValues['action_message'] = userMessage
 
-    updateUserMutation.mutate({ data: submitableValues })
+    updateUserMutation.mutate({ data: submittableValues })
   }
 
   useEffect(() => {
