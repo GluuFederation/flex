@@ -17,6 +17,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   isSubmitting,
 }) => {
   const [modal, setModal] = useState(false)
+  const [resetKey, setResetKey] = useState(0)
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
@@ -38,8 +39,13 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   }, [handleSubmit, toggle, formik.values])
 
   const handleCancel = useCallback(() => {
-    formik.resetForm()
-  }, [formik])
+    const initialValues = transformToFormValues(
+      fidoConfiguration,
+      fidoConstants.DYNAMIC,
+    ) as DynamicConfigFormValues
+    formik.resetForm({ values: initialValues })
+    setResetKey((prev) => prev + 1)
+  }, [formik, fidoConfiguration])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -220,6 +226,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
             <GluuLabel label={fidoConstants.LABELS.PERSON_CUSTOM_OBJECT_CLASSES} size={4} />
             <Col sm={8}>
               <GluuProperties
+                key={`personCustomObjectClassList-${resetKey}`}
                 compName={fidoConstants.FORM_FIELDS.PERSON_CUSTOM_OBJECT_CLASS_LIST}
                 isInputLables={true}
                 formik={formik}

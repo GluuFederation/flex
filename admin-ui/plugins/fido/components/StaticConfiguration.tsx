@@ -32,6 +32,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   const { t } = useTranslation()
 
   const [modal, setModal] = useState(false)
+  const [resetKey, setResetKey] = useState(0)
 
   const toggle = useCallback(() => {
     setModal((prev) => !prev)
@@ -53,8 +54,13 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
   }, [handleSubmit, toggle, formik.values])
 
   const handleCancel = useCallback(() => {
-    formik.resetForm()
-  }, [formik])
+    const initialValues = transformToFormValues(
+      staticConfiguration,
+      fidoConstants.STATIC,
+    ) as StaticConfigFormValues
+    formik.resetForm({ values: initialValues })
+    setResetKey((prev) => prev + 1)
+  }, [formik, staticConfiguration])
 
   const requestedPartiesOptions = useMemo(() => {
     return (formik.values.requestedParties || []).map((item) => ({
@@ -225,6 +231,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             <GluuLabel label={fidoConstants.LABELS.REQUESTED_PARTIES_ID} size={4} />
             <Col sm={8}>
               <GluuProperties
+                key={`requestedParties-${resetKey}`}
                 compName={fidoConstants.FORM_FIELDS.REQUESTED_PARTIES}
                 isInputLables={true}
                 keyLabel={t('fields.name')}
@@ -260,6 +267,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             <GluuLabel label={fidoConstants.LABELS.ENABLED_FIDO_ALGORITHMS} size={4} />
             <Col sm={8}>
               <GluuProperties
+                key={`enabledFidoAlgorithms-${resetKey}`}
                 compName={fidoConstants.FORM_FIELDS.ENABLED_FIDO_ALGORITHMS}
                 isInputLables={true}
                 formik={formik}
@@ -276,6 +284,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             <GluuLabel label={fidoConstants.LABELS.METADATA_SERVERS} size={4} />
             <Col sm={8}>
               <GluuProperties
+                key={`metadataServers-${resetKey}`}
                 compName={fidoConstants.FORM_FIELDS.METADATA_SERVERS}
                 isInputLables={true}
                 keyLabel="URL"
@@ -303,6 +312,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
 
         <Col sm={8}>
           <GluuTypeAhead
+            key={`hints-${resetKey}`}
             name={fidoConstants.FORM_FIELDS.HINTS}
             label={fidoConstants.LABELS.HINTS}
             formik={formik}
