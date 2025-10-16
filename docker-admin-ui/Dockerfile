@@ -162,7 +162,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
     org.opencontainers.image.authors="Gluu Inc. <team@gluu.org>" \
     org.opencontainers.image.vendor="Gluu Federation" \
-    org.opencontainers.image.version="5.13.0-1" \
+    org.opencontainers.image.version="0.0.0-nightly" \
     org.opencontainers.image.title="Gluu Flex Admin UI" \
     org.opencontainers.image.description=""
 
