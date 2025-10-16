@@ -33,3 +33,22 @@ export interface ReduxState {
   error: ApiError | null
   data: any
 }
+
+// Redux Root State interface for auth-related state
+export interface AuthRootState {
+  authReducer: {
+    token: {
+      access_token: string
+    }
+    userinfo: {
+      inum?: string
+      name?: string
+    }
+    config: {
+      clientId: string
+    }
+    location: {
+      IPv4: string
+    }
+  }
+}

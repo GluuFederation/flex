@@ -32,10 +32,13 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     enableReinitialize: true,
   })
 
-  const submitForm = useCallback(() => {
-    toggle()
-    handleSubmit(formik.values)
-  }, [handleSubmit, toggle, formik.values])
+  const submitForm = useCallback(
+    (userMessage: string) => {
+      toggle()
+      handleSubmit(formik.values, userMessage)
+    },
+    [handleSubmit, toggle, formik.values],
+  )
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
