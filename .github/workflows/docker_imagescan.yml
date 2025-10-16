@@ -27,7 +27,7 @@ jobs:
       matrix:
         docker-images: ["admin-ui", "flex-monolith", "flex-all-in-one"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
     - name: Build the Container image
       run: docker build ./docker-${{ matrix.docker-images }} --file ./docker-${{ matrix.docker-images }}/Dockerfile --tag localbuild/scanimage:latest
     - uses: anchore/scan-action@v3
