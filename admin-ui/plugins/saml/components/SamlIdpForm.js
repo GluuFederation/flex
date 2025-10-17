@@ -6,7 +6,7 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { useDispatch, useSelector } from 'react-redux'
-import * as Yup from 'yup'
+import { buildSamlIdpSchema } from '../helper/validationSchemas'
 import { useTranslation } from 'react-i18next'
 import {
   createSamlIdentity,
@@ -25,6 +25,7 @@ import { nameIDPolicyFormat } from '../helper'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
+import { trimObjectStrings } from 'Utils/Util'
 
 const SamlIdpForm = ({ configs, viewOnly }) => {
   const [showUploadBtn, setShowUploadBtn] = useState(false)
@@ -60,28 +61,7 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
     principalType: configs?.principalType || '',
   }
 
-  const validationSchema = Yup.object().shape({
-    singleSignOnServiceUrl: Yup.string().when('importMetadataFile', {
-      is: (value) => {
-        return value === false
-      },
-      then: () => Yup.string().required(`${t('fields.single_signon_service_url')} is Required!`),
-    }),
-    idpEntityId: Yup.string().when('importMetadataFile', {
-      is: (value) => {
-        return value === false
-      },
-      then: () => Yup.string().required(`${t('fields.idp_entity_id')} is Required!`),
-    }),
-    nameIDPolicyFormat: Yup.string().when('importMetadataFile', {
-      is: (value) => {
-        return value === false
-      },
-      then: () => Yup.string().required(`${t('fields.name_policy_format')} is Required!`),
-    }),
-    name: Yup.string().required(`${t('fields.name')} is Required!`),
-    displayName: Yup.string().required(`${t('fields.displayName')} is Required!`),
-  })
+  const validationSchema = buildSamlIdpSchema(t)
 
   const toggle = () => {
     setModal(!modal)
@@ -95,6 +75,10 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
     },
   })
 
+  const handleCancel = () => {
+    formik.resetForm()
+  }
+
   const submitForm = (messages) => {
     toggle()
     handleSubmit(formik.values, messages)
@@ -102,10 +86,11 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
   function handleSubmit(values, user_message) {
     delete values.importMetadataFile
+    const trimmedValues = trimObjectStrings(values)
     const formdata = new FormData()
 
     const payload = {
-      identityProvider: { ...values },
+      identityProvider: { ...trimmedValues },
     }
 
     if (metaDataFile) {
@@ -428,7 +413,12 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
               )}
             </FormGroup>
 
-            <GluuCommitFooter saveHandler={toggle} hideButtons={{ save: viewOnly, back: false }} />
+            <GluuCommitFooter
+              saveHandler={toggle}
+              hideButtons={{ save: viewOnly, back: true }}
+              extraLabel="Cancel"
+              extraOnClick={handleCancel}
+            />
 
             <GluuCommitDialog
               handler={toggle}
@@ -446,6 +436,6 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
 export default SamlIdpForm
 SamlIdpForm.propTypes = {
-  configs: PropTypes.any,
+  configs: PropTypes.object,
   viewOnly: PropTypes.bool,
 }
