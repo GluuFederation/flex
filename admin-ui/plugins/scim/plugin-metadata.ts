@@ -1,5 +1,3 @@
-import { reducer as scimReducer } from './redux/features/ScimSlice'
-import scimSaga from './redux/sagas/ScimSaga'
 import { SCIM_CONFIG_READ, SCIM_CONFIG_WRITE } from 'Utils/PermChecker'
 import ScimPage from './components/ScimPage'
 
@@ -21,8 +19,8 @@ const pluginMetadata = {
       permission: SCIM_CONFIG_WRITE,
     },
   ],
-  reducers: [{ name: 'scimReducer', reducer: scimReducer }],
-  sagas: [scimSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata
