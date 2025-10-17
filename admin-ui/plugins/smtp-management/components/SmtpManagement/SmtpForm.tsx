@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -7,9 +7,14 @@ import * as Yup from 'yup'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { useTranslation } from 'react-i18next'
-import { testSmtp } from 'Plugins/smtp-management/redux/features/smtpSlice'
-import { useDispatch } from 'react-redux'
+import {
+  testSmtp,
+  enableTestButton,
+  disableTestButton,
+} from 'Plugins/smtp-management/redux/features/smtpSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { RootState } from '../../redux/types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { putConfigWorker } from 'Redux/features/authSlice'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -22,6 +27,16 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
   const dispatch = useDispatch()
   const [modal, setModal] = useState(false)
   const [tempItems, setTempItems] = useState<SmtpConfiguration>(item)
+  const testButtonEnabled = useSelector((state: RootState) => state.smtpsReducer.testButtonEnabled)
+
+  useEffect(() => {
+    return () => {
+      if (testButtonEnabled) {
+        dispatch(disableTestButton())
+      }
+    }
+  }, [dispatch, testButtonEnabled])
+
   const toggle = () => {
     setModal(!modal)
   }
@@ -86,10 +101,13 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
     formik.resetForm()
   }
 
-  const submitForm = () => {
+  const submitForm = (_userMessage: string) => {
     toggle()
-    const trimmedValues = trimObjectStrings(formik.values)
+    const trimmedValues = trimObjectStrings(
+      formik.values as unknown as Record<string, unknown>,
+    ) as unknown as SmtpFormValues
     handleSubmit(toSmtpConfiguration(trimmedValues))
+    dispatch(enableTestButton())
   }
 
   const testSmtpConfig = () => {
@@ -370,8 +388,8 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
           <GluuCommitFooter
             saveHandler={toggle}
             hideButtons={{ save: true, back: false }}
-            extraLabel="Test"
-            extraOnClick={testSmtpConfig}
+            extraLabel={testButtonEnabled ? t('actions.test') : ''}
+            extraOnClick={testButtonEnabled ? testSmtpConfig : undefined}
             disableBackButton={true}
             cancelHandler={handleCancel}
             type="submit"

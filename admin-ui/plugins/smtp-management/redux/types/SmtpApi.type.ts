@@ -58,6 +58,7 @@ export interface SmtpState {
   loading: boolean
   testStatus: boolean | null
   openModal: boolean
+  testButtonEnabled: boolean
 }
 
 // Redux action payload types
