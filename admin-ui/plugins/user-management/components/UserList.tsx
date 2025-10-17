@@ -99,7 +99,20 @@ function UserList(): JSX.Element {
   const fidoDetails = fidoRegistrationData?.entries || []
 
   // Mutations
-  const deleteFido2Mutation = useDeleteFido2Data()
+  const deleteFido2Mutation = useDeleteFido2Data({
+    mutation: {
+      onSuccess: async () => {
+        dispatch(updateToast(true, 'success', t('messages.device_deleted_successfully')))
+        if (userDetails) {
+          await refetchFido2Details()
+        }
+      },
+      onError: (error: unknown) => {
+        const errMsg = getErrorMessage(error)
+        dispatch(updateToast(true, 'error', errMsg))
+      },
+    },
+  })
 
   const deleteUserMutation = useDeleteUser({
     mutation: {
@@ -382,11 +395,11 @@ function UserList(): JSX.Element {
           getOTPDevicesValue[0].devices?.filter((item: OTPDevice) => item.id !== row.id) || []
         const jansOTPDevices = { devices: removedDevice }
         updateUserData(JSON.stringify(jansOTPDevices))
-      }
-    }
 
-    if (userDetails) {
-      handleView2FADetails(userDetails)
+        // Update local OTP devices list immediately for better UX
+        const updatedOTPDevices = otpDevicesList.filter((device) => device.id !== row.id)
+        setOTPDevicesList(updatedOTPDevices)
+      }
     }
   }
 
@@ -412,14 +425,23 @@ function UserList(): JSX.Element {
     let removeNullValue: DeviceData[] = []
     if (Array.isArray(fidoDetails) && fidoDetails.length > 0) {
       const updatedDetails: DeviceData[] = fidoDetails.map((item: FidoRegistrationEntry) => {
-        const attenstationRequest = JSON.parse(item.registrationData?.attenstationRequest || '{}')
+        // displayName is at the top level of the entry, not inside registrationData
+        const displayName = item.displayName || item?.deviceData?.name || '-'
+
+        // Determine device type based on platform presence
+        const deviceType = item?.deviceData?.platform ? 'SUPER GLUU' : 'FIDO2'
+
+        // Format modality - use device platform or type
+        const modality = item?.deviceData?.platform || item?.registrationData?.type || '-'
 
         return {
           id: item.id,
-          nickName: attenstationRequest.displayName ?? '-',
-          modality: item?.deviceData?.platform ?? '-',
-          dateAdded: moment(item.creationDate).format('YYYY-MM-DD HH:mm:ss'),
-          type: item?.deviceData?.platform ? 'SUPER GLUU' : 'FIDO2',
+          nickName: displayName,
+          modality: modality,
+          dateAdded: item.creationDate
+            ? moment(item.creationDate).format('YYYY-MM-DD HH:mm:ss')
+            : '-',
+          type: deviceType,
           registrationData: item.registrationData,
           deviceData: item.deviceData,
         }

@@ -819,7 +819,8 @@
     "user_created_successfully": "User created successfully",
     "user_updated_successfully": "User updated successfully",
     "user_deleted_successfully": "User deleted successfully",
-    "password_changed_successfully": "Password changed successfully"
+    "password_changed_successfully": "Password changed successfully",
+    "device_deleted_successfully": "Device deleted successfully"
   },
   "tooltips": {
     "add_attribute": "Add attribute",

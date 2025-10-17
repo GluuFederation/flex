@@ -751,7 +751,8 @@
     "user_created_successfully": "Usuário criado com sucesso",
     "user_updated_successfully": "Usuário atualizado com sucesso",
     "user_deleted_successfully": "Usuário excluído com sucesso",
-    "password_changed_successfully": "Senha alterada com sucesso"
+    "password_changed_successfully": "Senha alterada com sucesso",
+    "device_deleted_successfully": "Dispositivo excluído com sucesso"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
