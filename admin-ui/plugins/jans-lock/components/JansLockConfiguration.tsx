@@ -15,6 +15,7 @@ import {
   jansLockConstants,
 } from '../helper'
 import { JansLockConfigFormValues, PatchOperation } from '../types'
+import { trimObjectStrings } from 'Utils/Util'
 
 interface JansLockConfigurationProps {
   lockConfig: Record<string, unknown>
@@ -49,9 +50,16 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfi
     validationSchema,
   })
 
+  const handleCancel = useCallback(() => {
+    formik.resetForm()
+  }, [formik])
+
   const submitForm = useCallback(
     (userMessage: string) => {
-      const patchOperations = createPatchOperations(formik.values, lockConfig)
+      const trimmedValues = trimObjectStrings(
+        formik.values as unknown as Record<string, unknown>,
+      ) as unknown as JansLockConfigFormValues
+      const patchOperations = createPatchOperations(trimmedValues, lockConfig)
 
       toggle()
 
@@ -398,7 +406,9 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfi
             <Col>
               <GluuCommitFooter
                 saveHandler={toggle}
-                hideButtons={{ save: true, back: false }}
+                hideButtons={{ save: true, back: true }}
+                extraLabel="Cancel"
+                extraOnClick={handleCancel}
                 type="submit"
               />
             </Col>
