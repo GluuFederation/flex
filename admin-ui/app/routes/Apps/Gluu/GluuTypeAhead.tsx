@@ -79,7 +79,7 @@ function GluuTypeAhead({
           id={name}
           data-testid={name}
           multiple={multiple}
-          defaultSelected={value}
+          selected={value || []}
           options={options}
         />
         {!hideHelperMessage && (
