@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -6,7 +6,6 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
 import { testSmtp } from 'Plugins/smtp-management/redux/features/smtpSlice'
 import { useDispatch } from 'react-redux'
@@ -16,14 +15,12 @@ import { putConfigWorker } from 'Redux/features/authSlice'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { SmtpConfiguration, SmtpTestOptions } from '../../redux/types'
 import { ConnectProtection, SmtpFormValues, SmtpFormProps } from './types/SmtpForm.types'
+import { trimObjectStrings } from 'Utils/Util'
 
 function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'darkBlack'
   const [modal, setModal] = useState(false)
-  const [hideTestButton, setHideTestButton] = useState(false)
   const [tempItems, setTempItems] = useState<SmtpConfiguration>(item)
   const toggle = () => {
     setModal(!modal)
@@ -85,9 +82,14 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
     }
   }
 
+  const handleCancel = () => {
+    formik.resetForm()
+  }
+
   const submitForm = () => {
     toggle()
-    handleSubmit(toSmtpConfiguration(formik.values))
+    const trimmedValues = trimObjectStrings(formik.values)
+    handleSubmit(toSmtpConfiguration(trimmedValues))
   }
 
   const testSmtpConfig = () => {
@@ -143,11 +145,6 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
     const tempRecord = temp as Record<string, unknown>
     tempRecord[name] = nextValue
 
-    if (JSON.stringify(temp) !== JSON.stringify(item)) {
-      setHideTestButton(true)
-    } else {
-      setHideTestButton(false)
-    }
     setTempItems({ ...tempItems, [name]: nextValue } as SmtpConfiguration)
   }
 
@@ -369,22 +366,14 @@ function SmtpForm({ item, handleSubmit, allowSmtpKeystoreEdit }: SmtpFormProps) 
         </Col>
       </FormGroup>
       <Row>
-        {!hideTestButton && (
-          <Col>
-            <button
-              type="button"
-              className={`btn btn-primary-${selectedTheme} text-center`}
-              onClick={testSmtpConfig}
-            >
-              {t('fields.test')}
-            </button>
-          </Col>
-        )}
         <Col>
-          {' '}
           <GluuCommitFooter
             saveHandler={toggle}
-            hideButtons={{ save: true, back: true }}
+            hideButtons={{ save: true, back: false }}
+            extraLabel="Test"
+            extraOnClick={testSmtpConfig}
+            disableBackButton={true}
+            cancelHandler={handleCancel}
             type="submit"
           />
         </Col>
