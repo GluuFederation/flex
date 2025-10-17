@@ -90,7 +90,7 @@ function UserList(): JSX.Element {
 
   // FIDO2 registration entries hook - only fetch when username is set
   const { data: fidoRegistrationData, refetch: refetchFido2Details } =
-    useGetRegistrationEntriesFido2(userDetails?.givenName?.toLowerCase() || '', {
+    useGetRegistrationEntriesFido2(userDetails?.userId?.toLowerCase() || '', {
       query: {
         enabled: false, // Don't auto-fetch, we'll trigger manually
       },
@@ -199,7 +199,7 @@ function UserList(): JSX.Element {
     setOTPDevicesList(otpDevices)
 
     // Fetch FIDO2 details
-    if (row.givenName) {
+    if (row.userId) {
       await refetchFido2Details()
     }
     setIsViewDetailModalOpen(!isViewDetailModalOpen)

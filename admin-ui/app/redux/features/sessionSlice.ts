@@ -19,7 +19,7 @@ const sessionSlice = createSlice({
   reducers: {
     auditLogoutLogs: (state, action: PayloadAction<{ message: string }>) => {
       console.log('Logout audit:', action.payload.message)
-      state.isUserLogout = false
+      state.isUserLogout = true
       // This action is handled by saga for actual audit logging
     },
     auditLogoutLogsResponse: (state, action: PayloadAction<boolean>) => {
@@ -33,4 +33,4 @@ const sessionSlice = createSlice({
 
 export const { auditLogoutLogs, auditLogoutLogsResponse, resetLogoutState } = sessionSlice.actions
 export default sessionSlice.reducer
-reducerRegistry.register('sessionReducer', sessionSlice.reducer)
+reducerRegistry.register('logoutAuditReducer', sessionSlice.reducer)

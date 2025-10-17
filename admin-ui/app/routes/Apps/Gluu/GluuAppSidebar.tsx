@@ -74,7 +74,7 @@ const MENU_ICON_MAP: MenuIconMap = {
 interface RootState extends SidebarRootState {}
 
 const selectHealth = (state: RootState): Record<string, string> => state.healthReducer.health
-const selectIsUserLogout = (state: RootState): boolean => state.sessionReducer.isUserLogout
+const selectIsUserLogout = (state: RootState): boolean => state.logoutAuditReducer.isUserLogout
 
 function GluuAppSidebar(): JSX.Element {
   const health = useSelector(selectHealth)

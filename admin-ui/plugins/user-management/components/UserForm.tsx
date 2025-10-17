@@ -10,12 +10,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
-import {
-  usePatchUserByInum,
-  getGetUserQueryKey,
-  UserPatchRequest,
-  GetAttributesParams,
-} from 'JansConfigApi'
+import { usePatchUserByInum, getGetUserQueryKey, GetAttributesParams } from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
@@ -140,12 +135,9 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
         value: formik.values.userPassword,
       },
     ]
-    const submitableValue: UserPatchRequest = {
-      jsonPatchString: JSON.stringify(patchOperations),
-    }
     changePasswordMutation.mutate({
       inum: userDetails.inum,
-      data: submitableValue,
+      data: patchOperations,
     })
     setPasswordModal(!passwordModal)
     toggleChangePasswordModal()
