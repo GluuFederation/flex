@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -6,28 +6,38 @@ import { SelectChangeEvent } from '@mui/material'
 import { useFormik } from 'formik'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { ThemeContext } from 'Context/theme/themeContext'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import {
+  testSmtp,
+  enableTestButton,
+  disableTestButton,
+} from 'Plugins/smtp-management/redux/features/smtpSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { RootState } from '../../redux/types'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import { putConfigWorker } from 'Redux/features/authSlice'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import { SmtpFormValues, SmtpFormProps } from '../../types'
-import {
-  toSmtpConfiguration,
-  transformToFormValues,
-  validationSchema,
-  smtpConstants,
-} from '../../helper'
+import { SmtpConfiguration, SmtpTestOptions } from '../../redux/types'
+import { ConnectProtection, SmtpFormValues, SmtpFormProps } from './types/SmtpForm.types'
+import { trimObjectStrings } from 'Utils/Util'
 
 function SmtpForm(props: Readonly<SmtpFormProps>) {
   const { item, handleSubmit, allowSmtpKeystoreEdit, onTestSmtp, formikRef } = props
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state.theme || 'darkBlack'
   const [modal, setModal] = useState(false)
+  const [tempItems, setTempItems] = useState<SmtpConfiguration>(item)
+  const testButtonEnabled = useSelector((state: RootState) => state.smtpsReducer.testButtonEnabled)
+
+  useEffect(() => {
+    return () => {
+      if (testButtonEnabled) {
+        dispatch(disableTestButton())
+      }
+    }
+  }, [dispatch, testButtonEnabled])
+
   const toggle = () => {
     setModal(!modal)
   }
@@ -48,9 +58,17 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
     }
   }, [formik, formikRef])
 
-  const submitForm = (userMessage: string) => {
+  const handleCancel = () => {
+    formik.resetForm()
+  }
+
+  const submitForm = (_userMessage: string) => {
     toggle()
-    handleSubmit(toSmtpConfiguration(formik.values), userMessage)
+    const trimmedValues = trimObjectStrings(
+      formik.values as unknown as Record<string, unknown>,
+    ) as unknown as SmtpFormValues
+    handleSubmit(toSmtpConfiguration(trimmedValues))
+    dispatch(enableTestButton())
   }
 
   const testSmtpConfig = () => {
@@ -65,10 +83,44 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
     }
   }
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> | SelectChangeEvent,
-  ): void => {
-    formik.handleChange(event)
+  const checkValue = (): boolean => {
+    const optionalKeys: Array<keyof SmtpFormValues> = [
+      'key_store',
+      'key_store_password',
+      'key_store_alias',
+      'signing_algorithm',
+    ]
+    for (const key in formik.values) {
+      const k = key as keyof SmtpFormValues
+      const value = formik.values[k]
+      if ((value === null || value === '') && !optionalKeys.includes(k)) return false
+    }
+    return true
+  }
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+    const temp: SmtpConfiguration = { ...tempItems }
+    const target = event.target
+
+    let name: string
+    let nextValue: string | number | boolean
+
+    if (target instanceof HTMLInputElement) {
+      const { type, value, checked } = target
+      name = target.name
+      nextValue =
+        type === 'number' ? parseInt(value, 10) : type === 'checkbox' ? Boolean(checked) : value
+    } else {
+      const select = target as HTMLSelectElement
+      name = select.name
+      const value = select.value
+      nextValue = value === 'true' ? true : value === 'false' ? false : value
+    }
+
+    const tempRecord = temp as Record<string, unknown>
+    tempRecord[name] = nextValue
+
+    setTempItems({ ...tempItems, [name]: nextValue } as SmtpConfiguration)
   }
 
   return (
@@ -292,20 +344,13 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
       </FormGroup>
       <Row>
         <Col>
-          <button
-            type="button"
-            className={`btn btn-primary-${selectedTheme} text-center`}
-            onClick={testSmtpConfig}
-            disabled={formik.dirty}
-            title={formik.dirty ? t('messages.save_before_test') : ''}
-          >
-            {t('fields.test')}
-          </button>
-        </Col>
-        <Col>
           <GluuCommitFooter
             saveHandler={toggle}
-            hideButtons={{ save: true, back: true }}
+            hideButtons={{ save: true, back: false }}
+            extraLabel={testButtonEnabled ? t('actions.test') : ''}
+            extraOnClick={testButtonEnabled ? testSmtpConfig : undefined}
+            disableBackButton={true}
+            cancelHandler={handleCancel}
             type="submit"
           />
         </Col>
