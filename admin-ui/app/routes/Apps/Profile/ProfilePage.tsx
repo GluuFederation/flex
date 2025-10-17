@@ -12,7 +12,6 @@ import { Box, Divider, Skeleton } from '@mui/material'
 import { useNavigate } from 'react-router'
 import { getProfileDetails } from 'Redux/features/ProfileDetailsSlice'
 import { randomAvatar } from '../../../utilities'
-import { setSelectedUserData } from 'Plugins/user-management/redux/features/userSlice'
 import { USER_WRITE } from 'Utils/PermChecker'
 import getThemeColor from '../../../context/theme/config'
 import { useCedarling } from '@/cedarling'
@@ -117,10 +116,11 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = () => {
 
   const navigateToUserManagement = useCallback((): void => {
     if (profileDetails) {
-      dispatch(setSelectedUserData(profileDetails))
-      navigate(`/user/usermanagement/edit/:${profileDetails.inum}`)
+      navigate(`/user/usermanagement/edit/:${profileDetails.inum}`, {
+        state: { selectedUser: profileDetails },
+      })
     }
-  }, [profileDetails, dispatch, navigate])
+  }, [profileDetails, navigate])
 
   const jansAdminUIRole = profileDetails?.customAttributes?.find(
     (att: CustomAttribute): boolean => att?.name === 'jansAdminUIRole',

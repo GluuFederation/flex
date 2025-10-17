@@ -8,9 +8,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { changeUserPassword } from '../redux/features/userSlice'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
+import { usePatchUserByInum, getGetUserQueryKey, GetAttributesParams } from 'JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
+import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
+import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { updateToast } from 'Redux/features/toastSlice'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { debounce } from 'lodash'
@@ -23,10 +27,12 @@ import {
   UserEditFormValues,
 } from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
-import { PersonAttribute, ChangeUserPasswordPayload, GetUserOptions } from '../types/UserApiTypes'
+import { PersonAttribute } from '../types/UserApiTypes'
 
-function UserForm({ onSubmitData }: UserFormProps) {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
+  const queryClient = useQueryClient()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
@@ -34,17 +40,30 @@ function UserForm({ onSubmitData }: UserFormProps) {
   const [passwordError, setPasswordError] = useState('')
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
-  const [passwordmodal, setPasswordModal] = useState(false)
+  const [passwordModal, setPasswordModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
 
-  const userDetails = useSelector((state: UserFormState) => state.userReducer.selectedUserData)
   const personAttributes = useSelector((state: UserFormState) => state.attributesReducerRoot.items)
 
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
-  const options: GetUserOptions = {}
+  const options: Partial<GetAttributesParams> = {}
+  const changePasswordMutation = usePatchUserByInum({
+    mutation: {
+      onSuccess: async (data, variables) => {
+        dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
+        await logPasswordChange(variables.inum, variables.data)
+        await triggerUserWebhook(data)
+        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
+      },
+      onError: (error) => {
+        const errorMessage = getErrorMessage(error)
+        dispatch(updateToast(true, 'error', errorMessage))
+      },
+    },
+  })
 
   const initialValues: UserEditFormValues = {
     displayName: userDetails?.displayName || '',
@@ -56,22 +75,29 @@ function UserForm({ onSubmitData }: UserFormProps) {
     status: (userDetails?.jansStatus as string) || userDetails?.status || '',
   }
 
-  if (userDetails && userDetails.customAttributes) {
-    for (let i = 0; i < userDetails.customAttributes.length; i++) {
-      const customAttr = userDetails.customAttributes[i]
-      if (customAttr.values && customAttr.values.length > 0) {
-        const customAttribute = personAttributes.filter(
-          (e: PersonAttribute) => e.name === customAttr.name,
-        )
-        if (customAttr.name === 'birthdate') {
-          initialValues[customAttr.name] = moment(customAttr.values[0]).format('YYYY-MM-DD')
-        } else {
-          if (customAttribute[0]?.oxMultiValuedAttribute) {
-            initialValues[customAttr.name] = customAttr.values
-          } else {
-            initialValues[customAttr.name] = customAttr.values[0]
-          }
+  if (userDetails?.customAttributes) {
+    for (const customAttr of userDetails.customAttributes) {
+      const attrValues = customAttr.values ?? []
+      const attrSingleValue = (customAttr as { value?: string }).value
+      const attributeDef = personAttributes.find((e: PersonAttribute) => e.name === customAttr.name)
+      if (customAttr.name === 'birthdate') {
+        const dateSource = attrValues.length > 0 ? attrValues[0] : attrSingleValue
+        if (dateSource) {
+          initialValues[customAttr.name] = moment(dateSource).format('YYYY-MM-DD')
         }
+        continue
+      }
+
+      if (attributeDef?.oxMultiValuedAttribute) {
+        if (attrValues.length > 0) {
+          initialValues[customAttr.name] = attrValues
+        } else if (attrSingleValue) {
+          initialValues[customAttr.name] = [attrSingleValue]
+        }
+      } else if (attrValues.length > 0) {
+        initialValues[customAttr.name] = attrValues[0]
+      } else if (attrSingleValue) {
+        initialValues[customAttr.name] = attrSingleValue
       }
     }
   }
@@ -102,35 +128,25 @@ function UserForm({ onSubmitData }: UserFormProps) {
 
   const submitChangePassword = (usermessage: string) => {
     if (!userDetails?.inum || !formik.values.userPassword) return
-
-    const submitableValue: ChangeUserPasswordPayload = {
+    const patchOperations = [
+      {
+        op: 'replace',
+        path: '/userPassword',
+        value: formik.values.userPassword,
+      },
+    ]
+    changePasswordMutation.mutate({
       inum: userDetails.inum,
-      jsonPatchString: '[]',
-      customAttributes: [
-        {
-          name: 'userPassword',
-          multiValued: false,
-          values: [formik.values.userPassword as string],
-        },
-      ],
-    }
-    submitableValue.performedOn = {
-      user_inum: userDetails.inum,
-      userId: userDetails.displayName as string,
-    }
-    // Set action_message for audit logging
-    if (usermessage) {
-      submitableValue.action_message = usermessage
-    }
-    dispatch(changeUserPassword(submitableValue))
-    setPasswordModal(!passwordmodal)
+      data: patchOperations,
+    })
+    setPasswordModal(!passwordModal)
     toggleChangePasswordModal()
   }
   const submitForm = (usermessage: string) => {
     toggle()
     onSubmitData(formik.values, modifiedFields, usermessage)
   }
-  const loading = useSelector((state: UserFormState) => state.userReducer.loading)
+  const loading = false
   const setSelectedClaimsToState = (data: PersonAttribute) => {
     const tempList = [...selectedClaims]
     tempList.push(data)
@@ -162,21 +178,15 @@ function UserForm({ onSubmitData }: UserFormProps) {
     'sn',
   ]
   const getCustomAttributeById = (id: string) => {
-    let claimData = null
-    for (const i in personAttributes) {
-      if (personAttributes[i].name == id) {
-        claimData = personAttributes[i]
-      }
-    }
-    return claimData
+    const match = personAttributes.find((attr) => attr.name == id)
+    return match || null
   }
 
   const setAttributes = () => {
     if (!userDetails?.customAttributes) return
 
     const tempList = [...selectedClaims]
-    for (let i = 0; i < userDetails.customAttributes.length; i++) {
-      const customAttr = userDetails.customAttributes[i]
+    for (const customAttr of userDetails.customAttributes) {
       if (customAttr.values && customAttr.values.length > 0) {
         const attributeData = getCustomAttributeById(customAttr.name)
         if (attributeData && !usedClaimes.includes(customAttr.name)) {
@@ -194,21 +204,16 @@ function UserForm({ onSubmitData }: UserFormProps) {
       setShowButtons(true)
     } else {
       setSelectedClaims([])
-      setShowButtons(true) // Enable buttons when adding new user
+      setShowButtons(true)
     }
   }, [userDetails])
 
   const removeSelectedClaimsFromState = (id: string) => {
     const tempList = [...selectedClaims]
-    if (userDetails) {
-      formik.setFieldValue(id, '')
-    } else {
-      formik.setFieldValue(id, '')
-    }
+    formik.setFieldValue(id, '')
     const newModifiedFields = { ...modifiedFields }
     delete newModifiedFields[id]
     setModifiedFields(newModifiedFields)
-
     const newList = tempList.filter((data) => data.name !== id)
     setSelectedClaims(newList)
   }
@@ -224,18 +229,22 @@ function UserForm({ onSubmitData }: UserFormProps) {
     setShowButtons(true)
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+      | { target: { name: string; value: unknown } },
+  ) => {
     setModifiedFields({
       ...modifiedFields,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value as string | string[],
     })
   }
 
   return (
     <GluuLoader blocking={loading}>
       <GluuCommitDialog
-        handler={() => setPasswordModal(!passwordmodal)}
-        modal={passwordmodal}
+        handler={() => setPasswordModal(!passwordModal)}
+        modal={passwordModal}
         onAccept={submitChangePassword}
       />
 
@@ -280,7 +289,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
               <Button
                 color={`primary-${selectedTheme}`}
                 type="button"
-                onClick={() => setPasswordModal(!passwordmodal)}
+                onClick={() => setPasswordModal(!passwordModal)}
               >
                 {t('actions.change_password')}
               </Button>
@@ -446,10 +455,10 @@ function UserForm({ onSubmitData }: UserFormProps) {
             {passwordError != '' && !changePasswordModal && (
               <span className="text-danger">{passwordError}</span>
             )}
-            {selectedClaims.map((data, key) => (
+            {selectedClaims.map((data, index) => (
               <UserClaimEntry
-                key={key}
-                entry={key}
+                key={data.name}
+                entry={index}
                 data={data}
                 formik={formik}
                 handler={removeSelectedClaimsFromState}
@@ -475,9 +484,7 @@ function UserForm({ onSubmitData }: UserFormProps) {
                     <i className="fa fa-arrow-circle-left me-2"></i>
                     {t('actions.cancel')}
                   </Button>
-                  {/* For Space in buttons */}
                   &nbsp; &nbsp; &nbsp;
-                  {/* For Space in buttons */}
                   <Button color={`primary-${selectedTheme}`} type="submit">
                     <i className="fa fa-check-circle me-2"></i>
                     {t('actions.save')}
@@ -524,12 +531,13 @@ function UserForm({ onSubmitData }: UserFormProps) {
                           key={'list' + key}
                           title="Click to add to the form"
                         >
-                          <a
+                          <button
+                            type="button"
+                            className="btn btn-link p-0 text-start"
                             onClick={() => setSelectedClaimsToState(data)}
-                            style={{ cursor: 'pointer' }}
                           >
                             {data.displayName}
-                          </a>
+                          </button>
                         </li>
                       )
                     }

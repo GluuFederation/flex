@@ -43,21 +43,22 @@ export const LazyRoutes = {
 export const loadPluginRoute = (pluginName: string, routePath?: string) => {
   const componentPath = routePath || `${pluginName.charAt(0).toUpperCase() + pluginName.slice(1)}`
 
-    return createLazyRoute(() =>
+  return createLazyRoute(() =>
+    import(
+      /* webpackChunkName: "plugin-[request]" */
+      /* webpackMode: "lazy" */
+      /* webpackInclude: /^[^/]+\/components\/[^/]+$/ */
+      `../../plugins/${pluginName}/components/${componentPath}`
+    ).catch(
+      () =>
         import(
           /* webpackChunkName: "plugin-[request]" */
           /* webpackMode: "lazy" */
-          /* webpackInclude: /^[^/]+\/components\/[^/]+$/ */
-          `../../plugins/${pluginName}/components/${componentPath}`
-        ).catch(() =>
-          import(
-            /* webpackChunkName: "plugin-[request]" */
-            /* webpackMode: "lazy" */
-            /* webpackInclude: /^[^/]+\/components\/index(\.(t|j)sx?)?$/ */
-            `../../plugins/${pluginName}/components/index`
-          ),
-        )
-      )
+          /* webpackInclude: /^[^/]+\/components\/index(\.(t|j)sx?)?$/ */
+          `../../plugins/${pluginName}/components/index`
+        ),
+    ),
+  )
 }
 
 // Route preloading utility
