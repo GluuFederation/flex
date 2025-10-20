@@ -26,7 +26,7 @@ auth-server:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/auth-server
+    repository: ghcr.io/janssenproject/jans/auth-server
     # -- Image  tag to use for deploying.
     tag: 0.0.0-nightly
     # -- Image Pull Secrets
@@ -159,7 +159,7 @@ config:
   email: team@gluu.org
   image:
     # -- Image  to use for deploying.
-    repository: janssenproject/configurator
+    repository: ghcr.io/janssenproject/jans/configurator
     # -- Image  tag to use for deploying.
     tag: 0.0.0-nightly
     # -- Image Pull Secrets
@@ -223,7 +223,7 @@ config-api:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/config-api
+    repository: ghcr.io/janssenproject/jans/config-api
     # -- Image  tag to use for deploying.
     tag: 0.0.0-nightly
     # -- Image Pull Secrets
@@ -623,7 +623,7 @@ persistence:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/persistence-loader
+    repository: ghcr.io/janssenproject/jans/persistence-loader
     # -- Image  tag to use for deploying.
     tag: 0.0.0-nightly
     # -- Image Pull Secrets
