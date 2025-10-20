@@ -56,6 +56,14 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
     [handleSubmit, toggle, formik.values],
   )
 
+  const handleCancel = useCallback(() => {
+    const initialValues = transformToFormValues(
+      staticConfiguration,
+      fidoConstants.STATIC,
+    ) as StaticConfigFormValues
+    formik.resetForm({ values: initialValues })
+  }, [formik, staticConfiguration])
+
   const requestedPartiesOptions = useMemo(() => {
     return (formik.values.requestedParties || []).map((item) => ({
       key: item.key || '',
@@ -336,7 +344,9 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
         <Col>
           <GluuCommitFooter
             saveHandler={toggle}
-            hideButtons={{ save: true, back: false }}
+            hideButtons={{ save: true, back: true }}
+            extraLabel="Cancel"
+            extraOnClick={handleCancel}
             type="submit"
             disabled={isSubmitting}
           />
