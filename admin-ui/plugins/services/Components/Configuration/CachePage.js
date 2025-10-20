@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import BlockUi from '../../../../app/components/BlockUi/BlockUi'
 import { Formik } from 'formik'
 import { Form, FormGroup, Card, Col, CardBody, InputGroup, CustomInput } from 'Components'
-import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import CacheInMemory from './CacheInMemory'
@@ -90,6 +90,12 @@ function CachePage() {
   function submitForm() {
     toggle()
     document.getElementsByClassName('LdapUserActionSubmitButton')[0].click()
+  }
+  function handleCancel(formik) {
+    return () => {
+      formik.resetForm()
+      setCacheProviderType(cacheData.cacheProviderType)
+    }
   }
 
   return (
@@ -187,7 +193,7 @@ function CachePage() {
                               type="select"
                               id="cacheProviderType"
                               name="cacheProviderType"
-                              defaultValue={cacheData.cacheProviderType}
+                              value={cacheProviderType}
                               onChange={(e) => {
                                 setCacheProviderType(e.target.value)
                                 formik.setFieldValue('cacheProviderType', e.target.value)
@@ -218,7 +224,13 @@ function CachePage() {
                     <CacheNative config={cacheNativeData} formik={formik} />
                   )}
                   <FormGroup row></FormGroup>
-                  <GluuFooter saveHandler={toggle} />
+                  <GluuCommitFooter
+                    saveHandler={toggle}
+                    hideButtons={{ save: true, back: true }}
+                    extraLabel="Cancel"
+                    extraOnClick={handleCancel(formik)}
+                    type="submit"
+                  />
                   <GluuCommitDialog
                     handler={toggle}
                     modal={modal}

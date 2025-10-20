@@ -1,3 +1,4 @@
+import { addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import type { AuditLog } from 'Plugins/admin/redux/sagas/types'
 
@@ -14,9 +15,10 @@ export interface LogAuditParams {
   message: string
   modifiedFields?: Record<string, unknown>
   performedOn?: string | Date
+  ip_address?: string
+  extra?: Record<string, unknown>
   status?: string
   client_id?: string
-  ip_address?: string
   payload?: unknown
 }
 
@@ -26,42 +28,39 @@ export async function logAuditUserAction({
   action,
   resource,
   message,
-  modifiedFields,
-  performedOn: _performedOn,
-  status = 'success',
+  modifiedFields = {},
+  performedOn,
+  extra = {},
+  status = 'success',      
   client_id,
-  ip_address,
+  ip_address,      
   payload,
 }: LogAuditParams): Promise<void> {
-  // Construct audit object in the exact sequence specified
   const audit: AuditLog = {
     headers: { Authorization: token ? `Bearer ${token}` : '' },
-    client_id,
-    ip_address,
     status,
     performedBy: {
       user_inum: userinfo?.inum ?? '-',
       userId: userinfo?.name ?? '-',
     },
-    action,
-    resource,
-    message,
+    client_id,
   }
 
-  // Add modifiedFields if provided
-  if (modifiedFields && Object.keys(modifiedFields).length > 0) {
-    audit.modifiedFields = modifiedFields
+  const payloadWrapper = {
+    action: {
+      action_message: message,
+      action_data:
+        payload !== undefined
+          ? payload
+          : {
+              ...extra,
+              modifiedFields,
+              ...(performedOn ? { performedOn } : {}),
+            },
+    },
   }
 
-  // Add payload if provided
-  if (payload !== undefined && payload !== null) {
-    audit.payload = payload as Record<string, unknown>
-  }
-
-  // Add date at the end
-  audit.date = new Date()
-
-  // Send the audit log
+  addAdditionalData(audit, action, resource, payloadWrapper)
   if (audit?.headers?.Authorization) {
     await postUserAction(audit)
   }
