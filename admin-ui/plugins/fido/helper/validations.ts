@@ -29,8 +29,6 @@ const dynamicConfigValidationSchema = Yup.object({
   fido2DeviceInfoCollection: Yup.boolean().required('FIDO2 Device Info Collection is required.'),
   fido2ErrorCategorization: Yup.boolean().required('FIDO2 Error Categorization is required.'),
   fido2PerformanceMetrics: Yup.boolean().required('FIDO2 Performance Metrics is required.'),
-  sessionIdPersistInCache: Yup.boolean().required('Session ID Persist In Cache is required.'),
-  errorReasonEnabled: Yup.boolean().required('Error Reason Enabled is required.'),
 })
 
 const staticConfigValidationSchema = Yup.object({

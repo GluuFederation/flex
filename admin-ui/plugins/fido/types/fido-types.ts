@@ -19,8 +19,6 @@ export interface DynamicConfigFormValues {
   fido2DeviceInfoCollection: boolean
   fido2ErrorCategorization: boolean
   fido2PerformanceMetrics: boolean
-  sessionIdPersistInCache: boolean
-  errorReasonEnabled: boolean
 }
 
 export interface StaticConfigFormValues {

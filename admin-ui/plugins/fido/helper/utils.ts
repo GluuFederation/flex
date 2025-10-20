@@ -93,8 +93,6 @@ const transformDynamicConfigToFormValues = (
     fido2DeviceInfoCollection: toBooleanValue(config?.fido2DeviceInfoCollection),
     fido2ErrorCategorization: toBooleanValue(config?.fido2ErrorCategorization),
     fido2PerformanceMetrics: toBooleanValue(config?.fido2PerformanceMetrics),
-    sessionIdPersistInCache: toBooleanValue(config?.sessionIdPersistInCache),
-    errorReasonEnabled: toBooleanValue(config?.errorReasonEnabled),
   }
 }
 
@@ -191,8 +189,6 @@ const applyDynamicConfigChanges = (
   payload.fido2DeviceInfoCollection = dynamicData.fido2DeviceInfoCollection
   payload.fido2ErrorCategorization = dynamicData.fido2ErrorCategorization
   payload.fido2PerformanceMetrics = dynamicData.fido2PerformanceMetrics
-  payload.sessionIdPersistInCache = dynamicData.sessionIdPersistInCache
-  payload.errorReasonEnabled = dynamicData.errorReasonEnabled
 }
 
 const createFidoConfigPayload = ({
