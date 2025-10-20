@@ -220,7 +220,9 @@ function UserList(): JSX.Element {
 
   function handleGoToUserEditPage(row: UserTableRowData): void {
     const userData = row as unknown as CustomUser
-    navigate(`/user/usermanagement/edit/:${row.tableData?.uuid || ''}`, {
+    const userId = row.tableData?.uuid || row.inum
+    if (!userId) return
+    navigate(`/user/usermanagement/edit/${encodeURIComponent(userId)}`, {
       state: { selectedUser: userData },
     })
   }

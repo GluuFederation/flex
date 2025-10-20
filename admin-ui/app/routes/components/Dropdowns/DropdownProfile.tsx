@@ -8,7 +8,7 @@ import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 const DropdownProfile = ({ position = '', end, userinfo }: any) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const { isUserLogout } = useSelector((state: any) => state.logoutAuditReducer)
+  const { logoutAuditSucceeded } = useSelector((state: any) => state.logoutAuditReducer)
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -16,10 +16,10 @@ const DropdownProfile = ({ position = '', end, userinfo }: any) => {
   }
 
   useEffect(() => {
-    if (isUserLogout) {
+    if (logoutAuditSucceeded === true) {
       navigate('/logout')
     }
-  }, [isUserLogout])
+  }, [logoutAuditSucceeded])
 
   return (
     <DropdownMenu end={end}>

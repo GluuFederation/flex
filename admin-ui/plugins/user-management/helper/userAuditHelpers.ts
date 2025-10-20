@@ -68,9 +68,7 @@ export async function logUserCreation(data: any, payload: any): Promise<void> {
     const userinfo = authReducer.userinfo
 
     const auditPayload = { ...payload }
-    delete auditPayload.userPassword // Don't log passwords
-
-    // Ensure modifiedFields/performedOn are inside payload so they are hoisted
+    delete auditPayload.userPassword
     if (payload?.modifiedFields && !auditPayload.modifiedFields) {
       auditPayload.modifiedFields = payload.modifiedFields
     }
@@ -106,7 +104,9 @@ export async function logUserUpdate(data: any, payload: any): Promise<void> {
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
     const auditPayload = { ...payload }
-    if (auditPayload.customAttributes && auditPayload.customAttributes[0]) {
+    delete auditPayload.userPassword
+    delete auditPayload.userConfirmPassword
+    if (auditPayload.customAttributes?.[0]) {
       delete auditPayload.customAttributes[0].values
     }
     if (payload?.modifiedFields && !auditPayload.modifiedFields) {
@@ -141,9 +141,7 @@ export async function logUserDeletion(inum: string, userData?: any): Promise<voi
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
-
     const payload = userData || { inum }
-
     await logAuditUserAction({
       token,
       userinfo,
@@ -187,9 +185,15 @@ export async function logPasswordChange(inum: string, payload: any): Promise<voi
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
-
     const auditPayload = { ...payload }
-    if (auditPayload.customAttributes && auditPayload.customAttributes[0]) {
+    if (Array.isArray(auditPayload)) {
+      for (const op of auditPayload) {
+        if (op.path === '/userPassword') {
+          op.value = '[REDACTED]'
+        }
+      }
+    }
+    if (auditPayload.customAttributes?.[0]) {
       delete auditPayload.customAttributes[0].values
     }
     if (payload?.modifiedFields && !auditPayload.modifiedFields) {

@@ -15,7 +15,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.domain"
-            value={deviceData.registrationData?.rpId}
+            value={deviceData.registrationData?.domain || deviceData.registrationData?.rpId}
             doc_category={DOC_SECTION}
             doc_entry="domain"
           />
@@ -60,7 +60,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.OSName"
-              value={deviceData.deviceData?.osName}
+              value={deviceData.deviceData?.os_name || deviceData.deviceData?.osName}
               doc_category={DOC_SECTION}
               doc_entry="OSName"
             />
@@ -68,7 +68,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.OSVersion"
-              value={deviceData.deviceData?.osVersion}
+              value={deviceData.deviceData?.os_version || deviceData.deviceData?.osVersion}
               doc_category={DOC_SECTION}
               doc_entry="OSVersion"
             />

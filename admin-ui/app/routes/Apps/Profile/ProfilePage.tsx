@@ -115,11 +115,10 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = () => {
   useEffect(() => {}, [cedarPermissions])
 
   const navigateToUserManagement = useCallback((): void => {
-    if (profileDetails) {
-      navigate(`/user/usermanagement/edit/:${profileDetails.inum}`, {
-        state: { selectedUser: profileDetails },
-      })
-    }
+    if (!profileDetails?.inum) return
+    navigate(`/user/usermanagement/edit/${encodeURIComponent(profileDetails.inum)}`, {
+      state: { selectedUser: profileDetails },
+    })
   }, [profileDetails, navigate])
 
   const jansAdminUIRole = profileDetails?.customAttributes?.find(

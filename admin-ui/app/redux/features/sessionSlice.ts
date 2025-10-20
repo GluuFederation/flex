@@ -1,32 +1,31 @@
-/**
- * Session management slice for handling logout audit logging
- * This is separate from user management to avoid tight coupling
- */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 interface SessionState {
-  isUserLogout: boolean
+  logoutAuditInFlight: boolean
+  logoutAuditSucceeded: boolean | null
 }
 
 const initialState: SessionState = {
-  isUserLogout: false,
+  logoutAuditInFlight: false,
+  logoutAuditSucceeded: null,
 }
 
 const sessionSlice = createSlice({
   name: 'session',
   initialState,
   reducers: {
-    auditLogoutLogs: (state, action: PayloadAction<{ message: string }>) => {
-      console.log('Logout audit:', action.payload.message)
-      state.isUserLogout = true
-      // This action is handled by saga for actual audit logging
+    auditLogoutLogs: (state, _action: PayloadAction<{ message: string }>) => {
+      state.logoutAuditInFlight = true
+      state.logoutAuditSucceeded = null
     },
     auditLogoutLogsResponse: (state, action: PayloadAction<boolean>) => {
-      state.isUserLogout = action.payload
+      state.logoutAuditInFlight = false
+      state.logoutAuditSucceeded = action.payload
     },
     resetLogoutState: (state) => {
-      state.isUserLogout = false
+      state.logoutAuditInFlight = false
+      state.logoutAuditSucceeded = null
     },
   },
 })

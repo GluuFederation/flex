@@ -1,4 +1,5 @@
 import { AuthState } from '../helper/userAuditHelpers'
+import { CustomObjectAttribute } from 'JansConfigApi'
 
 // Base user object interface
 export interface CustomUser {
@@ -11,23 +12,17 @@ export interface CustomUser {
   jansStatus?: string
   status?: string
   userPassword?: string
-  customAttributes?: CustomAttribute[]
+  customAttributes?: CustomObjectAttribute[]
   customObjectClasses?: string[]
   dn?: string
   createdAt?: string
   updatedAt?: string
   baseDn?: string
-  [key: string]: string | string[] | number | boolean | CustomAttribute[] | undefined // Allow additional properties with proper types
+  [key: string]: string | string[] | number | boolean | CustomObjectAttribute[] | undefined // Allow additional properties with proper types
 }
 
-// Custom attribute interface
-export interface CustomAttribute {
-  name: string
-  multiValued?: boolean
-  values?: string[] | []
-  value?: string
-  displayValue?: string
-}
+// Custom attribute interface - now using CustomObjectAttribute from SDK
+export type CustomAttribute = CustomObjectAttribute
 
 // 2FA Registration entry
 export interface FidoRegistrationEntry {
@@ -44,11 +39,14 @@ export interface FidoRegistrationEntry {
     platform?: string
     name?: string
     os_name?: string
+    osName?: string // Alternative property name for os_name
     os_version?: string
+    osVersion?: string // Alternative property name for os_version
   }
   registrationData?: {
     attenstationRequest?: string
     domain?: string
+    rpId?: string // Alternative property name for domain
     type?: string
     status?: string
     createdBy?: string
@@ -69,7 +67,7 @@ export interface UserData {
   givenName?: string
   userId?: string
   mail?: string
-  customAttributes?: CustomAttribute[]
+  customAttributes?: CustomObjectAttribute[]
 }
 
 export interface RowProps {

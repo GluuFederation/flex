@@ -17,7 +17,7 @@ const SessionTimeout = ({ isAuthenticated }: any) => {
   const idleTimer = useRef(null)
   const sessionTimeout =
     useSelector((state: any) => state.authReducer?.config?.sessionTimeoutInMins) || 5
-  const { isUserLogout } = useSelector((state: any) => state.logoutAuditReducer)
+  const { logoutAuditSucceeded } = useSelector((state: any) => state.logoutAuditReducer)
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -77,10 +77,10 @@ const SessionTimeout = ({ isAuthenticated }: any) => {
   }
 
   useEffect(() => {
-    if (isUserLogout) {
+    if (logoutAuditSucceeded === true) {
       navigate('/logout')
     }
-  }, [isUserLogout])
+  }, [logoutAuditSucceeded])
 
   return (
     <>

@@ -122,6 +122,7 @@ export interface DeviceData {
   registrationData?: {
     attenstationRequest?: string
     domain?: string
+    rpId?: string // Alternative property name for domain
     type?: string
     status?: string
     createdBy?: string
@@ -130,7 +131,9 @@ export interface DeviceData {
     platform?: string
     name?: string
     os_name?: string
+    osName?: string // Alternative property name for os_name
     os_version?: string
+    osVersion?: string // Alternative property name for os_version
   }
   creationDate?: string
 }

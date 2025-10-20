@@ -4,11 +4,8 @@ import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
 import customColors from '@/customColors'
-import {
-  CustomAttribute,
-  RowProps,
-  UserDetailState,
-} from 'Plugins/user-management/types/UserApiTypes'
+import { RowProps, UserDetailState } from 'Plugins/user-management/types/UserApiTypes'
+import { CustomObjectAttribute } from 'JansConfigApi'
 
 const UserDetailViewPage = ({ row }: RowProps) => {
   const { rowData } = row
@@ -62,7 +59,7 @@ const UserDetailViewPage = ({ row }: RowProps) => {
             doc_category={DOC_SECTION}
           />
         </Col>
-        {rowData.customAttributes?.map((data: CustomAttribute, key: number) => {
+        {rowData.customAttributes?.map((data: CustomObjectAttribute, key: number) => {
           let valueToShow = ''
           if (data.name === 'birthdate') {
             valueToShow = moment(data?.values?.[0]).format('YYYY-MM-DD') || ''

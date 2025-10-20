@@ -64,8 +64,8 @@ function UserAddPage() {
 
     const normalizeValues = (key: string, rawValue: unknown, multiValued: boolean): string[] => {
       if (!multiValued && key === 'birthdate' && typeof rawValue === 'string') {
-        const formattedDate = moment(rawValue, 'YYYY-MM-DD').format('YYYY-MM-DD')
-        return [formattedDate]
+        const m = moment(rawValue, 'YYYY-MM-DD', true)
+        return m.isValid() ? [m.format('YYYY-MM-DD')] : []
       }
       const items = Array.isArray(rawValue) ? rawValue : [rawValue]
       const result: string[] = []
@@ -103,7 +103,7 @@ function UserAddPage() {
       userId: values.userId || '',
       mail: values.mail,
       displayName: values.displayName || '',
-      status: values.status as 'active' | 'inactive' | 'expired' | 'register' | undefined,
+      status: values.status as 'active' | 'inactive' | undefined,
       userPassword: values.userPassword as string | undefined,
       givenName: values.givenName || '',
       customAttributes: customAttributes,

@@ -10,8 +10,13 @@ import moment from 'moment'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { getPersistenceType } from 'Plugins/services/redux/features/persistenceTypeSlice'
 import { UserEditPageState, UserEditFormValues } from '../types/ComponentTypes'
-import { PersonAttribute, CustomAttribute } from '../types/UserApiTypes'
-import { usePutUser, getGetUserQueryKey, GetAttributesParams } from 'JansConfigApi'
+import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
+import {
+  usePutUser,
+  getGetUserQueryKey,
+  GetAttributesParams,
+  CustomObjectAttribute,
+} from 'JansConfigApi'
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
@@ -24,7 +29,7 @@ function UserEditPage() {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
-  const [userDetails] = useState(location.state?.selectedUser)
+  const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {
     if (!userDetails) {
       navigate('/user/usersmanagement')
@@ -63,12 +68,12 @@ function UserEditPage() {
     },
   })
 
-  const createCustomAttributes = (values: UserEditFormValues): CustomAttribute[] => {
+  const createCustomAttributes = (values: UserEditFormValues): CustomObjectAttribute[] => {
     if (!values) {
       return []
     }
 
-    const result: CustomAttribute[] = []
+    const result: CustomObjectAttribute[] = []
 
     Object.keys(values).forEach((attributeName) => {
       const attributeDefinition = personAttributes.find(
@@ -85,9 +90,9 @@ function UserEditPage() {
       if (!isMultiValued) {
         let normalized: string | null = null
         if (typeof rawValue === 'string') {
-          normalized = rawValue
+          normalized = rawValue.trim()
         } else if (Array.isArray(rawValue)) {
-          normalized = (rawValue[0] as string | undefined) ?? null
+          normalized = (rawValue[0] as string | undefined)?.trim() ?? null
         }
 
         const singleValue =
@@ -95,10 +100,10 @@ function UserEditPage() {
             ? moment(normalized, 'YYYY-MM-DD').format('YYYY-MM-DD')
             : (normalized ?? '')
 
-        const customAttribute: CustomAttribute = {
+        const customAttribute: CustomObjectAttribute = {
           name: attributeName,
           multiValued: false,
-          values: singleValue ? [singleValue] : [],
+          values: (singleValue ? [singleValue] : []) as unknown as CustomObjectAttribute['values'],
         }
         result.push(customAttribute)
       } else {
@@ -107,24 +112,27 @@ function UserEditPage() {
           multiValues = (rawValue as unknown[])
             .map((entry) => {
               if (typeof entry === 'string') {
-                return entry
+                return entry.trim()
               }
               if (entry && typeof entry === 'object') {
                 const record = entry as Record<string, unknown>
                 const maybe = record.value ?? record[attributeName]
-                return typeof maybe === 'string' ? maybe : ''
+                return typeof maybe === 'string' ? maybe.trim() : ''
               }
               return ''
             })
-            .filter((v): v is string => Boolean(v))
+            .filter((v): v is string => Boolean(v.trim()))
         }
 
-        const customAttribute: CustomAttribute = {
-          name: attributeName,
-          multiValued: true,
-          values: multiValues,
+        // Only add the attribute if there are actual values
+        if (multiValues.length > 0) {
+          const customAttribute: CustomObjectAttribute = {
+            name: attributeName,
+            multiValued: true,
+            values: multiValues as unknown as CustomObjectAttribute['values'],
+          }
+          result.push(customAttribute)
         }
-        result.push(customAttribute)
       }
     })
 
