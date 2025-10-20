@@ -95,9 +95,13 @@ const processMultiValuedAttribute = (
   const attrValues = customAttr.values ?? []
   const attrSingleValue = customAttr.value
   if (attrValues.length > 0) {
-    initialValues[customAttr.name || ''] = attrValues.map((v) => JSON.stringify(v))
+    initialValues[customAttr.name || ''] = attrValues.map((v) =>
+      typeof v === 'string' ? v : JSON.stringify(v),
+    )
   } else if (attrSingleValue) {
-    initialValues[customAttr.name || ''] = [JSON.stringify(attrSingleValue)]
+    initialValues[customAttr.name || ''] = [
+      typeof attrSingleValue === 'string' ? attrSingleValue : JSON.stringify(attrSingleValue),
+    ]
   }
 }
 
@@ -108,9 +112,11 @@ const processSingleValuedAttribute = (
   const attrValues = customAttr.values ?? []
   const attrSingleValue = customAttr.value
   if (attrValues.length > 0) {
-    initialValues[customAttr.name || ''] = JSON.stringify(attrValues[0])
+    const value = attrValues[0]
+    initialValues[customAttr.name || ''] = typeof value === 'string' ? value : JSON.stringify(value)
   } else if (attrSingleValue) {
-    initialValues[customAttr.name || ''] = JSON.stringify(attrSingleValue)
+    initialValues[customAttr.name || ''] =
+      typeof attrSingleValue === 'string' ? attrSingleValue : JSON.stringify(attrSingleValue)
   }
 }
 
