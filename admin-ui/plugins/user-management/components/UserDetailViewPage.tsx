@@ -64,7 +64,9 @@ const UserDetailViewPage = ({ row }: RowProps) => {
           if (data.name === 'birthdate') {
             valueToShow = moment(data?.values?.[0]).format('YYYY-MM-DD') || ''
           } else {
-            valueToShow = data.multiValued ? data?.values?.join(', ') || '' : data.value || ''
+            valueToShow = data.multiValued
+              ? data?.values?.join(', ') || ''
+              : (typeof data.value === 'string' ? data.value : JSON.stringify(data.value)) || ''
           }
 
           return (
@@ -72,8 +74,12 @@ const UserDetailViewPage = ({ row }: RowProps) => {
               {valueToShow !== '' ? (
                 <Col sm={6} xl={4} key={'customAttributes' + key}>
                   <GluuFormDetailRow
-                    label={getCustomAttributeById(data?.name)?.displayName || data?.name}
-                    doc_category={getCustomAttributeById(data?.name)?.description || data?.name}
+                    label={
+                      getCustomAttributeById(data?.name || '')?.displayName || data?.name || ''
+                    }
+                    doc_category={
+                      getCustomAttributeById(data?.name || '')?.description || data?.name || ''
+                    }
                     isDirect={true}
                     value={
                       typeof valueToShow === 'boolean' ? JSON.stringify(valueToShow) : valueToShow

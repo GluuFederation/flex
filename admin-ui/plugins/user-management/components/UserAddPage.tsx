@@ -30,7 +30,7 @@ function UserAddPage() {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_created_successfully')))
         await logUserCreation(data, variables.data)
-        await triggerUserWebhook(data)
+        await triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigate('/user/usersmanagement')
       },
@@ -95,8 +95,8 @@ function UserAddPage() {
 
   const submitData = (
     values: UserEditFormValues,
-    modifiedFields: Record<string, string | string[]>,
-    message: string,
+    _modifiedFields: Record<string, string | string[]>,
+    _message: string,
   ) => {
     const customAttributes = createCustomAttributes(values)
     const submitableValues: CustomUser = {

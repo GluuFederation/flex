@@ -27,31 +27,36 @@ import {
   UserEditFormValues,
 } from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
-import { PersonAttribute } from '../types/UserApiTypes'
+import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
+import { FormikProps } from 'formik'
+import { QueryClient } from '@tanstack/react-query'
+import { Dispatch } from '@reduxjs/toolkit'
+import { TFunction } from 'i18next'
+import { UserPatchRequest, CustomObjectAttribute } from 'JansConfigApi'
 
 const usePasswordChange = (
-  userDetails: any,
-  formik: any,
-  queryClient: any,
-  dispatch: any,
-  t: any,
+  userDetails: CustomUser | null,
+  formik: FormikProps<UserEditFormValues>,
+  queryClient: QueryClient,
+  dispatch: Dispatch,
+  t: TFunction,
 ) => {
   const changePasswordMutation = usePatchUserByInum({
     mutation: {
-      onSuccess: async (data: any, variables: any) => {
+      onSuccess: async (data: CustomUser, variables: { inum: string; data: UserPatchRequest }) => {
         dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
-        await logPasswordChange(variables.inum, variables.data)
-        await triggerUserWebhook(data)
+        await logPasswordChange(variables.inum, variables.data as Record<string, unknown>)
+        await triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
-      onError: (error: any) => {
+      onError: (error: unknown) => {
         const errorMessage = getErrorMessage(error)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
   })
 
-  const submitChangePassword = (usermessage: string) => {
+  const submitChangePassword = (_usermessage: string) => {
     if (!userDetails?.inum || !formik.values.userPassword) return
     const patchOperations = {
       jsonPatchString: JSON.stringify([
@@ -70,44 +75,57 @@ const usePasswordChange = (
   return { changePasswordMutation, submitChangePassword }
 }
 
-const processBirthdateAttribute = (customAttr: any, initialValues: UserEditFormValues) => {
+const processBirthdateAttribute = (
+  customAttr: CustomObjectAttribute,
+  initialValues: UserEditFormValues,
+) => {
   const attrValues = customAttr.values ?? []
-  const attrSingleValue = (customAttr as { value?: string }).value
-  const dateSource = attrValues.length > 0 ? attrValues[0] : attrSingleValue
+  const attrSingleValue = customAttr.value
+  const dateSource =
+    attrValues.length > 0 ? JSON.stringify(attrValues[0]) : JSON.stringify(attrSingleValue)
   if (dateSource) {
-    initialValues[customAttr.name] = moment(dateSource).format('YYYY-MM-DD')
+    initialValues[customAttr.name || ''] = moment(dateSource).format('YYYY-MM-DD')
   }
 }
 
-const processMultiValuedAttribute = (customAttr: any, initialValues: UserEditFormValues) => {
+const processMultiValuedAttribute = (
+  customAttr: CustomObjectAttribute,
+  initialValues: UserEditFormValues,
+) => {
   const attrValues = customAttr.values ?? []
-  const attrSingleValue = (customAttr as { value?: string }).value
+  const attrSingleValue = customAttr.value
   if (attrValues.length > 0) {
-    initialValues[customAttr.name] = attrValues
+    initialValues[customAttr.name || ''] = attrValues.map((v) => JSON.stringify(v))
   } else if (attrSingleValue) {
-    initialValues[customAttr.name] = [attrSingleValue]
+    initialValues[customAttr.name || ''] = [JSON.stringify(attrSingleValue)]
   }
 }
 
-const processSingleValuedAttribute = (customAttr: any, initialValues: UserEditFormValues) => {
+const processSingleValuedAttribute = (
+  customAttr: CustomObjectAttribute,
+  initialValues: UserEditFormValues,
+) => {
   const attrValues = customAttr.values ?? []
-  const attrSingleValue = (customAttr as { value?: string }).value
+  const attrSingleValue = customAttr.value
   if (attrValues.length > 0) {
-    initialValues[customAttr.name] = attrValues[0]
+    initialValues[customAttr.name || ''] = JSON.stringify(attrValues[0])
   } else if (attrSingleValue) {
-    initialValues[customAttr.name] = attrSingleValue
+    initialValues[customAttr.name || ''] = JSON.stringify(attrSingleValue)
   }
 }
 
-const initializeCustomAttributes = (userDetails: any, personAttributes: PersonAttribute[]) => {
+const initializeCustomAttributes = (
+  userDetails: CustomUser | null,
+  personAttributes: PersonAttribute[],
+) => {
   const initialValues: UserEditFormValues = {
     displayName: userDetails?.displayName || '',
     givenName: userDetails?.givenName || '',
     mail: userDetails?.mail || '',
     userId: userDetails?.userId || '',
-    sn: userDetails?.familyName || '',
-    middleName: (userDetails?.middleName as string) || '',
-    status: (userDetails?.jansStatus as string) || userDetails?.status || '',
+    sn: (userDetails as any)?.familyName || '',
+    middleName: (userDetails as any)?.middleName || '',
+    status: (userDetails as any)?.jansStatus || userDetails?.status || '',
   }
 
   if (userDetails?.customAttributes) {
@@ -129,7 +147,7 @@ const initializeCustomAttributes = (userDetails: any, personAttributes: PersonAt
 }
 
 const setupCustomAttributes = (
-  userDetails: any,
+  userDetails: CustomUser | null,
   personAttributes: PersonAttribute[],
   selectedClaims: PersonAttribute[],
   setSelectedClaims: (claims: PersonAttribute[]) => void,
@@ -154,10 +172,10 @@ const setupCustomAttributes = (
 
   const tempList = [...selectedClaims]
   for (const customAttr of userDetails.customAttributes) {
-    if (customAttr.values && customAttr.values.length > 0) {
+    if (customAttr.values && customAttr.values.length > 0 && customAttr.name) {
       const attributeData = getCustomAttributeById(customAttr.name)
       if (attributeData && !usedClaims.has(customAttr.name)) {
-        const data = { ...attributeData, options: customAttr.values }
+        const data = { ...attributeData, options: customAttr.values } as PersonAttribute
         tempList.push(data)
       }
     }
@@ -177,10 +195,10 @@ const PasswordChangeModal = ({
 }: {
   isOpen: boolean
   toggle: () => void
-  formik: any
+  formik: FormikProps<UserEditFormValues>
   passwordError: string
   selectedTheme: string
-  t: any
+  t: TFunction
   onPasswordChange: () => void
 }) => {
   const DOC_SECTION = 'user'
@@ -247,7 +265,7 @@ const AvailableClaimsPanel = ({
   personAttributes: PersonAttribute[]
   selectedClaims: PersonAttribute[]
   setSelectedClaimsToState: (data: PersonAttribute) => void
-  dispatch: any
+  dispatch: Dispatch
   options: Partial<GetAttributesParams>
 }) => {
   const usedClaims = new Set([
@@ -328,7 +346,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const selectedTheme = theme.state.theme
   const options: Partial<GetAttributesParams> = {}
 
-  const initialValues = initializeCustomAttributes(userDetails, personAttributes)
+  const initialValues = initializeCustomAttributes(userDetails || null, personAttributes)
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -351,7 +369,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   })
 
   const { changePasswordMutation, submitChangePassword } = usePasswordChange(
-    userDetails,
+    userDetails || null,
     formik,
     queryClient,
     dispatch,

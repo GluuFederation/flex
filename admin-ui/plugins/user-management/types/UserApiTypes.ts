@@ -1,25 +1,9 @@
 import { AuthState } from '../helper/userAuditHelpers'
-import { CustomObjectAttribute } from 'JansConfigApi'
+import { CustomObjectAttribute, CustomUser as ApiCustomUser, JansAttribute } from 'JansConfigApi'
 
-// Base user object interface
-export interface CustomUser {
-  inum?: string
-  userId?: string
-  displayName?: string
-  givenName?: string
-  familyName?: string
-  mail?: string
-  jansStatus?: string
-  status?: string
-  userPassword?: string
-  customAttributes?: CustomObjectAttribute[]
-  customObjectClasses?: string[]
-  dn?: string
-  createdAt?: string
-  updatedAt?: string
-  baseDn?: string
-  [key: string]: string | string[] | number | boolean | CustomObjectAttribute[] | undefined // Allow additional properties with proper types
-}
+// Use the generated API types as the primary reference
+export type CustomUser = ApiCustomUser
+export type PersonAttribute = JansAttribute
 
 // Custom attribute interface - now using CustomObjectAttribute from SDK
 export type CustomAttribute = CustomObjectAttribute
@@ -86,27 +70,7 @@ export interface UserDetailState {
   }
 }
 
-// Define interfaces for TypeScript typing
-export interface PersonAttribute {
-  name: string
-  displayName?: string
-  description?: string
-  status?: string
-  dataType?: string
-  editType?: string[]
-  viewType?: string[]
-  usageType?: string[]
-  jansHideOnDiscovery?: boolean
-  oxMultiValuedAttribute?: boolean
-  attributeValidation?: {
-    maxLength?: number | null
-    regexp?: string | null
-    minLength?: number | null
-  }
-  scimCustomAttr?: boolean
-  inum?: string
-  options?: string[] // Added for dynamic options used in forms
-}
+// PersonAttribute is now aliased to JansAttribute from the generated API
 
 interface AttributesState {
   items: PersonAttribute[]

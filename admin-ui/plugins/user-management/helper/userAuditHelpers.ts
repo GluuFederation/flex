@@ -2,6 +2,7 @@ import store from 'Redux/store'
 import { logAuditUserAction } from 'Utils/AuditLogger'
 import { FETCH, DELETION, UPDATE, CREATE } from '../../../app/audit/UserActionType'
 import { API_USERS } from '../../../app/audit/Resources'
+import { CustomUser } from '../types/UserApiTypes'
 
 export interface AuditLog {
   headers: {
@@ -39,7 +40,7 @@ export interface AuthState {
  * Initialize audit log with user information from Redux store
  */
 export function initAudit(): AuditLog {
-  const state = store.getState() as any
+  const state = store.getState() as unknown as { authReducer: AuthState }
   const authReducer: AuthState = state.authReducer
   const auditlog: AuditLog = {
     headers: {},
@@ -59,27 +60,27 @@ export function initAudit(): AuditLog {
   return auditlog
 }
 
-export async function logUserCreation(data: any, payload: any): Promise<void> {
+export async function logUserCreation(data: CustomUser, payload: CustomUser): Promise<void> {
   try {
-    const state = store.getState() as any
+    const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
 
-    const auditPayload = { ...payload }
+    const auditPayload = { ...payload } as any
     delete auditPayload.userPassword
-    if (payload?.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = payload.modifiedFields
+    if ((payload as any)?.modifiedFields && !auditPayload.modifiedFields) {
+      auditPayload.modifiedFields = (payload as any).modifiedFields
     }
-    if (payload?.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = payload.performedOn
+    if ((payload as any)?.performedOn && !auditPayload.performedOn) {
+      auditPayload.performedOn = (payload as any).performedOn
     }
 
     const message =
-      payload?.action?.action_message ||
-      payload?.action_message ||
-      payload?.message ||
+      (payload as any)?.action?.action_message ||
+      (payload as any)?.action_message ||
+      (payload as any)?.message ||
       'Created user'
 
     await logAuditUserAction({
@@ -96,29 +97,29 @@ export async function logUserCreation(data: any, payload: any): Promise<void> {
   }
 }
 
-export async function logUserUpdate(data: any, payload: any): Promise<void> {
+export async function logUserUpdate(data: CustomUser, payload: CustomUser): Promise<void> {
   try {
-    const state = store.getState() as any
+    const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
-    const auditPayload = { ...payload }
+    const auditPayload = { ...payload } as any
     delete auditPayload.userPassword
     delete auditPayload.userConfirmPassword
-    if (auditPayload.customAttributes?.[0]) {
-      delete auditPayload.customAttributes[0].values
+    if ((auditPayload as any).customAttributes?.[0]) {
+      delete (auditPayload as any).customAttributes[0].values
     }
-    if (payload?.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = payload.modifiedFields
+    if ((payload as any)?.modifiedFields && !auditPayload.modifiedFields) {
+      auditPayload.modifiedFields = (payload as any).modifiedFields
     }
-    if (payload?.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = payload.performedOn
+    if ((payload as any)?.performedOn && !auditPayload.performedOn) {
+      auditPayload.performedOn = (payload as any).performedOn
     }
     const message =
-      payload?.action?.action_message ||
-      payload?.action_message ||
-      payload?.message ||
+      (payload as any)?.action?.action_message ||
+      (payload as any)?.action_message ||
+      (payload as any)?.message ||
       'Updated user'
     await logAuditUserAction({
       token,
@@ -134,9 +135,9 @@ export async function logUserUpdate(data: any, payload: any): Promise<void> {
   }
 }
 
-export async function logUserDeletion(inum: string, userData?: any): Promise<void> {
+export async function logUserDeletion(inum: string, userData?: CustomUser): Promise<void> {
   try {
-    const state = store.getState() as any
+    const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
@@ -156,9 +157,9 @@ export async function logUserDeletion(inum: string, userData?: any): Promise<voi
   }
 }
 
-export async function logUserFetch(payload: any): Promise<void> {
+export async function logUserFetch(payload: Record<string, unknown>): Promise<void> {
   try {
-    const state = store.getState() as any
+    const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
@@ -178,29 +179,32 @@ export async function logUserFetch(payload: any): Promise<void> {
   }
 }
 
-export async function logPasswordChange(inum: string, payload: any): Promise<void> {
+export async function logPasswordChange(
+  inum: string,
+  payload: Record<string, unknown>,
+): Promise<void> {
   try {
-    const state = store.getState() as any
+    const state = store.getState() as unknown as { authReducer: AuthState }
     const authReducer: AuthState = state.authReducer
     const token = authReducer.token?.access_token || ''
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
     const auditPayload = { ...payload }
-    if (Array.isArray(auditPayload)) {
-      for (const op of auditPayload) {
-        if (op.path === '/userPassword') {
-          op.value = '[REDACTED]'
+    if (Array.isArray(payload)) {
+      for (const op of payload) {
+        if ((op as Record<string, unknown>).path === '/userPassword') {
+          ;(op as Record<string, unknown>).value = '[REDACTED]'
         }
       }
     }
-    if (auditPayload.customAttributes?.[0]) {
-      delete auditPayload.customAttributes[0].values
+    if ((auditPayload as any).customAttributes?.[0]) {
+      delete (auditPayload as any).customAttributes[0].values
     }
-    if (payload?.modifiedFields && !auditPayload.modifiedFields) {
-      auditPayload.modifiedFields = payload.modifiedFields
+    if ((payload as any)?.modifiedFields && !auditPayload.modifiedFields) {
+      auditPayload.modifiedFields = (payload as any).modifiedFields
     }
-    if (payload?.performedOn && !auditPayload.performedOn) {
-      auditPayload.performedOn = payload.performedOn
+    if ((payload as any)?.performedOn && !auditPayload.performedOn) {
+      auditPayload.performedOn = (payload as any).performedOn
     }
 
     await logAuditUserAction({

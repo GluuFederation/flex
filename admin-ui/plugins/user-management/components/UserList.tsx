@@ -118,8 +118,8 @@ function UserList(): JSX.Element {
     mutation: {
       onSuccess: async (_data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
-        await logUserDeletion(variables.inum, deleteData || undefined)
-        await triggerUserWebhook(deleteData)
+        await logUserDeletion(variables.inum, (deleteData as CustomUser) || undefined)
+        await triggerUserWebhook(deleteData as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
       onError: (error: unknown) => {
@@ -133,7 +133,7 @@ function UserList(): JSX.Element {
     mutation: {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
-        await logUserUpdate(data, variables.data)
+        await logUserUpdate(data, variables.data as CustomUser)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
       onError: (error: unknown) => {
@@ -191,7 +191,7 @@ function UserList(): JSX.Element {
     const getOTPDevices =
       row?.customAttributes?.filter((item: CustomAttribute) => item.name === 'jansOTPDevices') || []
     const getOTPDevicesValue = getOTPDevices.map((item: CustomAttribute) =>
-      JSON.parse(item.value || '{}'),
+      JSON.parse(typeof item.value === 'string' ? item.value : JSON.stringify(item.value || {})),
     )
     const getDevices = getOTPDevicesValue?.map((item: OTPDevicesData) => [...(item.devices || [])])
     const getDevicesList = getDevices?.flat()
@@ -242,13 +242,6 @@ function UserList(): JSX.Element {
         setPattern(memoPattern)
         // Refetch with new parameters - React Query will handle it automatically
       }
-    }
-  }
-
-  function handleUserDelete(row: UserTableRowData): void {
-    if (row.inum) {
-      setDeleteData(row)
-      toggle()
     }
   }
 
@@ -389,7 +382,7 @@ function UserList(): JSX.Element {
           (item: CustomAttribute) => item.name === 'jansOTPDevices',
         ) || []
       const getOTPDevicesValue = getOTPDevices.map((item: CustomAttribute) =>
-        JSON.parse(item.value || '{}'),
+        JSON.parse(typeof item.value === 'string' ? item.value : JSON.stringify(item.value || {})),
       )
 
       if (getOTPDevicesValue.length > 0) {
@@ -411,7 +404,11 @@ function UserList(): JSX.Element {
 
     const usedAttributes = new Set<string>()
     for (const user of usersList) {
-      user.customAttributes?.forEach((attribute) => usedAttributes.add(attribute.name))
+      user.customAttributes?.forEach((attribute) => {
+        if (attribute.name) {
+          usedAttributes.add(attribute.name)
+        }
+      })
     }
 
     if (usedAttributes.size > 0) {

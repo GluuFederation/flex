@@ -57,7 +57,7 @@ function UserEditPage() {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
         await logUserUpdate(data, variables.data)
-        await triggerUserWebhook(data)
+        await triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigate('/user/usersmanagement')
       },
@@ -147,7 +147,7 @@ function UserEditPage() {
     const customAttributes = createCustomAttributes(values)
     const userInum = userDetails?.inum
 
-    const submittableValues: any = {
+    const submittableValues: Record<string, unknown> = {
       inum: userInum,
       userId: Array.isArray(values.userId) ? values.userId[0] : values.userId || '',
       mail: Array.isArray(values.mail) ? values.mail[0] : values.mail,
