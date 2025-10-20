@@ -31,9 +31,8 @@ export async function logAuditUserAction({
   modifiedFields = {},
   performedOn,
   extra = {},
-  status = 'success',      
+  status = 'success',
   client_id,
-  ip_address,      
   payload,
 }: LogAuditParams): Promise<void> {
   const audit: AuditLog = {
