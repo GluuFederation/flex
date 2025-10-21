@@ -815,6 +815,7 @@
     "add_ssa": "Agregar SSA",
     "copied": "Copiado",
     "no_data_found": "No se encontraron datos",
+    "no_sessions_found": "No se encontraron sesiones",
     "role_already_exists": "El rol ya existe",
     "user_created_successfully": "Usuario creado exitosamente",
     "user_updated_successfully": "Usuario actualizado exitosamente",

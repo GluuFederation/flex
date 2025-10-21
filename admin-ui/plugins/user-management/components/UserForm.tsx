@@ -1,25 +1,44 @@
+// React and React-related imports
 import React, { useEffect, useState, useContext } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
+import { useFormik, FormikProps } from 'formik'
+import { useQueryClient, QueryClient } from '@tanstack/react-query'
+
+// Third-party libraries
+import * as Yup from 'yup'
+import { debounce } from 'lodash'
+import moment from 'moment/moment'
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Dispatch } from '@reduxjs/toolkit'
+import { TFunction } from 'i18next'
+
+// UI Components
 import { Button, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
-import { useTranslation } from 'react-i18next'
-import UserClaimEntry from './UserClaimEntry'
-import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+
+// Context and Redux
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
-import { usePatchUserByInum, getGetUserQueryKey, GetAttributesParams } from 'JansConfigApi'
-import { useQueryClient } from '@tanstack/react-query'
+import { updateToast } from 'Redux/features/toastSlice'
+
+// API and Services
+import {
+  usePatchUserByInum,
+  getGetUserQueryKey,
+  GetAttributesParams,
+  UserPatchRequest,
+  CustomObjectAttribute,
+} from 'JansConfigApi'
+import UserClaimEntry from './UserClaimEntry'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
-import { updateToast } from 'Redux/features/toastSlice'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import { debounce } from 'lodash'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-import moment from 'moment/moment'
+
+// Types
 import {
   UserFormProps,
   UserFormState,
@@ -28,11 +47,6 @@ import {
 } from '../types/ComponentTypes'
 import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
-import { FormikProps } from 'formik'
-import { QueryClient } from '@tanstack/react-query'
-import { Dispatch } from '@reduxjs/toolkit'
-import { TFunction } from 'i18next'
-import { UserPatchRequest, CustomObjectAttribute } from 'JansConfigApi'
 
 const usePasswordChange = (
   userDetails: CustomUser | null,
@@ -58,15 +72,42 @@ const usePasswordChange = (
 
   const submitChangePassword = (_usermessage: string) => {
     if (!userDetails?.inum || !formik.values.userPassword) return
-    const patchOperations = {
-      jsonPatchString: JSON.stringify([
-        {
-          op: 'replace',
-          path: '/userPassword',
-          value: formik.values.userPassword,
-        },
-      ]),
+
+    // Find the userPassword custom attribute
+    const passwordAttrIndex = userDetails?.customAttributes?.findIndex(
+      (attr) => attr.name === 'userPassword',
+    )
+
+    let patchOperations
+
+    if (passwordAttrIndex !== undefined && passwordAttrIndex >= 0) {
+      // Update existing custom attribute
+      patchOperations = {
+        jsonPatchString: JSON.stringify([
+          {
+            op: 'replace',
+            path: `/customAttributes/${passwordAttrIndex}/values/0`,
+            value: formik.values.userPassword,
+          },
+        ]),
+      }
+    } else {
+      // Add new custom attribute
+      patchOperations = {
+        jsonPatchString: JSON.stringify([
+          {
+            op: 'add',
+            path: '/customAttributes/-',
+            value: {
+              name: 'userPassword',
+              multiValued: false,
+              values: [formik.values.userPassword],
+            },
+          },
+        ]),
+      }
     }
+
     changePasswordMutation.mutate({
       inum: userDetails.inum,
       data: patchOperations,

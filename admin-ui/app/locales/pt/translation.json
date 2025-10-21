@@ -747,6 +747,7 @@
     "copied": "Copiado",
     "edit_acr": "Editar ACR",
     "no_data_found": "Nenhum dado encontrado",
+    "no_sessions_found": "Nenhuma sessão encontrada",
     "role_already_exists": "Função já existe",
     "user_created_successfully": "Usuário criado com sucesso",
     "user_updated_successfully": "Usuário atualizado com sucesso",

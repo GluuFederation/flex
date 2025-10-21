@@ -13,58 +13,134 @@ import {
   Checkbox,
   FormControl,
   ListItemText,
+  Button as MaterialButton,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button } from 'reactstrap'
 import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { useTranslation } from 'react-i18next'
-import {
-  getSessions,
-  deleteSession,
-  revokeSession,
-} from 'Plugins/auth-server/redux/features/sessionSlice'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SessionDetailPage from '../Sessions/SessionDetailPage'
 import { SESSION_DELETE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import { searchSessions } from '../../redux/features/sessionSlice'
-import dayjs from 'dayjs'
-import { Button as MaterialButton } from '@mui/material'
+import dayjs, { Dayjs } from 'dayjs'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import GetAppIcon from '@mui/icons-material/GetApp'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
 import { DeleteOutlined } from '@mui/icons-material'
-import PropTypes from 'prop-types'
 import customColors from '@/customColors'
+import {
+  useGetSessions,
+  useDeleteSession,
+  useRevokeUserSession,
+  useSearchSession,
+} from '../../../../jans_config_api_orval/src/JansConfigApi'
+import type {
+  SessionId,
+  SearchSessionParams,
+} from '../../../../jans_config_api_orval/src/JansConfigApi'
+import type {
+  Session,
+  RootState,
+  TableColumn,
+  SessionListPageProps,
+  FilterState,
+  ColumnState,
+} from './types'
 
-function SessionListPage() {
+const SessionListPage: React.FC<SessionListPageProps> = () => {
   const { hasCedarPermission, authorize } = useCedarling()
-  const sessions = useSelector((state) => state.sessionReducer.items)
-  const loading = useSelector((state) => state.sessionReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
-  const dispatch = useDispatch()
-  const { t } = useTranslation()
-
-  const authenticatedSessions = useMemo(
-    () => sessions.filter((session) => session.state === 'authenticated'),
-    [sessions],
+  const { permissions: cedarPermissions } = useSelector(
+    (state: RootState) => state.cedarPermissions || { permissions: [] },
   )
-  const [myActions, setMyActions] = useState([])
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
-  const [deleteModal, setDeleteModal] = useState(false)
-  const pageSize = localStorage.getItem('paggingSize') || 10
+  const { t } = useTranslation()
+  const {
+    data: sessionsData,
+    isLoading: sessionsLoading,
+    refetch: refetchSessions,
+  } = useGetSessions()
+  const deleteSessionMutation = useDeleteSession()
+  const revokeSessionMutation = useRevokeUserSession()
+
+  // State for search functionality
+  const [searchParams, setSearchParams] = useState<SearchSessionParams | undefined>(undefined)
+  const { data: searchData, isLoading: searchLoading } = useSearchSession(searchParams, {
+    query: {
+      enabled: !!searchParams,
+    },
+  })
+
+  const adaptSessionIdToSession = useCallback((sessionId: SessionId): Session => {
+    return {
+      id: sessionId.id,
+      userDn: sessionId.userDn,
+      authenticationTime: sessionId.authenticationTime || '',
+      state: sessionId.state as 'authenticated' | 'unauthenticated',
+      sessionState: sessionId.sessionState,
+      sessionAttributes: {
+        auth_user: sessionId.sessionAttributes?.auth_user || '',
+        remote_ip: sessionId.sessionAttributes?.remote_ip || '',
+        client_id: sessionId.sessionAttributes?.client_id || '',
+        acr_values: sessionId.sessionAttributes?.acr_values || '',
+        sid: sessionId.sessionAttributes?.sid,
+        ...sessionId.sessionAttributes,
+      },
+      expirationDate: sessionId.expirationDate,
+      permissionGrantedMap: sessionId.permissionGrantedMap?.permissionGranted,
+    }
+  }, [])
+
+  // Determine which data to use
+  const sessions = useMemo(() => {
+    let rawSessions: SessionId[] = []
+    if (searchParams && searchData?.entries) {
+      rawSessions = searchData.entries
+    } else if (sessionsData?.entries) {
+      rawSessions = sessionsData.entries
+    }
+    return rawSessions.map(adaptSessionIdToSession)
+  }, [sessionsData, searchData, searchParams, adaptSessionIdToSession])
+
+  const loading = sessionsLoading || searchLoading
+
+  const authenticatedSessions = useMemo(() => {
+    const filtered = sessions.filter((session) => session.state === 'authenticated')
+    return filtered
+  }, [sessions])
+
+  // State management
+  const [myActions, setMyActions] = useState<Array<(rowData: Session) => any>>([])
+  const [item, setItem] = useState<Session>({} as Session)
+  const [modal, setModal] = useState<boolean>(false)
+  const [deleteModal, setDeleteModal] = useState<boolean>(false)
+  const [revokeUsername, setRevokeUsername] = useState<string | null>(null)
+  const [showFilter, setShowFilter] = useState<boolean>(false)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+
+  const [filterState, setFilterState] = useState<FilterState>({
+    limit: 10,
+    pattern: null,
+    searchFilter: null,
+    date: null,
+  })
+
+  const [columnState, setColumnState] = useState<ColumnState>({
+    checkedColumns: [],
+    updatedColumns: [],
+  })
+
+  const pageSize = Number.parseInt(localStorage.getItem('paggingSize') || '10', 10)
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'default'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
@@ -82,58 +158,55 @@ function SessionListPage() {
 
   useEffect(() => {}, [cedarPermissions])
 
-  const handleDeleteSession = useCallback(
-    (rowData) => {
-      setItem(rowData)
-      setDeleteModal(true)
-    },
-    [setDeleteModal],
+  const handleDeleteSession = useCallback((rowData: Session) => {
+    setItem(rowData)
+    setDeleteModal(true)
+  }, [])
+
+  const DeleteIcon = useCallback(
+    () => (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <DeleteOutlined />
+      </div>
+    ),
+    [],
+  )
+
+  const createDeleteAction = useCallback(
+    (rowData: Session) => ({
+      icon: DeleteIcon,
+      iconProps: {
+        color: 'secondary',
+        id: 'deleteSession' + rowData.sessionAttributes?.auth_user,
+      },
+      tooltip: `${t('actions.delete')}`,
+      onClick: (event: React.MouseEvent, rowData: Session) => handleDeleteSession(rowData),
+      disabled: !hasCedarPermission(SESSION_DELETE),
+    }),
+    [t, handleDeleteSession, hasCedarPermission, DeleteIcon],
   )
 
   useEffect(() => {
-    const actions = []
+    const actions: Array<(rowData: Session) => any> = []
 
     if (hasCedarPermission(SESSION_DELETE)) {
-      actions.push((rowData) => ({
-        icon: () => (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <DeleteOutlined />
-          </div>
-        ),
-        iconProps: {
-          color: 'secondary',
-          id: 'deleteSession' + rowData.sessionAttributes?.auth_user,
-        },
-        tooltip: `${t('actions.delete')}`,
-        onClick: (event, rowData) => handleDeleteSession(rowData),
-        disabled: !hasCedarPermission(SESSION_DELETE),
-      }))
+      actions.push(createDeleteAction)
     }
 
     setMyActions(actions)
-  }, [hasCedarPermission, t, handleDeleteSession])
+  }, [hasCedarPermission, createDeleteAction])
 
   const sessionUsername = useMemo(
-    () => authenticatedSessions.map((session) => session.sessionAttributes.auth_user),
+    () =>
+      authenticatedSessions.map((session) => session.sessionAttributes?.auth_user).filter(Boolean),
     [authenticatedSessions],
   )
   const usernames = useMemo(() => [...new Set(sessionUsername)], [sessionUsername])
-  const [revokeUsername, setRevokeUsername] = useState()
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState(null)
-  const [searchFilter, setSearchFilter] = useState(null)
-  const [date, setDate] = useState(null)
-  const [checkedColumns, setCheckedColumns] = useState([])
-  const [updatedColumns, setUpdatedColumns] = useState([])
-  const [showFilter, setShowFilter] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const memoLimit = limit
-  let memoPattern = pattern
 
   SetTitle(t('menus.sessions'))
 
   const tableColumns = useMemo(
-    () => [
+    (): TableColumn[] => [
       { title: `${t('fields.username')}`, field: 'sessionAttributes.auth_user' },
       {
         title: `${t('fields.ip_address')}`,
@@ -146,7 +219,7 @@ function SessionListPage() {
       {
         title: `${t('fields.auth_time')}`,
         field: 'authenticationTime',
-        render: (rowData) => (
+        render: (rowData: Session) => (
           <span>{moment(rowData.authenticationTime).format('ddd, MMM DD, YYYY h:mm:ss A')}</span>
         ),
       },
@@ -156,38 +229,42 @@ function SessionListPage() {
       },
       { title: `${t('fields.state')}`, field: 'state' },
     ],
-    [t, hasCedarPermission],
+    [t],
   )
 
   const handleCheckboxChange = useCallback(
-    (title) => {
-      setCheckedColumns((prev) => {
-        const newCheckedColumns = prev.includes(title)
-          ? prev.filter((item) => item !== title)
-          : [...prev, title]
+    (title: string) => {
+      setColumnState((prev) => {
+        const newCheckedColumns = prev.checkedColumns.includes(title)
+          ? prev.checkedColumns.filter((item) => item !== title)
+          : [...prev.checkedColumns, title]
         const newUpdatedColumns = tableColumns.filter((column) =>
           newCheckedColumns.includes(column.title),
         )
-        setUpdatedColumns(newUpdatedColumns)
-        return newCheckedColumns
+        return {
+          checkedColumns: newCheckedColumns,
+          updatedColumns: newUpdatedColumns,
+        }
       })
     },
     [tableColumns],
   )
 
   useEffect(() => {
-    dispatch(getSessions())
     const initialCheckedColumns = tableColumns.map((column) => column.title)
-    setCheckedColumns(initialCheckedColumns)
-    setUpdatedColumns(tableColumns)
-  }, [])
+    setColumnState({
+      checkedColumns: initialCheckedColumns,
+      updatedColumns: tableColumns,
+    })
+  }, [tableColumns])
 
   const handleRevoke = useCallback(() => {
-    const row = !isEmpty(authenticatedSessions)
-      ? authenticatedSessions.find(
-          ({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername,
-        )
-      : null
+    if (isEmpty(authenticatedSessions)) {
+      return
+    }
+    const row = authenticatedSessions.find(
+      ({ sessionAttributes }) => sessionAttributes?.auth_user === revokeUsername,
+    )
     if (row) {
       setItem(row)
       toggle()
@@ -195,30 +272,42 @@ function SessionListPage() {
   }, [authenticatedSessions, revokeUsername])
 
   const onRevokeConfirmed = useCallback(
-    (message) => {
-      const { userDn } = item
-      const params = { userDn, action_message: message }
-      dispatch(revokeSession(params))
-      toggle()
+    async (message: string) => {
+      try {
+        const { userDn } = item
+        if (userDn) {
+          await revokeSessionMutation.mutateAsync({ userDn })
+          refetchSessions()
+        }
+        toggle()
+      } catch (error) {
+        console.error('Error revoking session:', error)
+      }
     },
-    [item, dispatch, toggle],
+    [item, revokeSessionMutation, refetchSessions, toggle],
   )
 
   const onDeleteConfirmed = useCallback(
-    (message) => {
-      const sessionId = item.id || item.sessionAttributes?.sid
-      const params = { sessionId, action_message: message }
-      dispatch(deleteSession(params))
-      setDeleteModal(false)
+    async (message: string) => {
+      try {
+        const sessionId = item.id || item.sessionAttributes?.sid
+        if (sessionId) {
+          await deleteSessionMutation.mutateAsync({ sid: sessionId })
+          refetchSessions()
+        }
+        setDeleteModal(false)
+      } catch (error) {
+        console.error('Error deleting session:', error)
+      }
     },
-    [item, dispatch],
+    [item, deleteSessionMutation, refetchSessions],
   )
 
   const convertToCSV = useCallback(
-    (data) => {
-      const keys = updatedColumns.map((item) => item.title)
+    (data: Session[]) => {
+      const keys = columnState.updatedColumns.map((item) => item.title)
 
-      const header = keys.map((item) => item.replace(/-/g, ' ').toUpperCase()).join(',')
+      const header = keys.map((item) => item.replaceAll('-', ' ').toUpperCase()).join(',')
 
       const updateData = data.map((row) => {
         return {
@@ -237,7 +326,7 @@ function SessionListPage() {
 
       return [header, ...rows].join('\n')
     },
-    [updatedColumns, t],
+    [columnState.updatedColumns, t],
   )
 
   const downloadCSV = useCallback(() => {
@@ -250,10 +339,10 @@ function SessionListPage() {
     link.setAttribute('download', `client-tokens.csv`)
     document.body.appendChild(link)
     link.click()
-    document.body.removeChild(link)
+    link.remove()
   }, [convertToCSV, authenticatedSessions])
 
-  const handleUsernameChange = useCallback((_, value) => {
+  const handleUsernameChange = useCallback((_: any, value: string | null) => {
     setRevokeUsername(value)
   }, [])
 
@@ -261,7 +350,7 @@ function SessionListPage() {
     setShowFilter(!showFilter)
   }, [showFilter])
 
-  const handleColumnMenuOpen = useCallback((event) => {
+  const handleColumnMenuOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }, [])
 
@@ -270,32 +359,119 @@ function SessionListPage() {
   }, [])
 
   const handleFilterApply = useCallback(() => {
-    setLimit(memoLimit)
-    setPattern(memoPattern)
-    if (memoPattern || date) {
-      dispatch(
-        searchSessions({
-          action: {
-            fieldValuePair: `${searchFilter}=${
-              searchFilter !== 'expirationDate' && searchFilter !== 'authenticationTime'
-                ? memoPattern
-                : dayjs(date).format('YYYY-MM-DD')
-            }`,
-          },
-        }),
-      )
+    const { pattern, searchFilter, date } = filterState
+    if (pattern || date) {
+      const searchValue =
+        searchFilter !== 'expirationDate' && searchFilter !== 'authenticationTime'
+          ? pattern
+          : dayjs(date).format('YYYY-MM-DD')
+
+      const searchParams: SearchSessionParams = {
+        pattern: `${searchFilter}=${searchValue}`,
+        limit: 100, // Set a reasonable limit
+      }
+      setSearchParams(searchParams)
     } else {
-      dispatch(getSessions())
+      setSearchParams(undefined)
     }
-  }, [searchFilter, date, dispatch])
+  }, [filterState])
 
   const handleFilterClose = useCallback(() => {
     setShowFilter(false)
-    dispatch(getSessions())
-  }, [dispatch])
+    setSearchParams(undefined)
+  }, [])
 
-  const handleDetailPanel = useCallback((rowData) => {
+  const handleDetailPanel = useCallback((rowData: { rowData: Session }) => {
     return <SessionDetailPage row={rowData.rowData} />
+  }, [])
+
+  const TableContainer = useCallback((props: any) => <Paper {...props} elevation={0} />, [])
+
+  const tableOptions = useMemo(
+    () => ({
+      idSynonym: 'username',
+      columnsButton: false,
+      search: false,
+      searchFieldAlignment: 'left' as const,
+      selection: false,
+      pageSize: pageSize,
+      headerStyle: {
+        ...applicationStyle.tableHeaderStyle,
+        ...bgThemeColor,
+        textTransform: 'uppercase' as const,
+      },
+      actionsColumnIndex: -1,
+    }),
+    [pageSize, bgThemeColor],
+  )
+
+  const renderContent = useCallback(() => {
+    if (loading) {
+      return (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <p>{t('messages.loading')}...</p>
+        </div>
+      )
+    }
+
+    if (authenticatedSessions.length === 0) {
+      return (
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <p>{t('messages.no_sessions_found')}</p>
+        </div>
+      )
+    }
+
+    return (
+      <MaterialTable
+        components={{
+          Container: TableContainer,
+        }}
+        columns={columnState.updatedColumns}
+        data={authenticatedSessions}
+        isLoading={loading}
+        title=""
+        actions={myActions}
+        options={tableOptions}
+        detailPanel={handleDetailPanel}
+      />
+    )
+  }, [
+    loading,
+    authenticatedSessions,
+    columnState.updatedColumns,
+    myActions,
+    tableOptions,
+    handleDetailPanel,
+    TableContainer,
+    t,
+  ])
+
+  const handleSearchFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value === 'null' ? null : e.target.value
+    if (value === null) {
+      setSearchParams(undefined)
+    }
+    setFilterState((prev) => ({
+      ...prev,
+      pattern: null,
+      date: null,
+      searchFilter: value,
+    }))
+  }, [])
+
+  const handlePatternChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterState((prev) => ({
+      ...prev,
+      pattern: e.target.value,
+    }))
+  }, [])
+
+  const handleDateChange = useCallback((val: Dayjs | null) => {
+    setFilterState((prev) => ({
+      ...prev,
+      date: val,
+    }))
   }, [])
 
   return (
@@ -378,7 +554,7 @@ function SessionListPage() {
                     {tableColumns.map((column) => (
                       <MenuItem key={column.title} value={column.title}>
                         <Checkbox
-                          checked={checkedColumns.includes(column.title)}
+                          checked={columnState.checkedColumns.includes(column.title)}
                           onChange={() => handleCheckboxChange(column.title)}
                         />
                         <ListItemText primary={column.title} />
@@ -410,19 +586,12 @@ function SessionListPage() {
                       <TextField
                         select
                         label="Search Filter"
-                        value={searchFilter}
-                        onChange={(e) => {
-                          if (e.target.value === null) {
-                            dispatch(getSessions())
-                          }
-                          setPattern(null)
-                          setDate(null)
-                          setSearchFilter(e.target.value)
-                        }}
+                        value={filterState.searchFilter || ''}
+                        onChange={handleSearchFilterChange}
                         variant="outlined"
                         style={{ width: 150, marginTop: -3 }}
                       >
-                        <MenuItem value={null}>None</MenuItem>
+                        <MenuItem value="">None</MenuItem>
                         <MenuItem value="client_id">{t('fields.client_id_used')}</MenuItem>
                         <MenuItem value="auth_user">{t('fields.username')}</MenuItem>
                         <MenuItem value="expirationDate">{t('titles.expiration_date')}</MenuItem>
@@ -432,20 +601,23 @@ function SessionListPage() {
                       </TextField>
                     </Grid>
 
-                    {searchFilter === 'expirationDate' || searchFilter === 'authenticationTime' ? (
+                    {filterState.searchFilter === 'expirationDate' ||
+                    filterState.searchFilter === 'authenticationTime' ? (
                       <Grid item xs={4}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
                             format="MM/DD/YYYY"
                             label={t('dashboard.start_date')}
-                            value={date}
-                            style={{
-                              borderColor: customColors.lightBlue,
+                            value={filterState.date}
+                            onChange={handleDateChange}
+                            slotProps={{
+                              textField: {
+                                fullWidth: true,
+                                style: {
+                                  borderColor: customColors.lightBlue,
+                                },
+                              },
                             }}
-                            onChange={(val) => {
-                              setDate(val)
-                            }}
-                            renderInput={(params) => <TextField {...params} fullWidth />}
                           />
                         </LocalizationProvider>
                       </Grid>
@@ -456,7 +628,8 @@ function SessionListPage() {
                           name="value"
                           variant="outlined"
                           fullWidth
-                          onChange={(event) => (memoPattern = event.target.value)}
+                          value={filterState.pattern || ''}
+                          onChange={handlePatternChange}
                           style={{
                             borderColor: customColors.lightBlue,
                           }}
@@ -497,35 +670,9 @@ function SessionListPage() {
             </Box>
           </div>
 
-          <MaterialTable
-            components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-            }}
-            columns={updatedColumns}
-            data={authenticatedSessions}
-            isLoading={loading}
-            title=""
-            actions={myActions}
-            options={useMemo(
-              () => ({
-                idSynonym: 'username',
-                columnsButton: false,
-                search: false,
-                searchFieldAlignment: 'left',
-                selection: false,
-                pageSize: pageSize,
-                headerStyle: {
-                  ...applicationStyle.tableHeaderStyle,
-                  ...bgThemeColor,
-                },
-                actionsColumnIndex: -1,
-              }),
-              [pageSize, bgThemeColor],
-            )}
-            detailPanel={handleDetailPanel}
-          />
+          {renderContent()}
         </GluuViewWrapper>
-        {!isEmpty(item) && modal && (
+        {!isEmpty(item) && modal ? (
           <GluuDialog
             row={item}
             name={item.sessionAttributes?.auth_user}
@@ -535,8 +682,8 @@ function SessionListPage() {
             onAccept={onRevokeConfirmed}
             style={{ marginRight: '0px' }}
           />
-        )}
-        {!isEmpty(item) && deleteModal && (
+        ) : null}
+        {!isEmpty(item) && deleteModal ? (
           <GluuDialog
             row={item}
             name={`${item.sessionAttributes?.auth_user} (${item.id || item.sessionAttributes?.sid})`}
@@ -546,13 +693,10 @@ function SessionListPage() {
             onAccept={onDeleteConfirmed}
             style={{ marginRight: '0px' }}
           />
-        )}
+        ) : null}
       </CardBody>
     </Card>
   )
 }
 
-SessionListPage.propTypes = {
-  row: PropTypes.any,
-}
 export default SessionListPage

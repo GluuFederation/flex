@@ -815,6 +815,7 @@
     "add_ssa": "Add SSA",
     "copied": "Copied",
     "no_data_found": "No data found",
+    "no_sessions_found": "No sessions found",
     "role_already_exists": "Role already exists",
     "user_created_successfully": "User created successfully",
     "user_updated_successfully": "User updated successfully",
