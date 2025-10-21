@@ -39,6 +39,12 @@ function LdapForm({ item, handleSubmit, createLdap }) {
     toggle()
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
+
+  const handleCancel = () => {
+    formik.resetForm()
+    dispatch(resetTestLdap())
+    setInit(false)
+  }
   const formik = useFormik({
     initialValues: {
       configId: item.configId,
@@ -333,7 +339,12 @@ function LdapForm({ item, handleSubmit, createLdap }) {
           <Input type="hidden" id="moduleProperties" defaultValue={item.moduleProperties} />
         </FormGroup>
         <FormGroup row></FormGroup>
-        <GluuCommitFooter saveHandler={toggle} />
+        <GluuCommitFooter
+          saveHandler={toggle}
+          hideButtons={{ back: createLdap }}
+          extraLabel={createLdap ? t('actions.cancel') : undefined}
+          extraOnClick={createLdap ? handleCancel : undefined}
+        />
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} formik={formik} />
       </GluuLoader>
     </Form>

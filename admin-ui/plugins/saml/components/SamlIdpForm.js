@@ -77,6 +77,9 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
   const handleCancel = () => {
     formik.resetForm()
+    setShowUploadBtn(false)
+    setMetadaDataFile(null)
+    setFileError(false)
   }
 
   const submitForm = (messages) => {
@@ -415,9 +418,9 @@ const SamlIdpForm = ({ configs, viewOnly }) => {
 
             <GluuCommitFooter
               saveHandler={toggle}
-              hideButtons={{ save: viewOnly, back: true }}
-              extraLabel="Cancel"
-              extraOnClick={handleCancel}
+              hideButtons={{ save: viewOnly, back: !configs }}
+              extraLabel={!configs ? t('actions.cancel') : undefined}
+              extraOnClick={!configs ? handleCancel : undefined}
             />
 
             <GluuCommitDialog

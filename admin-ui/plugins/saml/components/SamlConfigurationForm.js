@@ -101,7 +101,7 @@ const SamlConfigurationForm = () => {
                 type="select"
                 id="selectedIdp"
                 name="selectedIdp"
-                defaultValue={formik.values.selectedIdp}
+                value={formik.values.selectedIdp || ''}
                 onChange={(e) => {
                   formik.setFieldValue('selectedIdp', e.target.value)
                 }}

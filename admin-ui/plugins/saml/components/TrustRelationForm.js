@@ -19,7 +19,6 @@ import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
 import { setClientSelectedScopes } from 'Plugins/auth-server/redux/features/scopeSlice'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
-import _debounce from 'lodash/debounce'
 import { useNavigate } from 'react-router'
 import { nameIDPolicyFormat } from '../helper'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
@@ -154,6 +153,13 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const submitForm = (messages) => {
     toggle()
     handleSubmit(formik.values, messages)
+  }
+
+  const handleCancel = () => {
+    formik.resetForm()
+    setMetaDataFile(null)
+    setFileError(false)
+    dispatch(setClientSelectedScopes([]))
   }
 
   function handleSubmit(values, user_message) {
@@ -495,7 +501,9 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                 <Col>
                   <GluuCommitFooter
                     saveHandler={toggle}
-                    hideButtons={{ save: true, back: false }}
+                    hideButtons={{ save: true, back: !configs }}
+                    extraLabel={!configs ? t('actions.cancel') : undefined}
+                    extraOnClick={!configs ? handleCancel : undefined}
                     type="submit"
                   />
                 </Col>
