@@ -15,6 +15,7 @@ export interface LogAuditParams {
   message: string
   modifiedFields?: Record<string, unknown>
   performedOn?: string | Date
+  ip_address?: string
   extra?: Record<string, unknown>
   status?: string
   client_id?: string

@@ -5,19 +5,38 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box } from '@mui/material'
 
+interface GluuCommitFooterProps {
+  extraOnClick?: () => void
+  saveHandler?: () => void
+  extraLabel?: string
+  hideButtons?: {
+    save?: boolean
+    back?: boolean
+  }
+  type?: 'button' | 'submit'
+  disableBackButton?: boolean
+  cancelHandler?: () => void
+}
+
 function GluuCommitFooter({
   extraOnClick,
   saveHandler,
   extraLabel,
   hideButtons,
   type = 'button',
+<<<<<<< HEAD
   backButtonLabel,
   backButtonHandler,
   disableBackButton,
 }: any) {
+=======
+  disableBackButton = false,
+  cancelHandler = () => {},
+}: GluuCommitFooterProps) {
+>>>>>>> e34cf7a541918589362c0e3fdedafd95a1a681fb
   const { t } = useTranslation()
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state.theme || 'darkBlack'
 
   function goBack() {
     if (backButtonHandler) {
@@ -36,11 +55,15 @@ function GluuCommitFooter({
             color={`primary-${selectedTheme}`}
             style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
             type="button"
-            onClick={goBack}
+            onClick={disableBackButton ? cancelHandler : goBack}
             className="d-flex m-1 mx-5"
           >
             {!disableBackButton && <i className="fa fa-arrow-circle-left me-2"></i>}
+<<<<<<< HEAD
             {backButtonLabel || t('actions.cancel')}
+=======
+            {t('actions.cancel')}
+>>>>>>> e34cf7a541918589362c0e3fdedafd95a1a681fb
           </Button>
         )}
         {extraLabel && extraOnClick && (
