@@ -1,6 +1,4 @@
-import { ConnectProtection } from 'Plugins/smtp-management/components/SmtpManagement/types/SmtpForm.types'
-
-// TypeScript definitions for SMTP Configuration API
+import { ConnectProtection } from 'Plugins/smtp-management/types/smtp-types'
 export interface SmtpConfiguration {
   host?: string
   port?: number
@@ -78,8 +76,8 @@ export interface SmtpUpdatePayload {
   smtpConfiguration: SmtpConfiguration
 }
 
-// Root state interface for selectors
-export interface RootState {
+// For use with Redux selectors in this plugin
+export interface SmtpRootState {
   authReducer: {
     token: {
       access_token: string
