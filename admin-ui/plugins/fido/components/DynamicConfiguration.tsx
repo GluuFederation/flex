@@ -32,10 +32,13 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     enableReinitialize: true,
   })
 
-  const submitForm = useCallback(() => {
-    toggle()
-    handleSubmit(formik.values)
-  }, [handleSubmit, toggle, formik.values])
+  const submitForm = useCallback(
+    (userMessage: string) => {
+      toggle()
+      handleSubmit(formik.values, userMessage)
+    },
+    [handleSubmit, toggle, formik.values],
+  )
 
   const handleCancel = useCallback(() => {
     const initialValues = transformToFormValues(
@@ -290,28 +293,6 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
           <GluuToggleRow
             label={fidoConstants.LABELS.FIDO2_PERFORMANCE_METRICS}
             name={fidoConstants.FORM_FIELDS.FIDO2_PERFORMANCE_METRICS}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            doc_category={fidoConstants.DOC_CATEGORY}
-          />
-        </Col>
-
-        <Col sm={8}>
-          <GluuToggleRow
-            label={fidoConstants.LABELS.SESSION_ID_PERSIST_IN_CACHE}
-            name={fidoConstants.FORM_FIELDS.SESSION_ID_PERSIST_IN_CACHE}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-            doc_category={fidoConstants.DOC_CATEGORY}
-          />
-        </Col>
-
-        <Col sm={8}>
-          <GluuToggleRow
-            label={fidoConstants.LABELS.ERROR_REASON_ENABLED}
-            name={fidoConstants.FORM_FIELDS.ERROR_REASON_ENABLED}
             formik={formik}
             lsize={4}
             rsize={8}
