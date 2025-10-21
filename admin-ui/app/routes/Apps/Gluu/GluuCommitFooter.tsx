@@ -13,6 +13,7 @@ function GluuCommitFooter({
   type = 'button',
   backButtonLabel,
   backButtonHandler,
+  disableBackButton,
 }: any) {
   const { t } = useTranslation()
   const theme: any = useContext(ThemeContext)
@@ -38,7 +39,7 @@ function GluuCommitFooter({
             onClick={goBack}
             className="d-flex m-1 mx-5"
           >
-            <i className="fa fa-arrow-circle-left me-2"></i>
+            {!disableBackButton && <i className="fa fa-arrow-circle-left me-2"></i>}
             {backButtonLabel || t('actions.cancel')}
           </Button>
         )}
