@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { FormGroup, Col, Button, Accordion, AccordionHeader, AccordionBody } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
@@ -34,6 +34,12 @@ function GluuProperties({
   const { t, i18n } = useTranslation()
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+
+  // Sync internal state with options prop when it changes
+  // This ensures the component properly resets when formik values are reset
+  useEffect(() => {
+    setProperties(options)
+  }, [options])
 
   const addProperty = () => {
     let item
