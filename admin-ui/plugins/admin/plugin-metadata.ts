@@ -43,6 +43,7 @@ import JansAssetEditPage from './components/Assets/JansAssetEditPage'
 import JansAssetAddPage from './components/Assets/JansAssetAddPage'
 import DashboardPage from '../../app/routes/Dashboards/DashboardPage'
 import LicenseDetailsPage from '../../app/routes/License/LicenseDetailsPage'
+import CedarlingConfigPage from './components/Cedarling/CedarlingConfigPage'
 
 const PLUGIN_BASE_PATH = '/adm'
 
@@ -93,6 +94,11 @@ const pluginMetadata = {
             {
               title: 'menus.securityDropdown.mapping',
               path: PLUGIN_BASE_PATH + '/mapping',
+              permission: MAPPING_READ,
+            },
+            {
+              title: 'menus.securityDropdown.cedarlingConfig',
+              path: PLUGIN_BASE_PATH + '/cedarlingconfig',
               permission: MAPPING_READ,
             },
           ],
@@ -156,6 +162,11 @@ const pluginMetadata = {
     {
       component: MappingPage,
       path: PLUGIN_BASE_PATH + '/mapping',
+      permission: MAPPING_READ,
+    },
+    {
+      component: CedarlingConfigPage,
+      path: PLUGIN_BASE_PATH + '/cedarlingconfig',
       permission: MAPPING_READ,
     },
 
