@@ -16,6 +16,8 @@ interface GluuCommitFooterProps {
   type?: 'button' | 'submit'
   disableBackButton?: boolean
   cancelHandler?: () => void
+  backButtonLabel?: string
+  backButtonHandler?: () => void
 }
 
 function GluuCommitFooter({
@@ -24,6 +26,8 @@ function GluuCommitFooter({
   extraLabel,
   hideButtons,
   type = 'button',
+  backButtonLabel,
+  backButtonHandler,
   disableBackButton = false,
   cancelHandler = () => {},
 }: GluuCommitFooterProps) {
@@ -32,7 +36,11 @@ function GluuCommitFooter({
   const selectedTheme = theme?.state.theme || 'darkBlack'
 
   function goBack() {
-    window.history.back()
+    if (backButtonHandler) {
+      backButtonHandler()
+    } else {
+      window.history.back()
+    }
   }
 
   return (
@@ -48,7 +56,7 @@ function GluuCommitFooter({
             className="d-flex m-1 mx-5"
           >
             {!disableBackButton && <i className="fa fa-arrow-circle-left me-2"></i>}
-            {t('actions.cancel')}
+            {backButtonLabel || t('actions.cancel')}
           </Button>
         )}
         {extraLabel && extraOnClick && (
