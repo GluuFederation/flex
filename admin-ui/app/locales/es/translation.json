@@ -617,7 +617,10 @@
     "reloginToViewCedarlingChanges": "Por favor, vuelve a iniciar sesión para ver los cambios de Cedarling.",
     "allAvailableHintsSelected": "Todas las opciones de sugerencia disponibles están seleccionadas",
     "noMatchingOptions": "No hay opciones coincidentes",
-    "nothingToShowInTheList": "Nada que mostrar en la lista"
+    "nothingToShowInTheList": "Nada que mostrar en la lista",
+    "adminUiPolicyStore": "Tienda de políticas de la interfaz de usuario del administrador",
+    "configApiPolicyStore": "Almacén de políticas de la API de configuración",
+    "localPolicies": "Políticas locales"
   },
   "languages": {
     "french": "Frances",
@@ -650,7 +653,8 @@
     "securityDropdown": {
       "adminUiRoles": "Roles de la Interfaz de Administración",
       "capabilities": "Capacidades",
-      "mapping": "Mapeo"
+      "mapping": "Mapeo",
+      "cedarlingConfig": "Cedarling"
     },
     "basic_configuration": "Configuración Básica",
     "inum_configuration": "Configuración Inum",
@@ -941,6 +945,7 @@
     "jwk_keys": "Claves JWK",
     "jans_json_property": "Propiedades",
     "mapping": "Mapeo Rol/Permiso",
+    "cedarling_config": "Configuración de Cedarling",
     "modules_properties": "Propiedades del módulo",
     "oauth_server_status_title": "Estado del servidor OAuth",
     "oidc_clients": "Clientes OpenID Connect",
@@ -1705,6 +1710,13 @@
       "enabled": "Funcionalidad SAML habilitada",
       "selectedIdp": "Servidor SAML seleccionado",
       "ignoreValidation": "Valor booleano para habilitar/deshabilitar validación SAML"
+    },
+    "cedarlingConfig": {
+      "title": "Configurar un control detallado mediante Cedarling",
+      "point1": "1. Crear un almacén de políticas con Agama Lab. Bifurcar proyecto.",
+      "point2": "2. Copie la URL de PolicyStore y configúrela.",
+      "note": "Nota: Esto te ayudará a crear tu propio proyecto de Cedarling. Puedes actualizar roles y permisos usando",
+      "localPoliciesNote:": "Nota: Se recomienda activarlo en producción. Si está activado, se obtendrán las políticas de las URL anteriores, se almacenarán en la base de datos y se usarán para la autorización de Cedarling."
     }
   },
   "validations": {

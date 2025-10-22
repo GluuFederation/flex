@@ -61,7 +61,8 @@
     "securityDropdown": {
       "adminUiRoles": "Funções da interface do administrador",
       "capabilities": "Capacidades",
-      "mapping": "Mapeamento"
+      "mapping": "Mapeamento",
+      "cedarlingConfig": "Cedarling"
     },
     "lock": "Trancar",
     "cache": "Cache",
@@ -644,7 +645,10 @@
     "reloginToViewCedarlingChanges": "Por favor, faça login novamente para ver as alterações do cedarling.",
     "allAvailableHintsSelected": "Todas as opções de dica disponíveis estão selecionadas",
     "noMatchingOptions": "Nenhuma opção correspondente",
-    "nothingToShowInTheList": "Nada a mostrar na lista"
+    "nothingToShowInTheList": "Nada a mostrar na lista",
+    "adminUiPolicyStore": "Política de armazenamento da interface de administração",
+    "configApiPolicyStore": "Política de armazenamento da API de configuração",
+    "localPolicies": "Políticas locais"
   },
   "messages": {
     "add_permission": "Adicionar permissão",
@@ -826,6 +830,7 @@
     "all_attributes": "Todos os Atributos",
     "all_custom_scripts": "Todos os scripts personalizados",
     "jans_json_property": "Propriedades",
+    "cedarling_config": "Configuração Cedarling",
     "jans_lock": "Trava Jans",
     "config_api_configuration": "Configuração da API de Configuração",
     "database_information": "Informações do Banco de Dados",
@@ -1552,6 +1557,13 @@
     },
     "authn": {
       "acr": "Référence de classe de contexte d'authentification"
+    },
+    "cedarlingConfig": {
+      "title": "Configurar o controlo refinado usando Cedarling",
+      "point1": "1. Crie um repositório de políticas utilizando o Agama Lab. Fork Project",
+      "point2": "2.º Copie o URL do PolicyStore e configure.",
+      "note": "Nota: isto irá ajudá-lo a criar o seu próprio projeto cedarling. Pode atualizar funções e permissões usando",
+      "localPoliciesNote:": "Nota: Recomenda-se ativar a opção para produção. Se ativado, o sistema irá procurar políticas dos URLs acima, armazená-las na base de dados e utilizá-las para autorização do Cedarling."
     }
   },
   "script": {
