@@ -60,7 +60,6 @@ const transformStaticConfigToFormValues = (
       key: party.id || '',
       value: (party.origins || []).join(','),
     })),
-    metadataRefreshInterval: config?.metadataRefreshInterval ?? '',
     enabledFidoAlgorithms: config?.enabledFidoAlgorithms || [],
     metadataServers: (config?.metadataServers || []).map((server) => ({
       url: server.url || '',
@@ -94,8 +93,6 @@ const transformDynamicConfigToFormValues = (
     fido2DeviceInfoCollection: toBooleanValue(config?.fido2DeviceInfoCollection),
     fido2ErrorCategorization: toBooleanValue(config?.fido2ErrorCategorization),
     fido2PerformanceMetrics: toBooleanValue(config?.fido2PerformanceMetrics),
-    sessionIdPersistInCache: toBooleanValue(config?.sessionIdPersistInCache),
-    errorReasonEnabled: toBooleanValue(config?.errorReasonEnabled),
   }
 }
 
@@ -140,11 +137,6 @@ const applyStaticConfigChanges = (
       .map((origin) => origin.trim())
       .filter((origin) => origin.length > 0),
   }))
-  payload.fido2Configuration.metadataRefreshInterval =
-    typeof staticData.metadataRefreshInterval === 'string' &&
-    staticData.metadataRefreshInterval.trim() === ''
-      ? undefined
-      : Number(staticData.metadataRefreshInterval)
   payload.fido2Configuration.enabledFidoAlgorithms = staticData.enabledFidoAlgorithms
   payload.fido2Configuration.metadataServers = staticData.metadataServers.map((server) => ({
     url: server.url,
@@ -197,8 +189,6 @@ const applyDynamicConfigChanges = (
   payload.fido2DeviceInfoCollection = dynamicData.fido2DeviceInfoCollection
   payload.fido2ErrorCategorization = dynamicData.fido2ErrorCategorization
   payload.fido2PerformanceMetrics = dynamicData.fido2PerformanceMetrics
-  payload.sessionIdPersistInCache = dynamicData.sessionIdPersistInCache
-  payload.errorReasonEnabled = dynamicData.errorReasonEnabled
 }
 
 const createFidoConfigPayload = ({
@@ -222,6 +212,29 @@ const createFidoConfigPayload = ({
   }
 }
 
+const getModifiedFields = (
+  newData: DynamicConfigFormValues | StaticConfigFormValues,
+  originalConfiguration: AppConfiguration1 | Fido2Configuration | undefined,
+  type: string,
+): Record<string, unknown> => {
+  const modifiedFields: Record<string, unknown> = {}
+  const originalData =
+    type === fidoConstants.STATIC
+      ? transformStaticConfigToFormValues(originalConfiguration as Fido2Configuration | undefined)
+      : transformDynamicConfigToFormValues(originalConfiguration as AppConfiguration1 | undefined)
+
+  Object.keys(newData).forEach((key) => {
+    const newValue = (newData as unknown as Record<string, unknown>)[key]
+    const oldValue = (originalData as unknown as Record<string, unknown>)[key]
+
+    if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
+      modifiedFields[key] = newValue
+    }
+  })
+
+  return modifiedFields
+}
+
 export {
   arrayValidationWithSchema,
   transformToFormValues,
@@ -229,4 +242,5 @@ export {
   getAvailableHintOptions,
   getEmptyDropdownMessage,
   toBooleanValue,
+  getModifiedFields,
 }

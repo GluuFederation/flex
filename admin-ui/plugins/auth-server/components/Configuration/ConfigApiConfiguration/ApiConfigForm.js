@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import spec from '../../../../../configApiSpecs.yaml'
 import { buildPayload, API_CONFIG_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
@@ -15,6 +16,7 @@ const schema = spec.components.schemas.ApiAppConfiguration.properties
 const ApiConfigForm = () => {
   const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState([])
   const [operations, setOperations] = useState([])
@@ -74,6 +76,10 @@ const ApiConfigForm = () => {
     setOperations(newPatches)
   }
 
+  const handleBack = () => {
+    navigate('/home/dashboard')
+  }
+
   return (
     <>
       {Object.keys(configuration).map((propKey) => {
@@ -93,7 +99,14 @@ const ApiConfigForm = () => {
       })}
 
       <FormGroup row></FormGroup>
-      {hasCedarPermission(API_CONFIG_WRITE) && <GluuCommitFooter saveHandler={toggle} />}
+      {hasCedarPermission(API_CONFIG_WRITE) && (
+        <GluuCommitFooter
+          saveHandler={toggle}
+          hideButtons={{ back: false }}
+          backButtonLabel="Back"
+          backButtonHandler={handleBack}
+        />
+      )}
 
       {hasCedarPermission(API_CONFIG_WRITE) && (
         <GluuCommitDialog
