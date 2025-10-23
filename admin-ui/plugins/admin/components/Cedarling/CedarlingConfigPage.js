@@ -72,7 +72,7 @@ function CedarlingConfigPage() {
               <Col sm={9}>
                 <Input
                   id="adminUiPolicyStore"
-                  type="text"
+                  type="url"
                   name="adminUiPolicyStore"
                   value={adminUiPolicyStore}
                   onChange={(e) => setAdminUiPolicyStore(e.target.value)}
@@ -84,7 +84,7 @@ function CedarlingConfigPage() {
               <Col sm={9}>
                 <Input
                   id="configApiPolicyStore"
-                  type="text"
+                  type="url"
                   name="configApiPolicyStore"
                   value={configApiPolicyStore}
                   onChange={(e) => setConfigApiPolicyStore(e.target.value)}
