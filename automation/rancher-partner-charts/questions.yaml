@@ -683,7 +683,7 @@ questions:
 - variable: auth-server.image.repository
   required: true
   type: string
-  default: "janssenproject/auth-server"
+  default: "ghcr.io/janssenproject/jans/auth-server"
   description: "The Auth Server Image repository"
   label: Auth Server image repo
   group: "Images"

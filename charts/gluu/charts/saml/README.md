@@ -36,7 +36,7 @@ Kubernetes: `>=v1.23.0-0`
 | hpa.metrics | list | `[]` | metrics if targetCPUUtilizationPercentage is not set |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pullPolicy to use for deploying. |
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
-| image.repository | string | `"janssenproject/saml"` | Image  to use for deploying. |
+| image.repository | string | `"ghcr.io/janssenproject/jans/saml"` | Image  to use for deploying. |
 | image.tag | string | `"0.0.0-nightly"` | Image  tag to use for deploying. |
 | lifecycle | object | `{}` |  |
 | livenessProbe | object | `{"exec":{"command":["python3","/app/scripts/healthcheck.py"]},"failureThreshold":10,"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}` | Configure the liveness healthcheck for saml if needed. |

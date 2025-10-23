@@ -152,7 +152,7 @@ countryCode: US
 email: team@gluu.org
 image:
   # -- Image  to use for deploying.
-  repository: janssenproject/configurator
+  repository: ghcr.io/janssenproject/jans/configurator
   # -- Image  tag to use for deploying.
   tag: 0.0.0-nightly
   # -- Image Pull Secrets

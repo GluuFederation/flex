@@ -5,36 +5,60 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box } from '@mui/material'
 
+interface GluuCommitFooterProps {
+  extraOnClick?: () => void
+  saveHandler?: () => void
+  extraLabel?: string
+  hideButtons?: {
+    save?: boolean
+    back?: boolean
+  }
+  type?: 'button' | 'submit'
+  disableBackButton?: boolean
+  cancelHandler?: () => void
+  backButtonLabel?: string
+  backButtonHandler?: () => void
+}
+
 function GluuCommitFooter({
   extraOnClick,
   saveHandler,
   extraLabel,
   hideButtons,
   type = 'button',
-}: any) {
+  backButtonLabel,
+  backButtonHandler,
+  disableBackButton = false,
+  cancelHandler = () => {},
+}: GluuCommitFooterProps) {
   const { t } = useTranslation()
-  const theme: any = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state.theme || 'darkBlack'
 
   function goBack() {
-    window.history.back()
+    if (backButtonHandler) {
+      backButtonHandler()
+    } else {
+      window.history.back()
+    }
   }
+
   return (
     <>
       <Divider></Divider>
       <Box display="flex" my={2} justifyContent="space-between" alignItems="center" gap={1}>
-        {!hideButtons || !hideButtons['back'] ? (
+        {(!hideButtons || !hideButtons['back']) && (
           <Button
             color={`primary-${selectedTheme}`}
             style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
             type="button"
-            onClick={goBack}
+            onClick={disableBackButton ? cancelHandler : goBack}
             className="d-flex m-1 mx-5"
           >
-            <i className="fa fa-arrow-circle-left me-2"></i>
-            {t('actions.cancel')}
+            {!disableBackButton && <i className="fa fa-arrow-circle-left me-2"></i>}
+            {backButtonLabel || t('actions.cancel')}
           </Button>
-        ) : null}
+        )}
         {extraLabel && extraOnClick && (
           <Button
             color={`primary-${selectedTheme}`}
