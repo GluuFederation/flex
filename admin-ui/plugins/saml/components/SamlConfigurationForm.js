@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { putSamlProperties } from 'Plugins/saml/redux/features/SamlSlice'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { trimObjectStrings } from 'Utils/Util'
 
 const SamlConfigurationForm = () => {
   const { t } = useTranslation()
@@ -53,15 +54,20 @@ const SamlConfigurationForm = () => {
     },
   })
 
+  const handleCancel = () => {
+    formik.resetForm()
+  }
+
   const submitForm = (messages) => {
     toggle()
     handleSubmit(formik.values, messages)
   }
 
   const handleSubmit = (values, messages) => {
+    const trimmedValues = trimObjectStrings(values)
     dispatch(
       putSamlProperties({
-        action: { action_message: messages, action_data: values },
+        action: { action_message: messages, action_data: trimmedValues },
       }),
     )
   }
@@ -95,7 +101,7 @@ const SamlConfigurationForm = () => {
                 type="select"
                 id="selectedIdp"
                 name="selectedIdp"
-                defaultValue={formik.values.selectedIdp}
+                value={formik.values.selectedIdp || ''}
                 onChange={(e) => {
                   formik.setFieldValue('selectedIdp', e.target.value)
                 }}
@@ -125,7 +131,9 @@ const SamlConfigurationForm = () => {
           <Col>
             <GluuCommitFooter
               saveHandler={toggle}
-              hideButtons={{ save: true, back: false }}
+              hideButtons={{ save: true, back: true }}
+              extraLabel="Cancel"
+              extraOnClick={handleCancel}
               type="submit"
             />
           </Col>
