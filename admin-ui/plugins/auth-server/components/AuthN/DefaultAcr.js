@@ -14,7 +14,7 @@ import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from '@/context/theme/themeContext'
 import DefaultAcrInput from '../Configuration/DefaultAcrInput'
 import { getScripts } from 'Redux/features/initSlice'
-import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
+import { buildAgamaFlowsArray, buildDropdownOptions } from './helper/acrUtils'
 
 function DefaultAcr() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -52,19 +52,17 @@ function DefaultAcr() {
   }, [authorize, dispatch])
 
   const authScripts = useMemo(() => {
+    // Filter and map scripts
     const filteredScripts = scripts
       .filter((item) => item.scriptType == 'person_authentication')
       .filter((item) => item.enabled)
-      .map((item) => item.name)
+      .map((item) => ({ key: item.name, value: item.name }))
+    // Build individual agama flows array
+    const agamaFlows = buildAgamaFlowsArray(agamaList)
+    // Build dropdown options (each flow is a separate entry)
+    const dropdownOptions = buildDropdownOptions(filteredScripts, agamaFlows)
 
-    const agamaFlows = Array.isArray(agamaList)
-      ? agamaList.map((flow) => flow?.details?.projectMetadata?.projectName).filter(Boolean)
-      : []
-
-    filteredScripts.push(SIMPLE_PASSWORD_AUTH)
-    const result = Array.from(new Set([...filteredScripts, ...agamaFlows])).sort()
-
-    return result
+    return dropdownOptions
   }, [scripts, agamaList])
 
   const toggle = () => {
@@ -89,12 +87,10 @@ function DefaultAcr() {
 
     if (put?.value) {
       const opts = {}
-      opts['authenticationMethod'] = { defaultAcr: put?.value }
+      opts['authenticationMethod'] = { defaultAcr: put.value }
 
       buildPayload(userAction, userMessage, opts)
       dispatch(editAcrs({ data: opts, action: userAction }))
-    } else {
-      console.error('No ACR value to save')
     }
   }
 
