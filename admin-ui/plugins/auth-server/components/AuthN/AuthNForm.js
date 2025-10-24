@@ -8,7 +8,6 @@ import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import { useTranslation } from 'react-i18next'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-
 import { useSelector } from 'react-redux'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import customColors from '@/customColors'
@@ -56,9 +55,16 @@ function AuthNForm({ item, handleSubmit }) {
     setModal(!modal)
   }
 
-  const submitForm = () => {
+  const submitForm = (userMessage) => {
     toggle()
-    handleSubmit(formik.values)
+    const values = {
+      ...formik.values,
+      defaultAuthNMethod:
+        formik.values.defaultAuthNMethod === true ||
+        String(formik.values.defaultAuthNMethod).toLowerCase() === 'true',
+      userMessage: userMessage,
+    }
+    handleSubmit(values)
   }
 
   const getPropertiesConfig = (entry) => {

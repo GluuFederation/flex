@@ -6,7 +6,7 @@ const initialState = {
     {
       name: 'simple_password_auth',
       level: '-1',
-      description: 'Built-in default password authentication',
+      description: 'Basic default password authentication',
       samlACR: 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport',
       primaryKey: 'uid',
       passwordAttribute: 'userPassword',

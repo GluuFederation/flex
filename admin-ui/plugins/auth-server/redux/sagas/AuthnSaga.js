@@ -10,8 +10,13 @@ import {
   setSuccess,
 } from '../features/authNSlice'
 import LdapApi from '../../../services/redux/api/LdapApi'
-import ScriptApi from '../../../admin/redux/api/ScriptApi'
+import ScriptApi from '../api/ScriptApi'
 const JansConfigApi = require('jans_config_api')
+import { initAudit } from '@/redux/sagas/SagaUtils'
+import { addAdditionalData } from '@/utils/TokenController'
+import { UPDATE } from '@/audit/UserActionType'
+import { postUserAction } from '@/redux/api/backend-api'
+import { BASIC } from '@/utils/ApiResources'
 
 function* newACRFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -39,14 +44,26 @@ function* newScriptFunction() {
 }
 
 export function* editSimpleAuthAcr({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, UPDATE, BASIC, {
+      message: payload?.data?.authenticationMethod?.userMessage,
+    })
     const api = yield* newACRFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
     yield put(setSimpleAuthAcrResponse({ data }))
     yield put(setSuccess({ data: true }))
+    yield call(postUserAction, audit)
     return data
   } catch (e) {
     yield put(setSimpleAuthAcrResponse(null))
+    try {
+      audit.status = 'failure'
+      addAdditionalData(audit, UPDATE, BASIC, { message: e?.message })
+      yield call(postUserAction, audit)
+    } catch {
+      /* empty */
+    }
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

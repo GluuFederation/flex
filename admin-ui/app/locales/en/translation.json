@@ -619,7 +619,10 @@
     "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes.",
     "allAvailableHintsSelected": "All available hint options are selected",
     "noMatchingOptions": "No matching options",
-    "nothingToShowInTheList": "Nothing to show in the list"
+    "nothingToShowInTheList": "Nothing to show in the list",
+    "simple_password_auth": "Simple Password Authentication",
+    "basic_auth": "Basic Authentication",
+    "agama_auth": "Agama Authentication"
   },
   "languages": {
     "french": "French",
@@ -642,13 +645,14 @@
     "config-api": "Config-API",
     "security": "Security",
     "authn": "Authn",
+
     "webhooks": "Webhooks",
     "agama_flows": "Agama Flows",
     "default_acr": "Default ACR",
     "acrs": "ACRs",
     "aliases": "Aliases",
     "api_config": "Config API properties",
-    "builtIn": "Built-In",
+    "basic": "Basic",
     "securityDropdown": {
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",
@@ -688,6 +692,7 @@
     "user_claims": "User Claims",
     "scopes": "Scopes",
     "scripts": "Scripts",
+    "ldap_servers": "LDAP Servers",
     "services": "Services",
     "sessions": "Sessions",
     "audit_logs": "Audit Logs",
@@ -841,9 +846,74 @@
     "product_version": "Version number of this database product",
     "driver_name": "Name of this JDBC driver",
     "driver_version": "Version number of this JDBC driver",
-    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI."
+    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI.",
+    "authn": {
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "Bind DN",
+          "bind_password": "Bind Password",
+          "remote_ldap_server": "Remote LDAP Server",
+          "max_connections": "Max Connections",
+          "base_dns": "Base DNs",
+          "remote_primary_key": "Remote Primary Key",
+          "local_primary_key": "Local Primary Key",
+          "servers": "Servers",
+          "level": "Level",
+          "default_authn_method": "Default Authn Method",
+          "use_ssl": "Use SSL",
+          "enabled": "Enabled",
+          "enable": "Enabled",
+          "disable": "Disabled",
+          "status": "Status"
+        },
+        "placeholders": {
+          "acr": "Enter ACR",
+          "bind_dn": "Enter Bind DN",
+          "bind_password": "Enter Bind Password",
+          "remote_ldap_server": "Enter Remote LDAP Server",
+          "max_connections": "Enter Max Connections",
+          "base_dns": "Enter Base DNs",
+          "remote_primary_key": "Enter Remote Primary Key",
+          "local_primary_key": "Enter Local Primary Key",
+          "level": "Enter Level",
+          "default_authn_method": "Enter Default Authn Method",
+          "action_commit_message": "Enter reason for change"
+        },
+        "errors": {
+          "acr_required": "ACR is required!",
+          "bind_dn_required": "Bind DN is required!",
+          "bind_password_required": "Bind Password is required!",
+          "remote_ldap_server_required": "Remote LDAP Server is required!",
+          "remote_ldap_server_invalid": "Server must be a valid LDAP URL (http:// or https://)",
+          "max_connections_required": "Max Connections is required!",
+          "max_connections_type": "Max Connections must be a number",
+          "max_connections_positive": "Max connections must be a positive number",
+          "max_connections_integer": "Max connections must be an integer",
+          "base_dns_required": "Base DNs is required!",
+          "remote_primary_key_required": "Remote Primary Key is required!",
+          "local_primary_key_required": "Local Primary Key is required!",
+          "level_required": "Level is required!",
+          "level_type": "Level must be a number",
+          "level_min": "Level must be at least 1",
+          "level_integer": "Level must be an integer",
+          "default_authn_method_required": "Default Authn Method is required!"
+        }
+      }
+    }
   },
   "placeholders": {
+    "acr": "Enter ACR",
+    "level": "Enter level",
+    "default_authn_method": "Select default authentication method",
+    "bind_dn": "Enter Bind DN",
+    "max_connections": "Enter max connections",
+    "local_primary_key": "Enter local primary key",
+    "base_dns": "Enter base DNs",
+    "enabled": "Enable or disable",
+    "remote_primary_key": "Enter the remote primary key",
+    "remote_ldap_server": "Enter the remote LDAP server",
+    "bind_password": "Enter the bind password",
     "id": "Enter id",
     "action_commit_message": "Provide the reason of this change",
     "activate_ldap_configuration": "Activate ldap configuration",
@@ -898,7 +968,6 @@
     "activate_sql_configuration": "Activate SQL configuration.",
     "script_path": "Enter script file path",
     "iconUrl": "Icon URL",
-    "level": "Level",
     "expires_after": "Expiration After Date",
     "expires_before": "Expiration Before Date",
     "charMoreThan512": "characters over limit (maximum 512)",
@@ -908,6 +977,7 @@
   "titles": {
     "activeTokens": "Active Tokens",
     "acrs": "ACRs",
+    "acr_management": "ACR Management",
     "active_users": "Actives Users && Access Token Stats",
     "assets": "Jans Assets",
     "asset_add": "Adding new Jans Asset",
@@ -1077,7 +1147,59 @@
       "hash_algorithm": "Hash Algorithim",
       "saml_acr": "The SAML parameter Authentication Context Requests",
       "primary_key": "Primary Key",
-      "description": "Description"
+      "description": "Description",
+      "ldap": {
+        "fields": {
+          "acr": "ACR",
+          "bind_dn": "Bind DN",
+          "bind_password": "Bind Password",
+          "remote_ldap_server": "Remote LDAP Server",
+          "max_connections": "Max Connections",
+          "base_dns": "Base DNs",
+          "remote_primary_key": "Remote Primary Key",
+          "local_primary_key": "Local Primary Key",
+          "servers": "Servers",
+          "level": "Level",
+          "default_authn_method": "Default Authn Method",
+          "use_ssl": "Use SSL",
+          "enabled": "Enabled",
+          "enable": "Enabled",
+          "disable": "Disabled",
+          "status": "Status"
+        },
+        "placeholders": {
+          "acr": "Enter ACR",
+          "bind_dn": "Enter Bind DN",
+          "bind_password": "Enter Bind Password",
+          "remote_ldap_server": "Enter Remote LDAP Server",
+          "max_connections": "Enter Max Connections",
+          "base_dns": "Enter Base DNs",
+          "remote_primary_key": "Enter Remote Primary Key",
+          "local_primary_key": "Enter Local Primary Key",
+          "level": "Enter Level",
+          "default_authn_method": "Enter Default Authn Method",
+          "action_commit_message": "Enter reason for change"
+        },
+        "errors": {
+          "acr_required": "ACR is required!",
+          "bind_dn_required": "Bind DN is required!",
+          "bind_password_required": "Bind Password is required!",
+          "remote_ldap_server_required": "Remote LDAP Server is required!",
+          "remote_ldap_server_invalid": "Server must be a valid LDAP URL (http:// or https://)",
+          "max_connections_required": "Max Connections is required!",
+          "max_connections_type": "Max Connections must be a number",
+          "max_connections_positive": "Max connections must be a positive number",
+          "max_connections_integer": "Max connections must be an integer",
+          "base_dns_required": "Base DNs is required!",
+          "remote_primary_key_required": "Remote Primary Key is required!",
+          "local_primary_key_required": "Local Primary Key is required!",
+          "level_required": "Level is required!",
+          "level_type": "Level must be a number",
+          "level_min": "Level must be at least 1",
+          "level_integer": "Level must be an integer",
+          "default_authn_method_required": "Default Authn Method is required!"
+        }
+      }
     },
     "roles": {
       "name": "Role name",

@@ -16,6 +16,7 @@ function DefaultAcrInput({
   handler,
   options,
   path,
+  showSaveButtons = true,
 }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -33,6 +34,15 @@ function DefaultAcrInput({
   const onValueChanged = (data) => {
     setShow(true)
     setData(data)
+
+    if (!showSaveButtons && data) {
+      const put = {}
+      put[PATH] = path
+      put[VALUE] = isArray ? (Array.isArray(data) ? data : [data]) : data
+      put['op'] = 'replace'
+      handler(put)
+      setShow(false)
+    }
   }
   const onAccept = () => {
     const put = {}
@@ -76,7 +86,9 @@ function DefaultAcrInput({
               >
                 <option value="">{t('actions.choose')}...</option>
                 {options.map((item, key) => (
-                  <option key={key}>{item}</option>
+                  <option key={key} value={item}>
+                    {item}
+                  </option>
                 ))}
               </CustomInput>
             </InputGroup>
@@ -84,7 +96,7 @@ function DefaultAcrInput({
         </FormGroup>
       </Col>
       <Col sm={2}>
-        {show && (
+        {show && showSaveButtons && (
           <>
             <Button
               color={`primary-${selectedTheme}`}
