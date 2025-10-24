@@ -1,24 +1,25 @@
 import React, { useEffect, useMemo, useCallback, useState } from 'react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import { SETTINGS } from 'Utils/ApiResources'
-import { Card, CardBody, FormGroup, Col, InputGroup, CustomInput, Form } from 'Components'
-import SetTitle from 'Utils/SetTitle'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { putConfigWorker, setPaggingSize } from 'Redux/features/authSlice'
-import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
-import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
-import { getScripts } from 'Redux/features/initSlice'
+import { Card, CardBody, FormGroup, Col, InputGroup, CustomInput, Form } from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import packageJson from '../../../../package.json'
+import { SETTINGS } from 'Utils/ApiResources'
+import SetTitle from 'Utils/SetTitle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { putConfigWorker, setPaggingSize } from 'Redux/features/authSlice'
+import { getScripts } from 'Redux/features/initSlice'
+import { updateToast } from 'Redux/features/toastSlice'
+import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import { CedarlingLogType } from '@/cedarling'
-import { updateToast } from '@/redux/features/toastSlice'
+import packageJson from '../../../../package.json'
 
 const levels = [1, 5, 10, 20]
 
@@ -27,35 +28,26 @@ function SettingsPage() {
   const dispatch = useDispatch()
   const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
-
-  // Get saved paging size from Redux (source of truth - persisted value)
   const savedPaggingSize = useSelector((state) => state.authReducer?.paggingSize) || 10
-
-  // Local state for editing (current value being displayed in the dropdown)
   const [currentPaggingSize, setCurrentPaggingSize] = useState(savedPaggingSize)
-
   SetTitle(t('titles.application_settings'))
 
   useEffect(() => {
     dispatch(getScripts({ action: {} }))
-  }, [])
+  }, [dispatch])
 
-  // Sync local state when Redux value changes (on mount or after save)
   useEffect(() => {
     setCurrentPaggingSize(savedPaggingSize)
   }, [savedPaggingSize])
 
-  // Only update local state when user changes dropdown
   const handlePaggingSizeChange = useCallback((size) => {
     setCurrentPaggingSize(size)
   }, [])
 
-  // Reset local state to the last saved Redux value
   const resetPaggingSize = useCallback(() => {
     setCurrentPaggingSize(savedPaggingSize)
   }, [savedPaggingSize])
 
-  // Save current paging size to Redux (called on form submit)
   const savePaggingSize = useCallback(() => {
     dispatch(setPaggingSize(currentPaggingSize))
   }, [dispatch, currentPaggingSize])
@@ -137,7 +129,6 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
   const config = useSelector((state) => state.authReducer?.config) || {}
   const scripts = useSelector((state) => state.initReducer.scripts)
 
-  // Transform config to form values (Fido pattern)
   const transformToFormValues = useCallback((configData) => {
     return {
       sessionTimeoutInMins: configData?.sessionTimeoutInMins || 30,
@@ -165,10 +156,7 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
     initialValues,
     enableReinitialize: true,
     onSubmit: (values) => {
-      // Save paging size to Redux (persist it)
       savePaggingSize()
-
-      // Save form config
       dispatch(putConfigWorker(values))
 
       if (values?.cedarlingLogType !== config?.cedarlingLogType) {
@@ -183,15 +171,11 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
   })
 
   const handleCancel = useCallback(() => {
-    // Reset form fields to last saved values
     const resetValues = transformToFormValues(config)
     formik.resetForm({ values: resetValues })
-
-    // Reset paging size to last saved value
     resetPaggingSize()
-  }, [formik, config, transformToFormValues, resetPaggingSize])
+  }, [config, transformToFormValues, resetPaggingSize, formik])
 
-  // Transform additionalParameters for GluuProperties (Fido pattern)
   const additionalParametersOptions = useMemo(() => {
     return (formik.values.additionalParameters || []).map((param) => ({
       key: param.key || '',
@@ -217,23 +201,25 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
       <FormGroup row>
         <GluuLabel
           size={4}
-          doc_category="settings"
-          doc_entry={'adminui_default_acr'}
+          doc_category={SETTINGS}
+          doc_entry="adminui_default_acr"
           label={t('fields.adminui_default_acr')}
         />
         <Col sm={8}>
           <InputGroup>
             <CustomInput
               type="select"
-              data-testid={'acrValues'}
-              id={'acrValues'}
-              name={'acrValues'}
-              value={formik?.values?.acrValues}
+              data-testid="acrValues"
+              id="acrValues"
+              name="acrValues"
+              value={formik.values.acrValues}
               onChange={formik.handleChange}
             >
               <option value="">{t('actions.choose')}...</option>
               {authScripts.map((item) => (
-                <option key={item.toString()}>{item}</option>
+                <option key={item} value={item}>
+                  {item}
+                </option>
               ))}
             </CustomInput>
           </InputGroup>
@@ -243,10 +229,9 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
         <GluuLabel
           size={4}
           doc_category={SETTINGS}
-          doc_entry={'cedarSwitch'}
+          doc_entry="cedarSwitch"
           label={t('fields.showCedarLogs?')}
         />
-
         <Col sm={8}>
           <GluuToogleRow
             isLabelVisible={false}
@@ -254,7 +239,7 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
             formik={formik}
             value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
             doc_category={SETTINGS}
-            doc_entry={'cedarSwitch'}
+            doc_entry="cedarSwitch"
             lsize={4}
             rsize={8}
             handler={(event) => {
@@ -285,6 +270,11 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
       />
     </Form>
   )
+}
+
+SettingsForm.propTypes = {
+  resetPaggingSize: PropTypes.func.isRequired,
+  savePaggingSize: PropTypes.func.isRequired,
 }
 
 export default SettingsPage
