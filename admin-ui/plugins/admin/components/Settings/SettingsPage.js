@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useEffect, useMemo, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -6,7 +6,7 @@ import { SETTINGS } from 'Utils/ApiResources'
 import { Card, CardBody, FormGroup, Col, InputGroup, CustomInput, Form } from 'Components'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { putConfigWorker } from 'Redux/features/authSlice'
+import { putConfigWorker, setPaggingSize } from 'Redux/features/authSlice'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,24 +27,38 @@ function SettingsPage() {
   const dispatch = useDispatch()
   const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
-  const initialPaggingSize = localStorage.getItem('paggingSize') || 10
-  const [paggingSize, setPaggingSize] = useState(initialPaggingSize)
-  const [originalPaggingSize, setOriginalPaggingSize] = useState(initialPaggingSize)
+
+  // Get saved paging size from Redux (source of truth - persisted value)
+  const savedPaggingSize = useSelector((state) => state.authReducer?.paggingSize) || 10
+
+  // Local state for editing (current value being displayed in the dropdown)
+  const [currentPaggingSize, setCurrentPaggingSize] = useState(savedPaggingSize)
+
   SetTitle(t('titles.application_settings'))
 
   useEffect(() => {
     dispatch(getScripts({ action: {} }))
   }, [])
 
-  const resetPaggingSize = () => {
-    setPaggingSize(originalPaggingSize)
-  }
+  // Sync local state when Redux value changes (on mount or after save)
+  useEffect(() => {
+    setCurrentPaggingSize(savedPaggingSize)
+  }, [savedPaggingSize])
 
-  const savePaggingSize = () => {
-    localStorage.setItem('paggingSize', paggingSize)
-    // Update the original value to the newly saved value
-    setOriginalPaggingSize(paggingSize)
-  }
+  // Only update local state when user changes dropdown
+  const handlePaggingSizeChange = useCallback((size) => {
+    setCurrentPaggingSize(size)
+  }, [])
+
+  // Reset local state to the last saved Redux value
+  const resetPaggingSize = useCallback(() => {
+    setCurrentPaggingSize(savedPaggingSize)
+  }, [savedPaggingSize])
+
+  // Save current paging size to Redux (called on form submit)
+  const savePaggingSize = useCallback(() => {
+    dispatch(setPaggingSize(currentPaggingSize))
+  }, [dispatch, currentPaggingSize])
 
   return (
     <React.Fragment>
@@ -90,10 +104,10 @@ function SettingsPage() {
                     type="select"
                     id="pagingSize"
                     name="pagingSize"
-                    value={paggingSize}
+                    value={currentPaggingSize}
                     onChange={(value) => {
                       const size = levels[value.target.options.selectedIndex]
-                      setPaggingSize(size)
+                      handlePaggingSizeChange(size)
                     }}
                   >
                     {levels.map((item, key) => (
@@ -151,10 +165,10 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
     initialValues,
     enableReinitialize: true,
     onSubmit: (values) => {
-      // Save paging size to localStorage
+      // Save paging size to Redux (persist it)
       savePaggingSize()
 
-      // Dispatch the action to save
+      // Save form config
       dispatch(putConfigWorker(values))
 
       if (values?.cedarlingLogType !== config?.cedarlingLogType) {
@@ -169,8 +183,11 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
   })
 
   const handleCancel = useCallback(() => {
+    // Reset form fields to last saved values
     const resetValues = transformToFormValues(config)
     formik.resetForm({ values: resetValues })
+
+    // Reset paging size to last saved value
     resetPaggingSize()
   }, [formik, config, transformToFormValues, resetPaggingSize])
 
