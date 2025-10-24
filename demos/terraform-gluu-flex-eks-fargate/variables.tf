@@ -334,7 +334,7 @@ variable "admin_ui_replicas" {
 }
 
 variable "auth_keys_image" {
-  default     = "janssenproject/certmanager"
+  default     = "ghcr.io/janssenproject/jans/certmanager"
   description = "The image to use for the the admin UI deployment."
   type        = string
 }
@@ -346,7 +346,7 @@ variable "auth_keys" {
 }
 
 variable "auth_server_image" {
-  default     = "janssenproject/auth-server"
+  default     = "ghcr.io/janssenproject/jans/auth-server"
   description = "The image to use for the the auth server deployment."
   type        = string
 }
@@ -382,7 +382,7 @@ variable "casa_replicas" {
 }
 
 variable "config_api_image" {
-  default     = "janssenproject/config-api"
+  default     = "ghcr.io/janssenproject/jans/config-api"
   description = "The image to use for the the config API deployment."
   type        = string
 }
@@ -400,7 +400,7 @@ variable "config_api_replicas" {
 }
 
 variable "configurator_image" {
-  default     = "janssenproject/configurator"
+  default     = "ghcr.io/janssenproject/jans/configurator"
   description = "The image to use for the the configurator job deployment."
   type        = string
 }
@@ -412,7 +412,7 @@ variable "configurator_version" {
 }
 
 variable "fido2_image" {
-  default     = "janssenproject/fido2"
+  default     = "ghcr.io/janssenproject/jans/fido2"
   description = "The image to use for the the FIDO2 server deployment."
   type        = string
 }
@@ -430,7 +430,7 @@ variable "fido2_replicas" {
 }
 
 variable "persistence_image" {
-  default     = "janssenproject/persistence-loader"
+  default     = "ghcr.io/janssenproject/jans/persistence-loader"
   description = "The image to use for the the persistence loader job deployment."
   type        = string
 }
@@ -442,7 +442,7 @@ variable "persistence_version" {
 }
 
 variable "scim_image" {
-  default     = "janssenproject/scim"
+  default     = "ghcr.io/janssenproject/jans/scim"
   description = "The image to use for the the SCIM server deployment."
   type        = string
 }

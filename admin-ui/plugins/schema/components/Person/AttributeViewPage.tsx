@@ -42,7 +42,7 @@ function AttributeEditPage(): JSX.Element {
               attributeValidation: { ...extensibleItems.attributeValidation },
             }}
             customOnSubmit={customHandleSubmit}
-            hideButtons={{ save: true }}
+            hideButtons={{ save: true, back: true }}
           />
         </CardBody>
       </Card>
