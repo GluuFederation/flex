@@ -1,10 +1,20 @@
-import React, { useEffect, useMemo, useCallback, useState } from 'react'
+import React, { useEffect, useMemo, useCallback, useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from 'yup'
-import { Card, CardBody, FormGroup, Col, InputGroup, CustomInput, Form } from 'Components'
+import {
+  Card,
+  CardBody,
+  FormGroup,
+  Col,
+  Label,
+  Badge,
+  InputGroup,
+  CustomInput,
+  Form,
+} from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
@@ -14,6 +24,7 @@ import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { SETTINGS } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 import { putConfigWorker, setPaggingSize } from 'Redux/features/authSlice'
 import { getScripts } from 'Redux/features/initSlice'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -26,6 +37,8 @@ const levels = [1, 5, 10, 20]
 function SettingsPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
   const savedPaggingSize = useSelector((state) => state.authReducer?.paggingSize) || 10
@@ -69,19 +82,28 @@ function SettingsPage() {
               doc_entry="gluuCurrentVersion"
             />
 
-            {window.configApiBaseUrl && (
-              <GluuInputRow
-                label="fields.config_api_url"
-                name="configApiUrl"
-                type="text"
-                lsize={4}
-                rsize={8}
-                value={window.configApiBaseUrl}
-                disabled={true}
+            <FormGroup row style={{ justifyContent: 'space-between' }}>
+              <GluuLabel
+                label={t('fields.config_api_url')}
                 doc_category={SETTINGS}
+                size={4}
                 doc_entry="configApiUrl"
               />
-            )}
+              <Col sm={8}>
+                <Label
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    paddingRight: '15px',
+                  }}
+                >
+                  <h3>
+                    <Badge color={`primary-${selectedTheme}`}>{window.configApiBaseUrl}</Badge>
+                  </h3>
+                </Label>
+              </Col>
+            </FormGroup>
 
             <FormGroup row>
               <GluuLabel
