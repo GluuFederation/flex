@@ -12,7 +12,7 @@ import DefaultAcr from './DefaultAcr'
 function AuthNPage() {
   const tabNames = [
     { name: 'default acr', path: '' },
-    { name: 'built in', path: '' },
+    { name: 'basic', path: '' },
     { name: 'ldap servers', path: '' },
     { name: 'scripts', path: '' },
     { name: 'aliases', path: '' },
@@ -23,7 +23,7 @@ function AuthNPage() {
     switch (tabName) {
       case 'default acr':
         return <DefaultAcr />
-      case 'built in':
+      case 'basic':
         return <Basic />
       case 'ldap servers':
         return <LdapListingPage />

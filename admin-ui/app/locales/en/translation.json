@@ -653,7 +653,6 @@
     "aliases": "Aliases",
     "api_config": "Config API properties",
     "basic": "Basic",
-    "built_in": "Built In",
     "securityDropdown": {
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",
