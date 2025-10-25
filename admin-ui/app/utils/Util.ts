@@ -1,7 +1,6 @@
 import customColors from '@/customColors'
 
-// @ts-nocheck
-export function uuidv4() {
+export function uuidv4(): string {
   // Use Web Crypto API if available
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID()
@@ -16,7 +15,7 @@ export function uuidv4() {
 }
 
 // Predefined color palette for consistent colors
-const colorPalette = [
+const colorPalette: string[] = [
   customColors.logo,
   customColors.white,
   customColors.black,
@@ -27,22 +26,22 @@ const colorPalette = [
   customColors.lightBlue,
 ]
 
-export function getNewColor(index = 0) {
+export function getNewColor(index = 0): string {
   // Use modulo to cycle through the palette
   return colorPalette[index % colorPalette.length]
 }
 
-export const getClientScopeByInum = (str) => {
+export const getClientScopeByInum = (str: string): string => {
   const inum = str.split(',')[0]
   const value = inum.split('=')[1]
   return value
 }
 
-export function getYearMonth(date) {
+export function getYearMonth(date: Date): string {
   return date.getFullYear() + getMonth(date)
 }
 
-export function getMonth(aDate) {
+export function getMonth(aDate: Date): string {
   const value = String(aDate.getMonth() + 1)
   if (value.length > 1) {
     return value
@@ -51,7 +50,7 @@ export function getMonth(aDate) {
   }
 }
 
-export function formatDate(date) {
+export function formatDate(date?: string): string {
   if (!date) {
     return '-'
   }
@@ -62,4 +61,18 @@ export function formatDate(date) {
     return date
   }
   return '-'
+}
+
+export const trimObjectStrings = <T extends Record<string, unknown>>(obj: T): T => {
+  const trimmed: Record<string, unknown> = {}
+  for (const key in obj) {
+    if (typeof obj[key] === 'string') {
+      trimmed[key] = (obj[key] as string).trim()
+    } else if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+      trimmed[key] = trimObjectStrings(obj[key] as Record<string, unknown>)
+    } else {
+      trimmed[key] = obj[key]
+    }
+  }
+  return trimmed as T
 }

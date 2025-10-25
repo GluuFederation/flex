@@ -477,7 +477,7 @@ function ClientWizardForm({
                 <CardFooter className="p-4 bt-0">
                   <div className="d-flex">
                     <div style={{ flex: 1 }}>
-                      {(!isEdit || viewOnly) && currentStep === sequence[0] && (
+                      {!viewOnly && currentStep === sequence[0] && (
                         <Button
                           type="button"
                           color={`primary-${selectedTheme}`}

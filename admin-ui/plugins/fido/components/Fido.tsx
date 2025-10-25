@@ -8,20 +8,26 @@ import StaticConfiguration from './StaticConfiguration'
 import DynamicConfiguration from './DynamicConfiguration'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-import { fidoConstants, createFidoConfigPayload } from '../helper'
+import { fidoConstants, createFidoConfigPayload, getModifiedFields } from '../helper'
 import {
   useGetPropertiesFido2,
   usePutPropertiesFido2,
   getGetPropertiesFido2QueryKey,
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido-types'
+import { logAudit } from 'Utils/AuditLogger'
+import { AuthRootState } from 'Utils/types'
 
 const Fido: React.FC = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const token = useSelector((state: AuthRootState) => state.authReducer.token.access_token)
+  const userinfo = useSelector((state: AuthRootState) => state.authReducer.userinfo)
+  const client_id = useSelector((state: AuthRootState) => state.authReducer.config.clientId)
+  const ip_address = useSelector((state: AuthRootState) => state.authReducer.location.IPv4)
 
   const { data: fidoConfiguration, isLoading } = useGetPropertiesFido2()
   const putFidoMutation = usePutPropertiesFido2({
@@ -41,19 +47,46 @@ const Fido: React.FC = () => {
   SetTitle(t('titles.fido_management'))
 
   const handleConfigSubmit = useCallback(
-    (data: DynamicConfigFormValues | StaticConfigFormValues, type: string) => {
+    (
+      data: DynamicConfigFormValues | StaticConfigFormValues,
+      type: string,
+      userMessage?: string,
+    ) => {
       if (!fidoConfiguration) {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
       }
+
       const apiPayload = createFidoConfigPayload({
         fidoConfiguration,
         data,
         type,
       })
-      putFidoMutation.mutate(apiPayload)
+      const configType = type === fidoConstants.STATIC ? 'Static' : 'Dynamic'
+      const originalConfig =
+        type === fidoConstants.STATIC ? fidoConfiguration?.fido2Configuration : fidoConfiguration
+      const modifiedFieldsOnly = getModifiedFields(data, originalConfig, type)
+
+      putFidoMutation.mutate(apiPayload, {
+        onSuccess: () => {
+          logAudit({
+            token,
+            userinfo,
+            action: 'UPDATE',
+            resource: 'FIDO',
+            message: userMessage || `FIDO ${configType} configuration updated successfully`,
+            payload: data,
+            status: 'success',
+            client_id,
+            ip_address,
+            modifiedFields: modifiedFieldsOnly,
+          }).catch((auditError) => {
+            console.error('Audit logging failed:', auditError)
+          })
+        },
+      })
     },
-    [fidoConfiguration, putFidoMutation, dispatch, t],
+    [fidoConfiguration, putFidoMutation, dispatch, t, token, userinfo, client_id, ip_address],
   )
 
   const tabNames = [
@@ -68,7 +101,9 @@ const Fido: React.FC = () => {
         case t('menus.static_configuration'):
           return (
             <StaticConfiguration
-              handleSubmit={(data) => handleConfigSubmit(data, fidoConstants.STATIC)}
+              handleSubmit={(data: StaticConfigFormValues, userMessage?: string) =>
+                handleConfigSubmit(data, fidoConstants.STATIC, userMessage)
+              }
               fidoConfiguration={fidoConfiguration}
               isSubmitting={isSubmitting}
             />
@@ -76,7 +111,9 @@ const Fido: React.FC = () => {
         case t('menus.dynamic_configuration'):
           return (
             <DynamicConfiguration
-              handleSubmit={(data) => handleConfigSubmit(data, fidoConstants.DYNAMIC)}
+              handleSubmit={(data: DynamicConfigFormValues, userMessage?: string) =>
+                handleConfigSubmit(data, fidoConstants.DYNAMIC, userMessage)
+              }
               fidoConfiguration={fidoConfiguration}
               isSubmitting={isSubmitting}
             />

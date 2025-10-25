@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useRef } from 'react'
+import { FormikProps } from 'formik'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { CardBody, Card } from 'Components'
 import SetTitle from 'Utils/SetTitle'
@@ -20,6 +21,8 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { UPDATE } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import store from 'Redux/store'
+import { SmtpRootState } from 'Plugins/smtp-management/redux/types/SmtpApi.type'
+import { SmtpFormValues } from 'Plugins/smtp-management/types'
 
 const API_SMTP = 'api-smtp-configuration'
 
@@ -31,8 +34,9 @@ interface ApiError {
   }
 }
 
-interface RootState {
-  authReducer: {
+// Extended state interface for SmtpEditPage with additional audit fields
+interface SmtpEditPageRootState extends SmtpRootState {
+  authReducer: SmtpRootState['authReducer'] & {
     config?: {
       allowSmtpKeystoreEdit?: boolean
       clientId?: string
@@ -44,7 +48,6 @@ interface RootState {
       name?: string
       inum?: string
     }
-    issuer?: string
     location?: {
       IPv4?: string
     }
@@ -82,7 +85,7 @@ function SmtpEditPage() {
   const queryClient = useQueryClient()
   const [testStatus, setTestStatus] = useState<boolean | null>(null)
   const [showTestModal, setShowTestModal] = useState(false)
-  const formikRef = useRef<any>(null)
+  const formikRef = useRef<FormikProps<SmtpFormValues> | null>(null)
   const { data: smtpConfiguration, isLoading } = useGetConfigSmtp()
   const putSmtpMutation = usePutConfigSmtp({
     mutation: {
@@ -120,13 +123,13 @@ function SmtpEditPage() {
   })
 
   const allowSmtpKeystoreEdit = useSelector(
-    (state: RootState) => state.authReducer?.config?.allowSmtpKeystoreEdit as boolean,
+    (state: SmtpEditPageRootState) => state.authReducer?.config?.allowSmtpKeystoreEdit as boolean,
   )
   SetTitle(t('menus.stmp_management'))
 
   const handleSubmit = useCallback(
     async (data: SmtpConfiguration, userMessage: string) => {
-      const state = store.getState() as unknown as RootState
+      const state = store.getState() as unknown as SmtpEditPageRootState
       putSmtpMutation.mutate(
         { data },
         {
