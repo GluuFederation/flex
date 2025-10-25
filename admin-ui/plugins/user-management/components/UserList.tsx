@@ -4,16 +4,8 @@ import { DeleteOutlined } from '@mui/icons-material'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { Paper, TablePagination } from '@mui/material'
 import UserDetailViewPage from './UserDetailViewPage'
-import {
-  getUsers,
-  setSelectedUserData,
-  deleteUser,
-  getUser2FADetails,
-  updateUser,
-} from '../redux/features/userSlice'
-
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Card, CardBody } from '../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -33,13 +25,18 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import GluuViewDetailModal from '../../../app/routes/Apps/Gluu/GluuViewDetailsModal'
 import customColors from '@/customColors'
 import moment from 'moment'
-import { useDeleteFido2Data } from 'JansConfigApi'
+import {
+  useDeleteFido2Data,
+  useGetUser,
+  useDeleteUser,
+  usePutUser,
+  useGetRegistrationEntriesFido2,
+  getGetUserQueryKey,
+} from 'JansConfigApi'
+import { useQueryClient } from '@tanstack/react-query'
 import UserDeviceDetailViewPage from './UserDeviceDetailViewPage'
 import {
   CustomAttribute,
-  User2FAPayload,
-  SearchOptions,
-  UserListRootState,
   DeviceData,
   UserTableRowData,
   OTPDevicesData,
@@ -47,13 +44,104 @@ import {
   FidoRegistrationEntry,
   CustomUser,
 } from '../types'
+import { updateToast } from 'Redux/features/toastSlice'
+import { logUserDeletion, logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
+import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 
 function UserList(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
-  const deleteFido2Mutation = useDeleteFido2Data()
+  const queryClient = useQueryClient()
   const renders = useRef(0)
-  const opt: SearchOptions = {}
+
+  const { t } = useTranslation()
+  const [modal, setModal] = useState<boolean>(false)
+  const [isViewDetailModalOpen, setIsViewDetailModalOpen] = useState<boolean>(false)
+  const [faDetails, setFADetails] = useState<DeviceData[]>([])
+  const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
+  const [userDetails, setUserDetails] = useState<UserTableRowData | null>(null)
+  const [deleteData, setDeleteData] = useState<UserTableRowData | null>(null)
+
+  const [pageNumber, setPageNumber] = useState<number>(0)
+  const [limit, setLimit] = useState<number>(10)
+  const [pattern, setPattern] = useState<string | undefined>(undefined)
+
+  // React Query hooks for data fetching
+  const {
+    data: usersData,
+    isLoading: loadingUsers,
+    refetch: refetchUsers,
+  } = useGetUser(
+    {
+      limit,
+      pattern,
+      startIndex: pageNumber * limit,
+    },
+    {
+      query: {
+        enabled: hasCedarPermission(USER_READ),
+      },
+    },
+  )
+
+  const usersList: UserTableRowData[] = (usersData?.entries as UserTableRowData[]) ?? []
+  const totalItems = usersData?.totalEntriesCount || 0
+  const loading = loadingUsers
+
+  // FIDO2 registration entries hook - only fetch when username is set
+  const { data: fidoRegistrationData, refetch: refetchFido2Details } =
+    useGetRegistrationEntriesFido2(userDetails?.userId?.toLowerCase() || '', {
+      query: {
+        enabled: false, // Don't auto-fetch, we'll trigger manually
+      },
+    })
+
+  const fidoDetails = fidoRegistrationData?.entries || []
+
+  // Mutations
+  const deleteFido2Mutation = useDeleteFido2Data({
+    mutation: {
+      onSuccess: async () => {
+        dispatch(updateToast(true, 'success', t('messages.device_deleted_successfully')))
+        if (userDetails) {
+          await refetchFido2Details()
+        }
+      },
+      onError: (error: unknown) => {
+        const errMsg = getErrorMessage(error)
+        dispatch(updateToast(true, 'error', errMsg))
+      },
+    },
+  })
+
+  const deleteUserMutation = useDeleteUser({
+    mutation: {
+      onSuccess: async (_data, variables) => {
+        dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
+        await logUserDeletion(variables.inum, (deleteData as CustomUser) || undefined)
+        await triggerUserWebhook(deleteData as Record<string, unknown>)
+        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
+      },
+      onError: (error: unknown) => {
+        const errMsg = getErrorMessage(error)
+        dispatch(updateToast(true, 'error', errMsg))
+      },
+    },
+  })
+
+  const updateUserMutation = usePutUser({
+    mutation: {
+      onSuccess: async (data, variables) => {
+        dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
+        await logUserUpdate(data, variables.data as CustomUser)
+        queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
+      },
+      onError: (error: unknown) => {
+        const errMsg = getErrorMessage(error)
+        dispatch(updateToast(true, 'error', errMsg))
+      },
+    },
+  })
 
   // Permission initialization
   useEffect(() => {
@@ -72,29 +160,14 @@ function UserList(): JSX.Element {
   }, [authorize])
 
   useEffect(() => {
-    opt.limit = 10
-    dispatch(getUsers(opt))
     dispatch(getRoles({}))
   }, [dispatch])
-
-  const { totalItems, fidoDetails } = useSelector((state: UserListRootState) => state.userReducer)
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const usersList = useSelector((state: UserListRootState) => state.userReducer.items) || []
-  const loading = useSelector((state: UserListRootState) => state.userReducer.loading)
-  const token = useSelector((state: UserListRootState) => state.authReducer.token.access_token)
-  const { t } = useTranslation()
-  const [modal, setModal] = useState<boolean>(false)
-  const [isViewDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false)
-  const [faDetails, setFADetails] = useState<DeviceData[]>([])
-  const [otpDevicesList, setOTPDevicesList] = useState<DeviceData[]>([])
-  const [userDetails, setUserDetails] = useState<UserTableRowData | null>(null)
-  const [deleteData, setDeleteData] = useState<UserTableRowData | null>(null)
   const toggle = (): void => setModal(!modal)
   const submitForm = (message: string): void => {
     toggle()
-    if (deleteData) {
+    if (deleteData?.inum) {
       deleteData.action_message = message
-      handleUserDelete(deleteData)
+      deleteUserMutation.mutate({ inum: deleteData.inum })
     }
   }
   const theme = useContext(ThemeContext)
@@ -106,10 +179,10 @@ function UserList(): JSX.Element {
     | Action<UserTableRowData>
     | ((rowData: UserTableRowData) => Action<UserTableRowData>)
   )[] = []
-  const options: SearchOptions = {}
+
   const navigate = useNavigate()
+
   function handleGoToUserAddPage(): void {
-    dispatch(setSelectedUserData(null))
     navigate('/user/usermanagement/add')
   }
 
@@ -118,7 +191,7 @@ function UserList(): JSX.Element {
     const getOTPDevices =
       row?.customAttributes?.filter((item: CustomAttribute) => item.name === 'jansOTPDevices') || []
     const getOTPDevicesValue = getOTPDevices.map((item: CustomAttribute) =>
-      JSON.parse(item.value || '{}'),
+      JSON.parse(typeof item.value === 'string' ? item.value : JSON.stringify(item.value || {})),
     )
     const getDevices = getOTPDevicesValue?.map((item: OTPDevicesData) => [...(item.devices || [])])
     const getDevicesList = getDevices?.flat()
@@ -137,21 +210,23 @@ function UserList(): JSX.Element {
         }
       }) || []
     setOTPDevicesList(otpDevices)
-    const payload: User2FAPayload = {
-      username: (row.givenName || '').toLowerCase(),
-      token: token,
+
+    // Fetch FIDO2 details
+    if (row.userId) {
+      await refetchFido2Details()
     }
-    dispatch(getUser2FADetails(payload))
-    setIsDetailModalOpen(!isViewDetailModalOpen)
+    setIsViewDetailModalOpen(!isViewDetailModalOpen)
   }
 
   function handleGoToUserEditPage(row: UserTableRowData): void {
-    dispatch(setSelectedUserData(row as unknown as CustomUser))
-    navigate(`/user/usermanagement/edit/:${row.tableData?.uuid || ''}`)
+    const userData = row as unknown as CustomUser
+    const userId = row.tableData?.uuid || row.inum
+    if (!userId) return
+    navigate(`/user/usermanagement/edit/${encodeURIComponent(userId)}`, {
+      state: { selectedUser: userData },
+    })
   }
 
-  const [limit, setLimit] = useState<number>(10)
-  const [pattern, setPattern] = useState<string | undefined>(undefined)
   let memoLimit = limit
   let memoPattern = pattern
 
@@ -165,14 +240,8 @@ function UserList(): JSX.Element {
       if (event.keyCode === 13) {
         setLimit(memoLimit)
         setPattern(memoPattern)
-        dispatch(getUsers({ limit: memoLimit, pattern: memoPattern }))
+        // Refetch with new parameters - React Query will handle it automatically
       }
-    }
-  }
-
-  function handleUserDelete(row: UserTableRowData): void {
-    if (row.inum) {
-      dispatch(deleteUser(row))
     }
   }
 
@@ -188,6 +257,9 @@ function UserList(): JSX.Element {
       />
     )
   }, [limit, pattern, handleOptionsChange])
+
+  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
+  const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
 
   if (hasCedarPermission(USER_READ)) {
     myActions.push({
@@ -208,9 +280,7 @@ function UserList(): JSX.Element {
       iconProps: { color: 'primary', style: { color: customColors.lightBlue } },
       isFreeAction: true,
       onClick: () => {
-        setLimit(memoLimit)
-        setPattern(memoPattern)
-        dispatch(getUsers({ limit: memoLimit, pattern: memoPattern }))
+        refetchUsers()
       },
     })
   }
@@ -281,46 +351,38 @@ function UserList(): JSX.Element {
   }
 
   const onPageChangeClick = (page: number): void => {
-    const startCount = page * limit
-    options.startIndex = startCount
-    options.limit = limit
-    options.pattern = pattern
     setPageNumber(page)
-    dispatch(getUsers(options))
+    // React Query will automatically refetch with new parameters
   }
 
   const onRowCountChangeClick = (count: number): void => {
-    options.limit = count
-    options.pattern = pattern
     setPageNumber(0)
     setLimit(count)
-    dispatch(getUsers(options))
+    // React Query will automatically refetch with new parameters
   }
 
   const updateUserData = (values: string): void => {
     if (!userDetails) return
 
     const submitableValues = {
-      customUser: {
-        inum: userDetails.inum,
-        userId: userDetails.userId || '',
-        dn: userDetails.dn,
-        jansOTPDevices: values,
-      },
+      inum: userDetails.inum,
+      userId: userDetails.userId || '',
+      dn: userDetails.dn,
+      jansOTPDevices: values,
     }
-    dispatch(updateUser(submitableValues))
+    updateUserMutation.mutate({ data: submitableValues })
   }
 
   const handleRemove2Fa = (row: DeviceData): void => {
     if (row.type === 'FIDO2' || row.type === 'SUPER GLUU') {
-      deleteFido2Mutation.mutate({ id: row.id || '' })
+      deleteFido2Mutation.mutate({ jansId: row.id || '' })
     } else if (row.type === 'OTP') {
       const getOTPDevices =
         userDetails?.customAttributes?.filter(
           (item: CustomAttribute) => item.name === 'jansOTPDevices',
         ) || []
       const getOTPDevicesValue = getOTPDevices.map((item: CustomAttribute) =>
-        JSON.parse(item.value || '{}'),
+        JSON.parse(typeof item.value === 'string' ? item.value : JSON.stringify(item.value || {})),
       )
 
       if (getOTPDevicesValue.length > 0) {
@@ -328,35 +390,33 @@ function UserList(): JSX.Element {
           getOTPDevicesValue[0].devices?.filter((item: OTPDevice) => item.id !== row.id) || []
         const jansOTPDevices = { devices: removedDevice }
         updateUserData(JSON.stringify(jansOTPDevices))
-      }
-    }
 
-    if (userDetails) {
-      handleView2FADetails(userDetails)
+        // Update local OTP devices list immediately for better UX
+        const updatedOTPDevices = otpDevicesList.filter((device) => device.id !== row.id)
+        setOTPDevicesList(updatedOTPDevices)
+      }
     }
   }
 
   useEffect(() => {
-    const usedAttributes: string[] = []
-    if (usersList?.length && renders.current < 1) {
-      renders.current = 1
-      for (const user of usersList) {
-        if (user.customAttributes) {
-          for (const attribute of user.customAttributes) {
-            const val = attribute.name
-            if (!usedAttributes.includes(val)) {
-              usedAttributes.push(val)
-            }
-          }
+    if (!usersList?.length || renders.current >= 1) return
+    renders.current = 1
+
+    const usedAttributes = new Set<string>()
+    for (const user of usersList) {
+      user.customAttributes?.forEach((attribute) => {
+        if (attribute.name) {
+          usedAttributes.add(attribute.name)
         }
-      }
-      if (usedAttributes.length) {
-        dispatch(
-          getAttributesRoot({
-            options: { pattern: usedAttributes.toString(), limit: 100 },
-          }),
-        )
-      }
+      })
+    }
+
+    if (usedAttributes.size > 0) {
+      dispatch(
+        getAttributesRoot({
+          options: { pattern: Array.from(usedAttributes).toString(), limit: 100 },
+        }),
+      )
     }
   }, [usersList, dispatch])
 
@@ -364,14 +424,23 @@ function UserList(): JSX.Element {
     let removeNullValue: DeviceData[] = []
     if (Array.isArray(fidoDetails) && fidoDetails.length > 0) {
       const updatedDetails: DeviceData[] = fidoDetails.map((item: FidoRegistrationEntry) => {
-        const attenstationRequest = JSON.parse(item.registrationData?.attenstationRequest || '{}')
+        // displayName is at the top level of the entry, not inside registrationData
+        const displayName = item.displayName || item?.deviceData?.name || '-'
+
+        // Determine device type based on platform presence
+        const deviceType = item?.deviceData?.platform ? 'SUPER GLUU' : 'FIDO2'
+
+        // Format modality - use device platform or type
+        const modality = item?.deviceData?.platform || item?.registrationData?.type || '-'
 
         return {
           id: item.id,
-          nickName: attenstationRequest.displayName ?? '-',
-          modality: item?.deviceData?.platform ?? '-',
-          dateAdded: moment(item.creationDate).format('YYYY-MM-DD HH:mm:ss'),
-          type: item?.deviceData?.platform ? 'SUPER GLUU' : 'FIDO2',
+          nickName: displayName,
+          modality: modality,
+          dateAdded: item.creationDate
+            ? moment(item.creationDate).format('YYYY-MM-DD HH:mm:ss')
+            : '-',
+          type: deviceType,
           registrationData: item.registrationData,
           deviceData: item.deviceData,
         }
@@ -395,9 +464,6 @@ function UserList(): JSX.Element {
     return <UserDeviceDetailViewPage row={rowData} />
   }, [])
 
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
-  const LockedOpenIcon = useCallback(() => <LockOpenIcon />, [])
-
   const PaginationWrapper = useCallback(
     () => (
       <TablePagination
@@ -418,7 +484,7 @@ function UserList(): JSX.Element {
     <GluuLoader blocking={loading}>
       <GluuViewDetailModal
         isOpen={isViewDetailModalOpen}
-        handleClose={() => setIsDetailModalOpen(!isViewDetailModalOpen)}
+        handleClose={() => setIsViewDetailModalOpen(!isViewDetailModalOpen)}
       >
         <MaterialTable<DeviceData>
           key={limit}
@@ -476,7 +542,7 @@ function UserList(): JSX.Element {
                 { title: `${t('fields.userName')}`, field: 'userId' },
                 { title: `${t('fields.email')}`, field: 'mail' },
               ]}
-              data={usersList as UserTableRowData[]}
+              data={usersList}
               isLoading={loading}
               title=""
               actions={myActions}

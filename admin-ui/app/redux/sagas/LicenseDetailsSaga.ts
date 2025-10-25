@@ -12,7 +12,7 @@ import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
 import { addAdditionalData, isFourZeroOneError } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
-import { API_LICENSE } from 'Plugins/user-management/redux/audit/Resources'
+import { API_LICENSE } from '../../audit/Resources'
 import { DELETION } from '@/audit/UserActionType'
 const JansConfigApi = require('jans_config_api')
 

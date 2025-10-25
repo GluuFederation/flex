@@ -1,11 +1,55 @@
 import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
-import PropTypes from 'prop-types'
 import customColors from '@/customColors'
+import type { SessionDetailPageProps } from './types'
+import { DOC_CATEGORY } from './types'
 
-function SessionDetailPage({ row }) {
-  const DOC_CATEGORY = 'sessions'
+const SessionDetailPage: React.FC<SessionDetailPageProps> = ({ row }) => {
+  // Helper function to safely format date
+  const formatDate = (date: Date | string | undefined): string => {
+    if (!date) return '-'
+
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date
+      return dateObj.toDateString()
+    } catch (error) {
+      console.warn('Error formatting date:', error)
+      return '-'
+    }
+  }
+
+  // Helper function to extract Jans ID from userDn
+  const extractJansId = (userDn: string | undefined): string => {
+    if (!userDn) return '-'
+
+    try {
+      const parts = userDn.split(',')
+      if (parts.length > 0) {
+        const firstPart = parts[0]
+        const equalIndex = firstPart.indexOf('=')
+        if (equalIndex !== -1) {
+          return firstPart.substring(equalIndex + 1)
+        }
+      }
+      return '-'
+    } catch (error) {
+      console.warn('Error extracting Jans ID:', error)
+      return '-'
+    }
+  }
+
+  // Helper function to safely stringify objects
+  const safeStringify = (obj: any): string => {
+    if (!obj) return '-'
+
+    try {
+      return JSON.stringify(obj, null, 2)
+    } catch (error) {
+      console.warn('Error stringifying object:', error)
+      return '-'
+    }
+  }
 
   return (
     <Container style={{ backgroundColor: customColors.whiteSmoke, minWidth: '100%' }}>
@@ -13,7 +57,7 @@ function SessionDetailPage({ row }) {
         <Col sm={4}>
           <GluuFormDetailRow
             label="fields.expiration"
-            value={row.expirationDate?.toDateString() ?? '-'}
+            value={formatDate(row.expirationDate)}
             doc_category={DOC_CATEGORY}
             doc_entry="expirationDate"
           />
@@ -21,7 +65,7 @@ function SessionDetailPage({ row }) {
         <Col sm={4}>
           <GluuFormDetailRow
             label="fields.jans_id"
-            value={row.userDn ? row.userDn.split(',')[0].split('=')[1] : '-'}
+            value={extractJansId(row.userDn)}
             doc_category={DOC_CATEGORY}
             doc_entry="jansId"
           />
@@ -56,7 +100,7 @@ function SessionDetailPage({ row }) {
         <Col sm={4}>
           <GluuFormDetailRow
             label="fields.permission_granted_map"
-            value={row.permissionGrantedMap ? JSON.stringify(row.permissionGrantedMap) : '-'}
+            value={safeStringify(row.permissionGrantedMap)}
             doc_category={DOC_CATEGORY}
             doc_entry="permissionGrantedMap"
           />
@@ -67,7 +111,7 @@ function SessionDetailPage({ row }) {
         <Col sm={4}>
           <GluuFormDetailRow
             label="fields.jans_sess_attr"
-            value={row.sessionAttributes ? JSON.stringify(row.sessionAttributes) : '-'}
+            value={safeStringify(row.sessionAttributes)}
             doc_category={DOC_CATEGORY}
             doc_entry="jansSessAttr"
           />
@@ -77,7 +121,4 @@ function SessionDetailPage({ row }) {
   )
 }
 
-SessionDetailPage.propTypes = {
-  row: PropTypes.any,
-}
 export default SessionDetailPage
