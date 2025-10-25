@@ -55,6 +55,9 @@ import type {
   FilterState,
   ColumnState,
 } from './types'
+import { logAuditUserAction } from 'Utils/AuditLogger'
+import { DELETION } from '../../../../app/audit/UserActionType'
+import { SESSION } from '../../redux/audit/Resources'
 
 const SessionListPage: React.FC<SessionListPageProps> = () => {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -70,13 +73,26 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   const deleteSessionMutation = useDeleteSession()
   const revokeSessionMutation = useRevokeUserSession()
 
-  // State for search functionality
+  const authState = useSelector((state: any) => state.authReducer)
+  const token = authState?.token?.access_token
+  const client_id = authState?.config?.clientId
+  const userinfo = authState?.userinfo
+
   const [searchParams, setSearchParams] = useState<SearchSessionParams | undefined>(undefined)
   const { data: searchData, isLoading: searchLoading } = useSearchSession(searchParams, {
     query: {
       enabled: !!searchParams,
     },
   })
+
+  const [filterState, setFilterState] = useState<FilterState>({
+    limit: 10,
+    pattern: null,
+    searchFilter: null,
+    date: null,
+  })
+
+  const [isFilterApplied, setIsFilterApplied] = useState(false)
 
   const adaptSessionIdToSession = useCallback((sessionId: SessionId): Session => {
     return {
@@ -98,12 +114,11 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     }
   }, [])
 
-  // Determine which data to use
   const sessions = useMemo(() => {
     let rawSessions: SessionId[] = []
-    if (searchParams && searchData?.entries) {
-      rawSessions = searchData.entries
-    } else if (sessionsData?.entries) {
+    if (searchParams && searchData) {
+      rawSessions = searchData.entries || []
+    } else if (!searchParams && sessionsData?.entries) {
       rawSessions = sessionsData.entries
     }
     return rawSessions.map(adaptSessionIdToSession)
@@ -111,12 +126,40 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
 
   const loading = sessionsLoading || searchLoading
 
-  const authenticatedSessions = useMemo(() => {
-    const filtered = sessions.filter((session) => session.state === 'authenticated')
-    return filtered
-  }, [sessions])
+  const tableKey = useMemo(() => {
+    if (searchParams) {
+      return `search-${JSON.stringify(searchParams)}`
+    } else if (
+      isFilterApplied &&
+      filterState.pattern &&
+      (filterState.searchFilter === 'client_id' || filterState.searchFilter === 'auth_user')
+    ) {
+      return `filter-${filterState.searchFilter}-${filterState.pattern}`
+    }
+    return 'all-sessions'
+  }, [searchParams, filterState.pattern, filterState.searchFilter, isFilterApplied])
 
-  // State management
+  const authenticatedSessions = useMemo(() => {
+    let filtered = sessions.filter((session) => session.state === 'authenticated')
+
+    if (
+      isFilterApplied &&
+      filterState.pattern &&
+      (filterState.searchFilter === 'client_id' || filterState.searchFilter === 'auth_user')
+    ) {
+      const searchValue = filterState.pattern.toLowerCase()
+      filtered = filtered.filter((session) => {
+        const fieldValue =
+          filterState.searchFilter === 'client_id'
+            ? session.sessionAttributes?.client_id
+            : session.sessionAttributes?.auth_user
+        return fieldValue?.toLowerCase().includes(searchValue)
+      })
+    }
+
+    return filtered
+  }, [sessions, filterState.pattern, filterState.searchFilter, isFilterApplied])
+
   const [myActions, setMyActions] = useState<Array<(rowData: Session) => any>>([])
   const [item, setItem] = useState<Session>({} as Session)
   const [modal, setModal] = useState<boolean>(false)
@@ -124,13 +167,6 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   const [revokeUsername, setRevokeUsername] = useState<string | null>(null)
   const [showFilter, setShowFilter] = useState<boolean>(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-
-  const [filterState, setFilterState] = useState<FilterState>({
-    limit: 10,
-    pattern: null,
-    searchFilter: null,
-    date: null,
-  })
 
   const [columnState, setColumnState] = useState<ColumnState>({
     checkedColumns: [],
@@ -277,6 +313,15 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         const { userDn } = item
         if (userDn) {
           await revokeSessionMutation.mutateAsync({ userDn })
+          await logAuditUserAction({
+            token,
+            userinfo,
+            action: DELETION,
+            resource: SESSION,
+            message: message || 'Session revoked',
+            client_id,
+            payload: { userDn, username: item.sessionAttributes?.auth_user },
+          })
           refetchSessions()
         }
         toggle()
@@ -284,7 +329,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         console.error('Error revoking session:', error)
       }
     },
-    [item, revokeSessionMutation, refetchSessions, toggle],
+    [item, revokeSessionMutation, refetchSessions, toggle, token, userinfo, client_id],
   )
 
   const onDeleteConfirmed = useCallback(
@@ -293,6 +338,15 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         const sessionId = item.id || item.sessionAttributes?.sid
         if (sessionId) {
           await deleteSessionMutation.mutateAsync({ sid: sessionId })
+          await logAuditUserAction({
+            token,
+            userinfo,
+            action: DELETION,
+            resource: SESSION,
+            message: message || 'Session deleted',
+            client_id,
+            payload: { sessionId, username: item.sessionAttributes?.auth_user },
+          })
           refetchSessions()
         }
         setDeleteModal(false)
@@ -300,7 +354,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
         console.error('Error deleting session:', error)
       }
     },
-    [item, deleteSessionMutation, refetchSessions],
+    [item, deleteSessionMutation, refetchSessions, token, userinfo, client_id],
   )
 
   const convertToCSV = useCallback(
@@ -366,19 +420,35 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
           ? pattern
           : dayjs(date).format('YYYY-MM-DD')
 
-      const searchParams: SearchSessionParams = {
-        pattern: `${searchFilter}=${searchValue}`,
-        limit: 100, // Set a reasonable limit
+      const isSessionAttribute = searchFilter === 'client_id' || searchFilter === 'auth_user'
+
+      if (isSessionAttribute) {
+        setSearchParams(undefined)
+        setIsFilterApplied(true)
+      } else if (searchFilter === 'expirationDate' || searchFilter === 'authenticationTime') {
+        const searchParams: SearchSessionParams = {
+          fieldValuePair: `${searchFilter}=${searchValue}`,
+          limit: 100,
+        }
+        setSearchParams(searchParams)
+        setIsFilterApplied(false)
       }
-      setSearchParams(searchParams)
     } else {
       setSearchParams(undefined)
+      setIsFilterApplied(false)
     }
   }, [filterState])
 
   const handleFilterClose = useCallback(() => {
     setShowFilter(false)
     setSearchParams(undefined)
+    setIsFilterApplied(false)
+    setFilterState({
+      limit: 10,
+      pattern: null,
+      searchFilter: null,
+      date: null,
+    })
   }, [])
 
   const handleDetailPanel = useCallback((rowData: { rowData: Session }) => {
@@ -415,15 +485,24 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     }
 
     if (authenticatedSessions.length === 0) {
+      const isFiltering =
+        searchParams ||
+        (isFilterApplied &&
+          filterState.pattern &&
+          (filterState.searchFilter === 'client_id' || filterState.searchFilter === 'auth_user'))
+      const message = isFiltering
+        ? 'No sessions found matching your search criteria'
+        : t('messages.no_sessions_found')
       return (
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <p>{t('messages.no_sessions_found')}</p>
+          <p>{message}</p>
         </div>
       )
     }
 
     return (
       <MaterialTable
+        key={tableKey}
         components={{
           Container: TableContainer,
         }}
@@ -444,6 +523,11 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     tableOptions,
     handleDetailPanel,
     TableContainer,
+    tableKey,
+    searchParams,
+    isFilterApplied,
+    filterState.pattern,
+    filterState.searchFilter,
     t,
   ])
 
@@ -451,6 +535,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
     const value = e.target.value === 'null' ? null : e.target.value
     if (value === null) {
       setSearchParams(undefined)
+      setIsFilterApplied(false)
     }
     setFilterState((prev) => ({
       ...prev,

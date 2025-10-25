@@ -70,18 +70,13 @@ const usePasswordChange = (
     },
   })
 
-  const submitChangePassword = (_usermessage: string) => {
+  const submitChangePassword = (usermessage: string) => {
     if (!userDetails?.inum || !formik.values.userPassword) return
-
-    // Find the userPassword custom attribute
     const passwordAttrIndex = userDetails?.customAttributes?.findIndex(
       (attr) => attr.name === 'userPassword',
     )
-
-    let patchOperations
-
+    let patchOperations: any
     if (passwordAttrIndex !== undefined && passwordAttrIndex >= 0) {
-      // Update existing custom attribute
       patchOperations = {
         jsonPatchString: JSON.stringify([
           {
@@ -92,7 +87,6 @@ const usePasswordChange = (
         ]),
       }
     } else {
-      // Add new custom attribute
       patchOperations = {
         jsonPatchString: JSON.stringify([
           {
@@ -108,6 +102,18 @@ const usePasswordChange = (
       }
     }
 
+    patchOperations['inum'] = userDetails.inum
+    patchOperations['customAttributes'] = [
+      {
+        name: 'userPassword',
+        multiValued: false,
+      },
+    ]
+    patchOperations['performedOn'] = {
+      user_inum: userDetails.inum,
+      userId: userDetails.userId || userDetails.displayName,
+    }
+    patchOperations['message'] = usermessage
     changePasswordMutation.mutate({
       inum: userDetails.inum,
       data: patchOperations,
@@ -230,7 +236,6 @@ const setupCustomAttributes = (
   setSelectedClaims(tempList)
 }
 
-// Password Change Modal Component
 const PasswordChangeModal = ({
   isOpen,
   toggle,
@@ -297,7 +302,6 @@ const PasswordChangeModal = ({
   )
 }
 
-// Available Claims Component
 const AvailableClaimsPanel = ({
   searchClaims,
   setSearchClaims,
@@ -392,9 +396,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
   const options: Partial<GetAttributesParams> = {}
-
   const initialValues = initializeCustomAttributes(userDetails || null, personAttributes)
-
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values: UserEditFormValues) => {
@@ -460,7 +462,6 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
     }
   }, [formik.values.userConfirmPassword, formik.values.userPassword])
 
-  // Setup custom attributes effect
   useEffect(() => {
     if (userDetails) {
       setupCustomAttributes(userDetails, personAttributes, selectedClaims, setSelectedClaims)
@@ -510,7 +511,6 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
         modal={passwordModal}
         onAccept={handleSubmitChangePassword}
       />
-
       <PasswordChangeModal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}

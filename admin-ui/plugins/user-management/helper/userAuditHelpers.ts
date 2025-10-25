@@ -190,6 +190,10 @@ export async function logPasswordChange(
     const client_id = authReducer.config?.clientId || ''
     const userinfo = authReducer.userinfo
     const auditPayload = { ...payload }
+    if ((auditPayload as any).jsonPatchString) {
+      ;(auditPayload as any).jsonPatchString =
+        '[{"op":"replace","path":"/userPassword","value":"[REDACTED]"}]'
+    }
     if (Array.isArray(payload)) {
       for (const op of payload) {
         if ((op as Record<string, unknown>).path === '/userPassword') {
@@ -207,12 +211,18 @@ export async function logPasswordChange(
       auditPayload.performedOn = (payload as any).performedOn
     }
 
+    const message =
+      (payload as any)?.action?.action_message ||
+      (payload as any)?.action_message ||
+      (payload as any)?.message ||
+      'Password changed'
+
     await logAuditUserAction({
       token,
       userinfo,
       action: UPDATE,
       resource: API_USERS,
-      message: 'Password changed',
+      message,
       client_id,
       payload: auditPayload,
     })
