@@ -42,11 +42,8 @@ import {
   useDeleteSession,
   useRevokeUserSession,
   useSearchSession,
-} from '../../../../jans_config_api_orval/src/JansConfigApi'
-import type {
-  SessionId,
-  SearchSessionParams,
-} from '../../../../jans_config_api_orval/src/JansConfigApi'
+} from 'JansConfigApi'
+import type { SessionId, SearchSessionParams } from 'JansConfigApi'
 import type {
   Session,
   RootState,
