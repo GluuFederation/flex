@@ -1,10 +1,11 @@
-import { SmtpConfiguration } from '../../../redux/types'
+import { SmtpConfiguration, SmtpTest } from 'JansConfigApi'
 
-export type ConnectProtection = 'None' | 'StartTls' | 'SslTls' | ''
+export type ConnectProtection = 'None' | 'StartTls' | 'SslTls'
 
+// Form values for SMTP Configuration
 export interface SmtpFormValues {
   host: string
-  port: number | ''
+  port: number | string
   connect_protection: ConnectProtection
   from_name: string
   from_email_address: string
@@ -18,8 +19,11 @@ export interface SmtpFormValues {
   signing_algorithm: string
 }
 
+// Props for SmtpForm component
 export interface SmtpFormProps {
   item: SmtpConfiguration
-  handleSubmit: (values: SmtpConfiguration) => void
+  handleSubmit: (data: SmtpConfiguration, userMessage: string) => void
   allowSmtpKeystoreEdit: boolean
+  onTestSmtp: (testData: SmtpTest) => void
+  formikRef?: React.MutableRefObject<any>
 }

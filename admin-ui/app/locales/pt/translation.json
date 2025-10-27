@@ -646,6 +646,8 @@
     "allAvailableHintsSelected": "Todas as opções de dica disponíveis estão selecionadas",
     "noMatchingOptions": "Nenhuma opção correspondente",
     "nothingToShowInTheList": "Nada a mostrar na lista",
+    "disable_logger_timer": "Desativar Temporizador de Logs",
+    "skip_defined_password_validation": "Pular Validação de Senha Definida"
     "adminUiPolicyStore": "Política de armazenamento da interface de administração",
     "configApiPolicyStore": "Política de armazenamento da API de configuração",
     "localPolicies": "Políticas locais"
@@ -695,6 +697,13 @@
     "add_role": "Adicionar função",
     "fido_config_updated_successfully": "Configuração FIDO atualizada com sucesso",
     "fido_config_update_failed": "Falha ao atualizar a configuração FIDO",
+    "smtp_config_updated_successfully": "Configuração SMTP atualizada com sucesso",
+    "smtp_config_update_failed": "Falha ao atualizar a configuração SMTP",
+    "smtp_test_success": "Teste SMTP concluído com sucesso",
+    "smtp_test_failed": "Teste SMTP falhou",
+    "smtp_test_subject": "Teste de configuração SMTP",
+    "smtp_test_message": "Este é um e-mail de teste para verificar se sua configuração SMTP está funcionando corretamente.",
+    "save_before_test": "Por favor, salve a configuração antes de testar",
     "no_configuration_loaded": "Nenhuma configuração carregada",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
     "licenseAuditLog": "Você realmente deseja redefinir a licença existente?",

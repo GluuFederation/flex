@@ -4,9 +4,9 @@ import { FormGroup, Card, CardBody, CardHeader } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-
 import PropertyBuilder from './JsonPropertyBuilder'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import spec from '../../../../configApiSpecs.yaml'
 import { buildPayload, PROPERTIES_WRITE } from 'Utils/PermChecker'
@@ -30,6 +30,7 @@ function ConfigPage() {
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const { t } = useTranslation()
   const lSize = 6
@@ -50,7 +51,6 @@ function ConfigPage() {
 
   const [put, setPut] = useState([])
 
-  // Permission initialization
   useEffect(() => {
     const authorizePermissions = async () => {
       try {
@@ -129,6 +129,10 @@ function ConfigPage() {
     return result.toLowerCase()
   }
 
+  const handleBack = () => {
+    navigate('/home/dashboard')
+  }
+
   return (
     <GluuLoader blocking={!(!!configuration && Object.keys(configuration).length > 0)}>
       <Card style={{ borderRadius: 24 }}>
@@ -203,7 +207,14 @@ function ConfigPage() {
           )}
 
           <FormGroup row></FormGroup>
-          {hasCedarPermission(PROPERTIES_WRITE) && <GluuCommitFooter saveHandler={toggle} />}
+          {hasCedarPermission(PROPERTIES_WRITE) && (
+            <GluuCommitFooter
+              saveHandler={toggle}
+              hideButtons={{ back: false }}
+              backButtonLabel="Back"
+              backButtonHandler={handleBack}
+            />
+          )}
           <FormGroup row></FormGroup>
           <FormGroup row></FormGroup>
           <FormGroup row></FormGroup>

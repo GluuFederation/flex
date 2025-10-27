@@ -32,8 +32,6 @@ export const fidoConstants = {
     FIDO2_DEVICE_INFO_COLLECTION: 'fido2DeviceInfoCollection',
     FIDO2_ERROR_CATEGORIZATION: 'fido2ErrorCategorization',
     FIDO2_PERFORMANCE_METRICS: 'fido2PerformanceMetrics',
-    SESSION_ID_PERSIST_IN_CACHE: 'sessionIdPersistInCache',
-    ERROR_REASON_ENABLED: 'errorReasonEnabled',
 
     // Static Configuration Fields
     AUTHENTICATOR_CERTS_FOLDER: 'authenticatorCertsFolder',
@@ -72,8 +70,6 @@ export const fidoConstants = {
     FIDO2_DEVICE_INFO_COLLECTION: 'fields.fido2_device_info_collection',
     FIDO2_ERROR_CATEGORIZATION: 'fields.fido2_error_categorization',
     FIDO2_PERFORMANCE_METRICS: 'fields.fido2_performance_metrics',
-    SESSION_ID_PERSIST_IN_CACHE: 'fields.session_id_persist_in_cache',
-    ERROR_REASON_ENABLED: 'fields.error_reason_enabled',
 
     // Static Configuration Labels
     AUTHENTICATOR_CERTIFICATES_FOLDER: 'fields.authenticator_certificates_folder',

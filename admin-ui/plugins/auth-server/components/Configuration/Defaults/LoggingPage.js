@@ -1,9 +1,10 @@
-import React, { useEffect, useContext, useState, useMemo, useCallback } from 'react'
-import { Form, Button, FormGroup, Card, CardBody, Col, CustomInput } from 'Components'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import { Form, FormGroup, Card, CardBody, Col, CustomInput, Row } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { JSON_CONFIG } from 'Utils/ApiResources'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,20 +17,17 @@ import { LOGGING_READ, LOGGING_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import { ThemeContext } from 'Context/theme/themeContext'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import { getChangedFields, getMergedValues } from '@/helpers'
 
 function LoggingPage() {
   const { t } = useTranslation()
   const { hasCedarPermission, authorize } = useCedarling()
-  const theme = useContext(ThemeContext)
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
-  const selectedTheme = theme.state.theme
 
   const [showCommitDialog, setShowCommitDialog] = useState(false)
   const [pendingValues, setPendingValues] = useState(null)
@@ -192,10 +190,17 @@ function LoggingPage() {
                   />
 
                   {hasCedarPermission(LOGGING_WRITE) && (
-                    <Button color={`primary-${selectedTheme}`} type="submit">
-                      <i className="fa fa-check-circle me-2"></i>
-                      {t('actions.save')}
-                    </Button>
+                    <Row>
+                      <Col>
+                        <GluuCommitFooter
+                          saveHandler={formik.handleSubmit}
+                          extraLabel={t('actions.cancel')}
+                          extraOnClick={() => formik.resetForm()}
+                          hideButtons={{ save: true, back: true }}
+                          type="submit"
+                        />
+                      </Col>
+                    </Row>
                   )}
                 </Form>
               )}

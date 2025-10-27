@@ -14,6 +14,7 @@ const initialState: SmtpState = {
   loading: true,
   testStatus: null,
   openModal: false,
+  testButtonEnabled: false,
 }
 
 const smtpSlice = createSlice({
@@ -56,6 +57,12 @@ const smtpSlice = createSlice({
       state.openModal = false
       state.testStatus = null
     },
+    enableTestButton: (state) => {
+      state.testButtonEnabled = true
+    },
+    disableTestButton: (state) => {
+      state.testButtonEnabled = false
+    },
   },
 })
 
@@ -69,6 +76,8 @@ export const {
   testSmtpResponse,
   testSmtpResponseFails,
   clearSmtpConfig,
+  enableTestButton,
+  disableTestButton,
 } = smtpSlice.actions
 
 export type { SmtpState }
