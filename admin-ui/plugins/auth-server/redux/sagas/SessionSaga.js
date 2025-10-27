@@ -35,11 +35,13 @@ export function* getSessions({ payload }) {
     addAdditionalData(audit, FETCH, SESSION, payload)
     const sessionApi = yield* newFunction()
     const data = yield call(sessionApi.getAllSessions, payload)
-    yield put(handleUpdateSessionsResponse({ data: data.entries }))
+    console.log('SessionSaga: API response data:', data)
+    yield put(handleUpdateSessionsResponse({ data: data.entries || [] }))
     yield call(postUserAction, audit)
     return data
   } catch (e) {
-    yield put(handleUpdateSessionsResponse({ data: null }))
+    console.error('SessionSaga: Error fetching sessions:', e)
+    yield put(handleUpdateSessionsResponse({ data: [] }))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

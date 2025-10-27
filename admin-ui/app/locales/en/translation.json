@@ -815,7 +815,13 @@
     "add_ssa": "Add SSA",
     "copied": "Copied",
     "no_data_found": "No data found",
-    "role_already_exists": "Role already exists"
+    "no_sessions_found": "No sessions found",
+    "role_already_exists": "Role already exists",
+    "user_created_successfully": "User created successfully",
+    "user_updated_successfully": "User updated successfully",
+    "user_deleted_successfully": "User deleted successfully",
+    "password_changed_successfully": "Password changed successfully",
+    "device_deleted_successfully": "Device deleted successfully"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
@@ -1713,7 +1719,6 @@
       "principalAttribute": "Name or Friendly Name of the attribute used to identify external",
       "principalType": "Way to identify and track external users from the assertion."
     },
-
     "samlConfiguration": {
       "enabled": "SAML functionality enabled.",
       "selectedIdp": "Selected SAML server.",
