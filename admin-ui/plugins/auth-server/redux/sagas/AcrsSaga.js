@@ -1,10 +1,17 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from 'Utils/TokenController'
-import { getAcrsResponse, editAcrsResponse } from '../features/acrSlice'
+import { isFourZeroOneError } from '@/utils/TokenController'
+import { getAcrsResponse, editAcrsResponse, editAcrsResponseFailed } from '../features/acrSlice'
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import AcrApi from '../api/AcrApi'
 import { getClient } from 'Redux/api/base'
+import { updateToast } from '@/redux/features/toastSlice'
 const JansConfigApi = require('jans_config_api')
+import { initAudit } from '@/redux/sagas/SagaUtils'
+import { addAdditionalData } from 'Utils/TokenController'
+import { UPDATE } from '@/audit/UserActionType'
+import { postUserAction } from '@/redux/api/backend-api'
+import { BASIC } from '@/utils/ApiResources'
+import { API_ACRS } from 'Plugins/user-management/redux/audit/Resources'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -30,12 +37,29 @@ export function* getCurrentAcrs() {
 }
 
 export function* editAcrs({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, UPDATE, API_ACRS, {
+      action: {
+        action_message: payload?.action?.action_message,
+        action_data: {
+          modifiedFields: payload?.action?.action_data,
+        },
+      },
+    })
     const api = yield* newFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(editAcrsResponse({ data }))
+    yield call(postUserAction, audit)
   } catch (e) {
-    yield put(editAcrsResponse(null))
+    audit.status = 'failure'
+    addAdditionalData(audit, UPDATE, API_ACRS, {
+      message: e?.response?.data?.error_description || e?.message,
+    })
+    yield put(updateToast(true, 'error'))
+    yield put(editAcrsResponseFailed())
+    yield call(postUserAction, audit)
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
