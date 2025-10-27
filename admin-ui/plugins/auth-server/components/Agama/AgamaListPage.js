@@ -36,6 +36,7 @@ import FormLabel from '@mui/material/FormLabel'
 import GluuTabs from 'Routes/Apps/Gluu/GluuTabs'
 import { toast } from 'react-toastify'
 import customColors from '@/customColors'
+import { Box, Typography } from '@mui/material'
 
 const dateTimeFormatOptions = {
   year: '2-digit',
@@ -490,83 +491,66 @@ function AgamaListPage() {
       case t('menus.add_community_project'):
         return (
           <>
-            <ModalBody style={{ maxHeight: '500px', height: 'auto' }}>
+            <ModalBody sx={{ maxHeight: 500 }}>
               <FormGroup>
-                <FormLabel
-                  style={{
-                    marginBottom: '16px',
-                    fontSize: '12px',
-                    fontWeight: '400',
-                  }}
-                >
-                  {t('titles.select_project_deploy')}
-                </FormLabel>
+                {fileLoading || !agamaRepostoriesList?.projects?.length ? (
+                  <Box display="flex" justifyContent="center" alignItems="center" py={4}>
+                    {fileLoading ? (
+                      <CircularProgress />
+                    ) : (
+                      <Typography fontSize={15}>{t('messages.no_data_found')}</Typography>
+                    )}
+                  </Box>
+                ) : (
+                  <>
+                    <FormLabel sx={{ mb: 2, fontSize: 12, fontWeight: 400 }}>
+                      {t('titles.select_project_deploy')}
+                    </FormLabel>
 
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: '0 10px',
-                    maxHeight: '400px',
-                    overflowY: 'auto',
-                    overflowX: 'hidden',
-                  }}
-                >
-                  {fileLoading ? (
-                    <CircularProgress />
-                  ) : agamaRepostoriesList?.projects?.length ? (
-                    agamaRepostoriesList?.projects?.map((item) => (
-                      <FormControlLabel
-                        key={item['repository-name']}
-                        control={
-                          <Checkbox
-                            checked={repoName === item['repository-name']}
-                            onChange={() =>
-                              setRepoName(
-                                repoName === item['repository-name']
-                                  ? null
-                                  : item['repository-name'],
-                              )
-                            }
-                            sx={{
-                              transform: 'scale(1.5)',
-                              paddingTop: '6px',
-                            }}
-                          />
-                        }
-                        label={
-                          <div>
-                            <div>{item['repository-name']}</div>
-                            <div
-                              style={{
-                                fontSize: '12px',
-                                color: customColors.darkGray,
-                                marginTop: 6,
-                              }}
-                            >
-                              {item.description}
-                            </div>
-                          </div>
-                        }
-                        sx={{
-                          alignItems: 'flex-start',
-                          marginBottom: '16px',
-                        }}
-                      />
-                    ))
-                  ) : (
-                    <div
-                      style={{
-                        fontSize: '15px',
-                        padding: '14px 0 ',
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      px={1.25}
+                      sx={{
+                        maxHeight: 400,
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
                       }}
                     >
-                      {t('messages.no_data_found')}
-                    </div>
-                  )}
-                </div>
+                      {agamaRepostoriesList.projects.map((item) => {
+                        const repo = item['repository-name']
+                        const isSelected = repoName === repo
+
+                        return (
+                          <FormControlLabel
+                            key={repo}
+                            sx={{ alignItems: 'flex-start', mb: 2 }}
+                            control={
+                              <Checkbox
+                                checked={isSelected}
+                                onChange={() => setRepoName(isSelected ? null : repo)}
+                                sx={{ transform: 'scale(1.5)', pt: 0.75 }}
+                              />
+                            }
+                            label={
+                              <Box>
+                                <Typography>{repo}</Typography>
+                                {item.description && (
+                                  <Typography fontSize={12} color={customColors.darkGray} mt={0.75}>
+                                    {item.description}
+                                  </Typography>
+                                )}
+                              </Box>
+                            }
+                          />
+                        )
+                      })}
+                    </Box>
+                  </>
+                )}
               </FormGroup>
             </ModalBody>
+
             <ModalFooter>
               <Button
                 color={`primary-${selectedTheme}`}

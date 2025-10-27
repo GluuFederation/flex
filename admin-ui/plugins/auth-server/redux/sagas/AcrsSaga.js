@@ -11,6 +11,7 @@ import { addAdditionalData } from 'Utils/TokenController'
 import { UPDATE } from '@/audit/UserActionType'
 import { postUserAction } from '@/redux/api/backend-api'
 import { BASIC } from '@/utils/ApiResources'
+import { API_ACRS } from 'Plugins/user-management/redux/audit/Resources'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -38,7 +39,14 @@ export function* getCurrentAcrs() {
 export function* editAcrs({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, UPDATE, BASIC, { message: payload?.data?.userMessage })
+    addAdditionalData(audit, UPDATE, API_ACRS, {
+      action: {
+        action_message: payload?.action?.action_message,
+        action_data: {
+          modifiedFields: payload?.action?.action_data,
+        },
+      },
+    })
     const api = yield* newFunction()
     const data = yield call(api.updateAcrsConfig, payload.data)
     yield put(updateToast(true, 'success'))
@@ -46,7 +54,7 @@ export function* editAcrs({ payload }) {
     yield call(postUserAction, audit)
   } catch (e) {
     audit.status = 'failure'
-    addAdditionalData(audit, UPDATE, BASIC, {
+    addAdditionalData(audit, UPDATE, API_ACRS, {
       message: e?.response?.data?.error_description || e?.message,
     })
     yield put(updateToast(true, 'error'))
