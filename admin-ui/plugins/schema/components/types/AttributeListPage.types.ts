@@ -1,17 +1,8 @@
-import type { JansAttribute } from 'Plugins/schema/types'
+import type { JansAttribute } from 'JansConfigApi'
 import type { CedarPermissionsState } from '@/cedarling/types'
 
-// Define interfaces for component state and props
-export interface AttributeState {
-  items: JansAttribute[]
-  item: JansAttribute | Record<string, never>
-  loading: boolean
-  totalItems: number
-  entriesCount: number
-}
-
+// Root state interface for component usage (minimal, no Redux)
 export interface RootState {
-  attributeReducer: AttributeState
   cedarPermissions: CedarPermissionsState
 }
 

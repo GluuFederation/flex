@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router'
 import { nameIDPolicyFormat } from '../helper'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
-import { getAttributes } from 'Plugins/schema/redux/features/attributeSlice'
+import { useGetAttributes } from 'JansConfigApi'
 import customColors from '@/customColors'
 
 const TrustRelationForm = ({ configs, viewOnly }) => {
@@ -48,10 +48,11 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
 
-  const attributes = useSelector((state) => state.attributeReducer)
+  // Fetch attributes using React Query
+  const { data: attributesData } = useGetAttributes({ limit: 70 })
 
-  const attributesList = attributes?.items
-    ? attributes?.items?.map((item) => ({
+  const attributesList = attributesData?.entries
+    ? attributesData.entries.map((item) => ({
         dn: item?.dn,
         name: item?.displayName,
       }))
@@ -215,10 +216,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     }
   }, [savedForm])
 
-  useEffect(() => {
-    const options = { limit: 70 }
-    dispatch(getAttributes({ options }))
-  }, [])
+  // Attributes are now fetched automatically by useGetAttributes hook
 
   const handleDrop = (files) => {
     const file = files[0]

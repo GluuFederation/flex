@@ -12,7 +12,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import * as Yup from 'yup'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import {
+import type {
   AttributeFormProps,
   AttributeFormValues,
   AttributeItem,

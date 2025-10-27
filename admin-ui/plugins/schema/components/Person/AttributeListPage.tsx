@@ -4,6 +4,7 @@ import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { Paper, TablePagination } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
+import { useQueryClient } from '@tanstack/react-query'
 import { Badge } from 'reactstrap'
 import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -13,12 +14,6 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ATTRIBUTE_WRITE, ATTRIBUTE_READ, ATTRIBUTE_DELETE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import {
-  getAttributes,
-  searchAttributes,
-  setCurrentItem,
-  deleteAttribute,
-} from 'Plugins/schema/redux/features/attributeSlice'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -27,25 +22,96 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import styled from 'styled-components'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
-import type { JansAttribute, GetAttributesOptions } from 'Plugins/schema/types'
-import type { Dispatch } from '@reduxjs/toolkit'
+import {
+  JansAttribute,
+  useGetAttributes,
+  useDeleteAttributesByInum,
+  getGetAttributesQueryKey,
+} from 'JansConfigApi'
+import { updateToast } from 'Redux/features/toastSlice'
+import { DELETION } from '@/audit/UserActionType'
+import { logAuditUserAction } from '@/utils/AuditLogger'
+import store from 'Redux/store'
+import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import type {
   RootState,
   OptionsChangeEvent,
   StyledBadgeProps,
 } from '../types/AttributeListPage.types'
 
+interface AttributeListPageRootState extends RootState {
+  authReducer: {
+    config?: {
+      clientId?: string
+    }
+    token?: {
+      access_token?: string
+    }
+    userinfo?: {
+      name?: string
+      inum?: string
+    }
+    location?: {
+      IPv4?: string
+    }
+  }
+}
+
+const API_ATTRIBUTE = 'api-attribute'
+
 function AttributeListPage(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
-  const dispatch = useDispatch<Dispatch>()
-  const attributes = useSelector((state: RootState) => state.attributeReducer.items)
-  const loading = useSelector((state: RootState) => state.attributeReducer.loading)
-  const { totalItems } = useSelector((state: RootState) => state.attributeReducer)
+  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
   const { permissions: cedarPermissions } = useSelector(
     (state: RootState) => state.cedarPermissions,
   )
   const [myActions, setMyActions] = useState<Action<JansAttribute>[]>([])
+
+  const pageSize = localStorage.getItem('paggingSize')
+    ? parseInt(localStorage.getItem('paggingSize')!)
+    : 10
+  const [limit, setLimit] = useState<number>(pageSize)
+  const [pageNumber, setPageNumber] = useState<number>(0)
+  const [pattern, setPattern] = useState<string | null>(null)
+  const [startIndex, setStartIndex] = useState<number>(0)
+
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state?.theme || 'light'
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
+  const StyledBadge = styled(Badge)<StyledBadgeProps>`
+    background-color: ${(props) =>
+      props.status === 'active' ? customColors.darkGray : customColors.paleYellow} !important;
+    color: ${customColors.white} !important;
+  `
+
+  // Fetch attributes using React Query
+  const { data: attributesData, isLoading } = useGetAttributes({
+    limit,
+    pattern: pattern || undefined,
+    startIndex,
+  })
+
+  const attributes = attributesData?.entries || []
+  const totalItems = attributesData?.totalEntriesCount || 0
+
+  // Delete mutation
+  const deleteAttributeMutation = useDeleteAttributesByInum({
+    mutation: {
+      onSuccess: () => {
+        dispatch(updateToast(true, 'success'))
+        queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
+      },
+      onError: (error: unknown) => {
+        const err = error as { response?: { data?: { message?: string } } }
+        const errorMessage = err?.response?.data?.message || 'Error deleting attribute'
+        dispatch(updateToast(true, 'error', errorMessage))
+      },
+    },
+  })
 
   // Permission initialization
   useEffect(() => {
@@ -64,33 +130,10 @@ function AttributeListPage(): JSX.Element {
   }, [authorize])
 
   useEffect(() => {}, [cedarPermissions])
-
-  const options: GetAttributesOptions = {}
-  const pageSize = localStorage.getItem('paggingSize')
-    ? parseInt(localStorage.getItem('paggingSize')!)
-    : 10
-  const [limit, setLimit] = useState<number>(pageSize)
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const [pattern, setPattern] = useState<string | null>(null)
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
-
-  const StyledBadge = styled(Badge)<StyledBadgeProps>`
-    background-color: ${(props) =>
-      props.status === 'active' ? customColors.darkGray : customColors.paleYellow} !important;
-    color: ${customColors.white} !important;
-  `
-
-  useEffect(() => {
-    makeOptions()
-    dispatch(getAttributes({ options }))
-  }, [])
   SetTitle(t('fields.attributes'))
 
   const navigate = useNavigate()
-  const [item, setItem] = useState<JansAttribute>({})
+  const [item, setItem] = useState<JansAttribute>({} as JansAttribute)
   const [modal, setModal] = useState<boolean>(false)
   const toggle = (): void => setModal(!modal)
 
@@ -100,47 +143,30 @@ function AttributeListPage(): JSX.Element {
     } else if (event.target.name === 'pattern') {
       setPattern(event.target.value)
       if (event.keyCode === 13) {
-        // Use the value from the event directly for search
-        const searchOpts = { ...options, limit, pattern: event.target.value }
-        dispatch(searchAttributes({ options: searchOpts }))
+        // Search on Enter key
+        setPageNumber(0)
+        setStartIndex(0)
       }
     }
   }
 
   const onPageChangeClick = (page: number): void => {
-    makeOptions()
-    const startCount = page * limit
-    options['startIndex'] = startCount
-    options['limit'] = limit
+    const newStartIndex = page * limit
+    setStartIndex(newStartIndex)
     setPageNumber(page)
-    dispatch(getAttributes({ options }))
   }
 
   const onRowCountChangeClick = (count: number): void => {
-    makeOptions()
-    options['startIndex'] = 0
-    options['limit'] = count
+    setStartIndex(0)
     setPageNumber(0)
     setLimit(count)
-    dispatch(getAttributes({ options }))
-  }
-
-  function makeOptions(): void {
-    options['limit'] = limit
-    if (pattern) {
-      options['pattern'] = pattern
-    } else {
-      delete options['pattern']
-    }
   }
 
   function handleGoToAttributeEditPage(row: JansAttribute): void {
-    dispatch(setCurrentItem({ item: row }))
     navigate(`/attribute/edit/:${row.inum}`)
   }
 
   function handleGoToAttributeViewPage(row: JansAttribute): void {
-    dispatch(setCurrentItem({ item: row }))
     navigate(`/attribute/view/:${row.inum}`)
   }
 
@@ -193,8 +219,7 @@ function AttributeListPage(): JSX.Element {
         },
         isFreeAction: true,
         onClick: () => {
-          makeOptions()
-          dispatch(searchAttributes({ options }))
+          queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
         },
       })
     }
@@ -237,8 +262,40 @@ function AttributeListPage(): JSX.Element {
   )
 
   function onDeletionConfirmed(): void {
-    dispatch(deleteAttribute({ inum: item.inum!, name: item?.name }))
-    navigate('/attributes')
+    if (item.inum) {
+      const state = store.getState() as unknown as AttributeListPageRootState
+      deleteAttributeMutation.mutate(
+        { inum: item.inum },
+        {
+          onSuccess: () => {
+            const token = state.authReducer?.token?.access_token
+            const userinfo = state.authReducer?.userinfo
+            const clientId = state.authReducer?.config?.clientId
+            const ipAddress = state.authReducer?.location?.IPv4
+
+            logAuditUserAction({
+              token: token ?? undefined,
+              userinfo: userinfo ?? undefined,
+              action: DELETION,
+              resource: API_ATTRIBUTE,
+              message: `Deleted attribute ${item.name || item.inum}`,
+              extra: ipAddress ? { ip_address: ipAddress } : {},
+              client_id: clientId,
+              payload: { inum: item.inum, name: item.name },
+            }).catch((error) => {
+              console.error('Failed to log audit action:', error)
+            })
+
+            // Trigger webhooks for the deleted attribute
+            dispatch(
+              triggerWebhook({
+                createdFeatureValue: { inum: item.inum, name: item.name },
+              } as unknown as Parameters<typeof triggerWebhook>[0]),
+            )
+          },
+        },
+      )
+    }
     toggle()
   }
 
@@ -299,8 +356,8 @@ function AttributeListPage(): JSX.Element {
               Pagination: PaginationWrapper,
             }}
             columns={columns}
-            data={attributes}
-            isLoading={loading}
+            data={attributes as unknown as JansAttribute[]}
+            isLoading={isLoading}
             title=""
             actions={myActions}
             options={tableOptions}
