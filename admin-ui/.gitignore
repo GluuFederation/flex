@@ -4,6 +4,7 @@ dist
 # dependencies
 node_modules
 jans_config_api
+jans_config_api_orval
 package-lock.json
 yarn.lock
 plugins_repo
