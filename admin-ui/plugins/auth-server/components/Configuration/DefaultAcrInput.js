@@ -86,8 +86,8 @@ function DefaultAcrInput({
               >
                 <option value="">{t('actions.choose')}...</option>
                 {options.map((item, key) => (
-                  <option key={key} value={item}>
-                    {item}
+                  <option key={key} value={typeof item === 'object' ? item.value : item}>
+                    {typeof item === 'object' ? item.label : item}
                   </option>
                 ))}
               </CustomInput>

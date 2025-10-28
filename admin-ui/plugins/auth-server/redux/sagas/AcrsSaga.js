@@ -10,8 +10,7 @@ import { initAudit } from '@/redux/sagas/SagaUtils'
 import { addAdditionalData } from 'Utils/TokenController'
 import { UPDATE } from '@/audit/UserActionType'
 import { postUserAction } from '@/redux/api/backend-api'
-import { BASIC } from '@/utils/ApiResources'
-import { API_ACRS } from 'Plugins/user-management/redux/audit/Resources'
+import { API_ACRS } from '@/audit/Resources'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)

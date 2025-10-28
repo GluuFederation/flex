@@ -21,7 +21,13 @@ export const buildAgamaFlowsArray = (agamaList) => {
 }
 
 export const buildDropdownOptions = (filteredScripts, agamaFlows) => {
-  const scriptNames = filteredScripts.map((s) => s.key)
-
-  return [...scriptNames, SIMPLE_PASSWORD_AUTH, ...agamaFlows].sort()
+  return [
+    { label: `${SIMPLE_PASSWORD_AUTH} (builtin)`, value: SIMPLE_PASSWORD_AUTH },
+    ...filteredScripts
+      .map((s) => ({ label: `${s.key} (script)`, value: s.key }))
+      .sort((a, b) => a.value.localeCompare(b.value)),
+    ...agamaFlows
+      .map((flow) => ({ label: `${flow} (agama)`, value: flow }))
+      .sort((a, b) => a.value.localeCompare(b.value)),
+  ]
 }
