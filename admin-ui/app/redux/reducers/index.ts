@@ -14,6 +14,7 @@ import toastReducer from '../features/toastSlice'
 import profileDetailsReducer from '../features/ProfileDetailsSlice'
 import cedarPermissionsReducer from '../features/cedarPermissionsSlice'
 import auditReducer from 'Plugins/admin/redux/features/auditSlice'
+import sessionReducer from '../features/sessionSlice'
 
 const appReducers = {
   authReducer,
@@ -29,6 +30,7 @@ const appReducers = {
   profileDetailsReducer,
   cedarPermissions: cedarPermissionsReducer,
   auditReducer,
+  sessionReducer,
 }
 
 export default appReducers
