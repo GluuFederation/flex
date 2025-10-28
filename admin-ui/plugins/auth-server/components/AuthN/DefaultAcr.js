@@ -33,7 +33,7 @@ function DefaultAcr() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  SetTitle(t('titles.acr_management'))
+  SetTitle(t('titles.authn'))
 
   useEffect(() => {
     const initializeAcr = async () => {
