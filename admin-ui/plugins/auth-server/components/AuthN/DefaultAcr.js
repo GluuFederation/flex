@@ -29,11 +29,12 @@ function DefaultAcr() {
 
   const [modal, setModal] = useState(false)
   const [put, setPut] = useState(null)
-  const userAction = {}
+  SetTitle(t('titles.authn'))
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  SetTitle(t('titles.authn'))
+  const userAction = {}
 
   useEffect(() => {
     const initializeAcr = async () => {
@@ -45,7 +46,7 @@ function DefaultAcr() {
     }
 
     initializeAcr()
-    const userAction = {}
+    buildPayload(userAction, 'Fetch custom scripts', {})
     dispatch(getScripts({ action: userAction }))
     dispatch(getAgama())
     dispatch(getAcrsConfig())

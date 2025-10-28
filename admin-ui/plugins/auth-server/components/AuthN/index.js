@@ -13,7 +13,7 @@ function AuthNPage() {
   const { t } = useTranslation()
 
   const tabNames = [
-    { name: 'default acr', path: '' },
+    { name: t('menus.default_acr'), path: '' },
     {
       name: t('menus.builtIn'),
       path: '',
@@ -31,7 +31,7 @@ function AuthNPage() {
 
   const tabToShow = (tabName) => {
     switch (tabName) {
-      case 'default acr':
+      case t('menus.default_acr'):
         return <DefaultAcr />
       case t('menus.builtIn'):
         return <AuthNListPage isBuiltIn={true} />
