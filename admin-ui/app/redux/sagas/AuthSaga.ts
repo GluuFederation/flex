@@ -1,7 +1,5 @@
 // @ts-nocheck
-/**
- * Auth Sagas
- */
+
 import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects'
 import {
   getOAuth2ConfigResponse,
@@ -56,7 +54,7 @@ function* getOAuth2ConfigWorker({ payload }) {
   yield put(getOAuth2ConfigResponse())
 }
 
-function* putConfigWorker({ payload }) {
+export function* putConfigWorker({ payload }) {
   try {
     // Extract metadata (if any) from payload
     const { _meta, ...configData } = payload
