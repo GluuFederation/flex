@@ -40,7 +40,8 @@ export interface MenuIconMap {
 // Sidebar state interface
 export interface SidebarState {
   health: Record<string, string>
-  isUserLogout: boolean
+  logoutAuditInFlight: boolean
+  logoutAuditSucceeded: boolean | null
 }
 
 // Root state interface for sidebar selectors
@@ -54,7 +55,8 @@ export interface SidebarRootState {
   healthReducer: {
     health: Record<string, string>
   }
-  userReducer: {
-    isUserLogout: boolean
+  logoutAuditReducer: {
+    logoutAuditInFlight: boolean
+    logoutAuditSucceeded: boolean | null
   }
 }

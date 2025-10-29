@@ -7,11 +7,13 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 import AgamaListPage from '../Agama/AgamaListPage'
 import AliasesListPage from '../Agama/AgamaAliasListPage'
+import DefaultAcr from './DefaultAcr'
 
 function AuthNPage() {
   const { t } = useTranslation()
 
   const tabNames = [
+    { name: t('menus.default_acr'), path: '' },
     {
       name: t('menus.builtIn'),
       path: '',
@@ -29,6 +31,8 @@ function AuthNPage() {
 
   const tabToShow = (tabName) => {
     switch (tabName) {
+      case t('menus.default_acr'):
+        return <DefaultAcr />
       case t('menus.builtIn'):
         return <AuthNListPage isBuiltIn={true} />
       case t('menus.acrs'):

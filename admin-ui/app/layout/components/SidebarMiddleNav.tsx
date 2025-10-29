@@ -1,6 +1,6 @@
 import React from 'react'
 import { SidebarMenu, SidebarMenuItem } from 'Components'
-import { auditLogoutLogs } from '../../../plugins/user-management/redux/features/userSlice'
+import { auditLogoutLogs } from 'Redux/features/sessionSlice'
 import { useDispatch } from 'react-redux'
 import type { SidebarMiddleNavProps, LayoutDispatch } from './types'
 

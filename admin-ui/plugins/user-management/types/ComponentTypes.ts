@@ -1,12 +1,6 @@
 // Component-specific type definitions
 import { FormikProps } from 'formik'
-import {
-  CustomUser,
-  GetUserOptions,
-  PersonAttribute,
-  UserState,
-  CustomAttribute,
-} from './UserApiTypes'
+import { CustomUser, PersonAttribute, UserState, CustomAttribute } from './UserApiTypes'
 import { UserFormValues } from './CommonTypes'
 
 export interface UserClaimEntryProps {
@@ -24,6 +18,7 @@ export interface UserFormProps {
     modifiedFields: Record<string, string | string[]>,
     usermessage: string,
   ) => void
+  userDetails?: CustomUser | null
 }
 
 export interface UserEditPageState {
@@ -66,24 +61,6 @@ export interface FormOperation {
   path: string
   value: string | string[]
   op: 'add' | 'remove' | 'replace'
-}
-
-export interface SubmitableUserValues {
-  inum?: string
-  userId?: string
-  mail?: string
-  displayName?: string
-  status?: string
-  givenName?: string
-  customAttributes?: CustomAttribute[]
-  dn?: string
-  customObjectClasses?: string[]
-  modifiedFields?: Array<Record<string, string | string[]>>
-  performedOn?: {
-    user_inum?: string
-    useId?: string
-  }
-  action_message?: string
 }
 
 export interface UserDeviceDetailViewPageProps {
@@ -145,6 +122,7 @@ export interface DeviceData {
   registrationData?: {
     attenstationRequest?: string
     domain?: string
+    rpId?: string // Alternative property name for domain
     type?: string
     status?: string
     createdBy?: string
@@ -153,7 +131,9 @@ export interface DeviceData {
     platform?: string
     name?: string
     os_name?: string
+    osName?: string // Alternative property name for os_name
     os_version?: string
+    osVersion?: string // Alternative property name for os_version
   }
   creationDate?: string
 }
@@ -167,12 +147,4 @@ export interface OTPDevice {
 
 export interface OTPDevicesData {
   devices: OTPDevice[]
-}
-
-export interface UserActionData extends CustomUser {
-  action_message?: string
-}
-
-export interface SearchOptions extends GetUserOptions {
-  startIndex?: number
 }
