@@ -2,14 +2,26 @@ import React, { useState, useEffect, useContext, useCallback } from 'react'
 import MaterialTable, { Action, Column, Options } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
-import { Paper, TablePagination } from '@mui/material'
+import {
+  Paper,
+  TablePagination,
+  Box,
+  TextField,
+  MenuItem,
+  IconButton,
+  Button,
+  InputAdornment,
+} from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import SwapVertIcon from '@mui/icons-material/SwapVert'
+import ClearIcon from '@mui/icons-material/Clear'
+import RefreshIcon from '@mui/icons-material/Refresh'
 import { useSelector, useDispatch } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import { Badge } from 'reactstrap'
 import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import AttributeDetailPage from './AttributeDetailPage'
-import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ATTRIBUTE_WRITE, ATTRIBUTE_READ, ATTRIBUTE_DELETE } from 'Utils/PermChecker'
@@ -21,7 +33,6 @@ import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import styled from 'styled-components'
-import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
 import {
   JansAttribute,
   useGetAttributes,
@@ -33,11 +44,7 @@ import { DELETION } from '@/audit/UserActionType'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import store from 'Redux/store'
 import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-import type {
-  RootState,
-  OptionsChangeEvent,
-  StyledBadgeProps,
-} from '../types/AttributeListPage.types'
+import type { RootState, StyledBadgeProps } from '../types/AttributeListPage.types'
 
 interface AttributeListPageRootState extends RootState {
   authReducer: {
@@ -76,6 +83,9 @@ function AttributeListPage(): JSX.Element {
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [pattern, setPattern] = useState<string | null>(null)
   const [startIndex, setStartIndex] = useState<number>(0)
+  const [status, setStatus] = useState<string | undefined>(undefined)
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined)
+  const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'light'
@@ -88,11 +98,13 @@ function AttributeListPage(): JSX.Element {
     color: ${customColors.white} !important;
   `
 
-  // Fetch attributes using React Query
   const { data: attributesData, isLoading } = useGetAttributes({
     limit,
     pattern: pattern || undefined,
     startIndex,
+    status: status || undefined,
+    sortBy: sortBy || undefined,
+    sortOrder: sortBy ? sortOrder : undefined,
   })
 
   const attributes = attributesData?.entries || []
@@ -137,17 +149,43 @@ function AttributeListPage(): JSX.Element {
   const [modal, setModal] = useState<boolean>(false)
   const toggle = (): void => setModal(!modal)
 
-  function handleOptionsChange(event: OptionsChangeEvent): void {
-    if (event.target.name === 'limit') {
-      setLimit(parseInt(event.target.value))
-    } else if (event.target.name === 'pattern') {
-      setPattern(event.target.value)
-      if (event.keyCode === 13) {
-        // Search on Enter key
-        setPageNumber(0)
-        setStartIndex(0)
-      }
+  const handlePatternChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = event.target.value
+    setPattern(value)
+  }
+
+  const handlePatternKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (event.key === 'Enter') {
+      setPageNumber(0)
+      setStartIndex(0)
     }
+  }
+
+  const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = event.target.value
+    setStatus(value === 'all' ? undefined : value)
+    setPageNumber(0)
+    setStartIndex(0)
+  }
+
+  const handleSortByChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = event.target.value
+    setSortBy(value === 'none' ? undefined : value)
+    setPageNumber(0)
+    setStartIndex(0)
+  }
+
+  const handleSortOrderToggle = (): void => {
+    setSortOrder(sortOrder === 'ascending' ? 'descending' : 'ascending')
+  }
+
+  const handleClearFilters = (): void => {
+    setPattern(null)
+    setStatus(undefined)
+    setSortBy(undefined)
+    setSortOrder('ascending')
+    setPageNumber(0)
+    setStartIndex(0)
   }
 
   const onPageChangeClick = (page: number): void => {
@@ -179,6 +217,8 @@ function AttributeListPage(): JSX.Element {
     navigate('/attribute/new')
   }
 
+  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
+
   useEffect(() => {
     const actions: Action<JansAttribute>[] = []
 
@@ -192,35 +232,6 @@ function AttributeListPage(): JSX.Element {
         tooltip: `${t('tooltips.view_attribute')}`,
         onClick: (event, rowData) => handleGoToAttributeViewPage(rowData as JansAttribute),
         disabled: false,
-      })
-      actions.push({
-        icon: () => (
-          <GluuAdvancedSearch
-            limitId={LIMIT_ID}
-            patternId={PATTERN_ID}
-            limit={limit}
-            pattern={pattern}
-            handler={handleOptionsChange}
-            showLimit={false}
-          />
-        ),
-        tooltip: `${t('tooltips.advanced_search_options')}`,
-        iconProps: {
-          style: { color: customColors.lightBlue },
-        },
-        isFreeAction: true,
-        onClick: () => {},
-      })
-      actions.push({
-        icon: 'refresh',
-        tooltip: `${t('tooltips.refresh_data')}`,
-        iconProps: {
-          style: { color: customColors.lightBlue },
-        },
-        isFreeAction: true,
-        onClick: () => {
-          queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
-        },
       })
     }
 
@@ -255,7 +266,6 @@ function AttributeListPage(): JSX.Element {
     setMyActions(actions)
   }, [cedarPermissions, limit, pattern, t, hasCedarPermission])
 
-  const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
   const DetailsPanel = useCallback(
     (rowData: { rowData: JansAttribute }) => <AttributeDetailPage row={rowData.rowData} />,
     [],
@@ -349,6 +359,104 @@ function AttributeListPage(): JSX.Element {
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuViewWrapper canShow={hasCedarPermission(ATTRIBUTE_READ)}>
+          <Box
+            sx={{
+              mb: '10px',
+              p: 1,
+              backgroundColor: '#fff',
+              borderRadius: 1,
+              border: '1px solid #e0e0e0',
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                <TextField
+                  size="small"
+                  placeholder={t('placeholders.search_pattern')}
+                  name="pattern"
+                  value={pattern || ''}
+                  onChange={handlePatternChange}
+                  onKeyDown={handlePatternKeyDown}
+                  sx={{ width: '250px' }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon
+                          fontSize="small"
+                          sx={{
+                            color: customColors.lightBlue,
+                            pointerEvents: 'none',
+                          }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  select
+                  size="small"
+                  value={status || 'all'}
+                  onChange={handleStatusChange}
+                  sx={{ width: '140px' }}
+                  label={t('fields.status')}
+                >
+                  <MenuItem value="all">{t('options.all')}</MenuItem>
+                  <MenuItem value="active">{t('options.active')}</MenuItem>
+                  <MenuItem value="inactive">{t('options.inactive')}</MenuItem>
+                </TextField>
+                <TextField
+                  select
+                  size="small"
+                  value={sortBy || 'none'}
+                  onChange={handleSortByChange}
+                  sx={{ width: '180px' }}
+                  label={t('fields.sort_by')}
+                >
+                  <MenuItem value="none">{t('options.none')}</MenuItem>
+                  <MenuItem value="displayName">{t('fields.displayname')}</MenuItem>
+                  <MenuItem value="inum">{t('fields.inum')}</MenuItem>
+                </TextField>
+                {sortBy && sortBy !== 'none' && (
+                  <IconButton
+                    size="small"
+                    onClick={handleSortOrderToggle}
+                    title={
+                      sortOrder === 'ascending' ? t('options.ascending') : t('options.descending')
+                    }
+                    sx={{ color: customColors.lightBlue }}
+                  >
+                    <SwapVertIcon />
+                  </IconButton>
+                )}
+                <Button
+                  size="small"
+                  startIcon={<ClearIcon />}
+                  onClick={handleClearFilters}
+                  sx={{ color: customColors.lightBlue }}
+                >
+                  {t('actions.clear')}
+                </Button>
+              </Box>
+              <IconButton
+                size="small"
+                onClick={() =>
+                  queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
+                }
+                title={t('tooltips.refresh_data')}
+                sx={{ color: customColors.lightBlue }}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </Box>
+          </Box>
+
           <MaterialTable
             key={attributes ? attributes.length : 0}
             components={{
@@ -370,6 +478,7 @@ function AttributeListPage(): JSX.Element {
             handler={toggle}
             modal={modal}
             subject="attribute"
+            name={item.displayName}
             onAccept={onDeletionConfirmed}
             feature={adminUiFeatures.attributes_delete}
           />
