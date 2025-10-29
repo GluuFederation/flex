@@ -47,7 +47,8 @@ import { API_ATTRIBUTE } from '../../constants'
 import { getErrorMessage } from '../../utils/errorHandler'
 import type { RootState, StyledBadgeProps } from '../types/AttributeListPage.types'
 
-// Define StyledBadge outside component to prevent hook order issues
+type AttributeIdentifier = Pick<JansAttribute, 'inum' | 'name'>
+
 const StyledBadge = styled(Badge)<StyledBadgeProps>`
   background-color: ${(props) =>
     props.status?.toLowerCase() === 'active'
@@ -68,7 +69,6 @@ function AttributeListPage(): JSX.Element {
   )
   const [myActions, setMyActions] = useState<Action<JansAttribute>[]>([])
 
-  // Optimize localStorage access with useMemo
   const pageSize = useMemo(() => {
     const stored = localStorage.getItem('paggingSize')
     return stored ? parseInt(stored) : 10
@@ -99,7 +99,6 @@ function AttributeListPage(): JSX.Element {
   const attributes = attributesData?.entries || []
   const totalItems = attributesData?.totalEntriesCount || 0
 
-  // Delete mutation
   const deleteAttributeMutation = useDeleteAttributesByInum({
     mutation: {
       onSuccess: () => {
@@ -113,7 +112,6 @@ function AttributeListPage(): JSX.Element {
     },
   })
 
-  // Permission initialization
   useEffect(() => {
     const authorizePermissions = async (): Promise<void> => {
       const permissions = [ATTRIBUTE_READ, ATTRIBUTE_WRITE, ATTRIBUTE_DELETE]
@@ -150,7 +148,6 @@ function AttributeListPage(): JSX.Element {
 
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value
-    // Convert to uppercase for API (expects 'ACTIVE', 'INACTIVE')
     setStatus(value === 'all' ? undefined : value.toUpperCase())
     setPageNumber(0)
     setStartIndex(0)
@@ -285,16 +282,19 @@ function AttributeListPage(): JSX.Element {
         { inum: item.inum },
         {
           onSuccess: () => {
-            // Log audit action
+            const deletedAttribute: AttributeIdentifier = {
+              inum: item.inum,
+              name: item.name,
+            }
+
             logAudit({
               action: DELETION,
               resource: API_ATTRIBUTE,
               message: `Deleted attribute ${item.name ?? item.inum}`,
-              payload: { inum: item.inum, name: item.name } as JansAttribute,
+              payload: deletedAttribute,
             })
 
-            // Trigger webhooks for the deleted attribute
-            triggerAttributeWebhook({ inum: item.inum, name: item.name } as JansAttribute)
+            triggerAttributeWebhook(deletedAttribute)
           },
         },
       )
@@ -322,7 +322,6 @@ function AttributeListPage(): JSX.Element {
     [],
   )
 
-  // Memoize columns to prevent re-creation on every render
   const columns: Column<JansAttribute>[] = useMemo(
     () => [
       { title: `${t('fields.inum')}`, field: 'inum' },
@@ -340,7 +339,6 @@ function AttributeListPage(): JSX.Element {
     [t],
   )
 
-  // Memoize tableOptions to prevent re-creation on every render
   const tableOptions: Options<JansAttribute> = useMemo(
     () => ({
       search: false,

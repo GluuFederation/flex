@@ -14,7 +14,6 @@ function AttributeViewPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
-  // Extract inum from route parameter (format is :inum)
   const inum = gid?.replace(':', '') || ''
 
   const {
@@ -42,12 +41,8 @@ function AttributeViewPage(): JSX.Element {
     return cloned
   }, [attribute])
 
-  // No-op submit handler for view-only mode
-  function customHandleSubmit(): void {
-    // View mode - no submission
-  }
+  function customHandleSubmit(): void {}
 
-  // Handle query error
   if (queryError) {
     return (
       <Card className="mb-3" style={applicationStyle.mainCard}>

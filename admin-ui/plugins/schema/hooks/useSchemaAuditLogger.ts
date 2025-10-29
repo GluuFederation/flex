@@ -8,15 +8,10 @@ interface AuditLogParams {
   action: string
   resource: string
   message: string
-  payload: JansAttribute
+  payload: Partial<JansAttribute>
 }
 
-/**
- * Custom hook for audit logging in Schema plugin
- * Automatically extracts auth state from Redux and handles audit logging
- */
 export function useSchemaAuditLogger() {
-  // Get auth state from Redux using proper selectors
   const authState = useSelector((state: SchemaPluginRootState) => state.authReducer)
 
   const logAudit = useCallback(

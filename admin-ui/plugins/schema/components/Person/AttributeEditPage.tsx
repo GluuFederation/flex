@@ -35,7 +35,6 @@ function AttributeEditPage(): JSX.Element {
   const { logAudit } = useSchemaAuditLogger()
   const { triggerAttributeWebhook } = useSchemaWebhook()
 
-  // Extract inum from route parameter (format is :inum)
   const inum = gid?.replace(':', '') || ''
 
   const {
@@ -85,7 +84,6 @@ function AttributeEditPage(): JSX.Element {
           { data: data as JansAttribute },
           {
             onSuccess: (updatedAttribute: JansAttribute) => {
-              // Log audit action
               logAudit({
                 action: UPDATE,
                 resource: API_ATTRIBUTE,
@@ -93,7 +91,6 @@ function AttributeEditPage(): JSX.Element {
                 payload: updatedAttribute,
               })
 
-              // Trigger webhooks for the updated attribute
               triggerAttributeWebhook(updatedAttribute)
             },
           },
@@ -103,7 +100,6 @@ function AttributeEditPage(): JSX.Element {
     [putAttributeMutation, logAudit, triggerAttributeWebhook],
   )
 
-  // Handle query error
   if (queryError) {
     return (
       <Card className="mb-3" style={applicationStyle.mainCard}>

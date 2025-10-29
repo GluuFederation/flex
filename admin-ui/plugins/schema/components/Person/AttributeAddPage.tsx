@@ -44,7 +44,6 @@ function AttributeAddPage(): JSX.Element {
           { data: data as JansAttribute },
           {
             onSuccess: (createdAttribute: JansAttribute) => {
-              // Log audit action
               logAudit({
                 action: CREATE,
                 resource: API_ATTRIBUTE,
@@ -52,7 +51,6 @@ function AttributeAddPage(): JSX.Element {
                 payload: createdAttribute,
               })
 
-              // Trigger webhooks for the created attribute
               triggerAttributeWebhook(createdAttribute)
             },
           },

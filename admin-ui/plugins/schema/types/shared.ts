@@ -1,10 +1,3 @@
-/**
- * Shared types for the Schema plugin
- */
-
-/**
- * Root state interface for accessing auth reducer across components
- */
 export interface SchemaPluginRootState {
   authReducer: {
     config?: {
@@ -23,9 +16,6 @@ export interface SchemaPluginRootState {
   }
 }
 
-/**
- * Auth state extracted from Redux store
- */
 export interface AuthState {
   token?: string
   userinfo?: {

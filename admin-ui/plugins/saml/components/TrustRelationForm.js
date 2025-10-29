@@ -51,7 +51,6 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
 
-  // Fetch attributes using React Query
   const { data: attributesData } = useGetAttributes({ limit: MAX_ATTRIBUTES_FOR_TRUST_RELATION })
 
   const attributesList = attributesData?.entries

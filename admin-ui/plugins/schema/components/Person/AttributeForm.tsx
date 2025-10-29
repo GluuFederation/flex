@@ -59,10 +59,8 @@ function AttributeForm(props: AttributeFormProps) {
     customOnSubmit,
     userMessage,
   }: HandleAttributeSubmitParams): void => {
-    // Create a new object instead of mutating the original
     const result = { ...item, ...values }
 
-    // Ensure attributeValidation exists
     if (!result.attributeValidation) {
       result.attributeValidation = {}
     } else {
