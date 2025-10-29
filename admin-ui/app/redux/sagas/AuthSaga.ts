@@ -58,11 +58,19 @@ function* getOAuth2ConfigWorker({ payload }) {
 
 function* putConfigWorker({ payload }) {
   try {
+    // Extract metadata (if any) from payload
+    const { _meta, ...configData } = payload
     const token = yield select((state) => state.authReducer.token.access_token)
-    const response = yield call(putServerConfiguration, { token, props: payload })
+    const response = yield call(putServerConfiguration, { token, props: configData })
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))
-      yield put(updateToast(true, 'success'))
+
+      // If cedarlingLogType changed, show specific toast; otherwise show generic success
+      if (_meta?.cedarlingLogTypeChanged && _meta?.toastMessage) {
+        yield put(updateToast(true, 'success', _meta.toastMessage))
+      } else {
+        yield put(updateToast(true, 'success'))
+      }
       return
     }
   } catch (error) {

@@ -26,7 +26,6 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { putConfigWorker } from 'Redux/features/authSlice'
 import { getScripts } from 'Redux/features/initSlice'
-import { updateToast } from 'Redux/features/toastSlice'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import { CedarlingLogType } from '@/cedarling'
 import { getPagingSize, savePagingSize as savePagingSizeToStorage } from 'Utils/pagingUtils'
@@ -51,6 +50,7 @@ function SettingsPage() {
   }, [pagingSizeOptions])
 
   const savedPagingSize = useMemo(() => getPagingSize(defaultPagingSize), [defaultPagingSize])
+  const [baselinePagingSize, setBaselinePagingSize] = useState(savedPagingSize)
   const [currentPagingSize, setCurrentPagingSize] = useState(savedPagingSize)
 
   SetTitle(t('titles.application_settings'))
@@ -97,15 +97,23 @@ function SettingsPage() {
     initialValues,
     enableReinitialize: true,
     onSubmit: (values) => {
-      // Save paging size to localStorage before dispatching saga
       savePagingSizeToStorage(currentPagingSize)
 
-      // Dispatch saga after saving paging size
-      dispatch(putConfigWorker(values))
+      const cedarlingLogTypeChanged = values?.cedarlingLogType !== config?.cedarlingLogType
 
-      if (values?.cedarlingLogType !== config?.cedarlingLogType) {
-        dispatch(updateToast(true, 'success', t('fields.reloginToViewCedarlingChanges')))
-      }
+      dispatch(
+        putConfigWorker({
+          ...values,
+          _meta: {
+            cedarlingLogTypeChanged,
+            toastMessage: cedarlingLogTypeChanged
+              ? t('fields.reloginToViewCedarlingChanges')
+              : undefined,
+          },
+        }),
+      )
+
+      setBaselinePagingSize(currentPagingSize)
     },
     validationSchema: Yup.object().shape({
       sessionTimeoutInMins: Yup.number()
@@ -116,15 +124,15 @@ function SettingsPage() {
 
   const { resetForm } = formik
 
-  const isPagingSizeChanged = currentPagingSize !== savedPagingSize
+  const isPagingSizeChanged = currentPagingSize !== baselinePagingSize
   const isFormChanged = formik.dirty || isPagingSizeChanged
   const hasErrors = !formik.isValid
 
   const handleCancel = useCallback(() => {
     const resetValues = transformToFormValues(config)
     resetForm({ values: resetValues })
-    setCurrentPagingSize(savedPagingSize)
-  }, [config, transformToFormValues, savedPagingSize, resetForm])
+    setCurrentPagingSize(baselinePagingSize)
+  }, [config, transformToFormValues, baselinePagingSize, resetForm])
 
   const additionalParametersOptions = useMemo(() => {
     return (formik.values.additionalParameters || []).map((param) => ({
@@ -192,11 +200,11 @@ function SettingsPage() {
                       type="select"
                       id="pagingSize"
                       name="pagingSize"
-                      value={currentPagingSize}
+                      value={String(currentPagingSize)}
                       onChange={(e) => handlePagingSizeChange(parseInt(e.target.value, 10))}
                     >
                       {pagingSizeOptions.map((option) => (
-                        <option value={option} key={option}>
+                        <option value={String(option)} key={option}>
                           {option}
                         </option>
                       ))}
