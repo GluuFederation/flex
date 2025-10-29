@@ -5,7 +5,7 @@ import type { JansAttribute } from 'JansConfigApi'
 
 /**
  * Custom hook for triggering webhooks in Schema plugin
- * Handles the type casting and dispatch logic
+ * Dispatches webhook trigger action with attribute payload
  */
 export function useSchemaWebhook() {
   const dispatch = useDispatch()
@@ -15,7 +15,7 @@ export function useSchemaWebhook() {
       dispatch(
         triggerWebhook({
           createdFeatureValue: attribute,
-        } as unknown as Parameters<typeof triggerWebhook>[0]),
+        }),
       )
     },
     [dispatch],

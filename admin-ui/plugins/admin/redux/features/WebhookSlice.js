@@ -107,8 +107,9 @@ const webhookSlice = createSlice({
     setWebhookModal: (state, action) => {
       state.webhookModal = action.payload
     },
-    triggerWebhook: (state) => {
+    triggerWebhook: (state, action) => {
       state.triggerWebhookInProgress = true
+      state.tiggerPayload = action.payload
     },
     setTriggerWebhookResponse: (state, action) => {
       state.triggerWebhookInProgress = false

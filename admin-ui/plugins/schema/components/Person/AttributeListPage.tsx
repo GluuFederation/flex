@@ -50,7 +50,9 @@ import type { RootState, StyledBadgeProps } from '../types/AttributeListPage.typ
 // Define StyledBadge outside component to prevent hook order issues
 const StyledBadge = styled(Badge)<StyledBadgeProps>`
   background-color: ${(props) =>
-    props.status === 'active' ? customColors.darkGray : customColors.paleYellow} !important;
+    props.status?.toLowerCase() === 'active'
+      ? customColors.darkGray
+      : customColors.paleYellow} !important;
   color: ${customColors.white} !important;
 `
 
@@ -148,7 +150,8 @@ function AttributeListPage(): JSX.Element {
 
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value
-    setStatus(value === 'all' ? undefined : value)
+    // Convert to uppercase for API (expects 'ACTIVE', 'INACTIVE')
+    setStatus(value === 'all' ? undefined : value.toUpperCase())
     setPageNumber(0)
     setStartIndex(0)
   }
@@ -328,9 +331,10 @@ function AttributeListPage(): JSX.Element {
         title: `${t('fields.status')}`,
         field: 'status',
         type: 'boolean',
-        render: (rowData) => (
-          <StyledBadge status={rowData.status ?? 'inactive'}>{rowData.status}</StyledBadge>
-        ),
+        render: (rowData) => {
+          const normalizedStatus = rowData.status?.toLowerCase() ?? 'inactive'
+          return <StyledBadge status={normalizedStatus}>{rowData.status}</StyledBadge>
+        },
       },
     ],
     [t],
@@ -403,7 +407,7 @@ function AttributeListPage(): JSX.Element {
                 <TextField
                   select
                   size="small"
-                  value={status || 'all'}
+                  value={status?.toLowerCase() || 'all'}
                   onChange={handleStatusChange}
                   sx={{ width: '140px' }}
                   label={t('fields.status')}

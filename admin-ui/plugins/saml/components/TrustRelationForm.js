@@ -27,6 +27,9 @@ import SetTitle from 'Utils/SetTitle'
 import { useGetAttributes } from 'JansConfigApi'
 import customColors from '@/customColors'
 
+// Maximum number of attributes to fetch for trust relationship configuration
+const MAX_ATTRIBUTES_FOR_TRUST_RELATION = 100
+
 const TrustRelationForm = ({ configs, viewOnly }) => {
   const { t } = useTranslation()
 
@@ -49,7 +52,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const [modal, setModal] = useState(false)
 
   // Fetch attributes using React Query
-  const { data: attributesData } = useGetAttributes({ limit: 70 })
+  const { data: attributesData } = useGetAttributes({ limit: MAX_ATTRIBUTES_FOR_TRUST_RELATION })
 
   const attributesList = attributesData?.entries
     ? attributesData.entries.map((item) => ({
