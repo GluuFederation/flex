@@ -33,7 +33,7 @@ export interface AuthState {
   permissions: string[]
   location: Location
   config: Config
-  paggingSize: number
+  pagingSize: number
   defaultToken: any
   codeChallenge: string | null
   codeChallengeMethod: string

@@ -11,7 +11,7 @@ const initialState: AuthState = {
   permissions: [],
   location: {},
   config: {},
-  paggingSize: 10,
+  pagingSize: 10,
   defaultToken: null,
   codeChallenge: null,
   codeChallengeMethod: 'S256',
@@ -52,7 +52,7 @@ const authSlice = createSlice({
     setAuthState: (state, action: PayloadAction<{ state: boolean }>) => {
       state.isAuthenticated = action.payload?.state
     },
-    getUserInfo: (state, _action: PayloadAction<any>) => {},
+    getUserInfo: (_state, _action: PayloadAction<any>) => {},
     getUserInfoResponse: (
       state,
       action: PayloadAction<{
@@ -75,7 +75,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true
       }
     },
-    getAPIAccessToken: (state, _action: PayloadAction<any>) => {},
+    getAPIAccessToken: (_state, _action: PayloadAction<any>) => {},
     getAPIAccessTokenResponse: (
       state,
       action: PayloadAction<{ access_token?: string; scopes?: string[]; issuer?: string }>,
@@ -90,7 +90,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true
       }
     },
-    getUserLocation: (state, _action: PayloadAction<any>) => {},
+    getUserLocation: (_state, _action: PayloadAction<any>) => {},
     getUserLocationResponse: (state, action: PayloadAction<{ location?: Location }>) => {
       if (action.payload?.location) {
         state.location = action.payload.location
@@ -106,8 +106,8 @@ const authSlice = createSlice({
     putConfigWorkerResponse: (state) => {
       state.loadingConfig = false
     },
-    setPaggingSize: (state, action: PayloadAction<number>) => {
-      state.paggingSize = action.payload
+    setPagingSize: (state, action: PayloadAction<number>) => {
+      state.pagingSize = action.payload
     },
   },
 })
@@ -127,7 +127,7 @@ export const {
   setBackendStatus,
   putConfigWorker,
   putConfigWorkerResponse,
-  setPaggingSize,
+  setPagingSize,
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)

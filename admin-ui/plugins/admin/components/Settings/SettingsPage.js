@@ -25,7 +25,7 @@ import { SETTINGS } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { putConfigWorker, setPaggingSize } from 'Redux/features/authSlice'
+import { putConfigWorker, setPagingSize } from 'Redux/features/authSlice'
 import { getScripts } from 'Redux/features/initSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
@@ -41,29 +41,32 @@ function SettingsPage() {
   const selectedTheme = theme.state.theme
   const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
-  const savedPaggingSize = useSelector((state) => state.authReducer?.paggingSize) || 10
-  const [currentPaggingSize, setCurrentPaggingSize] = useState(savedPaggingSize)
+  const savedPagingSize = useSelector((state) => state.authReducer?.pagingSize) || 10
+  const [currentPagingSize, setCurrentPagingSize] = useState(savedPagingSize)
   SetTitle(t('titles.application_settings'))
+
+  const configApiUrl =
+    typeof window !== 'undefined' && window.configApiBaseUrl ? window.configApiBaseUrl : 'N/A'
 
   useEffect(() => {
     dispatch(getScripts({ action: {} }))
   }, [dispatch])
 
   useEffect(() => {
-    setCurrentPaggingSize(savedPaggingSize)
-  }, [savedPaggingSize])
+    setCurrentPagingSize(savedPagingSize)
+  }, [savedPagingSize])
 
-  const handlePaggingSizeChange = useCallback((size) => {
-    setCurrentPaggingSize(size)
+  const handlePagingSizeChange = useCallback((size) => {
+    setCurrentPagingSize(size)
   }, [])
 
-  const resetPaggingSize = useCallback(() => {
-    setCurrentPaggingSize(savedPaggingSize)
-  }, [savedPaggingSize])
+  const resetPagingSize = useCallback(() => {
+    setCurrentPagingSize(savedPagingSize)
+  }, [savedPagingSize])
 
-  const savePaggingSize = useCallback(() => {
-    dispatch(setPaggingSize(currentPaggingSize))
-  }, [dispatch, currentPaggingSize])
+  const savePagingSize = useCallback(() => {
+    dispatch(setPagingSize(currentPagingSize))
+  }, [dispatch, currentPagingSize])
 
   return (
     <React.Fragment>
@@ -99,7 +102,7 @@ function SettingsPage() {
                   }}
                 >
                   <h3>
-                    <Badge color={`primary-${selectedTheme}`}>{window.configApiBaseUrl}</Badge>
+                    <Badge color={`primary-${selectedTheme}`}>{configApiUrl}</Badge>
                   </h3>
                 </Label>
               </Col>
@@ -118,11 +121,8 @@ function SettingsPage() {
                     type="select"
                     id="pagingSize"
                     name="pagingSize"
-                    value={currentPaggingSize}
-                    onChange={(value) => {
-                      const size = levels[value.target.options.selectedIndex]
-                      handlePaggingSizeChange(size)
-                    }}
+                    value={currentPagingSize}
+                    onChange={(e) => handlePagingSizeChange(parseInt(e.target.value, 10))}
                   >
                     {levels.map((item, key) => (
                       <option value={item} key={key}>
@@ -135,7 +135,7 @@ function SettingsPage() {
             </FormGroup>
 
             {!loadingScripts && (
-              <SettingsForm resetPaggingSize={resetPaggingSize} savePaggingSize={savePaggingSize} />
+              <SettingsForm resetPagingSize={resetPagingSize} savePagingSize={savePagingSize} />
             )}
           </CardBody>
         </Card>
@@ -144,7 +144,7 @@ function SettingsPage() {
   )
 }
 
-function SettingsForm({ resetPaggingSize, savePaggingSize }) {
+function SettingsForm({ resetPagingSize, savePagingSize }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
 
@@ -166,19 +166,17 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
   )
 
   const authScripts = useMemo(() => {
-    const filtered = scripts
-      .filter((item) => item.scriptType === 'person_authentication')
-      .filter((item) => item.enabled)
-      .map((item) => item.name)
-
-    return [...filtered, SIMPLE_PASSWORD_AUTH]
+    const names = (scripts || [])
+      .filter((s) => s.scriptType === 'person_authentication' && s.enabled)
+      .map((s) => s.name)
+    return Array.from(new Set([...names, SIMPLE_PASSWORD_AUTH]))
   }, [scripts])
 
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
     onSubmit: (values) => {
-      savePaggingSize()
+      savePagingSize()
       dispatch(putConfigWorker(values))
 
       if (values?.cedarlingLogType !== config?.cedarlingLogType) {
@@ -195,8 +193,8 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
   const handleCancel = useCallback(() => {
     const resetValues = transformToFormValues(config)
     formik.resetForm({ values: resetValues })
-    resetPaggingSize()
-  }, [config, transformToFormValues, resetPaggingSize, formik])
+    resetPagingSize()
+  }, [config, transformToFormValues, resetPagingSize, formik])
 
   const additionalParametersOptions = useMemo(() => {
     return (formik.values.additionalParameters || []).map((param) => ({
@@ -295,8 +293,8 @@ function SettingsForm({ resetPaggingSize, savePaggingSize }) {
 }
 
 SettingsForm.propTypes = {
-  resetPaggingSize: PropTypes.func.isRequired,
-  savePaggingSize: PropTypes.func.isRequired,
+  resetPagingSize: PropTypes.func.isRequired,
+  savePagingSize: PropTypes.func.isRequired,
 }
 
 export default SettingsPage
