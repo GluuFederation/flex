@@ -25,6 +25,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
+import { getPagingSize } from '@/utils/pagingUtils'
 
 function SqlListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -56,7 +57,7 @@ function SqlListPage() {
   const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const pageSize = localStorage.getItem('paggingSize') || 10
+  const pageSize = getPagingSize()
   const [alertObj, setAlertObj] = useState({
     severity: '',
     message: '',

@@ -27,6 +27,7 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import styled from 'styled-components'
 import { LIMIT_ID, PATTERN_ID } from 'Plugins/admin/common/Constants'
+import { getPagingSize } from '@/utils/pagingUtils'
 import type { JansAttribute, GetAttributesOptions } from 'Plugins/schema/types'
 import type { Dispatch } from '@reduxjs/toolkit'
 import type {
@@ -66,9 +67,7 @@ function AttributeListPage(): JSX.Element {
   useEffect(() => {}, [cedarPermissions])
 
   const options: GetAttributesOptions = {}
-  const pageSize = localStorage.getItem('paggingSize')
-    ? parseInt(localStorage.getItem('paggingSize')!)
-    : 10
+  const pageSize = getPagingSize()
   const [limit, setLimit] = useState<number>(pageSize)
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [pattern, setPattern] = useState<string | null>(null)

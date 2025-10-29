@@ -11,7 +11,6 @@ const initialState: AuthState = {
   permissions: [],
   location: {},
   config: {},
-  pagingSize: 10,
   defaultToken: null,
   codeChallenge: null,
   codeChallengeMethod: 'S256',
@@ -106,9 +105,6 @@ const authSlice = createSlice({
     putConfigWorkerResponse: (state) => {
       state.loadingConfig = false
     },
-    setPagingSize: (state, action: PayloadAction<number>) => {
-      state.pagingSize = action.payload
-    },
   },
 })
 
@@ -127,7 +123,6 @@ export const {
   setBackendStatus,
   putConfigWorker,
   putConfigWorkerResponse,
-  setPagingSize,
 } = authSlice.actions
 export default authSlice.reducer
 reducerRegistry.register('authReducer', authSlice.reducer)
