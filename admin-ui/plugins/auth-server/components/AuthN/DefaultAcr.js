@@ -29,7 +29,7 @@ function DefaultAcr() {
 
   const [modal, setModal] = useState(false)
   const [put, setPut] = useState(null)
-  SetTitle(t('titles.authn'))
+  SetTitle(t('titles.authentication'))
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme

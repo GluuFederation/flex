@@ -40,6 +40,7 @@
     "mau_clients": "Janeiro bloquear clientes"
   },
   "menus": {
+    "authentication": "Autenticação",
     "adminui": "Admin",
     "assets": "Assets",
     "config-api": "Config-API",
@@ -897,7 +898,8 @@
     "cedar_Init": "Cedarling está tentando inicializar, por favor aguarde",
     "newPermission": "Nova Permissão",
     "addingNewApiPermission": "Adicionando nova permissão de API",
-    "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!"
+    "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!",
+    "authentication": "Autenticação"
   },
   "links": {
     "support": "https://support.gluu.org/"

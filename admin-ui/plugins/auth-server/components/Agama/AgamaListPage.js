@@ -225,7 +225,7 @@ function AgamaListPage() {
   )
 
   const agamaList = useSelector((state) => state.agamaReducer.agamaList)
-  SetTitle(t('titles.agama'))
+  SetTitle(t('titles.authentication'))
 
   useEffect(() => {
     dispatch(getAgama())
