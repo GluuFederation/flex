@@ -6,7 +6,7 @@ import { updateToast } from 'Redux/features/toastSlice'
 import LoggingApi from '../api/LoggingApi'
 import { getClient } from 'Redux/api/base'
 import { UPDATE } from '@/audit/UserActionType'
-import { API_LOGGING } from 'Plugins/user-management/redux/audit/Resources'
+import { API_LOGGING } from '../../../../app/audit/Resources'
 import { initAudit } from '@/redux/sagas/SagaUtils'
 import { postUserAction } from '@/redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')

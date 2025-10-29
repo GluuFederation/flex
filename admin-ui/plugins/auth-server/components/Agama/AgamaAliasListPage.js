@@ -18,6 +18,7 @@ import TablePagination from '@mui/material/TablePagination'
 import Paper from '@mui/material/Paper'
 import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 import customColors from '@/customColors'
+import SetTitle from 'Utils/SetTitle'
 
 function AliasesListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -43,6 +44,8 @@ function AliasesListPage() {
   const [isEdit, setIsEdit] = useState(false)
   const [selectedRow, setSelectedRow] = useState(null)
   const [myActions, setMyActions] = useState([])
+
+  SetTitle(t('titles.authentication'))
 
   // Permission initialization
   useEffect(() => {

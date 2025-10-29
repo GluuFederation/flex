@@ -2,11 +2,11 @@ import React from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import customColors from '@/customColors'
-import { UserDeviceDetailViewPageProps, DeviceData } from '../../types/ComponentTypes'
+import { UserDeviceDetailViewPageProps } from '../types/ComponentTypes'
 
 const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
   const { rowData } = row
-  const deviceData = rowData as DeviceData
+  const deviceData = rowData
   const DOC_SECTION = 'user'
 
   return (
@@ -15,7 +15,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
         <Col sm={6} xl={4}>
           <GluuFormDetailRow
             label="fields.domain"
-            value={deviceData.registrationData?.domain}
+            value={deviceData.registrationData?.domain || deviceData.registrationData?.rpId}
             doc_category={DOC_SECTION}
             doc_entry="domain"
           />
@@ -60,7 +60,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.OSName"
-              value={deviceData.deviceData?.os_name}
+              value={deviceData.deviceData?.os_name || deviceData.deviceData?.osName}
               doc_category={DOC_SECTION}
               doc_entry="OSName"
             />
@@ -68,7 +68,7 @@ const UserDeviceDetailViewPage = ({ row }: UserDeviceDetailViewPageProps) => {
           <Col sm={6} xl={4}>
             <GluuFormDetailRow
               label="fields.OSVersion"
-              value={deviceData.deviceData?.os_version}
+              value={deviceData.deviceData?.os_version || deviceData.deviceData?.osVersion}
               doc_category={DOC_SECTION}
               doc_entry="OSVersion"
             />

@@ -40,6 +40,7 @@
     "mau_clients": "Janeiro bloquear clientes"
   },
   "menus": {
+    "authentication": "Autenticação",
     "adminui": "Admin",
     "assets": "Assets",
     "config-api": "Config-API",
@@ -747,7 +748,13 @@
     "copied": "Copiado",
     "edit_acr": "Editar ACR",
     "no_data_found": "Nenhum dado encontrado",
-    "role_already_exists": "Função já existe"
+    "no_sessions_found": "Nenhuma sessão encontrada",
+    "role_already_exists": "Função já existe",
+    "user_created_successfully": "Usuário criado com sucesso",
+    "user_updated_successfully": "Usuário atualizado com sucesso",
+    "user_deleted_successfully": "Usuário excluído com sucesso",
+    "password_changed_successfully": "Senha alterada com sucesso",
+    "device_deleted_successfully": "Dispositivo excluído com sucesso"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -891,7 +898,8 @@
     "cedar_Init": "Cedarling está tentando inicializar, por favor aguarde",
     "newPermission": "Nova Permissão",
     "addingNewApiPermission": "Adicionando nova permissão de API",
-    "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!"
+    "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!",
+    "authentication": "Autenticação"
   },
   "links": {
     "support": "https://support.gluu.org/"
