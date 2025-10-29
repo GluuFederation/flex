@@ -44,7 +44,7 @@ function AuthNListPage({ isBuiltIn = false }) {
   const customScriptloading = useSelector((state) => state.customScriptReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
-  SetTitle(t('titles.authn'))
+  SetTitle(t('titles.authentication'))
 
   // Permission initialization
   useEffect(() => {

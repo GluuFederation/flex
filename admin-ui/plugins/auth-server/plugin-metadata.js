@@ -58,7 +58,6 @@ import {
 } from 'Utils/PermChecker'
 import { reducer as agamaReducer } from './redux/features/agamaSlice'
 import configApiReducer from 'Plugins/auth-server/redux/features/configApiSlice'
-import AuthNListPage from './components/AuthN/AuthNListPage'
 import { reducer as authNReducer } from './redux/features/authNSlice'
 import AuthNEditPage from './components/AuthN/AuthNEditPage'
 import SsaListPage from './components/Ssa/SsaListPage'
@@ -114,7 +113,7 @@ const pluginMetadata = {
           permission: SSA_PORTAL,
         },
         {
-          title: 'menus.authn',
+          title: 'menus.authentication',
           path: PLUGIN_BASE_APTH + '/authn',
           permission: SCOPE_READ,
         },
