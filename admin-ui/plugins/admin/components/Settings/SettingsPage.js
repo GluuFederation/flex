@@ -37,16 +37,21 @@ function SettingsPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'darkBlack'
   const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
   const config = useSelector((state) => state.authReducer?.config) || {}
   const scripts = useSelector((state) => state.initReducer.scripts)
 
-  const savedPagingSize = useMemo(() => getPagingSize(10), [])
-  const [currentPagingSize, setCurrentPagingSize] = useState(savedPagingSize)
-
   const pagingSizeOptions = useMemo(() => [1, 5, 10, 20], [])
+
+  const defaultPagingSize = useMemo(() => {
+    // Use the third option (10) as default, or fallback to first option if array is too short
+    return pagingSizeOptions[2] || pagingSizeOptions[0] || 10
+  }, [pagingSizeOptions])
+
+  const savedPagingSize = useMemo(() => getPagingSize(defaultPagingSize), [defaultPagingSize])
+  const [currentPagingSize, setCurrentPagingSize] = useState(savedPagingSize)
 
   SetTitle(t('titles.application_settings'))
 
@@ -188,8 +193,8 @@ function SettingsPage() {
                       value={currentPagingSize}
                       onChange={(e) => handlePagingSizeChange(parseInt(e.target.value, 10))}
                     >
-                      {pagingSizeOptions.map((option, index) => (
-                        <option value={option} key={index}>
+                      {pagingSizeOptions.map((option) => (
+                        <option value={option} key={option}>
                           {option}
                         </option>
                       ))}
