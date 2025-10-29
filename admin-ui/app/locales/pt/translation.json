@@ -899,7 +899,7 @@
     "newPermission": "Nova Permissão",
     "addingNewApiPermission": "Adicionando nova permissão de API",
     "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!",
-    "authentication": "Authentication"
+    "authentication": "Autenticação"
   },
   "links": {
     "support": "https://support.gluu.org/"
