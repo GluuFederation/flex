@@ -69,12 +69,7 @@ function AttributeViewPage(): JSX.Element {
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AttributeForm
-            item={
-              {
-                ...extensibleItems,
-                attributeValidation: { ...extensibleItems.attributeValidation },
-              } as AttributeItem
-            }
+            item={extensibleItems as AttributeItem}
             customOnSubmit={customHandleSubmit}
             hideButtons={{ save: true, back: true }}
           />

@@ -51,7 +51,11 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
 
-  const { data: attributesData } = useGetAttributes({ limit: MAX_ATTRIBUTES_FOR_TRUST_RELATION })
+  const {
+    data: attributesData,
+    error: attributesError,
+    isLoading: attributesLoading,
+  } = useGetAttributes({ limit: MAX_ATTRIBUTES_FOR_TRUST_RELATION })
 
   const attributesList = attributesData?.entries
     ? attributesData.entries.map((item) => ({
@@ -323,13 +327,45 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   options={attributesList}
                   lsize={4}
                   rsize={8}
-                  disabled={viewOnly}
+                  disabled={viewOnly || attributesLoading}
                   onChange={saveSelectedScopes}
                   paginate={false}
                   hideHelperMessage={true}
                   defaultSelected={scopeFieldValue}
                   doc_category={DOC_SECTION}
                 />
+                {attributesLoading && (
+                  <Row>
+                    <GluuLabel label="" size={4} />
+                    <Col sm={8}>
+                      <div
+                        style={{
+                          color: customColors.lightBlue,
+                          fontSize: '0.875rem',
+                          marginTop: '0.25rem',
+                        }}
+                      >
+                        {t('messages.loading_attributes')}...
+                      </div>
+                    </Col>
+                  </Row>
+                )}
+                {attributesError && (
+                  <Row>
+                    <GluuLabel label="" size={4} />
+                    <Col sm={8}>
+                      <div
+                        style={{
+                          color: customColors.accentRed,
+                          fontSize: '0.875rem',
+                          marginTop: '0.25rem',
+                        }}
+                      >
+                        {t('errors.attribute_load_failed')}
+                      </div>
+                    </Col>
+                  </Row>
+                )}
               </Col>
               <Col sm={10}>
                 <GluuSelectRow

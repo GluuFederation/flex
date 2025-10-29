@@ -799,6 +799,7 @@
     "view_script_details": "Ver detalles del script personalizado",
     "add_new_user": "Agregar Usuario",
     "error_in_saving": "Error al guardar.",
+    "loading_attributes": "Cargando atributos",
     "error_processiong_request": "Error al procesar la solicitud.",
     "no_scope_in_client": "Sin datos de Scope para este Cliente",
     "no_scope_in_spontaneous_client": "Sin datos de Scope Espontáneo para este Cliente",

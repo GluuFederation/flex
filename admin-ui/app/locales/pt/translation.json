@@ -733,6 +733,7 @@
     "2FA_details": "detalhes 2FA",
     "view_script_details": "Ver detalhes do guião personalizado",
     "add_new_user": "Adicionar usuário",
+    "loading_attributes": "Carregando atributos",
     "no_scope_in_client": "Sem dados de Escopo para este Cliente",
     "error_in_script": "Erro no roteiro",
     "see_configurations": "Voir configuration",

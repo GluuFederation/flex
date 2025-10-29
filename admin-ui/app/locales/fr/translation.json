@@ -738,6 +738,7 @@
     "2FA_details": "les détails de la 2FA",
     "view_script_details": "Afficher les détails du script personnalisé",
     "add_new_user": "Ajouter un utilisateur",
+    "loading_attributes": "Chargement des attributs",
     "no_scope_in_client": "Aucune donnée d'étendue pour ce client",
     "error_in_script": "Erreur dans le script",
     "see_configurations": "Voir configuration",
