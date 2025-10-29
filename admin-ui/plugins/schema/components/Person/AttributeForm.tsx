@@ -59,26 +59,35 @@ function AttributeForm(props: AttributeFormProps) {
     customOnSubmit,
     userMessage,
   }: HandleAttributeSubmitParams): void => {
-    const result = Object.assign(item, values)
+    // Create a new object instead of mutating the original
+    const result = { ...item, ...values }
+
+    // Ensure attributeValidation exists
+    if (!result.attributeValidation) {
+      result.attributeValidation = {}
+    } else {
+      result.attributeValidation = { ...result.attributeValidation }
+    }
+
     if (result.maxLength !== null) {
-      result['attributeValidation'].maxLength = result.maxLength
+      result.attributeValidation.maxLength = result.maxLength
     }
     if (result.minLength !== null) {
-      result['attributeValidation'].minLength = result.minLength
+      result.attributeValidation.minLength = result.minLength
     }
     if (result.regexp !== null) {
-      result['attributeValidation'].regexp = result.regexp
+      result.attributeValidation.regexp = result.regexp
     }
 
     if (!validation) {
-      delete result['attributeValidation']['regexp']
-      delete result['regexp']
+      delete result.attributeValidation.regexp
+      delete result.regexp
 
-      delete result['attributeValidation']['maxLength']
-      delete result['maxLength']
+      delete result.attributeValidation.maxLength
+      delete result.maxLength
 
-      delete result['attributeValidation']['minLength']
-      delete result['minLength']
+      delete result.attributeValidation.minLength
+      delete result.minLength
     }
 
     customOnSubmit({ data: result as AttributeItem, userMessage })

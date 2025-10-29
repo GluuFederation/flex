@@ -799,6 +799,7 @@
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
+    "loading_attribute": "Loading attribute...",
     "error_processiong_request": "Error in processing request.",
     "no_scope_in_client": "No Scope data for this Client",
     "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client",
@@ -824,6 +825,12 @@
     "password_changed_successfully": "Password changed successfully",
     "device_deleted_successfully": "Device deleted successfully"
   },
+  "errors": {
+    "attribute_create_failed": "Error creating attribute",
+    "attribute_update_failed": "Error updating attribute",
+    "attribute_delete_failed": "Error deleting attribute",
+    "attribute_load_failed": "Error loading attribute"
+  },
   "tooltips": {
     "add_attribute": "Add attribute",
     "add_user": "Add User",
@@ -848,7 +855,10 @@
     "product_version": "Version number of this database product",
     "driver_name": "Name of this JDBC driver",
     "driver_version": "Version number of this JDBC driver",
-    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI."
+    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI.",
+    "sort_ascending": "Sort ascending",
+    "sort_descending": "Sort descending",
+    "clear_filters": "Clear all filters"
   },
   "placeholders": {
     "id": "Enter id",

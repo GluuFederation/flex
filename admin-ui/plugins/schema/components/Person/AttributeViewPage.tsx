@@ -7,14 +7,21 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { cloneDeep } from 'lodash'
 import { JansAttribute, useGetAttributesByInum } from 'JansConfigApi'
 import { AttributeItem } from '../types/AttributeListPage.types'
+import { useTranslation } from 'react-i18next'
+import { getErrorMessage } from '../../utils/errorHandler'
 
 function AttributeViewPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
+  const { t } = useTranslation()
 
   // Extract inum from route parameter (format is :inum)
   const inum = gid?.replace(':', '') || ''
 
-  const { data: attribute, isLoading } = useGetAttributesByInum(inum, {
+  const {
+    data: attribute,
+    isLoading,
+    error: queryError,
+  } = useGetAttributesByInum(inum, {
     query: {
       enabled: !!inum,
     },
@@ -40,11 +47,23 @@ function AttributeViewPage(): JSX.Element {
     // View mode - no submission
   }
 
+  // Handle query error
+  if (queryError) {
+    return (
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>
+          {t('errors.attribute_load_failed')}:{' '}
+          {getErrorMessage(queryError, 'errors.attribute_load_failed', t)}
+        </CardBody>
+      </Card>
+    )
+  }
+
   if (!extensibleItems) {
     return (
       <GluuLoader blocking={isLoading}>
         <Card className="mb-3" style={applicationStyle.mainCard}>
-          <CardBody>Loading attribute...</CardBody>
+          <CardBody>{t('messages.loading_attribute')}</CardBody>
         </Card>
       </GluuLoader>
     )

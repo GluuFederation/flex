@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable, { Action, Column, Options } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
@@ -41,44 +41,37 @@ import {
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { DELETION } from '@/audit/UserActionType'
-import { logAuditUserAction } from '@/utils/AuditLogger'
-import store from 'Redux/store'
-import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
+import { useSchemaAuditLogger } from '../../hooks/useSchemaAuditLogger'
+import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
+import { API_ATTRIBUTE } from '../../constants'
+import { getErrorMessage } from '../../utils/errorHandler'
 import type { RootState, StyledBadgeProps } from '../types/AttributeListPage.types'
 
-interface AttributeListPageRootState extends RootState {
-  authReducer: {
-    config?: {
-      clientId?: string
-    }
-    token?: {
-      access_token?: string
-    }
-    userinfo?: {
-      name?: string
-      inum?: string
-    }
-    location?: {
-      IPv4?: string
-    }
-  }
-}
-
-const API_ATTRIBUTE = 'api-attribute'
+// Define StyledBadge outside component to prevent hook order issues
+const StyledBadge = styled(Badge)<StyledBadgeProps>`
+  background-color: ${(props) =>
+    props.status === 'active' ? customColors.darkGray : customColors.paleYellow} !important;
+  color: ${customColors.white} !important;
+`
 
 function AttributeListPage(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const { logAudit } = useSchemaAuditLogger()
+  const { triggerAttributeWebhook } = useSchemaWebhook()
   const { permissions: cedarPermissions } = useSelector(
     (state: RootState) => state.cedarPermissions,
   )
   const [myActions, setMyActions] = useState<Action<JansAttribute>[]>([])
 
-  const pageSize = localStorage.getItem('paggingSize')
-    ? parseInt(localStorage.getItem('paggingSize')!)
-    : 10
+  // Optimize localStorage access with useMemo
+  const pageSize = useMemo(() => {
+    const stored = localStorage.getItem('paggingSize')
+    return stored ? parseInt(stored) : 10
+  }, [])
+
   const [limit, setLimit] = useState<number>(pageSize)
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [pattern, setPattern] = useState<string | null>(null)
@@ -88,15 +81,9 @@ function AttributeListPage(): JSX.Element {
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
 
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme?.state?.theme || 'light'
+  const selectedTheme = theme?.state?.theme ?? 'light'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-
-  const StyledBadge = styled(Badge)<StyledBadgeProps>`
-    background-color: ${(props) =>
-      props.status === 'active' ? customColors.darkGray : customColors.paleYellow} !important;
-    color: ${customColors.white} !important;
-  `
 
   const { data: attributesData, isLoading } = useGetAttributes({
     limit,
@@ -118,8 +105,7 @@ function AttributeListPage(): JSX.Element {
         queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
       },
       onError: (error: unknown) => {
-        const err = error as { response?: { data?: { message?: string } } }
-        const errorMessage = err?.response?.data?.message || 'Error deleting attribute'
+        const errorMessage = getErrorMessage(error, 'errors.attribute_delete_failed', t)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
@@ -141,7 +127,6 @@ function AttributeListPage(): JSX.Element {
     authorizePermissions()
   }, [authorize])
 
-  useEffect(() => {}, [cedarPermissions])
   SetTitle(t('fields.attributes'))
 
   const navigate = useNavigate()
@@ -200,22 +185,31 @@ function AttributeListPage(): JSX.Element {
     setLimit(count)
   }
 
-  function handleGoToAttributeEditPage(row: JansAttribute): void {
-    navigate(`/attribute/edit/:${row.inum}`)
-  }
+  const handleGoToAttributeEditPage = useCallback(
+    (row: JansAttribute): void => {
+      navigate(`/attribute/edit/:${row.inum}`)
+    },
+    [navigate],
+  )
 
-  function handleGoToAttributeViewPage(row: JansAttribute): void {
-    navigate(`/attribute/view/:${row.inum}`)
-  }
+  const handleGoToAttributeViewPage = useCallback(
+    (row: JansAttribute): void => {
+      navigate(`/attribute/view/:${row.inum}`)
+    },
+    [navigate],
+  )
 
-  function handleAttribueDelete(row: JansAttribute): void {
-    setItem(row)
-    toggle()
-  }
+  const handleAttribueDelete = useCallback(
+    (row: JansAttribute): void => {
+      setItem(row)
+      toggle()
+    },
+    [toggle],
+  )
 
-  function handleGoToAttributeAddPage(): void {
+  const handleGoToAttributeAddPage = useCallback((): void => {
     navigate('/attribute/new')
-  }
+  }, [navigate])
 
   const DeleteOutlinedIcon = useCallback(() => <DeleteOutlined />, [])
 
@@ -264,7 +258,18 @@ function AttributeListPage(): JSX.Element {
     }
 
     setMyActions(actions)
-  }, [cedarPermissions, limit, pattern, t, hasCedarPermission])
+  }, [
+    cedarPermissions,
+    limit,
+    pattern,
+    t,
+    hasCedarPermission,
+    handleGoToAttributeViewPage,
+    handleGoToAttributeEditPage,
+    handleAttribueDelete,
+    handleGoToAttributeAddPage,
+    DeleteOutlinedIcon,
+  ])
 
   const DetailsPanel = useCallback(
     (rowData: { rowData: JansAttribute }) => <AttributeDetailPage row={rowData.rowData} />,
@@ -273,35 +278,20 @@ function AttributeListPage(): JSX.Element {
 
   function onDeletionConfirmed(): void {
     if (item.inum) {
-      const state = store.getState() as unknown as AttributeListPageRootState
       deleteAttributeMutation.mutate(
         { inum: item.inum },
         {
           onSuccess: () => {
-            const token = state.authReducer?.token?.access_token
-            const userinfo = state.authReducer?.userinfo
-            const clientId = state.authReducer?.config?.clientId
-            const ipAddress = state.authReducer?.location?.IPv4
-
-            logAuditUserAction({
-              token: token ?? undefined,
-              userinfo: userinfo ?? undefined,
+            // Log audit action
+            logAudit({
               action: DELETION,
               resource: API_ATTRIBUTE,
-              message: `Deleted attribute ${item.name || item.inum}`,
-              extra: ipAddress ? { ip_address: ipAddress } : {},
-              client_id: clientId,
-              payload: { inum: item.inum, name: item.name },
-            }).catch((error) => {
-              console.error('Failed to log audit action:', error)
+              message: `Deleted attribute ${item.name ?? item.inum}`,
+              payload: { inum: item.inum, name: item.name } as JansAttribute,
             })
 
             // Trigger webhooks for the deleted attribute
-            dispatch(
-              triggerWebhook({
-                createdFeatureValue: { inum: item.inum, name: item.name },
-              } as unknown as Parameters<typeof triggerWebhook>[0]),
-            )
+            triggerAttributeWebhook({ inum: item.inum, name: item.name } as JansAttribute)
           },
         },
       )
@@ -329,31 +319,39 @@ function AttributeListPage(): JSX.Element {
     [],
   )
 
-  const columns: Column<JansAttribute>[] = [
-    { title: `${t('fields.inum')}`, field: 'inum' },
-    { title: `${t('fields.displayname')}`, field: 'displayName' },
-    {
-      title: `${t('fields.status')}`,
-      field: 'status',
-      type: 'boolean',
-      render: (rowData) => (
-        <StyledBadge status={rowData.status || 'inactive'}>{rowData.status}</StyledBadge>
-      ),
-    },
-  ]
+  // Memoize columns to prevent re-creation on every render
+  const columns: Column<JansAttribute>[] = useMemo(
+    () => [
+      { title: `${t('fields.inum')}`, field: 'inum' },
+      { title: `${t('fields.displayname')}`, field: 'displayName' },
+      {
+        title: `${t('fields.status')}`,
+        field: 'status',
+        type: 'boolean',
+        render: (rowData) => (
+          <StyledBadge status={rowData.status ?? 'inactive'}>{rowData.status}</StyledBadge>
+        ),
+      },
+    ],
+    [t],
+  )
 
-  const tableOptions: Options<JansAttribute> = {
-    search: false,
-    idSynonym: 'inum',
-    selection: false,
-    searchFieldAlignment: 'left',
-    pageSize: limit,
-    headerStyle: {
-      ...applicationStyle.tableHeaderStyle,
-      ...bgThemeColor,
-    } as React.CSSProperties,
-    actionsColumnIndex: -1,
-  }
+  // Memoize tableOptions to prevent re-creation on every render
+  const tableOptions: Options<JansAttribute> = useMemo(
+    () => ({
+      search: false,
+      idSynonym: 'inum',
+      selection: false,
+      searchFieldAlignment: 'left',
+      pageSize: limit,
+      headerStyle: {
+        ...applicationStyle.tableHeaderStyle,
+        ...bgThemeColor,
+      } as React.CSSProperties,
+      actionsColumnIndex: -1,
+    }),
+    [limit, bgThemeColor],
+  )
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -381,10 +379,13 @@ function AttributeListPage(): JSX.Element {
                   size="small"
                   placeholder={t('placeholders.search_pattern')}
                   name="pattern"
-                  value={pattern || ''}
+                  value={pattern ?? ''}
                   onChange={handlePatternChange}
                   onKeyDown={handlePatternKeyDown}
                   sx={{ width: '250px' }}
+                  inputProps={{
+                    'aria-label': t('placeholders.search_pattern'),
+                  }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -430,6 +431,11 @@ function AttributeListPage(): JSX.Element {
                     title={
                       sortOrder === 'ascending' ? t('options.ascending') : t('options.descending')
                     }
+                    aria-label={
+                      sortOrder === 'ascending'
+                        ? t('tooltips.sort_descending')
+                        : t('tooltips.sort_ascending')
+                    }
                     sx={{ color: customColors.lightBlue }}
                   >
                     <SwapVertIcon />
@@ -439,6 +445,7 @@ function AttributeListPage(): JSX.Element {
                   size="small"
                   startIcon={<ClearIcon />}
                   onClick={handleClearFilters}
+                  aria-label={t('tooltips.clear_filters')}
                   sx={{ color: customColors.lightBlue }}
                 >
                   {t('actions.clear')}
@@ -450,6 +457,7 @@ function AttributeListPage(): JSX.Element {
                   queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
                 }
                 title={t('tooltips.refresh_data')}
+                aria-label={t('tooltips.refresh_data')}
                 sx={{ color: customColors.lightBlue }}
               >
                 <RefreshIcon />

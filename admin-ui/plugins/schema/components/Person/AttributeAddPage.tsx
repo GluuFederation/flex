@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import { CardBody, Card } from 'Components'
 import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
@@ -10,34 +9,19 @@ import { JansAttribute, usePostAttributes, getGetAttributesQueryKey } from 'Jans
 import { updateToast } from 'Redux/features/toastSlice'
 import { useDispatch } from 'react-redux'
 import { CREATE } from '@/audit/UserActionType'
-import { logAuditUserAction } from '@/utils/AuditLogger'
-import store from 'Redux/store'
-import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
-
-interface AttributeAddPageRootState {
-  authReducer: {
-    config?: {
-      clientId?: string
-    }
-    token?: {
-      access_token?: string
-    }
-    userinfo?: {
-      name?: string
-      inum?: string
-    }
-    location?: {
-      IPv4?: string
-    }
-  }
-}
-
-const API_ATTRIBUTE = 'api-attribute'
+import { useSchemaAuditLogger } from '../../hooks/useSchemaAuditLogger'
+import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
+import { API_ATTRIBUTE } from '../../constants'
+import { useTranslation } from 'react-i18next'
+import { getErrorMessage } from '../../utils/errorHandler'
 
 function AttributeAddPage(): JSX.Element {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
+  const { logAudit } = useSchemaAuditLogger()
+  const { triggerAttributeWebhook } = useSchemaWebhook()
 
   const postAttributeMutation = usePostAttributes({
     mutation: {
@@ -47,8 +31,7 @@ function AttributeAddPage(): JSX.Element {
         navigate('/attributes')
       },
       onError: (error: unknown) => {
-        const err = error as { response?: { data?: { message?: string } } }
-        const errorMessage = err?.response?.data?.message || 'Error creating attribute'
+        const errorMessage = getErrorMessage(error, 'errors.attribute_create_failed', t)
         dispatch(updateToast(true, 'error', errorMessage))
       },
     },
@@ -57,41 +40,26 @@ function AttributeAddPage(): JSX.Element {
   const onSubmit = useCallback(
     ({ data, userMessage }: SubmitData): void => {
       if (data) {
-        const state = store.getState() as unknown as AttributeAddPageRootState
         postAttributeMutation.mutate(
           { data: data as JansAttribute },
           {
             onSuccess: (createdAttribute: JansAttribute) => {
-              const token = state.authReducer?.token?.access_token ?? ''
-              const userinfo = state.authReducer?.userinfo
-              const clientId = state.authReducer?.config?.clientId
-              const ipAddress = state.authReducer?.location?.IPv4
-
-              logAuditUserAction({
-                token: token || undefined,
-                userinfo: userinfo ?? undefined,
+              // Log audit action
+              logAudit({
                 action: CREATE,
                 resource: API_ATTRIBUTE,
                 message: userMessage || '',
-                extra: ipAddress ? { ip_address: ipAddress } : {},
-                client_id: clientId,
                 payload: createdAttribute,
-              }).catch((error) => {
-                console.error('Failed to log audit action:', error)
               })
 
               // Trigger webhooks for the created attribute
-              dispatch(
-                triggerWebhook({
-                  createdFeatureValue: createdAttribute,
-                } as unknown as Parameters<typeof triggerWebhook>[0]),
-              )
+              triggerAttributeWebhook(createdAttribute)
             },
           },
         )
       }
     },
-    [postAttributeMutation],
+    [postAttributeMutation, logAudit, triggerAttributeWebhook],
   )
 
   const defaultAttribute: Partial<AttributeItem> = {
