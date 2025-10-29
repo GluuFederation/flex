@@ -114,15 +114,17 @@ function SettingsPage() {
     }),
   })
 
+  const { resetForm } = formik
+
   const isPagingSizeChanged = currentPagingSize !== savedPagingSize
   const isFormChanged = formik.dirty || isPagingSizeChanged
   const hasErrors = !formik.isValid
 
   const handleCancel = useCallback(() => {
     const resetValues = transformToFormValues(config)
-    formik.resetForm({ values: resetValues })
+    resetForm({ values: resetValues })
     setCurrentPagingSize(savedPagingSize)
-  }, [config, transformToFormValues, savedPagingSize, formik])
+  }, [config, transformToFormValues, savedPagingSize, resetForm])
 
   const additionalParametersOptions = useMemo(() => {
     return (formik.values.additionalParameters || []).map((param) => ({
