@@ -22,15 +22,32 @@ const MappingAddDialogForm = ({ handler, modal, onAccept, roles, mapping = [] })
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  const getPermissionsForSearch = () => {
-    const filteredArr = []
-    for (const i in permissions) {
-      filteredArr.push(permissions[i].permission)
+  useEffect(() => {
+    if (!modal) {
+      setApiRole('')
+      setSelectedPermissions([])
+      setActive(false)
     }
-    setSearchAblePermissions(filteredArr)
+  }, [modal])
+
+  const getPermissionsForSearch = (role = '') => {
+    const fullPermissions = []
+    for (const i in permissions) {
+      if (permissions[i]?.permission) {
+        fullPermissions.push(permissions[i].permission)
+      }
+    }
+    if (role) {
+      const roleMapping = (mapping || []).find((m) => m?.role === role)
+      const assigned = new Set(roleMapping?.permissions || [])
+      const filtered = fullPermissions.filter((p) => !assigned.has(p))
+      setSearchAblePermissions(filtered)
+      return
+    }
+    setSearchAblePermissions(fullPermissions)
   }
   useEffect(() => {
-    getPermissionsForSearch()
+    getPermissionsForSearch(apiRole)
   }, [permissions])
 
   useEffect(() => {
@@ -42,19 +59,18 @@ const MappingAddDialogForm = ({ handler, modal, onAccept, roles, mapping = [] })
   }, [apiRole, selectedPermissions])
 
   useEffect(() => {
-    const addedRoles = []
-    for (const i in mapping) {
-      addedRoles.push(mapping[i].role)
-    }
+    getPermissionsForSearch(apiRole)
+  }, [apiRole, mapping])
 
+  useEffect(() => {
     const rolesArr = []
     for (const i in roles) {
-      if (!addedRoles.includes(roles[i].role)) {
+      if (roles[i]?.role) {
         rolesArr.push(roles[i].role)
       }
     }
     setAutoCompleteRoles(rolesArr)
-  }, [roles, mapping])
+  }, [roles])
 
   function handleAccept() {
     const roleData = {}
@@ -90,8 +106,9 @@ const MappingAddDialogForm = ({ handler, modal, onAccept, roles, mapping = [] })
               setSelectedPermissions(selected)
             }}
             options={searchablePermissions}
+            allowNew={false}
+            value={selectedPermissions}
             required={false}
-            value={[]}
             forwardRef={autocompleteRef}
             doc_category={'Mapping'}
           ></GluuTypeAhead>
@@ -103,7 +120,8 @@ const MappingAddDialogForm = ({ handler, modal, onAccept, roles, mapping = [] })
               style={applicationStyle.buttonStyle}
               onClick={handleAccept}
             >
-              {t('actions.yes')}
+              <i className="fa fa-plus me-2"></i>
+              {t('actions.add')}
             </Button>
           )}{' '}
           <Button
@@ -111,7 +129,7 @@ const MappingAddDialogForm = ({ handler, modal, onAccept, roles, mapping = [] })
             style={applicationStyle.buttonStyle}
             onClick={handler}
           >
-            {t('actions.no')}
+            {t('actions.cancel')}
           </Button>
         </ModalFooter>
       </Modal>
