@@ -89,13 +89,10 @@ function GluuProperties({
     // Sync with formik
     if (formik && compName) {
       if (!isKeys && !multiProperties) {
-        const valuesOnly = data.filter((element) => element != null).map((item: any) => item.value)
+        const valuesOnly = data.map((item: { key: string; value: string }) => item.value)
         formik.setFieldValue(compName, valuesOnly)
       } else {
-        formik.setFieldValue(
-          compName,
-          data.filter((element) => element != null),
-        )
+        formik.setFieldValue(compName, data)
       }
     }
   }
