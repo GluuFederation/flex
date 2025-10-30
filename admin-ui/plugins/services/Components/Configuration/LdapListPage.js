@@ -27,6 +27,7 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import customColors from '@/customColors'
+import { getPagingSize } from '@/utils/pagingUtils'
 
 function LdapListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -60,7 +61,7 @@ function LdapListPage() {
 
   // Constants
   const userAction = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
+  const pageSize = getPagingSize()
 
   SetTitle(t('titles.ldap_authentication'))
 
