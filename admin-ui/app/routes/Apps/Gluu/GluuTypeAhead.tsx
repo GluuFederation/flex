@@ -1,10 +1,15 @@
+import React, { useMemo, useCallback, MutableRefObject, memo } from 'react'
 import { FormGroup, Col } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
+import type { TypeaheadRef } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import Typography from '@mui/material/Typography'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
 import customColors from '@/customColors'
+import { FormikContextType } from 'formik'
+
+type Option = string | Record<string, unknown>
 
 const theme = createTheme({
   typography: {
@@ -14,7 +19,32 @@ const theme = createTheme({
   },
 })
 
-function GluuTypeAhead({
+interface GluuTypeAheadProps {
+  label: string
+  labelKey?: string
+  name: string
+  value?: Option[]
+  options: Option[]
+  formik?: FormikContextType<Record<string, unknown>> | null
+  required?: boolean
+  doc_category?: string
+  doc_entry?: string
+  forwardRef?: MutableRefObject<TypeaheadRef | null> | null
+  onChange?: ((selected: Option[]) => void) | null
+  lsize?: number
+  rsize?: number
+  disabled?: boolean
+  showError?: boolean
+  errorMessage?: string
+  allowNew?: boolean
+  isLoading?: boolean
+  multiple?: boolean
+  hideHelperMessage?: boolean
+  minLength?: number
+  emptyLabel?: string
+}
+
+const GluuTypeAhead = memo(function GluuTypeAhead({
   label,
   labelKey,
   name,
@@ -37,8 +67,30 @@ function GluuTypeAhead({
   hideHelperMessage = false,
   minLength = 0,
   emptyLabel = 'fields.nothingToShowInTheList',
-}: any) {
+}: GluuTypeAheadProps) {
   const { t } = useTranslation()
+
+  const selectedValue = useMemo(
+    () => (value !== undefined ? value : (formik?.values?.[name] as Option[]) || []),
+    [value, formik, name],
+  )
+
+  const handleChange = useCallback(
+    (selected: Option[]) => {
+      if (formik) {
+        formik.setFieldValue(name, selected)
+        if (onChange) {
+          onChange(selected)
+        }
+      } else if (onChange) {
+        onChange(selected)
+      }
+    },
+    [formik, name, onChange],
+  )
+
+  const resolvedLabelKey = useMemo(() => labelKey || name, [labelKey, name])
+
   return (
     <FormGroup row>
       {required ? (
@@ -63,23 +115,14 @@ function GluuTypeAhead({
           disabled={disabled}
           ref={forwardRef}
           emptyLabel={t(emptyLabel)}
-          labelKey={labelKey || name}
+          labelKey={resolvedLabelKey}
           isLoading={isLoading}
           minLength={minLength}
-          onChange={(selected) => {
-            if (formik) {
-              formik.setFieldValue(name, selected)
-              if (onChange) {
-                onChange(selected)
-              }
-            } else if (onChange) {
-              onChange(selected)
-            }
-          }}
+          onChange={handleChange}
           id={name}
           data-testid={name}
           multiple={multiple}
-          selected={value || []}
+          selected={selectedValue}
           options={options}
         />
         {!hideHelperMessage && (
@@ -93,5 +136,6 @@ function GluuTypeAhead({
       </Col>
     </FormGroup>
   )
-}
+})
+
 export default GluuTypeAhead
