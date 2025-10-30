@@ -50,7 +50,14 @@ export const setStorageItem = <T extends StorageValue>(
       localStorage.removeItem(key)
       return true
     }
-    const valueToStore = serializer ? serializer(value) : String(value)
+    let valueToStore: string
+    if (serializer) {
+      valueToStore = serializer(value)
+    } else if (typeof value === 'object' && value !== null) {
+      valueToStore = JSON.stringify(value)
+    } else {
+      valueToStore = String(value)
+    }
     localStorage.setItem(key, valueToStore)
     return true
   } catch (error) {
@@ -71,7 +78,7 @@ export const removeStorageItem = (key: string): boolean => {
 
 export const getStorageNumber = (key: string, defaultValue: number): number => {
   return getStorageItem(key, defaultValue, (value) => {
-    const parsed = parseInt(value, 10)
+    const parsed = Number(value)
     return isNaN(parsed) ? defaultValue : parsed
   })
 }
