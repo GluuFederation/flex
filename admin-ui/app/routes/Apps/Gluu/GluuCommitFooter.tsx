@@ -216,10 +216,7 @@ const GluuCommitFooter = memo(function GluuCommitFooter({
   }, [buttonStates, finalShowBack, finalShowCancel, finalShowApply])
 
   const actualDisableBack = useMemo(() => {
-    if (finalShowBack) {
-      return false
-    }
-    return finalDisableBack
+    return finalShowBack ? finalDisableBack : true
   }, [finalShowBack, finalDisableBack])
 
   if (!buttonStates.hasAnyButton) {

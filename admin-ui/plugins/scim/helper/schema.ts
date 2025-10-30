@@ -11,17 +11,12 @@ const isSecureUrl = (value: string | undefined): boolean => {
   }
 }
 
-const isValidSecureUrl = (value: string | undefined): boolean => {
-  if (!value) return true
-  return isSecureUrl(value)
-}
-
 export const scimConfigurationSchema = Yup.object({
   baseDN: Yup.string(),
   applicationUrl: Yup.string().test(
     'valid-secure-url',
     'Application URL must be a valid URL with http:// or https:// protocol',
-    isValidSecureUrl,
+    isSecureUrl,
   ),
   baseEndpoint: Yup.string(),
   personCustomObjectClass: Yup.string(),

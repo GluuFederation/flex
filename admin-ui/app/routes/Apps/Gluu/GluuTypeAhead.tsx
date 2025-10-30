@@ -21,7 +21,7 @@ const theme = createTheme({
 
 interface GluuTypeAheadProps {
   label: string
-  labelKey?: string
+  labelKey?: string | ((option: Option) => string)
   name: string
   value?: Option[]
   options: Option[]
@@ -89,7 +89,12 @@ const GluuTypeAhead = memo(function GluuTypeAhead({
     [formik, name, onChange],
   )
 
-  const resolvedLabelKey = useMemo(() => labelKey || name, [labelKey, name])
+  const resolvedLabelKey = useMemo(() => {
+    if (typeof labelKey === 'function' || typeof labelKey === 'string') {
+      return labelKey
+    }
+    return name
+  }, [labelKey, name])
 
   return (
     <FormGroup row>

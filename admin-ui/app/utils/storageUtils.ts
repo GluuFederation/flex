@@ -7,7 +7,7 @@ export const getStorageItem = <T extends StorageValue>(
 ): T => {
   try {
     const stored = localStorage.getItem(key)
-    if (!stored) return defaultValue
+    if (stored === null) return defaultValue
 
     if (parser) {
       return parser(stored)
@@ -26,6 +26,10 @@ export const setStorageItem = <T extends StorageValue>(
   serializer?: (value: T) => string,
 ): boolean => {
   try {
+    if (value === null) {
+      localStorage.removeItem(key)
+      return true
+    }
     const valueToStore = serializer ? serializer(value) : String(value)
     localStorage.setItem(key, valueToStore)
     return true
@@ -59,7 +63,7 @@ export const getStorageBoolean = (key: string, defaultValue: boolean): boolean =
 export const getStorageJSON = <T extends object>(key: string, defaultValue: T): T => {
   try {
     const stored = localStorage.getItem(key)
-    if (!stored) return defaultValue
+    if (stored === null) return defaultValue
     return JSON.parse(stored) as T
   } catch (error) {
     console.error(`Error reading JSON from localStorage key "${key}":`, error)

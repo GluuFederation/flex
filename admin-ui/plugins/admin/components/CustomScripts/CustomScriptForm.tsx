@@ -72,11 +72,17 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   const defaultScriptPathValue: string | undefined = getModuleProperty('location_path')
 
   // Helper to transform property format for API (key/value → value1/value2)
-  const transformPropertyForApi = (prop: ModuleProperty | ConfigurationProperty) => ({
-    value1: prop.key || prop.value1 || '',
-    value2: prop.value || prop.value2 || '',
-    hide: false,
-  })
+  const transformPropertyForApi = (prop: ModuleProperty | ConfigurationProperty) => {
+    const baseResult = {
+      value1: prop.key || prop.value1 || '',
+      value2: prop.value || prop.value2 || '',
+      hide: prop.hide ?? false,
+    }
+    if ('description' in prop && prop.description) {
+      return { ...baseResult, description: prop.description }
+    }
+    return baseResult
+  }
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -138,10 +144,19 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
           values.configurationProperties,
         ).map(transformPropertyForApi)
       }
-      if (values.moduleProperties && item.locationType !== 'db') {
-        submitValues.moduleProperties = filterEmptyObjects(values.moduleProperties).map(
-          transformPropertyForApi,
-        )
+      if (values.moduleProperties) {
+        if (item.locationType === 'db') {
+          const filteredProps = item?.moduleProperties?.filter(
+            (moduleItem: ModuleProperty) => moduleItem?.value1 !== 'location_path',
+          )
+          submitValues.moduleProperties = filteredProps
+            ? filterEmptyObjects(filteredProps).map(transformPropertyForApi)
+            : []
+        } else {
+          submitValues.moduleProperties = filterEmptyObjects(values.moduleProperties).map(
+            transformPropertyForApi,
+          )
+        }
       }
       if (typeof values.enabled == 'object') {
         if (Array.isArray(values.enabled) && values.enabled.length > 0) {
