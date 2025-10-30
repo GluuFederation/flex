@@ -7,6 +7,11 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { HelpOutline } from '@mui/icons-material'
 import customColors from '@/customColors'
 
+// Property type definitions
+type KeyValueProperty = { key: string; value: string }
+type SourceDestinationProperty = { source: string; destination: string }
+type Property = KeyValueProperty | SourceDestinationProperty
+
 function GluuProperties({
   compName,
   label,
@@ -42,7 +47,7 @@ function GluuProperties({
   }, [options])
 
   const addProperty = () => {
-    let item
+    let item: Property
     if (multiProperties) {
       item = { source: '', destination: '' }
     } else if (!isKeys) {
@@ -57,7 +62,7 @@ function GluuProperties({
     // Sync with formik
     if (formik && compName) {
       if (!isKeys && !multiProperties) {
-        const valuesOnly = newProperties.map((property: any) => property.value)
+        const valuesOnly = newProperties.map((property: KeyValueProperty) => property.value)
         formik.setFieldValue(compName, valuesOnly)
       } else {
         formik.setFieldValue(compName, newProperties)
@@ -73,7 +78,7 @@ function GluuProperties({
     // Sync with formik
     if (formik && compName) {
       if (!isKeys && !multiProperties) {
-        const valuesOnly = newDataArr.map((item: any) => item.value)
+        const valuesOnly = newDataArr.map((item: KeyValueProperty) => item.value)
         formik.setFieldValue(compName, valuesOnly)
       } else {
         formik.setFieldValue(compName, newDataArr)
@@ -83,13 +88,13 @@ function GluuProperties({
   const removeProperty = (position: any) => {
     let data = [...properties]
     delete data[position]
-    data = data.filter((element: any) => element != null)
+    data = data.filter((element: Property | undefined) => element != null)
     setProperties(data)
 
     // Sync with formik
     if (formik && compName) {
       if (!isKeys && !multiProperties) {
-        const valuesOnly = data.map((item: { key: string; value: string }) => item.value)
+        const valuesOnly = data.map((item: KeyValueProperty) => item.value)
         formik.setFieldValue(compName, valuesOnly)
       } else {
         formik.setFieldValue(compName, data)
