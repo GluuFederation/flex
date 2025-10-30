@@ -26,6 +26,7 @@ import {
   ScriptType,
 } from './types'
 import { CustomScriptItem } from './types/customScript'
+import { filterEmptyObjects, mapPropertyToKeyValue } from 'Utils/Util'
 const GluuScriptErrorModal = lazy(() => import('Routes/Apps/Gluu/GluuScriptErrorModal'))
 const Counter = lazy(() => import('@/components/Widgets/GroupedButtons/Counter'))
 const GluuInputEditor = lazy(() => import('Routes/Apps/Gluu/GluuInputEditor'))
@@ -43,15 +44,10 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     if (!item.moduleProperties) {
       return false
     }
-    if (
-      item.moduleProperties.filter((i: ModuleProperty) => i.value1 === 'location_type').length > 0
-    ) {
-      return (
-        item.moduleProperties.filter((it: ModuleProperty) => it.value1 === 'location_type')[0]
-          .value2 === 'file'
-      )
-    }
-    return false
+    const locationTypeProp = item.moduleProperties.find(
+      (prop: ModuleProperty) => prop.value1 === 'location_type',
+    )
+    return locationTypeProp?.value2 === 'file'
   })
   const [selectedLanguage, setSelectedLanguage] = useState<string | undefined>(
     item.programmingLanguage,
@@ -68,29 +64,19 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     submitButton?.click()
   }
 
-  // Helper functions to reduce repetition
-  const getModuleProperty = (key: string): string | undefined => {
-    return item?.moduleProperties?.find((p) => p.value1 === key)?.value2
-  }
-
-  const updateModuleProperty = (key: string, value: string): void => {
-    if (!item.moduleProperties) item.moduleProperties = []
-    const index = item.moduleProperties.findIndex((p) => p.value1 === key)
-
-    if (index >= 0) {
-      item.moduleProperties[index] = { value1: key, value2: value, description: '' }
-    } else {
-      item.moduleProperties.push({ value1: key, value2: value, description: '' })
-    }
-  }
-
-  const removeModuleProperty = (key: string): void => {
-    if (!item.moduleProperties) return
-    const index = item.moduleProperties.findIndex((p) => p.value1 === key)
-    if (index >= 0) item.moduleProperties.splice(index, 1)
+  const getModuleProperty = (key: string, properties?: ModuleProperty[]): string | undefined => {
+    const moduleProps = properties || item?.moduleProperties || []
+    return moduleProps.find((p) => p.value1 === key)?.value2
   }
 
   const defaultScriptPathValue: string | undefined = getModuleProperty('location_path')
+
+  // Helper to transform property format for API (key/value → value1/value2)
+  const transformPropertyForApi = (prop: ModuleProperty | ConfigurationProperty) => ({
+    value1: prop.key || prop.value1 || '',
+    value2: prop.value || prop.value2 || '',
+    hide: false,
+  })
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -101,8 +87,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
       level: item.level || 0,
       script: item.script,
       aliases: item.aliases || [],
-      moduleProperties: item.moduleProperties || [],
-      configurationProperties: item.configurationProperties || [],
+      moduleProperties: filterEmptyObjects(item.moduleProperties),
+      configurationProperties: filterEmptyObjects(item.configurationProperties),
       script_path: defaultScriptPathValue || '',
       locationPath: item.locationPath,
       location_type: item.locationType || '',
@@ -147,21 +133,15 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
 
       submitValues.level = item.level || 0
 
-      const transformProperty = (prop: ModuleProperty | ConfigurationProperty) => ({
-        value1: prop.key || prop.value1 || '',
-        value2: prop.value || prop.value2 || '',
-        hide: false,
-      })
-
       if (values.configurationProperties) {
-        submitValues.configurationProperties = values.configurationProperties
-          .filter((e) => e != null && Object.keys(e).length !== 0)
-          .map(transformProperty)
+        submitValues.configurationProperties = filterEmptyObjects(
+          values.configurationProperties,
+        ).map(transformPropertyForApi)
       }
       if (values.moduleProperties && item.locationType !== 'db') {
-        submitValues.moduleProperties = values.moduleProperties
-          .filter((e) => e != null && Object.keys(e).length !== 0)
-          .map(transformProperty)
+        submitValues.moduleProperties = filterEmptyObjects(values.moduleProperties).map(
+          transformPropertyForApi,
+        )
       }
       if (typeof values.enabled == 'object') {
         if (Array.isArray(values.enabled) && values.enabled.length > 0) {
@@ -188,18 +168,39 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
     },
   })
 
+  const updateModuleProperty = (key: string, value: string): void => {
+    const currentProperties = formik.values.moduleProperties || []
+    const index = currentProperties.findIndex((p) => p.value1 === key)
+
+    let newProperties: ModuleProperty[]
+    if (index >= 0) {
+      newProperties = currentProperties.map((p, idx) =>
+        idx === index ? { ...p, value1: key, value2: value, description: p.description || '' } : p,
+      )
+    } else {
+      newProperties = [...currentProperties, { value1: key, value2: value, description: '' }]
+    }
+    formik.setFieldValue('moduleProperties', newProperties)
+    item.moduleProperties = newProperties
+  }
+
+  const removeModuleProperty = (key: string): void => {
+    const currentProperties = formik.values.moduleProperties || []
+    const newProperties = currentProperties.filter((p) => p.value1 !== key)
+    formik.setFieldValue('moduleProperties', newProperties)
+    item.moduleProperties = newProperties
+  }
+
   const locationTypeChange = (value: string): void => {
     if (!value) return
 
     if (value === 'db') {
-      item.moduleProperties = item?.moduleProperties?.filter((p) => p.value1 !== 'location_path')
       formik.setFieldValue('script_path', undefined)
     } else if (value === 'file') {
       delete item.script
       formik.setFieldValue('script', undefined)
     }
 
-    removeModuleProperty('location_type')
     updateModuleProperty('location_type', value)
 
     item.locationType = value
@@ -226,23 +227,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
 
   const showErrorModal = (): void => setIsModalOpen(true)
 
-  // Memoize the options to prevent unnecessary re-renders in GluuProperties
   const configurationPropertiesOptions = useMemo(() => {
-    return (
-      formik.values.configurationProperties?.map((e) => ({
-        key: e.key || e.value1 || '',
-        value: e.value || e.value2 || '',
-      })) || []
-    )
+    return filterEmptyObjects(formik.values.configurationProperties)?.map(mapPropertyToKeyValue)
   }, [formik.values.configurationProperties])
 
   const modulePropertiesOptions = useMemo(() => {
-    return (
-      formik.values.moduleProperties?.map((e) => ({
-        key: e.key || e.value1 || '',
-        value: e.value || e.value2 || '',
-      })) || []
-    )
+    return filterEmptyObjects(formik.values.moduleProperties)?.map(mapPropertyToKeyValue)
   }, [formik.values.moduleProperties])
 
   return (

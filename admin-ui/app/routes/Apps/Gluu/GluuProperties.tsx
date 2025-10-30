@@ -51,7 +51,18 @@ function GluuProperties({
     } else {
       item = { key: '', value: '' }
     }
-    setProperties((prev: any) => [...prev, item])
+    const newProperties = [...properties, item]
+    setProperties(newProperties)
+
+    // Sync with formik
+    if (formik && compName) {
+      if (!isKeys && !multiProperties) {
+        const valuesOnly = newProperties.map((property: any) => property.value)
+        formik.setFieldValue(compName, valuesOnly)
+      } else {
+        formik.setFieldValue(compName, newProperties)
+      }
+    }
   }
   const changeProperty = (position: any, e: any) => {
     const { name, value } = e.target
@@ -59,12 +70,14 @@ function GluuProperties({
     newDataArr[position] = { ...newDataArr[position], [name]: value }
     setProperties(newDataArr)
 
-    // When isKeys is false and not using multiProperties, extract only the values as strings for formik
-    if (!isKeys && !multiProperties) {
-      const valuesOnly = newDataArr.map((item: any) => item.value)
-      formik.setFieldValue(compName, valuesOnly)
-    } else {
-      formik.setFieldValue(compName, newDataArr)
+    // Sync with formik
+    if (formik && compName) {
+      if (!isKeys && !multiProperties) {
+        const valuesOnly = newDataArr.map((item: any) => item.value)
+        formik.setFieldValue(compName, valuesOnly)
+      } else {
+        formik.setFieldValue(compName, newDataArr)
+      }
     }
   }
   const removeProperty = (position: any) => {
@@ -73,15 +86,17 @@ function GluuProperties({
     data = data.filter((element: any) => element != null)
     setProperties(data)
 
-    // When isKeys is false and not using multiProperties, extract only the values as strings for formik
-    if (!isKeys && !multiProperties) {
-      const valuesOnly = data.filter((element) => element != null).map((item: any) => item.value)
-      formik.setFieldValue(compName, valuesOnly)
-    } else {
-      formik.setFieldValue(
-        compName,
-        data.filter((element) => element != null),
-      )
+    // Sync with formik
+    if (formik && compName) {
+      if (!isKeys && !multiProperties) {
+        const valuesOnly = data.filter((element) => element != null).map((item: any) => item.value)
+        formik.setFieldValue(compName, valuesOnly)
+      } else {
+        formik.setFieldValue(
+          compName,
+          data.filter((element) => element != null),
+        )
+      }
     }
   }
 

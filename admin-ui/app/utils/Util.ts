@@ -76,3 +76,19 @@ export const trimObjectStrings = <T extends Record<string, unknown>>(obj: T): T 
   }
   return trimmed as T
 }
+
+export const filterEmptyObjects = <T extends object>(items?: T[]): T[] => {
+  return (items || []).filter((item) => item && Object.keys(item).length !== 0)
+}
+
+export const mapPropertyToKeyValue = (prop: {
+  key?: string
+  value?: string
+  value1?: string
+  value2?: string
+}): { key: string; value: string } => {
+  return {
+    key: prop.key || prop.value1 || '',
+    value: prop.value || prop.value2 || '',
+  }
+}
