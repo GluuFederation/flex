@@ -8,6 +8,7 @@ import MauGraph from './components/MAU/MauGraph'
 import WebhookListPage from './components/Webhook/WebhookListPage'
 import AuditListPage from '../admin/components/Audit/AuditListPage'
 
+import apiConfigSaga from './redux/sagas/ApiConfigSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
@@ -16,6 +17,7 @@ import assetSaga from './redux/sagas/AssetSaga'
 import auditSaga from '../admin/redux/sagas/AuditSaga'
 
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
+import { reducer as apiConfigReducer } from 'Plugins/admin/redux/features/apiConfigSlice'
 import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
@@ -207,6 +209,7 @@ const pluginMetadata = {
     },
   ],
   reducers: [
+    { name: 'apiConfigReducer', reducer: apiConfigReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
@@ -215,6 +218,7 @@ const pluginMetadata = {
     { name: 'assetReducer', reducer: assetReducer },
   ],
   sagas: [
+    apiConfigSaga(),
     apiRoleSaga(),
     auditSaga(),
     apiPermissionSaga(),

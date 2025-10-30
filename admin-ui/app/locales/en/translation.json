@@ -620,9 +620,8 @@
     "allAvailableHintsSelected": "All available hint options are selected",
     "noMatchingOptions": "No matching options",
     "nothingToShowInTheList": "Nothing to show in the list",
-    "adminUiPolicyStore": "Admin UI Policy Store",
-    "configApiPolicyStore": "Config API Policy Store",
-    "localPolicies": "Local Policies"
+    "auiPolicyStoreUrl": "Admin UI Policy Store",
+    "configApiPolicyStoreUrl": "Config API Policy Store"
   },
   "languages": {
     "french": "French",

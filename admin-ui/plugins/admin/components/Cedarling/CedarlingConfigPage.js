@@ -1,4 +1,4 @@
-import { lazy, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Button,
   Card,
@@ -7,33 +7,57 @@ import {
   CardTitle,
   CardText,
   Form,
-  Label,
   Input,
-  CustomInput,
   Col,
 } from 'Components'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
-import GluuToogleRow from '@/routes/Apps/Gluu/GluuToogleRow'
 import GluuLabel from '@/routes/Apps/Gluu/GluuLabel'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  buildPayload,
+  PROPERTIES_DELETE,
+  PROPERTIES_READ,
+  PROPERTIES_WRITE,
+} from '@/utils/PermChecker'
+import { editConfig, getConfig } from 'Plugins/admin/redux/features/apiConfigSlice'
+import { useCedarling } from '@/cedarling'
 
 function CedarlingConfigPage() {
+  const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
   SetTitle(t('titles.cedarling_config'))
-  const [adminUiPolicyStore, setAdminUiPolicyStore] = useState('')
-  const [configApiPolicyStore, setConfigApiPolicyStore] = useState('')
-  const [localPolicies, setLocalPolicies] = useState(true)
+  const [auiPolicyStoreUrl, setAuiPolicyStoreUrl] = useState('')
+  const [configApiPolicyStoreUrl, setConfigApiPolicyStoreUrl] = useState('')
+  const apiConfig = useSelector((state) => state.apiConfigReducer.items)
+  const loading = useSelector((state) => state.apiConfigReducer.loading)
+  const userAction = {},
+    options = [],
+    dispatch = useDispatch()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const config = {
-      adminUiPolicyStore,
-      configApiPolicyStore,
-      localPolicies,
+    const requestData = {
+      auiPolicyStoreUrl,
+      useRemotePolicyStore: true,
     }
-    console.log('Submitted Config:', config)
-    alert('Configuration applied successfully!')
+    buildPayload(userAction, 'EDIT_CONFIG', requestData)
+    console.log({ action: userAction })
+    dispatch(editConfig({ action: userAction }))
   }
+
+  useEffect(() => {
+    const initPermissions = async () => {
+      const permissions = [PROPERTIES_READ, PROPERTIES_WRITE, PROPERTIES_DELETE]
+      for (const permission of permissions) {
+        await authorize([permission])
+      }
+    }
+    initPermissions()
+
+    buildPayload(userAction, 'CONFIG', options)
+    dispatch(getConfig({ action: userAction }))
+  }, [])
 
   return (
     <Card className="shadow-sm align-items-center">
@@ -68,30 +92,31 @@ function CedarlingConfigPage() {
 
           <Form onSubmit={handleSubmit}>
             <FormGroup row>
-              <GluuLabel label={'fields.adminUiPolicyStore'} />
+              <GluuLabel label={'fields.auiPolicyStoreUrl'} />
               <Col sm={9}>
                 <Input
-                  id="adminUiPolicyStore"
+                  id="auiPolicyStoreUrl"
                   type="url"
-                  name="adminUiPolicyStore"
-                  value={adminUiPolicyStore}
-                  onChange={(e) => setAdminUiPolicyStore(e.target.value)}
+                  name="auiPolicyStoreUrl"
+                  value={auiPolicyStoreUrl}
+                  onChange={(e) => setAuiPolicyStoreUrl(e.target.value)}
                 />
               </Col>
             </FormGroup>
             <FormGroup row>
-              <GluuLabel label={'fields.configApiPolicyStore'} />
+              <GluuLabel label={'fields.configApiPolicyStoreUrl'} />
               <Col sm={9}>
                 <Input
-                  id="configApiPolicyStore"
+                  id="configApiPolicyStoreUrl"
                   type="url"
-                  name="configApiPolicyStore"
-                  value={configApiPolicyStore}
-                  onChange={(e) => setConfigApiPolicyStore(e.target.value)}
+                  name="configApiPolicyStoreUrl"
+                  value={configApiPolicyStoreUrl}
+                  onChange={(e) => setConfigApiPolicyStoreUrl(e.target.value)}
                 />
               </Col>
             </FormGroup>
 
+            {/* 
             <FormGroup row>
               <Col sm={12} className="ps-4">
                 <GluuToogleRow
@@ -108,7 +133,7 @@ function CedarlingConfigPage() {
                   {t('documentation.cedarlingConfig.localPoliciesNote')}
                 </p>
               </Col>
-            </FormGroup>
+            </FormGroup> */}
 
             <div className="text-center mt-4">
               <Button color="dark" size="lg" type="submit">
