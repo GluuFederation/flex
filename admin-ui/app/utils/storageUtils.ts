@@ -18,6 +18,9 @@ export const getStorageItem = <T extends StorageValue>(
     }
 
     if (typeof defaultValue === 'number') {
+      if (!stored || (typeof stored === 'string' && stored.trim() === '')) {
+        return defaultValue
+      }
       const parsed = Number(stored)
       return (isNaN(parsed) ? defaultValue : parsed) as T
     }
