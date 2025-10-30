@@ -45,7 +45,7 @@ import { useSchemaAuditLogger } from '../../hooks/useSchemaAuditLogger'
 import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
 import { API_ATTRIBUTE } from '../../constants'
 import { getErrorMessage } from '../../utils/errorHandler'
-import type { RootState, StyledBadgeProps } from '../types/AttributeListPage.types'
+import type { AttributeListPageState, StyledBadgeProps } from '../types/AttributeListPage.types'
 
 type AttributeIdentifier = Pick<JansAttribute, 'inum' | 'name'>
 
@@ -65,7 +65,7 @@ function AttributeListPage(): JSX.Element {
   const { logAudit } = useSchemaAuditLogger()
   const { triggerAttributeWebhook } = useSchemaWebhook()
   const { permissions: cedarPermissions } = useSelector(
-    (state: RootState) => state.cedarPermissions,
+    (state: AttributeListPageState) => state.cedarPermissions,
   )
   const [myActions, setMyActions] = useState<Action<JansAttribute>[]>([])
 

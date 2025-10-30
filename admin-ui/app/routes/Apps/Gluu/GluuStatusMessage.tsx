@@ -11,6 +11,20 @@ interface GluuStatusMessageProps {
   inline?: boolean
 }
 
+const getColorForType = (type: GluuStatusMessageProps['type']) => {
+  switch (type) {
+    case 'loading':
+    case 'info':
+      return customColors.lightBlue
+    case 'error':
+      return customColors.accentRed
+    case 'success':
+      return customColors.lightGreen
+    default:
+      return customColors.lightBlue
+  }
+}
+
 const GluuStatusMessage: React.FC<GluuStatusMessageProps> = ({
   message,
   type,
@@ -18,27 +32,28 @@ const GluuStatusMessage: React.FC<GluuStatusMessageProps> = ({
   colSize = 8,
   inline = false,
 }) => {
-  const getColorForType = () => {
+  const getAriaAttributes = () => {
     switch (type) {
-      case 'loading':
-      case 'info':
-        return customColors.lightBlue
       case 'error':
-        return customColors.accentRed
+        return { 'role': 'alert', 'aria-live': 'assertive' as const }
       case 'success':
-        return customColors.lightGreen
+      case 'info':
+        return { 'role': 'status', 'aria-live': 'polite' as const }
+      case 'loading':
+        return { 'role': 'status', 'aria-live': 'polite' as const, 'aria-busy': true }
       default:
-        return customColors.lightBlue
+        return { 'role': 'status', 'aria-live': 'polite' as const }
     }
   }
 
   const messageContent = (
     <div
       style={{
-        color: getColorForType(),
+        color: getColorForType(type),
         fontSize: '0.875rem',
         marginTop: '0.25rem',
       }}
+      {...getAriaAttributes()}
     >
       {message}
     </div>

@@ -14,7 +14,7 @@ function AttributeViewPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
-  const inum = gid?.replace(/:/g, '') || ''
+  const inum = gid?.replace(/^:/, '') || ''
 
   const {
     data: attribute,
