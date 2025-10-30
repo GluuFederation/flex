@@ -1,10 +1,10 @@
 import { useFormik, FormikProps } from 'formik'
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { scimConfigurationValidationSchema } from '../helper/validations'
-import { transformToFormValues } from '../helper'
+import { scimConfigurationSchema } from '../helper/schema'
+import { transformToFormValues, createJsonPatchFromDifferences } from '../helper'
 import ScimFieldRenderer from './ScimFieldRenderer'
 import { SCIM_FIELD_CONFIGS } from './fieldConfigurations'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
@@ -23,14 +23,30 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
   const formik: FormikProps<ScimFormValues> = useFormik<ScimFormValues>({
     initialValues: transformToFormValues(scimConfiguration),
-    validationSchema: scimConfigurationValidationSchema,
+    validationSchema: scimConfigurationSchema,
     onSubmit: toggle,
     enableReinitialize: true,
   })
 
-  const handleCancel = () => {
-    formik.resetForm()
-  }
+  const isFormDirty = useMemo(() => {
+    if (!scimConfiguration || !formik.values) {
+      return false
+    }
+    const { action_message, ...valuesWithoutAction } = formik.values
+    void action_message
+    const patches = createJsonPatchFromDifferences(
+      scimConfiguration,
+      valuesWithoutAction as ScimFormValues,
+    )
+    return patches.length > 0
+  }, [scimConfiguration, formik.values])
+
+  const isFormValid = useMemo(() => {
+    if (!formik.values) {
+      return false
+    }
+    return scimConfigurationSchema.isValidSync(formik.values)
+  }, [formik.values])
 
   const submitForm = useCallback(
     (userMessage: string): void => {
@@ -39,6 +55,10 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
     },
     [handleSubmit, toggle, formik.values],
   )
+
+  const handleCancel = useCallback(() => {
+    formik.resetForm()
+  }, [formik])
 
   const handleFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>): void => {
@@ -59,12 +79,16 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
       <Row>
         <Col>
           <GluuCommitFooter
-            saveHandler={toggle}
-            hideButtons={{ save: true, back: true }}
-            extraLabel="Cancel"
-            extraOnClick={handleCancel}
-            type="submit"
-            disabled={isSubmitting}
+            showBack={true}
+            showCancel={true}
+            showApply={true}
+            onApply={toggle}
+            onCancel={handleCancel}
+            disableBack={!isFormDirty}
+            disableCancel={!isFormDirty}
+            disableApply={!isFormValid || !isFormDirty}
+            applyButtonType="submit"
+            isLoading={isSubmitting}
           />
         </Col>
       </Row>
