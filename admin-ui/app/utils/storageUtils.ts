@@ -13,9 +13,6 @@ export const getStorageItem = <T extends StorageValue>(
       return parser(stored)
     }
 
-    // Auto-coerce based on defaultValue type
-    if (stored === 'null') return null as T
-
     if (typeof defaultValue === 'boolean') {
       return (stored === 'true') as T
     }
