@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Col } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import customColors from '@/customColors'
+import { customColors } from '@/customColors'
 
 interface GluuStatusMessageProps {
   message: string

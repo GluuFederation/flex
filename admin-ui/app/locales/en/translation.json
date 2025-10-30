@@ -830,7 +830,8 @@
     "attribute_create_failed": "Error creating attribute",
     "attribute_update_failed": "Error updating attribute",
     "attribute_delete_failed": "Error deleting attribute",
-    "attribute_load_failed": "Error loading attribute"
+    "attribute_load_failed": "Error loading attribute",
+    "attribute_not_found": "Attribute not found"
   },
   "tooltips": {
     "add_attribute": "Add attribute",

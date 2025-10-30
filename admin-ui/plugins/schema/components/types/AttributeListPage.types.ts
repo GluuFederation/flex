@@ -10,6 +10,11 @@ export interface RootState {
 export interface SubmitData {
   data: AttributeItem
   userMessage?: string
+  modifiedFields?: Record<string, unknown>
+  performedOn?: {
+    attribute_inum?: string
+    attributeName?: string
+  }
 }
 
 export interface ThemeState {
@@ -95,13 +100,29 @@ export interface AttributeFormValues {
 
 export interface AttributeFormProps {
   item: AttributeItem
-  customOnSubmit: (data: { data: AttributeItem; userMessage?: string }) => void
+  customOnSubmit: (data: {
+    data: AttributeItem
+    userMessage?: string
+    modifiedFields?: Record<string, unknown>
+    performedOn?: {
+      attribute_inum?: string
+      attributeName?: string
+    }
+  }) => void
   hideButtons?: Record<string, boolean>
 }
 
 export interface HandleAttributeSubmitParams {
   item: AttributeItem
   values: AttributeFormValues
-  customOnSubmit: (data: { data: AttributeItem; userMessage?: string }) => void
+  customOnSubmit: (data: {
+    data: AttributeItem
+    userMessage?: string
+    modifiedFields?: Record<string, unknown>
+    performedOn?: {
+      attribute_inum?: string
+      attributeName?: string
+    }
+  }) => void
   userMessage?: string
 }

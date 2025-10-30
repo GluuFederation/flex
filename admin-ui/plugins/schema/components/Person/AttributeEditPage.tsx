@@ -78,17 +78,20 @@ function AttributeEditPage(): JSX.Element {
   }, [attribute])
 
   const customHandleSubmit = useCallback(
-    ({ data, userMessage }: SubmitData): void => {
+    ({ data, userMessage, modifiedFields, performedOn }: SubmitData): void => {
       if (data) {
         putAttributeMutation.mutate(
           { data: data as JansAttribute },
           {
             onSuccess: (updatedAttribute: JansAttribute) => {
+              // Log with modifiedFields for clearer audit trail
+              // Include full attribute in extra for reference
               logAudit({
                 action: UPDATE,
                 resource: API_ATTRIBUTE,
                 message: userMessage || '',
-                payload: updatedAttribute,
+                modifiedFields,
+                performedOn,
               })
 
               triggerAttributeWebhook(updatedAttribute)

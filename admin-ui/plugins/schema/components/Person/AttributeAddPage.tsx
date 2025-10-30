@@ -68,6 +68,9 @@ function AttributeAddPage(): JSX.Element {
     custom: false,
     required: false,
     attributeValidation: { maxLength: null, regexp: null, minLength: null },
+    editType: [],
+    viewType: [],
+    usageType: [],
   }
 
   return (

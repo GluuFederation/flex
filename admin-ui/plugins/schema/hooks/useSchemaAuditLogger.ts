@@ -8,7 +8,12 @@ interface AuditLogParams {
   action: string
   resource: string
   message: string
-  payload: Partial<JansAttribute>
+  payload?: Partial<JansAttribute>
+  modifiedFields?: Record<string, unknown>
+  performedOn?: {
+    attribute_inum?: string
+    attributeName?: string
+  }
 }
 
 export function useSchemaAuditLogger() {
@@ -28,9 +33,13 @@ export function useSchemaAuditLogger() {
           action: params.action,
           resource: params.resource,
           message: params.message,
-          extra: ipAddress ? { ip_address: ipAddress } : {},
+          extra: {
+            ...(ipAddress ? { ip_address: ipAddress } : {}),
+            ...(params.performedOn ? { performedOn: params.performedOn } : {}),
+          },
           client_id: clientId,
           payload: params.payload,
+          modifiedFields: params.modifiedFields,
         })
       } catch (error) {
         console.error('Failed to log audit action:', error)

@@ -825,6 +825,13 @@
     "password_changed_successfully": "Contraseña cambiada exitosamente",
     "device_deleted_successfully": "Dispositivo eliminado exitosamente"
   },
+  "errors": {
+    "attribute_create_failed": "Error al crear el atributo",
+    "attribute_update_failed": "Error al actualizar el atributo",
+    "attribute_delete_failed": "Error al eliminar el atributo",
+    "attribute_load_failed": "Error al cargar el atributo",
+    "attribute_not_found": "Atributo no encontrado"
+  },
   "tooltips": {
     "add_attribute": "Añadir atributo",
     "add_ldap": "Añadir LDAP",

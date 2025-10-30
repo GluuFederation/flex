@@ -758,6 +758,13 @@
     "password_changed_successfully": "Senha alterada com sucesso",
     "device_deleted_successfully": "Dispositivo excluído com sucesso"
   },
+  "errors": {
+    "attribute_create_failed": "Erro ao criar atributo",
+    "attribute_update_failed": "Erro ao atualizar atributo",
+    "attribute_delete_failed": "Erro ao excluir atributo",
+    "attribute_load_failed": "Erro ao carregar atributo",
+    "attribute_not_found": "Atributo não encontrado"
+  },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
     "add_user": "Adicionar usuário",

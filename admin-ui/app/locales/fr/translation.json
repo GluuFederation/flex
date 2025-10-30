@@ -767,7 +767,8 @@
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
     "attribute_update_failed": "Erreur lors de la mise à jour de l'attribut",
     "attribute_delete_failed": "Erreur lors de la suppression de l'attribut",
-    "attribute_load_failed": "Erreur lors du chargement de l'attribut"
+    "attribute_load_failed": "Erreur lors du chargement de l'attribut",
+    "attribute_not_found": "Attribut introuvable"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",

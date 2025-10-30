@@ -51,13 +51,21 @@ function AttributeViewPage(): JSX.Element {
     )
   }
 
-  if (!extensibleItems) {
+  if (isLoading) {
     return (
-      <GluuLoader blocking={isLoading}>
+      <GluuLoader blocking={true}>
         <Card className="mb-3" style={applicationStyle.mainCard}>
           <CardBody>{t('messages.loading_attribute')}</CardBody>
         </Card>
       </GluuLoader>
+    )
+  }
+
+  if (!extensibleItems) {
+    return (
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>{t('errors.attribute_not_found')}</CardBody>
+      </Card>
     )
   }
 
