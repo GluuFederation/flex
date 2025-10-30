@@ -14,7 +14,7 @@ function AttributeViewPage(): JSX.Element {
   const { gid } = useParams<{ gid: string }>()
   const { t } = useTranslation()
 
-  const inum = gid?.replace(':', '') || ''
+  const inum = gid?.replace(/:/g, '') || ''
 
   const {
     data: attribute,
@@ -46,10 +46,7 @@ function AttributeViewPage(): JSX.Element {
   if (queryError) {
     return (
       <Card className="mb-3" style={applicationStyle.mainCard}>
-        <CardBody>
-          {t('errors.attribute_load_failed')}:{' '}
-          {getErrorMessage(queryError, 'errors.attribute_load_failed', t)}
-        </CardBody>
+        <CardBody>{getErrorMessage(queryError, 'errors.attribute_load_failed', t)}</CardBody>
       </Card>
     )
   }

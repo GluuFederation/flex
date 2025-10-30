@@ -25,7 +25,7 @@ import { nameIDPolicyFormat } from '../helper'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
 import { useGetAttributes } from 'JansConfigApi'
-import customColors from '@/customColors'
+import GluuStatusMessage from 'Routes/Apps/Gluu/GluuStatusMessage'
 
 // Maximum number of attributes to fetch for trust relationship configuration
 const MAX_ATTRIBUTES_FOR_TRUST_RELATION = 100
@@ -335,36 +335,20 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   doc_category={DOC_SECTION}
                 />
                 {attributesLoading && (
-                  <Row>
-                    <GluuLabel label="" size={4} />
-                    <Col sm={8}>
-                      <div
-                        style={{
-                          color: customColors.lightBlue,
-                          fontSize: '0.875rem',
-                          marginTop: '0.25rem',
-                        }}
-                      >
-                        {t('messages.loading_attributes')}...
-                      </div>
-                    </Col>
-                  </Row>
+                  <GluuStatusMessage
+                    message={`${t('messages.loading_attributes')}...`}
+                    type="loading"
+                    labelSize={4}
+                    colSize={8}
+                  />
                 )}
                 {attributesError && (
-                  <Row>
-                    <GluuLabel label="" size={4} />
-                    <Col sm={8}>
-                      <div
-                        style={{
-                          color: customColors.accentRed,
-                          fontSize: '0.875rem',
-                          marginTop: '0.25rem',
-                        }}
-                      >
-                        {t('errors.attribute_load_failed')}
-                      </div>
-                    </Col>
-                  </Row>
+                  <GluuStatusMessage
+                    message={t('errors.attribute_load_failed')}
+                    type="error"
+                    labelSize={4}
+                    colSize={8}
+                  />
                 )}
               </Col>
               <Col sm={10}>
@@ -406,9 +390,11 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                         disabled={viewOnly}
                       />
                       {fileError && (
-                        <div style={{ color: customColors.accentRed }}>
-                          {t('messages.import_metadata_file')}
-                        </div>
+                        <GluuStatusMessage
+                          message={t('messages.import_metadata_file')}
+                          type="error"
+                          inline
+                        />
                       )}
                     </Col>
                   </FormGroup>
