@@ -18,7 +18,7 @@ export const getStorageItem = <T extends StorageValue>(
     }
 
     if (typeof defaultValue === 'number') {
-      if (!stored || (typeof stored === 'string' && stored.trim() === '')) {
+      if (stored.trim() === '') {
         return defaultValue
       }
       const parsed = Number(stored)
@@ -78,6 +78,9 @@ export const removeStorageItem = (key: string): boolean => {
 
 export const getStorageNumber = (key: string, defaultValue: number): number => {
   return getStorageItem(key, defaultValue, (value) => {
+    if (value.trim() === '') {
+      return defaultValue
+    }
     const parsed = Number(value)
     return isNaN(parsed) ? defaultValue : parsed
   })
@@ -88,22 +91,9 @@ export const getStorageBoolean = (key: string, defaultValue: boolean): boolean =
 }
 
 export const getStorageJSON = <T extends object>(key: string, defaultValue: T): T => {
-  try {
-    const stored = localStorage.getItem(key)
-    if (stored === null) return defaultValue
-    return JSON.parse(stored) as T
-  } catch (error) {
-    console.error(`Error reading JSON from localStorage key "${key}":`, error)
-    return defaultValue
-  }
+  return getStorageItem(key, defaultValue)
 }
 
 export const setStorageJSON = <T extends object>(key: string, value: T): boolean => {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-    return true
-  } catch (error) {
-    console.error(`Error writing JSON to localStorage key "${key}":`, error)
-    return false
-  }
+  return setStorageItem(key, value)
 }
