@@ -18,12 +18,17 @@ export interface FormValues {
   scriptType: string
   programmingLanguage: string
   level: number
-  script: string
+  script?: string
   aliases: string[]
   moduleProperties: ModuleProperty[]
   configurationProperties: ConfigurationProperty[]
   script_path: string
-  locationPath: string
+  locationPath?: string
   location_type: string
   enabled?: boolean | string[]
 }
+
+// Utility type for property option mapping
+export type PropertyOptionMap = (
+  properties: Array<ModuleProperty | ConfigurationProperty> | undefined,
+) => Array<{ key: string; value: string }>

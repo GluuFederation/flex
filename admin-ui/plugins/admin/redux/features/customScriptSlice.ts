@@ -54,6 +54,7 @@ const customScriptSlice = createSlice({
       state.errorInSaveOperationFlag = false
       if (action.payload?.data) {
         state.saveOperationFlag = true
+        state.totalItems = state.totalItems + 1
       } else {
         state.saveOperationFlag = false
       }
@@ -93,6 +94,7 @@ const customScriptSlice = createSlice({
       if (action.payload?.inum) {
         const items = state.items.filter((item) => item.inum !== action.payload.inum)
         state.items = items
+        state.totalItems = Math.max(0, state.totalItems - 1)
       } else {
         state.saveOperationFlag = false
         state.errorInSaveOperationFlag = false
