@@ -25,6 +25,20 @@ const getColorForType = (type: GluuStatusMessageProps['type']) => {
   }
 }
 
+const getAriaAttributes = (type: GluuStatusMessageProps['type']) => {
+  switch (type) {
+    case 'error':
+      return { 'role': 'alert', 'aria-live': 'assertive' as const }
+    case 'success':
+    case 'info':
+      return { 'role': 'status', 'aria-live': 'polite' as const }
+    case 'loading':
+      return { 'role': 'status', 'aria-live': 'polite' as const, 'aria-busy': true }
+    default:
+      return { 'role': 'status', 'aria-live': 'polite' as const }
+  }
+}
+
 const GluuStatusMessage: React.FC<GluuStatusMessageProps> = ({
   message,
   type,
@@ -32,20 +46,6 @@ const GluuStatusMessage: React.FC<GluuStatusMessageProps> = ({
   colSize = 8,
   inline = false,
 }) => {
-  const getAriaAttributes = () => {
-    switch (type) {
-      case 'error':
-        return { 'role': 'alert', 'aria-live': 'assertive' as const }
-      case 'success':
-      case 'info':
-        return { 'role': 'status', 'aria-live': 'polite' as const }
-      case 'loading':
-        return { 'role': 'status', 'aria-live': 'polite' as const, 'aria-busy': true }
-      default:
-        return { 'role': 'status', 'aria-live': 'polite' as const }
-    }
-  }
-
   const messageContent = (
     <div
       style={{
@@ -53,7 +53,7 @@ const GluuStatusMessage: React.FC<GluuStatusMessageProps> = ({
         fontSize: '0.875rem',
         marginTop: '0.25rem',
       }}
-      {...getAriaAttributes()}
+      {...getAriaAttributes(type)}
     >
       {message}
     </div>
