@@ -17,18 +17,18 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { toast } from 'react-toastify'
 import customColors from '@/customColors'
+import { getPagingSize } from '@/utils/pagingUtils'
 
 function UiRoleListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
   const apiRoles = useSelector((state) => state.apiRoleReducer.items)
   const loading = useSelector((state) => state.apiRoleReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const [modal, setModal] = useState(false)
   const myActions = [],
     options = [],
     userAction = {},
-    pageSize = localStorage.getItem('paggingSize') || 10,
+    pageSize = getPagingSize(),
     theme = useContext(ThemeContext),
     selectedTheme = theme.state.theme,
     themeColors = getThemeColor(selectedTheme),

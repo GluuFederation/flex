@@ -27,6 +27,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { isEmpty } from 'lodash'
 import customColors from '@/customColors'
+import { getPagingSize } from '@/utils/pagingUtils'
 
 function UiPermListPage() {
   const { hasCedarPermission, authorize } = useCedarling()
@@ -49,7 +50,7 @@ function UiPermListPage() {
 
   // Constants
   const userAction = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
+  const pageSize = getPagingSize()
 
   SetTitle(t('menus.securityDropdown.capabilities'))
 

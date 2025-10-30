@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useEffect, useMemo, useCallback, useState, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
-import { SETTINGS } from 'Utils/ApiResources'
+import { useFormik } from 'formik'
+import { useDispatch, useSelector } from 'react-redux'
+import * as Yup from 'yup'
 import {
   Card,
   CardBody,
@@ -13,156 +13,107 @@ import {
   InputGroup,
   CustomInput,
   Form,
-  Button,
 } from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import { SETTINGS } from 'Utils/ApiResources'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { putConfigWorker } from 'Redux/features/authSlice'
-import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
-import { useFormik } from 'formik'
-import { useDispatch, useSelector } from 'react-redux'
-import * as Yup from 'yup'
-import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import { getScripts } from 'Redux/features/initSlice'
-import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
-import packageJson from '../../../../package.json'
+import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
 import { CedarlingLogType } from '@/cedarling'
-import { updateToast } from '@/redux/features/toastSlice'
-
-const levels = [1, 5, 10, 20]
+import { getPagingSize, savePagingSize as savePagingSizeToStorage } from 'Utils/pagingUtils'
+import { buildPayload } from 'Utils/PermChecker'
+import packageJson from '../../../../package.json'
 
 function SettingsPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme?.state?.theme || 'darkBlack'
   const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
   const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const [paggingSize, setPaggingSize] = useState(localStorage.getItem('paggingSize') || 10)
+  const config = useSelector((state) => state.authReducer?.config) || {}
+  const scripts = useSelector((state) => state.initReducer.scripts)
+
+  const pagingSizeOptions = useMemo(() => [1, 5, 10, 20], [])
+
+  const defaultPagingSize = useMemo(() => {
+    // Use the third option (10) as default, or fallback to first option if array is too short
+    return pagingSizeOptions[2] || pagingSizeOptions[0] || 10
+  }, [pagingSizeOptions])
+
+  const savedPagingSize = useMemo(() => getPagingSize(defaultPagingSize), [defaultPagingSize])
+  const [baselinePagingSize, setBaselinePagingSize] = useState(savedPagingSize)
+  const [currentPagingSize, setCurrentPagingSize] = useState(savedPagingSize)
+
   SetTitle(t('titles.application_settings'))
 
+  const configApiUrl = useMemo(
+    () =>
+      typeof window !== 'undefined' && window.configApiBaseUrl ? window.configApiBaseUrl : 'N/A',
+    [],
+  )
+
   useEffect(() => {
-    dispatch(getScripts({ action: {} }))
+    const userAction = {}
+    const options = {}
+    buildPayload(userAction, 'Fetch custom scripts', options)
+    dispatch(getScripts({ action: userAction }))
+  }, [dispatch])
+
+  const handlePagingSizeChange = useCallback((size) => {
+    setCurrentPagingSize(size)
   }, [])
 
-  return (
-    <React.Fragment>
-      <GluuLoader blocking={loadingScripts || loadingConfig}>
-        <Card style={applicationStyle.mainCard}>
-          <CardBody>
-            <GluuInputRow
-              label="fields.gluuFlexVersion"
-              name="gluuFlexVersion"
-              type="text"
-              lsize={4}
-              rsize={8}
-              value={packageJson.version}
-              disabled={true}
-              doc_category={SETTINGS}
-              doc_entry="gluuCurrentVersion"
-            />
+  const transformToFormValues = useCallback((configData) => {
+    return {
+      sessionTimeoutInMins: configData?.sessionTimeoutInMins || 30,
+      acrValues: configData?.acrValues || '',
+      cedarlingLogType: configData?.cedarlingLogType || CedarlingLogType.OFF,
+      additionalParameters: (configData?.additionalParameters || []).map((param) => ({ ...param })),
+    }
+  }, [])
 
-            <FormGroup row>
-              <GluuLabel
-                label={t('fields.list_paging_size')}
-                size={4}
-                doc_category={SETTINGS}
-                doc_entry="pageSize"
-              />
-              <Col sm={8}>
-                <InputGroup>
-                  <CustomInput
-                    type="select"
-                    id="pagingSize"
-                    name="pagingSize"
-                    defaultValue={
-                      levels[
-                        levels.findIndex((element) => {
-                          return element == paggingSize
-                        })
-                      ]
-                    }
-                    onChange={(value) => {
-                      const size = levels[value.target.options.selectedIndex]
-                      setPaggingSize(size)
-                      localStorage.setItem('paggingSize', size)
-                    }}
-                  >
-                    {levels.map((item, key) => (
-                      <option value={item} key={key}>
-                        {item}
-                      </option>
-                    ))}
-                  </CustomInput>
-                </InputGroup>
-              </Col>
-            </FormGroup>
-
-            <FormGroup row style={{ justifyContent: 'space-between' }}>
-              <GluuLabel
-                label={t('fields.config_api_url')}
-                doc_category={SETTINGS}
-                size={4}
-                doc_entry="configApiUrl"
-              />
-              <Col sm={8}>
-                <Label
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    paddingRight: '15px',
-                  }}
-                >
-                  <h3>
-                    <Badge color={`primary-${selectedTheme}`}>{window.configApiBaseUrl}</Badge>
-                  </h3>
-                </Label>
-              </Col>
-            </FormGroup>
-
-            {!loadingScripts && <SettingsForm />}
-          </CardBody>
-        </Card>
-      </GluuLoader>
-    </React.Fragment>
+  const initialValues = useMemo(
+    () => transformToFormValues(config),
+    [config, transformToFormValues],
   )
-}
 
-function SettingsForm() {
-  const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
-  const loadingConfig = useSelector((state) => state.authReducer?.loadingConfig)
-  const additionalParameters =
-    useSelector((state) => state.authReducer?.config?.additionalParameters) || []
-  const acrValues = useSelector((state) => state.authReducer?.config?.acrValues)
-  const sessionTimeout =
-    useSelector((state) => state.authReducer?.config?.sessionTimeoutInMins) || 5
-  const cedarlingLogType =
-    useSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
-  const scripts = useSelector((state) => state.initReducer.scripts)
-  const dispatch = useDispatch()
-
-  const authScripts = scripts
-    .filter((item) => item.scriptType == 'person_authentication')
-    .filter((item) => item.enabled)
-    .map((item) => item.name)
-
-  authScripts.push(SIMPLE_PASSWORD_AUTH)
+  const authScripts = useMemo(() => {
+    const names = (scripts || [])
+      .filter((s) => s.scriptType === 'person_authentication' && s.enabled)
+      .map((s) => s.name)
+    return Array.from(new Set([...names, SIMPLE_PASSWORD_AUTH]))
+  }, [scripts])
 
   const formik = useFormik({
-    initialValues: {
-      sessionTimeoutInMins: sessionTimeout,
-      acrValues: acrValues || '',
-      cedarlingLogType,
-    },
+    initialValues,
+    enableReinitialize: true,
     onSubmit: (values) => {
-      dispatch(putConfigWorker(values))
-      !(values?.cedarlingLogType === cedarlingLogType) &&
-        dispatch(updateToast(true, 'success', t('fields.reloginToViewCedarlingChanges')))
+      savePagingSizeToStorage(currentPagingSize)
+
+      const cedarlingLogTypeChanged = values?.cedarlingLogType !== config?.cedarlingLogType
+
+      dispatch(
+        putConfigWorker({
+          ...values,
+          _meta: {
+            cedarlingLogTypeChanged,
+            toastMessage: cedarlingLogTypeChanged
+              ? t('fields.reloginToViewCedarlingChanges')
+              : undefined,
+          },
+        }),
+      )
+
+      setBaselinePagingSize(currentPagingSize)
     },
     validationSchema: Yup.object().shape({
       sessionTimeoutInMins: Yup.number()
@@ -171,96 +122,195 @@ function SettingsForm() {
     }),
   })
 
+  const { resetForm } = formik
+
+  const isPagingSizeChanged = currentPagingSize !== baselinePagingSize
+  const isFormChanged = formik.dirty || isPagingSizeChanged
+  const hasErrors = !formik.isValid
+
+  const handleCancel = useCallback(() => {
+    const resetValues = transformToFormValues(config)
+    resetForm({ values: resetValues })
+    setCurrentPagingSize(baselinePagingSize)
+  }, [config, transformToFormValues, baselinePagingSize, resetForm])
+
+  const additionalParametersOptions = useMemo(() => {
+    return (formik.values.additionalParameters || []).map((param) => ({
+      key: param.key || '',
+      value: param.value || '',
+    }))
+  }, [formik.values.additionalParameters])
+
+  const formGroupRowStyle = useMemo(() => ({ justifyContent: 'space-between' }), [])
+
+  const labelContainerStyle = useMemo(
+    () => ({
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      paddingRight: '15px',
+    }),
+    [],
+  )
+
   return (
-    <Form onSubmit={formik.handleSubmit}>
-      <GluuInputRow
-        label="fields.sessionTimeoutInMins"
-        name="sessionTimeoutInMins"
-        type="number"
-        formik={formik}
-        lsize={4}
-        rsize={8}
-        value={formik.values.sessionTimeoutInMins}
-        doc_category={SETTINGS}
-        doc_entry="sessionTimeoutInMins"
-        errorMessage={formik.errors.sessionTimeoutInMins}
-        showError={formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins}
-      />
+    <React.Fragment>
+      <GluuLoader blocking={loadingScripts || loadingConfig}>
+        <Card style={applicationStyle.mainCard}>
+          <CardBody>
+            <Form onSubmit={formik.handleSubmit}>
+              <GluuInputRow
+                label="fields.gluuFlexVersion"
+                name="gluuFlexVersion"
+                type="text"
+                lsize={4}
+                rsize={8}
+                value={packageJson.version}
+                disabled={true}
+                doc_category={SETTINGS}
+                doc_entry="gluuCurrentVersion"
+              />
 
-      <FormGroup row>
-        <GluuLabel
-          size={4}
-          doc_category="settings"
-          doc_entry={'adminui_default_acr'}
-          label={t('fields.adminui_default_acr')}
-        />
-        <Col sm={8}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              data-testid={'acrValues'}
-              id={'acrValues'}
-              name={'acrValues'}
-              value={formik?.values?.acrValues}
-              onChange={formik.handleChange}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {authScripts.map((item) => (
-                <option key={item.toString()}>{item}</option>
-              ))}
-            </CustomInput>
-          </InputGroup>
-        </Col>
-      </FormGroup>
+              <FormGroup row style={formGroupRowStyle}>
+                <GluuLabel
+                  label={t('fields.config_api_url')}
+                  doc_category={SETTINGS}
+                  size={4}
+                  doc_entry="configApiUrl"
+                />
+                <Col sm={8}>
+                  <Label style={labelContainerStyle}>
+                    <h3>
+                      <Badge color={`primary-${selectedTheme}`}>{configApiUrl}</Badge>
+                    </h3>
+                  </Label>
+                </Col>
+              </FormGroup>
 
-      <FormGroup row>
-        <GluuLabel
-          size={4}
-          doc_category={SETTINGS}
-          doc_entry={'cedarSwitch'}
-          label={t('fields.showCedarLogs?')}
-        />
+              <FormGroup row>
+                <GluuLabel
+                  label={t('fields.list_paging_size')}
+                  size={4}
+                  doc_category={SETTINGS}
+                  doc_entry="pageSize"
+                />
+                <Col sm={8}>
+                  <InputGroup>
+                    <CustomInput
+                      type="select"
+                      id="pagingSize"
+                      name="pagingSize"
+                      value={String(currentPagingSize)}
+                      onChange={(e) => handlePagingSizeChange(parseInt(e.target.value, 10))}
+                    >
+                      {pagingSizeOptions.map((option) => (
+                        <option value={String(option)} key={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </CustomInput>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
 
-        <Col sm={8}>
-          <GluuToogleRow
-            isLabelVisible={false}
-            name={t('fields.showCedarLogs?')}
-            formik={formik}
-            value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
-            doc_category={SETTINGS}
-            doc_entry={'cedarSwitch'}
-            lsize={4}
-            rsize={8}
-            handler={(event) => {
-              formik.setFieldValue(
-                'cedarlingLogType',
-                event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
-              )
-            }}
-          />
-        </Col>
-      </FormGroup>
+              {!loadingScripts && (
+                <>
+                  <GluuInputRow
+                    label="fields.sessionTimeoutInMins"
+                    name="sessionTimeoutInMins"
+                    type="number"
+                    formik={formik}
+                    lsize={4}
+                    rsize={8}
+                    value={formik.values.sessionTimeoutInMins}
+                    doc_category={SETTINGS}
+                    doc_entry="sessionTimeoutInMins"
+                    errorMessage={formik.errors.sessionTimeoutInMins}
+                    showError={
+                      formik.errors.sessionTimeoutInMins && formik.touched.sessionTimeoutInMins
+                    }
+                  />
 
-      <div className="mb-3">
-        <GluuProperties
-          compName="additionalParameters"
-          label="fields.custom_params_auth"
-          formik={formik}
-          keyPlaceholder={t('placeholders.enter_property_key')}
-          valuePlaceholder={t('placeholders.enter_property_value')}
-          options={additionalParameters}
-          tooltip="documentation.settings.custom_params"
-        />
-      </div>
-      <Button
-        type="submit"
-        color={`primary-${selectedTheme}`}
-        className="UserActionSubmitButton"
-        disabled={loadingConfig || !formik.dirty}
-      >
-        {t('actions.submit')}
-      </Button>
-    </Form>
+                  <FormGroup row>
+                    <GluuLabel
+                      size={4}
+                      doc_category={SETTINGS}
+                      doc_entry="adminui_default_acr"
+                      label={t('fields.adminui_default_acr')}
+                    />
+                    <Col sm={8}>
+                      <InputGroup>
+                        <CustomInput
+                          type="select"
+                          data-testid="acrValues"
+                          id="acrValues"
+                          name="acrValues"
+                          value={formik.values.acrValues}
+                          onChange={formik.handleChange}
+                        >
+                          <option value="">{t('actions.choose')}...</option>
+                          {authScripts.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </CustomInput>
+                      </InputGroup>
+                    </Col>
+                  </FormGroup>
+
+                  <FormGroup row>
+                    <GluuLabel
+                      size={4}
+                      doc_category={SETTINGS}
+                      doc_entry="cedarSwitch"
+                      label={t('fields.showCedarLogs?')}
+                    />
+                    <Col sm={8}>
+                      <GluuToogleRow
+                        isLabelVisible={false}
+                        name={t('fields.showCedarLogs?')}
+                        formik={formik}
+                        value={formik.values.cedarlingLogType === CedarlingLogType.STD_OUT}
+                        doc_category={SETTINGS}
+                        doc_entry="cedarSwitch"
+                        lsize={4}
+                        rsize={8}
+                        handler={(event) => {
+                          formik.setFieldValue(
+                            'cedarlingLogType',
+                            event.target.checked ? CedarlingLogType.STD_OUT : CedarlingLogType.OFF,
+                          )
+                        }}
+                      />
+                    </Col>
+                  </FormGroup>
+
+                  <div className="mb-3">
+                    <GluuProperties
+                      compName="additionalParameters"
+                      label="fields.custom_params_auth"
+                      formik={formik}
+                      keyPlaceholder={t('placeholders.enter_property_key')}
+                      valuePlaceholder={t('placeholders.enter_property_value')}
+                      options={additionalParametersOptions}
+                      tooltip="documentation.settings.custom_params"
+                    />
+                  </div>
+
+                  <GluuCommitFooter
+                    saveHandler={formik.handleSubmit}
+                    disableBackButton={true}
+                    cancelHandler={handleCancel}
+                    disableButtons={{ save: !isFormChanged || hasErrors, back: !isFormChanged }}
+                  />
+                </>
+              )}
+            </Form>
+          </CardBody>
+        </Card>
+      </GluuLoader>
+    </React.Fragment>
   )
 }
 
