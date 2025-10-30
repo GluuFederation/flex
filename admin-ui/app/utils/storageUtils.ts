@@ -13,6 +13,26 @@ export const getStorageItem = <T extends StorageValue>(
       return parser(stored)
     }
 
+    // Auto-coerce based on defaultValue type
+    if (stored === 'null') return null as T
+
+    if (typeof defaultValue === 'boolean') {
+      return (stored === 'true') as T
+    }
+
+    if (typeof defaultValue === 'number') {
+      const parsed = Number(stored)
+      return (isNaN(parsed) ? defaultValue : parsed) as T
+    }
+
+    if (typeof defaultValue === 'object' && defaultValue !== null) {
+      try {
+        return JSON.parse(stored) as T
+      } catch {
+        return defaultValue
+      }
+    }
+
     return stored as T
   } catch (error) {
     console.error(`Error reading from localStorage key "${key}":`, error)

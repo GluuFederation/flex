@@ -93,8 +93,8 @@ const GluuTypeAhead = memo(function GluuTypeAhead({
     if (typeof labelKey === 'function' || typeof labelKey === 'string') {
       return labelKey
     }
-    return name
-  }, [labelKey, name])
+    return 'name'
+  }, [labelKey])
 
   return (
     <FormGroup row>

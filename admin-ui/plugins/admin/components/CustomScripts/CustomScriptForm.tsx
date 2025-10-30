@@ -145,18 +145,9 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
         ).map(transformPropertyForApi)
       }
       if (values.moduleProperties) {
-        if (item.locationType === 'db') {
-          const filteredProps = item?.moduleProperties?.filter(
-            (moduleItem: ModuleProperty) => moduleItem?.value1 !== 'location_path',
-          )
-          submitValues.moduleProperties = filteredProps
-            ? filterEmptyObjects(filteredProps).map(transformPropertyForApi)
-            : []
-        } else {
-          submitValues.moduleProperties = filterEmptyObjects(values.moduleProperties).map(
-            transformPropertyForApi,
-          )
-        }
+        submitValues.moduleProperties = filterEmptyObjects(values.moduleProperties).map(
+          transformPropertyForApi,
+        )
       }
       if (typeof values.enabled == 'object') {
         if (Array.isArray(values.enabled) && values.enabled.length > 0) {

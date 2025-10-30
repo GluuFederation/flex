@@ -87,7 +87,7 @@ export const mapPropertyToKeyValue = (prop: {
   value1?: string
   value2?: string
 }): { key: string; value: string } => {
-  const key = String(prop.key || prop.value1 || '').trim()
-  const value = String(prop.value || prop.value2 || '').trim()
+  const key = (prop.key ?? prop.value1 ?? '').trim()
+  const value = (prop.value ?? prop.value2 ?? '').trim()
   return { key, value }
 }
