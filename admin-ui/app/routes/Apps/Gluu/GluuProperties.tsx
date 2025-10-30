@@ -7,6 +7,11 @@ import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { HelpOutline } from '@mui/icons-material'
 import customColors from '@/customColors'
 
+// Property type definitions
+type KeyValueProperty = { key: string; value: string }
+type SourceDestinationProperty = { source: string; destination: string }
+type Property = KeyValueProperty | SourceDestinationProperty
+
 function GluuProperties({
   compName,
   label,
@@ -42,7 +47,7 @@ function GluuProperties({
   }, [options])
 
   const addProperty = () => {
-    let item
+    let item: Property
     if (multiProperties) {
       item = { source: '', destination: '' }
     } else if (!isKeys) {
@@ -51,7 +56,18 @@ function GluuProperties({
     } else {
       item = { key: '', value: '' }
     }
-    setProperties((prev: any) => [...prev, item])
+    const newProperties = [...properties, item]
+    setProperties(newProperties)
+
+    // Sync with formik
+    if (formik && compName) {
+      if (!isKeys && !multiProperties) {
+        const valuesOnly = newProperties.map((property: KeyValueProperty) => property.value)
+        formik.setFieldValue(compName, valuesOnly)
+      } else {
+        formik.setFieldValue(compName, newProperties)
+      }
+    }
   }
   const changeProperty = (position: any, e: any) => {
     const { name, value } = e.target
@@ -59,29 +75,30 @@ function GluuProperties({
     newDataArr[position] = { ...newDataArr[position], [name]: value }
     setProperties(newDataArr)
 
-    // When isKeys is false and not using multiProperties, extract only the values as strings for formik
-    if (!isKeys && !multiProperties) {
-      const valuesOnly = newDataArr.map((item: any) => item.value)
-      formik.setFieldValue(compName, valuesOnly)
-    } else {
-      formik.setFieldValue(compName, newDataArr)
+    // Sync with formik
+    if (formik && compName) {
+      if (!isKeys && !multiProperties) {
+        const valuesOnly = newDataArr.map((item: KeyValueProperty) => item.value)
+        formik.setFieldValue(compName, valuesOnly)
+      } else {
+        formik.setFieldValue(compName, newDataArr)
+      }
     }
   }
   const removeProperty = (position: any) => {
     let data = [...properties]
     delete data[position]
-    data = data.filter((element: any) => element != null)
+    data = data.filter((element: Property | undefined) => element != null)
     setProperties(data)
 
-    // When isKeys is false and not using multiProperties, extract only the values as strings for formik
-    if (!isKeys && !multiProperties) {
-      const valuesOnly = data.filter((element) => element != null).map((item: any) => item.value)
-      formik.setFieldValue(compName, valuesOnly)
-    } else {
-      formik.setFieldValue(
-        compName,
-        data.filter((element) => element != null),
-      )
+    // Sync with formik
+    if (formik && compName) {
+      if (!isKeys && !multiProperties) {
+        const valuesOnly = data.map((item: KeyValueProperty) => item.value)
+        formik.setFieldValue(compName, valuesOnly)
+      } else {
+        formik.setFieldValue(compName, data)
+      }
     }
   }
 
