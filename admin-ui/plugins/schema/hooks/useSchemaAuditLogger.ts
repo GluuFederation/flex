@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { logAuditUserAction } from '@/utils/AuditLogger'
 import type { SchemaPluginRootState } from '../types/shared'
 import type { JansAttribute } from 'JansConfigApi'
+import { UPDATE } from '@/audit/UserActionType'
 
 interface AuditLogParams {
   action: string
@@ -26,6 +27,8 @@ export function useSchemaAuditLogger() {
       const clientId = authState?.config?.clientId
       const ipAddress = authState?.location?.IPv4
 
+      const isUpdateAction = params.action === UPDATE
+
       try {
         await logAuditUserAction({
           token: token || undefined,
@@ -33,12 +36,14 @@ export function useSchemaAuditLogger() {
           action: params.action,
           resource: params.resource,
           message: params.message,
-          extra: {
-            ...(ipAddress ? { ip_address: ipAddress } : {}),
-            ...(params.performedOn ? { performedOn: params.performedOn } : {}),
-          },
+          extra: isUpdateAction
+            ? {}
+            : {
+                ...(ipAddress ? { ip_address: ipAddress } : {}),
+                ...(params.performedOn ? { performedOn: params.performedOn } : {}),
+              },
           client_id: clientId,
-          payload: params.payload,
+          payload: isUpdateAction ? undefined : params.payload,
           modifiedFields: params.modifiedFields,
         })
       } catch (error) {

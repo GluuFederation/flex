@@ -84,14 +84,11 @@ function AttributeEditPage(): JSX.Element {
           { data: data as JansAttribute },
           {
             onSuccess: (updatedAttribute: JansAttribute) => {
-              // Log with modifiedFields for clearer audit trail
-              // Include full attribute in extra for reference
               logAudit({
                 action: UPDATE,
                 resource: API_ATTRIBUTE,
                 message: userMessage || '',
                 modifiedFields,
-                performedOn,
               })
 
               triggerAttributeWebhook(updatedAttribute)
