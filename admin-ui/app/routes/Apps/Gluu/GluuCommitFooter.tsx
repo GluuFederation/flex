@@ -159,7 +159,7 @@ const GluuCommitFooter = ({
       }
     }
     throw new Error('Unhandled button layout state')
-  }, [buttonStates, showBack, showCancel, showApply])
+  }, [buttonStates])
 
   if (!buttonStates.hasAnyButton) {
     return null
@@ -200,7 +200,6 @@ const GluuCommitFooter = ({
                 type="submit"
                 color={buttonColor}
                 style={buttonStyle}
-                className="d-flex"
                 disabled={disableApply || isLoading}
               >
                 <ButtonLabel
@@ -214,7 +213,6 @@ const GluuCommitFooter = ({
                 type="button"
                 color={buttonColor}
                 style={buttonStyle}
-                className="d-flex"
                 onClick={onApply}
                 disabled={disableApply || isLoading}
               >
@@ -225,13 +223,13 @@ const GluuCommitFooter = ({
                 />
               </Button>
             )}
-            {buttonStates.hasAllThreeButtons && buttonStates.showCancel && (
+            {buttonStates.hasAllThreeButtons && (
               <Button
                 color={buttonColor}
                 style={buttonStyle}
                 type="button"
                 onClick={handleCancelClick}
-                className="d-flex ms-4"
+                className="ms-4"
                 disabled={disableCancel || isLoading}
               >
                 <ButtonLabel isLoading={isLoading} iconClass="fa fa-undo" label={cancelLabel} />
