@@ -5,16 +5,21 @@ import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { Box } from '@mui/material'
+// Local props for the label renderer used by buttons
+interface ButtonLabelProps {
+  isLoading: boolean
+  iconClass: string
+  label: string
+  loadingIconClass?: string
+}
 
 interface GluuCommitFooterProps {
   showBack?: boolean
   backButtonLabel?: string
-  backButtonHandler?: () => void
   onBack?: () => void
   disableBack?: boolean
   showCancel?: boolean
   cancelButtonLabel?: string
-  cancelHandler?: () => void
   onCancel?: () => void
   disableCancel?: boolean
   showApply?: boolean
@@ -22,32 +27,28 @@ interface GluuCommitFooterProps {
   onApply?: () => void
   disableApply?: boolean
   applyButtonType?: 'button' | 'submit'
-  extraOnClick?: () => void
-  extraLabel?: string
-  saveHandler?: () => void
-  hideButtons?: {
-    save?: boolean
-    back?: boolean
-  }
-  disableButtons?: {
-    save?: boolean
-    back?: boolean
-  }
-  type?: 'button' | 'submit'
   disableBackButton?: boolean
   isLoading?: boolean
   className?: string
 }
 
-const GluuCommitFooter = memo(function GluuCommitFooter({
+const ButtonLabel = memo((props: ButtonLabelProps) => {
+  const { isLoading, iconClass, label, loadingIconClass = 'fa fa-spinner fa-spin' } = props
+  return (
+    <>
+      <i className={`${isLoading ? loadingIconClass : iconClass} me-2`} />
+      {label}
+    </>
+  )
+})
+
+const GluuCommitFooter = ({
   showBack,
   backButtonLabel,
-  backButtonHandler,
   onBack,
   disableBack,
   showCancel,
   cancelButtonLabel,
-  cancelHandler: newCancelHandler,
   onCancel,
   disableCancel,
   showApply,
@@ -55,58 +56,26 @@ const GluuCommitFooter = memo(function GluuCommitFooter({
   onApply,
   disableApply,
   applyButtonType = 'submit',
-  extraOnClick,
-  saveHandler,
-  extraLabel,
-  hideButtons,
-  disableButtons,
-  type = 'button',
   disableBackButton = false,
-  cancelHandler: legacyCancelHandler,
   isLoading = false,
   className = '',
-}: GluuCommitFooterProps) {
+}: GluuCommitFooterProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
   const navigate = useNavigate()
 
-  const isNewApiUsed = useMemo(
-    () => showBack !== undefined || showCancel !== undefined || showApply !== undefined,
-    [showBack, showCancel, showApply],
-  )
+  const finalShowBack = useMemo(() => Boolean(showBack), [showBack])
+  const finalShowCancel = useMemo(() => Boolean(showCancel), [showCancel])
+  const finalShowApply = useMemo(() => Boolean(showApply), [showApply])
 
-  const finalShowBack = useMemo(() => {
-    return isNewApiUsed ? showBack : !hideButtons || !hideButtons.back
-  }, [isNewApiUsed, showBack, hideButtons])
-
-  const finalShowCancel = useMemo(() => {
-    return isNewApiUsed ? showCancel : false
-  }, [isNewApiUsed, showCancel])
-
-  const finalShowApply = useMemo(() => {
-    return isNewApiUsed ? showApply : !hideButtons || !hideButtons.save
-  }, [isNewApiUsed, showApply, hideButtons])
-
-  const finalBackHandler = useMemo(() => backButtonHandler || onBack, [backButtonHandler, onBack])
-  const finalCancelHandler = useMemo(
-    () => newCancelHandler || legacyCancelHandler || onCancel,
-    [newCancelHandler, legacyCancelHandler, onCancel],
-  )
-  const finalApplyHandler = useMemo(
-    () => applyHandler || onApply || saveHandler,
-    [applyHandler, onApply, saveHandler],
-  )
-  const finalButtonType = useMemo(() => applyButtonType || type, [applyButtonType, type])
-  const finalDisableBack = useMemo(
-    () => disableBack || disableButtons?.back,
-    [disableBack, disableButtons?.back],
-  )
+  const finalBackHandler = useMemo(() => onBack, [onBack])
+  const finalCancelHandler = useMemo(() => onCancel, [onCancel])
+  const finalApplyHandler = useMemo(() => applyHandler || onApply, [applyHandler, onApply])
+  const finalButtonType = useMemo(() => applyButtonType, [applyButtonType])
+  const finalDisableBack = useMemo(() => disableBack, [disableBack])
   const finalDisableCancel = useMemo(() => disableCancel, [disableCancel])
-  const finalDisableApply = useMemo(
-    () => disableApply || disableButtons?.save,
-    [disableApply, disableButtons?.save],
-  )
+  const finalDisableApply = useMemo(() => disableApply, [disableApply])
 
   const handleBackClick = useCallback(() => {
     if (disableBackButton && finalCancelHandler) {
@@ -125,8 +94,7 @@ const GluuCommitFooter = memo(function GluuCommitFooter({
   }, [finalCancelHandler])
 
   const buttonStates = useMemo(() => {
-    const showExtra = Boolean(extraLabel && extraOnClick)
-    const hasAnyButton = finalShowBack || finalShowCancel || finalShowApply || showExtra
+    const hasAnyButton = finalShowBack || finalShowCancel || finalShowApply
     const hasAllThreeButtons = finalShowBack && finalShowCancel && finalShowApply
     const hasBackAndCancel = finalShowBack && finalShowCancel && !finalShowApply
 
@@ -134,20 +102,17 @@ const GluuCommitFooter = memo(function GluuCommitFooter({
       showBack: finalShowBack,
       showCancel: finalShowCancel,
       showApply: finalShowApply,
-      showExtra,
       hasAnyButton,
       hasAllThreeButtons,
       hasBackAndCancel,
     }
-  }, [finalShowBack, finalShowCancel, finalShowApply, extraLabel, extraOnClick])
+  }, [finalShowBack, finalShowCancel, finalShowApply])
 
   const buttonStyle = useMemo(
     () => ({ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }),
     [],
   )
 
-  const extraButtonStyle = useMemo(() => applicationStyle.buttonStyle, [])
-  const hiddenButtonStyle = useMemo(() => ({ visibility: 'hidden' as const }), [])
   const buttonColor = useMemo(() => `primary-${selectedTheme}`, [selectedTheme])
 
   const backLabel = useMemo(() => backButtonLabel || t('actions.back'), [backButtonLabel, t])
@@ -156,14 +121,13 @@ const GluuCommitFooter = memo(function GluuCommitFooter({
     [cancelButtonLabel, t],
   )
   const applyLabel = useMemo(() => t('actions.apply'), [t])
-  const submitLabel = useMemo(() => t('actions.submit'), [t])
 
   const buttonLayout = useMemo(() => {
     if (buttonStates.hasAllThreeButtons) {
       return {
         back: 'd-flex',
         cancel: 'd-flex',
-        apply: 'd-flex ms-auto',
+        apply: 'd-flex',
       }
     }
     if (buttonStates.hasBackAndCancel) {
@@ -243,110 +207,81 @@ const GluuCommitFooter = memo(function GluuCommitFooter({
             className={buttonLayout.back}
             disabled={actualDisableBack || isLoading}
           >
-            {isLoading ? (
-              <>
-                <i className="fa fa-spinner fa-spin me-2" />
-                {backLabel}
-              </>
-            ) : (
-              <>
-                <i className="fa fa-arrow-circle-left me-2" />
-                {backLabel}
-              </>
-            )}
+            <ButtonLabel
+              isLoading={isLoading}
+              iconClass="fa fa-arrow-circle-left"
+              label={backLabel}
+            />
           </Button>
         )}
 
-        {buttonStates.showCancel && (
-          <Box
-            display="flex"
-            flex={buttonStates.hasAllThreeButtons ? 1 : 0}
-            justifyContent="center"
-          >
-            <Button
-              color={buttonColor}
-              style={buttonStyle}
-              type="button"
-              onClick={handleCancelClick}
-              className="d-flex"
-              disabled={finalDisableCancel || isLoading}
-            >
-              <>
-                <i className={`${isLoading ? 'fa fa-spinner fa-spin me-2' : 'fa fa-undo me-2'}`} />
-                {cancelLabel}
-              </>
-            </Button>
+        {buttonStates.showApply && (
+          <Box display="flex" className={buttonStates.hasAllThreeButtons ? 'ms-auto me-0' : ''}>
+            {finalButtonType === 'submit' ? (
+              <Button
+                type="submit"
+                color={buttonColor}
+                style={buttonStyle}
+                className="d-flex"
+                disabled={finalDisableApply || isLoading}
+              >
+                <ButtonLabel
+                  isLoading={isLoading}
+                  iconClass="fa fa-check-circle"
+                  label={applyLabel}
+                />
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                color={buttonColor}
+                style={buttonStyle}
+                className="d-flex"
+                onClick={finalApplyHandler}
+                disabled={finalDisableApply || isLoading}
+              >
+                <ButtonLabel
+                  isLoading={isLoading}
+                  iconClass="fa fa-check-circle"
+                  label={applyLabel}
+                />
+              </Button>
+            )}
+            {buttonStates.hasAllThreeButtons && buttonStates.showCancel && (
+              <Button
+                color={buttonColor}
+                style={buttonStyle}
+                type="button"
+                onClick={handleCancelClick}
+                className="d-flex ms-4"
+                disabled={finalDisableCancel || isLoading}
+              >
+                <>
+                  <i
+                    className={`${isLoading ? 'fa fa-spinner fa-spin me-2' : 'fa fa-undo me-2'}`}
+                  />
+                  {cancelLabel}
+                </>
+              </Button>
+            )}
           </Box>
         )}
 
-        {buttonStates.showExtra && (
+        {!buttonStates.hasAllThreeButtons && buttonStates.showCancel && (
           <Button
-            color={buttonColor}
-            type="button"
-            style={extraButtonStyle}
-            onClick={extraOnClick}
-            disabled={isLoading}
-          >
-            {extraLabel}
-          </Button>
-        )}
-
-        <Button
-          type="submit"
-          color={buttonColor}
-          className="UserActionSubmitButton"
-          style={hiddenButtonStyle}
-        >
-          {submitLabel}
-        </Button>
-
-        {buttonStates.showApply && finalButtonType === 'submit' && (
-          <Button
-            type="submit"
             color={buttonColor}
             style={buttonStyle}
-            className={buttonLayout.apply}
-            disabled={finalDisableApply || isLoading}
-          >
-            {isLoading ? (
-              <>
-                <i className="fa fa-spinner fa-spin me-2" />
-                {applyLabel}
-              </>
-            ) : (
-              <>
-                <i className="fa fa-check-circle me-2" />
-                {applyLabel}
-              </>
-            )}
-          </Button>
-        )}
-
-        {buttonStates.showApply && finalButtonType === 'button' && (
-          <Button
             type="button"
-            color={buttonColor}
-            style={buttonStyle}
+            onClick={handleCancelClick}
             className={buttonLayout.apply}
-            onClick={finalApplyHandler}
-            disabled={finalDisableApply || isLoading}
+            disabled={finalDisableCancel || isLoading}
           >
-            {isLoading ? (
-              <>
-                <i className="fa fa-spinner fa-spin me-2" />
-                {applyLabel}
-              </>
-            ) : (
-              <>
-                <i className="fa fa-check-circle me-2" />
-                {applyLabel}
-              </>
-            )}
+            <ButtonLabel isLoading={isLoading} iconClass="fa fa-undo" label={cancelLabel} />
           </Button>
         )}
       </Box>
     </>
   )
-})
+}
 
-export default GluuCommitFooter
+export default memo(GluuCommitFooter)
