@@ -16,6 +16,7 @@ import assetSaga from './redux/sagas/AssetSaga'
 import auditSaga from '../admin/redux/sagas/AuditSaga'
 
 import { reducer as apiRoleReducer } from 'Plugins/admin/redux/features/apiRoleSlice'
+import { reducer as apiConfigReducer } from 'Plugins/admin/redux/features/apiConfigSlice'
 import { reducer as apiPermissionReducer } from 'Plugins/admin/redux/features/apiPermissionSlice'
 import { reducer as mappingReducer } from 'Plugins/admin/redux/features/mappingSlice'
 import webhookReducer from 'Plugins/admin/redux/features/WebhookSlice'
@@ -43,6 +44,7 @@ import JansAssetEditPage from './components/Assets/JansAssetEditPage'
 import JansAssetAddPage from './components/Assets/JansAssetAddPage'
 import DashboardPage from '../../app/routes/Dashboards/DashboardPage'
 import LicenseDetailsPage from '../../app/routes/License/LicenseDetailsPage'
+import CedarlingConfigPage from './components/Cedarling/CedarlingConfigPage'
 
 const PLUGIN_BASE_PATH = '/adm'
 
@@ -93,6 +95,11 @@ const pluginMetadata = {
             {
               title: 'menus.securityDropdown.mapping',
               path: PLUGIN_BASE_PATH + '/mapping',
+              permission: MAPPING_READ,
+            },
+            {
+              title: 'menus.securityDropdown.cedarlingConfig',
+              path: PLUGIN_BASE_PATH + '/cedarlingconfig',
               permission: MAPPING_READ,
             },
           ],
@@ -158,6 +165,11 @@ const pluginMetadata = {
       path: PLUGIN_BASE_PATH + '/mapping',
       permission: MAPPING_READ,
     },
+    {
+      component: CedarlingConfigPage,
+      path: PLUGIN_BASE_PATH + '/cedarlingconfig',
+      permission: MAPPING_READ,
+    },
 
     {
       component: WebhookListPage,
@@ -196,6 +208,7 @@ const pluginMetadata = {
     },
   ],
   reducers: [
+    { name: 'apiConfigReducer', reducer: apiConfigReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },

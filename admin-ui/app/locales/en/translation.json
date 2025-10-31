@@ -620,7 +620,9 @@
     "reloginToViewCedarlingChanges": "Please Re-login to view the cedarling changes.",
     "allAvailableHintsSelected": "All available hint options are selected",
     "noMatchingOptions": "No matching options",
-    "nothingToShowInTheList": "Nothing to show in the list"
+    "nothingToShowInTheList": "Nothing to show in the list",
+    "auiPolicyStoreUrl": "Admin UI Policy Store",
+    "configApiPolicyStoreUrl": "Config API Policy Store"
   },
   "languages": {
     "french": "French",
@@ -653,7 +655,8 @@
     "securityDropdown": {
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",
-      "mapping": "Mapping"
+      "mapping": "Mapping",
+      "cedarlingConfig": "Cedarling"
     },
     "basic_configuration": "Basic Configuration",
     "inum_configuration": "Inum Configuration",
@@ -972,6 +975,7 @@
     "jwk_keys": "JWK keys",
     "jans_json_property": "Properties",
     "mapping": "Role/Permission Mapping",
+    "cedarling_config": "Cedarling Configuration",
     "modules_properties": "Module Properties",
     "oauth_server_status_title": "OAuth server status",
     "oidc_clients": "OpenID Connect Clients",
@@ -1740,6 +1744,13 @@
       "enabled": "SAML functionality enabled.",
       "selectedIdp": "Selected SAML server.",
       "ignoreValidation": "Boolean value to enable/disable SAML validation."
+    },
+    "cedarlingConfig": {
+      "title": "Configure fine-grained control using Cedarling",
+      "point1": "1. Create a policy store using Agama Lab. Fork project",
+      "point2": "2. Copy PolicyStore URL and configure.",
+      "note": "Note: This will help you to create your own cedarling project. You can update roles and permissions using",
+      "localPoliciesNote:": "Note: Recommended to set ON for production. If on, it will fetch policies from above URLs, store them in DB, and use them for Cedarling authorization."
     }
   }
 }
