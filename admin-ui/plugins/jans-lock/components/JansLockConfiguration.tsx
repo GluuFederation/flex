@@ -66,9 +66,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
         patches: [] as PatchOperation[],
       }
     }
-    const trimmedValues = trimObjectStrings(
-      formik.values as unknown as Record<string, unknown>,
-    ) as unknown as JansLockConfigFormValues
+    const trimmedValues = trimObjectStrings(formik.values)
     const patches = createPatchOperations(trimmedValues, lockConfig)
     return { trimmedValues, patches }
   }, [lockConfig, formik.values])
@@ -131,9 +129,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
                 .filter((v: unknown): v is string => typeof v === 'string' && v !== null)
               formik.setFieldValue('tokenChannels', values)
             }}
-            options={
-              (lockConfig?.tokenChannels as unknown as (string | Record<string, unknown>)[]) || []
-            }
+            options={(lockConfig?.tokenChannels as string[]) || []}
             doc_category={jansLockConstants.DOC_CATEGORY}
             lsize={3}
             rsize={9}
@@ -443,7 +439,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
                 disableCancel={!isFormDirty}
                 disableApply={!isFormValid || !isFormDirty}
                 applyButtonType="submit"
-                isLoading={!!isSubmitting}
+                isLoading={isSubmitting ?? false}
               />
             </Col>
           </Row>
