@@ -23,11 +23,9 @@ interface GluuCommitFooterProps {
   onCancel?: () => void
   disableCancel?: boolean
   showApply?: boolean
-  applyHandler?: () => void
   onApply?: () => void
   disableApply?: boolean
   applyButtonType?: 'button' | 'submit'
-  disableBackButton?: boolean
   isLoading?: boolean
   className?: string
 }
@@ -52,11 +50,9 @@ const GluuCommitFooter = ({
   onCancel,
   disableCancel,
   showApply,
-  applyHandler,
   onApply,
   disableApply,
   applyButtonType = 'submit',
-  disableBackButton = false,
   isLoading = false,
   className = '',
 }: GluuCommitFooterProps) => {
@@ -65,27 +61,29 @@ const GluuCommitFooter = ({
   const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
   const navigate = useNavigate()
 
-  const finalShowBack = useMemo(() => Boolean(showBack), [showBack])
-  const finalShowCancel = useMemo(() => Boolean(showCancel), [showCancel])
-  const finalShowApply = useMemo(() => Boolean(showApply), [showApply])
+  const finalShowBack = Boolean(showBack)
+  const finalShowCancel = Boolean(showCancel)
+  const finalShowApply = Boolean(showApply)
 
-  const finalBackHandler = useMemo(() => onBack, [onBack])
-  const finalCancelHandler = useMemo(() => onCancel, [onCancel])
-  const finalApplyHandler = useMemo(() => applyHandler || onApply, [applyHandler, onApply])
-  const finalButtonType = useMemo(() => applyButtonType, [applyButtonType])
-  const finalDisableBack = useMemo(() => disableBack, [disableBack])
-  const finalDisableCancel = useMemo(() => disableCancel, [disableCancel])
-  const finalDisableApply = useMemo(() => disableApply, [disableApply])
+  const finalBackHandler = onBack
+  const finalCancelHandler = onCancel
+  const finalApplyHandler = onApply
+  const finalButtonType = applyButtonType
+  const finalDisableBack = disableBack
+  const finalDisableCancel = disableCancel
+  const finalDisableApply = disableApply
 
   const handleBackClick = useCallback(() => {
-    if (disableBackButton && finalCancelHandler) {
-      finalCancelHandler()
-    } else if (finalBackHandler) {
+    if (finalBackHandler) {
       finalBackHandler()
+      return
+    }
+    if (window.history.length > 1) {
+      navigate(-1)
     } else {
       navigate('/home/dashboard')
     }
-  }, [disableBackButton, finalCancelHandler, finalBackHandler, navigate])
+  }, [finalBackHandler, navigate])
 
   const handleCancelClick = useCallback(() => {
     if (finalCancelHandler) {
@@ -127,7 +125,7 @@ const GluuCommitFooter = ({
       return {
         back: 'd-flex',
         cancel: 'd-flex',
-        apply: 'd-flex',
+        apply: 'd-flex ms-auto me-0',
       }
     }
     if (buttonStates.hasBackAndCancel) {
@@ -216,7 +214,7 @@ const GluuCommitFooter = ({
         )}
 
         {buttonStates.showApply && (
-          <Box display="flex" className={buttonStates.hasAllThreeButtons ? 'ms-auto me-0' : ''}>
+          <Box display="flex">
             {finalButtonType === 'submit' ? (
               <Button
                 type="submit"
@@ -256,12 +254,7 @@ const GluuCommitFooter = ({
                 className="d-flex ms-4"
                 disabled={finalDisableCancel || isLoading}
               >
-                <>
-                  <i
-                    className={`${isLoading ? 'fa fa-spinner fa-spin me-2' : 'fa fa-undo me-2'}`}
-                  />
-                  {cancelLabel}
-                </>
+                <ButtonLabel isLoading={isLoading} iconClass="fa fa-undo" label={cancelLabel} />
               </Button>
             )}
           </Box>
@@ -273,7 +266,7 @@ const GluuCommitFooter = ({
             style={buttonStyle}
             type="button"
             onClick={handleCancelClick}
-            className={buttonLayout.apply}
+            className={buttonLayout.cancel}
             disabled={finalDisableCancel || isLoading}
           >
             <ButtonLabel isLoading={isLoading} iconClass="fa fa-undo" label={cancelLabel} />
