@@ -2,8 +2,19 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AttributeAddPage from 'Plugins/schema/components/Person/AttributeAddPage'
 import { Provider } from 'react-redux'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+
+// Mock the JansConfigApi hooks
+jest.mock('JansConfigApi', () => ({
+  usePostAttributes: jest.fn(() => ({
+    mutate: jest.fn(),
+    isPending: false,
+  })),
+  getGetAttributesQueryKey: jest.fn(() => ['attributes']),
+  JansAttribute: {},
+}))
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
@@ -13,39 +24,27 @@ const permissions = [
 const INIT_STATE = {
   permissions: permissions,
 }
-const INIT_ATTRIBUTE_STATE = {
-  items: [
-    {
-      name: 'givenName',
-      inum: 'B4B0',
-      displayName: 'givenName',
-      description: 'First Name',
-      status: 'ACTIVE',
-      dataType: 'STRING',
-      editType: 'ADMIN',
-      viewType: 'ADMIN',
-      usageType: 'OPENID',
-      jansHideOnDiscovery: false,
-      oxMultiValuedAttribute: false,
-      attributeValidation: { maxLength: null, regexp: null, minLength: null },
-      scimCustomAttr: false,
-    },
-  ],
-  item: {},
-  loading: false,
-}
 
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    attributeReducer: (state = INIT_ATTRIBUTE_STATE) => state,
     noReducer: (state = {}) => state,
   }),
 })
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+})
+
 const Wrapper = ({ children }) => (
   <AppTestWrapper>
-    <Provider store={store}>{children}</Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>{children}</Provider>
+    </QueryClientProvider>
   </AppTestWrapper>
 )
 

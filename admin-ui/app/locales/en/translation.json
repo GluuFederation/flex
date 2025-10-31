@@ -437,6 +437,7 @@
     "state": "State",
     "status": "Status",
     "scopes": "Scopes",
+    "sort_by": "Sort By",
     "smtp_host": "SMTP Host",
     "smtp_port": "SMTP Port",
     "trust_host": "Trust Server",
@@ -799,6 +800,8 @@
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
+    "loading_attribute": "Loading attribute...",
+    "loading_attributes": "Loading attributes",
     "error_processiong_request": "Error in processing request.",
     "no_scope_in_client": "No Scope data for this Client",
     "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client",
@@ -824,6 +827,13 @@
     "password_changed_successfully": "Password changed successfully",
     "device_deleted_successfully": "Device deleted successfully"
   },
+  "errors": {
+    "attribute_create_failed": "Error creating attribute",
+    "attribute_update_failed": "Error updating attribute",
+    "attribute_delete_failed": "Error deleting attribute",
+    "attribute_load_failed": "Error loading attribute",
+    "attribute_not_found": "Attribute not found"
+  },
   "tooltips": {
     "add_attribute": "Add attribute",
     "add_user": "Add User",
@@ -848,7 +858,10 @@
     "product_version": "Version number of this database product",
     "driver_name": "Name of this JDBC driver",
     "driver_version": "Version number of this JDBC driver",
-    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI."
+    "followingPermissionRequiredToBeAdded": "We need to add the following essential permissions to the role to ensure users with this role can access the Admin UI.",
+    "sort_ascending": "Sort ascending",
+    "sort_descending": "Sort descending",
+    "clear_filters": "Clear all filters"
   },
   "placeholders": {
     "id": "Enter id",
@@ -1016,6 +1029,8 @@
   "options": {
     "admin": "ADMIN",
     "active": "ACTIVE",
+    "all": "All",
+    "ascending": "Ascending",
     "boolean": "BOOLEAN",
     "binary": "BINARY",
     "certificate": "CERTIFICATE",
@@ -1023,6 +1038,7 @@
     "cluster": "CLUSTER",
     "date": "DATE",
     "default": "DEFAULT",
+    "descending": "Descending",
     "disable": "disable",
     "disabled": "Disabled",
     "enabled": "Enabled",
@@ -1033,6 +1049,7 @@
     "memcached": "MEMCACHED",
     "native_persistence": "NATIVE_PERSISTENCE",
     "no": "No",
+    "none": "None",
     "numeric": "NUMERIC",
     "openid": "OPENID",
     "redis": "REDIS",

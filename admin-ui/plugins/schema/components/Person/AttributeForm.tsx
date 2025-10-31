@@ -12,7 +12,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import * as Yup from 'yup'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
-import {
+import type {
   AttributeFormProps,
   AttributeFormValues,
   AttributeItem,
@@ -53,35 +53,93 @@ function AttributeForm(props: AttributeFormProps) {
     handleAttributeSubmit({ values, item, customOnSubmit, userMessage })
   }
 
+  const computeModifiedFields = (
+    initial: AttributeFormValues,
+    updated: AttributeFormValues,
+  ): Record<string, unknown> => {
+    const modifiedFields: Record<string, unknown> = {}
+    const initialValues = getInitialAttributeValues(item)
+
+    // Compare each field
+    Object.keys(updated).forEach((key) => {
+      const initialValue = initialValues[key as keyof AttributeFormValues]
+      const updatedValue = updated[key as keyof AttributeFormValues]
+
+      // Handle arrays (editType, viewType, usageType)
+      if (Array.isArray(initialValue) && Array.isArray(updatedValue)) {
+        const arraysEqual =
+          initialValue.length === updatedValue.length &&
+          initialValue.every((val, index) => val === updatedValue[index])
+        if (!arraysEqual) {
+          modifiedFields[key] = updatedValue
+        }
+      }
+      // Handle objects (attributeValidation)
+      else if (
+        typeof initialValue === 'object' &&
+        initialValue !== null &&
+        typeof updatedValue === 'object' &&
+        updatedValue !== null
+      ) {
+        if (JSON.stringify(initialValue) !== JSON.stringify(updatedValue)) {
+          modifiedFields[key] = updatedValue
+        }
+      }
+      // Handle primitive values
+      else if (initialValue !== updatedValue) {
+        modifiedFields[key] = updatedValue
+      }
+    })
+
+    return modifiedFields
+  }
+
   const handleAttributeSubmit = ({
     item,
     values,
     customOnSubmit,
     userMessage,
   }: HandleAttributeSubmitParams): void => {
-    const result = Object.assign(item, values)
+    const result = { ...item, ...values }
+    const initialValues = getInitialAttributeValues(item)
+    const modifiedFields = computeModifiedFields(initialValues, values)
+
+    if (!result.attributeValidation) {
+      result.attributeValidation = {}
+    } else {
+      result.attributeValidation = { ...result.attributeValidation }
+    }
+
     if (result.maxLength !== null) {
-      result['attributeValidation'].maxLength = result.maxLength
+      result.attributeValidation.maxLength = result.maxLength
     }
     if (result.minLength !== null) {
-      result['attributeValidation'].minLength = result.minLength
+      result.attributeValidation.minLength = result.minLength
     }
     if (result.regexp !== null) {
-      result['attributeValidation'].regexp = result.regexp
+      result.attributeValidation.regexp = result.regexp
     }
 
     if (!validation) {
-      delete result['attributeValidation']['regexp']
-      delete result['regexp']
+      delete result.attributeValidation.regexp
+      delete result.regexp
 
-      delete result['attributeValidation']['maxLength']
-      delete result['maxLength']
+      delete result.attributeValidation.maxLength
+      delete result.maxLength
 
-      delete result['attributeValidation']['minLength']
-      delete result['minLength']
+      delete result.attributeValidation.minLength
+      delete result.minLength
     }
 
-    customOnSubmit({ data: result as AttributeItem, userMessage })
+    customOnSubmit({
+      data: result as AttributeItem,
+      userMessage,
+      modifiedFields,
+      performedOn: {
+        attribute_inum: item.inum,
+        attributeName: item.name,
+      },
+    })
   }
 
   const attributeValidationSchema = Yup.object({
@@ -272,9 +330,18 @@ function AttributeForm(props: AttributeFormProps) {
                 type="select"
                 name="editType"
                 id="editType"
-                defaultValue={item.editType}
+                value={formik.values.editType}
                 multiple
-                onChange={formik.handleChange}
+                onChange={(e: any) => {
+                  const options = e.target.options
+                  const selectedValues: string[] = []
+                  for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                      selectedValues.push(options[i].value)
+                    }
+                  }
+                  formik.setFieldValue('editType', selectedValues)
+                }}
               >
                 <option value="admin">{t('options.admin')}</option>
                 <option value="user">{t('options.user')}</option>
@@ -297,9 +364,18 @@ function AttributeForm(props: AttributeFormProps) {
                 type="select"
                 name="viewType"
                 id="viewType"
-                defaultValue={item.viewType}
+                value={formik.values.viewType}
                 multiple
-                onChange={formik.handleChange}
+                onChange={(e: any) => {
+                  const options = e.target.options
+                  const selectedValues: string[] = []
+                  for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                      selectedValues.push(options[i].value)
+                    }
+                  }
+                  formik.setFieldValue('viewType', selectedValues)
+                }}
               >
                 <option value="admin">{t('options.admin')}</option>
                 <option value="user">{t('options.user')}</option>
@@ -322,9 +398,18 @@ function AttributeForm(props: AttributeFormProps) {
                 type="select"
                 name="usageType"
                 id="usageType"
-                defaultValue={item.usageType}
+                value={formik.values.usageType}
                 multiple
-                onChange={formik.handleChange}
+                onChange={(e: any) => {
+                  const options = e.target.options
+                  const selectedValues: string[] = []
+                  for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected) {
+                      selectedValues.push(options[i].value)
+                    }
+                  }
+                  formik.setFieldValue('usageType', selectedValues)
+                }}
               >
                 <option value="openid">{t('options.openid')}</option>
               </Input>

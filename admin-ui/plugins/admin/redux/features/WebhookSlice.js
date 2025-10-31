@@ -19,7 +19,7 @@ const initialState = {
   triggerWebhookInProgress: false,
   triggerWebhookMessage: '',
   webhookTriggerErrors: [],
-  tiggerPayload: {
+  triggerPayload: {
     feature: null,
     payload: null,
   },
@@ -107,8 +107,9 @@ const webhookSlice = createSlice({
     setWebhookModal: (state, action) => {
       state.webhookModal = action.payload
     },
-    triggerWebhook: (state) => {
+    triggerWebhook: (state, action) => {
       state.triggerWebhookInProgress = true
+      state.triggerPayload = action.payload
     },
     setTriggerWebhookResponse: (state, action) => {
       state.triggerWebhookInProgress = false
@@ -118,7 +119,7 @@ const webhookSlice = createSlice({
       state.webhookTriggerErrors = action.payload
     },
     setTriggerPayload: (state, action) => {
-      state.tiggerPayload = action.payload
+      state.triggerPayload = action.payload
     },
     setFeatureToTrigger: (state, action) => {
       state.featureToTrigger = action.payload

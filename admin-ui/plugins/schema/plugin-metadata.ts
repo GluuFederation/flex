@@ -2,9 +2,7 @@ import AttributeListPage from 'Plugins/schema/components/Person/AttributeListPag
 import AttributeAddPage from 'Plugins/schema/components/Person/AttributeAddPage'
 import AttributeEditPage from 'Plugins/schema/components/Person/AttributeEditPage'
 import AttributeViewPage from 'Plugins/schema/components/Person/AttributeViewPage'
-import { reducer as attributeReducer } from 'Plugins/schema/redux/features/attributeSlice'
-import attributeSaga from 'Plugins/schema/redux/sagas/AttributeSaga'
-import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils//PermChecker'
+import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils/PermChecker'
 
 const pluginMetadata = {
   menus: [
@@ -37,8 +35,8 @@ const pluginMetadata = {
       permission: ATTRIBUTE_READ,
     },
   ],
-  reducers: [{ name: 'attributeReducer', reducer: attributeReducer }],
-  sagas: [attributeSaga()],
+  reducers: [],
+  sagas: [],
 }
 
 export default pluginMetadata
