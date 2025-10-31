@@ -170,16 +170,8 @@ const GluuCommitFooter = ({
         apply: 'd-flex ms-auto',
       }
     }
-    return {
-      back: 'd-flex',
-      cancel: 'd-flex',
-      apply: 'd-flex ms-auto',
-    }
+    throw new Error('Unhandled button layout state')
   }, [buttonStates, finalShowBack, finalShowCancel, finalShowApply])
-
-  const actualDisableBack = useMemo(() => {
-    return finalShowBack ? finalDisableBack : true
-  }, [finalShowBack, finalDisableBack])
 
   if (!buttonStates.hasAnyButton) {
     return null
@@ -203,7 +195,7 @@ const GluuCommitFooter = ({
             type="button"
             onClick={handleBackClick}
             className={buttonLayout.back}
-            disabled={actualDisableBack || isLoading}
+            disabled={finalDisableBack || isLoading}
           >
             <ButtonLabel
               isLoading={isLoading}
@@ -214,7 +206,7 @@ const GluuCommitFooter = ({
         )}
 
         {buttonStates.showApply && (
-          <Box display="flex">
+          <Box display="flex" className={buttonLayout.apply}>
             {finalButtonType === 'submit' ? (
               <Button
                 type="submit"
