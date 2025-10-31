@@ -620,9 +620,8 @@
     "allAvailableHintsSelected": "Todas las opciones de sugerencia disponibles están seleccionadas",
     "noMatchingOptions": "No hay opciones coincidentes",
     "nothingToShowInTheList": "Nada que mostrar en la lista",
-    "adminUiPolicyStore": "Tienda de políticas de la interfaz de usuario del administrador",
-    "configApiPolicyStore": "Almacén de políticas de la API de configuración",
-    "localPolicies": "Políticas locales"
+    "auiPolicyStoreUrl": "Tienda de políticas de la interfaz de usuario del administrador",
+    "configApiPolicyStoreUrl": "Almacén de políticas de la API de configuración"
   },
   "languages": {
     "french": "Frances",

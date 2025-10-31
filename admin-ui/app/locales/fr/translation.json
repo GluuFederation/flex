@@ -653,9 +653,8 @@
     "nothingToShowInTheList": "Rien à montrer dans la liste",
     "disable_logger_timer": "Désactiver le Minuteur du Journal",
     "skip_defined_password_validation": "Ignorer la Validation du Mot de Passe Défini",
-    "adminUiPolicyStore": "Magasin de politiques de l'interface utilisateur d'administration",
-    "configApiPolicyStore": "Magasin de politiques de configuration de l'API",
-    "localPolicies": "Politiques locales"
+    "auiPolicyStoreUrl": "Magasin de politiques de l'interface utilisateur d'administration",
+    "configApiPolicyStoreUrl": "Magasin de politiques de configuration de l'API"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",

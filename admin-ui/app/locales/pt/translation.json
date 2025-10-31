@@ -648,9 +648,8 @@
     "nothingToShowInTheList": "Nada a mostrar na lista",
     "disable_logger_timer": "Desativar Temporizador de Logs",
     "skip_defined_password_validation": "Pular Validação de Senha Definida",
-    "adminUiPolicyStore": "Política de armazenamento da interface de administração",
-    "configApiPolicyStore": "Política de armazenamento da API de configuração",
-    "localPolicies": "Políticas locais"
+    "auiPolicyStoreUrl": "Política de armazenamento da interface de administração",
+    "configApiPolicyStoreUrl": "Política de armazenamento da API de configuração"
   },
   "messages": {
     "add_permission": "Adicionar permissão",
