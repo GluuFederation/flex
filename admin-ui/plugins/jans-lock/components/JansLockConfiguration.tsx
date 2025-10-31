@@ -59,16 +59,23 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
     formik.resetForm()
   }, [formik])
 
-  const isFormDirty = useMemo(() => {
+  const trimmedValuesAndPatches = useMemo(() => {
     if (!lockConfig || !formik.values) {
-      return false
+      return {
+        trimmedValues: null as JansLockConfigFormValues | null,
+        patches: [] as PatchOperation[],
+      }
     }
     const trimmedValues = trimObjectStrings(
       formik.values as unknown as Record<string, unknown>,
     ) as unknown as JansLockConfigFormValues
     const patches = createPatchOperations(trimmedValues, lockConfig)
-    return patches.length > 0
+    return { trimmedValues, patches }
   }, [lockConfig, formik.values])
+
+  const isFormDirty = useMemo(() => {
+    return trimmedValuesAndPatches.patches.length > 0
+  }, [trimmedValuesAndPatches])
 
   const isFormValid = useMemo(() => {
     if (!formik.values) {
@@ -79,10 +86,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
 
   const submitForm = useCallback(
     (userMessage: string) => {
-      const trimmedValues = trimObjectStrings(
-        formik.values as unknown as Record<string, unknown>,
-      ) as unknown as JansLockConfigFormValues
-      const patchOperations = createPatchOperations(trimmedValues, lockConfig)
+      const { patches: patchOperations } = trimmedValuesAndPatches
 
       toggle()
 
@@ -96,7 +100,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
       }
       // Silently do nothing if no changes (better UX than showing a toast)
     },
-    [formik.values, lockConfig, toggle, onUpdate],
+    [trimmedValuesAndPatches, toggle, onUpdate],
   )
 
   return (
@@ -127,7 +131,9 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
                 .filter((v: unknown): v is string => typeof v === 'string' && v !== null)
               formik.setFieldValue('tokenChannels', values)
             }}
-            options={lockConfig?.tokenChannels || []}
+            options={
+              (lockConfig?.tokenChannels as unknown as (string | Record<string, unknown>)[]) || []
+            }
             doc_category={jansLockConstants.DOC_CATEGORY}
             lsize={3}
             rsize={9}
