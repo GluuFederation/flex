@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { Row, Col, Form, FormGroup } from 'Components'
@@ -20,9 +20,14 @@ import { trimObjectStrings } from 'Utils/Util'
 interface JansLockConfigurationProps {
   lockConfig: Record<string, unknown>
   onUpdate: (patches: PatchOperation[]) => void
+  isSubmitting?: boolean
 }
 
-const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfig, onUpdate }) => {
+const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
+  lockConfig,
+  onUpdate,
+  isSubmitting,
+}) => {
   const { hasCedarPermission, authorize } = useCedarling()
   const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
   const [modal, setModal] = useState(false)
@@ -53,6 +58,24 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfi
   const handleCancel = useCallback(() => {
     formik.resetForm()
   }, [formik])
+
+  const isFormDirty = useMemo(() => {
+    if (!lockConfig || !formik.values) {
+      return false
+    }
+    const trimmedValues = trimObjectStrings(
+      formik.values as unknown as Record<string, unknown>,
+    ) as unknown as JansLockConfigFormValues
+    const patches = createPatchOperations(trimmedValues, lockConfig)
+    return patches.length > 0
+  }, [lockConfig, formik.values])
+
+  const isFormValid = useMemo(() => {
+    if (!formik.values) {
+      return false
+    }
+    return validationSchema.isValidSync(formik.values)
+  }, [formik.values])
 
   const submitForm = useCallback(
     (userMessage: string) => {
@@ -405,11 +428,16 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfi
           <Row>
             <Col>
               <GluuCommitFooter
-                saveHandler={toggle}
-                hideButtons={{ save: true, back: true }}
-                extraLabel="Cancel"
-                extraOnClick={handleCancel}
-                type="submit"
+                showBack={true}
+                showCancel={true}
+                showApply={true}
+                onApply={toggle}
+                onCancel={handleCancel}
+                disableBack={false}
+                disableCancel={!isFormDirty}
+                disableApply={!isFormValid || !isFormDirty}
+                applyButtonType="submit"
+                isLoading={!!isSubmitting}
               />
             </Col>
           </Row>
