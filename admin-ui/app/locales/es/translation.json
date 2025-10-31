@@ -436,6 +436,7 @@
     "state": "Estado",
     "status": "Estado",
     "scopes": "Ámbitos",
+    "sort_by": "Ordenar Por",
     "smtp_host": "Host SMTP",
     "smtp_port": "Puerto SMTP",
     "trust_host": "Servidor de Confianza",
@@ -798,6 +799,7 @@
     "view_script_details": "Ver detalles del script personalizado",
     "add_new_user": "Agregar Usuario",
     "error_in_saving": "Error al guardar.",
+    "loading_attributes": "Cargando atributos",
     "error_processiong_request": "Error al procesar la solicitud.",
     "no_scope_in_client": "Sin datos de Scope para este Cliente",
     "no_scope_in_spontaneous_client": "Sin datos de Scope Espontáneo para este Cliente",
@@ -822,6 +824,13 @@
     "user_deleted_successfully": "Usuario eliminado exitosamente",
     "password_changed_successfully": "Contraseña cambiada exitosamente",
     "device_deleted_successfully": "Dispositivo eliminado exitosamente"
+  },
+  "errors": {
+    "attribute_create_failed": "Error al crear el atributo",
+    "attribute_update_failed": "Error al actualizar el atributo",
+    "attribute_delete_failed": "Error al eliminar el atributo",
+    "attribute_load_failed": "Error al cargar el atributo",
+    "attribute_not_found": "Atributo no encontrado"
   },
   "tooltips": {
     "add_attribute": "Añadir atributo",
@@ -1012,6 +1021,8 @@
   "options": {
     "admin": "ADMIN",
     "active": "ACTIVO",
+    "all": "Todos",
+    "ascending": "Ascendente",
     "boolean": "BOOLEANO",
     "binary": "BINARIO",
     "certificate": "CERTIFICADO",
@@ -1019,6 +1030,7 @@
     "cluster": "CLÚSTER",
     "date": "FECHA",
     "default": "POR DEFECTO",
+    "descending": "Descendente",
     "disable": "deshabilitar",
     "disabled": "Deshabilitado",
     "enabled": "Habilitado",
@@ -1029,6 +1041,7 @@
     "memcached": "MEMCACHED",
     "native_persistence": "PERSISTENCIA_NATIVA",
     "no": "No",
+    "none": "Ninguno",
     "numeric": "NUMÉRICO",
     "openid": "OPENID",
     "redis": "REDIS",

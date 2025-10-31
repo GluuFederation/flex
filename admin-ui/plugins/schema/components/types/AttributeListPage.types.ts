@@ -1,17 +1,8 @@
-import type { JansAttribute } from 'Plugins/schema/types'
+import type { JansAttribute } from 'JansConfigApi'
 import type { CedarPermissionsState } from '@/cedarling/types'
 
-// Define interfaces for component state and props
-export interface AttributeState {
-  items: JansAttribute[]
-  item: JansAttribute | Record<string, never>
-  loading: boolean
-  totalItems: number
-  entriesCount: number
-}
-
-export interface RootState {
-  attributeReducer: AttributeState
+// Component state for cedarPermissions selector
+export interface AttributeListPageState {
   cedarPermissions: CedarPermissionsState
 }
 
@@ -19,6 +10,11 @@ export interface RootState {
 export interface SubmitData {
   data: AttributeItem
   userMessage?: string
+  modifiedFields?: Record<string, unknown>
+  performedOn?: {
+    attribute_inum?: string
+    attributeName?: string
+  }
 }
 
 export interface ThemeState {
@@ -104,13 +100,13 @@ export interface AttributeFormValues {
 
 export interface AttributeFormProps {
   item: AttributeItem
-  customOnSubmit: (data: { data: AttributeItem; userMessage?: string }) => void
+  customOnSubmit: (data: SubmitData) => void
   hideButtons?: Record<string, boolean>
 }
 
 export interface HandleAttributeSubmitParams {
   item: AttributeItem
   values: AttributeFormValues
-  customOnSubmit: (data: { data: AttributeItem; userMessage?: string }) => void
+  customOnSubmit: (data: SubmitData) => void
   userMessage?: string
 }
