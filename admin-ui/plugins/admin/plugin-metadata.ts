@@ -8,7 +8,6 @@ import MauGraph from './components/MAU/MauGraph'
 import WebhookListPage from './components/Webhook/WebhookListPage'
 import AuditListPage from '../admin/components/Audit/AuditListPage'
 
-import apiConfigSaga from './redux/sagas/ApiConfigSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
@@ -218,7 +217,6 @@ const pluginMetadata = {
     { name: 'assetReducer', reducer: assetReducer },
   ],
   sagas: [
-    apiConfigSaga(),
     apiRoleSaga(),
     auditSaga(),
     apiPermissionSaga(),
