@@ -193,7 +193,7 @@ const GluuCommitFooter = ({
         )}
 
         {buttonStates.showApply && (
-          <Box display="flex" className={buttonLayout.apply}>
+          <Box className={buttonLayout.apply}>
             {applyButtonType === 'submit' ? (
               <Button
                 type="submit"
@@ -213,7 +213,7 @@ const GluuCommitFooter = ({
                 color={buttonColor}
                 style={BUTTON_STYLE}
                 onClick={onApply}
-                disabled={disableApply || isLoading}
+                disabled={disableApply || isLoading || !onApply}
               >
                 <ButtonLabel
                   isLoading={isLoading}
@@ -228,7 +228,7 @@ const GluuCommitFooter = ({
                 style={BUTTON_STYLE}
                 type="button"
                 onClick={handleCancelClick}
-                className="ms-4"
+                className={`${buttonLayout.cancel} ms-4`}
                 disabled={disableCancel || isLoading}
               >
                 <ButtonLabel isLoading={isLoading} iconClass="fa fa-undo" label={cancelLabel} />
