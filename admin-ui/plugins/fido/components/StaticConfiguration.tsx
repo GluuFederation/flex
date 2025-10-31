@@ -348,7 +348,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             extraLabel="Cancel"
             extraOnClick={handleCancel}
             type="submit"
-            disabled={isSubmitting}
+            isLoading={isSubmitting}
           />
         </Col>
       </Row>

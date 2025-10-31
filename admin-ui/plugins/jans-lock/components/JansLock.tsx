@@ -51,6 +51,7 @@ const JansLock: React.FC = () => {
             <JansLockConfiguration
               lockConfig={lockConfiguration as Record<string, unknown>}
               onUpdate={handleUpdate}
+              isSubmitting={patchMutation.isPending}
             />
           ) : null}
         </CardBody>

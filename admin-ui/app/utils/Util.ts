@@ -63,15 +63,17 @@ export function formatDate(date?: string): string {
   return '-'
 }
 
-export const trimObjectStrings = <T extends Record<string, unknown>>(obj: T): T => {
+export const trimObjectStrings = <T extends object>(obj: T): T => {
+  const source = obj as unknown as Record<string, unknown>
   const trimmed: Record<string, unknown> = {}
-  for (const key in obj) {
-    if (typeof obj[key] === 'string') {
-      trimmed[key] = (obj[key] as string).trim()
-    } else if (obj[key] && typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-      trimmed[key] = trimObjectStrings(obj[key] as Record<string, unknown>)
+  for (const key in source) {
+    const value = source[key]
+    if (typeof value === 'string') {
+      trimmed[key] = value.trim()
+    } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+      trimmed[key] = trimObjectStrings(value as Record<string, unknown>)
     } else {
-      trimmed[key] = obj[key]
+      trimmed[key] = value
     }
   }
   return trimmed as T
@@ -87,8 +89,7 @@ export const mapPropertyToKeyValue = (prop: {
   value1?: string
   value2?: string
 }): { key: string; value: string } => {
-  return {
-    key: prop.key || prop.value1 || '',
-    value: prop.value || prop.value2 || '',
-  }
+  const key = (prop.key ?? prop.value1 ?? '').trim()
+  const value = (prop.value ?? prop.value2 ?? '').trim()
+  return { key, value }
 }

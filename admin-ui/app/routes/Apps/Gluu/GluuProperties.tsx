@@ -86,9 +86,8 @@ function GluuProperties({
     }
   }
   const removeProperty = (position: any) => {
-    let data = [...properties]
-    delete data[position]
-    data = data.filter((element: Property | undefined) => element != null)
+    const data = [...properties]
+    data.splice(position, 1)
     setProperties(data)
 
     // Sync with formik

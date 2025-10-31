@@ -21,7 +21,7 @@ const theme = createTheme({
 
 interface GluuTypeAheadProps {
   label: string
-  labelKey?: string
+  labelKey?: string | ((option: Option) => string)
   name: string
   value?: Option[]
   options: Option[]
@@ -70,10 +70,13 @@ const GluuTypeAhead = memo(function GluuTypeAhead({
 }: GluuTypeAheadProps) {
   const { t } = useTranslation()
 
-  const selectedValue = useMemo(
-    () => (value !== undefined ? value : (formik?.values?.[name] as Option[]) || []),
-    [value, formik, name],
-  )
+  const selectedValue = useMemo(() => {
+    if (value !== undefined) {
+      return value
+    }
+    const fieldValue = formik?.values?.[name]
+    return Array.isArray(fieldValue) ? (fieldValue as Option[]) : []
+  }, [value, formik?.values?.[name], name])
 
   const handleChange = useCallback(
     (selected: Option[]) => {
@@ -86,10 +89,15 @@ const GluuTypeAhead = memo(function GluuTypeAhead({
         onChange(selected)
       }
     },
-    [formik, name, onChange],
+    [formik?.setFieldValue, name, onChange],
   )
 
-  const resolvedLabelKey = useMemo(() => labelKey || name, [labelKey, name])
+  const resolvedLabelKey = useMemo(() => {
+    if (typeof labelKey === 'function' || typeof labelKey === 'string') {
+      return labelKey
+    }
+    return 'name'
+  }, [labelKey])
 
   return (
     <FormGroup row>

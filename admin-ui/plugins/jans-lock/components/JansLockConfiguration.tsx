@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { buildPayload, JANS_LOCK_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import { Row, Col, Form, FormGroup } from 'Components'
@@ -20,9 +20,14 @@ import { trimObjectStrings } from 'Utils/Util'
 interface JansLockConfigurationProps {
   lockConfig: Record<string, unknown>
   onUpdate: (patches: PatchOperation[]) => void
+  isSubmitting?: boolean
 }
 
-const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfig, onUpdate }) => {
+const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
+  lockConfig,
+  onUpdate,
+  isSubmitting,
+}) => {
   const { hasCedarPermission, authorize } = useCedarling()
   const viewOnly = !hasCedarPermission(JANS_LOCK_WRITE)
   const [modal, setModal] = useState(false)
@@ -54,12 +59,32 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfi
     formik.resetForm()
   }, [formik])
 
+  const trimmedValuesAndPatches = useMemo(() => {
+    if (!lockConfig || !formik.values) {
+      return {
+        trimmedValues: null as JansLockConfigFormValues | null,
+        patches: [] as PatchOperation[],
+      }
+    }
+    const trimmedValues = trimObjectStrings(formik.values)
+    const patches = createPatchOperations(trimmedValues, lockConfig)
+    return { trimmedValues, patches }
+  }, [lockConfig, formik.values])
+
+  const isFormDirty = useMemo(() => {
+    return trimmedValuesAndPatches.patches.length > 0
+  }, [trimmedValuesAndPatches])
+
+  const isFormValid = useMemo(() => {
+    if (!formik.values) {
+      return false
+    }
+    return validationSchema.isValidSync(formik.values)
+  }, [formik.values])
+
   const submitForm = useCallback(
     (userMessage: string) => {
-      const trimmedValues = trimObjectStrings(
-        formik.values as unknown as Record<string, unknown>,
-      ) as unknown as JansLockConfigFormValues
-      const patchOperations = createPatchOperations(trimmedValues, lockConfig)
+      const { patches: patchOperations } = trimmedValuesAndPatches
 
       toggle()
 
@@ -73,7 +98,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfi
       }
       // Silently do nothing if no changes (better UX than showing a toast)
     },
-    [formik.values, lockConfig, toggle, onUpdate],
+    [trimmedValuesAndPatches, toggle, onUpdate],
   )
 
   return (
@@ -104,7 +129,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfi
                 .filter((v: unknown): v is string => typeof v === 'string' && v !== null)
               formik.setFieldValue('tokenChannels', values)
             }}
-            options={lockConfig?.tokenChannels || []}
+            options={(lockConfig?.tokenChannels as string[]) || []}
             doc_category={jansLockConstants.DOC_CATEGORY}
             lsize={3}
             rsize={9}
@@ -405,11 +430,16 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({ lockConfi
           <Row>
             <Col>
               <GluuCommitFooter
-                saveHandler={toggle}
-                hideButtons={{ save: true, back: true }}
-                extraLabel="Cancel"
-                extraOnClick={handleCancel}
-                type="submit"
+                showBack={true}
+                showCancel={true}
+                showApply={true}
+                onApply={toggle}
+                onCancel={handleCancel}
+                disableBack={false}
+                disableCancel={!isFormDirty}
+                disableApply={!isFormValid || !isFormDirty}
+                applyButtonType="submit"
+                isLoading={isSubmitting ?? false}
               />
             </Col>
           </Row>

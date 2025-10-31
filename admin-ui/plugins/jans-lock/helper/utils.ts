@@ -104,11 +104,21 @@ export const createPatchOperations = (
         }
       }
     } else if (normalizedValues[key] !== undefined && normalizedValues[key] !== '') {
-      differences.push({
-        op: 'add',
-        path: `/${key}`,
-        value: normalizedValues[key],
-      })
+      const value = normalizedValues[key]
+      const isEmptyArray = Array.isArray(value) && value.length === 0
+      const isEmptyObject =
+        typeof value === 'object' &&
+        value !== null &&
+        !Array.isArray(value) &&
+        Object.keys(value as Record<string, unknown>).length === 0
+
+      if (!isEmptyArray && !isEmptyObject) {
+        differences.push({
+          op: 'add',
+          path: `/${key}`,
+          value: normalizedValues[key],
+        })
+      }
     }
   }
 
