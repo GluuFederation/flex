@@ -31,17 +31,13 @@ export function useSchemaAuditLogger() {
 
       try {
         await logAuditUserAction({
-          token: token || undefined,
-          userinfo: userinfo ?? undefined,
+          token,
+          userinfo,
           action: params.action,
           resource: params.resource,
           message: params.message,
-          extra: isUpdateAction
-            ? {}
-            : {
-                ...(ipAddress ? { ip_address: ipAddress } : {}),
-                ...(params.performedOn ? { performedOn: params.performedOn } : {}),
-              },
+          performedOn: params.performedOn,
+          extra: ipAddress ? { ip_address: ipAddress } : {},
           client_id: clientId,
           payload: isUpdateAction ? undefined : params.payload,
           modifiedFields: params.modifiedFields,

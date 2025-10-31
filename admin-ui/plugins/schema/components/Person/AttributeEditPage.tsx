@@ -53,7 +53,6 @@ function AttributeEditPage(): JSX.Element {
         dispatch(updateToast(true, 'success'))
         queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
         queryClient.invalidateQueries({ queryKey: getGetAttributesByInumQueryKey(inum) })
-        navigate('/attributes')
       },
       onError: (error: unknown) => {
         const errorMessage = getErrorMessage(error, 'errors.attribute_update_failed', t)
@@ -83,8 +82,8 @@ function AttributeEditPage(): JSX.Element {
         putAttributeMutation.mutate(
           { data: data as JansAttribute },
           {
-            onSuccess: (updatedAttribute: JansAttribute) => {
-              logAudit({
+            onSuccess: async (updatedAttribute: JansAttribute) => {
+              await logAudit({
                 action: UPDATE,
                 resource: API_ATTRIBUTE,
                 message: userMessage || '',
@@ -92,12 +91,13 @@ function AttributeEditPage(): JSX.Element {
               })
 
               triggerAttributeWebhook(updatedAttribute)
+              navigate('/attributes')
             },
           },
         )
       }
     },
-    [putAttributeMutation, logAudit, triggerAttributeWebhook],
+    [putAttributeMutation, logAudit, triggerAttributeWebhook, navigate],
   )
 
   if (queryError) {
