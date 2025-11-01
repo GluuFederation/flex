@@ -1,0 +1,595 @@
+dn: inum=f9c23f63-184a-4777-a01c-ea928eb96054,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: f9c23f63-184a-4777-a01c-ea928eb96054
+jansAccessType: READ
+jansResource: dashboard
+jansScope: https://jans.io/oauth/config/stats.readonly
+jansScope: jans_stat
+jansScope: https://jans.io/oauth/config/data.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=491408e9-8870-45b0-88cc-86455830c3d7,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 491408e9-8870-45b0-88cc-86455830c3d7
+jansAccessType: READ
+jansResource: license
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/license.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=4a273022-268a-4bd9-b173-7ca8e79fc906,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 4a273022-268a-4bd9-b173-7ca8e79fc906
+jansAccessType: WRITE
+jansResource: license
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/license.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=57eef8f1-93d5-43b7-b859-de6f59572ced,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 57eef8f1-93d5-43b7-b859-de6f59572ced
+jansAccessType: READ
+jansResource: mau
+jansScope: https://jans.io/oauth/config/stats.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=000b7e87-5168-4c21-85ad-e717cafc8e8b,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 000b7e87-5168-4c21-85ad-e717cafc8e8b
+jansAccessType: READ
+jansResource: settings
+jansScope: https://jans.io/oauth/config/scripts.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/properties.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=10c51b99-af6d-467d-a66c-991c4af9779b,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 10c51b99-af6d-467d-a66c-991c4af9779b
+jansAccessType: WRITE
+jansResource: settings
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/properties.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=b5525233-4c64-41c1-b00b-91a334bf57cb,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: b5525233-4c64-41c1-b00b-91a334bf57cb
+jansAccessType: READ
+jansResource: webhooks
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=4140d9e7-021f-4a5f-8054-838a8e54b2da,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 4140d9e7-021f-4a5f-8054-838a8e54b2da
+jansAccessType: WRITE
+jansResource: webhooks
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=e4dcafe6-786f-4a7f-aa42-3b9d64fd792c,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: e4dcafe6-786f-4a7f-aa42-3b9d64fd792c
+jansAccessType: DELETE
+jansResource: webhooks
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=6b3fa54a-6b39-4d6a-8af6-f775084ff3e2,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 6b3fa54a-6b39-4d6a-8af6-f775084ff3e2
+jansAccessType: READ
+jansResource: assets
+jansScope: https://jans.io/oauth/config/jans_asset-read
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=014fe962-0fea-49c4-9798-eb51ce80204f,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 014fe962-0fea-49c4-9798-eb51ce80204f
+jansAccessType: WRITE
+jansResource: assets
+jansScope: https://jans.io/oauth/config/jans_asset-write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=b9ff6c69-4fc7-4a23-8ba7-7a250d80ea11,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: b9ff6c69-4fc7-4a23-8ba7-7a250d80ea11
+jansAccessType: DELETE
+jansResource: assets
+jansScope: https://jans.io/oauth/config/jans_asset-delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=d9b5076c-9678-4d7e-8830-89d125cf2e74,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: d9b5076c-9678-4d7e-8830-89d125cf2e74
+jansAccessType: READ
+jansResource: auditLogs
+jansScope: https://jans.io/oauth/config/logging.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=35ed86f5-fde4-4502-aff3-c0250b841f33,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 35ed86f5-fde4-4502-aff3-c0250b841f33
+jansAccessType: READ
+jansResource: clients
+jansScope: https://jans.io/oauth/config/openid/clients.readonly
+jansScope: https://jans.io/oauth/config/scopes.readonly
+jansScope: https://jans.io/oauth/config/scripts.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=fbf1e29b-369c-4fc9-8ab6-197ee9ed257c,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: fbf1e29b-369c-4fc9-8ab6-197ee9ed257c
+jansAccessType: READ
+jansResource: clients
+jansScope: https://jans.io/oauth/config/openid/clients.readonly
+jansScope: https://jans.io/oauth/config/scopes.readonly
+jansScope: https://jans.io/oauth/config/scripts.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=7d9558b3-8bc3-4727-96c9-67afe41e833c,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 7d9558b3-8bc3-4727-96c9-67afe41e833c
+jansAccessType: WRITE
+jansResource: clients
+jansScope: https://jans.io/oauth/config/openid/clients.write
+jansScope: https://jans.io/oauth/config/scopes.readonly
+jansScope: https://jans.io/oauth/config/scripts.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=77aa2e0e-a67d-4f90-a28c-a9b6077c3a7d,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 77aa2e0e-a67d-4f90-a28c-a9b6077c3a7d
+jansAccessType: DELETE
+jansResource: clients
+jansScope: https://jans.io/oauth/config/openid/clients.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=8d8e1d19-2ab8-4e2f-ab81-9ee7ed36f9e3,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 8d8e1d19-2ab8-4e2f-ab81-9ee7ed36f9e3
+jansAccessType: READ
+jansResource: scopes
+jansScope: https://jans.io/oauth/config/scopes.readonly
+jansScope: https://jans.io/oauth/config/attributes.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=07ec2f0c-2426-4d00-8cb7-9dea43bce3e0,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 07ec2f0c-2426-4d00-8cb7-9dea43bce3e0
+jansAccessType: WRITE
+jansResource: scopes
+jansScope: https://jans.io/oauth/config/scopes.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=3a0c4bb3-46ab-425f-bbe4-0b0515c221e1,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 3a0c4bb3-46ab-425f-bbe4-0b0515c221e1
+jansAccessType: DELETE
+jansResource: scopes
+jansScope: https://jans.io/oauth/config/scopes.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=12849fe5-e4c3-437f-94bc-d24848e275bb,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 12849fe5-e4c3-437f-94bc-d24848e275bb
+jansAccessType: READ
+jansResource: keys
+jansScope: https://jans.io/oauth/config/jwks.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=f614a842-f887-43af-a0bb-708976449610,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: f614a842-f887-43af-a0bb-708976449610
+jansAccessType: READ
+jansResource: authenticationServerConfiguration
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
+jansScope: https://jans.io/oauth/config/acrs.readonly
+jansScope: https://jans.io/oauth/config/scripts.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=d8c3bc28-054b-4906-9819-1a0db8030b37,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: d8c3bc28-054b-4906-9819-1a0db8030b37
+jansAccessType: WRITE
+jansResource: authenticationServerConfiguration
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.write
+jansScope: https://jans.io/oauth/config/acrs.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=8888368f-f108-4606-9834-dd331c527866,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 8888368f-f108-4606-9834-dd331c527866
+jansAccessType: READ
+jansResource: logging
+jansScope: https://jans.io/oauth/config/logging.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=52133aed-b1f4-46a0-824d-761148e7866d,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 52133aed-b1f4-46a0-824d-761148e7866d
+jansAccessType: WRITE
+jansResource: logging
+jansScope: https://jans.io/oauth/config/logging.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=eb61570d-1b5c-4433-84d7-276d210194d4,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: eb61570d-1b5c-4433-84d7-276d210194d4
+jansAccessType: READ
+jansResource: authentication
+jansScope: https://jans.io/oauth/config/database/ldap.readonly
+jansScope: https://jans.io/oauth/config/scripts.readonly
+jansScope: https://jans.io/oauth/config/acrs.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
+jansScope: https://jans.io/oauth/config/agama.readonly
+jansScope: https://jans.io/oauth/config/agama-repo.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=1eee190b-c2fb-455c-8ef4-0c22fde9f73a,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 1eee190b-c2fb-455c-8ef4-0c22fde9f73a
+jansAccessType: WRITE
+jansResource: authentication
+jansScope: https://jans.io/oauth/config/database/ldap.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.write
+jansScope: https://jans.io/oauth/config/agama.write
+jansScope: https://jans.io/oauth/config/agama-repo.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=1b64711b-9935-49e9-be27-35f92e40fac3,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 1b64711b-9935-49e9-be27-35f92e40fac3
+jansAccessType: READ
+jansResource: configApiConfiguration
+jansScope: https://jans.io/oauth/config/properties.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=87a66767-b740-4357-acb3-d37299f7d760,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 87a66767-b740-4357-acb3-d37299f7d760
+jansAccessType: WRITE
+jansResource: configApiConfiguration
+jansScope: https://jans.io/oauth/config/properties.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=7ceb0830-8b3d-455b-ba03-28cd4e7e9385,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 7ceb0830-8b3d-455b-ba03-28cd4e7e9385
+jansAccessType: READ
+jansResource: session
+jansScope: https://jans.io/oauth/jans-auth-server/session.readonly
+jansScope: revoke_session
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=26c54ba2-0adb-47d1-b64d-5266d75ef6d6,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 26c54ba2-0adb-47d1-b64d-5266d75ef6d6
+jansAccessType: DELETE
+jansResource: session
+jansScope: https://jans.io/oauth/jans-auth-server/session.delete
+jansScope: revoke_session
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=37488733-1b14-4648-a270-2c0f4dec2813,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 37488733-1b14-4648-a270-2c0f4dec2813
+jansAccessType: READ
+jansResource: users
+jansScope: https://jans.io/oauth/config/user.readonly
+jansScope: https://jans.io/oauth/config/attributes.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=b4952238-fae5-4d62-bfed-8a8e343fdffc,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: b4952238-fae5-4d62-bfed-8a8e343fdffc
+jansAccessType: WRITE
+jansResource: users
+jansScope: https://jans.io/oauth/config/user.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=3f2d534e-13e3-46a5-8062-de37d7c5da75,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 3f2d534e-13e3-46a5-8062-de37d7c5da75
+jansAccessType: DELETE
+jansResource: users
+jansScope: https://jans.io/oauth/config/user.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=c938bb27-ba6a-41f5-9506-86746e8c92bb,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: c938bb27-ba6a-41f5-9506-86746e8c92bb
+jansAccessType: READ
+jansResource: scripts
+jansScope: https://jans.io/oauth/config/scripts.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=9c8e3351-8ac9-4bb9-8548-f63d7f1a56eb,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 9c8e3351-8ac9-4bb9-8548-f63d7f1a56eb
+jansAccessType: WRITE
+jansResource: scripts
+jansScope: https://jans.io/oauth/config/scripts.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=3da24565-7d2b-4bc4-9f33-9b4720741fb1,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 3da24565-7d2b-4bc4-9f33-9b4720741fb1
+jansAccessType: DELETE
+jansResource: scripts
+jansScope: https://jans.io/oauth/config/scripts.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=c3359124-ee0b-4df6-9290-0f6a6837808c,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: c3359124-ee0b-4df6-9290-0f6a6837808c
+jansAccessType: READ
+jansResource: attributes
+jansScope: https://jans.io/oauth/config/attributes.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=a9c5bae2-7e18-4dc4-904b-b1b756fc9807,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: a9c5bae2-7e18-4dc4-904b-b1b756fc9807
+jansAccessType: WRITE
+jansResource: attributes
+jansScope: https://jans.io/oauth/config/attributes.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=e2532e04-f656-455e-83b6-10c1e2ab24bb,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: e2532e04-f656-455e-83b6-10c1e2ab24bb
+jansAccessType: DELETE
+jansResource: attributes
+jansScope: https://jans.io/oauth/config/attributes.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/webhook.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=45e1e36f-6225-4701-93a4-33b5afac2ed8,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 45e1e36f-6225-4701-93a4-33b5afac2ed8
+jansAccessType: READ
+jansResource: cache
+jansScope: https://jans.io/oauth/config/cache.readonly
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=766e21e3-ea1c-4421-8b1a-8c7cfeb20699,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 766e21e3-ea1c-4421-8b1a-8c7cfeb20699
+jansAccessType: WRITE
+jansResource: cache
+jansScope: https://jans.io/oauth/config/cache.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=a315242a-2eac-42cf-8d67-63072f1465bf,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: a315242a-2eac-42cf-8d67-63072f1465bf
+jansAccessType: READ
+jansResource: persistence
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=e9dea5be-d659-49cf-88aa-38e240e37aa6,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: e9dea5be-d659-49cf-88aa-38e240e37aa6
+jansAccessType: READ
+jansResource: smtp
+jansScope: https://jans.io/oauth/config/smtp.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=67b8301b-7adc-4b7f-8ffe-dc6c12a57bae,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 67b8301b-7adc-4b7f-8ffe-dc6c12a57bae
+jansAccessType: WRITE
+jansResource: smtp
+jansScope: https://jans.io/oauth/config/smtp.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=92f0f66b-5618-40c6-8c48-744bd03fbeae,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 92f0f66b-5618-40c6-8c48-744bd03fbeae
+jansAccessType: READ
+jansResource: scim
+jansScope: https://jans.io/scim/config.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=bae361b3-6013-4812-94d2-b04e4d55a5a2,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: bae361b3-6013-4812-94d2-b04e4d55a5a2
+jansAccessType: WRITE
+jansResource: scim
+jansScope: https://jans.io/scim/config.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=9846cf37-e701-4c52-881f-3d433233bf58,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 9846cf37-e701-4c52-881f-3d433233bf58
+jansAccessType: READ
+jansResource: fido
+jansScope: https://jans.io/oauth/config/fido2.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=4a953049-ddf1-4d55-aa4f-760f08b584a0,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 4a953049-ddf1-4d55-aa4f-760f08b584a0
+jansAccessType: WRITE
+jansResource: fido
+jansScope: https://jans.io/oauth/config/fido2.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=ce8c6212-a183-4b71-bc4b-3dfef88d1cd0,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: ce8c6212-a183-4b71-bc4b-3dfef88d1cd0
+jansAccessType: READ
+jansResource: saml
+jansScope: https://jans.io/oauth/config/saml-config.readonly
+jansScope: https://jans.io/oauth/config/saml.readonly
+jansScope: https://jans.io/idp/saml.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=5e01fe2a-86f6-4f3b-ac84-ec8928bbe78f,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 5e01fe2a-86f6-4f3b-ac84-ec8928bbe78f
+jansAccessType: WRITE
+jansResource: saml
+jansScope: https://jans.io/oauth/config/saml-config.write
+jansScope: https://jans.io/idp/saml.write
+jansScope: https://jans.io/oauth/config/saml.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=0dbbcf8f-6c5f-4d1b-90f6-985dd694d20a,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 0dbbcf8f-6c5f-4d1b-90f6-985dd694d20a
+jansAccessType: DELETE
+jansResource: saml
+jansScope: https://jans.io/idp/saml.delete
+jansScope: https://jans.io/oauth/config/saml.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=9fa4b8c8-e980-440e-b3cd-4ac1f01f8338,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 9fa4b8c8-e980-440e-b3cd-4ac1f01f8338
+jansAccessType: READ
+jansResource: lock
+jansScope: https://jans.io/oauth/lock-config.readonly
+jansScope: https://jans.io/oauth/lock/read-all
+jansScope: jans_stat
+jansScope: https://jans.io/oauth/lock/telemetry.readonly
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=4cb58914-f463-4015-beae-a36c38ec9f53,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: 4cb58914-f463-4015-beae-a36c38ec9f53
+jansAccessType: WRITE
+jansResource: lock
+jansScope: https://jans.io/oauth/lock-config.write
+jansScope: https://jans.io/oauth/lock/telemetry.write
+jansScope: https://jans.io/oauth/lock/log.write
+jansScope: https://jans.io/oauth/lock/health.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=ae8c6212-a183-4b71-bc4b-3dfef88d1cd0,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: ae8c6212-a183-4b71-bc4b-3dfef88d1cd0
+jansAccessType: READ
+jansResource: security
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=ae01fe2a-86f6-4f3b-ac84-ec8928bbe78f,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: ae01fe2a-86f6-4f3b-ac84-ec8928bbe78f
+jansAccessType: WRITE
+jansResource: security
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/security.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=adbbcf8f-6c5f-4d1b-90f6-985dd694d20a,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: adbbcf8f-6c5f-4d1b-90f6-985dd694d20a
+jansAccessType: DELETE
+jansResource: security
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=be8c6212-a183-4b71-bc4b-3dfef88d1cd0,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: be8c6212-a183-4b71-bc4b-3dfef88d1cd0
+jansAccessType: READ
+jansResource: ssa
+jansScope: https://jans.io/auth/ssa.developer
+jansScope: https://jans.io/auth/ssa.portal
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.readonly
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=be01fe2a-86f6-4f3b-ac84-ec8928bbe78f,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: be01fe2a-86f6-4f3b-ac84-ec8928bbe78f
+jansAccessType: WRITE
+jansResource: ssa
+jansScope: https://jans.io/auth/ssa.admin
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
+dn: inum=bdbbcf8f-6c5f-4d1b-90f6-985dd694d20a,ou=adminUIResourceScopesMapping,ou=admin-ui,o=jans
+inum: bdbbcf8f-6c5f-4d1b-90f6-985dd694d20a
+jansAccessType: DELETE
+jansResource: ssa
+jansScope: https://jans.io/auth/ssa.admin
+jansScope: https://jans.io/oauth/jans-auth-server/config/properties.write
+jansScope: https://jans.io/oauth/jans-auth-server/config/adminui/logging.write
+objectClass: top
+objectClass: adminUIResourceScopesMapping
+
