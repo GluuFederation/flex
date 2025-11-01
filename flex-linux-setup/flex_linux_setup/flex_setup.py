@@ -324,6 +324,7 @@ class flex_installer(JettyInstaller):
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
         self.adimin_ui_bin_url = 'https://jenkins.gluu.org/npm/admin_ui/main/built/admin-ui-main-built.tar.gz'
+        self.policy_store_path = os.path.join(self.templates_dir, 'policy-store.json')
 
         if not argsp.download_exit:
             self.dbUtils.bind(force=True)
@@ -566,6 +567,15 @@ class flex_installer(JettyInstaller):
         config_api_installer.dbUtils.set_configuration('jansConfApp', admin_ui_jans_conf_app, self.admin_ui_dn)
 
         self.install_config_api_plugin()
+
+        #cedaling integration
+        admin_ui_config_dir = os.path.join(config_api_installer.custom_config_dir, 'adminUI')
+        config_api_installer.renderTemplateInOut(self.policy_store_path, self.templates_dir, admin_ui_config_dir)
+        config_api_installer.chown(admin_ui_config_dir, Config.jetty_user, Config.jetty_group)
+        resource_scopes_mapping_lidf_fn = os.path.join(self.templates_dir, 'adminUIResourceScopesMapping.ldif')
+
+        self.dbUtils.import_ldif([resource_scopes_mapping_lidf_fn])
+
 
         print("Removing DUO Script")
         config_api_installer.dbUtils.delete_dn('inum=5018-F9CF,ou=scripts,o=jans')
