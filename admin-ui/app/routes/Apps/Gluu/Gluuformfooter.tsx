@@ -154,7 +154,7 @@ const Gluuformfooter = ({
             type="button"
             onClick={handleBackClick}
             className={buttonLayout.back}
-            disabled={disableBack || isLoading}
+            disabled={disableBack}
           >
             <ButtonLabel isLoading={false} iconClass="fa fa-arrow-circle-left" label={backLabel} />
           </Button>
@@ -190,19 +190,20 @@ const Gluuformfooter = ({
                 />
               </Button>
             )}
-            {buttonStates.hasAllThreeButtons && (
-              <Button
-                color={buttonColor}
-                style={BUTTON_STYLE}
-                type="button"
-                onClick={handleCancelClick}
-                className={`${buttonLayout.cancel} ms-4`}
-                disabled={disableCancel || isLoading}
-              >
-                <ButtonLabel isLoading={isLoading} iconClass="fa fa-undo" label={cancelLabel} />
-              </Button>
-            )}
           </Box>
+        )}
+
+        {buttonStates.hasAllThreeButtons && (
+          <Button
+            color={buttonColor}
+            style={BUTTON_STYLE}
+            type="button"
+            onClick={handleCancelClick}
+            className={`${buttonLayout.cancel} ms-4`}
+            disabled={disableCancel || isLoading}
+          >
+            <ButtonLabel isLoading={false} iconClass="fa fa-undo" label={cancelLabel} />
+          </Button>
         )}
 
         {!buttonStates.hasAllThreeButtons && buttonStates.showCancel && (
@@ -214,7 +215,7 @@ const Gluuformfooter = ({
             className={buttonLayout.cancel}
             disabled={disableCancel || isLoading}
           >
-            <ButtonLabel isLoading={isLoading} iconClass="fa fa-undo" label={cancelLabel} />
+            <ButtonLabel isLoading={false} iconClass="fa fa-undo" label={cancelLabel} />
           </Button>
         )}
       </Box>
