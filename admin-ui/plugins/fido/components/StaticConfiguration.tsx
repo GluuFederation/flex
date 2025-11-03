@@ -115,7 +115,7 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
       values: formik.values,
       setFieldValue: setFieldValueWrapper,
     }
-  }, [formik.values, formik.errors, formik.touched])
+  }, [formik.values, formik.setFieldValue])
 
   const availableHintOptions = useMemo(() => {
     return getAvailableHintOptions(formik.values.hints)
