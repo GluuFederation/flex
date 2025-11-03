@@ -26,6 +26,7 @@ interface GluuformfooterProps {
   onApply?: () => void
   disableApply?: boolean
   applyButtonType?: 'button' | 'submit'
+  applyButtonLabel?: string
   isLoading?: boolean
   className?: string
 }
@@ -57,6 +58,7 @@ const Gluuformfooter = ({
   onApply,
   disableApply,
   applyButtonType = 'submit',
+  applyButtonLabel,
   isLoading = false,
   className = '',
 }: GluuformfooterProps) => {
@@ -105,62 +107,29 @@ const Gluuformfooter = ({
     () => cancelButtonLabel || t('actions.cancel'),
     [cancelButtonLabel, t],
   )
-  const applyLabel = useMemo(() => t('actions.apply'), [t])
+  const applyLabel = useMemo(() => applyButtonLabel || t('actions.apply'), [applyButtonLabel, t])
 
   const buttonLayout = useMemo(() => {
     if (!buttonStates.hasAnyButton) {
       return { back: '', cancel: '', apply: '' }
     }
-    if (buttonStates.hasAllThreeButtons) {
-      return {
-        back: 'd-flex',
-        cancel: 'd-flex',
-        apply: 'd-flex ms-auto me-0',
-      }
+
+    const layout = {
+      back: buttonStates.showBack ? 'd-flex' : '',
+      cancel: buttonStates.showCancel ? 'd-flex' : '',
+      apply: buttonStates.showApply ? 'd-flex' : '',
     }
-    if (buttonStates.hasBackAndCancel) {
-      return {
-        back: 'd-flex',
-        cancel: 'd-flex ms-auto',
-        apply: '',
+
+    if (buttonStates.showApply) {
+      layout.apply += ' ms-auto'
+      if (buttonStates.hasAllThreeButtons) {
+        layout.apply += ' me-0'
       }
+    } else if (buttonStates.showCancel) {
+      layout.cancel += ' ms-auto'
     }
-    if (buttonStates.showBack && !buttonStates.showCancel && !buttonStates.showApply) {
-      return {
-        back: 'd-flex',
-        cancel: '',
-        apply: '',
-      }
-    }
-    if (buttonStates.showCancel && !buttonStates.showBack && !buttonStates.showApply) {
-      return {
-        back: '',
-        cancel: 'd-flex',
-        apply: '',
-      }
-    }
-    if (buttonStates.showBack && buttonStates.showApply && !buttonStates.showCancel) {
-      return {
-        back: 'd-flex',
-        cancel: '',
-        apply: 'd-flex ms-auto',
-      }
-    }
-    if (buttonStates.showCancel && buttonStates.showApply && !buttonStates.showBack) {
-      return {
-        back: '',
-        cancel: 'd-flex',
-        apply: 'd-flex ms-auto',
-      }
-    }
-    if (buttonStates.showApply && !buttonStates.showBack && !buttonStates.showCancel) {
-      return {
-        back: '',
-        cancel: '',
-        apply: 'd-flex ms-auto',
-      }
-    }
-    return { back: '', cancel: '', apply: '' }
+
+    return layout
   }, [buttonStates])
 
   if (!buttonStates.hasAnyButton) {
@@ -187,11 +156,7 @@ const Gluuformfooter = ({
             className={buttonLayout.back}
             disabled={disableBack || isLoading}
           >
-            <ButtonLabel
-              isLoading={isLoading}
-              iconClass="fa fa-arrow-circle-left"
-              label={backLabel}
-            />
+            <ButtonLabel isLoading={false} iconClass="fa fa-arrow-circle-left" label={backLabel} />
           </Button>
         )}
 
