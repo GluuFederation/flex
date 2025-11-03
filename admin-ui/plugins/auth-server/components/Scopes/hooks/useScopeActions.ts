@@ -116,7 +116,7 @@ export function useScopeActions() {
    */
   const navigateToScopeEdit = useCallback(
     (inum: string) => {
-      navigate(`/auth-server/scope/edit/:${inum}`)
+      navigate(`/auth-server/scope/edit/${inum}`)
     },
     [navigate],
   )

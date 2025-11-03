@@ -11,7 +11,7 @@ import type { Scope } from './types'
 jest.mock('JansConfigApi', () => ({
   useGetOauthScopes: jest.fn(() => ({
     data: {
-      data: [scopes[0]],
+      entries: [scopes[0]],
       totalEntriesCount: 1,
     },
     isLoading: false,

@@ -12,23 +12,11 @@ export interface ScopeDetailPageProps {
   row: Scope
 }
 
-/**
- * Props for ScopeListPage component
- * Currently no props needed (top-level page component)
- */
-export interface ScopeListPageProps {}
+export type ScopeListPageProps = Record<string, never>
 
-/**
- * Props for ScopeAddPage component
- * Currently no props needed (top-level page component)
- */
-export interface ScopeAddPageProps {}
+export type ScopeAddPageProps = Record<string, never>
 
-/**
- * Props for ScopeEditPage component
- * Currently no props needed (top-level page component)
- */
-export interface ScopeEditPageProps {}
+export type ScopeEditPageProps = Record<string, never>
 
 /**
  * Props for ScopeForm component

@@ -48,14 +48,15 @@ const ScopeEditPage: React.FC = () => {
   const updateScope = usePutOauthScopes()
 
   useEffect(() => {
-    const userAction: Record<string, unknown> = {}
     if (attributes.length === 0) {
-      buildPayload(userAction, 'Fetch attributes', {})
-      dispatch(getAttributes({ options: userAction }))
+      const attributeOptions: Record<string, unknown> = {}
+      buildPayload(attributeOptions, 'Fetch attributes', {})
+      dispatch(getAttributes({ options: attributeOptions }))
     }
     if (scripts.length === 0) {
-      buildPayload(userAction, 'Fetch custom scripts', {})
-      dispatch(getScripts({ action: userAction }))
+      const scriptAction: Record<string, unknown> = {}
+      buildPayload(scriptAction, 'Fetch custom scripts', {})
+      dispatch(getScripts({ action: scriptAction }))
     }
   }, [dispatch, attributes.length, scripts.length])
 
