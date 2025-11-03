@@ -37,7 +37,7 @@
     "allowSmtpKeystoreEdit": true,
     "cedarlingLogType":"off",
     "auiPolicyStoreUrl": "",
-    "auiDefaultPolicyStorePath": "./custom/config/adminUI/admin-ui-policy-store.json",
+    "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.json",
     "useRemotePolicyStore": false
   },
   "licenseConfig": {
