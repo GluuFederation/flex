@@ -5,7 +5,7 @@ import { useCedarling } from '@/cedarling'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import Gluuformfooter from 'Routes/Apps/Gluu/Gluuformfooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import {
@@ -429,7 +429,7 @@ const JansLockConfiguration: React.FC<JansLockConfigurationProps> = ({
         <>
           <Row>
             <Col>
-              <GluuCommitFooter
+              <Gluuformfooter
                 showBack={true}
                 showCancel={true}
                 showApply={true}
