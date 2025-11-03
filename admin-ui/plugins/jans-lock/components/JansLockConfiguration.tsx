@@ -5,7 +5,7 @@ import { useCedarling } from '@/cedarling'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import Gluuformfooter from 'Routes/Apps/Gluu/Gluuformfooter'
+import Gluuformfooter from '@/routes/Apps/Gluu/GluuFormFooter'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import {

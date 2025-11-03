@@ -45,7 +45,7 @@ ButtonLabel.displayName = 'ButtonLabel'
 
 const BUTTON_STYLE = { ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }
 
-const Gluuformfooter = ({
+const GluuFormFooter = ({
   showBack,
   backButtonLabel,
   onBack,
@@ -220,7 +220,7 @@ const Gluuformfooter = ({
   )
 }
 
-const GluuformfooterMemoized = memo(Gluuformfooter)
-GluuformfooterMemoized.displayName = 'Gluuformfooter'
+const GluuformfooterMemoized = memo(GluuFormFooter)
+GluuformfooterMemoized.displayName = 'GluuFormFooter'
 
 export default GluuformfooterMemoized
