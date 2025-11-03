@@ -13,7 +13,7 @@ interface ButtonLabelProps {
   loadingIconClass?: string
 }
 
-interface GluuformfooterProps {
+interface GluuFormFooterProps {
   showBack?: boolean
   backButtonLabel?: string
   onBack?: () => void
@@ -61,7 +61,7 @@ const GluuFormFooter = ({
   applyButtonLabel,
   isLoading = false,
   className = '',
-}: GluuformfooterProps) => {
+}: GluuFormFooterProps) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = useMemo(() => theme?.state.theme || 'darkBlack', [theme?.state.theme])
@@ -71,9 +71,9 @@ const GluuFormFooter = ({
     if (onBack) {
       onBack()
       return
-    } else {
-      navigate('/home/dashboard')
     }
+    navigate('/home/dashboard')
+    return
   }, [onBack, navigate])
 
   const handleCancelClick = useCallback(() => {
