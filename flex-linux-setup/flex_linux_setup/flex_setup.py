@@ -568,7 +568,7 @@ class flex_installer(JettyInstaller):
 
         self.install_config_api_plugin()
 
-        #cedaling integration
+        #cedarling integration
         admin_ui_config_dir = os.path.join(config_api_installer.custom_config_dir, 'adminUI')
         config_api_installer.renderTemplateInOut(self.policy_store_path, self.templates_dir, admin_ui_config_dir)
         config_api_installer.chown(admin_ui_config_dir, Config.jetty_user, Config.jetty_group)
