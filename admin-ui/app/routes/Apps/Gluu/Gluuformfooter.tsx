@@ -71,9 +71,6 @@ const Gluuformfooter = ({
     if (onBack) {
       onBack()
       return
-    }
-    if (window.history.length > 1) {
-      navigate(-1)
     } else {
       navigate('/home/dashboard')
     }
