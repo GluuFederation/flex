@@ -2,9 +2,29 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AttributeListPage from 'Plugins/schema/components/Person/AttributeListPage'
 import { Provider } from 'react-redux'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import attributes from '../../utils/attributes'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+
+// Mock the JansConfigApi hooks
+jest.mock('JansConfigApi', () => ({
+  useGetAttributes: jest.fn(() => ({
+    data: {
+      entries: [attributes[0]],
+      totalEntriesCount: 1,
+      entriesCount: 1,
+    },
+    isLoading: false,
+    error: null,
+  })),
+  useDeleteAttributesByInum: jest.fn(() => ({
+    mutate: jest.fn(),
+    isPending: false,
+  })),
+  getGetAttributesQueryKey: jest.fn(() => ['attributes']),
+  JansAttribute: {},
+}))
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
@@ -15,24 +35,27 @@ const INIT_STATE = {
   permissions: permissions,
 }
 
-const INIT_ATTRIBUTE_STATE = {
-  items: [attributes[0]],
-  item: {},
-  loading: false,
-  totalItems: 0,
-}
-
 const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    attributeReducer: (state = INIT_ATTRIBUTE_STATE) => state,
+    cedarPermissions: (state = { permissions: [] }) => state,
     noReducer: (state = {}) => state,
   }),
 })
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+})
+
 const Wrapper = ({ children }) => (
   <AppTestWrapper>
-    <Provider store={store}>{children}</Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>{children}</Provider>
+    </QueryClientProvider>
   </AppTestWrapper>
 )
 

@@ -27,6 +27,7 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
+import { getPagingSize } from '@/utils/pagingUtils'
 import { RootState, UserAction } from './types'
 
 function ScriptListTable(): JSX.Element {
@@ -39,7 +40,7 @@ function ScriptListTable(): JSX.Element {
   const [myActions, setMyActions] = useState<any[]>([])
   const [item, setItem] = useState<any>({})
   const [modal, setModal] = useState<boolean>(false)
-  const pageSize = localStorage.getItem('paggingSize') || 10
+  const pageSize = getPagingSize()
   const [limit, setLimit] = useState<string | number>(pageSize)
   const [pattern, setPattern] = useState<string>('')
   const [type, setType] = useState<string>('person_authentication')
@@ -192,7 +193,7 @@ function ScriptListTable(): JSX.Element {
         isFreeAction: true,
         onClick: handleGoToCustomScriptAddPage,
       })
-      actions.push((rowData: any) => ({
+      actions.push((_rowData: any) => ({
         icon: 'edit',
         iconProps: {
           color: 'primary',
@@ -209,7 +210,7 @@ function ScriptListTable(): JSX.Element {
     }
 
     if (canRead) {
-      actions.push((rowData: any) => ({
+      actions.push((_rowData: any) => ({
         icon: 'visibility',
         iconProps: {
           color: 'primary',
@@ -271,7 +272,7 @@ function ScriptListTable(): JSX.Element {
     }
 
     if (canDelete) {
-      actions.push((rowData: any) => ({
+      actions.push((_rowData: any) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
           color: 'primary',

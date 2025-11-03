@@ -16,6 +16,8 @@ import process from 'Plugins/PluginSagasResolver'
 import attributes from './AttributesSaga'
 import profileDetails from './ProfileDetailsSaga'
 import lockSaga from './LockSaga'
+import sessionSaga from './SessionSaga'
+
 export default function* rootSaga() {
   const pluginSagaArr = process()
   yield all(
@@ -31,6 +33,7 @@ export default function* rootSaga() {
         attributes(),
         profileDetails(),
         lockSaga(),
+        sessionSaga(),
       ],
       pluginSagaArr,
     ),

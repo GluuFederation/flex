@@ -1,27 +1,64 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { CardBody, Card } from 'Components'
 import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
-import { addAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { AttributeItem, SubmitData } from '../types/AttributeListPage.types'
-import { JansAttribute } from 'Plugins/schema/types'
+import { JansAttribute, usePostAttributes, getGetAttributesQueryKey } from 'JansConfigApi'
+import { updateToast } from 'Redux/features/toastSlice'
+import { useDispatch } from 'react-redux'
+import { CREATE } from '@/audit/UserActionType'
+import { useSchemaAuditLogger } from '../../hooks/useSchemaAuditLogger'
+import { useSchemaWebhook } from '../../hooks/useSchemaWebhook'
+import { API_ATTRIBUTE } from '../../constants'
+import { useTranslation } from 'react-i18next'
+import { getErrorMessage } from '../../utils/errorHandler'
 
 function AttributeAddPage(): JSX.Element {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
+  const { t } = useTranslation()
+  const { logAudit } = useSchemaAuditLogger()
+  const { triggerAttributeWebhook } = useSchemaWebhook()
 
-  function onSubmit({ data, userMessage }: SubmitData): void {
-    if (data) {
-      dispatch(
-        addAttribute({
-          action: { action_data: data as JansAttribute, action_message: userMessage },
-        }),
-      )
-      navigate('/attributes')
-    }
-  }
+  const postAttributeMutation = usePostAttributes({
+    mutation: {
+      onSuccess: () => {
+        dispatch(updateToast(true, 'success'))
+        queryClient.invalidateQueries({ queryKey: getGetAttributesQueryKey() })
+        navigate('/attributes')
+      },
+      onError: (error: unknown) => {
+        const errorMessage = getErrorMessage(error, 'errors.attribute_create_failed', t)
+        dispatch(updateToast(true, 'error', errorMessage))
+      },
+    },
+  })
+
+  const onSubmit = useCallback(
+    ({ data, userMessage }: SubmitData): void => {
+      if (data) {
+        postAttributeMutation.mutate(
+          { data: data as JansAttribute },
+          {
+            onSuccess: (createdAttribute: JansAttribute) => {
+              logAudit({
+                action: CREATE,
+                resource: API_ATTRIBUTE,
+                message: userMessage || '',
+                payload: createdAttribute,
+              })
+
+              triggerAttributeWebhook(createdAttribute)
+            },
+          },
+        )
+      }
+    },
+    [postAttributeMutation, logAudit, triggerAttributeWebhook],
+  )
 
   const defaultAttribute: Partial<AttributeItem> = {
     jansHideOnDiscovery: false,
@@ -31,6 +68,9 @@ function AttributeAddPage(): JSX.Element {
     custom: false,
     required: false,
     attributeValidation: { maxLength: null, regexp: null, minLength: null },
+    editType: [],
+    viewType: [],
+    usageType: [],
   }
 
   return (

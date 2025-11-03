@@ -40,6 +40,7 @@
     "mau_clients": "Janeiro bloquear clientes"
   },
   "menus": {
+    "authentication": "Autenticação",
     "adminui": "Admin",
     "assets": "Assets",
     "config-api": "Config-API",
@@ -326,6 +327,7 @@
     "spontaneousScopes": "Escopos espontâneos",
     "redirectUrisRegex": "Expressão regular de redirecionamento",
     "scopes": "Escopos",
+    "sort_by": "Ordenar Por",
     "requestUris": "URIs de solicitação",
     "defaultAcrValues": "ACR padrão",
     "authorizedAcrValues": "ACRs autorizados",
@@ -734,6 +736,7 @@
     "2FA_details": "detalhes 2FA",
     "view_script_details": "Ver detalhes do guião personalizado",
     "add_new_user": "Adicionar usuário",
+    "loading_attributes": "Carregando atributos",
     "no_scope_in_client": "Sem dados de Escopo para este Cliente",
     "error_in_script": "Erro no roteiro",
     "see_configurations": "Voir configuration",
@@ -750,7 +753,20 @@
     "copied": "Copiado",
     "edit_acr": "Editar ACR",
     "no_data_found": "Nenhum dado encontrado",
-    "role_already_exists": "Função já existe"
+    "no_sessions_found": "Nenhuma sessão encontrada",
+    "role_already_exists": "Função já existe",
+    "user_created_successfully": "Usuário criado com sucesso",
+    "user_updated_successfully": "Usuário atualizado com sucesso",
+    "user_deleted_successfully": "Usuário excluído com sucesso",
+    "password_changed_successfully": "Senha alterada com sucesso",
+    "device_deleted_successfully": "Dispositivo excluído com sucesso"
+  },
+  "errors": {
+    "attribute_create_failed": "Erro ao criar atributo",
+    "attribute_update_failed": "Erro ao atualizar atributo",
+    "attribute_delete_failed": "Erro ao excluir atributo",
+    "attribute_load_failed": "Erro ao carregar atributo",
+    "attribute_not_found": "Atributo não encontrado"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -895,7 +911,8 @@
     "cedar_Init": "Cedarling está tentando inicializar, por favor aguarde",
     "newPermission": "Nova Permissão",
     "addingNewApiPermission": "Adicionando nova permissão de API",
-    "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!"
+    "followingPermissionRequiredToBeAdded": "É necessária a permissão seguinte para ser adicionado!",
+    "authentication": "Autenticação"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -903,6 +920,8 @@
   "options": {
     "admin": "ADMIN",
     "active": "ATIVO",
+    "all": "Todos",
+    "ascending": "Ascendente",
     "boolean": "BOLEANO",
     "binary": "BINÁRIO",
     "certificate": "CERTIFICADO",
@@ -910,6 +929,7 @@
     "cluster": "AGRUPAR",
     "date": "ENCONTRO: DATA",
     "default": "PADRÃO",
+    "descending": "Descendente",
     "disable": "desabilitar",
     "disabled": "Desabilitado",
     "enabled": "Habilitado",
@@ -920,6 +940,7 @@
     "memcached": "MEMCACHED",
     "native_persistence": "NATIVE_PERSISTENCE",
     "no": "Não",
+    "none": "Nenhum",
     "numeric": "NUMÉRICO",
     "openid": "OPENID",
     "redis": "REDIS",

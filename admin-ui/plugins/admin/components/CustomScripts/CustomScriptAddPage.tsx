@@ -5,15 +5,8 @@ import { CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
 import { addCustomScript } from 'Plugins/admin/redux/features/customScriptSlice'
 import { buildPayload } from 'Utils/PermChecker'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import {
-  CustomScriptItem,
-  CustomScriptReducerState,
-  RootState,
-  UserAction,
-  SubmitData,
-} from './types'
+import { CustomScriptItem, RootState, UserAction, SubmitData } from './types'
 
 function CustomScriptAddPage() {
   const userAction: UserAction = {}
