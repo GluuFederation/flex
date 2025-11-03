@@ -314,7 +314,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
             disableBack={false}
             disableCancel={!formik.dirty}
             disableApply={!formik.dirty}
-            applyButtonType="submit"
+            applyButtonType="button"
             isLoading={isSubmitting}
           />
         </Col>
