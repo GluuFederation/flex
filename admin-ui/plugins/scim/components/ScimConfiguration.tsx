@@ -2,7 +2,7 @@ import { useFormik, FormikProps } from 'formik'
 import React, { useState, useCallback, useMemo } from 'react'
 import { Row, Col, Form, FormGroup } from 'Components'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import Gluuformfooter from '@/routes/Apps/Gluu/GluuFormFooter'
+import GluuFormFooter from '@/routes/Apps/Gluu/GluuFormFooter'
 import { scimConfigurationSchema } from '../helper/schema'
 import { transformToFormValues, createJsonPatchFromDifferences } from '../helper'
 import ScimFieldRenderer from './ScimFieldRenderer'
@@ -78,7 +78,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
 
       <Row>
         <Col>
-          <Gluuformfooter
+          <GluuFormFooter
             showBack={true}
             showCancel={true}
             showApply={true}

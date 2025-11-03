@@ -220,7 +220,7 @@ const GluuFormFooter = ({
   )
 }
 
-const GluuformfooterMemoized = memo(GluuFormFooter)
-GluuformfooterMemoized.displayName = 'GluuFormFooter'
+const GluuFormFooterMemoized = memo(GluuFormFooter)
+GluuFormFooterMemoized.displayName = 'GluuFormFooter'
 
-export default GluuformfooterMemoized
+export default GluuFormFooterMemoized

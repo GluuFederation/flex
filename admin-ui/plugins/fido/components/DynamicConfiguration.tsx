@@ -308,7 +308,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
             extraLabel="Cancel"
             extraOnClick={handleCancel}
             type="submit"
-            isLoading={isSubmitting}
+            disabled={isSubmitting}
           />
         </Col>
       </Row>
