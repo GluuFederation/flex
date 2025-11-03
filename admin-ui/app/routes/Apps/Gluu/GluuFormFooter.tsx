@@ -73,7 +73,6 @@ const GluuFormFooter = ({
       return
     }
     navigate('/home/dashboard')
-    return
   }, [onBack, navigate])
 
   const handleCancelClick = useCallback(() => {
