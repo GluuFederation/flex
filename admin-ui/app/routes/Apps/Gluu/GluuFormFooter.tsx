@@ -49,7 +49,7 @@ const GluuFormFooter = ({
   showBack,
   backButtonLabel,
   onBack,
-  disableBack,
+  disableBack = false,
   showCancel,
   cancelButtonLabel,
   onCancel,
