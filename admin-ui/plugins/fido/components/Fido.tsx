@@ -16,7 +16,7 @@ import {
 } from 'JansConfigApi'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido-types'
+import { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido'
 import { logAudit } from 'Utils/AuditLogger'
 import { AuthRootState } from 'Utils/types'
 

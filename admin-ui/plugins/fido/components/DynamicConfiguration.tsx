@@ -9,7 +9,7 @@ import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import { fidoConstants, validationSchema, transformToFormValues } from '../helper'
-import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido-types'
+import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido'
 
 const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   fidoConfiguration,

@@ -6,7 +6,7 @@ import {
   StaticConfigFormValues,
   CreateFidoConfigPayloadParams,
   PutPropertiesFido2Params,
-} from '../types/fido-types'
+} from '../types/fido'
 
 const isStaticConfigType = (type?: string): type is typeof fidoConstants.STATIC => {
   return type === fidoConstants.STATIC

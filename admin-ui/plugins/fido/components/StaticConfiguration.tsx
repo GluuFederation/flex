@@ -25,7 +25,7 @@ import {
   StaticConfigFormValues,
   MinimalFormik,
   FormikSetFieldValue,
-} from '../types/fido-types'
+} from '../types/fido'
 import { AttestationMode } from '../types'
 
 const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
