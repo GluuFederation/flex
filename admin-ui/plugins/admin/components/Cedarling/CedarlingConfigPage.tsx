@@ -13,35 +13,68 @@ import {
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuLabel from '@/routes/Apps/Gluu/GluuLabel'
-import { useDispatch } from 'react-redux'
-import {
-  buildPayload,
-  PROPERTIES_DELETE,
-  PROPERTIES_READ,
-  PROPERTIES_WRITE,
-} from '@/utils/PermChecker'
-import { editConfig, getConfig } from 'Plugins/admin/redux/features/apiConfigSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { PROPERTIES_DELETE, PROPERTIES_READ, PROPERTIES_WRITE } from '@/utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import { useGetAdminuiConf, getGetAdminuiConfQueryKey } from 'JansConfigApi'
+import { useGetAdminuiConf, useEditAdminuiConf } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
+import type { AppConfigResponse } from 'JansConfigApi'
+import { updateToast } from '@/redux/features/toastSlice'
+import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
+import { logAudit } from '@/utils/AuditLogger'
+import type { RootState } from '@/redux/sagas/types/audit'
+import { UPDATE } from '@/audit/UserActionType'
 
 const CedarlingConfigPage: React.FC = () => {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { authorize } = useCedarling()
   const { t } = useTranslation()
   SetTitle(t('titles.cedarling_config'))
   const [auiPolicyStoreUrl, setAuiPolicyStoreUrl] = useState('')
   const [configApiPolicyStoreUrl, setConfigApiPolicyStoreUrl] = useState('')
-  const { data: auiConfig, isPending, isLoading, isSuccess } = useGetAdminuiConf()
+  const { data: auiConfig, isLoading, isSuccess } = useGetAdminuiConf()
+  const editAdminuiConfMutation = useEditAdminuiConf()
+  const token: string | undefined = useSelector(
+    (state: RootState) => state.authReducer?.token?.access_token,
+  )
+  const userinfo: RootState['authReducer']['userinfo'] | undefined = useSelector(
+    (state: RootState) => state.authReducer?.userinfo,
+  )
+  const client_id: string | undefined = useSelector(
+    (state: RootState) => state.authReducer?.config?.clientId,
+  )
 
   const dispatch = useDispatch()
 
-  const handleSubmit = (e: Event) => {
+  const handleSubmit = async (e: Event) => {
     e.preventDefault()
     const requestData = {
       auiPolicyStoreUrl,
       useRemotePolicyStore: true,
     }
-    // dispatch(editConfig({ action: userAction }))
+
+    try {
+      const editAppConfigResponse: AppConfigResponse = await editAdminuiConfMutation.mutateAsync({
+        data: { ...auiConfig, ...requestData },
+      })
+      console.log('Edit Response:', editAppConfigResponse)
+      setAuiPolicyStoreUrl(editAppConfigResponse?.auiPolicyStoreUrl || '')
+      dispatch(updateToast(true, 'success'))
+
+      const userMessage: string = 'Policy Store URL configuration updated'
+      await logAudit({
+        token: token ?? undefined,
+        userinfo: userinfo ?? undefined,
+        action: UPDATE,
+        resource: 'update_admin_ui_config',
+        message: userMessage,
+        client_id: client_id,
+        payload: requestData,
+      })
+    } catch (error) {
+      console.error('Error updating Cedarling configuration:', error)
+      const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
+      dispatch(updateToast(true, 'error', errorMessage))
+    }
   }
 
   useEffect(() => {
@@ -57,7 +90,6 @@ const CedarlingConfigPage: React.FC = () => {
   useEffect(() => {
     if (isSuccess) {
       setAuiPolicyStoreUrl(auiConfig?.auiPolicyStoreUrl || '')
-      // dispatch(getConfig())
     }
   }, [isSuccess])
 
@@ -122,25 +154,6 @@ const CedarlingConfigPage: React.FC = () => {
                   />
                 </Col>
               </FormGroup>
-
-              {/* 
-            <FormGroup row>
-              <Col sm={12} className="ps-4">
-                <GluuToogleRow
-                  name="localPolicies"
-                  handler={(e) => {
-                    setLocalPolicies(e.target.checked)
-                  }}
-                  lsize={4}
-                  rsize={8}
-                  label={`${t('fields.localPolicies')}`}
-                  value={localPolicies}
-                />
-                <p className="text-muted small mt-2">
-                  {t('documentation.cedarlingConfig.localPoliciesNote')}
-                </p>
-              </Col>
-            </FormGroup> */}
 
               <div className="text-center mt-4">
                 <Button color="dark" size="lg" type="submit">
