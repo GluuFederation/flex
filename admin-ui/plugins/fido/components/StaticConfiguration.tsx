@@ -373,9 +373,9 @@ const StaticConfiguration: React.FC<StaticConfigurationProps> = ({
             onCancel={handleCancel}
             disableBack={false}
             disableCancel={!formik.dirty}
-            disableApply={!formik.dirty}
+            disableApply={!formik.isValid || !formik.dirty}
             applyButtonType="button"
-            isLoading={isSubmitting}
+            isLoading={isSubmitting ?? false}
           />
         </Col>
       </Row>
