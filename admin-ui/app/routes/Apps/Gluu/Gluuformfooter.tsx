@@ -108,6 +108,9 @@ const Gluuformfooter = ({
   const applyLabel = useMemo(() => t('actions.apply'), [t])
 
   const buttonLayout = useMemo(() => {
+    if (!buttonStates.hasAnyButton) {
+      return { back: '', cancel: '', apply: '' }
+    }
     if (buttonStates.hasAllThreeButtons) {
       return {
         back: 'd-flex',
@@ -157,7 +160,7 @@ const Gluuformfooter = ({
         apply: 'd-flex ms-auto',
       }
     }
-    throw new Error('Unhandled button layout state')
+    return { back: '', cancel: '', apply: '' }
   }, [buttonStates])
 
   if (!buttonStates.hasAnyButton) {
