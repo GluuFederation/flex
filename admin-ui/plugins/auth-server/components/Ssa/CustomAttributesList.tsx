@@ -1,11 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import type { CustomAttributesListProps } from './types'
 
-const CustomAttributesList = ({
+const CustomAttributesList: React.FC<CustomAttributesListProps> = ({
   availableAttributes,
   selectedAttributes,
   onAttributeSelect,
   searchQuery,
+  searchInputValue,
   onSearchChange,
 }) => {
   return (
@@ -16,10 +17,15 @@ const CustomAttributesList = ({
         className="form-control mb-2"
         placeholder="Search Attribute Here"
         onChange={(e) => onSearchChange(e.target.value)}
-        value={searchQuery}
+        value={searchInputValue}
         aria-label="Search custom attributes"
       />
-      <ul className="list-group" role="listbox">
+      <ul
+        className="list-group"
+        role="listbox"
+        aria-label="Available custom attributes for SSA"
+        aria-multiselectable="false"
+      >
         {availableAttributes.map((attribute) => {
           const name = attribute.toLowerCase()
           const alreadyAdded = selectedAttributes.includes(attribute)
@@ -31,6 +37,7 @@ const CustomAttributesList = ({
                   className="btn btn-link p-0"
                   onClick={() => onAttributeSelect(attribute)}
                   title="Click to add to the form"
+                  aria-label={`Add ${attribute} attribute to form`}
                 >
                   {attribute}
                 </button>
@@ -44,12 +51,6 @@ const CustomAttributesList = ({
   )
 }
 
-CustomAttributesList.propTypes = {
-  availableAttributes: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selectedAttributes: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onAttributeSelect: PropTypes.func.isRequired,
-  searchQuery: PropTypes.string.isRequired,
-  onSearchChange: PropTypes.func.isRequired,
-}
+CustomAttributesList.displayName = 'CustomAttributesList'
 
 export default CustomAttributesList

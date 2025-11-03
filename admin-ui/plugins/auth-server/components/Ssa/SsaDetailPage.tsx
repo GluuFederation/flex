@@ -5,14 +5,14 @@ import { SSA } from 'Utils/ApiResources'
 import GluuFormActionRow from 'Routes/Apps/Gluu/GluuFormActionRow'
 import JsonViewerDialog from '../JsonViewer/JsonViewerDialog'
 import customColors from '@/customColors'
+import type { SsaDetailPageProps } from './types'
+import { formatExpirationDate } from './utils/dateFormatters'
 
-const SsaDetailPage = ({ row }) => {
-  const [ssaDialogOpen, setSsaDialogOpen] = useState(false)
-  const [ssaData, setSsaData] = useState(row?.ssa?.software_roles)
+const SsaDetailPage: React.FC<SsaDetailPageProps> = ({ row }) => {
+  const [ssaDialogOpen, setSsaDialogOpen] = useState<boolean>(false)
 
-  const handleSsaDialogOpen = () => {
+  const handleSsaDialogOpen = (): void => {
     setSsaDialogOpen(!ssaDialogOpen)
-    setSsaData(row?.ssa?.software_roles)
   }
 
   return (
@@ -47,7 +47,7 @@ const SsaDetailPage = ({ row }) => {
         <Col sm={6}>
           <GluuFormActionRow
             label="fields.software_roles"
-            value={row?.ssa?.software_roles}
+            value={row.ssa.software_roles}
             doc_category={SSA}
             doc_entry="software_roles"
             rsize={2}
@@ -67,15 +67,7 @@ const SsaDetailPage = ({ row }) => {
         <Col sm={6}>
           <GluuFormDetailRow
             label="fields.expiration"
-            value={
-              row.expiration
-                ? new Date(row.expiration).toLocaleDateString('en-US', {
-                    month: '2-digit',
-                    day: '2-digit',
-                    year: 'numeric',
-                  })
-                : 'Never'
-            }
+            value={formatExpirationDate(row.expiration)}
             doc_category={SSA}
             doc_entry="expiration"
           />
@@ -85,7 +77,7 @@ const SsaDetailPage = ({ row }) => {
         <Col sm={6}>
           <GluuFormDetailRow
             label="fields.one_time_use"
-            value={row.ssa?.one_time_use?.toString()}
+            value={row.ssa.one_time_use.toString()}
             doc_category={SSA}
             doc_entry="one_time_use"
             isBadge
@@ -105,7 +97,7 @@ const SsaDetailPage = ({ row }) => {
         <Col sm={6}>
           <GluuFormDetailRow
             label="fields.rotate_ssa"
-            value={row.ssa?.rotate_ssa?.toString()}
+            value={row.ssa.rotate_ssa.toString()}
             doc_category={SSA}
             doc_entry="rotate_ssa"
             isBadge
@@ -115,7 +107,7 @@ const SsaDetailPage = ({ row }) => {
       <JsonViewerDialog
         isOpen={ssaDialogOpen}
         toggle={handleSsaDialogOpen}
-        data={ssaData}
+        data={row.ssa.software_roles}
         title="JSON View"
         theme="light"
         expanded={true}
@@ -123,5 +115,7 @@ const SsaDetailPage = ({ row }) => {
     </Container>
   )
 }
+
+SsaDetailPage.displayName = 'SsaDetailPage'
 
 export default SsaDetailPage
