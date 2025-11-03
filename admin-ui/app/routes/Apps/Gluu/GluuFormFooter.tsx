@@ -189,26 +189,13 @@ const GluuFormFooter = ({
           </Box>
         )}
 
-        {buttonStates.hasAllThreeButtons && (
+        {buttonStates.showCancel && (
           <Button
             color={buttonColor}
             style={BUTTON_STYLE}
             type="button"
             onClick={handleCancelClick}
-            className={`${buttonLayout.cancel} ms-4`}
-            disabled={disableCancel || isLoading}
-          >
-            <ButtonLabel isLoading={false} iconClass="fa fa-undo" label={cancelLabel} />
-          </Button>
-        )}
-
-        {!buttonStates.hasAllThreeButtons && buttonStates.showCancel && (
-          <Button
-            color={buttonColor}
-            style={BUTTON_STYLE}
-            type="button"
-            onClick={handleCancelClick}
-            className={buttonLayout.cancel}
+            className={`${buttonLayout.cancel}${buttonStates.hasAllThreeButtons ? ' ms-4' : ''}`}
             disabled={disableCancel || isLoading}
           >
             <ButtonLabel isLoading={false} iconClass="fa fa-undo" label={cancelLabel} />
