@@ -16,7 +16,11 @@ import GluuLabel from '@/routes/Apps/Gluu/GluuLabel'
 import { useDispatch, useSelector } from 'react-redux'
 import { PROPERTIES_DELETE, PROPERTIES_READ, PROPERTIES_WRITE } from '@/utils/PermChecker'
 import { useCedarling } from '@/cedarling'
-import { useGetAdminuiConf, useEditAdminuiConf } from 'JansConfigApi'
+import {
+  useGetAdminuiConf,
+  useEditAdminuiConf,
+  useSetRemotePolicyStoreAsDefault,
+} from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import type { AppConfigResponse } from 'JansConfigApi'
 import { updateToast } from '@/redux/features/toastSlice'
@@ -24,6 +28,8 @@ import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
 import type { RootState } from '@/redux/sagas/types/audit'
 import { UPDATE } from '@/audit/UserActionType'
+import { IconButton } from '@mui/material'
+import { RefreshOutlined } from '@mui/icons-material'
 
 const CedarlingConfigPage: React.FC = () => {
   const { authorize } = useCedarling()
@@ -33,6 +39,7 @@ const CedarlingConfigPage: React.FC = () => {
   const [configApiPolicyStoreUrl, setConfigApiPolicyStoreUrl] = useState('')
   const { data: auiConfig, isLoading, isSuccess } = useGetAdminuiConf()
   const editAdminuiConfMutation = useEditAdminuiConf()
+  const setRemotePolicyStoreAsDefaultMutation = useSetRemotePolicyStoreAsDefault()
   const token: string | undefined = useSelector(
     (state: RootState) => state.authReducer?.token?.access_token,
   )
@@ -45,7 +52,7 @@ const CedarlingConfigPage: React.FC = () => {
 
   const dispatch = useDispatch()
 
-  const handleSubmit = async (e: Event) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const requestData = {
       auiPolicyStoreUrl,
@@ -69,6 +76,32 @@ const CedarlingConfigPage: React.FC = () => {
         message: userMessage,
         client_id: client_id,
         payload: requestData,
+      })
+    } catch (error) {
+      console.error('Error updating Cedarling configuration:', error)
+      const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
+      dispatch(updateToast(true, 'error', errorMessage))
+    }
+  }
+
+  const handleSetRemotePolicyStoreAsDefault = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+
+    try {
+      const setPolicyDefaultResponse = await setRemotePolicyStoreAsDefaultMutation.mutateAsync()
+
+      console.log('Edit Response:', setPolicyDefaultResponse)
+      dispatch(updateToast(true, 'success'))
+
+      const userMessage: string = 'Set policy store as default'
+      await logAudit({
+        token: token ?? undefined,
+        userinfo: userinfo ?? undefined,
+        action: UPDATE,
+        resource: 'set_remote_policy_store_as_default',
+        message: userMessage,
+        client_id: client_id,
+        payload: {},
       })
     } catch (error) {
       console.error('Error updating Cedarling configuration:', error)
@@ -132,7 +165,7 @@ const CedarlingConfigPage: React.FC = () => {
             <Form onSubmit={handleSubmit}>
               <FormGroup row>
                 <GluuLabel label={'fields.auiPolicyStoreUrl'} />
-                <Col sm={9}>
+                <Col sm={8}>
                   <Input
                     id="auiPolicyStoreUrl"
                     type="url"
@@ -141,10 +174,19 @@ const CedarlingConfigPage: React.FC = () => {
                     onChange={(e) => setAuiPolicyStoreUrl(e.target.value)}
                   />
                 </Col>
+                <Col sm={1}>
+                  <IconButton
+                    type="button"
+                    aria-label="search"
+                    onClick={handleSetRemotePolicyStoreAsDefault}
+                  >
+                    <RefreshOutlined />
+                  </IconButton>
+                </Col>
               </FormGroup>
               <FormGroup row>
                 <GluuLabel label={'fields.configApiPolicyStoreUrl'} />
-                <Col sm={9}>
+                <Col sm={8}>
                   <Input
                     id="configApiPolicyStoreUrl"
                     type="url"
