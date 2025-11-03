@@ -360,7 +360,7 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
             disableCancel={!formik.dirty}
             disableApply={!formik.isValid || !formik.dirty}
             applyButtonType="button"
-            isLoading={false}
+            isLoading={formik.isSubmitting ?? false}
           />
         </Col>
       </Row>

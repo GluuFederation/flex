@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import BlockUi from '../../../../app/components/BlockUi/BlockUi'
 import { Formik } from 'formik'
 import { Form, FormGroup, Card, Col, CardBody, InputGroup, CustomInput } from 'Components'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import CacheInMemory from './CacheInMemory'
@@ -86,10 +86,6 @@ function CachePage() {
 
   function toggle() {
     setModal(!modal)
-  }
-  function submitForm() {
-    toggle()
-    document.getElementsByClassName('LdapUserActionSubmitButton')[0].click()
   }
   function handleCancel(formik) {
     return () => {
@@ -224,17 +220,25 @@ function CachePage() {
                     <CacheNative config={cacheNativeData} formik={formik} />
                   )}
                   <FormGroup row></FormGroup>
-                  <GluuCommitFooter
-                    saveHandler={toggle}
-                    hideButtons={{ save: true, back: true }}
-                    extraLabel="Cancel"
-                    extraOnClick={handleCancel(formik)}
-                    type="submit"
+                  <GluuFormFooter
+                    showBack={true}
+                    showCancel={true}
+                    showApply={true}
+                    onApply={toggle}
+                    onCancel={handleCancel(formik)}
+                    disableBack={false}
+                    disableCancel={!formik.dirty}
+                    disableApply={!formik.isValid || !formik.dirty}
+                    applyButtonType="button"
+                    isLoading={formik.isSubmitting ?? false}
                   />
                   <GluuCommitDialog
                     handler={toggle}
                     modal={modal}
-                    onAccept={submitForm}
+                    onAccept={() => {
+                      formik.handleSubmit()
+                      toggle()
+                    }}
                     formik={formik}
                   />
                 </Form>
