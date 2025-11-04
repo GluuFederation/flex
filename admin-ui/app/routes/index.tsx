@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 // ----------- Layout Imports ---------------
-import { processRoutes, processRoutesSync } from 'Plugins/PluginMenuResolver'
+import { processRoutes } from 'Plugins/PluginMenuResolver'
 
 import GluuSuspenseLoader from 'Routes/Apps/Gluu/GluuSuspenseLoader'
 
@@ -22,9 +22,8 @@ export const RoutedContent = () => {
         const routes = await processRoutes()
         setPluginMenus(routes)
       } catch (error) {
-        console.error('Failed to load plugins:', error)
-        // Fallback to sync loading
-        setPluginMenus(processRoutesSync())
+        console.error('Failed to load plugin routes:', error)
+        setPluginMenus([])
       }
     }
 

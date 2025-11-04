@@ -69,36 +69,6 @@ export async function processRoutes() {
   return pluginRoutes
 }
 
-// Synchronous fallback for backward compatibility
-export function processMenusSync() {
-  let pluginMenus = []
-  plugins
-    .map((item) => item.metadataFile)
-    .forEach((path) => {
-      try {
-        pluginMenus = pluginMenus.concat(require(`${path}`).default.menus || [])
-      } catch (error) {
-        console.warn(`Failed to load plugin menus: ${path}`, error)
-      }
-    })
-  pluginMenus = sortMenu(pluginMenus)
-  return pluginMenus
-}
-
-export function processRoutesSync() {
-  let pluginRoutes = []
-  plugins
-    .map((item) => item.metadataFile)
-    .forEach((path) => {
-      try {
-        pluginRoutes = pluginRoutes.concat(require(`${path}`).default.routes || [])
-      } catch (error) {
-        console.warn(`Failed to load plugin routes: ${path}`, error)
-      }
-    })
-  return pluginRoutes
-}
-
 const sortMenu = (menu) => {
   menu = sortParentMenu(menu)
   return menu
