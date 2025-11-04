@@ -13,12 +13,14 @@ export const customScriptValidationSchema = Yup.object({
     .integer('Level must be an integer')
     .min(0, 'Level must be non-negative')
     .required('Required!'),
-  script: Yup.string().when('location_type', ([locationType], schema) =>
-    locationType === 'db' ? schema.required('Required!') : schema,
-  ),
-  script_path: Yup.string().when('location_type', ([locationType], schema) =>
-    locationType === 'file' ? schema.required('Required!') : schema,
-  ),
+  script: Yup.string().when('location_type', (values, schema) => {
+    const locationType = values[0] as string
+    return locationType === 'db' ? schema.required('Required!') : schema
+  }),
+  script_path: Yup.string().when('location_type', (values, schema) => {
+    const locationType = values[0] as string
+    return locationType === 'file' ? schema.required('Required!') : schema
+  }),
 
   moduleProperties: Yup.array()
     .of(
@@ -27,7 +29,8 @@ export const customScriptValidationSchema = Yup.object({
         value2: Yup.string().optional(),
       }),
     )
-    .when('scriptType', ([scriptType], schema) => {
+    .when('scriptType', (values, schema) => {
+      const scriptType = values[0] as string
       if (scriptType !== 'person_authentication') {
         return schema
       }
