@@ -11,6 +11,7 @@ export async function processMenus() {
         const metadata = await import(
           /* webpackChunkName: "plugin-[request]" */
           /* webpackMode: "lazy" */
+          /* webpackExclude: /\.test\.(js|jsx|ts|tsx)$/ */
           `./${pluginName}/plugin-metadata`
         )
         return metadata.default.menus || []
@@ -45,6 +46,7 @@ export async function processRoutes() {
         const metadata = await import(
           /* webpackChunkName: "plugin-[request]" */
           /* webpackMode: "lazy" */
+          /* webpackExclude: /\.test\.(js|jsx|ts|tsx)$/ */
           `./${pluginName}/plugin-metadata`
         )
         return metadata.default.routes || []

@@ -2,13 +2,31 @@ import plugins from '../plugins.config.json'
 
 //get all metadata path
 
-function process() {
+async function process() {
   let pluginSagas = []
-  plugins
-    .map((item) => item.metadataFile)
-    .forEach((path) => {
-      pluginSagas = [...pluginSagas, ...require(`${path}`).default.sagas]
-    })
+
+  const pluginPromises = plugins.map(async (item) => {
+    const path = item.metadataFile
+    const pluginName = path?.match(/\.\/([^/]+)\/plugin-metadata/)?.[1]
+    if (pluginName) {
+      const metadata = await import(
+        /* webpackChunkName: "plugin-[request]" */
+        /* webpackMode: "lazy" */
+        /* webpackExclude: /\.test\.(js|jsx|ts|tsx)$/ */
+        `./${pluginName}/plugin-metadata`
+      )
+      return metadata.default.sagas || []
+    }
+    return []
+  })
+
+  const results = await Promise.allSettled(pluginPromises)
+  results.forEach((result) => {
+    if (result.status === 'fulfilled') {
+      pluginSagas = [...pluginSagas, ...result.value]
+    }
+  })
+
   return pluginSagas
 }
 export default process
