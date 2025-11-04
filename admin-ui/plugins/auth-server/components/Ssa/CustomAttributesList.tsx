@@ -26,26 +26,25 @@ const CustomAttributesList: React.FC<CustomAttributesListProps> = ({
         aria-label="Available custom attributes for SSA"
         aria-multiselectable="false"
       >
-        {availableAttributes.map((attribute) => {
-          const name = attribute.toLowerCase()
-          const alreadyAdded = selectedAttributes.includes(attribute)
-
-          if ((name.includes(searchQuery.toLowerCase()) || !searchQuery) && !alreadyAdded) {
-            return (
-              <li className="list-group-item" key={attribute} role="option" aria-selected={false}>
-                <button
-                  className="btn btn-link p-0"
-                  onClick={() => onAttributeSelect(attribute)}
-                  title="Click to add to the form"
-                  aria-label={`Add ${attribute} attribute to form`}
-                >
-                  {attribute}
-                </button>
-              </li>
-            )
-          }
-          return null
-        })}
+        {availableAttributes
+          .filter((attribute) => {
+            const name = attribute.toLowerCase()
+            const alreadyAdded = selectedAttributes.includes(attribute)
+            return (name.includes(searchQuery.toLowerCase()) || !searchQuery) && !alreadyAdded
+          })
+          .map((attribute) => (
+            <li className="list-group-item" key={attribute} role="option" aria-selected={false}>
+              <button
+                type="button"
+                className="btn btn-link p-0"
+                onClick={() => onAttributeSelect(attribute)}
+                title="Click to add to the form"
+                aria-label={`Add ${attribute} attribute to form`}
+              >
+                {attribute}
+              </button>
+            </li>
+          ))}
       </ul>
     </div>
   )

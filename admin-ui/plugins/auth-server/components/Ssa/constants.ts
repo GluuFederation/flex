@@ -7,7 +7,7 @@ export const GRANT_TYPES = [
   'urn:ietf:params:oauth:grant-type:uma-ticket',
 ] as const
 
-export type GrantType = typeof GRANT_TYPES[number]
+export type GrantType = (typeof GRANT_TYPES)[number]
 
 export const DEBOUNCE_DELAY = 500
 

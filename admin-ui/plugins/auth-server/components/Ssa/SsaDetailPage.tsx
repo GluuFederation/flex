@@ -77,7 +77,7 @@ const SsaDetailPage: React.FC<SsaDetailPageProps> = ({ row }) => {
         <Col sm={6}>
           <GluuFormDetailRow
             label="fields.one_time_use"
-            value={row.ssa.one_time_use.toString()}
+            value={row.ssa.one_time_use?.toString() ?? 'false'}
             doc_category={SSA}
             doc_entry="one_time_use"
             isBadge
@@ -97,7 +97,7 @@ const SsaDetailPage: React.FC<SsaDetailPageProps> = ({ row }) => {
         <Col sm={6}>
           <GluuFormDetailRow
             label="fields.rotate_ssa"
-            value={row.ssa.rotate_ssa.toString()}
+            value={row.ssa.rotate_ssa?.toString() ?? 'false'}
             doc_category={SSA}
             doc_entry="rotate_ssa"
             isBadge

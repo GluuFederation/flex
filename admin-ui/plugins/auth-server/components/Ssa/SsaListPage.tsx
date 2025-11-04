@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState, useMemo, useRef } from 'react'
+import React, { useCallback, useContext, useEffect, useState, useMemo } from 'react'
 import { Card, CardBody } from 'Components'
 import { useDispatch } from 'react-redux'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -43,46 +43,61 @@ const SSAListPage: React.FC = () => {
   const { logAudit } = useSsaAuditLogger()
 
   const [loadingJti, setLoadingJti] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ssa_management'))
   const [ssaDialogOpen, setSsaDialogOpen] = useState<boolean>(false)
-  const jwtDataRef = useRef<SsaJwtResponse | null>(null)
+  const [jwtData, setJwtData] = useState<SsaJwtResponse | null>(null)
 
   useEffect(() => {
+    let cancelled = false
+
     const authorizePermissions = async (): Promise<void> => {
       const permissions = [SSA_PORTAL, SSA_ADMIN, SSA_DELETE]
       try {
-        await Promise.all(permissions.map(permission => authorize([permission])))
+        await Promise.all(permissions.map((permission) => authorize([permission])))
       } catch (error) {
-        console.error('Error authorizing SSA permissions:', error)
-        dispatch(updateToast(true, 'error', 'Failed to authorize permissions'))
+        if (!cancelled) {
+          console.error('Error authorizing SSA permissions:', error)
+          dispatch(updateToast(true, 'error', 'Failed to authorize permissions'))
+        }
       }
     }
 
     authorizePermissions()
+
+    return () => {
+      cancelled = true
+    }
   }, [authorize, dispatch])
 
-  const PaperContainer = useCallback((props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />, [])
+  const PaperContainer = useCallback(
+    (props: React.ComponentProps<typeof Paper>) => <Paper {...props} elevation={0} />,
+    [],
+  )
 
-  const tableColumns = useMemo(() => [
-    { title: t('fields.software_id'), field: 'ssa.software_id' },
-    {
-      title: t('fields.organization'),
-      field: 'ssa.org_id',
-    },
-    {
-      title: t('fields.status'),
-      field: 'status',
-    },
-    {
-      title: t('fields.expiration'),
-      field: 'expiration',
-      render: (rowData: SsaData) => formatExpirationDate(rowData.expiration),
-    },
-  ], [t])
+  const tableColumns = useMemo(
+    () => [
+      { title: t('fields.software_id'), field: 'ssa.software_id' },
+      {
+        title: t('fields.organization'),
+        field: 'ssa.org_id',
+      },
+      {
+        title: t('fields.status'),
+        field: 'status',
+      },
+      {
+        title: t('fields.expiration'),
+        field: 'expiration',
+        render: (rowData: SsaData) => formatExpirationDate(rowData.expiration),
+      },
+    ],
+    [t],
+  )
 
   const DeleteIcon = useCallback(
     () => <DeleteOutlined style={{ color: customColors.darkGray }} />,
@@ -125,13 +140,21 @@ const SSAListPage: React.FC = () => {
   if (hasCedarPermission(SSA_PORTAL) || hasCedarPermission(SSA_ADMIN)) {
     myActions.push((rowData: SsaData) => ({
       icon: ViewIcon,
-      iconProps: { color: 'primary', id: rowData.ssa.org_id, style: { color: customColors.lightBlue } },
+      iconProps: {
+        color: 'primary',
+        id: rowData.ssa.org_id,
+        style: { color: customColors.lightBlue },
+      },
       onClick: () => handleViewSsa(rowData),
       disabled: loadingJti === rowData.ssa.jti,
     }))
     myActions.push((rowData: SsaData) => ({
       icon: DownloadIcon,
-      iconProps: { color: 'primary', id: rowData.ssa.org_id, style: { color: customColors.lightBlue } },
+      iconProps: {
+        color: 'primary',
+        id: rowData.ssa.org_id,
+        style: { color: customColors.lightBlue },
+      },
       onClick: () => handleDownloadSsa(rowData),
       disabled: loadingJti === rowData.ssa.jti,
     }))
@@ -145,7 +168,7 @@ const SSAListPage: React.FC = () => {
   const toggleSsaDialog = (): void => {
     setSsaDialogOpen(!ssaDialogOpen)
     if (ssaDialogOpen) {
-      jwtDataRef.current = null
+      setJwtData(null)
     }
   }
 
@@ -154,11 +177,12 @@ const SSAListPage: React.FC = () => {
   }
 
   const onDeletionConfirmed = async (message: string): Promise<void> => {
-    if (!item) return
+    if (!item || isDeleting) return
 
+    setIsDeleting(true)
     try {
       await revokeSsaMutation.mutateAsync({
-        params: { jti: item.ssa.jti }
+        params: { jti: item.ssa.jti },
       })
 
       await logAudit({
@@ -174,14 +198,16 @@ const SSAListPage: React.FC = () => {
     } catch (error) {
       console.error('Failed to delete SSA:', error)
       dispatch(updateToast(true, 'error'))
+    } finally {
+      setIsDeleting(false)
     }
   }
 
   const handleViewSsa = async (row: SsaData): Promise<void> => {
     setLoadingJti(row.ssa.jti)
     try {
-      const jwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
-      jwtDataRef.current = jwtData
+      const fetchedJwtData = await getSsaJwtMutation.mutateAsync(row.ssa.jti)
+      setJwtData(fetchedJwtData)
       toggleSsaDialog()
     } catch (error) {
       console.error('Failed to fetch SSA JWT:', error)
@@ -215,9 +241,7 @@ const SSAListPage: React.FC = () => {
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-      setTimeout(() => {
-        URL.revokeObjectURL(objectUrl)
-      }, 5000)
+      URL.revokeObjectURL(objectUrl)
     } catch (error) {
       console.error('Failed to download SSA JWT:', error)
       dispatch(updateToast(true, 'error'))
@@ -267,11 +291,11 @@ const SSAListPage: React.FC = () => {
             feature={adminUiFeatures.ssa_delete}
           />
         )}
-        {jwtDataRef.current && ssaDialogOpen && (
+        {jwtData && ssaDialogOpen && (
           <JsonViewerDialog
             isOpen={ssaDialogOpen}
             toggle={toggleSsaDialog}
-            data={jwtDataRef.current}
+            data={jwtData}
             title={`JSON View`}
             theme="light"
             expanded={true}

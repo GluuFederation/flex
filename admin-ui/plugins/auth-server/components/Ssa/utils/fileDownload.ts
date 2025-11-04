@@ -1,5 +1,13 @@
-export function downloadJSONFile(data: unknown, filename: string = 'ssa.json'): () => void {
-  const jsonData = JSON.stringify(data, null, 2)
+export function downloadJSONFile(data: unknown, filename: string = 'ssa.json'): void {
+  let jsonData: string
+  try {
+    jsonData = JSON.stringify(data, null, 2)
+  } catch (error) {
+    throw new Error(
+      `Failed to serialize data to JSON: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    )
+  }
+
   const blob = new Blob([jsonData], { type: 'application/json' })
   const link = document.createElement('a')
   const url = URL.createObjectURL(blob)
@@ -9,8 +17,6 @@ export function downloadJSONFile(data: unknown, filename: string = 'ssa.json'): 
   document.body.appendChild(link)
   link.click()
 
-  return () => {
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -65,8 +65,6 @@ const SsaAddPage: React.FC = () => {
 
   const { logAudit } = useSsaAuditLogger()
 
-  const cleanupRef = useRef<(() => void) | null>(null)
-
   SetTitle(t('titles.ssa_management'))
 
   const formik = useFormik<SsaFormValues>({
@@ -103,14 +101,6 @@ const SsaAddPage: React.FC = () => {
       navigate('/auth-server/config/ssa')
     }
   }, [createSsaMutation.isSuccess, navigate])
-
-  useEffect(() => {
-    return () => {
-      if (cleanupRef.current) {
-        cleanupRef.current()
-      }
-    }
-  }, [])
 
   const debouncedSetSearchQuery = useMemo(
     () =>
@@ -166,13 +156,17 @@ const SsaAddPage: React.FC = () => {
 
       const createdSsa = await createSsaMutation.mutateAsync(payload)
 
-      cleanupRef.current = downloadJSONFile(createdSsa, 'ssa.json')
+      downloadJSONFile(createdSsa, 'ssa.json')
 
       await logAudit({
         action: CREATE,
         resource: SSA_RESOURCE,
         message: userMessage || 'SSA created successfully',
-        payload,
+        payload: {
+          software_id: payload.software_id,
+          org_id: payload.org_id,
+          description: payload.description,
+        },
       })
 
       dispatch(updateToast(true, 'success'))

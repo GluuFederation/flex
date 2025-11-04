@@ -38,8 +38,8 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     try {
       const errorData = await response.json()
       errorMessage = errorData.message || errorData.description || errorData.error || errorMessage
-    } catch {
-      errorMessage = `${errorMessage}: ${response.statusText}`
+    } catch (parseError) {
+      errorMessage = `${errorMessage}: ${response.statusText} (Failed to parse error response: ${parseError instanceof Error ? parseError.message : 'Unknown error'})`
     }
 
     const error = new Error(errorMessage) as ApiError
@@ -47,7 +47,13 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     throw error
   }
 
-  return await response.json()
+  try {
+    return await response.json()
+  } catch (parseError) {
+    throw new Error(
+      `Failed to parse successful response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`,
+    )
+  }
 }
 
 const fetchAllSsas = async (
@@ -107,17 +113,15 @@ const getSsaJwt = async (
   signal?: AbortSignal,
 ): Promise<SsaJwtResponse> => {
   try {
-    const response = await fetch(
-      buildSsaUrl(authServerHost, `/jwt?jti=${encodeURIComponent(jti)}`),
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'GET',
-        signal,
+    const params = new URLSearchParams({ jti })
+    const response = await fetch(`${buildSsaUrl(authServerHost, '/jwt')}?${params.toString()}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
-    )
+      method: 'GET',
+      signal,
+    })
 
     return await handleResponse<SsaJwtResponse>(response)
   } catch (error) {
@@ -155,7 +159,15 @@ export const useCreateSsa = (): UseMutationResult<SsaData, Error, SsaCreatePaylo
   const queryClient = useQueryClient()
 
   return useMutation<SsaData, Error, SsaCreatePayload>({
-    mutationFn: (payload: SsaCreatePayload) => createSsa(payload, token, authServerHost),
+    mutationFn: (payload: SsaCreatePayload) => {
+      if (!token) {
+        throw new Error('No authentication token available')
+      }
+      if (!authServerHost) {
+        throw new Error('Auth server host not configured')
+      }
+      return createSsa(payload, token, authServerHost)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ssas'] })
     },
@@ -167,6 +179,14 @@ export const useGetSsaJwt = (): UseMutationResult<SsaJwtResponse, Error, string,
   const authServerHost = useSelector((state: RootState) => state.authReducer.config.authServerHost)
 
   return useMutation<SsaJwtResponse, Error, string>({
-    mutationFn: (jti: string) => getSsaJwt(jti, token, authServerHost),
+    mutationFn: (jti: string) => {
+      if (!token) {
+        throw new Error('No authentication token available')
+      }
+      if (!authServerHost) {
+        throw new Error('Auth server host not configured')
+      }
+      return getSsaJwt(jti, token, authServerHost)
+    },
   })
 }
