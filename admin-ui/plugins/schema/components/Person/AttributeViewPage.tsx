@@ -1,46 +1,80 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import React, { useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import AttributeForm from 'Plugins/schema/components/Person/AttributeForm'
-import { editAttribute } from 'Plugins/schema/redux/features/attributeSlice'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { cloneDeep } from 'lodash'
-import { JansAttribute } from 'Plugins/schema/types'
-import { AttributeItem, RootState } from '../types/AttributeListPage.types'
+import { JansAttribute, useGetAttributesByInum } from 'JansConfigApi'
+import { AttributeItem } from '../types/AttributeListPage.types'
+import { useTranslation } from 'react-i18next'
+import { getErrorMessage } from '../../utils/errorHandler'
 
-function AttributeEditPage(): JSX.Element {
-  const item = useSelector((state: RootState) => state.attributeReducer.item),
-    loading = useSelector((state: RootState) => state.attributeReducer.loading),
-    extensibleItems = cloneDeep(item) as AttributeItem,
-    dispatch = useDispatch(),
-    navigate = useNavigate()
+function AttributeViewPage(): JSX.Element {
+  const { gid } = useParams<{ gid: string }>()
+  const { t } = useTranslation()
 
-  if (!extensibleItems.attributeValidation) {
-    extensibleItems.attributeValidation = {
-      maxLength: null,
-      regexp: null,
-      minLength: null,
+  const inum = gid?.replace(/^:/, '') || ''
+
+  const {
+    data: attribute,
+    isLoading,
+    error: queryError,
+  } = useGetAttributesByInum(inum, {
+    query: {
+      enabled: !!inum,
+    },
+  })
+
+  const extensibleItems = useMemo(() => {
+    if (!attribute) return null
+    const cloned = cloneDeep(attribute) as JansAttribute
+
+    if (!cloned.attributeValidation) {
+      cloned.attributeValidation = {
+        maxLength: undefined,
+        regexp: undefined,
+        minLength: undefined,
+      }
     }
+
+    return cloned
+  }, [attribute])
+
+  function customHandleSubmit(): void {}
+
+  if (queryError) {
+    return (
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>{getErrorMessage(queryError, 'errors.attribute_load_failed', t)}</CardBody>
+      </Card>
+    )
   }
 
-  function customHandleSubmit(data: { data: AttributeItem; userMessage?: string }): void {
-    if (data) {
-      dispatch(editAttribute({ action: { action_data: data as JansAttribute } }))
-      navigate('/attributes')
-    }
+  if (isLoading) {
+    return (
+      <GluuLoader blocking={true}>
+        <Card className="mb-3" style={applicationStyle.mainCard}>
+          <CardBody>{t('messages.loading_attribute')}</CardBody>
+        </Card>
+      </GluuLoader>
+    )
+  }
+
+  if (!extensibleItems) {
+    return (
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>{t('errors.attribute_not_found')}</CardBody>
+      </Card>
+    )
   }
 
   return (
-    <GluuLoader blocking={loading}>
+    <GluuLoader blocking={isLoading}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AttributeForm
-            item={{
-              ...extensibleItems,
-              attributeValidation: { ...extensibleItems.attributeValidation },
-            }}
+            item={extensibleItems as AttributeItem}
             customOnSubmit={customHandleSubmit}
             hideButtons={{ save: true, back: true }}
           />
@@ -50,4 +84,4 @@ function AttributeEditPage(): JSX.Element {
   )
 }
 
-export default AttributeEditPage
+export default AttributeViewPage

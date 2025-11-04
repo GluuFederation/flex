@@ -13,6 +13,10 @@ interface GluuCommitFooterProps {
     save?: boolean
     back?: boolean
   }
+  disableButtons?: {
+    save?: boolean
+    back?: boolean
+  }
   type?: 'button' | 'submit'
   disableBackButton?: boolean
   cancelHandler?: () => void
@@ -25,6 +29,7 @@ function GluuCommitFooter({
   saveHandler,
   extraLabel,
   hideButtons,
+  disableButtons,
   type = 'button',
   backButtonLabel,
   backButtonHandler,
@@ -54,6 +59,7 @@ function GluuCommitFooter({
             type="button"
             onClick={disableBackButton ? cancelHandler : goBack}
             className="d-flex m-1 mx-5"
+            disabled={disableButtons?.back}
           >
             {!disableBackButton && <i className="fa fa-arrow-circle-left me-2"></i>}
             {backButtonLabel || t('actions.cancel')}
@@ -84,6 +90,7 @@ function GluuCommitFooter({
             color={`primary-${selectedTheme}`}
             style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
             className="ms-auto px-4"
+            disabled={disableButtons?.save}
           >
             <i className="fa fa-check-circle me-2"></i>
             {t('actions.apply')}
@@ -97,6 +104,7 @@ function GluuCommitFooter({
             style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
             className="ms-auto px-4"
             onClick={saveHandler}
+            disabled={disableButtons?.save}
           >
             <i className="fa fa-check-circle me-2"></i>
             {t('actions.apply')}

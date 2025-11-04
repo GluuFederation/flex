@@ -359,6 +359,7 @@
     "parLifetime": "Durée requise",
     "requirePar": "Requérir PAR",
     "scopes": "Portées",
+    "sort_by": "Trier Par",
     "activate": "Activer",
     "active": "Active",
     "application_type": "Type de demande",
@@ -737,6 +738,7 @@
     "2FA_details": "les détails de la 2FA",
     "view_script_details": "Afficher les détails du script personnalisé",
     "add_new_user": "Ajouter un utilisateur",
+    "loading_attributes": "Chargement des attributs",
     "no_scope_in_client": "Aucune donnée d'étendue pour ce client",
     "error_in_script": "Erreur dans le script",
     "see_configurations": "Voir configuration",
@@ -761,6 +763,13 @@
     "password_changed_successfully": "Mot de passe modifié avec succès",
     "device_deleted_successfully": "Appareil supprimé avec succès"
   },
+  "errors": {
+    "attribute_create_failed": "Erreur lors de la création de l'attribut",
+    "attribute_update_failed": "Erreur lors de la mise à jour de l'attribut",
+    "attribute_delete_failed": "Erreur lors de la suppression de l'attribut",
+    "attribute_load_failed": "Erreur lors du chargement de l'attribut",
+    "attribute_not_found": "Attribut introuvable"
+  },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
     "add_ldap": "Ajouter LDAP",
@@ -783,7 +792,10 @@
     "product_version": "Numéro de version de ce produit de base de données",
     "driver_name": "Nom de ce pilote JDBC",
     "driver_version": "Numéro de version de ce pilote JDBC",
-    "followingPermissionRequiredToBeAdded": "Nous devons ajouter les autorisations essentielles suivantes au rôle pour garantir que les utilisateurs disposant de ce rôle peuvent accéder à l'interface utilisateur d'administration."
+    "followingPermissionRequiredToBeAdded": "Nous devons ajouter les autorisations essentielles suivantes au rôle pour garantir que les utilisateurs disposant de ce rôle peuvent accéder à l'interface utilisateur d'administration.",
+    "sort_ascending": "Trier par ordre croissant",
+    "sort_descending": "Trier par ordre décroissant",
+    "clear_filters": "Effacer tous les filtres"
   },
   "placeholders": {
     "id": "Enter id",
@@ -910,6 +922,8 @@
   "options": {
     "admin": "ADMINISTRER",
     "active": "ACTIF",
+    "all": "Tout",
+    "ascending": "Croissant",
     "boolean": "BOOLEEN",
     "binary": "BINAIRE",
     "certificate": "CERTIFICAT",
@@ -917,6 +931,7 @@
     "cluster": "GROUPE",
     "date": "DATE",
     "default": "DÉFAUT",
+    "descending": "Décroissant",
     "disable": "désactiver",
     "disabled": "Désactivée",
     "enabled": "Activée",
@@ -927,6 +942,7 @@
     "memcached": "MEMCACHED",
     "native_persistence": "NATIVE_PERSISTENCE",
     "no": "Non",
+    "none": "Aucun",
     "numeric": "NUMÉRIQUE",
     "openid": "ID OUVERT",
     "redis": "REDIS",

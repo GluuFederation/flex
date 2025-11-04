@@ -24,8 +24,11 @@ import { useNavigate } from 'react-router'
 import { nameIDPolicyFormat } from '../helper'
 import GluuUploadFile from 'Routes/Apps/Gluu/GluuUploadFile'
 import SetTitle from 'Utils/SetTitle'
-import { getAttributes } from 'Plugins/schema/redux/features/attributeSlice'
-import customColors from '@/customColors'
+import { useGetAttributes } from 'JansConfigApi'
+import GluuStatusMessage from 'Routes/Apps/Gluu/GluuStatusMessage'
+
+// Maximum number of attributes to fetch for trust relationship configuration
+const MAX_ATTRIBUTES_FOR_TRUST_RELATION = 100
 
 const TrustRelationForm = ({ configs, viewOnly }) => {
   const { t } = useTranslation()
@@ -48,10 +51,14 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
   const [fileError, setFileError] = useState(false)
   const [modal, setModal] = useState(false)
 
-  const attributes = useSelector((state) => state.attributeReducer)
+  const {
+    data: attributesData,
+    error: attributesError,
+    isLoading: attributesLoading,
+  } = useGetAttributes({ limit: MAX_ATTRIBUTES_FOR_TRUST_RELATION })
 
-  const attributesList = attributes?.items
-    ? attributes?.items?.map((item) => ({
+  const attributesList = attributesData?.entries
+    ? attributesData.entries.map((item) => ({
         dn: item?.dn,
         name: item?.displayName,
       }))
@@ -215,10 +222,7 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
     }
   }, [savedForm])
 
-  useEffect(() => {
-    const options = { limit: 70 }
-    dispatch(getAttributes({ options }))
-  }, [])
+  // Attributes are now fetched automatically by useGetAttributes hook
 
   const handleDrop = (files) => {
     const file = files[0]
@@ -323,13 +327,29 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                   options={attributesList}
                   lsize={4}
                   rsize={8}
-                  disabled={viewOnly}
+                  disabled={viewOnly || attributesLoading}
                   onChange={saveSelectedScopes}
                   paginate={false}
                   hideHelperMessage={true}
                   defaultSelected={scopeFieldValue}
                   doc_category={DOC_SECTION}
                 />
+                {attributesLoading && (
+                  <GluuStatusMessage
+                    message={`${t('messages.loading_attributes')}...`}
+                    type="loading"
+                    labelSize={4}
+                    colSize={8}
+                  />
+                )}
+                {attributesError && (
+                  <GluuStatusMessage
+                    message={t('errors.attribute_load_failed')}
+                    type="error"
+                    labelSize={4}
+                    colSize={8}
+                  />
+                )}
               </Col>
               <Col sm={10}>
                 <GluuSelectRow
@@ -370,9 +390,11 @@ const TrustRelationForm = ({ configs, viewOnly }) => {
                         disabled={viewOnly}
                       />
                       {fileError && (
-                        <div style={{ color: customColors.accentRed }}>
-                          {t('messages.import_metadata_file')}
-                        </div>
+                        <GluuStatusMessage
+                          message={t('messages.import_metadata_file')}
+                          type="error"
+                          inline
+                        />
                       )}
                     </Col>
                   </FormGroup>

@@ -100,7 +100,7 @@ function MappingItem({ candidate, roles }) {
     getPermissionsForSearch()
   }, [permissions, candidate?.permissions?.length, cedarPermissions])
 
-  const initialValues = {}
+  const initialValues = { mappingAddPermissions: [] }
 
   const handleAddPermission = (values, { resetForm }) => {
     if (values?.mappingAddPermissions?.length) {
@@ -200,7 +200,6 @@ function MappingItem({ candidate, roles }) {
                               formik={formik}
                               options={searchablePermissions}
                               required={false}
-                              value={[]}
                               forwardRef={autocompleteRef}
                               doc_category={'Mapping'}
                               allowNew={false}

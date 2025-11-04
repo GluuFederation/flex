@@ -61,10 +61,14 @@ function MappingPage() {
   }
 
   function onAddConfirmed(mappingData) {
-    buildPayload(userAction, 'Add new mapping', mappingData)
-    dispatch(addNewRolePermissions({ data: mappingData }))
+    const existing = (mapping || []).find((m) => m?.role === mappingData.role)
+    const mergedPermissions = Array.from(
+      new Set([...(existing?.permissions || []), ...(mappingData?.permissions || [])]),
+    )
+    const payload = { role: mappingData.role, permissions: mergedPermissions }
+    buildPayload(userAction, 'Add new mapping', payload)
+    dispatch(addNewRolePermissions({ data: payload }))
     toggle()
-    // doFetchList()
   }
 
   function doFetchList() {

@@ -1,7 +1,5 @@
 // @ts-nocheck
-/**
- * Auth Sagas
- */
+
 import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects'
 import {
   getOAuth2ConfigResponse,
@@ -56,13 +54,21 @@ function* getOAuth2ConfigWorker({ payload }) {
   yield put(getOAuth2ConfigResponse())
 }
 
-function* putConfigWorker({ payload }) {
+export function* putConfigWorker({ payload }) {
   try {
+    // Extract metadata (if any) from payload
+    const { _meta, ...configData } = payload
     const token = yield select((state) => state.authReducer.token.access_token)
-    const response = yield call(putServerConfiguration, { token, props: payload })
+    const response = yield call(putServerConfiguration, { token, props: configData })
     if (response) {
       yield put(getOAuth2ConfigResponse({ config: response }))
-      yield put(updateToast(true, 'success'))
+
+      // If cedarlingLogType changed, show specific toast; otherwise show generic success
+      if (_meta?.cedarlingLogTypeChanged && _meta?.toastMessage) {
+        yield put(updateToast(true, 'success', _meta.toastMessage))
+      } else {
+        yield put(updateToast(true, 'success'))
+      }
       return
     }
   } catch (error) {
