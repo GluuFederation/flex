@@ -168,7 +168,7 @@ const pluginMetadata = {
     {
       component: CedarlingConfigPage,
       path: PLUGIN_BASE_PATH + '/cedarlingconfig',
-      permission: MAPPING_READ,
+      permission: PROPERTIES_READ,
     },
 
     {

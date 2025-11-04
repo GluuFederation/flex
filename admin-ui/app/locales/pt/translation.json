@@ -1592,7 +1592,7 @@
       "point1": "1. Crie um repositório de políticas utilizando o Agama Lab. Fork Project",
       "point2": "2.º Copie o URL do PolicyStore e configure.",
       "note": "Nota: isto irá ajudá-lo a criar o seu próprio projeto cedarling. Pode atualizar funções e permissões usando",
-      "localPoliciesNote:": "Nota: Recomenda-se ativar a opção para produção. Se ativado, o sistema irá procurar políticas dos URLs acima, armazená-las na base de dados e utilizá-las para autorização do Cedarling."
+      "useRemotePolicyStore": "Nota: Recomenda-se ativar a opção para produção. Se ativado, o sistema irá procurar políticas dos URLs acima, armazená-las na base de dados e utilizá-las para autorização do Cedarling."
     }
   },
   "script": {

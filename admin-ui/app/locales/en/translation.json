@@ -1750,7 +1750,7 @@
       "point1": "1. Create a policy store using Agama Lab. Fork project",
       "point2": "2. Copy PolicyStore URL and configure.",
       "note": "Note: This will help you to create your own cedarling project. You can update roles and permissions using",
-      "localPoliciesNote:": "Note: Recommended to set ON for production. If on, it will fetch policies from above URLs, store them in DB, and use them for Cedarling authorization."
+      "useRemotePolicyStore": "Note: Recommended to set ON for production. If on, it will fetch policies from above URLs, store them in DB, and use them for Cedarling authorization."
     }
   }
 }

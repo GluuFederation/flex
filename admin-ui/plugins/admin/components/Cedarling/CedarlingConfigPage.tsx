@@ -30,13 +30,13 @@ import type { RootState } from '@/redux/sagas/types/audit'
 import { UPDATE } from '@/audit/UserActionType'
 import { IconButton } from '@mui/material'
 import { RefreshOutlined } from '@mui/icons-material'
+import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
 
 const CedarlingConfigPage: React.FC = () => {
   const { authorize } = useCedarling()
   const { t } = useTranslation()
   SetTitle(t('titles.cedarling_config'))
   const [auiPolicyStoreUrl, setAuiPolicyStoreUrl] = useState('')
-  const [configApiPolicyStoreUrl, setConfigApiPolicyStoreUrl] = useState('')
   const { data: auiConfig, isLoading, isSuccess } = useGetAdminuiConf()
   const editAdminuiConfMutation = useEditAdminuiConf()
   const setRemotePolicyStoreAsDefaultMutation = useSetRemotePolicyStoreAsDefault()
@@ -139,7 +139,7 @@ const CedarlingConfigPage: React.FC = () => {
               <CardText className="text-center text-secondary">
                 {t('documentation.cedarlingConfig.point1')}{' '}
                 <a
-                  href="https://github.com/kdhttps/admin-ui-cedarling-config"
+                  href="https://github.com/duttarnab/cedarling_store/tree/agama-lab-policy-designer"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -175,25 +175,15 @@ const CedarlingConfigPage: React.FC = () => {
                   />
                 </Col>
                 <Col sm={1}>
-                  <IconButton
-                    type="button"
-                    aria-label="search"
-                    onClick={handleSetRemotePolicyStoreAsDefault}
-                  >
-                    <RefreshOutlined />
-                  </IconButton>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <GluuLabel label={'fields.configApiPolicyStoreUrl'} />
-                <Col sm={8}>
-                  <Input
-                    id="configApiPolicyStoreUrl"
-                    type="url"
-                    name="configApiPolicyStoreUrl"
-                    value={configApiPolicyStoreUrl}
-                    onChange={(e) => setConfigApiPolicyStoreUrl(e.target.value)}
-                  />
+                  <GluuTooltip doc_category={'cedarlingConfig'} doc_entry={'useRemotePolicyStore'}>
+                    <IconButton
+                      type="button"
+                      aria-label="search"
+                      onClick={handleSetRemotePolicyStoreAsDefault}
+                    >
+                      <RefreshOutlined />
+                    </IconButton>
+                  </GluuTooltip>
                 </Col>
               </FormGroup>
 
