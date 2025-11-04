@@ -52,7 +52,10 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   }, [])
 
   const handleNavigateBack = useCallback(() => {
-    navigate(-1)
+    if (window.history.length > 1) {
+      navigate(-1)
+    }
+    return
   }, [navigate])
 
   const transformPropertyForApi = (
@@ -189,6 +192,8 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
       formik.setFieldValue('location_type', value || '')
 
       if (value === 'db') {
+        removeModuleProperty('location_path')
+        formik.setFieldValue('locationPath', undefined)
         formik.setFieldValue('script_path', undefined)
       } else if (value === 'file') {
         formik.setFieldValue('script', undefined)
@@ -197,7 +202,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
         formik.setFieldValue('script_path', undefined)
       }
     },
-    [formik.setFieldValue, formik.values.moduleProperties, updatePropertyInModuleProperties],
+    [
+      formik.setFieldValue,
+      formik.values.moduleProperties,
+      updatePropertyInModuleProperties,
+      removeModuleProperty,
+    ],
   )
 
   const scriptPathChange = useCallback(

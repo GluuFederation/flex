@@ -3,10 +3,10 @@ import * as Yup from 'yup'
 export const customScriptValidationSchema = Yup.object({
   name: Yup.string()
     .matches(/^[a-zA-Z0-9_]+$/, 'Name should contain only letters, digits and underscores')
-    .min(2, 'Mininum 2 characters')
+    .min(2, 'Minimum 2 characters')
     .required('Required!'),
   description: Yup.string(),
-  scriptType: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
+  scriptType: Yup.string().min(2, 'Minimum 2 characters').required('Required!'),
   programmingLanguage: Yup.string().min(3, 'This value is required').required('Required!'),
   level: Yup.number()
     .typeError('Level must be a number')
