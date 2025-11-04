@@ -7,6 +7,7 @@ import { Badge } from 'reactstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCedarling } from '@/cedarling'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { Card, CardBody } from 'Components'
 import CustomScriptDetailPage from './CustomScriptDetailPage'
 import GluuCustomScriptSearch from 'Routes/Apps/Gluu/GluuCustomScriptSearch'
@@ -111,6 +112,8 @@ function ScriptListTable(): JSX.Element {
         }
       } else if (name === 'type') {
         memoType = event.target.value
+        setPageNumber(0)
+        delete options['startIndex']
         makeOptions()
         dispatch(getCustomScriptByType({ action: options } as any))
       }
@@ -393,6 +396,7 @@ function ScriptListTable(): JSX.Element {
             feature={adminUiFeatures.custom_script_delete}
           />
         )}
+        <GluuFormFooter showBack={true} showCancel={false} showApply={false} />
       </CardBody>
     </Card>
   )
