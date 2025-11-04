@@ -31,6 +31,7 @@ import { UPDATE } from '@/audit/UserActionType'
 import { IconButton } from '@mui/material'
 import { RefreshOutlined } from '@mui/icons-material'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
+import { ADMIN_UI_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 
 const CedarlingConfigPage: React.FC = () => {
   const { authorize } = useCedarling()
@@ -63,7 +64,6 @@ const CedarlingConfigPage: React.FC = () => {
       const editAppConfigResponse: AppConfigResponse = await editAdminuiConfMutation.mutateAsync({
         data: { ...auiConfig, ...requestData },
       })
-      console.log('Edit Response:', editAppConfigResponse)
       setAuiPolicyStoreUrl(editAppConfigResponse?.auiPolicyStoreUrl || '')
       dispatch(updateToast(true, 'success'))
 
@@ -72,7 +72,7 @@ const CedarlingConfigPage: React.FC = () => {
         token: token ?? undefined,
         userinfo: userinfo ?? undefined,
         action: UPDATE,
-        resource: 'update_admin_ui_config',
+        resource: ADMIN_UI_CONFIG,
         message: userMessage,
         client_id: client_id,
         payload: requestData,
@@ -88,9 +88,8 @@ const CedarlingConfigPage: React.FC = () => {
     e.preventDefault()
 
     try {
-      const setPolicyDefaultResponse = await setRemotePolicyStoreAsDefaultMutation.mutateAsync()
+      await setRemotePolicyStoreAsDefaultMutation.mutateAsync()
 
-      console.log('Edit Response:', setPolicyDefaultResponse)
       dispatch(updateToast(true, 'success'))
 
       const userMessage: string = 'Set policy store as default'
@@ -98,7 +97,7 @@ const CedarlingConfigPage: React.FC = () => {
         token: token ?? undefined,
         userinfo: userinfo ?? undefined,
         action: UPDATE,
-        resource: 'set_remote_policy_store_as_default',
+        resource: ADMIN_UI_CONFIG,
         message: userMessage,
         client_id: client_id,
         payload: {},
@@ -111,14 +110,9 @@ const CedarlingConfigPage: React.FC = () => {
   }
 
   useEffect(() => {
-    const initPermissions = async () => {
-      const permissions = [PROPERTIES_READ, PROPERTIES_WRITE, PROPERTIES_DELETE]
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
-    }
-    initPermissions()
-  }, [])
+    const permissions = [PROPERTIES_READ, PROPERTIES_WRITE, PROPERTIES_DELETE]
+    Promise.allSettled(permissions.map((p) => authorize([p])))
+  }, [authorize])
 
   useEffect(() => {
     if (isSuccess) {

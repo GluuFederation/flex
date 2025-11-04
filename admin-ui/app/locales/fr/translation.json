@@ -62,7 +62,7 @@
       "adminUiRoles": "Rôles de l'interface utilisateur d'administration",
       "capabilities": "Capacités",
       "mapping": "Mapping",
-      "cedarlingConfig": "Cèdre"
+      "cedarlingConfig": "Cedarling"
     },
     "lock": "Verrouillage",
     "cache": "Cacher",

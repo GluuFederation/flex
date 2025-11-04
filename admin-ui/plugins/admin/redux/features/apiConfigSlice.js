@@ -33,14 +33,13 @@ const apiConfigSlice = createSlice({
   name: 'apiConfig',
   initialState,
   reducers: {
-    editConfig: (state, data) => {
-      if (data) {
-        state.items = { ...state.items, ...data }
+    editConfig: (state, action) => {
+      if (action.payload) {
+        state.items = { ...state.items, ...action.payload }
       }
     },
   },
 })
 
 export const { editConfig } = apiConfigSlice.actions
-export const { actions, reducer, state } = apiConfigSlice
-reducerRegistry.register('apiConfigReducer', reducer)
+export const { actions, reducer } = apiConfigSlice

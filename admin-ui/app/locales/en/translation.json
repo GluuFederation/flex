@@ -1747,7 +1747,7 @@
     },
     "cedarlingConfig": {
       "title": "Configure fine-grained control using Cedarling",
-      "point1": "1. Create a policy store using Agama Lab. Fork project",
+      "point1": "1. Create a policy store using Agama Lab. Fork the project",
       "point2": "2. Copy PolicyStore URL and configure.",
       "note": "Note: This will help you to create your own cedarling project. You can update roles and permissions using",
       "useRemotePolicyStore": "Note: Recommended to set ON for production. If on, it will fetch policies from above URLs, store them in DB, and use them for Cedarling authorization."
