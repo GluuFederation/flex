@@ -30,7 +30,7 @@ const CustomAttributesList: React.FC<CustomAttributesListProps> = ({
 
           if (filtered.length === 0) {
             return (
-              <li className="list-group-item text-muted">
+              <li className="list-group-item text-muted" role="status">
                 {searchQuery ? 'No attributes found' : 'All attributes have been added'}
               </li>
             )
