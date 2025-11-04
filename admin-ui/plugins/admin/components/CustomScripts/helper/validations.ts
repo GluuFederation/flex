@@ -7,7 +7,7 @@ export const customScriptValidationSchema = Yup.object({
     .required('Required!'),
   description: Yup.string(),
   scriptType: Yup.string().min(2, 'Minimum 2 characters').required('Required!'),
-  programmingLanguage: Yup.string().min(3, 'This value is required').required('Required!'),
+  programmingLanguage: Yup.string().min(3, 'Must be at least 3 characters').required('Required!'),
   level: Yup.number()
     .typeError('Level must be a number')
     .integer('Level must be an integer')
