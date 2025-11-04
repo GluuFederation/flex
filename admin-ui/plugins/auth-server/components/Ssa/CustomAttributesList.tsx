@@ -21,13 +21,22 @@ const CustomAttributesList: React.FC<CustomAttributesListProps> = ({
         aria-label="Search custom attributes"
       />
       <ul className="list-group" aria-label="Available custom attributes for SSA">
-        {availableAttributes
-          .filter((attribute) => {
+        {(() => {
+          const filtered = availableAttributes.filter((attribute) => {
             const name = attribute.toLowerCase()
             const alreadyAdded = selectedAttributes.includes(attribute)
             return (name.includes(searchQuery.toLowerCase()) || !searchQuery) && !alreadyAdded
           })
-          .map((attribute) => (
+
+          if (filtered.length === 0) {
+            return (
+              <li className="list-group-item text-muted">
+                {searchQuery ? 'No attributes found' : 'All attributes have been added'}
+              </li>
+            )
+          }
+
+          return filtered.map((attribute) => (
             <li className="list-group-item" key={attribute}>
               <button
                 type="button"
@@ -39,7 +48,8 @@ const CustomAttributesList: React.FC<CustomAttributesListProps> = ({
                 {attribute}
               </button>
             </li>
-          ))}
+          ))
+        })()}
       </ul>
     </div>
   )
