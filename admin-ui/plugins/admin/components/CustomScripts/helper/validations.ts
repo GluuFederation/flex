@@ -13,18 +13,12 @@ export const customScriptValidationSchema = Yup.object({
     .integer('Level must be an integer')
     .min(0, 'Level must be non-negative')
     .required('Required!'),
-  script: Yup.string().when('location_type', {
-    is: (value: string) => {
-      return value === 'db'
-    },
-    then: () => Yup.string().required('Required!'),
-  }),
-  script_path: Yup.string().when('location_type', {
-    is: (value: string) => {
-      return value === 'file'
-    },
-    then: () => Yup.string().required('Required!'),
-  }),
+  script: Yup.string().when('location_type', ([locationType], schema) =>
+    locationType === 'db' ? schema.required('Required!') : schema,
+  ),
+  script_path: Yup.string().when('location_type', ([locationType], schema) =>
+    locationType === 'file' ? schema.required('Required!') : schema,
+  ),
 
   moduleProperties: Yup.array()
     .of(
@@ -33,29 +27,30 @@ export const customScriptValidationSchema = Yup.object({
         value2: Yup.string().optional(),
       }),
     )
-    .when('scriptType', {
-      is: (v: string) => v === 'person_authentication',
-      then: (schema) =>
-        schema
-          .test(
-            'usage-type-present',
-            'Interactive is required for person_authentication',
-            (arr?: Array<{ value1?: string; value2?: string }>) => {
-              if (!Array.isArray(arr)) return false
-              const prop = arr.find((p) => p?.value1 === 'usage_type')
-              return !!(prop && prop.value2 && prop.value2.trim().length > 0)
-            },
-          )
-          .test(
-            'usage-type-valid',
-            'Interactive must be one of interactive, service, or both',
-            (arr?: Array<{ value1?: string; value2?: string }>) => {
-              if (!Array.isArray(arr)) return true
-              const prop = arr.find((p) => p?.value1 === 'usage_type')
-              if (!prop || !prop.value2) return true
-              return ['interactive', 'service', 'both'].includes(prop.value2)
-            },
-          ),
-      otherwise: (schema) => schema,
+    .when('scriptType', ([scriptType], schema) => {
+      if (scriptType !== 'person_authentication') {
+        return schema
+      }
+
+      return schema
+        .test(
+          'usage-type-present',
+          'Interactive is required for person_authentication',
+          (arr?: Array<{ value1?: string; value2?: string }>) => {
+            if (!Array.isArray(arr)) return false
+            const prop = arr.find((p) => p?.value1 === 'usage_type')
+            return !!(prop && prop.value2 && prop.value2.trim().length > 0)
+          },
+        )
+        .test(
+          'usage-type-valid',
+          'Interactive must be one of interactive, service, or both',
+          (arr?: Array<{ value1?: string; value2?: string }>) => {
+            if (!Array.isArray(arr)) return true
+            const prop = arr.find((p) => p?.value1 === 'usage_type')
+            if (!prop || !prop.value2) return true
+            return ['interactive', 'service', 'both'].includes(prop.value2)
+          },
+        )
     }),
 })
