@@ -177,7 +177,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
           path.resolve(__dirname, '../jans_config_api_orval'),
           path.resolve(__dirname, '..'), // Include root directory for api-client.ts
         ],
-        exclude: /node_modules/,
+        exclude: /(node_modules|\.test\.(ts|tsx)$)/,
         use: 'babel-loader',
       },
       {
@@ -186,8 +186,13 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: /(node_modules|\.test\.js$)/,
         use: 'babel-loader',
+      },
+      {
+        test: /\.test\.(js|ts|tsx)$/,
+        include: [config.srcDir, config.pluginsDir],
+        use: 'ignore-loader',
       },
       {
         test: /\.css$/i,
