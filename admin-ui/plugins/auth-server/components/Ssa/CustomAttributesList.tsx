@@ -20,12 +20,7 @@ const CustomAttributesList: React.FC<CustomAttributesListProps> = ({
         value={searchInputValue}
         aria-label="Search custom attributes"
       />
-      <ul
-        className="list-group"
-        role="listbox"
-        aria-label="Available custom attributes for SSA"
-        aria-multiselectable="false"
-      >
+      <ul className="list-group" aria-label="Available custom attributes for SSA">
         {availableAttributes
           .filter((attribute) => {
             const name = attribute.toLowerCase()
@@ -33,7 +28,7 @@ const CustomAttributesList: React.FC<CustomAttributesListProps> = ({
             return (name.includes(searchQuery.toLowerCase()) || !searchQuery) && !alreadyAdded
           })
           .map((attribute) => (
-            <li className="list-group-item" key={attribute} role="option" aria-selected={false}>
+            <li className="list-group-item" key={attribute}>
               <button
                 type="button"
                 className="btn btn-link p-0"
