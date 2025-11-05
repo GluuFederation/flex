@@ -299,8 +299,12 @@ const SsaAddPage = () => {
                         formik.resetForm()
                         setSelectedAttributes([])
                         setSearchQuery('')
+                        setFilteredQuery('')
                         setIsExpirable(false)
                         setExpirationDate(null)
+                        if (debouncedSetFilteredQuery && debouncedSetFilteredQuery.cancel) {
+                          debouncedSetFilteredQuery.cancel()
+                        }
                       }}
                       onApply={formik.handleSubmit}
                       disableBack={false}
