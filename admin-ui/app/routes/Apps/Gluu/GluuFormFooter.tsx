@@ -13,7 +13,7 @@ interface ButtonLabelProps {
   loadingIconClass?: string
 }
 
-interface GluuFormFooterProps {
+interface GluuFormFooterBaseProps {
   showBack?: boolean
   backButtonLabel?: string
   onBack?: () => void
@@ -23,13 +23,17 @@ interface GluuFormFooterProps {
   onCancel?: () => void
   disableCancel?: boolean
   showApply?: boolean
-  onApply?: () => void
   disableApply?: boolean
-  applyButtonType?: 'button' | 'submit'
   applyButtonLabel?: string
   isLoading?: boolean
   className?: string
 }
+
+type GluuFormFooterProps = GluuFormFooterBaseProps &
+  (
+    | { applyButtonType?: 'submit'; onApply?: () => void }
+    | { applyButtonType: 'button'; onApply: () => void }
+  )
 
 const ButtonLabel = memo((props: ButtonLabelProps) => {
   const { isLoading, iconClass, label, loadingIconClass = 'fa fa-spinner fa-spin' } = props
@@ -151,6 +155,7 @@ const GluuFormFooter = ({
             onClick={handleBackClick}
             className={buttonLayout.back}
             disabled={disableBack}
+            aria-label={backLabel}
           >
             <ButtonLabel isLoading={false} iconClass="fa fa-arrow-circle-left" label={backLabel} />
           </Button>
@@ -164,6 +169,7 @@ const GluuFormFooter = ({
                 color={buttonColor}
                 style={BUTTON_STYLE}
                 disabled={disableApply || isLoading}
+                aria-label={applyLabel}
               >
                 <ButtonLabel
                   isLoading={isLoading}
@@ -177,7 +183,8 @@ const GluuFormFooter = ({
                 color={buttonColor}
                 style={BUTTON_STYLE}
                 onClick={onApply}
-                disabled={disableApply || isLoading || !onApply}
+                disabled={disableApply || isLoading}
+                aria-label={applyLabel}
               >
                 <ButtonLabel
                   isLoading={isLoading}
@@ -197,6 +204,7 @@ const GluuFormFooter = ({
             onClick={handleCancelClick}
             className={`${buttonLayout.cancel}${buttonStates.hasAllThreeButtons ? ' ms-4' : ''}`}
             disabled={disableCancel || isLoading}
+            aria-label={cancelLabel}
           >
             <ButtonLabel isLoading={false} iconClass="fa fa-undo" label={cancelLabel} />
           </Button>
