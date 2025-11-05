@@ -59,3 +59,15 @@ export interface CreateFidoConfigPayloadParams {
 export interface PutPropertiesFido2Params {
   data: AppConfiguration1
 }
+
+// Minimal Formik subset used by StaticConfiguration for typeahead adapters
+export type FormikSetFieldValue<TValues> = <K extends keyof TValues>(
+  field: K,
+  value: TValues[K],
+  shouldValidate?: boolean,
+) => void
+
+export interface MinimalFormik<TValues> {
+  values: TValues
+  setFieldValue: FormikSetFieldValue<TValues>
+}

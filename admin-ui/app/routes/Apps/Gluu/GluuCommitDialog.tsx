@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import {
   FormGroup,
   Col,
@@ -50,13 +50,15 @@ const GluuCommitDialog = ({
     modal,
   })
 
+  const prevModalRef = useRef<boolean>(false)
   useEffect(() => {
-    if (userMessage.length >= 10 && userMessage.length <= 512) {
-      setActive(true)
-    } else {
-      setActive(false)
+    setActive(userMessage.length >= 10 && userMessage.length <= 512)
+
+    if (modal && !prevModalRef.current) {
+      setUserMessage('')
     }
-  }, [userMessage])
+    prevModalRef.current = modal
+  }, [userMessage, modal])
 
   function handleAccept() {
     if (formik) {
@@ -77,7 +79,7 @@ const GluuCommitDialog = ({
   const renderBadges = (values: any) => {
     return (
       <div className="d-flex flex-column gap-1 align-items-start">
-        {values.map((data: any, index: any) => (
+        {values.map((data: any) => (
           <Badge
             color={`primary-${selectedTheme}  `}
             style={{ width: 'fit-content' }}

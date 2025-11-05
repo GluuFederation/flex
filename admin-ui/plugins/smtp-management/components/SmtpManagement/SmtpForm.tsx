@@ -5,7 +5,7 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { SelectChangeEvent } from '@mui/material'
 import { useFormik } from 'formik'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { useTranslation } from 'react-i18next'
 import {
   enableTestButton,
@@ -55,6 +55,7 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
       toggle()
     },
     validationSchema,
+    validateOnMount: true,
   })
 
   useEffect(() => {
@@ -67,7 +68,17 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
     formik.resetForm()
   }
 
-  const submitForm = (userMessage: string) => {
+  const submitForm = async (userMessage: string) => {
+    const errors = await formik.validateForm()
+    if (Object.keys(errors).length > 0) {
+      // mark all fields as touched to reveal validation messages
+      const touched: Record<string, boolean> = {}
+      Object.keys(errors).forEach((k) => (touched[k] = true))
+      formik.setTouched(touched)
+      toast.error(t('messages.mandatory_fields_required'))
+      return
+    }
+
     toggle()
     const trimmedValues = trimObjectStrings(
       formik.values as unknown as Record<string, unknown>,
@@ -328,16 +339,28 @@ function SmtpForm(props: Readonly<SmtpFormProps>) {
           />
         </Col>
       </FormGroup>
+      {testButtonEnabled && (
+        <Row className="mb-2">
+          <Col>
+            <button type="button" className="btn btn-secondary" onClick={testSmtpConfig}>
+              {t('actions.test')}
+            </button>
+          </Col>
+        </Row>
+      )}
+
       <Row>
         <Col>
-          <GluuCommitFooter
-            saveHandler={toggle}
-            hideButtons={{ save: true, back: false }}
-            extraLabel={testButtonEnabled ? t('actions.test') : ''}
-            extraOnClick={testButtonEnabled ? testSmtpConfig : undefined}
-            disableBackButton={true}
-            cancelHandler={handleCancel}
-            type="submit"
+          <GluuFormFooter
+            showBack={true}
+            showCancel={true}
+            showApply={true}
+            onApply={toggle}
+            onCancel={handleCancel}
+            disableCancel={!formik.dirty}
+            disableApply={!formik.isValid || !formik.dirty}
+            applyButtonType="button"
+            isLoading={formik.isSubmitting ?? false}
           />
         </Col>
       </Row>

@@ -5,11 +5,11 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToggleRow from 'Routes/Apps/Gluu/GluuToggleRow'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import { fidoConstants, validationSchema, transformToFormValues } from '../helper'
-import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido-types'
+import { DynamicConfigurationProps, DynamicConfigFormValues } from '../types/fido'
 
 const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
   fidoConfiguration,
@@ -30,6 +30,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
     onSubmit: toggle,
     validationSchema: validationSchema[fidoConstants.VALIDATION_SCHEMAS.DYNAMIC_CONFIG],
     enableReinitialize: true,
+    validateOnMount: true,
   })
 
   const submitForm = useCallback(
@@ -74,6 +75,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             showError={!!(formik.errors.issuer && formik.touched.issuer)}
             errorMessage={formik.errors.issuer}
           />
@@ -87,6 +89,7 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
             formik={formik}
             lsize={4}
             rsize={8}
+            required
             showError={!!(formik.errors.baseEndpoint && formik.touched.baseEndpoint)}
             errorMessage={formik.errors.baseEndpoint}
           />
@@ -302,13 +305,17 @@ const DynamicConfiguration: React.FC<DynamicConfigurationProps> = ({
       </FormGroup>
       <Row>
         <Col>
-          <GluuCommitFooter
-            saveHandler={toggle}
-            hideButtons={{ save: true, back: true }}
-            extraLabel="Cancel"
-            extraOnClick={handleCancel}
-            type="submit"
-            disabled={isSubmitting}
+          <GluuFormFooter
+            showBack={true}
+            showCancel={true}
+            showApply={true}
+            onApply={toggle}
+            onCancel={handleCancel}
+            disableBack={false}
+            disableCancel={!formik.dirty}
+            disableApply={!formik.isValid || !formik.dirty}
+            applyButtonType="button"
+            isLoading={isSubmitting ?? false}
           />
         </Col>
       </Row>
