@@ -230,14 +230,14 @@ function CachePage() {
                     disableCancel={!formik.dirty}
                     disableApply={!formik.isValid || !formik.dirty}
                     applyButtonType="button"
-                    isLoading={formik.isSubmitting ?? false}
+                    isLoading={loading}
                   />
                   <GluuCommitDialog
                     handler={toggle}
                     modal={modal}
                     onAccept={() => {
-                      formik.handleSubmit()
                       toggle()
+                      formik.handleSubmit()
                     }}
                     formik={formik}
                   />
