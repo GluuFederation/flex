@@ -4,8 +4,10 @@ import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { JSON_CONFIG } from 'Utils/ApiResources'
+import { loggingValidationSchema } from './validations'
+import { LOG_LEVELS, LOG_LAYOUTS, getLoggingInitialValues } from './utils'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useDispatch, useSelector } from 'react-redux'
 import { Formik } from 'formik'
@@ -25,13 +27,12 @@ function LoggingPage() {
   const { hasCedarPermission, authorize } = useCedarling()
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
 
   const [showCommitDialog, setShowCommitDialog] = useState(false)
   const [pendingValues, setPendingValues] = useState(null)
-  const [localLogging, setLocalLogging] = useState(null)
+  const toggleCommitDialog = useCallback(() => setShowCommitDialog((prev) => !prev), [])
 
   useEffect(() => {
     const initPermissions = async () => {
@@ -44,38 +45,21 @@ function LoggingPage() {
     dispatch(getLoggingConfig())
   }, [dispatch, authorize])
 
-  useEffect(() => {
-    if (logging) {
-      setLocalLogging(logging)
-    }
-  }, [logging])
+  const initialValues = useMemo(() => getLoggingInitialValues(logging), [logging])
 
-  useEffect(() => {}, [cedarPermissions])
-
-  const initialValues = useMemo(
-    () => ({
-      loggingLevel: localLogging?.loggingLevel,
-      loggingLayout: localLogging?.loggingLayout,
-      httpLoggingEnabled: localLogging?.httpLoggingEnabled,
-      disableJdkLogger: localLogging?.disableJdkLogger,
-      enabledOAuthAuditLogging: localLogging?.enabledOAuthAuditLogging,
-    }),
-    [localLogging],
-  )
-
-  const levels = useMemo(() => ['TRACE', 'DEBUG', 'INFO', 'ERROR', 'WARN'], [])
-  const logLayouts = useMemo(() => ['text', 'json'], [])
+  const levels = useMemo(() => LOG_LEVELS, [])
+  const logLayouts = useMemo(() => LOG_LAYOUTS, [])
   SetTitle('Logging')
 
   const handleSubmit = useCallback(
     (values) => {
-      const mergedValues = getMergedValues(localLogging, values)
-      const changedFields = getChangedFields(localLogging, mergedValues)
+      const mergedValues = getMergedValues(logging, values)
+      const changedFields = getChangedFields(logging, mergedValues)
 
       setPendingValues({ mergedValues, changedFields })
       setShowCommitDialog(true)
     },
-    [localLogging],
+    [logging],
   )
 
   const handleAccept = useCallback(
@@ -104,7 +88,13 @@ function LoggingPage() {
       <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
           <GluuViewWrapper canShow={hasCedarPermission(LOGGING_READ)}>
-            <Formik initialValues={initialValues} enableReinitialize onSubmit={handleSubmit}>
+            <Formik
+              initialValues={initialValues}
+              enableReinitialize
+              onSubmit={handleSubmit}
+              validationSchema={loggingValidationSchema}
+              validateOnMount
+            >
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit}>
                   <FormGroup row>
@@ -113,6 +103,7 @@ function LoggingPage() {
                       size={4}
                       doc_category={JSON_CONFIG}
                       doc_entry="loggingLevel"
+                      required
                     />
                     <Col sm={8}>
                       <CustomInput
@@ -122,6 +113,9 @@ function LoggingPage() {
                         data-testid="loggingLevel"
                         value={formik.values.loggingLevel}
                         onChange={(e) => formik.setFieldValue('loggingLevel', e.target.value)}
+                        onBlur={() => formik.setFieldTouched('loggingLevel', true)}
+                        required
+                        aria-required="true"
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {levels.map((item, key) => (
@@ -130,6 +124,9 @@ function LoggingPage() {
                           </option>
                         ))}
                       </CustomInput>
+                      {formik.touched.loggingLevel && formik.errors.loggingLevel && (
+                        <div className="text-danger mt-1">{formik.errors.loggingLevel}</div>
+                      )}
                     </Col>
                   </FormGroup>
 
@@ -139,6 +136,7 @@ function LoggingPage() {
                       size={4}
                       doc_category={JSON_CONFIG}
                       doc_entry="loggingLayout"
+                      required
                     />
                     <Col sm={8}>
                       <CustomInput
@@ -148,6 +146,9 @@ function LoggingPage() {
                         data-testid="loggingLayout"
                         value={formik.values.loggingLayout}
                         onChange={(e) => formik.setFieldValue('loggingLayout', e.target.value)}
+                        onBlur={() => formik.setFieldTouched('loggingLayout', true)}
+                        required
+                        aria-required="true"
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {logLayouts.map((item, key) => (
@@ -156,6 +157,9 @@ function LoggingPage() {
                           </option>
                         ))}
                       </CustomInput>
+                      {formik.touched.loggingLayout && formik.errors.loggingLayout && (
+                        <div className="text-danger mt-1">{formik.errors.loggingLayout}</div>
+                      )}
                     </Col>
                   </FormGroup>
 
@@ -192,12 +196,17 @@ function LoggingPage() {
                   {hasCedarPermission(LOGGING_WRITE) && (
                     <Row>
                       <Col>
-                        <GluuCommitFooter
-                          saveHandler={formik.handleSubmit}
-                          extraLabel={t('actions.cancel')}
-                          extraOnClick={() => formik.resetForm()}
-                          hideButtons={{ save: true, back: true }}
-                          type="submit"
+                        <GluuFormFooter
+                          showBack={true}
+                          showCancel={true}
+                          showApply={true}
+                          onApply={formik.handleSubmit}
+                          onCancel={() => formik.resetForm()}
+                          disableBack={false}
+                          disableCancel={!formik.dirty}
+                          disableApply={!formik.isValid || !formik.dirty}
+                          applyButtonType="button"
+                          isLoading={loading}
                         />
                       </Col>
                     </Row>
@@ -207,7 +216,7 @@ function LoggingPage() {
             </Formik>
 
             <GluuCommitDialog
-              handler={() => setShowCommitDialog(false)}
+              handler={toggleCommitDialog}
               modal={showCommitDialog}
               onAccept={handleAccept}
               isLicenseLabel={false}
