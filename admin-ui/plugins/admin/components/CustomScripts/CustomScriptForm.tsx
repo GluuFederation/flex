@@ -72,11 +72,21 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
   const defaultScriptPathValue: string | undefined = getModuleProperty('location_path')
 
   // Helper to transform property format for API (key/value → value1/value2)
-  const transformPropertyForApi = (prop: ModuleProperty | ConfigurationProperty) => ({
-    value1: prop.key || prop.value1 || '',
-    value2: prop.value || prop.value2 || '',
-    hide: false,
-  })
+  const transformPropertyForApi = (
+    prop: ModuleProperty | ConfigurationProperty,
+  ): ModuleProperty | ConfigurationProperty => {
+    const baseResult: Record<string, unknown> = {
+      value1: prop.key || prop.value1 || '',
+      value2: prop.value || prop.value2 || '',
+    }
+    if (prop.hide !== undefined) {
+      baseResult.hide = prop.hide
+    }
+    if ('description' in prop && prop.description) {
+      baseResult.description = prop.description
+    }
+    return baseResult as ModuleProperty | ConfigurationProperty
+  }
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -136,12 +146,12 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
       if (values.configurationProperties) {
         submitValues.configurationProperties = filterEmptyObjects(
           values.configurationProperties,
-        ).map(transformPropertyForApi)
+        ).map(transformPropertyForApi) as ConfigurationProperty[]
       }
-      if (values.moduleProperties && item.locationType !== 'db') {
+      if (values.moduleProperties) {
         submitValues.moduleProperties = filterEmptyObjects(values.moduleProperties).map(
           transformPropertyForApi,
-        )
+        ) as ModuleProperty[]
       }
       if (typeof values.enabled == 'object') {
         if (Array.isArray(values.enabled) && values.enabled.length > 0) {
