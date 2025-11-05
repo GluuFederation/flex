@@ -88,7 +88,7 @@ const ScimConfiguration: React.FC<ScimConfigurationProps> = ({
             disableCancel={!isFormDirty}
             disableApply={!isFormValid || !isFormDirty}
             applyButtonType="submit"
-            isLoading={isSubmitting ?? false}
+            isLoading={isSubmitting}
           />
         </Col>
       </Row>
