@@ -170,6 +170,12 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
   module: {
     rules: [
       {
+        test: /\.test\.(ts|tsx|js|jsx)$/,
+        include: [config.srcDir, config.pluginsDir],
+        use: 'ignore-loader',
+        sideEffects: false,
+      },
+      {
         test: /\.(ts|tsx)$/,
         include: [
           config.srcDir,
