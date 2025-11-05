@@ -173,6 +173,7 @@ function AliasesListPage(): React.ReactElement {
         : `Created ACR mapping: ${values.mapping}`
       await logAcrMappingUpdate(auditMessage, modifiedFields)
 
+      formik.resetForm()
       setShowAddModal(false)
     },
     [configuration, isEdit, selectedRow, dispatch, logAcrMappingUpdate],
@@ -338,7 +339,10 @@ function AliasesListPage(): React.ReactElement {
             <Button
               color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
-              onClick={() => setShowAddModal(false)}
+              onClick={() => {
+                formik.resetForm()
+                setShowAddModal(false)
+              }}
             >
               {t('actions.cancel')}
             </Button>

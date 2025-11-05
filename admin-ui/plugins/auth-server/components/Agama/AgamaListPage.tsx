@@ -195,12 +195,6 @@ function AgamaListPage(): React.ReactElement {
     }
   }
 
-  useEffect(() => {
-    if (isEmpty(configuration)) {
-      dispatch(getJsonConfig({} as never))
-    }
-  }, [dispatch, configuration])
-
   const submitData = async (): Promise<void> => {
     if (!selectedFile) return
 
@@ -239,13 +233,14 @@ function AgamaListPage(): React.ReactElement {
     }
   }
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]): Promise<void> => {
     setProjectName('')
     const file = acceptedFiles[0]
     if (!file) return
 
     setSelectedFileName(file.name)
     setSelectedFile(file)
+    let foundProjectName = false
 
     try {
       const zip = await JSZip.loadAsync(file)
@@ -262,6 +257,7 @@ function AgamaListPage(): React.ReactElement {
             const jsonData = JSON.parse(jsonStr) as { projectName?: string }
             if (jsonData?.projectName) {
               setProjectName(jsonData.projectName)
+              foundProjectName = true
               setGetProjectName(true)
               break // Stop after finding first project name
             }
@@ -272,7 +268,7 @@ function AgamaListPage(): React.ReactElement {
         }
       }
 
-      if (!projectName) {
+      if (!foundProjectName) {
         setGetProjectName(true)
       }
     } catch (error) {
@@ -299,6 +295,13 @@ function AgamaListPage(): React.ReactElement {
       'application/octet-stream': ['.gama'],
       'application/x-zip-compressed': ['.zip'],
     },
+    maxSize: 50 * 1024 * 1024, // 50MB limit
+    onDropRejected: (fileRejections) => {
+      const error = fileRejections[0]?.errors[0]
+      if (error?.code === 'file-too-large') {
+        toast.error('File size exceeds 50MB limit')
+      }
+    },
   })
 
   const {
@@ -309,6 +312,10 @@ function AgamaListPage(): React.ReactElement {
     onDrop: onSHA256FileDrop,
     accept: {
       'text/plain': ['.sha256sum'],
+    },
+    maxSize: 1024 * 1024, // 1MB limit for SHA file
+    onDropRejected: () => {
+      toast.error('SHA256 file size exceeds 1MB limit')
     },
   })
 
@@ -451,11 +458,6 @@ function AgamaListPage(): React.ReactElement {
     if (shaFile && selectedFile) {
       verifySHA256Hash()
     }
-
-    // Cleanup: abort file reader if component unmounts
-    return () => {
-      // FileReader doesn't have an abort method, but we can prevent state updates
-    }
   }, [shaFile, selectedFile, verifySHA256Hash])
 
   const handleUpdateRowData = useCallback((updatedData: Deployment): void => {
@@ -495,10 +497,7 @@ function AgamaListPage(): React.ReactElement {
   }, [])
 
   //Modal Tabs
-  const tabNames = [
-    { name: t('menus.upload_agama_project'), path: '' },
-    { name: t('menus.add_community_project'), path: '' },
-  ]
+  const tabNames = [t('menus.upload_agama_project'), t('menus.add_community_project')]
 
   const handleDeploy = async (): Promise<void> => {
     try {
@@ -850,7 +849,7 @@ function AgamaListPage(): React.ReactElement {
       <Modal isOpen={showAddModal} size="lg" style={{ maxWidth: '700px', width: '100%' }}>
         <ModalHeader>{t('titles.add_new_agama_project')}</ModalHeader>
         <Card>
-          <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={true} />
+          <GluuTabs tabNames={tabNames} tabToShow={tabToShow} withNavigation={false} />
         </Card>
       </Modal>
     </>

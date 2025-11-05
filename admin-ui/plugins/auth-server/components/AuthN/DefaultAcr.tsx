@@ -15,6 +15,7 @@ import { ThemeContext } from '@/context/theme/themeContext'
 import DefaultAcrInput from '../Configuration/DefaultAcrInput'
 import { getScripts } from 'Redux/features/initSlice'
 import { buildAgamaFlowsArray, buildDropdownOptions, type DropdownOption } from './helper/acrUtils'
+import { updateToast } from 'Redux/features/toastSlice'
 
 const MAX_AGAMA_PROJECTS_FOR_ACR = 9999
 
@@ -92,6 +93,17 @@ function DefaultAcr(): React.ReactElement {
     dispatch(getScripts({ action: userAction }))
     dispatch(getAcrsConfig())
   }, [authorize, dispatch])
+
+  // Surface Agama fetch failures
+  useEffect(() => {
+    if (error) {
+      const errorMessage =
+        (error as Error)?.message ||
+        'Failed to fetch Agama projects. Only showing authentication scripts.'
+      console.error('Error fetching Agama projects:', error)
+      dispatch(updateToast(true, 'error', errorMessage))
+    }
+  }, [error, dispatch])
 
   const authScripts = useMemo<DropdownOption[]>(() => {
     const filteredScripts = (scripts || [])
