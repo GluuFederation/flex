@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import * as Yup from 'yup'
+// Yup handled via schema file
 import debounce from 'lodash/debounce'
 import { CardBody, Card, Form, Col, Row, FormGroup } from 'Components'
 import { LocalizationProvider } from '@mui/x-date-pickers'
@@ -16,7 +16,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { SSA } from 'Utils/ApiResources'
 import { buildPayload } from 'Utils/PermChecker'
@@ -25,14 +25,8 @@ import { getJsonConfig } from '../../redux/features/jsonConfigSlice'
 import { FETCHING_JSON_PROPERTIES } from '../../common/Constants'
 import CustomAttributesList from './CustomAttributesList'
 import { GRANT_TYPES, DEBOUNCE_DELAY } from './constants'
-
-const validationSchema = Yup.object({
-  software_id: Yup.string(),
-  software_roles: Yup.array(),
-  description: Yup.string(),
-  org_id: Yup.string(),
-  grant_types: Yup.array(),
-})
+import { ssaValidationSchema } from './validations'
+import { getSsaInitialValues, toEpochSecondsFromDayjs } from './utils'
 
 const SsaAddPage = () => {
   const { t } = useTranslation()
@@ -44,8 +38,22 @@ const SsaAddPage = () => {
   const [expirationDate, setExpirationDate] = useState(null)
   const [selectedAttributes, setSelectedAttributes] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
+  const [filteredQuery, setFilteredQuery] = useState('')
   const [modifiedFields, setModifiedFields] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const debouncedSetFilteredQuery = useRef(
+    debounce((value) => {
+      setFilteredQuery(value)
+    }, DEBOUNCE_DELAY),
+  ).current
+
+  useEffect(() => {
+    return () => {
+      if (debouncedSetFilteredQuery && debouncedSetFilteredQuery.cancel) {
+        debouncedSetFilteredQuery.cancel()
+      }
+    }
+  }, [debouncedSetFilteredQuery])
 
   const { savedConfig } = useSelector((state) => state.ssaReducer)
   const customAttributes = useSelector(
@@ -55,18 +63,11 @@ const SsaAddPage = () => {
   SetTitle(t('titles.ssa_management'))
 
   const formik = useFormik({
-    initialValues: {
-      software_id: '',
-      one_time_use: false,
-      org_id: '',
-      description: '',
-      software_roles: [],
-      rotate_ssa: false,
-      grant_types: [],
-    },
-    validationSchema,
+    initialValues: getSsaInitialValues(),
+    validationSchema: ssaValidationSchema,
     enableReinitialize: true,
-    onSubmit: (values) => {
+    validateOnMount: true,
+    onSubmit: () => {
       setModal(true)
     },
   })
@@ -85,10 +86,11 @@ const SsaAddPage = () => {
   }, [savedConfig, navigate, dispatch])
 
   const handleSearchChange = useCallback(
-    debounce((value) => {
+    (value) => {
       setSearchQuery(value)
-    }, DEBOUNCE_DELAY),
-    [],
+      debouncedSetFilteredQuery(value)
+    },
+    [debouncedSetFilteredQuery],
   )
 
   const handleAttributeSelect = useCallback(
@@ -103,7 +105,6 @@ const SsaAddPage = () => {
   const handleAttributeRemove = useCallback(
     (attribute) => {
       setSelectedAttributes((prev) => prev.filter((attr) => attr !== attribute))
-      // Remove the custom attribute from formik values
       formik.setFieldValue(attribute, undefined)
       const newModifiedFields = { ...modifiedFields }
       delete newModifiedFields[attribute]
@@ -119,9 +120,9 @@ const SsaAddPage = () => {
       // Get all form values including custom attributes
       const formValues = { ...formik.values }
 
-      // Add expiration if applicable
-      const timestamp = expirationDate?.getTime
-      formValues.expiration = isExpirable && timestamp ? Math.floor(timestamp / 1000) : null
+      if (!isExpirable) {
+        formValues.expiration = null
+      }
 
       const userAction = {}
       buildPayload(userAction, userMessage, formValues)
@@ -156,6 +157,7 @@ const SsaAddPage = () => {
                   errorMessage={formik.errors.software_id}
                   showError={formik.errors.software_id && formik.touched.software_id}
                   doc_category={SSA}
+                  required
                 />
 
                 <GluuInputRow
@@ -168,6 +170,7 @@ const SsaAddPage = () => {
                   errorMessage={formik.errors.org_id}
                   showError={formik.errors.org_id && formik.touched.org_id}
                   doc_category={SSA}
+                  required
                 />
 
                 <GluuInputRow
@@ -240,7 +243,14 @@ const SsaAddPage = () => {
                       lsize={6}
                       rsize={3}
                       value={isExpirable}
-                      handler={() => setIsExpirable(!isExpirable)}
+                      handler={() => {
+                        const newValue = !isExpirable
+                        setIsExpirable(newValue)
+                        if (!newValue) {
+                          setExpirationDate(null)
+                          formik.setFieldValue('expiration', null)
+                        }
+                      }}
                       errorMessage={formik.errors.expiration}
                       showError={formik.errors.expiration && formik.touched.expiration}
                       doc_category={SSA}
@@ -252,7 +262,10 @@ const SsaAddPage = () => {
                         <DatePicker
                           format="MM/DD/YYYY"
                           value={expirationDate}
-                          onChange={(date) => setExpirationDate(date)}
+                          onChange={(date) => {
+                            setExpirationDate(date)
+                            formik.setFieldValue('expiration', toEpochSecondsFromDayjs(date))
+                          }}
                           disablePast
                         />
                       </LocalizationProvider>
@@ -277,11 +290,24 @@ const SsaAddPage = () => {
 
                 <Row>
                   <Col>
-                    <GluuCommitFooter
-                      saveHandler={formik.handleSubmit}
-                      hideButtons={{ save: true, back: false }}
-                      type="submit"
-                      disabled={isSubmitting}
+                    <GluuFormFooter
+                      showBack={true}
+                      showCancel={true}
+                      showApply={true}
+                      onBack={() => navigate('/auth-server/config/ssa')}
+                      onCancel={() => {
+                        formik.resetForm()
+                        setSelectedAttributes([])
+                        setSearchQuery('')
+                        setIsExpirable(false)
+                        setExpirationDate(null)
+                      }}
+                      onApply={formik.handleSubmit}
+                      disableBack={false}
+                      disableCancel={!formik.dirty}
+                      disableApply={!formik.isValid || !formik.dirty}
+                      applyButtonType="button"
+                      isLoading={isSubmitting}
                     />
                   </Col>
                 </Row>
@@ -294,6 +320,7 @@ const SsaAddPage = () => {
                 selectedAttributes={selectedAttributes}
                 onAttributeSelect={handleAttributeSelect}
                 searchQuery={searchQuery}
+                filteredQuery={filteredQuery}
                 onSearchChange={handleSearchChange}
               />
             </Col>
