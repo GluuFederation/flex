@@ -139,20 +139,20 @@ const SsaAddPage = () => {
     <>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          <Row>
-            <Col sm={8}>
-              <Form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  formik.handleSubmit()
-                }}
-              >
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault()
+              formik.handleSubmit()
+            }}
+          >
+            <Row>
+              <Col sm={8}>
                 <GluuInputRow
                   label="fields.software_id"
                   name="software_id"
                   formik={formik}
-                  lsize={2}
-                  rsize={10}
+                  lsize={3}
+                  rsize={9}
                   value={formik.values.software_id}
                   errorMessage={formik.errors.software_id}
                   showError={formik.errors.software_id && formik.touched.software_id}
@@ -164,8 +164,8 @@ const SsaAddPage = () => {
                   label="fields.organization"
                   name="org_id"
                   formik={formik}
-                  lsize={2}
-                  rsize={10}
+                  lsize={3}
+                  rsize={9}
                   value={formik.values.org_id}
                   errorMessage={formik.errors.org_id}
                   showError={formik.errors.org_id && formik.touched.org_id}
@@ -177,8 +177,8 @@ const SsaAddPage = () => {
                   label="fields.description"
                   name="description"
                   formik={formik}
-                  lsize={2}
-                  rsize={10}
+                  lsize={3}
+                  rsize={9}
                   value={formik.values.description}
                   errorMessage={formik.errors.description}
                   showError={formik.errors.description && formik.touched.description}
@@ -189,8 +189,8 @@ const SsaAddPage = () => {
                   name="software_roles"
                   label={t('fields.software_roles')}
                   formik={formik}
-                  lsize={2}
-                  rsize={10}
+                  lsize={3}
+                  rsize={9}
                   options={[]}
                   value={formik.values.software_roles}
                   errorMessage={formik.errors.software_roles}
@@ -202,8 +202,8 @@ const SsaAddPage = () => {
                   name="grant_types"
                   label="fields.grant_types"
                   formik={formik}
-                  lsize={2}
-                  rsize={10}
+                  lsize={3}
+                  rsize={9}
                   value={formik.values.grant_types}
                   errorMessage={formik.errors.grant_types}
                   showError={formik.errors.grant_types && formik.touched.grant_types}
@@ -215,8 +215,8 @@ const SsaAddPage = () => {
                   name="one_time_use"
                   formik={formik}
                   label="fields.one_time_use"
-                  lsize={2}
-                  rsize={10}
+                  lsize={3}
+                  rsize={9}
                   value={formik.values.one_time_use}
                   errorMessage={formik.errors.one_time_use}
                   showError={formik.errors.one_time_use && formik.touched.one_time_use}
@@ -227,8 +227,8 @@ const SsaAddPage = () => {
                   name="rotate_ssa"
                   formik={formik}
                   label="fields.rotate_ssa"
-                  lsize={2}
-                  rsize={10}
+                  lsize={3}
+                  rsize={9}
                   value={formik.values.rotate_ssa}
                   errorMessage={formik.errors.rotate_ssa}
                   showError={formik.errors.rotate_ssa && formik.touched.rotate_ssa}
@@ -236,28 +236,26 @@ const SsaAddPage = () => {
                 />
 
                 <FormGroup row>
-                  <Col sm={4}>
-                    <GluuToogleRow
-                      name="expiration"
-                      label="fields.is_expirable"
-                      lsize={6}
-                      rsize={3}
-                      value={isExpirable}
-                      handler={() => {
-                        const newValue = !isExpirable
-                        setIsExpirable(newValue)
-                        if (!newValue) {
-                          setExpirationDate(null)
-                          formik.setFieldValue('expiration', null)
-                        }
-                      }}
-                      errorMessage={formik.errors.expiration}
-                      showError={formik.errors.expiration && formik.touched.expiration}
-                      doc_category={SSA}
-                    />
-                  </Col>
-                  <Col sm={6}>
-                    {isExpirable && (
+                  <GluuToogleRow
+                    name="expiration"
+                    label="fields.is_expirable"
+                    lsize={3}
+                    rsize={9}
+                    value={isExpirable}
+                    handler={() => {
+                      const newValue = !isExpirable
+                      setIsExpirable(newValue)
+                      if (!newValue) {
+                        setExpirationDate(null)
+                        formik.setFieldValue('expiration', null)
+                      }
+                    }}
+                    errorMessage={formik.errors.expiration}
+                    showError={formik.errors.expiration && formik.touched.expiration}
+                    doc_category={SSA}
+                  />
+                  {isExpirable && (
+                    <Col sm={9} style={{ marginLeft: '25%' }}>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                           format="MM/DD/YYYY"
@@ -269,8 +267,8 @@ const SsaAddPage = () => {
                           disablePast
                         />
                       </LocalizationProvider>
-                    )}
-                  </Col>
+                    </Col>
+                  )}
                 </FormGroup>
 
                 {selectedAttributes.map((attribute) => (
@@ -287,48 +285,43 @@ const SsaAddPage = () => {
                     doc_category={SSA}
                   />
                 ))}
+              </Col>
 
-                <Row>
-                  <Col>
-                    <GluuFormFooter
-                      showBack={true}
-                      showCancel={true}
-                      showApply={true}
-                      onBack={() => navigate('/auth-server/config/ssa')}
-                      onCancel={() => {
-                        formik.resetForm()
-                        setSelectedAttributes([])
-                        setSearchQuery('')
-                        setFilteredQuery('')
-                        setIsExpirable(false)
-                        setExpirationDate(null)
-                        if (debouncedSetFilteredQuery && debouncedSetFilteredQuery.cancel) {
-                          debouncedSetFilteredQuery.cancel()
-                        }
-                      }}
-                      onApply={formik.handleSubmit}
-                      disableBack={false}
-                      disableCancel={!formik.dirty}
-                      disableApply={!formik.isValid || !formik.dirty}
-                      applyButtonType="button"
-                      isLoading={isSubmitting}
-                    />
-                  </Col>
-                </Row>
-              </Form>
-            </Col>
-
-            <Col sm={4}>
-              <CustomAttributesList
-                availableAttributes={customAttributes}
-                selectedAttributes={selectedAttributes}
-                onAttributeSelect={handleAttributeSelect}
-                searchQuery={searchQuery}
-                filteredQuery={filteredQuery}
-                onSearchChange={handleSearchChange}
-              />
-            </Col>
-          </Row>
+              <Col sm={4}>
+                <CustomAttributesList
+                  availableAttributes={customAttributes}
+                  selectedAttributes={selectedAttributes}
+                  onAttributeSelect={handleAttributeSelect}
+                  searchQuery={searchQuery}
+                  filteredQuery={filteredQuery}
+                  onSearchChange={handleSearchChange}
+                />
+              </Col>
+            </Row>
+            <GluuFormFooter
+              showBack={true}
+              showCancel={true}
+              showApply={true}
+              onBack={() => navigate('/auth-server/config/ssa')}
+              onCancel={() => {
+                formik.resetForm()
+                setSelectedAttributes([])
+                setSearchQuery('')
+                setFilteredQuery('')
+                setIsExpirable(false)
+                setExpirationDate(null)
+                if (debouncedSetFilteredQuery && debouncedSetFilteredQuery.cancel) {
+                  debouncedSetFilteredQuery.cancel()
+                }
+              }}
+              onApply={formik.handleSubmit}
+              disableBack={false}
+              disableCancel={!formik.dirty}
+              disableApply={!formik.isValid || !formik.dirty}
+              applyButtonType="button"
+              isLoading={isSubmitting}
+            />
+          </Form>
         </CardBody>
       </Card>
 
