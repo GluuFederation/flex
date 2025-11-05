@@ -5,19 +5,21 @@ import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import customColors from '@/customColors'
+import type { ScopeDetailPageProps } from './types'
 
-function ScopeDetailPage({ row }) {
+const ScopeDetailPage: React.FC<ScopeDetailPageProps> = ({ row }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'light'
 
-  function getBadgeTheme(status) {
+  function getBadgeTheme(status: boolean | undefined): string {
     if (status) {
       return `primary-${selectedTheme}`
     } else {
       return 'dimmed'
     }
   }
+
   return (
     <React.Fragment>
       <Container style={{ backgroundColor: customColors.whiteSmoke }}>
@@ -81,13 +83,13 @@ function ScopeDetailPage({ row }) {
         <Row>
           <Col sm={3}>{t('fields.attributes')}:</Col>
           <Col sm={9}>
-            {Object.keys(row.attributes || []).map((item, key) => {
+            {Object.keys(row.attributes || {}).map((item, key) => {
               return (
                 <GluuFormDetailRow
                   key={key}
                   label={item}
                   isBadge={true}
-                  value={String(row.attributes[item])}
+                  value={String(row.attributes?.[item as keyof typeof row.attributes])}
                   doc_category={SCOPE}
                   doc_entry={`attributes.${item}`}
                 />

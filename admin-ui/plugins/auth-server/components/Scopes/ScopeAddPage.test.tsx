@@ -6,6 +6,26 @@ import scopes from './scopes.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
+// Mock orval hooks
+jest.mock('JansConfigApi', () => ({
+  usePostOauthScopes: jest.fn(() => ({
+    mutateAsync: jest.fn(),
+    isPending: false,
+    isSuccess: false,
+    isError: false,
+  })),
+}))
+
+// Mock audit logger
+jest.mock('./hooks', () => ({
+  useScopeActions: jest.fn(() => ({
+    logScopeCreation: jest.fn(),
+    navigateToScopeList: jest.fn(),
+    navigateToScopeAdd: jest.fn(),
+    navigateToScopeEdit: jest.fn(),
+  })),
+}))
+
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
   'https://jans.io/oauth/config/openid/clients.write',
@@ -13,11 +33,6 @@ const permissions = [
 ]
 const INIT_STATE = {
   permissions: permissions,
-}
-const SCPOPES_STATE = {
-  items: scopes,
-  item: {},
-  loading: false,
 }
 const STATE = {
   scopes: [],
@@ -29,12 +44,11 @@ const store = configureStore({
   reducer: combineReducers({
     authReducer: (state = INIT_STATE) => state,
     initReducer: (state = STATE) => state,
-    scopeReducer: (state = SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,
   }),
 })
 
-const Wrapper = ({ children }) => (
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <AppTestWrapper>
     <Provider store={store}>{children}</Provider>
   </AppTestWrapper>
