@@ -20,7 +20,7 @@ import {
   useGetAdminuiConf,
   useEditAdminuiConf,
   useSetRemotePolicyStoreAsDefault,
-  useSyncRoleToScopesMappings
+  useSyncRoleToScopesMappings,
 } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import type { AppConfigResponse } from 'JansConfigApi'
@@ -96,7 +96,6 @@ const CedarlingConfigPage: React.FC = () => {
         client_id: client_id,
         payload: requestData,
       })
-
     } catch (error) {
       console.error('Error updating Cedarling configuration:', error)
       const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
