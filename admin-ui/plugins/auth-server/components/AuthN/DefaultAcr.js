@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ACR_READ, ACR_WRITE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
-import { getAgama } from 'Plugins/auth-server/redux/features/agamaSlice'
+import { useGetAgamaPrj } from 'JansConfigApi'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
 import { Button, Form } from 'Components'
@@ -23,7 +23,12 @@ function DefaultAcr() {
   const { acrReponse: acrs } = useSelector((state) => state.acrReducer)
   const scripts = useSelector((state) => state.initReducer.scripts)
   const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
-  const { agamaList, loading: agamaLoading } = useSelector((state) => state.agamaReducer)
+
+  // Fetch Agama projects using React Query
+  const { data: projectsResponse, isLoading: agamaLoading } = useGetAgamaPrj({
+    count: 9999,
+    start: 0,
+  })
 
   const { t } = useTranslation()
 
@@ -48,7 +53,6 @@ function DefaultAcr() {
     initializeAcr()
     buildPayload(userAction, 'Fetch custom scripts', {})
     dispatch(getScripts({ action: userAction }))
-    dispatch(getAgama())
     dispatch(getAcrsConfig())
   }, [authorize, dispatch])
 
@@ -56,11 +60,12 @@ function DefaultAcr() {
     const filteredScripts = (scripts || [])
       .filter((item) => item?.scriptType === 'person_authentication' && item?.enabled)
       .map((item) => ({ key: item.name, value: item.name }))
+    const agamaList = projectsResponse?.entries || []
     const agamaFlows = buildAgamaFlowsArray(agamaList)
     const dropdownOptions = buildDropdownOptions(filteredScripts, agamaFlows)
 
     return dropdownOptions
-  }, [scripts, agamaList])
+  }, [scripts, projectsResponse])
 
   const toggle = () => {
     setModal(!modal)
