@@ -1,15 +1,13 @@
 // React and React-related imports
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { useFormik, FormikProps } from 'formik'
+import { useFormik } from 'formik'
 import { useQueryClient, QueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 
 // Third-party libraries
-import * as Yup from 'yup'
 import { debounce } from 'lodash'
-import moment from 'moment/moment'
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { Dispatch } from '@reduxjs/toolkit'
 import { TFunction } from 'i18next'
 
@@ -19,6 +17,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 
 // Context and Redux
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -31,12 +30,13 @@ import {
   getGetUserQueryKey,
   GetAttributesParams,
   UserPatchRequest,
-  CustomObjectAttribute,
 } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
+import PasswordChangeModal from './PasswordChangeModal'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
 import { triggerUserWebhook } from '../helper/userWebhookHelpers'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { getUserValidationSchema, initializeCustomAttributes } from '../helper/validations'
 
 // Types
 import {
@@ -50,16 +50,15 @@ import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 
 const usePasswordChange = (
   userDetails: CustomUser | null,
-  formik: FormikProps<UserEditFormValues>,
+  password: string,
   queryClient: QueryClient,
   dispatch: Dispatch,
   t: TFunction,
 ) => {
   const changePasswordMutation = usePatchUserByInum({
     mutation: {
-      onSuccess: async (data: CustomUser, variables: { inum: string; data: UserPatchRequest }) => {
+      onSuccess: async (data: CustomUser) => {
         dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
-        await logPasswordChange(variables.inum, variables.data as Record<string, unknown>)
         await triggerUserWebhook(data as Record<string, unknown>)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
@@ -71,132 +70,63 @@ const usePasswordChange = (
   })
 
   const submitChangePassword = (usermessage: string) => {
-    if (!userDetails?.inum || !formik.values.userPassword) return
+    if (!userDetails?.inum || !password) return
     const passwordAttrIndex = userDetails?.customAttributes?.findIndex(
       (attr) => attr.name === 'userPassword',
     )
-    let patchOperations: any
-    if (passwordAttrIndex !== undefined && passwordAttrIndex >= 0) {
-      patchOperations = {
-        jsonPatchString: JSON.stringify([
-          {
-            op: 'replace',
-            path: `/customAttributes/${passwordAttrIndex}/values/0`,
-            value: formik.values.userPassword,
-          },
-        ]),
-      }
-    } else {
-      patchOperations = {
-        jsonPatchString: JSON.stringify([
-          {
-            op: 'add',
-            path: '/customAttributes/-',
-            value: {
-              name: 'userPassword',
-              multiValued: false,
-              values: [formik.values.userPassword],
-            },
-          },
-        ]),
-      }
+    const patchOperations: UserPatchRequest =
+      passwordAttrIndex !== undefined && passwordAttrIndex >= 0
+        ? {
+            jsonPatchString: JSON.stringify([
+              {
+                op: 'replace',
+                path: `/customAttributes/${passwordAttrIndex}/values/0`,
+                value: password,
+              },
+            ]),
+          }
+        : {
+            jsonPatchString: JSON.stringify([
+              {
+                op: 'add',
+                path: '/customAttributes/-',
+                value: {
+                  name: 'userPassword',
+                  multiValued: false,
+                  values: [password],
+                },
+              },
+            ]),
+          }
+
+    // Create audit payload for logging (separate from API request)
+    const auditPayload: Record<string, unknown> = {
+      ...patchOperations,
+      inum: userDetails.inum,
+      customAttributes: [
+        {
+          name: 'userPassword',
+          multiValued: false,
+        },
+      ],
+      performedOn: {
+        user_inum: userDetails.inum,
+        userId: userDetails.userId || userDetails.displayName,
+      },
+      message: usermessage,
     }
 
-    patchOperations['inum'] = userDetails.inum
-    patchOperations['customAttributes'] = [
-      {
-        name: 'userPassword',
-        multiValued: false,
-      },
-    ]
-    patchOperations['performedOn'] = {
-      user_inum: userDetails.inum,
-      userId: userDetails.userId || userDetails.displayName,
-    }
-    patchOperations['message'] = usermessage
     changePasswordMutation.mutate({
       inum: userDetails.inum,
       data: patchOperations,
     })
+
+    // Log audit separately with full payload
+    logPasswordChange(userDetails.inum, auditPayload).catch((error) => {
+      console.error('Failed to log password change:', error)
+    })
   }
   return { changePasswordMutation, submitChangePassword }
-}
-
-const processBirthdateAttribute = (
-  customAttr: CustomObjectAttribute,
-  initialValues: UserEditFormValues,
-) => {
-  const attrValues = customAttr.values ?? []
-  const attrSingleValue = customAttr.value
-  const dateSource =
-    attrValues.length > 0 ? JSON.stringify(attrValues[0]) : JSON.stringify(attrSingleValue)
-  if (dateSource) {
-    initialValues[customAttr.name || ''] = moment(dateSource).format('YYYY-MM-DD')
-  }
-}
-
-const processMultiValuedAttribute = (
-  customAttr: CustomObjectAttribute,
-  initialValues: UserEditFormValues,
-) => {
-  const attrValues = customAttr.values ?? []
-  const attrSingleValue = customAttr.value
-  if (attrValues.length > 0) {
-    initialValues[customAttr.name || ''] = attrValues.map((v) =>
-      typeof v === 'string' ? v : JSON.stringify(v),
-    )
-  } else if (attrSingleValue) {
-    initialValues[customAttr.name || ''] = [
-      typeof attrSingleValue === 'string' ? attrSingleValue : JSON.stringify(attrSingleValue),
-    ]
-  }
-}
-
-const processSingleValuedAttribute = (
-  customAttr: CustomObjectAttribute,
-  initialValues: UserEditFormValues,
-) => {
-  const attrValues = customAttr.values ?? []
-  const attrSingleValue = customAttr.value
-  if (attrValues.length > 0) {
-    const value = attrValues[0]
-    initialValues[customAttr.name || ''] = typeof value === 'string' ? value : JSON.stringify(value)
-  } else if (attrSingleValue) {
-    initialValues[customAttr.name || ''] =
-      typeof attrSingleValue === 'string' ? attrSingleValue : JSON.stringify(attrSingleValue)
-  }
-}
-
-const initializeCustomAttributes = (
-  userDetails: CustomUser | null,
-  personAttributes: PersonAttribute[],
-) => {
-  const initialValues: UserEditFormValues = {
-    displayName: userDetails?.displayName || '',
-    givenName: userDetails?.givenName || '',
-    mail: userDetails?.mail || '',
-    userId: userDetails?.userId || '',
-    sn: (userDetails as any)?.familyName || '',
-    middleName: (userDetails as any)?.middleName || '',
-    status: (userDetails as any)?.jansStatus || userDetails?.status || '',
-  }
-
-  if (userDetails?.customAttributes) {
-    for (const customAttr of userDetails.customAttributes) {
-      const attributeDef = personAttributes.find((e: PersonAttribute) => e.name === customAttr.name)
-      if (customAttr.name === 'birthdate') {
-        processBirthdateAttribute(customAttr, initialValues)
-        continue
-      }
-      if (attributeDef?.oxMultiValuedAttribute) {
-        processMultiValuedAttribute(customAttr, initialValues)
-      } else {
-        processSingleValuedAttribute(customAttr, initialValues)
-      }
-    }
-  }
-
-  return initialValues
 }
 
 const setupCustomAttributes = (
@@ -234,72 +164,6 @@ const setupCustomAttributes = (
     }
   }
   setSelectedClaims(tempList)
-}
-
-const PasswordChangeModal = ({
-  isOpen,
-  toggle,
-  formik,
-  passwordError,
-  selectedTheme,
-  t,
-  onPasswordChange,
-}: {
-  isOpen: boolean
-  toggle: () => void
-  formik: FormikProps<UserEditFormValues>
-  passwordError: string
-  selectedTheme: string
-  t: TFunction
-  onPasswordChange: () => void
-}) => {
-  const DOC_SECTION = 'user'
-
-  return (
-    <Modal isOpen={isOpen} toggle={toggle} className="modal-outline-primary">
-      <ModalHeader>Change Password</ModalHeader>
-      <ModalBody>
-        <FormGroup row>
-          <Col>
-            <GluuInputRow
-              doc_category={DOC_SECTION}
-              label="Password"
-              name="userPassword"
-              type="password"
-              value={formik.values.userPassword || ''}
-              formik={formik}
-              lsize={3}
-              rsize={9}
-            />
-            <GluuInputRow
-              doc_category={DOC_SECTION}
-              label="Confirm Password"
-              name="userConfirmPassword"
-              type="password"
-              value={formik.values.userConfirmPassword || ''}
-              formik={formik}
-              lsize={3}
-              rsize={9}
-            />
-            {passwordError != '' && <span className="text-danger">{passwordError}</span>}
-          </Col>
-        </FormGroup>
-      </ModalBody>
-      <ModalFooter>
-        {formik.values?.userPassword &&
-          formik.values.userPassword.length > 3 &&
-          formik.values?.userPassword === formik.values.userConfirmPassword && (
-            <Button color={`primary-${selectedTheme}`} type="button" onClick={onPasswordChange}>
-              {t('actions.change_password')}
-            </Button>
-          )}
-        &nbsp;
-        <Button color={`primary-${selectedTheme}`} onClick={toggle}>
-          {t('actions.cancel')}
-        </Button>
-      </ModalFooter>
-    </Modal>
-  )
 }
 
 const AvailableClaimsPanel = ({
@@ -380,65 +244,103 @@ const AvailableClaimsPanel = ({
 function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
-  const [passwordError, setPasswordError] = useState('')
-  const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
   const [passwordModal, setPasswordModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const [modifiedFields, setModifiedFields] = useState<Record<string, string | string[]>>({})
   const [operations, setOperations] = useState<FormOperation[]>([])
+  const [passwordToChange, setPasswordToChange] = useState<string>('')
 
   const personAttributes = useSelector((state: UserFormState) => state.attributesReducerRoot.items)
   const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
   const options: Partial<GetAttributesParams> = {}
-  const initialValues = initializeCustomAttributes(userDetails || null, personAttributes)
+  const initialValues = useMemo(
+    () => initializeCustomAttributes(userDetails || null, personAttributes),
+    [userDetails, personAttributes],
+  )
   const formik = useFormik({
     initialValues: initialValues,
+    enableReinitialize: true,
     onSubmit: (values: UserEditFormValues) => {
       if (values) {
         toggle()
       }
     },
-    validationSchema: Yup.object({
-      displayName: Yup.string().required('Display name is required.'),
-      givenName: Yup.string().required('First name is required.'),
-      sn: Yup.string().required('Last name is required.'),
-      userId: Yup.string().required('User name is required.'),
-      mail: Yup.string().required('Email is required.'),
-      userPassword: userDetails ? Yup.string() : Yup.string().required('Password is required.'),
-      userConfirmPassword: userDetails
-        ? Yup.string()
-        : Yup.string().required('Confirm password is required.'),
-    }),
+    validationSchema: getUserValidationSchema(userDetails || null),
   })
 
   const { changePasswordMutation, submitChangePassword } = usePasswordChange(
     userDetails || null,
-    formik,
+    passwordToChange,
     queryClient,
     dispatch,
     t,
   )
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     setModal(!modal)
-  }
+  }, [modal])
 
-  const handleSubmitChangePassword = (usermessage: string) => {
-    submitChangePassword(usermessage)
-    setPasswordModal(!passwordModal)
-    toggleChangePasswordModal()
-  }
+  const handleNavigateBack = useCallback(() => {
+    if (window.history.length > 1) {
+      navigate(-1)
+    } else {
+      navigate('/user/usersmanagement')
+    }
+  }, [navigate])
 
-  const submitForm = (usermessage: string) => {
-    toggle()
-    onSubmitData(formik.values, modifiedFields, usermessage)
-  }
+  const handleCancel = useCallback(() => {
+    const resetValues = initializeCustomAttributes(userDetails || null, personAttributes)
+    formik.resetForm({ values: resetValues })
+    setModifiedFields({})
+    if (userDetails) {
+      const tempSelectedClaims: PersonAttribute[] = []
+      setupCustomAttributes(
+        userDetails,
+        personAttributes,
+        tempSelectedClaims,
+        (claims: PersonAttribute[]) => setSelectedClaims(claims),
+      )
+    } else {
+      setSelectedClaims([])
+    }
+  }, [formik, userDetails, personAttributes])
+
+  const toggleChangePasswordModal = useCallback(() => {
+    setChangePasswordModal(!changePasswordModal)
+  }, [changePasswordModal])
+
+  const handlePasswordChange = useCallback(
+    (password: string) => {
+      setPasswordToChange(password)
+      setPasswordModal(!passwordModal)
+    },
+    [passwordModal],
+  )
+
+  const handleSubmitChangePassword = useCallback(
+    (usermessage: string) => {
+      submitChangePassword(usermessage)
+      setPasswordModal(!passwordModal)
+      toggleChangePasswordModal()
+      setPasswordToChange('')
+    },
+    [submitChangePassword, passwordModal, toggleChangePasswordModal],
+  )
+
+  const submitForm = useCallback(
+    (usermessage: string) => {
+      toggle()
+      onSubmitData(formik.values, modifiedFields, usermessage)
+    },
+    [toggle, onSubmitData, formik.values, modifiedFields],
+  )
 
   const loading = changePasswordMutation.isPending
 
@@ -449,26 +351,10 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   }
 
   useEffect(() => {
-    if (formik.values.userConfirmPassword && formik.values.userPassword) {
-      if (formik.values.userConfirmPassword === formik.values.userPassword) {
-        setPasswordError('')
-        setShowButtons(true)
-      } else {
-        setPasswordError('Confirm password should be same as password entered.')
-        setShowButtons(false)
-      }
-    } else {
-      setPasswordError('')
-    }
-  }, [formik.values.userConfirmPassword, formik.values.userPassword])
-
-  useEffect(() => {
     if (userDetails) {
       setupCustomAttributes(userDetails, personAttributes, selectedClaims, setSelectedClaims)
-      setShowButtons(true)
     } else {
       setSelectedClaims([])
-      setShowButtons(true)
     }
   }, [userDetails])
 
@@ -480,17 +366,6 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
     setModifiedFields(newModifiedFields)
     const newList = tempList.filter((data) => data.name !== id)
     setSelectedClaims(newList)
-  }
-
-  const goBack = () => {
-    globalThis.history.back()
-  }
-
-  const toggleChangePasswordModal = () => {
-    setChangePasswordModal(!changePasswordModal)
-    formik.setFieldValue('userPassword', '')
-    formik.setFieldValue('userConfirmPassword', '')
-    setShowButtons(true)
   }
 
   const handleChange = (
@@ -514,11 +389,9 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
       <PasswordChangeModal
         isOpen={changePasswordModal}
         toggle={toggleChangePasswordModal}
-        formik={formik}
-        passwordError={passwordError}
         selectedTheme={selectedTheme}
         t={t}
-        onPasswordChange={() => setPasswordModal(!passwordModal)}
+        onPasswordChange={handlePasswordChange}
       />
       <Form
         onSubmit={(e) => {
@@ -672,9 +545,6 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
                 handleChange={handleChange}
               />
             )}
-            {passwordError != '' && !changePasswordModal && (
-              <span className="text-danger">{passwordError}</span>
-            )}
             {selectedClaims.map((data, index) => (
               <UserClaimEntry
                 key={data.name}
@@ -686,45 +556,51 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
                 modifiedFields={modifiedFields}
               />
             ))}
-            {showButtons && (
-              <FormGroup row>
-                <Col md={4}>
-                  {userDetails && (
-                    <Button
-                      color={`primary-${selectedTheme}`}
-                      onClick={() => setChangePasswordModal(true)}
-                    >
-                      <i className="fa fa-key me-2"></i>
-                      {t('actions.change_password')}
-                    </Button>
-                  )}
-                </Col>
-                <Col md={8} className="text-end">
-                  <Button color={`primary-${selectedTheme}`} type="button" onClick={goBack}>
-                    <i className="fa fa-arrow-circle-left me-2"></i>
-                    {t('actions.cancel')}
-                  </Button>
-                  &nbsp; &nbsp; &nbsp;
-                  <Button color={`primary-${selectedTheme}`} type="submit">
-                    <i className="fa fa-check-circle me-2"></i>
-                    {t('actions.save')}
-                  </Button>
-                </Col>
-              </FormGroup>
-            )}
           </Col>
           <Col sm={4}>
-            <AvailableClaimsPanel
-              searchClaims={searchClaims}
-              setSearchClaims={setSearchClaims}
-              personAttributes={personAttributes}
-              selectedClaims={selectedClaims}
-              setSelectedClaimsToState={setSelectedClaimsToState}
-              dispatch={dispatch}
-              options={options}
-            />
+            <div className="d-flex flex-column h-100">
+              <AvailableClaimsPanel
+                searchClaims={searchClaims}
+                setSearchClaims={setSearchClaims}
+                personAttributes={personAttributes}
+                selectedClaims={selectedClaims}
+                setSelectedClaimsToState={setSelectedClaimsToState}
+                dispatch={dispatch}
+                options={options}
+              />
+              {userDetails && (
+                <div className="mt-auto pt-3 d-flex justify-content-end">
+                  <Button color={`primary-${selectedTheme}`} onClick={toggleChangePasswordModal}>
+                    <i className="fa fa-key me-2"></i>
+                    {t('actions.change_password')}
+                  </Button>
+                </div>
+              )}
+            </div>
           </Col>
         </FormGroup>
+        <GluuFormFooter
+          showBack={true}
+          onBack={handleNavigateBack}
+          showCancel={true}
+          onCancel={handleCancel}
+          disableCancel={!formik.dirty}
+          showApply={true}
+          onApply={() => {
+            const values = Object.keys(modifiedFields).map((key) => {
+              return {
+                path: key,
+                value: modifiedFields[key],
+                op: 'replace' as const,
+              }
+            })
+            setOperations(values)
+            formik.handleSubmit()
+          }}
+          disableApply={!formik.dirty || !formik.isValid}
+          applyButtonType="button"
+          isLoading={loading}
+        />
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
