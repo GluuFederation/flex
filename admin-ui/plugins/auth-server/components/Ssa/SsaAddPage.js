@@ -72,6 +72,14 @@ const SsaAddPage = () => {
     },
   })
 
+  const handleBack = useCallback(() => {
+    if (window.history.length > 1) {
+      navigate(-1)
+      return
+    }
+    navigate('/auth-server/config/ssa')
+  }, [navigate])
+
   useEffect(() => {
     const userAction = {}
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, {})
@@ -302,7 +310,7 @@ const SsaAddPage = () => {
               showBack={true}
               showCancel={true}
               showApply={true}
-              onBack={() => navigate('/auth-server/config/ssa')}
+              onBack={handleBack}
               onCancel={() => {
                 formik.resetForm()
                 setSelectedAttributes([])
