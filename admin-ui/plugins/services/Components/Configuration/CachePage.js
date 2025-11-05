@@ -236,8 +236,8 @@ function CachePage() {
                     handler={toggle}
                     modal={modal}
                     onAccept={() => {
-                      formik.handleSubmit()
                       toggle()
+                      formik.handleSubmit()
                     }}
                     formik={formik}
                   />
