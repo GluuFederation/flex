@@ -1,37 +1,22 @@
 import * as Yup from 'yup'
 import { PROTECTION_MODES } from './constants'
 
-/**
- * Validates that a URL uses only allowed protocols (http/https)
- * Prevents SSRF attacks via javascript:, file:, data:, etc.
- * More permissive than Yup's .url() - allows URLs without TLDs (e.g., internal hostnames)
- */
 const isSecureUrl = (value: string | undefined): boolean => {
-  if (!value) return true // Empty values are handled by .required() if needed
+  if (!value) return true
   try {
     const url = new URL(value)
     return url.protocol === 'http:' || url.protocol === 'https:'
   } catch {
-    return false // Invalid URL format
+    return false
   }
 }
 
-/**
- * Validates URL format and protocol together
- * Allows hostnames without TLDs (internal services, k8s, docker, etc.)
- */
-const isValidSecureUrl = (value: string | undefined): boolean => {
-  if (!value) return true
-  // Must be valid URL format AND use http/https protocol
-  return isSecureUrl(value)
-}
-
-export const scimConfigurationValidationSchema = Yup.object({
+export const scimConfigurationSchema = Yup.object({
   baseDN: Yup.string(),
   applicationUrl: Yup.string().test(
     'valid-secure-url',
     'Application URL must be a valid URL with http:// or https:// protocol',
-    isValidSecureUrl,
+    isSecureUrl,
   ),
   baseEndpoint: Yup.string(),
   personCustomObjectClass: Yup.string(),
