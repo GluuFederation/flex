@@ -20,6 +20,7 @@ import {
   useGetAdminuiConf,
   useEditAdminuiConf,
   useSetRemotePolicyStoreAsDefault,
+  useSyncRoleToScopesMappings
 } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import type { AppConfigResponse } from 'JansConfigApi'
@@ -28,18 +29,22 @@ import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
 import type { RootState } from '@/redux/sagas/types/audit'
 import { UPDATE } from '@/audit/UserActionType'
-import { IconButton } from '@mui/material'
+import { FormControlLabel, IconButton, Radio, RadioGroup } from '@mui/material'
 import { RefreshOutlined } from '@mui/icons-material'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
 import { ADMIN_UI_CONFIG } from 'Plugins/admin/redux/audit/Resources'
+import { useIsFetching } from '@tanstack/react-query'
 
 const CedarlingConfigPage: React.FC = () => {
   const { authorize } = useCedarling()
   const { t } = useTranslation()
   SetTitle(t('titles.cedarling_config'))
   const [auiPolicyStoreUrl, setAuiPolicyStoreUrl] = useState('')
-  const { data: auiConfig, isLoading, isSuccess } = useGetAdminuiConf()
+  const { data: auiConfig, isSuccess } = useGetAdminuiConf()
+  const isFetching = useIsFetching()
+
   const editAdminuiConfMutation = useEditAdminuiConf()
+  const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
   const setRemotePolicyStoreAsDefaultMutation = useSetRemotePolicyStoreAsDefault()
   const token: string | undefined = useSelector(
     (state: RootState) => state.authReducer?.token?.access_token,
@@ -50,6 +55,7 @@ const CedarlingConfigPage: React.FC = () => {
   const client_id: string | undefined = useSelector(
     (state: RootState) => state.authReducer?.config?.clientId,
   )
+  const [policyRetrievalPoint, setPolicyRetrievalPoint] = useState('github')
 
   const dispatch = useDispatch()
 
@@ -57,7 +63,7 @@ const CedarlingConfigPage: React.FC = () => {
     e.preventDefault()
     const requestData = {
       auiPolicyStoreUrl,
-      useRemotePolicyStore: true,
+      policyRetrievalPoint,
     }
 
     try {
@@ -67,7 +73,7 @@ const CedarlingConfigPage: React.FC = () => {
       setAuiPolicyStoreUrl(editAppConfigResponse?.auiPolicyStoreUrl || '')
       dispatch(updateToast(true, 'success'))
 
-      const userMessage: string = 'Policy Store URL configuration updated'
+      let userMessage: string = 'Policy Store URL configuration updated'
       await logAudit({
         token: token ?? undefined,
         userinfo: userinfo ?? undefined,
@@ -77,6 +83,20 @@ const CedarlingConfigPage: React.FC = () => {
         client_id: client_id,
         payload: requestData,
       })
+
+      await syncRoleToScopesMappingsMutation.mutateAsync()
+
+      userMessage = 'sync role to scopes mappings'
+      await logAudit({
+        token: token ?? undefined,
+        userinfo: userinfo ?? undefined,
+        action: UPDATE,
+        resource: ADMIN_UI_CONFIG,
+        message: userMessage,
+        client_id: client_id,
+        payload: requestData,
+      })
+
     } catch (error) {
       console.error('Error updating Cedarling configuration:', error)
       const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
@@ -121,7 +141,7 @@ const CedarlingConfigPage: React.FC = () => {
   }, [isSuccess])
 
   return (
-    <GluuLoader blocking={isLoading}>
+    <GluuLoader blocking={isFetching}>
       <Card className="shadow-sm align-items-center">
         <Col sm="9">
           <CardBody>
@@ -169,8 +189,12 @@ const CedarlingConfigPage: React.FC = () => {
                   />
                 </Col>
                 <Col sm={1}>
-                  <GluuTooltip doc_category={'cedarlingConfig'} doc_entry={'useRemotePolicyStore'}>
+                  <GluuTooltip
+                    doc_category={'cedarlingConfig'}
+                    doc_entry={'updateRemotePolicyStoreOnServer'}
+                  >
                     <IconButton
+                      hidden={policyRetrievalPoint == 'github'}
                       type="button"
                       aria-label="search"
                       onClick={handleSetRemotePolicyStoreAsDefault}
@@ -179,6 +203,31 @@ const CedarlingConfigPage: React.FC = () => {
                     </IconButton>
                   </GluuTooltip>
                 </Col>
+              </FormGroup>
+              <FormGroup row>
+                <GluuLabel label={'fields.policyRetrievalPoint'} size={3} />
+                <Col sm={9} className="top-5">
+                  <RadioGroup
+                    row
+                    name="policyRetrievalPoint"
+                    value={policyRetrievalPoint}
+                    onChange={(e) => setPolicyRetrievalPoint(e.target.value)}
+                  >
+                    <FormControlLabel
+                      value={'github'}
+                      control={<Radio color="primary" />}
+                      label="GitHub"
+                      checked={policyRetrievalPoint === 'github'}
+                    />
+                    <FormControlLabel
+                      value={'local'}
+                      control={<Radio color="primary" />}
+                      label={'Local'}
+                      checked={policyRetrievalPoint === 'local'}
+                    />
+                  </RadioGroup>
+                </Col>
+                <Col>{t('documentation.cedarlingConfig.useRemotePolicyStore')}</Col>
               </FormGroup>
 
               <div className="text-center mt-4">
