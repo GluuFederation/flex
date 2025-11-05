@@ -1,4 +1,6 @@
-export const scopes = [
+import type { Scope } from './types'
+
+export const scopes: Partial<Scope>[] = [
   {
     dn: 'inum=F0C4,ou=scopes,o=jans',
     inum: 'F0C4',

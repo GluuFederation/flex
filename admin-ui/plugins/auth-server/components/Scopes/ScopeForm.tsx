@@ -1,9 +1,8 @@
 import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { Formik, ErrorMessage } from 'formik'
+import { Formik, ErrorMessage, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
-import PropTypes from 'prop-types'
 import {
   Container,
   Col,
@@ -29,8 +28,19 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import moment from 'moment'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
+import type { ScopeFormProps, ScopeFormValues, ScopeClient } from './types'
 
-function ScopeForm({
+interface AuthReducer {
+  userinfo: {
+    inum: string
+  }
+}
+
+interface RootState {
+  authReducer: AuthReducer
+}
+
+const ScopeForm: React.FC<ScopeFormProps> = ({
   scope,
   scripts,
   attributes,
@@ -38,33 +48,36 @@ function ScopeForm({
   onSearch,
   modifiedFields,
   setModifiedFields,
-}) {
+}) => {
   const { t } = useTranslation()
-  let dynamicScopeScripts = []
-  let umaAuthorizationPolicies = []
   const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
+  const selectedTheme = theme?.state?.theme || 'light'
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const client = scope.clients || []
 
-  const authReducer = useSelector((state) => state.authReducer)
-  let claims = []
+  const authReducer = useSelector((state: RootState) => state.authReducer)
+
+  let dynamicScopeScripts: { dn: string; name: string }[] = []
+  let umaAuthorizationPolicies: { dn: string; name: string }[] = []
+  let claims: { dn: string; name: string; key?: string }[] = []
+
   scripts = scripts || []
   attributes = attributes || []
+
   dynamicScopeScripts = scripts
-    .filter((item) => item.scriptType == 'dynamic_scope')
+    .filter((item) => item.scriptType === 'dynamic_scope')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   umaAuthorizationPolicies = scripts
-    .filter((item) => item.scriptType == 'uma_rpt_policy')
+    .filter((item) => item.scriptType === 'uma_rpt_policy')
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   claims = attributes.map((item) => ({
     dn: item.dn,
-    name: item.displayName,
-    key: item.claimName,
+    name: item.name,
+    key: item.key,
   }))
 
   const [init, setInit] = useState(false)
@@ -77,7 +90,7 @@ function ScopeForm({
   )
   const [showUmaPanel, handleShowUmaPanel] = useState(scope.scopeType === 'uma')
 
-  const handleScopeTypeChanged = (type) => {
+  const handleScopeTypeChanged = (type: string) => {
     if (type && type === 'openid') {
       handleClaimsPanel(true)
     } else {
@@ -98,14 +111,19 @@ function ScopeForm({
     } else {
       handleShowUmaPanel(false)
     }
-    scope.dynamicScopeScripts = ''
-    scope.claims = ''
-    scope.attributes.spontaneousClientId = ''
-    scope.attributes.spontaneousClientScopes = []
+    scope.dynamicScopeScripts = []
+    scope.claims = []
+    if (scope.attributes) {
+      scope.attributes.spontaneousClientId = undefined
+      scope.attributes.spontaneousClientScopes = []
+    }
   }
 
-  const getMapping = (partial, total) => {
-    let mappings = []
+  const getMapping = (
+    partial: string[] | undefined,
+    total: { dn: string; name: string }[],
+  ): { dn: string; name: string }[] => {
+    let mappings: { dn: string; name: string }[] = []
     if (!partial) {
       partial = []
     }
@@ -120,19 +138,21 @@ function ScopeForm({
       setInit(true)
     }
   }
+
   const toggle = () => {
     setModal(!modal)
   }
 
   const submitForm = () => {
     toggle()
-    document.getElementsByClassName('UserActionSubmitButton')[0].click()
+    const submitButton = document.getElementsByClassName('UserActionSubmitButton')[0] as HTMLElement
+    submitButton?.click()
   }
 
-  const goToClientViewPage = (clientId, clientData = {}) => {
+  const goToClientViewPage = (clientId: string, clientData: ScopeClient = {} as ScopeClient) => {
     dispatch(viewOnly({ view: true }))
     dispatch(setCurrentItem({ item: clientData }))
-    return navigate(`/auth-server/client/edit:` + clientId)
+    return navigate(`/auth-server/client/edit:${clientId}`)
   }
 
   return (
@@ -152,7 +172,7 @@ function ScopeForm({
           displayName: Yup.string().min(2, 'displayName 2 characters').required('Required!'),
           id: Yup.string().min(2, 'id 2 characters').required('Required!'),
         })}
-        onSubmit={(values) => {
+        onSubmit={(values: ScopeFormValues) => {
           const result = {
             ...scope,
             ...values,
@@ -163,9 +183,11 @@ function ScopeForm({
           }
           result['creatorType'] = 'user'
           result['creatorId'] = authReducer.userinfo.inum
-          result['attributes'].spontaneousClientId = scope.attributes.spontaneousClientId
-          result['attributes'].spontaneousClientScopes =
-            scope.spontaneousClientScopes || scope.attributes.spontaneousClientScopes
+          if (result.attributes && scope.attributes) {
+            result.attributes.spontaneousClientId = scope.attributes.spontaneousClientId
+            result.attributes.spontaneousClientScopes =
+              scope.spontaneousClientScopes || scope.attributes.spontaneousClientScopes
+          }
 
           handleSubmit(JSON.stringify(result))
         }}
@@ -182,7 +204,7 @@ function ScopeForm({
                   name="id"
                   defaultValue={scope.id}
                   onKeyUp={activate}
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     formik.handleChange(e)
                     setModifiedFields({
                       ...modifiedFields,
@@ -201,7 +223,7 @@ function ScopeForm({
                 name="inum"
                 value={scope.inum}
                 doc_category={SCOPE}
-                handleChange={(e) => {
+                handleChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   formik.handleChange(e)
                   setModifiedFields({
                     ...modifiedFields,
@@ -227,7 +249,7 @@ function ScopeForm({
                   name="displayName"
                   defaultValue={scope.displayName}
                   onKeyUp={activate}
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     formik.handleChange(e)
                     setModifiedFields({
                       ...modifiedFields,
@@ -252,12 +274,12 @@ function ScopeForm({
                 <Input
                   type="textarea"
                   placeholder={t('placeholders.description')}
-                  maxLength="4000"
+                  maxLength={4000}
                   id="description"
                   name="description"
                   defaultValue={scope.description}
                   onKeyUp={activate}
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     formik.handleChange(e)
                     setModifiedFields({
                       ...modifiedFields,
@@ -275,7 +297,7 @@ function ScopeForm({
                   formik={formik}
                   value={scope.defaultScope}
                   doc_category={SCOPE}
-                  handler={(e) => {
+                  handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setModifiedFields({
                       ...modifiedFields,
                       'Default Scope': e.target.checked,
@@ -286,9 +308,9 @@ function ScopeForm({
                   label="fields.show_in_configuration_endpoint"
                   name="attributes.showInConfigurationEndpoint"
                   formik={formik}
-                  value={scope.attributes.showInConfigurationEndpoint}
+                  value={scope.attributes?.showInConfigurationEndpoint}
                   doc_category={SCOPE}
-                  handler={(e) => {
+                  handler={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setModifiedFields({
                       ...modifiedFields,
                       'Show in Configuration Endpoint': e.target.checked,
@@ -326,7 +348,7 @@ function ScopeForm({
                       id="scopeType"
                       name="scopeType"
                       defaultValue={scope.scopeType}
-                      onChange={(e) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         handleScopeTypeChanged(e.target.value)
                         formik.setFieldValue('scopeType', e.target.value)
                         setModifiedFields({
@@ -357,14 +379,14 @@ function ScopeForm({
                 defaultSelected={
                   formik.values['dynamicScopeScripts']?.length
                     ? getMapping(
-                        [...formik.values['dynamicScopeScripts'].flat()],
+                        [...(formik.values['dynamicScopeScripts'] as string[]).flat()],
                         dynamicScopeScripts,
                       )
                     : []
                 }
                 options={dynamicScopeScripts}
                 doc_category={SCOPE}
-                onChange={(values) => {
+                onChange={(values: { name: string }[]) => {
                   setModifiedFields({
                     ...modifiedFields,
                     'Dynamic Scope Scripts': values?.map((item) => item.name),
@@ -383,14 +405,14 @@ function ScopeForm({
                     value={getMapping(scope.claims, claims)}
                     defaultSelected={
                       formik.values['claims']?.length
-                        ? getMapping([...formik.values['claims'].flat()], claims)
+                        ? getMapping([...(formik.values['claims'] as string[]).flat()], claims)
                         : []
                     }
                     options={claims}
                     doc_category={SCOPE}
                     placeholder="Search by display name or claim name"
                     onSearch={onSearch}
-                    onChange={(values) => {
+                    onChange={(values: { name: string }[]) => {
                       setModifiedFields({
                         ...modifiedFields,
                         Claims: values?.map((item) => item.name),
@@ -410,7 +432,7 @@ function ScopeForm({
                       id="iconUrl"
                       name="iconUrl"
                       defaultValue={scope.iconUrl}
-                      onChange={(e) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         formik.handleChange(e)
                         setModifiedFields({
                           ...modifiedFields,
@@ -438,12 +460,12 @@ function ScopeForm({
                       defaultSelected={
                         formik.values['umaAuthorizationPolicies']?.length
                           ? getMapping(
-                              [...formik.values['umaAuthorizationPolicies'].flat()],
+                              [...(formik.values['umaAuthorizationPolicies'] as string[]).flat()],
                               umaAuthorizationPolicies,
                             )
                           : []
                       }
-                      onChange={(value) => {
+                      onChange={(value: { name: string }[]) => {
                         setModifiedFields({
                           ...modifiedFields,
                           'UMA Authorization Policies': value?.map((item) => item.name),
@@ -483,7 +505,7 @@ function ScopeForm({
                       <Col sm={8}>
                         <Input
                           defaultValue={
-                            ['CLIENT', 'USER'].includes(scope.creatorType)
+                            ['CLIENT', 'USER'].includes(scope.creatorType || '')
                               ? scope.creatorType + ' (' + scope.creatorId + ')' || ''
                               : scope.creatorType
                           }
@@ -524,11 +546,12 @@ function ScopeForm({
                     <FormGroup row>
                       <GluuLabel label="fields.spontaneous_client_scopes" size={4} />
                       <Col sm={8}>
-                        {scope?.attributes?.spontaneousClientScopes?.map((item, key) => (
-                          <div style={{ maxWidth: 140, overflow: 'auto' }} key={item}>
-                            <Badge key={key} color={`primary-${selectedTheme}`}>
-                              {item}
-                            </Badge>
+                        {scope?.attributes?.spontaneousClientScopes?.map((item, index) => (
+                          <div
+                            style={{ maxWidth: 140, overflow: 'auto' }}
+                            key={`scope-${index}-${item}`}
+                          >
+                            <Badge color={`primary-${selectedTheme}`}>{item}</Badge>
                           </div>
                         ))}
                       </Col>
@@ -576,12 +599,3 @@ function ScopeForm({
 }
 
 export default ScopeForm
-ScopeForm.propTypes = {
-  scope: PropTypes.any,
-  scripts: PropTypes.any,
-  attributes: PropTypes.any,
-  handleSubmit: PropTypes.any,
-  onSearch: PropTypes.any,
-  modifiedFields: PropTypes.any,
-  setModifiedFields: PropTypes.any,
-}

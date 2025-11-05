@@ -3,17 +3,16 @@ import { render, screen } from '@testing-library/react'
 import ScopeDetailPage from './ScopeDetailPage'
 import scopes from './scopes.test'
 import AppTestWrapper from 'Routes/Apps/Gluu/Tests/Components/AppTestWrapper.test'
+import type { Scope } from './types'
 
-const Wrapper = ({ children }) => <AppTestWrapper>{children}</AppTestWrapper>
-const permissions = [
-  'https://jans.io/oauth/config/scopes.readonly',
-  'https://jans.io/oauth/config/scopes.write',
-  'https://jans.io/oauth/config/scopes.delete',
-]
-const scope = scopes[0]
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <AppTestWrapper>{children}</AppTestWrapper>
+)
+
+const scope = scopes[0] as Scope
 
 it('Should render the scope detail page properly', () => {
-  render(<ScopeDetailPage row={scope} permissions={permissions} />, {
+  render(<ScopeDetailPage row={scope} />, {
     wrapper: Wrapper,
   })
   screen.getByText(/Display Name/)
