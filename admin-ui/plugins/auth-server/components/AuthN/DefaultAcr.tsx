@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ACR_READ, ACR_WRITE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
-import { useGetAgamaPrj } from 'JansConfigApi'
+import { useGetAgamaPrj, type Deployment } from 'JansConfigApi'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { buildPayload } from 'Utils/PermChecker'
 import { Button, Form } from 'Components'
@@ -14,35 +14,72 @@ import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from '@/context/theme/themeContext'
 import DefaultAcrInput from '../Configuration/DefaultAcrInput'
 import { getScripts } from 'Redux/features/initSlice'
-import { buildAgamaFlowsArray, buildDropdownOptions } from './helper/acrUtils'
+import { buildAgamaFlowsArray, buildDropdownOptions, type DropdownOption } from './helper/acrUtils'
 
-function DefaultAcr() {
+const MAX_AGAMA_PROJECTS_FOR_ACR = 9999
+
+interface CustomScript {
+  name: string
+  scriptType: string
+  enabled: boolean
+  [key: string]: any
+}
+
+interface AcrState {
+  acrReponse?: {
+    defaultAcr?: string
+  }
+  loading: boolean
+  error: string | null
+}
+
+interface InitState {
+  scripts: CustomScript[]
+  loadingScripts: boolean
+}
+
+interface RootState {
+  acrReducer: AcrState
+  initReducer: InitState
+}
+
+interface PutData {
+  value: string
+  path?: string
+  op?: string
+}
+
+function DefaultAcr(): React.ReactElement {
   const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
 
-  const { acrReponse: acrs } = useSelector((state) => state.acrReducer)
-  const scripts = useSelector((state) => state.initReducer.scripts)
-  const loadingScripts = useSelector((state) => state.initReducer.loadingScripts)
+  const { acrReponse: acrs } = useSelector((state: RootState) => state.acrReducer)
+  const scripts = useSelector((state: RootState) => state.initReducer.scripts)
+  const loadingScripts = useSelector((state: RootState) => state.initReducer.loadingScripts)
 
   // Fetch Agama projects using React Query
-  const { data: projectsResponse, isLoading: agamaLoading } = useGetAgamaPrj({
-    count: 9999,
+  const {
+    data: projectsResponse,
+    isLoading: agamaLoading,
+    error,
+  } = useGetAgamaPrj({
+    count: MAX_AGAMA_PROJECTS_FOR_ACR,
     start: 0,
   })
 
   const { t } = useTranslation()
 
-  const [modal, setModal] = useState(false)
-  const [put, setPut] = useState(null)
+  const [modal, setModal] = useState<boolean>(false)
+  const [put, setPut] = useState<PutData | null>(null)
   SetTitle(t('titles.authentication'))
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
-  const userAction = {}
+  const userAction: Record<string, unknown> = {}
 
   useEffect(() => {
-    const initializeAcr = async () => {
+    const initializeAcr = async (): Promise<void> => {
       try {
         await authorize([ACR_WRITE, ACR_READ])
       } catch (error) {
@@ -56,7 +93,7 @@ function DefaultAcr() {
     dispatch(getAcrsConfig())
   }, [authorize, dispatch])
 
-  const authScripts = useMemo(() => {
+  const authScripts = useMemo<DropdownOption[]>(() => {
     const filteredScripts = (scripts || [])
       .filter((item) => item?.scriptType === 'person_authentication' && item?.enabled)
       .map((item) => ({ key: item.name, value: item.name }))
@@ -67,28 +104,28 @@ function DefaultAcr() {
     return dropdownOptions
   }, [scripts, projectsResponse])
 
-  const toggle = () => {
+  const toggle = (): void => {
     setModal(!modal)
   }
 
-  const putHandler = (putData) => {
+  const putHandler = (putData: PutData): void => {
     setPut(putData)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     setModal(true)
   }
 
-  const handleSaveClick = () => {
+  const handleSaveClick = (): void => {
     setModal(true)
   }
 
-  const submitForm = (userMessage) => {
+  const submitForm = (userMessage: string): void => {
     toggle()
 
     if (put?.value) {
-      const opts = {}
+      const opts: Record<string, unknown> = {}
       opts['authenticationMethod'] = { defaultAcr: put.value }
 
       buildPayload(userAction, userMessage, opts)

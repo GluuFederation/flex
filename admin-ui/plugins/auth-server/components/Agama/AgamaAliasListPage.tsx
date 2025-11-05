@@ -145,7 +145,7 @@ function AliasesListPage(): React.ReactElement {
     async (values: AcrMappingFormValues): Promise<void> => {
       const userAction: Record<string, unknown> = {}
       const postBody: Record<string, unknown> = {}
-      let value = configuration.acrMappings || {}
+      const currentMappings = { ...(configuration.acrMappings ?? {}) }
 
       const modifiedFields: Record<string, string> = {
         mapping: values.mapping,
@@ -153,13 +153,13 @@ function AliasesListPage(): React.ReactElement {
       }
 
       if (isEdit && selectedRow) {
-        delete value[selectedRow.mapping]
+        delete currentMappings[selectedRow.mapping]
       }
-      value = { ...value, [values.mapping]: values.source }
+      const nextMappings = { ...currentMappings, [values.mapping]: values.source }
       postBody['requestBody'] = [
         {
           path: '/acrMappings',
-          value: value,
+          value: nextMappings,
           op: configuration?.acrMappings ? 'replace' : 'add',
         },
       ]

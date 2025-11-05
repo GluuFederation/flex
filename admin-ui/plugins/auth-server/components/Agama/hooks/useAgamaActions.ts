@@ -10,23 +10,7 @@ import { CREATE, UPDATE, DELETION } from '../../../../../app/audit/UserActionTyp
 import { AGAMA_PROJECT } from '../../../redux/audit/Resources'
 import type { Deployment } from 'JansConfigApi'
 import type { ModifiedFields } from '../types'
-
-interface AuthState {
-  token?: {
-    access_token: string
-  }
-  config?: {
-    clientId: string
-  }
-  userinfo?: {
-    inum: string
-    name: string
-  }
-}
-
-interface RootState {
-  authReducer: AuthState
-}
+import type { RootState } from '@/redux/sagas/types/audit'
 
 /**
  * Hook for Agama project actions with audit logging

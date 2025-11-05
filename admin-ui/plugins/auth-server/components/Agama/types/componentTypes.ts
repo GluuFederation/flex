@@ -5,13 +5,13 @@ import type { AgamaProject } from './agamaTypes'
  * Props for AgamaAliasListPage component
  * This is a route-level component with no props
  */
-export interface AgamaAliasListPageProps {}
+export type AgamaAliasListPageProps = Record<string, never>
 
 /**
  * Props for AgamaListPage component
  * This is a route-level component with no props
  */
-export interface AgamaListPageProps {}
+export type AgamaListPageProps = Record<string, never>
 
 /**
  * Props for AgamaProjectConfigModal component

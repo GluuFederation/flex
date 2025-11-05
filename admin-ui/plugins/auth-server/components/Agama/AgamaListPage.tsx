@@ -312,7 +312,7 @@ function AgamaListPage(): React.ReactElement {
     },
   })
 
-  SetTitle(t('titles.authentication'))
+  SetTitle(t('titles.agama'))
 
   const formDeploymentDetailsData = useCallback((): void => {
     const data: AgamaProject[] = []
