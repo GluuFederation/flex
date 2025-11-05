@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Container, Row, Col, Card, CardBody } from 'Components'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { getDatabaseInfo } from '../../redux/features/persistenceTypeSlice'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -8,7 +9,6 @@ import getThemeColor from 'Context/theme/config'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SetTitle from 'Utils/SetTitle'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import colors from 'colors'
 import customColors from '@/customColors'
 
 function PersistenceDetail() {
@@ -123,6 +123,9 @@ function PersistenceDetail() {
             return null
           })}
         </Container>
+        <div className="mt-3">
+          <GluuFormFooter showBack={true} showCancel={false} showApply={false} />
+        </div>
       </CardBody>
     </Card>
   )
