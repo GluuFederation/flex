@@ -18,7 +18,20 @@ export const getUserValidationSchema = (userDetails: CustomUser | null) => {
   const confirmPasswordSchemaBase = Yup.string()
     .nullable()
     .transform((value) => (typeof value === 'string' && value.trim() === '' ? null : value))
-    .oneOf([Yup.ref('userPassword'), null], 'Passwords must match')
+    .when('userPassword', {
+      is: (val: string | null | undefined) => {
+        if (val === null || val === undefined) return false
+        if (typeof val === 'string') {
+          return val.trim() !== ''
+        }
+        return true
+      },
+      then: (schema) =>
+        schema
+          .required('Confirm password is required when password is provided')
+          .oneOf([Yup.ref('userPassword')], 'Passwords must match'),
+      otherwise: (schema) => schema.oneOf([Yup.ref('userPassword'), null], 'Passwords must match'),
+    })
 
   const confirmPasswordSchema = isEdit
     ? confirmPasswordSchemaBase
