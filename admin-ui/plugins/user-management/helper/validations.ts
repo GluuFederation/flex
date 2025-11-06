@@ -5,16 +5,33 @@ import { UserEditFormValues } from '../types/ComponentTypes'
 import { CustomObjectAttribute } from 'JansConfigApi'
 
 export const getUserValidationSchema = (userDetails: CustomUser | null) => {
+  const isEdit = Boolean(userDetails)
+  const passwordSchemaBase = Yup.string()
+    .nullable()
+    .transform((value) => (typeof value === 'string' && value.trim() === '' ? null : value))
+    .min(4, 'Password must be at least 4 characters')
+
+  const passwordSchema = isEdit
+    ? passwordSchemaBase
+    : passwordSchemaBase.required('Password is required.')
+
+  const confirmPasswordSchemaBase = Yup.string()
+    .nullable()
+    .transform((value) => (typeof value === 'string' && value.trim() === '' ? null : value))
+    .oneOf([Yup.ref('userPassword'), null], 'Passwords must match')
+
+  const confirmPasswordSchema = isEdit
+    ? confirmPasswordSchemaBase
+    : confirmPasswordSchemaBase.required('Confirm password is required.')
+
   return Yup.object({
     displayName: Yup.string().required('Display name is required.'),
     givenName: Yup.string().required('First name is required.'),
     sn: Yup.string().required('Last name is required.'),
     userId: Yup.string().required('User name is required.'),
-    mail: Yup.string().required('Email is required.'),
-    userPassword: userDetails ? Yup.string() : Yup.string().required('Password is required.'),
-    userConfirmPassword: userDetails
-      ? Yup.string()
-      : Yup.string().required('Confirm password is required.'),
+    mail: Yup.string().email('Invalid email address').required('Email is required.'),
+    userPassword: passwordSchema,
+    userConfirmPassword: confirmPasswordSchema,
   })
 }
 
