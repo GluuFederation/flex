@@ -62,10 +62,17 @@ const processBirthdateAttribute = (
 ): void => {
   const attrValues = customAttr.values ?? []
   const attrSingleValue = customAttr.value
-  const dateSource =
-    attrValues.length > 0 ? JSON.stringify(attrValues[0]) : JSON.stringify(attrSingleValue)
-  if (dateSource && customAttr.name) {
-    initialValues[customAttr.name] = moment(dateSource).format('YYYY-MM-DD')
+  if (!customAttr.name) return
+
+  const dateSource = attrValues.length > 0 ? attrValues[0] : attrSingleValue
+
+  if (dateSource !== undefined && dateSource !== null) {
+    const parsedDate = moment(dateSource)
+
+    if (parsedDate.isValid()) {
+      initialValues[customAttr.name] = parsedDate.format('YYYY-MM-DD')
+      return
+    }
   }
 }
 
