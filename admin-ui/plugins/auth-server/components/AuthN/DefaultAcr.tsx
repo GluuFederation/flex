@@ -17,7 +17,7 @@ import { getScripts } from 'Redux/features/initSlice'
 import { buildAgamaFlowsArray, buildDropdownOptions, type DropdownOption } from './helper/acrUtils'
 import { updateToast } from 'Redux/features/toastSlice'
 
-const MAX_AGAMA_PROJECTS_FOR_ACR = 9999
+const MAX_AGAMA_PROJECTS_FOR_ACR = 500
 
 interface CustomScript {
   name: string

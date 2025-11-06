@@ -82,16 +82,14 @@ function AliasesListPage(): React.ReactElement {
     const authorizePermissions = async (): Promise<void> => {
       const permissions = [SCOPE_READ, SCOPE_WRITE]
       try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
+        await Promise.all(permissions.map((permission) => authorize([permission])))
       } catch (error) {
         console.error('Error authorizing scope permissions:', error)
       }
     }
 
     authorizePermissions()
-    dispatch(getJsonConfig({} as never))
+    dispatch(getJsonConfig())
   }, [dispatch, authorize])
 
   const validationSchema = Yup.object().shape({
@@ -139,44 +137,48 @@ function AliasesListPage(): React.ReactElement {
     }
 
     setMyActions(actions)
-  }, [cedarPermissions, hasCedarPermission, t])
+  }, [cedarPermissions, hasCedarPermission, t, formik])
 
   const handleSubmit = useCallback(
     async (values: AcrMappingFormValues): Promise<void> => {
-      const userAction: Record<string, unknown> = {}
-      const postBody: Record<string, unknown> = {}
-      const currentMappings = { ...(configuration.acrMappings ?? {}) }
+      try {
+        const userAction: Record<string, unknown> = {}
+        const postBody: Record<string, unknown> = {}
+        const currentMappings = { ...(configuration.acrMappings ?? {}) }
 
-      const modifiedFields: Record<string, string> = {
-        mapping: values.mapping,
-        source: values.source,
+        const modifiedFields: Record<string, string> = {
+          mapping: values.mapping,
+          source: values.source,
+        }
+
+        if (isEdit && selectedRow) {
+          delete currentMappings[selectedRow.mapping]
+        }
+        const nextMappings = { ...currentMappings, [values.mapping]: values.source }
+        postBody['requestBody'] = [
+          {
+            path: '/acrMappings',
+            value: nextMappings,
+            op: configuration?.acrMappings ? 'replace' : 'add',
+          },
+        ]
+
+        buildPayload(userAction, 'changes', postBody)
+        dispatch(patchJsonConfig({ action: userAction }))
+
+        // Log audit action
+        const auditMessage = isEdit
+          ? `Updated ACR mapping: ${values.mapping}`
+          : `Created ACR mapping: ${values.mapping}`
+        await logAcrMappingUpdate(auditMessage, modifiedFields)
+
+        formik.resetForm()
+        setShowAddModal(false)
+      } catch (error) {
+        console.error('Error submitting ACR mapping:', error)
       }
-
-      if (isEdit && selectedRow) {
-        delete currentMappings[selectedRow.mapping]
-      }
-      const nextMappings = { ...currentMappings, [values.mapping]: values.source }
-      postBody['requestBody'] = [
-        {
-          path: '/acrMappings',
-          value: nextMappings,
-          op: configuration?.acrMappings ? 'replace' : 'add',
-        },
-      ]
-
-      buildPayload(userAction, 'changes', postBody)
-      dispatch(patchJsonConfig({ action: userAction }))
-
-      // Log audit action
-      const auditMessage = isEdit
-        ? `Updated ACR mapping: ${values.mapping}`
-        : `Created ACR mapping: ${values.mapping}`
-      await logAcrMappingUpdate(auditMessage, modifiedFields)
-
-      formik.resetForm()
-      setShowAddModal(false)
     },
-    [configuration, isEdit, selectedRow, dispatch, logAcrMappingUpdate],
+    [configuration, isEdit, selectedRow, dispatch, logAcrMappingUpdate, formik],
   )
 
   const handleEdit = useCallback(
@@ -239,9 +241,7 @@ function AliasesListPage(): React.ReactElement {
             search: false,
             paging: false,
             rowStyle: (rowData) => ({
-              backgroundColor: (rowData as AcrMappingTableRow & { enabled?: boolean }).enabled
-                ? customColors.lightGreen
-                : customColors.white,
+              backgroundColor: customColors.white,
             }),
             headerStyle: {
               ...(applicationStyle.tableHeaderStyle as React.CSSProperties),

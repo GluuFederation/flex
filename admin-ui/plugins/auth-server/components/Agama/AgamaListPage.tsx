@@ -367,7 +367,7 @@ function AgamaListPage(): React.ReactElement {
   }, [])
 
   // Actions as state that will rebuild when permissions change
-  useEffect(() => {
+  const myActionsComputed = useMemo(() => {
     const newActions: Action<AgamaTableRow>[] = []
 
     if (hasCedarPermission(AGAMA_WRITE)) {
@@ -416,8 +416,12 @@ function AgamaListPage(): React.ReactElement {
       })
     }
 
-    setMyActions(newActions)
-  }, [hasCedarPermission, t, isAgamaEnabled, dispatch, cedarPermissions])
+    return newActions
+  }, [hasCedarPermission, t, isAgamaEnabled, cedarPermissions])
+
+  useEffect(() => {
+    setMyActions(myActionsComputed)
+  }, [myActionsComputed])
 
   const getSHA256 = useCallback(
     async (sha256sum: string): Promise<void> => {
@@ -551,205 +555,233 @@ function AgamaListPage(): React.ReactElement {
     }
   }
 
-  const tabToShow = (tabName: string): React.ReactNode => {
-    switch (tabName) {
-      case t('menus.upload_agama_project'):
-        return (
-          <>
-            <ModalBody>
-              <div {...getRootProps1()} className={isDragActive1 ? 'active' : 'dropzone'}>
-                <input {...getInputProps1()} />
-                {selectedFileName ? (
-                  <strong>Selected File : {selectedFileName}</strong>
-                ) : (
-                  <p>{t('messages.drag_agama_file')}</p>
-                )}
-              </div>
-              <div className="mt-2"></div>
-              <div {...getRootProps2()} className={isDragActive2 ? 'active' : 'dropzone'}>
-                <input {...getInputProps2()} />
-                {shaFile ? (
-                  <strong>Selected File : {shaFileName}</strong>
-                ) : (
-                  <p>{t('messages.drag_sha_file')}</p>
-                )}
-              </div>
-              <div className="mt-2"></div>
-              <div className="text-danger">
-                {shaFile && selectedFileName && !shaStatus && 'SHA256 not verified'}
-              </div>
-              <div className="text-success">
-                {shaFile && selectedFileName && shaStatus && 'SHA256 verified'}
-              </div>
-              {getProjectName && (
-                <Input
-                  type="text"
-                  placeholder="Project name"
-                  value={projectName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setProjectName(e.target.value)
-                  }
-                />
-              )}
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                color={`primary-${selectedTheme}`}
-                style={applicationStyle.buttonStyle}
-                onClick={() => submitData()}
-                disabled={
-                  !(shaFile && selectedFileName && shaStatus && projectName !== '') ||
-                  uploadLoading ||
-                  isConfigLoading
-                }
-              >
-                {uploadLoading || isConfigLoading ? (
-                  <>
-                    <CircularProgress size={12} /> &nbsp;
-                  </>
-                ) : null}
-                {t('actions.add')}
-              </Button>
-              &nbsp;
-              <Button
-                color={`primary-${selectedTheme}`}
-                style={applicationStyle.buttonStyle}
-                onClick={() => {
-                  setShowAddModal(false)
-                  setRepoName(null)
-                }}
-              >
-                {t('actions.cancel')}
-              </Button>
-            </ModalFooter>
-          </>
-        )
-      case t('menus.add_community_project'):
-        return (
-          <>
-            <ModalBody style={{ maxHeight: '500px', height: 'auto' }}>
-              <FormGroup>
-                <FormLabel
-                  style={{
-                    marginBottom: '16px',
-                    fontSize: '12px',
-                    fontWeight: '400',
-                  }}
-                >
-                  {t('titles.select_project_deploy')}
-                </FormLabel>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: '0 10px',
-                    maxHeight: '400px',
-                    overflowY: 'auto',
-                    overflowX: 'hidden',
-                  }}
-                >
-                  {fileLoading ? (
-                    <CircularProgress />
-                  ) : agamaRepositoriesList?.projects?.length ? (
-                    agamaRepositoriesList?.projects?.map((item: AgamaRepository) => (
-                      <FormControlLabel
-                        key={item['repository-name']}
-                        control={
-                          <Checkbox
-                            checked={repoName === item['repository-name']}
-                            onChange={() =>
-                              setRepoName(
-                                repoName === item['repository-name']
-                                  ? null
-                                  : item['repository-name'],
-                              )
-                            }
-                            sx={{
-                              transform: 'scale(1.5)',
-                              paddingTop: '6px',
-                            }}
-                          />
-                        }
-                        label={
-                          <div>
-                            <div>{item['repository-name']}</div>
-                            <div
-                              style={{
-                                fontSize: '12px',
-                                color: customColors.darkGray,
-                                marginTop: 6,
-                              }}
-                            >
-                              {item.description}
-                            </div>
-                          </div>
-                        }
-                        sx={{
-                          alignItems: 'flex-start',
-                          marginBottom: '16px',
-                        }}
-                      />
-                    ))
+  const tabToShow = useCallback(
+    (tabName: string): React.ReactNode => {
+      switch (tabName) {
+        case t('menus.upload_agama_project'):
+          return (
+            <>
+              <ModalBody>
+                <div {...getRootProps1()} className={isDragActive1 ? 'active' : 'dropzone'}>
+                  <input {...getInputProps1()} />
+                  {selectedFileName ? (
+                    <strong>Selected File : {selectedFileName}</strong>
                   ) : (
-                    <div
-                      style={{
-                        fontSize: '15px',
-                        padding: '14px 0 ',
-                      }}
-                    >
-                      {t('messages.no_data_found')}
-                    </div>
+                    <p>{t('messages.drag_agama_file')}</p>
                   )}
                 </div>
-              </FormGroup>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                color={`primary-${selectedTheme}`}
-                style={applicationStyle.buttonStyle}
-                disabled={repoName === null || fileLoading}
-                onClick={() => handleDeploy()}
-              >
-                {fileLoading || isConfigLoading ? (
-                  <>
-                    <CircularProgress size={12} /> &nbsp;
-                  </>
-                ) : null}
-                {t('actions.deploy')}
-              </Button>
-              &nbsp;
-              <Button
-                color={`primary-${selectedTheme}`}
-                style={applicationStyle.buttonStyle}
-                onClick={() => {
-                  setShowAddModal(false)
-                  setRepoName(null)
-                }}
-              >
-                {t('actions.cancel')}
-              </Button>
-            </ModalFooter>
-          </>
-        )
-    }
-  }
+                <div className="mt-2"></div>
+                <div {...getRootProps2()} className={isDragActive2 ? 'active' : 'dropzone'}>
+                  <input {...getInputProps2()} />
+                  {shaFile ? (
+                    <strong>Selected File : {shaFileName}</strong>
+                  ) : (
+                    <p>{t('messages.drag_sha_file')}</p>
+                  )}
+                </div>
+                <div className="mt-2"></div>
+                <div className="text-danger">
+                  {shaFile && selectedFileName && !shaStatus && 'SHA256 not verified'}
+                </div>
+                <div className="text-success">
+                  {shaFile && selectedFileName && shaStatus && 'SHA256 verified'}
+                </div>
+                {getProjectName && (
+                  <Input
+                    type="text"
+                    placeholder="Project name"
+                    value={projectName}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setProjectName(e.target.value)
+                    }
+                  />
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color={`primary-${selectedTheme}`}
+                  style={applicationStyle.buttonStyle}
+                  onClick={() => submitData()}
+                  disabled={
+                    !(shaFile && selectedFileName && shaStatus && projectName !== '') ||
+                    uploadLoading ||
+                    isConfigLoading
+                  }
+                >
+                  {uploadLoading || isConfigLoading ? (
+                    <>
+                      <CircularProgress size={12} /> &nbsp;
+                    </>
+                  ) : null}
+                  {t('actions.add')}
+                </Button>
+                &nbsp;
+                <Button
+                  color={`primary-${selectedTheme}`}
+                  style={applicationStyle.buttonStyle}
+                  onClick={() => {
+                    setShowAddModal(false)
+                    setRepoName(null)
+                  }}
+                >
+                  {t('actions.cancel')}
+                </Button>
+              </ModalFooter>
+            </>
+          )
+        case t('menus.add_community_project'):
+          return (
+            <>
+              <ModalBody style={{ maxHeight: '500px', height: 'auto' }}>
+                <FormGroup>
+                  <FormLabel
+                    style={{
+                      marginBottom: '16px',
+                      fontSize: '12px',
+                      fontWeight: '400',
+                    }}
+                  >
+                    {t('titles.select_project_deploy')}
+                  </FormLabel>
 
-  const handleDeleteProject = async (oldData: AgamaTableRow): Promise<void> => {
-    const projectName = oldData.details?.projectMetadata?.projectName
-    if (!projectName) {
-      throw new Error('Project name not found')
-    }
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      padding: '0 10px',
+                      maxHeight: '400px',
+                      overflowY: 'auto',
+                      overflowX: 'hidden',
+                    }}
+                  >
+                    {fileLoading ? (
+                      <CircularProgress />
+                    ) : agamaRepositoriesList?.projects?.length ? (
+                      agamaRepositoriesList?.projects?.map((item: AgamaRepository) => (
+                        <FormControlLabel
+                          key={item['repository-name']}
+                          control={
+                            <Checkbox
+                              checked={repoName === item['repository-name']}
+                              onChange={() =>
+                                setRepoName(
+                                  repoName === item['repository-name']
+                                    ? null
+                                    : item['repository-name'],
+                                )
+                              }
+                              sx={{
+                                transform: 'scale(1.5)',
+                                paddingTop: '6px',
+                              }}
+                            />
+                          }
+                          label={
+                            <div>
+                              <div>{item['repository-name']}</div>
+                              <div
+                                style={{
+                                  fontSize: '12px',
+                                  color: customColors.darkGray,
+                                  marginTop: 6,
+                                }}
+                              >
+                                {item.description}
+                              </div>
+                            </div>
+                          }
+                          sx={{
+                            alignItems: 'flex-start',
+                            marginBottom: '16px',
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <div
+                        style={{
+                          fontSize: '15px',
+                          padding: '14px 0 ',
+                        }}
+                      >
+                        {t('messages.no_data_found')}
+                      </div>
+                    )}
+                  </div>
+                </FormGroup>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color={`primary-${selectedTheme}`}
+                  style={applicationStyle.buttonStyle}
+                  disabled={repoName === null || fileLoading}
+                  onClick={() => handleDeploy()}
+                >
+                  {fileLoading || isConfigLoading ? (
+                    <>
+                      <CircularProgress size={12} /> &nbsp;
+                    </>
+                  ) : null}
+                  {t('actions.deploy')}
+                </Button>
+                &nbsp;
+                <Button
+                  color={`primary-${selectedTheme}`}
+                  style={applicationStyle.buttonStyle}
+                  onClick={() => {
+                    setShowAddModal(false)
+                    setRepoName(null)
+                  }}
+                >
+                  {t('actions.cancel')}
+                </Button>
+              </ModalFooter>
+            </>
+          )
+      }
+    },
+    [
+      t,
+      selectedTheme,
+      getRootProps1,
+      getInputProps1,
+      isDragActive1,
+      selectedFileName,
+      getRootProps2,
+      getInputProps2,
+      isDragActive2,
+      shaFile,
+      shaFileName,
+      getProjectName,
+      projectName,
+      shaStatus,
+      uploadLoading,
+      isConfigLoading,
+      submitData,
+      fileLoading,
+      agamaRepositoriesList,
+      repoName,
+      handleDeploy,
+    ],
+  )
 
-    try {
-      await deleteProjectMutation.mutateAsync({ name: projectName })
-      // Log audit action
-      await logAgamaDeletion(oldData, `Deleted Agama project: ${projectName}`)
-    } catch (error) {
-      console.error('Error deleting project:', error)
-      throw error
-    }
-  }
+  const handleDeleteProject = useCallback(
+    async (oldData: AgamaTableRow): Promise<void> => {
+      const projectName = oldData.details?.projectMetadata?.projectName
+      if (!projectName) {
+        throw new Error('Project name not found')
+      }
+
+      try {
+        await deleteProjectMutation.mutateAsync({ name: projectName })
+        // Log audit action
+        await logAgamaDeletion(oldData, `Deleted Agama project: ${projectName}`)
+      } catch (error) {
+        console.error('Error deleting project:', error)
+        throw error
+      }
+    },
+    [deleteProjectMutation, logAgamaDeletion],
+  )
 
   const tableColumns: Column<AgamaTableRow>[] = useMemo(
     () => [
