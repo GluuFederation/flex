@@ -129,6 +129,13 @@ const processSingleValuedAttribute = (
   }
 }
 
+/**
+ * Builds initial form values for a user using custom attribute definitions, honoring
+ * backwards-compatible fallbacks (e.g. `sn`: `familyName` → `sn`, `status`: `jansStatus` → `status`).
+ * @param userDetails Existing user data or null when creating a new user.
+ * @param personAttributes Attribute metadata describing multi-valued behaviour.
+ * @returns The normalized form values ready for the user management UI.
+ */
 export const initializeCustomAttributes = (
   userDetails: CustomUser | null,
   personAttributes: PersonAttribute[],
