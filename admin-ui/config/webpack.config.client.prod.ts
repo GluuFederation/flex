@@ -72,7 +72,7 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
         plugins: {
           test: /[\\/]plugins[\\/]/,
           name: (module: any) => {
-          const pluginName = module?.context?.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)?.[1]
+            const pluginName = module?.context?.match(/[\\/]plugins[\\/]([^\\/]+)[\\/]/)?.[1]
             return pluginName ? `plugin-${pluginName}` : 'plugin-common'
           },
           chunks: 'all',
@@ -203,6 +203,12 @@ const webpackConfig: WebpackConfig & { devServer?: DevServerConfig } = {
       },
       {
         test: /\.test\.js$/,
+        include: [config.srcDir, config.pluginsDir],
+        use: 'ignore-loader',
+        sideEffects: false,
+      },
+      {
+        test: /\.test\.(ts|tsx)$/,
         include: [config.srcDir, config.pluginsDir],
         use: 'ignore-loader',
         sideEffects: false,
