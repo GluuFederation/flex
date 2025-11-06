@@ -27,5 +27,6 @@ export const transformToFormValues = (item: CustomScriptItem): FormValues => {
     locationPath: item.locationPath,
     location_type: item.locationType || '',
     enabled: item.enabled,
+    action_message: '',
   }
 }

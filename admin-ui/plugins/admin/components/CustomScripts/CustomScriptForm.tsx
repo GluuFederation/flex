@@ -127,7 +127,13 @@ function CustomScriptForm({ item, handleSubmit, viewOnly = false }: CustomScript
               script: values.script,
             }
 
-      const reqBody = { customScript }
+      const actionMessage = values.action_message?.trim()
+
+      const reqBody = {
+        customScript: actionMessage
+          ? { ...customScript, action_message: actionMessage }
+          : customScript,
+      }
       handleSubmit(reqBody)
     },
   })
