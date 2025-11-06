@@ -31,6 +31,7 @@ interface ExtendedRootState {
   cedarPermissions: {
     initialized: boolean
     isInitializing: boolean
+    policyStoreJson: string
   }
 }
 
@@ -41,6 +42,7 @@ const PermissionsPolicyInitializer = () => {
   const rolePermissionMapping = useSelector(
     (state: ExtendedRootState) => state.mappingReducer.items,
   )
+
   const apiPermission = useSelector((state: ExtendedRootState) => state.apiPermissionReducer.items)
 
   const retryCount = useRef({
@@ -51,7 +53,7 @@ const PermissionsPolicyInitializer = () => {
   const [maxRetries] = useState(10)
 
   const token = useSelector((state: ExtendedRootState) => state.authReducer.token)
-  const { initialized, isInitializing } = useSelector(
+  const { initialized, isInitializing, policyStoreJson } = useSelector(
     (state: ExtendedRootState) => state.cedarPermissions,
   )
   const cedarlingLogType =
@@ -99,11 +101,12 @@ const PermissionsPolicyInitializer = () => {
 
     const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
     const policies = generateCedarPolicies(allPermissions)
-
+    debugger
     const bootstrapConfig = {
       ...bootstrap,
       CEDARLING_LOG_TYPE: cedarlingLogType,
-      CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policies),
+      CEDARLING_POLICY_STORE_URI: '',
+      CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policyStoreJson),
     }
 
     cedarlingClient

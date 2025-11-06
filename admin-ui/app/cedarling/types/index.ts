@@ -76,6 +76,7 @@ export interface CedarPermissionsState {
   initialized: null | boolean
   isInitializing: boolean
   cedarFailedStatusAfterMaxTries: null | boolean
+  policyStoreJson: string
 }
 
 export interface SetCedarlingPermissionPayload {

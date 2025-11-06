@@ -23,7 +23,7 @@ import {
   AuthorizationNotifier,
   GRANT_TYPE_AUTHORIZATION_CODE,
 } from '@openid/appauth'
-import { fetchUserInformation } from 'Redux/api/backend-api'
+import { fetchApiAccessToken, fetchPolicyStore, fetchUserInformation } from 'Redux/api/backend-api'
 import { jwtDecode } from 'jwt-decode'
 
 export default function AppAuthProvider(props) {
@@ -172,6 +172,18 @@ export default function AppAuthProvider(props) {
                 dispatch(getAPIAccessToken(userinfo_jwt))
               }
             }
+            return fetchApiAccessToken(ujwt)
+          })
+          .then((tokenResponse: string) => {
+            // fetch policy store and set in redux
+            return fetchPolicyStore(tokenResponse.access_token)
+          })
+          .then((policyStoreResponse) => {
+            const policyStoreJson = policyStoreResponse.data.responseObject
+            dispatch({
+              type: 'cedarPermissions/setPolicyStoreJson',
+              payload: policyStoreJson,
+            })
           })
           .catch((oError) => {
             setError(oError)
