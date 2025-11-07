@@ -207,7 +207,7 @@ const CedarlingConfigPage: React.FC = () => {
                     doc_entry={'updateRemotePolicyStoreOnServer'}
                   >
                     <IconButton
-                      hidden={cedarlingPolicyStoreRetrievalPoint == 'remote'}
+                      hidden={cedarlingPolicyStoreRetrievalPoint === 'remote'}
                       type="button"
                       aria-label="search"
                       onClick={handleSetRemotePolicyStoreAsDefault}
