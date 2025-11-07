@@ -652,7 +652,7 @@
     "skip_defined_password_validation": "Pular Validação de Senha Definida",
     "auiPolicyStoreUrl": "Política de armazenamento da interface de administração",
     "configApiPolicyStoreUrl": "Política de armazenamento da API de configuração",
-    "policyRetrievalPoint": "Ponto de Recuperação de Políticas"
+    "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas"
   },
   "messages": {
     "add_permission": "Adicionar permissão",

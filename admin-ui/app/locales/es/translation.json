@@ -623,7 +623,7 @@
     "nothingToShowInTheList": "Nada que mostrar en la lista",
     "auiPolicyStoreUrl": "Tienda de políticas de la interfaz de usuario del administrador",
     "configApiPolicyStoreUrl": "Almacén de políticas de la API de configuración",
-    "policyRetrievalPoint": "Point de récupération des politiques"
+    "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques"
   },
   "languages": {
     "french": "Frances",

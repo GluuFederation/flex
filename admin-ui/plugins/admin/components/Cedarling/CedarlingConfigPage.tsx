@@ -21,9 +21,10 @@ import {
   useEditAdminuiConf,
   useSetRemotePolicyStoreAsDefault,
   useSyncRoleToScopesMappings,
+  getGetAdminuiConfQueryKey,
 } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
-import type { AppConfigResponse } from 'JansConfigApi'
+import type { AppConfigResponse, AppConfigResponseCedarlingPolicyStoreRetrievalPoint } from 'JansConfigApi'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
@@ -33,15 +34,16 @@ import { FormControlLabel, IconButton, Radio, RadioGroup } from '@mui/material'
 import { RefreshOutlined } from '@mui/icons-material'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
 import { ADMIN_UI_CONFIG } from 'Plugins/admin/redux/audit/Resources'
-import { useIsFetching } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 
 const CedarlingConfigPage: React.FC = () => {
   const { authorize } = useCedarling()
   const { t } = useTranslation()
   SetTitle(t('titles.cedarling_config'))
   const [auiPolicyStoreUrl, setAuiPolicyStoreUrl] = useState('')
-  const { data: auiConfig, isSuccess } = useGetAdminuiConf()
-  const isFetching = useIsFetching()
+  const { data: auiConfig, isSuccess, isFetching } = useGetAdminuiConf()
+  const [isLoading, setIsLoading] = useState(false)
+  const queryClient = useQueryClient()
 
   const editAdminuiConfMutation = useEditAdminuiConf()
   const syncRoleToScopesMappingsMutation = useSyncRoleToScopesMappings()
@@ -55,7 +57,7 @@ const CedarlingConfigPage: React.FC = () => {
   const client_id: string | undefined = useSelector(
     (state: RootState) => state.authReducer?.config?.clientId,
   )
-  const [policyRetrievalPoint, setPolicyRetrievalPoint] = useState('github')
+  const [cedarlingPolicyStoreRetrievalPoint, setCedarlingPolicyRetrievalPoint] = useState<AppConfigResponseCedarlingPolicyStoreRetrievalPoint>('remote')
 
   const dispatch = useDispatch()
 
@@ -63,15 +65,15 @@ const CedarlingConfigPage: React.FC = () => {
     e.preventDefault()
     const requestData = {
       auiPolicyStoreUrl,
-      policyRetrievalPoint,
+      cedarlingPolicyStoreRetrievalPoint,
     }
 
     try {
+      setIsLoading(true)
       const editAppConfigResponse: AppConfigResponse = await editAdminuiConfMutation.mutateAsync({
         data: { ...auiConfig, ...requestData },
       })
       setAuiPolicyStoreUrl(editAppConfigResponse?.auiPolicyStoreUrl || '')
-      dispatch(updateToast(true, 'success'))
 
       let userMessage: string = 'Policy Store URL configuration updated'
       await logAudit({
@@ -96,10 +98,14 @@ const CedarlingConfigPage: React.FC = () => {
         client_id: client_id,
         payload: requestData,
       })
+      dispatch(updateToast(true, 'success'))
     } catch (error) {
       console.error('Error updating Cedarling configuration:', error)
       const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
       dispatch(updateToast(true, 'error', errorMessage))
+    } finally {
+      queryClient.invalidateQueries({ queryKey: getGetAdminuiConfQueryKey() })
+      setIsLoading(false)
     }
   }
 
@@ -107,6 +113,7 @@ const CedarlingConfigPage: React.FC = () => {
     e.preventDefault()
 
     try {
+      setIsLoading(true)
       await setRemotePolicyStoreAsDefaultMutation.mutateAsync()
 
       dispatch(updateToast(true, 'success'))
@@ -125,6 +132,8 @@ const CedarlingConfigPage: React.FC = () => {
       console.error('Error updating Cedarling configuration:', error)
       const errorMessage = getErrorMessage(error, 'messages.error_in_saving', t)
       dispatch(updateToast(true, 'error', errorMessage))
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -136,11 +145,12 @@ const CedarlingConfigPage: React.FC = () => {
   useEffect(() => {
     if (isSuccess) {
       setAuiPolicyStoreUrl(auiConfig?.auiPolicyStoreUrl || '')
+      setCedarlingPolicyRetrievalPoint(auiConfig?.cedarlingPolicyStoreRetrievalPoint || 'remote')
     }
   }, [isSuccess])
 
   return (
-    <GluuLoader blocking={isFetching}>
+    <GluuLoader blocking={isFetching || isLoading}>
       <Card className="shadow-sm align-items-center">
         <Col sm="9">
           <CardBody>
@@ -193,7 +203,7 @@ const CedarlingConfigPage: React.FC = () => {
                     doc_entry={'updateRemotePolicyStoreOnServer'}
                   >
                     <IconButton
-                      hidden={policyRetrievalPoint == 'github'}
+                      hidden={cedarlingPolicyStoreRetrievalPoint == 'remote'}
                       type="button"
                       aria-label="search"
                       onClick={handleSetRemotePolicyStoreAsDefault}
@@ -204,25 +214,25 @@ const CedarlingConfigPage: React.FC = () => {
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <GluuLabel label={'fields.policyRetrievalPoint'} size={3} />
+                <GluuLabel label={'fields.cedarlingPolicyStoreRetrievalPoint'} size={3} />
                 <Col sm={9} className="top-5">
                   <RadioGroup
                     row
-                    name="policyRetrievalPoint"
-                    value={policyRetrievalPoint}
-                    onChange={(e) => setPolicyRetrievalPoint(e.target.value)}
+                    name="cedarlingPolicyStoreRetrievalPoint"
+                    value={cedarlingPolicyStoreRetrievalPoint}
+                    onChange={(e) => setCedarlingPolicyRetrievalPoint(e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint)}
                   >
                     <FormControlLabel
-                      value={'github'}
+                      value={'remote'}
                       control={<Radio color="primary" />}
-                      label="GitHub"
-                      checked={policyRetrievalPoint === 'github'}
+                      label="Remote"
+                      checked={cedarlingPolicyStoreRetrievalPoint === 'remote'}
                     />
                     <FormControlLabel
-                      value={'local'}
+                      value={'default'}
                       control={<Radio color="primary" />}
-                      label={'Local'}
-                      checked={policyRetrievalPoint === 'local'}
+                      label={'Default'}
+                      checked={cedarlingPolicyStoreRetrievalPoint === 'default'}
                     />
                   </RadioGroup>
                 </Col>

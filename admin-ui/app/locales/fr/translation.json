@@ -657,7 +657,7 @@
     "skip_defined_password_validation": "Ignorer la Validation du Mot de Passe Défini",
     "auiPolicyStoreUrl": "Magasin de politiques de l'interface utilisateur d'administration",
     "configApiPolicyStoreUrl": "Magasin de politiques de configuration de l'API",
-    "policyRetrievalPoint": "Point de récupération des politiques"
+    "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques"
   },
   "messages": {
     "add_permission": "Ajouter une autorisation",

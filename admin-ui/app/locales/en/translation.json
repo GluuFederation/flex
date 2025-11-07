@@ -623,7 +623,7 @@
     "nothingToShowInTheList": "Nothing to show in the list",
     "auiPolicyStoreUrl": "Admin UI Policy Store",
     "configApiPolicyStoreUrl": "Config API Policy Store",
-    "policyRetrievalPoint": "Policy Retrieval Point"
+    "cedarlingPolicyStoreRetrievalPoint": "Policy Retrieval Point"
   },
   "languages": {
     "french": "French",
@@ -1751,7 +1751,7 @@
       "point1": "1. Create a policy store using Agama Lab. Fork the sample project",
       "point2": "2. Copy PolicyStore URL and apply.",
       "note": "Note: This will help you to create your own cedarling project. You can update roles and permissions using",
-      "useRemotePolicyStore": "Note: It is recommended to set the policy retrieval point to Local for production. If set to Local, it will fetch policies from the above URLs, store them on the Server, and use them for Cedarling authorization. Use the refresh button to update the store on the server.",
+      "useRemotePolicyStore": "Note: It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
       "updateRemotePolicyStoreOnServer": "Click here to update the store on the server"
     }
   }
