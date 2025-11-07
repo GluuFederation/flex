@@ -35,7 +35,10 @@
     "uiConfig": {
       "sessionTimeoutInMins": 30,
       "allowSmtpKeystoreEdit": true,
-      "cedarlingLogType": "off"
+      "cedarlingLogType": "off",
+      "auiPolicyStoreUrl": "",
+      "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.json",
+      "cedarlingPolicyStoreRetrievalPoint": "default"
     },
     "licenseConfig": {
         "ssa": "%(ssa)s",
