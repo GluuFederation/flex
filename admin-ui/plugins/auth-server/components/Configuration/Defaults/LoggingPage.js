@@ -1,14 +1,17 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
-import { Form, FormGroup, Card, CardBody, Col, CustomInput, Row } from 'Components'
+import { Form, FormGroup, Card, CardBody, Col, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import { JSON_CONFIG } from 'Utils/ApiResources'
+import { loggingValidationSchema } from './validations'
+import { LOG_LEVELS, LOG_LAYOUTS, getLoggingInitialValues } from './utils'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useDispatch, useSelector } from 'react-redux'
 import { Formik } from 'formik'
+import { useNavigate } from 'react-router-dom'
 import {
   getLoggingConfig,
   editLoggingConfig,
@@ -22,6 +25,7 @@ import { getChangedFields, getMergedValues } from '@/helpers'
 
 function LoggingPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { hasCedarPermission, authorize } = useCedarling()
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
@@ -52,19 +56,10 @@ function LoggingPage() {
 
   useEffect(() => {}, [cedarPermissions])
 
-  const initialValues = useMemo(
-    () => ({
-      loggingLevel: localLogging?.loggingLevel,
-      loggingLayout: localLogging?.loggingLayout,
-      httpLoggingEnabled: localLogging?.httpLoggingEnabled,
-      disableJdkLogger: localLogging?.disableJdkLogger,
-      enabledOAuthAuditLogging: localLogging?.enabledOAuthAuditLogging,
-    }),
-    [localLogging],
-  )
+  const initialValues = useMemo(() => getLoggingInitialValues(localLogging), [localLogging])
 
-  const levels = useMemo(() => ['TRACE', 'DEBUG', 'INFO', 'ERROR', 'WARN'], [])
-  const logLayouts = useMemo(() => ['text', 'json'], [])
+  const levels = useMemo(() => [...LOG_LEVELS], [])
+  const logLayouts = useMemo(() => [...LOG_LAYOUTS], [])
   SetTitle('Logging')
 
   const handleSubmit = useCallback(
@@ -104,7 +99,12 @@ function LoggingPage() {
       <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
           <GluuViewWrapper canShow={hasCedarPermission(LOGGING_READ)}>
-            <Formik initialValues={initialValues} enableReinitialize onSubmit={handleSubmit}>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={loggingValidationSchema}
+              enableReinitialize
+              onSubmit={handleSubmit}
+            >
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit}>
                   <FormGroup row>
@@ -190,17 +190,24 @@ function LoggingPage() {
                   />
 
                   {hasCedarPermission(LOGGING_WRITE) && (
-                    <Row>
-                      <Col>
-                        <GluuCommitFooter
-                          saveHandler={formik.handleSubmit}
-                          extraLabel={t('actions.cancel')}
-                          extraOnClick={() => formik.resetForm()}
-                          hideButtons={{ save: true, back: true }}
-                          type="submit"
-                        />
-                      </Col>
-                    </Row>
+                    <GluuFormFooter
+                      showBack={true}
+                      onBack={() => {
+                        if (window.history.length > 1) {
+                          navigate(-1)
+                        } else {
+                          navigate('/auth-server/config/logging')
+                        }
+                      }}
+                      showCancel={true}
+                      onCancel={() => formik.resetForm()}
+                      disableCancel={!formik.dirty}
+                      showApply={true}
+                      onApply={formik.handleSubmit}
+                      disableApply={!formik.isValid || !formik.dirty}
+                      applyButtonType="button"
+                      isLoading={loading}
+                    />
                   )}
                 </Form>
               )}
