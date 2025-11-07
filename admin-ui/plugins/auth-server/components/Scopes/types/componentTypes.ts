@@ -1,15 +1,8 @@
-/**
- * Component prop types for Scope components
- */
-
-import type { Scope, ExtendedScope, ScopeWithClients, ScopeScript, ScopeClaim } from './scopeTypes'
+import type { ExtendedScope, ScopeWithClients, ScopeScript, ScopeClaim } from './scopeTypes'
 import type { ModifiedFields } from './formTypes'
 
-/**
- * Props for ScopeDetailPage component
- */
 export interface ScopeDetailPageProps {
-  row: Scope
+  row: ScopeWithClients
 }
 
 export type ScopeListPageProps = Record<string, never>
@@ -18,9 +11,6 @@ export type ScopeAddPageProps = Record<string, never>
 
 export type ScopeEditPageProps = Record<string, never>
 
-/**
- * Props for ScopeForm component
- */
 export interface ScopeFormProps {
   scope: ExtendedScope
   scripts: ScopeScript[]
@@ -31,10 +21,6 @@ export interface ScopeFormProps {
   setModifiedFields: (fields: ModifiedFields) => void
 }
 
-/**
- * Row data for MaterialTable in ScopeListPage
- * Extends Scope with client information
- */
 export interface ScopeTableRow extends ScopeWithClients {
   tableData?: {
     id: number

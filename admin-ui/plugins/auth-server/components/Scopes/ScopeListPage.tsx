@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
-import MaterialTable from '@material-table/core'
+import MaterialTable, { type Column, type Action, type Options } from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import {
   Paper,
@@ -42,7 +42,6 @@ import {
 import type { Scope } from 'JansConfigApi'
 import type { ScopeWithClients, ScopeTableRow } from './types'
 import { useScopeActions } from './hooks'
-import type { Column, Action } from '@material-table/core'
 
 interface CedarPermissionsState {
   permissions: string[]
@@ -71,9 +70,8 @@ const ScopeListPage: React.FC = () => {
   const [scopeType, setScopeType] = useState<string | undefined>(undefined)
   const [sortBy, setSortBy] = useState<string | undefined>(undefined)
   const [sortOrder, setSortOrder] = useState<'ascending' | 'descending'>('ascending')
-  const [item, setItem] = useState<Scope | null>(null)
+  const [item, setItem] = useState<ScopeTableRow | null>(null)
   const [modal, setModal] = useState(false)
-  const [myActions, setMyActions] = useState<Action<ScopeTableRow>[]>([])
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'light'
@@ -220,7 +218,7 @@ const ScopeListPage: React.FC = () => {
 
       try {
         await deleteScope.mutateAsync({ inum: item.inum })
-        await logScopeDeletion(item, message)
+        await logScopeDeletion({ inum: item.inum, id: item.id } as Scope, message)
         toggle()
       } catch (error) {
         console.error('Error deleting scope:', error)
@@ -244,23 +242,31 @@ const ScopeListPage: React.FC = () => {
     setLimit(count)
   }, [])
 
-  useEffect(() => {
+  const normalizedPermissions = useMemo(
+    () => (Array.isArray(permissions) ? permissions : []),
+    [permissions],
+  )
+  const permissionsKey = useMemo(() => normalizedPermissions.join('|'), [normalizedPermissions])
+  const tableActions = useMemo<Action<ScopeTableRow>[]>(() => {
     const actions: Action<ScopeTableRow>[] = []
 
     if (hasCedarPermission(SCOPE_WRITE)) {
-      actions.push((rowData: ScopeTableRow) => ({
+      const editAction = ((rowData: ScopeTableRow) => ({
         icon: 'edit',
         iconProps: {
           id: 'editScope' + rowData.inum,
         },
         tooltip: `${t('messages.edit_scope')}`,
-        onClick: (event, rowData) => {
-          if (rowData && !Array.isArray(rowData)) {
-            handleGoToScopeEditPage(rowData)
+        onClick: (_event: React.MouseEvent, data?: ScopeTableRow | ScopeTableRow[]) => {
+          const scopeRow = Array.isArray(data) ? data[0] : data
+          if (scopeRow) {
+            handleGoToScopeEditPage(scopeRow)
           }
         },
         disabled: !hasCedarPermission(SCOPE_WRITE),
-      }))
+      })) as unknown as Action<ScopeTableRow>
+
+      actions.push(editAction)
       actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_scope')}`,
@@ -272,39 +278,52 @@ const ScopeListPage: React.FC = () => {
     }
 
     if (hasCedarPermission(SCOPE_DELETE)) {
-      actions.push((rowData: ScopeTableRow) => ({
+      const deleteAction = ((rowData: ScopeTableRow) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
           color: 'secondary',
           id: 'deleteScope' + rowData.inum,
         },
         tooltip: `${t('Delete Scope')}`,
-        onClick: (event, rowData) => {
-          if (rowData && !Array.isArray(rowData)) {
-            handleScopeDelete(rowData)
+        onClick: (_event: React.MouseEvent, data?: ScopeTableRow | ScopeTableRow[]) => {
+          const scopeRow = Array.isArray(data) ? data[0] : data
+          if (scopeRow) {
+            handleScopeDelete(scopeRow)
           }
         },
         disabled: !hasCedarPermission(SCOPE_DELETE),
-      }))
+      })) as unknown as Action<ScopeTableRow>
+      actions.push(deleteAction)
     }
+    return actions
+  }, [
+    handleGoToScopeAddPage,
+    handleGoToScopeEditPage,
+    handleScopeDelete,
+    hasCedarPermission,
+    permissionsKey,
+    t,
+  ])
 
-    setMyActions(actions)
-  }, [hasCedarPermission, t, handleGoToScopeAddPage, handleGoToScopeEditPage, handleScopeDelete])
+  const headerStyle = useMemo<React.CSSProperties>(
+    () => ({
+      ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
+      ...bgThemeColor,
+    }),
+    [bgThemeColor],
+  )
 
-  const tableOptions = useMemo(
+  const tableOptions = useMemo<Options<ScopeTableRow>>(
     () => ({
       idSynonym: 'inum',
       columnsButton: true,
       search: false,
       selection: false,
       pageSize: limit,
-      headerStyle: {
-        ...applicationStyle.tableHeaderStyle,
-        ...bgThemeColor,
-      },
+      headerStyle,
       actionsColumnIndex: -1,
     }),
-    [limit, bgThemeColor],
+    [limit, headerStyle],
   )
 
   const detailPanel = useCallback((rowData: { rowData: ScopeTableRow }) => {
@@ -449,7 +468,7 @@ const ScopeListPage: React.FC = () => {
             data={scopes}
             isLoading={loading}
             title=""
-            actions={myActions}
+            actions={tableActions}
             options={tableOptions}
             detailPanel={detailPanel}
           />
