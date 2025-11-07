@@ -71,9 +71,15 @@ export function* addSsaConfig({ payload }) {
   const audit = yield* initAudit()
   const creationData = { ...(payload?.action?.action_data || {}) }
   addAdditionalData(audit, CREATE, 'post-register-ssa', payload)
-  audit.payload = {
-    ...(audit.payload || {}),
-    modifiedFields: creationData,
+  audit.modifiedFields = {
+    ...(audit.modifiedFields || {}),
+    ...creationData,
+  }
+  if (audit.payload && 'modifiedFields' in audit.payload) {
+    delete audit.payload.modifiedFields
+    if (Object.keys(audit.payload).length === 0) {
+      delete audit.payload
+    }
   }
   const token = yield select((state) => state.authReducer.token.access_token)
   const { authServerHost } = yield select((state) => state.authReducer.config)
