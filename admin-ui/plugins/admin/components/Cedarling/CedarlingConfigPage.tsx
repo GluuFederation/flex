@@ -24,7 +24,10 @@ import {
   getGetAdminuiConfQueryKey,
 } from 'JansConfigApi'
 import GluuLoader from '@/routes/Apps/Gluu/GluuLoader'
-import type { AppConfigResponse, AppConfigResponseCedarlingPolicyStoreRetrievalPoint } from 'JansConfigApi'
+import type {
+  AppConfigResponse,
+  AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
+} from 'JansConfigApi'
 import { updateToast } from '@/redux/features/toastSlice'
 import { getErrorMessage } from 'Plugins/schema/utils/errorHandler'
 import { logAudit } from '@/utils/AuditLogger'
@@ -57,7 +60,8 @@ const CedarlingConfigPage: React.FC = () => {
   const client_id: string | undefined = useSelector(
     (state: RootState) => state.authReducer?.config?.clientId,
   )
-  const [cedarlingPolicyStoreRetrievalPoint, setCedarlingPolicyRetrievalPoint] = useState<AppConfigResponseCedarlingPolicyStoreRetrievalPoint>('remote')
+  const [cedarlingPolicyStoreRetrievalPoint, setCedarlingPolicyRetrievalPoint] =
+    useState<AppConfigResponseCedarlingPolicyStoreRetrievalPoint>('remote')
 
   const dispatch = useDispatch()
 
@@ -220,7 +224,11 @@ const CedarlingConfigPage: React.FC = () => {
                     row
                     name="cedarlingPolicyStoreRetrievalPoint"
                     value={cedarlingPolicyStoreRetrievalPoint}
-                    onChange={(e) => setCedarlingPolicyRetrievalPoint(e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint)}
+                    onChange={(e) =>
+                      setCedarlingPolicyRetrievalPoint(
+                        e.target.value as AppConfigResponseCedarlingPolicyStoreRetrievalPoint,
+                      )
+                    }
                   >
                     <FormControlLabel
                       value={'remote'}

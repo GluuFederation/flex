@@ -1,39 +1,13 @@
-import { useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { Row, Badge, Col, FormGroup, Accordion } from 'Components'
-import { useSelector } from 'react-redux'
 import mappingItemStyles from './styles/MappingItem.style'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from '@/context/theme/config'
 
 function MappingItem({ candidate }) {
-  const permissions = useSelector((state) => state.apiPermissionReducer.items)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
-
-  const getPermissionsForSearch = () => {
-    const selectedPermissions = candidate.permissions
-    const filteredArr = []
-    const essentialArr = []
-
-    for (const i in permissions) {
-      if (!selectedPermissions.includes(permissions[i].permission)) {
-        if (permissions[i].permission) {
-          // Check if it's an essential permission
-          if (permissions[i].essentialPermissionInAdminUI === true) {
-            essentialArr.push(permissions[i].permission)
-          } else {
-            filteredArr.push(permissions[i].permission)
-          }
-        }
-      }
-    }
-  }
-
-  useEffect(() => {
-    getPermissionsForSearch()
-  }, [permissions, candidate?.permissions?.length, cedarPermissions])
 
   return (
     <div>

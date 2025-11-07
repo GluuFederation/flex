@@ -623,7 +623,7 @@
     "nothingToShowInTheList": "Nada que mostrar en la lista",
     "auiPolicyStoreUrl": "Tienda de políticas de la interfaz de usuario del administrador",
     "configApiPolicyStoreUrl": "Almacén de políticas de la API de configuración",
-    "cedarlingPolicyStoreRetrievalPoint": "Point de récupération des politiques"
+    "cedarlingPolicyStoreRetrievalPoint": "Punto de recuperación de políticas"
   },
   "languages": {
     "french": "Frances",
@@ -1743,7 +1743,7 @@
       "title": "Configurar un control detallado mediante Cedarling",
       "point1": "1. Crear un almacén de políticas con Agama Lab. Bifurcar proyecto.",
       "point2": "2. Copie la URL de PolicyStore y configúrela.",
-      "note": "Nota: Esto te ayudará a crear tu propio proyecto de Cedarling. Puedes actualizar roles y permisos usando",
+      "note": "Nota: Esto te ayudará a crear tu propio proyecto de Cedarling. Puedes actualizar roles y permisos a través de Agama Lab.",
       "useRemotePolicyStore": "Nota: Se recomienda configurar el punto de recuperación de políticas en Local para producción. Si se configura en Local, se obtendrán las políticas de las URL anteriores, se almacenarán en el servidor y se usarán para la autorización de Cedarling. Use el botón de actualización para actualizar el almacenamiento en el servidor.",
       "updateRemotePolicyStoreOnServer": "Haz clic aquí para actualizar la tienda en el servidor"
     }

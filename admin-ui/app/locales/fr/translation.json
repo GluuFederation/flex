@@ -1596,7 +1596,7 @@
     },
     "cedarlingConfig": {
       "title": "Configurer un contrôle précis à l'aide de Cedarling",
-      "point1": "1. Créer un magasin de politiques avec Agama Lab. Projet Fork",
+      "point1": "1. Créer un magasin de politiques avec Agama Lab. Dupliquez le projet",
       "point2": "2. Copiez l'URL de PolicyStore et configurez-la.",
       "note": "Remarque : Ceci vous aidera à créer votre propre projet Cedarling. Vous pouvez modifier les rôles et les autorisations via",
       "useRemotePolicyStore": "Remarque : Il est recommandé de définir le point de récupération des stratégies sur « Local » en production. Dans ce cas, les stratégies seront récupérées depuis les URL ci-dessus, stockées sur le serveur et utilisées pour l’autorisation Cedarling. Utilisez le bouton d’actualisation pour mettre à jour le stockage sur le serveur.",
