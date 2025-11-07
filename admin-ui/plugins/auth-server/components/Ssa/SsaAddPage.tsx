@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
-import { useFormik } from 'formik'
+import { useFormik, type FormikContextType } from 'formik'
 import * as Yup from 'yup'
 import debounce from 'lodash/debounce'
 import dayjs from 'dayjs'
@@ -18,7 +18,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuRemovableInputRow from 'Routes/Apps/Gluu/GluuRemovableInputRow'
-import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuFormFooter from 'Routes/Apps/Gluu/GluuFormFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { SSA } from 'Utils/ApiResources'
@@ -31,6 +31,7 @@ import type { SsaFormValues, SsaCreatePayload, ModifiedFields } from './types'
 import { CREATE } from '../../../../app/audit/UserActionType'
 import { SSA as SSA_RESOURCE } from '../../redux/audit/Resources'
 import { updateToast } from 'Redux/features/toastSlice'
+import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 
 const validationSchema = Yup.object({
   software_id: Yup.string().required('Software ID is required'),
@@ -67,6 +68,14 @@ const SsaAddPage: React.FC = () => {
 
   SetTitle(t('titles.ssa_management'))
 
+  const handleNavigateBack = useCallback(() => {
+    if (window.history.length > 1) {
+      navigate(-1)
+    } else {
+      navigate('/auth-server/config/ssa')
+    }
+  }, [navigate])
+
   const formik = useFormik<SsaFormValues>({
     initialValues: {
       software_id: '',
@@ -90,17 +99,32 @@ const SsaAddPage: React.FC = () => {
         return
       }
 
-      setModal(true)
+      openCommitDialog()
     },
   })
 
   const setFieldValue = formik.setFieldValue
+  const formikContext = formik as unknown as FormikContextType<Record<string, unknown>>
 
   useEffect(() => {
     if (createSsaMutation.isSuccess) {
       navigate('/auth-server/config/ssa')
     }
   }, [createSsaMutation.isSuccess, navigate])
+
+  const [pendingPayload, setPendingPayload] = useState<SsaCreatePayload | null>(null)
+
+  const openCommitDialog = useCallback(() => {
+    const payload: SsaCreatePayload = { ...formik.values }
+
+    const timestamp = expirationDate?.valueOf()
+    if (isExpirable && timestamp) {
+      payload.expiration = Math.floor(timestamp / 1000)
+    }
+
+    setPendingPayload(payload)
+    setModal(true)
+  }, [formik.values, expirationDate, isExpirable])
 
   const debouncedSetSearchQuery = useMemo(
     () =>
@@ -147,14 +171,9 @@ const SsaAddPage: React.FC = () => {
 
   const submitForm = async (userMessage: string): Promise<void> => {
     try {
-      const payload: SsaCreatePayload = { ...formik.values }
+      if (!pendingPayload) return
 
-      const timestamp = expirationDate?.valueOf()
-      if (isExpirable && timestamp) {
-        payload.expiration = Math.floor(timestamp / 1000)
-      }
-
-      const createdSsa = await createSsaMutation.mutateAsync(payload)
+      const createdSsa = await createSsaMutation.mutateAsync(pendingPayload)
 
       downloadJSONFile(createdSsa, 'ssa.json')
 
@@ -162,15 +181,12 @@ const SsaAddPage: React.FC = () => {
         action: CREATE,
         resource: SSA_RESOURCE,
         message: userMessage || 'SSA created successfully',
-        payload: {
-          software_id: payload.software_id,
-          org_id: payload.org_id,
-          description: payload.description,
-        },
+        payload: pendingPayload,
       })
 
       dispatch(updateToast(true, 'success'))
       setModal(false)
+      setPendingPayload(null)
     } catch (error) {
       console.error('Failed to submit SSA form:', error)
       dispatch(updateToast(true, 'error'))
@@ -231,7 +247,7 @@ const SsaAddPage: React.FC = () => {
                     <GluuTypeAhead
                       name="software_roles"
                       label={t('fields.software_roles')}
-                      formik={formik}
+                      formik={formikContext}
                       lsize={FORM_LAYOUT.LABEL_SIZE}
                       rsize={FORM_LAYOUT.INPUT_SIZE}
                       options={softwareRolesOptions}
@@ -244,13 +260,13 @@ const SsaAddPage: React.FC = () => {
                     <GluuTypeAhead
                       name="grant_types"
                       label="fields.grant_types"
-                      formik={formik}
+                      formik={formikContext}
                       lsize={FORM_LAYOUT.LABEL_SIZE}
                       rsize={FORM_LAYOUT.INPUT_SIZE}
                       value={formik.values.grant_types}
                       errorMessage={formik.errors.grant_types as string | undefined}
                       showError={!!(formik.errors.grant_types && formik.touched.grant_types)}
-                      options={GRANT_TYPES}
+                      options={[...GRANT_TYPES]}
                       doc_category={SSA}
                     />
 
@@ -321,16 +337,22 @@ const SsaAddPage: React.FC = () => {
                       />
                     ))}
 
-                    <Row>
-                      <Col>
-                        <GluuCommitFooter
-                          saveHandler={formik.handleSubmit}
-                          hideButtons={{ save: true, back: false }}
-                          type="submit"
-                          disabled={createSsaMutation.isPending}
-                        />
-                      </Col>
-                    </Row>
+                    <GluuFormFooter
+                      showBack={true}
+                      onBack={handleNavigateBack}
+                      showCancel={true}
+                      onCancel={() => {
+                        formik.resetForm()
+                        setModifiedFields({})
+                        setSelectedAttributes([])
+                      }}
+                      disableCancel={!formik.dirty}
+                      showApply={true}
+                      onApply={() => formik.handleSubmit()}
+                      disableApply={!formik.isValid || !formik.dirty || createSsaMutation.isPending}
+                      applyButtonType="button"
+                      isLoading={createSsaMutation.isPending}
+                    />
                   </Form>
                 </Col>
 
@@ -351,10 +373,22 @@ const SsaAddPage: React.FC = () => {
       </GluuLoader>
 
       <GluuCommitDialog
-        handler={() => setModal(false)}
+        handler={() => {
+          setModal(false)
+          setPendingPayload(null)
+        }}
         modal={modal}
+        feature={adminUiFeatures.ssa_write}
         onAccept={submitForm}
-        isLoading={createSsaMutation.isPending}
+        formik={formik}
+        operations={
+          Object.keys(modifiedFields)?.length
+            ? Object.keys(modifiedFields).map((item) => ({
+                path: item,
+                value: modifiedFields[item],
+              }))
+            : []
+        }
       />
     </>
   )
