@@ -986,9 +986,9 @@ global:
       webdiscoveryEnabled: true
       # -- Enable endpoint /.well-known/fido-configuration
       u2fConfigEnabled: true
-      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token. Currently not working in Istio.
+      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
       authServerProtectedToken: false
-      # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register. Currently not working in Istio.
+      # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register.
       authServerProtectedRegister: false
       # -- Enable endpoint /.well-known/lock-server-configuration
       lockConfigEnabled: false
