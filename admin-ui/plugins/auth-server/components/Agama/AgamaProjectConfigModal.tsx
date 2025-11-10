@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
-import axios from 'Redux/api/axios'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
@@ -12,24 +11,13 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { isEmpty } from 'lodash'
 import AceEditor from 'react-ace'
 import type { Deployment } from 'JansConfigApi'
+import { useGetAgamaPrjByName, useGetAgamaPrjConfigs, usePutAgamaPrj } from 'JansConfigApi'
 import type {
   AgamaProjectConfigModalProps,
   FlowError,
   ProjectDetailsState,
   ConfigDetailsState,
-  ModifiedFields,
 } from './types'
-import { useAgamaActions } from './hooks'
-
-interface AuthState {
-  token: {
-    access_token: string
-  }
-}
-
-interface RootState {
-  authReducer: AuthState
-}
 
 const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
   isOpen,
@@ -40,7 +28,6 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const token = useSelector((state: RootState) => state.authReducer.token.access_token)
   const theme = useContext(ThemeContext)
   const name = row.details?.projectMetadata?.projectName || ''
   const selectedTheme = theme?.state?.theme || 'dark'
@@ -56,91 +43,107 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
     },
   })
 
-  const { logAgamaUpdate } = useAgamaActions()
+  const { data: projectDetailsData, isLoading: projectDetailsLoading } = useGetAgamaPrjByName(
+    name,
+    {
+      query: {
+        enabled: !!name && isOpen,
+      },
+    },
+  )
 
-  const getConfigDetails = useCallback((): void => {
-    setConfigDetails((prevState) => ({ ...prevState, isLoading: true }))
+  const {
+    data: configDetailsData,
+    isLoading: configDetailsLoading,
+    refetch: refetchConfig,
+  } = useGetAgamaPrjConfigs(name, {
+    query: {
+      enabled: manageConfig && !!name && isOpen,
+    },
+  })
 
-    axios
-      .get<Record<string, unknown>>('/api/v1/agama-deployment/configs/' + name, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
-      .then((response) => {
+  const updateConfigMutation = usePutAgamaPrj({
+    mutation: {
+      onSuccess: async (data) => {
         setConfigDetails((prevState) => ({
           ...prevState,
-          data: response.data,
+          data: JSON.parse(data as string),
         }))
-      })
-      .catch((error) => {
-        console.error('Error fetching config details:', error)
-        dispatch(updateToast(true, 'error', 'Failed to fetch configuration details'))
-      })
-      .finally(() => {
-        setConfigDetails((prevState) => ({ ...prevState, isLoading: false }))
-      })
-  }, [name, token, dispatch])
+        dispatch(
+          updateToast(true, 'success', `Configuration for project ${name} imported successfully.`),
+        )
+      },
+      onError: (error: unknown) => {
+        console.error('Error importing config:', error)
+        dispatch(updateToast(true, 'error', `Invalid JSON file`))
+      },
+    },
+  })
 
-  const getAgamaProjectDetails = useCallback((): void => {
-    setProjectDetails((prevState) => ({ ...prevState, isLoading: true }))
-    axios
-      .get<Deployment>('/api/v1/agama-deployment/' + name, {
-        headers: {
-          Authorization: 'Bearer ' + token,
+  useEffect(() => {
+    if (projectDetailsData) {
+      const tableOptions: FlowError[] = []
+
+      if (projectDetailsData.details?.flowsError) {
+        for (const flow in projectDetailsData.details.flowsError) {
+          const error = projectDetailsData.details.flowsError[flow]
+          tableOptions.push({ flow: flow, error })
+        }
+      }
+
+      setProjectDetails({
+        isLoading: false,
+        data: {
+          ...projectDetailsData,
+          statusCode: 200,
+          tableOptions: tableOptions,
         },
       })
-      .then((response) => {
-        if (response.status === 200) {
-          const tableOptions: FlowError[] = []
 
-          if (response.data.details?.flowsError) {
-            for (const flow in response.data.details.flowsError) {
-              const error = response.data.details.flowsError[flow]
-              tableOptions.push({ flow: flow, error })
-            }
-          }
-
-          setProjectDetails((prevState) => ({
-            ...prevState,
-            data: {
-              ...response?.data,
-              statusCode: response.status,
-              tableOptions: tableOptions,
-            },
-          }))
-
-          handleUpdateRowData(response.data)
-        }
-
-        if (response.status === 204) {
-          setProjectDetails((prevState) => ({
-            ...prevState,
-            data: {
-              statusCode: response.status,
-              tableOptions: [],
-            },
-          }))
-        }
+      handleUpdateRowData(projectDetailsData)
+    } else if (!projectDetailsLoading && isOpen) {
+      setProjectDetails({
+        isLoading: false,
+        data: {
+          statusCode: 204,
+          tableOptions: [],
+        },
       })
-      .catch((error) => {
-        console.error('Error fetching project details:', error)
-        dispatch(updateToast(true, 'error', 'Failed to fetch project details'))
-      })
-      .finally(() => {
-        setProjectDetails((prevState) => ({ ...prevState, isLoading: false }))
-      })
-  }, [name, token, handleUpdateRowData, dispatch])
-
-  useEffect(() => {
-    getAgamaProjectDetails()
-  }, [getAgamaProjectDetails])
-
-  useEffect(() => {
-    if (manageConfig) {
-      getConfigDetails()
     }
-  }, [manageConfig, getConfigDetails])
+  }, [projectDetailsData, projectDetailsLoading, handleUpdateRowData, isOpen])
+
+  useEffect(() => {
+    if (configDetailsData) {
+      try {
+        const parsedData =
+          typeof configDetailsData === 'string' ? JSON.parse(configDetailsData) : configDetailsData
+        setConfigDetails({
+          isLoading: false,
+          data: parsedData,
+        })
+      } catch (error) {
+        console.error('Error parsing config data:', error)
+        setConfigDetails({
+          isLoading: false,
+          data: {},
+        })
+      }
+    }
+  }, [configDetailsData])
+
+  useEffect(() => {
+    setProjectDetails((prevState) => ({
+      ...prevState,
+      isLoading: projectDetailsLoading,
+    }))
+  }, [projectDetailsLoading])
+
+  useEffect(() => {
+    setConfigDetails((prevState) => ({
+      ...prevState,
+      isLoading: configDetailsLoading,
+    }))
+  }, [configDetailsLoading])
 
   const [isCopied, setIsCopied] = useState<boolean>(false)
   const projectConfigs = projectDetails?.data?.details?.projectMetadata?.configs
@@ -172,38 +175,12 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
           parsedValue = JSON.parse(result) as Record<string, unknown>
           setConfigDetails((prevState) => ({ ...prevState, isLoading: true }))
 
-          const response = await axios.put<Record<string, unknown>>(
-            '/api/v1/agama-deployment/configs/' + name,
-            parsedValue,
-            {
-              headers: {
-                Authorization: 'Bearer ' + token,
-              },
-            },
-          )
+          await updateConfigMutation.mutateAsync({
+            name,
+            data: JSON.stringify(parsedValue),
+          })
 
-          setConfigDetails((prevState) => ({
-            ...prevState,
-            data: response.data,
-          }))
-
-          dispatch(
-            updateToast(
-              true,
-              'success',
-              `Configuration for project ${name} imported successfully.`,
-            ),
-          )
-
-          // Log audit action for config update
-          const modifiedFields: ModifiedFields = {
-            configurationImported: true,
-          }
-          await logAgamaUpdate(
-            { ...row, details: response.data } as Deployment,
-            `Imported configuration for project: ${name}`,
-            modifiedFields,
-          )
+          await refetchConfig()
         } catch (error) {
           console.error('Error importing config:', error)
           dispatch(updateToast(true, 'error', `Invalid JSON file`))
@@ -221,7 +198,6 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       reader.readAsText(file, 'utf-8')
     }
     input.click()
-    // Cleanup: Remove reference after use
     setTimeout(() => {
       input.remove()
     }, 100)
@@ -229,28 +205,22 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
 
   function save_data(data: string): void {
     try {
-      // Convert data to a Blob object
       const blob = new Blob([data], { type: 'application/json' })
 
-      // Create a download link for the Blob object
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
       link.download = 'data.json'
 
-      // Trigger a click event on the download link to download the file
       link.dispatchEvent(new MouseEvent('click'))
 
-      // Clean up the download link and URL object
       URL.revokeObjectURL(url)
       if (document.body.contains(link)) {
         document.body.removeChild(link)
       }
 
-      // Show a success message to the user
       dispatch(updateToast(true, 'success', 'File saved successfully'))
     } catch (e) {
-      // Show an error message to the user
       console.error('Error saving file:', e)
       dispatch(updateToast(true, 'error', 'An error occurred while saving the file'))
     }

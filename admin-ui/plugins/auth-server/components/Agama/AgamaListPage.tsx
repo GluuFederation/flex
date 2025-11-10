@@ -35,16 +35,18 @@ import {
   useGetAgamaPrj,
   useDeleteAgamaPrj,
   getGetAgamaPrjQueryKey,
+  useGetAgamaRepositories,
+  usePostAgamaPrj,
+  getAgamaProject,
+  getGetAgamaProjectQueryKey,
   type Deployment,
 } from 'JansConfigApi'
-import axios from 'Redux/api/axios'
 import type {
   AgamaProject,
   AgamaRepository,
   AgamaRepositoriesResponse,
   AgamaTableRow,
 } from './types'
-import { useAgamaActions } from './hooks'
 
 interface JsonConfigState {
   configuration: {
@@ -107,14 +109,11 @@ function AgamaListPage(): React.ReactElement {
     (state: RootState) => state.cedarPermissions,
   )
 
-  const { logAgamaCreation, logAgamaDeletion } = useAgamaActions()
-
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'dark'
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  // Fetch projects using React Query
   const {
     data: projectsResponse,
     isLoading: loading,
@@ -137,7 +136,55 @@ function AgamaListPage(): React.ReactElement {
     },
   })
 
-  // Permission initialization
+  const {
+    data: agamaRepositoriesData,
+    isLoading: repositoriesLoading,
+    refetch: refetchRepositories,
+  } = useGetAgamaRepositories({
+    query: {
+      enabled: false, // Only fetch when explicitly triggered
+    },
+  })
+
+  const uploadProjectMutation = usePostAgamaPrj({
+    mutation: {
+      onSuccess: async () => {
+        dispatch(updateToast(true, 'success'))
+        await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
+        setProjectName('')
+        setShowAddModal(false)
+        setSelectedFile(null)
+        setSelectedFileName(null)
+        setSHAfile(null)
+        setShaStatus(false)
+        setUploadLoading(false)
+      },
+      onError: (error: unknown) => {
+        console.error('Error uploading project:', error)
+        dispatch(updateToast(true, 'error', 'Failed to upload project'))
+        setUploadLoading(false)
+      },
+    },
+  })
+
+  const deployProjectMutation = usePostAgamaPrj({
+    mutation: {
+      onSuccess: async () => {
+        dispatch(updateToast(true, 'success'))
+        await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
+        setShowConfigModal(false)
+        setShowAddModal(false)
+        setRepoName(null)
+        setFileLoading(false)
+      },
+      onError: (error: unknown) => {
+        console.error('Error deploying project:', error)
+        toast.error('File not found or deployment failed')
+        setFileLoading(false)
+      },
+    },
+  })
+
   useEffect(() => {
     const authorizePermissions = async (): Promise<void> => {
       const permissions = [AGAMA_READ, AGAMA_WRITE, AGAMA_DELETE]
@@ -171,66 +218,38 @@ function AgamaListPage(): React.ReactElement {
   }
 
   const convertFileFrombase64 = (base64String: string): Uint8Array => {
-    // Decode Base64 string to a Uint8Array
     const byteCharacters = atob(base64String)
     const byteArray = new Uint8Array(byteCharacters.length)
 
-    // Fill the Uint8Array with the byte values
     for (let i = 0; i < byteCharacters.length; i++) {
       byteArray[i] = byteCharacters.charCodeAt(i)
     }
     return byteArray
   }
 
-  async function fetchRespositoryData(): Promise<void> {
-    try {
-      setFileLoading(true)
-      const response = await axios.get<AgamaRepositoriesResponse>('/api/v1/agama-repo')
-      setAgamaRepositoriesList(response.data)
-    } catch (error) {
-      console.error('Error fetching repository data:', error)
-      dispatch(updateToast(true, 'error', 'Failed to fetch repositories'))
-    } finally {
+  useEffect(() => {
+    if (agamaRepositoriesData) {
+      setAgamaRepositoriesList(agamaRepositoriesData as AgamaRepositoriesResponse)
       setFileLoading(false)
     }
-  }
+  }, [agamaRepositoriesData])
+
+  useEffect(() => {
+    if (repositoriesLoading) {
+      setFileLoading(true)
+    }
+  }, [repositoriesLoading])
 
   const submitData = async (): Promise<void> => {
     if (!selectedFile) return
 
-    try {
-      setUploadLoading(true)
-      const file = await convertFileToByteArray(selectedFile)
+    setUploadLoading(true)
+    const file = await convertFileToByteArray(selectedFile)
 
-      // Upload using custom axios since this needs multipart/zip
-      const response = await axios.post<Deployment>(
-        `/api/v1/agama-deployment/${projectName}`,
-        file,
-        {
-          headers: {
-            'Content-Type': 'application/zip',
-          },
-        },
-      )
-
-      // Log audit action
-      await logAgamaCreation(response.data, `Uploaded Agama project: ${projectName}`)
-
-      dispatch(updateToast(true, 'success'))
-      await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
-
-      setProjectName('')
-      setShowAddModal(false)
-      setSelectedFile(null)
-      setSelectedFileName(null)
-      setSHAfile(null)
-      setShaStatus(false)
-    } catch (error) {
-      console.error('Error uploading project:', error)
-      dispatch(updateToast(true, 'error', 'Failed to upload project'))
-    } finally {
-      setUploadLoading(false)
-    }
+    await uploadProjectMutation.mutateAsync({
+      name: projectName,
+      data: file as unknown as string,
+    })
   }
 
   const onDrop = useCallback(async (acceptedFiles: File[]): Promise<void> => {
@@ -245,10 +264,8 @@ function AgamaListPage(): React.ReactElement {
     try {
       const zip = await JSZip.loadAsync(file)
 
-      // Get all .json files
       const jsonFiles = Object.keys(zip.files).filter((filename) => filename.endsWith('.json'))
 
-      // Process first .json file to extract project name
       for (const filename of jsonFiles) {
         const zipEntry = zip.files[filename]
         if (!zipEntry.dir) {
@@ -263,7 +280,6 @@ function AgamaListPage(): React.ReactElement {
             }
           } catch (parseError) {
             console.error(`Error parsing JSON from ${filename}:`, parseError)
-            // Continue to next file if this one fails
           }
         }
       }
@@ -366,7 +382,6 @@ function AgamaListPage(): React.ReactElement {
     setLimit(count)
   }, [])
 
-  // Actions as state that will rebuild when permissions change
   const myActionsComputed = useMemo(() => {
     const newActions: Action<AgamaTableRow>[] = []
 
@@ -381,7 +396,7 @@ function AgamaListPage(): React.ReactElement {
           setSelectedFileName(null)
           setGetProjectName(false)
           setSHAfile(null)
-          fetchRespositoryData()
+          refetchRepositories()
           if (isAgamaEnabled) {
             setShowAddModal(true)
           } else {
@@ -500,57 +515,42 @@ function AgamaListPage(): React.ReactElement {
     })
   }, [])
 
-  //Modal Tabs
   const tabNames = [t('menus.upload_agama_project'), t('menus.add_community_project')]
 
   const handleDeploy = async (): Promise<void> => {
+    const repo = agamaRepositoriesList.projects.find((item) => item['repository-name'] === repoName)
+    if (!repo) {
+      toast.error('Repository not found')
+      return
+    }
+
+    setFileLoading(true)
+    const downloadUrl = repo['download-link']
+    setProjectName(repo['repository-name'])
+
     try {
-      const repo = agamaRepositoriesList.projects.find(
-        (item) => item['repository-name'] === repoName,
-      )
-      if (!repo) {
-        toast.error('Repository not found')
-        return
+      const downloadResult = await queryClient.fetchQuery({
+        queryKey: getGetAgamaProjectQueryKey({ downloadLink: encodeURIComponent(downloadUrl) }),
+        queryFn: ({ signal }) =>
+          getAgamaProject({ downloadLink: encodeURIComponent(downloadUrl) }, undefined, signal),
+        staleTime: 0, // Always fetch fresh, don't use cache
+      })
+
+      if (!downloadResult) {
+        throw new Error('Failed to download project')
       }
 
-      setFileLoading(true)
-      const downloadUrl = repo['download-link']
-      setProjectName(repo['repository-name'])
+      // Response is already a base64 string, no need for FileReader
+      const base64String = downloadResult as unknown as string
+      const byteArray = convertFileFrombase64(base64String)
 
-      // Fetch repository file
-      const response = await axios.get<{ file: string }>(
-        `/api/v1/agama-repo/download/?downloadLink=${encodeURIComponent(downloadUrl)}`,
-      )
-
-      const byteArray = convertFileFrombase64(response.data.file)
-
-      // Upload the file
-      const uploadResponse = await axios.post<Deployment>(
-        `/api/v1/agama-deployment/${repo['repository-name']}`,
-        byteArray,
-        {
-          headers: {
-            'Content-Type': 'application/zip',
-          },
-        },
-      )
-
-      // Log audit action
-      await logAgamaCreation(
-        uploadResponse.data,
-        `Deployed community project: ${repo['repository-name']}`,
-      )
-
-      dispatch(updateToast(true, 'success'))
-      await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
-
-      setShowConfigModal(false)
-      setShowAddModal(false)
-      setRepoName(null)
+      await deployProjectMutation.mutateAsync({
+        name: repo['repository-name'],
+        data: byteArray as unknown as string,
+      })
     } catch (error) {
       console.error('Error deploying project:', error)
       toast.error('File not found or deployment failed')
-    } finally {
       setFileLoading(false)
     }
   }
@@ -773,14 +773,12 @@ function AgamaListPage(): React.ReactElement {
 
       try {
         await deleteProjectMutation.mutateAsync({ name: projectName })
-        // Log audit action
-        await logAgamaDeletion(oldData, `Deleted Agama project: ${projectName}`)
       } catch (error) {
         console.error('Error deleting project:', error)
         throw error
       }
     },
-    [deleteProjectMutation, logAgamaDeletion],
+    [deleteProjectMutation],
   )
 
   const tableColumns: Column<AgamaTableRow>[] = useMemo(
