@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { Card } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import WebhookForm from './WebhookForm'
@@ -10,7 +10,6 @@ import { usePostWebhook, useGetAllFeatures, getGetAllWebhooksQueryKey } from 'Ja
 import type { WebhookEntry, WebhookFormValues } from './types'
 import { postUserAction } from 'Redux/api/backend-api'
 import { addAdditionalData } from 'Utils/TokenController'
-import { buildPayload } from 'Utils/PermChecker'
 import { CREATE } from '@/audit/UserActionType'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'

@@ -134,13 +134,13 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
     }),
   })
 
-  const toggle = (): void => {
-    setModal(!modal)
-  }
+  const toggle = useCallback(() => {
+    setModal((prev) => !prev)
+  }, [])
 
   const submitForm = useCallback(
     (userMessage: string): void => {
-      toggle()
+      setModal(false)
 
       const validHeaders = (formik.values.httpHeaders || [])
         .map((header) => ({

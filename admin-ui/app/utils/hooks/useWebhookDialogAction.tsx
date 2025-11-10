@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -20,12 +19,6 @@ import type { WebhookEntry } from 'JansConfigApi'
 interface UseWebhookDialogActionProps {
   feature?: string
   modal: boolean
-}
-
-interface RootStateOfRedux {
-  cedarPermissions: {
-    permissions: Record<string, boolean>
-  }
 }
 
 interface ThemeState {
@@ -52,10 +45,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
         enabled: !!feature && modal && hasCedarPermission(WEBHOOK_READ),
       },
     },
-  )
-
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootStateOfRedux) => state.cedarPermissions,
   )
 
   useEffect(() => {
