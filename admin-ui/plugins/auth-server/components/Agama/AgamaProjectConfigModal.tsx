@@ -321,7 +321,7 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
                     <Box mt={2}>
                       <MaterialTable
                         components={{
-                          Toolbar: () => undefined,
+                          Toolbar: () => null,
                         }}
                         columns={tableColumns}
                         data={projectDetails.data?.tableOptions || []}

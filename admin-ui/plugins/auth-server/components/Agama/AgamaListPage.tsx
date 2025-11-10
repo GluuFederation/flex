@@ -335,7 +335,9 @@ function AgamaListPage(): React.ReactElement {
     },
   })
 
-  SetTitle(t('titles.agama'))
+  useEffect(() => {
+    SetTitle(t('titles.agama'))
+  }, [t])
 
   const formDeploymentDetailsData = useCallback((): void => {
     const data: AgamaProject[] = []
