@@ -117,10 +117,14 @@ const WebhookAddPage: React.FC = () => {
     },
   })
 
+  const isValidHttpMethod = (method: string): method is (typeof ALLOWED_HTTP_METHODS)[number] => {
+    return ALLOWED_HTTP_METHODS.includes(method as (typeof ALLOWED_HTTP_METHODS)[number])
+  }
+
   const handleSubmit = (values: WebhookFormValues, userMessage: string): void => {
     userMessageRef.current = userMessage
 
-    if (!ALLOWED_HTTP_METHODS.includes(values.httpMethod as any)) {
+    if (!isValidHttpMethod(values.httpMethod)) {
       dispatch(updateToast(true, 'error', 'Invalid HTTP method'))
       return
     }

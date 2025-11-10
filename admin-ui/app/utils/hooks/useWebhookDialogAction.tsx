@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -76,11 +76,12 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   }, [isFetchingWebhooks, actions])
 
   const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
+  const hasInitializedModal = useRef(false)
 
-  // Set webhook modal visibility based on enabled webhooks
   useEffect(() => {
-    if (featureWebhooks.length > 0) {
+    if (featureWebhooks.length > 0 && !hasInitializedModal.current) {
       actions.setWebhookModal(enabledFeatureWebhooks.length > 0)
+      hasInitializedModal.current = true
     }
   }, [featureWebhooks.length, enabledFeatureWebhooks.length, actions])
 

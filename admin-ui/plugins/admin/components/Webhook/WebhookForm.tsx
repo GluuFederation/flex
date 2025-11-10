@@ -44,8 +44,8 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
 
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
-  const urlFocusTimeoutRef = useRef<NodeJS.Timeout>()
-  const editorCursorTimeoutRef = useRef<NodeJS.Timeout>()
+  const urlFocusTimeoutRef = useRef<number>()
+  const editorCursorTimeoutRef = useRef<number>()
 
   useEffect(() => {
     return () => {

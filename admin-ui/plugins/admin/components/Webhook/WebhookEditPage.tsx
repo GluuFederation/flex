@@ -145,6 +145,10 @@ const WebhookEditPage: React.FC = () => {
     },
   })
 
+  const isValidHttpMethod = (method: string): method is (typeof ALLOWED_HTTP_METHODS)[number] => {
+    return ALLOWED_HTTP_METHODS.includes(method as (typeof ALLOWED_HTTP_METHODS)[number])
+  }
+
   const handleSubmit = (values: WebhookFormValues, userMessage: string): void => {
     userMessageRef.current = userMessage
 
@@ -153,7 +157,7 @@ const WebhookEditPage: React.FC = () => {
       return
     }
 
-    if (!ALLOWED_HTTP_METHODS.includes(values.httpMethod as any)) {
+    if (!isValidHttpMethod(values.httpMethod)) {
       dispatch(updateToast(true, 'error', 'Invalid HTTP method'))
       return
     }
@@ -190,7 +194,7 @@ const WebhookEditPage: React.FC = () => {
 
     setIsInitialized(true)
 
-    if (!webhook && !loadingWebhook) {
+    if (!webhook) {
       dispatch(
         updateToast(true, 'error', 'Webhook data not found. Please select a webhook to edit.'),
       )
