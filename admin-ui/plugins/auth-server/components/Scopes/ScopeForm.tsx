@@ -37,14 +37,12 @@ import {
 } from './helper/utils'
 import { getScopeValidationSchema } from './helper/validations'
 
-interface AuthReducer {
-  userinfo: {
-    inum: string
-  }
-}
-
 interface RootState {
-  authReducer: AuthReducer
+  authReducer: {
+    userinfo: {
+      inum: string
+    }
+  }
 }
 
 const ScopeForm: React.FC<ScopeFormProps> = ({
@@ -65,26 +63,31 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
 
   const authReducer = useSelector((state: RootState) => state.authReducer)
 
-  let dynamicScopeScripts: { dn: string; name: string }[] = []
-  let umaAuthorizationPolicies: { dn: string; name: string }[] = []
-  let claims: { dn: string; name: string; key?: string }[] = []
+  const dynamicScopeScripts = useMemo(
+    () =>
+      (scripts ?? [])
+        .filter((item) => item.scriptType === 'dynamic_scope' && item.enabled)
+        .map((item) => ({ dn: item.dn, name: item.name })),
+    [scripts],
+  )
 
-  scripts = scripts || []
-  attributes = attributes || []
+  const umaAuthorizationPolicies = useMemo(
+    () =>
+      (scripts ?? [])
+        .filter((item) => item.scriptType === 'uma_rpt_policy')
+        .map((item) => ({ dn: item.dn, name: item.name })),
+    [scripts],
+  )
 
-  dynamicScopeScripts = scripts
-    .filter((item) => item.scriptType === 'dynamic_scope' && item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
-
-  umaAuthorizationPolicies = scripts
-    .filter((item) => item.scriptType === 'uma_rpt_policy')
-    .map((item) => ({ dn: item.dn, name: item.name }))
-
-  claims = attributes.map((item) => ({
-    dn: item.dn,
-    name: item.name,
-    key: item.key,
-  }))
+  const claims = useMemo(
+    () =>
+      (attributes ?? []).map((item) => ({
+        dn: item.dn,
+        name: item.name,
+        key: item.key,
+      })),
+    [attributes],
+  )
 
   const initialFormValues = useMemo<ScopeFormValues>(() => buildScopeInitialValues(scope), [scope])
 
@@ -98,6 +101,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
     initialFormValues.scopeType === 'spontaneous',
   )
   const [showUmaPanel, handleShowUmaPanel] = useState(initialFormValues.scopeType === 'uma')
+  const isExistingScope = Boolean(scope?.inum)
 
   const applyScopeTypeVisibility = useCallback((type?: string) => {
     const visibility = derivePanelVisibility(type)
@@ -179,7 +183,8 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
       <Formik<ScopeFormValues>
         initialValues={initialFormValues}
         enableReinitialize
-        validationSchema={getScopeValidationSchema()}
+        validateOnMount
+        validationSchema={getScopeValidationSchema({ isExistingScope })}
         onSubmit={(values: ScopeFormValues, helpers: FormikHelpers<ScopeFormValues>) => {
           const result: Record<string, unknown> = {
             ...scope,
@@ -209,7 +214,32 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
           const handleScopeTypeChangeInternal = (type: string) => {
             applyScopeTypeVisibility(type)
             const updatedValues = applyScopeTypeDefaults(formikProps.values, type)
-            formikProps.setValues(updatedValues, false)
+            formikProps.setValues(updatedValues, true)
+
+            const updatedTouched: Partial<Record<keyof ScopeFormValues, boolean>> = {}
+            if (type === 'dynamic') {
+              updatedTouched.dynamicScopeScripts = true
+              updatedTouched.claims = true
+            } else if (type === 'openid') {
+              updatedTouched.claims = true
+            } else if (type === 'uma') {
+              if (!isExistingScope) {
+                updatedTouched.umaAuthorizationPolicies = true
+                updatedTouched.iconUrl = true
+              }
+            }
+
+            if (Object.keys(updatedTouched).length > 0) {
+              formikProps.setTouched(
+                {
+                  ...formikProps.touched,
+                  ...updatedTouched,
+                },
+                true,
+              )
+            } else {
+              formikProps.validateForm()
+            }
           }
 
           const handleCancel = () => {
@@ -406,31 +436,38 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                 </FormGroup>
               )}
               {showDynamicPanel && (
-                <GluuTypeAheadForDn
-                  name="dynamicScopeScripts"
-                  label="fields.dynamic_scope_scripts"
-                  formik={formikProps}
-                  value={getMapping(
-                    formikProps.values.dynamicScopeScripts as string[] | undefined,
-                    dynamicScopeScripts,
-                  )}
-                  defaultSelected={
-                    formikProps.values['dynamicScopeScripts']?.length
-                      ? getMapping(
-                          [...(formikProps.values['dynamicScopeScripts'] as string[]).flat()],
-                          dynamicScopeScripts,
-                        )
-                      : []
-                  }
-                  options={dynamicScopeScripts}
-                  doc_category={SCOPE}
-                  onChange={(values: { name: string }[]) => {
-                    setModifiedFields({
-                      ...modifiedFields,
-                      'Dynamic Scope Scripts': values?.map((item) => item.name),
-                    })
-                  }}
-                />
+                <>
+                  <GluuTypeAheadForDn
+                    name="dynamicScopeScripts"
+                    label="fields.dynamic_scope_scripts"
+                    formik={formikProps}
+                    required
+                    value={getMapping(
+                      formikProps.values.dynamicScopeScripts as string[] | undefined,
+                      dynamicScopeScripts,
+                    )}
+                    defaultSelected={
+                      formikProps.values['dynamicScopeScripts']?.length
+                        ? getMapping(
+                            [...(formikProps.values['dynamicScopeScripts'] as string[]).flat()],
+                            dynamicScopeScripts,
+                          )
+                        : []
+                    }
+                    options={dynamicScopeScripts}
+                    doc_category={SCOPE}
+                    onChange={(values: { name: string }[]) => {
+                      formikProps.setFieldTouched('dynamicScopeScripts', true, false)
+                      setModifiedFields({
+                        ...modifiedFields,
+                        'Dynamic Scope Scripts': values?.map((item) => item.name),
+                      })
+                    }}
+                  />
+                  <ErrorMessage name="dynamicScopeScripts">
+                    {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                  </ErrorMessage>
+                </>
               )}
               {(showClaimsPanel || showDynamicPanel) && (
                 <Accordion className="mb-2 b-primary" initialOpen>
@@ -440,6 +477,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       name="claims"
                       label="fields.claims"
                       formik={formikProps}
+                      required={showClaimsPanel || showDynamicPanel}
                       value={getMapping(formikProps.values.claims as string[] | undefined, claims)}
                       defaultSelected={
                         formikProps.values['claims']?.length
@@ -454,24 +492,30 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                       placeholder="Search by display name or claim name"
                       onSearch={onSearch}
                       onChange={(values: { name: string }[]) => {
+                        formikProps.setFieldTouched('claims', true, false)
                         setModifiedFields({
                           ...modifiedFields,
                           Claims: values?.map((item) => item.name),
                         })
                       }}
                     />
+                    <ErrorMessage name="claims">
+                      {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                    </ErrorMessage>
                   </AccordionBody>
                 </Accordion>
               )}
               {showUmaPanel && (
                 <>
                   <FormGroup row>
-                    <GluuLabel label="fields.iconUrl" size={4} />
+                    <GluuLabel label="fields.iconUrl" size={4} required={!isExistingScope} />
                     <Col sm={8}>
                       <Input
                         placeholder={t('placeholders.icon_url')}
                         id="iconUrl"
                         name="iconUrl"
+                        required={!isExistingScope}
+                        invalid={Boolean(formikProps.touched.iconUrl && formikProps.errors.iconUrl)}
                         value={formikProps.values.iconUrl ?? ''}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           formikProps.handleChange(e)
@@ -483,6 +527,9 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         disabled={scope.inum ? true : false}
                       />
                     </Col>
+                    <ErrorMessage name="iconUrl">
+                      {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                    </ErrorMessage>
                   </FormGroup>
                   <Accordion className="mb-2 b-primary" initialOpen>
                     <AccordionHeader className="text-primary">
@@ -494,6 +541,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                         name="umaAuthorizationPolicies"
                         label="fields.umaAuthorizationPolicies"
                         formik={formikProps}
+                        required={!isExistingScope}
                         value={getMapping(
                           formikProps.values.umaAuthorizationPolicies as string[] | undefined,
                           umaAuthorizationPolicies,
@@ -514,12 +562,16 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
                             : []
                         }
                         onChange={(value: { name: string }[]) => {
+                          formikProps.setFieldTouched('umaAuthorizationPolicies', true, false)
                           setModifiedFields({
                             ...modifiedFields,
                             'UMA Authorization Policies': value?.map((item) => item.name),
                           })
                         }}
                       />
+                      <ErrorMessage name="umaAuthorizationPolicies">
+                        {(msg) => <div style={{ color: customColors.accentRed }}>{msg}</div>}
+                      </ErrorMessage>
                     </AccordionBody>
                   </Accordion>
                   {scope.inum && (

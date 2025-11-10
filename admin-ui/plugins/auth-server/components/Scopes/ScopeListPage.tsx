@@ -51,6 +51,13 @@ interface RootState {
   cedarPermissions?: CedarPermissionsState
 }
 
+const PAGE_SIZE_STORAGE_KEY = 'paggingSize'
+
+function getInitialScopePageSize(): number {
+  const stored = localStorage.getItem(PAGE_SIZE_STORAGE_KEY)
+  return stored ? parseInt(stored, 10) : 10
+}
+
 const ScopeListPage: React.FC = () => {
   const { t } = useTranslation()
   const { hasCedarPermission, authorize } = useCedarling()
@@ -58,12 +65,7 @@ const ScopeListPage: React.FC = () => {
   const queryClient = useQueryClient()
   const dispatch = useDispatch()
 
-  const getInitialPageSize = (): number => {
-    const stored = localStorage.getItem('paggingSize')
-    return stored ? parseInt(stored) : 10
-  }
-
-  const [limit, setLimit] = useState<number>(getInitialPageSize())
+  const [limit, setLimit] = useState<number>(() => getInitialScopePageSize())
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [pattern, setPattern] = useState<string | null>(null)
   const [startIndex, setStartIndex] = useState<number>(0)
@@ -73,10 +75,19 @@ const ScopeListPage: React.FC = () => {
   const [item, setItem] = useState<ScopeTableRow | null>(null)
   const [modal, setModal] = useState(false)
 
+  useEffect(() => {
+    localStorage.setItem(PAGE_SIZE_STORAGE_KEY, limit.toString())
+  }, [limit])
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme?.state?.theme || 'light'
-  const themeColors = getThemeColor(selectedTheme)
-  const bgThemeColor = { background: themeColors.background }
+  const themeColors = useMemo(() => getThemeColor(selectedTheme), [selectedTheme])
+  const bgThemeColor = useMemo(
+    () => ({
+      background: themeColors.background,
+    }),
+    [themeColors.background],
+  )
 
   const { permissions } = useSelector(
     (state: RootState) => state.cedarPermissions || { permissions: [] },
