@@ -31,7 +31,6 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
 
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
     feature,
-    modal,
   })
 
   useEffect(() => {
@@ -42,7 +41,6 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
     }
   }, [userMessage])
 
-  // Reset user message when modal opens with a new item
   useEffect(() => {
     if (modal) {
       setUserMessage('')

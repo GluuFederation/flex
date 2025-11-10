@@ -48,7 +48,6 @@ const GluuCommitDialog = ({
   const { loadingWebhooks, webhookModal } = webhookState
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
     feature,
-    modal,
   })
 
   const prevModalRef = useRef<boolean>(false)

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { ThemeContext, type ThemeContextType } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
@@ -18,26 +18,17 @@ import type { WebhookEntry } from 'JansConfigApi'
 
 interface UseWebhookDialogActionProps {
   feature?: string
-  modal: boolean
 }
 
-interface ThemeState {
-  state: {
-    theme: string
-  }
-}
-
-const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps) => {
+const useWebhookDialogAction = ({ feature }: UseWebhookDialogActionProps) => {
   const { hasCedarPermission, authorize } = useCedarling()
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext) as ThemeState
+  const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
 
-  // Use webhook dialog context
   const { state, actions } = useWebhookDialog()
   const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } = state
 
-  // Fetch webhooks by feature using orval hook
   const shouldFetchWebhooks = Boolean(feature) && hasCedarPermission(WEBHOOK_READ)
   const { data: webhooksData, isLoading: isFetchingWebhooks } = useGetWebhooksByFeatureId(
     feature ?? '',
@@ -52,7 +43,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     authorize([WEBHOOK_READ]).catch(console.error)
   }, [authorize])
 
-  // Update context when webhooks data changes
   useEffect(() => {
     if (webhooksData) {
       const webhooks = Array.isArray(webhooksData) ? webhooksData : []
@@ -62,7 +52,6 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     }
   }, [webhooksData, actions])
 
-  // Update loading state
   useEffect(() => {
     actions.setLoadingWebhooks(isFetchingWebhooks)
   }, [isFetchingWebhooks, actions])
@@ -79,11 +68,12 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   }, [feature])
 
   useEffect(() => {
+    const enabledCount = enabledFeatureWebhooks.length
     if (featureWebhooks.length > 0 && !hasInitializedModal.current) {
-      actions.setWebhookModal(enabledFeatureWebhooks.length > 0)
+      actions.setWebhookModal(enabledCount > 0)
       hasInitializedModal.current = true
     }
-  }, [featureWebhooks, enabledFeatureWebhooks.length, actions])
+  }, [featureWebhooks, actions, enabledFeatureWebhooks])
 
   const onCloseModal = useCallback(() => {
     actions.setWebhookModal(false)
@@ -92,10 +82,10 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     actions.setFeatureToTrigger('')
   }, [actions])
 
-  const handleAcceptWebhookTrigger = () => {
+  const handleAcceptWebhookTrigger = useCallback(() => {
     actions.setWebhookModal(false)
     actions.setFeatureToTrigger(feature || '')
-  }
+  }, [actions, feature])
 
   const webhookTriggerModal = ({ closeModal }: { closeModal: () => void }) => {
     const closeWebhookTriggerModal = () => {
