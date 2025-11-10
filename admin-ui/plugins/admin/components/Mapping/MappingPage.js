@@ -71,8 +71,14 @@ function MappingPage() {
               <MappingItem key={idx} candidate={candidate} roles={apiRoles} />
             ))}
           </GluuViewWrapper>
-          <StickyNote2Outlined /> <Link to="/adm/cedarlingconfig">Cedarling</Link>{' '}
-          {t('documentation.mappings.note')}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
+            <StickyNote2Outlined aria-label="Note" />
+            <span>
+              {t('documentation.mappings.note_prefix')}{' '}
+              <Link to="/adm/cedarlingconfig">Cedarling</Link>{' '}
+              {t('documentation.mappings.note_suffix')}
+            </span>
+          </div>
         </CardBody>
       </Card>
     </GluuLoader>

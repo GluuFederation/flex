@@ -1755,7 +1755,8 @@
       "updateRemotePolicyStoreOnServer": "Click here to update the default policy-store JSON with the version available from the configured remote URL."
     },
     "mappings": {
-      "note": "configuration helps to manage roles and permissions. Once you save the cedarling configuration, roles and permissions will be automatically synced from the policy store."
+      "note_prefix": "Configure",
+      "note_suffix": "to manage roles and permissions. Once you save the cedarling configuration, roles and permissions will be automatically synced from the policy store."
     }
   }
 }

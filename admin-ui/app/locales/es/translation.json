@@ -1747,8 +1747,9 @@
       "useRemotePolicyStore": "Se recomienda establecerlo en Predeterminado para producción. Si se establece en Predeterminado, utilizará el almacenamiento de la interfaz de administración para la autorización de Cedarling. Active el modo Predeterminado y utilice el botón de actualización para guardar o actualizar las políticas de GitHub en el servidor de la interfaz de administración.",
       "updateRemotePolicyStoreOnServer": "Haga clic aquí para actualizar el JSON del almacén de políticas predeterminado con la versión disponible en la URL remota configurada."
     },
-    "mapping": {
-      "configure": "configuración ayuda a gestionar roles y permisos. Una vez guardada la configuración de Cedarling, los roles y permisos se sincronizarán automáticamente desde el almacén de políticas."
+    "mappings": {
+      "note_prefix": "Configurar",
+      "note_suffix": "Para administrar roles y permisos. Una vez que guarde la configuración de Cedarling, los roles y permisos se sincronizarán automáticamente desde el almacén de políticas."
     }
   },
   "validations": {

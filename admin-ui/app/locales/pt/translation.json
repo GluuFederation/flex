@@ -1597,7 +1597,8 @@
       "updateRemotePolicyStoreOnServer": "Clique aqui para atualizar o JSON do repositório de políticas padrão com a versão disponível no URL remoto configurado."
     },
     "mappings": {
-      "note": "configuração ajuda a gerir funções e permissões. Depois de guardar a configuração do Cedarling, as funções e permissões serão sincronizadas automaticamente a partir do repositório de políticas."
+      "note_prefix": "Configurar",
+      "note_suffix": "Para gerir funções e permissões. Depois de guardar a configuração do Cedarling, as funções e permissões serão sincronizadas automaticamente a partir do repositório de políticas."
     }
   },
   "script": {

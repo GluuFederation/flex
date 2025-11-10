@@ -1603,7 +1603,8 @@
       "updateRemotePolicyStoreOnServer": "Cliquez ici pour mettre à jour le fichier JSON du magasin de politiques par défaut avec la version disponible à partir de l'URL distante configurée."
     },
     "mappings": {
-      "note": "configuration permet de gérer les rôles et les permissions. Une fois la configuration Cedarling enregistrée, les rôles et les permissions seront automatiquement synchronisés à partir du référentiel de stratégies."
+      "note_prefix": "Configure",
+      "note_suffix": "Pour gérer les rôles et les permissions. Une fois la configuration Cedarling enregistrée, les rôles et les permissions seront automatiquement synchronisés à partir du référentiel de stratégies."
     }
   },
   "script": {
