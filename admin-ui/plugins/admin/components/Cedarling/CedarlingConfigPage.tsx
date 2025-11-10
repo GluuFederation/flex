@@ -34,7 +34,7 @@ import { logAudit } from '@/utils/AuditLogger'
 import type { RootState } from '@/redux/sagas/types/audit'
 import { UPDATE } from '@/audit/UserActionType'
 import { FormControlLabel, IconButton, Radio, RadioGroup } from '@mui/material'
-import { RefreshOutlined } from '@mui/icons-material'
+import { RefreshOutlined, StickyNote2Outlined } from '@mui/icons-material'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
 import { ADMIN_UI_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { useQueryClient } from '@tanstack/react-query'
@@ -166,7 +166,7 @@ const CedarlingConfigPage: React.FC = () => {
               <CardText className="text-center text-secondary">
                 {t('documentation.cedarlingConfig.point1')}{' '}
                 <a
-                  href="https://github.com/duttarnab/cedarling_store/tree/agama-lab-policy-designer"
+                  href="https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -244,7 +244,10 @@ const CedarlingConfigPage: React.FC = () => {
                     />
                   </RadioGroup>
                 </Col>
-                <Col>{t('documentation.cedarlingConfig.useRemotePolicyStore')}</Col>
+                <Col>
+                  <StickyNote2Outlined />
+                  {t('documentation.cedarlingConfig.useRemotePolicyStore')}
+                </Col>
               </FormGroup>
 
               <div className="text-center mt-4">

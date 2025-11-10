@@ -12,6 +12,8 @@ import MappingItem from './MappingItem'
 import { buildPayload, MAPPING_WRITE, MAPPING_READ } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { useCedarling } from '@/cedarling'
+import { Link } from 'react-router-dom'
+import { StickyNote2Outlined } from '@mui/icons-material'
 
 function MappingPage() {
   const dispatch = useDispatch()
@@ -69,6 +71,9 @@ function MappingPage() {
               <MappingItem key={idx} candidate={candidate} roles={apiRoles} />
             ))}
           </GluuViewWrapper>
+          <StickyNote2Outlined /> Configure <Link to="/adm/cedarlingconfig">Cedarling</Link> to
+          manage roles and permissions. Once you save the cedarling configuration, roles and
+          permissions will be authomatically synced from policy store.
         </CardBody>
       </Card>
     </GluuLoader>

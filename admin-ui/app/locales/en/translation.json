@@ -656,7 +656,7 @@
     "securityDropdown": {
       "adminUiRoles": "Admin UI Roles",
       "capabilities": "Capabilities",
-      "mapping": "Mapping",
+      "mapping": "Roles and Permissions",
       "cedarlingConfig": "Cedarling"
     },
     "basic_configuration": "Basic Configuration",

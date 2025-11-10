@@ -1,6 +1,4 @@
 import HealthPage from './components/Health/HealthPage'
-import UiRoleListPage from './components/Roles/UiRoleListPage'
-import UiPermListPage from './components/Permissions/UiPermListPage'
 import MappingPage from './components/Mapping/MappingPage'
 
 import SettingsPage from './components/Settings/SettingsPage'
@@ -25,8 +23,6 @@ import auditReducer from '../admin/redux/features/auditSlice'
 
 import {
   ACR_READ,
-  ROLE_READ,
-  PERMISSION_READ,
   MAPPING_READ,
   WEBHOOK_READ,
   WEBHOOK_WRITE,
@@ -82,16 +78,6 @@ const pluginMetadata = {
         {
           title: 'menus.security',
           children: [
-            {
-              title: 'menus.securityDropdown.adminUiRoles',
-              path: PLUGIN_BASE_PATH + '/roles',
-              permission: ROLE_READ,
-            },
-            {
-              title: 'menus.securityDropdown.capabilities',
-              path: PLUGIN_BASE_PATH + '/capabilities',
-              permission: PERMISSION_READ,
-            },
             {
               title: 'menus.securityDropdown.mapping',
               path: PLUGIN_BASE_PATH + '/mapping',
@@ -150,16 +136,6 @@ const pluginMetadata = {
       permission: ACR_READ,
     },
 
-    {
-      component: UiRoleListPage,
-      path: PLUGIN_BASE_PATH + '/roles',
-      permission: ROLE_READ,
-    },
-    {
-      component: UiPermListPage,
-      path: PLUGIN_BASE_PATH + '/capabilities',
-      permission: PERMISSION_READ,
-    },
     {
       component: MappingPage,
       path: PLUGIN_BASE_PATH + '/mapping',
