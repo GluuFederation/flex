@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -57,6 +57,8 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     if (webhooksData) {
       const webhooks = Array.isArray(webhooksData) ? webhooksData : []
       actions.setFeatureWebhooks(webhooks as WebhookEntry[])
+    } else {
+      actions.setFeatureWebhooks([])
     }
   }, [webhooksData, actions])
 
@@ -65,15 +67,23 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
     actions.setLoadingWebhooks(isFetchingWebhooks)
   }, [isFetchingWebhooks, actions])
 
-  const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
+  const enabledFeatureWebhooks = useMemo(
+    () => featureWebhooks.filter((item) => item.jansEnabled),
+    [featureWebhooks],
+  )
+
   const hasInitializedModal = useRef(false)
+
+  useEffect(() => {
+    hasInitializedModal.current = false
+  }, [feature])
 
   useEffect(() => {
     if (featureWebhooks.length > 0 && !hasInitializedModal.current) {
       actions.setWebhookModal(enabledFeatureWebhooks.length > 0)
       hasInitializedModal.current = true
     }
-  }, [featureWebhooks.length, enabledFeatureWebhooks.length, actions])
+  }, [featureWebhooks, enabledFeatureWebhooks.length, actions])
 
   const onCloseModal = useCallback(() => {
     actions.setWebhookModal(false)
