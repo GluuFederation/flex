@@ -38,11 +38,12 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } = state
 
   // Fetch webhooks by feature using orval hook
+  const shouldFetchWebhooks = Boolean(feature) && hasCedarPermission(WEBHOOK_READ)
   const { data: webhooksData, isLoading: isFetchingWebhooks } = useGetWebhooksByFeatureId(
-    feature || '',
+    feature ?? '',
     {
       query: {
-        enabled: !!feature && modal && hasCedarPermission(WEBHOOK_READ),
+        enabled: shouldFetchWebhooks,
       },
     },
   )
