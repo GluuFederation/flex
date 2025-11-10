@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Card, Input } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -102,6 +102,8 @@ function AgamaListPage(): React.ReactElement {
   const [fileLoading, setFileLoading] = useState<boolean>(false)
   const [uploadLoading, setUploadLoading] = useState<boolean>(false)
 
+  const hasAuthorizedRef = useRef(false)
+
   const configuration = useSelector((state: RootState) => state.jsonConfigReducer.configuration)
   const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
   const isConfigLoading = useSelector((state: RootState) => state.jsonConfigReducer.loading)
@@ -187,11 +189,14 @@ function AgamaListPage(): React.ReactElement {
 
   useEffect(() => {
     const authorizePermissions = async (): Promise<void> => {
+      if (hasAuthorizedRef.current) return
+
       const permissions = [AGAMA_READ, AGAMA_WRITE, AGAMA_DELETE]
       try {
         for (const permission of permissions) {
           await authorize([permission])
         }
+        hasAuthorizedRef.current = true
       } catch (error) {
         console.error('Error authorizing Agama permissions:', error)
       }
@@ -201,7 +206,7 @@ function AgamaListPage(): React.ReactElement {
     if (isEmpty(configuration)) {
       dispatch(getJsonConfig({} as never))
     }
-  }, [dispatch, configuration, authorize])
+  }, [dispatch, authorize])
 
   function convertFileToByteArray(file: File): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
@@ -434,7 +439,22 @@ function AgamaListPage(): React.ReactElement {
     }
 
     return newActions
-  }, [hasCedarPermission, t, isAgamaEnabled, cedarPermissions])
+  }, [
+    hasCedarPermission,
+    t,
+    isAgamaEnabled,
+    cedarPermissions,
+    dispatch,
+    refetchRepositories,
+    setShowAddModal,
+    setSelectedFile,
+    setSelectedFileName,
+    setGetProjectName,
+    setSHAfile,
+    setSelectedRow,
+    setShowConfigModal,
+    setManageConfig,
+  ])
 
   useEffect(() => {
     setMyActions(myActionsComputed)
@@ -520,6 +540,11 @@ function AgamaListPage(): React.ReactElement {
   const tabNames = [t('menus.upload_agama_project'), t('menus.add_community_project')]
 
   const handleDeploy = async (): Promise<void> => {
+    if (!repoName) {
+      toast.error('No repository selected')
+      return
+    }
+
     const repo = agamaRepositoriesList.projects.find((item) => item['repository-name'] === repoName)
     if (!repo) {
       toast.error('Repository not found')

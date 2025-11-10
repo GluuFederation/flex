@@ -194,6 +194,10 @@ const AgamaProjectConfigModal: React.FC<AgamaProjectConfigModalProps> = ({
       reader.onerror = function () {
         console.error('Error reading file')
         dispatch(updateToast(true, 'error', 'Failed to read file'))
+        setConfigDetails((prevState) => ({
+          ...prevState,
+          isLoading: false,
+        }))
       }
       reader.readAsText(file, 'utf-8')
     }
