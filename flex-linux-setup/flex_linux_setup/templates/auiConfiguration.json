@@ -38,7 +38,7 @@
     "cedarlingLogType":"off",
     "auiPolicyStoreUrl": "",
     "auiDefaultPolicyStorePath": "./custom/config/adminUI/policy-store.json",
-    "useRemotePolicyStore": false
+    "cedarlingPolicyStoreRetrievalPoint": "default"
   },
   "licenseConfig": {
     "ssa": "%(ssa)s",
