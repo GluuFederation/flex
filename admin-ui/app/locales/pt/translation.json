@@ -650,7 +650,7 @@
     "nothingToShowInTheList": "Nada a mostrar na lista",
     "disable_logger_timer": "Desativar Temporizador de Logs",
     "skip_defined_password_validation": "Pular Validação de Senha Definida",
-    "auiPolicyStoreUrl": "Política de armazenamento da interface de administração",
+    "auiPolicyStoreUrl": "Repositório de políticas remotas da interface de administração",
     "configApiPolicyStoreUrl": "Política de armazenamento da API de configuração",
     "cedarlingPolicyStoreRetrievalPoint": "Ponto de Recuperação de Políticas"
   },
@@ -1594,7 +1594,7 @@
       "point2": "2.º Copie o URL do PolicyStore e configure.",
       "note": "Nota: isto irá ajudá-lo a criar o seu próprio projeto cedarling. Pode atualizar funções e permissões através do Agama Lab.",
       "useRemotePolicyStore": "Nota: recomenda-se definir o ponto de recuperação de políticas como Local para produção. Se definido como Local, as políticas serão pesquisadas nos URLs acima, armazenadas no servidor e utilizadas para a autorização do Cedarling. Utilize o botão de atualização para atualizar o armazenamento no servidor.",
-      "updateRemotePolicyStoreOnServer": "Clique aqui para atualizar a loja no servidor."
+      "updateRemotePolicyStoreOnServer": "Clique aqui para atualizar o JSON do repositório de políticas padrão com a versão disponível no URL remoto configurado."
     }
   },
   "script": {

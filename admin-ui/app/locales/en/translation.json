@@ -621,7 +621,7 @@
     "allAvailableHintsSelected": "All available hint options are selected",
     "noMatchingOptions": "No matching options",
     "nothingToShowInTheList": "Nothing to show in the list",
-    "auiPolicyStoreUrl": "Admin UI Policy Store",
+    "auiPolicyStoreUrl": "Admin UI Remote Policy Store",
     "configApiPolicyStoreUrl": "Config API Policy Store",
     "cedarlingPolicyStoreRetrievalPoint": "Policy Retrieval Point"
   },
@@ -1752,7 +1752,7 @@
       "point2": "2. Copy PolicyStore URL and apply.",
       "note": "Note: This will help you to create your own cedarling project. You can update roles and permissions using",
       "useRemotePolicyStore": "Note: It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.",
-      "updateRemotePolicyStoreOnServer": "Click here to update the store on the server"
+      "updateRemotePolicyStoreOnServer": "Click here to update the default policy-store JSON with the version available from the configured remote URL."
     }
   }
 }
