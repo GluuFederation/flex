@@ -73,8 +73,7 @@ const ScopeForm: React.FC<ScopeFormProps> = ({
   attributes = attributes || []
 
   dynamicScopeScripts = scripts
-    .filter((item) => item.scriptType === 'dynamic_scope')
-    .filter((item) => item.enabled)
+    .filter((item) => item.scriptType === 'dynamic_scope' && item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   umaAuthorizationPolicies = scripts
