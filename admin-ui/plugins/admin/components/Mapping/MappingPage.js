@@ -71,9 +71,8 @@ function MappingPage() {
               <MappingItem key={idx} candidate={candidate} roles={apiRoles} />
             ))}
           </GluuViewWrapper>
-          <StickyNote2Outlined /> Configure <Link to="/adm/cedarlingconfig">Cedarling</Link> to
-          manage roles and permissions. Once you save the cedarling configuration, roles and
-          permissions will be authomatically synced from policy store.
+          <StickyNote2Outlined /> <Link to="/adm/cedarlingconfig">Cedarling</Link>{' '}
+          {t('documentation.mappings.note')}
         </CardBody>
       </Card>
     </GluuLoader>

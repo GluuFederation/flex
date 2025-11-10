@@ -621,7 +621,7 @@
     "allAvailableHintsSelected": "Todas las opciones de sugerencia disponibles están seleccionadas",
     "noMatchingOptions": "No hay opciones coincidentes",
     "nothingToShowInTheList": "Nada que mostrar en la lista",
-    "auiPolicyStoreUrl": "Interfaz de administración Almacén de políticas remotas",
+    "auiPolicyStoreUrl": "Almacén de políticas remotas de la interfaz de administración",
     "configApiPolicyStoreUrl": "Almacén de políticas de la API de configuración",
     "cedarlingPolicyStoreRetrievalPoint": "Punto de recuperación de políticas"
   },
@@ -1744,8 +1744,11 @@
       "point1": "1. Crear un almacén de políticas con Agama Lab. Bifurcar proyecto.",
       "point2": "2. Copie la URL de PolicyStore y configúrela.",
       "note": "Nota: Esto te ayudará a crear tu propio proyecto de Cedarling. Puedes actualizar roles y permisos a través de Agama Lab.",
-      "useRemotePolicyStore": "Nota: Se recomienda configurar el punto de recuperación de políticas en Local para producción. Si se configura en Local, se obtendrán las políticas de las URL anteriores, se almacenarán en el servidor y se usarán para la autorización de Cedarling. Use el botón de actualización para actualizar el almacenamiento en el servidor.",
+      "useRemotePolicyStore": "Se recomienda establecerlo en Predeterminado para producción. Si se establece en Predeterminado, utilizará el almacenamiento de la interfaz de administración para la autorización de Cedarling. Active el modo Predeterminado y utilice el botón de actualización para guardar o actualizar las políticas de GitHub en el servidor de la interfaz de administración.",
       "updateRemotePolicyStoreOnServer": "Haga clic aquí para actualizar el JSON del almacén de políticas predeterminado con la versión disponible en la URL remota configurada."
+    },
+    "mapping": {
+      "configure": "configuración ayuda a gestionar roles y permisos. Una vez guardada la configuración de Cedarling, los roles y permisos se sincronizarán automáticamente desde el almacén de políticas."
     }
   },
   "validations": {
