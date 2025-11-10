@@ -10,6 +10,7 @@ import {
   usePutWebhook,
   useGetAllFeatures,
   useGetFeaturesByWebhookId,
+  useGetWebhookByInum,
   getGetAllWebhooksQueryKey,
 } from 'JansConfigApi'
 import type { WebhookEntry, WebhookFormValues } from './types'
@@ -82,7 +83,13 @@ const WebhookEditPage: React.FC = () => {
     token: state.authReducer.token.access_token,
   }))
 
-  const webhook = locationState?.webhook
+  const { data: fetchedWebhook, isLoading: loadingWebhook } = useGetWebhookByInum(id || '', {
+    query: {
+      enabled: !!id,
+    },
+  })
+
+  const webhook = fetchedWebhook || locationState?.webhook
 
   const { data: featuresData, isLoading: loadingFeatures } = useGetAllFeatures()
 
@@ -179,17 +186,17 @@ const WebhookEditPage: React.FC = () => {
   }
 
   useEffect(() => {
-    if (loadingWebhookFeatures) return
+    if (loadingWebhook || loadingWebhookFeatures) return
 
     setIsInitialized(true)
 
-    if (!webhook) {
+    if (!webhook && !loadingWebhook) {
       dispatch(
         updateToast(true, 'error', 'Webhook data not found. Please select a webhook to edit.'),
       )
       navigate('/adm/webhook')
     }
-  }, [webhook, loadingWebhookFeatures, navigate, dispatch])
+  }, [webhook, loadingWebhook, loadingWebhookFeatures, navigate, dispatch])
 
   if (!isInitialized || !webhook) {
     return <GluuLoader blocking={true} />
@@ -197,7 +204,12 @@ const WebhookEditPage: React.FC = () => {
 
   return (
     <GluuLoader
-      blocking={updateWebhookMutation.isPending || loadingFeatures || loadingWebhookFeatures}
+      blocking={
+        updateWebhookMutation.isPending ||
+        loadingWebhook ||
+        loadingFeatures ||
+        loadingWebhookFeatures
+      }
     >
       <Card style={applicationStyle.mainCard}>
         <WebhookForm

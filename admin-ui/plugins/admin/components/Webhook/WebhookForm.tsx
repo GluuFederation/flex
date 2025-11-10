@@ -36,11 +36,7 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
   onSubmit,
   isEdit = false,
 }) => {
-  const [selectedFeatures, setSelectedFeatures] = useState<AuiFeature[]>(
-    item?.auiFeatureIds
-      ? features.filter((f) => item.auiFeatureIds?.includes(f.auiFeatureId || ''))
-      : [],
-  )
+  const [selectedFeatures, setSelectedFeatures] = useState<AuiFeature[]>([])
   const [cursorPosition, setCursorPosition] = useState<CursorPosition>({
     url: 0,
     httpRequestBody: 0,
@@ -59,15 +55,21 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
   }, [])
 
   useEffect(() => {
-    if (!loadingFeatures && item?.auiFeatureIds?.length) {
-      const selected = features.filter((f) => item.auiFeatureIds?.includes(f.auiFeatureId || ''))
-      const missingCount = item.auiFeatureIds.length - selected.length
+    if (loadingFeatures) return
 
+    const selected = item?.auiFeatureIds?.length
+      ? features.filter((feature) => item.auiFeatureIds?.includes(feature.auiFeatureId ?? ''))
+      : []
+
+    setSelectedFeatures(selected)
+
+    if (item?.auiFeatureIds?.length) {
+      const missingCount = item.auiFeatureIds.length - selected.length
       if (missingCount > 0) {
         console.warn(`${missingCount} feature(s) not found in available features`)
       }
     }
-  }, [item?.auiFeatureIds, features, loadingFeatures])
+  }, [loadingFeatures, features, item?.auiFeatureIds])
 
   const validatePayload = (values: WebhookFormValues): boolean => {
     let faulty = false

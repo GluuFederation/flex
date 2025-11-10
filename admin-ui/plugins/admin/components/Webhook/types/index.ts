@@ -3,6 +3,8 @@
  * Re-exports orval-generated types and defines component-specific types
  */
 
+import type { CSSProperties, ReactNode, MouseEvent } from 'react'
+
 // Import orval types for local use
 import type {
   WebhookEntry,
@@ -68,7 +70,7 @@ export interface FeatureShortcodes {
  */
 export interface ShortcodePopoverProps {
   codes?: ShortcodeField[]
-  buttonWrapperStyles?: React.CSSProperties
+  buttonWrapperStyles?: CSSProperties
   handleSelectShortcode: (code: string, name: string, withString?: boolean) => void
 }
 
@@ -97,14 +99,14 @@ export type AuditAction = 'CREATE' | 'UPDATE' | 'DELETE'
  * Material Table action configuration
  */
 export interface TableAction {
-  icon: string | (() => string | JSX.Element)
+  icon: string | (() => string | ReactNode)
   tooltip: string
-  onClick: (event: React.MouseEvent, rowData: WebhookEntry | WebhookEntry[]) => void
+  onClick: (event: MouseEvent, rowData: WebhookEntry | WebhookEntry[]) => void
   disabled?: boolean
   isFreeAction?: boolean
   iconProps?: {
     color?: string
-    style?: React.CSSProperties
+    style?: CSSProperties
     id?: string
   }
 }
@@ -116,7 +118,7 @@ export interface WebhookTableColumn {
   title: string
   field?: string
   width?: string
-  render?: (rowData: WebhookEntry) => React.ReactNode
-  headerStyle?: React.CSSProperties
-  cellStyle?: React.CSSProperties
+  render?: (rowData: WebhookEntry) => ReactNode
+  headerStyle?: CSSProperties
+  cellStyle?: CSSProperties
 }

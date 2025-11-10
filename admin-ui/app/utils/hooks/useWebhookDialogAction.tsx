@@ -85,11 +85,11 @@ const useWebhookDialogAction = ({ feature, modal }: UseWebhookDialogActionProps)
   }, [featureWebhooks.length, enabledFeatureWebhooks.length, actions])
 
   const onCloseModal = useCallback(() => {
-    actions.setWebhookModal(enabledFeatureWebhooks.length > 0)
+    actions.setWebhookModal(false)
     actions.setWebhookTriggerErrors([])
     actions.setTriggerWebhookResponse('')
     actions.setFeatureToTrigger('')
-  }, [actions, enabledFeatureWebhooks.length])
+  }, [actions])
 
   const handleAcceptWebhookTrigger = () => {
     actions.setWebhookModal(false)

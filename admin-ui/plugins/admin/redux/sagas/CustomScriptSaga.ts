@@ -118,7 +118,7 @@ export function* addScript({
       { context: scriptApi, fn: scriptApi.addCustomScript },
       payload.action.action_data as Record<string, unknown>,
     )
-    yield call(triggerWebhook, { payload: { createdFeatureValue: data } })
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     yield put(addCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield* successToast()
@@ -153,7 +153,7 @@ export function* editScript({
     yield put(editCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield* successToast()
-    yield call(triggerWebhook, { payload: { createdFeatureValue: data } })
+    yield* triggerWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e: unknown) {
     const errMsg = getErrorMessage(e)
@@ -179,7 +179,7 @@ export function* deleteScript({
     yield call({ context: scriptApi, fn: scriptApi.deleteCustomScript }, payload.action.action_data)
     yield* successToast()
     yield put(deleteCustomScriptResponse({ inum: payload.action.action_data }))
-    yield call(triggerWebhook, {
+    yield* triggerWebhook({
       payload: { createdFeatureValue: { inum: payload.action.action_data } },
     })
     yield call(postUserAction, audit)
