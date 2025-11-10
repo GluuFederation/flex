@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
-import { Form, FormGroup, Card, CardBody, Col, CustomInput, Row } from 'Components'
+import { Form, FormGroup, Card, CardBody, Col, CustomInput } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -11,6 +11,7 @@ import { LOG_LEVELS, LOG_LAYOUTS, getLoggingInitialValues } from './utils'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useDispatch, useSelector } from 'react-redux'
 import { Formik } from 'formik'
+import { useNavigate } from 'react-router-dom'
 import {
   getLoggingConfig,
   editLoggingConfig,
@@ -24,6 +25,7 @@ import { getChangedFields, getMergedValues } from '@/helpers'
 
 function LoggingPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { hasCedarPermission, authorize } = useCedarling()
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
@@ -45,10 +47,18 @@ function LoggingPage() {
     dispatch(getLoggingConfig())
   }, [dispatch, authorize])
 
-  const initialValues = useMemo(() => getLoggingInitialValues(logging), [logging])
+  useEffect(() => {
+    if (logging) {
+      setLocalLogging(logging)
+    }
+  }, [logging])
 
-  const levels = useMemo(() => LOG_LEVELS, [])
-  const logLayouts = useMemo(() => LOG_LAYOUTS, [])
+  useEffect(() => {}, [cedarPermissions])
+
+  const initialValues = useMemo(() => getLoggingInitialValues(localLogging), [localLogging])
+
+  const levels = useMemo(() => [...LOG_LEVELS], [])
+  const logLayouts = useMemo(() => [...LOG_LAYOUTS], [])
   SetTitle('Logging')
 
   const handleSubmit = useCallback(
@@ -90,10 +100,9 @@ function LoggingPage() {
           <GluuViewWrapper canShow={hasCedarPermission(LOGGING_READ)}>
             <Formik
               initialValues={initialValues}
+              validationSchema={loggingValidationSchema}
               enableReinitialize
               onSubmit={handleSubmit}
-              validationSchema={loggingValidationSchema}
-              validateOnMount
             >
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit}>
@@ -194,22 +203,24 @@ function LoggingPage() {
                   />
 
                   {hasCedarPermission(LOGGING_WRITE) && (
-                    <Row>
-                      <Col>
-                        <GluuFormFooter
-                          showBack={true}
-                          showCancel={true}
-                          showApply={true}
-                          onApply={formik.handleSubmit}
-                          onCancel={() => formik.resetForm()}
-                          disableBack={false}
-                          disableCancel={!formik.dirty}
-                          disableApply={!formik.isValid || !formik.dirty}
-                          applyButtonType="button"
-                          isLoading={loading}
-                        />
-                      </Col>
-                    </Row>
+                    <GluuFormFooter
+                      showBack={true}
+                      onBack={() => {
+                        if (window.history.length > 1) {
+                          navigate(-1)
+                        } else {
+                          navigate('/auth-server/config/logging')
+                        }
+                      }}
+                      showCancel={true}
+                      onCancel={() => formik.resetForm()}
+                      disableCancel={!formik.dirty}
+                      showApply={true}
+                      onApply={formik.handleSubmit}
+                      disableApply={!formik.isValid || !formik.dirty}
+                      applyButtonType="button"
+                      isLoading={loading}
+                    />
                   )}
                 </Form>
               )}
