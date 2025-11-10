@@ -16,11 +16,11 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import PropTypes from 'prop-types'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
 import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import customColors from '@/customColors'
+import { useWebhookDialog } from '@/context/WebhookDialogContext'
 
 const USER_MESSAGE = 'user_action_message'
 
@@ -44,7 +44,8 @@ const GluuCommitDialog = ({
   const [active, setActive] = useState(false)
   const [isOpen, setIsOpen] = useState(null)
   const [userMessage, setUserMessage] = useState('')
-  const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
+  const { state: webhookState } = useWebhookDialog()
+  const { loadingWebhooks, webhookModal } = webhookState
   const { webhookTriggerModal, onCloseModal } = useWebhookDialogAction({
     feature,
     modal,

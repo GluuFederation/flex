@@ -20,7 +20,7 @@ import {
 import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { CREATE, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
-import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSagaUtils'
 
 const JansConfigApi = require('jans_config_api')
 

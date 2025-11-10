@@ -757,7 +757,13 @@
     "user_updated_successfully": "Usuário atualizado com sucesso",
     "user_deleted_successfully": "Usuário excluído com sucesso",
     "password_changed_successfully": "Senha alterada com sucesso",
-    "device_deleted_successfully": "Dispositivo excluído com sucesso"
+    "device_deleted_successfully": "Dispositivo excluído com sucesso",
+    "bad_request": "Solicitação inválida",
+    "unauthorized": "Não autorizado",
+    "forbidden": "Proibido",
+    "not_found": "Não encontrado",
+    "conflict": "Conflito",
+    "server_error": "Erro do servidor"
   },
   "errors": {
     "attribute_create_failed": "Erro ao criar atributo",
@@ -797,6 +803,7 @@
     "client_description": "Insira a descrição do cliente",
     "client_name": "Insira o nome do cliente",
     "enter_header_key": "Digite a chave do cabeçalho",
+    "enter_header_value": "Digite o valor do cabeçalho",
     "enter_key_value": "Digite o valor da chave",
     "request_body_error": "O corpo da solicitação HTTP é obrigatório para o método HTTP selecionado",
     "description": "Digite a descrição",

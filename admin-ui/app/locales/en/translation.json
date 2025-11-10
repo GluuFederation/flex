@@ -825,7 +825,13 @@
     "user_updated_successfully": "User updated successfully",
     "user_deleted_successfully": "User deleted successfully",
     "password_changed_successfully": "Password changed successfully",
-    "device_deleted_successfully": "Device deleted successfully"
+    "device_deleted_successfully": "Device deleted successfully",
+    "bad_request": "Bad request",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "not_found": "Not found",
+    "conflict": "Conflict",
+    "server_error": "Server error"
   },
   "errors": {
     "attribute_create_failed": "Error creating attribute",
@@ -875,6 +881,7 @@
     "enter_property_key": "Enter the property key",
     "enter_property_value": "Enter the property value",
     "enter_header_key": "Enter header key",
+    "enter_header_value": "Enter header value",
     "enter_key_value": "Enter key value",
     "enter_source_value": "Enter the source value",
     "enter_destination_value": "Enter the destination value",

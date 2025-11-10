@@ -824,7 +824,13 @@
     "user_updated_successfully": "Usuario actualizado exitosamente",
     "user_deleted_successfully": "Usuario eliminado exitosamente",
     "password_changed_successfully": "Contraseña cambiada exitosamente",
-    "device_deleted_successfully": "Dispositivo eliminado exitosamente"
+    "device_deleted_successfully": "Dispositivo eliminado exitosamente",
+    "bad_request": "Solicitud incorrecta",
+    "unauthorized": "No autorizado",
+    "forbidden": "Prohibido",
+    "not_found": "No encontrado",
+    "conflict": "Conflicto",
+    "server_error": "Error del servidor"
   },
   "errors": {
     "attribute_create_failed": "Error al crear el atributo",
@@ -868,6 +874,7 @@
     "enter_property_key": "Introduce la clave de la propiedad",
     "enter_property_value": "Introduce el valor de la propiedad",
     "enter_header_key": "Introduce la clave de cabecera",
+    "enter_header_value": "Introduce el valor de cabecera",
     "enter_key_value": "Introduce el valor de la clave",
     "enter_source_value": "Introduce el valor de origen",
     "enter_destination_value": "Introduce el valor de destino",

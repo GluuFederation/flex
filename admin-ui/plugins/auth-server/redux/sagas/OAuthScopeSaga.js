@@ -7,7 +7,7 @@ import ScopeApi from '../api/ScopeApi'
 import { getClient } from 'Redux/api/base'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
-import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSagaUtils'
 
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'

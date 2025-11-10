@@ -762,7 +762,13 @@
     "user_updated_successfully": "Utilisateur mis à jour avec succès",
     "user_deleted_successfully": "Utilisateur supprimé avec succès",
     "password_changed_successfully": "Mot de passe modifié avec succès",
-    "device_deleted_successfully": "Appareil supprimé avec succès"
+    "device_deleted_successfully": "Appareil supprimé avec succès",
+    "bad_request": "Mauvaise requête",
+    "unauthorized": "Non autorisé",
+    "forbidden": "Interdit",
+    "not_found": "Non trouvé",
+    "conflict": "Conflit",
+    "server_error": "Erreur du serveur"
   },
   "errors": {
     "attribute_create_failed": "Erreur lors de la création de l'attribut",
@@ -807,6 +813,7 @@
     "description": "Entrer la description",
     "display_name": "Entrez le nom d'affichage",
     "enter_header_key": "Entrer la clé d'en-tête",
+    "enter_header_value": "Entrer la valeur d'en-tête",
     "enter_key_value": "Entrer la valeur de la clé",
     "enable_ssl_communication": "Activer la communication SSL entre le serveur d'authentification et le serveur LDAP",
     "enter_property_key": "Entrez la clé de propriété",

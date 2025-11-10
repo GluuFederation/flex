@@ -1,33 +1,35 @@
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
 import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import {
-  setShowErrorModal,
-  setWebhookTriggerErrors,
-  setTriggerWebhookResponse,
-} from 'Plugins/admin/redux/features/WebhookSlice'
 import { Box } from '@mui/material'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useCedarling } from '@/cedarling'
 import customColors from '@/customColors'
+import { useWebhookDialog } from '@/context/WebhookDialogContext'
+import type { WebhookTriggerError } from '@/context/WebhookDialogContext'
+
+interface ThemeState {
+  state: {
+    theme: string
+  }
+}
 
 const GluuWebhookErrorDialog = () => {
   const { t } = useTranslation()
-  const dispatch = useDispatch()
+  const { state, actions } = useWebhookDialog()
   const { triggerWebhookMessage, webhookTriggerErrors, triggerWebhookInProgress, showErrorModal } =
-    useSelector((state: any) => state.webhookReducer)
+    state
   const { hasCedarPermission } = useCedarling()
 
-  const theme: any = useContext(ThemeContext)
+  const theme = useContext(ThemeContext) as ThemeState
   const selectedTheme = theme.state.theme
 
   const closeModal = () => {
-    dispatch(setShowErrorModal(!showErrorModal))
-    dispatch(setWebhookTriggerErrors([]))
-    dispatch(setTriggerWebhookResponse('Something went wrong while triggering webhook.'))
+    actions.setShowErrorModal(!showErrorModal)
+    actions.setWebhookTriggerErrors([])
+    actions.setTriggerWebhookResponse('Something went wrong while triggering webhook.')
   }
 
   return (
@@ -57,7 +59,7 @@ const GluuWebhookErrorDialog = () => {
           ) : null}
           {webhookTriggerErrors.length ? (
             <ul>
-              {webhookTriggerErrors.map((item: any) => (
+              {webhookTriggerErrors.map((item: WebhookTriggerError) => (
                 <li
                   key={item.responseMessage}
                   style={{

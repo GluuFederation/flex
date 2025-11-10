@@ -35,7 +35,7 @@ import { getErrorMessage } from './types/common'
 
 import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
-import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSagaUtils'
 
 // Helper function to create ScriptApi instance
 function* createScriptApi(): Generator<SelectEffect, ScriptApi, string> {

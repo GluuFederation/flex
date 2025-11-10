@@ -18,7 +18,7 @@ import OIDCApi from '../api/OIDCApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
-import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSaga'
+import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSagaUtils'
 import TokenApi from '../api/TokenApi'
 
 function* newFunction() {

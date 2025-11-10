@@ -12,11 +12,11 @@ import {
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
-import { useSelector } from 'react-redux'
 import useWebhookDialogAction from 'Utils/hooks/useWebhookDialogAction'
 import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import customColors from '@/customColors'
+import { useWebhookDialog } from '@/context/WebhookDialogContext'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: any) => {
   const [active, setActive] = useState(false)
@@ -24,7 +24,8 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name, feature }: a
   const { hasCedarPermission } = useCedarling()
 
   const [userMessage, setUserMessage] = useState('')
-  const { loadingWebhooks, webhookModal } = useSelector((state: any) => state.webhookReducer)
+  const { state: webhookState } = useWebhookDialog()
+  const { loadingWebhooks, webhookModal } = webhookState
   const theme: any = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
