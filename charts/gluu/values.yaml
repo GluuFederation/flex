@@ -988,7 +988,7 @@ global:
       u2fConfigEnabled: true
       # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token.
       authServerProtectedToken: false
-      # -- Enable mTLS onn Auth server endpoint /jans-auth/restv1/register.
+      # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/register.
       authServerProtectedRegister: false
       # -- Enable endpoint /.well-known/lock-server-configuration
       lockConfigEnabled: false
