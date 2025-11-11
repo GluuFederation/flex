@@ -369,6 +369,9 @@ class flex_installer(JettyInstaller):
                 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(
                     app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
                 (self.adimin_ui_bin_url, os.path.join(Config.dist_jans_dir, os.path.basename(self.adimin_ui_bin_url))),
+                ('https://raw.githubusercontent.com/GluuFederation/GluuFlexAdminUIPolicyStore/refs/heads/main/2fb50e468d9dfefa142d1fce4fa9747efbd3a0f08de5.json',
+                    self.policy_store_path
+                ),
             ]
 
             if argsp.update_admin_ui:
