@@ -214,7 +214,7 @@ function AgamaListPage(): React.ReactElement {
 
     authorizePermissions()
     if (isEmpty(configuration)) {
-      dispatch(getJsonConfig({} as never))
+      dispatch(getJsonConfig())
     }
   }, [dispatch, authorize])
 
@@ -242,6 +242,14 @@ function AgamaListPage(): React.ReactElement {
     return byteArray
   }
 
+  const convertByteArrayToBase64 = (byteArray: Uint8Array): string => {
+    let binary = ''
+    for (let i = 0; i < byteArray.length; i++) {
+      binary += String.fromCharCode(byteArray[i])
+    }
+    return btoa(binary)
+  }
+
   useEffect(() => {
     if (agamaRepositoriesData) {
       setAgamaRepositoriesList(agamaRepositoriesData as AgamaRepositoriesResponse)
@@ -260,10 +268,11 @@ function AgamaListPage(): React.ReactElement {
 
     setUploadLoading(true)
     const file = await convertFileToByteArray(selectedFile)
+    const base64Data = convertByteArrayToBase64(file)
 
     await uploadProjectMutation.mutateAsync({
       name: projectName,
-      data: file as unknown as string,
+      data: base64Data,
     })
   }
 
@@ -575,13 +584,13 @@ function AgamaListPage(): React.ReactElement {
         throw new Error('Failed to download project')
       }
 
-      // Response is already a base64 string, no need for FileReader
       const base64String = downloadResult as unknown as string
       const byteArray = convertFileFrombase64(base64String)
+      const base64Data = convertByteArrayToBase64(byteArray)
 
       await deployProjectMutation.mutateAsync({
         name: repo['repository-name'],
-        data: byteArray as unknown as string,
+        data: base64Data,
       })
     } catch (error) {
       console.error('Error deploying project:', error)
