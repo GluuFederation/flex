@@ -516,7 +516,7 @@ class flex_installer(JettyInstaller):
             print("\033[1mAdmin UI Web Client ID:\033[0m", Config.admin_ui_client_id)
             print("\033[1mAdmin UI Web Client Secret:\033[0m", Config.admin_ui_client_pw)
 
-            self.dbUtils.import_ldif([client_tmp_fn])
+            self.dbUtils.import_ldif([client_tmp_fn, self.admin_ui_web_hook_ldif_fn])
 
         client_check_result = config_api_installer.check_clients([('admin_ui_web_client_id', '2002.')])
         if client_check_result['2002.'] == -1:
