@@ -153,10 +153,10 @@ function AgamaListPage(): React.ReactElement {
 
   const uploadProjectMutation = usePostAgamaPrj({
     mutation: {
-      onSuccess: async (uploadedProject: Deployment) => {
+      onSuccess: async (response: string) => {
         dispatch(updateToast(true, 'success'))
         await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
-        await logAgamaCreation(uploadedProject, `Uploaded Agama project: ${projectName}`)
+        await logAgamaCreation({} as Deployment, `Uploaded Agama project: ${projectName}`)
         setProjectName('')
         setShowAddModal(false)
         setSelectedFile(null)
@@ -175,14 +175,12 @@ function AgamaListPage(): React.ReactElement {
 
   const deployProjectMutation = usePostAgamaPrj({
     mutation: {
-      onSuccess: async (deployedProject: Deployment) => {
+      onSuccess: async (response: string) => {
         dispatch(updateToast(true, 'success'))
         await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
-        const projectNameForAudit =
-          deployedProject.details?.projectMetadata?.projectName || repoName || 'Unknown'
         await logAgamaCreation(
-          deployedProject,
-          `Deployed community Agama project: ${projectNameForAudit}`,
+          {} as Deployment,
+          `Deployed community Agama project: ${repoName || 'Unknown'}`,
         )
         setShowConfigModal(false)
         setShowAddModal(false)
