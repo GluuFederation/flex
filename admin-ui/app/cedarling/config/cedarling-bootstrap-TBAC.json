@@ -24,5 +24,6 @@
     ]
   },
   "CEDARLING_USER_AUTHZ": "enabled",
-  "CEDARLING_WORKLOAD_AUTHZ": "disabled"
+  "CEDARLING_WORKLOAD_AUTHZ": "disabled",
+  "CEDARLING_MAPPING_TRUSTED_ISSUER": "Gluu::Flex::AdminUI::TrustedIssuer"
 }

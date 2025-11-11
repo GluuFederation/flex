@@ -101,11 +101,10 @@ const PermissionsPolicyInitializer = () => {
 
     const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
     const policies = generateCedarPolicies(allPermissions)
-    debugger
+
     const bootstrapConfig = {
       ...bootstrap,
       CEDARLING_LOG_TYPE: cedarlingLogType,
-      CEDARLING_POLICY_STORE_URI: '',
       CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policyStoreJson),
     }
 
