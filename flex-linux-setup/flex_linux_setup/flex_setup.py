@@ -574,7 +574,13 @@ class flex_installer(JettyInstaller):
         #cedarling integration
         admin_ui_config_dir = os.path.join(config_api_installer.custom_config_dir, 'adminUI')
         if os.path.exists(self.policy_store_path):
-            config_api_installer.renderTemplateInOut(self.policy_store_path, self.templates_dir, admin_ui_config_dir)
+            try:
+                with open(self.policy_store_path) as f:
+                    json.load(f)  # Validates JSON format
+                    config_api_installer.renderTemplateInOut(self.policy_store_path, self.templates_dir, admin_ui_config_dir)
+            except json.JSONDecodeError as e:
+                print(f"Warning: Downloaded policy store is not valid JSON: {e}")
+
         config_api_installer.chown(admin_ui_config_dir, Config.jetty_user, Config.jetty_group)
         resource_scopes_mapping_lidf_fn = os.path.join(self.templates_dir, 'adminUIResourceScopesMapping.ldif')
 
