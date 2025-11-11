@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Card, Input } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-import SetTitle from 'Utils/SetTitle'
+import useSetTitle from 'Utils/SetTitle'
+import { useAgamaActions } from './hooks/useAgamaActions'
+import { CREATE, DELETION } from '@/audit/UserActionType'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import TablePagination from '@mui/material/TablePagination'
@@ -79,6 +81,7 @@ function AgamaListPage(): React.ReactElement {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const { logAgamaCreation, logAgamaDeletion } = useAgamaActions()
   const [myActions, setMyActions] = useState<Action<AgamaTableRow>[]>([])
   const [limit, setLimit] = useState<number>(10)
   const [pageNumber, setPageNumber] = useState<number>(0)
@@ -150,9 +153,10 @@ function AgamaListPage(): React.ReactElement {
 
   const uploadProjectMutation = usePostAgamaPrj({
     mutation: {
-      onSuccess: async () => {
+      onSuccess: async (uploadedProject: Deployment) => {
         dispatch(updateToast(true, 'success'))
         await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
+        await logAgamaCreation(uploadedProject, `Uploaded Agama project: ${projectName}`)
         setProjectName('')
         setShowAddModal(false)
         setSelectedFile(null)
@@ -171,9 +175,15 @@ function AgamaListPage(): React.ReactElement {
 
   const deployProjectMutation = usePostAgamaPrj({
     mutation: {
-      onSuccess: async () => {
+      onSuccess: async (deployedProject: Deployment) => {
         dispatch(updateToast(true, 'success'))
         await queryClient.invalidateQueries({ queryKey: getGetAgamaPrjQueryKey() })
+        const projectNameForAudit =
+          deployedProject.details?.projectMetadata?.projectName || repoName || 'Unknown'
+        await logAgamaCreation(
+          deployedProject,
+          `Deployed community Agama project: ${projectNameForAudit}`,
+        )
         setShowConfigModal(false)
         setShowAddModal(false)
         setRepoName(null)
@@ -340,9 +350,7 @@ function AgamaListPage(): React.ReactElement {
     },
   })
 
-  useEffect(() => {
-    SetTitle(t('titles.agama'))
-  }, [t])
+  useSetTitle(t('titles.agama'))
 
   const formDeploymentDetailsData = useCallback((): void => {
     const data: AgamaProject[] = []
@@ -800,12 +808,13 @@ function AgamaListPage(): React.ReactElement {
 
       try {
         await deleteProjectMutation.mutateAsync({ name: projectName })
+        await logAgamaDeletion(oldData as Deployment, `Deleted Agama project: ${projectName}`)
       } catch (error) {
         console.error('Error deleting project:', error)
         throw error
       }
     },
-    [deleteProjectMutation],
+    [deleteProjectMutation, logAgamaDeletion],
   )
 
   const tableColumns: Column<AgamaTableRow>[] = useMemo(
