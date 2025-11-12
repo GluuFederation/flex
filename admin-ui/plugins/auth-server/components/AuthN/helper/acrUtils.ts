@@ -1,7 +1,18 @@
 import { SIMPLE_PASSWORD_AUTH } from 'Plugins/auth-server/common/Constants'
+import type { Deployment } from 'JansConfigApi'
 
-export const buildAgamaFlowsArray = (agamaList) => {
-  const agamaFlows = []
+export interface DropdownOption {
+  label: string
+  value: string
+}
+
+interface ScriptOption {
+  key: string
+  value: string
+}
+
+export const buildAgamaFlowsArray = (agamaList: Deployment[]): string[] => {
+  const agamaFlows: string[] = []
   if (Array.isArray(agamaList)) {
     agamaList.forEach((flow) => {
       const configs = flow?.details?.projectMetadata?.configs
@@ -20,7 +31,10 @@ export const buildAgamaFlowsArray = (agamaList) => {
   return agamaFlows
 }
 
-export const buildDropdownOptions = (filteredScripts, agamaFlows) => {
+export const buildDropdownOptions = (
+  filteredScripts: ScriptOption[],
+  agamaFlows: string[],
+): DropdownOption[] => {
   return [
     { label: `${SIMPLE_PASSWORD_AUTH} (builtin)`, value: SIMPLE_PASSWORD_AUTH },
     ...filteredScripts
