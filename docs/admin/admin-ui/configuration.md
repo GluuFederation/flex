@@ -23,7 +23,7 @@ Use the Cedarling configuration section for policy store configuration:
 
 Admin UI comes with [Default policy store](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer). You can simply fork the [GluuFlexAdminUIPolicyStore](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer) repository, view, add, and update roles and policies using [Agama Lab](https://cloud.gluu.org/agama-lab) and configure it in Admin UI.
 
-If you want to add a new role, simply open your policy store in [Agama Lab](https://cloud.gluu.org/agama-lab), add a policy with the role, and configure it in Admin UI Cedarling. Once you apply, Admin UI parses your policy store schema, finds all roles from policies, and adds them to Admin UI.
+To add a new role, open your policy store in [Agama Lab](https://cloud.gluu.org/agama-lab), create a policy with the role, and configure it in the Admin UI Cedarling. Once you apply, Admin UI parses your policy store schema, finds all roles from policies, and adds them to Admin UI.
 
 #### Set policy retrieval point
 
