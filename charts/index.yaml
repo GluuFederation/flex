@@ -32,7 +32,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.13.0
-    created: "2025-11-12T15:54:04.289423225Z"
+    created: "2025-11-12T17:36:26.014623014Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -135,7 +135,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.12.0
-    created: "2025-11-12T15:54:04.280485112Z"
+    created: "2025-11-12T17:36:26.005522388Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -238,7 +238,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.11.0
-    created: "2025-11-12T15:54:04.27112571Z"
+    created: "2025-11-12T17:36:25.996282229Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -341,7 +341,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.9.0
-    created: "2025-11-12T15:54:04.362716286Z"
+    created: "2025-11-12T17:36:26.089542961Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -444,7 +444,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.8.0
-    created: "2025-11-12T15:54:04.354037638Z"
+    created: "2025-11-12T17:36:26.080550605Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -549,7 +549,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.7.0
-    created: "2025-11-12T15:54:04.345214857Z"
+    created: "2025-11-12T17:36:26.071451594Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -662,7 +662,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.6.0
-    created: "2025-11-12T15:54:04.335492308Z"
+    created: "2025-11-12T17:36:26.061306801Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -775,7 +775,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.5.0
-    created: "2025-11-12T15:54:04.325636487Z"
+    created: "2025-11-12T17:36:26.051106409Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -884,7 +884,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.4.0
-    created: "2025-11-12T15:54:04.316516344Z"
+    created: "2025-11-12T17:36:26.041663945Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -989,7 +989,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.3.0
-    created: "2025-11-12T15:54:04.307458064Z"
+    created: "2025-11-12T17:36:26.032604Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1094,7 +1094,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.2.0
-    created: "2025-11-12T15:54:04.298318462Z"
+    created: "2025-11-12T17:36:26.023502302Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1199,7 +1199,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.6
-    created: "2025-11-12T15:54:04.261958557Z"
+    created: "2025-11-12T17:36:25.987227663Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1304,7 +1304,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.6-dev
-    created: "2025-11-12T15:54:04.253156577Z"
+    created: "2025-11-12T17:36:25.978197403Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1409,7 +1409,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.5
-    created: "2025-11-12T15:54:04.244112269Z"
+    created: "2025-11-12T17:36:25.968871816Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1518,7 +1518,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.5-dev
-    created: "2025-11-12T15:54:04.233558836Z"
+    created: "2025-11-12T17:36:25.958170598Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1627,7 +1627,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.4
-    created: "2025-11-12T15:54:04.223379914Z"
+    created: "2025-11-12T17:36:25.948146528Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1736,7 +1736,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.4-dev
-    created: "2025-11-12T15:54:04.212800325Z"
+    created: "2025-11-12T17:36:25.937938224Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1845,7 +1845,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.3
-    created: "2025-11-12T15:54:04.201938961Z"
+    created: "2025-11-12T17:36:25.927545528Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -1954,7 +1954,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.3-dev
-    created: "2025-11-12T15:54:04.190914473Z"
+    created: "2025-11-12T17:36:25.916823253Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2063,7 +2063,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.2
-    created: "2025-11-12T15:54:04.179245901Z"
+    created: "2025-11-12T17:36:25.901557128Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2172,7 +2172,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.2
-    created: "2025-11-12T15:54:04.168713339Z"
+    created: "2025-11-12T17:36:25.891518069Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2279,7 +2279,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.1
-    created: "2025-11-12T15:54:04.158012296Z"
+    created: "2025-11-12T17:36:25.881583379Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2382,7 +2382,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.1
-    created: "2025-11-12T15:54:04.148256646Z"
+    created: "2025-11-12T17:36:25.87181807Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2485,7 +2485,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.1
-    created: "2025-11-12T15:54:04.138238917Z"
+    created: "2025-11-12T17:36:25.861914718Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2588,7 +2588,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.0
-    created: "2025-11-12T15:54:04.128020576Z"
+    created: "2025-11-12T17:36:25.852026089Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2691,7 +2691,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.1.0
-    created: "2025-11-12T15:54:04.117579044Z"
+    created: "2025-11-12T17:36:25.84241511Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2794,7 +2794,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.22
-    created: "2025-11-12T15:54:04.107414869Z"
+    created: "2025-11-12T17:36:25.83277074Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2897,7 +2897,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.097559137Z"
+    created: "2025-11-12T17:36:25.818970702Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -2999,7 +2999,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.086677647Z"
+    created: "2025-11-12T17:36:25.809430048Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3093,7 +3093,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.076678536Z"
+    created: "2025-11-12T17:36:25.801084086Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3189,7 +3189,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.066791148Z"
+    created: "2025-11-12T17:36:25.79192473Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3285,7 +3285,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.058051668Z"
+    created: "2025-11-12T17:36:25.784647232Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3390,7 +3390,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.048618523Z"
+    created: "2025-11-12T17:36:25.774807466Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3495,7 +3495,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.038594937Z"
+    created: "2025-11-12T17:36:25.766089308Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3600,7 +3600,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.029315246Z"
+    created: "2025-11-12T17:36:25.756966397Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3705,7 +3705,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.020180978Z"
+    created: "2025-11-12T17:36:25.747963517Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3810,7 +3810,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.010826692Z"
+    created: "2025-11-12T17:36:25.738979491Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -3915,7 +3915,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.001504725Z"
+    created: "2025-11-12T17:36:25.729969348Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4020,7 +4020,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.992198751Z"
+    created: "2025-11-12T17:36:25.720762159Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4125,7 +4125,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.982223789Z"
+    created: "2025-11-12T17:36:25.711762707Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4230,7 +4230,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.972955656Z"
+    created: "2025-11-12T17:36:25.699154304Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4335,7 +4335,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.963563298Z"
+    created: "2025-11-12T17:36:25.689893263Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4440,7 +4440,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.953790073Z"
+    created: "2025-11-12T17:36:25.680720877Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4545,7 +4545,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.944337669Z"
+    created: "2025-11-12T17:36:25.670706525Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4650,7 +4650,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.93489976Z"
+    created: "2025-11-12T17:36:25.66224786Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4755,7 +4755,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.925712555Z"
+    created: "2025-11-12T17:36:25.653092167Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4860,7 +4860,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:03.915986105Z"
+    created: "2025-11-12T17:36:25.644458779Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -4964,7 +4964,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 0.0.0-nightly
-    created: "2025-11-12T15:54:03.906729024Z"
+    created: "2025-11-12T17:36:25.63576312Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -5023,7 +5023,7 @@ entries:
       repository: ""
       version: 0.0.0-nightly
     description: Gluu Access and Identity Management
-    digest: fd7018275144e720224f2eaae56957631ba872035ee2eee0d610512dade8d1bb
+    digest: c1ec8b9c4c3e149c08f13b51524d94a7d9608be9da45a5bc3b09648fc05a5868
     home: https://www.gluu.org
     icon: https://gluu.org/docs/gluu-server/favicon.ico
     kubeVersion: '>=v1.23.0-0'
@@ -5049,7 +5049,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.13.0
-    created: "2025-11-12T15:54:04.414463602Z"
+    created: "2025-11-12T17:36:26.138810157Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: a84c05dfa558b374b95534911d33b76b13b50bb845d71242aab566e76fece609
@@ -5078,7 +5078,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.12.0
-    created: "2025-11-12T15:54:04.412210957Z"
+    created: "2025-11-12T17:36:26.136599045Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 109a184114f1b3c1cceb6b5214996dba57e90346d645d739edddccad6db76978
@@ -5107,7 +5107,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.11.0
-    created: "2025-11-12T15:54:04.408796825Z"
+    created: "2025-11-12T17:36:26.133683725Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 02da67b86e5e76235b47cdf79a22ba8c134a326db70de59211fa003cd4832579
@@ -5136,7 +5136,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.9.0
-    created: "2025-11-12T15:54:04.434869296Z"
+    created: "2025-11-12T17:36:26.158484428Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 04fdce57ed9f06984f170e45b15fa611a8a18dbc4bf109ccfe7093da9dfe27f5
@@ -5165,7 +5165,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.8.0
-    created: "2025-11-12T15:54:04.431683562Z"
+    created: "2025-11-12T17:36:26.155436743Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 3bdd422b5aa42cd5c80a79a406e5fe3bc526c022732f34c2cf6c38cf7bee5fdc
@@ -5194,7 +5194,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.7.0
-    created: "2025-11-12T15:54:04.429430895Z"
+    created: "2025-11-12T17:36:26.153354893Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: fea206c913106d3879f78b97c2b1b7837aeb65af00f1db454e2f9bfe0c8d0239
@@ -5223,7 +5223,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.6.0
-    created: "2025-11-12T15:54:04.42710126Z"
+    created: "2025-11-12T17:36:26.151142859Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 4edfac29122372e4e3f99cafcb06d4085db3ad9e4e62f341846f377c744dc6a8
@@ -5252,7 +5252,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.5.0
-    created: "2025-11-12T15:54:04.423783554Z"
+    created: "2025-11-12T17:36:26.148062985Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 57becd734c9a89b62e7c4d13f03a928b4b510d5480d690c87f6d100efa6bc3a4
@@ -5281,7 +5281,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.4.0
-    created: "2025-11-12T15:54:04.421578865Z"
+    created: "2025-11-12T17:36:26.14594086Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: f42287230f4287aee0f392a307c0aa952f553503d4d2456c29357d8e8f0df58b
@@ -5310,7 +5310,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.3.0
-    created: "2025-11-12T15:54:04.419548401Z"
+    created: "2025-11-12T17:36:26.143878496Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: a6a1e3d92e673d7ca301d5d8ab9c7de7f7c6f1f3a396220519580877ea90270d
@@ -5339,7 +5339,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.2.0
-    created: "2025-11-12T15:54:04.416526574Z"
+    created: "2025-11-12T17:36:26.140907967Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 952e1ed04da67ecde3bca7ee4864ef66b12d0119490b47c888518d989b4033fe
@@ -5368,7 +5368,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.6
-    created: "2025-11-12T15:54:04.406663721Z"
+    created: "2025-11-12T17:36:26.131602566Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 2edb573e58741982a3be074a10921071e2ae7617d55e7bb2f2455932484425c3
@@ -5397,7 +5397,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.6-dev
-    created: "2025-11-12T15:54:04.40462767Z"
+    created: "2025-11-12T17:36:26.129611596Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 4f6cd31363157b04b9f392b1d2c46906bbddf3764fa9d895016827b8b51a9a51
@@ -5426,7 +5426,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.5
-    created: "2025-11-12T15:54:04.40162783Z"
+    created: "2025-11-12T17:36:26.126881949Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 315306c90ec1b86b89e332b5886986975989b9ef85d94bf4fb91811c17f740cb
@@ -5455,7 +5455,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.5-dev
-    created: "2025-11-12T15:54:04.3995715Z"
+    created: "2025-11-12T17:36:26.124822841Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 83a01c73321e167e19071b294466d8b7470b3073a4cea3eaa675c4ce046ab8ea
@@ -5484,7 +5484,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.4
-    created: "2025-11-12T15:54:04.39746434Z"
+    created: "2025-11-12T17:36:26.122754817Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: af6fcc0ba0858a92e6b80aaa5e12bc1d51782c592eb3c293f91f0e1c12d08bb4
@@ -5513,7 +5513,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.4-dev
-    created: "2025-11-12T15:54:04.394434929Z"
+    created: "2025-11-12T17:36:26.120643362Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 57808da241c9be85c91125cb6e7a1e2c18ee1eb8180e23ab7d2049abdbfc12ae
@@ -5542,7 +5542,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.3
-    created: "2025-11-12T15:54:04.392325637Z"
+    created: "2025-11-12T17:36:26.117647741Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 39973afe0c5e3b81d6310a60d8b60300175b8e416a60cd0d19f900fe02f00f86
@@ -5571,7 +5571,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.3-dev
-    created: "2025-11-12T15:54:04.390244548Z"
+    created: "2025-11-12T17:36:26.115622838Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 782168d240a84743337ca19cfcee81c6df56af625940ab283da3b7cb7e6305e7
@@ -5600,7 +5600,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.2
-    created: "2025-11-12T15:54:04.386922172Z"
+    created: "2025-11-12T17:36:26.11358517Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: bccbfe33f1a09be7e5b8f53acc05a66b3d8d7bad47d9b72870522ea23b808575
@@ -5629,7 +5629,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.2
-    created: "2025-11-12T15:54:04.384894977Z"
+    created: "2025-11-12T17:36:26.110940722Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: d8176a5e2ae93667977d1cd7f776d60decae13ed69293e905ca40109cba2392c
@@ -5658,7 +5658,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.1
-    created: "2025-11-12T15:54:04.382871127Z"
+    created: "2025-11-12T17:36:26.108453445Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 0f8cb67a0263cb3995746b2add018baac6345a85173559f42c966de3900ca209
@@ -5687,7 +5687,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.1
-    created: "2025-11-12T15:54:04.380897373Z"
+    created: "2025-11-12T17:36:26.106544568Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 16df387e8628114b4ada11251da04d228bb5a56d8bcd1dac8eb0a8bfc4737b6c
@@ -5716,7 +5716,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.1.0
-    created: "2025-11-12T15:54:04.377868314Z"
+    created: "2025-11-12T17:36:26.104627697Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 4f04600dfe57ea63f0cc1dcb1ac5e5aaeaea301b5d6d88c1465e6e7b26c63681
@@ -5745,7 +5745,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.0.22
-    created: "2025-11-12T15:54:04.375955181Z"
+    created: "2025-11-12T17:36:26.102017707Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 89f620286a1bf1f3d660dde987ef71d8591b4b56383f3d2a4a63a5d3a20dd0ab
@@ -5774,7 +5774,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.374080452Z"
+    created: "2025-11-12T17:36:26.099992122Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 7933c1944cee8fe7081fd20b458c393049591779607443c00adc78700f0b2818
@@ -5804,7 +5804,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.37099956Z"
+    created: "2025-11-12T17:36:26.097918427Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 1c7a5df81b9750989e471d6313828834f67a8c01e9407cee7c9840860fbe6925
@@ -5834,7 +5834,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.369227416Z"
+    created: "2025-11-12T17:36:26.096162336Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: 322a1b4de45e30947f3a319d0ede7e9f466c3687bb7a8795a7dfcdb649ab98d7
@@ -5866,7 +5866,7 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2025-11-12T15:54:04.367455324Z"
+    created: "2025-11-12T17:36:26.093461082Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
     digest: ab0b9ca96bf41aa4a1689f4c11f60d9420d68072b348879c76737d8e87fedf61
@@ -5895,10 +5895,10 @@ entries:
       catalog.cattle.io/release-name: gluu-all-in-one
     apiVersion: v2
     appVersion: 0.0.0-nightly
-    created: "2025-11-12T15:54:04.365707463Z"
+    created: "2025-11-12T17:36:26.091702636Z"
     description: Gluu Access and Identity Management All-in-One Chart. This chart
       deploys the selected janssen microservice all in one deployment.
-    digest: 89a83c9ed27de79a6ed601edb18541333cdbd6c921ed97af6195adc539ef7648
+    digest: 082b224f5cfcd4db71bc76f49bcb6121ef5d199e9cc092a2828d4dbda5b7cb92
     home: https://docs.gluu.org
     icon: https://gluu.org/docs/gluu-server/favicon.ico
     kubeVersion: '>=v1.23.0-0'
@@ -5912,4 +5912,4 @@ entries:
     urls:
     - gluu-all-in-one-0.0.0-nightly.tgz
     version: 0.0.0-nightly
-generated: "2025-11-12T15:54:03.896359445Z"
+generated: "2025-11-12T17:36:25.62631114Z"
