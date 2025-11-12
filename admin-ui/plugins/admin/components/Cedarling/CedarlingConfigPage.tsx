@@ -67,6 +67,13 @@ const CedarlingConfigPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (auiPolicyStoreUrl.trim() === '') {
+      const errorMessage = `${t('messages.error_in_saving')} field: ${t('fields.auiPolicyStoreUrl')} ${t('messages.is_required')}`
+      dispatch(updateToast(true, 'error', errorMessage))
+      return
+    }
+
     const requestData = {
       auiPolicyStoreUrl,
       cedarlingPolicyStoreRetrievalPoint,
@@ -207,7 +214,10 @@ const CedarlingConfigPage: React.FC = () => {
                     doc_entry={'updateRemotePolicyStoreOnServer'}
                   >
                     <IconButton
-                      hidden={cedarlingPolicyStoreRetrievalPoint === 'remote'}
+                      hidden={
+                        cedarlingPolicyStoreRetrievalPoint === 'remote' ||
+                        auiPolicyStoreUrl.trim() === ''
+                      }
                       type="button"
                       aria-label="search"
                       onClick={handleSetRemotePolicyStoreAsDefault}
