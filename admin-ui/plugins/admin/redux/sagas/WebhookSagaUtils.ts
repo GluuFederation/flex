@@ -6,18 +6,19 @@ import { updateToast } from 'Redux/features/toastSlice'
 import { WEBHOOK_FEATURE_IDS } from '../../constants/webhookFeatures'
 import { getClient } from 'Redux/api/base'
 
-const JansConfigApi = require('jans_config_api')
+import * as JansConfigApi from 'jans_config_api'
 
 interface WebhookPayload {
   createdFeatureValue?: Record<string, unknown>
+  deletedFeatureValue?: Record<string, unknown>
 }
 
-function* getApiInstance(): Generator<SelectEffect, any, RootState> {
+function* getApiInstance(): Generator<SelectEffect, JansConfigApi.AdminUIWebhooksApi, RootState> {
   const state = yield select((state: RootState) => state)
   const token = state.authReducer.token.access_token
   const issuer = state.authReducer.issuer
 
-  return new JansConfigApi.WebhooksApi(getClient(JansConfigApi, token, issuer))
+  return new JansConfigApi.AdminUIWebhooksApi(getClient(JansConfigApi, token, issuer))
 }
 
 export function* triggerWebhook({
@@ -26,17 +27,24 @@ export function* triggerWebhook({
 }: {
   payload: WebhookPayload
   featureId: string
-}): Generator<CallEffect | SelectEffect | PutEffect, void, any> {
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi.AdminUIWebhooksApi> {
   try {
-    if (!payload.createdFeatureValue) {
-      console.warn('No createdFeatureValue provided for webhook trigger')
+    const isDelete = featureId.endsWith('_delete')
+    const valueKey = isDelete ? 'deletedFeatureValue' : 'createdFeatureValue'
+    const featureValue = isDelete ? payload.deletedFeatureValue : payload.createdFeatureValue
+
+    if (!featureValue) {
+      console.warn(`No ${valueKey} provided for webhook trigger`)
       return
     }
 
     const api = yield* getApiInstance()
+    const webhookId = featureValue.inum || featureValue.dn || ''
     const requestData: ShortCodeRequest = {
-      webhookId: payload.createdFeatureValue.inum || payload.createdFeatureValue.dn || '',
-      shortcodeValueMap: payload.createdFeatureValue as Record<string, { [key: string]: unknown }>,
+      webhookId,
+      shortcodeValueMap: {
+        [valueKey]: featureValue as Record<string, unknown>,
+      },
     }
 
     yield call([api, api.triggerWebhook], featureId, requestData)
@@ -61,11 +69,16 @@ export function* triggerOidcClientWebhook({
 }: {
   payload: WebhookPayload
   isDelete?: boolean
-}): Generator<CallEffect | SelectEffect | PutEffect, void, any> {
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi.AdminUIWebhooksApi> {
   const featureId = isDelete
     ? WEBHOOK_FEATURE_IDS.OIDC_CLIENTS_DELETE
     : WEBHOOK_FEATURE_IDS.OIDC_CLIENTS_WRITE
-  yield* triggerWebhook({ payload, featureId })
+
+  const convertedPayload: WebhookPayload = isDelete
+    ? { deletedFeatureValue: payload.createdFeatureValue || payload.deletedFeatureValue }
+    : { createdFeatureValue: payload.createdFeatureValue || payload.deletedFeatureValue }
+
+  yield* triggerWebhook({ payload: convertedPayload, featureId })
 }
 
 export function* triggerScopeWebhook({
@@ -74,9 +87,14 @@ export function* triggerScopeWebhook({
 }: {
   payload: WebhookPayload
   isDelete?: boolean
-}): Generator<CallEffect | SelectEffect | PutEffect, void, any> {
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi.AdminUIWebhooksApi> {
   const featureId = isDelete ? WEBHOOK_FEATURE_IDS.SCOPES_DELETE : WEBHOOK_FEATURE_IDS.SCOPES_WRITE
-  yield* triggerWebhook({ payload, featureId })
+
+  const convertedPayload: WebhookPayload = isDelete
+    ? { deletedFeatureValue: payload.createdFeatureValue || payload.deletedFeatureValue }
+    : { createdFeatureValue: payload.createdFeatureValue || payload.deletedFeatureValue }
+
+  yield* triggerWebhook({ payload: convertedPayload, featureId })
 }
 
 export function* triggerScriptWebhook({
@@ -85,11 +103,16 @@ export function* triggerScriptWebhook({
 }: {
   payload: WebhookPayload
   isDelete?: boolean
-}): Generator<CallEffect | SelectEffect | PutEffect, void, any> {
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi.AdminUIWebhooksApi> {
   const featureId = isDelete
     ? WEBHOOK_FEATURE_IDS.CUSTOM_SCRIPT_DELETE
     : WEBHOOK_FEATURE_IDS.CUSTOM_SCRIPT_WRITE
-  yield* triggerWebhook({ payload, featureId })
+
+  const convertedPayload: WebhookPayload = isDelete
+    ? { deletedFeatureValue: payload.createdFeatureValue || payload.deletedFeatureValue }
+    : { createdFeatureValue: payload.createdFeatureValue || payload.deletedFeatureValue }
+
+  yield* triggerWebhook({ payload: convertedPayload, featureId })
 }
 
 export function* triggerSamlWebhook({
@@ -100,6 +123,6 @@ export function* triggerSamlWebhook({
   featureId:
     | typeof WEBHOOK_FEATURE_IDS.SAML_CONFIGURATION_WRITE
     | typeof WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE
-}): Generator<CallEffect | SelectEffect | PutEffect, void, any> {
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi.AdminUIWebhooksApi> {
   yield* triggerWebhook({ payload, featureId })
 }
