@@ -105,10 +105,10 @@ permit (
 
 | Parent Resource | Child resources |
 |-----------------|-----------------|
-|`AuthServerAndConfiguration`|`Clients`, `Scopes`, `Keys`, `AuthenticationServerConfiguration`, `Logging`, `SSA`, `Authentication`, `ConfigApiConfiguration`, `Sesison`|
+|`AuthServerAndConfiguration`|`Clients`, `Scopes`, `Keys`, `AuthenticationServerConfiguration`, `Logging`, `SSA`, `Authentication`, `ConfigApiConfiguration`, `Session`|
 |`IdentityAndAccess`|`Users`, `Scripts`, `UserClaims`|
-|`SystemAndMonitoring`|`Dashboard`, `License`, `MAU`, `Security`, `Settings`, `Webhooks`, `Assests`, `AuditLogs`|
-|`Service`|`Cache`, `Persistance`, `SMTP`, `SCIM`, `FIDO`, `SAML`, `Lock`|
+|`SystemAndMonitoring`|`Dashboard`, `License`, `MAU`, `Security`, `Settings`, `Webhooks`, `Assets`, `AuditLogs`|
+|`Service`|`Cache`, `Persistence`, `SMTP`, `SCIM`, `FIDO`, `SAML`, `Lock`|
 
 **Default entities**
 
@@ -197,7 +197,7 @@ Default entities helps to make a parent-child relation in entities. In Admin UI 
   "6694c954f8d4": {
     "uid": {
       "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Assests"
+      "id": "Assets"
     },
     "attrs": {},
     "parents": [
@@ -327,7 +327,7 @@ Default entities helps to make a parent-child relation in entities. In Admin UI 
   "1694c954f8ca": {
     "uid": {
       "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Sesison"
+      "id": "Session"
     },
     "attrs": {},
     "parents": [
@@ -392,7 +392,7 @@ Default entities helps to make a parent-child relation in entities. In Admin UI 
   "6694c954f8c5": {
     "uid": {
       "type": "Gluu::Flex::AdminUI::Resources::Features",
-      "id": "Persistance"
+      "id": "Persistence"
     },
     "attrs": {},
     "parents": [
