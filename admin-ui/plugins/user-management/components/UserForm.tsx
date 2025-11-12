@@ -26,7 +26,7 @@ import {
 } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { useUserWebhook } from '../hooks/useUserWebhook'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import {
   UserFormProps,
@@ -43,13 +43,14 @@ const usePasswordChange = (
   queryClient: QueryClient,
   dispatch: Dispatch,
   t: TFunction,
+  triggerWebhook: (user: Partial<CustomUser>) => void,
 ) => {
   const changePasswordMutation = usePatchUserByInum({
     mutation: {
       onSuccess: async (data: CustomUser, variables: { inum: string; data: UserPatchRequest }) => {
         dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
         await logPasswordChange(variables.inum, variables.data as Record<string, unknown>)
-        await triggerUserWebhook(data as Record<string, unknown>)
+        triggerWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
       onError: (error: unknown) => {
@@ -370,6 +371,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const { triggerUserWebhook } = useUserWebhook()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
@@ -412,6 +414,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
     queryClient,
     dispatch,
     t,
+    triggerUserWebhook,
   )
 
   const toggle = () => {

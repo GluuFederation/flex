@@ -15,13 +15,14 @@ import { usePostUser, getGetUserQueryKey, CustomUser, CustomObjectAttribute } fr
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserCreation, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { useUserWebhook } from '../hooks/useUserWebhook'
 
 function UserAddPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const { triggerUserWebhook } = useUserWebhook()
   const personAttributes = useSelector(
     (state: UserManagementRootState) => state.attributesReducerRoot.items,
   )
@@ -30,7 +31,7 @@ function UserAddPage() {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_created_successfully')))
         await logUserCreation(data, variables.data)
-        await triggerUserWebhook(data as Record<string, unknown>)
+        triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigate('/user/usersmanagement')
       },

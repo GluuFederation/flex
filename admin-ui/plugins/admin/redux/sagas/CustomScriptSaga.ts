@@ -35,7 +35,7 @@ import { getErrorMessage } from './types/common'
 
 import * as JansConfigApi from 'jans_config_api'
 import { initAudit } from 'Redux/sagas/SagaUtils'
-import { triggerWebhook } from 'Plugins/admin/redux/sagas/WebhookSagaUtils'
+import { triggerScriptWebhook } from 'Plugins/admin/redux/sagas/WebhookSagaUtils'
 
 // Helper function to create ScriptApi instance
 function* createScriptApi(): Generator<SelectEffect, ScriptApi, string> {
@@ -118,7 +118,7 @@ export function* addScript({
       { context: scriptApi, fn: scriptApi.addCustomScript },
       payload.action.action_data as Record<string, unknown>,
     )
-    triggerWebhook({ payload: { createdFeatureValue: data } })
+    yield* triggerScriptWebhook({ payload: { createdFeatureValue: data } })
     yield put(addCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield* successToast()
@@ -153,7 +153,7 @@ export function* editScript({
     yield put(editCustomScriptResponse({ data }))
     yield call(postUserAction, audit)
     yield* successToast()
-    triggerWebhook({ payload: { createdFeatureValue: data } })
+    yield* triggerScriptWebhook({ payload: { createdFeatureValue: data } })
     return data
   } catch (e: unknown) {
     const errMsg = getErrorMessage(e)
@@ -179,8 +179,9 @@ export function* deleteScript({
     yield call({ context: scriptApi, fn: scriptApi.deleteCustomScript }, payload.action.action_data)
     yield* successToast()
     yield put(deleteCustomScriptResponse({ inum: payload.action.action_data }))
-    triggerWebhook({
+    yield* triggerScriptWebhook({
       payload: { createdFeatureValue: { inum: payload.action.action_data } },
+      isDelete: true,
     })
     yield call(postUserAction, audit)
   } catch (e: unknown) {

@@ -20,7 +20,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { useUserWebhook } from '../hooks/useUserWebhook'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -28,6 +28,7 @@ function UserEditPage() {
   const location = useLocation()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const { triggerUserWebhook } = useUserWebhook()
 
   const [userDetails] = useState<CustomUser | null>(location.state?.selectedUser ?? null)
   useEffect(() => {
@@ -57,7 +58,7 @@ function UserEditPage() {
       onSuccess: async (data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_updated_successfully')))
         await logUserUpdate(data, variables.data)
-        await triggerUserWebhook(data as Record<string, unknown>)
+        triggerUserWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
         navigate('/user/usersmanagement')
       },
