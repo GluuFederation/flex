@@ -574,6 +574,11 @@ class flex_installer(JettyInstaller):
         #cedarling integration
         admin_ui_config_dir = os.path.join(config_api_installer.custom_config_dir, 'adminUI')
         if os.path.exists(self.policy_store_path):
+            # before rendering template we need to 'replace your-openid-provider.server' with current hostname
+            policy_store_content = self.readFile(self.policy_store_path)
+            policy_store_content = policy_store_content.replace('your-openid-provider.server', Config.hostname)
+            self.writeFile(self.policy_store_path, policy_store_content)
+
             try:
                 with open(self.policy_store_path) as f:
                     json.load(f)  # Validates JSON format
