@@ -11,7 +11,7 @@ export function useUserWebhook() {
 
   const triggerUserWebhook = useCallback(
     (user: Partial<CustomUser>): void => {
-      trigger(user as Record<string, unknown>, WEBHOOK_FEATURE_IDS.USERS_EDIT)
+      trigger(user, WEBHOOK_FEATURE_IDS.USERS_EDIT)
     },
     [trigger],
   )

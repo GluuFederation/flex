@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useWebhookTrigger } from 'Plugins/admin/hooks/useWebhookTrigger'
+import { WEBHOOK_FEATURE_IDS } from 'Plugins/admin/constants/webhookFeatures'
 
 export function useSamlWebhook() {
   const trigger = useWebhookTrigger<Record<string, unknown>>({
@@ -10,7 +11,9 @@ export function useSamlWebhook() {
   const triggerSamlWebhook = useCallback(
     (
       entity: Record<string, unknown>,
-      featureId: 'saml_configuration_write' | 'saml_idp_write',
+      featureId:
+        | typeof WEBHOOK_FEATURE_IDS.SAML_CONFIGURATION_WRITE
+        | typeof WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE,
     ): void => {
       trigger(entity, featureId)
     },

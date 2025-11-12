@@ -13,7 +13,7 @@ export function useSchemaWebhook() {
 
   const triggerAttributeWebhook = useCallback(
     (attribute: Partial<JansAttribute>): void => {
-      trigger(attribute as Record<string, unknown>, 'attributes_write')
+      trigger(attribute, 'attributes_write')
     },
     [trigger],
   )

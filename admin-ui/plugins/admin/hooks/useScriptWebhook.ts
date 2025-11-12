@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useWebhookTrigger } from './useWebhookTrigger'
+import { WEBHOOK_FEATURE_IDS } from '../constants/webhookFeatures'
 
 export function useScriptWebhook() {
   const trigger = useWebhookTrigger<Record<string, unknown>>({
@@ -10,7 +11,9 @@ export function useScriptWebhook() {
   const triggerScriptWebhook = useCallback(
     (
       script: Record<string, unknown>,
-      featureId: 'custom_script_write' | 'custom_script_delete',
+      featureId:
+        | typeof WEBHOOK_FEATURE_IDS.CUSTOM_SCRIPT_WRITE
+        | typeof WEBHOOK_FEATURE_IDS.CUSTOM_SCRIPT_DELETE,
     ): void => {
       trigger(script, featureId)
     },

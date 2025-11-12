@@ -1,14 +1,15 @@
 import { useCallback } from 'react'
+import type { Scope } from 'JansConfigApi'
 import { useWebhookTrigger } from 'Plugins/admin/hooks/useWebhookTrigger'
 
 export function useScopeWebhook() {
-  const trigger = useWebhookTrigger<Record<string, unknown>>({
-    extractId: (scope) => scope.inum as string | undefined,
+  const trigger = useWebhookTrigger<Scope>({
+    extractId: (scope) => scope.inum,
     idFieldName: 'scope.inum',
   })
 
   const triggerScopeWebhook = useCallback(
-    (scope: Record<string, unknown>, featureId: 'scopes_write' | 'scopes_delete'): void => {
+    (scope: Scope, featureId: 'scopes_write' | 'scopes_delete'): void => {
       trigger(scope, featureId)
     },
     [trigger],

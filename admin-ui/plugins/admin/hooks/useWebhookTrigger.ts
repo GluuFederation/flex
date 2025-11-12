@@ -6,14 +6,14 @@ import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
 import type { WebhookTriggerResponse } from '../constants/webhookTypes'
-import { WEBHOOK_FEATURE_IDS } from '../constants/webhookFeatures'
+import type { ApiError } from '../redux/sagas/types/webhook'
 
-interface WebhookTriggerConfig<T> {
+interface WebhookTriggerConfig<T extends { inum?: string; dn?: string }> {
   extractId: (item: T) => string | undefined
   idFieldName: string
 }
 
-export function useWebhookTrigger<T extends Record<string, unknown>>(
+export function useWebhookTrigger<T extends { inum?: string; dn?: string }>(
   config: WebhookTriggerConfig<T>,
 ) {
   const { t } = useTranslation()
@@ -39,14 +39,13 @@ export function useWebhookTrigger<T extends Record<string, unknown>>(
           actions.setShowErrorModal(true)
         }
       },
-      onError: (error: Error) => {
+      onError: (error: ApiError) => {
         actions.setTriggerWebhookResponse(t('messages.webhook_trigger_failed'))
         dispatch(
           updateToast(
             true,
             'error',
-            (error as Error & { response?: { body?: { responseMessage?: string } } })?.response
-              ?.body?.responseMessage ||
+            error.response?.body?.responseMessage ||
               error.message ||
               t('messages.webhook_trigger_failed'),
           ),
@@ -65,11 +64,7 @@ export function useWebhookTrigger<T extends Record<string, unknown>>(
         return
       }
 
-      const isDelete =
-        featureId === WEBHOOK_FEATURE_IDS.OIDC_CLIENTS_DELETE ||
-        featureId === WEBHOOK_FEATURE_IDS.SCOPES_DELETE ||
-        featureId === WEBHOOK_FEATURE_IDS.CUSTOM_SCRIPT_DELETE ||
-        featureId.endsWith('_delete')
+      const isDelete = featureId.endsWith('_delete')
 
       const valueKey = isDelete ? 'deletedFeatureValue' : 'createdFeatureValue'
 
