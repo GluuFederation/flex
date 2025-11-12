@@ -4,33 +4,35 @@ import type { ShortCodeRequest } from 'JansConfigApi'
 import { useWebhookDialog } from '@/context/WebhookDialogContext'
 import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
+import type { WebhookTriggerResponse } from 'Plugins/admin/constants/webhookTypes'
+import { useTranslation } from 'react-i18next'
 
 export function useOidcWebhook() {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
   const { actions } = useWebhookDialog()
 
   const triggerWebhookMutation = useTriggerWebhook({
     mutation: {
-      onSuccess: (data: unknown) => {
-        const response = data as {
-          body?: Array<{ success: boolean; responseMessage: string; responseObject: unknown }>
-        }
-        const allSucceeded = response?.body?.every((item: { success: boolean }) => item.success)
+      onSuccess: (data: WebhookTriggerResponse) => {
+        const { body = [] } = data
+        const allSucceeded = body.every(({ success }) => success)
         if (allSucceeded) {
+          actions.setWebhookTriggerErrors([])
           actions.setShowErrorModal(false)
           actions.setWebhookModal(false)
           actions.setTriggerWebhookResponse('')
-          dispatch(updateToast(true, 'success', 'All webhooks triggered successfully.'))
+          dispatch(updateToast(true, 'success', t('messages.webhook_trigger_success')))
         } else {
-          const errors = response?.body?.filter((item: { success: boolean }) => !item.success) || []
-          actions.setWebhookTriggerErrors(errors as never[])
-          actions.setTriggerWebhookResponse('Something went wrong while triggering webhook.')
-          dispatch(updateToast(true, 'error', 'Something went wrong while triggering webhook.'))
+          const errors = body.filter(({ success }) => !success)
+          actions.setWebhookTriggerErrors(errors)
+          actions.setTriggerWebhookResponse(t('messages.webhook_trigger_error'))
+          dispatch(updateToast(true, 'error', t('messages.webhook_trigger_error')))
           actions.setShowErrorModal(true)
         }
       },
       onError: (error: Error) => {
-        actions.setTriggerWebhookResponse('Failed to trigger webhook.')
+        actions.setTriggerWebhookResponse(t('messages.webhook_trigger_failed'))
         dispatch(
           updateToast(
             true,
@@ -38,7 +40,7 @@ export function useOidcWebhook() {
             (error as Error & { response?: { body?: { responseMessage?: string } } })?.response
               ?.body?.responseMessage ||
               error.message ||
-              'Failed to trigger webhook',
+              t('messages.webhook_trigger_failed'),
           ),
         )
         actions.setShowErrorModal(true)
@@ -51,8 +53,15 @@ export function useOidcWebhook() {
       client: Record<string, unknown>,
       featureId: 'oidc_clients_write' | 'oidc_clients_delete',
     ): void => {
+      const clientInum = client.inum as string | undefined
+      if (!clientInum) {
+        console.error('Cannot trigger webhook: client.inum is missing')
+        dispatch(updateToast(true, 'error', t('messages.webhook_trigger_invalid_data')))
+        return
+      }
+
       const requestData: ShortCodeRequest = {
-        webhookId: (client.inum as string) || '',
+        webhookId: clientInum,
         shortcodeValueMap: client as Record<string, { [key: string]: unknown }>,
       }
 

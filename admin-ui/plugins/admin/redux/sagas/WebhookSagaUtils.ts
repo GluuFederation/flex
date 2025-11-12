@@ -1,9 +1,17 @@
-import { call, select } from 'redux-saga/effects'
+import { call, select, put } from 'redux-saga/effects'
+import type { CallEffect, SelectEffect, PutEffect } from 'redux-saga/effects'
 import { JansConfigApi, Configuration, ConfigurationParameters } from 'JansConfigApi'
 import type { ShortCodeRequest } from 'JansConfigApi'
+import type { RootState } from '../types/state'
+import { updateToast } from 'Redux/features/toastSlice'
+import { WEBHOOK_FEATURE_IDS } from '../../constants/webhookFeatures'
 
-function* getApiInstance() {
-  const state = yield select((state: any) => state)
+interface WebhookPayload {
+  createdFeatureValue?: Record<string, unknown>
+}
+
+function* getApiInstance(): Generator<SelectEffect, JansConfigApi, RootState> {
+  const state = yield select((state: RootState) => state)
   const token = state.authReducer.token.access_token
   const issuer = state.authReducer.issuer
 
@@ -19,9 +27,9 @@ export function* triggerWebhook({
   payload,
   featureId,
 }: {
-  payload: { createdFeatureValue?: any }
+  payload: WebhookPayload
   featureId: string
-}): Generator<any, void, any> {
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi> {
   try {
     if (!payload.createdFeatureValue) {
       console.warn('No createdFeatureValue provided for webhook trigger')
@@ -36,7 +44,17 @@ export function* triggerWebhook({
 
     yield call([api, api.triggerWebhook], featureId, requestData)
   } catch (error) {
-    console.error('Failed to trigger webhook:', error)
+    const errorMessage =
+      (error as Error & { response?: { body?: { responseMessage?: string } } })?.response?.body
+        ?.responseMessage ||
+      (error as Error)?.message ||
+      'Failed to trigger webhook'
+
+    console.error(`Failed to trigger webhook for feature ${featureId}:`, error)
+
+    yield put(updateToast(true, 'error', `Webhook trigger failed: ${errorMessage}`))
+
+    throw error
   }
 }
 
@@ -44,10 +62,12 @@ export function* triggerOidcClientWebhook({
   payload,
   isDelete = false,
 }: {
-  payload: { createdFeatureValue?: any }
+  payload: WebhookPayload
   isDelete?: boolean
-}): Generator<any, void, any> {
-  const featureId = isDelete ? 'oidc_clients_delete' : 'oidc_clients_write'
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi> {
+  const featureId = isDelete
+    ? WEBHOOK_FEATURE_IDS.OIDC_CLIENTS_DELETE
+    : WEBHOOK_FEATURE_IDS.OIDC_CLIENTS_WRITE
   yield* triggerWebhook({ payload, featureId })
 }
 
@@ -55,10 +75,10 @@ export function* triggerScopeWebhook({
   payload,
   isDelete = false,
 }: {
-  payload: { createdFeatureValue?: any }
+  payload: WebhookPayload
   isDelete?: boolean
-}): Generator<any, void, any> {
-  const featureId = isDelete ? 'scopes_delete' : 'scopes_write'
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi> {
+  const featureId = isDelete ? WEBHOOK_FEATURE_IDS.SCOPES_DELETE : WEBHOOK_FEATURE_IDS.SCOPES_WRITE
   yield* triggerWebhook({ payload, featureId })
 }
 
@@ -66,10 +86,12 @@ export function* triggerScriptWebhook({
   payload,
   isDelete = false,
 }: {
-  payload: { createdFeatureValue?: any }
+  payload: WebhookPayload
   isDelete?: boolean
-}): Generator<any, void, any> {
-  const featureId = isDelete ? 'custom_script_delete' : 'custom_script_write'
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi> {
+  const featureId = isDelete
+    ? WEBHOOK_FEATURE_IDS.CUSTOM_SCRIPT_DELETE
+    : WEBHOOK_FEATURE_IDS.CUSTOM_SCRIPT_WRITE
   yield* triggerWebhook({ payload, featureId })
 }
 
@@ -77,8 +99,10 @@ export function* triggerSamlWebhook({
   payload,
   featureId,
 }: {
-  payload: { createdFeatureValue?: any }
-  featureId: 'saml_configuration_write' | 'saml_idp_write'
-}): Generator<any, void, any> {
+  payload: WebhookPayload
+  featureId:
+    | typeof WEBHOOK_FEATURE_IDS.SAML_CONFIGURATION_WRITE
+    | typeof WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE
+}): Generator<CallEffect | SelectEffect | PutEffect, void, JansConfigApi> {
   yield* triggerWebhook({ payload, featureId })
 }

@@ -21,6 +21,7 @@ import { getAPIAccessToken } from 'Redux/features/authSlice'
 import { updateToast } from 'Redux/features/toastSlice'
 import { CREATE, DELETION, UPDATE } from '../../../../app/audit/UserActionType'
 import { triggerSamlWebhook } from 'Plugins/admin/redux/sagas/WebhookSagaUtils'
+import { WEBHOOK_FEATURE_IDS } from 'Plugins/admin/constants/webhookFeatures'
 
 const JansConfigApi = require('jans_config_api')
 
@@ -85,7 +86,7 @@ export function* putSamlProperties({ payload }) {
     })
     yield* triggerSamlWebhook({
       payload: { createdFeatureValue: data },
-      featureId: 'saml_configuration_write',
+      featureId: WEBHOOK_FEATURE_IDS.SAML_CONFIGURATION_WRITE,
     })
     yield put(putSamlPropertiesResponse(data))
     yield call(postUserAction, audit)
@@ -109,7 +110,7 @@ export function* postSamlIdentity({ payload }) {
     })
     yield* triggerSamlWebhook({
       payload: { createdFeatureValue: data },
-      featureId: 'saml_idp_write',
+      featureId: WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE,
     })
     yield put(toggleSavedFormFlag(true))
     yield call(postUserAction, audit)
@@ -154,7 +155,7 @@ export function* postTrustRelationship({ payload }) {
     yield call(postUserAction, audit)
     yield* triggerSamlWebhook({
       payload: { createdFeatureValue: data },
-      featureId: 'saml_idp_write',
+      featureId: WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE,
     })
   } catch (error) {
     console.log('Error: ', error)
@@ -182,7 +183,7 @@ export function* updateTrustRelationship({ payload }) {
     yield call(postUserAction, audit)
     yield* triggerSamlWebhook({
       payload: { createdFeatureValue: data },
-      featureId: 'saml_idp_write',
+      featureId: WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE,
     })
   } catch (error) {
     console.log('Error: ', error)
@@ -207,7 +208,7 @@ export function* deleteTrustRelationship({ payload }) {
     yield call(postUserAction, audit)
     yield* triggerSamlWebhook({
       payload: { createdFeatureValue: payload.action.action_data },
-      featureId: 'saml_idp_write',
+      featureId: WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE,
     })
   } catch (error) {
     yield* errorToast({ error })
@@ -231,7 +232,7 @@ export function* updateSamlIdentity({ payload }) {
     yield put(toggleSavedFormFlag(true))
     yield* triggerSamlWebhook({
       payload: { createdFeatureValue: data },
-      featureId: 'saml_idp_write',
+      featureId: WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE,
     })
     yield call(postUserAction, audit)
   } catch (error) {
@@ -257,7 +258,7 @@ export function* deleteSamlIdentity({ payload }) {
     yield call(postUserAction, audit)
     yield* triggerSamlWebhook({
       payload: { createdFeatureValue: data },
-      featureId: 'saml_idp_write',
+      featureId: WEBHOOK_FEATURE_IDS.SAML_IDP_WRITE,
     })
   } catch (error) {
     yield* errorToast({ error })
