@@ -17,8 +17,8 @@ const cedarPermissionsSlice = createSlice({
   initialState,
   reducers: {
     setCedarlingPermission: (state, action: PayloadAction<SetCedarlingPermissionPayload>) => {
-      const { url, isAuthorized } = action.payload
-      state.permissions[url] = isAuthorized
+      const { resourceId, isAuthorized } = action.payload
+      state.permissions[resourceId] = isAuthorized
       state.loading = false
       state.error = null
     },

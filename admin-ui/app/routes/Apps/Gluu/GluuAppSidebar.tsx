@@ -123,7 +123,13 @@ function GluuAppSidebar(): JSX.Element {
             result.push({ ...item, children: filteredChildren })
           }
         } else if (item.permission) {
-          const { isAuthorized } = await authorize([item.permission])
+          if (!item.resourceKey) {
+            console.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
+            continue
+          }
+          const { isAuthorized } = await authorize([
+            { permission: item.permission, resourceId: item.resourceKey },
+          ])
           if (isAuthorized) {
             result.push(item)
           }
@@ -133,7 +139,7 @@ function GluuAppSidebar(): JSX.Element {
       }
       return result
     },
-    [hasChildren],
+    [hasChildren, authorize],
   )
 
   const memoizedFilteredMenus = useMemo(async (): Promise<PluginMenu[]> => {

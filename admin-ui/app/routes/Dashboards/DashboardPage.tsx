@@ -5,23 +5,25 @@ import { useMediaQuery } from 'react-responsive'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getClients } from 'Redux/features/initSlice'
-import { hasBoth, buildPayload, STAT_READ, STAT_JANS_READ } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { getLicenseDetails } from 'Redux/features/licenseDetailsSlice'
 import { getHealthStatus } from 'Redux/features/healthSlice'
 import DashboardChart from './Chart/DashboardChart'
 import DateRange from './DateRange'
-import CheckIcon from '../../images/svg/check.svg'
-import CrossIcon from '../../images/svg/cross.svg'
+import CheckIcon from 'Images/svg/check.svg'
+import CrossIcon from 'Images/svg/cross.svg'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 import { formatDate } from 'Utils/Util'
-import UsersIcon from 'components/SVG/menu/Users'
-import Administrator from 'components/SVG/menu/Administrator'
-import OAuthIcon from 'components/SVG/menu/OAuth'
-import JansLockUsers from 'components/SVG/menu/JansLockUsers'
-import JansLockClients from 'components/SVG/menu/JansLockClients'
+import UsersIcon from '@/components/SVG/menu/Users'
+import Administrator from '@/components/SVG/menu/Administrator'
+import OAuthIcon from '@/components/SVG/menu/OAuth'
+import JansLockUsers from '@/components/SVG/menu/JansLockUsers'
+import JansLockClients from '@/components/SVG/menu/JansLockClients'
 import { getHealthServerStatus } from '../../redux/features/healthSlice'
 import GluuPermissionModal from 'Routes/Apps/Gluu/GluuPermissionModal'
 import { auditLogoutLogs } from 'Redux/features/sessionSlice'
@@ -64,25 +66,30 @@ function DashboardPage() {
   const access_token = useSelector((state: any) => state.authReducer.token?.access_token)
   const permissions = useSelector((state: any) => state.authReducer.permissions)
 
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const cedarInitialized = useSelector((state: any) => state.cedarPermissions?.initialized)
   const cedarIsInitializing = useSelector((state: any) => state.cedarPermissions?.isInitializing)
+
+  const dashboardResourceId = useMemo(() => ADMIN_UI_RESOURCES.Dashboard, [])
+  const dashboardScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[dashboardResourceId],
+    [dashboardResourceId],
+  )
+
   const hasViewPermissions = useMemo(() => {
-    if (cedarInitialized && !cedarIsInitializing) {
-      const hasStatRead = hasCedarPermission(STAT_READ)
-      const hasStatJansRead = hasCedarPermission(STAT_JANS_READ)
-      return hasStatRead === true && hasStatJansRead === true
+    if (!cedarInitialized || cedarIsInitializing) {
+      return false
     }
-    return hasBoth(permissions, STAT_READ, STAT_JANS_READ)
-  }, [cedarInitialized, cedarIsInitializing, hasCedarPermission, permissions])
+    return Boolean(hasCedarReadPermission(dashboardResourceId))
+  }, [cedarInitialized, cedarIsInitializing, hasCedarReadPermission, dashboardResourceId])
 
   SetTitle(t('menus.dashboard'))
 
   const initPermissions = useCallback(async () => {
     if (!access_token || !cedarInitialized) return
 
-    await Promise.allSettled([authorize([STAT_READ]), authorize([STAT_JANS_READ])])
-  }, [access_token, cedarInitialized, authorize])
+    await authorizeHelper(dashboardScopes)
+  }, [access_token, cedarInitialized, authorizeHelper, dashboardScopes])
 
   useEffect(() => {
     if (access_token && cedarInitialized && !cedarIsInitializing) {

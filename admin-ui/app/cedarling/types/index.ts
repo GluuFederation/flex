@@ -1,8 +1,7 @@
 // Core Cedarling Types
 export interface CedarlingConstants {
-  readonly RESOURCE_TYPE: string
-  readonly APP_ID: string
   readonly ACTION_TYPE: string
+  readonly RESOURCE_TYPE: string
 }
 export interface IPermissionWithTags {
   permission: string
@@ -25,10 +24,11 @@ export interface IToken {
 }
 
 // Resource Types
-export interface ITokenResource {
-  app_id: string
-  id: string
-  type: string
+export interface ICedarEntityMappingResource {
+  cedar_entity_mapping: {
+    entity_type: string
+    id: string
+  }
 }
 
 // Authorization Request
@@ -36,7 +36,7 @@ export interface ITokenResource {
 export interface TokenAuthorizationRequest {
   tokens: IToken
   action: string
-  resource: ITokenResource
+  resource: ICedarEntityMappingResource
   context: Record<string, unknown>
 }
 
@@ -80,14 +80,23 @@ export interface CedarPermissionsState {
 }
 
 export interface SetCedarlingPermissionPayload {
-  url: string
+  resourceId: string
   isAuthorized: boolean
 }
 
 // Hook Types
+export type ResourceScopeEntry = {
+  permission: string
+  resourceId: string
+}
+
 export interface UseCedarlingReturn {
-  authorize: (resourceScope: string[]) => Promise<AuthorizationResult>
-  hasCedarPermission: (url: string) => boolean | undefined
+  authorize: (resourceScope: ResourceScopeEntry[]) => Promise<AuthorizationResult>
+  authorizeHelper: (resourceScopes: ResourceScopeEntry[]) => Promise<AuthorizationResult[]>
+  hasCedarPermission: (resourceId: string, permission?: string) => boolean | undefined
+  hasCedarReadPermission: (resourceId: string) => boolean | undefined
+  hasCedarWritePermission: (resourceId: string) => boolean | undefined
+  hasCedarDeletePermission: (resourceId: string) => boolean | undefined
   isLoading: boolean
   error: string | null
 }
@@ -185,3 +194,37 @@ export interface ExtendedPolicyStoreConfig {
   cedar_version?: string
   [key: string]: unknown
 }
+
+export type AdminUiFeatureResource =
+  | 'Dashboard'
+  | 'Health'
+  | 'License'
+  | 'MAU'
+  | 'Security'
+  | 'Settings'
+  | 'Webhooks'
+  | 'Assests'
+  | 'AuditLogs'
+  | 'Clients'
+  | 'Scopes'
+  | 'Keys'
+  | 'AuthenticationServerConfiguration'
+  | 'Logging'
+  | 'SSA'
+  | 'Authentication'
+  | 'ConfigApiConfiguration'
+  | 'Sesison'
+  | 'Users'
+  | 'Scripts'
+  | 'UserClaims'
+  | 'Cache'
+  | 'Persistance'
+  | 'SMTP'
+  | 'SCIM'
+  | 'FIDO'
+  | 'SAML'
+  | 'Lock'
+
+export type ApiPermissionType = { permission: string; tag: string }
+
+export type CedarAction = 'read' | 'write' | 'delete'

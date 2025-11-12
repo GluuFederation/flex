@@ -4,7 +4,7 @@ import type {
   BootStrapConfig,
   AuthorizationResponse,
   TokenAuthorizationRequest,
-} from '../types'
+} from '@/cedarling'
 
 let cedarling: Cedarling | null = null
 let cedarlingInitialized: boolean = false

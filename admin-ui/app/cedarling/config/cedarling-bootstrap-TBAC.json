@@ -15,15 +15,18 @@
   "CEDARLING_LOG_LEVEL": "DEBUG",
   "CEDARLING_LOG_TYPE": "off",
   "CEDARLING_POLICY_STORE_LOCAL": "",
+  "CEDARLING_MAPPING_ROLE": "Gluu::Flex::AdminUI::Role",
+  "CEDARLING_MAPPING_TRUSTED_ISSUER": "Gluu::Flex::AdminUI::TrustedIssuer",
+  "CEDARLING_MAPPING_USER": "Gluu::Flex::AdminUI::User",
+  "CEDARLING_MAPPING_WORKLOAD": "Gluu::Flex::AdminUI::Workload",
   "CEDARLING_PRINCIPAL_BOOLEAN_OPERATION": {
     "===": [
       {
-        "var": "Jans::User"
+        "var": "Gluu::Flex::AdminUI::User"
       },
       "ALLOW"
     ]
   },
   "CEDARLING_USER_AUTHZ": "enabled",
-  "CEDARLING_WORKLOAD_AUTHZ": "disabled",
-  "CEDARLING_MAPPING_TRUSTED_ISSUER": "Gluu::Flex::AdminUI::TrustedIssuer"
+  "CEDARLING_WORKLOAD_AUTHZ": "disabled"
 }

@@ -4,6 +4,7 @@ export interface MenuItem {
   path?: string
   title?: string
   permission?: string
+  resourceKey?: string
   children?: MenuItem[]
 }
 

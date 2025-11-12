@@ -1,2 +1,1 @@
-export { generateCedarPolicies } from './generateCedarPolicies'
-export { mapRolePermissions } from './mapRolePermissions'
+export { ADMIN_UI_RESOURCES, findPermissionByUrl, buildCedarPermissionKey } from './resources'

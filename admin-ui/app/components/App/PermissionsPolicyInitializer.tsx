@@ -7,7 +7,6 @@ import {
   setCedarlingInitialized,
   setCedarlingInitializing,
 } from '../../redux/features/cedarPermissionsSlice'
-import { generateCedarPolicies, mapRolePermissions } from '@/cedarling/utility'
 import { cedarlingClient, CedarlingLogType } from '@/cedarling'
 import bootstrap from '@/cedarling/config/cedarling-bootstrap-TBAC.json'
 import { buildPayload } from '@/utils/PermChecker'
@@ -20,6 +19,9 @@ interface ExtendedRootState {
     token?: {
       access_token: string
       scopes: string[]
+    }
+    config?: {
+      cedarlingLogType?: CedarlingLogType
     }
   }
   mappingReducer: {
@@ -57,7 +59,8 @@ const PermissionsPolicyInitializer = () => {
     (state: ExtendedRootState) => state.cedarPermissions,
   )
   const cedarlingLogType =
-    useSelector((state) => state.authReducer?.config?.cedarlingLogType) || CedarlingLogType.OFF
+    useSelector((state: ExtendedRootState) => state.authReducer?.config?.cedarlingLogType) ||
+    CedarlingLogType.OFF
 
   const doFetchPermissionsList = useCallback(() => {
     const userAction = {}
@@ -98,9 +101,6 @@ const PermissionsPolicyInitializer = () => {
     if (!shouldTryInit) return
 
     dispatch(setCedarlingInitializing(true))
-
-    const allPermissions = mapRolePermissions(apiPermission, rolePermissionMapping)
-    const policies = generateCedarPolicies(allPermissions)
 
     const bootstrapConfig = {
       ...bootstrap,

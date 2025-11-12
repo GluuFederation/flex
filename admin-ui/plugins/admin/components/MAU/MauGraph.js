@@ -9,7 +9,7 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getMau } from 'Plugins/admin/redux/features/mauSlice'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { Button, Card, CardFooter, CardBody, FormGroup, Col, Row } from 'Components'
-import { buildPayload, STAT_READ, STAT_JANS_READ } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import SetTitle from 'Utils/SetTitle'
@@ -17,6 +17,8 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import dayjs from 'dayjs'
 import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const ActiveUsersGraph = lazy(() => import('Routes/Dashboards/Grapths/ActiveUsersGraph'))
 
@@ -30,24 +32,26 @@ function MauGraph() {
   const selectedTheme = theme.state.theme
   const [startDate, setStartDate] = useState(dayjs().subtract(3, 'months'))
   const [endDate, setEndDate] = useState(dayjs())
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarPermission, authorizeHelper } = useCedarling()
   const userAction = {}
   const options = {}
-  const initPermissions = async () => {
-    await Promise.allSettled([authorize([STAT_READ]), authorize([STAT_JANS_READ])])
-  }
+  const mauResourceId = useMemo(() => ADMIN_UI_RESOURCES.MAU, [])
+  const mauScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[mauResourceId], [mauResourceId])
 
   useEffect(() => {
+    const initPermissions = async () => {
+      await authorizeHelper(mauScopes)
+    }
+
     if (!statData || statData.length === 0) {
       search()
     }
     initPermissions()
-  }, [])
+  }, [statData, authorizeHelper, mauScopes])
 
-  const hasViewPermissions = useMemo(
-    () => hasCedarPermission(STAT_READ) && hasCedarPermission(STAT_JANS_READ),
-    [cedarPermissions, hasCedarPermission],
-  )
+  const hasViewPermissions = useMemo(() => {
+    return Boolean(hasCedarPermission(mauResourceId))
+  }, [cedarPermissions, hasCedarPermission, mauResourceId])
 
   SetTitle(t('fields.monthly_active_users'))
 
