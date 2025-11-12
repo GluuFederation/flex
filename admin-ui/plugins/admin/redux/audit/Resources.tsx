@@ -1,6 +1,5 @@
 export const SCRIPT = 'custom-script'
 export const API_ROLE = 'api-role'
-export const API_CONFIG = 'api-config'
 export const API_PERMISSION = 'api-permission'
 export const API_MAPPING = 'api-role-mapping'
-export const ADMIN_UI_CONFIG = 'admin_ui_config'
+export const ADMIN_UI_CEDARLING_CONFIG = 'admin_ui_cedarling_config'

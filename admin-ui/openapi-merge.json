@@ -10,7 +10,7 @@
       "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/user-mgt-plugin-swagger.yaml"
     },
     {
-      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/refs/heads/jans-config-api-12616/jans-config-api/plugins/docs/jans-admin-ui-plugin-swagger.yaml"
+      "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-admin-ui-plugin-swagger.yaml"
     },
     {
       "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-link-plugin-swagger.yaml"

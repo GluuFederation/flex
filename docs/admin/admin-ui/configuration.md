@@ -11,7 +11,9 @@ This document outlines the configuration process for Gluu Flex Admin UI, with a 
 
 ## Configuration Components
 
-### Role-Permission
+### Cedarling Configuration
+
+Gluu Flex Admin UI uses [Cedarling](https://docs.jans.io/stable/cedarling/) for GUI access control. The role of the user is mapped with specific permissions to ensure that the user can only access and modify functionalities relevant to their roles.
 
 The cedarling configuration helps to manage roles and permissions for Admin UI. You need to configure Cedarling, and it automatically syncs roles and permissions as per the schema and policies.
 

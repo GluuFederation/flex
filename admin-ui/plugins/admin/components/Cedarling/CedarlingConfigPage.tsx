@@ -36,7 +36,7 @@ import { UPDATE } from '@/audit/UserActionType'
 import { FormControlLabel, IconButton, Radio, RadioGroup } from '@mui/material'
 import { RefreshOutlined, StickyNote2Outlined } from '@mui/icons-material'
 import GluuTooltip from '@/routes/Apps/Gluu/GluuTooltip'
-import { ADMIN_UI_CONFIG } from 'Plugins/admin/redux/audit/Resources'
+import { ADMIN_UI_CEDARLING_CONFIG } from 'Plugins/admin/redux/audit/Resources'
 import { useQueryClient } from '@tanstack/react-query'
 
 const CedarlingConfigPage: React.FC = () => {
@@ -84,7 +84,7 @@ const CedarlingConfigPage: React.FC = () => {
         token: token ?? undefined,
         userinfo: userinfo ?? undefined,
         action: UPDATE,
-        resource: ADMIN_UI_CONFIG,
+        resource: ADMIN_UI_CEDARLING_CONFIG,
         message: userMessage,
         client_id: client_id,
         payload: requestData,
@@ -97,7 +97,7 @@ const CedarlingConfigPage: React.FC = () => {
         token: token ?? undefined,
         userinfo: userinfo ?? undefined,
         action: UPDATE,
-        resource: ADMIN_UI_CONFIG,
+        resource: ADMIN_UI_CEDARLING_CONFIG,
         message: userMessage,
         client_id: client_id,
         payload: requestData,
@@ -127,7 +127,7 @@ const CedarlingConfigPage: React.FC = () => {
         token: token ?? undefined,
         userinfo: userinfo ?? undefined,
         action: UPDATE,
-        resource: ADMIN_UI_CONFIG,
+        resource: ADMIN_UI_CEDARLING_CONFIG,
         message: userMessage,
         client_id: client_id,
         payload: {},
