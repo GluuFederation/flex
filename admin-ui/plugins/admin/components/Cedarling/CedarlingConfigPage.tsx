@@ -85,6 +85,9 @@ const CedarlingConfigPage: React.FC = () => {
         data: { ...auiConfig, ...requestData },
       })
       setAuiPolicyStoreUrl(editAppConfigResponse?.auiPolicyStoreUrl || '')
+      setCedarlingPolicyRetrievalPoint(
+        editAppConfigResponse?.cedarlingPolicyStoreRetrievalPoint || 'remote',
+      )
 
       let userMessage: string = 'Policy Store URL configuration updated'
       await logAudit({
