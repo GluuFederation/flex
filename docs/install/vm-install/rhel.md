@@ -9,7 +9,7 @@ tags:
 
 # Install Gluu Flex On Red Hat EL
 
-This is a step-by-step guide for installation and uninstallation of Gluu Flex on Ubuntu Linux.
+This is a step-by-step guide for installation and uninstallation of Gluu Flex on Red Hat Enterprise Linux.
 
 ## Prerequisites
 - Ensure that the OS platform is one of the [supported versions](./vm-requirements.md#supported-versions)
