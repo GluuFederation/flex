@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { Card } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import WebhookForm from './WebhookForm'
@@ -10,7 +10,7 @@ import {
   usePutWebhook,
   useGetAllFeatures,
   useGetFeaturesByWebhookId,
-  useGetWebhookByInum,
+  useGetAllWebhooks,
   getGetAllWebhooksQueryKey,
 } from 'JansConfigApi'
 import type { WebhookEntry, WebhookFormValues } from './types'
@@ -82,23 +82,48 @@ const WebhookEditPage: React.FC = () => {
     token: state.authReducer.token.access_token,
   }))
 
-  const { data: fetchedWebhook, isLoading: loadingWebhook } = useGetWebhookByInum(id || '', {
+  const { data: allWebhooksData, isLoading: loadingWebhook } = useGetAllWebhooks({
     query: {
-      enabled: !!id,
+      enabled: !!id && !locationState?.webhook,
     },
   })
 
-  const webhook = fetchedWebhook || locationState?.webhook
+  const webhooksList = allWebhooksData?.entries || []
+  const fetchedWebhook = webhooksList.find((w) => w.inum === id)
 
   const { data: featuresData, isLoading: loadingFeatures } = useGetAllFeatures()
 
-  const { isLoading: loadingWebhookFeatures } = useGetFeaturesByWebhookId(id || '', {
-    query: {
-      enabled: !!id,
-    },
-  })
+  const { data: webhookFeaturesData, isLoading: loadingWebhookFeatures } =
+    useGetFeaturesByWebhookId(id || '', {
+      query: {
+        enabled: !!id,
+      },
+    })
 
   const features = Array.isArray(featuresData) ? featuresData : []
+
+  const webhook = useMemo(() => {
+    const baseWebhook = locationState?.webhook || fetchedWebhook
+
+    if (!baseWebhook) {
+      return undefined
+    }
+
+    if (loadingWebhookFeatures) {
+      return undefined
+    }
+
+    if (webhookFeaturesData) {
+      return {
+        ...baseWebhook,
+        auiFeatureIds: Array.isArray(webhookFeaturesData)
+          ? webhookFeaturesData.map((f) => f.auiFeatureId || '')
+          : [],
+      }
+    }
+
+    return baseWebhook
+  }, [locationState?.webhook, fetchedWebhook, webhookFeaturesData, loadingWebhookFeatures])
 
   const updateWebhookMutation = usePutWebhook({
     mutation: {

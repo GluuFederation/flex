@@ -690,6 +690,7 @@
     "http_method_error": "Por favor, selecione um método HTTP.",
     "display_name_error": "Por favor, insira um nome de exibição.",
     "url_error": "Por favor, insira uma URL.",
+    "aui_feature_ids_error": "Pelo menos um Recurso da Interface de Administração deve ser selecionado.",
     "invalid_json_error": "Valor JSON inválido.",
     "license_api_not_enabled": "A API de licença não está habilitada para este aplicativo.",
     "adding_new_permission": "Adicionando nova permissão",

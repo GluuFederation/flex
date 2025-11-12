@@ -56,20 +56,27 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
 
   useEffect(() => {
     if (loadingFeatures) return
+    if (!features.length) return
 
-    const selected = item?.auiFeatureIds?.length
-      ? features.filter((feature) => item.auiFeatureIds?.includes(feature.auiFeatureId ?? ''))
+    const itemFeatureIds = item?.auiFeatureIds || []
+    const selected = itemFeatureIds.length
+      ? features.filter((feature) => itemFeatureIds.includes(feature.auiFeatureId ?? ''))
       : []
 
     setSelectedFeatures(selected)
 
-    if (item?.auiFeatureIds?.length) {
-      const missingCount = item.auiFeatureIds.length - selected.length
+    if (itemFeatureIds.length) {
+      const missingCount = itemFeatureIds.length - selected.length
       if (missingCount > 0) {
         console.warn(`${missingCount} feature(s) not found in available features`)
       }
     }
-  }, [loadingFeatures, features, item?.auiFeatureIds])
+  }, [loadingFeatures, features, item])
+
+  useEffect(() => {
+    const featureIds = selectedFeatures.map((feature) => feature.auiFeatureId || '')
+    formik.setFieldValue('auiFeatureIds', featureIds, false)
+  }, [selectedFeatures])
 
   const validatePayload = (values: WebhookFormValues): boolean => {
     let faulty = false
@@ -104,6 +111,7 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
   }
 
   const formik = useFormik<WebhookFormValues>({
+    enableReinitialize: true,
     initialValues: {
       httpRequestBody: initialRequestBody,
       httpMethod: item?.httpMethod || '',
@@ -127,6 +135,9 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
         .required(t('messages.display_name_error'))
         .matches(/^\S*$/, `${t('fields.webhook_name')} ${t('messages.no_spaces')}`),
       url: Yup.string().required(t('messages.url_error')),
+      auiFeatureIds: Yup.array()
+        .min(1, t('messages.aui_feature_ids_error'))
+        .required(t('messages.aui_feature_ids_error')),
       httpRequestBody: Yup.string().when('httpMethod', {
         is: requiresRequestBody,
         then: () => Yup.string().required(t('messages.request_body_error')),
@@ -237,6 +248,7 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
               setSelectedFeatures(
                 Array.isArray(auiFeatures) ? auiFeatures : auiFeatures ? [auiFeatures] : [],
               )
+              formik.setFieldTouched('auiFeatureIds', true)
             }}
             lsize={4}
             doc_category={WEBHOOK}
@@ -246,6 +258,9 @@ const WebhookForm: React.FC<WebhookFormProps> = ({
             isLoading={loadingFeatures}
             multiple={false}
             hideHelperMessage
+            required
+            errorMessage={formik.errors.auiFeatureIds}
+            showError={!!(formik.errors.auiFeatureIds && formik.touched.auiFeatureIds)}
           />
           <GluuInputRow
             label="fields.webhook_url"

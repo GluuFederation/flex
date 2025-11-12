@@ -739,6 +739,7 @@
     "request_body_error": "El cuerpo de la solicitud HTTP es obligatorio para el método HTTP seleccionado",
     "display_name_error": "Ingrese el nombre para mostrar.",
     "url_error": "Ingrese la URL.",
+    "aui_feature_ids_error": "Debe seleccionarse al menos una Función de Interfaz de Administración.",
     "session_timeout_error": "El tiempo de espera de sesión debe ser de al menos 1 minuto",
     "session_timeout_required_error": "El tiempo de espera de sesión es obligatorio",
     "invalid_json_error": "Valor JSON inválido.",

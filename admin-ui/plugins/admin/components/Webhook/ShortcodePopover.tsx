@@ -31,7 +31,12 @@ export default function ShortcodePopover({
   const id = open ? 'simple-popover' : undefined
 
   return (
-    <div style={{ ...(applicationstyle.shortCodesWrapperStyles as React.CSSProperties), ...buttonWrapperStyles }}>
+    <div
+      style={{
+        ...(applicationstyle.shortCodesWrapperStyles as React.CSSProperties),
+        ...buttonWrapperStyles,
+      }}
+    >
       <Button aria-describedby={id} variant="text" sx={{ border: 0 }} onClick={handleClick}>
         <ShortCodesIcon className="" style={{}} />
       </Button>
