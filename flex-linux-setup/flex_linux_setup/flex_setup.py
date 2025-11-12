@@ -58,7 +58,7 @@ if '--remove-flex' in sys.argv and '--flex-non-interactive' not in sys.argv:
 def get_flex_setup_parser():
     parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
-    parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
+    parser.add_argument('--flex-branch', help="Gluu flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
     parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
