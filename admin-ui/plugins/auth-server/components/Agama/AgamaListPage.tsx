@@ -582,9 +582,7 @@ function AgamaListPage(): React.ReactElement {
         throw new Error('Failed to download project')
       }
 
-      const base64String = downloadResult as unknown as string
-      const byteArray = convertFileFrombase64(base64String)
-      const base64Data = convertByteArrayToBase64(byteArray)
+      const base64Data = downloadResult as unknown as string
 
       await deployProjectMutation.mutateAsync({
         name: repo['repository-name'],
@@ -902,10 +900,8 @@ function AgamaListPage(): React.ReactElement {
             searchFieldAlignment: 'left',
             selection: false,
             pageSize: limit,
-            rowStyle: (rowData) => ({
-              backgroundColor: (rowData as AgamaTableRow & { enabled?: boolean }).enabled
-                ? customColors.lightGreen
-                : customColors.white,
+            rowStyle: () => ({
+              backgroundColor: customColors.white,
             }),
             headerStyle: {
               ...(applicationStyle.tableHeaderStyle as React.CSSProperties),
