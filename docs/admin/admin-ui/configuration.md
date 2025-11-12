@@ -11,72 +11,29 @@ This document outlines the configuration process for Gluu Flex Admin UI, with a 
 
 ## Configuration Components
 
-### Role-Permission Mapping
+### Role-Permission
 
-[Role-permission](./admin-menu.md/) mapping defines which administrative roles are granted specific permissions within the Gluu Flex Admin UI. This mapping ensures that administrators can only access and modify functionalities relevant to their roles.
+The cedarling configuration helps to manage role and permissions for Admin UI. You need to configure cedarling and it automatically synced role and permissions as per schema and policies.
 
-The mapping is stored in json format with following attributes.
+#### Cedarling Configuration
 
-**Roles**
+Use cedarling configuration section for policy store configuration:
 
-|Attribute Name|Description|
-|--------------|-----------|
-|roles|Array of all roles|
-|role|Role name|
-|description| Role description|
-|deletable|If set to `true` then entire role-permission mapping with respect to the role can be deleted. Default value: `false`|
+![image](../../assets/admin-ui/cedarling-config.png)
 
-**Permissions**
+Admin UI comes with [Default policy store](https://github.com/GluuFederation/GluuFlexAdminUIPolicyStore/tree/agama-lab-policy-designer). You can simply fork this repository, add or update roles and policies using [Agama Lab](https://cloud.gluu.org/agama-lab) and configure it in Admin UI.
 
-|Attribute Name|Description|
-|--------------|-----------|
-|permissions|Array of all available permissions|
-|permission|Permission name|
-|description| Permission description|
-|defaultPermissionInToken|If set to `true`, it indicates that permission will need authentication and valid role during `/token` request to include in token|
+If you are thinking to add new role then simply open your policy store in [Agama Lab](https://cloud.gluu.org/agama-lab), add policy with role and configure it in Admin UI Cedarling. Once you apply, Admin UI parse your policy store schema, find all roles from policies and added in Admin UI.
 
-**Mapping**
+#### Set policy retrieval point
 
-|Attribute Name|Description|
-|--------------|-----------|
-|rolePermissionMapping| List of all role-permission mapping|
-|role|Role name|
-|permission|Array of all permission mapped to the role|
+This feature is useful to set PRP. It helps to prevents from MITM attack in production. There are 2 mods.
 
-**Sample role-permission mapping stored in persistence**
+1. `Remote`: In this mode, Admin UI will always use remote policy store URL to initialize cedarling, fetch policies, and schema.
 
-```text
-{
-  "roles": [
-    {
-      "role": "sample-role",
-      "description": "role description",
-      "deletable": false
-    }
-  ],
-  "permissions": [
-    {
-      "permission": "sample-permission1",
-      "description": "permission1 description",
-      "defaultPermissionInToken": false
-    },
-    {
-      "permission": "sample-permission2",
-      "description": "permission2 description",
-      "defaultPermissionInToken": true
-    }
-  ],
-  "rolePermissionMapping": [
-    {
-      "role": "sample-role",
-      "permissions": [
-        "sample-permission1",
-        "sample-permission2"
-      ]
-    }
-  ]
-}
-```
+2. `Default`: It is recommended to set it to Default for production. If set to Default, it will use the Admin-UI storage for Cedarling authorization. Enable Default mode and use the refresh button to store or update GitHub policies on the Admin-UI Server.
+
+
 
 ### OIDC Client Details for Auth Server
 
