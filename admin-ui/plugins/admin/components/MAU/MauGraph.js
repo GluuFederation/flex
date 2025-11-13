@@ -26,37 +26,41 @@ function MauGraph() {
   const dispatch = useDispatch()
   const statData = useSelector((state) => state.mauReducer.stat)
   const loading = useSelector((state) => state.mauReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const [startDate, setStartDate] = useState(dayjs().subtract(3, 'months'))
   const [endDate, setEndDate] = useState(dayjs())
-  const { hasCedarPermission, authorizeHelper } = useCedarling()
+  const { hasCedarReadPermission, authorizeHelper } = useCedarling()
   const userAction = {}
   const options = {}
   const mauResourceId = useMemo(() => ADMIN_UI_RESOURCES.MAU, [])
   const mauScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[mauResourceId], [mauResourceId])
 
-  useEffect(() => {
-    const initPermissions = async () => {
-      await authorizeHelper(mauScopes)
-    }
+  const canViewMau = useMemo(
+    () => hasCedarReadPermission(mauResourceId) === true,
+    [hasCedarReadPermission, mauResourceId],
+  )
 
+  useEffect(() => {
+    authorizeHelper(mauScopes)
+  }, [authorizeHelper, mauScopes])
+
+  useEffect(() => {
+    if (!canViewMau) {
+      return
+    }
     if (!statData || statData.length === 0) {
       search()
     }
-    initPermissions()
-  }, [statData, authorizeHelper, mauScopes])
-
-  const hasViewPermissions = useMemo(() => {
-    return Boolean(hasCedarPermission(mauResourceId))
-  }, [cedarPermissions, hasCedarPermission, mauResourceId])
+  }, [statData, canViewMau])
 
   SetTitle(t('fields.monthly_active_users'))
 
   function search() {
-    // options['month'] = getFormattedMonth()
+    if (!canViewMau) {
+      return
+    }
     options['startMonth'] = getYearMonth(startDate.toDate())
     options['endMonth'] = getYearMonth(endDate.toDate())
     buildPayload(userAction, 'GET MAU', options)
@@ -109,7 +113,7 @@ function MauGraph() {
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuViewWrapper canShow={hasViewPermissions}>
+      <GluuViewWrapper canShow={canViewMau}>
         <Card style={applicationStyle.mainCard}>
           <CardBody>
             <Row>

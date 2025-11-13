@@ -117,7 +117,7 @@ const pluginMetadata = {
           title: 'menus.assets',
           path: PLUGIN_BASE_PATH + '/assets',
           permission: ASSETS_READ,
-          resourceKey: ADMIN_UI_RESOURCES.Assests,
+          resourceKey: ADMIN_UI_RESOURCES.Assets,
         },
         {
           title: 'menus.audit_logs',
@@ -201,19 +201,19 @@ const pluginMetadata = {
       component: JansAssetListPage,
       path: PLUGIN_BASE_PATH + '/assets',
       permission: ASSETS_READ,
-      resourceKey: ADMIN_UI_RESOURCES.Assests,
+      resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: JansAssetAddPage,
       path: PLUGIN_BASE_PATH + '/asset/add',
       permission: ASSETS_WRITE,
-      resourceKey: ADMIN_UI_RESOURCES.Assests,
+      resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: JansAssetEditPage,
       path: PLUGIN_BASE_PATH + '/asset/edit/:id',
       permission: ASSETS_WRITE,
-      resourceKey: ADMIN_UI_RESOURCES.Assests,
+      resourceKey: ADMIN_UI_RESOURCES.Assets,
     },
     {
       component: AuditListPage,

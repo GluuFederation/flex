@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useContext, useState } from 'react'
+import React, { useCallback, useEffect, useContext, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSamlIdentites, deleteSamlIdentity } from 'Plugins/saml/redux/features/SamlSlice'
 import MaterialTable from '@material-table/core'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import { SAML_READ, SAML_WRITE, SAML_DELETE, buildPayload } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useNavigate } from 'react-router'
@@ -16,6 +16,8 @@ import { adminUiFeatures } from 'Plugins/admin/helper/utils'
 import customColors from '@/customColors'
 import getThemeColor from 'Context/theme/config'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 export const getTableCols = (t) => {
   return [
@@ -35,7 +37,12 @@ export const getTableCols = (t) => {
 }
 
 const SamlIdentityList = () => {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    authorizeHelper,
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+  } = useCedarling()
   const options = {}
   const [modal, setModal] = useState(false)
   const [limit, setLimit] = useState(10)
@@ -54,23 +61,33 @@ const SamlIdentityList = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { items, loadingSamlIdp, totalItems } = useSelector((state) => state.idpSamlReducer)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+  const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
+  const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
+  const canReadIdentities = useMemo(
+    () => hasCedarReadPermission(samlResourceId) === true,
+    [hasCedarReadPermission, samlResourceId],
+  )
+  const canWriteIdentities = useMemo(
+    () => hasCedarWritePermission(samlResourceId) === true,
+    [hasCedarWritePermission, samlResourceId],
+  )
+  const canDeleteIdentities = useMemo(
+    () => hasCedarDeletePermission(samlResourceId) === true,
+    [hasCedarDeletePermission, samlResourceId],
+  )
 
   // Permission initialization
   useEffect(() => {
-    const initPermissions = async () => {
-      const permissions = [SAML_READ, SAML_WRITE, SAML_DELETE]
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
-    }
-    initPermissions()
-  }, [])
+    authorizeHelper(samlScopes)
+  }, [authorizeHelper, samlScopes])
 
   useEffect(() => {
+    if (!canReadIdentities) {
+      return
+    }
     makeOptions()
     dispatch(getSamlIdentites(options))
-  }, [cedarPermissions])
+  }, [dispatch, canReadIdentities])
 
   const handleGoToEditPage = useCallback((rowData, viewOnly) => {
     navigate('/saml/identity-providers/edit', { state: { rowData: rowData, viewOnly: viewOnly } })
@@ -166,7 +183,7 @@ const SamlIdentityList = () => {
 
   return (
     <>
-      <GluuViewWrapper canShow={hasCedarPermission(SAML_READ)}>
+      <GluuViewWrapper canShow={canReadIdentities}>
         <MaterialTable
           components={{
             Container: PaperContainer,
@@ -186,13 +203,13 @@ const SamlIdentityList = () => {
                 delete data.tableData
                 handleGoToEditPage(data)
               },
-              disabled: !hasCedarPermission(SAML_WRITE),
+              disabled: !canWriteIdentities,
             },
             {
               icon: 'visibility',
               tooltip: `${t('messages.view_identity_provider')}`,
               onClick: (event, rowData) => handleGoToEditPage(rowData, true),
-              disabled: !hasCedarPermission(SAML_READ),
+              disabled: !canReadIdentities,
             },
             {
               icon: DeleteOutlinedIcon,
@@ -201,7 +218,7 @@ const SamlIdentityList = () => {
               },
               tooltip: `${t('messages.delete_identity_provider')}`,
               onClick: (event, rowData) => handleDelete(rowData),
-              disabled: !hasCedarPermission(SAML_DELETE),
+              disabled: !canDeleteIdentities,
             },
             {
               icon: GluuSearch,
@@ -227,7 +244,7 @@ const SamlIdentityList = () => {
               iconProps: { color: 'primary' },
               isFreeAction: true,
               onClick: () => handleGoToAddPage(),
-              disabled: !hasCedarPermission(SAML_WRITE),
+              disabled: !canWriteIdentities,
             },
           ]}
           options={{
@@ -244,7 +261,7 @@ const SamlIdentityList = () => {
           }}
         />
       </GluuViewWrapper>
-      {hasCedarPermission(SAML_DELETE) && (
+      {canDeleteIdentities && (
         <GluuDialog
           row={item}
           name={item?.displayName || ''}

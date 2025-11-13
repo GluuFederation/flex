@@ -139,7 +139,7 @@ const pluginMetadata = {
           title: 'menus.sessions',
           path: PLUGIN_BASE_APTH + '/sessions',
           permission: SESSION_READ,
-          resourceKey: ADMIN_UI_RESOURCES.Sesison,
+          resourceKey: ADMIN_UI_RESOURCES.Session,
         },
         // {
         //   title: 'menus.lock ',
@@ -154,7 +154,7 @@ const pluginMetadata = {
       component: SessionListPage,
       path: PLUGIN_BASE_APTH + '/sessions',
       permission: SESSION_READ,
-      resourceKey: ADMIN_UI_RESOURCES.Sesison,
+      resourceKey: ADMIN_UI_RESOURCES.Session,
     },
     {
       component: ClientListPage,

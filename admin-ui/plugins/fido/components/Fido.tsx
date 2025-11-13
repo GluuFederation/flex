@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { Card, CardBody } from 'Components'
@@ -19,6 +19,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DynamicConfigFormValues, StaticConfigFormValues } from '../types/fido'
 import { logAudit } from 'Utils/AuditLogger'
 import { AuthRootState } from 'Utils/types'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const Fido: React.FC = () => {
   const { t } = useTranslation()
@@ -28,6 +31,22 @@ const Fido: React.FC = () => {
   const userinfo = useSelector((state: AuthRootState) => state.authReducer.userinfo)
   const client_id = useSelector((state: AuthRootState) => state.authReducer.config.clientId)
   const ip_address = useSelector((state: AuthRootState) => state.authReducer.location.IPv4)
+
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const fidoResourceId = useMemo(() => ADMIN_UI_RESOURCES.FIDO, [])
+  const fidoScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[fidoResourceId], [fidoResourceId])
+  const canReadFido = useMemo(
+    () => hasCedarReadPermission(fidoResourceId) === true,
+    [hasCedarReadPermission, fidoResourceId],
+  )
+  const canWriteFido = useMemo(
+    () => hasCedarWritePermission(fidoResourceId) === true,
+    [hasCedarWritePermission, fidoResourceId],
+  )
+
+  useEffect(() => {
+    authorizeHelper(fidoScopes)
+  }, [authorizeHelper, fidoScopes])
 
   const { data: fidoConfiguration, isLoading } = useGetPropertiesFido2()
   const putFidoMutation = usePutPropertiesFido2({
@@ -52,6 +71,9 @@ const Fido: React.FC = () => {
       type: string,
       userMessage?: string,
     ) => {
+      if (!canWriteFido) {
+        return
+      }
       if (!fidoConfiguration) {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
@@ -86,7 +108,17 @@ const Fido: React.FC = () => {
         },
       })
     },
-    [fidoConfiguration, putFidoMutation, dispatch, t, token, userinfo, client_id, ip_address],
+    [
+      fidoConfiguration,
+      putFidoMutation,
+      dispatch,
+      t,
+      token,
+      userinfo,
+      client_id,
+      ip_address,
+      canWriteFido,
+    ],
   )
 
   const tabNames = [
@@ -106,6 +138,7 @@ const Fido: React.FC = () => {
               }
               fidoConfiguration={fidoConfiguration}
               isSubmitting={isSubmitting}
+              readOnly={!canWriteFido}
             />
           )
         case t('menus.dynamic_configuration'):
@@ -116,14 +149,19 @@ const Fido: React.FC = () => {
               }
               fidoConfiguration={fidoConfiguration}
               isSubmitting={isSubmitting}
+              readOnly={!canWriteFido}
             />
           )
         default:
           return null
       }
     },
-    [t, handleConfigSubmit, fidoConfiguration, isLoading, putFidoMutation.isPending],
+    [t, handleConfigSubmit, fidoConfiguration, isLoading, putFidoMutation.isPending, canWriteFido],
   )
+
+  if (!canReadFido) {
+    return <GluuLoader blocking={isLoading} />
+  }
 
   return (
     <GluuLoader blocking={isLoading}>

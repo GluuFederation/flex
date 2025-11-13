@@ -1,10 +1,9 @@
 import { useFormik } from 'formik'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Row, Col, Form, FormGroup, CustomInput } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
-import { SAML_CONFIG_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -12,32 +11,29 @@ import { useTranslation } from 'react-i18next'
 import { putSamlProperties } from 'Plugins/saml/redux/features/SamlSlice'
 import SetTitle from 'Utils/SetTitle'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 const SamlConfigurationForm = () => {
   const { t } = useTranslation()
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { authorizeHelper, hasCedarWritePermission } = useCedarling()
   const dispatch = useDispatch()
   const DOC_SECTION = 'samlConfiguration'
 
   const [modal, setModal] = useState(false)
   const configuration = useSelector((state) => state.idpSamlReducer.configuration)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   SetTitle(t('titles.saml_management'))
 
-  // Permission initialization
+  const samlResourceId = useMemo(() => ADMIN_UI_RESOURCES.SAML, [])
+  const samlScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[samlResourceId], [samlResourceId])
+  const canWriteConfig = useMemo(
+    () => hasCedarWritePermission(samlResourceId) === true,
+    [hasCedarWritePermission, samlResourceId],
+  )
+
   useEffect(() => {
-    const authorizePermissions = async () => {
-      try {
-        await authorize([SAML_CONFIG_WRITE])
-      } catch (error) {
-        console.error('Error authorizing SAML permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-  }, [])
-
-  useEffect(() => {}, [cedarPermissions])
+    authorizeHelper(samlScopes)
+  }, [authorizeHelper, samlScopes])
 
   const toggle = () => {
     setModal(!modal)
@@ -120,7 +116,7 @@ const SamlConfigurationForm = () => {
           />
         </Col>
       </FormGroup>
-      {hasCedarPermission(SAML_CONFIG_WRITE) && (
+      {canWriteConfig && (
         <Row>
           <Col>
             <GluuCommitFooter

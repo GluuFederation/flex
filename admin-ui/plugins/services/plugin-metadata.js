@@ -46,7 +46,7 @@ const pluginMetadata = {
           title: 'menus.persistence',
           path: '/config/persistence',
           permission: PERSISTENCE_DETAIL,
-          resourceKey: ADMIN_UI_RESOURCES.Persistance,
+          resourceKey: ADMIN_UI_RESOURCES.Persistence,
         },
       ],
     },
@@ -62,7 +62,7 @@ const pluginMetadata = {
       component: PersistenceDetail,
       path: '/config/persistence',
       permission: PERSISTENCE_DETAIL,
-      resourceKey: ADMIN_UI_RESOURCES.Persistance,
+      resourceKey: ADMIN_UI_RESOURCES.Persistence,
     },
     {
       component: LdapEditPage,
