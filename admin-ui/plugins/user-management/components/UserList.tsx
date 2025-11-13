@@ -46,12 +46,13 @@ import {
 } from '../types'
 import { updateToast } from 'Redux/features/toastSlice'
 import { logUserDeletion, logUserUpdate, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { useUserWebhook } from '../hooks/useUserWebhook'
 
 function UserList(): JSX.Element {
   const { hasCedarPermission, authorize } = useCedarling()
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
+  const { triggerUserWebhook } = useUserWebhook()
   const renders = useRef(0)
 
   const { t } = useTranslation()
@@ -119,7 +120,9 @@ function UserList(): JSX.Element {
       onSuccess: async (_data, variables) => {
         dispatch(updateToast(true, 'success', t('messages.user_deleted_successfully')))
         await logUserDeletion(variables.inum, (deleteData as CustomUser) || undefined)
-        await triggerUserWebhook(deleteData as Record<string, unknown>)
+        if (deleteData) {
+          triggerUserWebhook(deleteData as CustomUser)
+        }
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
       onError: (error: unknown) => {

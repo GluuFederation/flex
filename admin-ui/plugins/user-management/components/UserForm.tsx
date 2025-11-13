@@ -1,31 +1,22 @@
-// React and React-related imports
 import React, { useEffect, useState, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { useFormik, FormikProps } from 'formik'
 import { useQueryClient, QueryClient } from '@tanstack/react-query'
-
-// Third-party libraries
 import * as Yup from 'yup'
 import { debounce } from 'lodash'
 import moment from 'moment/moment'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { Dispatch } from '@reduxjs/toolkit'
 import { TFunction } from 'i18next'
-
-// UI Components
 import { Button, Col, Form, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-
-// Context and Redux
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from 'Redux/features/attributesSlice'
 import { updateToast } from 'Redux/features/toastSlice'
-
-// API and Services
 import {
   usePatchUserByInum,
   getGetUserQueryKey,
@@ -35,17 +26,15 @@ import {
 } from 'JansConfigApi'
 import UserClaimEntry from './UserClaimEntry'
 import { logPasswordChange, getErrorMessage } from '../helper/userAuditHelpers'
-import { triggerUserWebhook } from '../helper/userWebhookHelpers'
+import { useUserWebhook } from '../hooks/useUserWebhook'
 import { adminUiFeatures } from 'Plugins/admin/helper/utils'
-
-// Types
 import {
   UserFormProps,
   UserFormState,
   FormOperation,
   UserEditFormValues,
 } from '../types/ComponentTypes'
-import { ThemeContext as ThemeContextType } from '../types/CommonTypes'
+import { ThemeContextType } from '../types/CommonTypes'
 import { PersonAttribute, CustomUser } from '../types/UserApiTypes'
 
 const usePasswordChange = (
@@ -54,13 +43,14 @@ const usePasswordChange = (
   queryClient: QueryClient,
   dispatch: Dispatch,
   t: TFunction,
+  triggerWebhook: (user: Partial<CustomUser>) => void,
 ) => {
   const changePasswordMutation = usePatchUserByInum({
     mutation: {
       onSuccess: async (data: CustomUser, variables: { inum: string; data: UserPatchRequest }) => {
         dispatch(updateToast(true, 'success', t('messages.password_changed_successfully')))
         await logPasswordChange(variables.inum, variables.data as Record<string, unknown>)
-        await triggerUserWebhook(data as Record<string, unknown>)
+        triggerWebhook(data)
         queryClient.invalidateQueries({ queryKey: getGetUserQueryKey() })
       },
       onError: (error: unknown) => {
@@ -381,6 +371,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
   const dispatch = useDispatch()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const { triggerUserWebhook } = useUserWebhook()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
   const [selectedClaims, setSelectedClaims] = useState<PersonAttribute[]>([])
@@ -423,6 +414,7 @@ function UserForm({ onSubmitData, userDetails }: Readonly<UserFormProps>) {
     queryClient,
     dispatch,
     t,
+    triggerUserWebhook,
   )
 
   const toggle = () => {

@@ -1,17 +1,6 @@
-// @ts-nocheck
-import React, { useCallback, useContext, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import {
-  getWebhooksByFeatureId,
-  getWebhooksByFeatureIdResponse,
-  setWebhookModal,
-  setWebhookTriggerErrors,
-  setTriggerWebhookResponse,
-  setFeatureToTrigger,
-} from 'Plugins/admin/redux/features/WebhookSlice'
-import PropTypes from 'prop-types'
-import { ThemeContext } from 'Context/theme/themeContext'
+import { ThemeContext, type ThemeContextType } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import Table from '@mui/material/Table'
@@ -23,62 +12,87 @@ import Box from '@mui/material/Box'
 import { WEBHOOK_READ } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
 import customColors from '@/customColors'
+import { useGetWebhooksByFeatureId } from 'JansConfigApi'
+import { useWebhookDialog } from '@/context/WebhookDialogContext'
+import type { WebhookEntry } from 'JansConfigApi'
 
-const useWebhookDialogAction = ({ feature, modal }) => {
-  const dispatch = useDispatch()
+interface UseWebhookDialogActionProps {
+  feature?: string
+}
+
+const useWebhookDialogAction = ({ feature }: UseWebhookDialogActionProps) => {
   const { hasCedarPermission, authorize } = useCedarling()
-
   const { t } = useTranslation()
-
-  const theme = useContext(ThemeContext)
+  const theme = useContext(ThemeContext) as ThemeContextType
   const selectedTheme = theme.state.theme
 
-  const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } = useSelector(
-    (state) => state.webhookReducer,
+  const { state, actions } = useWebhookDialog()
+  const { featureWebhooks, loadingWebhooks, webhookModal, triggerWebhookInProgress } = state
+
+  const shouldFetchWebhooks = Boolean(feature) && hasCedarPermission(WEBHOOK_READ)
+  const { data: webhooksData, isLoading: isFetchingWebhooks } = useGetWebhooksByFeatureId(
+    feature ?? '',
+    {
+      query: {
+        enabled: shouldFetchWebhooks,
+      },
+    },
   )
-
-  const enabledFeatureWebhooks = featureWebhooks.filter((item) => item.jansEnabled)
-
-  const onCloseModal = useCallback(() => {
-    dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
-    dispatch(setWebhookTriggerErrors([]))
-    dispatch(setTriggerWebhookResponse(''))
-    dispatch(setFeatureToTrigger(''))
-  }, [dispatch, enabledFeatureWebhooks])
 
   useEffect(() => {
     authorize([WEBHOOK_READ]).catch(console.error)
   }, [authorize])
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootStateOfRedux) => state.cedarPermissions,
+
+  useEffect(() => {
+    if (webhooksData) {
+      const webhooks = Array.isArray(webhooksData) ? webhooksData : []
+      actions.setFeatureWebhooks(webhooks as WebhookEntry[])
+    } else {
+      actions.setFeatureWebhooks([])
+    }
+  }, [webhooksData, actions])
+
+  useEffect(() => {
+    actions.setLoadingWebhooks(isFetchingWebhooks)
+  }, [isFetchingWebhooks, actions])
+
+  const enabledFeatureWebhooks = useMemo(
+    () => featureWebhooks.filter((item) => item.jansEnabled),
+    [featureWebhooks],
   )
 
+  const hasInitializedModal = useRef(false)
+
   useEffect(() => {
-    if (hasCedarPermission(WEBHOOK_READ)) {
-      if (modal) {
-        if (feature) {
-          dispatch(getWebhooksByFeatureId(feature))
-        } else {
-          dispatch(getWebhooksByFeatureIdResponse([]))
-        }
-      }
+    hasInitializedModal.current = false
+  }, [feature])
+
+  useEffect(() => {
+    const enabledCount = enabledFeatureWebhooks.length
+    if (featureWebhooks.length > 0 && !hasInitializedModal.current) {
+      actions.setWebhookModal(enabledCount > 0)
+      hasInitializedModal.current = true
     }
-  }, [cedarPermissions, modal])
+  }, [featureWebhooks, actions, enabledFeatureWebhooks])
 
-  useEffect(() => {
-    dispatch(setWebhookModal(enabledFeatureWebhooks?.length > 0))
-  }, [featureWebhooks?.length])
+  const onCloseModal = useCallback(() => {
+    actions.setWebhookModal(false)
+    actions.setWebhookTriggerErrors([])
+    actions.setTriggerWebhookResponse('')
+    actions.setFeatureToTrigger('')
+  }, [actions])
 
-  const handleAcceptWebhookTrigger = () => {
-    dispatch(setWebhookModal(false))
-    dispatch(setFeatureToTrigger(feature))
-  }
+  const handleAcceptWebhookTrigger = useCallback(() => {
+    actions.setWebhookModal(false)
+    actions.setFeatureToTrigger(feature || '')
+  }, [actions, feature])
 
-  const webhookTriggerModal = ({ closeModal }) => {
+  const webhookTriggerModal = ({ closeModal }: { closeModal: () => void }) => {
     const closeWebhookTriggerModal = () => {
       closeModal()
-      dispatch(setFeatureToTrigger(''))
+      actions.setFeatureToTrigger('')
     }
+
     return (
       <Modal
         isOpen={(webhookModal || loadingWebhooks) && hasCedarPermission(WEBHOOK_READ)}
@@ -86,7 +100,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
         toggle={() => {
           if (!loadingWebhooks) {
             closeModal()
-            dispatch(setFeatureToTrigger(''))
+            actions.setFeatureToTrigger('')
           }
         }}
         className="modal-outline-primary"
@@ -100,7 +114,6 @@ const useWebhookDialogAction = ({ feature, modal }) => {
                 onClick={closeWebhookTriggerModal}
                 onKeyDown={() => {}}
                 style={{ color: customColors.logo }}
-                code
                 className="fa fa-2x fa-info fa-fw modal-icon mb-3"
                 role="img"
                 aria-hidden="true"
@@ -112,7 +125,7 @@ const useWebhookDialogAction = ({ feature, modal }) => {
         {!loadingWebhooks ? (
           <>
             <ModalBody>
-              <Box flex flexDirection="column" px={2}>
+              <Box display="flex" flexDirection="column" px={2}>
                 <p style={{ fontWeight: 600 }}>{t('messages.webhook_dialog_dec')}</p>
               </Box>
               {enabledFeatureWebhooks?.length ? (
@@ -177,7 +190,3 @@ const useWebhookDialogAction = ({ feature, modal }) => {
 }
 
 export default useWebhookDialogAction
-useWebhookDialogAction.propTypes = {
-  feature: PropTypes.string,
-  modal: PropTypes.bool,
-}

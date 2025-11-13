@@ -1,20 +1,15 @@
 import { useCallback } from 'react'
-import { useDispatch } from 'react-redux'
-import { triggerWebhook } from 'Plugins/admin/redux/features/WebhookSlice'
 import type { JansAttribute } from 'JansConfigApi'
+import { useWebhookTrigger } from 'Plugins/admin/hooks/useWebhookTrigger'
 
 export function useSchemaWebhook() {
-  const dispatch = useDispatch()
+  const trigger = useWebhookTrigger()
 
   const triggerAttributeWebhook = useCallback(
     (attribute: Partial<JansAttribute>): void => {
-      dispatch(
-        triggerWebhook({
-          createdFeatureValue: attribute,
-        }),
-      )
+      trigger(attribute, 'attributes_write')
     },
-    [dispatch],
+    [trigger],
   )
 
   return { triggerAttributeWebhook }

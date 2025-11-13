@@ -1,17 +1,14 @@
 import React, { createContext, useReducer, Dispatch, ReactNode } from 'react'
 
-// Define the shape of the theme state
 type ThemeState = {
   theme: string
 }
 
-// Define the shape of the actions for the reducer
 type ThemeAction = {
   type: string
 }
 
-// Define the context value type
-interface ThemeContextType {
+export interface ThemeContextType {
   state: ThemeState
   dispatch: Dispatch<ThemeAction>
 }
