@@ -29,13 +29,12 @@ function LoggingPage() {
   const { hasCedarPermission, authorize } = useCedarling()
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
 
   const [showCommitDialog, setShowCommitDialog] = useState(false)
   const [pendingValues, setPendingValues] = useState(null)
-  const [localLogging, setLocalLogging] = useState(null)
+  const toggleCommitDialog = useCallback(() => setShowCommitDialog((prev) => !prev), [])
 
   useEffect(() => {
     const initPermissions = async () => {
@@ -64,13 +63,13 @@ function LoggingPage() {
 
   const handleSubmit = useCallback(
     (values) => {
-      const mergedValues = getMergedValues(localLogging, values)
-      const changedFields = getChangedFields(localLogging, mergedValues)
+      const mergedValues = getMergedValues(logging, values)
+      const changedFields = getChangedFields(logging, mergedValues)
 
       setPendingValues({ mergedValues, changedFields })
       setShowCommitDialog(true)
     },
-    [localLogging],
+    [logging],
   )
 
   const handleAccept = useCallback(
@@ -113,6 +112,7 @@ function LoggingPage() {
                       size={4}
                       doc_category={JSON_CONFIG}
                       doc_entry="loggingLevel"
+                      required
                     />
                     <Col sm={8}>
                       <CustomInput
@@ -122,6 +122,9 @@ function LoggingPage() {
                         data-testid="loggingLevel"
                         value={formik.values.loggingLevel}
                         onChange={(e) => formik.setFieldValue('loggingLevel', e.target.value)}
+                        onBlur={() => formik.setFieldTouched('loggingLevel', true)}
+                        required
+                        aria-required="true"
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {levels.map((item, key) => (
@@ -130,6 +133,9 @@ function LoggingPage() {
                           </option>
                         ))}
                       </CustomInput>
+                      {formik.touched.loggingLevel && formik.errors.loggingLevel && (
+                        <div className="text-danger mt-1">{formik.errors.loggingLevel}</div>
+                      )}
                     </Col>
                   </FormGroup>
 
@@ -139,6 +145,7 @@ function LoggingPage() {
                       size={4}
                       doc_category={JSON_CONFIG}
                       doc_entry="loggingLayout"
+                      required
                     />
                     <Col sm={8}>
                       <CustomInput
@@ -148,6 +155,9 @@ function LoggingPage() {
                         data-testid="loggingLayout"
                         value={formik.values.loggingLayout}
                         onChange={(e) => formik.setFieldValue('loggingLayout', e.target.value)}
+                        onBlur={() => formik.setFieldTouched('loggingLayout', true)}
+                        required
+                        aria-required="true"
                       >
                         <option value="">{t('actions.choose')}...</option>
                         {logLayouts.map((item, key) => (
@@ -156,6 +166,9 @@ function LoggingPage() {
                           </option>
                         ))}
                       </CustomInput>
+                      {formik.touched.loggingLayout && formik.errors.loggingLayout && (
+                        <div className="text-danger mt-1">{formik.errors.loggingLayout}</div>
+                      )}
                     </Col>
                   </FormGroup>
 
@@ -214,7 +227,7 @@ function LoggingPage() {
             </Formik>
 
             <GluuCommitDialog
-              handler={() => setShowCommitDialog(false)}
+              handler={toggleCommitDialog}
               modal={showCommitDialog}
               onAccept={handleAccept}
               isLicenseLabel={false}

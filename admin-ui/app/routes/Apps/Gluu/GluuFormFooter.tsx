@@ -18,6 +18,7 @@ interface GluuFormFooterBaseProps {
   backButtonLabel?: string
   onBack?: () => void
   disableBack?: boolean
+  backIconClass?: string
   showCancel?: boolean
   cancelButtonLabel?: string
   onCancel?: () => void
@@ -54,6 +55,7 @@ const GluuFormFooter = ({
   backButtonLabel,
   onBack,
   disableBack = false,
+  backIconClass = 'fa fa-arrow-circle-left',
   showCancel,
   cancelButtonLabel,
   onCancel,
@@ -157,7 +159,7 @@ const GluuFormFooter = ({
             disabled={disableBack}
             aria-label={backLabel}
           >
-            <ButtonLabel isLoading={false} iconClass="fa fa-arrow-circle-left" label={backLabel} />
+            <ButtonLabel isLoading={false} iconClass={backIconClass} label={backLabel} />
           </Button>
         )}
 
