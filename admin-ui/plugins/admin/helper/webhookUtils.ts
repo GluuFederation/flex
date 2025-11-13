@@ -28,7 +28,7 @@ export const webhookOutputObject = (
 
       if (value !== undefined) {
         shortcodeValueMap[key] = value
-        webhook.url = webhook.url?.replace(new RegExp(`\\{${key}\\}`, 'g'), String(value))
+        webhook.url = webhook.url?.replaceAll(`{${key}}`, String(value))
       }
     })
 
@@ -44,8 +44,8 @@ export const webhookOutputObject = (
               : createdFeatureValue[placeholderKey]
             if (value !== undefined && webhook.httpRequestBody) {
               const updatedRequestBody = webhook.httpRequestBody as Record<string, any>
-              updatedRequestBody[key] = templateValue.replace(
-                new RegExp(`\\{${placeholderKey}\\}`, 'g'),
+              updatedRequestBody[key] = templateValue.replaceAll(
+                `{${placeholderKey}}`,
                 String(value),
               )
               shortcodeValueMap[placeholderKey] = value
