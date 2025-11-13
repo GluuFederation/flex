@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import type { WebhookEntry, ShortCodeRequest } from 'JansConfigApi'
 
 const getNestedValue = (obj: Record<string, any>, path: string): any => {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj)
+  return path.split('.').reduce((acc, part) => (acc != null ? acc[part] : undefined), obj)
 }
 
 /**
@@ -32,7 +32,11 @@ export const webhookOutputObject = (
       }
     })
 
-    if (webhook.httpRequestBody && typeof webhook.httpRequestBody === 'object') {
+    if (
+      webhook.httpRequestBody &&
+      typeof webhook.httpRequestBody === 'object' &&
+      !Array.isArray(webhook.httpRequestBody)
+    ) {
       const requestBody = webhook.httpRequestBody as Record<string, any>
       Object.entries(requestBody).forEach(([key, templateValue]) => {
         if (typeof templateValue === 'string' && templateValue.includes('{')) {
