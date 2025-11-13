@@ -5,12 +5,6 @@ const getNestedValue = (obj: Record<string, any>, path: string): any => {
   return path.split('.').reduce((acc, part) => (acc != null ? acc[part] : undefined), obj)
 }
 
-/**
- * Processes enabled webhooks and creates ShortCodeRequest array for triggering
- * @param enabledFeatureWebhooks Array of enabled webhook configurations
- * @param createdFeatureValue The entity data (user, script, etc.) that triggered the webhook
- * @returns Array of ShortCodeRequest objects ready to send to the API
- */
 export const webhookOutputObject = (
   enabledFeatureWebhooks: WebhookEntry[],
   createdFeatureValue: Record<string, any>,
@@ -41,20 +35,20 @@ export const webhookOutputObject = (
       Object.entries(requestBody).forEach(([key, templateValue]) => {
         if (typeof templateValue === 'string' && templateValue.includes('{')) {
           const matches = templateValue.match(/\{([^{}]+?)\}/g)
+          let updatedValue = templateValue
           matches?.forEach((placeholder: string) => {
             const placeholderKey = placeholder.slice(1, -1)
             const value = placeholderKey.includes('.')
               ? getNestedValue(createdFeatureValue, placeholderKey)
               : createdFeatureValue[placeholderKey]
-            if (value !== undefined && webhook.httpRequestBody) {
-              const updatedRequestBody = webhook.httpRequestBody as Record<string, any>
-              updatedRequestBody[key] = templateValue.replaceAll(
-                `{${placeholderKey}}`,
-                String(value),
-              )
+            if (value !== undefined) {
+              updatedValue = updatedValue.replaceAll(`{${placeholderKey}}`, String(value))
               shortcodeValueMap[placeholderKey] = value
             }
           })
+          if (webhook.httpRequestBody) {
+            ;(webhook.httpRequestBody as Record<string, any>)[key] = updatedValue
+          }
         }
       })
     }
