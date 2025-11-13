@@ -2,14 +2,8 @@ import { useCallback } from 'react'
 import type { JansAttribute } from 'JansConfigApi'
 import { useWebhookTrigger } from 'Plugins/admin/hooks/useWebhookTrigger'
 
-/**
- * Hook for triggering webhooks related to schema/attribute operations
- */
 export function useSchemaWebhook() {
-  const trigger = useWebhookTrigger<Partial<JansAttribute>>({
-    extractId: (attribute) => attribute.inum,
-    idFieldName: 'attribute.inum',
-  })
+  const trigger = useWebhookTrigger()
 
   const triggerAttributeWebhook = useCallback(
     (attribute: Partial<JansAttribute>): void => {

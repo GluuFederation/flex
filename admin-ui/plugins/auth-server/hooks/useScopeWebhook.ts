@@ -4,10 +4,7 @@ import { useWebhookTrigger } from 'Plugins/admin/hooks/useWebhookTrigger'
 import { WEBHOOK_FEATURE_IDS } from 'Plugins/admin/constants/webhookFeatures'
 
 export function useScopeWebhook() {
-  const trigger = useWebhookTrigger<Scope>({
-    extractId: (scope) => scope.inum,
-    idFieldName: 'scope.inum',
-  })
+  const trigger = useWebhookTrigger()
 
   const triggerScopeWebhook = useCallback(
     (

@@ -1,29 +1,25 @@
 import { useCallback } from 'react'
-import { useTriggerWebhook } from 'JansConfigApi'
-import type { ShortCodeRequest } from 'JansConfigApi'
+import { useTriggerWebhook, getWebhooksByFeatureId } from 'JansConfigApi'
+import type { WebhookEntry } from 'JansConfigApi'
 import { useWebhookDialog } from '@/context/WebhookDialogContext'
 import { useDispatch } from 'react-redux'
 import { updateToast } from 'Redux/features/toastSlice'
 import { useTranslation } from 'react-i18next'
 import type { WebhookTriggerResponse } from '../constants/webhookTypes'
 import type { ApiError } from '../redux/sagas/types/webhook'
+import { webhookOutputObject } from '../helper/webhookUtils'
 
-interface WebhookTriggerConfig<T extends { inum?: string; dn?: string }> {
-  extractId: (item: T) => string | undefined
-  idFieldName: string
-}
-
-export function useWebhookTrigger<T extends { inum?: string; dn?: string }>(
-  config: WebhookTriggerConfig<T>,
-) {
+export function useWebhookTrigger() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { actions } = useWebhookDialog()
 
   const triggerWebhookMutation = useTriggerWebhook({
     mutation: {
-      onSuccess: (data: WebhookTriggerResponse) => {
-        const { body = [] } = data
+      onSuccess: (data: any) => {
+        // Cast to WebhookTriggerResponse since the OpenAPI spec doesn't match the actual response
+        const response = data as WebhookTriggerResponse
+        const { body = [] } = response
         const allSucceeded = body.every(({ success }) => success)
         if (allSucceeded) {
           actions.setWebhookTriggerErrors([])
@@ -56,42 +52,56 @@ export function useWebhookTrigger<T extends { inum?: string; dn?: string }>(
   })
 
   const trigger = useCallback(
-    (item: T, featureId: string): void => {
-      const webhookId = config.extractId(item)
-      if (!webhookId) {
-        console.error(`Cannot trigger webhook: ${config.idFieldName} is missing`)
-        dispatch(updateToast(true, 'error', t('messages.webhook_trigger_invalid_data')))
-        return
-      }
+    async (item: Record<string, any>, featureId: string): Promise<void> => {
+      try {
+        actions.setTriggerWebhookInProgress(true)
+        actions.setFeatureToTrigger(featureId)
 
-      const isDelete = featureId.endsWith('_delete')
+        const webhooksResponse = await getWebhooksByFeatureId(featureId)
+        // The API response structure is { data: { body: WebhookEntry[] } }
+        // Cast to any because the OpenAPI spec doesn't match the actual response
+        const responseData = (webhooksResponse as any)?.data
+        const featureWebhooks: WebhookEntry[] = Array.isArray(responseData?.body)
+          ? responseData.body
+          : []
 
-      const valueKey = isDelete ? 'deletedFeatureValue' : 'createdFeatureValue'
+        const enabledFeatureWebhooks = featureWebhooks.filter(
+          (webhook) => webhook.jansEnabled === true,
+        )
 
-      const requestData: ShortCodeRequest = {
-        webhookId,
-        shortcodeValueMap: {
-          [valueKey]: item as Record<string, unknown>,
-        },
-      }
+        if (!enabledFeatureWebhooks.length) {
+          console.warn(`No enabled webhooks found for feature: ${featureId}`)
+          actions.setTriggerWebhookInProgress(false)
+          actions.setFeatureToTrigger('')
+          return
+        }
 
-      actions.setTriggerWebhookInProgress(true)
-      actions.setFeatureToTrigger(featureId)
+        const shortCodeRequests = webhookOutputObject(enabledFeatureWebhooks, item)
 
-      triggerWebhookMutation.mutate(
-        {
-          featureId,
-          data: requestData,
-        },
-        {
-          onSettled: () => {
-            actions.setTriggerWebhookInProgress(false)
-            actions.setFeatureToTrigger('')
+        const requestData = {
+          shortCodeRequest: shortCodeRequests,
+        } as any
+
+        triggerWebhookMutation.mutate(
+          {
+            featureId,
+            data: requestData,
           },
-        },
-      )
+          {
+            onSettled: () => {
+              actions.setTriggerWebhookInProgress(false)
+              actions.setFeatureToTrigger('')
+            },
+          },
+        )
+      } catch (error) {
+        console.error('Error fetching webhooks:', error)
+        actions.setTriggerWebhookInProgress(false)
+        actions.setFeatureToTrigger('')
+        dispatch(updateToast(true, 'error', t('messages.webhook_fetch_failed')))
+      }
     },
-    [config, dispatch, t, actions, triggerWebhookMutation],
+    [dispatch, t, actions, triggerWebhookMutation],
   )
 
   return trigger

@@ -3,10 +3,7 @@ import { useWebhookTrigger } from './useWebhookTrigger'
 import { WEBHOOK_FEATURE_IDS } from '../constants/webhookFeatures'
 
 export function useScriptWebhook() {
-  const trigger = useWebhookTrigger<Record<string, unknown>>({
-    extractId: (script) => script.inum as string | undefined,
-    idFieldName: 'script.inum',
-  })
+  const trigger = useWebhookTrigger()
 
   const triggerScriptWebhook = useCallback(
     (

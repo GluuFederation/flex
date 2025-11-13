@@ -3,10 +3,7 @@ import { useWebhookTrigger } from 'Plugins/admin/hooks/useWebhookTrigger'
 import { WEBHOOK_FEATURE_IDS } from 'Plugins/admin/constants/webhookFeatures'
 
 export function useSamlWebhook() {
-  const trigger = useWebhookTrigger<Record<string, unknown>>({
-    extractId: (entity) => (entity.inum as string | undefined) || (entity.dn as string | undefined),
-    idFieldName: 'entity.inum or entity.dn',
-  })
+  const trigger = useWebhookTrigger()
 
   const triggerSamlWebhook = useCallback(
     (
