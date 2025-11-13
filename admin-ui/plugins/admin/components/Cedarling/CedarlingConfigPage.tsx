@@ -247,13 +247,11 @@ const CedarlingConfigPage: React.FC = () => {
                       value={'remote'}
                       control={<Radio color="primary" />}
                       label="Remote"
-                      checked={cedarlingPolicyStoreRetrievalPoint === 'remote'}
                     />
                     <FormControlLabel
                       value={'default'}
                       control={<Radio color="primary" />}
                       label={'Default'}
-                      checked={cedarlingPolicyStoreRetrievalPoint === 'default'}
                     />
                   </RadioGroup>
                 </Col>
