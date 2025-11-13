@@ -21,8 +21,15 @@ export const webhookOutputObject = (
         : createdFeatureValue[key]
 
       if (value !== undefined) {
+        if (typeof value === 'object' && value !== null) {
+          console.warn(
+            `Placeholder {${key}} resolved to a complex value; using JSON.stringify. Consider using a primitive field.`,
+          )
+        }
+        const stringValue =
+          typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value)
         shortcodeValueMap[key] = value
-        webhook.url = webhook.url?.replaceAll(`{${key}}`, String(value))
+        webhook.url = webhook.url?.replaceAll(`{${key}}`, stringValue)
       }
     })
 
@@ -42,7 +49,14 @@ export const webhookOutputObject = (
               ? getNestedValue(createdFeatureValue, placeholderKey)
               : createdFeatureValue[placeholderKey]
             if (value !== undefined) {
-              updatedValue = updatedValue.replaceAll(`{${placeholderKey}}`, String(value))
+              if (typeof value === 'object' && value !== null) {
+                console.warn(
+                  `Placeholder {${placeholderKey}} resolved to a complex value; using JSON.stringify. Consider using a primitive field.`,
+                )
+              }
+              const stringValue =
+                typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value)
+              updatedValue = updatedValue.replaceAll(`{${placeholderKey}}`, stringValue)
               shortcodeValueMap[placeholderKey] = value
             }
           })
