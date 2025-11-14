@@ -67,6 +67,9 @@ import {
   WEBHOOK_DELETE,
   WEBHOOK_READ,
   WEBHOOK_WRITE,
+  AGAMA_READ,
+  AGAMA_WRITE,
+  AGAMA_DELETE,
 } from '@/utils/PermChecker'
 
 export const CEDAR_RESOURCE_SCOPES: Record<string, ResourceScopeEntry[]> = {
@@ -165,6 +168,9 @@ export const CEDAR_RESOURCE_SCOPES: Record<string, ResourceScopeEntry[]> = {
   [ADMIN_UI_RESOURCES.Authentication]: [
     { permission: ACR_READ, resourceId: ADMIN_UI_RESOURCES.Authentication },
     { permission: ACR_WRITE, resourceId: ADMIN_UI_RESOURCES.Authentication },
+    { permission: AGAMA_READ, resourceId: ADMIN_UI_RESOURCES.Authentication },
+    { permission: AGAMA_WRITE, resourceId: ADMIN_UI_RESOURCES.Authentication },
+    { permission: AGAMA_DELETE, resourceId: ADMIN_UI_RESOURCES.Authentication },
   ],
   [ADMIN_UI_RESOURCES.Clients]: [
     { permission: CLIENT_READ, resourceId: ADMIN_UI_RESOURCES.Clients },

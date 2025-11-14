@@ -4,10 +4,11 @@ import { Paper } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-import { SCOPE_READ, SCOPE_WRITE } from 'Utils/PermChecker'
 import customColors from '@/customColors'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -19,7 +20,7 @@ import { setCurrentItem } from '../../redux/features/authNSlice'
 import { getAcrsConfig } from 'Plugins/auth-server/redux/features/acrSlice'
 
 function AuthNListPage({ isBuiltIn = false }) {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const [myActions, setMyActions] = useState([])
@@ -42,24 +43,27 @@ function AuthNListPage({ isBuiltIn = false }) {
   const loading = useSelector((state) => state.ldapReducer.loading)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const customScriptloading = useSelector((state) => state.customScriptReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   SetTitle(t('titles.authentication'))
 
+  const authNResourceId = ADMIN_UI_RESOURCES.Authentication
+  const authNScopes = React.useMemo(
+    () => CEDAR_RESOURCE_SCOPES[authNResourceId] || [],
+    [authNResourceId],
+  )
+
+  const canReadAuthN = React.useMemo(
+    () => hasCedarReadPermission(authNResourceId),
+    [hasCedarReadPermission, authNResourceId],
+  )
+  const canWriteAuthN = React.useMemo(
+    () => hasCedarWritePermission(authNResourceId),
+    [hasCedarWritePermission, authNResourceId],
+  )
+
   // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async () => {
-      const permissions = [SCOPE_READ, SCOPE_WRITE]
-      try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
-      } catch (error) {
-        console.error('Error authorizing scope permissions:', error)
-      }
-    }
-
-    authorizePermissions()
+    authorizeHelper(authNScopes)
     dispatch(getLdapConfig())
     dispatch(getCustomScriptByType({ action: { type: 'person_authentication' } }))
     dispatch(getAcrsConfig())
@@ -67,13 +71,13 @@ function AuthNListPage({ isBuiltIn = false }) {
     return () => {
       // Cleanup if needed
     }
-  }, [dispatch])
+  }, [authorizeHelper, authNScopes, dispatch])
 
   // Actions as state that will rebuild when permissions change
   useEffect(() => {
     const newActions = []
 
-    if (hasCedarPermission(SCOPE_WRITE)) {
+    if (canWriteAuthN) {
       newActions.push((rowData) => {
         return {
           icon: 'edit',
@@ -83,13 +87,13 @@ function AuthNListPage({ isBuiltIn = false }) {
           },
           tooltip: `${t('messages.edit_authn')}`,
           onClick: (event, rowData) => handleGoToAuthNEditPage(rowData),
-          disabled: !hasCedarPermission(SCOPE_WRITE),
+          disabled: !canWriteAuthN,
         }
       })
     }
 
     setMyActions(newActions)
-  }, [cedarPermissions, t, handleGoToAuthNEditPage])
+  }, [canWriteAuthN, t, handleGoToAuthNEditPage])
 
   useEffect(() => {
     setList({ ...list, ldap: [] })
@@ -131,7 +135,7 @@ function AuthNListPage({ isBuiltIn = false }) {
   )
 
   return (
-    <GluuViewWrapper canShow={hasCedarPermission(SCOPE_READ)}>
+    <GluuViewWrapper canShow={canReadAuthN}>
       <MaterialTable
         key={limit ? limit : 0}
         components={{

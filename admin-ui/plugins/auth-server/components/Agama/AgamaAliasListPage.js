@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Form, FormGroup, Col } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
-import { buildPayload, SCOPE_READ, SCOPE_WRITE } from 'Utils/PermChecker'
-import { useCedarling } from '@/cedarling'
+import { buildPayload } from 'Utils/PermChecker'
+import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
@@ -21,7 +21,7 @@ import customColors from '@/customColors'
 import SetTitle from 'Utils/SetTitle'
 
 function AliasesListPage() {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
@@ -29,7 +29,22 @@ function AliasesListPage() {
   const bgThemeColor = { background: themeColors.background }
   const { loading } = useSelector((state) => state.jsonConfigReducer)
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
+
+  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
+  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
+
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(authResourceId),
+    [hasCedarReadPermission, authResourceId],
+  )
+  const canWriteAuth = useMemo(
+    () => hasCedarWritePermission(authResourceId),
+    [hasCedarWritePermission, authResourceId],
+  )
+
+  useEffect(() => {
+    authorizeHelper(authScopes)
+  }, [authorizeHelper, authScopes])
 
   const [initalFormValues] = useState({
     source: '',
@@ -47,20 +62,7 @@ function AliasesListPage() {
 
   SetTitle(t('titles.authentication'))
 
-  // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async () => {
-      const permissions = [SCOPE_READ, SCOPE_WRITE]
-      try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
-      } catch (error) {
-        console.error('Error authorizing scope permissions:', error)
-      }
-    }
-
-    authorizePermissions()
     dispatch(getJsonConfig({ action: {} }))
   }, [dispatch])
 
@@ -68,7 +70,7 @@ function AliasesListPage() {
   useEffect(() => {
     const actions = []
 
-    if (hasCedarPermission(SCOPE_WRITE)) {
+    if (canWriteAuth) {
       actions.push({
         icon: 'add',
         tooltip: `${t('actions.add_mapping')}`,
@@ -92,7 +94,7 @@ function AliasesListPage() {
     }
 
     setMyActions(actions)
-  }, [cedarPermissions])
+  }, [canWriteAuth, t, handleEdit])
 
   const validationSchema = Yup.object().shape({
     source: Yup.string().required(`${t('fields.source')} is Required!`),
@@ -163,7 +165,7 @@ function AliasesListPage() {
   return (
     <>
       <>
-        <GluuViewWrapper canShow={hasCedarPermission(SCOPE_READ)}>
+        <GluuViewWrapper canShow={canReadAuth}>
           <MaterialTable
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
@@ -206,7 +208,7 @@ function AliasesListPage() {
               actionsColumnIndex: -1,
             }}
             editable={{
-              isDeleteHidden: () => !hasCedarPermission(SCOPE_WRITE),
+              isDeleteHidden: () => !canWriteAuth,
               onRowDelete: (oldData) => {
                 try {
                   return new Promise((resolve) => {

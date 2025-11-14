@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { useTranslation } from 'react-i18next'
-import { ACR_READ, ACR_WRITE } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/features/acrSlice'
 import { getAgama } from 'Plugins/auth-server/redux/features/agamaSlice'
@@ -17,7 +18,7 @@ import { getScripts } from 'Redux/features/initSlice'
 import { buildAgamaFlowsArray, buildDropdownOptions } from './helper/acrUtils'
 
 function DefaultAcr() {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const dispatch = useDispatch()
 
   const { acrReponse: acrs } = useSelector((state) => state.acrReducer)
@@ -36,21 +37,28 @@ function DefaultAcr() {
 
   const userAction = {}
 
-  useEffect(() => {
-    const initializeAcr = async () => {
-      try {
-        await authorize([ACR_WRITE, ACR_READ])
-      } catch (error) {
-        console.error('Error authorizing ACR permissions:', error)
-      }
-    }
+  const authResourceId = ADMIN_UI_RESOURCES.Authentication
+  const authScopes = React.useMemo(
+    () => CEDAR_RESOURCE_SCOPES[authResourceId] || [],
+    [authResourceId],
+  )
 
-    initializeAcr()
+  const canReadAuth = React.useMemo(
+    () => hasCedarReadPermission(authResourceId),
+    [hasCedarReadPermission, authResourceId],
+  )
+  const canWriteAuth = React.useMemo(
+    () => hasCedarWritePermission(authResourceId),
+    [hasCedarWritePermission, authResourceId],
+  )
+
+  useEffect(() => {
+    authorizeHelper(authScopes)
     buildPayload(userAction, 'Fetch custom scripts', {})
     dispatch(getScripts({ action: userAction }))
     dispatch(getAgama())
     dispatch(getAcrsConfig())
-  }, [authorize, dispatch])
+  }, [authorizeHelper, authScopes, dispatch])
 
   const authScripts = useMemo(() => {
     const filteredScripts = (scripts || [])
@@ -96,7 +104,7 @@ function DefaultAcr() {
       <Form onSubmit={handleSubmit}>
         <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
         <div style={{ padding: '3vh' }}>
-          <GluuViewWrapper canShow={hasCedarPermission(ACR_READ)}>
+          <GluuViewWrapper canShow={canReadAuth}>
             <DefaultAcrInput
               id="defaultAcr"
               name="defaultAcr"
@@ -111,7 +119,7 @@ function DefaultAcr() {
               showSaveButtons={false}
             />
           </GluuViewWrapper>
-          {hasCedarPermission(ACR_WRITE) && (
+          {canWriteAuth && (
             <Button
               color={`primary-${selectedTheme}`}
               onClick={handleSaveClick}

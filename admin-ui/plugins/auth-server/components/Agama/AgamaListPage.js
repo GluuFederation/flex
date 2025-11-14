@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Card, Input } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -15,8 +15,7 @@ import {
   getAgamaRepository,
   getAgamaRepositoryFile,
 } from 'Plugins/auth-server/redux/features/agamaSlice'
-import { AGAMA_READ, AGAMA_WRITE, AGAMA_DELETE } from 'Utils/PermChecker'
-import { useCedarling } from '@/cedarling'
+import { useCedarling, ADMIN_UI_RESOURCES, CEDAR_RESOURCE_SCOPES } from '@/cedarling'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
@@ -46,7 +45,12 @@ const dateTimeFormatOptions = {
 }
 
 function AgamaListPage() {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const [myActions, setMyActions] = useState([])
@@ -70,7 +74,6 @@ function AgamaListPage() {
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
   const isAgamaEnabled = configuration?.agamaConfiguration?.enabled
   const isConfigLoading = useSelector((state) => state.jsonConfigReducer.loading)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
   const agamaFileResponse = useSelector((state) => state.agamaReducer.agamaFileResponse)
 
   const theme = useContext(ThemeContext)
@@ -78,26 +81,29 @@ function AgamaListPage() {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  // Permission initialization
-  useEffect(() => {
-    const authorizePermissions = async () => {
-      const permissions = [AGAMA_READ, AGAMA_WRITE, AGAMA_DELETE]
-      try {
-        for (const permission of permissions) {
-          await authorize([permission])
-        }
-      } catch (error) {
-        console.error('Error authorizing Agama permissions:', error)
-      }
-    }
+  const authResourceId = useMemo(() => ADMIN_UI_RESOURCES.Authentication, [])
+  const authScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[authResourceId] || [], [authResourceId])
 
-    authorizePermissions()
+  const canReadAuth = useMemo(
+    () => hasCedarReadPermission(authResourceId),
+    [hasCedarReadPermission, authResourceId],
+  )
+  const canWriteAuth = useMemo(
+    () => hasCedarWritePermission(authResourceId),
+    [hasCedarWritePermission, authResourceId],
+  )
+  const canDeleteAuth = useMemo(
+    () => hasCedarDeletePermission(authResourceId),
+    [hasCedarDeletePermission, authResourceId],
+  )
+
+  useEffect(() => {
+    authorizeHelper(authScopes)
     if (isEmpty(configuration)) {
       dispatch(getJsonConfig({ action: {} }))
     }
     dispatch(getAgama())
-  }, [dispatch, configuration])
-  useEffect(() => {}, [cedarPermissions])
+  }, [authorizeHelper, authScopes, dispatch, configuration])
 
   function convertFileToByteArray(file) {
     return new Promise((resolve, reject) => {
@@ -125,13 +131,13 @@ function AgamaListPage() {
     return byteArray
   }
 
-  async function fetchRespositoryData() {
+  const fetchRespositoryData = useCallback(async () => {
     try {
       dispatch(getAgamaRepository())
     } catch (error) {
       console.error('Error fetching repository data:', error)
     }
-  }
+  }, [dispatch])
 
   useEffect(() => {
     if (isEmpty(configuration)) {
@@ -290,7 +296,7 @@ function AgamaListPage() {
   useEffect(() => {
     const newActions = []
 
-    if (hasCedarPermission(AGAMA_WRITE)) {
+    if (canWriteAuth) {
       newActions.push({
         icon: 'add',
         tooltip: `${t('titles.add_new_agama_project')}`,
@@ -333,7 +339,7 @@ function AgamaListPage() {
     }
 
     setMyActions(newActions)
-  }, [hasCedarPermission, t, isAgamaEnabled, dispatch])
+  }, [canWriteAuth, t, isAgamaEnabled, dispatch, fetchRespositoryData])
 
   const getSHA256 = async (sha256sum) => {
     const uint8Array = new Uint8Array(await new Blob([selectedFile]).arrayBuffer())
@@ -616,7 +622,7 @@ function AgamaListPage() {
         />
       )}
       <>
-        <GluuViewWrapper canShow={hasCedarPermission(AGAMA_READ)}>
+        <GluuViewWrapper canShow={canReadAuth}>
           <MaterialTable
             key={limit}
             components={{
@@ -679,7 +685,7 @@ function AgamaListPage() {
               actionsColumnIndex: -1,
             }}
             editable={{
-              isDeleteHidden: () => !hasCedarPermission(AGAMA_DELETE),
+              isDeleteHidden: () => !canDeleteAuth,
               onRowDelete: (oldData) => {
                 return new Promise((resolve) => {
                   dispatch(

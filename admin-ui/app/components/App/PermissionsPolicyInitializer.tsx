@@ -88,6 +88,34 @@ const PermissionsPolicyInitializer = () => {
   }, [token, initialized, initializations])
 
   useEffect(() => {
+    // Helper function to check if policyStoreJson is valid
+    const isValidPolicyStore = (policyStore: string | unknown): boolean => {
+      if (!policyStore) {
+        return false
+      }
+
+      // If it's a string, check if it's not empty and is valid JSON
+      if (typeof policyStore === 'string') {
+        if (policyStore.trim() === '') {
+          return false
+        }
+        try {
+          const parsed = JSON.parse(policyStore)
+          // Check if it's an object (not a string, number, etc.)
+          return typeof parsed === 'object' && parsed !== null
+        } catch {
+          return false
+        }
+      }
+
+      // If it's an object, check if it's a valid object
+      if (typeof policyStore === 'object' && policyStore !== null) {
+        return true
+      }
+
+      return false
+    }
+
     const shouldTryInit =
       token &&
       token.access_token &&
@@ -96,16 +124,35 @@ const PermissionsPolicyInitializer = () => {
       !initialized &&
       !isInitializing &&
       cedarlingLogType &&
+      isValidPolicyStore(policyStoreJson) &&
       retryCount.current.tryCount < maxRetries
 
     if (!shouldTryInit) return
 
     dispatch(setCedarlingInitializing(true))
 
+    // Ensure policyStoreJson is properly formatted as a JSON string
+    // If it's already a string, use it; if it's an object, stringify it
+    let policyStoreString: string
+    try {
+      if (typeof policyStoreJson === 'string') {
+        // Already a string, but verify it's valid JSON
+        JSON.parse(policyStoreJson)
+        policyStoreString = policyStoreJson
+      } else {
+        // It's an object, stringify it
+        policyStoreString = JSON.stringify(policyStoreJson)
+      }
+    } catch (error) {
+      console.error('Invalid policy store JSON format:', error)
+      dispatch(setCedarlingInitializing(false))
+      return
+    }
+
     const bootstrapConfig = {
       ...bootstrap,
       CEDARLING_LOG_TYPE: cedarlingLogType,
-      CEDARLING_POLICY_STORE_LOCAL: JSON.stringify(policyStoreJson),
+      CEDARLING_POLICY_STORE_LOCAL: policyStoreString,
     }
 
     cedarlingClient
@@ -128,7 +175,16 @@ const PermissionsPolicyInitializer = () => {
           dispatch(setCedarFailedStatusAfterMaxTries())
         }
       })
-  }, [token, initialized, isInitializing, rolePermissionMapping, apiPermission, cedarlingLogType])
+  }, [
+    token,
+    initialized,
+    isInitializing,
+    rolePermissionMapping,
+    apiPermission,
+    cedarlingLogType,
+    policyStoreJson,
+    dispatch,
+  ])
 
   return null
 }
