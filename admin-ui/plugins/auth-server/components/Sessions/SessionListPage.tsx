@@ -29,8 +29,9 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import SessionDetailPage from '../Sessions/SessionDetailPage'
-import { SESSION_DELETE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import dayjs, { Dayjs } from 'dayjs'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import GetAppIcon from '@mui/icons-material/GetApp'
@@ -58,7 +59,7 @@ import { DELETION } from '../../../../app/audit/UserActionType'
 import { SESSION } from '../../redux/audit/Resources'
 
 const SessionListPage: React.FC<SessionListPageProps> = () => {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarDeletePermission, authorizeHelper } = useCedarling()
   const { permissions: cedarPermissions } = useSelector(
     (state: RootState) => state.cedarPermissions || { permissions: [] },
   )
@@ -178,17 +179,20 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
 
-  useEffect(() => {
-    const authorizePermissions = async () => {
-      try {
-        await authorize([SESSION_DELETE])
-      } catch (error) {
-        console.error('Error authorizing session permissions:', error)
-      }
-    }
+  const sessionResourceId = ADMIN_UI_RESOURCES.Session
+  const sessionScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[sessionResourceId] || [],
+    [sessionResourceId],
+  )
 
-    authorizePermissions()
-  }, [authorize])
+  const canDeleteSession = useMemo(
+    () => hasCedarDeletePermission(sessionResourceId),
+    [hasCedarDeletePermission, sessionResourceId],
+  )
+
+  useEffect(() => {
+    authorizeHelper(sessionScopes)
+  }, [authorizeHelper, sessionScopes])
 
   useEffect(() => {}, [cedarPermissions])
 
@@ -215,20 +219,20 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
       },
       tooltip: `${t('actions.delete')}`,
       onClick: (event: React.MouseEvent, rowData: Session) => handleDeleteSession(rowData),
-      disabled: !hasCedarPermission(SESSION_DELETE),
+      disabled: !canDeleteSession,
     }),
-    [t, handleDeleteSession, hasCedarPermission, DeleteIcon],
+    [t, handleDeleteSession, canDeleteSession, DeleteIcon],
   )
 
   useEffect(() => {
     const actions: Array<(rowData: Session) => any> = []
 
-    if (hasCedarPermission(SESSION_DELETE)) {
+    if (canDeleteSession) {
       actions.push(createDeleteAction)
     }
 
     setMyActions(actions)
-  }, [hasCedarPermission, createDeleteAction])
+  }, [canDeleteSession, createDeleteAction])
 
   const sessionUsername = useMemo(
     () =>
@@ -562,7 +566,7 @@ const SessionListPage: React.FC<SessionListPageProps> = () => {
       <CardBody>
         <GluuViewWrapper canShow>
           <div className="d-flex justify-content-between align-items-center">
-            {hasCedarPermission(SESSION_DELETE) && (
+            {canDeleteSession && (
               <Box display="flex" justifyContent="flex-end">
                 <Box display="flex" alignItems="center" fontSize="16px" mr="20px">
                   {t('fields.selectUserRevoke')}

@@ -25,6 +25,26 @@ import {
   SMTP_WRITE,
   STAT_JANS_READ,
   STAT_READ,
+  SSA_PORTAL,
+  SSA_ADMIN,
+  SSA_DELETE,
+  SCOPE_READ,
+  SCOPE_WRITE,
+  SCOPE_DELETE,
+  SESSION_READ,
+  SESSION_DELETE,
+  ACR_READ,
+  ACR_WRITE,
+  CLIENT_READ,
+  CLIENT_WRITE,
+  CLIENT_DELETE,
+  PROPERTIES_WRITE,
+  API_CONFIG_READ,
+  API_CONFIG_WRITE,
+  LOGGING_READ,
+  LOGGING_WRITE,
+  JWKS_READ,
+  JWKS_WRITE,
   SAML_READ,
   SAML_WRITE,
   SAML_DELETE,
@@ -111,10 +131,51 @@ export const CEDAR_RESOURCE_SCOPES: Record<string, ResourceScopeEntry[]> = {
     { permission: SAML_CONFIG_READ, resourceId: ADMIN_UI_RESOURCES.SAML },
     { permission: SAML_CONFIG_WRITE, resourceId: ADMIN_UI_RESOURCES.SAML },
   ],
-  [ADMIN_UI_RESOURCES.UserClaims]: [
-    { permission: ATTRIBUTE_READ, resourceId: ADMIN_UI_RESOURCES.UserClaims },
-    { permission: ATTRIBUTE_WRITE, resourceId: ADMIN_UI_RESOURCES.UserClaims },
-    { permission: ATTRIBUTE_DELETE, resourceId: ADMIN_UI_RESOURCES.UserClaims },
+  [ADMIN_UI_RESOURCES.Attributes]: [
+    { permission: ATTRIBUTE_READ, resourceId: ADMIN_UI_RESOURCES.Attributes },
+    { permission: ATTRIBUTE_WRITE, resourceId: ADMIN_UI_RESOURCES.Attributes },
+    { permission: ATTRIBUTE_DELETE, resourceId: ADMIN_UI_RESOURCES.Attributes },
+  ],
+  [ADMIN_UI_RESOURCES.SSA]: [
+    { permission: SSA_PORTAL, resourceId: ADMIN_UI_RESOURCES.SSA },
+    { permission: SSA_ADMIN, resourceId: ADMIN_UI_RESOURCES.SSA },
+    { permission: SSA_DELETE, resourceId: ADMIN_UI_RESOURCES.SSA },
+  ],
+  [ADMIN_UI_RESOURCES.Scopes]: [
+    { permission: SCOPE_READ, resourceId: ADMIN_UI_RESOURCES.Scopes },
+    { permission: SCOPE_WRITE, resourceId: ADMIN_UI_RESOURCES.Scopes },
+    { permission: SCOPE_DELETE, resourceId: ADMIN_UI_RESOURCES.Scopes },
+  ],
+  [ADMIN_UI_RESOURCES.Session]: [
+    { permission: SESSION_READ, resourceId: ADMIN_UI_RESOURCES.Session },
+    { permission: SESSION_DELETE, resourceId: ADMIN_UI_RESOURCES.Session },
+  ],
+  [ADMIN_UI_RESOURCES.Authentication]: [
+    { permission: ACR_READ, resourceId: ADMIN_UI_RESOURCES.Authentication },
+    { permission: ACR_WRITE, resourceId: ADMIN_UI_RESOURCES.Authentication },
+  ],
+  [ADMIN_UI_RESOURCES.Clients]: [
+    { permission: CLIENT_READ, resourceId: ADMIN_UI_RESOURCES.Clients },
+    { permission: CLIENT_WRITE, resourceId: ADMIN_UI_RESOURCES.Clients },
+    { permission: CLIENT_DELETE, resourceId: ADMIN_UI_RESOURCES.Clients },
+  ],
+  [ADMIN_UI_RESOURCES.AuthenticationServerConfiguration]: [
+    {
+      permission: PROPERTIES_WRITE,
+      resourceId: ADMIN_UI_RESOURCES.AuthenticationServerConfiguration,
+    },
+  ],
+  [ADMIN_UI_RESOURCES.ConfigApiConfiguration]: [
+    { permission: API_CONFIG_READ, resourceId: ADMIN_UI_RESOURCES.ConfigApiConfiguration },
+    { permission: API_CONFIG_WRITE, resourceId: ADMIN_UI_RESOURCES.ConfigApiConfiguration },
+  ],
+  [ADMIN_UI_RESOURCES.Logging]: [
+    { permission: LOGGING_READ, resourceId: ADMIN_UI_RESOURCES.Logging },
+    { permission: LOGGING_WRITE, resourceId: ADMIN_UI_RESOURCES.Logging },
+  ],
+  [ADMIN_UI_RESOURCES.Keys]: [
+    { permission: JWKS_READ, resourceId: ADMIN_UI_RESOURCES.Keys },
+    { permission: JWKS_WRITE, resourceId: ADMIN_UI_RESOURCES.Keys },
   ],
 } as const
 

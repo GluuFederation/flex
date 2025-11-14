@@ -6,6 +6,7 @@ export interface MenuItem {
   permission?: string
   resourceKey?: string
   children?: MenuItem[]
+  cedarlingPassed?: boolean
 }
 
 export interface PluginMenu extends MenuItem {}

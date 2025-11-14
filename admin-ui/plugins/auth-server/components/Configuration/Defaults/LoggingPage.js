@@ -13,8 +13,9 @@ import {
   getLoggingConfig,
   editLoggingConfig,
 } from 'Plugins/auth-server/redux/features/loggingSlice'
-import { LOGGING_READ, LOGGING_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -22,27 +23,37 @@ import { getChangedFields, getMergedValues } from '@/helpers'
 
 function LoggingPage() {
   const { t } = useTranslation()
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
   const logging = useSelector((state) => state.loggingReducer.logging)
   const loading = useSelector((state) => state.loggingReducer.loading)
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const dispatch = useDispatch()
 
+  const loggingResourceId = ADMIN_UI_RESOURCES.Logging
+  const loggingScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[loggingResourceId] || [],
+    [loggingResourceId],
+  )
+
+  const canReadLogging = useMemo(
+    () => hasCedarReadPermission(loggingResourceId),
+    [hasCedarReadPermission, loggingResourceId],
+  )
+
+  const canWriteLogging = useMemo(
+    () => hasCedarWritePermission(loggingResourceId),
+    [hasCedarWritePermission, loggingResourceId],
+  )
+
   const [showCommitDialog, setShowCommitDialog] = useState(false)
   const [pendingValues, setPendingValues] = useState(null)
   const [localLogging, setLocalLogging] = useState(null)
 
   useEffect(() => {
-    const initPermissions = async () => {
-      const permissions = [LOGGING_READ, LOGGING_WRITE]
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
-    }
-    initPermissions()
+    authorizeHelper(loggingScopes)
     dispatch(getLoggingConfig())
-  }, [dispatch, authorize])
+  }, [dispatch, authorizeHelper, loggingScopes])
 
   useEffect(() => {
     if (logging) {
@@ -103,7 +114,7 @@ function LoggingPage() {
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
-          <GluuViewWrapper canShow={hasCedarPermission(LOGGING_READ)}>
+          <GluuViewWrapper canShow={canReadLogging}>
             <Formik initialValues={initialValues} enableReinitialize onSubmit={handleSubmit}>
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit}>
@@ -189,7 +200,7 @@ function LoggingPage() {
                     value={formik.values.enabledOAuthAuditLogging}
                   />
 
-                  {hasCedarPermission(LOGGING_WRITE) && (
+                  {canWriteLogging && (
                     <Row>
                       <Col>
                         <GluuCommitFooter

@@ -36,7 +36,7 @@ import {
   PROPERTIES_READ,
   STAT_READ,
 } from 'Utils/PermChecker'
-import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { ADMIN_UI_RESOURCES, CEDARLING_BYPASS } from '@/cedarling/utility'
 import WebhookAddPage from './components/Webhook/WebhookAddPage'
 import WebhookEditPage from './components/Webhook/WebhookEditPage'
 import JansAssetListPage from './components/Assets/JansAssetListPage'
@@ -63,7 +63,7 @@ const pluginMetadata = {
           title: 'menus.health',
           path: PLUGIN_BASE_PATH + '/health',
           permission: PROPERTIES_READ,
-          resourceKey: ADMIN_UI_RESOURCES.Health,
+          resourceKey: CEDARLING_BYPASS,
         },
         {
           title: 'menus.licenseDetails',
@@ -139,7 +139,7 @@ const pluginMetadata = {
       component: HealthPage,
       path: PLUGIN_BASE_PATH + '/health',
       permission: PROPERTIES_READ,
-      resourceKey: ADMIN_UI_RESOURCES.Health,
+      resourceKey: CEDARLING_BYPASS,
     },
     {
       component: LicenseDetailsPage,

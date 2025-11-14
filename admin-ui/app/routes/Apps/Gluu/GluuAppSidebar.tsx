@@ -29,6 +29,7 @@ import {
   StmpZoneIcon,
 } from '../../../components/SVG'
 import { useCedarling } from '@/cedarling'
+import { CEDARLING_BYPASS } from '@/cedarling/utility'
 import type {
   MenuItem,
   PluginMenu,
@@ -123,13 +124,24 @@ function GluuAppSidebar(): JSX.Element {
             result.push({ ...item, children: filteredChildren })
           }
         } else if (item.permission) {
+          if (item.resourceKey === CEDARLING_BYPASS) {
+            result.push(item)
+            continue
+          }
           if (!item.resourceKey) {
             console.warn('[Sidebar] Missing resourceKey for menu item', item.path ?? item.title)
             continue
           }
-          const { isAuthorized } = await authorize([
+          const { isAuthorized, error } = await authorize([
             { permission: item.permission, resourceId: item.resourceKey },
           ])
+          if (!isAuthorized) {
+            console.warn(
+              `[Sidebar] Menu item "${item.title}" (${item.path}) is not authorized.`,
+              error ? `Error: ${error}` : 'User does not have required permission.',
+              `Permission: ${item.permission}, Resource: ${item.resourceKey}`,
+            )
+          }
           if (isAuthorized) {
             result.push(item)
           }

@@ -10,14 +10,7 @@ import type {
   CedarAction,
 } from '@/cedarling'
 import { findPermissionByUrl } from '@/cedarling/utility'
-import {
-  OPENID,
-  REVOKE_SESSION,
-  SCIM_BULK,
-  SSA_ADMIN,
-  SSA_DEVELOPER,
-  SSA_PORTAL,
-} from '@/utils/PermChecker'
+import { OPENID, REVOKE_SESSION, SCIM_BULK, SSA_ADMIN, SSA_DEVELOPER } from '@/utils/PermChecker'
 
 export function useCedarling(): UseCedarlingReturn {
   const { ACTION_TYPE, RESOURCE_TYPE } = CEDARLING_CONSTANTS
@@ -38,14 +31,7 @@ export function useCedarling(): UseCedarlingReturn {
     initialized: cedarlingInitialized,
     isInitializing,
   } = useSelector((state: RootState) => state.cedarPermissions)
-  const executeUrls = new Set([
-    SSA_ADMIN,
-    SSA_PORTAL,
-    SSA_DEVELOPER,
-    SCIM_BULK,
-    REVOKE_SESSION,
-    OPENID,
-  ])
+  const executeUrls = new Set([SSA_ADMIN, SSA_DEVELOPER, SCIM_BULK, REVOKE_SESSION, OPENID])
 
   const getActionLabelFromUrl = (url: string): CedarAction => {
     const lowerUrl = url.toLowerCase()

@@ -1,9 +1,10 @@
 import { AdminUiFeatureResource, ApiPermissionType, CedarAction } from '@/cedarling'
 
+export const CEDARLING_BYPASS = 'CEDARLING_BYPASS' as const
+
 export const ADMIN_UI_RESOURCES = {
   Dashboard: 'Dashboard',
   License: 'License',
-  Health: 'Health',
   MAU: 'MAU',
   Security: 'Security',
   Settings: 'Settings',
@@ -21,7 +22,7 @@ export const ADMIN_UI_RESOURCES = {
   Session: 'Session',
   Users: 'Users',
   Scripts: 'Scripts',
-  UserClaims: 'UserClaims',
+  Attributes: 'Attributes',
   Cache: 'Cache',
   Persistence: 'Persistence',
   SMTP: 'SMTP',

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
+import React, { useState, useContext, useRef, useEffect, useMemo } from 'react'
 import { Card, CardFooter, CardBody, Button, Wizard, WizardStep } from 'Components'
 import { Form } from 'reactstrap'
 import ClientBasic from './ClientBasicPanel'
@@ -9,8 +9,9 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { CLIENT_WRITE } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import ClientTokensPanel from './ClientTokensPanel'
@@ -52,7 +53,7 @@ function ClientWizardForm({
   modifiedFields,
   setModifiedFields,
 }) {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const formRef = useRef()
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -63,18 +64,21 @@ function ClientWizardForm({
   const dispatch = useDispatch()
   const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
+  const clientResourceId = ADMIN_UI_RESOURCES.Clients
+  const clientScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[clientResourceId] || [],
+    [clientResourceId],
+  )
+
+  const canWriteClient = useMemo(
+    () => hasCedarWritePermission(clientResourceId),
+    [hasCedarWritePermission, clientResourceId],
+  )
+
   // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async () => {
-      try {
-        await authorize([CLIENT_WRITE])
-      } catch (error) {
-        console.error('Error authorizing client permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-  }, [])
+    authorizeHelper(clientScopes)
+  }, [authorizeHelper, clientScopes])
 
   const initialValues = {
     inum: client_data.inum,
@@ -530,7 +534,7 @@ function ClientWizardForm({
                           <i className="fa fa-angle-right ms-2"></i>
                         </Button>
                       )}
-                      {!viewOnly && hasCedarPermission(CLIENT_WRITE) && (
+                      {!viewOnly && canWriteClient && (
                         <Button
                           type="button"
                           color={`primary-${selectedTheme}`}

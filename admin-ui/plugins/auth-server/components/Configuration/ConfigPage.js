@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Card, CardBody, CardHeader } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -9,8 +9,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import spec from '../../../../configApiSpecs.yaml'
-import { buildPayload, PROPERTIES_WRITE } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import { getJsonConfig, patchJsonConfig } from 'Plugins/auth-server/redux/features/jsonConfigSlice'
 import SetTitle from 'Utils/SetTitle'
 import DefaultAcrInput from './DefaultAcrInput'
@@ -23,7 +25,7 @@ import { getScripts } from 'Redux/features/initSlice'
 import customColors from '@/customColors'
 
 function ConfigPage() {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const configuration = useSelector((state) => state.jsonConfigReducer.configuration)
   const acrs = useSelector((state) => state.acrReducer.acrReponse)
   const scripts = useSelector((state) => state.initReducer.scripts)
@@ -35,6 +37,18 @@ function ConfigPage() {
   const { t } = useTranslation()
   const lSize = 6
   const userAction = {}
+
+  const propertiesResourceId = ADMIN_UI_RESOURCES.AuthenticationServerConfiguration
+  const propertiesScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[propertiesResourceId] || [],
+    [propertiesResourceId],
+  )
+
+  const canWriteProperties = useMemo(
+    () => hasCedarWritePermission(propertiesResourceId),
+    [hasCedarWritePermission, propertiesResourceId],
+  )
+
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState([])
   const [operations, setOperations] = useState([])
@@ -52,16 +66,8 @@ function ConfigPage() {
   const [put, setPut] = useState([])
 
   useEffect(() => {
-    const authorizePermissions = async () => {
-      try {
-        await authorize([PROPERTIES_WRITE])
-      } catch (error) {
-        console.error('Error authorizing properties permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-  }, [])
+    authorizeHelper(propertiesScopes)
+  }, [authorizeHelper, propertiesScopes])
   const authScripts = scripts
     .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)
@@ -207,7 +213,7 @@ function ConfigPage() {
           )}
 
           <FormGroup row></FormGroup>
-          {hasCedarPermission(PROPERTIES_WRITE) && (
+          {canWriteProperties && (
             <GluuCommitFooter
               saveHandler={toggle}
               hideButtons={{ back: false }}
@@ -218,7 +224,7 @@ function ConfigPage() {
           <FormGroup row></FormGroup>
           <FormGroup row></FormGroup>
           <FormGroup row></FormGroup>
-          {hasCedarPermission(PROPERTIES_WRITE) && (
+          {canWriteProperties && (
             <GluuCommitDialog
               handler={toggle}
               modal={modal}

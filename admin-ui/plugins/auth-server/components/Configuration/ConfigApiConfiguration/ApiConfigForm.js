@@ -1,11 +1,13 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { FormGroup } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import spec from '../../../../../configApiSpecs.yaml'
-import { buildPayload, API_CONFIG_WRITE } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import { useCedarling } from '@/cedarling'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import { patchApiConfigConfiguration } from 'Plugins/auth-server/redux/features/configApiSlice'
 import JsonPropertyBuilderConfigApi from './JsonPropertyBuilderConfigApi'
@@ -14,7 +16,7 @@ import { toast } from 'react-toastify'
 const schema = spec.components.schemas.ApiAppConfiguration.properties
 
 const ApiConfigForm = () => {
-  const { hasCedarPermission, authorize } = useCedarling()
+  const { hasCedarWritePermission, authorizeHelper } = useCedarling()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [modal, setModal] = useState(false)
@@ -22,24 +24,24 @@ const ApiConfigForm = () => {
   const [operations, setOperations] = useState([])
 
   const configuration = useSelector((state) => state.configApiReducer.configuration)
-  const { permissions: cedarPermissions } = useSelector((state) => state.cedarPermissions)
 
   const userAction = {}
 
+  const configApiResourceId = ADMIN_UI_RESOURCES.ConfigApiConfiguration
+  const configApiScopes = useMemo(
+    () => CEDAR_RESOURCE_SCOPES[configApiResourceId] || [],
+    [configApiResourceId],
+  )
+
+  const canWriteConfigApi = useMemo(
+    () => hasCedarWritePermission(configApiResourceId),
+    [hasCedarWritePermission, configApiResourceId],
+  )
+
   // Permission initialization
   useEffect(() => {
-    const authorizePermissions = async () => {
-      try {
-        await authorize([API_CONFIG_WRITE])
-      } catch (error) {
-        console.error('Error authorizing API config permissions:', error)
-      }
-    }
-
-    authorizePermissions()
-  }, [])
-
-  useEffect(() => {}, [cedarPermissions])
+    authorizeHelper(configApiScopes)
+  }, [authorizeHelper, configApiScopes])
 
   const toggle = useCallback(() => {
     if (patches?.length > 0) {
@@ -99,7 +101,7 @@ const ApiConfigForm = () => {
       })}
 
       <FormGroup row></FormGroup>
-      {hasCedarPermission(API_CONFIG_WRITE) && (
+      {canWriteConfigApi && (
         <GluuCommitFooter
           saveHandler={toggle}
           hideButtons={{ back: false }}
@@ -108,7 +110,7 @@ const ApiConfigForm = () => {
         />
       )}
 
-      {hasCedarPermission(API_CONFIG_WRITE) && (
+      {canWriteConfigApi && (
         <GluuCommitDialog
           handler={toggle}
           modal={modal}

@@ -197,7 +197,6 @@ export interface ExtendedPolicyStoreConfig {
 
 export type AdminUiFeatureResource =
   | 'Dashboard'
-  | 'Health'
   | 'License'
   | 'MAU'
   | 'Security'
@@ -216,7 +215,7 @@ export type AdminUiFeatureResource =
   | 'Session'
   | 'Users'
   | 'Scripts'
-  | 'UserClaims'
+  | 'Attributes'
   | 'Cache'
   | 'Persistence'
   | 'SMTP'

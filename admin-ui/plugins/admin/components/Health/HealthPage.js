@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { Container, CardBody, Card, CardHeader } from 'Components'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
