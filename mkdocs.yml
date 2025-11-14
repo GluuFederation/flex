@@ -141,6 +141,7 @@ nav:
         - 'Introduction': 'admin/admin-ui/introduction.md'
         - 'Design & Implementation':
           - 'Auth Server Interaction': 'admin/admin-ui/auth-server-interaction.md'
+          - 'Access Control': 'admin/admin-ui/access-control.md'
         - 'Configuration': 'admin/admin-ui/configuration.md'
         - 'Logs': 'admin/admin-ui/logs.md'
         - 'Left Navigation Menu':
