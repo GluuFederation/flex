@@ -117,7 +117,7 @@ Jans Token Server->>Admin UI Backend: AT2
 Admin UI Backend->>Gluu Flex Admin UI: AT2
 Gluu Flex Admin UI->>Gluu Flex Admin UI:extracts scopes from AT2
 Gluu Flex Admin UI->>Gluu Flex Admin UI: AT2 determine which Config API–protected endpoints the Admin UI can access
-
+```
 ## Accessing Config-API Endpoints
 
 To access config-api endpoints, the following steps are taken:
