@@ -766,6 +766,7 @@
     "smtp_test_message": "Este es un correo electrónico de prueba para verificar que su configuración SMTP funciona correctamente.",
     "save_before_test": "Por favor, guarde la configuración antes de probar",
     "no_configuration_loaded": "No se cargó ninguna configuración",
+    "insufficient_permissions_to_modify": "No tiene permiso para modificar esta configuración",
     "action_commit_question": "Registro de auditoría: ¿Desea aplicar los cambios realizados en esta página?",
     "licenseAuditLog": "¿Realmente desea restablecer la licencia existente?",
     "action_deletion_question": "¿Realmente desea eliminar este elemento?",

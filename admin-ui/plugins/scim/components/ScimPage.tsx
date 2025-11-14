@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useQueryClient } from '@tanstack/react-query'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { Card, CardBody } from 'Components'
 import ScimConfiguration from './ScimConfiguration'
 import { updateToast } from 'Redux/features/toastSlice'
@@ -15,6 +16,9 @@ import { logAudit } from 'Utils/AuditLogger'
 import { PATCH } from '@/audit/UserActionType'
 import type { RootState } from '@/redux/sagas/types/audit'
 import type { JsonPatch } from 'JansConfigApi'
+import { useCedarling } from '@/cedarling'
+import { ADMIN_UI_RESOURCES } from '@/cedarling/utility'
+import { CEDAR_RESOURCE_SCOPES } from '@/cedarling/constants/resourceScopes'
 
 interface ApiErrorResponse {
   response?: {
@@ -54,6 +58,22 @@ const ScimPage: React.FC = () => {
     (state: RootState) => state.authReducer?.config?.clientId,
   )
   SetTitle(t('titles.scim_management'))
+  const { hasCedarReadPermission, hasCedarWritePermission, authorizeHelper } = useCedarling()
+  const scimResourceId = useMemo(() => ADMIN_UI_RESOURCES.SCIM, [])
+  const scimScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[scimResourceId], [scimResourceId])
+  const canReadScim = useMemo(
+    () => hasCedarReadPermission(scimResourceId) === true,
+    [hasCedarReadPermission, scimResourceId],
+  )
+  const canWriteScim = useMemo(
+    () => hasCedarWritePermission(scimResourceId) === true,
+    [hasCedarWritePermission, scimResourceId],
+  )
+
+  useEffect(() => {
+    authorizeHelper(scimScopes)
+  }, [authorizeHelper, scimScopes])
+
   const { data: scimConfiguration, isLoading } = useGetScimConfig()
   const userMessageRef = React.useRef<string>('')
 
@@ -125,6 +145,10 @@ const ScimPage: React.FC = () => {
 
   const handleSubmit = useCallback(
     (formValues: ScimFormValues): void => {
+      if (canWriteScim) {
+        dispatch(updateToast(true, 'error', t('messages.insufficient_permissions_to_modify')))
+        return
+      }
       if (!scimConfiguration) {
         dispatch(updateToast(true, 'error', t('messages.no_configuration_loaded')))
         return
@@ -138,20 +162,20 @@ const ScimPage: React.FC = () => {
       userMessageRef.current = action_message || ''
       patchScimMutation.mutate({ data: patches })
     },
-    [scimConfiguration, patchScimMutation, dispatch, t],
+    [scimConfiguration, patchScimMutation, dispatch, t, canWriteScim],
   )
 
   return (
     <GluuLoader blocking={isLoading || patchScimMutation.isPending}>
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
-          {!isLoading && (
+          <GluuViewWrapper canShow={canReadScim}>
             <ScimConfiguration
               scimConfiguration={scimConfiguration}
               handleSubmit={handleSubmit}
               isSubmitting={patchScimMutation.isPending}
             />
-          )}
+          </GluuViewWrapper>
         </CardBody>
       </Card>
     </GluuLoader>

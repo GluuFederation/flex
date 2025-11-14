@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { Paper, Skeleton, TablePagination } from '@mui/material'
 import { Badge } from 'reactstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { useCedarling } from '@/cedarling'
+import { useCedarling, CEDAR_RESOURCE_SCOPES, ADMIN_UI_RESOURCES } from '@/cedarling'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { Card, CardBody } from 'Components'
 import CustomScriptDetailPage from './CustomScriptDetailPage'
@@ -19,7 +19,7 @@ import {
   viewOnly,
   getScriptTypes,
 } from 'Plugins/admin/redux/features/customScriptSlice'
-import { buildPayload, SCRIPT_READ, SCRIPT_WRITE, SCRIPT_DELETE } from 'Utils/PermChecker'
+import { buildPayload } from 'Utils/PermChecker'
 import { LIMIT_ID, LIMIT, PATTERN, PATTERN_ID, TYPE, TYPE_ID } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
@@ -34,7 +34,12 @@ function ScriptListTable(): JSX.Element {
   const { t } = useTranslation()
   const dispatch = useDispatch<any>()
   const navigate = useNavigate()
-  const { hasCedarPermission, authorize } = useCedarling()
+  const {
+    hasCedarReadPermission,
+    hasCedarWritePermission,
+    hasCedarDeletePermission,
+    authorizeHelper,
+  } = useCedarling()
   const userAction: UserAction = {}
   const options: any = {}
   const [myActions, setMyActions] = useState<any[]>([])
@@ -51,11 +56,24 @@ function ScriptListTable(): JSX.Element {
 
   let memoType = type
 
+  const scriptsResourceId = useMemo(() => ADMIN_UI_RESOURCES.Scripts, [])
+  const scriptScopes = useMemo(() => CEDAR_RESOURCE_SCOPES[scriptsResourceId], [scriptsResourceId])
+
+  const canReadScripts = useMemo(
+    () => hasCedarReadPermission(scriptsResourceId) === true,
+    [hasCedarReadPermission, scriptsResourceId],
+  )
+  const canWriteScripts = useMemo(
+    () => hasCedarWritePermission(scriptsResourceId) === true,
+    [hasCedarWritePermission, scriptsResourceId],
+  )
+  const canDeleteScripts = useMemo(
+    () => hasCedarDeletePermission(scriptsResourceId) === true,
+    [hasCedarDeletePermission, scriptsResourceId],
+  )
+
   const scripts = useSelector((state: RootState) => state.customScriptReducer.items)
   const loading = useSelector((state: RootState) => state.customScriptReducer.loading)
-  const { permissions: cedarPermissions } = useSelector(
-    (state: RootState) => state.cedarPermissions,
-  )
   const hasFetchedScriptTypes = useSelector(
     (state: RootState) => state.customScriptReducer.hasFetchedScriptTypes,
   )
@@ -82,16 +100,15 @@ function ScriptListTable(): JSX.Element {
 
   // Initialize Cedar permissions
   useEffect(() => {
-    const initPermissions = async () => {
-      const permissions = [SCRIPT_READ, SCRIPT_WRITE, SCRIPT_DELETE]
-      for (const permission of permissions) {
-        await authorize([permission])
-      }
-    }
+    authorizeHelper(scriptScopes)
+  }, [authorizeHelper, scriptScopes])
+
+  useEffect(() => {
     makeOptions()
-    dispatch(getCustomScriptByType({ action: options } as any))
-    initPermissions()
-  }, [dispatch])
+    if (canReadScripts) {
+      dispatch(getCustomScriptByType({ action: options } as any))
+    }
+  }, [dispatch, canReadScripts])
 
   useEffect(() => {
     if (!hasFetchedScriptTypes) {
@@ -177,10 +194,7 @@ function ScriptListTable(): JSX.Element {
   // Build actions only when permissions change
   useEffect(() => {
     const actions: any[] = []
-    const canRead = hasCedarPermission(SCRIPT_READ)
-    const canWrite = hasCedarPermission(SCRIPT_WRITE)
-    const canDelete = hasCedarPermission(SCRIPT_DELETE)
-    if (canWrite) {
+    if (canWriteScripts) {
       actions.push({
         icon: 'add',
         tooltip: `${t('messages.add_script')}`,
@@ -209,7 +223,7 @@ function ScriptListTable(): JSX.Element {
       }))
     }
 
-    if (canRead) {
+    if (canReadScripts) {
       actions.push((_rowData: any) => ({
         icon: 'visibility',
         iconProps: {
@@ -271,7 +285,7 @@ function ScriptListTable(): JSX.Element {
       })
     }
 
-    if (canDelete) {
+    if (canDeleteScripts) {
       actions.push((_rowData: any) => ({
         icon: () => <DeleteOutlined />,
         iconProps: {
@@ -290,7 +304,9 @@ function ScriptListTable(): JSX.Element {
 
     setMyActions(actions)
   }, [
-    cedarPermissions,
+    canReadScripts,
+    canWriteScripts,
+    canDeleteScripts,
     loadingScriptTypes,
     limit,
     type,
@@ -353,7 +369,7 @@ function ScriptListTable(): JSX.Element {
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasCedarPermission(SCRIPT_READ)}>
+        <GluuViewWrapper canShow={canReadScripts}>
           <MaterialTable
             key={Number(limit)}
             components={{
@@ -383,7 +399,7 @@ function ScriptListTable(): JSX.Element {
             detailPanel={DetailPanel}
           />
         </GluuViewWrapper>
-        {hasCedarPermission(SCRIPT_DELETE) && (
+        {canDeleteScripts && (
           <GluuDialog
             row={item}
             handler={toggle}

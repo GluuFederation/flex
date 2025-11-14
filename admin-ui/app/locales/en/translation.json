@@ -766,6 +766,7 @@
     "smtp_test_message": "This is a test email to verify your SMTP configuration is working correctly.",
     "save_before_test": "Please save the configuration before testing",
     "no_configuration_loaded": "No configuration loaded",
+    "insufficient_permissions_to_modify": "You do not have permission to modify this configuration",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
     "licenseAuditLog": "Do you really want to reset the existing license?",
     "action_deletion_question": "Do you really want to delete this item?",

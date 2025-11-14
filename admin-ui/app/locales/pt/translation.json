@@ -704,6 +704,7 @@
     "smtp_test_message": "Este é um e-mail de teste para verificar se sua configuração SMTP está funcionando corretamente.",
     "save_before_test": "Por favor, salve a configuração antes de testar",
     "no_configuration_loaded": "Nenhuma configuração carregada",
+    "insufficient_permissions_to_modify": "Você não tem permissão para modificar esta configuração",
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
     "licenseAuditLog": "Você realmente deseja redefinir a licença existente?",
     "action_deletion_question": "Tem certeza que quer deletar este item?",

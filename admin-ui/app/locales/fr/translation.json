@@ -705,6 +705,7 @@
     "smtp_test_message": "Ceci est un e-mail de test pour vérifier que votre configuration SMTP fonctionne correctement.",
     "save_before_test": "Veuillez enregistrer la configuration avant de tester",
     "no_configuration_loaded": "Aucune configuration chargée",
+    "insufficient_permissions_to_modify": "Vous n'avez pas la permission de modifier cette configuration",
     "http_method_error": "Veuillez sélectionner une méthode HTTP.",
     "display_name_error": "Veuillez entrer un nom d'affichage.",
     "url_error": "Veuillez entrer une URL.",
