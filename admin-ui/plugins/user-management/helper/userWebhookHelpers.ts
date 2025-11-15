@@ -1,8 +1,3 @@
-/**
- * Helper functions for triggering webhooks on user management actions
- * These functions replace the saga-based webhook triggering with React Query mutation callbacks
- */
-
 import store from 'Redux/store'
 
 interface WebhookAction {

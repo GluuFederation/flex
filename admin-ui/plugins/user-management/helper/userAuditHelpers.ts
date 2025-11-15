@@ -51,11 +51,7 @@ export interface AuditPayload extends CustomUser {
   jsonPatchString?: string
 }
 
-/**
- * Redact sensitive data from audit payload to prevent password/secret leakage
- */
 function redactSensitiveData(payload: AuditPayload): void {
-  // Redact top-level password fields
   if (payload.userPassword) {
     payload.userPassword = '[REDACTED]'
   }
@@ -63,26 +59,24 @@ function redactSensitiveData(payload: AuditPayload): void {
     payload.userConfirmPassword = '[REDACTED]'
   }
 
-  // Redact password in jsonPatchString
   if (payload.jsonPatchString) {
     payload.jsonPatchString =
       '[{\"op\":\"replace\",\"path\":\"/userPassword\",\"value\":\"[REDACTED]\"}]'
   }
 
-  // Redact password values in customAttributes by attribute name
   if (Array.isArray(payload.customAttributes)) {
     payload.customAttributes = payload.customAttributes.map((attr) => {
       if (attr.name === USER_PASSWORD_ATTR || attr.name === 'userPassword') {
-        return { ...attr, values: '[REDACTED]' }
+        const redactedValues = Array.isArray(attr.values)
+          ? attr.values.map(() => '[REDACTED]')
+          : ['[REDACTED]']
+        return { ...attr, values: redactedValues }
       }
       return attr
     })
   }
 }
 
-/**
- * Initialize audit log with user information from Redux store
- */
 export function initAudit(): AuditLog {
   const state = store.getState() as unknown as { authReducer: AuthState }
   const authReducer: AuthState = state.authReducer

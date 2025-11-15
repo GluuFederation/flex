@@ -19,10 +19,13 @@ function UserClaimEntry({
     handler(data.name)
   }
 
-  const { data: rolesData } = useGetAllAdminuiRoles()
+  const { data: rolesData, isLoading: rolesLoading, isError: rolesError } = useGetAllAdminuiRoles()
   const rolesToBeShown: string[] = (rolesData ?? [])
     .map((roleItem) => roleItem.role)
     .filter((role): role is string => Boolean(role))
+
+  const isRoleField = data.name === JANS_ADMIN_UI_ROLE_ATTR
+  const isRolesUnavailable = isRoleField && (rolesLoading || rolesError)
 
   return (
     <div key={entry}>
@@ -34,15 +37,21 @@ function UserClaimEntry({
           value={formik.values[data.name] || []}
           formik={formik}
           isDirect={true}
-          options={
-            data.name === JANS_ADMIN_UI_ROLE_ATTR ? rolesToBeShown : formik.values[data.name] || []
-          }
+          options={isRoleField ? rolesToBeShown : formik.values[data.name] || []}
           handler={doHandle}
           modifiedFields={modifiedFields}
           setModifiedFields={setModifiedFields}
           doc_category={data.description}
           lsize={3}
           rsize={9}
+          disabled={isRolesUnavailable}
+          placeholder={
+            isRolesUnavailable
+              ? rolesLoading
+                ? 'Loading roles...'
+                : 'Failed to load roles'
+              : undefined
+          }
         />
       )}
       {data.name !== COUNTRY_ATTR && !data.oxMultiValuedAttribute && (

@@ -20,6 +20,8 @@ function GluuRemovableTypeAhead({
   allowNew = true,
   modifiedFields,
   setModifiedFields,
+  disabled = false,
+  placeholder,
 }: any) {
   const { t } = useTranslation()
   return (
@@ -54,6 +56,8 @@ function GluuRemovableTypeAhead({
               multiple={true}
               defaultSelected={value}
               options={options}
+              disabled={disabled}
+              placeholder={placeholder}
             />
           </InputGroup>
         </Col>
